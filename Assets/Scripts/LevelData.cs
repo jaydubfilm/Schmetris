@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class LevelData
+[CreateAssetMenu(fileName = "New Level", menuName = "Level")]
+public class LevelData : ScriptableObject
 {
    public float levelDuration;
    public SpawnData[] spawns;

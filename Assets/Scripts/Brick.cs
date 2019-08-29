@@ -60,7 +60,7 @@ public class Brick : MonoBehaviour
             {
                 brickHP-=10;
                 bounceBitFlag = false;
-              
+                bot.GetComponent<Overheat>().AddHeat();
             } 
             else if (transform.parent != null)
             {
@@ -268,7 +268,6 @@ public class Brick : MonoBehaviour
     {
         if (brickLevel<spriteArr.Length-1) {
             brickLevel++;
-            Debug.Log("WTF?????");
             GetComponent<SpriteRenderer>().sprite = spriteArr[brickLevel];
             if (brickType == 1)
                 gameObject.GetComponent<Fuel>().UpgradeFuelLevel();

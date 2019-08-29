@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
+  m_Name: Level One
+  m_EditorClassIdentifier: 
+  levelDuration: 60
+  spawns:
+  - block: {fileID: 9034390688859657117, guid: b1743be37722e45f48b14cad9e74719d, type: 3}
+    probability: 2
+  - block: {fileID: 912910950829958133, guid: 4cfb3d094b93149c893e3cb0cbbbd95c, type: 3}
+    probability: 1
+  - block: {fileID: 4802360544740397894, guid: 70109e6ead048437898b5bd2d3714001, type: 3}
+    probability: 1
+  - block: {fileID: 1315968348086269550, guid: f45569c414904480ca2d2a2aa64c1a85, type: 3}
+    probability: 2
+  spawnRate: 0.2

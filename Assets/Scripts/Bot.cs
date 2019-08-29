@@ -69,16 +69,17 @@ public class Bot : MonoBehaviour
         gameObject.transform.position = new Vector3(coreX, coreY, 0);
         gameObject.transform.rotation = Quaternion.identity;
         botBody = gameObject.GetComponent<Rigidbody2D>();
-        brickArr[maxBotRadius,maxBotRadius] = coreBrick;
-        coreBrick.GetComponent<Brick>().arrPos = new Vector2Int(maxBotRadius,maxBotRadius);
+        // brickArr[maxBotRadius,maxBotRadius] = coreBrick;
+        // coreBrick.GetComponent<Brick>().arrPos = new Vector2Int(maxBotRadius,maxBotRadius);
         
         botRotation=1;
         // add fuel brick
-        AddBrick(new Vector2Int(maxBotRadius,maxBotRadius-1),1,0);
+        // AddBrick(new Vector2Int(maxBotRadius,maxBotRadius-1),1,0);
         source = GetComponent<AudioSource>();
         startTileMap = GetComponentInChildren<Tilemap>();
         myGrid = GetComponentInChildren<Grid>();
         AddStartingBricks();
+
     }
 
     public void AddStartingBricks(){
@@ -634,7 +635,8 @@ public class Bot : MonoBehaviour
         }
         botBody.transform.rotation = finalRotation;
         foreach (Brick brick in brickScripts) {
-            if ((!brick.IsCore())&&(brick!=null))
+            // if ((!brick.IsCore())&&(brick!=null))
+            if (brick!=null)
                 brick.RotateUpright();
         }
     }

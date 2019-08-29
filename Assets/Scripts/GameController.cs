@@ -12,8 +12,9 @@ public class GameController : MonoBehaviour
     public static int tripleCheckFlag = 0;
     
     public GameObject gameOverPanel;
-    public LevelData[] allLevelData;
-    
+    //public LevelData[] allLevelData;
+    public Game game;
+    // public LevelData currentGame;
 
     Text levelTimer;
     Text levelNumberString;
@@ -21,7 +22,7 @@ public class GameController : MonoBehaviour
     public static float timeRemaining = 10.0f;
     public int currentScene = 1;
     public static int spawnRow = 40;
-    public static int bitCount = 10;
+    //public static int bitCount = 10;
 
     public GameObject BG1;
     public GameObject BG2;
@@ -106,7 +107,8 @@ public class GameController : MonoBehaviour
     public void LoadLevelData(int levelNumber) {
         SceneManager.LoadScene(levelNumber);
         levelNumberString.text = "Level: " + levelNumber;  
-        levelData = allLevelData[levelNumber-1];
+        //levelData = allLevelData[levelNumber-1];
+        levelData = game.levelDataArr[levelNumber-1];
         spawns = levelData.spawns;
         eProbArr = GetSpawnProbabilities();
         spawnTimer = levelData.spawnRate;
@@ -274,7 +276,7 @@ public class GameController : MonoBehaviour
 */
     void GameOver () 
     {
-        Debug.Log("Game Over");
+        //Debug.Log("Game Over");
         gameOverPanel.SetActive(true);
     }
     
