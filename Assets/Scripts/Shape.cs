@@ -2,16 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Trying to push this GitHub
-
 public class Shape : MonoBehaviour
 {
-    public int cellCount = 0;
+    public GameObject[,] cellArr;
+    public int column;
+    public int cellCount;
+    public int radius = 2;
+    public int shapeWidth;
+    public int shapeHeight;
+    public GameObject coreCell;
+    public GameObject newCell;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        shapeWidth = 2 * radius +1;
+        shapeHeight = 2 * radius +1;
+        cellArr = new GameObject[shapeWidth,shapeHeight];
+    }
+    
+
+    /* 
     public static int cellTypesNum = 3;
     public static int maxCellRadius = 4;
     public static int maxCellWidth = maxCellRadius *2 +1;
     public static int maxCellHeight = maxCellRadius *2 +1;
-    public int[] shapeColorProbabilityArr = new int[3];
+    // public int[] shapeColorProbabilityArr = new int[3];
     bool dropFlag = false;
     public float moveDelay = 0.1f;
     public float moveStep = 0.1f;
@@ -22,17 +38,10 @@ public class Shape : MonoBehaviour
     
     float coreX;
     float coreY;
-    int Dummy; //branch test
 
     public GameObject[] cellObjectsArr = new GameObject[cellTypesNum];
 
     Rigidbody2D shapeBody;
-
-    /* public List<List<int>> ShapeForms = new List<List<int>>{
-        new List<int> {2,2,3,2},
-        new List<int> {2,2,2,3},
-        new List<int> {1,2,2,2,2,3}
-    }*/
 
     public GameObject[,] cellArr = new GameObject[maxCellWidth,maxCellHeight];
 
@@ -52,8 +61,6 @@ public class Shape : MonoBehaviour
   // Update is called once per frame
     void Update()
     {
-        if (transform.position.y < -50)
-            Destroy(gameObject);
     }
 
     void LateUpdate()
@@ -78,13 +85,13 @@ public class Shape : MonoBehaviour
         }
         startMoveTime = Time.time;
     }
-/* 
+
     public GameObject AddRandomCell()
     {
         int c = GameController.ProbabilityPicker(shapeColorProbabilityArr);
         return AddRandomOffsetCell(c);
     }
-*/
+
     public GameObject AddRandomOffsetCell (int color)
     {
         int newXpos;
@@ -139,7 +146,7 @@ public class Shape : MonoBehaviour
         int c = GameController.ProbabilityPicker(shapeColorProbabilityArr);
         return AddCell(OffsetToArray(0),OffsetToArray(0),c);
     }
-*/
+
     public GameObject AddCell (int xArr, int yArr, int color)
     {
         GameObject newCell;
@@ -164,16 +171,7 @@ public class Shape : MonoBehaviour
 
         return newCell;
     }
+*/
 
-
-   public static int OffsetToArray(int offset)
-    {
-        return (offset + maxCellRadius);
-    }
-
-    public static int ArrToOffset(int arr)
-    {
-        return (arr - maxCellRadius);
-    }
 
 }

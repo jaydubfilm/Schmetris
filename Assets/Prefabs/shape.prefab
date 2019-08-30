@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 3066352362972558761}
   - component: {fileID: 169275432723214623}
   m_Layer: 0
-  m_Name: shape 1
-  m_TagString: Untagged
+  m_Name: shape
+  m_TagString: Moveable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,7 +48,6 @@ MonoBehaviour:
   shapeColorProbabilityArr: 010000000200000001000000
   moveDelay: 0.1
   moveStep: 0.1
-  mainCamera: {fileID: 0}
   cellObjectsArr:
   - {fileID: 6252570782243358495, guid: 3ef3b5fc4672e4b97bbbe22fe2f6e8c2, type: 3}
   - {fileID: 8854629051377165017, guid: dd0a71f282cd24b2481317aa1b1816ae, type: 3}

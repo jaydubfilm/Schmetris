@@ -276,7 +276,6 @@ public class GameController : MonoBehaviour
 */
     void GameOver () 
     {
-        //Debug.Log("Game Over");
         gameOverPanel.SetActive(true);
     }
     

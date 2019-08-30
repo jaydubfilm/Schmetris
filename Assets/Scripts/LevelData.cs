@@ -7,5 +7,6 @@ public class LevelData : ScriptableObject
 {
    public float levelDuration;
    public SpawnData[] spawns;
+   public Shape[] shapes;
    public float spawnRate;
 }

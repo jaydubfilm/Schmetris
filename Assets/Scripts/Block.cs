@@ -19,25 +19,10 @@ public class Block : MonoBehaviour
         blockWidth = 2 * radius +1;
         blockHeight = 2 * radius +1;
         bitArr = new GameObject[blockWidth,blockHeight];
- /* 
-        foreach(Bit bit in GetComponentsInChildren<Bit>()) {
-            
-
-        }
-
-        Vector3 vpos = gameObject.transform.position;
-       // newBit = Instantiate(coreBit, vpos, Quaternion.identity);
-       newBit.GetComponent<Bit>().xArrPos = radius;
-        newBit.GetComponent<Bit>().yArrPos = radius;
-        newBit.GetComponent<Bit>().parentBlock = gameObject;
-        bitArr[radius,radius] = newBit;
-        */
     }
 
     // Update is called once per frame
     void Update()
     {
-          //if (gameObject.transform.position.y < ScreenStuff.bottomEdgeOfWorld)
-           // Destroy(gameObject);
     }
 }

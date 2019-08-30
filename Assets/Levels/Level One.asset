@@ -22,4 +22,8 @@ MonoBehaviour:
     probability: 1
   - block: {fileID: 1315968348086269550, guid: f45569c414904480ca2d2a2aa64c1a85, type: 3}
     probability: 2
+  shapes:
+  - {fileID: 6479144064301131973, guid: 802e1aa218c794d45b13f0de108a80f4, type: 3}
+  - {fileID: 765075248993939602, guid: cc2ac4c7bffb346cca71565b2aade3f1, type: 3}
+  - {fileID: 2803758784820982045, guid: 056380f83ede1468e86752d36915f1f4, type: 3}
   spawnRate: 0.2

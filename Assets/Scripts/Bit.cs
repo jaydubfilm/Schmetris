@@ -7,10 +7,6 @@ public class Bit : MonoBehaviour
     public int bitType;
     public Vector2Int arrPos;
 
-   //  public List<GameObject> neighborList = new List<GameObject>();
-   
-    // public int hitPoints;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -20,8 +16,6 @@ public class Bit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (gameObject.transform.position.y < ScreenStuff.selfDestructY)
-          //  Destroy(gameObject);
     }
 
     public void RemoveFromBlock(string actionType){
@@ -50,9 +44,7 @@ public class Bit : MonoBehaviour
             default :
                 Destroy(gameObject);
                 break;
-            //Block.orphanCheckFlag = true;
         }
-        // parentBlock.RefreshNeighborLists();
     }  
 
     public void ExplodeBit() {
