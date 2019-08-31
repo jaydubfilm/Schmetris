@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class SpawnData
+public class BlockSpawnData
 {
     public GameObject block;
     public int probability;

@@ -44,14 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad61e27d95ef6456e830c9106ea87c14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  column: 0
   cellCount: 0
-  shapeColorProbabilityArr: 010000000200000001000000
-  moveDelay: 0.1
-  moveStep: 0.1
-  cellObjectsArr:
-  - {fileID: 6252570782243358495, guid: 3ef3b5fc4672e4b97bbbe22fe2f6e8c2, type: 3}
-  - {fileID: 8854629051377165017, guid: dd0a71f282cd24b2481317aa1b1816ae, type: 3}
-  - {fileID: 8854629051377165017, guid: acda12282c330497d92a30a142def080, type: 3}
+  radius: 2
+  shapeWidth: 0
+  shapeHeight: 0
+  coreCell: {fileID: 0}
+  newCell: {fileID: 0}
 --- !u!50 &169275432723214623
 Rigidbody2D:
   serializedVersion: 4
@@ -64,10 +63,10 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.2
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0.1
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1

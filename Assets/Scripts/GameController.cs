@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     public static int lives = 1;
     public static int bgAdjustFlag = 0;
     public static int tripleCheckFlag = 0;
+    public static int shapeScore = 0;
     
     public GameObject gameOverPanel;
     //public LevelData[] allLevelData;
@@ -18,6 +19,7 @@ public class GameController : MonoBehaviour
 
     Text levelTimer;
     Text levelNumberString;
+    Text shapeScoreString;
 
     public static float timeRemaining = 10.0f;
     public int currentScene = 1;
@@ -40,11 +42,14 @@ public class GameController : MonoBehaviour
     int[] eProbArr;
 
     LevelData levelData;
-    SpawnData[] spawns;
+    BlockSpawnData[] blockSpawns;
 
     public int[] shapeCellCountProbArr = new int[maxShapeCellCount];
    
-    float spawnTimer;
+    float blockSpawnTimer;
+    float shapeSpawnRate;
+    float shapeSpawnTimer;
+    int shapeCount;
 
 
     void Awake()
@@ -53,16 +58,18 @@ public class GameController : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
         levelNumberString = GameObject.Find("Level").GetComponent<Text>();
         levelTimer = GameObject.Find("Timer").GetComponent<Text>();
+        shapeScoreString = GameObject.Find("Shapes").GetComponent<Text>();
         LoadLevelData(1);
     }
 
 
     public void Update()
     {
-        CheckForSpawn();
- 
+        BlockSpawnCheck();
+        ShapeSpawnCheck();
         timeRemaining -= Time.deltaTime;
         levelTimer.text = "Time remaining: " + Mathf.Round(timeRemaining);
+        shapeScoreString.text = "Shapes matched: " + shapeScore;
         if (timeRemaining < 0) {
             if (currentScene == 3) {
                 levelTimer.enabled = false;
@@ -98,21 +105,23 @@ public class GameController : MonoBehaviour
     }
 
     public int[] GetSpawnProbabilities() {
-        int[] pArr = new int[spawns.Length];
-        for (int d = 0; d < spawns.Length; d++)
-            pArr[d] = spawns[d].probability;
+        int[] pArr = new int[blockSpawns.Length];
+        for (int d = 0; d < blockSpawns.Length; d++)
+            pArr[d] = blockSpawns[d].probability;
         return pArr;
     }
 
     public void LoadLevelData(int levelNumber) {
         SceneManager.LoadScene(levelNumber);
         levelNumberString.text = "Level: " + levelNumber;  
-        //levelData = allLevelData[levelNumber-1];
         levelData = game.levelDataArr[levelNumber-1];
-        spawns = levelData.spawns;
+        blockSpawns = levelData.blocks;
         eProbArr = GetSpawnProbabilities();
-        spawnTimer = levelData.spawnRate;
+        blockSpawnTimer = levelData.blockSpawnRate;
         timeRemaining = levelData.levelDuration;
+        shapeSpawnRate = (levelData.levelDuration * 0.8f) / levelData.shapes.Length; 
+        shapeSpawnTimer = shapeSpawnRate;
+        shapeCount = 0;
     }
 
 
@@ -194,27 +203,28 @@ public class GameController : MonoBehaviour
         BG3.transform.position = BV3;
         BG4.transform.position = BV4;
     }
-/* 
  
     void ShapeSpawnCheck() {
         shapeSpawnTimer -= Time.deltaTime;
         if (shapeSpawnTimer <= 0)
         {
             shapeSpawnTimer = shapeSpawnRate;
-            SpawnRandomSizeShape();
+            SpawnShape();
+            shapeCount++;
         }
     }
-*/
 
-    void CheckForSpawn() {
-        spawnTimer -= Time.deltaTime;
-        if (spawnTimer<= 0)
+
+    void BlockSpawnCheck() {
+        blockSpawnTimer -= Time.deltaTime;
+        if (blockSpawnTimer<= 0)
         {
             int blockType = ProbabilityPicker(eProbArr);
-            spawnTimer = levelData.spawnRate;
+            blockSpawnTimer = levelData.blockSpawnRate;
             SpawnBlock(Random.Range(1, columnNum), blockType);
         }
     }
+
 
 
     public static int ProbabilityPicker(int[] pArr)
@@ -243,37 +253,25 @@ public class GameController : MonoBehaviour
 
         Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(col), ScreenStuff.RowToYPosition(spawnRow), 0);
 
-        newBlock = Instantiate(spawns[type].block, vpos, Quaternion.identity);
+        newBlock = Instantiate(blockSpawns[type].block, vpos, Quaternion.identity);
 
         newBlock.GetComponent<Block>().column = col;
 
         return newBlock;
     }
     
-/* 
-    public GameObject SpawnShape(int cellCount)
+    public Shape SpawnShape()
     {
-        GameObject newShape; 
+        Shape newShape; 
 
         int sCol = Random.Range(1,columnNum);
-      
         Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(sCol), ScreenStuff.RowToYPosition(spawnRow), 0);
 
-        newShape = Instantiate(shape,vpos,Quaternion.identity);
-        newShape.GetComponent<Shape>().AddSeedCell();
-        
-        for (int x = 1; x < cellCount; x++){ 
-            newShape.GetComponent<Shape>().AddRandomCell();
-        } 
+        newShape = Instantiate(levelData.shapes[shapeCount],vpos,Quaternion.identity);
+  
         return newShape;
     }
 
-    void SpawnRandomSizeShape()
-    {
-        int r = ProbabilityPicker(shapeCellCountProbArr);
-        SpawnShape(r+1);
-    }
-*/
     void GameOver () 
     {
         gameOverPanel.SetActive(true);

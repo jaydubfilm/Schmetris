@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Cell : MonoBehaviour
 {
-    public int xPos;
-    public int yPos;
-    public int type;
+    public int xOffset;
+    public int yOffset;
+    public int matchType;
 
     // Start is called before the first frame update
     void Start()

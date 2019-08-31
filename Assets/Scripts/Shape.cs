@@ -4,24 +4,51 @@ using UnityEngine;
 
 public class Shape : MonoBehaviour
 {
-    public GameObject[,] cellArr;
     public int column;
     public int cellCount;
-    public int radius = 2;
-    public int shapeWidth;
-    public int shapeHeight;
-    public GameObject coreCell;
-    public GameObject newCell;
+    GameObject[] cellArr;
 
     // Start is called before the first frame update
     void Start()
     {
-        shapeWidth = 2 * radius +1;
-        shapeHeight = 2 * radius +1;
-        cellArr = new GameObject[shapeWidth,shapeHeight];
+        cellCount = 0;
+        foreach (Transform child in gameObject.transform) {
+            cellArr[cellCount] = child.gameObject;
+            cellCount++;
+        }
+        AssignCellOffsets();
     }
     
+    void Update(){
+        if (CheckForPatternMatch()){
+            ExplodeShape();
+            GameController.shapeScore++;
+        }   
+    }
+    void AssignCellOffsets(){
+        for (int x = 0; x< cellCount; x++)
+        {
+            Cell cell = cellArr[x].GetComponent<Cell>();
+            cell.xOffset = Mathf.RoundToInt(cellArr[x].transform.position.x / ScreenStuff.colSize);
+            cell.yOffset = Mathf.RoundToInt(cellArr[x].transform.position.y / ScreenStuff.rowSize);
+        }
+    }
+    bool CheckForPatternMatch(){
+        
+        for(int x = 0; x < cellCount; x++)
+        {
+            Cell cell = cellArr[x].GetComponent<Cell>();
+            
+        }
+     /*   foreach(Cell in Shape)
+            Vector2 offset = new Vector2 (cellX, cellY)
+*/
+        return false;
+    }
 
+    void ExplodeShape(){
+        Destroy(this);
+    }
     /* 
     public static int cellTypesNum = 3;
     public static int maxCellRadius = 4;

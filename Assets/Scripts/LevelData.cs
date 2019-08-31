@@ -6,7 +6,7 @@ using UnityEngine;
 public class LevelData : ScriptableObject
 {
    public float levelDuration;
-   public SpawnData[] spawns;
+   public BlockSpawnData[] blocks;
    public Shape[] shapes;
-   public float spawnRate;
+   public float blockSpawnRate;
 }
