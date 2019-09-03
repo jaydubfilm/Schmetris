@@ -9,7 +9,7 @@ public class Bot : MonoBehaviour
     public float longPause;
     public float shortPause;
 
-    public int coreCol;
+    public int coreCol = 0;
     public int maxBotRadius = 4;
 
     public static bool orphanCheckFlag = false;
@@ -65,7 +65,6 @@ public class Bot : MonoBehaviour
 
     void Start()
     {
-        coreCol = Mathf.RoundToInt(ScreenStuff.cols/2);
         gameObject.transform.position = new Vector3(coreX, coreY, 0);
         gameObject.transform.rotation = Quaternion.identity;
         botBody = gameObject.GetComponent<Rigidbody2D>();
@@ -463,7 +462,7 @@ public class Bot : MonoBehaviour
             return 99;
     }
 
-    Vector2Int TwistCoordsUpright(Vector2Int arrXY) {
+    public Vector2Int TwistCoordsUpright(Vector2Int arrXY) {
         Vector2Int newCoords = new Vector2Int();
 
         switch (botRotation) {
@@ -471,22 +470,22 @@ public class Bot : MonoBehaviour
                 newCoords = arrXY;
                 break;
             case 2:
-                newCoords.x = maxBotHeight - arrXY.y;
+                newCoords.x = maxBotHeight - 1 - arrXY.y;
                 newCoords.y = arrXY.x;
                 break;
             case 3:
-                newCoords.x = maxBotWidth - arrXY.x;
-                newCoords.y = maxBotHeight - arrXY.y;
+                newCoords.x = maxBotWidth - 1 - arrXY.x;
+                newCoords.y = maxBotHeight - 1 - arrXY.y;
                 break;
             default:
                 newCoords.x = arrXY.y;
-                newCoords.y = maxBotWidth - arrXY.x;
+                newCoords.y = maxBotWidth - 1 - arrXY.x;
                 break;
         }
         return newCoords;
     }
 
-    Vector2Int TwistCoordsRotated(Vector2Int arrV2) {
+    public Vector2Int TwistCoordsRotated(Vector2Int arrV2) {
         Vector2Int newCoords = new Vector2Int();
 
         switch (botRotation) {
@@ -495,19 +494,66 @@ public class Bot : MonoBehaviour
                 break;
             case 2:
                 newCoords.x = arrV2.y;
-                newCoords.y = maxBotWidth - arrV2.x;
+                newCoords.y = maxBotWidth - 1 - arrV2.x;
                 break;
             case 3:
-                newCoords.x = maxBotWidth - arrV2.x;
-                newCoords.y = maxBotHeight - arrV2.y;
+                newCoords.x = maxBotWidth - 1 - arrV2.x;
+                newCoords.y = maxBotHeight - 1 - arrV2.y;
                 break;
             default:
-                newCoords.x = maxBotHeight - arrV2.y;
+                newCoords.x = maxBotHeight - 1 - arrV2.y;
                 newCoords.y = arrV2.x;
                 break;
         }
         return newCoords;
     }
+
+    public Vector2Int TwistOffsetRotated(Vector2Int offset) {
+        Vector2Int newCoords = new Vector2Int();
+
+        switch (botRotation) {
+            case 1: 
+                newCoords = offset;
+                break;
+            case 2: 
+                newCoords.x = offset.y;
+                newCoords.y = -offset.x; 
+                break;
+            case 3: 
+                newCoords.x = -offset.x;
+                newCoords.y = -offset.y;
+                break;
+            case 4:
+                newCoords.x = -offset.y;
+                newCoords.y = offset.x;
+                break;
+        }
+        return newCoords;
+    }
+
+    public Vector2Int TwistOffsetUpright(Vector2Int offset){
+        Vector2Int newCoords = new Vector2Int();
+
+        switch (botRotation) {
+            case 1: 
+                newCoords = offset;
+                break;
+            case 2: 
+                newCoords.x = -offset.y;
+                newCoords.y = offset.x;
+                break;
+            case 3: 
+                newCoords.x = -offset.x;
+                newCoords.y = -offset.y;
+                break;
+            case 4:
+                newCoords.x = offset.y;
+                newCoords.y = -offset.x; 
+                break;
+        }
+        return newCoords;
+    }
+    
 
     public List<GameObject> GetOrphans(){
         List<GameObject> orphanList = new List<GameObject>();
@@ -573,28 +619,7 @@ public class Bot : MonoBehaviour
             return true;
     }
 
-    public Vector2Int RotateArrayCoords(Vector2Int arrPos) {
-        Vector2Int newCoords = new Vector2Int();
-
-        switch (botRotation) {
-            case 1: 
-                newCoords = arrPos;
-                break;
-            case 2: 
-                newCoords.x = arrPos.y;
-                newCoords.y = -arrPos.x; 
-                break;
-            case 3: 
-                newCoords.x = -arrPos.x;
-                newCoords.y = -arrPos.y;
-                break;
-            case 4:
-                newCoords.x = -arrPos.y;
-                newCoords.y = arrPos.x;
-                break;
-        }
-        return newCoords;
-    } 
+   
 
     public bool IsNeighbor(GameObject brick1, GameObject brick2)
     {
@@ -740,6 +765,7 @@ public class Bot : MonoBehaviour
             rotation1 = botBody.transform.rotation;
             rotation2 = rotation1*Quaternion.Euler(0,0,-90);
             StartCoroutine(RotateOverTime(rotation1, rotation2, 0.05f));
+           
         }       
 
         if (Input.GetKeyDown(KeyCode.DownArrow)||Input.GetKeyDown("q")){
@@ -790,19 +816,19 @@ public class Bot : MonoBehaviour
     
     void MoveBotLeft() {
         GameController.bgAdjustFlag = 1;
-        if (coreCol > 1)
+        if (coreCol > ScreenStuff.leftEdgeCol)
             coreCol--;
         else {
-            coreCol = ScreenStuff.cols;
+            coreCol = ScreenStuff.rightEdgeCol;
         }
     }
 
     void MoveBotRight() {
         GameController.bgAdjustFlag = -1;
-        if (coreCol < ScreenStuff.cols)
+        if (coreCol < ScreenStuff.rightEdgeCol)
             coreCol++;
         else {
-            coreCol = 1;
+            coreCol = ScreenStuff.leftEdgeCol;
         }
     }
 

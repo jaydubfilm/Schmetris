@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   longPause: 0.1
   shortPause: 0.04
-  coreCol: 20
+  coreCol: 0
   maxBotRadius: 4
   rotation1: {x: 0, y: 0, z: 0, w: 0}
   rotation2: {x: 0, y: 0, z: 0, w: 0}

@@ -24,7 +24,6 @@ public class Overheat : MonoBehaviour
         if (heatLevel > maxHeatLevel)
             GameController.lives = 0;  
         lastHitTime = Time.time; 
-        //Debug.Log(heatLevel);
     }
 
     void UpdateHeatSprite() {
@@ -44,9 +43,7 @@ public class Overheat : MonoBehaviour
         overlayColor = heatOverlay.GetComponent<SpriteRenderer>().color;
         l = (float)heatLevel;
         overlayColor.a = l/maxHeatLevel;
-        //Debug.Log(l/maxHeatLevel);
         heatOverlay.GetComponent<SpriteRenderer>().color = overlayColor;
-        Debug.Log(overlayColor);
     }
 
     public void RemoveHeat() {

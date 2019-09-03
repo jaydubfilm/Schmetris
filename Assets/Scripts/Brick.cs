@@ -164,8 +164,6 @@ public class Brick : MonoBehaviour
 
         anim = gameObject.GetComponent<Animator>();
         anim.enabled = true;
-       // anim.Play("FlashFX1_0");
-        //anim.SetTrigger("explode");
         animDuration = 0.3f;
 
         RemoveBrickFromBotArray();
@@ -230,7 +228,7 @@ public class Brick : MonoBehaviour
 
 
     public void SmoothMoveBrickObj(Vector2Int newArrPos){
-        Vector2Int newOffset = bot.RotateArrayCoords(bot.ArrToOffset(newArrPos));
+        Vector2Int newOffset = bot.TwistOffsetRotated(bot.ArrToOffset(newArrPos));
         Vector3 newOffsetV3 = new Vector3(newOffset.x*ScreenStuff.colSize,newOffset.y*ScreenStuff.colSize,0);
 
         StartCoroutine(SlideBrickOverTime(rb2D.transform.position,newOffsetV3));

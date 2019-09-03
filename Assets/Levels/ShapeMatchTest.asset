@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
+  m_Name: ShapeMatchTest
+  m_EditorClassIdentifier: 
+  levelDuration: 40
+  blocks:
+  - block: {fileID: 8969066657479465000, guid: eb1b726dacc9a42c3acdce4630eb9c71, type: 3}
+    probability: 1
+  - block: {fileID: 9034390688859657117, guid: b1743be37722e45f48b14cad9e74719d, type: 3}
+    probability: 1
+  - block: {fileID: 8766584015180183694, guid: 7cae096353da445bf9fee553137262a1, type: 3}
+    probability: 1
+  shapes:
+  - {fileID: 6019978676112685272, guid: 3afed7824058d4cc49b50bf82e043e12, type: 3}
+  - {fileID: 1450777765414527474, guid: cc2ac4c7bffb346cca71565b2aade3f1, type: 3}
+  - {fileID: 4059105081420275837, guid: 056380f83ede1468e86752d36915f1f4, type: 3}
+  blockSpawnRate: 0.2

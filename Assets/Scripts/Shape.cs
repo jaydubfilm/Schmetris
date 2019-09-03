@@ -6,49 +6,80 @@ public class Shape : MonoBehaviour
 {
     public int column;
     public int cellCount;
-    GameObject[] cellArr;
+    public int deadFlag;
+    GameObject[] cellArr; 
+    Bot bot;
+    int botWidth;
 
     // Start is called before the first frame update
     void Start()
     {
         cellCount = 0;
+        deadFlag = 0;
+        cellArr = new GameObject[transform.childCount];
         foreach (Transform child in gameObject.transform) {
             cellArr[cellCount] = child.gameObject;
             cellCount++;
         }
-        AssignCellOffsets();
+        //AssignCellOffsets();
+        bot = (Bot)FindObjectOfType(typeof(Bot));
+        botWidth = bot.maxBotRadius * 2 +1;
     }
     
     void Update(){
-        if (CheckForPatternMatch()){
+        if (CheckForPatternMatch()&&(deadFlag==0)) {
+            deadFlag=1;
             ExplodeShape();
-            GameController.shapeScore++;
         }   
     }
-    void AssignCellOffsets(){
-        for (int x = 0; x< cellCount; x++)
-        {
-            Cell cell = cellArr[x].GetComponent<Cell>();
-            cell.xOffset = Mathf.RoundToInt(cellArr[x].transform.position.x / ScreenStuff.colSize);
-            cell.yOffset = Mathf.RoundToInt(cellArr[x].transform.position.y / ScreenStuff.rowSize);
+    
+
+    bool CheckForPatternMatch() {
+        int bX = column - bot.coreCol + bot.maxBotRadius;
+        if ((bX < 0)||(bX > botWidth-1))
+            return false;
+        for (int bY = 0; bY < botWidth; bY++) {
+            Vector2Int bCoords = new Vector2Int(bX,bY);
+           
+            Vector2Int bCoordsUpright = bot.TwistCoordsRotated(bCoords);
+
+            GameObject brick = bot.brickArr[bCoordsUpright.x,bCoordsUpright.y];
+            if (brick!=null) {
+                Cell cellZero = cellArr[0].GetComponent<Cell>();
+                if (brick.GetComponent<Brick>().brickType == cellZero.matchType) {
+                    int matchCount = 1;
+                    for (int c = 1; c < cellCount; c++) {
+                        Cell testCell = cellArr[c].GetComponent<Cell>();
+                        Vector2Int testCellOffset = new Vector2Int(testCell.xOffset,testCell.yOffset);
+                        Vector2Int testCellOffsetUpright = bot.TwistOffsetUpright(testCellOffset);
+                        Vector2Int tCoords = bCoordsUpright+testCellOffsetUpright;
+
+                        GameObject testBrick = bot.brickArr[tCoords.x,tCoords.y];
+                        if (testBrick!=null) {
+                            if (testBrick.GetComponent<Brick>().brickType == testCell.matchType)
+                                matchCount++;
+                        }
+                    }
+                    if (matchCount == cellCount)
+                        return true;
+                }
+            }
         }
-    }
-    bool CheckForPatternMatch(){
-        
-        for(int x = 0; x < cellCount; x++)
-        {
-            Cell cell = cellArr[x].GetComponent<Cell>();
-            
-        }
-     /*   foreach(Cell in Shape)
-            Vector2 offset = new Vector2 (cellX, cellY)
-*/
         return false;
     }
 
-    void ExplodeShape(){
-        Destroy(this);
+    void ExplodeShape() {
+        GameController.shapeScore++;
+        for(int x = 0; x < cellCount; x++)
+            cellArr[x].GetComponent<Cell>().ExplodeCell();
+        StartCoroutine(DestroyAfterSeconds(0.3f));
     }
+
+    IEnumerator DestroyAfterSeconds(float duration){  
+        yield return new WaitForSeconds(duration);
+        Destroy(gameObject); 
+    }
+
     /* 
     public static int cellTypesNum = 3;
     public static int maxCellRadius = 4;

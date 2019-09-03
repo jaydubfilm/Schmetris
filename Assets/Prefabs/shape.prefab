@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9053642830123059016}
-  - component: {fileID: 3066352362972558761}
   - component: {fileID: 169275432723214623}
+  - component: {fileID: 3761062488783971529}
   m_Layer: 0
   m_Name: shape
   m_TagString: Moveable
@@ -32,25 +32,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3066352362972558761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8681776765605191541}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad61e27d95ef6456e830c9106ea87c14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  column: 0
-  cellCount: 0
-  radius: 2
-  shapeWidth: 0
-  shapeHeight: 0
-  coreCell: {fileID: 0}
-  newCell: {fileID: 0}
 --- !u!50 &169275432723214623
 Rigidbody2D:
   serializedVersion: 4
@@ -66,9 +47,23 @@ Rigidbody2D:
   m_Mass: 0.2
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 0.1
+  m_GravityScale: 0.02
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &3761062488783971529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8681776765605191541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad61e27d95ef6456e830c9106ea87c14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  column: 0
+  cellCount: 0

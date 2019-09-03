@@ -99,8 +99,8 @@ public class GameController : MonoBehaviour
             if (pos.x > ScreenStuff.rightEdgeOfWorld)
                 pos.x = ScreenStuff.leftEdgeOfWorld;
             moveableObject.transform.position = pos;
-            if (transform.position.y < ScreenStuff.bottomEdgeOfWorld)
-                Destroy(gameObject);
+            if (pos.y < ScreenStuff.bottomEdgeOfWorld)
+                Destroy(moveableObject);
         }
     }
 
@@ -220,8 +220,9 @@ public class GameController : MonoBehaviour
         if (blockSpawnTimer<= 0)
         {
             int blockType = ProbabilityPicker(eProbArr);
+
             blockSpawnTimer = levelData.blockSpawnRate;
-            SpawnBlock(Random.Range(1, columnNum), blockType);
+            SpawnBlock(Random.Range(-ScreenStuff.screenRadius,ScreenStuff.screenRadius), blockType);
         }
     }
 
@@ -250,12 +251,12 @@ public class GameController : MonoBehaviour
     public GameObject SpawnBlock(int col, int type)
     {
         GameObject newBlock;
-
+      
         Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(col), ScreenStuff.RowToYPosition(spawnRow), 0);
 
         newBlock = Instantiate(blockSpawns[type].block, vpos, Quaternion.identity);
 
-        newBlock.GetComponent<Block>().column = col;
+        newBlock.GetComponent<Block>().column = ScreenStuff.WrapCol(col);
 
         return newBlock;
     }
@@ -264,10 +265,11 @@ public class GameController : MonoBehaviour
     {
         Shape newShape; 
 
-        int sCol = Random.Range(1,columnNum);
-        Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(sCol), ScreenStuff.RowToYPosition(spawnRow), 0);
+        int sCol = Random.Range(ScreenStuff.leftEdgeCol,ScreenStuff.rightEdgeCol);
+        Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(sCol), ScreenStuff.RowToYPosition(spawnRow)-10, 0);
 
         newShape = Instantiate(levelData.shapes[shapeCount],vpos,Quaternion.identity);
+        newShape.column = ScreenStuff.WrapCol(sCol);
   
         return newShape;
     }
