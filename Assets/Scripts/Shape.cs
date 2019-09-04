@@ -39,9 +39,8 @@ public class Shape : MonoBehaviour
         if ((bX < 0)||(bX > botWidth-1))
             return false;
         for (int bY = 0; bY < botWidth; bY++) {
-            Vector2Int bCoords = new Vector2Int(bX,bY);
-           
-            Vector2Int bCoordsUpright = bot.TwistCoordsRotated(bCoords);
+            Vector2Int bCoords = new Vector2Int(bX,bY);  
+            Vector2Int bCoordsUpright = bot.TwistCoordsUpright(bCoords);
 
             GameObject brick = bot.brickArr[bCoordsUpright.x,bCoordsUpright.y];
             if (brick!=null) {
@@ -54,10 +53,12 @@ public class Shape : MonoBehaviour
                         Vector2Int testCellOffsetUpright = bot.TwistOffsetUpright(testCellOffset);
                         Vector2Int tCoords = bCoordsUpright+testCellOffsetUpright;
 
-                        GameObject testBrick = bot.brickArr[tCoords.x,tCoords.y];
-                        if (testBrick!=null) {
-                            if (testBrick.GetComponent<Brick>().brickType == testCell.matchType)
-                                matchCount++;
+                        if (bot.IsValidBrickPos(tCoords)) {
+                            GameObject testBrick = bot.brickArr[tCoords.x,tCoords.y];
+                            if (testBrick!=null) {
+                                if (testBrick.GetComponent<Brick>().brickType == testCell.matchType)
+                                    matchCount++;
+                            }
                         }
                     }
                     if (matchCount == cellCount)

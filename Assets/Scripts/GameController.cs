@@ -37,19 +37,20 @@ public class GameController : MonoBehaviour
     float bgScrollSpeed = 0.1f;
 
     int columnNum = ScreenStuff.cols;
-    public static int maxShapeCellCount = 3;
   
     int[] eProbArr;
 
     LevelData levelData;
     BlockSpawnData[] blockSpawns;
-
-    public int[] shapeCellCountProbArr = new int[maxShapeCellCount];
    
     float blockSpawnTimer;
-    float shapeSpawnRate;
+    float shapeSpawnRate = 0;
     float shapeSpawnTimer;
+    float lastShapeSpawnTime;
+    float firstShapeSpawnTime;
     int shapeCount;
+    int numberOfShapes;
+    
 
 
     void Awake()
@@ -119,14 +120,21 @@ public class GameController : MonoBehaviour
         eProbArr = GetSpawnProbabilities();
         blockSpawnTimer = levelData.blockSpawnRate;
         timeRemaining = levelData.levelDuration;
-        shapeSpawnRate = (levelData.levelDuration * 0.8f) / levelData.shapes.Length; 
-        shapeSpawnTimer = shapeSpawnRate;
-        shapeCount = 0;
+        numberOfShapes = levelData.shapes.Length;
+        if (numberOfShapes!=0) {
+            lastShapeSpawnTime = levelData.levelDuration * 0.75f;
+            firstShapeSpawnTime = lastShapeSpawnTime; 
+            if (numberOfShapes > 1) {
+                shapeSpawnRate = (levelData.levelDuration * 0.5f) / numberOfShapes;
+                firstShapeSpawnTime = levelData.levelDuration *0.25f;
+            }
+            shapeSpawnTimer = firstShapeSpawnTime;
+            shapeCount = 0;
+        }
     }
 
 
     void ScrollBackground() {
-
         Vector3 BV1 = BG1.transform.position;
         Vector3 BV2 = BG2.transform.position;
         Vector3 BV3 = BG3.transform.position;
@@ -205,12 +213,14 @@ public class GameController : MonoBehaviour
     }
  
     void ShapeSpawnCheck() {
-        shapeSpawnTimer -= Time.deltaTime;
-        if (shapeSpawnTimer <= 0)
-        {
-            shapeSpawnTimer = shapeSpawnRate;
-            SpawnShape();
-            shapeCount++;
+        if (shapeCount < numberOfShapes) {
+            shapeSpawnTimer -= Time.deltaTime;
+            if (shapeSpawnTimer <= 0)
+            {
+                SpawnShape();
+                shapeCount++;
+                shapeSpawnTimer = shapeSpawnRate;
+            }
         }
     }
 

@@ -31,4 +31,4 @@ MonoBehaviour:
   - {fileID: 5118674430307507696, guid: d511c8aa5a1c249fb9cd043c5f58217d, type: 3}
   - {fileID: 4027776842206976144, guid: a39192c900d8a4746bf85c5354e7de26, type: 3}
   - {fileID: 4998592545037372415, guid: 8e068647be89a4ea1b443cba9cb86e57, type: 3}
-  blockSpawnRate: 0.2
+  blockSpawnRate: 0.4

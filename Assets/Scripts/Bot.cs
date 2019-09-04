@@ -523,7 +523,7 @@ public class Bot : MonoBehaviour
                 newCoords.x = -offset.x;
                 newCoords.y = -offset.y;
                 break;
-            case 4:
+            default:
                 newCoords.x = -offset.y;
                 newCoords.y = offset.x;
                 break;
@@ -546,7 +546,7 @@ public class Bot : MonoBehaviour
                 newCoords.x = -offset.x;
                 newCoords.y = -offset.y;
                 break;
-            case 4:
+            default:
                 newCoords.x = offset.y;
                 newCoords.y = -offset.x; 
                 break;
@@ -581,12 +581,14 @@ public class Bot : MonoBehaviour
         {
             // add this brick to the pathList
             // add the shortestPath of all non-path neighbors to pathDistance
+            Brick brickScript1 = brick1.GetComponent<Brick>();
+            int neighborCount = brickScript1.neighborList.Count;
 
             pathList.Add(brick1);
            
-            for (int n = 0; n < brick1.GetComponent<Brick>().neighborList.Count; n++)
+            for (int n = 0; n < neighborCount; n++)
             {
-                GameObject nBrick = brick1.GetComponent<Brick>().neighborList[n];
+                GameObject nBrick = brickScript1.neighborList[n];
 
                 if (pathList.Contains(nBrick))
                     nDist = 99;
