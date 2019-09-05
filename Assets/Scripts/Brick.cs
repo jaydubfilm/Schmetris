@@ -197,6 +197,7 @@ public class Brick : MonoBehaviour
 
     public void RemoveBrickFromBotArray() {
         bot.brickArr[arrPos.x,arrPos.y] = null;
+        bot.brickTypeArr[arrPos.x,arrPos.y]=0;
         bot.RefreshNeighborLists();
         Bot.orphanCheckFlag = true;
     }
