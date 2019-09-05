@@ -34,6 +34,7 @@ public class Bot : MonoBehaviour
     public GameObject[,] brickArr;
     public int[,] brickTypeArr;
     public GameObject[] masterBrickList;
+    int[,] pathArr;
 
     public Vector2Int coreV2;
    
@@ -66,7 +67,7 @@ public class Bot : MonoBehaviour
         brickTypeArr = new int[maxBotWidth, maxBotHeight];
         for (int x = 0; x < maxBotWidth; x++)
             for (int y = 0; y < maxBotHeight ; y++)
-                brickTypeArr[x,y] = 0;
+                brickTypeArr[x,y] = -1;
     }
 
     void Start()
@@ -120,14 +121,12 @@ public class Bot : MonoBehaviour
     }
 
     public int GetBrickType(Sprite sprite){
-        int bType = 2;
         foreach (GameObject brick in masterBrickList) {
             for (int level = 0; level < brick.GetComponent<Brick>().spriteArr.Length; level++)
                 if (brick.GetComponent<Brick>().spriteArr[level]==sprite)
                     return brick.GetComponent<Brick>().brickType;
-
         }
-        return bType;
+        return 2; // default
     }
 
 
@@ -272,12 +271,12 @@ public class Bot : MonoBehaviour
 
         brickArr[m1Pos.x,m1Pos.y] = null;
         brickArr[m2Pos.x,m2Pos.y] = null;
-        brickTypeArr[m1Pos.x,m1Pos.y] = 0;
-        brickTypeArr[m2Pos.x,m2Pos.y] = 0;
+        brickTypeArr[m1Pos.x,m1Pos.y] = -1;
+        brickTypeArr[m2Pos.x,m2Pos.y] = -1;
 
         RefreshNeighborLists();
 
-        if (IsConnectedToCore(sideBrick1.GetComponent<Brick>().arrPos)||IsConnectedToCore(sideBrick2.GetComponent<Brick>().arrPos))
+        if ((IsConnectedToCore(sideBrick1))||(IsConnectedToCore(sideBrick2)))
             centreIsStable = true;
         
         brickArr[matchBrick1.GetComponent<Brick>().arrPos.x,matchBrick1.GetComponent<Brick>().arrPos.y] = matchBrick1;
@@ -422,7 +421,7 @@ public class Bot : MonoBehaviour
             groupIndex = 99;
             foreach (List<GameObject> group in orphanGroupList) {
                 int len = group.Count;
-                if (AreConnected(orphanBrick.GetComponent<Brick>().arrPos,group[0].GetComponent<Brick>().arrPos)) {
+                if (AreConnected(orphanBrick,group[0])) {
                     groupIndex = orphanGroupList.IndexOf(group);
                     break;
                 }
@@ -581,8 +580,8 @@ public class Bot : MonoBehaviour
 
         for (int x = 0; x < maxBotWidth ; x++ )
             for (int y = 0; y < maxBotHeight ; y++)
-                if (brickTypeArr[x,y] != 0) 
-                    if (IsConnectedToCore(new Vector2Int(x,y))==false)
+                if (brickTypeArr[x,y] != -1) 
+                    if (IsConnectedToCore(brickArr[x,y])==false)
                         orphanList.Add(brickArr[x,y]);
 
         return orphanList;
@@ -626,41 +625,41 @@ public class Bot : MonoBehaviour
     }
 
     // Shortest Path Using Arrays
-  public int ShortestPathArray(Vector2Int arrPos1, Vector2Int arrPos2)
+    public int ShortestPathArray(Vector2Int arrPos1, Vector2Int arrPos2)
     {
-        int pathDistance = 1; // default for neighbours
-        int minNeighborDist = 99;
-        int nDist;
-
-        if ((brickTypeArr[arrPos1.x,arrPos1.y]==0)||(brickTypeArr[arrPos2.x,arrPos2.y]==0))
+        if ((IsValidBrickPos(arrPos1)==false)||(IsValidBrickPos(arrPos2)==false))
+            return 99;
+        if ((brickArr[arrPos1.x,arrPos1.y]==null)||(brickArr[arrPos2.x,arrPos2.y]==null))
             return 99;
         else if (arrPos1 == arrPos2)
             return 0;
-        else if (IsNeighborArr(arrPos1,arrPos2) == false)
-        {
-            // add this brick to the pathList
-            // add the shortestPath of all non-path neighbors to pathDistance
 
-            pathArrList.Add(arrPos1);
-           
-            for (int n = 0; n < 4; n++)
-            {
-                Vector2Int nPos = arrPos1+directionV2Arr[n];
-              
-                if ((pathArrList.Contains(nPos))||(brickTypeArr[nPos.x,nPos.y]==0))
-                    nDist = 99;
-                else
-                    nDist = ShortestPathArray(nPos, arrPos2);
-                if (nDist < minNeighborDist)
-                    minNeighborDist = nDist;
-            }
-            pathArrList.Remove(arrPos1); 
-            pathDistance = minNeighborDist + 1;
-        }
-       
-        return pathDistance;
+        pathArr = brickTypeArr;
+
+        for (int x = 0; x < maxBotWidth; x++)
+            for (int y = 0; y < maxBotHeight; y++)
+                if (pathArr[x,y] >= 0)
+                    pathArr[x,y] = 0;
+
+        pathArr[arrPos1.x,arrPos1.y]=1;
+        ExpandPath(arrPos1);
+        return pathArr[arrPos2.x,arrPos2.y]-1;
     }
 
+    void ExpandPath(Vector2Int arrPos){
+        for (int n = 0; n < 4; n++) {
+            Vector2Int nPos = arrPos+directionV2Arr[n];
+            if (IsValidBrickPos(nPos))
+                if (pathArr[nPos.x,nPos.y]==0)
+                    pathArr[nPos.x,nPos.y] = pathArr[arrPos.x,arrPos.y]+1;
+        }
+        for (int n = 0; n < 4; n++) {
+            Vector2Int nPos = arrPos+directionV2Arr[n];
+            if (IsValidBrickPos(nPos))
+                if (pathArr[nPos.x,nPos.y]>pathArr[arrPos.x,arrPos.y])
+                    ExpandPath(nPos);
+        }
+    }
 
     /*
      public bool AreConnected(GameObject brick1, GameObject brick2){
@@ -671,14 +670,16 @@ public class Bot : MonoBehaviour
     }
     */
 
-    public bool AreConnected(Vector2Int arrPos1, Vector2Int arrPos2){
-        if (ShortestPathArray(arrPos1, arrPos2) >= 99)
+    public bool AreConnected(GameObject brick1, GameObject brick2){
+        if ((brick1 == null) || (brick2 == null))
+            return false;
+        if (ShortestPathArray(brick1.GetComponent<Brick>().arrPos,brick2.GetComponent<Brick>().arrPos) >= 99)
             return false;
         else    
             return true;
     }
 
-    /* 
+    
     public bool IsConnectedToCore(GameObject brick)
     {
         if (brick == null)
@@ -688,16 +689,40 @@ public class Bot : MonoBehaviour
         else    
             return true;
     }
-    */
+    
 
-    public bool IsConnectedToCore(Vector2Int arrPos)
+    
+/* 
+    public bool IsConnectedToCore(GameObject brick)
     {
-        if (brickTypeArr[arrPos.x,arrPos.y] == 0)
+        if (brick == null)
             return false;
-        if (ShortestPathArray(arrPos, coreV2) >= 99)
+
+        pathArr = brickTypeArr;
+        Vector2Int bPos = brick.GetComponent<Brick>().arrPos;
+     
+        return (IsBranchConnectedToCore(bPos));
+    }
+*/
+
+    public bool IsBranchConnectedToCore(Vector2Int bPos) {
+        
+        if (brickTypeArr[bPos.x,bPos.y] == -1)
             return false;
-        else    
+        
+        if (bPos == coreV2)
             return true;
+
+        pathArr[bPos.x,bPos.y] = -2;
+        GameObject brick = brickArr[bPos.x,bPos.y];
+           
+        foreach (GameObject nBrick in brick.GetComponent<Brick>().neighborList) {
+            Vector2Int nPos = nBrick.GetComponent<Brick>().arrPos;
+            if (pathArr[nPos.x,nPos.y] >= 0)
+                if (IsBranchConnectedToCore(nPos))
+                    return true;
+        }
+        return false;
     }
 
 
@@ -827,8 +852,10 @@ public class Bot : MonoBehaviour
         GameObject brick1 = brickArr[ArrPos1.x,ArrPos1.y];
         GameObject brick2 = brickArr[ArrPos2.x,ArrPos2.y];
 
-        int p1 = ShortestPath(brick1, coreBrick);
-        int p2 = ShortestPath(brick2, coreBrick);
+        //int p1 = ShortestPath(brick1, coreBrick);
+        //int p2 = ShortestPath(brick2, coreBrick);
+        int p1 = ShortestPathArray(ArrPos1,coreV2);
+        int p2 = ShortestPathArray(ArrPos2,coreV2);
 
         if (p1 < p2)
         {

@@ -197,7 +197,7 @@ public class Brick : MonoBehaviour
 
     public void RemoveBrickFromBotArray() {
         bot.brickArr[arrPos.x,arrPos.y] = null;
-        bot.brickTypeArr[arrPos.x,arrPos.y]=0;
+        bot.brickTypeArr[arrPos.x,arrPos.y]=-1;
         bot.RefreshNeighborLists();
         Bot.orphanCheckFlag = true;
     }
@@ -212,7 +212,9 @@ public class Brick : MonoBehaviour
             // update the array
 
             bot.brickArr[newArrPos.x,newArrPos.y] = gameObject;
+            bot.brickTypeArr[newArrPos.x,newArrPos.y] = brickType;
             bot.brickArr[arrPos.x,arrPos.y] = null;
+            bot.brickTypeArr[arrPos.x,arrPos.y] = -1;
 
             // move the gameObject
 
