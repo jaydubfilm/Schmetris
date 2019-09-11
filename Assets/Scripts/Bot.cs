@@ -43,7 +43,7 @@ public class Bot : MonoBehaviour
     
     GameObject coreBrick; 
     Tilemap startTileMap;
-    Grid myGrid;
+    public Grid startingBrickGrid;
 
     private List<GameObject> pathList = new List<GameObject>();
     private List<Vector2Int> pathArrList = new List<Vector2Int>();
@@ -82,10 +82,8 @@ public class Bot : MonoBehaviour
         // add fuel brick
         // AddBrick(new Vector2Int(maxBotRadius,maxBotRadius-1),1,0);
         source = GetComponent<AudioSource>();
-        startTileMap = GetComponentInChildren<Tilemap>();
-        myGrid = GetComponentInChildren<Grid>();
+        startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(),new Vector3 (0,0,0), Quaternion.identity);
         AddStartingBricks();
-
     }
 
     public void AddStartingBricks(){
@@ -100,7 +98,7 @@ public class Bot : MonoBehaviour
                 Sprite mySprite = startTileMap.GetSprite(posV3);
                 
                 if (mySprite != null) {
-                    Vector3 world = myGrid.LocalToWorld(posV3);
+                    Vector3 world = startingBrickGrid.LocalToWorld(posV3);
                     int bType = 1;
                     int bLevel = 0;
 
@@ -476,10 +474,13 @@ public class Bot : MonoBehaviour
             }
             testCoords+=directionV2;
         }
+        /*
         if (closedGap)
             return gapDist;
         else    
             return 99;
+            */
+        return closedGap? gapDist : 99;
     }
 
     public Vector2Int TwistCoordsUpright(Vector2Int arrXY) {
@@ -576,17 +577,36 @@ public class Bot : MonoBehaviour
     
 
     public List<GameObject> GetOrphans(){
+        List<GameObject> connectedList = new List<GameObject>();
         List<GameObject> orphanList = new List<GameObject>();
+
+        pathArr = brickTypeArr.Clone() as int[,];
+        
+        ExpandConnectedList(ref connectedList,coreV2);
 
         for (int x = 0; x < maxBotWidth ; x++ )
             for (int y = 0; y < maxBotHeight ; y++)
                 if (brickTypeArr[x,y] != -1) 
-                    if (IsConnectedToCore(brickArr[x,y])==false)
+                    if (connectedList.Contains(brickArr[x,y]) == false)
                         orphanList.Add(brickArr[x,y]);
 
         return orphanList;
     }
 
+    public void ExpandConnectedList(ref List<GameObject> currentList, Vector2Int arrPos){
+        GameObject thisBrick = brickArr[arrPos.x,arrPos.y];
+
+        foreach (GameObject neighborBrick in thisBrick.GetComponent<Brick>().neighborList){
+            Vector2Int neighborArrPos = neighborBrick.GetComponent<Brick>().arrPos;
+            if (pathArr[neighborArrPos.x,neighborArrPos.y] >= 0) {
+                currentList.Add(neighborBrick);
+                pathArr[neighborArrPos.x,neighborArrPos.y] = -2;
+                ExpandConnectedList(ref currentList, neighborArrPos);
+            }
+        }
+    }
+
+/* 
     public int ShortestPath(GameObject brick1, GameObject brick2)
     {
         int pathDistance = 1; // default for neighbours
@@ -623,6 +643,7 @@ public class Bot : MonoBehaviour
        
         return pathDistance;
     }
+    */
 
     // Shortest Path Using Arrays
     public int ShortestPathArray(Vector2Int arrPos1, Vector2Int arrPos2)
@@ -634,7 +655,7 @@ public class Bot : MonoBehaviour
         else if (arrPos1 == arrPos2)
             return 0;
 
-        pathArr = brickTypeArr;
+        pathArr = brickTypeArr.Clone() as int[,];
 
         for (int x = 0; x < maxBotWidth; x++)
             for (int y = 0; y < maxBotHeight; y++)
@@ -680,30 +701,29 @@ public class Bot : MonoBehaviour
     }
 
     
-    public bool IsConnectedToCore(GameObject brick)
+   /*  public bool IsConnectedToCore(GameObject brick)
     {
         if (brick == null)
             return false;
-        if (ShortestPath(brick, brickArr[maxBotRadius,maxBotRadius]) >= 99)
+        if (ShortestPathArray(brick.GetComponent<Brick>().arrPos, coreV2) >= 99)
             return false;
         else    
             return true;
     }
     
-
+*/
     
-/* 
+
     public bool IsConnectedToCore(GameObject brick)
     {
         if (brick == null)
             return false;
 
-        pathArr = brickTypeArr;
+        pathArr = brickTypeArr.Clone() as int[,];
         Vector2Int bPos = brick.GetComponent<Brick>().arrPos;
      
         return (IsBranchConnectedToCore(bPos));
     }
-*/
 
     public bool IsBranchConnectedToCore(Vector2Int bPos) {
         
@@ -882,8 +902,9 @@ public class Bot : MonoBehaviour
         if (GameController.lives == 0)
             return;
 
-        if (fuelBrickList.Count == 0)
-            return;
+        if (GameController.Instance.settings.Schmetris==false)
+            if (fuelBrickList.Count == 0)
+                return;
             
         if (Input.GetKeyDown(KeyCode.UpArrow)||Input.GetKeyDown("e")) {
             botRotation++;

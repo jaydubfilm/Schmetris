@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5902128f472564b98abfcdfed45089dc, type: 3}
-  m_Name: Tetris
+  m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
+  m_Name: New Level
   m_EditorClassIdentifier: 
-  levelDataArr:
-  - {fileID: 11400000, guid: cb3dd1d04803a41b99e943bc55586a0f, type: 2}
+  levelDuration: 0
+  blocks: []
+  shapes: []
+  blockSpawnRate: 0

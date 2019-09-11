@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
-  m_Name: New Level
+  m_Script: {fileID: 11500000, guid: 5902128f472564b98abfcdfed45089dc, type: 3}
+  m_Name: New Game
   m_EditorClassIdentifier: 
-  levelDuration: 0
-  spawns: []
-  spawnRate: 0
+  levelDataArr:
+  - {fileID: 11400000, guid: 9adcb7f70afb747719a285200792b3a7, type: 2}

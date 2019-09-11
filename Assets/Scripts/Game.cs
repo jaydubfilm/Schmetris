@@ -6,4 +6,6 @@ using UnityEngine;
 public class Game : ScriptableObject
 {
     public LevelData[] levelDataArr;
+    //public bool schmetris;
+    //public Bot startingBot;
 }

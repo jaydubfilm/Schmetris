@@ -216,7 +216,7 @@ public class Shape : MonoBehaviour
         float coreX = gameObject.transform.position.x;
         float coreY = gameObject.transform.position.y;
 
-        Vector3 offsetV3 = new Vector3(xOffset * ScreenStuff.colSize, yOffset * ScreenStuff.colSize, 0);
+        Vector3 offsetV3 = new Vector3(xOffset * ScreenStuff.Instance.colSize, yOffset * ScreenStuff.Instance.colSize, 0);
 
         newCell = Object.Instantiate(cellObjectsArr[color], new Vector3(coreX,coreY,0),
          Quaternion.identity, gameObject.transform);
