@@ -65,42 +65,18 @@ public class Brick : MonoBehaviour
             else if (transform.parent != null)
             {
                 int rotation = bot.botRotation;
-                Vector2Int eArrPos = arrPos;
-                
-                if (rotation == 1) { // up facing
-                    eArrPos.y +=1;
-                } else if (rotation == 2) { // right facing
-                    eArrPos.x -=1;
-                }  else if (rotation == 3) { // down facing
-                    eArrPos.y -=1;
-                } else { // left facing
-                    eArrPos.x +=1;
-                }
+                Vector2Int eArrPos = arrPos + bot.upOffsetV2Arr[rotation];
+        
                 if (((rA == 0) || (rA == 90) || (rA == 180) || (rA == 270)) /* && (BitIsAboveBrick(collider))*/) {
                     if (bitType == 1) // white bit - bump the brick
                     {     
                         bot.BumpColumn(arrPos);
                     } else {   // test for collapsable double below collision
-                        
-                        Vector2Int lowerPos = arrPos;
+                        /* 
+                        Vector2Int lowerPos = arrPos+=bot.downOffsetV2Arr[rotation];
 
                         int newBrickType = bitType - 2;
                         GameObject lowerBrick;
-
-                        switch (rotation) {
-                            case 1:  // up facing
-                                lowerPos.y -=1;
-                                break;
-                            case 2:  // right facing
-                                lowerPos.x +=1;
-                                break;
-                            case 3: // down facing
-                                lowerPos.y +=1;
-                                break;
-                            default: // left facing
-                                lowerPos.x -=1;
-                                break;
-                        }
 
                         if (bot.IsValidBrickPos(lowerPos)) {
                             lowerBrick = bot.brickArr[lowerPos.x,lowerPos.y];
@@ -114,21 +90,24 @@ public class Brick : MonoBehaviour
                                 }
                             }
                         }
+                        */
 
                         // add a new brick
-
+                        bot.AddBlock(bitObj.transform.parent.gameObject);
+                        bounceBitFlag = false;
+/* 
                         if ((bot.IsValidBrickPos(eArrPos)) &&
                                 (bot.brickArr[eArrPos.x,eArrPos.y]==null)) {
-                            bot.AddBrick(eArrPos, newBrickType);
+                            // bot.AddBrick(eArrPos, newBrickType);
                             bounceBitFlag = false;
                             source.PlayOneShot(addBrickSound,1.0f);
-                        }
+                        } */
                       
                     }
                 }
             }
             if (bounceBitFlag == false) {
-                 Destroy(collider.gameObject);
+                 Destroy(bitObj.transform.parent.gameObject);
             } else { // bounce the bit away
                 bit.RemoveFromBlock("bounce");
             }

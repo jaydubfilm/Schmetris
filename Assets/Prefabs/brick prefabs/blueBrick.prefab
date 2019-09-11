@@ -7,7 +7,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6450636027791030212}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8c7db3d282814364af56bd7f0c437b3, type: 3}
   m_Name: 
@@ -41,6 +41,79 @@ PrefabInstance:
       propertyPath: m_Name
       value: blueBrick
       objectReference: {fileID: 0}
+    - target: {fileID: 504040540746106522, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: d028320245a4246aeb3898517a04d87e,
+        type: 3}
+    - target: {fileID: 504040540746106522, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 1.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: spriteArr.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: spriteArr.Array.data[0]
+      value: 
+      objectReference: {fileID: 21300110, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: spriteArr.Array.data[1]
+      value: 
+      objectReference: {fileID: 21300112, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: spriteArr.Array.data[2]
+      value: 
+      objectReference: {fileID: 21300114, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: brickType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: spriteArr.Array.data[3]
+      value: 
+      objectReference: {fileID: 21300116, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: spriteArr.Array.data[4]
+      value: 
+      objectReference: {fileID: 21300118, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: spriteArr.Array.data[5]
+      value: 
+      objectReference: {fileID: 21300120, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: spriteArr.Array.data[6]
+      value: 
+      objectReference: {fileID: 21300122, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
     - target: {fileID: 3272617812009182816, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -106,79 +179,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 1.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.y
-      value: 1.28
-      objectReference: {fileID: 0}
-    - target: {fileID: 504040540746106522, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: d028320245a4246aeb3898517a04d87e,
-        type: 3}
-    - target: {fileID: 504040540746106522, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: spriteArr.Array.size
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: spriteArr.Array.data[0]
-      value: 
-      objectReference: {fileID: 21300110, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
-        type: 3}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: spriteArr.Array.data[1]
-      value: 
-      objectReference: {fileID: 21300112, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
-        type: 3}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: spriteArr.Array.data[2]
-      value: 
-      objectReference: {fileID: 21300114, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
-        type: 3}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: brickType
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: spriteArr.Array.data[3]
-      value: 
-      objectReference: {fileID: 21300116, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
-        type: 3}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: spriteArr.Array.data[4]
-      value: 
-      objectReference: {fileID: 21300118, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
-        type: 3}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: spriteArr.Array.data[5]
-      value: 
-      objectReference: {fileID: 21300120, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
-        type: 3}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: spriteArr.Array.data[6]
-      value: 
-      objectReference: {fileID: 21300122, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
-        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6cd0d4289632642bfa007f1e1c33c1a3, type: 3}
 --- !u!1 &6450636027791030212 stripped

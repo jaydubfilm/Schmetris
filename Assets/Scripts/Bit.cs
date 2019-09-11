@@ -5,12 +5,21 @@ using UnityEngine;
 public class Bit : MonoBehaviour
 {
     public int bitType;
-    public Vector2Int arrPos;
+    public Vector2Int offset;
+
+    GameObject parentBlock;
 
     // Start is called before the first frame update
+
+    void Awake ()
+    {
+        parentBlock = transform.parent.gameObject;
+        offset = new Vector2Int (Mathf.RoundToInt(transform.position.x / ScreenStuff.colSize), Mathf.RoundToInt(transform.position.y / ScreenStuff.rowSize));
+    }
+    
     void Start()
     {
-       
+       parentBlock.GetComponent<Block>().bitList.Add(gameObject);
     }
 
     // Update is called once per frame
@@ -23,9 +32,9 @@ public class Bit : MonoBehaviour
         if (transform.parent == null)
             return;
 
-        Block parentBlock = transform.parent.gameObject.GetComponent<Block>();
         gameObject.transform.parent = null;
-        parentBlock.bitArr[arrPos.x,arrPos.y] = null;
+        // parentBlock.GetComponent<Block>().bitArr[arrPos.x,arrPos.y] = null;
+        parentBlock.GetComponent<Block>().bitList.Remove(gameObject);
 
         switch (actionType) {
             case ("bounce"):

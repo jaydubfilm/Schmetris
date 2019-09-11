@@ -19,11 +19,27 @@ public class Bot : MonoBehaviour
 
     public Quaternion rotation1;
     public Quaternion rotation2;
+[HideInInspector]
 
     public Vector2Int[] directionV2Arr = new [] {
         new Vector2Int (0,1),
         new Vector2Int (1,0),
         new Vector2Int (0,-1),
+        new Vector2Int (-1,0)};
+        
+[HideInInspector]
+    public Vector2Int[] upOffsetV2Arr = new [] { // given bot rotation
+        new Vector2Int (0,1),
+        new Vector2Int (-1,0),
+        new Vector2Int (0,-1),
+        new Vector2Int (1,0)};
+
+[HideInInspector]
+
+    public Vector2Int[] downOffsetV2Arr = new [] {
+        new Vector2Int (0,-1),
+        new Vector2Int (1,0),
+        new Vector2Int (0,1),
         new Vector2Int (-1,0)};
 
     float coreX = 0.0f;
@@ -65,9 +81,6 @@ public class Bot : MonoBehaviour
         coreV2 = new Vector2Int (maxBotRadius,maxBotRadius);
         brickArr  = new GameObject[maxBotWidth, maxBotHeight];
         brickTypeArr = new int[maxBotWidth, maxBotHeight];
-        for (int x = 0; x < maxBotWidth; x++)
-            for (int y = 0; y < maxBotHeight ; y++)
-                brickTypeArr[x,y] = -1;
     }
 
     void Start()
@@ -77,7 +90,9 @@ public class Bot : MonoBehaviour
         botBody = gameObject.GetComponent<Rigidbody2D>();
         // brickArr[maxBotRadius,maxBotRadius] = coreBrick;
         // coreBrick.GetComponent<Brick>().arrPos = new Vector2Int(maxBotRadius,maxBotRadius);
-        
+        for (int x = 0; x < maxBotWidth; x++)
+            for (int y = 0; y < maxBotHeight ; y++)
+                brickTypeArr[x,y] = -1;
         botRotation=1;
         // add fuel brick
         // AddBrick(new Vector2Int(maxBotRadius,maxBotRadius-1),1,0);
@@ -133,11 +148,16 @@ public class Bot : MonoBehaviour
     {
         if (GameController.lives == 1)
             MoveBot();
-
+/* 
         if (GameController.tripleCheckFlag ==1) {
             GameController.tripleCheckFlag = 0;
             TripleTestBot();
         }
+
+        if (GameController.SquareCheckFlag ==1) {
+            SquareCheckBot();
+        }
+    */
         if (orphanCheckFlag) {
             ReleaseOrphans();
             orphanCheckFlag = false;
@@ -203,6 +223,10 @@ public class Bot : MonoBehaviour
         orphanCheckFlag = true;
     }
 
+    public void SquareCheckBot()
+    {
+
+    }
     public void TripleTestBot()
     {
         for (int x = 0; x < maxBotWidth ; x++) {
@@ -863,6 +887,36 @@ public class Bot : MonoBehaviour
         } else {
             return null;
         }
+    }
+
+    public void AddBlock(GameObject blockObj) {
+        if(blockObj == null)
+            return;
+        Block block = blockObj.GetComponent<Block>();
+
+        Vector2Int blockOffset = new Vector2Int (coreCol - block.column, block.row);
+        
+        if (DoesBlockFit(block)) {
+            foreach(GameObject bit in block.bitList){
+                Vector2Int bitOffset = blockOffset + bit.GetComponent<Bit>().offset;
+                AddBrick(bitOffset+coreV2,bit.GetComponent<Bit>().bitType-2);
+            }
+        }
+    }
+
+    public bool DoesBlockFit(Block block){
+        bool fit = true;
+        if (block == null)
+            return false;
+
+        Vector2Int blockOffset = new Vector2Int (coreCol - block.column, block.row);
+        
+        foreach(GameObject bit in block.bitList) {
+            Vector2Int bitOffset = blockOffset + bit.GetComponent<Bit>().offset;
+            if (IsValidBrickPos(bitOffset + coreV2)==false)
+                fit = false;
+        }
+        return fit;
     }
 
     public void CollapseDouble(Vector2Int ArrPos1, Vector2Int ArrPos2){

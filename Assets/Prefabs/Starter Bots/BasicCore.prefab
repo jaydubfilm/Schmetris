@@ -12,12 +12,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BasicCore
       objectReference: {fileID: 0}
-    - target: {fileID: 7694494178386460899, guid: bb56c75261b904b7faa6bf50d108aa65,
-        type: 3}
-      propertyPath: startingBrickGrid
-      value: 
-      objectReference: {fileID: 99424046045511965, guid: dddb2e10105a849b7b59f4d6132774f4,
-        type: 3}
     - target: {fileID: 3694019655305186038, guid: bb56c75261b904b7faa6bf50d108aa65,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -73,5 +67,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7694494178386460899, guid: bb56c75261b904b7faa6bf50d108aa65,
+        type: 3}
+      propertyPath: startingBrickGrid
+      value: 
+      objectReference: {fileID: 2885102360245583875, guid: 3dcba5aa8ce8146cfa20b2aae11195fb,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb56c75261b904b7faa6bf50d108aa65, type: 3}
