@@ -270,10 +270,10 @@ public class GameController : MonoBehaviour
         GameObject newBlock;
       
         Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(col), ScreenStuff.RowToYPosition(spawnRow), 0);
-
-        newBlock = Instantiate(blockSpawns[type].block, vpos, Quaternion.identity);
-
-        newBlock.GetComponent<Block>().column = ScreenStuff.WrapCol(col);
+        float rotationAngle = Random.Range(0,4) * 90.0f;
+        newBlock = Instantiate(blockSpawns[type].block, vpos, Quaternion.Euler(0f,0f,rotationAngle));
+        newBlock.GetComponent<Block>().bot = bot;
+       
 
         return newBlock;
     }
@@ -286,7 +286,7 @@ public class GameController : MonoBehaviour
         Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(sCol), ScreenStuff.RowToYPosition(spawnRow)-10, 0);
 
         newShape = Instantiate(levelData.shapes[shapeCount],vpos,Quaternion.identity);
-        newShape.column = ScreenStuff.WrapCol(sCol);
+        newShape.column = ScreenStuff.WrapCol(sCol,bot.coreCol);
   
         return newShape;
     }

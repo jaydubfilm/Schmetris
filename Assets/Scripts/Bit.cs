@@ -14,12 +14,15 @@ public class Bit : MonoBehaviour
     void Awake ()
     {
         parentBlock = transform.parent.gameObject;
-        offset = new Vector2Int (Mathf.RoundToInt(transform.position.x / ScreenStuff.colSize), Mathf.RoundToInt(transform.position.y / ScreenStuff.rowSize));
+        Vector3 parentOffsetV3 = parentBlock.transform.position;
+    
+        offset = new Vector2Int (Mathf.RoundToInt((transform.position.x-parentOffsetV3.x) / ScreenStuff.colSize), Mathf.RoundToInt((transform.position.y-parentOffsetV3.y) / ScreenStuff.rowSize));
     }
     
     void Start()
     {
-       parentBlock.GetComponent<Block>().bitList.Add(gameObject);
+        parentBlock.GetComponent<Block>().bitList.Add(gameObject);
+        RotateUpright();
     }
 
     // Update is called once per frame
@@ -67,6 +70,10 @@ public class Bit : MonoBehaviour
 
         animDuration = 0.3f;
         StartCoroutine(DestroyAfterAnimation(animDuration));
+    }
+
+    public void RotateUpright() {
+        transform.rotation = Quaternion.identity;
     }
 
     IEnumerator DestroyAfterAnimation(float duration){  

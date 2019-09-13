@@ -65,7 +65,7 @@ public class Brick : MonoBehaviour
             else if (transform.parent != null)
             {
                 int rotation = bot.botRotation;
-                Vector2Int eArrPos = arrPos + bot.upOffsetV2Arr[rotation];
+                Vector2Int eArrPos = arrPos + bot.upOffsetV2Arr[rotation-1];
         
                 if (((rA == 0) || (rA == 90) || (rA == 180) || (rA == 270)) /* && (BitIsAboveBrick(collider))*/) {
                     if (bitType == 1) // white bit - bump the brick
@@ -111,6 +111,7 @@ public class Brick : MonoBehaviour
             } else { // bounce the bit away
                 bit.RemoveFromBlock("bounce");
             }
+          
         }
     }
 
@@ -175,6 +176,7 @@ public class Brick : MonoBehaviour
 
 
     public void RemoveBrickFromBotArray() {
+        bot = parentBot.GetComponent<Bot>();
         bot.brickArr[arrPos.x,arrPos.y] = null;
         bot.brickTypeArr[arrPos.x,arrPos.y]=-1;
         bot.RefreshNeighborLists();

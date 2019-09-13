@@ -7,7 +7,8 @@ public class Block : MonoBehaviour
    // public GameObject[,] bitArr;
     public List<GameObject> bitList;
     public int column;
-    public int row;
+    //public int row;
+    public Bot bot;
 
    // public int bitCount = 1;
     // public int radius = 2;
@@ -20,9 +21,11 @@ public class Block : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // blockWidth = 2 * radius +1;
+      int absoluteCol =  ScreenStuff.XPositionToCol(transform.position.x);
+      column = ScreenStuff.WrapCol(absoluteCol,bot.coreCol);
+      // blockWidth = 2 * radius +1;
       //  blockHeight = 2 * radius +1;
-       // bitArr = new GameObject[blockWidth,blockHeight];
+      // bitArr = new GameObject[blockWidth,blockHeight];
     }
 
 
@@ -32,4 +35,18 @@ public class Block : MonoBehaviour
     {
 
     }
+
+    public int GetXOffset(int coreColumn) {
+      int offset = column - coreColumn;
+      if (offset > 20)
+          offset -=40;
+      return offset;
+    }
+    
+    public void RotateBitsUpright() {
+      foreach (GameObject bit in bitList) {
+         bit.GetComponent<Bit>().RotateUpright();  
+      }
+    }
+
 }

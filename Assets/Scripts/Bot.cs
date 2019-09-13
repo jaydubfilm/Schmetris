@@ -3,39 +3,42 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-
+[System.Serializable]
 public class Bot : MonoBehaviour
 { 
     public float longPause;
     public float shortPause;
 
     public int coreCol = 0;
-    public int maxBotRadius = 4;
+    public int maxBotRadius;
 
     public static bool orphanCheckFlag = false;
     public static float ghostMoveSpeed = 30f;
+    public static bool squareCheckFlag = false;
 
     Rigidbody2D botBody;
 
+    [HideInInspector]
     public Quaternion rotation1;
+    
+    [HideInInspector]
     public Quaternion rotation2;
-[HideInInspector]
 
+    [HideInInspector]
     public Vector2Int[] directionV2Arr = new [] {
         new Vector2Int (0,1),
         new Vector2Int (1,0),
         new Vector2Int (0,-1),
         new Vector2Int (-1,0)};
         
-[HideInInspector]
+    [HideInInspector]
     public Vector2Int[] upOffsetV2Arr = new [] { // given bot rotation
         new Vector2Int (0,1),
         new Vector2Int (-1,0),
         new Vector2Int (0,-1),
         new Vector2Int (1,0)};
 
-[HideInInspector]
-
+    [HideInInspector]
     public Vector2Int[] downOffsetV2Arr = new [] {
         new Vector2Int (0,-1),
         new Vector2Int (1,0),
@@ -46,14 +49,14 @@ public class Bot : MonoBehaviour
     float coreY = 0.0f;
     int maxBotWidth;
     int maxBotHeight;
-
+ 
     public GameObject[,] brickArr;
+
     public int[,] brickTypeArr;
     public GameObject[] masterBrickList;
     int[,] pathArr;
 
     public Vector2Int coreV2;
-   
    
     public int botRotation = 1;
     
@@ -75,16 +78,17 @@ public class Bot : MonoBehaviour
     void Awake() 
     {
         DontDestroyOnLoad(this.gameObject);
+    }
+
+    void Start()
+    {
+        maxBotRadius = GameController.Instance.settings.maxBotRadius;
         coreBrick = masterBrickList[0];
         maxBotWidth = maxBotRadius * 2 +1;
         maxBotHeight = maxBotRadius * 2 + 1;
         coreV2 = new Vector2Int (maxBotRadius,maxBotRadius);
         brickArr  = new GameObject[maxBotWidth, maxBotHeight];
         brickTypeArr = new int[maxBotWidth, maxBotHeight];
-    }
-
-    void Start()
-    {
         gameObject.transform.position = new Vector3(coreX, coreY, 0);
         gameObject.transform.rotation = Quaternion.identity;
         botBody = gameObject.GetComponent<Rigidbody2D>();
@@ -148,17 +152,19 @@ public class Bot : MonoBehaviour
     {
         if (GameController.lives == 1)
             MoveBot();
+        
+        if (squareCheckFlag) {
+            SquareCheck();
+            squareCheckFlag = false;
+        }
 /* 
         if (GameController.tripleCheckFlag ==1) {
             GameController.tripleCheckFlag = 0;
             TripleTestBot();
         }
-
-        if (GameController.SquareCheckFlag ==1) {
-            SquareCheckBot();
-        }
-    */
-        if (orphanCheckFlag) {
+*/   
+    
+        if ((orphanCheckFlag)&&(GameController.Instance.settings.Schmetris==false)) {
             ReleaseOrphans();
             orphanCheckFlag = false;
         }
@@ -223,10 +229,43 @@ public class Bot : MonoBehaviour
         orphanCheckFlag = true;
     }
 
-    public void SquareCheckBot()
+    public void SquareCheck()
     {
+        bool[] completeRingList = new bool[maxBotRadius+1];
 
+        for (int r = 1; r <= maxBotRadius; r++) 
+            completeRingList[r] = IsRingComplete(r);
+        
+        for (int r = 1; r <= maxBotRadius; r++) 
+            if (completeRingList[r])
+                RemoveRing(r);
     }
+
+    public bool IsRingComplete(int ringNumber) {
+        bool ringIsComplete = true;
+        // check top and bottom
+        for (int x = -ringNumber; x <= ringNumber; x++)
+            if ((brickTypeArr[maxBotRadius+x,maxBotRadius+ringNumber] == -1) || (brickTypeArr[maxBotRadius+x,maxBotRadius-ringNumber] == -1))
+                ringIsComplete = false;
+        for (int y = 1-ringNumber; y <= ringNumber-1; y++)
+            if ((brickTypeArr[maxBotRadius-ringNumber,maxBotRadius+y] == -1) || (brickTypeArr[maxBotRadius+ringNumber,maxBotRadius+y] == -1))
+                ringIsComplete = false;
+        return ringIsComplete;
+    }
+
+    public void RemoveRing(int ringNumber){
+        // top and bottom
+        for (int x = -ringNumber; x <= ringNumber; x++) {
+            brickArr[maxBotRadius+x,maxBotRadius+ringNumber].GetComponent<Brick>().DestroyBrick();
+            brickArr[maxBotRadius+x,maxBotRadius-ringNumber].GetComponent<Brick>().DestroyBrick();
+        }
+        // sides
+        for (int y = 1-ringNumber; y <= ringNumber-1; y++) {
+            brickArr[maxBotRadius-ringNumber,maxBotRadius+y].GetComponent<Brick>().DestroyBrick();
+            brickArr[maxBotRadius+ringNumber,maxBotRadius+y].GetComponent<Brick>().DestroyBrick(); 
+        }
+    }
+
     public void TripleTestBot()
     {
         for (int x = 0; x < maxBotWidth ; x++) {
@@ -893,14 +932,19 @@ public class Bot : MonoBehaviour
         if(blockObj == null)
             return;
         Block block = blockObj.GetComponent<Block>();
+        int blockRow = ScreenStuff.YPositionToRow(blockObj.transform.position.y);
+        int xOffset = block.GetXOffset(coreCol);
 
-        Vector2Int blockOffset = new Vector2Int (coreCol - block.column, block.row);
+        Vector2Int blockOffset = new Vector2Int (xOffset, blockRow);
         
         if (DoesBlockFit(block)) {
             foreach(GameObject bit in block.bitList){
-                Vector2Int bitOffset = blockOffset + bit.GetComponent<Bit>().offset;
-                AddBrick(bitOffset+coreV2,bit.GetComponent<Bit>().bitType-2);
+                Vector2Int bitPos = blockOffset + bit.GetComponent<Bit>().offset + coreV2;
+                Vector2Int rotatedBitPos = TwistCoordsUpright(bitPos);
+
+                AddBrick(rotatedBitPos,bit.GetComponent<Bit>().bitType-2);
             }
+            squareCheckFlag = true;
         }
     }
 
@@ -908,12 +952,14 @@ public class Bot : MonoBehaviour
         bool fit = true;
         if (block == null)
             return false;
-
-        Vector2Int blockOffset = new Vector2Int (coreCol - block.column, block.row);
+        int blockRow = ScreenStuff.YPositionToRow(block.transform.position.y);
+        Vector2Int blockOffset = new Vector2Int (block.column-coreCol, blockRow);
         
         foreach(GameObject bit in block.bitList) {
-            Vector2Int bitOffset = blockOffset + bit.GetComponent<Bit>().offset;
-            if (IsValidBrickPos(bitOffset + coreV2)==false)
+            Vector2Int bitPos = blockOffset + bit.GetComponent<Bit>().offset + coreV2;
+            Vector2Int rotatedBitPos = TwistCoordsUpright(bitPos);
+
+            if (IsValidBrickPos(rotatedBitPos)==false)
                 fit = false;
         }
         return fit;

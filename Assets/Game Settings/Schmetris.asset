@@ -25,3 +25,4 @@ MonoBehaviour:
   bgZDepth: 400
   bgScrollSpeed: 0.1
   bgScale: {x: 21, y: 21, z: 1}
+  maxBotRadius: 10

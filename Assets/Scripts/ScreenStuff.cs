@@ -75,14 +75,18 @@ public class ScreenStuff : MonoBehaviour
         return (cfloat);
     }
 
-    public static int WrapCol(int column)
-    {
-        Bot bot = (Bot)FindObjectOfType(typeof(Bot));
+    public static int MinXoffSet(int column, int coreColumn){
+        int offset;
+        offset = column - coreColumn;
+        if (offset > 20)
+            offset -=40;
+        return offset;
+    }
 
-        if (bot==null)
-            return column;
-       
-        int newCol = column + bot.coreCol;
+
+    public static int WrapCol(int column, int coreCol)
+    {
+        int newCol = column + coreCol;
 
         if (newCol > rightEdgeCol)
                 newCol -= cols;

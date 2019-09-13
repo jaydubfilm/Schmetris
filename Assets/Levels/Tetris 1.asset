@@ -29,4 +29,4 @@ MonoBehaviour:
   - block: {fileID: 4549165937086163763, guid: ff8e5b172656142a1a67c0ab6493f235, type: 3}
     probability: 1
   shapes: []
-  blockSpawnRate: 0.4
+  blockSpawnRate: 1
