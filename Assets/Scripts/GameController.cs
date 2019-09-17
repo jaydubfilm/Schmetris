@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     public static GameController Instance { get; private set; }
+    public List<GameObject> blockList;
 
     public static int lives = 1;
     public static int bgAdjustFlag = 0;
@@ -274,7 +275,7 @@ public class GameController : MonoBehaviour
         newBlock = Instantiate(blockSpawns[type].block, vpos, Quaternion.Euler(0f,0f,rotationAngle));
         newBlock.GetComponent<Block>().bot = bot;
        
-
+        blockList.Add(newBlock);
         return newBlock;
     }
     

@@ -57,9 +57,19 @@ MonoBehaviour:
   - {x: 1, y: 0}
   - {x: 0, y: -1}
   - {x: -1, y: 0}
+  upOffsetV2Arr:
+  - {x: 0, y: 1}
+  - {x: -1, y: 0}
+  - {x: 0, y: -1}
+  - {x: 1, y: 0}
+  downOffsetV2Arr:
+  - {x: 0, y: -1}
+  - {x: 1, y: 0}
+  - {x: 0, y: 1}
+  - {x: -1, y: 0}
   masterBrickList:
   - {fileID: 6471613597453367622, guid: 7544aff9065454f41ab1fd0a0491acc2, type: 3}
-  - {fileID: 7832514841687427558, guid: cd35053b0c8664eae8a7476325bcd771, type: 3}
+  - {fileID: 5783272881628935429, guid: 9d22e820e24b44098990a011ff255f7e, type: 3}
   - {fileID: 1550391163482342013, guid: 4041c7b358034436bb0a62aaef31deb4, type: 3}
   - {fileID: 6450636027791030212, guid: 8d224d3a4016a47ea86d7ab7283122ab, type: 3}
   - {fileID: 8838603319638469390, guid: 729d476ed6e1d426792246df021f1449, type: 3}
@@ -68,6 +78,7 @@ MonoBehaviour:
   - {fileID: 5570540888293643073, guid: 01c4b15ca06cf4fa8aa6b7519021dae8, type: 3}
   coreV2: {x: 0, y: 0}
   botRotation: 1
+  startingBrickGrid: {fileID: 0}
   fuelBrickList: []
   tripleSound: {fileID: 8300000, guid: f0cd4d87d7e925248b91fc9187c53c42, type: 3}
   tripleDelay: 0.1

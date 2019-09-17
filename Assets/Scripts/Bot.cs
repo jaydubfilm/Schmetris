@@ -154,7 +154,7 @@ public class Bot : MonoBehaviour
             MoveBot();
         
         if (squareCheckFlag) {
-            SquareCheck();
+            squareCheck();
             squareCheckFlag = false;
         }
 /* 
@@ -229,40 +229,41 @@ public class Bot : MonoBehaviour
         orphanCheckFlag = true;
     }
 
-    public void SquareCheck()
+    public void squareCheck()
     {
-        bool[] completeRingList = new bool[maxBotRadius+1];
+        bool[] completesquareList = new bool[maxBotRadius+1];
 
         for (int r = 1; r <= maxBotRadius; r++) 
-            completeRingList[r] = IsRingComplete(r);
+            completesquareList[r] = IsSquareComplete(r);
         
         for (int r = 1; r <= maxBotRadius; r++) 
-            if (completeRingList[r])
-                RemoveRing(r);
+            if (completesquareList[r])
+                RemoveSquare(r);
     }
 
-    public bool IsRingComplete(int ringNumber) {
-        bool ringIsComplete = true;
+    public bool IsSquareComplete(int squareNumber) {
+        bool squareIsComplete = true;
         // check top and bottom
-        for (int x = -ringNumber; x <= ringNumber; x++)
-            if ((brickTypeArr[maxBotRadius+x,maxBotRadius+ringNumber] == -1) || (brickTypeArr[maxBotRadius+x,maxBotRadius-ringNumber] == -1))
-                ringIsComplete = false;
-        for (int y = 1-ringNumber; y <= ringNumber-1; y++)
-            if ((brickTypeArr[maxBotRadius-ringNumber,maxBotRadius+y] == -1) || (brickTypeArr[maxBotRadius+ringNumber,maxBotRadius+y] == -1))
-                ringIsComplete = false;
-        return ringIsComplete;
+        for (int x = -squareNumber; x <= squareNumber; x++)
+            if ((brickTypeArr[maxBotRadius+x,maxBotRadius+squareNumber] == -1) || (brickTypeArr[maxBotRadius+x,maxBotRadius-squareNumber] == -1))
+                squareIsComplete = false;
+        // check sides
+        for (int y = 1-squareNumber; y <= squareNumber-1; y++)
+            if ((brickTypeArr[maxBotRadius-squareNumber,maxBotRadius+y] == -1) || (brickTypeArr[maxBotRadius+squareNumber,maxBotRadius+y] == -1))
+                squareIsComplete = false;
+        return squareIsComplete;
     }
 
-    public void RemoveRing(int ringNumber){
+    public void RemoveSquare(int squareNumber){
         // top and bottom
-        for (int x = -ringNumber; x <= ringNumber; x++) {
-            brickArr[maxBotRadius+x,maxBotRadius+ringNumber].GetComponent<Brick>().DestroyBrick();
-            brickArr[maxBotRadius+x,maxBotRadius-ringNumber].GetComponent<Brick>().DestroyBrick();
+        for (int x = -squareNumber; x <= squareNumber; x++) {
+            brickArr[maxBotRadius+x,maxBotRadius+squareNumber].GetComponent<Brick>().DestroyBrick();
+            brickArr[maxBotRadius+x,maxBotRadius-squareNumber].GetComponent<Brick>().DestroyBrick();
         }
         // sides
-        for (int y = 1-ringNumber; y <= ringNumber-1; y++) {
-            brickArr[maxBotRadius-ringNumber,maxBotRadius+y].GetComponent<Brick>().DestroyBrick();
-            brickArr[maxBotRadius+ringNumber,maxBotRadius+y].GetComponent<Brick>().DestroyBrick(); 
+        for (int y = 1-squareNumber; y <= squareNumber-1; y++) {
+            brickArr[maxBotRadius-squareNumber,maxBotRadius+y].GetComponent<Brick>().DestroyBrick();
+            brickArr[maxBotRadius+squareNumber,maxBotRadius+y].GetComponent<Brick>().DestroyBrick(); 
         }
     }
 
@@ -932,28 +933,29 @@ public class Bot : MonoBehaviour
         if(blockObj == null)
             return;
         Block block = blockObj.GetComponent<Block>();
-        int blockRow = ScreenStuff.YPositionToRow(blockObj.transform.position.y);
         int xOffset = block.GetXOffset(coreCol);
 
-        Vector2Int blockOffset = new Vector2Int (xOffset, blockRow);
+        Vector2Int blockOffset = new Vector2Int (xOffset, block.row-maxBotRadius);
         
-        if (DoesBlockFit(block)) {
+       // if (DoesBlockFit(block)) {
             foreach(GameObject bit in block.bitList){
                 Vector2Int bitPos = blockOffset + bit.GetComponent<Bit>().offset + coreV2;
                 Vector2Int rotatedBitPos = TwistCoordsUpright(bitPos);
+                int brickType = bit.GetComponent<Bit>().bitType-2;
 
-                AddBrick(rotatedBitPos,bit.GetComponent<Bit>().bitType-2);
+                AddBrick(rotatedBitPos,brickType);
             }
             squareCheckFlag = true;
-        }
+       // }
+       Destroy(blockObj);
     }
 
     public bool DoesBlockFit(Block block){
         bool fit = true;
         if (block == null)
             return false;
-        int blockRow = ScreenStuff.YPositionToRow(block.transform.position.y);
-        Vector2Int blockOffset = new Vector2Int (block.column-coreCol, blockRow);
+
+        Vector2Int blockOffset = new Vector2Int (block.column-coreCol, block.row);
         
         foreach(GameObject bit in block.bitList) {
             Vector2Int bitPos = blockOffset + bit.GetComponent<Bit>().offset + coreV2;
@@ -1062,6 +1064,9 @@ public class Bot : MonoBehaviour
     
     void MoveBotLeft() {
         GameController.bgAdjustFlag = 1;
+        Block[] blocks = GetBlocksLeft();
+        if (GetBlockLeft())
+            AddBlock();
         if (coreCol > ScreenStuff.leftEdgeCol)
             coreCol--;
         else {
@@ -1096,5 +1101,14 @@ public class Bot : MonoBehaviour
                 break;
         }
         return downV2;
+    }
+
+    public List<Block> GetBlocksLeft(){
+        List<Block> blockList;
+
+        
+
+
+        return blockList;
     }
 }

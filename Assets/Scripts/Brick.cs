@@ -93,7 +93,7 @@ public class Brick : MonoBehaviour
                         */
 
                         // add a new brick
-                        bot.AddBlock(bitObj.transform.parent.gameObject);
+                        //bot.AddBlock(bitObj.transform.parent.gameObject);
                         bounceBitFlag = false;
 /* 
                         if ((bot.IsValidBrickPos(eArrPos)) &&
@@ -106,11 +106,11 @@ public class Brick : MonoBehaviour
                     }
                 }
             }
-            if (bounceBitFlag == false) {
+          /*  if (bounceBitFlag == false) {
                  Destroy(bitObj.transform.parent.gameObject);
             } else { // bounce the bit away
                 bit.RemoveFromBlock("bounce");
-            }
+            } */
           
         }
     }
@@ -161,9 +161,10 @@ public class Brick : MonoBehaviour
         if (brickType == 0)
             GameController.lives = 0;
 
-        if (brickType ==1) {
+        /*if (brickType ==1) {
             gameObject.GetComponent<Fuel>().Deactivate();
-        }
+        }*/
+        
         Destroy(gameObject);
     }
 

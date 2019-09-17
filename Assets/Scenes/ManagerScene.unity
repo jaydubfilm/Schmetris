@@ -327,6 +327,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Schmetris Bot
       objectReference: {fileID: 0}
+    - target: {fileID: 3503017710870731891, guid: b552d0595d5f54288aac639a6cff6f5d,
+        type: 3}
+      propertyPath: startingBrickGrid
+      value: 
+      objectReference: {fileID: 2885102360245583875, guid: 3dcba5aa8ce8146cfa20b2aae11195fb,
+        type: 3}
     - target: {fileID: 7572423383872542310, guid: b552d0595d5f54288aac639a6cff6f5d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -382,12 +388,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3503017710870731891, guid: b552d0595d5f54288aac639a6cff6f5d,
-        type: 3}
-      propertyPath: startingBrickGrid
-      value: 
-      objectReference: {fileID: 2885102360245583875, guid: 3dcba5aa8ce8146cfa20b2aae11195fb,
-        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b552d0595d5f54288aac639a6cff6f5d, type: 3}
 --- !u!1001 &3821141159295645162
