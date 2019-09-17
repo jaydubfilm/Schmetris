@@ -947,7 +947,7 @@ public class Bot : MonoBehaviour
             }
             squareCheckFlag = true;
        // }
-       Destroy(blockObj);
+       block.DestroyBlock();
     }
 
     public bool DoesBlockFit(Block block){
@@ -1064,9 +1064,11 @@ public class Bot : MonoBehaviour
     
     void MoveBotLeft() {
         GameController.bgAdjustFlag = 1;
-        Block[] blocks = GetBlocksLeft();
-        if (GetBlockLeft())
-            AddBlock();
+        List<GameObject> leftBlockList = GetBlocksLeft();
+
+        foreach (GameObject block in leftBlockList) {
+            AddBlock(block);
+        }
         if (coreCol > ScreenStuff.leftEdgeCol)
             coreCol--;
         else {
@@ -1076,6 +1078,11 @@ public class Bot : MonoBehaviour
 
     void MoveBotRight() {
         GameController.bgAdjustFlag = -1;
+        List<GameObject> rightBlockList = GetBlocksRight();
+
+        foreach (GameObject block in rightBlockList) {
+            AddBlock(block);
+        }
         if (coreCol < ScreenStuff.rightEdgeCol)
             coreCol++;
         else {
@@ -1103,12 +1110,45 @@ public class Bot : MonoBehaviour
         return downV2;
     }
 
-    public List<Block> GetBlocksLeft(){
-        List<Block> blockList;
+    public List<GameObject> GetBlocksLeft() {
+        List<GameObject> leftBlocks = new List<GameObject>();
+        foreach (GameObject blockObj in GameController.Instance.blockList) {
+            Block block = blockObj.GetComponent<Block>();
+            Vector2Int blockOffset = new Vector2Int (block.column-coreCol,block.row-maxBotRadius);
+            
+            foreach(GameObject bit in block.bitList) {
+                Vector2Int bitOffset = bit.GetComponent<Bit>().offset;
+                Vector2Int testPos = blockOffset + bitOffset + coreV2 + Vector2Int.right;
+                Vector2Int rotatedTestPos = TwistCoordsUpright(testPos);
 
-        
+                if (IsValidBrickPos(rotatedTestPos)==true)
+                if (brickTypeArr[rotatedTestPos.x,rotatedTestPos.y]>=0) {
+                    leftBlocks.Add(blockObj);
+                    break;
+                }
+            }
+        }
+        return leftBlocks;
+    }
 
+     public List<GameObject> GetBlocksRight() {
+        List<GameObject> rightBlocks = new List<GameObject>();
+        foreach (GameObject blockObj in GameController.Instance.blockList) {
+            Block block = blockObj.GetComponent<Block>();
+            Vector2Int blockOffset = new Vector2Int (block.column-coreCol,block.row-maxBotRadius);
+            
+            foreach(GameObject bit in block.bitList) {
+                Vector2Int bitOffset = bit.GetComponent<Bit>().offset;
+                Vector2Int testPos = blockOffset + bitOffset + coreV2 + Vector2Int.left;
+                Vector2Int rotatedTestPos = TwistCoordsUpright(testPos);
 
-        return blockList;
+                if (IsValidBrickPos(rotatedTestPos)==true)
+                if (brickTypeArr[rotatedTestPos.x,rotatedTestPos.y]>=0) {
+                    rightBlocks.Add(blockObj);
+                    break;
+                }
+            }
+        }
+        return rightBlocks;
     }
 }

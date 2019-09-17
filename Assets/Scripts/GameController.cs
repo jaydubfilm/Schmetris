@@ -107,8 +107,13 @@ public class GameController : MonoBehaviour
             if (pos.x > ScreenStuff.rightEdgeOfWorld)
                 pos.x = ScreenStuff.leftEdgeOfWorld;
             moveableObject.transform.position = pos;
-            if (pos.y < ScreenStuff.bottomEdgeOfWorld)
-                Destroy(moveableObject);
+            if (pos.y < ScreenStuff.bottomEdgeOfWorld) {
+                Block block = moveableObject.GetComponent<Block>();
+                if (block!=null) {
+                    block.DestroyBlock();
+                } else 
+                    Destroy(moveableObject);
+            }
         }
     }
 

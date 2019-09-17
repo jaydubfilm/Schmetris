@@ -53,7 +53,7 @@ public class Block : MonoBehaviour
           }
           yield return new WaitForSeconds(blockSpeed);
       }
-      Destroy(gameObject);
+      DestroyBlock();
     }
 
     void StepDown() {
@@ -92,7 +92,4 @@ public class Block : MonoBehaviour
       GameController.Instance.blockList.Remove(gameObject);
       Destroy(gameObject);
     }
-
-    
-
 }
