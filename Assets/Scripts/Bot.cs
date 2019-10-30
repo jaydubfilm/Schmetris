@@ -12,9 +12,10 @@ public class Bot : MonoBehaviour
     public int coreCol = 0;
     public int maxBotRadius;
 
-    public static bool orphanCheckFlag = false;
-    public static float ghostMoveSpeed = 30f;
+    public bool orphanCheckFlag = false;
+    
     public static bool squareCheckFlag = false;
+    public bool tripleCheckFlag = false;
 
     Rigidbody2D botBody;
 
@@ -51,13 +52,12 @@ public class Bot : MonoBehaviour
     int maxBotHeight;
  
     public GameObject[,] brickArr;
-
     public int[,] brickTypeArr;
     public GameObject[] masterBrickList;
     int[,] pathArr;
+  
 
     public Vector2Int coreV2;
-   
     public int botRotation = 1;
     
     GameObject coreBrick; 
@@ -70,6 +70,7 @@ public class Bot : MonoBehaviour
 
     private AudioSource source;
     public AudioClip tripleSound;
+    GameSettings settings;
 
     float startTime;
     public float tripleDelay = 0.5f;
@@ -82,7 +83,8 @@ public class Bot : MonoBehaviour
 
     void Start()
     {
-        maxBotRadius = GameController.Instance.settings.maxBotRadius;
+        settings = GameController.Instance.settings;
+        maxBotRadius = settings.maxBotRadius;
         coreBrick = masterBrickList[0];
         maxBotWidth = maxBotRadius * 2 +1;
         maxBotHeight = maxBotRadius * 2 + 1;
@@ -150,19 +152,18 @@ public class Bot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameController.lives == 1)
+        if (GameController.Instance.lives == 1)
             MoveBot();
-        
+        /*
         if (squareCheckFlag) {
             squareCheck();
             squareCheckFlag = false;
         }
-/* 
-        if (GameController.tripleCheckFlag ==1) {
-            GameController.tripleCheckFlag = 0;
+        */
+        if (tripleCheckFlag == true) {
+            tripleCheckFlag = false;
             TripleTestBot();
-        }
-*/   
+        }  
     
         if ((orphanCheckFlag)&&(GameController.Instance.settings.Schmetris==false)) {
             ReleaseOrphans();
@@ -225,7 +226,7 @@ public class Bot : MonoBehaviour
             brickArr[brickArrPos.x,brickArrPos.y].GetComponent<Brick>().MoveBrick(brickArrPos+bumpV2);
         }
         RefreshNeighborLists();
-        GameController.tripleCheckFlag = 1;
+        tripleCheckFlag = true;
         orphanCheckFlag = true;
     }
 
@@ -267,6 +268,14 @@ public class Bot : MonoBehaviour
         }
     }
 
+    void UpdateMergedTypeArr(GameObject blockObj){
+    
+
+        
+
+    }
+
+
     public void TripleTestBot()
     {
         for (int x = 0; x < maxBotWidth ; x++) {
@@ -280,7 +289,6 @@ public class Bot : MonoBehaviour
 
     public bool TripleTestBrick(Vector2Int arrPos)
     {
-        
         bool hMatch = false;
         bool vMatch = false;
         bool centreIsStable = false;
@@ -306,25 +314,24 @@ public class Bot : MonoBehaviour
         vMatch = DoTypeAndLevelMatch(vTestArrPos1,arrPos,vTestArrPos2);
  
         if (hMatch) {  
-                matchBrick1 = brickArr[hTestArrPos1.x,hTestArrPos1.y];
-                matchBrick2 = brickArr[hTestArrPos2.x,hTestArrPos2.y];
-                if (IsValidBrickPos(vTestArrPos1))
-                    sideBrick1 = brickArr[vTestArrPos1.x,vTestArrPos1.y];
-                if (IsValidBrickPos(vTestArrPos2))
-                    sideBrick2 = brickArr[vTestArrPos2.x,vTestArrPos2.y];
+            matchBrick1 = brickArr[hTestArrPos1.x,hTestArrPos1.y];
+            matchBrick2 = brickArr[hTestArrPos2.x,hTestArrPos2.y];
+            if (IsValidBrickPos(vTestArrPos1))
+                sideBrick1 = brickArr[vTestArrPos1.x,vTestArrPos1.y];
+            if (IsValidBrickPos(vTestArrPos2))
+                sideBrick2 = brickArr[vTestArrPos2.x,vTestArrPos2.y];
         }
         else if (vMatch) {
-                matchBrick1 = brickArr[vTestArrPos1.x,vTestArrPos1.y];
-                matchBrick2 = brickArr[vTestArrPos2.x,vTestArrPos2.y];
-                if (IsValidBrickPos(hTestArrPos1))
-                    sideBrick1 = brickArr[hTestArrPos1.x,hTestArrPos1.y];
-                if (IsValidBrickPos(hTestArrPos2))
-                    sideBrick2 = brickArr[hTestArrPos2.x,hTestArrPos2.y];
+            matchBrick1 = brickArr[vTestArrPos1.x,vTestArrPos1.y];
+            matchBrick2 = brickArr[vTestArrPos2.x,vTestArrPos2.y];
+            if (IsValidBrickPos(hTestArrPos1))
+                sideBrick1 = brickArr[hTestArrPos1.x,hTestArrPos1.y];
+            if (IsValidBrickPos(hTestArrPos2))
+                sideBrick2 = brickArr[hTestArrPos2.x,hTestArrPos2.y];
         } else 
             return false;
     
         // we found a triple!  Collapse it!
-
 
         // temporarily remove edge bricks from Array
 
@@ -345,7 +352,6 @@ public class Bot : MonoBehaviour
         brickArr[matchBrick2.GetComponent<Brick>().arrPos.x,matchBrick2.GetComponent<Brick>().arrPos.y] = matchBrick2;
         brickTypeArr[m1Pos.x,m1Pos.y] = matchBrick1.GetComponent<Brick>().brickType;
         brickTypeArr[m2Pos.x,m2Pos.y] = matchBrick2.GetComponent<Brick>().brickType;
-
 
         RefreshNeighborLists();
 
@@ -408,6 +414,7 @@ public class Bot : MonoBehaviour
 
     public void SlideDestroyBrick(GameObject brick1, GameObject brick2,bool upgradeFlag) 
     {
+        // Destroys brick1. Slides a ghost of brick1 toward brick2's position.  
         GameObject ghostBrick = new GameObject();
         Rigidbody2D ghostRb = ghostBrick.AddComponent<Rigidbody2D>();
         SpriteRenderer ghostSpriteRenderer = ghostBrick.AddComponent<SpriteRenderer>();
@@ -421,6 +428,23 @@ public class Bot : MonoBehaviour
         //StartCoroutine(WaitAndDestroyGhost(ghostBrick,0.1f));
     }
 
+    public void SlideDestroyBit(GameObject bit, GameObject brick,bool upgradeFlag) 
+    {
+        // Destroys bit. Slides a ghost of bit toward brick's position.  
+        GameObject ghostBit = new GameObject();
+        Rigidbody2D ghostRb = ghostBit.AddComponent<Rigidbody2D>();
+        SpriteRenderer ghostSpriteRenderer = ghostBit.AddComponent<SpriteRenderer>();
+        
+        ghostBit.transform.position = bit.transform.position;
+        ghostRb.isKinematic = true;
+        ghostSpriteRenderer.sprite = bit.GetComponent<SpriteRenderer>().sprite;
+       
+        bit.GetComponent<Bit>().RemoveFromBlock("destroy");
+
+        StartCoroutine(SlideGhost(ghostRb,brick,upgradeFlag));
+        //StartCoroutine(WaitAndDestroyGhost(ghostBrick,0.1f));
+    }
+
     IEnumerator WaitAndDestroyGhost(GameObject ghost, float pause) 
     {
         yield return new WaitForSeconds(pause);
@@ -430,7 +454,7 @@ public class Bot : MonoBehaviour
     IEnumerator WaitAndTripleCheck(float pause)
     {
         yield return new WaitForSeconds(pause);
-        GameController.tripleCheckFlag =1;
+        tripleCheckFlag = true;
     }
 
 
@@ -439,7 +463,7 @@ public class Bot : MonoBehaviour
     
         Vector3 originalPos = ghostRb.transform.position;
         Vector3 newPos = brick2.GetComponent<Rigidbody2D>().transform.position;
-        float duration = (newPos-originalPos).magnitude/ghostMoveSpeed;
+        float duration = (newPos-originalPos).magnitude/settings.ghostMoveSpeed;
 
         while (t< duration)
         {
@@ -456,6 +480,14 @@ public class Bot : MonoBehaviour
     public bool IsValidBrickPos(Vector2Int arrPos)
     {
         if ((0<=arrPos.x)&&(arrPos.x<maxBotWidth)&&(0<=arrPos.y)&&(arrPos.y<maxBotHeight))
+            return true;
+        else   
+            return false;
+    }
+
+    public bool IsValidMergedBrickPos(Vector2Int mergedArrPos)
+    {
+        if ((0<=mergedArrPos.x)&&(mergedArrPos.x<maxBotWidth+2)&&(0<=mergedArrPos.y)&&(mergedArrPos.y<maxBotHeight+2))
             return true;
         else   
             return false;
@@ -516,7 +548,7 @@ public class Bot : MonoBehaviour
                     Brick orphan = orphanBrick.GetComponent<Brick>();
                     orphan.MoveBrick(orphan.arrPos+(downV2*minFallDist));
                 }
-                GameController.tripleCheckFlag = 1;
+                tripleCheckFlag = true;
             }
         }
         RefreshNeighborLists();
@@ -538,12 +570,7 @@ public class Bot : MonoBehaviour
             }
             testCoords+=directionV2;
         }
-        /*
-        if (closedGap)
-            return gapDist;
-        else    
-            return 99;
-            */
+       
         return closedGap? gapDist : 99;
     }
 
@@ -892,7 +919,7 @@ public class Bot : MonoBehaviour
     {  
         Vector2Int offsetV2 = ArrToOffset(arrPos);
 
-        Vector3 offsetV3 = new Vector3(offsetV2.x * ScreenStuff.colSize, offsetV2.y * ScreenStuff.colSize, 0);
+        Vector3 offsetV3 = new Vector3(offsetV2.x * settings.colSize, offsetV2.y * settings.colSize, 0);
         GameObject newBrick;
 
        // GameObject[] brickTypesArr = new GameObject[8] {coreBrick, redBrick, greenBrick, blueBrick, cyanBrick, pinkBrick, greyBrick, purpleBrick};
@@ -921,7 +948,7 @@ public class Bot : MonoBehaviour
 
             RefreshNeighborLists();
 
-            GameController.tripleCheckFlag = 1;
+            tripleCheckFlag = true;
 
             return newBrick;
         } else {
@@ -929,26 +956,157 @@ public class Bot : MonoBehaviour
         }
     }
 
-    public void AddBlock(GameObject blockObj) {
-        if(blockObj == null)
-            return;
-        Block block = blockObj.GetComponent<Block>();
-        int xOffset = block.GetXOffset(coreCol);
-
-        Vector2Int blockOffset = new Vector2Int (xOffset, block.row-maxBotRadius);
+    public void AddBlock(Vector2Int arrPos,Vector2Int hitDir, GameObject colliderBitObj) {
         
+        if(colliderBitObj == null)
+            return;
+
+        int[,] mergedTypeArr = new int[maxBotWidth+4,maxBotHeight+4];
+        GameObject blockObj = colliderBitObj.transform.parent.gameObject;
+        Block block = blockObj.GetComponent<Block>();
+        Bit colliderBit = colliderBitObj.GetComponent<Bit>();
+        
+        int xOffset = block.GetXOffset(coreCol);
+        int blockRow = ScreenStuff.GetRow(blockObj);
+    
+        Vector2Int blockOffset = new Vector2Int (xOffset, blockRow); 
+
+        // combine Brick types and Bit types into mergedTypeArr
+
+        for (int x = 0; x < maxBotWidth ; x++) 
+            for (int y = 0; y < maxBotHeight ; y++) 
+                mergedTypeArr[x+2,y+2] = brickTypeArr[x,y];
+        
+        foreach(GameObject bitObj in block.bitList) {
+            Vector2Int mergedBitArrPos = GetMergedArrPos(bitObj.GetComponent<Bit>(),colliderBit,hitDir,arrPos);
+            if(IsValidMergedBrickPos(mergedBitArrPos))
+                mergedTypeArr[mergedBitArrPos.x,mergedBitArrPos.y]=bitObj.GetComponent<Bit>().ConvertToBrickType();
+        }
+
+        // Collapse Cross-Border Triples //
+
+        foreach(GameObject bitObj in block.bitList) {
+            Vector2Int borderBitArrPos = GetMergedArrPos(bitObj.GetComponent<Bit>(),colliderBit,hitDir,arrPos);
+            Vector2Int borderBrickArrPos = new Vector2Int(-1,-1);
+            Vector2Int innerBrickArrPos = new Vector2Int(-1,-1);
+            Vector2Int outerBitArrPos = new Vector2Int(-1,-1);
+            int bType = mergedTypeArr[borderBitArrPos.x,borderBitArrPos.y];
+
+            if((borderBitArrPos.x)==1) {
+                if ((borderBitArrPos.y)>1&&(borderBitArrPos.y<maxBotHeight+2)) {
+                    borderBrickArrPos = borderBitArrPos+Vector2Int.right;
+                    if (mergedTypeArr[borderBrickArrPos.x,borderBrickArrPos.y]==bType){
+                        outerBitArrPos = borderBitArrPos+Vector2Int.left; 
+                        if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
+                            //CollapseBorderTriple(outerBitArrPos,borderBitArrPos,borderBrickArrPos);
+                            GameObject outerBitObj = 
+                            SlideDestroyBit(bitObj, upgradeBrick,true);
+                            SlideDestroyBrick(
+                        }              
+                    } else {  
+                        innerBrickArrPos = borderBrickArrPos+Vector2Int.right;
+                        if (mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType) {
+                            CollapseBorderTriple(borderBitArrPos,borderBrickArrPos,innerBrickArrPos);
+                        }
+                    }
+                } 
+            } else if ((borderBitArrPos.x)==maxBotWidth-1){
+                if ((borderBitArrPos.y)>1&&(borderBitArrPos.y<maxBotHeight+2)) {
+                    borderBrickArrPos = borderBitArrPos+Vector2Int.left;
+                    if (mergedTypeArr[borderBrickArrPos.x,borderBrickArrPos.y]==bType){
+                        outerBitArrPos = borderBitArrPos+Vector2Int.right; 
+                        if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
+                            CollapseBorderTriple(outerBitArrPos,borderBitArrPos,borderBrickArrPos);
+                        }              
+                    } else {  
+                        innerBrickArrPos = borderBrickArrPos+Vector2Int.left;
+                        if (mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType) {
+                            CollapseBorderTriple(borderBitArrPos,borderBrickArrPos,innerBrickArrPos);
+                        }
+                    }
+                } 
+            } else if ((borderBitArrPos.y)==1) {
+                if ((borderBitArrPos.x)>1&&(borderBitArrPos.x<maxBotWidth+2)) {
+                    borderBrickArrPos = borderBitArrPos+Vector2Int.up;
+                    if (mergedTypeArr[borderBrickArrPos.x,borderBrickArrPos.y]==bType){
+                        outerBitArrPos = borderBitArrPos+Vector2Int.down; 
+                        if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
+                            CollapseBorderTriple(outerBitArrPos,borderBitArrPos,borderBrickArrPos);
+                        }              
+                    } else {  
+                        innerBrickArrPos = borderBrickArrPos+Vector2Int.up;
+                        if (mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType) {
+                            CollapseBorderTriple(borderBitArrPos,borderBrickArrPos,innerBrickArrPos);
+                        }
+                    }
+                } 
+            } else if ((borderBitArrPos.y)==maxBotHeight+1){
+                if ((borderBitArrPos.x)>1&&(borderBitArrPos.y<maxBotWidth+2)) {
+                    borderBrickArrPos = borderBitArrPos+Vector2Int.down;
+                    if (mergedTypeArr[borderBrickArrPos.x,borderBrickArrPos.y]==bType){
+                        outerBitArrPos = borderBitArrPos+Vector2Int.up; 
+                        if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
+                            CollapseBorderTriple(outerBitArrPos,borderBitArrPos,borderBrickArrPos);
+                        }              
+                    } else {  
+                        innerBrickArrPos = borderBrickArrPos+Vector2Int.down;
+                        if (mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType) {
+                            CollapseBorderTriple(borderBitArrPos,borderBrickArrPos,innerBrickArrPos);
+                        }
+                    }
+                } 
+            }
+                    
+            }
+
+
+        }
+
        // if (DoesBlockFit(block)) {
-            foreach(GameObject bit in block.bitList){
+            foreach(GameObject bit in block.bitList) {
                 Vector2Int bitPos = blockOffset + bit.GetComponent<Bit>().offset + coreV2;
                 Vector2Int rotatedBitPos = TwistCoordsUpright(bitPos);
                 int brickType = bit.GetComponent<Bit>().bitType-2;
 
                 AddBrick(rotatedBitPos,brickType);
             }
-            squareCheckFlag = true;
+            // squareCheckFlag = true;
        // }
        block.DestroyBlock();
+
     }
+
+    public void CollapseBorderTriple(Vector2Int ghost1ArrPos, Vector2Int ghost2ArrPos, Vector2Int upgradeArrPos){
+        Vector2Int arrPos = destArrPos-new Vector2Int(2,2);
+        Vector2Int g2Pos = ghost2ArrPos- new Vector2Int(2,2);
+        Vector2Int g1Pos = ghost1ArrPos - new Vector2Int(2,2);
+
+        GameObject upgradeBrick = brickArr[upgradeArrPos.x,upgradeArrPos.y];
+
+
+        if (IsValidBrickPos(ghost2ArrPos)){
+            GameObject ghostBrick = brickArr[g2Pos.x,g2Pos.y];
+            GameObject ghostBit = 
+
+            SlideDestroyBit(GameObject bit, upgradeBrick,true);
+        }
+
+
+
+            SlideDestroyBit(GameObject bit, upgradeBrick,true);
+
+
+    }
+
+
+    public Vector2Int GetMergedArrPos(Bit bit,Bit colliderBit,Vector2Int hitDir,Vector2Int colliderBrickArrPos){
+        Vector2Int twistedBitOffset = TwistOffsetRotated(bit.offset-colliderBit.offset);
+        Vector2Int twistedHitDir = TwistOffsetRotated(hitDir);
+        Vector2Int mergedBitArrPos = colliderBrickArrPos - twistedHitDir - twistedBitOffset + new Vector2Int (2,2);
+           
+        return mergedBitArrPos;
+    }
+
 
     public bool DoesBlockFit(Block block){
         bool fit = true;
@@ -1001,7 +1159,7 @@ public class Bot : MonoBehaviour
 
     void MoveBot()
     {
-        if (GameController.lives == 0)
+        if (GameController.Instance.lives == 0)
             return;
 
         if (GameController.Instance.settings.Schmetris==false)
@@ -1113,6 +1271,8 @@ public class Bot : MonoBehaviour
     public List<GameObject> GetBlocksLeft() {
         List<GameObject> leftBlocks = new List<GameObject>();
         foreach (GameObject blockObj in GameController.Instance.blockList) {
+            if (blockObj==null)
+                break;
             Block block = blockObj.GetComponent<Block>();
             Vector2Int blockOffset = new Vector2Int (block.column-coreCol,block.row-maxBotRadius);
             
@@ -1134,6 +1294,8 @@ public class Bot : MonoBehaviour
      public List<GameObject> GetBlocksRight() {
         List<GameObject> rightBlocks = new List<GameObject>();
         foreach (GameObject blockObj in GameController.Instance.blockList) {
+            if (blockObj==null)
+                break;
             Block block = blockObj.GetComponent<Block>();
             Vector2Int blockOffset = new Vector2Int (block.column-coreCol,block.row-maxBotRadius);
             

@@ -9,9 +9,9 @@ public class GameController : MonoBehaviour
     public static GameController Instance { get; private set; }
     public List<GameObject> blockList;
 
-    public static int lives = 1;
+    public int lives = 1;
     public static int bgAdjustFlag = 0;
-    public static int tripleCheckFlag = 0;
+
     public static int shapeScore = 0;
     
     public GameObject gameOverPanel;
@@ -27,7 +27,7 @@ public class GameController : MonoBehaviour
 
     public static float timeRemaining = 10.0f;
     public int currentScene = 1;
-    public static int spawnRow = 40;
+    public static int spawnRow = 25;
     //public static int bitCount = 10;
 
     GameObject BG1;
@@ -289,7 +289,7 @@ public class GameController : MonoBehaviour
         Shape newShape; 
 
         int sCol = Random.Range(ScreenStuff.leftEdgeCol,ScreenStuff.rightEdgeCol);
-        Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(sCol), ScreenStuff.RowToYPosition(spawnRow)-10, 0);
+        Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(sCol), ScreenStuff.RowToYPosition(spawnRow), 0);
 
         newShape = Instantiate(levelData.shapes[shapeCount],vpos,Quaternion.identity);
         newShape.column = ScreenStuff.WrapCol(sCol,bot.coreCol);

@@ -50,6 +50,7 @@ public class ScreenStuff : MonoBehaviour
             Destroy(gameObject);
         }
         */
+     
     }
 
     void Start()
@@ -75,6 +76,12 @@ public class ScreenStuff : MonoBehaviour
         return (cfloat);
     }
 
+    public static float RowToYPosition(int row)
+    {
+        float rfloat = rowSize*(row);
+        return (rfloat);
+    }
+
     public static int MinXoffSet(int column, int coreColumn){
         int offset;
         offset = column - coreColumn;
@@ -95,10 +102,17 @@ public class ScreenStuff : MonoBehaviour
         return newCol;
     }
 
-    public static float RowToYPosition(int row)
+    public static int GetRow(GameObject obj) {
+      return ScreenStuff.YPositionToRow(obj.transform.position.y);
+    }
+
+    public static int GetCol(GameObject obj){
+      return ScreenStuff.XPositionToCol(obj.transform.position.x);
+    }
+
+    public static Vector2Int GetCoords(GameObject obj)
     {
-        float rfloat = 1.4f*(row - rows / 2.0f);
-        return (rfloat);
+        return new Vector2Int(GetRow(obj), GetCol(obj));
     }
 
     public static int XPositionToCol (float xpos)
@@ -111,5 +125,14 @@ public class ScreenStuff : MonoBehaviour
         return (Mathf.RoundToInt(ypos / rowSize));
     }
 
-   
+    public static void BounceObject(GameObject obj) {
+        Vector2 force = new Vector2 (Random.Range(-20,20),0);
+        Rigidbody2D rb2D = obj.AddComponent<Rigidbody2D>();
+
+        rb2D.AddForce(force,ForceMode2D.Impulse);
+        rb2D.AddTorque(Random.Range(-10,10),ForceMode2D.Impulse);
+        rb2D.gravityScale=1;
+        obj.GetComponent<BoxCollider2D>().enabled = false;
+        obj.tag = "Moveable";
+    }
 }

@@ -44,76 +44,71 @@ public class Brick : MonoBehaviour
     void OnTriggerEnter2D(Collider2D collider)
     {
         GameObject bitObj= collider.gameObject;
+        GameObject blockObj = bitObj.transform.parent.gameObject;
         Bit bit = bitObj.GetComponent<Bit>();
-     
-        if (transform.parent == null)
+    
+        if ((transform.parent == null)||(bit==null))
             return;
 
+        int bitType = bit.bitType;
+        float rA = parentBot.transform.rotation.eulerAngles.z;
+        bool bounceBitFlag = true;
 
-        if (bit!=null) {
-            int bitType = bit.bitType;
-            int brickType = gameObject.GetComponent<Brick>().brickType;
-            float rA = parentBot.transform.rotation.eulerAngles.z;
-            bool bounceBitFlag = true;
+        if (bitType == 0) // black bit - hurt the brick
+        {
+            brickHP-=10;
+            bounceBitFlag = false;
+            bot.GetComponent<Overheat>().AddHeat();
+            bit.RemoveFromBlock("Destroy");
+        } 
+      
+        else
+        {
+            int rotation = bot.botRotation;
+            Vector2Int bitCoords = ScreenStuff.GetCoords(bitObj);
+    
+            if (((rA == 0) || (rA == 90) || (rA == 180) || (rA == 270))) {
+                Vector2Int hitDirV2 = ScreenStuff.GetCoords(gameObject)-ScreenStuff.GetCoords(bitObj);
 
-            if (bitType == 0) // black bit - hurt the brick
-            {
-                brickHP-=10;
-                bounceBitFlag = false;
-                bot.GetComponent<Overheat>().AddHeat();
-            } 
-            else if (transform.parent != null)
-            {
-                int rotation = bot.botRotation;
-                Vector2Int eArrPos = arrPos + bot.upOffsetV2Arr[rotation-1];
-        
-                if (((rA == 0) || (rA == 90) || (rA == 180) || (rA == 270)) /* && (BitIsAboveBrick(collider))*/) {
-                    if (bitType == 1) // white bit - bump the brick
-                    {     
-                        bot.BumpColumn(arrPos);
-                    } else {   // test for collapsable double below collision
-                        /* 
-                        Vector2Int lowerPos = arrPos+=bot.downOffsetV2Arr[rotation];
-
-                        int newBrickType = bitType - 2;
-                        GameObject lowerBrick;
-
-                        if (bot.IsValidBrickPos(lowerPos)) {
-                            lowerBrick = bot.brickArr[lowerPos.x,lowerPos.y];
-                            if (lowerBrick!=null){
-                                if ((((bot.IsValidBrickPos(eArrPos)==false)&&(brickType == bitType-2))&&
-                                (lowerBrick.GetComponent<Brick>().brickType == bitType - 2)) &&
-                                    ((brickLevel == 0) &&
-                                        (lowerBrick.GetComponent<Brick>().brickLevel == 0))) {
-                                    bot.CollapseDouble(arrPos,lowerPos);
-                                    bounceBitFlag = false;
-                                }
-                            }
-                        }
-                        */
-
-                        // add a new brick
-                        //bot.AddBlock(bitObj.transform.parent.gameObject);
-                        bounceBitFlag = false;
-/* 
-                        if ((bot.IsValidBrickPos(eArrPos)) &&
-                                (bot.brickArr[eArrPos.x,eArrPos.y]==null)) {
-                            // bot.AddBrick(eArrPos, newBrickType);
-                            bounceBitFlag = false;
-                            source.PlayOneShot(addBrickSound,1.0f);
-                        } */
-                      
-                    }
+                if (bitType == 1) // white bit - bump the brick
+                {     
+                    bot.BumpColumn(arrPos,hitDirV2);
+                } else {   
+                    // add the block
+                    bot.AddBlock(arrPos,hitDirV2,bitObj);
+                    bounceBitFlag = false;
                 }
             }
-          /*  if (bounceBitFlag == false) {
-                 Destroy(bitObj.transform.parent.gameObject);
-            } else { // bounce the bit away
-                bit.RemoveFromBlock("bounce");
-            } */
-          
         }
+
+        if (bounceBitFlag) {
+            blockObj.GetComponent<Block>().BounceBlock();
+        } 
     }
+
+/*
+    public bool CheckForCollapsableDouble(Bit bit, Vector2Int hitDirV2){ 
+        Vector2Int lowerPos = arrPos+=bot.downOffsetV2Arr[bot.botRotation];
+
+        int newBrickType = bit.ConvertToBrickType();
+
+        GameObject lowerBrick;
+        bool isCollapsible = false;
+
+        if (bot.IsValidBrickPos(lowerPos)) {
+            lowerBrick = bot.brickArr[lowerPos.x,lowerPos.y];
+            if (lowerBrick!=null){
+                if ((((bot.IsValidBrickPos(eArrPos)==false)&&(brickType == bitType-2))&&
+                (lowerBrick.GetComponent<Brick>().brickType == bitType - 2)) &&
+                    ((brickLevel == 0) &&
+                        (lowerBrick.GetComponent<Brick>().brickLevel == 0))) {
+                    isCollapsible = true;
+                }
+            }
+        }
+        return isCollapsible;
+    }   
+*/
 
     public void RotateUpright(){
             transform.rotation = Quaternion.identity;
@@ -132,7 +127,7 @@ public class Brick : MonoBehaviour
         float animDuration;
 
         if (brickType == 0)
-            GameController.lives = 0;
+            GameController.Instance.lives = 0;
 
         if (brickType == 1)
         {
@@ -159,7 +154,7 @@ public class Brick : MonoBehaviour
         RemoveBrickFromBotArray();  
 
         if (brickType == 0)
-            GameController.lives = 0;
+            GameController.Instance.lives = 0;
 
         /*if (brickType ==1) {
             gameObject.GetComponent<Fuel>().Deactivate();
@@ -175,13 +170,12 @@ public class Brick : MonoBehaviour
         tag = "Moveable";
     }
 
-
     public void RemoveBrickFromBotArray() {
         bot = parentBot.GetComponent<Bot>();
         bot.brickArr[arrPos.x,arrPos.y] = null;
         bot.brickTypeArr[arrPos.x,arrPos.y]=-1;
         bot.RefreshNeighborLists();
-        Bot.orphanCheckFlag = true;
+        bot.orphanCheckFlag = true;
     }
 
     public void MoveBrick(Vector2Int newArrPos) {
@@ -210,7 +204,6 @@ public class Brick : MonoBehaviour
             bot.RefreshNeighborLists();
         }  
     }
-
 
     public void SmoothMoveBrickObj(Vector2Int newArrPos){
         Vector2Int newOffset = bot.TwistOffsetRotated(bot.ArrToOffset(newArrPos));

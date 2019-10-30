@@ -22,6 +22,7 @@ public class Bit : MonoBehaviour
     void Start()
     {
         parentBlock.GetComponent<Block>().bitList.Add(gameObject);
+        
         RotateUpright();
     }
 
@@ -41,16 +42,7 @@ public class Bit : MonoBehaviour
 
         switch (actionType) {
             case ("bounce"):
-                Vector2 force = new Vector2 (Random.Range(-20,20),0);
-                Rigidbody2D rb2D = gameObject.AddComponent<Rigidbody2D>();
-
-                rb2D.AddForce(force,ForceMode2D.Impulse);
-                rb2D.AddTorque(Random.Range(-10,10),ForceMode2D.Impulse);
-                rb2D.gravityScale=1;
-                //gameObject.GetComponent<BoxCollider2D>().isTrigger = false;
-                gameObject.GetComponent<BoxCollider2D>().enabled = false;
-                
-                gameObject.tag = "Moveable";
+                ScreenStuff.BounceObject(gameObject);
                 break;
             case ("explode"):
                 ExplodeBit();
@@ -79,5 +71,9 @@ public class Bit : MonoBehaviour
     IEnumerator DestroyAfterAnimation(float duration){  
         yield return new WaitForSeconds(duration);
         Destroy(gameObject); 
+    }
+
+    public int ConvertToBrickType(){
+        return bitType - 2;
     }
 }
