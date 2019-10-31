@@ -20,4 +20,5 @@ public class GameSettings : ScriptableObject
     public Vector3 bgScale = new Vector3(21,21,1);
     public int maxBotRadius = 4;
     public float ghostMoveSpeed = 30f;
+    public int blockRadius = 3;
 }

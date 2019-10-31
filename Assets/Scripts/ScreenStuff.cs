@@ -112,7 +112,7 @@ public class ScreenStuff : MonoBehaviour
 
     public static Vector2Int GetCoords(GameObject obj)
     {
-        return new Vector2Int(GetRow(obj), GetCol(obj));
+        return new Vector2Int(GetCol(obj),GetRow(obj));
     }
 
     public static int XPositionToCol (float xpos)

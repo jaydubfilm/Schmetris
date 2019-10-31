@@ -11,12 +11,21 @@ public class Block : MonoBehaviour
     //public int row;
     public Bot bot;
     public float blockSpeed = 0.2f;
+    public int blockRadius; 
+    public int blockWidth;
+    public Vector2Int coreV2;
+    
   
     // Start is called before the first frame update
     void Start()
     {
+      blockRadius = GameController.Instance.settings.blockRadius;
       int absoluteCol =  ScreenStuff.GetCol(gameObject);
       column = ScreenStuff.WrapCol(absoluteCol,bot.coreCol);
+      blockWidth = blockRadius*2+1;
+      bitArr = new GameObject[blockWidth,blockWidth];
+      coreV2 = new Vector2Int(blockRadius,blockRadius);
+
       //row = GameController.spawnRow;
       // blockWidth = 2 * radius +1;
       //  blockHeight = 2 * radius +1;

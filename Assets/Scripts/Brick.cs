@@ -32,6 +32,7 @@ public class Brick : MonoBehaviour
 
     void Start () {
         bot = parentBot.GetComponent<Bot>();
+        bot.brickList.Add(gameObject);
     }
 
     void Update () {
@@ -72,7 +73,7 @@ public class Brick : MonoBehaviour
 
                 if (bitType == 1) // white bit - bump the brick
                 {     
-                    bot.BumpColumn(arrPos,hitDirV2);
+                    bot.BumpColumn(arrPos); //FIX THIS!!!
                 } else {   
                     // add the block
                     bot.AddBlock(arrPos,hitDirV2,bitObj);
@@ -174,6 +175,7 @@ public class Brick : MonoBehaviour
         bot = parentBot.GetComponent<Bot>();
         bot.brickArr[arrPos.x,arrPos.y] = null;
         bot.brickTypeArr[arrPos.x,arrPos.y]=-1;
+        bot.brickList.Remove(gameObject);
         bot.RefreshNeighborLists();
         bot.orphanCheckFlag = true;
     }
