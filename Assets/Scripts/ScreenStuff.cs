@@ -126,13 +126,24 @@ public class ScreenStuff : MonoBehaviour
     }
 
     public static void BounceObject(GameObject obj) {
-        Vector2 force = new Vector2 (Random.Range(-20,20),0);
-        Rigidbody2D rb2D = obj.AddComponent<Rigidbody2D>();
+        if (obj == null)
+            return;
+
+        Vector2 force = new Vector2 (Random.Range(-5,5),5);
+        Rigidbody2D rb2D = obj.GetComponent<Rigidbody2D>();
+        BoxCollider2D box = obj.GetComponent<BoxCollider2D>();
+
+        if (rb2D == null)
+            rb2D = obj.AddComponent<Rigidbody2D>();
+        if (box != null) {
+            box.enabled = false;
+            box.isTrigger = false;
+        }
 
         rb2D.AddForce(force,ForceMode2D.Impulse);
         rb2D.AddTorque(Random.Range(-10,10),ForceMode2D.Impulse);
         rb2D.gravityScale=1;
-        obj.GetComponent<BoxCollider2D>().enabled = false;
+        
         obj.tag = "Moveable";
     }
 }

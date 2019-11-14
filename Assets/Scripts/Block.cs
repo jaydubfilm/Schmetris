@@ -10,10 +10,12 @@ public class Block : MonoBehaviour
     public int column;
     //public int row;
     public Bot bot;
-    public float blockSpeed = 0.2f;
+    public float blockSpeed = 0.4f;
     public int blockRadius; 
     public int blockWidth;
+    public int blockRotation;
     public Vector2Int coreV2;
+    public Rigidbody2D rb;
     
   
     // Start is called before the first frame update
@@ -25,6 +27,8 @@ public class Block : MonoBehaviour
       blockWidth = blockRadius*2+1;
       bitArr = new GameObject[blockWidth,blockWidth];
       coreV2 = new Vector2Int(blockRadius,blockRadius);
+      rb =  gameObject.GetComponent<Rigidbody2D>();
+      rb.velocity = new Vector3(0,-10,0);
 
       //row = GameController.spawnRow;
       // blockWidth = 2 * radius +1;
@@ -39,23 +43,6 @@ public class Block : MonoBehaviour
     {
 
     }
-  /*
-    IEnumerator MoveController()
-    {
-      for (int r = GameController.spawnRow; r > -10; r--) {
-          if (IsBotBelow()) {
-              bot.AddBlock(gameObject);
-              yield break;
-          } else {
-              StepDown();
-              row--;
-          }
-          yield return new WaitForSeconds(blockSpeed);
-      }
-      DestroyBlock();
-    }
-    */
-
 
     void StepDown() {
         Vector3 stepVector = new Vector3(0,-ScreenStuff.rowSize,0);
@@ -77,6 +64,9 @@ public class Block : MonoBehaviour
 
     public void BounceBlock() {
       GameController.Instance.blockList.Remove(gameObject);
+      foreach(GameObject bitObj in gameObject.GetComponent<Block>().bitList) 
+         // bitObj.GetComponent<BoxCollider2D>().isTrigger = false;
+          bitObj.GetComponent<BoxCollider2D>().enabled = false;
       ScreenStuff.BounceObject(gameObject);
     }
 

@@ -30,10 +30,8 @@ public class GameController : MonoBehaviour
     public static int spawnRow = 25;
     //public static int bitCount = 10;
 
-    GameObject BG1;
-    GameObject BG2;
-    GameObject BG3;
-    GameObject BG4;
+    public GameObject[] bgPanelArr;
+    public GameObject bgPanel;
 
     int columnNum = ScreenStuff.cols;
   
@@ -64,6 +62,7 @@ public class GameController : MonoBehaviour
     }
 
     void Start () {
+        bgPanelArr = new GameObject[4];
         SpawnBGPanels();
         gameOverPanel.SetActive(false);
         levelNumberString = GameObject.Find("Level").GetComponent<Text>();
@@ -88,11 +87,10 @@ public class GameController : MonoBehaviour
             }
         }
         BlockSpawnCheck();
-        ShapeSpawnCheck();
+        // ShapeSpawnCheck();
+
         if (lives == 0)
-        {
             GameOver();
-        }   
 
         if(Input.GetKeyDown(KeyCode.Escape)) 
             Application.Quit();
@@ -147,44 +145,41 @@ public class GameController : MonoBehaviour
     }
 
     void ScrollBackground() {
-        if (BG1 == null)
-            return;
+        Vector3[] bV3 = new Vector3[4];
+        Vector3 panelUpV3 = new Vector3(0,2*settings.bgHeight,0);
+        Vector3 panelLeftV3 = new Vector3(-2*settings.bgWidth,0,0);
+        Vector3 panelRightV3 = new Vector3(2*settings.bgWidth,0,0);
 
-        Vector3 BV1 = BG1.transform.position;
-        Vector3 BV2 = BG2.transform.position;
-        Vector3 BV3 = BG3.transform.position;
-        Vector3 BV4 = BG4.transform.position;
+        if (bgPanelArr[0] == null)
+            return;
 
         // scroll Background Down
 
-        BV1 = new Vector3 (BV1.x,BV1.y-settings.bgScrollSpeed,settings.bgZDepth);
-        BV2 = new Vector3 (BV2.x,BV2.y-settings.bgScrollSpeed,settings.bgZDepth);
-        BV3 = new Vector3 (BV3.x,BV3.y-settings.bgScrollSpeed,settings.bgZDepth);
-        BV4 = new Vector3 (BV4.x,BV4.y-settings.bgScrollSpeed,settings.bgZDepth);
+        for (int x = 0;x<4;x++) {    
+            bV3[x] = bgPanelArr[x].transform.position;
+            bV3[x] += new Vector3 (0,-settings.bgScrollSpeed,0);
+        }
 
         // flip bottom BG to top
 
-        if (BV2.y < BV1.y && BV1.y < 0.0f) {
-            BV2 = new Vector3(BV2.x,BV2.y+2*settings.bgHeight,settings.bgZDepth);
-            BV4 = new Vector3(BV4.x,BV4.y+2*settings.bgHeight,settings.bgZDepth);
+        if (bV3[1].y < bV3[0].y && bV3[0].y < 0.0f) {
+            bV3[1] += panelUpV3;
+            bV3[3] += panelUpV3;
         }
-        if (BV1.y < BV2.y && BV2.y < 0.0f) {
-            BV1 = new Vector3(BV1.x,BV1.y+2*settings.bgHeight,settings.bgZDepth);
-            BV3 = new Vector3(BV3.x,BV3.y+2*settings.bgHeight,settings.bgZDepth);
+        if (bV3[0].y < bV3[1].y && bV3[1].y < 0.0f) {
+            bV3[0] += panelUpV3;
+            bV3[2] += panelUpV3;
         }
 
         // on player move
 
         if (bgAdjustFlag!=0) {
-
             float xOffset = ScreenStuff.colSize*bgAdjustFlag;
 
             // adjust background position
 
-            BV1 = new Vector3(BV1.x+xOffset,BV1.y,settings.bgZDepth);
-            BV2 = new Vector3(BV2.x+xOffset,BV2.y,settings.bgZDepth);
-            BV3 = new Vector3(BV3.x+xOffset,BV3.y,settings.bgZDepth);
-            BV4 = new Vector3(BV4.x+xOffset,BV4.y,settings.bgZDepth);
+            for (int x = 0;x<4;x++)
+                bV3[x] += new Vector3(xOffset,0,0);
 
             // adjust all non-player object positions
 
@@ -201,30 +196,28 @@ public class GameController : MonoBehaviour
 
         // flip left BG to right
 
-        if (BV1.x < BV3.x && BV3.x < 0.0f) {
-            BV1 = new Vector3(BV1.x+2*settings.bgWidth,BV1.y,settings.bgZDepth);
-            BV2 = new Vector3(BV2.x+2*settings.bgWidth,BV2.y,settings.bgZDepth);
+        if (bV3[0].x < bV3[2].x && bV3[2].x < 0.0f) {
+            bV3[0] += panelRightV3;
+            bV3[1] += panelRightV3;
         }
-        if (BV3.x < BV1.x && BV1.x < 0.0f) {
-            BV3 = new Vector3(BV3.x+2*settings.bgWidth,BV3.y,settings.bgZDepth);
-            BV4 = new Vector3(BV4.x+2*settings.bgWidth,BV4.y,settings.bgZDepth);
+        if (bV3[2].x < bV3[0].x && bV3[0].x < 0.0f) {
+            bV3[2] += panelRightV3;
+            bV3[3] += panelRightV3;
         }
     
         // flip right BG to left
 
-        if (BV1.x > BV3.x && BV3.x > 0.0f) {
-            BV1 = new Vector3(BV1.x-2*settings.bgWidth,BV1.y,settings.bgZDepth);
-            BV2 = new Vector3(BV2.x-2*settings.bgWidth,BV2.y,settings.bgZDepth);
+        if (bV3[0].x > bV3[2].x && bV3[2].x > 0.0f) {
+            bV3[0] += panelLeftV3;
+            bV3[1] += panelLeftV3;
         }
-        if (BV3.x > BV1.x && BV1.x > 0.0f) {
-            BV3 = new Vector3(BV3.x-2*settings.bgWidth,BV3.y,settings.bgZDepth);
-            BV4 = new Vector3(BV4.x-2*settings.bgWidth,BV4.y,settings.bgZDepth);
+        if (bV3[2].x > bV3[0].x && bV3[0].x > 0.0f) {
+            bV3[2] += panelLeftV3;
+            bV3[3] += panelLeftV3;
         }
 
-        BG1.transform.position = BV1;
-        BG2.transform.position = BV2;
-        BG3.transform.position = BV3;
-        BG4.transform.position = BV4;
+        for (int x=0;x<4;x++)
+            bgPanelArr[x].transform.position = bV3[x];
     }
  
     void ShapeSpawnCheck() {
@@ -276,7 +269,8 @@ public class GameController : MonoBehaviour
         GameObject newBlock;
       
         Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(col), ScreenStuff.RowToYPosition(spawnRow), 0);
-        float rotationAngle = Random.Range(0,4) * 90.0f;
+        // float rotationAngle = Random.Range(0,4) * 90.0f;
+        float rotationAngle = 0;
         newBlock = Instantiate(blockSpawns[type].block, vpos, Quaternion.Euler(0f,0f,rotationAngle));
         newBlock.GetComponent<Block>().bot = bot;
        
@@ -303,32 +297,15 @@ public class GameController : MonoBehaviour
     }
 
     void SpawnBGPanels() {
-        BG1 = Instantiate(new GameObject(),new Vector3(0,settings.bgHeight,settings.bgZDepth),Quaternion.identity);
-        BG2 = Instantiate(new GameObject(),new Vector3(0,0,settings.bgZDepth),Quaternion.identity);
-        BG3 = Instantiate(new GameObject(),new Vector3(settings.bgWidth,settings.bgHeight,settings.bgZDepth),Quaternion.identity);
-        BG4 = Instantiate(new GameObject(),new Vector3(settings.bgWidth,0,settings.bgZDepth),Quaternion.identity);
-        BG1.AddComponent<SpriteRenderer>();
-        BG2.AddComponent<SpriteRenderer>();
-        BG3.AddComponent<SpriteRenderer>();
-        BG4.AddComponent<SpriteRenderer>();
-        BG1.GetComponent<SpriteRenderer>().sprite = settings.bgSprite;
-        BG2.GetComponent<SpriteRenderer>().sprite = settings.bgSprite;
-        BG3.GetComponent<SpriteRenderer>().sprite = settings.bgSprite;
-        BG4.GetComponent<SpriteRenderer>().sprite = settings.bgSprite;
-        BG1.transform.localScale = settings.bgScale;
-        BG2.transform.localScale = settings.bgScale;
-        BG3.transform.localScale = settings.bgScale;
-        BG4.transform.localScale = settings.bgScale;
-        DontDestroyOnLoad(BG1);
-        DontDestroyOnLoad(BG2);
-        DontDestroyOnLoad(BG3);
-        DontDestroyOnLoad(BG4);
+        for (int x = 0;x<4;x++) {
+            bgPanelArr[x] = new GameObject();
+            bgPanelArr[x] = Instantiate(bgPanel,new Vector3(0,0,0),Quaternion.identity);
+            bgPanelArr[x].transform.localScale = settings.bgScale;
+            DontDestroyOnLoad(bgPanelArr[x]);
+        }
+        bgPanelArr[0].transform.position = new Vector3(0,settings.bgHeight,settings.bgZDepth);
+        bgPanelArr[1].transform.position = new Vector3(0,0,settings.bgZDepth);
+        bgPanelArr[2].transform.position = new Vector3(settings.bgWidth,settings.bgHeight,settings.bgZDepth);
+        bgPanelArr[3].transform.position = new Vector3(settings.bgWidth,0,settings.bgZDepth);
     }
-    
-}
-
-
-public class bgPanel : MonoBehaviour {
-
-
 }

@@ -284,11 +284,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockList: []
+  lives: 1
   gameOverPanel: {fileID: 1154038573}
   game: {fileID: 11400000, guid: acaace0b0b1b6450cb9cd16c42e65093, type: 2}
   bot: {fileID: 19749441}
   settings: {fileID: 11400000, guid: 7b02eee40b211405a8626adc4d7495ef, type: 2}
   currentScene: 0
+  bgPanelArr: []
+  bgPanel: {fileID: 6436523624224430614, guid: b5bf3d8b53ea54527ac6215a9568df94, type: 3}
 --- !u!4 &828699282
 Transform:
   m_ObjectHideFlags: 0

@@ -7,6 +7,7 @@ public class Brick : MonoBehaviour
     public Vector2Int arrPos;
   
     public int brickType;
+    public int ID;
     public int brickLevel;
     public int brickHP;
     public int brickMaxHP;
@@ -44,47 +45,48 @@ public class Brick : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        GameObject bitObj= collider.gameObject;
+        GameObject bitObj = collider.gameObject;
         GameObject blockObj = bitObj.transform.parent.gameObject;
+        Block block = blockObj.GetComponent<Block>();
         Bit bit = bitObj.GetComponent<Bit>();
-    
-        if ((transform.parent == null)||(bit==null))
-            return;
-
         int bitType = bit.bitType;
         float rA = parentBot.transform.rotation.eulerAngles.z;
-        bool bounceBitFlag = true;
+
+        if (blockObj == null)
+            return;
+
+        if (bit==null)
+            return;
 
         if (bitType == 0) // black bit - hurt the brick
         {
             brickHP-=10;
-            bounceBitFlag = false;
             bot.GetComponent<Overheat>().AddHeat();
             bit.RemoveFromBlock("Destroy");
         } 
       
         else
         {
-            int rotation = bot.botRotation;
-            Vector2Int bitCoords = ScreenStuff.GetCoords(bitObj);
-    
-            if (((rA == 0) || (rA == 90) || (rA == 180) || (rA == 270))) {
-                Vector2Int hitDirV2 = ScreenStuff.GetCoords(gameObject)-ScreenStuff.GetCoords(bitObj);
+            if (!((rA == 0) || (rA == 90) || (rA == 180) || (rA == 270))) 
+                block.BounceBlock();
+            else {
+                Vector2Int bitCoords = ScreenStuff.GetCoords(bitObj);
+                Vector2Int brickCoords = ScreenStuff.GetCoords(gameObject);
+                Vector2Int hitDirV2 = brickCoords-bitCoords;
+
+                if (hitDirV2 == new Vector2Int(0,0))
+                    block.BounceBlock();
 
                 if (bitType == 1) // white bit - bump the brick
                 {     
-                    bot.BumpColumn(arrPos); //FIX THIS!!!
+                    bot.BumpColumn(arrPos);
+                    block.BounceBlock();
                 } else {   
                     // add the block
                     bot.AddBlock(arrPos,hitDirV2,bitObj);
-                    bounceBitFlag = false;
                 }
-            }
+            } 
         }
-
-        if (bounceBitFlag) {
-            blockObj.GetComponent<Block>().BounceBlock();
-        } 
     }
 
 /*
@@ -246,10 +248,21 @@ public class Brick : MonoBehaviour
     {
         if (brickLevel<spriteArr.Length-1) {
             brickLevel++;
+            ID++;
             GetComponent<SpriteRenderer>().sprite = spriteArr[brickLevel];
             if (brickType == 1)
                 gameObject.GetComponent<Fuel>().UpgradeFuelLevel();
         }
+    }
+
+    public int ConvertToBitType(){
+        return brickType + 2;
+    }
+
+    public bool CompareToBit(Bit bit) {
+        int compType = Mathf.RoundToInt((ID-bit.bitLevel)/1000) - 2;
+
+        return((compType == brickType)&&(bit.bitLevel==brickLevel));
     }
 
 }

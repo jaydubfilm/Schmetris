@@ -56,7 +56,6 @@ public class Bot : MonoBehaviour
     public GameObject[] masterBrickList;
     public List<GameObject> brickList;
     int[,] pathArr;
-  
 
     public Vector2Int coreV2;
     public int botRotation = 1;
@@ -95,8 +94,7 @@ public class Bot : MonoBehaviour
         gameObject.transform.position = new Vector3(coreX, coreY, 0);
         gameObject.transform.rotation = Quaternion.identity;
         botBody = gameObject.GetComponent<Rigidbody2D>();
-        // brickArr[maxBotRadius,maxBotRadius] = coreBrick;
-        // coreBrick.GetComponent<Brick>().arrPos = new Vector2Int(maxBotRadius,maxBotRadius);
+
         for (int x = 0; x < maxBotWidth; x++)
             for (int y = 0; y < maxBotHeight ; y++)
                 brickTypeArr[x,y] = -1;
@@ -486,7 +484,7 @@ public class Bot : MonoBehaviour
 
     public bool IsValidMergedBrickPos(Vector2Int mergedArrPos)
     {
-        if ((0<=mergedArrPos.x)&&(mergedArrPos.x<maxBotWidth+2)&&(0<=mergedArrPos.y)&&(mergedArrPos.y<maxBotHeight+2))
+        if ((0<=mergedArrPos.x)&&(mergedArrPos.x<maxBotWidth+4)&&(0<=mergedArrPos.y)&&(mergedArrPos.y<maxBotHeight+4))
             return true;
         else   
             return false;
@@ -912,7 +910,18 @@ public class Bot : MonoBehaviour
     }
     */
 
-    
+
+    class BorderTriple {
+        public GameObject BitObj;
+        public Vector2Int StartArrPos;
+        public Vector2Int EndArrPos;
+        public BorderTriple (GameObject bitObj,Vector2Int startArrPos,Vector2Int endArrPos)
+        {
+            BitObj = bitObj;
+            StartArrPos = startArrPos;
+            EndArrPos = endArrPos;
+        }
+    }
 
     public GameObject AddBrick(Vector2Int arrPos, int type, int level = 0)
     {  
@@ -940,6 +949,7 @@ public class Bot : MonoBehaviour
 
             newBrickScript.arrPos = arrPos;
             newBrickScript.brickType = type;
+            newBrickScript.ID = type*100;
             newBrickScript.parentBot = gameObject;
             newBrickScript.SetLevel(level);
 
@@ -955,6 +965,12 @@ public class Bot : MonoBehaviour
         }
     }
 
+
+    public void ResolveCollision(Vector2Int arrPos,Vector2Int hitDir, GameObject colliderBitObj)
+    {
+        
+    }
+
     public void AddBlock(Vector2Int arrPos,Vector2Int hitDir, GameObject colliderBitObj) {
         if(colliderBitObj == null)
             return;
@@ -968,6 +984,11 @@ public class Bot : MonoBehaviour
         int blockRow = ScreenStuff.GetRow(blockObj);
     
         Vector2Int blockOffset = new Vector2Int (xOffset, blockRow); 
+        
+        bool bounceBlockFlag = false;
+    
+        List<BorderTriple> deepTripleList = new List<BorderTriple>();
+        List<BorderTriple> shallowTripleList = new List<BorderTriple>();
 
         // combine Brick types and Bit types into mergedTypeArr
 
@@ -983,7 +1004,8 @@ public class Bot : MonoBehaviour
         }
         
         foreach(GameObject bitObj in block.bitList) {
-            Vector2Int mergedBitArrPos = GetMergedArrPos(bitObj.GetComponent<Bit>(),colliderBit,hitDir,arrPos);
+            // Vector2Int mergedBitArrPos = GetMergedArrPos(bitObj.GetComponent<Bit>(),colliderBit,hitDir,arrPos);
+            Vector2Int mergedBitArrPos = bitObj.GetComponent<Bit>().offset;
             if(IsValidMergedBrickPos(mergedBitArrPos))
                 mergedTypeArr[mergedBitArrPos.x,mergedBitArrPos.y]=bitObj.GetComponent<Bit>().ConvertToBrickType();
         }
@@ -1003,30 +1025,36 @@ public class Bot : MonoBehaviour
                     borderObjArrPos = borderBitArrPos+Vector2Int.right;
                     if (mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]==bType){
                         outerBitArrPos = borderBitArrPos+Vector2Int.left; 
-                        if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
-                            CollapseBorderTripleDeep(bitObj,outerBitArrPos,borderObjArrPos);
-                        }              
-                    } else {  
                         innerBrickArrPos = borderObjArrPos+Vector2Int.right;
-                        if (mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType) {
-                            CollapseBorderTripleShallow(bitObj,borderObjArrPos,innerBrickArrPos);
-                            mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]=-1;
+                        if(brickArr[borderObjArrPos.x-2,borderObjArrPos.y-2].GetComponent<Brick>().brickLevel==0){
+                            if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
+                                deepTripleList.Add(new BorderTriple(bitObj,outerBitArrPos,borderObjArrPos));
+                            } else {  
+                                if ((mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType)
+                                    && (brickArr[innerBrickArrPos.x-2,innerBrickArrPos.y-2].GetComponent<Brick>().brickLevel==0)) {
+                                    shallowTripleList.Add(new BorderTriple(bitObj,borderObjArrPos,innerBrickArrPos));
+                                    mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]=-1;
+                                }
+                            }
                         }
                     }
                 } 
-            } else if ((borderBitArrPos.x)==maxBotWidth-1){
+            } else if ((borderBitArrPos.x)==maxBotWidth+2){
                 if ((borderBitArrPos.y)>1&&(borderBitArrPos.y<maxBotHeight+2)) {
                     borderObjArrPos = borderBitArrPos+Vector2Int.left;
                     if (mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]==bType){
                         outerBitArrPos = borderBitArrPos+Vector2Int.right; 
-                        if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
-                            CollapseBorderTripleDeep(bitObj,outerBitArrPos,borderObjArrPos);
-                        }              
-                    } else {  
                         innerBrickArrPos = borderObjArrPos+Vector2Int.left;
-                        if (mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType) {
-                            CollapseBorderTripleShallow(bitObj,borderObjArrPos,innerBrickArrPos);
-                            mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]=-1;
+                        if(brickArr[borderObjArrPos.x-2,borderObjArrPos.y-2].GetComponent<Brick>().brickLevel==0){
+                            if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
+                                deepTripleList.Add(new BorderTriple(bitObj,outerBitArrPos,borderObjArrPos));
+                            } else {  
+                                if ((mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType) 
+                                    && (brickArr[innerBrickArrPos.x-2,innerBrickArrPos.y-2].GetComponent<Brick>().brickLevel==0)) {
+                                    shallowTripleList.Add(new BorderTriple(bitObj,borderObjArrPos,innerBrickArrPos));
+                                    mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]=-1;
+                                }
+                            }
                         }
                     }
                 } 
@@ -1035,35 +1063,46 @@ public class Bot : MonoBehaviour
                     borderObjArrPos = borderBitArrPos+Vector2Int.up;
                     if (mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]==bType){
                         outerBitArrPos = borderBitArrPos+Vector2Int.down; 
-                        if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
-                            CollapseBorderTripleDeep(bitObj,outerBitArrPos,borderObjArrPos);
-                        }              
-                    } else {  
                         innerBrickArrPos = borderObjArrPos+Vector2Int.up;
-                        if (mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType) {
-                            CollapseBorderTripleShallow(bitObj,borderObjArrPos,innerBrickArrPos);
-                            mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]=-1;
+                        if(brickArr[borderObjArrPos.x-2,borderObjArrPos.y-2].GetComponent<Brick>().brickLevel==0){
+                            if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
+                                deepTripleList.Add(new BorderTriple(bitObj,outerBitArrPos,borderObjArrPos));
+                            } else {  
+                                if ((mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType) 
+                                    && (brickArr[innerBrickArrPos.x-2,innerBrickArrPos.y-2].GetComponent<Brick>().brickLevel==0)) {
+                                    shallowTripleList.Add(new BorderTriple(bitObj,borderObjArrPos,innerBrickArrPos));
+                                    mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]=-1;
+                                }
+                            }
                         }
                     }
                 } 
-            } else if ((borderBitArrPos.y)==maxBotHeight+1){
-                if ((borderBitArrPos.x)>1&&(borderBitArrPos.y<maxBotWidth+2)) {
+            } else if ((borderBitArrPos.y)==maxBotHeight+2){
+                if ((borderBitArrPos.x)>1&&(borderBitArrPos.x<maxBotWidth+2)) {
                     borderObjArrPos = borderBitArrPos+Vector2Int.down;
                     if (mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]==bType){
                         outerBitArrPos = borderBitArrPos+Vector2Int.up; 
-                        if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
-                            CollapseBorderTripleDeep(bitObj,outerBitArrPos,borderObjArrPos);
-                        }              
-                    } else {  
-                        innerBrickArrPos = borderObjArrPos+Vector2Int.down;
-                        if (mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType) {
-                            CollapseBorderTripleShallow(bitObj,borderObjArrPos,innerBrickArrPos);
-                            mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]=-1;
+                         innerBrickArrPos = borderObjArrPos+Vector2Int.down;
+                         if(brickArr[borderObjArrPos.x-2,borderObjArrPos.y-2].GetComponent<Brick>().brickLevel==0){ 
+                            if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
+                                deepTripleList.Add(new BorderTriple(bitObj,outerBitArrPos,borderObjArrPos));
+                            } else {  
+                                if ((mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType) 
+                                    && (brickArr[innerBrickArrPos.x-2,innerBrickArrPos.y-2].GetComponent<Brick>().brickLevel==0)) {
+                                    shallowTripleList.Add(new BorderTriple(bitObj,borderObjArrPos,innerBrickArrPos));
+                                    mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]=-1;
+                                }
+                            }
                         }
                     }
                 } 
             }
         }
+
+        foreach (BorderTriple deepTriple in deepTripleList) 
+            CollapseBorderTripleDeep(deepTriple);
+        foreach (BorderTriple shallowTriple in shallowTripleList) 
+            CollapseBorderTripleShallow(shallowTriple);
 
         // Add remaining Bits within Bounds
 
@@ -1090,11 +1129,30 @@ public class Bot : MonoBehaviour
                 brickBitPair[0].GetComponent<Brick>().DestroyBrick();
             }
         }
+
+        // if the block still has bits directly above bricks - bounce the block
+
+        if (blockObj!=null) {
+            foreach (GameObject bitObj in block.bitList) {
+                Bit bit = bitObj.GetComponent<Bit>();
+                Vector2Int mergedArrPos = GetMergedArrPos(bitObj.GetComponent<Bit>(),colliderBit,hitDir,arrPos);
+                Vector2Int testArrPos = mergedArrPos + TwistOffsetUpright(hitDir);
+                if (mergedTypeArr[testArrPos.x,testArrPos.y]>=0)
+                    bounceBlockFlag = true;
+            }
+            if (bounceBlockFlag) {
+                blockObj.GetComponent<Block>().BounceBlock();
+            } 
+        }
+
         StartCoroutine(WaitAndTripleCheck(0.2f));
     }
 
-    public void CollapseBorderTripleShallow(GameObject bitObj, Vector2Int startArrPos, Vector2Int endArrPos){
-        // one bit outside the bot border
+    void CollapseBorderTripleShallow(BorderTriple borderTriple){
+        // Two Bricks and one Bit 
+        GameObject bitObj = borderTriple.BitObj;
+        Vector2Int startArrPos = borderTriple.StartArrPos;
+        Vector2Int endArrPos = borderTriple.EndArrPos;
         Bit bit = bitObj.GetComponent<Bit>();
         GameObject blockObj = bitObj.transform.parent.gameObject;
         Block block = blockObj.GetComponent<Block>();
@@ -1107,15 +1165,15 @@ public class Bot : MonoBehaviour
         SlideDestroy(bitObj, borderObj, innerBrickObj);
     }
 
-    public void CollapseBorderTripleDeep(GameObject bitObj, Vector2Int startArrPos, Vector2Int endArrPos){
-        // two bits outside the bot border
+    void CollapseBorderTripleDeep(BorderTriple borderTriple){
+          // two bits and one Brick
+        GameObject bitObj = borderTriple.BitObj;
         Bit bit = bitObj.GetComponent<Bit>();
         GameObject blockObj = bitObj.transform.parent.gameObject;
         Block block = blockObj.GetComponent<Block>();
-
-        Vector2Int outerBitDir = TwistOffsetUpright(endArrPos-startArrPos);
+        Vector2Int outerBitDir = TwistOffsetUpright(borderTriple.EndArrPos-borderTriple.StartArrPos);
         GameObject outerBitObj = block.bitArr[bit.blockArrPos.x+outerBitDir.x/2,bit.blockArrPos.y+outerBitDir.y/2];
-        GameObject borderObj = brickArr[endArrPos.x-2,endArrPos.y-2];
+        GameObject borderObj = brickArr[borderTriple.EndArrPos.x-2,borderTriple.EndArrPos.y-2];
         SlideDestroy(outerBitObj, bitObj, borderObj);
     }
 
@@ -1291,6 +1349,82 @@ public class Bot : MonoBehaviour
         }
         return downV2;
     }
+
+
+    public class CollisionMap {
+        public Block block;
+        public Vector2Int botCoreCoords;
+        public Vector2Int blockCoreCoords;
+        public Vector2Int hitDir;
+        public GameObject[,] objArr;
+        public int[,] IDArr;
+        public int width;
+        public int height;
+
+        public CollisionMap(Block b, Vector2Int h)
+        {
+            block = b;
+            hitDir = h;
+        }
+
+        public void AddBot(){
+
+        }
+    }
+
+    
+    public CollisionMap CreateCollisionMap(GameObject blockObj, Vector2Int hitDir){
+        Block block = blockObj.GetComponent<Block>();
+        CollisionMap cMap = new CollisionMap(block,hitDir);
+        int xOffset = block.GetXOffset(coreCol);
+        int blockWidth = block.blockWidth;
+        int blockRadius = block.blockRadius;
+        int blockRow = ScreenStuff.GetRow(blockObj);
+        int mapRadius = block.blockWidth+maxBotRadius;
+    
+        Vector2Int blockOffset = new Vector2Int (xOffset, blockRow);
+        cMap.width = maxBotWidth+2*block.blockWidth;
+        cMap.height = maxBotHeight+2*block.blockWidth;
+        cMap.objArr = new GameObject[cMap.width,cMap.height];
+        cMap.IDArr = new int[cMap.width,cMap.height];
+        cMap.botCoreCoords = new Vector2Int (mapRadius,mapRadius);
+        cMap.blockCoreCoords = cMap.botCoreCoords + blockOffset;
+
+        for (int x = 0; x< cMap.width; x++)
+            for (int y = 0; y<cMap.height; y++)
+                cMap.IDArr[x,y] = -1;
+
+        foreach (GameObject brickObj in brickList) {
+            Brick brick = brickObj.GetComponent<Brick>();
+            Vector2Int mapCoords = new Vector2Int (brick.arrPos.x+blockWidth,brick.arrPos.y+blockWidth);
+
+            cMap.objArr[mapCoords.x,mapCoords.y] = brickObj;
+            cMap.IDArr[mapCoords.x,mapCoords.y] = brick.ID;
+        }
+        
+        foreach(GameObject bitObj in block.bitList) {
+            Vector2Int bitOffset = bitObj.GetComponent<Bit>().offset;
+            Vector2Int mapCoords = new Vector2Int (cMap.blockCoreCoords.x+bitOffset.x,cMap.blockCoreCoords.y+bitOffset.y);
+
+            cMap.objArr[mapCoords.x,mapCoords.y] = bitObj;
+            cMap.IDArr[mapCoords.x,mapCoords.y] = bitObj.GetComponent<Bit>().ID;
+        }
+
+        return cMap;
+    }
+
+
+
+            
+
+
+
+        return cMap;
+    }
+
+
+}
+
 /*
     public List<GameObject> GetBlocksLeft() {
         List<GameObject> leftBlocks = new List<GameObject>();
@@ -1337,4 +1471,4 @@ public class Bot : MonoBehaviour
         }
         return rightBlocks;
     }*/
-}
+
