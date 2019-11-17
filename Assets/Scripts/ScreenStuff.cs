@@ -125,6 +125,52 @@ public class ScreenStuff : MonoBehaviour
         return (Mathf.RoundToInt(ypos / rowSize));
     }
 
+    public static Vector2Int TwistOffsetRotated(Vector2Int offset, int rotation) {
+        Vector2Int newCoords = new Vector2Int();
+
+        switch (rotation) {
+            case 0: 
+                newCoords = offset;
+                break;
+            case 1: 
+                newCoords.x = offset.y;
+                newCoords.y = -offset.x; 
+                break;
+            case 2: 
+                newCoords.x = -offset.x;
+                newCoords.y = -offset.y;
+                break;
+            default:
+                newCoords.x = -offset.y;
+                newCoords.y = offset.x;
+                break;
+        }
+        return newCoords;
+    }
+
+    public static Vector2Int TwistOffsetUpright(Vector2Int offset, int rotation){
+        Vector2Int newCoords = new Vector2Int();
+
+        switch (rotation) {
+            case 0: 
+                newCoords = offset;
+                break;
+            case 1: 
+                newCoords.x = -offset.y;
+                newCoords.y = offset.x;
+                break;
+            case 2: 
+                newCoords.x = -offset.x;
+                newCoords.y = -offset.y;
+                break;
+            default:
+                newCoords.x = offset.y;
+                newCoords.y = -offset.x; 
+                break;
+        }
+        return newCoords;
+    }
+
     public static void BounceObject(GameObject obj) {
         if (obj == null)
             return;

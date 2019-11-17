@@ -80,7 +80,7 @@ public class Block : MonoBehaviour
         foreach(GameObject bit in bitList) {
             Vector2Int bitOffset = bit.GetComponent<Bit>().offset;
             Vector2Int testPos = bot.coreV2 + blockOffset + bitOffset + Vector2Int.down;
-            Vector2Int rotatedTestPos = bot.TwistCoordsUpright(testPos);
+            Vector2Int rotatedTestPos = bot.TwistCoordsUpright(testPos,9);//WRONG
 
             if (bot.IsValidBrickPos(rotatedTestPos)==true)
               if (bot.brickTypeArr[rotatedTestPos.x,rotatedTestPos.y]>=0)

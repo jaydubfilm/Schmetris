@@ -269,10 +269,12 @@ public class GameController : MonoBehaviour
         GameObject newBlock;
       
         Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(col), ScreenStuff.RowToYPosition(spawnRow), 0);
-        // float rotationAngle = Random.Range(0,4) * 90.0f;
-        float rotationAngle = 0;
+        int rotation = Random.Range(0,4);
+        float rotationAngle = rotation * 90.0f;
+        
         newBlock = Instantiate(blockSpawns[type].block, vpos, Quaternion.Euler(0f,0f,rotationAngle));
         newBlock.GetComponent<Block>().bot = bot;
+        newBlock.GetComponent<Block>().blockRotation = rotation;
        
         blockList.Add(newBlock);
         return newBlock;

@@ -19,6 +19,8 @@ public class Bit : MonoBehaviour
     {
         parentObj = transform.parent.gameObject;
         parentBlock = parentObj.GetComponent<Block>();
+        FixedJoint2D fj = gameObject.GetComponent<FixedJoint2D>();
+        fj.connectedBody = parentObj.GetComponent<Rigidbody2D>();
     }
     
     void Start()

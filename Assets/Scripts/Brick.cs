@@ -46,7 +46,11 @@ public class Brick : MonoBehaviour
     void OnTriggerEnter2D(Collider2D collider)
     {
         GameObject bitObj = collider.gameObject;
-        GameObject blockObj = bitObj.transform.parent.gameObject;
+        Transform t = bitObj.transform.parent;
+        if (t==null)
+            return;
+        
+        GameObject blockObj = t.gameObject;
         Block block = blockObj.GetComponent<Block>();
         Bit bit = bitObj.GetComponent<Bit>();
         int bitType = bit.bitType;
@@ -83,7 +87,8 @@ public class Brick : MonoBehaviour
                     block.BounceBlock();
                 } else {   
                     // add the block
-                    bot.AddBlock(arrPos,hitDirV2,bitObj);
+                    bot.ResolveCollision(blockObj,hitDirV2);
+                    //bot.AddBlock(arrPos,hitDirV2,bitObj);
                 }
             } 
         }
@@ -210,7 +215,7 @@ public class Brick : MonoBehaviour
     }
 
     public void SmoothMoveBrickObj(Vector2Int newArrPos){
-        Vector2Int newOffset = bot.TwistOffsetRotated(bot.ArrToOffset(newArrPos));
+        Vector2Int newOffset = ScreenStuff.TwistOffsetRotated(bot.ArrToOffset(newArrPos),bot.botRotation);
         Vector3 newOffsetV3 = new Vector3(newOffset.x*ScreenStuff.colSize,newOffset.y*ScreenStuff.colSize,0);
 
         StartCoroutine(SlideBrickOverTime(rb2D.transform.position,newOffsetV3));
