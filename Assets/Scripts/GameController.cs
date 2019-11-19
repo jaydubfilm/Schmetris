@@ -266,18 +266,25 @@ public class GameController : MonoBehaviour
 
     public GameObject SpawnBlock(int col, int type)
     {
-        GameObject newBlock;
+        GameObject newBlockObj;
+        
       
         Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(col), ScreenStuff.RowToYPosition(spawnRow), 0);
         int rotation = Random.Range(0,4);
         float rotationAngle = rotation * 90.0f;
         
-        newBlock = Instantiate(blockSpawns[type].block, vpos, Quaternion.Euler(0f,0f,rotationAngle));
-        newBlock.GetComponent<Block>().bot = bot;
-        newBlock.GetComponent<Block>().blockRotation = rotation;
+        newBlockObj = Instantiate(blockSpawns[type].block, vpos, Quaternion.Euler(0f,0f,rotationAngle));
+        Block newBlock = newBlockObj.GetComponent<Block>();
+        newBlock.bot = bot;
+        newBlock.blockRotation = rotation;
+
+        foreach (GameObject bit in newBlock.bitList)
+            bit.GetComponent<Bit>().RotateUpright();
        
-        blockList.Add(newBlock);
-        return newBlock;
+        blockList.Add(newBlockObj);
+
+
+        return newBlockObj;
     }
     
     public Shape SpawnShape()

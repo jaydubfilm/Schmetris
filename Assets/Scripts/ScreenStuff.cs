@@ -175,9 +175,11 @@ public class ScreenStuff : MonoBehaviour
         if (obj == null)
             return;
 
-        Vector2 force = new Vector2 (Random.Range(-5,5),5);
+        Vector2 force = new Vector2 (Random.Range(-10,10),45);
         Rigidbody2D rb2D = obj.GetComponent<Rigidbody2D>();
         BoxCollider2D box = obj.GetComponent<BoxCollider2D>();
+        rb2D.isKinematic = false;
+        rb2D.velocity = new Vector2(0,0);
 
         if (rb2D == null)
             rb2D = obj.AddComponent<Rigidbody2D>();
@@ -188,7 +190,8 @@ public class ScreenStuff : MonoBehaviour
 
         rb2D.AddForce(force,ForceMode2D.Impulse);
         rb2D.AddTorque(Random.Range(-10,10),ForceMode2D.Impulse);
-        rb2D.gravityScale=1;
+        rb2D.gravityScale=4;
+       
         
         obj.tag = "Moveable";
     }

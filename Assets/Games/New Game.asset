@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: New Game
   m_EditorClassIdentifier: 
   levelDataArr:
-  - {fileID: 11400000, guid: cb3dd1d04803a41b99e943bc55586a0f, type: 2}
-  - {fileID: 11400000, guid: cb3dd1d04803a41b99e943bc55586a0f, type: 2}
+  - {fileID: 11400000, guid: 9adcb7f70afb747719a285200792b3a7, type: 2}
+  - {fileID: 11400000, guid: 41c4cb1ed21e64087aab5faaf3fe782d, type: 2}

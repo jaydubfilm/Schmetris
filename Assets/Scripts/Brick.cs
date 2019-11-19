@@ -37,8 +37,6 @@ public class Brick : MonoBehaviour
     }
 
     void Update () {
-        //if (transform.position.y < ScreenStuff.bottomEdgeOfWorld)
-           // Destroy(gameObject);
         if (brickHP <= 0)
             ExplodeBrick();
     }
@@ -53,6 +51,9 @@ public class Brick : MonoBehaviour
         GameObject blockObj = t.gameObject;
         Block block = blockObj.GetComponent<Block>();
         Bit bit = bitObj.GetComponent<Bit>();
+        if (bit== null)
+            return;
+
         int bitType = bit.bitType;
         float rA = parentBot.transform.rotation.eulerAngles.z;
 
@@ -86,37 +87,12 @@ public class Brick : MonoBehaviour
                     bot.BumpColumn(arrPos);
                     block.BounceBlock();
                 } else {   
-                    // add the block
                     bot.ResolveCollision(blockObj,hitDirV2);
-                    //bot.AddBlock(arrPos,hitDirV2,bitObj);
                 }
             } 
         }
     }
 
-/*
-    public bool CheckForCollapsableDouble(Bit bit, Vector2Int hitDirV2){ 
-        Vector2Int lowerPos = arrPos+=bot.downOffsetV2Arr[bot.botRotation];
-
-        int newBrickType = bit.ConvertToBrickType();
-
-        GameObject lowerBrick;
-        bool isCollapsible = false;
-
-        if (bot.IsValidBrickPos(lowerPos)) {
-            lowerBrick = bot.brickArr[lowerPos.x,lowerPos.y];
-            if (lowerBrick!=null){
-                if ((((bot.IsValidBrickPos(eArrPos)==false)&&(brickType == bitType-2))&&
-                (lowerBrick.GetComponent<Brick>().brickType == bitType - 2)) &&
-                    ((brickLevel == 0) &&
-                        (lowerBrick.GetComponent<Brick>().brickLevel == 0))) {
-                    isCollapsible = true;
-                }
-            }
-        }
-        return isCollapsible;
-    }   
-*/
 
     public void RotateUpright(){
             transform.rotation = Quaternion.identity;
@@ -164,9 +140,9 @@ public class Brick : MonoBehaviour
         if (brickType == 0)
             GameController.Instance.lives = 0;
 
-        /*if (brickType ==1) {
+        if (brickType ==1) {
             gameObject.GetComponent<Fuel>().Deactivate();
-        }*/
+        }
         
         Destroy(gameObject);
     }

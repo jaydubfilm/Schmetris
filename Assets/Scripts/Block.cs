@@ -64,8 +64,7 @@ public class Block : MonoBehaviour
 
     public void BounceBlock() {
       GameController.Instance.blockList.Remove(gameObject);
-      foreach(GameObject bitObj in gameObject.GetComponent<Block>().bitList) 
-         // bitObj.GetComponent<BoxCollider2D>().isTrigger = false;
+      foreach(GameObject bitObj in bitList) 
           bitObj.GetComponent<BoxCollider2D>().enabled = false;
       ScreenStuff.BounceObject(gameObject);
     }
@@ -78,7 +77,7 @@ public class Block : MonoBehaviour
         Vector2Int blockOffset = new Vector2Int (column-bot.coreCol,row);
         
         foreach(GameObject bit in bitList) {
-            Vector2Int bitOffset = bit.GetComponent<Bit>().offset;
+            Vector2Int bitOffset = bit.GetComponent<Bit>().blockOffset;
             Vector2Int testPos = bot.coreV2 + blockOffset + bitOffset + Vector2Int.down;
             Vector2Int rotatedTestPos = bot.TwistCoordsUpright(testPos,9);//WRONG
 

@@ -6,7 +6,8 @@ public class Bit : MonoBehaviour
 {
     public int bitType;
     public int ID;
-    public Vector2Int offset;
+    public Vector2Int blockOffset;
+    public Vector2Int screenOffset;
     public Vector2Int blockArrPos;
     public int bitLevel=0;
 
@@ -26,8 +27,9 @@ public class Bit : MonoBehaviour
     void Start()
     {
         Vector3 parentOffsetV3 = parentObj.transform.position;
-        offset = new Vector2Int (Mathf.RoundToInt((transform.position.x-parentOffsetV3.x) / ScreenStuff.colSize), Mathf.RoundToInt((transform.position.y-parentOffsetV3.y) / ScreenStuff.rowSize));
-        blockArrPos = parentBlock.coreV2 - offset;
+        screenOffset = new Vector2Int (Mathf.RoundToInt((transform.position.x-parentOffsetV3.x) / ScreenStuff.colSize), Mathf.RoundToInt((transform.position.y-parentOffsetV3.y) / ScreenStuff.rowSize));
+        blockOffset = ScreenStuff.TwistOffsetUpright(screenOffset,parentBlock.blockRotation);
+        blockArrPos = parentBlock.coreV2 + blockOffset;
         parentBlock.bitList.Add(gameObject);
         parentBlock.bitArr[blockArrPos.x,blockArrPos.y] = gameObject;
         RotateUpright();
