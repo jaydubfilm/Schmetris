@@ -47,6 +47,8 @@ public class GameController : MonoBehaviour
     float firstShapeSpawnTime;
     int shapeCount;
     int numberOfShapes;
+    Bounds collisionBubble;
+   
 
     private void Awake()
     {
@@ -68,6 +70,7 @@ public class GameController : MonoBehaviour
         levelNumberString = GameObject.Find("Level").GetComponent<Text>();
         levelTimer = GameObject.Find("Timer").GetComponent<Text>();
         shapeScoreString = GameObject.Find("Shapes").GetComponent<Text>();
+      
         LoadLevelData(1);
     }
 
@@ -180,7 +183,8 @@ public class GameController : MonoBehaviour
 
             for (int x = 0;x<4;x++)
                 bV3[x] += new Vector3(xOffset,0,0);
-
+    
+                
             // adjust all non-player object positions
 
             GameObject[] movingObjectArr;

@@ -50,6 +50,7 @@ public class Bot : MonoBehaviour
     float coreY = 0.0f;
     public int maxBotWidth;
     public int maxBotHeight;
+    public Bounds botBounds;
  
     public GameObject[,] brickArr;
     public int[,] brickTypeArr;
@@ -94,13 +95,13 @@ public class Bot : MonoBehaviour
         gameObject.transform.position = new Vector3(coreX, coreY, 0);
         gameObject.transform.rotation = Quaternion.identity;
         botBody = gameObject.GetComponent<Rigidbody2D>();
+        botBounds = new Bounds (Vector3.zero,Vector3.zero);
 
         for (int x = 0; x < maxBotWidth; x++)
             for (int y = 0; y < maxBotHeight ; y++)
                 brickTypeArr[x,y] = -1;
         botRotation=0;
-        // add fuel brick
-        // AddBrick(new Vector2Int(maxBotRadius,maxBotRadius-1),1,0);
+  
         source = GetComponent<AudioSource>();
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(),new Vector3 (0,0,0), Quaternion.identity);
         AddStartingBricks();
@@ -471,7 +472,8 @@ public class Bot : MonoBehaviour
         ghostRb.transform.position = newPos;
         Destroy(ghostRb.gameObject);
         if (upgradeFlag == true)
-           brickObj.GetComponent<Brick>().UpgradeBrick();
+            if (brickObj!=null)
+                brickObj.GetComponent<Brick>().UpgradeBrick();
     }
     
     public bool IsValidBrickPos(Vector2Int arrPos)
@@ -617,6 +619,10 @@ public class Bot : MonoBehaviour
                 break;
         }
         return newCoords;
+    }
+
+    public Vector2Int ScreenPosToOffset(Vector2 point) {
+        return new Vector2Int (ScreenStuff.XPositionToCol(point.x),ScreenStuff.YPositionToRow(point.y));
     }
     
 
@@ -837,10 +843,23 @@ public class Bot : MonoBehaviour
 
             tripleCheckFlag = true;
 
+           
+
             return newBrick;
         } else {
             return null;
         }
+    }
+
+    public void RefreshBotBounds(){
+        Bounds b = new Bounds(Vector3.zero,Vector3.zero);
+        foreach(GameObject brick in brickList) {
+            Collider2D bC = brick.GetComponent<Collider2D>();
+            if (b.extents==Vector3.zero) 
+                b = bC.bounds;
+            b.Encapsulate(bC.bounds);   
+        }
+        botBounds = b;
     }
 
 
@@ -1093,23 +1112,62 @@ public class Bot : MonoBehaviour
     }
     
     void MoveBotLeft() {
-        GameController.bgAdjustFlag = 1;
-    
+        CollisionCheck(1);
+
         if (coreCol > ScreenStuff.leftEdgeCol)
             coreCol--;
         else {
             coreCol = ScreenStuff.rightEdgeCol;
         }
+        GameController.bgAdjustFlag = 1;
     }
 
     void MoveBotRight() {
-        GameController.bgAdjustFlag = -1;
-
+        CollisionCheck(-1);
         if (coreCol < ScreenStuff.rightEdgeCol)
             coreCol++;
         else {
             coreCol = ScreenStuff.leftEdgeCol;
         }
+        GameController.bgAdjustFlag = -1;
+    }
+
+    public void CollisionCheck(int directionFlag){   
+        // check for left-right bit-brick collisions 
+
+        Bounds collisionBubble = botBounds;
+        collisionBubble.Expand(2*settings.colSize);
+        float xOffset = ScreenStuff.colSize*directionFlag;
+
+        Collider2D[] possibleColliders = Physics2D.OverlapBoxAll(collisionBubble.center,collisionBubble.size,0);
+            
+        for (int x = 0; x < possibleColliders.Length; x++) {
+            if (possibleColliders[x].GetComponent<Brick>()==null) {
+                Vector2 v = possibleColliders[x].transform.position;
+                v.x +=xOffset;
+                Vector2Int offset = ScreenStuff.TwistOffsetUpright(ScreenPosToOffset(v),botRotation);
+                Vector2Int arrPos = OffsetToArray(offset);
+                if (IsValidBrickPos(arrPos))  {
+                    if (brickArr[arrPos.x,arrPos.y]!=null) {
+                        Brick colliderBrick = brickArr[arrPos.x,arrPos.y].GetComponent<Brick>();
+                        colliderBrick.BitBrickCollide(possibleColliders[x]);
+                    }
+                }
+            }
+        }
+    }
+
+    public Vector2 GetTopLeftPoint(){
+        Vector2 bPos = transform.position;
+
+        return (bPos + new Vector2 (-(maxBotWidth*settings.colSize/2),(maxBotHeight*settings.colSize/2)));
+
+    }
+
+    public Vector2 GetBottomRightPoint(){
+        Vector2 bPos = transform.position;
+
+        return (bPos + new Vector2 ((maxBotWidth*settings.colSize/2),-(maxBotHeight*settings.colSize/2)));
     }
 
     public Vector2Int GetDownVector(){

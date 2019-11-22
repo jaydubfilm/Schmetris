@@ -26,14 +26,19 @@ public class Brick : MonoBehaviour
     public List<GameObject> neighborList = new List<GameObject>();
     
     void Awake () {
-       brickLevel = 0;
-       source = GetComponent<AudioSource>();
-       rb2D = gameObject.GetComponent<Rigidbody2D>();
+        brickLevel = 0;
+        source = GetComponent<AudioSource>();
+        rb2D = gameObject.GetComponent<Rigidbody2D>();
+     
+     
     }
 
     void Start () {
         bot = parentBot.GetComponent<Bot>();
         bot.brickList.Add(gameObject);
+        bot.RefreshBotBounds();
+        FixedJoint2D fj = gameObject.GetComponent<FixedJoint2D>();
+        fj.connectedBody = parentBot.GetComponent<Rigidbody2D>();
     }
 
     void Update () {
@@ -43,6 +48,10 @@ public class Brick : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
+        BitBrickCollide(collider);
+    }
+
+    public void BitBrickCollide(Collider2D collider) {
         GameObject bitObj = collider.gameObject;
         Transform t = bitObj.transform.parent;
         if (t==null)
@@ -136,15 +145,15 @@ public class Brick : MonoBehaviour
 
     public void DestroyBrick() {
         RemoveBrickFromBotArray();  
-
+        
         if (brickType == 0)
             GameController.Instance.lives = 0;
 
         if (brickType ==1) {
             gameObject.GetComponent<Fuel>().Deactivate();
         }
-        
         Destroy(gameObject);
+        bot.RefreshBotBounds();
     }
 
     public void MakeOrphan() {
