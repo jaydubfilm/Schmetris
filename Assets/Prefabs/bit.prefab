@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 7774494130500512625}
   - component: {fileID: 3339395617024580638}
   - component: {fileID: 3347281637632630334}
+  - component: {fileID: 3220918427149417770}
+  - component: {fileID: 6532306865327685587}
   m_Layer: 0
   m_Name: bit
   m_TagString: Untagged
@@ -122,7 +124,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bitType: 0
-  arrPos: {x: 0, y: 0}
+  ID: 0
+  blockOffset: {x: 0, y: 0}
+  screenOffset: {x: 0, y: 0}
+  blockArrPos: {x: 0, y: 0}
+  bitLevel: 0
 --- !u!95 &3347281637632630334
 Animator:
   serializedVersion: 3
@@ -142,3 +148,42 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!50 &3220918427149417770
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4783243248563623757}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 1
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!255 &6532306865327685587
+FixedJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4783243248563623757}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_DampingRatio: 0
+  m_Frequency: 0

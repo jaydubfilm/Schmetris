@@ -26,7 +26,11 @@ MonoBehaviour:
     probability: 1
   - block: {fileID: 2237821119791837071, guid: 2208ab367e11b4feb9833f86114109f5, type: 3}
     probability: 1
+  - block: {fileID: 3908810048976006719, guid: 0c609c432c86b42ad9631220ee8db9c6, type: 3}
+    probability: 2
+  - block: {fileID: 6215762431153503963, guid: 0de4a4f3435814b5db99a2dea142f90a, type: 3}
+    probability: 5
   - block: {fileID: 4549165937086163763, guid: ff8e5b172656142a1a67c0ab6493f235, type: 3}
     probability: 1
   shapes: []
-  blockSpawnRate: 4
+  blockSpawnRate: 0.5

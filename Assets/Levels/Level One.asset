@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
   m_Name: Level One
   m_EditorClassIdentifier: 
-  levelDuration: 100
+  levelDuration: 30
   blocks:
-  - block: {fileID: 912910950829958133, guid: 4cfb3d094b93149c893e3cb0cbbbd95c, type: 3}
-    probability: 1
-  - block: {fileID: 5246289856396381724, guid: 2b42c885d366d4084a2950bffca61817, type: 3}
+  - block: {fileID: 3908810048976006719, guid: 0c609c432c86b42ad9631220ee8db9c6, type: 3}
+    probability: 3
+  - block: {fileID: 6497979926103665891, guid: b4de234fe1ea2407ca7fed8868ba23af, type: 3}
     probability: 4
-  - block: {fileID: 9034390688859657117, guid: b1743be37722e45f48b14cad9e74719d, type: 3}
+  - block: {fileID: 8480972586710585632, guid: 934b8c0b6a23b4092bdf57addff8b22d, type: 3}
     probability: 4
-  - block: {fileID: 1315968348086269550, guid: f45569c414904480ca2d2a2aa64c1a85, type: 3}
+  - block: {fileID: 6215762431153503963, guid: 0de4a4f3435814b5db99a2dea142f90a, type: 3}
     probability: 1
   shapes:
   - {fileID: 7447227267234729856, guid: ddc9859106f2541888066d9e396de2d1, type: 3}
@@ -31,4 +31,4 @@ MonoBehaviour:
   - {fileID: 5118674430307507696, guid: d511c8aa5a1c249fb9cd043c5f58217d, type: 3}
   - {fileID: 4027776842206976144, guid: a39192c900d8a4746bf85c5354e7de26, type: 3}
   - {fileID: 4998592545037372415, guid: 8e068647be89a4ea1b443cba9cb86e57, type: 3}
-  blockSpawnRate: 0.1
+  blockSpawnRate: 0.4

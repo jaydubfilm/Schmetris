@@ -5,29 +5,41 @@ using UnityEngine;
 public class Bit : MonoBehaviour
 {
     public int bitType;
-    public Vector2Int offset;
+    public int ID;
+    public Vector2Int blockOffset;
+    public Vector2Int screenOffset;
+    public Vector2Int blockArrPos;
+    public int bitLevel=0;
 
-    GameObject parentBlock;
+    GameObject parentObj;
+    Block parentBlock;
 
     // Start is called before the first frame update
 
     void Awake ()
     {
-        parentBlock = transform.parent.gameObject;
-        Vector3 parentOffsetV3 = parentBlock.transform.position;
-    
-        offset = new Vector2Int (Mathf.RoundToInt((transform.position.x-parentOffsetV3.x) / ScreenStuff.colSize), Mathf.RoundToInt((transform.position.y-parentOffsetV3.y) / ScreenStuff.rowSize));
+        parentObj = transform.parent.gameObject;
+        parentBlock = parentObj.GetComponent<Block>();
+        FixedJoint2D fj = gameObject.GetComponent<FixedJoint2D>();
+        fj.connectedBody = parentObj.GetComponent<Rigidbody2D>();
     }
     
     void Start()
     {
-        parentBlock.GetComponent<Block>().bitList.Add(gameObject);
+        Vector3 parentOffsetV3 = parentObj.transform.position;
+        screenOffset = new Vector2Int (Mathf.RoundToInt((transform.position.x-parentOffsetV3.x) / ScreenStuff.colSize), Mathf.RoundToInt((transform.position.y-parentOffsetV3.y) / ScreenStuff.rowSize));
+        blockOffset = ScreenStuff.TwistOffsetUpright(screenOffset,parentBlock.blockRotation);
+        blockArrPos = parentBlock.coreV2 + blockOffset;
+        parentBlock.bitList.Add(gameObject);
+        parentBlock.bitArr[blockArrPos.x,blockArrPos.y] = gameObject;
         RotateUpright();
+        ID = bitType*1000;
     }
 
     // Update is called once per frame
     void Update()
     {
+
     }
 
     public void RemoveFromBlock(string actionType){
@@ -36,21 +48,15 @@ public class Bit : MonoBehaviour
             return;
 
         gameObject.transform.parent = null;
-        // parentBlock.GetComponent<Block>().bitArr[arrPos.x,arrPos.y] = null;
-        parentBlock.GetComponent<Block>().bitList.Remove(gameObject);
+        parentBlock.bitArr[blockArrPos.x,blockArrPos.y] = null;
+        parentBlock.bitList.Remove(gameObject);
+
+        if (parentBlock.bitList.Count==0)
+            parentBlock.DestroyBlock();
 
         switch (actionType) {
             case ("bounce"):
-                Vector2 force = new Vector2 (Random.Range(-20,20),0);
-                Rigidbody2D rb2D = gameObject.AddComponent<Rigidbody2D>();
-
-                rb2D.AddForce(force,ForceMode2D.Impulse);
-                rb2D.AddTorque(Random.Range(-10,10),ForceMode2D.Impulse);
-                rb2D.gravityScale=1;
-                //gameObject.GetComponent<BoxCollider2D>().isTrigger = false;
-                gameObject.GetComponent<BoxCollider2D>().enabled = false;
-                
-                gameObject.tag = "Moveable";
+                ScreenStuff.BounceObject(gameObject);
                 break;
             case ("explode"):
                 ExplodeBit();
@@ -80,4 +86,15 @@ public class Bit : MonoBehaviour
         yield return new WaitForSeconds(duration);
         Destroy(gameObject); 
     }
+
+    public int ConvertToBrickType(){
+        return bitType - 2;
+    }
+
+    public bool CompareToBrick(Brick brick) {
+        int compType = Mathf.RoundToInt((ID-bitLevel)/1000) - 2;
+
+        return((compType == brick.brickType)&&(bitLevel==brick.brickLevel));
+    }
+
 }

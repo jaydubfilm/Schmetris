@@ -12,9 +12,10 @@ public class Bot : MonoBehaviour
     public int coreCol = 0;
     public int maxBotRadius;
 
-    public static bool orphanCheckFlag = false;
-    public static float ghostMoveSpeed = 30f;
+    public bool orphanCheckFlag = false;
+    
     public static bool squareCheckFlag = false;
+    public bool tripleCheckFlag = false;
 
     Rigidbody2D botBody;
 
@@ -47,18 +48,18 @@ public class Bot : MonoBehaviour
 
     float coreX = 0.0f;
     float coreY = 0.0f;
-    int maxBotWidth;
-    int maxBotHeight;
+    public int maxBotWidth;
+    public int maxBotHeight;
+    public Bounds botBounds;
  
     public GameObject[,] brickArr;
-
     public int[,] brickTypeArr;
     public GameObject[] masterBrickList;
+    public List<GameObject> brickList;
     int[,] pathArr;
 
     public Vector2Int coreV2;
-   
-    public int botRotation = 1;
+    public int botRotation = 0;
     
     GameObject coreBrick; 
     Tilemap startTileMap;
@@ -70,6 +71,7 @@ public class Bot : MonoBehaviour
 
     private AudioSource source;
     public AudioClip tripleSound;
+    GameSettings settings;
 
     float startTime;
     public float tripleDelay = 0.5f;
@@ -82,7 +84,8 @@ public class Bot : MonoBehaviour
 
     void Start()
     {
-        maxBotRadius = GameController.Instance.settings.maxBotRadius;
+        settings = GameController.Instance.settings;
+        maxBotRadius = settings.maxBotRadius;
         coreBrick = masterBrickList[0];
         maxBotWidth = maxBotRadius * 2 +1;
         maxBotHeight = maxBotRadius * 2 + 1;
@@ -92,14 +95,13 @@ public class Bot : MonoBehaviour
         gameObject.transform.position = new Vector3(coreX, coreY, 0);
         gameObject.transform.rotation = Quaternion.identity;
         botBody = gameObject.GetComponent<Rigidbody2D>();
-        // brickArr[maxBotRadius,maxBotRadius] = coreBrick;
-        // coreBrick.GetComponent<Brick>().arrPos = new Vector2Int(maxBotRadius,maxBotRadius);
+        botBounds = new Bounds (Vector3.zero,Vector3.zero);
+
         for (int x = 0; x < maxBotWidth; x++)
             for (int y = 0; y < maxBotHeight ; y++)
                 brickTypeArr[x,y] = -1;
-        botRotation=1;
-        // add fuel brick
-        // AddBrick(new Vector2Int(maxBotRadius,maxBotRadius-1),1,0);
+        botRotation=0;
+  
         source = GetComponent<AudioSource>();
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(),new Vector3 (0,0,0), Quaternion.identity);
         AddStartingBricks();
@@ -150,21 +152,20 @@ public class Bot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameController.lives == 1)
+        if (GameController.Instance.lives == 1)
             MoveBot();
-        
+        /*
         if (squareCheckFlag) {
             squareCheck();
             squareCheckFlag = false;
         }
-/* 
-        if (GameController.tripleCheckFlag ==1) {
-            GameController.tripleCheckFlag = 0;
+        */
+        if (tripleCheckFlag == true) {
+            tripleCheckFlag = false;
             TripleTestBot();
-        }
-*/   
+        }  
     
-        if ((orphanCheckFlag)&&(GameController.Instance.settings.Schmetris==false)) {
+        if ((orphanCheckFlag)&&(settings.Schmetris==false)) {
             ReleaseOrphans();
             orphanCheckFlag = false;
         }
@@ -184,19 +185,19 @@ public class Bot : MonoBehaviour
        // Vector2Int eOffsetV2 = bot.ArrToOffset(eArrPos);
 
         switch (botRotation) {
-            case 1:
+            case 0:
                 if (startArrPos.x == 0)
                     bitIsAboveCore = true;
                 break;
-            case 2:
+            case 1:
                 if (startArrPos.y == 0)
                     bitIsAboveCore = true;
                 break;
-            case 3:
+            case 2:
                 if (startArrPos.x == 0)
                     bitIsAboveCore = true;
                 break;
-            case 4:
+            case 3:
                 if (startArrPos.y == 0)
                     bitIsAboveCore = true;
                 break;
@@ -225,7 +226,7 @@ public class Bot : MonoBehaviour
             brickArr[brickArrPos.x,brickArrPos.y].GetComponent<Brick>().MoveBrick(brickArrPos+bumpV2);
         }
         RefreshNeighborLists();
-        GameController.tripleCheckFlag = 1;
+        tripleCheckFlag = true;
         orphanCheckFlag = true;
     }
 
@@ -267,6 +268,7 @@ public class Bot : MonoBehaviour
         }
     }
 
+
     public void TripleTestBot()
     {
         for (int x = 0; x < maxBotWidth ; x++) {
@@ -280,7 +282,6 @@ public class Bot : MonoBehaviour
 
     public bool TripleTestBrick(Vector2Int arrPos)
     {
-        
         bool hMatch = false;
         bool vMatch = false;
         bool centreIsStable = false;
@@ -306,25 +307,24 @@ public class Bot : MonoBehaviour
         vMatch = DoTypeAndLevelMatch(vTestArrPos1,arrPos,vTestArrPos2);
  
         if (hMatch) {  
-                matchBrick1 = brickArr[hTestArrPos1.x,hTestArrPos1.y];
-                matchBrick2 = brickArr[hTestArrPos2.x,hTestArrPos2.y];
-                if (IsValidBrickPos(vTestArrPos1))
-                    sideBrick1 = brickArr[vTestArrPos1.x,vTestArrPos1.y];
-                if (IsValidBrickPos(vTestArrPos2))
-                    sideBrick2 = brickArr[vTestArrPos2.x,vTestArrPos2.y];
+            matchBrick1 = brickArr[hTestArrPos1.x,hTestArrPos1.y];
+            matchBrick2 = brickArr[hTestArrPos2.x,hTestArrPos2.y];
+            if (IsValidBrickPos(vTestArrPos1))
+                sideBrick1 = brickArr[vTestArrPos1.x,vTestArrPos1.y];
+            if (IsValidBrickPos(vTestArrPos2))
+                sideBrick2 = brickArr[vTestArrPos2.x,vTestArrPos2.y];
         }
         else if (vMatch) {
-                matchBrick1 = brickArr[vTestArrPos1.x,vTestArrPos1.y];
-                matchBrick2 = brickArr[vTestArrPos2.x,vTestArrPos2.y];
-                if (IsValidBrickPos(hTestArrPos1))
-                    sideBrick1 = brickArr[hTestArrPos1.x,hTestArrPos1.y];
-                if (IsValidBrickPos(hTestArrPos2))
-                    sideBrick2 = brickArr[hTestArrPos2.x,hTestArrPos2.y];
+            matchBrick1 = brickArr[vTestArrPos1.x,vTestArrPos1.y];
+            matchBrick2 = brickArr[vTestArrPos2.x,vTestArrPos2.y];
+            if (IsValidBrickPos(hTestArrPos1))
+                sideBrick1 = brickArr[hTestArrPos1.x,hTestArrPos1.y];
+            if (IsValidBrickPos(hTestArrPos2))
+                sideBrick2 = brickArr[hTestArrPos2.x,hTestArrPos2.y];
         } else 
             return false;
     
         // we found a triple!  Collapse it!
-
 
         // temporarily remove edge bricks from Array
 
@@ -346,13 +346,11 @@ public class Bot : MonoBehaviour
         brickTypeArr[m1Pos.x,m1Pos.y] = matchBrick1.GetComponent<Brick>().brickType;
         brickTypeArr[m2Pos.x,m2Pos.y] = matchBrick2.GetComponent<Brick>().brickType;
 
-
         RefreshNeighborLists();
 
         if (centreIsStable) // collapse toward centre
         { 
-            SlideDestroyBrick(matchBrick1,testBrick,false);
-            SlideDestroyBrick(matchBrick2,testBrick,true);
+            SlideDestroy(matchBrick1,matchBrick2,testBrick);
         }
         else // collapse towards shortest path
         {
@@ -365,11 +363,9 @@ public class Bot : MonoBehaviour
             int p2 = ShortestPathArray(arrPos2, coreV2);
             if (p1 < p2) 
             {
-                SlideDestroyBrick(testBrick,matchBrick1,false);
-                SlideDestroyBrick(matchBrick2,matchBrick1,true);
+                SlideDestroy(testBrick,matchBrick2,matchBrick1);
             }  else  {
-                SlideDestroyBrick(matchBrick1,matchBrick2,false);
-                SlideDestroyBrick(testBrick,matchBrick2,true);                     
+                SlideDestroy(matchBrick1,testBrick,matchBrick2);                    
             }   
         }
         source.PlayOneShot(tripleSound,1.0f);
@@ -406,20 +402,46 @@ public class Bot : MonoBehaviour
         return false;
     }
 
-    public void SlideDestroyBrick(GameObject brick1, GameObject brick2,bool upgradeFlag) 
+    public void SlideDestroy(GameObject obj1, GameObject obj2, GameObject obj3) 
     {
-        GameObject ghostBrick = new GameObject();
-        Rigidbody2D ghostRb = ghostBrick.AddComponent<Rigidbody2D>();
-        SpriteRenderer ghostSpriteRenderer = ghostBrick.AddComponent<SpriteRenderer>();
-        
-        ghostBrick.transform.position = brick1.transform.position;
-        ghostRb.isKinematic = true;
-        ghostSpriteRenderer.sprite = brick1.GetComponent<SpriteRenderer>().sprite;
+        // Destroys obj1 and obj2 (bits or bricks)... Slides ghosts of obj1 and obj2 to obj3's position.  
+        Brick brick;
+        Bit bit;
+        Rigidbody2D ghostRb1 = CreateGhost(obj1);
+        Rigidbody2D ghostRb2 = CreateGhost(obj2);
        
-        brick1.GetComponent<Brick>().DestroyBrick();
-        StartCoroutine(SlideGhost(ghostRb,brick2,upgradeFlag));
+        brick = obj1.GetComponent<Brick>();
+        if (brick == null) {
+            bit = obj1.GetComponent<Bit>();
+            bit.RemoveFromBlock("destroy");
+        } else
+            brick.DestroyBrick();
+
+        brick = obj2.GetComponent<Brick>();
+        if (brick == null) {
+            bit = obj2.GetComponent<Bit>();
+            bit.RemoveFromBlock("destroy");
+        } else
+            brick.DestroyBrick();
+
+        StartCoroutine(SlideGhost(ghostRb1,obj3,false));
+        StartCoroutine(SlideGhost(ghostRb2,obj3,true));
+        StartCoroutine(WaitAndTripleCheck(0.2f));
+     
         //StartCoroutine(WaitAndDestroyGhost(ghostBrick,0.1f));
     }
+
+    public Rigidbody2D CreateGhost (GameObject obj){
+        GameObject ghostObj = new GameObject();
+        Rigidbody2D ghostRb = ghostObj.AddComponent<Rigidbody2D>();
+        SpriteRenderer ghostSpriteRenderer = ghostObj.AddComponent<SpriteRenderer>();
+      
+        ghostObj.transform.position = obj.transform.position;
+        ghostRb.isKinematic = true;
+        ghostSpriteRenderer.sprite = obj.GetComponent<SpriteRenderer>().sprite;
+        return ghostRb;
+    }
+
 
     IEnumerator WaitAndDestroyGhost(GameObject ghost, float pause) 
     {
@@ -430,16 +452,16 @@ public class Bot : MonoBehaviour
     IEnumerator WaitAndTripleCheck(float pause)
     {
         yield return new WaitForSeconds(pause);
-        GameController.tripleCheckFlag =1;
+        tripleCheckFlag = true;
     }
 
 
-    IEnumerator SlideGhost(Rigidbody2D ghostRb, GameObject brick2, bool upgradeFlag) {
+    IEnumerator SlideGhost(Rigidbody2D ghostRb, GameObject brickObj, bool upgradeFlag) {
         float t = 0f;
     
         Vector3 originalPos = ghostRb.transform.position;
-        Vector3 newPos = brick2.GetComponent<Rigidbody2D>().transform.position;
-        float duration = (newPos-originalPos).magnitude/ghostMoveSpeed;
+        Vector3 newPos = brickObj.GetComponent<Rigidbody2D>().transform.position;
+        float duration = (newPos-originalPos).magnitude/settings.ghostMoveSpeed;
 
         while (t< duration)
         {
@@ -450,12 +472,22 @@ public class Bot : MonoBehaviour
         ghostRb.transform.position = newPos;
         Destroy(ghostRb.gameObject);
         if (upgradeFlag == true)
-           brick2.GetComponent<Brick>().UpgradeBrick();
+            if (brickObj!=null)
+                brickObj.GetComponent<Brick>().UpgradeBrick();
     }
     
     public bool IsValidBrickPos(Vector2Int arrPos)
     {
         if ((0<=arrPos.x)&&(arrPos.x<maxBotWidth)&&(0<=arrPos.y)&&(arrPos.y<maxBotHeight))
+            return true;
+        else   
+            return false;
+    }
+
+
+    public bool IsValidMergedBrickPos(Vector2Int mergedArrPos)
+    {
+        if ((0<=mergedArrPos.x)&&(mergedArrPos.x<maxBotWidth+4)&&(0<=mergedArrPos.y)&&(mergedArrPos.y<maxBotHeight+4))
             return true;
         else   
             return false;
@@ -516,7 +548,7 @@ public class Bot : MonoBehaviour
                     Brick orphan = orphanBrick.GetComponent<Brick>();
                     orphan.MoveBrick(orphan.arrPos+(downV2*minFallDist));
                 }
-                GameController.tripleCheckFlag = 1;
+                tripleCheckFlag = true;
             }
         }
         RefreshNeighborLists();
@@ -538,105 +570,59 @@ public class Bot : MonoBehaviour
             }
             testCoords+=directionV2;
         }
-        /*
-        if (closedGap)
-            return gapDist;
-        else    
-            return 99;
-            */
+       
         return closedGap? gapDist : 99;
     }
+    
 
-    public Vector2Int TwistCoordsUpright(Vector2Int arrXY) {
+     public Vector2Int TwistCoordsUpright(Vector2Int arrXY, int arrWidth) {
         Vector2Int newCoords = new Vector2Int();
 
         switch (botRotation) {
-            case 1:
+            case 0:
                 newCoords = arrXY;
                 break;
-            case 2:
-                newCoords.x = maxBotHeight - 1 - arrXY.y;
+            case 1:
+                newCoords.x = arrWidth - 1 - arrXY.y;
                 newCoords.y = arrXY.x;
                 break;
-            case 3:
-                newCoords.x = maxBotWidth - 1 - arrXY.x;
-                newCoords.y = maxBotHeight - 1 - arrXY.y;
+            case 2:
+                newCoords.x = arrWidth - 1 - arrXY.x;
+                newCoords.y = arrWidth - 1 - arrXY.y;
                 break;
             default:
                 newCoords.x = arrXY.y;
-                newCoords.y = maxBotWidth - 1 - arrXY.x;
+                newCoords.y = arrWidth - 1 - arrXY.x;
                 break;
         }
         return newCoords;
     }
 
-    public Vector2Int TwistCoordsRotated(Vector2Int arrV2) {
+    public Vector2Int TwistCoordsRotated(Vector2Int arrV2, int arrWidth) {
         Vector2Int newCoords = new Vector2Int();
 
         switch (botRotation) {
-            case 1:
+            case 0:
                 newCoords = arrV2;
                 break;
-            case 2:
+            case 1:
                 newCoords.x = arrV2.y;
-                newCoords.y = maxBotWidth - 1 - arrV2.x;
+                newCoords.y = arrWidth - 1 - arrV2.x;
                 break;
-            case 3:
-                newCoords.x = maxBotWidth - 1 - arrV2.x;
-                newCoords.y = maxBotHeight - 1 - arrV2.y;
+            case 2:
+                newCoords.x = arrWidth - 1 - arrV2.x;
+                newCoords.y = arrWidth - 1 - arrV2.y;
                 break;
             default:
-                newCoords.x = maxBotHeight - 1 - arrV2.y;
+                newCoords.x = arrWidth - 1 - arrV2.y;
                 newCoords.y = arrV2.x;
                 break;
         }
         return newCoords;
     }
 
-    public Vector2Int TwistOffsetRotated(Vector2Int offset) {
-        Vector2Int newCoords = new Vector2Int();
-
-        switch (botRotation) {
-            case 1: 
-                newCoords = offset;
-                break;
-            case 2: 
-                newCoords.x = offset.y;
-                newCoords.y = -offset.x; 
-                break;
-            case 3: 
-                newCoords.x = -offset.x;
-                newCoords.y = -offset.y;
-                break;
-            default:
-                newCoords.x = -offset.y;
-                newCoords.y = offset.x;
-                break;
-        }
-        return newCoords;
-    }
-
-    public Vector2Int TwistOffsetUpright(Vector2Int offset){
-        Vector2Int newCoords = new Vector2Int();
-
-        switch (botRotation) {
-            case 1: 
-                newCoords = offset;
-                break;
-            case 2: 
-                newCoords.x = -offset.y;
-                newCoords.y = offset.x;
-                break;
-            case 3: 
-                newCoords.x = -offset.x;
-                newCoords.y = -offset.y;
-                break;
-            default:
-                newCoords.x = offset.y;
-                newCoords.y = -offset.x; 
-                break;
-        }
-        return newCoords;
+    public Vector2Int ScreenPosToOffset(Vector2 point) {
+        return new Vector2Int (ScreenStuff.XPositionToCol(point.x),ScreenStuff.YPositionToRow(point.y));
     }
     
 
@@ -670,44 +656,6 @@ public class Bot : MonoBehaviour
         }
     }
 
-/* 
-    public int ShortestPath(GameObject brick1, GameObject brick2)
-    {
-        int pathDistance = 1; // default for neighbours
-        int minNeighborDist = 99;
-        int nDist;
-
-        if ((brick1==null)||(brick2==null))
-            return 99;
-        else if (brick1 == brick2)
-            return 0;
-        else if (IsNeighbor(brick1, brick2) == false)
-        {
-            // add this brick to the pathList
-            // add the shortestPath of all non-path neighbors to pathDistance
-            Brick brickScript1 = brick1.GetComponent<Brick>();
-            int neighborCount = brickScript1.neighborList.Count;
-
-            pathList.Add(brick1);
-           
-            for (int n = 0; n < neighborCount; n++)
-            {
-                GameObject nBrick = brickScript1.neighborList[n];
-
-                if (pathList.Contains(nBrick))
-                    nDist = 99;
-                else
-                    nDist = ShortestPath(nBrick, brick2);
-                if (nDist < minNeighborDist)
-                    minNeighborDist = nDist;
-            }
-            pathList.Remove(brick1); 
-            pathDistance = minNeighborDist + 1;
-        }
-       
-        return pathDistance;
-    }
-    */
 
     // Shortest Path Using Arrays
     public int ShortestPathArray(Vector2Int arrPos1, Vector2Int arrPos2)
@@ -746,15 +694,6 @@ public class Bot : MonoBehaviour
         }
     }
 
-    /*
-     public bool AreConnected(GameObject brick1, GameObject brick2){
-        if (ShortestPath(brick1, brick2) >= 99)
-            return false;
-        else    
-            return true;
-    }
-    */
-
     public bool AreConnected(GameObject brick1, GameObject brick2){
         if ((brick1 == null) || (brick2 == null))
             return false;
@@ -763,19 +702,6 @@ public class Bot : MonoBehaviour
         else    
             return true;
     }
-
-    
-   /*  public bool IsConnectedToCore(GameObject brick)
-    {
-        if (brick == null)
-            return false;
-        if (ShortestPathArray(brick.GetComponent<Brick>().arrPos, coreV2) >= 99)
-            return false;
-        else    
-            return true;
-    }
-    
-*/
     
 
     public bool IsConnectedToCore(GameObject brick)
@@ -821,8 +747,6 @@ public class Bot : MonoBehaviour
     }
 
     public bool IsNeighborArr(Vector2Int arrPos1, Vector2Int arrPos2) {
-        // if ((brickTypeArr[arrPos1.x,arrPos1.y]==0)||(brickTypeArr[arrPos2.x,arrPos2.y]==0))
-         //   return false;
         if (arrPos1.x==arrPos2.x) {
             if (Mathf.Abs(arrPos1.y-arrPos2.y)==1) {
                 return true;
@@ -871,31 +795,26 @@ public class Bot : MonoBehaviour
                 brick.RotateUpright();
         }
     }
-/* 
-    IEnumerator MoveBrickOverTime (Vector2Int originalPos, Vector2Int finalPos, float duration) {
-        float t = 0f;
-        GameObject brick = brickArr[originalPos.x,originalPos.y];
 
-        if (brickArr[finalPos.x,finalPos.y]!=null)
-            return;
-        
-        while (t<duration)
+
+    class BorderTriple {
+        public GameObject BitObj;
+        public Vector2Int StartArrPos;
+        public Vector2Int EndArrPos;
+        public BorderTriple (GameObject bitObj,Vector2Int startArrPos,Vector2Int endArrPos)
         {
-            
+            BitObj = bitObj;
+            StartArrPos = startArrPos;
+            EndArrPos = endArrPos;
         }
     }
-    */
-
-    
 
     public GameObject AddBrick(Vector2Int arrPos, int type, int level = 0)
     {  
         Vector2Int offsetV2 = ArrToOffset(arrPos);
 
-        Vector3 offsetV3 = new Vector3(offsetV2.x * ScreenStuff.colSize, offsetV2.y * ScreenStuff.colSize, 0);
+        Vector3 offsetV3 = new Vector3(offsetV2.x * settings.colSize, offsetV2.y * settings.colSize, 0);
         GameObject newBrick;
-
-       // GameObject[] brickTypesArr = new GameObject[8] {coreBrick, redBrick, greenBrick, blueBrick, cyanBrick, pinkBrick, greyBrick, purpleBrick};
 
         // check to see if Brick will form vertical triple
 
@@ -914,6 +833,7 @@ public class Bot : MonoBehaviour
 
             newBrickScript.arrPos = arrPos;
             newBrickScript.brickType = type;
+            newBrickScript.ID = type*100;
             newBrickScript.parentBot = gameObject;
             newBrickScript.SetLevel(level);
 
@@ -921,7 +841,9 @@ public class Bot : MonoBehaviour
 
             RefreshNeighborLists();
 
-            GameController.tripleCheckFlag = 1;
+            tripleCheckFlag = true;
+
+           
 
             return newBrick;
         } else {
@@ -929,63 +851,191 @@ public class Bot : MonoBehaviour
         }
     }
 
-    public void AddBlock(GameObject blockObj) {
-        if(blockObj == null)
+    public void RefreshBotBounds(){
+        Bounds b = new Bounds(Vector3.zero,Vector3.zero);
+        foreach(GameObject brick in brickList) {
+            Collider2D bC = brick.GetComponent<Collider2D>();
+            if (b.extents==Vector3.zero) 
+                b = bC.bounds;
+            b.Encapsulate(bC.bounds);   
+        }
+        botBounds = b;
+    }
+
+
+    public void ResolveCollision(GameObject blockObj,Vector2Int hitDir)
+    {
+        if (blockObj == null)
             return;
         Block block = blockObj.GetComponent<Block>();
-        int xOffset = block.GetXOffset(coreCol);
+        CollisionMap cMap = CreateCollisionMap(blockObj,hitDir);
+        bool bounceBlockFlag = false;
 
-        Vector2Int blockOffset = new Vector2Int (xOffset, block.row-maxBotRadius);
+        /*
+        foreach (CollisionPair cp in cMap.collisionPairs) {
+
+            int xOffset = block.GetXOffset(coreCol);
+            int blockRow = ScreenStuff.GetRow(blockObj);
         
-       // if (DoesBlockFit(block)) {
-            foreach(GameObject bit in block.bitList){
-                Vector2Int bitPos = blockOffset + bit.GetComponent<Bit>().offset + coreV2;
-                Vector2Int rotatedBitPos = TwistCoordsUpright(bitPos);
-                int brickType = bit.GetComponent<Bit>().bitType-2;
+            Vector2Int blockOffset = new Vector2Int (xOffset, blockRow); 
+            
+            bool bounceBlockFlag = false;
+        
+            List<BorderTriple> deepTripleList = new List<BorderTriple>();
+            List<BorderTriple> shallowTripleList = new List<BorderTriple>();
+        }
 
-                AddBrick(rotatedBitPos,brickType);
+
+            // Collapse Cross-Border Triples //
+
+            foreach(GameObject bitObj in block.bitList) {
+                Vector2Int borderBitArrPos = cMap.GetMapCoordsBit(bitObj);
+                Vector2Int borderObjArrPos = new Vector2Int(-1,-1);
+                Vector2Int innerBrickArrPos = new Vector2Int(-1,-1);
+                Vector2Int outerBitArrPos = new Vector2Int(-1,-1);
+                int bType = mergedTypeArr[borderBitArrPos.x,borderBitArrPos.y];
+                Bit bit = bitObj.GetComponent<Bit>();
+
+                if((borderBitArrPos.x)==1) {
+                    if ((borderBitArrPos.y)>1&&(borderBitArrPos.y<maxBotHeight+2)) {
+                        borderObjArrPos = borderBitArrPos+Vector2Int.right;
+                        if (mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]==bType){
+                            outerBitArrPos = borderBitArrPos+Vector2Int.left; 
+                            innerBrickArrPos = borderObjArrPos+Vector2Int.right;
+                            if(brickArr[borderObjArrPos.x-2,borderObjArrPos.y-2].GetComponent<Brick>().brickLevel==0){
+                                if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
+                                    deepTripleList.Add(new BorderTriple(bitObj,outerBitArrPos,borderObjArrPos));
+                                } else {  
+                                    if ((mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType)
+                                        && (brickArr[innerBrickArrPos.x-2,innerBrickArrPos.y-2].GetComponent<Brick>().brickLevel==0)) {
+                                        shallowTripleList.Add(new BorderTriple(bitObj,borderObjArrPos,innerBrickArrPos));
+                                        mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]=-1;
+                                    }
+                                }
+                            }
+                        }
+                    } 
+                } else if ((borderBitArrPos.x)==maxBotWidth+2){
+                    if ((borderBitArrPos.y)>1&&(borderBitArrPos.y<maxBotHeight+2)) {
+                        borderObjArrPos = borderBitArrPos+Vector2Int.left;
+                        if (mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]==bType){
+                            outerBitArrPos = borderBitArrPos+Vector2Int.right; 
+                            innerBrickArrPos = borderObjArrPos+Vector2Int.left;
+                            if(brickArr[borderObjArrPos.x-2,borderObjArrPos.y-2].GetComponent<Brick>().brickLevel==0){
+                                if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
+                                    deepTripleList.Add(new BorderTriple(bitObj,outerBitArrPos,borderObjArrPos));
+                                } else {  
+                                    if ((mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType) 
+                                        && (brickArr[innerBrickArrPos.x-2,innerBrickArrPos.y-2].GetComponent<Brick>().brickLevel==0)) {
+                                        shallowTripleList.Add(new BorderTriple(bitObj,borderObjArrPos,innerBrickArrPos));
+                                        mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]=-1;
+                                    }
+                                }
+                            }
+                        }
+                    } 
+                } else if ((borderBitArrPos.y)==1) {
+                    if ((borderBitArrPos.x)>1&&(borderBitArrPos.x<maxBotWidth+2)) {
+                        borderObjArrPos = borderBitArrPos+Vector2Int.up;
+                        if (mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]==bType){
+                            outerBitArrPos = borderBitArrPos+Vector2Int.down; 
+                            innerBrickArrPos = borderObjArrPos+Vector2Int.up;
+                            if(brickArr[borderObjArrPos.x-2,borderObjArrPos.y-2].GetComponent<Brick>().brickLevel==0){
+                                if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
+                                    deepTripleList.Add(new BorderTriple(bitObj,outerBitArrPos,borderObjArrPos));
+                                } else {  
+                                    if ((mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType) 
+                                        && (brickArr[innerBrickArrPos.x-2,innerBrickArrPos.y-2].GetComponent<Brick>().brickLevel==0)) {
+                                        shallowTripleList.Add(new BorderTriple(bitObj,borderObjArrPos,innerBrickArrPos));
+                                        mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]=-1;
+                                    }
+                                }
+                            }
+                        }
+                    } 
+                } else if ((borderBitArrPos.y)==maxBotHeight+2){
+                    if ((borderBitArrPos.x)>1&&(borderBitArrPos.x<maxBotWidth+2)) {
+                        borderObjArrPos = borderBitArrPos+Vector2Int.down;
+                        if (mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]==bType){
+                            outerBitArrPos = borderBitArrPos+Vector2Int.up; 
+                            innerBrickArrPos = borderObjArrPos+Vector2Int.down;
+                            if(brickArr[borderObjArrPos.x-2,borderObjArrPos.y-2].GetComponent<Brick>().brickLevel==0){ 
+                                if (mergedTypeArr[outerBitArrPos.x,outerBitArrPos.y]==bType) {
+                                    deepTripleList.Add(new BorderTriple(bitObj,outerBitArrPos,borderObjArrPos));
+                                } else {  
+                                    if ((mergedTypeArr[innerBrickArrPos.x,innerBrickArrPos.y]==bType) 
+                                        && (brickArr[innerBrickArrPos.x-2,innerBrickArrPos.y-2].GetComponent<Brick>().brickLevel==0)) {
+                                        shallowTripleList.Add(new BorderTriple(bitObj,borderObjArrPos,innerBrickArrPos));
+                                        mergedTypeArr[borderObjArrPos.x,borderObjArrPos.y]=-1;
+                                    }
+                                }
+                            }
+                        }
+                    } 
+                }
             }
-            squareCheckFlag = true;
-       // }
-       Destroy(blockObj);
-    }
 
-    public bool DoesBlockFit(Block block){
-        bool fit = true;
-        if (block == null)
-            return false;
+            foreach (BorderTriple deepTriple in deepTripleList) 
+                CollapseBorderTripleDeep(deepTriple);
+            foreach (BorderTriple shallowTriple in shallowTripleList) 
+                CollapseBorderTripleShallow(shallowTriple);
+                */
 
-        Vector2Int blockOffset = new Vector2Int (block.column-coreCol, block.row);
+        // Convert Bits into Bricks within Bounds
+
+        List<BrickBitPair> brickBitPairList = new List<BrickBitPair>();
+
+        foreach (GameObject bitObj in block.bitList) {
+            Bit bit = bitObj.GetComponent<Bit>();
+            Vector2Int bitMapCoords = cMap.GetMapCoordsBit(bitObj);
+            Vector2Int botCoords = cMap.MapCoordsToBotCoords(bitMapCoords);
+           if (IsValidBrickPos(botCoords)){
+                int brickType = bit.ConvertToBrickType();
+                GameObject newBrick = AddBrick(botCoords,brickType,bit.bitLevel);
+                if (newBrick!=null) {
+                    BrickBitPair brickBitPair = new BrickBitPair(newBrick,bitObj);
+                    brickBitPairList.Add(brickBitPair);
+                }
+            }
+        }
+
+        // remove bits connected to Bot from Block.
+
+        foreach (BrickBitPair brickBitPair in brickBitPairList){
+            if (IsConnectedToCore(brickBitPair.brickObj)){
+                brickBitPair.bitObj.GetComponent<Bit>().RemoveFromBlock("Destroy");
+            } else {
+                brickBitPair.brickObj.GetComponent<Brick>().DestroyBrick();
+            }
+        }
+
+        // if the block still has bits directly above bricks - bounce the block
+
+        if (blockObj!=null) {
+            foreach (GameObject bitObj in block.bitList) {
+                Bit bit = bitObj.GetComponent<Bit>();
+                Vector2Int mapCoords = cMap.GetMapCoordsBit(bitObj);
+                Vector2Int testCoords = mapCoords + hitDir;
+                if (cMap.IsValidMapPos(testCoords))
+                    if (cMap.IDArr[testCoords.x,testCoords.y]>=0)
+                        bounceBlockFlag = true;
+            }
+            if (bounceBlockFlag) {
+                block.BounceBlock();
+            } 
+        }
         
-        foreach(GameObject bit in block.bitList) {
-            Vector2Int bitPos = blockOffset + bit.GetComponent<Bit>().offset + coreV2;
-            Vector2Int rotatedBitPos = TwistCoordsUpright(bitPos);
-
-            if (IsValidBrickPos(rotatedBitPos)==false)
-                fit = false;
-        }
-        return fit;
+        StartCoroutine(WaitAndTripleCheck(0.2f));
     }
 
-    public void CollapseDouble(Vector2Int ArrPos1, Vector2Int ArrPos2){
-       
-        // if a double is hit by similar energy type from out of bounds
+    public class BrickBitPair{
+        public GameObject brickObj;
+        public GameObject bitObj;
 
-        GameObject brick1 = brickArr[ArrPos1.x,ArrPos1.y];
-        GameObject brick2 = brickArr[ArrPos2.x,ArrPos2.y];
-
-        //int p1 = ShortestPath(brick1, coreBrick);
-        //int p2 = ShortestPath(brick2, coreBrick);
-        int p1 = ShortestPathArray(ArrPos1,coreV2);
-        int p2 = ShortestPathArray(ArrPos2,coreV2);
-
-        if (p1 < p2)
-        {
-            SlideDestroyBrick(brick2,brick1,true);
-        } else {
-            SlideDestroyBrick(brick1,brick2,true);
+        public BrickBitPair(GameObject aBrickObj, GameObject aBitObj){
+            brickObj = aBrickObj;
+            bitObj = aBitObj;
         }
-        StartCoroutine(WaitAndTripleCheck(0.2f));
     }
 
     public Vector2Int OffsetToArray(Vector2Int offsetV2)
@@ -998,13 +1048,12 @@ public class Bot : MonoBehaviour
         return arrPos - coreV2;
     }
 
-
     void MoveBot()
     {
-        if (GameController.lives == 0)
+        if (GameController.Instance.lives == 0)
             return;
 
-        if (GameController.Instance.settings.Schmetris==false)
+        if (settings.Schmetris==false)
             if (fuelBrickList.Count == 0)
                 return;
             
@@ -1023,10 +1072,10 @@ public class Bot : MonoBehaviour
             StartCoroutine(RotateOverTime(rotation1, rotation2, 0.05f));
         }
 
-        if (botRotation == 5)
-            botRotation = 1;
-        if (botRotation == 0)
-            botRotation = 4;
+        if (botRotation == 4)
+            botRotation = 0;
+        if (botRotation == -1)
+            botRotation = 3;
       
         if (Input.GetKeyDown(KeyCode.LeftArrow)||Input.GetKeyDown("a"))
         {
@@ -1063,37 +1112,75 @@ public class Bot : MonoBehaviour
     }
     
     void MoveBotLeft() {
-        GameController.bgAdjustFlag = 1;
-        Block[] blocks = GetBlocksLeft();
-        if (GetBlockLeft())
-            AddBlock();
+        CollisionCheck(1);
+
         if (coreCol > ScreenStuff.leftEdgeCol)
             coreCol--;
         else {
             coreCol = ScreenStuff.rightEdgeCol;
         }
+        GameController.bgAdjustFlag = 1;
     }
 
     void MoveBotRight() {
-        GameController.bgAdjustFlag = -1;
+        CollisionCheck(-1);
         if (coreCol < ScreenStuff.rightEdgeCol)
             coreCol++;
         else {
             coreCol = ScreenStuff.leftEdgeCol;
         }
+        GameController.bgAdjustFlag = -1;
+    }
+
+    public void CollisionCheck(int directionFlag){   
+        // check for left-right bit-brick collisions 
+
+        Bounds collisionBubble = botBounds;
+        collisionBubble.Expand(2*settings.colSize);
+        float xOffset = ScreenStuff.colSize*directionFlag;
+
+        Collider2D[] possibleColliders = Physics2D.OverlapBoxAll(collisionBubble.center,collisionBubble.size,0);
+            
+        for (int x = 0; x < possibleColliders.Length; x++) {
+            if (possibleColliders[x].GetComponent<Brick>()==null) {
+                Vector2 v = possibleColliders[x].transform.position;
+                v.x +=xOffset;
+                Vector2Int offset = ScreenStuff.TwistOffsetUpright(ScreenPosToOffset(v),botRotation);
+                Vector2Int arrPos = OffsetToArray(offset);
+                if (IsValidBrickPos(arrPos))  {
+                    if (brickArr[arrPos.x,arrPos.y]!=null) {
+                        Brick colliderBrick = brickArr[arrPos.x,arrPos.y].GetComponent<Brick>();
+                        colliderBrick.BitBrickCollide(possibleColliders[x]);
+                    }
+                }
+            }
+        }
+    }
+
+    public Vector2 GetTopLeftPoint(){
+        Vector2 bPos = transform.position;
+
+        return (bPos + new Vector2 (-(maxBotWidth*settings.colSize/2),(maxBotHeight*settings.colSize/2)));
+
+    }
+
+    public Vector2 GetBottomRightPoint(){
+        Vector2 bPos = transform.position;
+
+        return (bPos + new Vector2 ((maxBotWidth*settings.colSize/2),-(maxBotHeight*settings.colSize/2)));
     }
 
     public Vector2Int GetDownVector(){
         Vector2Int downV2;
 
         switch (botRotation) {
-            case 1:
+            case 0:
                 downV2 = Vector2Int.down;
                 break;
-            case 2:
+            case 1:
                 downV2 = Vector2Int.right;
                 break;
-            case 3:
+            case 2:
                 downV2 = Vector2Int.up;
                 break;
             default:
@@ -1103,12 +1190,137 @@ public class Bot : MonoBehaviour
         return downV2;
     }
 
-    public List<Block> GetBlocksLeft(){
-        List<Block> blockList;
+    public class CollisionPair{
+        public GameObject bitObj;
+        public GameObject brickObj;
+        public Vector2Int bitCoords;
+        public Vector2Int brickCoords;
+    }
 
+    public class CollisionMap {
+
+        // map of intersection between the bot and a block
+
+        public Block block;
+        public Bot bot;
+        public Vector2Int botCoreCoords;
+        public Vector2Int blockCoreCoords;
+        public Vector2Int hitDir;
+        public GameObject[,] objArr;
+        public int[,] IDArr;
+        public int width;
+        public int height;
+        public List<CollisionPair> collisionPairs;
+
+        public CollisionMap(Block b, Vector2Int h)
+        {
+            block = b;
+            hitDir = h;
+        }
+
+        public void AddBot(){
+
+        }
+
+        public Vector2Int GetMapCoordsBit(GameObject bitObj){
+            Bit bit = bitObj.GetComponent<Bit>();
+            Vector2Int mapPos = new Vector2Int(0,0);
+
+            if (bit!=null)
+                mapPos = blockCoreCoords+bit.screenOffset;
+
+            return mapPos;
+        }
         
+        public Vector2Int GetMapCoordsBrick(GameObject brickObj){
+            Brick brick = brickObj.GetComponent<Brick>();
+            Vector2Int mapPos = new Vector2Int(0,0);
+            
+            if (brick!=null)
+                mapPos = botCoreCoords+bot.ArrToOffset(brick.arrPos);
 
+            return mapPos;
+        }
 
-        return blockList;
+        public bool IsValidMapPos(Vector2Int arrPos)
+        {
+            if ((0<=arrPos.x)&&(arrPos.x<width&&(0<=arrPos.y)&&(arrPos.y<height)))
+                return true;
+            else   
+                return false;
+        }
+
+        public Vector2Int MapCoordsToBotCoords(Vector2Int mapCoords) {
+            Vector2Int botCoords = bot.TwistCoordsUpright(mapCoords,width);
+            Vector2Int blockV2 = new Vector2Int (block.blockWidth,block.blockWidth);
+
+            return (botCoords-blockV2);
+        }
+    }
+
+    public CollisionMap CreateCollisionMap(GameObject blockObj, Vector2Int hitDir){
+        Block block = blockObj.GetComponent<Block>();
+        CollisionMap cMap = new CollisionMap(block,hitDir);
+        int blockColOffset = block.GetXOffset(coreCol);
+        int blockWidth = block.blockWidth;
+        int blockRadius = block.blockRadius;
+        int blockRowOffset = ScreenStuff.GetRow(blockObj);
+        int mapRadius = block.blockWidth+maxBotRadius;
+    
+        Vector2Int blockOffset = new Vector2Int (blockColOffset, blockRowOffset);
+        Vector2Int borderOffset = new Vector2Int (blockWidth,blockWidth);
+
+        cMap.bot = gameObject.GetComponent<Bot>();
+        cMap.width = maxBotWidth+2*block.blockWidth;
+        cMap.height = maxBotHeight+2*block.blockWidth;
+        cMap.objArr = new GameObject[cMap.width,cMap.height];
+        cMap.IDArr = new int[cMap.width,cMap.height];
+        cMap.botCoreCoords = new Vector2Int (mapRadius,mapRadius);
+        cMap.blockCoreCoords = cMap.botCoreCoords + blockOffset;
+        cMap.collisionPairs = new List<CollisionPair>();
+
+        for (int x = 0; x< cMap.width; x++)
+            for (int y = 0; y<cMap.height; y++)
+                cMap.IDArr[x,y] = -1;
+
+        // add Bot to Map
+
+        foreach (GameObject brickObj in brickList) {
+            Brick brick = brickObj.GetComponent<Brick>();
+            Vector2Int rotatedCoords = TwistCoordsRotated(brick.arrPos,maxBotWidth);
+            Vector2Int mapCoords = rotatedCoords+borderOffset;
+
+            cMap.objArr[mapCoords.x,mapCoords.y] = brickObj;
+            cMap.IDArr[mapCoords.x,mapCoords.y] = brick.ID;
+        }
+        
+        // add Block to Map
+        foreach(GameObject bitObj in block.bitList) {
+            Vector2Int bitOffset = bitObj.GetComponent<Bit>().screenOffset;
+            Vector2Int mapCoords = cMap.blockCoreCoords+bitOffset;
+            if (cMap.IsValidMapPos(mapCoords)) {
+                cMap.objArr[mapCoords.x,mapCoords.y] = bitObj;
+                cMap.IDArr[mapCoords.x,mapCoords.y] = bitObj.GetComponent<Bit>().ID;
+
+                GameObject brickObj = cMap.objArr[mapCoords.x+hitDir.x,mapCoords.y+hitDir.y];
+            
+                // create list of bits and bricks that are touching
+
+                if (brickObj!=null) {
+                    Brick brick = brickObj.GetComponent<Brick>();
+                    if (brick!=null) {
+                        CollisionPair cPair = new CollisionPair();
+                        cPair.bitObj = bitObj;
+                        cPair.brickObj = brick.gameObject;
+                        cPair.bitCoords = mapCoords;
+                        cPair.brickCoords = mapCoords+hitDir;
+                        cMap.collisionPairs.Add(cPair);
+                    }
+                }
+            }
+        }
+        return cMap;
     }
 }
+
+

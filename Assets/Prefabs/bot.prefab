@@ -50,6 +50,8 @@ MonoBehaviour:
   shortPause: 0.04
   coreCol: 0
   maxBotRadius: 4
+  orphanCheckFlag: 0
+  tripleCheckFlag: 0
   rotation1: {x: 0, y: 0, z: 0, w: 0}
   rotation2: {x: 0, y: 0, z: 0, w: 0}
   directionV2Arr:
@@ -67,6 +69,8 @@ MonoBehaviour:
   - {x: 1, y: 0}
   - {x: 0, y: 1}
   - {x: -1, y: 0}
+  maxBotWidth: 0
+  maxBotHeight: 0
   masterBrickList:
   - {fileID: 6471613597453367622, guid: 7544aff9065454f41ab1fd0a0491acc2, type: 3}
   - {fileID: 5783272881628935429, guid: 9d22e820e24b44098990a011ff255f7e, type: 3}
@@ -76,6 +80,7 @@ MonoBehaviour:
   - {fileID: 2116668555202113812, guid: 95cb7349a9d4e4a6e99463544b69a6a1, type: 3}
   - {fileID: 7097192913053656470, guid: 354dc29582bdf47619ec4a75051b9b49, type: 3}
   - {fileID: 5570540888293643073, guid: 01c4b15ca06cf4fa8aa6b7519021dae8, type: 3}
+  brickList: []
   coreV2: {x: 0, y: 0}
   botRotation: 1
   startingBrickGrid: {fileID: 0}
@@ -97,9 +102,9 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
