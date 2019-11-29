@@ -125,7 +125,7 @@ public class ScreenStuff : MonoBehaviour
         return (Mathf.RoundToInt(ypos / rowSize));
     }
 
-    public static Vector2Int TwistOffsetRotated(Vector2Int offset, int rotation) {
+    public static Vector2Int ScreenToBotOffset(Vector2Int offset, int rotation) {
         Vector2Int newCoords = new Vector2Int();
 
         switch (rotation) {
@@ -148,7 +148,7 @@ public class ScreenStuff : MonoBehaviour
         return newCoords;
     }
 
-    public static Vector2Int TwistOffsetUpright(Vector2Int offset, int rotation){
+    public static Vector2Int BotToScreenOffset(Vector2Int offset, int rotation){
         Vector2Int newCoords = new Vector2Int();
 
         switch (rotation) {
@@ -170,29 +170,8 @@ public class ScreenStuff : MonoBehaviour
         }
         return newCoords;
     }
+   
+  
 
-    public static void BounceObject(GameObject obj) {
-        if (obj == null)
-            return;
-
-        Vector2 force = new Vector2 (Random.Range(-10,10),45);
-        Rigidbody2D rb2D = obj.GetComponent<Rigidbody2D>();
-        BoxCollider2D box = obj.GetComponent<BoxCollider2D>();
-        rb2D.isKinematic = false;
-        rb2D.velocity = new Vector2(0,0);
-
-        if (rb2D == null)
-            rb2D = obj.AddComponent<Rigidbody2D>();
-        if (box != null) {
-            box.enabled = false;
-            box.isTrigger = false;
-        }
-
-        rb2D.AddForce(force,ForceMode2D.Impulse);
-        rb2D.AddTorque(Random.Range(-10,10),ForceMode2D.Impulse);
-        rb2D.gravityScale=4;
-       
-        
-        obj.tag = "Moveable";
-    }
+  
 }

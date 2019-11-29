@@ -22,7 +22,7 @@ MonoBehaviour:
     probability: 2
   - block: {fileID: 912910950829958133, guid: 4cfb3d094b93149c893e3cb0cbbbd95c, type: 3}
     probability: 2
-  - block: {fileID: 8969066657479465000, guid: eb1b726dacc9a42c3acdce4630eb9c71, type: 3}
+  - block: {fileID: 2589978003207516240, guid: e215a09cb11b7426cabf3b57049ca5b1, type: 3}
     probability: 1
   - block: {fileID: 3661152122392825465, guid: 296de58e07dae4e7bb9513be26382c00, type: 3}
     probability: 1
@@ -32,4 +32,4 @@ MonoBehaviour:
   - {fileID: 765075248993939602, guid: cc2ac4c7bffb346cca71565b2aade3f1, type: 3}
   - {fileID: 7588632461966053350, guid: c818bbaa9511044ab904ed46ba8de896, type: 3}
   - {fileID: 2803758784820982045, guid: 056380f83ede1468e86752d36915f1f4, type: 3}
-  blockSpawnRate: 0.1
+  blockSpawnRate: 0.2

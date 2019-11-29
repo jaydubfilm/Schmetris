@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour
     public static GameController Instance { get; private set; }
     public List<GameObject> blockList;
 
-    public int lives = 1;
+    public int lives;
     public static int bgAdjustFlag = 0;
 
     public static int shapeScore = 0;
@@ -64,6 +64,7 @@ public class GameController : MonoBehaviour
     }
 
     void Start () {
+        lives = 1;
         bgPanelArr = new GameObject[4];
         SpawnBGPanels();
         gameOverPanel.SetActive(false);
@@ -103,9 +104,9 @@ public class GameController : MonoBehaviour
         foreach (GameObject moveableObject in GameObject.FindGameObjectsWithTag("Moveable")) {
             Vector3 pos = moveableObject.transform.position;
 
-            if (pos.x < ScreenStuff.leftEdgeOfWorld)
+            if (pos.x < ScreenStuff.leftEdgeOfWorld-ScreenStuff.colSize)
                 pos.x = ScreenStuff.rightEdgeOfWorld;
-            if (pos.x > ScreenStuff.rightEdgeOfWorld)
+            if (pos.x > ScreenStuff.rightEdgeOfWorld+ScreenStuff.colSize)
                 pos.x = ScreenStuff.leftEdgeOfWorld;
             moveableObject.transform.position = pos;
             if (pos.y < ScreenStuff.bottomEdgeOfWorld) {
@@ -272,21 +273,16 @@ public class GameController : MonoBehaviour
     {
         GameObject newBlockObj;
         
-      
         Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(col), ScreenStuff.RowToYPosition(spawnRow), 0);
         int rotation = Random.Range(0,4);
         float rotationAngle = rotation * 90.0f;
         
-        newBlockObj = Instantiate(blockSpawns[type].block, vpos, Quaternion.Euler(0f,0f,rotationAngle));
+        newBlockObj = (GameObject) Instantiate(blockSpawns[type].block, vpos, Quaternion.Euler(0f,0f,rotationAngle));
         Block newBlock = newBlockObj.GetComponent<Block>();
         newBlock.bot = bot;
         newBlock.blockRotation = rotation;
-
-        foreach (GameObject bit in newBlock.bitList)
-            bit.GetComponent<Bit>().RotateUpright();
-       
+     
         blockList.Add(newBlockObj);
-
 
         return newBlockObj;
     }

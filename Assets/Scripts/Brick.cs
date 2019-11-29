@@ -29,13 +29,11 @@ public class Brick : MonoBehaviour
         brickLevel = 0;
         source = GetComponent<AudioSource>();
         rb2D = gameObject.GetComponent<Rigidbody2D>();
-     
-     
     }
 
     void Start () {
         bot = parentBot.GetComponent<Bot>();
-        bot.brickList.Add(gameObject);
+        //bot.brickList.Add(gameObject);
         bot.RefreshBotBounds();
         FixedJoint2D fj = gameObject.GetComponent<FixedJoint2D>();
         fj.connectedBody = parentBot.GetComponent<Rigidbody2D>();
@@ -46,10 +44,12 @@ public class Brick : MonoBehaviour
             ExplodeBrick();
     }
 
+/*
     void OnTriggerEnter2D(Collider2D collider)
     {
         BitBrickCollide(collider);
     }
+    */
 
     public void BitBrickCollide(Collider2D collider) {
         GameObject bitObj = collider.gameObject;
@@ -93,7 +93,7 @@ public class Brick : MonoBehaviour
 
                 if (bitType == 1) // white bit - bump the brick
                 {     
-                    bot.BumpColumn(arrPos);
+                    bot.BumpColumn(arrPos,hitDirV2);
                     block.BounceBlock();
                 } else {   
                     bot.ResolveCollision(blockObj,hitDirV2);
@@ -102,9 +102,16 @@ public class Brick : MonoBehaviour
         }
     }
 
+    public Vector2Int ScreenArrPos(){
+        return bot.BotToScreenCoords(arrPos);
+    }
+
 
     public void RotateUpright(){
-            transform.rotation = Quaternion.identity;
+       // Destroy(gameObject.GetComponent<FixedJoint2D>());
+        transform.rotation = Quaternion.identity;
+      //  gameObject.AddComponent<FixedJoint2D>();
+      //  gameObject.GetComponent<FixedJoint2D>().connectedBody = bot.GetComponent<Rigidbody2D>();
     }
 
     public bool BitIsAboveBrick(Collision2D col)
@@ -145,9 +152,6 @@ public class Brick : MonoBehaviour
 
     public void DestroyBrick() {
         RemoveBrickFromBotArray();  
-        
-        if (brickType == 0)
-            GameController.Instance.lives = 0;
 
         if (brickType ==1) {
             gameObject.GetComponent<Fuel>().Deactivate();
@@ -157,18 +161,25 @@ public class Brick : MonoBehaviour
     }
 
     public void MakeOrphan() {
-        RemoveBrickFromBotArray();  
-        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+        RemoveBrickFromBotArray();
+        rb2D.isKinematic = false;
+    
         transform.parent = null;
         tag = "Moveable";
+       // GameController.Instance.blockList.Remove(gameObject);
+        GetComponent<BoxCollider2D>().enabled = false;
+        rb2D.gravityScale=4;
     }
 
     public void RemoveBrickFromBotArray() {
         bot = parentBot.GetComponent<Bot>();
-        bot.brickArr[arrPos.x,arrPos.y] = null;
+        bot.SetBrickAtBotArr(arrPos,null);
         bot.brickTypeArr[arrPos.x,arrPos.y]=-1;
         bot.brickList.Remove(gameObject);
+        if (bot.BrickAtBotArr(bot.coreV2)==null)
+            GameController.Instance.lives = 0;
         bot.RefreshNeighborLists();
+        // bot.powerGrid.Refresh();
         bot.orphanCheckFlag = true;
     }
 
@@ -177,30 +188,31 @@ public class Brick : MonoBehaviour
         // move this brick to newArrPos.x, newArrPos.y
 
         if ((bot.IsValidBrickPos(newArrPos) &&
-            (bot.brickArr[newArrPos.x,newArrPos.y] == null))) 
+            (bot.BrickAtBotArr(newArrPos) == null))) 
         {
             // update the array
 
-            bot.brickArr[newArrPos.x,newArrPos.y] = gameObject;
+            bot.SetBrickAtBotArr(newArrPos,gameObject);
             bot.brickTypeArr[newArrPos.x,newArrPos.y] = brickType;
-            bot.brickArr[arrPos.x,arrPos.y] = null;
+            
+            bot.SetBrickAtBotArr(arrPos,null);
             bot.brickTypeArr[arrPos.x,arrPos.y] = -1;
 
             // move the gameObject
 
             SmoothMoveBrickObj(newArrPos);
   
-            arrPos.x = newArrPos.x;
-            arrPos.y = newArrPos.y;
+            arrPos = newArrPos;
 
             // update neighbor lists
 
             bot.RefreshNeighborLists();
+            bot.powerGrid.Refresh();
         }  
     }
 
     public void SmoothMoveBrickObj(Vector2Int newArrPos){
-        Vector2Int newOffset = ScreenStuff.TwistOffsetRotated(bot.ArrToOffset(newArrPos),bot.botRotation);
+        Vector2Int newOffset = ScreenStuff.ScreenToBotOffset(bot.ArrToOffset(newArrPos),bot.botRotation);
         Vector3 newOffsetV3 = new Vector3(newOffset.x*ScreenStuff.colSize,newOffset.y*ScreenStuff.colSize,0);
 
         StartCoroutine(SlideBrickOverTime(rb2D.transform.position,newOffsetV3));

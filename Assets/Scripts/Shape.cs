@@ -40,7 +40,7 @@ public class Shape : MonoBehaviour
             return false;
         for (int bY = 0; bY < botWidth; bY++) {
             Vector2Int bCoords = new Vector2Int(bX,bY);  
-            Vector2Int bCoordsUpright = bot.TwistCoordsUpright(bCoords,bot.maxBotWidth);
+            Vector2Int bCoordsUpright = bot.BotToScreenCoords(bCoords);
 
             GameObject brick = bot.brickArr[bCoordsUpright.x,bCoordsUpright.y];
             if (brick!=null) {
@@ -50,7 +50,7 @@ public class Shape : MonoBehaviour
                     for (int c = 1; c < cellCount; c++) {
                         Cell testCell = cellArr[c].GetComponent<Cell>();
                         Vector2Int testCellOffset = new Vector2Int(testCell.xOffset,testCell.yOffset);
-                        Vector2Int testCellOffsetUpright = ScreenStuff.TwistOffsetUpright(testCellOffset,bot.botRotation);
+                        Vector2Int testCellOffsetUpright = ScreenStuff.BotToScreenOffset(testCellOffset,bot.botRotation);
                         Vector2Int tCoords = bCoordsUpright+testCellOffsetUpright;
 
                         if (bot.IsValidBrickPos(tCoords)) {

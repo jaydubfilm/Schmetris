@@ -6,6 +6,7 @@ using UnityEngine;
 public class GameSettings : ScriptableObject
 {
     public bool Schmetris; 
+    public bool OrphanFall = true;
     public float colSize = 1.4f;
     public float rowSize = 1.4f;
     public int screenRadius = 20;

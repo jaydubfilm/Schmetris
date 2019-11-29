@@ -12,6 +12,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: greenBit
       objectReference: {fileID: 0}
+    - target: {fileID: 5288901565796899886, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300142, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
     - target: {fileID: 2208540190280565718, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -67,22 +73,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6269311892932438117, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 1.2800001
-      objectReference: {fileID: 0}
-    - target: {fileID: 6269311892932438117, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.y
-      value: 1.2800001
-      objectReference: {fileID: 0}
-    - target: {fileID: 5288901565796899886, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300142, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
-        type: 3}
     - target: {fileID: 925089867753089857, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
         type: 3}
       propertyPath: bitType

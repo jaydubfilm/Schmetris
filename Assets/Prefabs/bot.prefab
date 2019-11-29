@@ -52,6 +52,7 @@ MonoBehaviour:
   maxBotRadius: 4
   orphanCheckFlag: 0
   tripleCheckFlag: 0
+  botBody: {fileID: 0}
   rotation1: {x: 0, y: 0, z: 0, w: 0}
   rotation2: {x: 0, y: 0, z: 0, w: 0}
   directionV2Arr:
@@ -71,6 +72,9 @@ MonoBehaviour:
   - {x: -1, y: 0}
   maxBotWidth: 0
   maxBotHeight: 0
+  botBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
   masterBrickList:
   - {fileID: 6471613597453367622, guid: 7544aff9065454f41ab1fd0a0491acc2, type: 3}
   - {fileID: 5783272881628935429, guid: 9d22e820e24b44098990a011ff255f7e, type: 3}
@@ -84,6 +88,10 @@ MonoBehaviour:
   coreV2: {x: 0, y: 0}
   botRotation: 1
   startingBrickGrid: {fileID: 0}
+  blockPrefab: {fileID: 4564228733873789851, guid: d16b46eb056324158bd30fafdfb2e724,
+    type: 3}
+  bitPrefab: {fileID: 4783243248563623757, guid: 442d0dda9ca044fb88edee1caa2bcc99,
+    type: 3}
   fuelBrickList: []
   tripleSound: {fileID: 8300000, guid: f0cd4d87d7e925248b91fc9187c53c42, type: 3}
   tripleDelay: 0.1
