@@ -36,11 +36,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 622827001879522502, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: m_Name
-      value: blueBrick
-      objectReference: {fileID: 0}
     - target: {fileID: 504040540746106522, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: m_Sprite
@@ -52,20 +47,20 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+    - target: {fileID: 622827001879522502, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 1.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.y
-      value: 1.28
+      propertyPath: m_Name
+      value: blueBrick
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: spriteArr.Array.size
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: brickMaxHP.Array.size
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
@@ -114,6 +109,31 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300122, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
         type: 3}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: brickMaxHP.Array.data[0]
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: brickMaxHP.Array.data[4]
+      value: 1500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: brickMaxHP.Array.data[3]
+      value: 800
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: brickMaxHP.Array.data[2]
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: brickMaxHP.Array.data[1]
+      value: 80
+      objectReference: {fileID: 0}
     - target: {fileID: 3272617812009182816, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -178,6 +198,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 1.28
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6cd0d4289632642bfa007f1e1c33c1a3, type: 3}

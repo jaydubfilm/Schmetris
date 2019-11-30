@@ -32,23 +32,13 @@ public class Block : MonoBehaviour
       coreV2 = new Vector2Int(blockRadius,blockRadius);
       rb =  gameObject.GetComponent<Rigidbody2D>();
       rb.velocity = new Vector3(0,-blockSpeed,0);
-      //stepDownV3 = new Vector3 (0,-ScreenStuff.colSize,0);
-      //moveToPos = transform.position + stepDownV3;
-      //transform.position = Vector3.MoveTowards(transform.position,moveToPos,step);
     }
 
 
     // Update is called once per frame
     void Update()
     {
-      /*
-      if (transform.position.y<=moveToPos.y) {
-          float step = blockSpeed*Time.deltaTime;
-          // CollisionCheck();
-          moveToPos += stepDownV3;
-          transform.position = Vector3.MoveTowards(transform.position,moveToPos,step);
-      }
-      */
+     
     }
 
     void StepDown() {

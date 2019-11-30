@@ -10,7 +10,7 @@ public class Brick : MonoBehaviour
     public int ID;
     public int brickLevel;
     public int brickHP;
-    public int brickMaxHP;
+    public int[] brickMaxHP;
     public static int brickMaxLevel = 5;
     public static float brickMoveSpeed = 20f;
 
@@ -27,6 +27,7 @@ public class Brick : MonoBehaviour
     
     void Awake () {
         brickLevel = 0;
+        brickHP = brickMaxHP[brickLevel];
         source = GetComponent<AudioSource>();
         rb2D = gameObject.GetComponent<Rigidbody2D>();
     }
@@ -74,7 +75,7 @@ public class Brick : MonoBehaviour
 
         if (bitType == 0) // black bit - hurt the brick
         {
-            brickHP-=10;
+            brickHP-=1000;
             bot.GetComponent<Overheat>().AddHeat();
             bit.RemoveFromBlock("Destroy");
         } 
@@ -251,10 +252,21 @@ public class Brick : MonoBehaviour
         if (brickLevel<spriteArr.Length-1) {
             brickLevel++;
             ID++;
+            brickHP = brickMaxHP[brickLevel];
             GetComponent<SpriteRenderer>().sprite = spriteArr[brickLevel];
             if (brickType == 1)
                 gameObject.GetComponent<Fuel>().UpgradeFuelLevel();
         }
+    }
+
+    public void HealHP(int health){
+        brickHP += health;
+        if (brickHP>brickMaxHP[brickLevel])
+            brickHP = brickMaxHP[brickLevel];
+    }
+
+    public void HealMaxHP(){
+        brickHP = brickMaxHP[brickLevel];
     }
 
     public int ConvertToBitType(){

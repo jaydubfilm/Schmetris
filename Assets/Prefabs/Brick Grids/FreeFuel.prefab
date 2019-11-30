@@ -7,11 +7,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5823190758141226529, guid: 3dcba5aa8ce8146cfa20b2aae11195fb,
-        type: 3}
-      propertyPath: m_Name
-      value: FreeFuel
-      objectReference: {fileID: 0}
     - target: {fileID: 4544100554173488529, guid: 3dcba5aa8ce8146cfa20b2aae11195fb,
         type: 3}
       propertyPath: m_Tiles.Array.size
@@ -61,7 +56,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TileAssetArray.Array.data[1].m_Data
       value: 
-      objectReference: {fileID: 11400000, guid: 9dcfb9c5dd0ba4b01a3269abba6986cb,
+      objectReference: {fileID: 11400000, guid: 8072ea23031554df5bb2a432fa8328fe,
         type: 2}
     - target: {fileID: 4544100554173488529, guid: 3dcba5aa8ce8146cfa20b2aae11195fb,
         type: 3}
@@ -72,7 +67,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TileSpriteArray.Array.data[1].m_Data
       value: 
-      objectReference: {fileID: 21300090, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+      objectReference: {fileID: 21300086, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
         type: 3}
     - target: {fileID: 4544100554173488529, guid: 3dcba5aa8ce8146cfa20b2aae11195fb,
         type: 3}
@@ -96,6 +91,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300064, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
         type: 3}
+    - target: {fileID: 5823190758141226529, guid: 3dcba5aa8ce8146cfa20b2aae11195fb,
+        type: 3}
+      propertyPath: m_Name
+      value: FreeFuel
+      objectReference: {fileID: 0}
     - target: {fileID: 5848790251045490916, guid: 3dcba5aa8ce8146cfa20b2aae11195fb,
         type: 3}
       propertyPath: m_LocalPosition.x

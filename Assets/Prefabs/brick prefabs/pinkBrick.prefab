@@ -12,6 +12,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: pinkBrick
       objectReference: {fileID: 0}
+    - target: {fileID: 2008068205311469601, guid: 4041c7b358034436bb0a62aaef31deb4,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300012, guid: 0af25fd342af74c2fa8014bc588a148b,
+        type: 3}
+    - target: {fileID: 3029761191453176019, guid: 4041c7b358034436bb0a62aaef31deb4,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 1.28
+      objectReference: {fileID: 0}
     - target: {fileID: 3479608886206761179, guid: 4041c7b358034436bb0a62aaef31deb4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -67,17 +78,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3029761191453176019, guid: 4041c7b358034436bb0a62aaef31deb4,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 1.28
-      objectReference: {fileID: 0}
-    - target: {fileID: 2008068205311469601, guid: 4041c7b358034436bb0a62aaef31deb4,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300012, guid: 0af25fd342af74c2fa8014bc588a148b,
-        type: 3}
     - target: {fileID: 4196681304116509050, guid: 4041c7b358034436bb0a62aaef31deb4,
         type: 3}
       propertyPath: spriteArr.Array.size
@@ -130,6 +130,31 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300058, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
         type: 3}
+    - target: {fileID: 4196681304116509050, guid: 4041c7b358034436bb0a62aaef31deb4,
+        type: 3}
+      propertyPath: brickMaxHP.Array.data[0]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4196681304116509050, guid: 4041c7b358034436bb0a62aaef31deb4,
+        type: 3}
+      propertyPath: brickMaxHP.Array.data[1]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4196681304116509050, guid: 4041c7b358034436bb0a62aaef31deb4,
+        type: 3}
+      propertyPath: brickMaxHP.Array.data[2]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4196681304116509050, guid: 4041c7b358034436bb0a62aaef31deb4,
+        type: 3}
+      propertyPath: brickMaxHP.Array.data[3]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4196681304116509050, guid: 4041c7b358034436bb0a62aaef31deb4,
+        type: 3}
+      propertyPath: brickMaxHP.Array.data[4]
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8738072175783550817, guid: 4041c7b358034436bb0a62aaef31deb4,
         type: 3}
       propertyPath: m_Enabled

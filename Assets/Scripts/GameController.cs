@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour
 {
     public static GameController Instance { get; private set; }
     public List<GameObject> blockList;
+    public List<GameObject> enemyList;
 
     public int lives;
     public static int bgAdjustFlag = 0;
@@ -35,16 +36,20 @@ public class GameController : MonoBehaviour
 
     int columnNum = ScreenStuff.cols;
   
-    int[] eProbArr;
+    int[] blockProbArr;
+    int[] speciesProbArr;
 
     LevelData levelData;
     BlockSpawnData[] blockSpawns;
+    SpeciesSpawnData[] speciesSpawnData;
    
     float blockSpawnTimer;
     float shapeSpawnRate = 0;
     float shapeSpawnTimer;
     float lastShapeSpawnTime;
     float firstShapeSpawnTime;
+    float enemySpawnTimer;
+    float enemySpawnRate;
     int shapeCount;
     int numberOfShapes;
     Bounds collisionBubble;
@@ -92,6 +97,7 @@ public class GameController : MonoBehaviour
         }
         BlockSpawnCheck();
         // ShapeSpawnCheck();
+        EnemySpawnCheck();
 
         if (lives == 0)
             GameOver();
@@ -126,15 +132,26 @@ public class GameController : MonoBehaviour
         return pArr;
     }
 
+    public int[] GetSpeciesProbabilities() {
+        int[] pArr = new int[speciesSpawnData.Length];
+        for (int d = 0; d < speciesSpawnData.Length; d++)
+            pArr[d] = speciesSpawnData[d].probability;
+        return pArr;
+    }
+
     public void LoadLevelData(int levelNumber) {
         SceneManager.LoadScene(levelNumber);
         levelNumberString.text = "Level: " + levelNumber;  
         levelData = game.levelDataArr[levelNumber-1];
         blockSpawns = levelData.blocks;
-        eProbArr = GetSpawnProbabilities();
+        speciesSpawnData = levelData.speciesSpawnData;
+        blockProbArr = GetSpawnProbabilities();
+        speciesProbArr = GetSpeciesProbabilities();
         
         blockSpawnTimer = levelData.blockSpawnRate;
+        enemySpawnTimer = levelData.enemySpawnRate;
         timeRemaining = levelData.levelDuration;
+        /*
         numberOfShapes = levelData.shapes.Length;
         if (numberOfShapes!=0) {
             lastShapeSpawnTime = levelData.levelDuration * 0.75f;
@@ -146,6 +163,7 @@ public class GameController : MonoBehaviour
             shapeSpawnTimer = firstShapeSpawnTime;
             shapeCount = 0;
         }
+        */
     }
 
     void ScrollBackground() {
@@ -237,12 +255,21 @@ public class GameController : MonoBehaviour
         }
     }
 
+    void EnemySpawnCheck() {
+        enemySpawnTimer -= Time.deltaTime;
+        if (enemySpawnTimer <= 0)
+        {
+            int spawnType = ProbabilityPicker(speciesProbArr);
+            enemySpawnTimer = levelData.enemySpawnRate;
+            SpawnEnemy(spawnType);
+        }
+    }
 
     void BlockSpawnCheck() {
         blockSpawnTimer -= Time.deltaTime;
         if (blockSpawnTimer<= 0)
         {
-            int blockType = ProbabilityPicker(eProbArr);
+            int blockType = ProbabilityPicker(blockProbArr);
 
             blockSpawnTimer = levelData.blockSpawnRate;
             SpawnBlock(Random.Range(-ScreenStuff.screenRadius,ScreenStuff.screenRadius), blockType);
@@ -268,6 +295,17 @@ public class GameController : MonoBehaviour
         }
         return (num-1);
     }
+
+    public GameObject SpawnEnemy(int type) {
+        GameObject newEnemyObj;
+
+        float xPos = Random.Range(ScreenStuff.leftEdgeOfWorld,ScreenStuff.rightEdgeOfWorld);
+        Vector3 vpos = new Vector3(xPos, ScreenStuff.RowToYPosition(spawnRow), 0);
+        newEnemyObj = Instantiate(speciesSpawnData[type].species, vpos, Quaternion.identity);
+
+        return newEnemyObj;
+    }
+
 
     public GameObject SpawnBlock(int col, int type)
     {
