@@ -57,11 +57,14 @@ public class PowerGrid
 
         for (int x = 0; x<count ;x++) {
             GameObject brickObj = bot.brickList[x];
-            Brick brick = brickObj.GetComponent<Brick>();
-            if (brick.brickType!=0) {
-                if (PowerAtBotCoords(brick.arrPos)==0) {
-                    brick.MakeOrphan();
-                    count--;
+            Parasite parasite = brickObj.GetComponent<Parasite>();
+            if (parasite==null) {
+                Brick brick = brickObj.GetComponent<Brick>();
+                if (brick.brickType!=0) {
+                    if (PowerAtBotCoords(brick.arrPos)==0) {
+                        brick.MakeOrphan();
+                        count--;
+                    }
                 }
             }
         }

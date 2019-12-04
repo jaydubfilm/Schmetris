@@ -81,9 +81,10 @@ MonoBehaviour:
   - {fileID: 1550391163482342013, guid: 4041c7b358034436bb0a62aaef31deb4, type: 3}
   - {fileID: 6450636027791030212, guid: 8d224d3a4016a47ea86d7ab7283122ab, type: 3}
   - {fileID: 8838603319638469390, guid: 729d476ed6e1d426792246df021f1449, type: 3}
-  - {fileID: 2116668555202113812, guid: 95cb7349a9d4e4a6e99463544b69a6a1, type: 3}
   - {fileID: 7097192913053656470, guid: 354dc29582bdf47619ec4a75051b9b49, type: 3}
   - {fileID: 5570540888293643073, guid: 01c4b15ca06cf4fa8aa6b7519021dae8, type: 3}
+  - {fileID: 6703889337379585221, guid: c6511eeda86244a65939ca538c048ea0, type: 3}
+  - {fileID: 3786325451140840089, guid: 06d2c88f29e3441339002e2924aa7c83, type: 3}
   brickList: []
   coreV2: {x: 0, y: 0}
   botRotation: 1

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e8e59a7ae94c4517b7488b1f5bd33ea, type: 3}
   m_Name: BrickChomper
   m_EditorClassIdentifier: 
-  type: 1
+  type: 8
   maxHP: 200
-  dPS: 100
-  sprite: {fileID: 21300000, guid: 6c27418e993452a4aa094376187dba4b, type: 3}
+  attackRate: 2
+  damage: 5
   speed: 3

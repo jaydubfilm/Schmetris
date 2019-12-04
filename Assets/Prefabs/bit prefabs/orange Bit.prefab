@@ -7,10 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4783243248563623757, guid: 442d0dda9ca044fb88edee1caa2bcc99,
+    - target: {fileID: 3339395617024580638, guid: 442d0dda9ca044fb88edee1caa2bcc99,
         type: 3}
-      propertyPath: m_Name
-      value: orange Bit
+      propertyPath: bitType
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4334487393489630345, guid: 442d0dda9ca044fb88edee1caa2bcc99,
         type: 3}
@@ -67,16 +67,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4783243248563623757, guid: 442d0dda9ca044fb88edee1caa2bcc99,
+        type: 3}
+      propertyPath: m_Name
+      value: orange Bit
+      objectReference: {fileID: 0}
     - target: {fileID: 7774494130500512625, guid: 442d0dda9ca044fb88edee1caa2bcc99,
         type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300010, guid: 0af25fd342af74c2fa8014bc588a148b,
         type: 3}
-    - target: {fileID: 3339395617024580638, guid: 442d0dda9ca044fb88edee1caa2bcc99,
-        type: 3}
-      propertyPath: bitType
-      value: 9
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 442d0dda9ca044fb88edee1caa2bcc99, type: 3}

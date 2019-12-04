@@ -110,7 +110,7 @@ public class ScreenStuff : MonoBehaviour
       return ScreenStuff.XPositionToCol(obj.transform.position.x);
     }
 
-    public static Vector2Int GetCoords(GameObject obj)
+    public static Vector2Int GetOffset(GameObject obj)
     {
         return new Vector2Int(GetCol(obj),GetRow(obj));
     }

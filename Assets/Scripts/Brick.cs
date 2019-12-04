@@ -16,7 +16,7 @@ public class Brick : MonoBehaviour
 
     public AudioClip addBrickSound;
     private AudioSource source;
-
+  
     public Sprite[] spriteArr;
     
     public GameObject parentBot;
@@ -42,8 +42,17 @@ public class Brick : MonoBehaviour
 
     void Update () {
         if (brickHP <= 0)
-            ExplodeBrick();
+            DestroyBrick();
     }
+
+    public bool IsParasite(){
+        if (GetComponent<Parasite>()==null)
+            return false;
+        else
+            return true;
+    }
+
+  
 
 /*
     void OnTriggerEnter2D(Collider2D collider)
@@ -52,8 +61,7 @@ public class Brick : MonoBehaviour
     }
     */
 
-    public void BitBrickCollide(Collider2D collider) {
-        GameObject bitObj = collider.gameObject;
+    public void BitBrickCollide(GameObject bitObj) {
         Transform t = bitObj.transform.parent;
         if (t==null)
             return;
@@ -79,14 +87,13 @@ public class Brick : MonoBehaviour
             bot.GetComponent<Overheat>().AddHeat();
             bit.RemoveFromBlock("Destroy");
         } 
-      
         else
         {
             if (!((rA == 0) || (rA == 90) || (rA == 180) || (rA == 270))) 
                 block.BounceBlock();
             else {
-                Vector2Int bitCoords = ScreenStuff.GetCoords(bitObj);
-                Vector2Int brickCoords = ScreenStuff.GetCoords(gameObject);
+                Vector2Int bitCoords = ScreenStuff.GetOffset(bitObj);
+                Vector2Int brickCoords = ScreenStuff.GetOffset(gameObject);
                 Vector2Int hitDirV2 = brickCoords-bitCoords;
 
                 if (hitDirV2 == new Vector2Int(0,0))
@@ -157,6 +164,8 @@ public class Brick : MonoBehaviour
         if (brickType ==1) {
             gameObject.GetComponent<Fuel>().Deactivate();
         }
+        if (IsParasite())
+            GameController.Instance.enemyList.Remove(gameObject);
         Destroy(gameObject);
         bot.RefreshBotBounds();
     }
@@ -177,6 +186,8 @@ public class Brick : MonoBehaviour
         bot.SetBrickAtBotArr(arrPos,null);
         bot.brickTypeArr[arrPos.x,arrPos.y]=-1;
         bot.brickList.Remove(gameObject);
+        if (IsParasite())
+            GameController.Instance.enemyList.Remove(gameObject);
         if (bot.BrickAtBotArr(bot.coreV2)==null)
             GameController.Instance.lives = 0;
         bot.RefreshNeighborLists();
@@ -271,6 +282,10 @@ public class Brick : MonoBehaviour
 
     public int ConvertToBitType(){
         return brickType + 2;
+    }
+
+    public int ConvertToEnemyType(){
+        return brickType-7;
     }
 
     public bool CompareToBit(Bit bit) {

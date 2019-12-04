@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e8e59a7ae94c4517b7488b1f5bd33ea, type: 3}
   m_Name: BrickNibbler
   m_EditorClassIdentifier: 
-  type: 0
+  type: 7
   maxHP: 50
-  dPS: 10
-  sprite: {fileID: 21300000, guid: e1d63550fb412cc4ebbc4acb3a66cedb, type: 3}
+  attackRate: 2
+  damage: 1
   speed: 5

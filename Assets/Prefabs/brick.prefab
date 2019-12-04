@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: -8506737372053305420}
   m_Layer: 9
   m_Name: brick
-  m_TagString: DoNotCollideWithBullet
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -129,7 +129,7 @@ MonoBehaviour:
   ID: 0
   brickLevel: 0
   brickHP: 10
-  brickMaxHP: 10
+  brickMaxHP: 
   addBrickSound: {fileID: 8300000, guid: 5114e7b0487db684c812c5ca40be7536, type: 3}
   spriteArr:
   - {fileID: 0}

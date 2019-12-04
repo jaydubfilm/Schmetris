@@ -16,7 +16,7 @@ PrefabInstance:
     - target: {fileID: 2116668555202113812, guid: 95cb7349a9d4e4a6e99463544b69a6a1,
         type: 3}
       propertyPath: m_Name
-      value: greyBrick
+      value: steelBrick
       objectReference: {fileID: 0}
     - target: {fileID: 3667734617007950355, guid: 95cb7349a9d4e4a6e99463544b69a6a1,
         type: 3}
@@ -44,12 +44,12 @@ PrefabInstance:
     - target: {fileID: 3667734617007950355, guid: 95cb7349a9d4e4a6e99463544b69a6a1,
         type: 3}
       propertyPath: brickType
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3667734617007950355, guid: 95cb7349a9d4e4a6e99463544b69a6a1,
         type: 3}
       propertyPath: brickHP
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3667734617007950355, guid: 95cb7349a9d4e4a6e99463544b69a6a1,
         type: 3}

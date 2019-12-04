@@ -7,11 +7,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7097192913053656470, guid: 354dc29582bdf47619ec4a75051b9b49,
-        type: 3}
-      propertyPath: m_Name
-      value: orangebrick
-      objectReference: {fileID: 0}
     - target: {fileID: 5165732187707486000, guid: 354dc29582bdf47619ec4a75051b9b49,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -67,22 +62,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6769345744327022392, guid: 354dc29582bdf47619ec4a75051b9b49,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.pivot.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6769345744327022392, guid: 354dc29582bdf47619ec4a75051b9b49,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.pivot.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7792428787238834122, guid: 354dc29582bdf47619ec4a75051b9b49,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300010, guid: 0af25fd342af74c2fa8014bc588a148b,
-        type: 3}
     - target: {fileID: 5604668986800053905, guid: 354dc29582bdf47619ec4a75051b9b49,
         type: 3}
       propertyPath: spriteArr.Array.size
@@ -109,7 +88,7 @@ PrefabInstance:
     - target: {fileID: 5604668986800053905, guid: 354dc29582bdf47619ec4a75051b9b49,
         type: 3}
       propertyPath: brickType
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5604668986800053905, guid: 354dc29582bdf47619ec4a75051b9b49,
         type: 3}
@@ -134,6 +113,27 @@ PrefabInstance:
       propertyPath: spriteArr.Array.data[4]
       value: 
       objectReference: {fileID: 21300102, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 6769345744327022392, guid: 354dc29582bdf47619ec4a75051b9b49,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6769345744327022392, guid: 354dc29582bdf47619ec4a75051b9b49,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7097192913053656470, guid: 354dc29582bdf47619ec4a75051b9b49,
+        type: 3}
+      propertyPath: m_Name
+      value: bombBrick
+      objectReference: {fileID: 0}
+    - target: {fileID: 7792428787238834122, guid: 354dc29582bdf47619ec4a75051b9b49,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300010, guid: 0af25fd342af74c2fa8014bc588a148b,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 354dc29582bdf47619ec4a75051b9b49, type: 3}

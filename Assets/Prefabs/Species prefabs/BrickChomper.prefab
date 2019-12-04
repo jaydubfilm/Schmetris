@@ -12,6 +12,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BrickChomper
       objectReference: {fileID: 0}
+    - target: {fileID: 4772868703973222878, guid: c2906289b3f75423a85d7faeb2570317,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 7261516919247563701, guid: c2906289b3f75423a85d7faeb2570317,
         type: 3}
       propertyPath: data
@@ -76,12 +81,53 @@ PrefabInstance:
     - target: {fileID: 7484416850874066765, guid: c2906289b3f75423a85d7faeb2570317,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7484416850874066765, guid: c2906289b3f75423a85d7faeb2570317,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 3
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8054087108052339247, guid: c2906289b3f75423a85d7faeb2570317,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2d7d34242bb238342b5090606321941d,
+        type: 3}
+    - target: {fileID: 8054087108052339247, guid: c2906289b3f75423a85d7faeb2570317,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 2.56
+      objectReference: {fileID: 0}
+    - target: {fileID: 8054087108052339247, guid: c2906289b3f75423a85d7faeb2570317,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 2.56
+      objectReference: {fileID: 0}
+    - target: {fileID: 8054087108052339247, guid: c2906289b3f75423a85d7faeb2570317,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8054087108052339247, guid: c2906289b3f75423a85d7faeb2570317,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.7411765
+      objectReference: {fileID: 0}
+    - target: {fileID: 8054087108052339247, guid: c2906289b3f75423a85d7faeb2570317,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.7411765
+      objectReference: {fileID: 0}
+    - target: {fileID: 8054087108052339247, guid: c2906289b3f75423a85d7faeb2570317,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.7411765
+      objectReference: {fileID: 0}
+    - target: {fileID: 8054087108052339247, guid: c2906289b3f75423a85d7faeb2570317,
+        type: 3}
+      propertyPath: m_DrawMode
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2906289b3f75423a85d7faeb2570317, type: 3}

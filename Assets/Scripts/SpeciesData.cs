@@ -7,7 +7,7 @@ public class SpeciesData : ScriptableObject
 {
     public int type;
     public int maxHP;
-    public int dPS;
-    public Sprite sprite;
+    public float attackRate;
+    public int damage;
     public float speed;
 }

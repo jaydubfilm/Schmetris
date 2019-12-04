@@ -41,7 +41,7 @@ public class GameController : MonoBehaviour
 
     LevelData levelData;
     BlockSpawnData[] blockSpawns;
-    SpeciesSpawnData[] speciesSpawnData;
+    public SpeciesSpawnData[] speciesSpawnData;
    
     float blockSpawnTimer;
     float shapeSpawnRate = 0;

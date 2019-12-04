@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
   m_Name: Level One
   m_EditorClassIdentifier: 
-  levelDuration: 30
+  levelDuration: 500
   blocks:
   - block: {fileID: 3908810048976006719, guid: 0c609c432c86b42ad9631220ee8db9c6, type: 3}
     probability: 3
-  - block: {fileID: 7663026049011859802, guid: 2ff12aa88bbb04b94b2ece72dc46ba77, type: 3}
+  - block: {fileID: 5399240307803968247, guid: ab069a2ca412044889730906a907b7c5, type: 3}
     probability: 4
   - block: {fileID: 8480972586710585632, guid: 934b8c0b6a23b4092bdf57addff8b22d, type: 3}
     probability: 4
@@ -24,17 +24,17 @@ MonoBehaviour:
     probability: 1
   - block: {fileID: 2589978003207516240, guid: e215a09cb11b7426cabf3b57049ca5b1, type: 3}
     probability: 1
-  - block: {fileID: 222475542513969448, guid: 5d8cd4a50453d494eac703464ec23180, type: 3}
-    probability: 1
+  - block: {fileID: 8639198243880090134, guid: 80e57895ab51b4fb591ba9d29d8b237b, type: 3}
+    probability: 4
   - block: {fileID: 6215762431153503963, guid: 0de4a4f3435814b5db99a2dea142f90a, type: 3}
     probability: 1
   speciesSpawnData:
   - species: {fileID: 822335604602250409, guid: 5b93156cd52954237adcfe43c62642b2,
       type: 3}
-    probability: 6
+    probability: 1
   - species: {fileID: 5277106986393640395, guid: 28f46922a8ca84764a7fc71259c21536,
       type: 3}
-    probability: 1
+    probability: 0
   shapes:
   - {fileID: 7447227267234729856, guid: ddc9859106f2541888066d9e396de2d1, type: 3}
   - {fileID: 2283743967113377014, guid: 47032a8bf62a647a3a9c05f1f3267cff, type: 3}
@@ -45,4 +45,4 @@ MonoBehaviour:
   - {fileID: 4027776842206976144, guid: a39192c900d8a4746bf85c5354e7de26, type: 3}
   - {fileID: 4998592545037372415, guid: 8e068647be89a4ea1b443cba9cb86e57, type: 3}
   blockSpawnRate: 0.4
-  enemySpawnRate: 5
+  enemySpawnRate: 10

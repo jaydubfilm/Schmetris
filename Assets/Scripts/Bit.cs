@@ -51,8 +51,7 @@ public class Bit : MonoBehaviour
         if (gameObject.GetComponent<BoxCollider2D>().enabled == true) {
             RaycastHit2D rH = Physics2D.Raycast(transform.position, Vector2.down, ScreenStuff.colSize/2,brickMask); 
             if (rH.collider!=null) {
-                Collider2D col = GetComponent<BoxCollider2D>();
-                rH.collider.gameObject.GetComponent<Brick>().BitBrickCollide(col);
+                rH.collider.gameObject.GetComponent<Brick>().BitBrickCollide(gameObject);
             }
         }
     }

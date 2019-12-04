@@ -110,7 +110,6 @@ public class Bot : MonoBehaviour
         source = GetComponent<AudioSource>();
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(),new Vector3 (0,0,0), Quaternion.identity);
         AddStartingBricks();
-        
     }
 
     public void AddStartingBricks(){
@@ -144,6 +143,7 @@ public class Bot : MonoBehaviour
         }
         Destroy(startTileMap.gameObject);
         powerGrid.Refresh();
+        StartCoroutine(WaitAndTripleCheck(0.2f));
     }
 
     public int GetBrickType(Sprite sprite){
@@ -578,17 +578,24 @@ public class Bot : MonoBehaviour
         // add bits to new block
         foreach (GameObject orphanBrickObj in group) {
             Brick orphanBrick = orphanBrickObj.GetComponent<Brick>();
-            GameObject newBitObj;
-            Vector3 bPos = orphanBrick.transform.position;
-            int type = orphanBrick.ConvertToBitType();
-            int level = orphanBrick.brickLevel;
+            if (orphanBrick.IsParasite()){
+                GameObject newEnemyObj;
+                int type = orphanBrick.ConvertToEnemyType();
+                newEnemyObj = Instantiate(GameController.Instance.speciesSpawnData[type].species, orphanBrickObj.transform.position, Quaternion.identity);
+                newEnemyObj.GetComponent<Enemy>().hP = orphanBrick.brickHP;
+            } else {
+                GameObject newBitObj;
+                Vector3 bPos = orphanBrick.transform.position;
+                int type = orphanBrick.ConvertToBitType();
+                int level = orphanBrick.brickLevel;
 
+                newBitObj = Instantiate(bitPrefab,bPos,Quaternion.identity);
+                newBitObj.transform.parent = newBlockObj.transform;  
+                Bit newBit = newBitObj.GetComponent<Bit>();
+                newBit.bitType = type;
+                newBit.bitLevel = level;
+            }
             orphanBrick.DestroyBrick(); 
-            newBitObj = Instantiate(bitPrefab,bPos,Quaternion.identity);
-            newBitObj.transform.parent = newBlockObj.transform;  
-            Bit newBit = newBitObj.GetComponent<Bit>();
-            newBit.bitType = type;
-            newBit.bitLevel = level;
         }
     }
 
@@ -891,10 +898,9 @@ public class Bot : MonoBehaviour
         GameObject newBrick;
         Vector2Int screenPos = BotToScreenCoords(arrPos);
 
+        // check to see if brickType is valid - MAKE FUNCTION!!
 
-        // check to see if brickType is valid
-        
-        if ((type>7)||(type<0))
+        if ((type>8)||(type<0))
             return null;
 
         // check to see that array position is valid and empty
@@ -938,6 +944,53 @@ public class Bot : MonoBehaviour
         botBounds = b;
     }
 
+    public void ResolveEnemyCollision (GameObject enemyObj)
+    {
+        Enemy enemy = enemyObj.GetComponent<Enemy>();
+        if (enemy == null)
+            return;
+        float rA = transform.rotation.eulerAngles.z;
+
+        if (!((rA == 0) || (rA == 90) || (rA == 180) || (rA == 270))) 
+            return;
+
+        Vector2Int sOffset = ScreenStuff.GetOffset(enemyObj);
+        Vector2Int sCoords = OffsetToArray(sOffset);
+        Vector2Int bCoords = ScreenToBotCoords(sCoords);
+    
+        if (!IsValidBrickPos(bCoords))
+            return;
+
+        if (BrickAtBotArr(bCoords)!=null)
+            return;
+
+        // check to see if the enemy can attach to a brick;
+
+        bool hasNeighbor = false;   
+        for (int x = 0; x< 4; x++) {
+            
+            Vector2Int testCoords = bCoords + directionV2Arr[x];
+            if (IsValidBrickPos(testCoords))
+                if (BrickAtBotArr(testCoords)!=null)
+                    hasNeighbor = true;
+        }
+        if (!hasNeighbor)
+            return;
+        
+        int brickType = enemy.data.type;
+
+        // enemies turn into bricks once they collide with Bot
+
+        GameObject newBrick = AddBrick(bCoords,brickType,0);
+        newBrick.GetComponent<Parasite>().data = enemy.data;
+        newBrick.GetComponent<Parasite>().targetBrick = enemy.targetBrick;
+        newBrick.GetComponent<Brick>().brickHP = enemy.hP;
+        GameController.Instance.enemyList.Add(newBrick);
+
+        enemy.DestroyEnemy();
+
+        StartCoroutine(WaitAndTripleCheck(0.2f));
+    }
 
     public void ResolveCollision(GameObject blockObj,Vector2Int hitDir)
     {
@@ -1225,7 +1278,11 @@ public class Bot : MonoBehaviour
         foreach (GameObject brickObj in brickList) {
             RaycastHit2D rH = Physics2D.Raycast(brickObj.transform.position, new Vector2(directionFlag,0), ScreenStuff.colSize,bitMask); 
             if (rH.collider!=null) {
-                brickObj.GetComponent<Brick>().BitBrickCollide(rH.collider);
+                Brick brick = brickObj.GetComponent<Brick>();
+                if (rH.collider.gameObject.GetComponent<Bit>()!=null)
+                    brick.BitBrickCollide(rH.collider.gameObject);
+                else 
+                    ResolveEnemyCollision(rH.collider.gameObject);
                 collisionFlag = true;
                 break;
             }
