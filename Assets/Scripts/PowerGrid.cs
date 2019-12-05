@@ -2,30 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PowerGrid 
+public class PowerGrid : MonoBehaviour
 {
     public int[,] grid;
     Bot bot;
     public int width;
-
-    // Start is called before the first frame update
-    void Start()
-    {
+    float timer;
     
+    // Start is called before the first frame update
+    void Awake()
+    {
+        bot = transform.parent.gameObject.GetComponent<Bot>();
+        width = bot.maxBotWidth;
+        grid = new int[width,width];
+        timer = Time.time;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-    }
-
-    public PowerGrid(Bot parentBot)
-    {
-            bot = parentBot;
-            width = bot.maxBotWidth;
-            grid = new int[width,width];
+        if (Time.time>timer+2.0f) {
             Refresh();
+            timer = Time.time;
+        }
     }
 
     public void Refresh() {
@@ -34,6 +33,8 @@ public class PowerGrid
                 grid[x,y] = 0;
         
         // update Power Grid levels
+        if (bot.brickList.Count==0)
+            return;
 
         foreach (GameObject brickObj in bot.brickList){
             Brick brick = brickObj.GetComponent<Brick>();
@@ -63,12 +64,19 @@ public class PowerGrid
                 if (brick.brickType!=0) {
                     if (PowerAtBotCoords(brick.arrPos)==0) {
                         brick.MakeOrphan();
+                        StartCoroutine(WaitFlashNoPower(brickObj));
                         count--;
                     }
                 }
             }
         }
     }
+
+    IEnumerator WaitFlashNoPower(GameObject brickObj) {
+        yield return new WaitForSeconds(0.1f);
+        GameObject pWarning = Instantiate(bot.powerWarning,brickObj.transform);
+    }
+
 
     public bool IsValidGridPos(Vector2Int gridArrPos) {
         if (((gridArrPos.x>=0)&&(gridArrPos.x<width))&&((gridArrPos.y>=0)&&(gridArrPos.y<width)))

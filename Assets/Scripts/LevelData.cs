@@ -11,6 +11,7 @@ public class LevelData : ScriptableObject
    public Shape[] shapes;
    public float blockSpawnRate;
    public float enemySpawnRate;
+   public float blockSpeed;
 }
 
 

@@ -9,6 +9,7 @@ public class GameController : MonoBehaviour
     public static GameController Instance { get; private set; }
     public List<GameObject> blockList;
     public List<GameObject> enemyList;
+    
 
     public int lives;
     public static int bgAdjustFlag = 0;
@@ -52,6 +53,7 @@ public class GameController : MonoBehaviour
     float enemySpawnRate;
     int shapeCount;
     int numberOfShapes;
+    public float blockSpeed;
     Bounds collisionBubble;
    
 
@@ -97,7 +99,8 @@ public class GameController : MonoBehaviour
         }
         BlockSpawnCheck();
         // ShapeSpawnCheck();
-        EnemySpawnCheck();
+        if (enemySpawnRate>0)
+            EnemySpawnCheck();
 
         if (lives == 0)
             GameOver();
@@ -145,11 +148,13 @@ public class GameController : MonoBehaviour
         levelData = game.levelDataArr[levelNumber-1];
         blockSpawns = levelData.blocks;
         speciesSpawnData = levelData.speciesSpawnData;
+        blockSpeed = levelData.blockSpeed;
         blockProbArr = GetSpawnProbabilities();
         speciesProbArr = GetSpeciesProbabilities();
         
         blockSpawnTimer = levelData.blockSpawnRate;
-        enemySpawnTimer = levelData.enemySpawnRate;
+        enemySpawnRate = levelData.enemySpawnRate;
+        enemySpawnTimer = enemySpawnRate;
         timeRemaining = levelData.levelDuration;
         /*
         numberOfShapes = levelData.shapes.Length;
@@ -260,7 +265,7 @@ public class GameController : MonoBehaviour
         if (enemySpawnTimer <= 0)
         {
             int spawnType = ProbabilityPicker(speciesProbArr);
-            enemySpawnTimer = levelData.enemySpawnRate;
+            enemySpawnTimer = enemySpawnRate;
             SpawnEnemy(spawnType);
         }
     }

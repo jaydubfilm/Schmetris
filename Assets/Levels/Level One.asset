@@ -26,15 +26,17 @@ MonoBehaviour:
     probability: 1
   - block: {fileID: 8639198243880090134, guid: 80e57895ab51b4fb591ba9d29d8b237b, type: 3}
     probability: 4
-  - block: {fileID: 6215762431153503963, guid: 0de4a4f3435814b5db99a2dea142f90a, type: 3}
+  - block: {fileID: 8053527841708647293, guid: 1c867cf67048f4bf89365a468581df26, type: 3}
+    probability: 1
+  - block: {fileID: 8136126349772497620, guid: 381bf456d798d4284b024eadf422a681, type: 3}
     probability: 1
   speciesSpawnData:
   - species: {fileID: 822335604602250409, guid: 5b93156cd52954237adcfe43c62642b2,
       type: 3}
-    probability: 1
+    probability: 6
   - species: {fileID: 5277106986393640395, guid: 28f46922a8ca84764a7fc71259c21536,
       type: 3}
-    probability: 0
+    probability: 1
   shapes:
   - {fileID: 7447227267234729856, guid: ddc9859106f2541888066d9e396de2d1, type: 3}
   - {fileID: 2283743967113377014, guid: 47032a8bf62a647a3a9c05f1f3267cff, type: 3}
@@ -45,4 +47,5 @@ MonoBehaviour:
   - {fileID: 4027776842206976144, guid: a39192c900d8a4746bf85c5354e7de26, type: 3}
   - {fileID: 4998592545037372415, guid: 8e068647be89a4ea1b443cba9cb86e57, type: 3}
   blockSpawnRate: 0.4
-  enemySpawnRate: 10
+  enemySpawnRate: 20
+  blockSpeed: 10

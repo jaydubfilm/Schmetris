@@ -33,7 +33,7 @@ public class Bullet : MonoBehaviour
         if (r2.collider!=null) {
             GameObject brickObj = r2.collider.gameObject;
             if (brickObj.GetComponent<Brick>().IsParasite()) {
-                brickObj.GetComponent<Brick>().brickHP-=damage;
+                brickObj.GetComponent<Brick>().AdjustHP(-damage);
                 Destroy(gameObject);
              }
         }

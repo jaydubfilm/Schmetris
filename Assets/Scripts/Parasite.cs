@@ -39,17 +39,25 @@ public class Parasite : MonoBehaviour
         if (targetBrick == null) 
             ChooseNewTarget();
         if (targetBrick!=null)
-            targetBrick.GetComponent<Brick>().brickHP-=data.damage;
+            targetBrick.GetComponent<Brick>().AdjustHP(-data.damage);
     }
 
     public void ChooseNewTarget() {
         if (brick.neighborList.Count==0)
             return;
+        foreach (GameObject neighbor in brick.neighborList) {
+            if (neighbor.GetComponent<Brick>().IsCore()) {
+                targetBrick = neighbor;
+                return;
+            }
+         }
+
         int targetInt = Random.Range(0,brick.neighborList.Count);
         targetBrick = brick.neighborList[targetInt];
-        foreach (GameObject neighbor in brick.neighborList) 
-            if (neighbor.GetComponent<Brick>().IsCore())
-                targetBrick = neighbor;
+        if (targetBrick.GetComponent<Brick>().IsParasite()) {
+            targetBrick = null;
+            return;
+        }
     }
 
 }

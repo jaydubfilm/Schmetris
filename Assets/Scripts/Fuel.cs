@@ -4,18 +4,19 @@ using UnityEngine;
 
 public class Fuel : MonoBehaviour
 {
-    public int fuelLevel;
-    public int maxLevel;
-    public int fuelDrop;
-    public float fuelPeriod;
+    private int fuelLevel;
+    private int maxLevel;
+    private int fuelDrop=1;
+    public float fuelPeriod=1f;
     private float fuelTimer;
     private GameObject marker;
     private bool emptyWarning;
     public int[] maxFuelArr;
-    private int warningLevel = 20;
-
+    private int warningLevel;
+    
     public bool active;
-    private List<GameObject> fuelBrickList; 
+    Bot bot;
+    
     Brick parentBrick;
 
 
@@ -28,10 +29,11 @@ public class Fuel : MonoBehaviour
         marker.SetActive(false);
         parentBrick = gameObject.GetComponent<Brick>();
         maxLevel = maxFuelArr[parentBrick.brickLevel];
+        warningLevel = Mathf.Max(10,maxLevel/5);
         fuelLevel = maxLevel;
-        fuelBrickList = parentBrick.parentBot.GetComponent<Bot>().fuelBrickList;
-        fuelBrickList.Add(gameObject);
-        if (fuelBrickList.Count == 1)
+        bot = GameController.Instance.bot;
+        bot.fuelBrickList.Add(gameObject);
+        if (bot.fuelBrickList.Count == 1)
             Activate();
     }
 
@@ -40,19 +42,33 @@ public class Fuel : MonoBehaviour
         if (active) {
             if (Time.time >= fuelTimer + fuelPeriod) {
                 fuelLevel -= fuelDrop;
+                if ((fuelLevel<= warningLevel) && (emptyWarning == false) && (bot.fuelBrickList.Count<=1)){
+                    LowFuelWarning();
+                }
                 fuelTimer = Time.time;
             }   
         }
-        if ((fuelLevel<= warningLevel) && (emptyWarning == false)){
-            CancelInvoke();
-            emptyWarning = true;
-            InvokeRepeating("Blink",0,0.1f);
-        }
 
+        if ((emptyWarning == true) && (bot.fuelBrickList.Count>1))
+            CancelLowFuelWarning();
+        
         if (fuelLevel <= 0) {
             parentBrick.DestroyBrick();
         }
     }
+
+    public void LowFuelWarning(){
+        CancelInvoke();
+        emptyWarning = true;
+        InvokeRepeating("Blink",0,0.1f);
+    }
+
+    public void CancelLowFuelWarning(){
+        CancelInvoke();
+        emptyWarning = false;
+        InvokeRepeating("Blink",0,0.5f);
+    }
+
 
     public void Activate()
     {
@@ -63,12 +79,12 @@ public class Fuel : MonoBehaviour
     }
 
     public void Deactivate() {
-        fuelBrickList.Remove(gameObject);
+        bot.fuelBrickList.Remove(gameObject);
         CancelInvoke();
         active = false;
         marker.SetActive(false);
-        if (fuelBrickList.Count != 0) {
-            fuelBrickList[0].GetComponent<Fuel>().Activate();
+        if (bot.fuelBrickList.Count != 0) {
+            bot.fuelBrickList[0].GetComponent<Fuel>().Activate();
         }
     }
 
@@ -84,5 +100,4 @@ public class Fuel : MonoBehaviour
         maxLevel = maxFuelArr[parentBrick.brickLevel];
         fuelLevel = maxLevel-fuelLoss;
     }
-
 }

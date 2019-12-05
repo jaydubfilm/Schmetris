@@ -17,13 +17,14 @@ public class Block : MonoBehaviour
     public Vector2Int coreV2;
     public Rigidbody2D rb;
     Vector3 moveToPos;
-    Vector3 stepDownV3;
     
   
     // Start is called before the first frame update
     void Start()
     {
       blockRadius = GameController.Instance.settings.blockRadius;
+      blockSpeed = GameController.Instance.blockSpeed;
+      
       int absoluteCol =  ScreenStuff.GetCol(gameObject);
       float step = blockSpeed*Time.deltaTime;
       column = ScreenStuff.WrapCol(absoluteCol,bot.coreCol);
@@ -41,10 +42,6 @@ public class Block : MonoBehaviour
      
     }
 
-    void StepDown() {
-        Vector3 stepVector = new Vector3(0,-ScreenStuff.rowSize,0);
-        transform.position += stepVector;
-    }
 
     public int GetXOffset(int coreColumn) {
       int offset = column - coreColumn;

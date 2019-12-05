@@ -41,3 +41,4 @@ MonoBehaviour:
   - {fileID: 2803758784820982045, guid: 056380f83ede1468e86752d36915f1f4, type: 3}
   blockSpawnRate: 0.2
   enemySpawnRate: 5
+  blockSpeed: 10

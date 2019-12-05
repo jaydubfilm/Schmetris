@@ -24,12 +24,15 @@ public class Brick : MonoBehaviour
     Rigidbody2D rb2D;
 
     public List<GameObject> neighborList = new List<GameObject>();
+    public HealthBar healthBar;
     
     void Awake () {
         brickLevel = 0;
         brickHP = brickMaxHP[brickLevel];
         source = GetComponent<AudioSource>();
         rb2D = gameObject.GetComponent<Rigidbody2D>();
+        healthBar = GetComponentInChildren<HealthBar>();
+        healthBar.gameObject.SetActive(false);
     }
 
     void Start () {
@@ -41,8 +44,7 @@ public class Brick : MonoBehaviour
     }
 
     void Update () {
-        if (brickHP <= 0)
-            DestroyBrick();
+      
     }
 
     public bool IsParasite(){
@@ -52,7 +54,24 @@ public class Brick : MonoBehaviour
             return true;
     }
 
-  
+    public void AdjustHP(int damage){
+        brickHP+=damage;
+        if (brickHP<=0)
+            DestroyBrick();
+        else {
+            if (brickHP>=brickMaxHP[brickLevel]) {
+                brickHP = brickMaxHP[brickLevel];
+                healthBar.gameObject.SetActive(false);
+            } else if (healthBar.gameObject.activeInHierarchy==false) {
+                healthBar.gameObject.SetActive(true);
+                float normalizedHealth = (float)brickHP/(float)brickMaxHP[brickLevel];
+                healthBar.SetSize(normalizedHealth);
+            } else {
+                float normalizedHealth = (float)brickHP/(float)brickMaxHP[brickLevel];
+                healthBar.SetSize(normalizedHealth);
+            }
+        }
+    }
 
 /*
     void OnTriggerEnter2D(Collider2D collider)
@@ -83,7 +102,7 @@ public class Brick : MonoBehaviour
 
         if (bitType == 0) // black bit - hurt the brick
         {
-            brickHP-=1000;
+            AdjustHP(-1000);
             bot.GetComponent<Overheat>().AddHeat();
             bit.RemoveFromBlock("Destroy");
         } 
@@ -142,8 +161,15 @@ public class Brick : MonoBehaviour
             gameObject.GetComponent<Fuel>().Deactivate();
             foreach(GameObject neighbor in this.neighborList)
                 if (neighbor.GetComponent<Brick>().brickType == 1)
-                    neighbor.GetComponent<Brick>().brickHP-=10;
+                    neighbor.GetComponent<Brick>().AdjustHP(-10);
         } 
+
+        if (brickType == 6) {
+            Bomb bomb = GetComponent<Bomb>();
+            int damage = bomb.damage[brickLevel];
+            // StartCoroutine(WaitAndBombEnemies(damage));
+            BombEnemies(damage);
+        }
 
         anim = gameObject.GetComponent<Animator>();
         anim.enabled = true;
@@ -158,12 +184,43 @@ public class Brick : MonoBehaviour
         Destroy(gameObject); 
     }
 
+    IEnumerator WaitAndBombEnemies(int damage){
+        yield return new WaitForSeconds(0.5f);
+        BombEnemies(damage);
+    }
+
+    public void BombEnemies(int damage){
+        int c = GameController.Instance.enemyList.Count;
+        GameObject[] enemyArr = new GameObject[c];
+
+        for (int x = 0;x < c; x++)
+            enemyArr[x] = GameController.Instance.enemyList[x];
+        
+        for (int x = 0;x < c; x++) {
+            Brick brick = enemyArr[x].GetComponent<Brick>();
+            if (brick!=null)
+                brick.AdjustHP(-damage);    
+            else {
+                Enemy enemy = enemyArr[x].GetComponent<Enemy>();
+                enemy.hP -=damage;
+            }
+        }
+    }
+
     public void DestroyBrick() {
-        RemoveBrickFromBotArray();  
 
         if (brickType ==1) {
             gameObject.GetComponent<Fuel>().Deactivate();
         }
+
+        if (brickType == 6) {
+            Bomb bomb = GetComponent<Bomb>();
+            int damage = bomb.damage[brickLevel];
+            // StartCoroutine(WaitAndBombEnemies(damage));
+            BombEnemies(damage);
+        }
+
+        RemoveBrickFromBotArray();  
         if (IsParasite())
             GameController.Instance.enemyList.Remove(gameObject);
         Destroy(gameObject);
@@ -219,7 +276,7 @@ public class Brick : MonoBehaviour
             // update neighbor lists
 
             bot.RefreshNeighborLists();
-            bot.powerGrid.Refresh();
+            // bot.powerGrid.Refresh();
         }  
     }
 
@@ -264,20 +321,17 @@ public class Brick : MonoBehaviour
             brickLevel++;
             ID++;
             brickHP = brickMaxHP[brickLevel];
+            healthBar.gameObject.SetActive(false);
             GetComponent<SpriteRenderer>().sprite = spriteArr[brickLevel];
             if (brickType == 1)
                 gameObject.GetComponent<Fuel>().UpgradeFuelLevel();
         }
     }
 
-    public void HealHP(int health){
-        brickHP += health;
-        if (brickHP>brickMaxHP[brickLevel])
-            brickHP = brickMaxHP[brickLevel];
-    }
 
     public void HealMaxHP(){
         brickHP = brickMaxHP[brickLevel];
+        healthBar.gameObject.SetActive(false);
     }
 
     public int ConvertToBitType(){

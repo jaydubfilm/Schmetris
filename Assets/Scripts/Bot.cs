@@ -67,6 +67,8 @@ public class Bot : MonoBehaviour
     public Grid startingBrickGrid;
     public GameObject blockPrefab;
     public GameObject bitPrefab;
+    public GameObject powerWarning;
+ 
 
     private List<GameObject> pathList = new List<GameObject>();
     private List<Vector2Int> pathArrList = new List<Vector2Int>();
@@ -99,13 +101,13 @@ public class Bot : MonoBehaviour
         gameObject.transform.rotation = Quaternion.identity;
         botBody = gameObject.GetComponent<Rigidbody2D>();
         botBounds = new Bounds (Vector3.zero,Vector3.zero);
-        powerGrid = new PowerGrid(this);
 
         for (int x = 0; x < maxBotWidth; x++)
             for (int y = 0; y < maxBotHeight ; y++) {
                 brickTypeArr[x,y] = -1;
             }
         botRotation=0;
+        powerGrid = Instantiate(powerGrid,gameObject.transform);
   
         source = GetComponent<AudioSource>();
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(),new Vector3 (0,0,0), Quaternion.identity);
@@ -142,7 +144,7 @@ public class Bot : MonoBehaviour
             }
         }
         Destroy(startTileMap.gameObject);
-        powerGrid.Refresh();
+        // powerGrid.Refresh();
         StartCoroutine(WaitAndTripleCheck(0.2f));
     }
 
@@ -214,7 +216,7 @@ public class Bot : MonoBehaviour
             BrickAtScreenArr(brickArrPos).GetComponent<Brick>().MoveBrick(ScreenToBotCoords(brickArrPos+bumpDirV2));
         }
         RefreshNeighborLists();
-        powerGrid.Refresh();
+        // powerGrid.Refresh();
         tripleCheckFlag = true;
         orphanCheckFlag = true;
     }
@@ -346,6 +348,7 @@ public class Bot : MonoBehaviour
         // we found a triple!  Collapse it!
 
         // temporarily remove edge bricks from Array
+
         Brick mBrick1 = matchBrick1.GetComponent<Brick>();
         Brick mBrick2 = matchBrick2.GetComponent<Brick>();
 
@@ -358,7 +361,7 @@ public class Bot : MonoBehaviour
         brickTypeArr[m2Pos.x,m2Pos.y] = -1;
 
         RefreshNeighborLists();
-        powerGrid.Refresh();
+        // powerGrid.Refresh();
 
         if ((IsConnectedToCore(sideBrick1))||(IsConnectedToCore(sideBrick2)))
             centreIsStable = true;
@@ -369,7 +372,7 @@ public class Bot : MonoBehaviour
         brickTypeArr[m2Pos.x,m2Pos.y] = mBrick2.brickType;
 
         RefreshNeighborLists();
-        powerGrid.Refresh();
+       //  powerGrid.Refresh();
 
         if (centreIsStable) // collapse toward centre
         { 
@@ -561,7 +564,7 @@ public class Bot : MonoBehaviour
              ConvertBricksToBlock(group);
         }
         RefreshNeighborLists();
-        powerGrid.Refresh();
+        // powerGrid.Refresh();
     }
 
     public void ConvertBricksToBlock(List<GameObject> group) {    
@@ -1154,8 +1157,8 @@ public class Bot : MonoBehaviour
             } 
         }
 
-        powerGrid.Refresh();
         StartCoroutine(WaitAndTripleCheck(0.2f));
+       //  powerGrid.Refresh();
 
     }
 

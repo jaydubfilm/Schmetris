@@ -80,18 +80,24 @@ MonoBehaviour:
   - {fileID: 5783272881628935429, guid: 9d22e820e24b44098990a011ff255f7e, type: 3}
   - {fileID: 1550391163482342013, guid: 4041c7b358034436bb0a62aaef31deb4, type: 3}
   - {fileID: 6450636027791030212, guid: 8d224d3a4016a47ea86d7ab7283122ab, type: 3}
-  - {fileID: 8838603319638469390, guid: 729d476ed6e1d426792246df021f1449, type: 3}
+  - {fileID: 1862860024383603479, guid: fa5d2e263149748858c26ba1a2f86ef0, type: 3}
   - {fileID: 7097192913053656470, guid: 354dc29582bdf47619ec4a75051b9b49, type: 3}
   - {fileID: 5570540888293643073, guid: 01c4b15ca06cf4fa8aa6b7519021dae8, type: 3}
   - {fileID: 6703889337379585221, guid: c6511eeda86244a65939ca538c048ea0, type: 3}
   - {fileID: 3786325451140840089, guid: 06d2c88f29e3441339002e2924aa7c83, type: 3}
   brickList: []
+  powerGrid: {fileID: 6811822890141058021, guid: 615e256f41e1542db8dff35ad956b506,
+    type: 3}
   coreV2: {x: 0, y: 0}
   botRotation: 1
   startingBrickGrid: {fileID: 0}
   blockPrefab: {fileID: 4564228733873789851, guid: d16b46eb056324158bd30fafdfb2e724,
     type: 3}
   bitPrefab: {fileID: 4783243248563623757, guid: 442d0dda9ca044fb88edee1caa2bcc99,
+    type: 3}
+  powerWarning: {fileID: 5515604555638627983, guid: 5eb9884e0b57449d8b33f38d7cf509e9,
+    type: 3}
+  healingSymbol: {fileID: 8426587966987511266, guid: 4c3b08cf452254872acc73392fd2982a,
     type: 3}
   fuelBrickList: []
   tripleSound: {fileID: 8300000, guid: f0cd4d87d7e925248b91fc9187c53c42, type: 3}

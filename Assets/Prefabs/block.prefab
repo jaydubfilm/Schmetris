@@ -68,7 +68,7 @@ MonoBehaviour:
   bitList: []
   column: 0
   bot: {fileID: 0}
-  blockSpeed: 15
+  blockSpeed: 5
   blockRadius: 0
   blockWidth: 0
   blockRotation: 0

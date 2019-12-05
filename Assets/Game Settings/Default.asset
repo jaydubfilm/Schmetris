@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Default
   m_EditorClassIdentifier: 
   Schmetris: 0
+  OrphanFall: 1
   colSize: 1.4
   rowSize: 1.4
   screenRadius: 20
@@ -23,5 +24,8 @@ MonoBehaviour:
   bgHeight: 278
   bgWidth: 388
   bgZDepth: 400
-  bgScrollSpeed: 0.1
+  bgScrollSpeed: 0.05
   bgScale: {x: 21, y: 21, z: 1}
+  maxBotRadius: 6
+  ghostMoveSpeed: 30
+  blockRadius: 3
