@@ -104,7 +104,7 @@ public class Brick : MonoBehaviour
         {
             AdjustHP(-1000);
             bot.GetComponent<Overheat>().AddHeat();
-            bit.RemoveFromBlock("Destroy");
+            bit.RemoveFromBlock("explode");
         } 
         else
         {
@@ -158,7 +158,7 @@ public class Brick : MonoBehaviour
 
         if (brickType == 1)
         {
-            gameObject.GetComponent<Fuel>().Deactivate();
+           // gameObject.GetComponent<Fuel>().Deactivate();
             foreach(GameObject neighbor in this.neighborList)
                 if (neighbor.GetComponent<Brick>().brickType == 1)
                     neighbor.GetComponent<Brick>().AdjustHP(-10);
@@ -208,21 +208,13 @@ public class Brick : MonoBehaviour
     }
 
     public void DestroyBrick() {
-
-        if (brickType ==1) {
-            gameObject.GetComponent<Fuel>().Deactivate();
-        }
-
         if (brickType == 6) {
             Bomb bomb = GetComponent<Bomb>();
             int damage = bomb.damage[brickLevel];
             // StartCoroutine(WaitAndBombEnemies(damage));
             BombEnemies(damage);
         }
-
         RemoveBrickFromBotArray();  
-        if (IsParasite())
-            GameController.Instance.enemyList.Remove(gameObject);
         Destroy(gameObject);
         bot.RefreshBotBounds();
     }
@@ -247,6 +239,8 @@ public class Brick : MonoBehaviour
             GameController.Instance.enemyList.Remove(gameObject);
         if (bot.BrickAtBotArr(bot.coreV2)==null)
             GameController.Instance.lives = 0;
+        if (brickType == 1)
+            bot.fuelBrickList.Remove(gameObject);
         bot.RefreshNeighborLists();
         // bot.powerGrid.Refresh();
         bot.orphanCheckFlag = true;

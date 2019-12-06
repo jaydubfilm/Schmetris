@@ -9,7 +9,7 @@ public class Fuel : MonoBehaviour
     private int fuelDrop=1;
     public float fuelPeriod=1f;
     private float fuelTimer;
-    private GameObject marker;
+    private GameObject flashingSymbol;
     private bool emptyWarning;
     public int[] maxFuelArr;
     private int warningLevel;
@@ -25,14 +25,14 @@ public class Fuel : MonoBehaviour
     {
         active = false;
         emptyWarning = false;
-        marker = transform.Find("FuelSymbol").gameObject;
-        marker.SetActive(false);
+        flashingSymbol = transform.Find("FuelSymbol").gameObject;
+        flashingSymbol.SetActive(false);
         parentBrick = gameObject.GetComponent<Brick>();
         maxLevel = maxFuelArr[parentBrick.brickLevel];
         warningLevel = Mathf.Max(10,maxLevel/5);
         fuelLevel = maxLevel;
         bot = GameController.Instance.bot;
-        bot.fuelBrickList.Add(gameObject);
+        bot.fuelBrickList.Add(parentBrick.gameObject);
         if (bot.fuelBrickList.Count == 1)
             Activate();
     }
@@ -73,29 +73,27 @@ public class Fuel : MonoBehaviour
     public void Activate()
     {
         active = true;
-        marker.SetActive(true);
+        flashingSymbol.SetActive(true);
         fuelTimer = Time.time;  
         InvokeRepeating("Blink",0,0.5f);
     }
-
+/*
     public void Deactivate() {
-        bot.fuelBrickList.Remove(gameObject);
+        // bot.fuelBrickList.Remove(gameObject);
         CancelInvoke();
         active = false;
-        marker.SetActive(false);
-        if (bot.fuelBrickList.Count != 0) {
-            bot.fuelBrickList[0].GetComponent<Fuel>().Activate();
-        }
-    }
+        flashingSymbol.SetActive(false);
+       
+    }*/
 
     public void Blink(){
-        if (marker.activeSelf == true)
-            marker.SetActive(false);
+        if (flashingSymbol.activeSelf == true)
+            flashingSymbol.SetActive(false);
         else 
-            marker.SetActive(true);
+            flashingSymbol.SetActive(true);
     }
 
-    public void UpgradeFuelLevel() {
+    public void UpgradeFuelLevel() {  // this is broken -
         int fuelLoss = maxLevel-fuelLevel;
         maxLevel = maxFuelArr[parentBrick.brickLevel];
         fuelLevel = maxLevel-fuelLoss;

@@ -161,7 +161,7 @@ public class Bot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MoveBot();
+        MoveCheck();
 
         if (tripleCheckFlag == true) {
             tripleCheckFlag = false;
@@ -1182,44 +1182,25 @@ public class Bot : MonoBehaviour
         return arrPos - coreV2;
     }
 
-    void MoveBot()
+    void MoveCheck()
     {
-        if (GameController.Instance.lives == 0)
-            return;
+        if (Input.GetKeyDown(KeyCode.UpArrow)||Input.GetKeyDown("e")) 
+            Rotate(1);     
 
-        if (settings.Schmetris==false)
-            if (fuelBrickList.Count == 0)
-                return;
-            
-        if (Input.GetKeyDown(KeyCode.UpArrow)||Input.GetKeyDown("e")) {
-            botRotation++;
-            rotation1 = botBody.transform.rotation;
-            rotation2 = rotation1*Quaternion.Euler(0,0,-90);
-            StartCoroutine(RotateOverTime(rotation1, rotation2, 0.05f));
-            CorrectBotRotation();
-        }       
-
-        if (Input.GetKeyDown(KeyCode.DownArrow)||Input.GetKeyDown("q")){
-            botRotation--;
-            rotation1 = botBody.transform.rotation;
-            rotation2 = rotation1*Quaternion.Euler(0,0,90);   
-            StartCoroutine(RotateOverTime(rotation1, rotation2, 0.05f));
-            CorrectBotRotation();
-        }
+        if (Input.GetKeyDown(KeyCode.DownArrow)||Input.GetKeyDown("q"))
+            Rotate(-1);
       
         if (Input.GetKeyDown(KeyCode.LeftArrow)||Input.GetKeyDown("a"))
         {
             delay = longPause;
             startTime = Time.time;
-            MoveBotLeft();
+            MoveBot(-1);
         } 
-        else if (Input.GetKey(KeyCode.LeftArrow)||Input.GetKey("a"))
-        {
-            if (startTime + delay <= Time.time)
-            {
+        else if (Input.GetKey(KeyCode.LeftArrow)||Input.GetKey("a")){
+            if (startTime + delay <= Time.time) {
                 startTime = Time.time;
                 delay = shortPause;
-                MoveBotLeft();
+                MoveBot(-1);
             }
         }
 
@@ -1227,17 +1208,29 @@ public class Bot : MonoBehaviour
         {
             delay = longPause;
             startTime = Time.time;
-            MoveBotRight();
+            MoveBot(1);
         }
+
         else if (Input.GetKey(KeyCode.RightArrow)||Input.GetKey("d"))
         {
             if (startTime + delay <= Time.time)
             {
                 startTime = Time.time;
                 delay = shortPause;
-                MoveBotRight(); 
+                MoveBot(1); 
             }
         }
+    }
+
+    void Rotate(int direction) {
+        if (!HasFuel())
+            return;
+        
+        botRotation+=direction;
+        rotation1 = botBody.transform.rotation;
+        rotation2 = rotation1*Quaternion.Euler(0,0,-direction*90);
+        StartCoroutine(RotateOverTime(rotation1, rotation2, 0.05f));
+        CorrectBotRotation();   
     }
 
     void CorrectBotRotation(){
@@ -1247,30 +1240,45 @@ public class Bot : MonoBehaviour
             botRotation = 3;
     }
     
-    void MoveBotLeft() {
-        bool cFlag = true;
-        while (cFlag) {
-            cFlag = CollisionCheck(-1);
+    public bool HasFuel() {
+        if (fuelBrickList.Count == 0)
+            return false;
+        else { // activate new fuel cell
+            if (fuelBrickList[0]==null)
+                Debug.Log("wtf");
+            Fuel fuel = fuelBrickList[0].GetComponent<Fuel>();
+            if (fuel.active==false)
+                fuel.Activate();
+            return true;
         }
-        if (coreCol > ScreenStuff.leftEdgeCol)
-            coreCol--;
-        else {
-            coreCol = ScreenStuff.rightEdgeCol;
-        }
-        GameController.bgAdjustFlag = 1;
     }
 
-    void MoveBotRight() {
+    void MoveBot(int direction) {
+        if (GameController.Instance.lives == 0)
+            return;
+
+        if (!HasFuel())
+            return;
+
         bool cFlag = true;
+
         while (cFlag) {
-            cFlag = CollisionCheck(1);
+            cFlag = CollisionCheck(direction);
         }
-        if (coreCol < ScreenStuff.rightEdgeCol)
-            coreCol++;
-        else {
-            coreCol = ScreenStuff.leftEdgeCol;
+
+        if (direction==-1) {  // move left
+            if (coreCol > ScreenStuff.leftEdgeCol)
+                coreCol--;
+            else 
+                coreCol = ScreenStuff.rightEdgeCol;
+        } else { // move right
+            if (coreCol < ScreenStuff.rightEdgeCol)
+                coreCol++;
+            else 
+                coreCol = ScreenStuff.leftEdgeCol;
         }
-        GameController.bgAdjustFlag = -1;
+
+        GameController.bgAdjustFlag = -direction;
     }
 
     public bool CollisionCheck(int directionFlag){  

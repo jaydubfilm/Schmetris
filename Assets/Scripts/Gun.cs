@@ -30,21 +30,20 @@ public class Gun : MonoBehaviour
         if (Time.time - startTime >= rateOfFire[parentBrick.brickLevel])
         {
             target = FindTarget();
-            FireGun();
+            if (target!=null)
+                FireGun();
             startTime = Time.time;
         }
     }
 
-    public void FireGun(){
-        if (target!=null) {
-            GameObject newBulletObj = Instantiate(bullet[gunLevel],transform.position, Quaternion.identity);
-            Vector3 dirV3 = Vector3.Normalize(target.transform.position-transform.position);
-            Bullet newBullet = newBulletObj.GetComponent<Bullet>();
-            newBullet.direction = new Vector2(dirV3.x,dirV3.y);
-            newBullet.speed = speed;
-            newBullet.damage = attackPower[gunLevel];
-            newBullet.range = range[gunLevel];
-        }
+    public void FireGun(){ 
+        GameObject newBulletObj = Instantiate(bullet[gunLevel],transform.position, Quaternion.identity);
+        Vector3 dirV3 = Vector3.Normalize(target.transform.position-transform.position);
+        Bullet newBullet = newBulletObj.GetComponent<Bullet>();
+        newBullet.direction = new Vector2(dirV3.x,dirV3.y);
+        newBullet.speed = speed;
+        newBullet.damage = attackPower[gunLevel];
+        newBullet.range = range[gunLevel];
     }
 
     public GameObject FindTarget(){
@@ -52,7 +51,7 @@ public class Gun : MonoBehaviour
         GameObject target = null;
         foreach (GameObject enemyObj in GameController.Instance.enemyList){
             float dist = Vector3.Distance(enemyObj.transform.position,transform.position);
-            if (dist<closestDistance) {
+            if ((dist<closestDistance)&&(dist<=range[gunLevel])) {
                 closestDistance = dist;
                 target = enemyObj;
             }
