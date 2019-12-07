@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healPower: 0a000000140000001e0000002800000032000000
   healRange:
-  - 1
   - 2
   - 3
   - 4
   - 5
+  - 6
   healRate:
   - 5
   - 5

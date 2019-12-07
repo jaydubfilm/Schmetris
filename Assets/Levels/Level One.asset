@@ -30,6 +30,14 @@ MonoBehaviour:
     probability: 1
   - block: {fileID: 8136126349772497620, guid: 381bf456d798d4284b024eadf422a681, type: 3}
     probability: 1
+  - block: {fileID: 8459872569636080655, guid: c5aaf9792745f4939903666a24e35fee, type: 3}
+    probability: 1
+  - block: {fileID: 4939782655615511966, guid: c41aa069d16104f9da47f7decf2ee067, type: 3}
+    probability: 1
+  - block: {fileID: 6121247593640326524, guid: 48b12a0c9a0584982acc4d283afe21c3, type: 3}
+    probability: 1
+  - block: {fileID: 8711779262324829158, guid: b20727edf559f4948bb5d7a6c66b1694, type: 3}
+    probability: 1
   speciesSpawnData:
   - species: {fileID: 822335604602250409, guid: 5b93156cd52954237adcfe43c62642b2,
       type: 3}
