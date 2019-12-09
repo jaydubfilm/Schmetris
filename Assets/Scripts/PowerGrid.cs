@@ -7,7 +7,9 @@ public class PowerGrid : MonoBehaviour
     public int[,] grid;
     Bot bot;
     public int width;
-    float timer;
+    public GameObject gridSymbol;
+
+    //float timer;
     
     // Start is called before the first frame update
     void Awake()
@@ -15,16 +17,18 @@ public class PowerGrid : MonoBehaviour
         bot = transform.parent.gameObject.GetComponent<Bot>();
         width = bot.maxBotWidth;
         grid = new int[width,width];
-        timer = Time.time;
+        //timer = Time.time;
+        InvokeRepeating("Refresh",1.0f,0.2f);
     }
 
     // Update is called once per frame
     void Update()
     {
+        /* 
         if (Time.time>timer+2.0f) {
             Refresh();
             timer = Time.time;
-        }
+        }*/
     }
 
     public void Refresh() {
@@ -55,6 +59,7 @@ public class PowerGrid : MonoBehaviour
         // make bricks with no power orphans
 
         int count = bot.brickList.Count;
+        bool zoneReminder = false;
 
         for (int x = 0; x<count ;x++) {
             GameObject brickObj = bot.brickList[x];
@@ -64,12 +69,50 @@ public class PowerGrid : MonoBehaviour
                 if (brick.brickType!=0) {
                     if (PowerAtBotCoords(brick.arrPos)==0) {
                         brick.MakeOrphan();
-                        StartCoroutine(WaitFlashNoPower(brickObj));
+                        zoneReminder = true;
+                        // StartCoroutine(WaitFlashNoPower(brickObj));
                         count--;
                     }
                 }
             }
         }
+
+        if (zoneReminder) {
+            FlashGridCells();
+        }
+    }
+
+    public void FlashGridCells(){
+        for (int x = 0;x<width;x++) {
+            for (int y = 0;y<width;y++) {
+                if (grid[x,y]>0) {
+                    Vector2Int botPos = new Vector2Int(x,y);
+                    Vector3 symbolPos = bot.BotCoordsToScreenPos(botPos);
+                    GameObject newSymbol = Instantiate (gridSymbol,symbolPos,Quaternion.identity);
+                    StartCoroutine(FlashGridCell(botPos,newSymbol));
+                }
+            }
+        }
+    }
+
+
+
+    IEnumerator FlashGridCell(Vector2Int botPos, GameObject symbol){
+        
+        SpriteRenderer gridCellSprite = symbol.GetComponent<SpriteRenderer>();
+
+        Color tmpColor = gridCellSprite.color;
+        float fadeTime = 1.0f;
+        tmpColor.a = 0.5f;
+        while (tmpColor.a > 0f) {
+            tmpColor.a -= Time.deltaTime / fadeTime;
+            gridCellSprite.color = tmpColor;
+            if (tmpColor.a <=0)
+                tmpColor.a = 0;
+            yield return null;
+            gridCellSprite.color = tmpColor;
+        }
+        Destroy(symbol);
     }
 
     IEnumerator WaitFlashNoPower(GameObject brickObj) {

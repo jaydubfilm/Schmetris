@@ -87,7 +87,7 @@ public class Bot : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
 
-    void Start()
+    public void Start()
     {
         settings = GameController.Instance.settings;
         maxBotRadius = settings.maxBotRadius;
@@ -637,6 +637,13 @@ public class Bot : MonoBehaviour
     public Vector2Int ScreenToBotCoords(Vector2Int arrXY) {
         return UnTwistCoords(arrXY,maxBotWidth);
     }
+
+    public Vector3 BotCoordsToScreenPos(Vector2Int botCoords){
+        Vector2Int screenOffset = ArrToOffset((BotToScreenCoords(botCoords)));
+
+        Vector3 screenPos = transform.position + new Vector3(screenOffset.x*ScreenStuff.colSize,screenOffset.y*ScreenStuff.colSize);
+        return screenPos;
+    }
      
     public Vector2Int UnTwistCoords(Vector2Int arrXY, int arrWidth) {
         Vector2Int newCoords = new Vector2Int();
@@ -921,6 +928,7 @@ public class Bot : MonoBehaviour
         SetBrickAtBotArr(arrPos,newBrick);
         brickList.Add(newBrick);
         brickTypeArr[arrPos.x,arrPos.y] = type;
+        newBrickScript.brickHP = newBrickScript.brickMaxHP[level];
 
         newBrickScript.arrPos = arrPos;
         newBrickScript.brickType = type;
@@ -1401,6 +1409,8 @@ public class Bot : MonoBehaviour
 
             return mapPos;
         }
+
+       
         
         public Vector2Int GetMapCoordsBrick(GameObject brickObj){
             Brick brick = brickObj.GetComponent<Brick>();

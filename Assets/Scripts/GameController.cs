@@ -26,6 +26,7 @@ public class GameController : MonoBehaviour
     Text levelTimer;
     Text levelNumberString;
     Text shapeScoreString;
+    Text quitString;
 
     public static float timeRemaining = 10.0f;
     public int currentScene = 1;
@@ -44,7 +45,7 @@ public class GameController : MonoBehaviour
     BlockSpawnData[] blockSpawns;
     public SpeciesSpawnData[] speciesSpawnData;
    
-    float blockSpawnTimer;
+    float blockSpawnTimer = 3f;
     float shapeSpawnRate = 0;
     float shapeSpawnTimer;
     float lastShapeSpawnTime;
@@ -78,8 +79,9 @@ public class GameController : MonoBehaviour
         levelNumberString = GameObject.Find("Level").GetComponent<Text>();
         levelTimer = GameObject.Find("Timer").GetComponent<Text>();
         shapeScoreString = GameObject.Find("Shapes").GetComponent<Text>();
-      
+        quitString = GameObject.Find("Quit").GetComponent<Text>();
         LoadLevelData(1);
+        InvokeRepeating("GameOverCheck",1.0f,0.2f);
     }
 
     public void Update()
@@ -97,16 +99,25 @@ public class GameController : MonoBehaviour
                 LoadLevelData(currentScene);
             }
         }
+
         BlockSpawnCheck();
         // ShapeSpawnCheck();
         if (enemySpawnRate>0)
             EnemySpawnCheck();
 
-        if (lives == 0)
-            GameOver();
-
         if(Input.GetKeyDown(KeyCode.Escape)) 
             Application.Quit();
+
+/* 
+        if ((lives == 0)&&(Input.GetKeyDown(KeyCode.Space))){
+            lives = 1;
+            gameOverPanel.SetActive(false);
+            
+            SceneManager.LoadScene(0);
+            Destroy (GameObject.Find("Camera"));
+            Destroy(bot);
+        }
+        */
 
         ScrollBackground();
 
@@ -128,6 +139,10 @@ public class GameController : MonoBehaviour
         }
     }
 
+    void GameOverCheck(){
+        if (lives == 0)
+            gameOverPanel.SetActive(true);
+    }
     public int[] GetSpawnProbabilities() {
         int[] pArr = new int[blockSpawns.Length];
         for (int d = 0; d < blockSpawns.Length; d++)
@@ -343,10 +358,6 @@ public class GameController : MonoBehaviour
         return newShape;
     }
 
-    void GameOver () 
-    {
-        gameOverPanel.SetActive(true);
-    }
 
     void SpawnBGPanels() {
         for (int x = 0;x<4;x++) {

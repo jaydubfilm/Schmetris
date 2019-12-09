@@ -41,12 +41,17 @@ public class Brick : MonoBehaviour
         bot.RefreshBotBounds();
         FixedJoint2D fj = gameObject.GetComponent<FixedJoint2D>();
         fj.connectedBody = parentBot.GetComponent<Rigidbody2D>();
+        InvokeRepeating("CheckHP",0.5f,0.1f);
     }
 
     void Update () {
       
     }
 
+    void CheckHP(){
+        if (brickHP<=0)
+            DestroyBrick();
+    }
     public bool IsParasite(){
         if (GetComponent<Parasite>()==null)
             return false;
@@ -54,11 +59,10 @@ public class Brick : MonoBehaviour
             return true;
     }
 
-    public void AdjustHP(int damage){
+    public void AdjustHP(int damage) {
         brickHP+=damage;
-        if (brickHP<=0)
-            DestroyBrick();
-        else {
+     
+        if (brickHP>0){
             if (brickHP>=brickMaxHP[brickLevel]) {
                 brickHP = brickMaxHP[brickLevel];
                 healthBar.gameObject.SetActive(false);
@@ -214,9 +218,19 @@ public class Brick : MonoBehaviour
             // StartCoroutine(WaitAndBombEnemies(damage));
             BombEnemies(damage);
         }
+
+        if (brickType == 1)
+        {
+            for (int x = 0;x<neighborList.Count;x++) {
+                if (neighborList[x].GetComponent<Brick>().brickType == 1)
+                    neighborList[x].GetComponent<Brick>().AdjustHP(-10);
+            }
+        } 
+
         RemoveBrickFromBotArray();  
         Destroy(gameObject);
         bot.RefreshBotBounds();
+     
     }
 
     public void MakeOrphan() {
