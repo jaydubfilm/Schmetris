@@ -14,15 +14,11 @@ public class Bit : MonoBehaviour
     Block parentBlock;
     LayerMask brickMask; 
 
+    bool CanCollideFlag;
+
  
 
     // Start is called before the first frame update
-
-    void Awake ()
-    {
-        // FixedJoint2D fj = gameObject.GetComponent<FixedJoint2D>();
-        // fj.connectedBody = parentObj.GetComponent<Rigidbody2D>();
-    }
     
     void Start()
     {
@@ -33,6 +29,7 @@ public class Bit : MonoBehaviour
         blockOffset = ScreenStuff.BotToScreenOffset(screenOffset,parentBlock.blockRotation);
         blockArrPos = parentBlock.coreV2 + blockOffset;
         brickMask = LayerMask.GetMask("Brick");
+        CanCollideFlag = true;
 
         if (parentBlock.IsValidBitPos(blockArrPos)) {
             parentBlock.bitList.Add(gameObject);
@@ -48,18 +45,20 @@ public class Bit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameObject.GetComponent<BoxCollider2D>().enabled == true) {
+        if (CanCollideFlag) {
             RaycastHit2D rH = Physics2D.Raycast(transform.position, Vector2.down, ScreenStuff.colSize/2,brickMask); 
             if (rH.collider!=null) {
-                rH.collider.gameObject.GetComponent<Brick>().BitBrickCollide(gameObject);
+                if (rH.collider.gameObject.GetComponent<Brick>().BitBrickCollide(gameObject)>0) {
+                    CanCollideFlag = false;
+                    StartCoroutine(WaitToCollideAgain(0.2f));
+                }
             }
         }
     }
 
-    public IEnumerator WaitAndRotateUpright(float pause) 
-    {
+    public IEnumerator WaitToCollideAgain(float pause){
         yield return new WaitForSeconds(pause);
-        RotateUpright();
+        CanCollideFlag = true;
     }
 
     public void RemoveFromBlock(string actionType){
@@ -111,6 +110,7 @@ public class Bit : MonoBehaviour
     }
 
     public bool CompareToBrick(Brick brick) {
+        // part of a system to compare the IDs of Bricks and Bits.  Not currently implemented
         int compType = Mathf.RoundToInt((ID-bitLevel)/1000) - 2;
 
         return((compType == brick.brickType)&&(bitLevel==brick.brickLevel));
@@ -122,6 +122,7 @@ public class Bit : MonoBehaviour
         BoxCollider2D box = GetComponent<BoxCollider2D>();
 
         box.enabled = false;
+        CanCollideFlag = false;
         box.isTrigger = false;
         rb2D.isKinematic = false;
         rb2D.velocity = new Vector2(0,0); 

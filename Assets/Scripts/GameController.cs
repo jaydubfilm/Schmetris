@@ -13,8 +13,8 @@ public class GameController : MonoBehaviour
 
     public int lives;
     public static int bgAdjustFlag = 0;
+  
 
-    public static int shapeScore = 0;
     
     public GameObject gameOverPanel;
     //public LevelData[] allLevelData;
@@ -25,7 +25,7 @@ public class GameController : MonoBehaviour
 
     Text levelTimer;
     Text levelNumberString;
-    Text shapeScoreString;
+
     Text quitString;
 
     public static float timeRemaining = 10.0f;
@@ -46,14 +46,9 @@ public class GameController : MonoBehaviour
     public SpeciesSpawnData[] speciesSpawnData;
    
     float blockSpawnTimer = 3f;
-    float shapeSpawnRate = 0;
-    float shapeSpawnTimer;
-    float lastShapeSpawnTime;
-    float firstShapeSpawnTime;
     float enemySpawnTimer;
     float enemySpawnRate;
-    int shapeCount;
-    int numberOfShapes;
+
     public float blockSpeed;
     Bounds collisionBubble;
    
@@ -78,7 +73,6 @@ public class GameController : MonoBehaviour
         gameOverPanel.SetActive(false);
         levelNumberString = GameObject.Find("Level").GetComponent<Text>();
         levelTimer = GameObject.Find("Timer").GetComponent<Text>();
-        shapeScoreString = GameObject.Find("Shapes").GetComponent<Text>();
         quitString = GameObject.Find("Quit").GetComponent<Text>();
         LoadLevelData(1);
         InvokeRepeating("GameOverCheck",1.0f,0.2f);
@@ -88,7 +82,6 @@ public class GameController : MonoBehaviour
     {
         timeRemaining -= Time.deltaTime;
         levelTimer.text = "Time remaining: " + Mathf.Round(timeRemaining);
-        shapeScoreString.text = "Shapes matched: " + shapeScore;
         if (timeRemaining < 0) {
             if (currentScene == 3) {
                 levelTimer.enabled = false;
@@ -101,23 +94,12 @@ public class GameController : MonoBehaviour
         }
 
         BlockSpawnCheck();
-        // ShapeSpawnCheck();
+    
         if (enemySpawnRate>0)
             EnemySpawnCheck();
 
         if(Input.GetKeyDown(KeyCode.Escape)) 
             Application.Quit();
-
-/* 
-        if ((lives == 0)&&(Input.GetKeyDown(KeyCode.Space))){
-            lives = 1;
-            gameOverPanel.SetActive(false);
-            
-            SceneManager.LoadScene(0);
-            Destroy (GameObject.Find("Camera"));
-            Destroy(bot);
-        }
-        */
 
         ScrollBackground();
 
@@ -171,19 +153,6 @@ public class GameController : MonoBehaviour
         enemySpawnRate = levelData.enemySpawnRate;
         enemySpawnTimer = enemySpawnRate;
         timeRemaining = levelData.levelDuration;
-        /*
-        numberOfShapes = levelData.shapes.Length;
-        if (numberOfShapes!=0) {
-            lastShapeSpawnTime = levelData.levelDuration * 0.75f;
-            firstShapeSpawnTime = lastShapeSpawnTime; 
-            if (numberOfShapes > 1) {
-                shapeSpawnRate = (levelData.levelDuration * 0.5f) / numberOfShapes;
-                firstShapeSpawnTime = levelData.levelDuration *0.25f;
-            }
-            shapeSpawnTimer = firstShapeSpawnTime;
-            shapeCount = 0;
-        }
-        */
     }
 
     void ScrollBackground() {
@@ -262,18 +231,7 @@ public class GameController : MonoBehaviour
         for (int x=0;x<4;x++)
             bgPanelArr[x].transform.position = bV3[x];
     }
- 
-    void ShapeSpawnCheck() {
-        if (shapeCount < numberOfShapes) {
-            shapeSpawnTimer -= Time.deltaTime;
-            if (shapeSpawnTimer <= 0)
-            {
-                SpawnShape();
-                shapeCount++;
-                shapeSpawnTimer = shapeSpawnRate;
-            }
-        }
-    }
+
 
     void EnemySpawnCheck() {
         enemySpawnTimer -= Time.deltaTime;
@@ -343,19 +301,6 @@ public class GameController : MonoBehaviour
         blockList.Add(newBlockObj);
 
         return newBlockObj;
-    }
-    
-    public Shape SpawnShape()
-    {
-        Shape newShape; 
-
-        int sCol = Random.Range(ScreenStuff.leftEdgeCol,ScreenStuff.rightEdgeCol);
-        Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(sCol), ScreenStuff.RowToYPosition(spawnRow), 0);
-
-        newShape = Instantiate(levelData.shapes[shapeCount],vpos,Quaternion.identity);
-        newShape.column = ScreenStuff.WrapCol(sCol,bot.coreCol);
-  
-        return newShape;
     }
 
 

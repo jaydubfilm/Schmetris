@@ -37,8 +37,6 @@ public class Brick : MonoBehaviour
 
     void Start () {
         bot = parentBot.GetComponent<Bot>();
-        //bot.brickList.Add(gameObject);
-        bot.RefreshBotBounds();
         FixedJoint2D fj = gameObject.GetComponent<FixedJoint2D>();
         fj.connectedBody = parentBot.GetComponent<Rigidbody2D>();
         InvokeRepeating("CheckHP",0.5f,0.1f);
@@ -50,7 +48,7 @@ public class Brick : MonoBehaviour
 
     void CheckHP(){
         if (brickHP<=0)
-            DestroyBrick();
+            ExplodeBrick();
     }
     public bool IsParasite(){
         if (GetComponent<Parasite>()==null)
@@ -77,32 +75,25 @@ public class Brick : MonoBehaviour
         }
     }
 
-/*
-    void OnTriggerEnter2D(Collider2D collider)
-    {
-        BitBrickCollide(collider);
-    }
-    */
-
-    public void BitBrickCollide(GameObject bitObj) {
+    public int BitBrickCollide(GameObject bitObj) {
         Transform t = bitObj.transform.parent;
         if (t==null)
-            return;
+            return 0;
         
         GameObject blockObj = t.gameObject;
         Block block = blockObj.GetComponent<Block>();
         Bit bit = bitObj.GetComponent<Bit>();
-        if (bit== null)
-            return;
+        if (bit == null)
+            return 0;
 
         int bitType = bit.bitType;
         float rA = parentBot.transform.rotation.eulerAngles.z;
 
         if (blockObj == null)
-            return;
+            return 0;
 
         if (bit==null)
-            return;
+            return 0;
 
         if (bitType == 0) // black bit - hurt the brick
         {
@@ -112,9 +103,9 @@ public class Brick : MonoBehaviour
         } 
         else
         {
-            if (!((rA == 0) || (rA == 90) || (rA == 180) || (rA == 270))) 
+            if (!((rA == 0) || (rA == 90) || (rA == 180) || (rA == 270))) {
                 block.BounceBlock();
-            else {
+            } else {
                 Vector2Int bitCoords = ScreenStuff.GetOffset(bitObj);
                 Vector2Int brickCoords = ScreenStuff.GetOffset(gameObject);
                 Vector2Int hitDirV2 = brickCoords-bitCoords;
@@ -131,6 +122,7 @@ public class Brick : MonoBehaviour
                 }
             } 
         }
+        return 1;
     }
 
     public Vector2Int ScreenArrPos(){
@@ -139,10 +131,7 @@ public class Brick : MonoBehaviour
 
 
     public void RotateUpright(){
-       // Destroy(gameObject.GetComponent<FixedJoint2D>());
         transform.rotation = Quaternion.identity;
-      //  gameObject.AddComponent<FixedJoint2D>();
-      //  gameObject.GetComponent<FixedJoint2D>().connectedBody = bot.GetComponent<Rigidbody2D>();
     }
 
     public bool BitIsAboveBrick(Collision2D col)
@@ -160,20 +149,19 @@ public class Brick : MonoBehaviour
         if (brickType == 0)
             GameController.Instance.lives = 0;
 
-        if (brickType == 1)
-        {
-           // gameObject.GetComponent<Fuel>().Deactivate();
-            foreach(GameObject neighbor in this.neighborList)
-                if (neighbor.GetComponent<Brick>().brickType == 1)
-                    neighbor.GetComponent<Brick>().AdjustHP(-10);
-        } 
-
-        if (brickType == 6) {
+         if (brickType == 6) {
             Bomb bomb = GetComponent<Bomb>();
             int damage = bomb.damage[brickLevel];
-            // StartCoroutine(WaitAndBombEnemies(damage));
             BombEnemies(damage);
         }
+
+        if ((brickType == 1)&&(GetComponent<Fuel>().fuelLevel>0))
+        {
+            for (int x = 0;x<neighborList.Count;x++) {
+                if (neighborList[x].GetComponent<Brick>().brickType == 1)
+                    neighborList[x].GetComponent<Brick>().AdjustHP(-10);
+            }
+        } 
 
         anim = gameObject.GetComponent<Animator>();
         anim.enabled = true;
@@ -212,25 +200,8 @@ public class Brick : MonoBehaviour
     }
 
     public void DestroyBrick() {
-        if (brickType == 6) {
-            Bomb bomb = GetComponent<Bomb>();
-            int damage = bomb.damage[brickLevel];
-            // StartCoroutine(WaitAndBombEnemies(damage));
-            BombEnemies(damage);
-        }
-
-        if (brickType == 1)
-        {
-            for (int x = 0;x<neighborList.Count;x++) {
-                if (neighborList[x].GetComponent<Brick>().brickType == 1)
-                    neighborList[x].GetComponent<Brick>().AdjustHP(-10);
-            }
-        } 
-
         RemoveBrickFromBotArray();  
         Destroy(gameObject);
-        bot.RefreshBotBounds();
-     
     }
 
     public void MakeOrphan() {
@@ -239,7 +210,7 @@ public class Brick : MonoBehaviour
     
         transform.parent = null;
         tag = "Moveable";
-       // GameController.Instance.blockList.Remove(gameObject);
+
         GetComponent<BoxCollider2D>().enabled = false;
         rb2D.gravityScale=4;
     }
@@ -256,7 +227,6 @@ public class Brick : MonoBehaviour
         if (brickType == 1)
             bot.fuelBrickList.Remove(gameObject);
         bot.RefreshNeighborLists();
-        // bot.powerGrid.Refresh();
         bot.orphanCheckFlag = true;
     }
 
@@ -284,7 +254,6 @@ public class Brick : MonoBehaviour
             // update neighbor lists
 
             bot.RefreshNeighborLists();
-            // bot.powerGrid.Refresh();
         }  
     }
 

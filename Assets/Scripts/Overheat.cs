@@ -15,7 +15,7 @@ public class Overheat : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //UpdateHeatSprite();
+    
     }
 
     public void AddHeat() {

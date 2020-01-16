@@ -46,19 +46,5 @@ public class Bullet : MonoBehaviour
         if (transform.position.y>ScreenStuff.topEdgeOfWorld)
             Destroy(gameObject);
     }
-    /*
-    void OnTriggerEnter2D(Collider2D collider){
-        Bit bit = collider.gameObject.GetComponent<Bit>();
-        Brick brick = collider.gameObject.GetComponent<Brick>();
-        if(bit!= null)
-        {
-            bit.RemoveFromBlock("explode");
-            Destroy(gameObject);
-        }
-        if (brick != null)
-            if (transform.parent != brick.transform)
-                Destroy(gameObject);
-    } 
-    */
 
 }

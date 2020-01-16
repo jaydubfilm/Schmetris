@@ -14,8 +14,9 @@ public class Bot : MonoBehaviour
 
     public bool orphanCheckFlag = false;
     
-    public static bool squareCheckFlag = false;
     public bool tripleCheckFlag = false;
+
+    public bool powerGridRefreshFlag = false;
 
     public Rigidbody2D botBody;
 
@@ -31,26 +32,11 @@ public class Bot : MonoBehaviour
         new Vector2Int (1,0),
         new Vector2Int (0,-1),
         new Vector2Int (-1,0)};
-        
-    [HideInInspector]
-    public Vector2Int[] upOffsetV2Arr = new [] { // given bot rotation
-        new Vector2Int (0,1),
-        new Vector2Int (-1,0),
-        new Vector2Int (0,-1),
-        new Vector2Int (1,0)};
-
-    [HideInInspector]
-    public Vector2Int[] downOffsetV2Arr = new [] {
-        new Vector2Int (0,-1),
-        new Vector2Int (1,0),
-        new Vector2Int (0,1),
-        new Vector2Int (-1,0)};
 
     float coreX = 0.0f;
     float coreY = 0.0f;
     public int maxBotWidth;
     public int maxBotHeight;
-    public Bounds botBounds;
  
     public GameObject[,] brickArr;
     public int[,] brickTypeArr;
@@ -68,7 +54,7 @@ public class Bot : MonoBehaviour
     public GameObject blockPrefab;
     public GameObject bitPrefab;
     public GameObject powerWarning;
- 
+
 
     private List<GameObject> pathList = new List<GameObject>();
     private List<Vector2Int> pathArrList = new List<Vector2Int>();
@@ -100,7 +86,6 @@ public class Bot : MonoBehaviour
         gameObject.transform.position = new Vector3(coreX, coreY, 0);
         gameObject.transform.rotation = Quaternion.identity;
         botBody = gameObject.GetComponent<Rigidbody2D>();
-        botBounds = new Bounds (Vector3.zero,Vector3.zero);
 
         for (int x = 0; x < maxBotWidth; x++)
             for (int y = 0; y < maxBotHeight ; y++) {
@@ -112,7 +97,27 @@ public class Bot : MonoBehaviour
         source = GetComponent<AudioSource>();
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(),new Vector3 (0,0,0), Quaternion.identity);
         AddStartingBricks();
+        powerGridRefreshFlag = true;
     }
+
+     // Update is called once per frame
+    void Update()
+    {
+        MoveCheck();
+
+        if (tripleCheckFlag == true) {
+            powerGridRefreshFlag = false;
+            tripleCheckFlag = false;
+            TripleTestBot();
+            StartCoroutine(WaitAndRefreshPower(0.5f));
+        }  
+    
+        if ((orphanCheckFlag)&&(settings.Schmetris==false)) {
+            StartCoroutine(WaitAndReleaseOrphans(0.2f));
+            orphanCheckFlag = false;
+        }
+    }
+
 
     public void AddStartingBricks(){
         startTileMap.CompressBounds();
@@ -144,7 +149,6 @@ public class Bot : MonoBehaviour
             }
         }
         Destroy(startTileMap.gameObject);
-        // powerGrid.Refresh();
         StartCoroutine(WaitAndTripleCheck(0.2f));
     }
 
@@ -157,22 +161,6 @@ public class Bot : MonoBehaviour
         return 2; // default
     }
 
-
-    // Update is called once per frame
-    void Update()
-    {
-        MoveCheck();
-
-        if (tripleCheckFlag == true) {
-            tripleCheckFlag = false;
-            TripleTestBot();
-        }  
-    
-        if ((orphanCheckFlag)&&(settings.Schmetris==false)) {
-            StartCoroutine(WaitAndReleaseOrphans(0.2f));
-            orphanCheckFlag = false;
-        }
-    }
 
     public void BumpColumn(Vector2Int startArrPos, Vector2Int bumpDirV2) {
 
@@ -255,19 +243,9 @@ public class Bot : MonoBehaviour
         }
     }
 
-    public void squareCheck()
-    {
-        bool[] completesquareList = new bool[maxBotRadius+1];
-
-        for (int r = 1; r <= maxBotRadius; r++) 
-            completesquareList[r] = IsSquareComplete(r);
-        
-        for (int r = 1; r <= maxBotRadius; r++) 
-            if (completesquareList[r])
-                RemoveSquare(r);
-    }
 
     public bool IsSquareComplete(int squareNumber) {
+        // square checking is not currently implemented
         bool squareIsComplete = true;
         // check top and bottom
         for (int x = -squareNumber; x <= squareNumber; x++)
@@ -280,29 +258,19 @@ public class Bot : MonoBehaviour
         return squareIsComplete;
     }
 
-    public void RemoveSquare(int squareNumber){
-        // top and bottom
-        for (int x = -squareNumber; x <= squareNumber; x++) {
-            brickArr[maxBotRadius+x,maxBotRadius+squareNumber].GetComponent<Brick>().DestroyBrick();
-            brickArr[maxBotRadius+x,maxBotRadius-squareNumber].GetComponent<Brick>().DestroyBrick();
-        }
-        // sides
-        for (int y = 1-squareNumber; y <= squareNumber-1; y++) {
-            brickArr[maxBotRadius-squareNumber,maxBotRadius+y].GetComponent<Brick>().DestroyBrick();
-            brickArr[maxBotRadius+squareNumber,maxBotRadius+y].GetComponent<Brick>().DestroyBrick(); 
-        }
-    }
-
     public void TripleTestBot()
     {
         foreach (GameObject brickObj in brickList){
-            if (TripleTestBrick(brickObj.GetComponent<Brick>().arrPos) == true)
+            if (TripleTestBrick(brickObj.GetComponent<Brick>().arrPos) == true) {
                 return;
+            }   
         }
     }
 
     public bool TripleTestBrick(Vector2Int arrPos)
     {
+        
+
         bool hMatch = false;
         bool vMatch = false;
         bool centreIsStable = false;
@@ -447,11 +415,11 @@ public class Bot : MonoBehaviour
         } else
             brick.DestroyBrick();
 
-        StartCoroutine(SlideGhost(ghostRb1,obj3,false));
-        StartCoroutine(SlideGhost(ghostRb2,obj3,true));
+        Vector3 newPos = obj3.GetComponent<Rigidbody2D>().transform.position;
+        StartCoroutine(SlideGhost(ghostRb1,newPos));
+        StartCoroutine(SlideGhost(ghostRb2,newPos));
+        obj3.GetComponent<Brick>().UpgradeBrick();
         StartCoroutine(WaitAndTripleCheck(0.2f));
-     
-        //StartCoroutine(WaitAndDestroyGhost(ghostBrick,0.1f));
     }
 
     public Rigidbody2D CreateGhost (GameObject obj){
@@ -483,12 +451,17 @@ public class Bot : MonoBehaviour
         tripleCheckFlag = true;
     }
 
+    IEnumerator WaitAndRefreshPower(float pause)
+    {
+        yield return new WaitForSeconds(pause);
+        powerGridRefreshFlag = true;
+    }
 
-    IEnumerator SlideGhost(Rigidbody2D ghostRb, GameObject brickObj, bool upgradeFlag) {
+
+    IEnumerator SlideGhost(Rigidbody2D ghostRb, Vector3 newPos) {
         float t = 0f;
     
         Vector3 originalPos = ghostRb.transform.position;
-        Vector3 newPos = brickObj.GetComponent<Rigidbody2D>().transform.position;
         float duration = (newPos-originalPos).magnitude/settings.ghostMoveSpeed;
 
         while (t< duration)
@@ -499,9 +472,6 @@ public class Bot : MonoBehaviour
         }
         ghostRb.transform.position = newPos;
         Destroy(ghostRb.gameObject);
-        if (upgradeFlag == true)
-            if (brickObj!=null)
-                brickObj.GetComponent<Brick>().UpgradeBrick();
     }
     
     public bool IsValidBrickPos(Vector2Int arrPos)
@@ -944,17 +914,6 @@ public class Bot : MonoBehaviour
      
     }
 
-    public void RefreshBotBounds(){
-        Bounds b = new Bounds(Vector3.zero,Vector3.zero);
-        foreach(GameObject brick in brickList) {
-            Collider2D bC = brick.GetComponent<Collider2D>();
-            if (b.extents==Vector3.zero) 
-                b = bC.bounds;
-            b.Encapsulate(bC.bounds);   
-        }
-        botBounds = b;
-    }
-
     public void ResolveEnemyCollision (GameObject enemyObj)
     {
         Enemy enemy = enemyObj.GetComponent<Enemy>();
@@ -1166,8 +1125,6 @@ public class Bot : MonoBehaviour
         }
 
         StartCoroutine(WaitAndTripleCheck(0.2f));
-       //  powerGrid.Refresh();
-
     }
 
     public class BrickBitPair{
@@ -1270,9 +1227,9 @@ public class Bot : MonoBehaviour
 
         bool cFlag = true;
 
-        while (cFlag) {
-            cFlag = CollisionCheck(direction);
-        }
+        
+        cFlag = CollisionCheck(direction);
+        
 
         if (direction==-1) {  // move left
             if (coreCol > ScreenStuff.leftEdgeCol)
@@ -1309,30 +1266,7 @@ public class Bot : MonoBehaviour
         return collisionFlag;
     }
 
-/*
-        Bounds collisionBubble = botBounds;
-        collisionBubble.Expand(2*settings.colSize);
-        float xOffset = ScreenStuff.colSize*directionFlag;
-        
-        // get list of Bricks
-        Collider2D[] possibleColliders = Physics2D.OverlapBoxAll(collisionBubble.center,collisionBubble.size,0);
-            
-        for (int x = 0; x < possibleColliders.Length; x++) {
-            if (possibleColliders[x].GetComponent<Brick>()==null) {
-                Vector2 v = possibleColliders[x].transform.position;
-                v.x +=xOffset;
-                Vector2Int offset = ScreenStuff.BotToScreenOffset(ScreenPosToOffset(v),botRotation);
-                Vector2Int arrPos = OffsetToArray(offset);
-                if (IsValidBrickPos(arrPos))  {
-                    if (BrickAtBotArr(arrPos)!=null) {
-                        Brick colliderBrick = BrickAtBotArr(arrPos).GetComponent<Brick>();
-                        colliderBrick.BitBrickCollide(possibleColliders[x]);
-                    }
-                }
-            }
-        }
-    }
-        */
+
     
 
     public Vector2 GetTopLeftPoint(){
@@ -1409,8 +1343,6 @@ public class Bot : MonoBehaviour
 
             return mapPos;
         }
-
-       
         
         public Vector2Int GetMapCoordsBrick(GameObject brickObj){
             Brick brick = brickObj.GetComponent<Brick>();

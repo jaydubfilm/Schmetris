@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class ScreenStuff : MonoBehaviour
 {
-    //public static ScreenStuff Instance { get; private set; }
-
     public static int rows;
     public static float colSize;
     public static float rowSize;
@@ -20,36 +18,9 @@ public class ScreenStuff : MonoBehaviour
 
     public Sprite bgSprite;
 
-/* 
-    public int rows;
-    public float colSize;
-    public float rowSize = gameSettings.rowSize;
-    public int screenRadius = gameSettings.screenRadius;
-    public float topEdgeOfWorld = gameSettings.topEdgeOfWorld;
-    public int cols = gameSettings.screenRadius*2+1;
-    public int leftEdgeCol = -gameSettings.screenRadius;
-    public int rightEdgeCol = gameSettings.screenRadius;
-    public float leftEdgeOfWorld = leftEdgeCol*gameSettings.colSize;
-    public float rightEdgeOfWorld = rightEdgeCol*gameSettings.colSize;
-    public float bottomEdgeOfWorld = gameSettings.bottomEdgeOfWorld; 
-    
- 
-*/
-
-    // Start is called before the first frame update
 
     void Awake()
     {
-        /* if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-        */
      
     }
 

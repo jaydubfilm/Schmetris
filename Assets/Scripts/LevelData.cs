@@ -8,7 +8,6 @@ public class LevelData : ScriptableObject
    public float levelDuration;
    public BlockSpawnData[] blocks;
    public SpeciesSpawnData[] speciesSpawnData;
-   public Shape[] shapes;
    public float blockSpawnRate;
    public float enemySpawnRate;
    public float blockSpeed;

@@ -321,6 +321,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 703195834}
   m_CullTransparentMesh: 0
+--- !u!1 &789353583 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5122040302724224645, guid: 1bcf1d92ef0dc46a39cfe189fa42f3c5,
+    type: 3}
+  m_PrefabInstance: {fileID: 5122040302863422782}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &789353584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789353583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4791c903a80af4f8b82f239a90458b7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &828699279
 GameObject:
   m_ObjectHideFlags: 0
@@ -354,7 +372,7 @@ MonoBehaviour:
   enemyList: []
   lives: 1
   gameOverPanel: {fileID: 1154038573}
-  game: {fileID: 11400000, guid: 25d4e45b526fe4fe3862a3119d2f7ab5, type: 2}
+  game: {fileID: 11400000, guid: acaace0b0b1b6450cb9cd16c42e65093, type: 2}
   bot: {fileID: 1821527173}
   settings: {fileID: 11400000, guid: 7b02eee40b211405a8626adc4d7495ef, type: 2}
   currentScene: 0
@@ -799,5 +817,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Camera
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5122040302724224642, guid: 1bcf1d92ef0dc46a39cfe189fa42f3c5, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 1bcf1d92ef0dc46a39cfe189fa42f3c5, type: 3}

@@ -64,51 +64,6 @@ public class Block : MonoBehaviour
         else   
             return false;
     }
-/*
-    public void CollisionCheck(int directionFlag){   
-        // check for left-right bit-brick collisions 
-
-        Bounds collisionBubble = botBounds;
-        collisionBubble.Expand(2*settings.colSize);
-        float xOffset = ScreenStuff.colSize*directionFlag;
-        
-        // get list of Bricks
-        Collider2D[] possibleColliders = Physics2D.OverlapBoxAll(collisionBubble.center,collisionBubble.size,0);
-            
-        for (int x = 0; x < possibleColliders.Length; x++) {
-            if (possibleColliders[x].GetComponent<Brick>()==null) {
-                Vector2 v = possibleColliders[x].transform.position;
-                v.x +=xOffset;
-                Vector2Int offset = ScreenStuff.BotToScreenOffset(ScreenPosToOffset(v),botRotation);
-                Vector2Int arrPos = OffsetToArray(offset);
-                if (IsValidBrickPos(arrPos))  {
-                    if (brickArr[arrPos.x,arrPos.y]!=null) {
-                        Brick colliderBrick = brickArr[arrPos.x,arrPos.y].GetComponent<Brick>();
-                        colliderBrick.BitBrickCollide(possibleColliders[x]);
-                    }
-                }
-            }
-        }
-    }
-    */
-
-    public bool IsBotBelow(){
-        bool botBelow = false;
-        int row = ScreenStuff.GetRow(gameObject);
-
-        Vector2Int blockOffset = new Vector2Int (column-bot.coreCol,row);
-        
-        foreach(GameObject bit in bitList) {
-            Vector2Int bitOffset = bit.GetComponent<Bit>().blockOffset;
-            Vector2Int testPos = bot.coreV2 + blockOffset + bitOffset + Vector2Int.down;
-            Vector2Int rotatedTestPos = bot.MapToScreenCoords(testPos,9);//WRONG
-
-            if (bot.IsValidBrickPos(rotatedTestPos)==true)
-              if (bot.brickTypeArr[rotatedTestPos.x,rotatedTestPos.y]>=0)
-                botBelow = true;
-        }
-        return botBelow;
-    }
 
     public void DestroyBlock(){
       GameController.Instance.blockList.Remove(gameObject);

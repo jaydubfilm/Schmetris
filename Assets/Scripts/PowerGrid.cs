@@ -12,6 +12,7 @@ public class PowerGrid : MonoBehaviour
     //float timer;
     
     // Start is called before the first frame update
+
     void Awake()
     {
         bot = transform.parent.gameObject.GetComponent<Bot>();
@@ -24,14 +25,14 @@ public class PowerGrid : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /* 
-        if (Time.time>timer+2.0f) {
-            Refresh();
-            timer = Time.time;
-        }*/
+      
     }
 
     public void Refresh() {
+
+        if (!bot.powerGridRefreshFlag)
+            return;
+
         for (int x = 0;x<width;x++)
             for (int y = 0;y<width;y++)
                 grid[x,y] = 0;
@@ -70,7 +71,6 @@ public class PowerGrid : MonoBehaviour
                     if (PowerAtBotCoords(brick.arrPos)==0) {
                         brick.MakeOrphan();
                         zoneReminder = true;
-                        // StartCoroutine(WaitFlashNoPower(brickObj));
                         count--;
                     }
                 }

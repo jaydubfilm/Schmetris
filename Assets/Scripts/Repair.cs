@@ -19,7 +19,6 @@ public class Repair : MonoBehaviour
         bot = GameController.Instance.bot;
         startTime = Time.time;
         brick = GetComponent<Brick>();
-        // target = FindNewTarget();
     }
 
     // Update is called once per frame
@@ -44,7 +43,6 @@ public class Repair : MonoBehaviour
             targetBrick.AdjustHP(healPower[brick.brickLevel]);
             if (targetBrick.brickHP>=targetBrick.brickMaxHP[targetBrick.brickLevel]) {
                 targetBrick.brickHP = targetBrick.brickMaxHP[targetBrick.brickLevel];
-                // target = FindNewTarget();
             }
         }
     }
@@ -61,7 +59,6 @@ public class Repair : MonoBehaviour
                 t+=Time.deltaTime;
             }
             symbol.transform.position = newPos;
-           // Destroy(symbol);
     }
 
     IEnumerator FadeOutSymbol(GameObject symbol){

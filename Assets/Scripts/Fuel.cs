@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Fuel : MonoBehaviour
 {
-    private int fuelLevel;
+    public int fuelLevel;
     private int maxLevel;
     private int fuelDrop=1;
     public float fuelPeriod=1f;
@@ -93,9 +93,10 @@ public class Fuel : MonoBehaviour
             flashingSymbol.SetActive(true);
     }
 
-    public void UpgradeFuelLevel() {  // this is broken -
-        int fuelLoss = maxLevel-fuelLevel;
-        maxLevel = maxFuelArr[parentBrick.brickLevel];
-        fuelLevel = maxLevel-fuelLoss;
+    public void UpgradeFuelLevel() {  // this is broken!!! -
+        // int fuelLoss = maxLevel-fuelLevel;
+        //maxLevel = maxFuelArr[parentBrick.brickLevel];
+        // fuelLevel = maxLevel-fuelLoss;
+        fuelLevel = maxFuelArr[parentBrick.brickLevel];
     }
 }

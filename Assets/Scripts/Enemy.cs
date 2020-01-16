@@ -17,12 +17,9 @@ public class Enemy : MonoBehaviour
         hP = data.maxHP;
         GameController.Instance.enemyList.Add(gameObject);
         rb2d = GetComponent<Rigidbody2D>();
-        //GetComponent<SpriteRenderer>().sprite = data.sprite;
         Vector3 dest = GameController.Instance.bot.transform.position;
-        // rb2d.velocity = new Vector3(0,-data.speed,0);
         brickMask = LayerMask.GetMask("Brick");
         bot = GameController.Instance.bot;
-        // targetBrick = bot.brickArr[0,0];
     }
 
     // Update is called once per frame
