@@ -157,9 +157,15 @@ public class Brick : MonoBehaviour
 
         if ((brickType == 1)&&(GetComponent<Fuel>().fuelLevel>0))
         {
-            for (int x = 0;x<neighborList.Count;x++) {
-                if (neighborList[x].GetComponent<Brick>().brickType == 1)
+            for (int x = 0; x < neighborList.Count; x++) {
+                if (!neighborList[x] || !neighborList[x].GetComponent<Brick>())
+                {
+                    neighborList.RemoveAt(x--);
+                }
+                else if (neighborList[x].GetComponent<Brick>().brickType == 1)
+                {
                     neighborList[x].GetComponent<Brick>().AdjustHP(-10);
+                }
             }
         } 
 

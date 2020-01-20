@@ -506,13 +506,6 @@ PrefabInstance:
       propertyPath: m_FontData.m_FontSize
       value: 40
       objectReference: {fileID: 0}
-    - target: {fileID: 1912261922279189043, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
-        type: 3}
-      propertyPath: m_Text
-      value: 'GAME OVER
-
-'
-      objectReference: {fileID: 0}
     - target: {fileID: 3586710146923071544, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
         type: 3}
       propertyPath: m_IsActive

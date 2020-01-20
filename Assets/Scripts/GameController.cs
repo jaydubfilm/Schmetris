@@ -101,6 +101,11 @@ public class GameController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Escape)) 
             Application.Quit();
 
+        if(Input.GetKeyDown(KeyCode.Space) && gameOverPanel.activeSelf)
+        {
+            Restart();
+        }
+
         ScrollBackground();
 
         foreach (GameObject moveableObject in GameObject.FindGameObjectsWithTag("Moveable")) {
@@ -119,6 +124,15 @@ public class GameController : MonoBehaviour
                     Destroy(moveableObject);
             }
         }
+    }
+
+    void Restart()
+    {
+        FindObjectOfType<Bot>().DestroyBot();
+        lives = 1;
+        gameOverPanel.SetActive(false);
+        LoadLevelData(1);
+        FindObjectOfType<Bot>().Restart();
     }
 
     void GameOverCheck(){

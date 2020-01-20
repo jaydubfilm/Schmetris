@@ -68,6 +68,36 @@ public class Bot : MonoBehaviour
     public float tripleDelay = 0.5f;
     float delay;
 
+    public void DestroyBot()
+    {
+        foreach (GameObject brick in brickList)
+        {
+            brick.GetComponent<Brick>().ExplodeBrick();
+        }
+    }
+
+    public void Restart()
+    {
+        coreBrick = masterBrickList[0];
+        coreV2 = new Vector2Int(maxBotRadius, maxBotRadius);
+        brickArr = new GameObject[maxBotWidth, maxBotHeight];
+        brickTypeArr = new int[maxBotWidth, maxBotHeight];
+        gameObject.transform.position = new Vector3(coreX, coreY, 0);
+        gameObject.transform.rotation = Quaternion.identity;
+
+        for (int x = 0; x < maxBotWidth; x++)
+            for (int y = 0; y < maxBotHeight; y++)
+            {
+                brickTypeArr[x, y] = -1;
+            }
+        botRotation = 0;
+        powerGrid = Instantiate(powerGrid, gameObject.transform);
+
+        startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(), new Vector3(0, 0, 0), Quaternion.identity);
+        AddStartingBricks();
+        powerGridRefreshFlag = true;
+    }
+
     void Awake() 
     {
         DontDestroyOnLoad(this.gameObject);
