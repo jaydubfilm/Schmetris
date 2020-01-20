@@ -112,7 +112,7 @@ public class GameController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Escape)) 
             Application.Quit();
 
-        if(Input.GetKeyDown(KeyCode.Space) && gameOverPanel.activeSelf)
+        if(gameOverPanel.activeSelf && Input.anyKeyDown)
         {
             Restart();
         }
