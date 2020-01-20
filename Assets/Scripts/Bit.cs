@@ -16,10 +16,19 @@ public class Bit : MonoBehaviour
 
     bool CanCollideFlag;
 
- 
+
+    private void OnEnable()
+    {
+        GameController.OnGameOver += ExplodeBit;
+    }
+
+    private void OnDisable()
+    {
+        GameController.OnGameOver -= ExplodeBit;
+    }
 
     // Start is called before the first frame update
-    
+
     void Start()
     {
         parentObj = transform.parent.gameObject;

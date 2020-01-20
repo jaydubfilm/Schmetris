@@ -6,6 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
+    //Game-wide events - Individual assets can connect to these to perform actions on specific game/level events (end, restart, etc)
+    public delegate void GameEvent();
+    public static event GameEvent OnGameOver, OnGameRestart;
+
     public static GameController Instance { get; private set; }
     public List<GameObject> blockList;
     public List<GameObject> enemyList;
@@ -80,23 +84,30 @@ public class GameController : MonoBehaviour
 
     public void Update()
     {
-        timeRemaining -= Time.deltaTime;
-        levelTimer.text = "Time remaining: " + Mathf.Round(timeRemaining);
-        if (timeRemaining < 0) {
-            if (currentScene == 3) {
-                levelTimer.enabled = false;
-                levelNumberString.enabled = false;
-                lives = 0;
-            } else {
-                currentScene++;
-                LoadLevelData(currentScene);
+        if (lives > 0)
+        {
+            timeRemaining -= Time.deltaTime;
+            levelTimer.text = "Time remaining: " + Mathf.Round(timeRemaining);
+            if (timeRemaining < 0)
+            {
+                if (currentScene == 3)
+                {
+                    levelTimer.enabled = false;
+                    levelNumberString.enabled = false;
+                    lives = 0;
+                }
+                else
+                {
+                    currentScene++;
+                    LoadLevelData(currentScene);
+                }
             }
-        }
 
-        BlockSpawnCheck();
-    
-        if (enemySpawnRate>0)
-            EnemySpawnCheck();
+            BlockSpawnCheck();
+
+            if (enemySpawnRate > 0)
+                EnemySpawnCheck();
+        }
 
         if(Input.GetKeyDown(KeyCode.Escape)) 
             Application.Quit();
@@ -128,16 +139,24 @@ public class GameController : MonoBehaviour
 
     void Restart()
     {
-        FindObjectOfType<Bot>().DestroyBot();
         lives = 1;
         gameOverPanel.SetActive(false);
         LoadLevelData(1);
-        FindObjectOfType<Bot>().Restart();
+        if(OnGameRestart != null)
+        {
+            OnGameRestart();
+        }
     }
 
     void GameOverCheck(){
         if (lives == 0)
+        {
+            if(!gameOverPanel.activeSelf && OnGameOver != null)
+            {
+                OnGameOver();
+            }
             gameOverPanel.SetActive(true);
+        }
     }
     public int[] GetSpawnProbabilities() {
         int[] pArr = new int[blockSpawns.Length];

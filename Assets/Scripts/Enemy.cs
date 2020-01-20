@@ -11,6 +11,16 @@ public class Enemy : MonoBehaviour
     LayerMask brickMask;
     Bot bot;
 
+    private void OnEnable()
+    {
+        GameController.OnGameOver += DestroyEnemy;
+    }
+
+    private void OnDisable()
+    {
+        GameController.OnGameOver -= DestroyEnemy;
+    }
+
     // Start is called before the first frame update
     void Start()
     {

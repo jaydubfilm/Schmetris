@@ -68,7 +68,7 @@ public class Bot : MonoBehaviour
     public float tripleDelay = 0.5f;
     float delay;
 
-    public void DestroyBot()
+    void OnGameOver()
     {
         foreach (GameObject brick in brickList)
         {
@@ -76,7 +76,7 @@ public class Bot : MonoBehaviour
         }
     }
 
-    public void Restart()
+    void OnGameRestart()
     {
         coreBrick = masterBrickList[0];
         coreV2 = new Vector2Int(maxBotRadius, maxBotRadius);
@@ -96,6 +96,18 @@ public class Bot : MonoBehaviour
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(), new Vector3(0, 0, 0), Quaternion.identity);
         AddStartingBricks();
         powerGridRefreshFlag = true;
+    }
+
+    private void OnEnable()
+    {
+        GameController.OnGameOver += OnGameOver;
+        GameController.OnGameRestart += OnGameRestart;
+    }
+
+    private void OnDisable()
+    {
+        GameController.OnGameOver -= OnGameOver;
+        GameController.OnGameRestart -= OnGameRestart;
     }
 
     void Awake() 
