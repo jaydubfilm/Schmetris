@@ -421,6 +421,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1862860024383603479, guid: fa5d2e263149748858c26ba1a2f86ef0,
         type: 3}
+    - target: {fileID: 661850550311263315, guid: 98ba262c447344a8d9a55d9fc327f851,
+        type: 3}
+      propertyPath: startingBrickGrid
+      value: 
+      objectReference: {fileID: 2774337595705906173, guid: aab3023f0fe9b4c15b1d2521b171d2ab,
+        type: 3}
     - target: {fileID: 2324491171898079932, guid: 98ba262c447344a8d9a55d9fc327f851,
         type: 3}
       propertyPath: m_Name

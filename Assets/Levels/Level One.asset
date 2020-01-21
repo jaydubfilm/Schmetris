@@ -21,7 +21,7 @@ MonoBehaviour:
   - block: {fileID: 8480972586710585632, guid: 934b8c0b6a23b4092bdf57addff8b22d, type: 3}
     probability: 4
   - block: {fileID: 6215762431153503963, guid: 0de4a4f3435814b5db99a2dea142f90a, type: 3}
-    probability: 0
+    probability: 1
   - block: {fileID: 2589978003207516240, guid: e215a09cb11b7426cabf3b57049ca5b1, type: 3}
     probability: 1
   - block: {fileID: 8639198243880090134, guid: 80e57895ab51b4fb591ba9d29d8b237b, type: 3}
@@ -45,15 +45,6 @@ MonoBehaviour:
   - species: {fileID: 5277106986393640395, guid: 28f46922a8ca84764a7fc71259c21536,
       type: 3}
     probability: 1
-  shapes:
-  - {fileID: 7447227267234729856, guid: ddc9859106f2541888066d9e396de2d1, type: 3}
-  - {fileID: 2283743967113377014, guid: 47032a8bf62a647a3a9c05f1f3267cff, type: 3}
-  - {fileID: 7329553411024191988, guid: ed2579305ff2f4e39bac09842d9e9aa1, type: 3}
-  - {fileID: 551389554228133649, guid: 16a1015e8405947ec9393f86e7a0daa9, type: 3}
-  - {fileID: 5645609077908554748, guid: 6e97a3923ba09443f93b5d248785cd57, type: 3}
-  - {fileID: 5118674430307507696, guid: d511c8aa5a1c249fb9cd043c5f58217d, type: 3}
-  - {fileID: 4027776842206976144, guid: a39192c900d8a4746bf85c5354e7de26, type: 3}
-  - {fileID: 4998592545037372415, guid: 8e068647be89a4ea1b443cba9cb86e57, type: 3}
   blockSpawnRate: 0.3
   enemySpawnRate: 12
   blockSpeed: 10

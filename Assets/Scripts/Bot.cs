@@ -226,10 +226,9 @@ public class Bot : MonoBehaviour
        
         Vector2Int endCoords = startCoords;
 
-        while ((IsValidScreenPos(endCoords+bumpDirV2))
-            && (BrickAtScreenArr((endCoords+bumpDirV2))!=null))    
+        while (bumpDirV2 != Vector2.zero && (IsValidScreenPos(endCoords + bumpDirV2)) && (BrickAtScreenArr((endCoords + bumpDirV2)) != null))
         {
-            endCoords+=bumpDirV2;
+            endCoords += bumpDirV2;
             length++;
             if (endCoords == coreV2)
                 return;
