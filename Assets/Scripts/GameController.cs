@@ -57,6 +57,14 @@ public class GameController : MonoBehaviour
     public float blockSpeed;
     Bounds collisionBubble;
    
+    public void EndGame(string endgameMessage)
+    {
+        if (lives != 0)
+        {
+            gameOverPanel.GetComponent<Text>().text = endgameMessage;
+            lives = 0;
+        }
+    }
 
     private void Awake()
     {
@@ -96,7 +104,7 @@ public class GameController : MonoBehaviour
                 {
                     levelTimer.enabled = false;
                     levelNumberString.enabled = false;
-                    lives = 0;
+                    GameController.Instance.EndGame("GAME OVER");
                 }
                 else
                 {
