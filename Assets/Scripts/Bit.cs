@@ -15,6 +15,7 @@ public class Bit : MonoBehaviour
     LayerMask brickMask; 
 
     bool CanCollideFlag;
+    public bool hasBounced = false;
 
 
     private void OnEnable()
@@ -54,7 +55,7 @@ public class Bit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (CanCollideFlag) {
+        if (!hasBounced && CanCollideFlag) {
             RaycastHit2D rH = Physics2D.Raycast(transform.position, Vector2.down, ScreenStuff.colSize/2,brickMask); 
             if (rH.collider!=null) {
                 if (rH.collider.gameObject.GetComponent<Brick>().BitBrickCollide(gameObject)>0) {
@@ -130,6 +131,7 @@ public class Bit : MonoBehaviour
         Rigidbody2D rb2D = GetComponent<Rigidbody2D>();
         BoxCollider2D box = GetComponent<BoxCollider2D>();
 
+        hasBounced = true;
         box.enabled = false;
         CanCollideFlag = false;
         box.isTrigger = false;
