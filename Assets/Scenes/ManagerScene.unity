@@ -376,7 +376,7 @@ MonoBehaviour:
   game: {fileID: 11400000, guid: acaace0b0b1b6450cb9cd16c42e65093, type: 2}
   bot: {fileID: 1821527173}
   settings: {fileID: 11400000, guid: 7b02eee40b211405a8626adc4d7495ef, type: 2}
-  currentScene: 0
+  currentScene: 1
   bgPanelArr: []
   bgPanel: {fileID: 6436523624224430614, guid: b5bf3d8b53ea54527ac6215a9568df94, type: 3}
   speciesSpawnData: []
@@ -517,6 +517,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_FontData.m_FontSize
       value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 2322143761172007144, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3586710146923071544, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
         type: 3}
