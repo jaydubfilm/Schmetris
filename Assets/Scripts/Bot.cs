@@ -70,8 +70,10 @@ public class Bot : MonoBehaviour
 
     void OnGameOver()
     {
-        foreach (GameObject brick in brickList)
-        {
+        for (int x = 0; x < brickList.Count; x++ )
+            
+        {   
+            GameObject brick = brickList[x];
             brick.GetComponent<Brick>().ExplodeBrick();
         }
     }
