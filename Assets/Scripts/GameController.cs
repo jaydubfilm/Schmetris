@@ -21,6 +21,7 @@ public class GameController : MonoBehaviour
 
     
     public GameObject gameOverPanel;
+    public GameObject restartText;
     //public LevelData[] allLevelData;
     public Game game;
     // public LevelData currentGame;
@@ -75,6 +76,7 @@ public class GameController : MonoBehaviour
         bgPanelArr = new GameObject[4];
         SpawnBGPanels();
         gameOverPanel.SetActive(false);
+        restartText.SetActive(false);
         levelNumberString = GameObject.Find("Level").GetComponent<Text>();
         levelTimer = GameObject.Find("Timer").GetComponent<Text>();
         quitString = GameObject.Find("Quit").GetComponent<Text>();
@@ -112,7 +114,7 @@ public class GameController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Escape)) 
             Application.Quit();
 
-        if(gameOverPanel.activeSelf && Input.anyKeyDown)
+        if(restartText.activeSelf && Input.anyKeyDown)
         {
             Restart();
         }
@@ -141,6 +143,7 @@ public class GameController : MonoBehaviour
     {
         lives = 1;
         gameOverPanel.SetActive(false);
+        restartText.SetActive(false);
         LoadLevelData(1);
         if(OnGameRestart != null)
         {
@@ -148,12 +151,22 @@ public class GameController : MonoBehaviour
         }
     }
 
+    IEnumerator DelayedRestart()
+    {
+        yield return new WaitForSeconds(2.0f);
+        restartText.SetActive(true);
+    }
+
     void GameOverCheck(){
         if (lives == 0)
         {
-            if(!gameOverPanel.activeSelf && OnGameOver != null)
+            if(!gameOverPanel.activeSelf)
             {
-                OnGameOver();
+                StartCoroutine(DelayedRestart());
+                if (OnGameOver != null)
+                {
+                    OnGameOver();
+                }
             }
             gameOverPanel.SetActive(true);
         }

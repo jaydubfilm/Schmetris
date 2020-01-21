@@ -372,6 +372,7 @@ MonoBehaviour:
   enemyList: []
   lives: 1
   gameOverPanel: {fileID: 1154038573}
+  restartText: {fileID: 3821141159295645163}
   game: {fileID: 11400000, guid: acaace0b0b1b6450cb9cd16c42e65093, type: 2}
   bot: {fileID: 1821527173}
   settings: {fileID: 11400000, guid: 7b02eee40b211405a8626adc4d7495ef, type: 2}
@@ -502,6 +503,11 @@ PrefabInstance:
     m_TransformParent: {fileID: 32833780}
     m_Modifications:
     - target: {fileID: 1912261922279189043, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
+        type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 2144861810189655365, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
         type: 3}
       propertyPath: m_FontData.m_FontSize
       value: 40
@@ -731,8 +737,19 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9002851712186130968, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 369c240a1f1ea4a74ba5c1c78ac988ec, type: 3}
+--- !u!1 &3821141159295645163 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9002851712186130968, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
+    type: 3}
+  m_PrefabInstance: {fileID: 3821141159295645162}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5122040302863422782
 PrefabInstance:
   m_ObjectHideFlags: 0
