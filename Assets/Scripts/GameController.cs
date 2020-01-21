@@ -111,8 +111,14 @@ public class GameController : MonoBehaviour
                 EnemySpawnCheck();
         }
 
-        if(Input.GetKeyDown(KeyCode.Escape)) 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
             Application.Quit();
+#endif
+        }
 
         if(restartText.activeSelf && Input.anyKeyDown)
         {
