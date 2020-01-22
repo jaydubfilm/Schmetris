@@ -1137,6 +1137,7 @@ public class Bot : MonoBehaviour
                 if (newBrick!=null) {
                     BrickBitPair brickBitPair = new BrickBitPair(newBrick,bitObj);
                     brickBitPairList.Add(brickBitPair);
+                    GameController.Instance.money++;
                 }
             }
         }

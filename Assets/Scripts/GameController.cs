@@ -13,12 +13,24 @@ public class GameController : MonoBehaviour
     public static GameController Instance { get; private set; }
     public List<GameObject> blockList;
     public List<GameObject> enemyList;
-    
+
+    //Player earned score/money - adjust UI to match every time money is updated
+    int _money = 0;
+    public int money
+    {
+        get
+        {
+            return _money;
+        }
+        set
+        {
+            _money = value;
+            moneyString.text = "$" + _money;
+        }
+    }
 
     public int lives;
     public static int bgAdjustFlag = 0;
-  
-
     
     public GameObject gameOverPanel;
     public GameObject restartText;
@@ -32,6 +44,8 @@ public class GameController : MonoBehaviour
     Text levelNumberString;
 
     Text quitString;
+
+    Text moneyString;
 
     public static float timeRemaining = 10.0f;
     public int currentScene = 1;
@@ -88,6 +102,7 @@ public class GameController : MonoBehaviour
         levelNumberString = GameObject.Find("Level").GetComponent<Text>();
         levelTimer = GameObject.Find("Timer").GetComponent<Text>();
         quitString = GameObject.Find("Quit").GetComponent<Text>();
+        moneyString = GameObject.Find("Money").GetComponent<Text>();
         LoadLevelData(1);
         InvokeRepeating("GameOverCheck",1.0f,0.2f);
     }
@@ -156,6 +171,7 @@ public class GameController : MonoBehaviour
     void Restart()
     {
         lives = 1;
+        money = 0;
         gameOverPanel.SetActive(false);
         restartText.SetActive(false);
         LoadLevelData(1);

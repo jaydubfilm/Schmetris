@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Brick : MonoBehaviour
 {
+    const int brickMoneyMultiplier = 10;
+
     public Vector2Int arrPos;
   
     public int brickType;
@@ -309,6 +311,7 @@ public class Brick : MonoBehaviour
             GetComponent<SpriteRenderer>().sprite = spriteArr[brickLevel];
             if (brickType == 1)
                 gameObject.GetComponent<Fuel>().UpgradeFuelLevel();
+            GameController.Instance.money += (int)Mathf.Pow(brickMoneyMultiplier, brickLevel);
         }
     }
 
