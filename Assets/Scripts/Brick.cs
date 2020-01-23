@@ -311,7 +311,10 @@ public class Brick : MonoBehaviour
             GetComponent<SpriteRenderer>().sprite = spriteArr[brickLevel];
             if (brickType == 1)
                 gameObject.GetComponent<Fuel>().UpgradeFuelLevel();
-            GameController.Instance.money += (int)Mathf.Pow(brickMoneyMultiplier, brickLevel);
+
+            int scoreIncrease = (int)Mathf.Pow(brickMoneyMultiplier, brickLevel);
+            GameController.Instance.money += scoreIncrease;
+            GameController.Instance.CreateFloatingText("$" + scoreIncrease, transform.position);
         }
     }
 

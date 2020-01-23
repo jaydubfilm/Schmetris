@@ -46,6 +46,7 @@ public class GameController : MonoBehaviour
     Text quitString;
 
     Text moneyString;
+    public GameObject scoreIncreasePrefab;
 
     public static float timeRemaining = 10.0f;
     public int currentScene = 1;
@@ -166,6 +167,15 @@ public class GameController : MonoBehaviour
                     Destroy(moveableObject);
             }
         }
+    }
+
+    public void CreateFloatingText(string message, Vector3 worldPos)
+    {
+        GameObject scoreFX = Instantiate(scoreIncreasePrefab);
+        scoreFX.transform.SetParent(GetComponentInChildren<Canvas>().transform);
+        scoreFX.transform.rotation = Quaternion.identity;
+        scoreFX.transform.position = Camera.main.WorldToScreenPoint(worldPos);
+        scoreFX.GetComponent<FloatingText>().Init(message, moneyString.transform.position);
     }
 
     void Restart()
