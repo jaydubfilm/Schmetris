@@ -1137,6 +1137,7 @@ public class Bot : MonoBehaviour
                 if (newBrick!=null) {
                     BrickBitPair brickBitPair = new BrickBitPair(newBrick,bitObj);
                     brickBitPairList.Add(brickBitPair);
+                    GameController.Instance.money++;
                 }
             }
         }
@@ -1298,10 +1299,15 @@ public class Bot : MonoBehaviour
             RaycastHit2D rH = Physics2D.Raycast(brickObj.transform.position, new Vector2(directionFlag,0), ScreenStuff.colSize,bitMask); 
             if (rH.collider!=null) {
                 Brick brick = brickObj.GetComponent<Brick>();
-                if (rH.collider.gameObject.GetComponent<Bit>()!=null)
-                    brick.BitBrickCollide(rH.collider.gameObject);
-                else 
+                if (rH.collider.gameObject.GetComponent<Bit>() != null)
+                {
+                    if(!rH.collider.gameObject.GetComponent<Bit>().hasBounced)
+                        brick.BitBrickCollide(rH.collider.gameObject);
+                }
+                else
+                {
                     ResolveEnemyCollision(rH.collider.gameObject);
+                }
                 collisionFlag = true;
                 break;
             }

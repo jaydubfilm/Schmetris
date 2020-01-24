@@ -13,6 +13,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300012, guid: 0af25fd342af74c2fa8014bc588a148b,
         type: 3}
+    - target: {fileID: 811458502134845658, guid: 81335e38cdcb94b69a74f84eb1a4e5c4,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1523909053783057553, guid: 81335e38cdcb94b69a74f84eb1a4e5c4,
         type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.x
@@ -28,6 +33,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1523909053783057553, guid: 81335e38cdcb94b69a74f84eb1a4e5c4,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2505991961807940838, guid: 81335e38cdcb94b69a74f84eb1a4e5c4,
         type: 3}
       propertyPath: m_Name
@@ -37,6 +47,11 @@ PrefabInstance:
         type: 3}
       propertyPath: bitType
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5688475773625657269, guid: 81335e38cdcb94b69a74f84eb1a4e5c4,
+        type: 3}
+      propertyPath: hasBounced
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6665711575774252834, guid: 81335e38cdcb94b69a74f84eb1a4e5c4,
         type: 3}

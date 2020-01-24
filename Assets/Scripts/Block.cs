@@ -74,8 +74,12 @@ public class Block : MonoBehaviour
         Vector2 force = new Vector2 (Random.Range(-10,10),5);
 
         GameController.Instance.blockList.Remove(gameObject);
-        foreach(GameObject bitObj in bitList) 
+        foreach (GameObject bitObj in bitList)
+        {
+            bitObj.GetComponent<Bit>().hasBounced = true;
             bitObj.GetComponent<BoxCollider2D>().enabled = false;
+            bitObj.GetComponent<BoxCollider2D>().isTrigger = false;
+        }
         
         rb.isKinematic = false;
         rb.AddForce(force,ForceMode2D.Impulse);
