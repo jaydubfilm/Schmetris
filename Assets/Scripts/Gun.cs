@@ -50,10 +50,14 @@ public class Gun : MonoBehaviour
         float closestDistance = 99;
         GameObject target = null;
         foreach (GameObject enemyObj in GameController.Instance.enemyList){
-            float dist = Vector3.Distance(enemyObj.transform.position,transform.position);
-            if ((dist<closestDistance)&&(dist<=range[gunLevel])) {
-                closestDistance = dist;
-                target = enemyObj;
+            if (enemyObj)
+            {
+                float dist = Vector3.Distance(enemyObj.transform.position, transform.position);
+                if ((dist < closestDistance) && (dist <= range[gunLevel]))
+                {
+                    closestDistance = dist;
+                    target = enemyObj;
+                }
             }
         }
         return target;
