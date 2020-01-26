@@ -7,10 +7,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4841581537565243348, guid: 15cfdcc7e33a44b5890958eda6a88d6f,
+    - target: {fileID: 3388488382232329351, guid: 15cfdcc7e33a44b5890958eda6a88d6f,
         type: 3}
-      propertyPath: m_Name
-      value: cyanBit
+      propertyPath: bitType
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3388488382232329351, guid: 15cfdcc7e33a44b5890958eda6a88d6f,
+        type: 3}
+      propertyPath: hasBounced
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4428885563262260240, guid: 15cfdcc7e33a44b5890958eda6a88d6f,
         type: 3}
@@ -67,10 +72,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3388488382232329351, guid: 15cfdcc7e33a44b5890958eda6a88d6f,
+    - target: {fileID: 4841581537565243348, guid: 15cfdcc7e33a44b5890958eda6a88d6f,
         type: 3}
-      propertyPath: bitType
-      value: 6
+      propertyPath: m_Name
+      value: cyanBit
       objectReference: {fileID: 0}
     - target: {fileID: 7689108690851744744, guid: 15cfdcc7e33a44b5890958eda6a88d6f,
         type: 3}
