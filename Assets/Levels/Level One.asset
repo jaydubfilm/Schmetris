@@ -27,7 +27,7 @@ MonoBehaviour:
   - block: {fileID: 8639198243880090134, guid: 80e57895ab51b4fb591ba9d29d8b237b, type: 3}
     probability: 4
   - block: {fileID: 8053527841708647293, guid: 1c867cf67048f4bf89365a468581df26, type: 3}
-    probability: 0
+    probability: 1
   - block: {fileID: 8136126349772497620, guid: 381bf456d798d4284b024eadf422a681, type: 3}
     probability: 1
   - block: {fileID: 8459872569636080655, guid: c5aaf9792745f4939903666a24e35fee, type: 3}

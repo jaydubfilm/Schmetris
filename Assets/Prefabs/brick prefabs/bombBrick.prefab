@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: e8030000d0070000b80b0000a00f000088130000
+  bombEffect: {fileID: 4168938144742612567, guid: 3587e99bcb9dfca468d23457b7fdd40d,
+    type: 3}
 --- !u!1001 &3400431258289026775
 PrefabInstance:
   m_ObjectHideFlags: 0

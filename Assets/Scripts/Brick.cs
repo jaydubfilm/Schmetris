@@ -154,7 +154,7 @@ public class Brick : MonoBehaviour
         if (brickType == 6) {
             Bomb bomb = GetComponent<Bomb>();
             int damage = bomb.damage[brickLevel];
-            BombEnemies(damage);
+            BombEnemies(damage, bomb.bombEffect);
         }
 
         if ((brickType == 1)&&(GetComponent<Fuel>().fuelLevel>0))
@@ -184,25 +184,39 @@ public class Brick : MonoBehaviour
         Destroy(gameObject); 
     }
 
-    IEnumerator WaitAndBombEnemies(int damage){
+    IEnumerator WaitAndBombEnemies(int damage, GameObject effect){
         yield return new WaitForSeconds(0.5f);
-        BombEnemies(damage);
+        BombEnemies(damage, effect);
     }
 
-    public void BombEnemies(int damage){
+    public void BombEnemies(int damage, GameObject effect){
         int c = GameController.Instance.enemyList.Count;
         GameObject[] enemyArr = new GameObject[c];
 
-        for (int x = 0;x < c; x++)
-            enemyArr[x] = GameController.Instance.enemyList[x];
+        for (int x = 0; x < c; x++)
+        {
+            if (GameController.Instance.enemyList[x])
+            {
+                enemyArr[x] = GameController.Instance.enemyList[x];
+            }
+            else
+            {
+                GameController.Instance.enemyList.RemoveAt(x--);
+            }
+        }
         
         for (int x = 0;x < c; x++) {
             Brick brick = enemyArr[x].GetComponent<Brick>();
-            if (brick!=null)
-                brick.AdjustHP(-damage);    
-            else {
+            if (brick != null)
+            {
+                brick.AdjustHP(-damage);
+                GameObject explosion = Instantiate(effect, brick.transform.position, Quaternion.identity);
+            }
+            else
+            {
                 Enemy enemy = enemyArr[x].GetComponent<Enemy>();
-                enemy.hP -=damage;
+                enemy.hP -= damage;
+                GameObject explosion = Instantiate(effect, enemy.transform.position, Quaternion.identity);
             }
         }
     }
@@ -289,7 +303,7 @@ public class Brick : MonoBehaviour
 
 
     public bool IsCore() {
-        if (arrPos == bot.coreV2)
+        if (bot && arrPos == bot.coreV2)
             return true;
         else    
             return false;
