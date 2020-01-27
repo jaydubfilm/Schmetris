@@ -48,6 +48,9 @@ public class GameController : MonoBehaviour
     Text moneyString;
     public GameObject scoreIncreasePrefab;
 
+    Text noFuelString;
+    float noFuelAlpha = 0;
+
     public static float timeRemaining = 10.0f;
     public int currentScene = 1;
     public static int spawnRow = 25;
@@ -104,6 +107,7 @@ public class GameController : MonoBehaviour
         levelTimer = GameObject.Find("Timer").GetComponent<Text>();
         quitString = GameObject.Find("Quit").GetComponent<Text>();
         moneyString = GameObject.Find("Money").GetComponent<Text>();
+        noFuelString = GameObject.Find("NoFuel").GetComponent<Text>();
         LoadLevelData(1);
         InvokeRepeating("GameOverCheck",1.0f,0.2f);
     }
@@ -149,6 +153,9 @@ public class GameController : MonoBehaviour
             Restart();
         }
 
+        noFuelAlpha = Mathf.Max(0, noFuelAlpha - Time.deltaTime);
+        noFuelString.color = new Color(1, 1, 1, noFuelAlpha);
+
         ScrollBackground();
 
         foreach (GameObject moveableObject in GameObject.FindGameObjectsWithTag("Moveable")) {
@@ -167,6 +174,12 @@ public class GameController : MonoBehaviour
                     Destroy(moveableObject);
             }
         }
+    }
+
+    public void NoFuelMessage()
+    {
+        noFuelAlpha = 1;
+        noFuelString.color = Color.white;
     }
 
     public void CreateFloatingText(string message, Vector3 worldPos)

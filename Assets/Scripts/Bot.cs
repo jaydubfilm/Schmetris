@@ -1231,8 +1231,8 @@ public class Bot : MonoBehaviour
     }
 
     void Rotate(int direction) {
-        if (!HasFuel())
-            return;
+        //if (!HasFuel())
+         //   return;
         
         botRotation+=direction;
         rotation1 = botBody.transform.rotation;
@@ -1266,7 +1266,10 @@ public class Bot : MonoBehaviour
             return;
 
         if (!HasFuel())
+        {
+            GameController.Instance.NoFuelMessage();
             return;
+        }
 
         bool cFlag = true;
 
