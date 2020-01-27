@@ -1332,6 +1332,9 @@ public class Bot : MonoBehaviour
     }
 
     public Vector2Int GetDownVector(){
+
+        // returns a screen vector that represents where 'down' is relative to the bot
+        
         Vector2Int downV2;
 
         switch (botRotation) {

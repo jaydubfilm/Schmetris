@@ -10,21 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
-  m_Name: Tutorial 2
+  m_Name: Tutorial 3
   m_EditorClassIdentifier: 
   levelDuration: 45
   blocks:
-  - block: {fileID: 488350703338922660, guid: c33749ff23fca4621a66b4e1b8c7ad26, type: 3}
+  - block: {fileID: 8146263361562881765, guid: 8d1f4aa6e94e1439bb017982bbae21df, type: 3}
     probability: 1
-  - block: {fileID: 798731784141526963, guid: e1ccf596e5441483aa2bfe98aa35da02, type: 3}
+  - block: {fileID: 3052228523271653724, guid: 1e9196a3828aa41c4bc5cf6af70bfc71, type: 3}
     probability: 1
-  - block: {fileID: 2840699409229192888, guid: d4798ab7ce4f540febf6cac94e97ede0, type: 3}
-    probability: 1
-  - block: {fileID: 5399240307803968247, guid: ab069a2ca412044889730906a907b7c5, type: 3}
-    probability: 1
-  - block: {fileID: 8480972586710585632, guid: 934b8c0b6a23b4092bdf57addff8b22d, type: 3}
+  - block: {fileID: 4270379508308473956, guid: 2bf086c39835f424f8e5c4d9749f56ee, type: 3}
     probability: 2
+  - block: {fileID: 3908810048976006719, guid: 0c609c432c86b42ad9631220ee8db9c6, type: 3}
+    probability: 3
+  - block: {fileID: 5399240307803968247, guid: ab069a2ca412044889730906a907b7c5, type: 3}
+    probability: 2
+  - block: {fileID: 2589978003207516240, guid: e215a09cb11b7426cabf3b57049ca5b1, type: 3}
+    probability: 1
   - block: {fileID: 6215762431153503963, guid: 0de4a4f3435814b5db99a2dea142f90a, type: 3}
+    probability: 2
+  - block: {fileID: 8480972586710585632, guid: 934b8c0b6a23b4092bdf57addff8b22d, type: 3}
     probability: 2
   speciesSpawnData: []
   blockSpawnRate: 0.3
