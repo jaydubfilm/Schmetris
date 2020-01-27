@@ -22,7 +22,7 @@ public class Overheat : MonoBehaviour
         heatLevel++;
         UpdateHeatSprite();
         if (heatLevel > maxHeatLevel)
-            GameController.Instance.EndGame("CORE OVERHEATED - Game Over");
+            GameController.Instance.EndGame("CORE OVERHEATED");
         lastHitTime = Time.time; 
     }
 

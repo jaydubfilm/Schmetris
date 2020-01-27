@@ -78,7 +78,40 @@ public class Bot : MonoBehaviour
         }
     }
 
+    void OnLoseLife()
+    {
+        for (int x = 0; x < brickList.Count; x++)
+
+        {
+            GameObject brick = brickList[x];
+            brick.GetComponent<Brick>().ExplodeBrick();
+        }
+    }
+
     void OnGameRestart()
+    {
+        coreBrick = masterBrickList[0];
+        coreV2 = new Vector2Int(maxBotRadius, maxBotRadius);
+        brickArr = new GameObject[maxBotWidth, maxBotHeight];
+        brickTypeArr = new int[maxBotWidth, maxBotHeight];
+        gameObject.transform.position = new Vector3(coreX, coreY, 0);
+        gameObject.transform.rotation = Quaternion.identity;
+
+        for (int x = 0; x < maxBotWidth; x++)
+            for (int y = 0; y < maxBotHeight; y++)
+            {
+                brickTypeArr[x, y] = -1;
+            }
+        botRotation = 0;
+        powerGrid = Instantiate(powerGrid, gameObject.transform);
+
+        startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(), new Vector3(0, 0, 0), Quaternion.identity);
+        AddStartingBricks();
+        powerGridRefreshFlag = true;
+    }
+
+    //Rebuild player's bot from the start of this level
+    void OnLevelRestart()
     {
         coreBrick = masterBrickList[0];
         coreV2 = new Vector2Int(maxBotRadius, maxBotRadius);
@@ -104,12 +137,16 @@ public class Bot : MonoBehaviour
     {
         GameController.OnGameOver += OnGameOver;
         GameController.OnGameRestart += OnGameRestart;
+        GameController.OnLevelRestart += OnLevelRestart;
+        GameController.OnLoseLife += OnLoseLife;
     }
 
     private void OnDisable()
     {
         GameController.OnGameOver -= OnGameOver;
         GameController.OnGameRestart -= OnGameRestart;
+        GameController.OnLevelRestart -= OnLevelRestart;
+        GameController.OnLoseLife -= OnLoseLife;
     }
 
     void Awake() 
@@ -1262,7 +1299,7 @@ public class Bot : MonoBehaviour
     }
 
     void MoveBot(int direction) {
-        if (GameController.Instance.lives == 0)
+        if (GameController.Instance.isBotDead)
             return;
 
         if (!HasFuel())

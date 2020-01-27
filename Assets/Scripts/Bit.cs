@@ -21,11 +21,13 @@ public class Bit : MonoBehaviour
     private void OnEnable()
     {
         GameController.OnGameOver += ExplodeBit;
+        GameController.OnLoseLife += ExplodeBit;
     }
 
     private void OnDisable()
     {
         GameController.OnGameOver -= ExplodeBit;
+        GameController.OnLoseLife -= ExplodeBit;
     }
 
     // Start is called before the first frame update

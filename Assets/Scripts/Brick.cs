@@ -149,7 +149,7 @@ public class Brick : MonoBehaviour
         float animDuration;
 
         if (brickType == 0 && (bot.BrickAtBotArr(bot.coreV2) == null))
-            GameController.Instance.EndGame("CORE DESTROYED - Game Over");
+            GameController.Instance.EndGame("CORE DESTROYED");
 
         if (brickType == 6) {
             Bomb bomb = GetComponent<Bomb>();
@@ -245,7 +245,7 @@ public class Brick : MonoBehaviour
         if (IsParasite())
             GameController.Instance.enemyList.Remove(gameObject);
         if (bot.BrickAtBotArr(bot.coreV2)==null)
-            GameController.Instance.EndGame("CORE DESTROYED - Game Over");
+            GameController.Instance.EndGame("CORE DESTROYED");
 
         if (brickType == 1)
             bot.fuelBrickList.Remove(gameObject);
