@@ -184,7 +184,8 @@ public class GameController : MonoBehaviour
         money = 0;
         gameOverPanel.SetActive(false);
         restartText.SetActive(false);
-        LoadLevelData(1);
+        currentScene = 1;
+        LoadLevelData(currentScene);
         if(OnGameRestart != null)
         {
             OnGameRestart();

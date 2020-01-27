@@ -304,7 +304,7 @@ public class Bot : MonoBehaviour
     public void TripleTestBot()
     {
         foreach (GameObject brickObj in brickList){
-            if (TripleTestBrick(brickObj.GetComponent<Brick>().arrPos) == true) {
+            if (!brickObj.GetComponent<Parasite>() && TripleTestBrick(brickObj.GetComponent<Brick>().arrPos) == true) {
                 return;
             }   
         }
@@ -312,7 +312,6 @@ public class Bot : MonoBehaviour
 
     public bool TripleTestBrick(Vector2Int arrPos)
     {
-        
 
         bool hMatch = false;
         bool vMatch = false;

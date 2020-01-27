@@ -55,7 +55,7 @@ public class Bit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!hasBounced && CanCollideFlag) {
+        if (!hasBounced && CanCollideFlag && !GetComponent<Enemy>()) {
             RaycastHit2D rH = Physics2D.Raycast(transform.position, Vector2.down, ScreenStuff.colSize/2,brickMask); 
             if (rH.collider!=null) {
                 if (rH.collider.gameObject.GetComponent<Brick>().BitBrickCollide(gameObject)>0) {
