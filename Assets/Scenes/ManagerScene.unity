@@ -500,6 +500,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blockList: []
   enemyList: []
+  bitReference:
+  - {fileID: 2505991961807940838, guid: 81335e38cdcb94b69a74f84eb1a4e5c4, type: 3}
+  - {fileID: 4307808082125022822, guid: 9eb6eca47c0ec4e80967575d5ee25eee, type: 3}
+  - {fileID: 6901300428808103629, guid: 2b89696b11b754a41bc48d1df6010813, type: 3}
+  - {fileID: 4991958652618335879, guid: 15b400636cc854252af8d1951a6be438, type: 3}
+  - {fileID: 1886541818451629197, guid: bcef3189518744689893d67840e5b8dd, type: 3}
+  - {fileID: 6980580177892401170, guid: 1690ec5bf10ff4a07894aeb3e8bebc52, type: 3}
+  - {fileID: 4913680874586773639, guid: 266df219f89b24a3597b486e957d1674, type: 3}
+  - {fileID: 4841581537565243348, guid: 15cfdcc7e33a44b5890958eda6a88d6f, type: 3}
+  - {fileID: 8219368864634782378, guid: 5455aca0c3e244e788c63cc69e87057e, type: 3}
+  - {fileID: 3832286982253132984, guid: 17d870134c96041f99febc285c8898a3, type: 3}
   isBotDead: 0
   gameOverPanel: {fileID: 1154038573}
   restartText: {fileID: 3821141159295645163}

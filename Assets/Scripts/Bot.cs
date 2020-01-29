@@ -641,11 +641,11 @@ public class Bot : MonoBehaviour
                 int type = orphanBrick.ConvertToBitType();
                 int level = orphanBrick.brickLevel;
 
-                newBitObj = Instantiate(bitPrefab,bPos,Quaternion.identity);
+                newBitObj = Instantiate(GameController.Instance.bitReference[type],bPos,Quaternion.identity);
                 newBitObj.transform.parent = newBlockObj.transform;  
                 Bit newBit = newBitObj.GetComponent<Bit>();
                 newBit.bitType = type;
-                newBit.bitLevel = level;
+                newBit.SetLevel(level);
             }
             orphanBrick.DestroyBrick(); 
         }

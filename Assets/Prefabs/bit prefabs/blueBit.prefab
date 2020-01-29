@@ -7,11 +7,58 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4991958652618335879, guid: 15b400636cc854252af8d1951a6be438,
+    - target: {fileID: 2986004237518138836, guid: 15b400636cc854252af8d1951a6be438,
         type: 3}
-      propertyPath: m_Name
-      value: blueBit
+      propertyPath: spriteArr.Array.size
+      value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 2986004237518138836, guid: 15b400636cc854252af8d1951a6be438,
+        type: 3}
+      propertyPath: bitType
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2986004237518138836, guid: 15b400636cc854252af8d1951a6be438,
+        type: 3}
+      propertyPath: spriteArr.Array.data[0]
+      value: 
+      objectReference: {fileID: 21300110, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 2986004237518138836, guid: 15b400636cc854252af8d1951a6be438,
+        type: 3}
+      propertyPath: spriteArr.Array.data[1]
+      value: 
+      objectReference: {fileID: 21300112, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 2986004237518138836, guid: 15b400636cc854252af8d1951a6be438,
+        type: 3}
+      propertyPath: spriteArr.Array.data[2]
+      value: 
+      objectReference: {fileID: 21300114, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 2986004237518138836, guid: 15b400636cc854252af8d1951a6be438,
+        type: 3}
+      propertyPath: spriteArr.Array.data[3]
+      value: 
+      objectReference: {fileID: 21300116, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 2986004237518138836, guid: 15b400636cc854252af8d1951a6be438,
+        type: 3}
+      propertyPath: spriteArr.Array.data[4]
+      value: 
+      objectReference: {fileID: 21300118, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 2986004237518138836, guid: 15b400636cc854252af8d1951a6be438,
+        type: 3}
+      propertyPath: spriteArr.Array.data[5]
+      value: 
+      objectReference: {fileID: 21300120, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 2986004237518138836, guid: 15b400636cc854252af8d1951a6be438,
+        type: 3}
+      propertyPath: spriteArr.Array.data[6]
+      value: 
+      objectReference: {fileID: 21300122, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
     - target: {fileID: 4251592420244899139, guid: 15b400636cc854252af8d1951a6be438,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -67,10 +114,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2986004237518138836, guid: 15b400636cc854252af8d1951a6be438,
+    - target: {fileID: 4991958652618335879, guid: 15b400636cc854252af8d1951a6be438,
         type: 3}
-      propertyPath: bitType
-      value: 5
+      propertyPath: m_Name
+      value: blueBit
       objectReference: {fileID: 0}
     - target: {fileID: 7837121718068763323, guid: 15b400636cc854252af8d1951a6be438,
         type: 3}

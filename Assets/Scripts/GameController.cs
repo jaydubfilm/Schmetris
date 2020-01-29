@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour
     public static GameController Instance { get; private set; }
     public List<GameObject> blockList;
     public List<GameObject> enemyList;
+    public List<GameObject> bitReference;
 
     //Player earned score/money - adjust UI to match every time money is updated
     int _money = 0;

@@ -7,16 +7,52 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6980580177892401170, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
+    - target: {fileID: 925089867753089857, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
         type: 3}
-      propertyPath: m_Name
-      value: greenBit
+      propertyPath: bitType
+      value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 5288901565796899886, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
+    - target: {fileID: 925089867753089857, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
         type: 3}
-      propertyPath: m_Sprite
+      propertyPath: spriteArr.Array.data[0]
       value: 
       objectReference: {fileID: 21300142, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 925089867753089857, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
+        type: 3}
+      propertyPath: spriteArr.Array.data[1]
+      value: 
+      objectReference: {fileID: 21300144, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 925089867753089857, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
+        type: 3}
+      propertyPath: spriteArr.Array.data[2]
+      value: 
+      objectReference: {fileID: 21300146, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 925089867753089857, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
+        type: 3}
+      propertyPath: spriteArr.Array.data[3]
+      value: 
+      objectReference: {fileID: 21300148, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 925089867753089857, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
+        type: 3}
+      propertyPath: spriteArr.Array.data[4]
+      value: 
+      objectReference: {fileID: 21300150, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 925089867753089857, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
+        type: 3}
+      propertyPath: spriteArr.Array.data[5]
+      value: 
+      objectReference: {fileID: 21300152, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 925089867753089857, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
+        type: 3}
+      propertyPath: spriteArr.Array.data[6]
+      value: 
+      objectReference: {fileID: 21300154, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
         type: 3}
     - target: {fileID: 2208540190280565718, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
         type: 3}
@@ -73,10 +109,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 925089867753089857, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
+    - target: {fileID: 5288901565796899886, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
         type: 3}
-      propertyPath: bitType
-      value: 4
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300142, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 6980580177892401170, guid: 1690ec5bf10ff4a07894aeb3e8bebc52,
+        type: 3}
+      propertyPath: m_Name
+      value: greenBit
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1690ec5bf10ff4a07894aeb3e8bebc52, type: 3}
