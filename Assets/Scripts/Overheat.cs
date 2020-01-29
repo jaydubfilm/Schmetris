@@ -18,6 +18,23 @@ public class Overheat : MonoBehaviour
     
     }
 
+    private void OnEnable()
+    {
+        GameController.OnGameRestart += ResetHeat;
+        GameController.OnLevelRestart += ResetHeat;
+    }
+
+    private void OnDisable()
+    {
+        GameController.OnGameRestart -= ResetHeat;
+        GameController.OnLevelRestart -= ResetHeat;
+    }
+
+    void ResetHeat()
+    {
+        heatLevel = 0;
+    }
+
     public void AddHeat() {
         heatLevel++;
         UpdateHeatSprite();

@@ -100,7 +100,10 @@ public class Brick : MonoBehaviour
         if (bitType == 0) // black bit - hurt the brick
         {
             AdjustHP(-1000);
-            bot.GetComponent<Overheat>().AddHeat();
+            if (!IsParasite())
+            {
+                bot.GetComponent<Overheat>().AddHeat();
+            }
             bit.RemoveFromBlock("explode");
         } 
         else

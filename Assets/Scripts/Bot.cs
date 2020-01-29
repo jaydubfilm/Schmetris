@@ -50,6 +50,7 @@ public class Bot : MonoBehaviour
     
     GameObject coreBrick; 
     Tilemap startTileMap;
+    Sprite[,] savedTileMap;
     public Grid startingBrickGrid;
     public GameObject blockPrefab;
     public GameObject bitPrefab;
@@ -88,12 +89,59 @@ public class Bot : MonoBehaviour
         }
     }
 
+    void OnNewLevel()
+    {
+        foreach (GameObject Brick in brickList)
+        {
+            if(Brick && Brick.GetComponent<Brick>())
+            {
+                Vector2Int brickPos = Brick.GetComponent<Brick>().arrPos;
+                savedTileMap[brickPos.x, brickPos.y] = Brick.GetComponent<SpriteRenderer>().sprite;
+            }
+        }
+
+        /*startTileMap.CompressBounds();
+        BoundsInt bounds = startTileMap.cellBounds;
+        TileBase[] allTiles = startTileMap.GetTilesBlock(bounds);
+        Vector3Int origin = startTileMap.origin;
+
+        for (int x = origin.x; x < origin.x + bounds.size.x; x++)
+        {
+            for (int y = origin.y; y < origin.y + bounds.size.y; y++)
+            {
+                Vector3Int posV3 = new Vector3Int(x, y, 0);
+                Sprite mySprite = startTileMap.GetSprite(posV3);
+
+                if (mySprite != null)
+                {
+                    Vector3 world = brickGrid.LocalToWorld(posV3);
+                    int bType = 1;
+                    int bLevel = 0;
+
+                    startTileMap.SetTile(posV3, null);
+
+                    foreach (GameObject brick in masterBrickList)
+                    {
+                        for (int level = 0; level < brick.GetComponent<Brick>().spriteArr.Length; level++)
+                            if (brick.GetComponent<Brick>().spriteArr[level] == mySprite)
+                            {
+                                bType = brick.GetComponent<Brick>().brickType;
+                                bLevel = level;
+                            }
+                    }
+                    AddBrick(new Vector2Int(x + maxBotRadius, y + maxBotRadius), bType, bLevel);
+                }
+            }
+        }*/
+    }
+
     void OnGameRestart()
     {
         coreBrick = masterBrickList[0];
         coreV2 = new Vector2Int(maxBotRadius, maxBotRadius);
         brickArr = new GameObject[maxBotWidth, maxBotHeight];
         brickTypeArr = new int[maxBotWidth, maxBotHeight];
+        savedTileMap = new Sprite[maxBotWidth, maxBotHeight];
         gameObject.transform.position = new Vector3(coreX, coreY, 0);
         gameObject.transform.rotation = Quaternion.identity;
 
@@ -129,6 +177,17 @@ public class Bot : MonoBehaviour
         powerGrid = Instantiate(powerGrid, gameObject.transform);
 
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(), new Vector3(0, 0, 0), Quaternion.identity);
+
+        /*for (int x = 0; x < maxBotWidth; x++)
+        {
+            for (int y = 0; y < maxBotHeight; y++)
+            {
+                Tile newTile = ScriptableObject.CreateInstance<Tile>();
+                newTile.sprite = savedTileMap[x, y];
+                startTileMap.SetTile(new Vector3Int(x, y, 0), newTile);
+            }
+        }*/
+
         AddStartingBricks();
         powerGridRefreshFlag = true;
     }
@@ -139,6 +198,7 @@ public class Bot : MonoBehaviour
         GameController.OnGameRestart += OnGameRestart;
         GameController.OnLevelRestart += OnLevelRestart;
         GameController.OnLoseLife += OnLoseLife;
+        GameController.OnNewLevel += OnNewLevel;
     }
 
     private void OnDisable()
@@ -147,6 +207,7 @@ public class Bot : MonoBehaviour
         GameController.OnGameRestart -= OnGameRestart;
         GameController.OnLevelRestart -= OnLevelRestart;
         GameController.OnLoseLife -= OnLoseLife;
+        GameController.OnNewLevel -= OnNewLevel;
     }
 
     void Awake() 
@@ -164,6 +225,7 @@ public class Bot : MonoBehaviour
         coreV2 = new Vector2Int (maxBotRadius,maxBotRadius);
         brickArr  = new GameObject[maxBotWidth, maxBotHeight];
         brickTypeArr = new int[maxBotWidth, maxBotHeight];
+        savedTileMap = new Sprite[maxBotWidth, maxBotHeight];
         gameObject.transform.position = new Vector3(coreX, coreY, 0);
         gameObject.transform.rotation = Quaternion.identity;
         botBody = gameObject.GetComponent<Rigidbody2D>();
@@ -179,6 +241,8 @@ public class Bot : MonoBehaviour
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(),new Vector3 (0,0,0), Quaternion.identity);
         AddStartingBricks();
         powerGridRefreshFlag = true;
+
+        OnNewLevel();
     }
 
      // Update is called once per frame

@@ -8,7 +8,7 @@ public class GameController : MonoBehaviour
 {
     //Game-wide events - Individual assets can connect to these to perform actions on specific game/level events (end, restart, etc)
     public delegate void GameEvent();
-    public static event GameEvent OnGameOver, OnGameRestart, OnLoseLife, OnLevelRestart;
+    public static event GameEvent OnGameOver, OnGameRestart, OnLoseLife, OnLevelRestart, OnNewLevel;
 
     public static GameController Instance { get; private set; }
     public List<GameObject> blockList;
@@ -170,6 +170,10 @@ public class GameController : MonoBehaviour
                 else
                 {
                     currentScene++;
+                    if(OnNewLevel != null)
+                    {
+                        OnNewLevel();
+                    }
                     LoadLevelData(currentScene);
                 }
             }
