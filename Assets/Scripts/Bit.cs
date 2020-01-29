@@ -17,15 +17,25 @@ public class Bit : MonoBehaviour
     bool CanCollideFlag;
     public bool hasBounced = false;
 
+    public Sprite[] spriteArr;
 
     private void OnEnable()
     {
         GameController.OnGameOver += ExplodeBit;
+        GameController.OnLoseLife += ExplodeBit;
     }
 
     private void OnDisable()
     {
         GameController.OnGameOver -= ExplodeBit;
+        GameController.OnLoseLife -= ExplodeBit;
+    }
+
+    public void SetLevel(int level)
+    {
+        bitLevel = level;
+        if (level < spriteArr.Length)
+            this.GetComponent<SpriteRenderer>().sprite = spriteArr[bitLevel];
     }
 
     // Start is called before the first frame update

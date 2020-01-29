@@ -8,11 +8,12 @@ public class GameController : MonoBehaviour
 {
     //Game-wide events - Individual assets can connect to these to perform actions on specific game/level events (end, restart, etc)
     public delegate void GameEvent();
-    public static event GameEvent OnGameOver, OnGameRestart;
+    public static event GameEvent OnGameOver, OnGameRestart, OnLoseLife, OnLevelRestart, OnNewLevel;
 
     public static GameController Instance { get; private set; }
     public List<GameObject> blockList;
     public List<GameObject> enemyList;
+    public List<GameObject> bitReference;
 
     //Player earned score/money - adjust UI to match every time money is updated
     int _money = 0;
@@ -29,11 +30,30 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public int lives;
+    //Player lives remaining - adjust UI to match every time lives change
+    int _lives = 0;
+    public int lives
+    {
+        get
+        {
+            return _lives;
+        }
+        set
+        {
+            _lives = value;
+            UpdateLivesUI();
+        }
+    }
+
+    public bool isBotDead = false;
+
     public static int bgAdjustFlag = 0;
     
     public GameObject gameOverPanel;
     public GameObject restartText;
+
+    public GameObject loseLifePanel;
+    public GameObject retryText;
     //public LevelData[] allLevelData;
     public Game game;
     // public LevelData currentGame;
@@ -50,6 +70,10 @@ public class GameController : MonoBehaviour
 
     Text noFuelString;
     float noFuelAlpha = 0;
+
+    public Transform livesGroup;
+    public GameObject livesIcon;
+    List<GameObject> livesUI = new List<GameObject>();
 
     public static float timeRemaining = 10.0f;
     public int currentScene = 1;
@@ -75,12 +99,27 @@ public class GameController : MonoBehaviour
     public float blockSpeed;
     Bounds collisionBubble;
    
+    void UpdateLivesUI()
+    {
+        while(_lives < livesUI.Count && livesUI.Count > 0)
+        {
+            Destroy(livesUI[0]);
+            livesUI.RemoveAt(0);
+        }
+        while(_lives > livesUI.Count)
+        {
+            livesUI.Add(Instantiate(livesIcon, livesGroup));
+        }
+    }
+
     public void EndGame(string endgameMessage)
     {
-        if (lives != 0)
+        if (!isBotDead)
         {
-            gameOverPanel.GetComponent<Text>().text = endgameMessage;
-            lives = 0;
+            isBotDead = true;
+            gameOverPanel.GetComponent<Text>().text = endgameMessage + " - Game Over";
+            loseLifePanel.GetComponent<Text>().text = endgameMessage + " - Life Lost";
+            lives--;
         }
     }
 
@@ -98,9 +137,11 @@ public class GameController : MonoBehaviour
     }
 
     void Start () {
-        lives = 1;
+        lives = 3;
         bgPanelArr = new GameObject[4];
         SpawnBGPanels();
+        loseLifePanel.SetActive(false);
+        retryText.SetActive(false);
         gameOverPanel.SetActive(false);
         restartText.SetActive(false);
         levelNumberString = GameObject.Find("Level").GetComponent<Text>();
@@ -114,7 +155,7 @@ public class GameController : MonoBehaviour
 
     public void Update()
     {
-        if (lives > 0)
+        if (!isBotDead)
         {
             timeRemaining -= Time.deltaTime;
             levelTimer.text = "Time remaining: " + Mathf.Round(timeRemaining);
@@ -124,11 +165,15 @@ public class GameController : MonoBehaviour
                 {
                     levelTimer.enabled = false;
                     levelNumberString.enabled = false;
-                    GameController.Instance.EndGame("GAME OVER");
+                    GameController.Instance.EndGame("OUT OF LEVELS");
                 }
                 else
                 {
                     currentScene++;
+                    if(OnNewLevel != null)
+                    {
+                        OnNewLevel();
+                    }
                     LoadLevelData(currentScene);
                 }
             }
@@ -151,6 +196,10 @@ public class GameController : MonoBehaviour
         if(restartText.activeSelf && Input.anyKeyDown)
         {
             Restart();
+        }
+        else if(retryText.activeSelf && Input.anyKeyDown)
+        {
+            ReplayLevel();
         }
 
         noFuelAlpha = Mathf.Max(0, noFuelAlpha - Time.deltaTime);
@@ -191,10 +240,28 @@ public class GameController : MonoBehaviour
         scoreFX.GetComponent<FloatingText>().Init(message, moneyString.transform.position);
     }
 
+    //Like restart but resets only the current level - for when player has lost a life but not gotten a game over
+    void ReplayLevel()
+    {
+        isBotDead = false;
+        loseLifePanel.SetActive(false);
+        retryText.SetActive(false);
+        gameOverPanel.SetActive(false);
+        restartText.SetActive(false);
+        LoadLevelData(currentScene);
+        if(OnLevelRestart != null)
+        {
+            OnLevelRestart();
+        }
+    }
+
     void Restart()
     {
-        lives = 1;
+        isBotDead = false;
+        lives = 3;
         money = 0;
+        loseLifePanel.SetActive(false);
+        retryText.SetActive(false);
         gameOverPanel.SetActive(false);
         restartText.SetActive(false);
         currentScene = 1;
@@ -211,6 +278,12 @@ public class GameController : MonoBehaviour
         restartText.SetActive(true);
     }
 
+    IEnumerator DelayedReload()
+    {
+        yield return new WaitForSeconds(2.0f);
+        retryText.SetActive(true);
+    }
+
     void GameOverCheck(){
         if (lives == 0)
         {
@@ -224,7 +297,20 @@ public class GameController : MonoBehaviour
             }
             gameOverPanel.SetActive(true);
         }
+        else if (isBotDead)
+        {
+            if (!loseLifePanel.activeSelf)
+            {
+                StartCoroutine(DelayedReload());
+                if (OnLoseLife != null)
+                {
+                    OnLoseLife();
+                }
+            }
+            loseLifePanel.SetActive(true);
+        }
     }
+
     public int[] GetSpawnProbabilities() {
         int[] pArr = new int[blockSpawns.Length];
         for (int d = 0; d < blockSpawns.Length; d++)

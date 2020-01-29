@@ -50,6 +50,7 @@ public class Bot : MonoBehaviour
     
     GameObject coreBrick; 
     Tilemap startTileMap;
+    Sprite[,] savedTileMap;
     public Grid startingBrickGrid;
     public GameObject blockPrefab;
     public GameObject bitPrefab;
@@ -78,7 +79,55 @@ public class Bot : MonoBehaviour
         }
     }
 
+    void OnLoseLife()
+    {
+        for (int x = 0; x < brickList.Count; x++)
+
+        {
+            GameObject brick = brickList[x];
+            brick.GetComponent<Brick>().ExplodeBrick();
+        }
+    }
+
+    void OnNewLevel()
+    {
+        foreach (GameObject Brick in brickList)
+        {
+            if(Brick && Brick.GetComponent<Brick>())
+            {
+                Vector2Int brickPos = Brick.GetComponent<Brick>().arrPos;
+                savedTileMap[brickPos.x, brickPos.y] = Brick.GetComponent<SpriteRenderer>().sprite;
+            }
+        }
+    }
+
     void OnGameRestart()
+    {
+        coreBrick = masterBrickList[0];
+        coreV2 = new Vector2Int(maxBotRadius, maxBotRadius);
+        brickArr = new GameObject[maxBotWidth, maxBotHeight];
+        brickTypeArr = new int[maxBotWidth, maxBotHeight];
+        savedTileMap = new Sprite[maxBotWidth, maxBotHeight];
+        gameObject.transform.position = new Vector3(coreX, coreY, 0);
+        gameObject.transform.rotation = Quaternion.identity;
+
+        for (int x = 0; x < maxBotWidth; x++)
+            for (int y = 0; y < maxBotHeight; y++)
+            {
+                brickTypeArr[x, y] = -1;
+            }
+        botRotation = 0;
+        powerGrid = Instantiate(powerGrid, gameObject.transform);
+
+        startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(), new Vector3(0, 0, 0), Quaternion.identity);
+        AddStartingBricks();
+        powerGridRefreshFlag = true;
+
+        OnNewLevel();
+    }
+
+    //Rebuild player's bot from the start of this level
+    void OnLevelRestart()
     {
         coreBrick = masterBrickList[0];
         coreV2 = new Vector2Int(maxBotRadius, maxBotRadius);
@@ -96,6 +145,17 @@ public class Bot : MonoBehaviour
         powerGrid = Instantiate(powerGrid, gameObject.transform);
 
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(), new Vector3(0, 0, 0), Quaternion.identity);
+
+        for (int x = 0; x < maxBotWidth; x++)
+        {
+            for (int y = 0; y < maxBotHeight; y++)
+            {
+                Tile newTile = ScriptableObject.CreateInstance<Tile>();
+                newTile.sprite = savedTileMap[x, y];
+                startTileMap.SetTile(new Vector3Int(x - maxBotRadius, y - maxBotRadius, 0), newTile);
+            }
+        }
+
         AddStartingBricks();
         powerGridRefreshFlag = true;
     }
@@ -104,12 +164,18 @@ public class Bot : MonoBehaviour
     {
         GameController.OnGameOver += OnGameOver;
         GameController.OnGameRestart += OnGameRestart;
+        GameController.OnLevelRestart += OnLevelRestart;
+        GameController.OnLoseLife += OnLoseLife;
+        GameController.OnNewLevel += OnNewLevel;
     }
 
     private void OnDisable()
     {
         GameController.OnGameOver -= OnGameOver;
         GameController.OnGameRestart -= OnGameRestart;
+        GameController.OnLevelRestart -= OnLevelRestart;
+        GameController.OnLoseLife -= OnLoseLife;
+        GameController.OnNewLevel -= OnNewLevel;
     }
 
     void Awake() 
@@ -127,6 +193,7 @@ public class Bot : MonoBehaviour
         coreV2 = new Vector2Int (maxBotRadius,maxBotRadius);
         brickArr  = new GameObject[maxBotWidth, maxBotHeight];
         brickTypeArr = new int[maxBotWidth, maxBotHeight];
+        savedTileMap = new Sprite[maxBotWidth, maxBotHeight];
         gameObject.transform.position = new Vector3(coreX, coreY, 0);
         gameObject.transform.rotation = Quaternion.identity;
         botBody = gameObject.GetComponent<Rigidbody2D>();
@@ -142,6 +209,8 @@ public class Bot : MonoBehaviour
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(),new Vector3 (0,0,0), Quaternion.identity);
         AddStartingBricks();
         powerGridRefreshFlag = true;
+
+        OnNewLevel();
     }
 
      // Update is called once per frame
@@ -604,11 +673,11 @@ public class Bot : MonoBehaviour
                 int type = orphanBrick.ConvertToBitType();
                 int level = orphanBrick.brickLevel;
 
-                newBitObj = Instantiate(bitPrefab,bPos,Quaternion.identity);
+                newBitObj = Instantiate(GameController.Instance.bitReference[type],bPos,Quaternion.identity);
                 newBitObj.transform.parent = newBlockObj.transform;  
                 Bit newBit = newBitObj.GetComponent<Bit>();
                 newBit.bitType = type;
-                newBit.bitLevel = level;
+                newBit.SetLevel(level);
             }
             orphanBrick.DestroyBrick(); 
         }
@@ -1262,7 +1331,7 @@ public class Bot : MonoBehaviour
     }
 
     void MoveBot(int direction) {
-        if (GameController.Instance.lives == 0)
+        if (GameController.Instance.isBotDead)
             return;
 
         if (!HasFuel())

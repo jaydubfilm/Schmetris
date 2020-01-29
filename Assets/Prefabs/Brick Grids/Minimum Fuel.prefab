@@ -62,7 +62,7 @@ PrefabInstance:
     - target: {fileID: 6798673142492691935, guid: aab3023f0fe9b4c15b1d2521b171d2ab,
         type: 3}
       propertyPath: m_Name
-      value: SnakeEyes
+      value: Minimum Fuel
       objectReference: {fileID: 0}
     - target: {fileID: 6891228336569058074, guid: aab3023f0fe9b4c15b1d2521b171d2ab,
         type: 3}

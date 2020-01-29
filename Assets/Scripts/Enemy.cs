@@ -14,11 +14,13 @@ public class Enemy : MonoBehaviour
     private void OnEnable()
     {
         GameController.OnGameOver += DestroyEnemy;
+        GameController.OnLoseLife += DestroyEnemy;
     }
 
     private void OnDisable()
     {
         GameController.OnGameOver -= DestroyEnemy;
+        GameController.OnLoseLife -= DestroyEnemy;
     }
 
     // Start is called before the first frame update

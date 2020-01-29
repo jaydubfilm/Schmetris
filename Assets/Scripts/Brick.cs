@@ -100,7 +100,10 @@ public class Brick : MonoBehaviour
         if (bitType == 0) // black bit - hurt the brick
         {
             AdjustHP(-1000);
-            bot.GetComponent<Overheat>().AddHeat();
+            if (!IsParasite())
+            {
+                bot.GetComponent<Overheat>().AddHeat();
+            }
             bit.RemoveFromBlock("explode");
         } 
         else
@@ -149,7 +152,7 @@ public class Brick : MonoBehaviour
         float animDuration;
 
         if (brickType == 0 && (bot.BrickAtBotArr(bot.coreV2) == null))
-            GameController.Instance.EndGame("CORE DESTROYED - Game Over");
+            GameController.Instance.EndGame("CORE DESTROYED");
 
         if (brickType == 6) {
             Bomb bomb = GetComponent<Bomb>();
@@ -245,7 +248,7 @@ public class Brick : MonoBehaviour
         if (IsParasite())
             GameController.Instance.enemyList.Remove(gameObject);
         if (bot.BrickAtBotArr(bot.coreV2)==null)
-            GameController.Instance.EndGame("CORE DESTROYED - Game Over");
+            GameController.Instance.EndGame("CORE DESTROYED");
 
         if (brickType == 1)
             bot.fuelBrickList.Remove(gameObject);

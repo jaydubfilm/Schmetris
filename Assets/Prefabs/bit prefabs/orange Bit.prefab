@@ -9,9 +9,56 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3339395617024580638, guid: 442d0dda9ca044fb88edee1caa2bcc99,
         type: 3}
+      propertyPath: spriteArr.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3339395617024580638, guid: 442d0dda9ca044fb88edee1caa2bcc99,
+        type: 3}
       propertyPath: bitType
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 3339395617024580638, guid: 442d0dda9ca044fb88edee1caa2bcc99,
+        type: 3}
+      propertyPath: spriteArr.Array.data[0]
+      value: 
+      objectReference: {fileID: 21300094, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 3339395617024580638, guid: 442d0dda9ca044fb88edee1caa2bcc99,
+        type: 3}
+      propertyPath: spriteArr.Array.data[1]
+      value: 
+      objectReference: {fileID: 21300096, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 3339395617024580638, guid: 442d0dda9ca044fb88edee1caa2bcc99,
+        type: 3}
+      propertyPath: spriteArr.Array.data[2]
+      value: 
+      objectReference: {fileID: 21300098, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 3339395617024580638, guid: 442d0dda9ca044fb88edee1caa2bcc99,
+        type: 3}
+      propertyPath: spriteArr.Array.data[3]
+      value: 
+      objectReference: {fileID: 21300100, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 3339395617024580638, guid: 442d0dda9ca044fb88edee1caa2bcc99,
+        type: 3}
+      propertyPath: spriteArr.Array.data[4]
+      value: 
+      objectReference: {fileID: 21300102, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 3339395617024580638, guid: 442d0dda9ca044fb88edee1caa2bcc99,
+        type: 3}
+      propertyPath: spriteArr.Array.data[5]
+      value: 
+      objectReference: {fileID: 21300104, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
+    - target: {fileID: 3339395617024580638, guid: 442d0dda9ca044fb88edee1caa2bcc99,
+        type: 3}
+      propertyPath: spriteArr.Array.data[6]
+      value: 
+      objectReference: {fileID: 21300106, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+        type: 3}
     - target: {fileID: 4334487393489630345, guid: 442d0dda9ca044fb88edee1caa2bcc99,
         type: 3}
       propertyPath: m_LocalPosition.x
