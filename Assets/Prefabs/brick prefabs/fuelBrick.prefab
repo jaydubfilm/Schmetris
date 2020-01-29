@@ -29,6 +29,7 @@ MonoBehaviour:
   - {fileID: 21300090, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   parentBot: {fileID: 0}
   neighborList: []
+  healthBar: {fileID: 0}
 --- !u!114 &5824135034861798755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41,6 +42,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 419dad0985ef34bdba2d0c81b2c4e4c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fuelLevel: 0
   fuelPeriod: 1
   maxFuelArr: 0a0000002800000096000000f401000008070000
   active: 0
@@ -265,6 +267,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AutoTiling
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6831544958099400304, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7233765132151845338, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
