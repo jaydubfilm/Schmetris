@@ -221,6 +221,7 @@ public class Bot : MonoBehaviour
         if (tripleCheckFlag == true) {
             powerGridRefreshFlag = false;
             tripleCheckFlag = false;
+            tripleWaitFlag = false;
             TripleTestBot();
             StartCoroutine(WaitAndRefreshPower(0.5f));
         }  
@@ -556,10 +557,13 @@ public class Bot : MonoBehaviour
         Destroy(ghost);
     }
 
+    public bool tripleWaitFlag = false;
     IEnumerator WaitAndTripleCheck(float pause)
     {
+        tripleWaitFlag = true;
         yield return new WaitForSeconds(pause);
         tripleCheckFlag = true;
+        tripleWaitFlag = false;
     }
 
     IEnumerator WaitAndRefreshPower(float pause)

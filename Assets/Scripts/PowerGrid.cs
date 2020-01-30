@@ -30,7 +30,7 @@ public class PowerGrid : MonoBehaviour
 
     public void Refresh() {
 
-        if (!bot.powerGridRefreshFlag)
+        if (!bot.powerGridRefreshFlag || bot.tripleCheckFlag || bot.tripleWaitFlag)
             return;
 
         for (int x = 0;x<width;x++)
