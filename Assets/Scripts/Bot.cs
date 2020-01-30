@@ -26,6 +26,8 @@ public class Bot : MonoBehaviour
     [HideInInspector]
     public Quaternion rotation2;
 
+    bool isRotating = false;
+
     [HideInInspector]
     public Vector2Int[] directionV2Arr = new [] {
         new Vector2Int (0,1),
@@ -943,8 +945,8 @@ public class Bot : MonoBehaviour
         }
     }
 
-
     IEnumerator RotateOverTime (Quaternion originalRotation, Quaternion finalRotation, float duration) {
+        isRotating = true;
         float t = 0f;
         Component[] brickScripts = GetComponentsInChildren<Brick>();
 
@@ -958,6 +960,7 @@ public class Bot : MonoBehaviour
         foreach (GameObject brickObj in brickList) {    
             brickObj.GetComponent<Brick>().RotateUpright();
         }
+        isRotating = false;
     }
 
     public GameObject BrickAtBotArr(Vector2Int arrPos) {
@@ -1305,13 +1308,16 @@ public class Bot : MonoBehaviour
 
     void Rotate(int direction) {
         //if (!HasFuel())
-         //   return;
-        
-        botRotation+=direction;
-        rotation1 = botBody.transform.rotation;
-        rotation2 = rotation1*Quaternion.Euler(0,0,-direction*90);
-        StartCoroutine(RotateOverTime(rotation1, rotation2, 0.05f));
-        CorrectBotRotation();   
+        //   return;
+
+        if (!isRotating)
+        {
+            botRotation += direction;
+            rotation1 = botBody.transform.rotation;
+            rotation2 = rotation1 * Quaternion.Euler(0, 0, -direction * 90);
+            StartCoroutine(RotateOverTime(rotation1, rotation2, 0.05f));
+            CorrectBotRotation();
+        }
     }
 
     void CorrectBotRotation(){
