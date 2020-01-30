@@ -25,6 +25,9 @@ MonoBehaviour:
   - block: {fileID: 6215762431153503963, guid: 0de4a4f3435814b5db99a2dea142f90a, type: 3}
     probability: 1
   speciesSpawnData:
+  - species: {fileID: 822335604602250409, guid: 5b93156cd52954237adcfe43c62642b2,
+      type: 3}
+    probability: 0
   - species: {fileID: 5277106986393640395, guid: 28f46922a8ca84764a7fc71259c21536,
       type: 3}
     probability: 1

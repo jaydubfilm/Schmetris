@@ -516,7 +516,7 @@ MonoBehaviour:
   restartText: {fileID: 3821141159295645163}
   loseLifePanel: {fileID: 954041905}
   retryText: {fileID: 887070794}
-  game: {fileID: 11400000, guid: f6aba2d92368340b08c63d73ea319ea0, type: 2}
+  game: {fileID: 11400000, guid: acaace0b0b1b6450cb9cd16c42e65093, type: 2}
   bot: {fileID: 1162166409}
   settings: {fileID: 11400000, guid: 7b02eee40b211405a8626adc4d7495ef, type: 2}
   scoreIncreasePrefab: {fileID: 1390986891220089146, guid: 2f58309bcd325b045b76c2709e3fe960,

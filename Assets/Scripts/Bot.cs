@@ -665,7 +665,7 @@ public class Bot : MonoBehaviour
             if (orphanBrick.IsParasite()){
                 GameObject newEnemyObj;
                 int type = orphanBrick.ConvertToEnemyType();
-                newEnemyObj = Instantiate(GameController.Instance.speciesSpawnData[type].species, orphanBrickObj.transform.position, Quaternion.identity);
+                newEnemyObj = Instantiate(GameController.Instance.speciesSpawnData[type].species, orphanBrick.transform.position, Quaternion.identity);
                 newEnemyObj.GetComponent<Enemy>().hP = orphanBrick.brickHP;
             } else {
                 GameObject newBitObj;
