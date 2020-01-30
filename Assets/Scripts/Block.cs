@@ -35,14 +35,6 @@ public class Block : MonoBehaviour
       rb.velocity = new Vector3(0,-blockSpeed,0);
     }
 
-
-    // Update is called once per frame
-    void Update()
-    {
-     
-    }
-
-
     public int GetXOffset(int coreColumn) {
       int offset = column - coreColumn;
       if (offset > 20)

@@ -115,11 +115,13 @@ public class Brick : MonoBehaviour
                 Vector2Int brickCoords = ScreenStuff.GetOffset(gameObject);
                 Vector2Int hitDirV2 = brickCoords-bitCoords;
 
-                if (hitDirV2 == new Vector2Int(0,0))
+                if (hitDirV2 == new Vector2Int(0, 0))
+                {
                     block.BounceBlock();
+                }
 
                 if (bitType == 1) // white bit - bump the brick
-                {     
+                {
                     bot.BumpColumn(arrPos,hitDirV2);
                     block.BounceBlock();
                 } else {   

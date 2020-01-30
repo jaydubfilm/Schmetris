@@ -47,7 +47,7 @@ public class GameController : MonoBehaviour
 
     public bool isBotDead = false;
 
-    public static int bgAdjustFlag = 0;
+    //public static int bgAdjustFlag = 0;
     
     public GameObject gameOverPanel;
     public GameObject restartText;
@@ -370,7 +370,7 @@ public class GameController : MonoBehaviour
 
         // on player move
 
-        if (bgAdjustFlag!=0) {
+        /*if (bgAdjustFlag!=0) {
             float xOffset = ScreenStuff.colSize*bgAdjustFlag;
 
             // adjust background position
@@ -390,7 +390,7 @@ public class GameController : MonoBehaviour
             }
             
             bgAdjustFlag = 0;
-        }
+        }*/
 
         // flip left BG to right
 
@@ -418,6 +418,35 @@ public class GameController : MonoBehaviour
             bgPanelArr[x].transform.position = bV3[x];
     }
 
+    public void MoveBot(int bgMoveFlag)
+    {
+        float xOffset = ScreenStuff.colSize * bgMoveFlag;
+
+        Vector3[] bV3 = new Vector3[4];
+
+        if (bgPanelArr[0] == null)
+            return;
+
+        // adjust background position
+
+        for (int x = 0; x < 4; x++)
+        {
+            bV3[x] = bgPanelArr[x].transform.position;
+            bV3[x] += new Vector3(xOffset, 0, 0);
+            bgPanelArr[x].transform.position = bV3[x];
+        }
+
+        // adjust all non-player object positions
+
+        GameObject[] movingObjectArr;
+        movingObjectArr = GameObject.FindGameObjectsWithTag("Moveable");
+        foreach (GameObject mo in movingObjectArr)
+        {
+            Vector3 v = mo.transform.position;
+            v.x += xOffset;
+            mo.transform.position = v;
+        }
+    }
 
     void EnemySpawnCheck() {
         enemySpawnTimer -= Time.deltaTime;

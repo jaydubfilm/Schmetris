@@ -1343,7 +1343,7 @@ public class Bot : MonoBehaviour
         bool cFlag = true;
 
         
-        cFlag = CollisionCheck(direction);
+        cFlag = CollisionCheck(direction, 0);
         
 
         if (direction==-1) {  // move left
@@ -1358,16 +1358,21 @@ public class Bot : MonoBehaviour
                 coreCol = ScreenStuff.leftEdgeCol;
         }
 
-        GameController.bgAdjustFlag = -direction;
+        GameController.Instance.MoveBot(-direction);
+
+        CollisionCheck(0, 1);
+
+        //GameController.bgAdjustFlag = -direction;
     }
 
-    public bool CollisionCheck(int directionFlag){  
+    public bool CollisionCheck(int directionFlag, int vertFlag){  
         bool collisionFlag = false;
         // check for left-right bit-brick collisions 
         LayerMask bitMask = LayerMask.GetMask("Bit");
 
         foreach (GameObject brickObj in brickList) {
-            RaycastHit2D rH = Physics2D.Raycast(brickObj.transform.position, new Vector2(directionFlag,0), ScreenStuff.colSize,bitMask); 
+            //RaycastHit2D rH = Physics2D.Raycast(brickObj.transform.position, new Vector2(directionFlag,0), ScreenStuff.colSize,bitMask);
+            RaycastHit2D rH = Physics2D.BoxCast(brickObj.transform.position, Vector2.one * ScreenStuff.colSize, 0, new Vector2(directionFlag, vertFlag), ScreenStuff.colSize, bitMask);
             if (rH.collider!=null) {
                 Brick brick = brickObj.GetComponent<Brick>();
                 if (rH.collider.gameObject.GetComponent<Bit>() != null)
@@ -1385,9 +1390,6 @@ public class Bot : MonoBehaviour
         }
         return collisionFlag;
     }
-
-
-    
 
     public Vector2 GetTopLeftPoint(){
         Vector2 bPos = transform.position;
