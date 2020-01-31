@@ -40,16 +40,22 @@ public class Enemy : MonoBehaviour
         if (hP<=0) 
             DestroyEnemy();
    
-        RaycastHit2D rH = Physics2D.Raycast(transform.position,bot.transform.position-transform.position, ScreenStuff.colSize,brickMask); 
-        if (rH.collider!=null) {
-            bot.ResolveEnemyCollision(gameObject);
-        }
         MoveTowardsBot();
     }
 
     public void MoveTowardsBot(){
         float step = data.speed*Time.deltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, bot.transform.position, step);
+
+        //RaycastHit2D rH = Physics2D.Raycast(transform.position, bot.transform.position - transform.position, ScreenStuff.colSize, brickMask);
+        RaycastHit2D rH = Physics2D.BoxCast(transform.position, Vector2.one * ScreenStuff.colSize, 0, bot.transform.position - transform.position, step, brickMask);
+        if (rH.collider != null)
+        {
+            bot.ResolveEnemyCollision(gameObject);
+        }
+        else
+        {
+            transform.position = Vector3.MoveTowards(transform.position, bot.transform.position, step);
+        }
     }   
 
     public void DestroyEnemy() {

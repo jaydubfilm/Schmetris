@@ -16,6 +16,8 @@ MonoBehaviour:
   targetBrick: {fileID: 0}
   brick: {fileID: 0}
   attackTimer: 0
+  attackPrefab: {fileID: 7857921322564960265, guid: 6a99a139e66c5f144ac5cbe03e6cf77a,
+    type: 3}
 --- !u!1001 &6173386218710306819
 PrefabInstance:
   m_ObjectHideFlags: 0

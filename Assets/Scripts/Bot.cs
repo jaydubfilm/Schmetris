@@ -897,7 +897,7 @@ public class Bot : MonoBehaviour
            
         foreach (GameObject nBrick in brick.GetComponent<Brick>().neighborList) {
             Vector2Int nPos = nBrick.GetComponent<Brick>().arrPos;
-            if (pathArr[nPos.x,nPos.y] >= 0)
+            if (pathArr[nPos.x,nPos.y] >= 0 && !nBrick.GetComponent<Brick>().IsParasite())
                 if (IsBranchConnectedToCore(nPos))
                     return true;
         }

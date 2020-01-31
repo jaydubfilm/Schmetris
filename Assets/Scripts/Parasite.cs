@@ -9,6 +9,7 @@ public class Parasite : MonoBehaviour
     public GameObject targetBrick;
     public Brick brick;
     public float attackTimer;
+    public GameObject attackPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -38,8 +39,12 @@ public class Parasite : MonoBehaviour
     public void AttackTarget() {
         if (targetBrick == null) 
             ChooseNewTarget();
-        if (targetBrick!=null)
+        if (targetBrick != null)
+        {
             targetBrick.GetComponent<Brick>().AdjustHP(-data.damage);
+            GameObject attack = Instantiate(attackPrefab, transform.position, Quaternion.identity);
+            attack.GetComponent<EnemyBullet>().Init(targetBrick.transform);
+        }
     }
 
     public void ChooseNewTarget() {
