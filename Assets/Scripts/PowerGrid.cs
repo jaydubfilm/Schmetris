@@ -73,6 +73,10 @@ public class PowerGrid : MonoBehaviour
                         zoneReminder = true;
                         count--;
                     }
+                    else
+                    {
+                        //brick.isPowered = PowerAtBotCoords(brick.arrPos) > brick.brickLevel;
+                    }
                 }
             }
         }

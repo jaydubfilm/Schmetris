@@ -27,7 +27,28 @@ public class Brick : MonoBehaviour
 
     public List<GameObject> neighborList = new List<GameObject>();
     public HealthBar healthBar;
-    
+
+    //Is this brick fully powered by the grid?
+    bool _isPowered = false;
+    public bool isPowered
+    {
+        get
+        {
+            return _isPowered;
+        }
+        set
+        {
+            _isPowered = value;
+            GetComponent<SpriteRenderer>().color = _isPowered ? Color.white : Color.gray;
+        }
+    }
+
+    //Return adjusted brick level based on available power
+    public int GetPoweredLevel()
+    {
+        return isPowered ? brickLevel : 0;
+    }
+
     void Awake () {
         brickLevel = 0;
         brickHP = brickMaxHP[brickLevel];
@@ -35,6 +56,7 @@ public class Brick : MonoBehaviour
         rb2D = gameObject.GetComponent<Rigidbody2D>();
         healthBar = GetComponentInChildren<HealthBar>();
         healthBar.gameObject.SetActive(false);
+        isPowered = true;
     }
 
     void Start () {
@@ -63,15 +85,15 @@ public class Brick : MonoBehaviour
         brickHP+=damage;
      
         if (brickHP>0){
-            if (brickHP>=brickMaxHP[brickLevel]) {
-                brickHP = brickMaxHP[brickLevel];
+            if (brickHP>=brickMaxHP[brickLevel]) {  //~NOTE - Check if this should use GetPoweredLevel()
+                brickHP = brickMaxHP[brickLevel];  //~NOTE - Check if this should use GetPoweredLevel()
                 healthBar.gameObject.SetActive(false);
             } else if (healthBar.gameObject.activeInHierarchy==false) {
                 healthBar.gameObject.SetActive(true);
-                float normalizedHealth = (float)brickHP/(float)brickMaxHP[brickLevel];
+                float normalizedHealth = (float)brickHP/(float)brickMaxHP[brickLevel];  //~NOTE - Check if this should use GetPoweredLevel()
                 healthBar.SetSize(normalizedHealth);
             } else {
-                float normalizedHealth = (float)brickHP/(float)brickMaxHP[brickLevel];
+                float normalizedHealth = (float)brickHP/(float)brickMaxHP[brickLevel];  //~NOTE - Check if this should use GetPoweredLevel()
                 healthBar.SetSize(normalizedHealth);
             }
         }
@@ -158,7 +180,7 @@ public class Brick : MonoBehaviour
 
         if (brickType == 6) {
             Bomb bomb = GetComponent<Bomb>();
-            int damage = bomb.damage[brickLevel];
+            int damage = bomb.damage[GetPoweredLevel()];
             BombEnemies(damage, bomb.bombEffect);
         }
 

@@ -24,7 +24,7 @@ public class Repair : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Time.time - startTime >= healRate[brick.brickLevel])
+        if (Time.time - startTime >= healRate[brick.GetPoweredLevel()])
         {
             target = FindNewTarget();
             HealTarget();
@@ -40,9 +40,9 @@ public class Repair : MonoBehaviour
             StartCoroutine(MoveSymbol(newHealSymbol));
             StartCoroutine(FadeOutSymbol(newHealSymbol));
 
-            targetBrick.AdjustHP(healPower[brick.brickLevel]);
-            if (targetBrick.brickHP>=targetBrick.brickMaxHP[targetBrick.brickLevel]) {
-                targetBrick.brickHP = targetBrick.brickMaxHP[targetBrick.brickLevel];
+            targetBrick.AdjustHP(healPower[brick.GetPoweredLevel()]);
+            if (targetBrick.brickHP>=targetBrick.brickMaxHP[targetBrick.brickLevel]) {  //~NOTE - Check if this should use GetPoweredLevel()
+                targetBrick.brickHP = targetBrick.brickMaxHP[targetBrick.brickLevel];  //~NOTE - Check if this should use GetPoweredLevel()
             }
         }
     }
@@ -88,9 +88,9 @@ public class Repair : MonoBehaviour
         foreach (GameObject brickObj in bot.brickList){
             Brick brick = brickObj.GetComponent<Brick>();
             if (!brick.IsParasite()) {
-                if (brick.brickHP<brick.brickMaxHP[brick.brickLevel]) {
+                if (brick.brickHP<brick.brickMaxHP[brick.brickLevel]) {  //~NOTE - Check if this should use GetPoweredLevel()
                     float dist = Vector3.Distance(brickObj.transform.position,transform.position);
-                    if ((dist<closestDistance) && (dist<healRange[brick.brickLevel])){
+                    if ((dist<closestDistance) && (dist<healRange[brick.GetPoweredLevel()])){
                         closestDistance = dist;
                         newTarget = brickObj;
                     }

@@ -8,7 +8,6 @@ public class Gun : MonoBehaviour
     public int[] attackPower;
     public float[] range;
     public float speed;
-    int gunLevel;
 
     float startTime;
     Brick parentBrick;
@@ -21,13 +20,12 @@ public class Gun : MonoBehaviour
     {
         startTime = Time.time;
         parentBrick = gameObject.GetComponent<Brick>();
-        gunLevel = parentBrick.brickLevel;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Time.time - startTime >= rateOfFire[parentBrick.brickLevel])
+        if (Time.time - startTime >= rateOfFire[parentBrick.GetPoweredLevel()])
         {
             target = FindTarget();
             if (target!=null)
@@ -37,13 +35,13 @@ public class Gun : MonoBehaviour
     }
 
     public void FireGun(){ 
-        GameObject newBulletObj = Instantiate(bullet[gunLevel],transform.position, Quaternion.identity);
+        GameObject newBulletObj = Instantiate(bullet[parentBrick.GetPoweredLevel()],transform.position, Quaternion.identity);
         Vector3 dirV3 = Vector3.Normalize(target.transform.position-transform.position);
         Bullet newBullet = newBulletObj.GetComponent<Bullet>();
         newBullet.direction = new Vector2(dirV3.x,dirV3.y);
         newBullet.speed = speed;
-        newBullet.damage = attackPower[gunLevel];
-        newBullet.range = range[gunLevel];
+        newBullet.damage = attackPower[parentBrick.GetPoweredLevel()];
+        newBullet.range = range[parentBrick.GetPoweredLevel()];
     }
 
     public GameObject FindTarget(){
@@ -53,7 +51,7 @@ public class Gun : MonoBehaviour
             if (enemyObj)
             {
                 float dist = Vector3.Distance(enemyObj.transform.position, transform.position);
-                if ((dist < closestDistance) && (dist <= range[gunLevel]))
+                if ((dist < closestDistance) && (dist <= range[parentBrick.GetPoweredLevel()]))
                 {
                     closestDistance = dist;
                     target = enemyObj;
