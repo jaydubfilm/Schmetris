@@ -46,12 +46,17 @@ public class GameController : MonoBehaviour
     }
 
     public bool isBotDead = false;
+    public bool isPaused = false;
 
     //public static int bgAdjustFlag = 0;
     
     public GameObject gameOverPanel;
     public Text progressText;
     public GameObject restartText;
+
+    public GameObject pauseMenu;
+    public GameObject mainPanel;
+    public GameObject helpPanel;
 
     public GameObject loseLifePanel;
     public GameObject retryText;
@@ -138,6 +143,9 @@ public class GameController : MonoBehaviour
     }
 
     void Start () {
+        pauseMenu.SetActive(false);
+        isPaused = false;
+        Time.timeScale = 1;
         lives = 3;
         bgPanelArr = new GameObject[4];
         SpawnBGPanels();
@@ -156,7 +164,7 @@ public class GameController : MonoBehaviour
 
     public void Update()
     {
-        if (!isBotDead)
+        if (!isBotDead && !isPaused)
         {
             timeRemaining -= Time.deltaTime;
             levelTimer.text = "Time remaining: " + Mathf.Round(timeRemaining);
@@ -185,13 +193,60 @@ public class GameController : MonoBehaviour
                 EnemySpawnCheck();
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (isPaused)
         {
+            if(helpPanel.activeSelf)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    helpPanel.SetActive(false);
+                    mainPanel.SetActive(true);
+                }
+            }
+            else if(Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                pauseMenu.SetActive(false);
+                isPaused = false;
+                Time.timeScale = 1;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                EndGame("Life Lost");
+                StartCoroutine(ReplayOnLevelDelay());
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                lives = 0;
+                isBotDead = true;
+                gameOverPanel.GetComponent<Text>().text = "Game Over";
+                loseLifePanel.GetComponent<Text>().text = "Life Lost";
+                StartCoroutine(RestartLevelOnDelay());
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                mainPanel.SetActive(false);
+                helpPanel.SetActive(true);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha5))
+            {
 #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
+                UnityEditor.EditorApplication.isPlaying = false;
 #else
             Application.Quit();
 #endif
+            }
+
+        }
+        else
+        {
+            if(Input.GetKeyDown(KeyCode.Escape))
+            {
+                mainPanel.SetActive(true);
+                helpPanel.SetActive(false);
+                pauseMenu.SetActive(true);
+                isPaused = true;
+                Time.timeScale = 0;
+            }
         }
 
         if(restartText.activeSelf && Input.anyKeyDown)
@@ -206,24 +261,49 @@ public class GameController : MonoBehaviour
         noFuelAlpha = Mathf.Max(0, noFuelAlpha - Time.deltaTime);
         noFuelString.color = new Color(1, 1, 1, noFuelAlpha);
 
-        ScrollBackground();
+        if (!isPaused)
+        {
+            ScrollBackground();
 
-        foreach (GameObject moveableObject in GameObject.FindGameObjectsWithTag("Moveable")) {
-            Vector3 pos = moveableObject.transform.position;
+            foreach (GameObject moveableObject in GameObject.FindGameObjectsWithTag("Moveable"))
+            {
+                Vector3 pos = moveableObject.transform.position;
 
-            if (pos.x < ScreenStuff.leftEdgeOfWorld-ScreenStuff.colSize)
-                pos.x = ScreenStuff.rightEdgeOfWorld;
-            if (pos.x > ScreenStuff.rightEdgeOfWorld+ScreenStuff.colSize)
-                pos.x = ScreenStuff.leftEdgeOfWorld;
-            moveableObject.transform.position = pos;
-            if (pos.y < ScreenStuff.bottomEdgeOfWorld) {
-                Block block = moveableObject.GetComponent<Block>();
-                if (block!=null) {
-                    block.DestroyBlock();
-                } else 
-                    Destroy(moveableObject);
+                if (pos.x < ScreenStuff.leftEdgeOfWorld - ScreenStuff.colSize)
+                    pos.x = ScreenStuff.rightEdgeOfWorld;
+                if (pos.x > ScreenStuff.rightEdgeOfWorld + ScreenStuff.colSize)
+                    pos.x = ScreenStuff.leftEdgeOfWorld;
+                moveableObject.transform.position = pos;
+                if (pos.y < ScreenStuff.bottomEdgeOfWorld)
+                {
+                    Block block = moveableObject.GetComponent<Block>();
+                    if (block != null)
+                    {
+                        block.DestroyBlock();
+                    }
+                    else
+                        Destroy(moveableObject);
+                }
             }
         }
+    }
+
+    IEnumerator ReplayOnLevelDelay()
+    {
+        pauseMenu.SetActive(false);
+        isPaused = false;
+        Time.timeScale = 1;
+        yield return new WaitForSecondsRealtime(0.2f);
+        ReplayLevel();
+    }
+
+    IEnumerator RestartLevelOnDelay()
+    {
+        pauseMenu.SetActive(false);
+        isPaused = false;
+        Time.timeScale = 1;
+        yield return new WaitForSecondsRealtime(0.2f);
+        Restart();
     }
 
     public void NoFuelMessage()
@@ -341,6 +421,10 @@ public class GameController : MonoBehaviour
         enemySpawnRate = levelData.enemySpawnRate;
         enemySpawnTimer = enemySpawnRate;
         timeRemaining = levelData.levelDuration;
+
+        pauseMenu.SetActive(false);
+        isPaused = false;
+        Time.timeScale = 1;
     }
 
     void ScrollBackground() {

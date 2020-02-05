@@ -218,6 +218,9 @@ public class Bot : MonoBehaviour
      // Update is called once per frame
     void Update()
     {
+        if (GameController.Instance.isPaused)
+            return;
+
         MoveCheck();
 
         if (tripleCheckFlag == true) {
@@ -1341,7 +1344,7 @@ public class Bot : MonoBehaviour
     }
 
     void MoveBot(int direction) {
-        if (GameController.Instance.isBotDead)
+        if (GameController.Instance.isBotDead || GameController.Instance.isPaused)
             return;
 
         if (!HasFuel())
