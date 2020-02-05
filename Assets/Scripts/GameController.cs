@@ -161,7 +161,7 @@ public class GameController : MonoBehaviour
             levelTimer.text = "Time remaining: " + Mathf.Round(timeRemaining);
             if (timeRemaining < 0)
             {
-                if (currentScene == 3)
+                if (currentScene > game.levelDataArr.Length)
                 {
                     levelTimer.enabled = false;
                     levelNumberString.enabled = false;
@@ -326,7 +326,7 @@ public class GameController : MonoBehaviour
     }
 
     public void LoadLevelData(int levelNumber) {
-        SceneManager.LoadScene(levelNumber);
+        SceneManager.LoadScene(Mathf.Min(SceneManager.sceneCountInBuildSettings - 1,levelNumber));
         levelNumberString.text = "Level: " + levelNumber;  
         levelData = game.levelDataArr[levelNumber-1];
         blockSpawns = levelData.blocks;
