@@ -54,6 +54,7 @@ public class GameController : MonoBehaviour
     public Text progressText;
     public GameObject restartText;
 
+    public GameObject levelMenu;
     public GameObject pauseMenu;
     public GameObject mainPanel;
     public GameObject helpPanel;
@@ -61,6 +62,9 @@ public class GameController : MonoBehaviour
     public GameObject loseLifePanel;
     public GameObject retryText;
     //public LevelData[] allLevelData;
+    public Game easyGame;
+    public Game mediumGame;
+    public Game hardGame;
     public Game game;
     // public LevelData currentGame;
     public Bot bot;
@@ -144,8 +148,9 @@ public class GameController : MonoBehaviour
 
     void Start () {
         pauseMenu.SetActive(false);
-        isPaused = false;
-        Time.timeScale = 1;
+        levelMenu.SetActive(true);
+        isPaused = true;
+        Time.timeScale = 0;
         lives = 3;
         bgPanelArr = new GameObject[4];
         SpawnBGPanels();
@@ -158,8 +163,12 @@ public class GameController : MonoBehaviour
         quitString = GameObject.Find("Quit").GetComponent<Text>();
         moneyString = GameObject.Find("Money").GetComponent<Text>();
         noFuelString = GameObject.Find("NoFuel").GetComponent<Text>();
+    }
+
+    void StartGame()
+    {
         LoadLevelData(1);
-        InvokeRepeating("GameOverCheck",1.0f,0.2f);
+        InvokeRepeating("GameOverCheck", 1.0f, 0.2f);
     }
 
     public void Update()
@@ -195,7 +204,29 @@ public class GameController : MonoBehaviour
 
         if (isPaused)
         {
-            if(helpPanel.activeSelf)
+            if(levelMenu.activeSelf)
+            {
+                if(Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    game = easyGame;
+                    StartGame();
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    game = mediumGame;
+                    StartGame();
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    game = hardGame;
+                    StartGame();
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha4))
+                {
+                    QuitGame();
+                }
+            }
+            else if(helpPanel.activeSelf)
             {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
@@ -229,11 +260,7 @@ public class GameController : MonoBehaviour
             }
             else if (Input.GetKeyDown(KeyCode.Alpha5))
             {
-#if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
-#endif
+                QuitGame();
             }
 
         }
@@ -286,6 +313,15 @@ public class GameController : MonoBehaviour
                 }
             }
         }
+    }
+
+    void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
     }
 
     IEnumerator ReplayOnLevelDelay()
@@ -422,6 +458,7 @@ public class GameController : MonoBehaviour
         enemySpawnTimer = enemySpawnRate;
         timeRemaining = levelData.levelDuration;
 
+        levelMenu.SetActive(false);
         pauseMenu.SetActive(false);
         isPaused = false;
         Time.timeScale = 1;
