@@ -50,6 +50,7 @@ public class GameController : MonoBehaviour
     //public static int bgAdjustFlag = 0;
     
     public GameObject gameOverPanel;
+    public Text progressText;
     public GameObject restartText;
 
     public GameObject loseLifePanel;
@@ -289,6 +290,7 @@ public class GameController : MonoBehaviour
         {
             if(!gameOverPanel.activeSelf)
             {
+                progressText.text = "Level " + currentScene + " attained. $" + money + " Salvaged.";
                 StartCoroutine(DelayedRestart());
                 if (OnGameOver != null)
                 {
