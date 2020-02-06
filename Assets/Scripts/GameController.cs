@@ -179,21 +179,21 @@ public class GameController : MonoBehaviour
             levelTimer.text = "Time remaining: " + Mathf.Round(timeRemaining);
             if (timeRemaining < 0)
             {
-                if (currentScene > game.levelDataArr.Length)
+                /*if (currentScene > game.levelDataArr.Length)
                 {
                     levelTimer.enabled = false;
                     levelNumberString.enabled = false;
                     GameController.Instance.EndGame("OUT OF LEVELS");
                 }
                 else
+                {*/
+                currentScene = Mathf.Min(currentScene + 1, game.levelDataArr.Length);
+                if (OnNewLevel != null)
                 {
-                    currentScene++;
-                    if(OnNewLevel != null)
-                    {
-                        OnNewLevel();
-                    }
-                    LoadLevelData(currentScene);
+                    OnNewLevel();
                 }
+                LoadLevelData(currentScene);
+                //}
             }
 
             BlockSpawnCheck();
