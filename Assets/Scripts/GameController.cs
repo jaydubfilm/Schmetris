@@ -477,7 +477,7 @@ public class GameController : MonoBehaviour
 
         for (int x = 0;x<4;x++) {    
             bV3[x] = bgPanelArr[x].transform.position;
-            bV3[x] += new Vector3 (0,-settings.bgScrollSpeed,0);
+            bV3[x] += new Vector3 (0,-settings.bgScrollSpeed * Time.unscaledDeltaTime,0);
         }
 
         // flip bottom BG to top

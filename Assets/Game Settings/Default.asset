@@ -24,7 +24,7 @@ MonoBehaviour:
   bgHeight: 278
   bgWidth: 388
   bgZDepth: 400
-  bgScrollSpeed: 0.05
+  bgScrollSpeed: 3
   bgScale: {x: 21, y: 21, z: 1}
   maxBotRadius: 6
   ghostMoveSpeed: 30
