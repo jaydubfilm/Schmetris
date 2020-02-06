@@ -240,12 +240,12 @@ public class GameController : MonoBehaviour
                 isPaused = false;
                 Time.timeScale = 1;
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            /*else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 EndGame("Life Lost");
                 StartCoroutine(ReplayOnLevelDelay());
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            }*/
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 lives = 0;
                 isBotDead = true;
@@ -253,12 +253,12 @@ public class GameController : MonoBehaviour
                 loseLifePanel.GetComponent<Text>().text = "Life Lost";
                 StartCoroutine(RestartLevelOnDelay());
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha4))
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
                 mainPanel.SetActive(false);
                 helpPanel.SetActive(true);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha5))
+            else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
                 QuitGame();
             }
