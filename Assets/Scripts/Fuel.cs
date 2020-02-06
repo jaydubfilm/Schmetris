@@ -28,7 +28,7 @@ public class Fuel : MonoBehaviour
         flashingSymbol = transform.Find("FuelSymbol").gameObject;
         flashingSymbol.SetActive(false);
         parentBrick = gameObject.GetComponent<Brick>();
-        maxLevel = maxFuelArr[parentBrick.brickLevel];  //~NOTE - Check if this should use GetPoweredLevel()
+        maxLevel = maxFuelArr[parentBrick.GetPoweredLevel()];  
         warningLevel = Mathf.Max(10,maxLevel/5);
         fuelLevel = maxLevel;
         bot = GameController.Instance.bot;
@@ -97,6 +97,6 @@ public class Fuel : MonoBehaviour
         // int fuelLoss = maxLevel-fuelLevel;
         //maxLevel = maxFuelArr[parentBrick.brickLevel];
         // fuelLevel = maxLevel-fuelLoss;
-        fuelLevel = maxFuelArr[parentBrick.brickLevel]; //~NOTE - Check if this should use GetPoweredLevel()
+        fuelLevel = maxFuelArr[parentBrick.GetPoweredLevel()]; 
     }
 }

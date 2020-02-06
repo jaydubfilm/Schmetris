@@ -85,15 +85,15 @@ public class Brick : MonoBehaviour
         brickHP+=damage;
      
         if (brickHP>0){
-            if (brickHP>=brickMaxHP[brickLevel]) {  //~NOTE - Check if this should use GetPoweredLevel()
-                brickHP = brickMaxHP[brickLevel];  //~NOTE - Check if this should use GetPoweredLevel()
+            if (brickHP>=brickMaxHP[GetPoweredLevel()]) {
+                brickHP = brickMaxHP[GetPoweredLevel()];  
                 healthBar.gameObject.SetActive(false);
             } else if (healthBar.gameObject.activeInHierarchy==false) {
                 healthBar.gameObject.SetActive(true);
-                float normalizedHealth = (float)brickHP/(float)brickMaxHP[brickLevel];  //~NOTE - Check if this should use GetPoweredLevel()
+                float normalizedHealth = (float)brickHP/(float)brickMaxHP[GetPoweredLevel()];
                 healthBar.SetSize(normalizedHealth);
             } else {
-                float normalizedHealth = (float)brickHP/(float)brickMaxHP[brickLevel];  //~NOTE - Check if this should use GetPoweredLevel()
+                float normalizedHealth = (float)brickHP/(float)brickMaxHP[GetPoweredLevel()];
                 healthBar.SetSize(normalizedHealth);
             }
         }
@@ -361,7 +361,7 @@ public class Brick : MonoBehaviour
 
 
     public void HealMaxHP(){
-        brickHP = brickMaxHP[brickLevel];
+        brickHP = brickMaxHP[GetPoweredLevel()];
         healthBar.gameObject.SetActive(false);
     }
 
