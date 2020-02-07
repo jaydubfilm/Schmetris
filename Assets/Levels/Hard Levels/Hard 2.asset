@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
+  m_Name: Hard 2
+  m_EditorClassIdentifier: 
+  levelDuration: 45
+  blocks:
+  - block: {fileID: 3908810048976006719, guid: 0c609c432c86b42ad9631220ee8db9c6, type: 3}
+    probability: 4
+  - block: {fileID: 488350703338922660, guid: c33749ff23fca4621a66b4e1b8c7ad26, type: 3}
+    probability: 3
+  - block: {fileID: 8319017433535808421, guid: 9b9d6e95896a24eada93a5dcd516ada5, type: 3}
+    probability: 2
+  - block: {fileID: 6121247593640326524, guid: 48b12a0c9a0584982acc4d283afe21c3, type: 3}
+    probability: 2
+  - block: {fileID: 5399240307803968247, guid: ab069a2ca412044889730906a907b7c5, type: 3}
+    probability: 2
+  - block: {fileID: 8480972586710585632, guid: 934b8c0b6a23b4092bdf57addff8b22d, type: 3}
+    probability: 3
+  - block: {fileID: 8639198243880090134, guid: 80e57895ab51b4fb591ba9d29d8b237b, type: 3}
+    probability: 2
+  - block: {fileID: 8136126349772497620, guid: 381bf456d798d4284b024eadf422a681, type: 3}
+    probability: 2
+  - block: {fileID: 2589978003207516240, guid: e215a09cb11b7426cabf3b57049ca5b1, type: 3}
+    probability: 1
+  - block: {fileID: 6215762431153503963, guid: 0de4a4f3435814b5db99a2dea142f90a, type: 3}
+    probability: 2
+  speciesSpawnData:
+  - species: {fileID: 822335604602250409, guid: 5b93156cd52954237adcfe43c62642b2,
+      type: 3}
+    probability: 1
+  - species: {fileID: 5277106986393640395, guid: 28f46922a8ca84764a7fc71259c21536,
+      type: 3}
+    probability: 2
+  blockSpawnRate: 0.2
+  enemySpawnRate: 9
+  blockSpeed: 12
