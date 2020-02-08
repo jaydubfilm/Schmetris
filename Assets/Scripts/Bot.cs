@@ -621,6 +621,90 @@ public class Bot : MonoBehaviour
             return false;
     }
 
+    public Vector2Int GetNearestValidBrickPos(Vector2Int arrPos, bool isRecursing)
+    {
+        //If this isn't a valid position, we'll need to look for another
+        bool isValidBrickPos = true;
+        if (!IsValidBrickPos(arrPos))
+            isValidBrickPos = false;
+        if (BrickAtBotArr(arrPos) != null)
+            isValidBrickPos = false;
+
+        //If we're too far from the bot to find neighbours, stop looking in this direction
+        bool hasNeighbor = false;
+        for (int x = 0; x < 4; x++)
+        {
+            Vector2Int testCoords = arrPos + directionV2Arr[x];
+            if (IsValidBrickPos(testCoords))
+            {
+                if (BrickAtBotArr(testCoords) != null)
+                {
+                    hasNeighbor = true;
+                }
+            }
+        }
+
+        //Return a 'default' value so we know to stop recursing this function
+        if (!hasNeighbor)
+        {
+            if (isRecursing)
+                return coreV2;
+            else
+                isValidBrickPos = false;
+        }
+
+        //Nearest valid brick pos has been found
+        if (isValidBrickPos)
+        {
+            return arrPos;
+        }
+        else
+        {
+            //Check right
+            Vector2Int testPos = GetNearestValidBrickPos(new Vector2Int(arrPos.x + 1, arrPos.y), true);
+            if (testPos != coreV2)
+                return testPos;
+
+            //Check left
+            testPos = GetNearestValidBrickPos(new Vector2Int(arrPos.x - 1, arrPos.y), true);
+            if (testPos != coreV2)
+                return testPos;
+
+            //Check up
+            testPos = GetNearestValidBrickPos(new Vector2Int(arrPos.x, arrPos.y + 1), true);
+            if (testPos != coreV2)
+                return testPos;
+
+            //Check down
+            testPos = GetNearestValidBrickPos(new Vector2Int(arrPos.x, arrPos.y - 1), true);
+            if (testPos != coreV2)
+                return testPos;
+
+            //Check top right
+            testPos = GetNearestValidBrickPos(new Vector2Int(arrPos.x + 1, arrPos.y + 1), true);
+            if (testPos != coreV2)
+                return testPos;
+
+            //Check top left
+            testPos = GetNearestValidBrickPos(new Vector2Int(arrPos.x - 1, arrPos.y + 1), true);
+            if (testPos != coreV2)
+                return testPos;
+
+            //Check bottom right
+            testPos = GetNearestValidBrickPos(new Vector2Int(arrPos.x + 1, arrPos.y - 1), true);
+            if (testPos != coreV2)
+                return testPos;
+
+            //Check bottom left
+            testPos = GetNearestValidBrickPos(new Vector2Int(arrPos.x - 1, arrPos.y - 1), true);
+            if (testPos != coreV2)
+                return testPos;
+        }
+
+        //Return a 'default' value so we know to stop recursing this function
+        return coreV2;
+    }
+
     public bool IsValidScreenPos(Vector2Int arrCoords)
     {
         return IsValidBrickPos(ScreenToBotCoords(arrCoords));
@@ -1021,13 +1105,17 @@ public class Bot : MonoBehaviour
 
         // check to see if brickType is valid - MAKE FUNCTION!!
 
-        if ((type>8)||(type<0))
+        if ((type > 8) || (type < 0))
+        {
             return null;
+        }
 
         // check to see that array position is valid and empty
 
-        if ((IsValidBrickPos(arrPos)==false)||(BrickAtBotArr(arrPos)!=null))
+        if ((IsValidBrickPos(arrPos) == false) || (BrickAtBotArr(arrPos) != null))
+        {
             return null;
+        }
 
         offsetV3 = gameObject.transform.rotation * offsetV3;
 
@@ -1068,12 +1156,13 @@ public class Bot : MonoBehaviour
         Vector2Int sOffset = ScreenStuff.GetOffset(enemyObj);
         Vector2Int sCoords = OffsetToArray(sOffset);
         Vector2Int bCoords = ScreenToBotCoords(sCoords);
-    
+        bool hasValidBrickPos = true;
+
         if (!IsValidBrickPos(bCoords))
-            return;
+            hasValidBrickPos = false;
 
         if (BrickAtBotArr(bCoords)!=null)
-            return;
+            hasValidBrickPos = false;
 
         // check to see if the enemy can attach to a brick;
 
@@ -1086,13 +1175,22 @@ public class Bot : MonoBehaviour
                     hasNeighbor = true;
         }
         if (!hasNeighbor)
-            return;
+            hasValidBrickPos = false;
         
+        if(!hasValidBrickPos)
+        {
+            bCoords = GetNearestValidBrickPos(bCoords, false);
+            if (bCoords == coreV2)
+            {
+                return;
+            }
+        }
+
         int brickType = enemy.data.type;
 
         // enemies turn into bricks once they collide with Bot
 
-        GameObject newBrick = AddBrick(bCoords,brickType,0);
+        GameObject newBrick = AddBrick(bCoords, brickType, 0);
         newBrick.GetComponent<Parasite>().data = enemy.data;
         newBrick.GetComponent<Parasite>().targetBrick = enemy.targetBrick;
         newBrick.GetComponent<Brick>().brickHP = enemy.hP;
