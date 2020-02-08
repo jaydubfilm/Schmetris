@@ -46,6 +46,7 @@ public class Bot : MonoBehaviour
     public List<GameObject> brickList;
     int[,] pathArr;
     public PowerGrid powerGrid;
+    public PowerGrid powerGridPrefab;
 
     public Vector2Int coreV2;
     public int botRotation = 0;
@@ -73,22 +74,32 @@ public class Bot : MonoBehaviour
 
     void OnGameOver()
     {
-        for (int x = 0; x < brickList.Count; x++ )
-            
+        while(brickList.Count > 0)
         {   
-            GameObject brick = brickList[x];
-            brick.GetComponent<Brick>().ExplodeBrick();
+            GameObject brick = brickList[0];
+            if(brick)
+                brick.GetComponent<Brick>().ExplodeBrick();
+            if(brickList.Contains(brick))
+            {
+                brickList.Remove(brick);
+            }
         }
+        Destroy(powerGrid.gameObject);
     }
 
     void OnLoseLife()
     {
-        for (int x = 0; x < brickList.Count; x++)
-
+        while (brickList.Count > 0)
         {
-            GameObject brick = brickList[x];
-            brick.GetComponent<Brick>().ExplodeBrick();
+            GameObject brick = brickList[0];
+            if(brick)
+                brick.GetComponent<Brick>().ExplodeBrick();
+            if (brickList.Contains(brick))
+            {
+                brickList.Remove(brick);
+            }
         }
+        Destroy(powerGrid.gameObject);
     }
 
     void OnNewLevel()
@@ -119,7 +130,7 @@ public class Bot : MonoBehaviour
                 brickTypeArr[x, y] = -1;
             }
         botRotation = 0;
-        powerGrid = Instantiate(powerGrid, gameObject.transform);
+        powerGrid = Instantiate(powerGridPrefab, gameObject.transform);
 
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(), new Vector3(0, 0, 0), Quaternion.identity);
         AddStartingBricks();
@@ -144,7 +155,7 @@ public class Bot : MonoBehaviour
                 brickTypeArr[x, y] = -1;
             }
         botRotation = 0;
-        powerGrid = Instantiate(powerGrid, gameObject.transform);
+        powerGrid = Instantiate(powerGridPrefab, gameObject.transform);
 
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(), new Vector3(0, 0, 0), Quaternion.identity);
 
@@ -205,8 +216,8 @@ public class Bot : MonoBehaviour
                 brickTypeArr[x,y] = -1;
             }
         botRotation=0;
-        powerGrid = Instantiate(powerGrid,gameObject.transform);
-  
+        powerGrid = Instantiate(powerGridPrefab, gameObject.transform);
+
         source = GetComponent<AudioSource>();
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(),new Vector3 (0,0,0), Quaternion.identity);
         AddStartingBricks();
@@ -519,18 +530,26 @@ public class Bot : MonoBehaviour
         Rigidbody2D ghostRb2 = CreateGhost(obj2);
        
         brick = obj1.GetComponent<Brick>();
-        if (brick == null) {
+        if (brick == null)
+        {
             bit = obj1.GetComponent<Bit>();
             bit.RemoveFromBlock("destroy");
-        } else
+        }
+        else
+        {
             brick.DestroyBrick();
+        }
 
         brick = obj2.GetComponent<Brick>();
-        if (brick == null) {
+        if (brick == null)
+        {
             bit = obj2.GetComponent<Bit>();
             bit.RemoveFromBlock("destroy");
-        } else
+        }
+        else
+        {
             brick.DestroyBrick();
+        }
 
         Vector3 newPos = obj3.GetComponent<Rigidbody2D>().transform.position;
         StartCoroutine(SlideGhost(ghostRb1,newPos));
@@ -688,6 +707,7 @@ public class Bot : MonoBehaviour
                 newBit.bitType = type;
                 newBit.SetLevel(level);
             }
+
             orphanBrick.DestroyBrick(); 
         }
     }
@@ -1224,8 +1244,10 @@ public class Bot : MonoBehaviour
 
         foreach (BrickBitPair brickBitPair in brickBitPairList){
             if (IsConnectedToCore(brickBitPair.brickObj)){
+
                 brickBitPair.bitObj.GetComponent<Bit>().RemoveFromBlock("Destroy");
             } else {
+
                 brickBitPair.brickObj.GetComponent<Brick>().DestroyBrick();
             }
         }

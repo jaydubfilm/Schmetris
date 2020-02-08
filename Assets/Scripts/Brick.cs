@@ -206,7 +206,7 @@ public class Brick : MonoBehaviour
         StartCoroutine(DestroyAfterAnimation(animDuration));
     }
 
-    IEnumerator DestroyAfterAnimation(float duration){  
+    IEnumerator DestroyAfterAnimation(float duration){
         yield return new WaitForSeconds(duration);
         Destroy(gameObject); 
     }
@@ -254,6 +254,7 @@ public class Brick : MonoBehaviour
     }
 
     public void MakeOrphan() {
+
         RemoveBrickFromBotArray();
         rb2D.isKinematic = false;
     
@@ -271,6 +272,7 @@ public class Brick : MonoBehaviour
         bot.brickList.Remove(gameObject);
         if (IsParasite())
             GameController.Instance.enemyList.Remove(gameObject);
+
         if (bot.BrickAtBotArr(bot.coreV2)==null)
             GameController.Instance.EndGame("CORE DESTROYED");
 

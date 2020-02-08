@@ -108,6 +108,8 @@ public class GameController : MonoBehaviour
 
     public float blockSpeed;
     Bounds collisionBubble;
+
+    bool isRestarting = false;
    
     void UpdateLivesUI()
     {
@@ -245,7 +247,7 @@ public class GameController : MonoBehaviour
                 EndGame("Life Lost");
                 StartCoroutine(ReplayOnLevelDelay());
             }*/
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            else if (!isRestarting && Input.GetKeyDown(KeyCode.Alpha2))
             {
                 lives = 0;
                 isBotDead = true;
@@ -276,8 +278,9 @@ public class GameController : MonoBehaviour
             }
         }
 
-        if(restartText.activeSelf && Input.anyKeyDown)
+        if(!isRestarting && restartText.activeSelf && Input.anyKeyDown)
         {
+            isRestarting = true;
             Restart();
         }
         else if(retryText.activeSelf && Input.anyKeyDown)
@@ -329,16 +332,21 @@ public class GameController : MonoBehaviour
         pauseMenu.SetActive(false);
         isPaused = false;
         Time.timeScale = 1;
-        yield return new WaitForSecondsRealtime(0.2f);
+        yield return new WaitForSecondsRealtime(1.0f);
         ReplayLevel();
     }
 
     IEnumerator RestartLevelOnDelay()
     {
+        isRestarting = true;
         pauseMenu.SetActive(false);
         isPaused = false;
         Time.timeScale = 1;
-        yield return new WaitForSecondsRealtime(0.2f);
+        if (OnGameOver != null)
+        {
+            OnGameOver();
+        }
+        yield return new WaitForSecondsRealtime(1.0f);
         Restart();
     }
 
@@ -381,6 +389,7 @@ public class GameController : MonoBehaviour
         retryText.SetActive(false);
         gameOverPanel.SetActive(false);
         restartText.SetActive(false);
+        isRestarting = false;
         currentScene = 1;
         LoadLevelData(currentScene);
         if(OnGameRestart != null)
@@ -404,7 +413,7 @@ public class GameController : MonoBehaviour
     void GameOverCheck(){
         if (lives == 0)
         {
-            if(!gameOverPanel.activeSelf)
+            if(!gameOverPanel.activeSelf && !isRestarting)
             {
                 progressText.text = "Level " + currentScene + " attained. $" + money + " Salvaged.";
                 StartCoroutine(DelayedRestart());
@@ -412,10 +421,10 @@ public class GameController : MonoBehaviour
                 {
                     OnGameOver();
                 }
+                gameOverPanel.SetActive(true);
             }
-            gameOverPanel.SetActive(true);
         }
-        else if (isBotDead)
+        else if (isBotDead && !isRestarting)
         {
             if (!loseLifePanel.activeSelf)
             {
@@ -424,8 +433,8 @@ public class GameController : MonoBehaviour
                 {
                     OnLoseLife();
                 }
+                loseLifePanel.SetActive(true);
             }
-            loseLifePanel.SetActive(true);
         }
     }
 
