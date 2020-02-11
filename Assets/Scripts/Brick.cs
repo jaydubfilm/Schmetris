@@ -38,10 +38,40 @@ public class Brick : MonoBehaviour
         }
         set
         {
+            if(_isPowered != value)
+            {
+                if(value)
+                {
+                    brickHP = Mathf.Min(brickMaxHP[brickLevel], brickHP + healthDiff);
+                    healthDiff = 0;
+
+                    Fuel fuelBrick = GetComponent<Fuel>();
+                    if(fuelBrick)
+                    {
+                        fuelBrick.fuelLevel = Mathf.Min(fuelBrick.maxFuelArr[brickLevel], fuelBrick.fuelLevel + fuelBrick.fuelDiff);
+                        fuelBrick.fuelDiff = 0;
+                    }
+                }
+                else
+                {
+                    healthDiff = Mathf.Max(0, brickHP - brickMaxHP[0]);
+                    brickHP = Mathf.Min(brickHP, brickMaxHP[0]);
+
+                    Fuel fuelBrick = GetComponent<Fuel>();
+                    if (fuelBrick)
+                    {
+                        fuelBrick.fuelDiff = Mathf.Max(0, fuelBrick.fuelLevel - fuelBrick.maxFuelArr[0]);
+                        fuelBrick.fuelLevel = Mathf.Min(fuelBrick.fuelLevel, fuelBrick.maxFuelArr[0]);
+                    }
+                }
+            }
             _isPowered = value;
             GetComponent<SpriteRenderer>().color = _isPowered ? Color.white : Color.gray;
         }
     }
+
+    //Store change in brick's health if power level changes
+    int healthDiff = 0;
 
     //Return adjusted brick level based on available power
     public int GetPoweredLevel()
@@ -56,7 +86,7 @@ public class Brick : MonoBehaviour
         rb2D = gameObject.GetComponent<Rigidbody2D>();
         healthBar = GetComponentInChildren<HealthBar>();
         healthBar.gameObject.SetActive(false);
-        isPowered = true;
+        _isPowered = false;
     }
 
     void Start () {
@@ -347,6 +377,7 @@ public class Brick : MonoBehaviour
     public void UpgradeBrick() 
     {
         if (brickLevel<spriteArr.Length-1) {
+            isPowered = true;
             brickLevel++;
             ID++;
             brickHP = brickMaxHP[brickLevel];

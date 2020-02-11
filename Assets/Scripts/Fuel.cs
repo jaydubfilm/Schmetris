@@ -19,6 +19,8 @@ public class Fuel : MonoBehaviour
     
     Brick parentBrick;
 
+    //Store change in brick's fuel leve if power level changes
+    public int fuelDiff = 0;
 
     // Start is called before the first frame update
     void Start()

@@ -75,7 +75,7 @@ public class PowerGrid : MonoBehaviour
                     }
                     else
                     {
-                        //brick.isPowered = PowerAtBotCoords(brick.arrPos) > brick.brickLevel;
+                        brick.isPowered = PowerAtBotCoords(brick.arrPos) > brick.brickLevel;
                     }
                 }
             }
