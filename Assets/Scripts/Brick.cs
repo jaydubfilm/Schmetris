@@ -246,23 +246,24 @@ public class Brick : MonoBehaviour
         BombEnemies(damage, effect);
     }
 
-    public void BombEnemies(int damage, GameObject effect){
-        int c = GameController.Instance.enemyList.Count;
-        GameObject[] enemyArr = new GameObject[c];
+    public void BombEnemies(int damage, GameObject effect)
+    {
+        List<GameObject> enemyArr = new List<GameObject>();
 
-        for (int x = 0; x < c; x++)
+        for (int x = 0; x < GameController.Instance.enemyList.Count; x++)
         {
             if (GameController.Instance.enemyList[x])
             {
-                enemyArr[x] = GameController.Instance.enemyList[x];
+                enemyArr.Add(GameController.Instance.enemyList[x]);
             }
             else
             {
                 GameController.Instance.enemyList.RemoveAt(x--);
             }
         }
-        
-        for (int x = 0;x < c; x++) {
+
+        for (int x = 0; x < enemyArr.Count; x++)
+        {
             Brick brick = enemyArr[x].GetComponent<Brick>();
             if (brick != null)
             {
