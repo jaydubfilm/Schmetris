@@ -459,6 +459,11 @@ public class Bot : MonoBehaviour
         RefreshNeighborLists();
         // powerGrid.Refresh();
 
+        //Look for orphaned bricks that need to be reattached around upgraded brick
+        List<GameObject> m1Orphans = FindUpgradeOrphans(m1Pos, arrPos);
+        List<GameObject> m2Orphans = FindUpgradeOrphans(m2Pos, arrPos);
+        List<GameObject> arrOrphans = FindUpgradeOrphans(arrPos, arrPos);
+
         if ((IsConnectedToCore(sideBrick1))||(IsConnectedToCore(sideBrick2)))
             centreIsStable = true;
         
@@ -492,6 +497,142 @@ public class Bot : MonoBehaviour
         return true;
     }
 
+    List<GameObject> FindUpgradeOrphans(Vector2Int originPos, Vector2Int upgradePos)
+    {
+        List<GameObject> foundOrphans = new List<GameObject>();
+        if(originPos != upgradePos)
+        {
+            bool isVertical = originPos.x == upgradePos.x;
+
+            //Check all blocks that might only be attached to the core by the originPos brick (any that are not touching upgradePos)
+            if(isVertical)
+            {
+                //Right brick
+                Vector2Int checkBrick = new Vector2Int(originPos.x + 1, originPos.y);
+                GameObject targetBrick = BrickAtBotArr(checkBrick);
+                if (targetBrick && !IsConnectedToCore(targetBrick))
+                {
+                    foundOrphans.Add(targetBrick);
+                }
+
+                //Left brick
+                checkBrick = new Vector2Int(originPos.x - 1, originPos.y);
+                targetBrick = BrickAtBotArr(checkBrick);
+                if (targetBrick && !IsConnectedToCore(targetBrick))
+                {
+                    foundOrphans.Add(targetBrick);
+                }
+
+                //Outer edge bricks
+                checkBrick = new Vector2Int(originPos.x, originPos.y + (upgradePos.y < originPos.y ? 1 : -1));
+                targetBrick = BrickAtBotArr(checkBrick);
+                if (targetBrick && !IsConnectedToCore(targetBrick))
+                {
+                    foundOrphans.Add(targetBrick);
+                }
+
+                checkBrick = new Vector2Int(originPos.x + 1, originPos.y + (upgradePos.y < originPos.y ? 1 : -1));
+                targetBrick = BrickAtBotArr(checkBrick);
+                if (targetBrick && !IsConnectedToCore(targetBrick))
+                {
+                    foundOrphans.Add(targetBrick);
+                }
+
+                checkBrick = new Vector2Int(originPos.x - 1, originPos.y + (upgradePos.y < originPos.y ? 1 : -1));
+                targetBrick = BrickAtBotArr(checkBrick);
+                if (targetBrick && !IsConnectedToCore(targetBrick))
+                {
+                    foundOrphans.Add(targetBrick);
+                }
+            }
+            else
+            {
+                //Top brick
+                Vector2Int checkBrick = new Vector2Int(originPos.x, originPos.y + 1);
+                GameObject targetBrick = BrickAtBotArr(checkBrick);
+                if (targetBrick && !IsConnectedToCore(targetBrick))
+                {
+                    foundOrphans.Add(targetBrick);
+                }
+
+                //Bottom brick
+                checkBrick = new Vector2Int(originPos.x, originPos.y - 1);
+                targetBrick = BrickAtBotArr(checkBrick);
+                if (targetBrick && !IsConnectedToCore(targetBrick))
+                {
+                    foundOrphans.Add(targetBrick);
+                }
+
+                //Outer edge bricks
+                checkBrick = new Vector2Int(originPos.x + (upgradePos.x < originPos.x ? 1 : -1), originPos.y);
+                targetBrick = BrickAtBotArr(checkBrick);
+                if (targetBrick && !IsConnectedToCore(targetBrick))
+                {
+                    foundOrphans.Add(targetBrick);
+                }
+
+                checkBrick = new Vector2Int(originPos.x + (upgradePos.x < originPos.x ? 1 : -1), originPos.y + 1);
+                targetBrick = BrickAtBotArr(checkBrick);
+                if (targetBrick && !IsConnectedToCore(targetBrick))
+                {
+                    foundOrphans.Add(targetBrick);
+                }
+
+                checkBrick = new Vector2Int(originPos.x + (upgradePos.x < originPos.x ? 1 : -1), originPos.y - 1);
+                targetBrick = BrickAtBotArr(checkBrick);
+                if (targetBrick && !IsConnectedToCore(targetBrick))
+                {
+                    foundOrphans.Add(targetBrick);
+                }
+            }
+        }
+        else
+        {
+            //Temporarily remove center brick in upgrade to check for orphans on edges
+            GameObject upgradeBrick = BrickAtBotArr(upgradePos);
+            SetBrickAtBotArr(upgradePos, null);
+            brickTypeArr[upgradePos.x, upgradePos.y] = -1;
+            RefreshNeighborLists();
+
+            //Top brick
+            Vector2Int checkBrick = new Vector2Int(originPos.x, originPos.y + 1);
+            GameObject targetBrick = BrickAtBotArr(checkBrick);
+            if (targetBrick && !IsConnectedToCore(targetBrick))
+            {
+                foundOrphans.Add(targetBrick);
+            }
+
+            //Bottom brick
+            checkBrick = new Vector2Int(originPos.x, originPos.y - 1);
+            targetBrick = BrickAtBotArr(checkBrick);
+            if (targetBrick && !IsConnectedToCore(targetBrick))
+            {
+                foundOrphans.Add(targetBrick);
+            }
+
+            //Right brick
+            checkBrick = new Vector2Int(originPos.x + 1, originPos.y);
+            targetBrick = BrickAtBotArr(checkBrick);
+            if (targetBrick && !IsConnectedToCore(targetBrick))
+            {
+                foundOrphans.Add(targetBrick);
+            }
+
+            //Left brick
+            checkBrick = new Vector2Int(originPos.x - 1, originPos.y);
+            targetBrick = BrickAtBotArr(checkBrick);
+            if (targetBrick && !IsConnectedToCore(targetBrick))
+            {
+                foundOrphans.Add(targetBrick);
+            }
+
+            SetBrickAtBotArr(upgradePos, upgradeBrick);
+            brickTypeArr[upgradePos.x, upgradePos.y] = upgradeBrick.GetComponent<Brick>().brickType;
+            RefreshNeighborLists();
+        }
+
+        return foundOrphans;
+    }
 
     public bool DoTypeAndLevelMatch(Vector2Int arrPos1, Vector2Int arrPos2, Vector2Int arrPos3) {
         if (IsValidBrickPos(arrPos1) && IsValidBrickPos(arrPos2) && IsValidBrickPos(arrPos3))
@@ -555,6 +696,7 @@ public class Bot : MonoBehaviour
         StartCoroutine(SlideGhost(ghostRb1,newPos));
         StartCoroutine(SlideGhost(ghostRb2,newPos));
         obj3.GetComponent<Brick>().UpgradeBrick();
+        //~Adjust position of unattached side bricksets
         StartCoroutine(WaitAndTripleCheck(0.2f));
     }
 
