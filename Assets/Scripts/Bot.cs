@@ -476,8 +476,9 @@ public class Bot : MonoBehaviour
        //  powerGrid.Refresh();
 
         if (centreIsStable) // collapse toward centre
-        { 
+        {
             SlideDestroy(matchBrick1,matchBrick2,testBrick);
+            RepositionUpgradeOrphans(hMatch, arrPos, m1Orphans, m2Orphans);
         }
         else // collapse towards shortest path
         {
@@ -486,9 +487,12 @@ public class Bot : MonoBehaviour
             if (p1 < p2) 
             {
                 SlideDestroy(testBrick,matchBrick2,matchBrick1);
-            }  else  {
-                SlideDestroy(matchBrick1,testBrick,matchBrick2);                    
-            }   
+                RepositionUpgradeOrphans(hMatch, m1Pos, arrOrphans, m2Orphans);
+            }
+            else  {
+                SlideDestroy(matchBrick1,testBrick,matchBrick2);
+                RepositionUpgradeOrphans(hMatch, m2Pos, arrOrphans, m1Orphans);
+            }
         }
         source.PlayOneShot(tripleSound,1.0f);
         orphanCheckFlag = true;
@@ -497,6 +501,52 @@ public class Bot : MonoBehaviour
         return true;
     }
 
+    //Determine where bricks orphaned by upgrades must move to in order to remain attached
+    void RepositionUpgradeOrphans(bool isHorizontal, Vector2Int upgradeFinal, List<GameObject> setA, List<GameObject> setB)
+    {
+        if (isHorizontal)
+        {
+            foreach (GameObject OrphanA in setA)
+            {
+                Brick orphanBrick = OrphanA.GetComponent<Brick>();
+                if (orphanBrick)
+                {
+                    orphanBrick.MoveBrick(new Vector2Int(orphanBrick.arrPos.x + (upgradeFinal.x > orphanBrick.arrPos.x ? 1 : -1), orphanBrick.arrPos.y));
+                }
+            }
+
+            foreach (GameObject OrphanB in setB)
+            {
+                Brick orphanBrick = OrphanB.GetComponent<Brick>();
+                if (orphanBrick)
+                {
+                    orphanBrick.MoveBrick(new Vector2Int(orphanBrick.arrPos.x + (upgradeFinal.x > orphanBrick.arrPos.x ? 1 : -1), orphanBrick.arrPos.y));
+                }
+            }
+        }
+        else
+        {
+            foreach (GameObject OrphanA in setA)
+            {
+                Brick orphanBrick = OrphanA.GetComponent<Brick>();
+                if (orphanBrick)
+                {
+                    orphanBrick.MoveBrick(new Vector2Int(orphanBrick.arrPos.x, orphanBrick.arrPos.y + (upgradeFinal.y > orphanBrick.arrPos.y ? 1 : -1)));
+                }
+            }
+
+            foreach (GameObject OrphanB in setB)
+            {
+                Brick orphanBrick = OrphanB.GetComponent<Brick>();
+                if (orphanBrick)
+                {
+                    orphanBrick.MoveBrick(new Vector2Int(orphanBrick.arrPos.x, orphanBrick.arrPos.y + (upgradeFinal.y > orphanBrick.arrPos.y ? 1 : -1)));
+                }
+            }
+        }
+    }
+
+    //Return a list of bricks that will be orphaned if the originPos brick disappears
     List<GameObject> FindUpgradeOrphans(Vector2Int originPos, Vector2Int upgradePos)
     {
         List<GameObject> foundOrphans = new List<GameObject>();
