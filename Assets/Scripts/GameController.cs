@@ -173,6 +173,69 @@ public class GameController : MonoBehaviour
         InvokeRepeating("GameOverCheck", 1.0f, 0.2f);
     }
 
+    //Used for external Canvas buttons for touchscreen controls
+    public void EasyGame()
+    {
+        game = easyGame;
+        StartGame();
+    }
+
+    //Used for external Canvas buttons for touchscreen controls
+    public void MediumGame()
+    {
+        game = mediumGame;
+        StartGame();
+    }
+
+    //Used for external Canvas buttons for touchscreen controls
+    public void HardGame()
+    {
+        game = hardGame;
+        StartGame();
+    }
+
+    //Used for external Canvas buttons for touchscreen controls
+    public void PauseGame()
+    {
+        mainPanel.SetActive(true);
+        helpPanel.SetActive(false);
+        pauseMenu.SetActive(true);
+        isPaused = true;
+        Time.timeScale = 0;
+    }
+
+    //Used for external Canvas buttons for touchscreen controls
+    public void ResumeGame()
+    {
+        pauseMenu.SetActive(false);
+        isPaused = false;
+        Time.timeScale = 1;
+    }
+
+    //Used for external Canvas buttons for touchscreen controls
+    public void RestartGame()
+    {
+        lives = 0;
+        isBotDead = true;
+        gameOverPanel.GetComponent<Text>().text = "Game Over";
+        loseLifePanel.GetComponent<Text>().text = "Life Lost";
+        StartCoroutine(RestartLevelOnDelay());
+    }
+
+    //Used for external Canvas buttons for touchscreen controls
+    public void HelpMenu()
+    {
+        mainPanel.SetActive(false);
+        helpPanel.SetActive(true);
+    }
+
+    //Used for external Canvas buttons for touchscreen controls
+    public void PauseMenu()
+    {
+        helpPanel.SetActive(false);
+        mainPanel.SetActive(true);
+    }
+
     public void Update()
     {
         if (!isBotDead && !isPaused)
@@ -210,18 +273,15 @@ public class GameController : MonoBehaviour
             {
                 if(Input.GetKeyDown(KeyCode.Alpha1))
                 {
-                    game = easyGame;
-                    StartGame();
+                    EasyGame();
                 }
                 else if (Input.GetKeyDown(KeyCode.Alpha2))
                 {
-                    game = mediumGame;
-                    StartGame();
+                    MediumGame();
                 }
                 else if (Input.GetKeyDown(KeyCode.Alpha3))
                 {
-                    game = hardGame;
-                    StartGame();
+                    HardGame();
                 }
                 else if (Input.GetKeyDown(KeyCode.Alpha4))
                 {
@@ -232,15 +292,12 @@ public class GameController : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
-                    helpPanel.SetActive(false);
-                    mainPanel.SetActive(true);
+                    PauseMenu();
                 }
             }
             else if(Input.GetKeyDown(KeyCode.Alpha1))
             {
-                pauseMenu.SetActive(false);
-                isPaused = false;
-                Time.timeScale = 1;
+                ResumeGame();
             }
             /*else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
@@ -249,16 +306,11 @@ public class GameController : MonoBehaviour
             }*/
             else if (!isRestarting && Input.GetKeyDown(KeyCode.Alpha2))
             {
-                lives = 0;
-                isBotDead = true;
-                gameOverPanel.GetComponent<Text>().text = "Game Over";
-                loseLifePanel.GetComponent<Text>().text = "Life Lost";
-                StartCoroutine(RestartLevelOnDelay());
+                RestartGame();
             }
             else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-                mainPanel.SetActive(false);
-                helpPanel.SetActive(true);
+                HelpMenu();
             }
             else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
@@ -270,11 +322,7 @@ public class GameController : MonoBehaviour
         {
             if(Input.GetKeyDown(KeyCode.Escape))
             {
-                mainPanel.SetActive(true);
-                helpPanel.SetActive(false);
-                pauseMenu.SetActive(true);
-                isPaused = true;
-                Time.timeScale = 0;
+                PauseGame();
             }
         }
 
@@ -318,7 +366,8 @@ public class GameController : MonoBehaviour
         }
     }
 
-    void QuitGame()
+    //Used for external Canvas buttons for touchscreen controls
+    public void QuitGame()
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;

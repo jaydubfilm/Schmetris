@@ -1581,8 +1581,54 @@ public class Bot : MonoBehaviour
         return arrPos - coreV2;
     }
 
+    bool isHoldingScreen = false;
+    float holdingScreenTimer = 0;
+    const float maxTapTimer = 0.15f;
+    float prevMouse = 0;
+    void TouchInputCheck()
+    {
+        if (!isHoldingScreen && Input.GetMouseButton(0))
+        {
+            isHoldingScreen = true;
+            holdingScreenTimer = 0;
+            prevMouse = Input.mousePosition.x;
+        }
+        else if (isHoldingScreen && !Input.GetMouseButton(0))
+        {
+            if (holdingScreenTimer <= maxTapTimer)
+            {
+                if (Input.mousePosition.x < Screen.width / 2.0f)
+                {
+                    Rotate(-1);
+                }
+                else
+                {
+                    Rotate(1);
+                }
+            }
+            isHoldingScreen = false;
+            prevMouse = 0;
+        }
+        else if (isHoldingScreen)
+        {
+            holdingScreenTimer += Time.deltaTime;
+            if(holdingScreenTimer > maxTapTimer && prevMouse != Input.mousePosition.x)
+            {
+                if (startTime + delay <= Time.time)
+                {
+                    startTime = Time.time;
+                    delay = shortPause;
+                    MoveBot(Input.mousePosition.x < prevMouse ? -1 : 1);
+                    prevMouse = Input.mousePosition.x;
+                }
+            }
+        }
+    }
+
     void MoveCheck()
     {
+        TouchInputCheck();
+
         if (Input.GetKeyDown(KeyCode.UpArrow)||Input.GetKeyDown("e")) 
             Rotate(1);     
 
