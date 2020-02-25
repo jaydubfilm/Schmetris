@@ -22,8 +22,8 @@ public class Parasite : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-        attackTimer-=Time.deltaTime;
+
+        attackTimer -= Time.deltaTime;
         if (attackTimer < 0) {
             AttackTarget();
             attackTimer = data.attackRate;

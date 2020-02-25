@@ -27,7 +27,7 @@ public class Block : MonoBehaviour
       
       int absoluteCol =  ScreenStuff.GetCol(gameObject);
       float step = blockSpeed*Time.deltaTime;
-      column = ScreenStuff.WrapCol(absoluteCol,bot.coreCol);
+        column = ScreenStuff.WrapCol(absoluteCol,bot.coreCol);
       blockWidth = blockRadius*2+1;
       bitArr = new GameObject[blockWidth,blockWidth];
       coreV2 = new Vector2Int(blockRadius,blockRadius);

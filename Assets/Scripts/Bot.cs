@@ -1612,7 +1612,7 @@ public class Bot : MonoBehaviour
         else if (isHoldingScreen)
         {
             holdingScreenTimer += Time.deltaTime;
-            if(holdingScreenTimer > maxTapTimer && prevMouse != Input.mousePosition.x)
+            if (holdingScreenTimer > maxTapTimer && prevMouse != Input.mousePosition.x)
             {
                 if (startTime + delay <= Time.time)
                 {

@@ -57,7 +57,7 @@ public class Repair : MonoBehaviour
                 symbol.transform.position = Vector3.Lerp(originalPos.position,newPos,t/duration);
                 yield return null;
                 t+=Time.deltaTime;
-            }
+        }
             symbol.transform.position = newPos;
     }
 
