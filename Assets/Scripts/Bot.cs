@@ -1627,8 +1627,10 @@ public class Bot : MonoBehaviour
 
     void MoveCheck()
     {
-        TouchInputCheck();
 
+#if UNITY_IOS || UNITY_ANDROID
+        TouchInputCheck();
+#else
         if (Input.GetKeyDown(KeyCode.UpArrow)||Input.GetKeyDown("e")) 
             Rotate(1);     
 
@@ -1665,6 +1667,7 @@ public class Bot : MonoBehaviour
                 MoveBot(1); 
             }
         }
+#endif
     }
 
     void Rotate(int direction) {
