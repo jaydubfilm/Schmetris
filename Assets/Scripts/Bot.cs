@@ -1585,6 +1585,7 @@ public class Bot : MonoBehaviour
     float holdingScreenTimer = 0;
     const float maxTapTimer = 0.15f;
     float prevMouse = 0;
+    float moveBuffer = 25.0f;
     void TouchInputCheck()
     {
         if (!isHoldingScreen && Input.GetMouseButton(0))
@@ -1611,8 +1612,8 @@ public class Bot : MonoBehaviour
         }
         else if (isHoldingScreen)
         {
-            holdingScreenTimer += Time.deltaTime;
-            if (holdingScreenTimer > maxTapTimer && prevMouse != Input.mousePosition.x)
+            holdingScreenTimer += Time.unscaledDeltaTime;
+            if (holdingScreenTimer > maxTapTimer && Mathf.Abs(prevMouse - Input.mousePosition.x) > moveBuffer)
             {
                 if (startTime + delay <= Time.time)
                 {
