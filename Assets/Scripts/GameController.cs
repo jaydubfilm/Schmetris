@@ -177,6 +177,11 @@ public class GameController : MonoBehaviour
         moneyString = GameObject.Find("Money").GetComponent<Text>();
         noFuelString = GameObject.Find("NoFuel").GetComponent<Text>();
         speedText = GameObject.Find("Speed").GetComponent<Text>();
+#if UNITY_IOS || UNITY_ANDROID
+        quitString.enabled = false;
+#else
+        quitString.GetComponentInChildren<Image>().enabled = false;
+#endif
     }
 
     void StartGame()
