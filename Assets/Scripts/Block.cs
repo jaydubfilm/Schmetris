@@ -17,22 +17,31 @@ public class Block : MonoBehaviour
     public Vector2Int coreV2;
     public Rigidbody2D rb;
     Vector3 moveToPos;
-    
-  
+
+
     // Start is called before the first frame update
     void Start()
     {
-      blockRadius = GameController.Instance.settings.blockRadius;
-      blockSpeed = GameController.Instance.blockSpeed;
-      
-      int absoluteCol =  ScreenStuff.GetCol(gameObject);
-      float step = blockSpeed*Time.deltaTime;
-        column = ScreenStuff.WrapCol(absoluteCol,bot.coreCol);
-      blockWidth = blockRadius*2+1;
-      bitArr = new GameObject[blockWidth,blockWidth];
-      coreV2 = new Vector2Int(blockRadius,blockRadius);
-      rb =  gameObject.GetComponent<Rigidbody2D>();
-      rb.velocity = new Vector3(0,-blockSpeed,0);
+        blockRadius = GameController.Instance.settings.blockRadius;
+        int absoluteCol = ScreenStuff.GetCol(gameObject);
+        column = ScreenStuff.WrapCol(absoluteCol, bot.coreCol);
+        blockWidth = blockRadius * 2 + 1;
+        bitArr = new GameObject[blockWidth, blockWidth];
+        coreV2 = new Vector2Int(blockRadius, blockRadius);
+        rb = gameObject.GetComponent<Rigidbody2D>();
+        GameController.OnSpeedChange += UpdateBlockSpeed;
+        UpdateBlockSpeed();
+    }
+
+    private void OnDestroy()
+    {
+        GameController.OnSpeedChange -= UpdateBlockSpeed;
+    }
+
+    void UpdateBlockSpeed()
+    {
+        blockSpeed = GameController.Instance.blockSpeed * GameController.Instance.adjustedSpeed;
+        rb.velocity = new Vector3(0, -blockSpeed, 0);
     }
 
     public int GetXOffset(int coreColumn) {

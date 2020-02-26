@@ -8,7 +8,7 @@ public class GameController : MonoBehaviour
 {
     //Game-wide events - Individual assets can connect to these to perform actions on specific game/level events (end, restart, etc)
     public delegate void GameEvent();
-    public static event GameEvent OnGameOver, OnGameRestart, OnLoseLife, OnLevelRestart, OnNewLevel;
+    public static event GameEvent OnGameOver, OnGameRestart, OnLoseLife, OnLevelRestart, OnNewLevel, OnSpeedChange;
 
     public static GameController Instance { get; private set; }
     public List<GameObject> blockList;
@@ -114,7 +114,7 @@ public class GameController : MonoBehaviour
     Text speedText;
     int speedMultiplier = 2;
     float[] speedOptions = new float[] { 0.5f, 0.75f, 1.0f, 1.5f, 2.0f };
-    float adjustedSpeed
+    public float adjustedSpeed
     {
         get
         {
@@ -221,7 +221,7 @@ public class GameController : MonoBehaviour
     {
         pauseMenu.SetActive(false);
         isPaused = false;
-        Time.timeScale = adjustedSpeed;
+        Time.timeScale = 1.0f;
     }
 
     //Used for external Canvas buttons for touchscreen controls
@@ -253,17 +253,23 @@ public class GameController : MonoBehaviour
         if (!isBotDead && !isPaused)
         {
             //Adjust game speed
-            if(Input.GetKeyDown(KeyCode.Equals))
+            if (Input.GetKeyDown(KeyCode.Equals))
             {
                 speedMultiplier = Mathf.Min(speedMultiplier + 1, speedOptions.Length - 1);
                 speedText.text = "x" + adjustedSpeed.ToString() + " Speed";
-                Time.timeScale = adjustedSpeed;
+                if (OnSpeedChange != null)
+                {
+                    OnSpeedChange();
+                }
             }
-            else if(Input.GetKeyDown(KeyCode.Minus))
+            else if (Input.GetKeyDown(KeyCode.Minus))
             {
                 speedMultiplier = Mathf.Max(speedMultiplier - 1, 0);
                 speedText.text = "x" + adjustedSpeed.ToString() + " Speed";
-                Time.timeScale = adjustedSpeed;
+                if (OnSpeedChange != null)
+                {
+                    OnSpeedChange();
+                }
             }
 
             timeRemaining -= Time.deltaTime;
@@ -406,7 +412,7 @@ public class GameController : MonoBehaviour
     {
         pauseMenu.SetActive(false);
         isPaused = false;
-        Time.timeScale = adjustedSpeed;
+        Time.timeScale = 1.0f;
         yield return new WaitForSecondsRealtime(1.0f);
         ReplayLevel();
     }
@@ -416,7 +422,7 @@ public class GameController : MonoBehaviour
         isRestarting = true;
         pauseMenu.SetActive(false);
         isPaused = false;
-        Time.timeScale = adjustedSpeed;
+        Time.timeScale = 1.0f;
         if (OnGameOver != null)
         {
             OnGameOver();
@@ -545,7 +551,7 @@ public class GameController : MonoBehaviour
         levelMenu.SetActive(false);
         pauseMenu.SetActive(false);
         isPaused = false;
-        Time.timeScale = adjustedSpeed;
+        Time.timeScale = 1.0f;
     }
 
     void ScrollBackground() {
@@ -561,7 +567,7 @@ public class GameController : MonoBehaviour
 
         for (int x = 0;x<4;x++) {    
             bV3[x] = bgPanelArr[x].transform.position;
-            bV3[x] += new Vector3 (0,-settings.bgScrollSpeed * Time.unscaledDeltaTime * adjustedSpeed,0);
+            bV3[x] += new Vector3 (0,-settings.bgScrollSpeed * Time.unscaledDeltaTime,0);
         }
 
         // flip bottom BG to top
