@@ -662,7 +662,7 @@ public class GameController : MonoBehaviour
     }
 
     void EnemySpawnCheck() {
-        enemySpawnTimer -= Time.deltaTime;
+        enemySpawnTimer -= Time.deltaTime * adjustedSpeed;
         if (enemySpawnTimer <= 0)
         {
             int spawnType = ProbabilityPicker(speciesProbArr);
@@ -672,7 +672,7 @@ public class GameController : MonoBehaviour
     }
 
     void BlockSpawnCheck() {
-        blockSpawnTimer -= Time.deltaTime;
+        blockSpawnTimer -= Time.deltaTime * adjustedSpeed;
         if (blockSpawnTimer<= 0)
         {
             int blockType = ProbabilityPicker(blockProbArr);
