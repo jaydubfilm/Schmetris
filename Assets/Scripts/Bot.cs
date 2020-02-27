@@ -1584,7 +1584,7 @@ public class Bot : MonoBehaviour
     bool isHoldingScreen = false;
     float holdingScreenTimer = 0;
     const float maxTapTimer = 0.1f;
-    const float slideBuffer = 10.0f;
+    const float slideBuffer = 20.0f;
     float moveBuffer = 25.0f;
     Vector3 prevMousePos = Vector3.zero;
     Vector3 bufferedMovePos = Vector3.zero;
