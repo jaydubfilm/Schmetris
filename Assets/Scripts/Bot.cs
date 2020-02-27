@@ -1645,34 +1645,62 @@ public class Bot : MonoBehaviour
             else
             {
                 bufferTimer = 0;
-                if(bufferedMovePos.x - Input.mousePosition.x >= rotateBuffer || bufferedMovePos.y - Input.mousePosition.y >= rotateBuffer)
+                bool isLeftBot = Input.mousePosition.x < Screen.width / 2.0f;
+                bool isBelowBot = Input.mousePosition.y < Camera.main.WorldToScreenPoint(coreBrick.transform.position).y;
+                if (bufferedMovePos.x - Input.mousePosition.x >= rotateBuffer)
                 {
                     hasRotated = true;
                     bufferedMovePos = Input.mousePosition;
-                    Rotate(-1);
+                    Rotate(!isBelowBot ? -1 : 1);
                 }
-                else if (bufferedMovePos.x - Input.mousePosition.x <= -rotateBuffer || bufferedMovePos.y - Input.mousePosition.y <= -rotateBuffer)
+                else if (bufferedMovePos.y - Input.mousePosition.y >= rotateBuffer)
                 {
                     hasRotated = true;
                     bufferedMovePos = Input.mousePosition;
-                    Rotate(1);
+                    Rotate(isLeftBot ? -1 : 1);
+                }
+                else if (bufferedMovePos.x - Input.mousePosition.x <= -rotateBuffer)
+                {
+                    hasRotated = true;
+                    bufferedMovePos = Input.mousePosition;
+                    Rotate(!isBelowBot ? 1 : -1);
+                }
+                else if (bufferedMovePos.y - Input.mousePosition.y <= -rotateBuffer)
+                {
+                    hasRotated = true;
+                    bufferedMovePos = Input.mousePosition;
+                    Rotate(isLeftBot ? 1 : -1);
                 }
             }
             prevMousePos = Input.mousePosition;
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            if (bufferedMovePos.x - Input.mousePosition.x >= rotateBuffer || bufferedMovePos.y - Input.mousePosition.y >= rotateBuffer)
+            bool isLeftBot = Input.mousePosition.x < Screen.width / 2.0f;
+            bool isBelowBot = Input.mousePosition.y < Camera.main.WorldToScreenPoint(coreBrick.transform.position).y;
+            if (bufferedMovePos.x - Input.mousePosition.x >= rotateBuffer)
             {
                 hasRotated = true;
                 bufferedMovePos = Input.mousePosition;
-                Rotate(-1);
+                Rotate(!isBelowBot ? -1 : 1);
             }
-            else if (bufferedMovePos.x - Input.mousePosition.x <= -rotateBuffer || bufferedMovePos.y - Input.mousePosition.y <= -rotateBuffer)
+            else if (bufferedMovePos.y - Input.mousePosition.y >= rotateBuffer)
             {
                 hasRotated = true;
                 bufferedMovePos = Input.mousePosition;
-                Rotate(1);
+                Rotate(isLeftBot ? -1 : 1);
+            }
+            else if (bufferedMovePos.x - Input.mousePosition.x <= -rotateBuffer)
+            {
+                hasRotated = true;
+                bufferedMovePos = Input.mousePosition;
+                Rotate(!isBelowBot ? 1 : -1);
+            }
+            else if (bufferedMovePos.y - Input.mousePosition.y <= -rotateBuffer)
+            {
+                hasRotated = true;
+                bufferedMovePos = Input.mousePosition;
+                Rotate(isLeftBot ? 1 : -1);
             }
             else if (holdingScreenTimer < maxTapTimer)
             {
