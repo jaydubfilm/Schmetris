@@ -1583,12 +1583,122 @@ public class Bot : MonoBehaviour
 
     bool isHoldingScreen = false;
     float holdingScreenTimer = 0;
-    const float maxTapTimer = 0.15f;
-    float prevMouse = 0;
+    const float maxTapTimer = 0.1f;
+    const float slideBuffer = 10.0f;
     float moveBuffer = 25.0f;
+    Vector3 prevMousePos = Vector3.zero;
+    Vector3 bufferedMovePos = Vector3.zero;
+    float rotateBuffer = 200.0f;
+    float bufferTimer = 0;
+    float bufferMaxTime = 3.0f;
+    bool hasRotated = false;
     void TouchInputCheck()
     {
-        if (!isHoldingScreen && Input.GetMouseButton(0))
+        if(Input.GetMouseButtonDown(0))
+        {
+            isHoldingScreen = true;
+            prevMousePos = Input.mousePosition;
+            bufferedMovePos = Input.mousePosition;
+            holdingScreenTimer = 0;
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            isHoldingScreen = true;
+            if(holdingScreenTimer < maxTapTimer)
+            {
+                holdingScreenTimer += Time.deltaTime;
+            }
+            else if (Vector3.Distance(Input.mousePosition,prevMousePos) <= slideBuffer)
+            {
+                if (hasRotated || bufferTimer > 0)
+                {
+                    bufferTimer += Time.deltaTime;
+                    if (bufferTimer >= bufferMaxTime)
+                    {
+                        bufferedMovePos = Input.mousePosition;
+                        bufferTimer = 0;
+                        hasRotated = false;
+                    }
+                }
+                else
+                {
+                    if (Input.mousePosition.x < Screen.width / 2.0f)
+                    {
+                        if (startTime + delay <= Time.time)
+                        {
+                            startTime = Time.time;
+                            delay = shortPause;
+                            MoveBot(-1);
+                        }
+                    }
+                    else if (Input.mousePosition.x > Screen.width / 2.0f)
+                    {
+                        if (startTime + delay <= Time.time)
+                        {
+                            startTime = Time.time;
+                            delay = shortPause;
+                            MoveBot(1);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                bufferTimer = 0;
+                if(bufferedMovePos.x - Input.mousePosition.x >= rotateBuffer || bufferedMovePos.y - Input.mousePosition.y >= rotateBuffer)
+                {
+                    hasRotated = true;
+                    bufferedMovePos = Input.mousePosition;
+                    Rotate(-1);
+                }
+                else if (bufferedMovePos.x - Input.mousePosition.x <= -rotateBuffer || bufferedMovePos.y - Input.mousePosition.y <= -rotateBuffer)
+                {
+                    hasRotated = true;
+                    bufferedMovePos = Input.mousePosition;
+                    Rotate(1);
+                }
+            }
+            prevMousePos = Input.mousePosition;
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            if (bufferedMovePos.x - Input.mousePosition.x >= rotateBuffer || bufferedMovePos.y - Input.mousePosition.y >= rotateBuffer)
+            {
+                hasRotated = true;
+                bufferedMovePos = Input.mousePosition;
+                Rotate(-1);
+            }
+            else if (bufferedMovePos.x - Input.mousePosition.x <= -rotateBuffer || bufferedMovePos.y - Input.mousePosition.y <= -rotateBuffer)
+            {
+                hasRotated = true;
+                bufferedMovePos = Input.mousePosition;
+                Rotate(1);
+            }
+            else if (holdingScreenTimer < maxTapTimer)
+            {
+                if (prevMousePos.x < Screen.width / 2.0f)
+                {
+                    MoveBot(-1);
+                }
+                else if (prevMousePos.x > Screen.width / 2.0f)
+                {
+                    MoveBot(1);
+                }
+            }
+            bufferTimer = 0;
+            isHoldingScreen = false;
+            hasRotated = false;
+            holdingScreenTimer = 0;
+        }
+        else
+        {
+            bufferTimer = 0;
+            isHoldingScreen = false;
+            hasRotated = false;
+            holdingScreenTimer = 0;
+        }
+
+        /*if (!isHoldingScreen && Input.GetMouseButton(0))
         {
             isHoldingScreen = true;
             holdingScreenTimer = 0;
@@ -1623,7 +1733,7 @@ public class Bot : MonoBehaviour
                     prevMouse = Input.mousePosition.x;
                 }
             }
-        }
+        }*/
     }
 
     void MoveCheck()
