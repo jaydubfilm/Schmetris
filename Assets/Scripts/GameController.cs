@@ -181,6 +181,8 @@ public class GameController : MonoBehaviour
         quitString.enabled = false;
 #else
         quitString.GetComponentInChildren<Image>().enabled = false;
+        GameObject.Find("SpeedUp").SetActive(false);
+        GameObject.Find("SpeedDown").SetActive(false);
 #endif
     }
 
@@ -188,6 +190,28 @@ public class GameController : MonoBehaviour
     {
         LoadLevelData(1);
         InvokeRepeating("GameOverCheck", 1.0f, 0.2f);
+    }
+
+    //Used for external Canvas buttons for touchscreen controls
+    public void SpeedUp()
+    {
+        speedMultiplier = Mathf.Min(speedMultiplier + 1, speedOptions.Length - 1);
+        speedText.text = "x" + adjustedSpeed.ToString() + " Speed";
+        if (OnSpeedChange != null)
+        {
+            OnSpeedChange();
+        }
+    }
+
+    //Used for external Canvas buttons for touchscreen controls
+    public void SpeedDown()
+    {
+        speedMultiplier = Mathf.Max(speedMultiplier - 1, 0);
+        speedText.text = "x" + adjustedSpeed.ToString() + " Speed";
+        if (OnSpeedChange != null)
+        {
+            OnSpeedChange();
+        }
     }
 
     //Used for external Canvas buttons for touchscreen controls
@@ -260,21 +284,11 @@ public class GameController : MonoBehaviour
             //Adjust game speed
             if (Input.GetKeyDown(KeyCode.Equals))
             {
-                speedMultiplier = Mathf.Min(speedMultiplier + 1, speedOptions.Length - 1);
-                speedText.text = "x" + adjustedSpeed.ToString() + " Speed";
-                if (OnSpeedChange != null)
-                {
-                    OnSpeedChange();
-                }
+                SpeedUp();
             }
             else if (Input.GetKeyDown(KeyCode.Minus))
             {
-                speedMultiplier = Mathf.Max(speedMultiplier - 1, 0);
-                speedText.text = "x" + adjustedSpeed.ToString() + " Speed";
-                if (OnSpeedChange != null)
-                {
-                    OnSpeedChange();
-                }
+                SpeedDown();
             }
 
             timeRemaining -= Time.deltaTime;
