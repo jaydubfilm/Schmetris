@@ -58,6 +58,8 @@ public class GameController : MonoBehaviour
     public GameObject pauseMenu;
     public GameObject mainPanel;
     public GameObject helpPanel;
+    public GameObject loadPanel;
+    public GameObject savePanel;
 
     public GameObject loseLifePanel;
     public GameObject retryText;
@@ -110,6 +112,7 @@ public class GameController : MonoBehaviour
     Bounds collisionBubble;
 
     bool isRestarting = false;
+    SaveManager saveManager;
 
     Text speedText;
     int speedMultiplier = 2;
@@ -152,6 +155,8 @@ public class GameController : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            saveManager = new SaveManager();
+            saveManager.Init();
         }
         else
         {
@@ -190,6 +195,57 @@ public class GameController : MonoBehaviour
     {
         LoadLevelData(1);
         InvokeRepeating("GameOverCheck", 1.0f, 0.2f);
+    }
+
+    public void SaveGame(int index)
+    {
+        saveManager.SetSave(index, lives, money, currentScene, game.name, bot.GetTileMap());
+    }
+
+    public void LoadGame(int index)
+    {
+        SaveData loadData = saveManager.GetSave(index);
+        if (loadData != null && loadData.game != "")
+        {
+            lives = loadData.lives;
+            money = loadData.money;
+            currentScene = loadData.level;
+
+            //~Add in resource loading?
+            if (easyGame.name == loadData.game)
+            {
+                game = easyGame;
+            }
+            else if (mediumGame.name == loadData.game)
+            {
+                game = mediumGame;
+            }
+            else if (hardGame.name == loadData.game)
+            {
+                game = hardGame;
+            }
+
+            //~Best way to load a tilemap?
+            if (loadData.bot.Length > 0)
+            {
+                Sprite[,] newMap = new Sprite[loadData.bot.Length, loadData.bot[0].botRow.Length];
+                for (int x = 0; x < newMap.GetLength(0); x++)
+                {
+                    for (int y = 0; y < newMap.GetLength(1); y++)
+                    {
+                        newMap[x, y] = loadData.bot[x].botRow[y];
+                    }
+                }
+                bot.SetTileMap(newMap);
+            }
+
+            LoadLevelData(currentScene);
+            InvokeRepeating("GameOverCheck", 1.0f, 0.2f);
+        }
+        else
+        {
+            StartGame();
+        }
     }
 
     //Used for external Canvas buttons for touchscreen controls
@@ -241,6 +297,8 @@ public class GameController : MonoBehaviour
         mainPanel.SetActive(true);
         helpPanel.SetActive(false);
         pauseMenu.SetActive(true);
+        savePanel.SetActive(false);
+        loadPanel.SetActive(false);
         isPaused = true;
         Time.timeScale = 0;
     }
@@ -274,6 +332,8 @@ public class GameController : MonoBehaviour
     public void PauseMenu()
     {
         helpPanel.SetActive(false);
+        savePanel.SetActive(false);
+        loadPanel.SetActive(false);
         mainPanel.SetActive(true);
     }
 
@@ -346,6 +406,44 @@ public class GameController : MonoBehaviour
                     PauseMenu();
                 }
             }
+            else if (savePanel.activeSelf)
+            {
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    SaveGame(0);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    SaveGame(1);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    SaveGame(2);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha4))
+                {
+                    PauseMenu();
+                }
+            }
+            else if(loadPanel.activeSelf)
+            {
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    LoadGame(0);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    LoadGame(1);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    LoadGame(2);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha4))
+                {
+                    PauseMenu();
+                }
+            }
             else if(Input.GetKeyDown(KeyCode.Alpha1))
             {
                 ResumeGame();
@@ -365,9 +463,16 @@ public class GameController : MonoBehaviour
             }
             else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
+                SaveMenu();
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha5))
+            {
+                LoadMenu();
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha6))
+            {
                 QuitGame();
             }
-
         }
         else
         {
@@ -415,6 +520,18 @@ public class GameController : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void LoadMenu()
+    {
+        loadPanel.SetActive(true);
+        mainPanel.SetActive(false);
+    }
+
+    public void SaveMenu()
+    {
+        savePanel.SetActive(true);
+        mainPanel.SetActive(false);
     }
 
     //Used for external Canvas buttons for touchscreen controls

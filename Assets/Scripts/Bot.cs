@@ -72,6 +72,42 @@ public class Bot : MonoBehaviour
     public float tripleDelay = 0.5f;
     float delay;
 
+    public Sprite[,] GetTileMap()
+    {
+        return savedTileMap;
+    }
+
+    bool tileMapSet = false;
+    public void SetTileMap(Sprite[,] setTileMap)
+    {
+        savedTileMap = setTileMap;
+        if (init)
+        {
+            while (brickList.Count > 0)
+            {
+                GameObject brick = brickList[0];
+                if (brick)
+                {
+                    Brick newBrick = brick.GetComponent<Brick>();
+                    SetBrickAtBotArr(newBrick.arrPos, null);
+                    brickTypeArr[newBrick.arrPos.x, newBrick.arrPos.y] = -1;
+                    if (newBrick.IsParasite())
+                        GameController.Instance.enemyList.Remove(gameObject);
+                }
+                if (brickList.Contains(brick))
+                {
+                    brickList.Remove(brick);
+                }
+            }
+            fuelBrickList = new List<GameObject>();
+            OnLevelRestart();
+        }
+        else
+        {
+            tileMapSet = true;
+        }
+    }
+
     void OnGameOver()
     {
         while(brickList.Count > 0)
@@ -136,6 +172,11 @@ public class Bot : MonoBehaviour
         AddStartingBricks();
         powerGridRefreshFlag = true;
 
+        if(tileMapSet)
+        {
+            OnLevelRestart();
+        }
+
         OnNewLevel();
     }
 
@@ -196,8 +237,10 @@ public class Bot : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
 
+    bool init = false;
     public void Start()
     {
+        init = true;
         settings = GameController.Instance.settings;
         maxBotRadius = settings.maxBotRadius;
         coreBrick = masterBrickList[0];
@@ -222,6 +265,12 @@ public class Bot : MonoBehaviour
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(),new Vector3 (0,0,0), Quaternion.identity);
         AddStartingBricks();
         powerGridRefreshFlag = true;
+
+        if(tileMapSet)
+        {
+            OnLevelRestart();
+            tileMapSet = false;
+        }
 
         OnNewLevel();
     }
