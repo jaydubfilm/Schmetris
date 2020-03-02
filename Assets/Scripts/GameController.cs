@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Tilemaps;
 
 public class GameController : MonoBehaviour
 {
@@ -113,6 +114,11 @@ public class GameController : MonoBehaviour
 
     bool isRestarting = false;
     SaveManager saveManager;
+    public Transform[] saveIcons;
+    public Transform[] loadIcons;
+    public GameObject iconGrid;
+    public GameObject iconColumn;
+    public GameObject iconTile;
 
     Text speedText;
     int speedMultiplier = 2;
@@ -157,6 +163,7 @@ public class GameController : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             saveManager = new SaveManager();
             saveManager.Init();
+            RefreshBotIcons();
         }
         else
         {
@@ -191,6 +198,85 @@ public class GameController : MonoBehaviour
 #endif
     }
 
+    void RefreshBotIcons()
+    {
+        for (int i = 0; i < saveIcons.Length; i++)
+        {
+            BuildBotIcon(i, saveIcons[i]);
+        }
+
+        for (int i = 0; i < loadIcons.Length; i++)
+        {
+            BuildBotIcon(i, loadIcons[i]);
+        }
+    }
+
+    void BuildBotIcon(int index, Transform target )
+    {
+        if(target.GetComponentInChildren<VerticalLayoutGroup>())
+        {
+            Destroy(target.GetComponentInChildren<VerticalLayoutGroup>().gameObject);
+        }
+
+        SaveData targetFile = saveManager.GetSave(index);
+        if(targetFile != null && targetFile.game != "" && targetFile.bot.Length > 0)
+        {
+            GameObject newGrid = Instantiate(iconGrid, target);
+            newGrid.GetComponent<RectTransform>().anchoredPosition = new Vector2(10, 0);
+
+            int minX = -1;
+            int maxX = -1;
+            int minY = -1;
+            int maxY = -1;
+
+            for (int y = 0; y < targetFile.bot.Length; y++)
+            {
+                for (int x = 0; x < targetFile.bot[0].botRow.Length; x++)
+                {
+                    if(targetFile.bot[x].botRow[y])
+                    {
+                        maxX = x;
+                        maxY = y;
+                        if(minX == -1)
+                        {
+                            minX = x;
+                        }
+                        if(minY == -1)
+                        {
+                            minY = y;
+                        }
+                    }
+                }
+            }
+
+            minX = Mathf.Min(minX, minY);
+            minY = minX;
+            maxX = Mathf.Max(maxX, maxY);
+            maxY = maxX;
+
+            if (minX > -1 && minY > -1)
+            {
+                for (int y = maxY; y >= minY; y--)
+                {
+                    GameObject newColumn = Instantiate(iconColumn, newGrid.transform);
+                    for (int x = maxX; x >= minX ; x--)
+                    {
+                        GameObject newTile = Instantiate(iconTile, newColumn.transform);
+                        Image newTileImage = newTile.GetComponent<Image>();
+                        if (targetFile.bot[x].botRow[y])
+                        {
+                            newTileImage.sprite = targetFile.bot[x].botRow[y];
+                        }
+                        else
+                        {
+                            newTileImage.color = Color.clear;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     void StartGame()
     {
         LoadLevelData(1);
@@ -200,6 +286,7 @@ public class GameController : MonoBehaviour
     public void SaveGame(int index)
     {
         saveManager.SetSave(index, lives, money, currentScene, game.name, bot.GetTileMap());
+        RefreshBotIcons();
     }
 
     public void LoadGame(int index)
