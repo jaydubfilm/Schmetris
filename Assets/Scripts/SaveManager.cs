@@ -38,10 +38,10 @@ public class SaveManager
         for(int x = 0;x < bot.GetLength(0);x++)
         {
             newData.bot[x] = new BotData();
-            newData.bot[x].botRow = new Sprite[bot.GetLength(1)];
+            newData.bot[x].botRow = new string[bot.GetLength(1)];
             for(int y = 0;y<bot.GetLength(1);y++)
             {
-                newData.bot[x].botRow[y] = bot[x, y];
+                newData.bot[x].botRow[y] = bot[x, y] ? bot[x, y].name : "";
             }
         }
 
@@ -72,7 +72,7 @@ public class SaveManager
             newData.level = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
-            newData.bot[0].botRow = new Sprite[1] { null };
+            newData.bot[0].botRow = new string[1] { "" };
             saveData.saveFiles.Add(newData);
         }
         SaveGame();
@@ -137,5 +137,5 @@ public class SaveData
 [Serializable]
 public class BotData
 {
-    public Sprite[] botRow;    //Create a new bot data for each row to artificially support a second array level
+    public string[] botRow;    //Create a new bot data for each row to artificially support a second array level
 }

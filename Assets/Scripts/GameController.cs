@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -119,6 +120,8 @@ public class GameController : MonoBehaviour
     public GameObject iconGrid;
     public GameObject iconColumn;
     public GameObject iconTile;
+    const string atlasResource = "MasterDiceSprites";
+    Sprite[] tilesAtlas;
 
     Text speedText;
     int speedMultiplier = 2;
@@ -163,6 +166,7 @@ public class GameController : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             saveManager = new SaveManager();
             saveManager.Init();
+            tilesAtlas = Resources.LoadAll<Sprite>(atlasResource);
             RefreshBotIcons();
         }
         else
@@ -233,7 +237,7 @@ public class GameController : MonoBehaviour
             {
                 for (int x = 0; x < targetFile.bot[0].botRow.Length; x++)
                 {
-                    if(targetFile.bot[x].botRow[y])
+                    if(targetFile.bot[x].botRow[y] != "")
                     {
                         maxX = x;
                         maxY = y;
@@ -259,13 +263,13 @@ public class GameController : MonoBehaviour
                 for (int y = maxY; y >= minY; y--)
                 {
                     GameObject newColumn = Instantiate(iconColumn, newGrid.transform);
-                    for (int x = maxX; x >= minX ; x--)
+                    for (int x = minX; x <= maxX ; x++)
                     {
                         GameObject newTile = Instantiate(iconTile, newColumn.transform);
                         Image newTileImage = newTile.GetComponent<Image>();
-                        if (targetFile.bot[x].botRow[y])
+                        if (targetFile.bot[x].botRow[y] != "")
                         {
-                            newTileImage.sprite = targetFile.bot[x].botRow[y];
+                            newTileImage.sprite = tilesAtlas.Single<Sprite>(s => s.name == targetFile.bot[x].botRow[y]);
                         }
                         else
                         {
@@ -320,7 +324,8 @@ public class GameController : MonoBehaviour
                 {
                     for (int y = 0; y < newMap.GetLength(1); y++)
                     {
-                        newMap[x, y] = loadData.bot[x].botRow[y];
+                        if(loadData.bot[x].botRow[y] != "")
+                            newMap[x, y] = tilesAtlas.Single<Sprite>(s => s.name == loadData.bot[x].botRow[y]);
                     }
                 }
                 bot.SetTileMap(newMap);

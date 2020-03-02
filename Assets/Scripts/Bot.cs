@@ -144,8 +144,10 @@ public class Bot : MonoBehaviour
         {
             if(Brick && Brick.GetComponent<Brick>())
             {
+                //~What to do about parasites?
                 Vector2Int brickPos = Brick.GetComponent<Brick>().arrPos;
-                savedTileMap[brickPos.x, brickPos.y] = Brick.GetComponent<SpriteRenderer>().sprite;
+                if(!Brick.GetComponent<Brick>().IsParasite())
+                    savedTileMap[brickPos.x, brickPos.y] = Brick.GetComponent<SpriteRenderer>().sprite;
             }
         }
     }
