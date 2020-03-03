@@ -8,25 +8,32 @@ public class Scrapyard : MonoBehaviour
     public GameObject botColumn;
     public GameObject botTile;
     public Transform botParent;
+    GameObject botDisplay;
+
+    //Bot zoom limits
+    float currentSize = 20.0f;
+    const float minSize = 10.0f;
+    const float maxSize = 70.0f;
+    const float sizeChange = 10.0f;
 
     //Create editable bot grid
-    void BuildBotGrid()
+    public void BuildBotGrid()
     {
         //Destroy existing bot grid
         if (botParent.GetComponentInChildren<VerticalLayoutGroup>())
         {
-            Destroy(botParent.GetComponentInChildren<VerticalLayoutGroup>().gameObject);
+            Destroy(botDisplay);
         }
 
         //Generate empty grid
         Sprite[,] botMap = GameController.Instance.bot.GetTileMap();
-        GameObject newGrid = Instantiate(botGrid, botParent);
-        newGrid.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        botDisplay = Instantiate(botGrid, botParent);
+        botDisplay.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
         //Fill grid with existing bricks
         for (int y = botMap.GetLength(1) - 1; y >= 0; y--)
         {
-            GameObject newColumn = Instantiate(botColumn, newGrid.transform);
+            GameObject newColumn = Instantiate(botColumn, botDisplay.transform);
             for (int x = 0; x < botMap.GetLength(0); x++)
             {
                 GameObject newTile = Instantiate(botTile, newColumn.transform);
@@ -46,25 +53,27 @@ public class Scrapyard : MonoBehaviour
     //Button for rotating bot 90 degrees clockwise
     public void RotateClockwise()
     {
-
+        botParent.Rotate(Vector3.back, 90);
     }
 
     //Button for rotating bot 90 degrees counterclockwise
     public void RotateCounterclockwise()
     {
-
+        botParent.Rotate(Vector3.back, -90);
     }
 
     //Button for zooming in on bot
     public void ZoomIn()
     {
-
+        currentSize = Mathf.Min(currentSize + sizeChange, maxSize);
+        botDisplay.GetComponent<RectTransform>().sizeDelta = Vector2.one * currentSize;
     }
 
     //Button for zooming out of bot
     public void ZoomOut()
     {
-
+        currentSize = Mathf.Max(currentSize - sizeChange, minSize);
+        botDisplay.GetComponent<RectTransform>().sizeDelta = Vector2.one * currentSize;
     }
 
     //Button for saving current bot as a blueprint
