@@ -114,7 +114,7 @@ public class GameController : MonoBehaviour
     Bounds collisionBubble;
 
     bool isRestarting = false;
-    SaveManager saveManager;
+    public SaveManager saveManager = null;
     public Transform[] saveIcons;
     public Transform[] loadIcons;
     public GameObject iconGrid;
@@ -164,8 +164,11 @@ public class GameController : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            saveManager = new SaveManager();
-            saveManager.Init();
+            if (saveManager == null)
+            {
+                saveManager = new SaveManager();
+                saveManager.Init();
+            }
             tilesAtlas = Resources.LoadAll<Sprite>(atlasResource);
             RefreshBotIcons();
         }
