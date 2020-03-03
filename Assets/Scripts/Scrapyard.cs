@@ -20,14 +20,21 @@ public class Scrapyard : MonoBehaviour
     //Scrapyard submenus
     public GameObject saveMenu;
     public GameObject loadMenu;
-    public Transform[] saveSlots;
-    public Transform[] loadSlots;
+    public GameObject confirmPurchase;
+    public GameObject failPurchase;
 
     //Saving and loading
+    public Transform[] saveSlots;
+    public Transform[] loadSlots;
     const string tileAtlasResource = "MasterDiceSprites";
     Sprite[] tilesAtlas;
     const float iconSize = 5.0f;
     const float iconPos = 100.0f;
+
+    //Market
+    public Text playerMoney;
+    public Text transactionMoney;
+    int transactionAmount = 0;
 
     //Init
     private void Start()
@@ -38,9 +45,17 @@ public class Scrapyard : MonoBehaviour
             GameController.Instance.saveManager.Init();
         }
         tilesAtlas = Resources.LoadAll<Sprite>(tileAtlasResource);
+    }
 
+    //Update scrapyard UI on opening
+    public void UpdateScrapyard()
+    {
+        transactionAmount = GameController.Instance.money;
+        playerMoney.text = "Money: $" + GameController.Instance.money.ToString();
+        transactionMoney.text = "After: $" + transactionAmount;
         CloseSubMenu();
         RefreshBotIcons();
+        BuildBotGrid();
     }
 
     //Create editable bot grid
@@ -219,7 +234,21 @@ public class Scrapyard : MonoBehaviour
     //Button for confirming market purchases
     public void ConfirmPurchase()
     {
+        if(transactionAmount >= 0)
+        {
+            confirmPurchase.SetActive(true);
+        }
+        else
+        {
+            failPurchase.SetActive(true);
+        }
+    }
 
+    //Button for completing confirmed market purchases
+    public void CompleteConfirmedPurchase()
+    {
+        GameController.Instance.money = transactionAmount;
+        UpdateScrapyard();
     }
 
     //Button for closing the scrapyard and loading the next level
@@ -252,5 +281,7 @@ public class Scrapyard : MonoBehaviour
     {
         saveMenu.SetActive(false);
         loadMenu.SetActive(false);
+        confirmPurchase.SetActive(false);
+        failPurchase.SetActive(false);
     }
 }
