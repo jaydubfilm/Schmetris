@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Linq;
+using System.Collections.Generic;
 
 public class Scrapyard : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class Scrapyard : MonoBehaviour
     public GameObject botTile;
     public Transform botParent;
     GameObject botDisplay;
+    List<GameObject> botBricks = new List<GameObject>();
 
     //Bot zoom limits
     float currentSize = 20.0f;
@@ -22,6 +25,7 @@ public class Scrapyard : MonoBehaviour
     public GameObject loadMenu;
     public GameObject confirmPurchase;
     public GameObject failPurchase;
+    public GameObject confirmSell;
 
     //Saving and loading
     public Transform[] saveSlots;
@@ -35,16 +39,91 @@ public class Scrapyard : MonoBehaviour
     public Text playerMoney;
     public Text transactionMoney;
     int transactionAmount = 0;
+    public Transform marketParent;
+    public List<string> marketList = new List<string>();
+    List<GameObject> marketSelection = new List<GameObject>();
+
+    //Brick moving
+    GraphicRaycaster raycaster;
+    GameObject selectedBrick = null;
+    float holdingScreenTimer = 0;
+    const float maxTapTimer = 0.15f;
+    bool isMarketBrick = false;
 
     //Init
     private void Start()
     {
+        raycaster = GetComponent<GraphicRaycaster>();
         if (GameController.Instance.saveManager == null)
         {
             GameController.Instance.saveManager = new SaveManager();
             GameController.Instance.saveManager.Init();
         }
         tilesAtlas = Resources.LoadAll<Sprite>(tileAtlasResource);
+    }
+
+    //Check for brick dragging
+    private void Update()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            holdingScreenTimer = 0;
+            PointerEventData pointer = new PointerEventData(EventSystem.current);
+            pointer.position = Input.mousePosition;
+            List<RaycastResult> targets = new List<RaycastResult>();
+            raycaster.Raycast(pointer, targets);
+            for (int i = 0; i < targets.Count; i++)
+            {
+                if (marketSelection.Contains(targets[i].gameObject))
+                {
+                    isMarketBrick = true;
+                    selectedBrick = targets[i].gameObject;
+                    break;
+                }
+                else if (botBricks.Contains(targets[i].gameObject))
+                {
+                    isMarketBrick = false;
+                    selectedBrick = targets[i].gameObject;
+                    break;
+                }
+            }
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            if (holdingScreenTimer < maxTapTimer)
+            {
+                if (selectedBrick && !isMarketBrick)
+                {
+                    ConfirmSell(selectedBrick.GetComponent<Image>().sprite.name);
+                }
+            }
+            else if(selectedBrick)
+            {
+                //~Add brick to bot grid
+            }
+            holdingScreenTimer = 0;
+            selectedBrick = null;
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            holdingScreenTimer += Time.unscaledDeltaTime;
+            if (holdingScreenTimer >= maxTapTimer)
+            {
+                UpdateBrickSnap();
+            }
+        }
+    }
+
+    //Snap brick to block closest to player drag position
+    void UpdateBrickSnap()
+    {
+        //~Ability to drag bricks around grid
+        if(selectedBrick)
+        {
+            selectedBrick.transform.parent = transform;
+            selectedBrick.GetComponent<RectTransform>().sizeDelta = Vector2.one * currentSize;
+            selectedBrick.GetComponent<RectTransform>().anchoredPosition = Input.mousePosition;
+        }
     }
 
     //Update scrapyard UI on opening
@@ -56,6 +135,28 @@ public class Scrapyard : MonoBehaviour
         CloseSubMenu();
         RefreshBotIcons();
         BuildBotGrid();
+        BuildMarketplace();
+    }
+
+    //Add available tiles to market
+    void BuildMarketplace()
+    {
+        //Remove existing marketplace items
+        Image[] buttons = marketParent.GetComponentsInChildren<Image>();
+        for(int i = 0;i<buttons.Length;i++)
+        {
+            Destroy(buttons[i].gameObject);
+        }
+        marketSelection = new List<GameObject>();
+
+        //Add new items to marketplace
+        for (int i = 0;i<marketList.Count;i++)
+        {
+            GameObject newTile = Instantiate(botTile, marketParent.transform);
+            Image newTileImage = newTile.GetComponent<Image>();
+            newTileImage.sprite = tilesAtlas.Single<Sprite>(s => s.name == marketList[i]);
+            marketSelection.Add(newTile);
+        }
     }
 
     //Create editable bot grid
@@ -66,6 +167,7 @@ public class Scrapyard : MonoBehaviour
         {
             Destroy(botDisplay);
         }
+        botBricks = new List<GameObject>();
 
         //Generate empty grid
         Sprite[,] botMap = GameController.Instance.bot.GetTileMap();
@@ -83,6 +185,7 @@ public class Scrapyard : MonoBehaviour
                 if (botMap[x, y])
                 {
                     newTileImage.sprite = botMap[x, y];
+                    botBricks.Add(newTile);
                 }
                 else
                 {
@@ -207,14 +310,14 @@ public class Scrapyard : MonoBehaviour
         botDisplay.GetComponent<RectTransform>().sizeDelta = Vector2.one * currentSize;
     }
 
-    //Button for saving current bot as a blueprint
-    public void SaveBlueprint()
+    //Button for saving current bot as a layout
+    public void SaveLayout()
     {
 
     }
 
-    //Button for replacing bot with a loaded blueprint
-    public void LoadBlueprint()
+    //Button for replacing bot with a loaded layout
+    public void LoadLayout()
     {
 
     }
@@ -229,6 +332,18 @@ public class Scrapyard : MonoBehaviour
     public void LoadGameMenu()
     {
         loadMenu.SetActive(true);
+    }
+
+    //Button for confirming sold bricks
+    public void ConfirmSell(string brick)
+    {
+        confirmSell.SetActive(true);
+    }
+
+    //Button for selling confirmed bricks
+    public void CompleteConfirmedSell(string brick)
+    {
+        UpdateScrapyard();
     }
 
     //Button for confirming market purchases
@@ -283,5 +398,6 @@ public class Scrapyard : MonoBehaviour
         loadMenu.SetActive(false);
         confirmPurchase.SetActive(false);
         failPurchase.SetActive(false);
+        confirmSell.SetActive(false);
     }
 }
