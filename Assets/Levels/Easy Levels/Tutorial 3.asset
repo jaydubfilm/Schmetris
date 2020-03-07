@@ -38,4 +38,4 @@ MonoBehaviour:
     probability: 1
   blockSpawnRate: 0.3
   enemySpawnRate: 15
-  blockSpeed: 8
+  blockSpeed: 7.5

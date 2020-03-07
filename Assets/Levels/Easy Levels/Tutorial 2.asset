@@ -29,4 +29,4 @@ MonoBehaviour:
   speciesSpawnData: []
   blockSpawnRate: 0.3
   enemySpawnRate: 0
-  blockSpeed: 8
+  blockSpeed: 7.5
