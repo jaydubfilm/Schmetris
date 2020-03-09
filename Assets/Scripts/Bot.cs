@@ -97,9 +97,11 @@ public class Bot : MonoBehaviour
                 if (brickList.Contains(brick))
                 {
                     brickList.Remove(brick);
+                    Destroy(brick);
                 }
             }
             fuelBrickList = new List<GameObject>();
+            Destroy(powerGrid.gameObject);
             //OnLevelRestart();
         }
         else
@@ -140,6 +142,7 @@ public class Bot : MonoBehaviour
 
     public void OnNewLevel()
     {
+        savedTileMap = new Sprite[maxBotWidth, maxBotHeight];
         foreach (GameObject Brick in brickList)
         {
             if(Brick && Brick.GetComponent<Brick>())
@@ -168,6 +171,7 @@ public class Bot : MonoBehaviour
                 brickTypeArr[x, y] = -1;
             }
         botRotation = 0;
+        isRotating = false;
         powerGrid = Instantiate(powerGridPrefab, gameObject.transform);
 
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(), new Vector3(0, 0, 0), Quaternion.identity);
@@ -183,7 +187,7 @@ public class Bot : MonoBehaviour
     }
 
     //Rebuild player's bot from the start of this level
-    void OnLevelRestart()
+    public void OnLevelRestart()
     {
         coreBrick = masterBrickList[0];
         coreV2 = new Vector2Int(maxBotRadius, maxBotRadius);
@@ -198,6 +202,7 @@ public class Bot : MonoBehaviour
                 brickTypeArr[x, y] = -1;
             }
         botRotation = 0;
+        isRotating = false;
         powerGrid = Instantiate(powerGridPrefab, gameObject.transform);
 
         startTileMap = Instantiate(startingBrickGrid.GetComponent<Tilemap>(), new Vector3(0, 0, 0), Quaternion.identity);
@@ -261,6 +266,7 @@ public class Bot : MonoBehaviour
                 brickTypeArr[x,y] = -1;
             }
         botRotation=0;
+        isRotating = false;
         powerGrid = Instantiate(powerGridPrefab, gameObject.transform);
 
         source = GetComponent<AudioSource>();
@@ -330,7 +336,8 @@ public class Bot : MonoBehaviour
             }
         }
         Destroy(startTileMap.gameObject);
-        StartCoroutine(WaitAndTripleCheck(0.2f));
+        if(gameObject.activeSelf)
+            StartCoroutine(WaitAndTripleCheck(0.2f));
     }
 
     public int GetBrickType(Sprite sprite){
@@ -1339,7 +1346,8 @@ public class Bot : MonoBehaviour
     }
 
     public GameObject AddBrick(Vector2Int arrPos, int type, int level = 0)
-    {  
+    {
+
         Vector2Int offsetV2 = ArrToOffset(arrPos);
 
         Vector3 offsetV3 = new Vector3(offsetV2.x * settings.colSize, offsetV2.y * settings.colSize, 0);

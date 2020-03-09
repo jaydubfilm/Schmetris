@@ -207,8 +207,8 @@ public class Scrapyard : MonoBehaviour
         {
             for (int y = 0; y < botMap.GetLength(1); y++)
             {
-                if (botBricks[x * botMap.GetLength(0) + y].GetComponent<Image>().color != Color.clear)
-                    botMap[x, y] = botBricks[x * botMap.GetLength(0) + y].GetComponent<Image>().sprite;
+                if (botBricks[x + y * botMap.GetLength(1)].GetComponent<Image>().color != Color.clear)
+                    botMap[x, y] = botBricks[x + y * botMap.GetLength(1)].GetComponent<Image>().sprite;
                 else
                     botMap[x, y] = null;
             }

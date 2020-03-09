@@ -445,6 +445,7 @@ public class GameController : MonoBehaviour
     {
         scrapyard.SetActive(false);
         bot.gameObject.SetActive(true);
+        bot.OnLevelRestart();
         currentScene = Mathf.Min(currentScene + 1, game.levelDataArr.Length);
         if (OnNewLevel != null)
         {
