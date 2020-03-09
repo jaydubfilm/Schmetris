@@ -100,7 +100,7 @@ public class Bot : MonoBehaviour
                 }
             }
             fuelBrickList = new List<GameObject>();
-            OnLevelRestart();
+            //OnLevelRestart();
         }
         else
         {
@@ -138,7 +138,7 @@ public class Bot : MonoBehaviour
         Destroy(powerGrid.gameObject);
     }
 
-    void OnNewLevel()
+    public void OnNewLevel()
     {
         foreach (GameObject Brick in brickList)
         {

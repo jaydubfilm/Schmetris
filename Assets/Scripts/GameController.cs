@@ -458,6 +458,7 @@ public class GameController : MonoBehaviour
         hud.SetActive(false);
         isPaused = true;
         Time.timeScale = 0;
+        bot.OnNewLevel();
         bot.gameObject.SetActive(false);
         SceneManager.LoadScene(1);
         scrapyard.SetActive(true);

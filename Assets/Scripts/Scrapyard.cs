@@ -51,6 +51,7 @@ public class Scrapyard : MonoBehaviour
     const float maxTapTimer = 0.15f;
     bool isMarketBrick = false;
     GameObject botBrick = null;
+    bool canMove = true;
 
     //Init
     private void Start()
@@ -71,7 +72,7 @@ public class Scrapyard : MonoBehaviour
     //Check for brick dragging
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && canMove)
         {
             holdingScreenTimer = 0;
             PointerEventData pointer = new PointerEventData(EventSystem.current);
@@ -99,7 +100,7 @@ public class Scrapyard : MonoBehaviour
                 }
             }
         }
-        else if (Input.GetMouseButtonUp(0))
+        else if (Input.GetMouseButtonUp(0) && canMove)
         {
             if (holdingScreenTimer < maxTapTimer)
             {
@@ -142,7 +143,7 @@ public class Scrapyard : MonoBehaviour
             selectedBrick = null;
             botBrick = null;
         }
-        else if (Input.GetMouseButton(0))
+        else if (Input.GetMouseButton(0) && canMove)
         {
             holdingScreenTimer += Time.unscaledDeltaTime;
             if (holdingScreenTimer >= maxTapTimer)
@@ -196,6 +197,23 @@ public class Scrapyard : MonoBehaviour
             newTileImage.sprite = tilesAtlas.Single<Sprite>(s => s.name == tempMarketList[i]);
             marketSelection.Add(newTile);
         }
+    }
+
+    //Update player's bot from editable bot grid
+    void UpdateGameplayBot()
+    {
+        Sprite[,] botMap = GameController.Instance.bot.GetTileMap();
+        for (int x = 0; x < botMap.GetLength(0); x++)
+        {
+            for (int y = 0; y < botMap.GetLength(1); y++)
+            {
+                if (botBricks[x * botMap.GetLength(0) + y].GetComponent<Image>().color != Color.clear)
+                    botMap[x, y] = botBricks[x * botMap.GetLength(0) + y].GetComponent<Image>().sprite;
+                else
+                    botMap[x, y] = null;
+            }
+        }
+        GameController.Instance.bot.SetTileMap(botMap);
     }
 
     //Create editable bot grid
@@ -364,31 +382,36 @@ public class Scrapyard : MonoBehaviour
     //Button for opening save game menu
     public void SaveGameMenu()
     {
+        canMove = false;
         saveMenu.SetActive(true);
     }
 
     //Button for opening load game menu
     public void LoadGameMenu()
     {
+        canMove = false;
         loadMenu.SetActive(true);
     }
 
     //Button for confirming sold bricks
     public void ConfirmSell(string brick)
     {
+        canMove = false;
         confirmSell.SetActive(true);
     }
 
     //Button for selling confirmed bricks
     public void CompleteConfirmedSell(string brick)
     {
+        canMove = true;
         UpdateScrapyard();
     }
 
     //Button for confirming market purchases
     public void ConfirmPurchase()
     {
-        if(transactionAmount >= 0)
+        canMove = false;
+        if (transactionAmount >= 0)
         {
             confirmPurchase.SetActive(true);
         }
@@ -401,7 +424,9 @@ public class Scrapyard : MonoBehaviour
     //Button for completing confirmed market purchases
     public void CompleteConfirmedPurchase()
     {
+        canMove = true;
         GameController.Instance.money = transactionAmount;
+        UpdateGameplayBot();
         UpdateScrapyard();
     }
 
@@ -433,6 +458,7 @@ public class Scrapyard : MonoBehaviour
     //Button for closing a sub-menu and returning to the main scrapyard
     public void CloseSubMenu()
     {
+        canMove = true;
         saveMenu.SetActive(false);
         loadMenu.SetActive(false);
         confirmPurchase.SetActive(false);
