@@ -41,6 +41,7 @@ public class Scrapyard : MonoBehaviour
     int transactionAmount = 0;
     public Transform marketParent;
     public List<string> marketList = new List<string>();
+    public List<string> tempMarketList = new List<string>();
     List<GameObject> marketSelection = new List<GameObject>();
 
     //Brick moving
@@ -49,6 +50,7 @@ public class Scrapyard : MonoBehaviour
     float holdingScreenTimer = 0;
     const float maxTapTimer = 0.15f;
     bool isMarketBrick = false;
+    GameObject botBrick = null;
 
     //Init
     private void Start()
@@ -60,12 +62,16 @@ public class Scrapyard : MonoBehaviour
             GameController.Instance.saveManager.Init();
         }
         tilesAtlas = Resources.LoadAll<Sprite>(tileAtlasResource);
+        foreach(string MarketItem in marketList)
+        {
+            tempMarketList.Add(MarketItem);
+        }
     }
 
     //Check for brick dragging
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             holdingScreenTimer = 0;
             PointerEventData pointer = new PointerEventData(EventSystem.current);
@@ -78,12 +84,17 @@ public class Scrapyard : MonoBehaviour
                 {
                     isMarketBrick = true;
                     selectedBrick = targets[i].gameObject;
+                    UpdateBrickSnap();
                     break;
                 }
-                else if (botBricks.Contains(targets[i].gameObject))
+                else if (botBricks.Contains(targets[i].gameObject) && targets[i].gameObject.GetComponent<Image>().color != Color.clear)
                 {
                     isMarketBrick = false;
-                    selectedBrick = targets[i].gameObject;
+                    botBrick = targets[i].gameObject;
+                    selectedBrick = Instantiate(botTile, transform.parent);
+                    selectedBrick.GetComponent<Image>().sprite = botBrick.GetComponent<Image>().sprite;
+                    botBrick.GetComponent<Image>().color = Color.clear;
+                    UpdateBrickSnap();
                     break;
                 }
             }
@@ -97,12 +108,39 @@ public class Scrapyard : MonoBehaviour
                     ConfirmSell(selectedBrick.GetComponent<Image>().sprite.name);
                 }
             }
-            else if(selectedBrick)
+            else if (selectedBrick)
             {
-                //~Add brick to bot grid
+                PointerEventData pointer = new PointerEventData(EventSystem.current);
+                pointer.position = Input.mousePosition;
+                List<RaycastResult> targets = new List<RaycastResult>();
+                raycaster.Raycast(pointer, targets);
+                for (int i = 0; i < targets.Count; i++)
+                {
+                    if (botBricks.Contains(targets[i].gameObject) && targets[i].gameObject.GetComponent<Image>().color == Color.clear)
+                    {
+                        targets[i].gameObject.GetComponent<Image>().color = Color.white;
+                        targets[i].gameObject.GetComponent<Image>().sprite = selectedBrick.GetComponent<Image>().sprite;
+                        if(isMarketBrick)
+                        {
+                            tempMarketList.Remove(selectedBrick.GetComponent<Image>().sprite.name);
+                        }
+                        else
+                        {
+                            botBrick = null;
+                        }
+                        break;
+                    }
+                }
+                Destroy(selectedBrick);
+                BuildMarketplace();
+                if(botBrick)
+                {
+                    botBrick.GetComponent<Image>().color = Color.white;
+                }
             }
             holdingScreenTimer = 0;
             selectedBrick = null;
+            botBrick = null;
         }
         else if (Input.GetMouseButton(0))
         {
@@ -117,10 +155,11 @@ public class Scrapyard : MonoBehaviour
     //Snap brick to block closest to player drag position
     void UpdateBrickSnap()
     {
-        //~Ability to drag bricks around grid
         if(selectedBrick)
         {
-            selectedBrick.transform.parent = transform;
+            selectedBrick.transform.parent = transform.parent;
+            selectedBrick.GetComponent<RectTransform>().anchorMin = Vector2.zero;
+            selectedBrick.GetComponent<RectTransform>().anchorMax = Vector2.zero;
             selectedBrick.GetComponent<RectTransform>().sizeDelta = Vector2.one * currentSize;
             selectedBrick.GetComponent<RectTransform>().anchoredPosition = Input.mousePosition;
         }
@@ -150,11 +189,11 @@ public class Scrapyard : MonoBehaviour
         marketSelection = new List<GameObject>();
 
         //Add new items to marketplace
-        for (int i = 0;i<marketList.Count;i++)
+        for (int i = 0;i<tempMarketList.Count;i++)
         {
             GameObject newTile = Instantiate(botTile, marketParent.transform);
             Image newTileImage = newTile.GetComponent<Image>();
-            newTileImage.sprite = tilesAtlas.Single<Sprite>(s => s.name == marketList[i]);
+            newTileImage.sprite = tilesAtlas.Single<Sprite>(s => s.name == tempMarketList[i]);
             marketSelection.Add(newTile);
         }
     }
@@ -185,12 +224,12 @@ public class Scrapyard : MonoBehaviour
                 if (botMap[x, y])
                 {
                     newTileImage.sprite = botMap[x, y];
-                    botBricks.Add(newTile);
                 }
                 else
                 {
                     newTileImage.color = Color.clear;
                 }
+                botBricks.Add(newTile);
             }
         }
     }
