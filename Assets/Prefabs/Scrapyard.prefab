@@ -1380,7 +1380,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1018826844164630249}
         m_MethodName: CompleteConfirmedSell
-        m_Mode: 5
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1476,6 +1476,7 @@ MonoBehaviour:
   - Grey1
   - Red4
   - LightBlue0
+  tempMarketList: []
 --- !u!223 &7533438584670130256
 Canvas:
   m_ObjectHideFlags: 0

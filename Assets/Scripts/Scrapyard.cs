@@ -51,6 +51,7 @@ public class Scrapyard : MonoBehaviour
     const float maxTapTimer = 0.15f;
     bool isMarketBrick = false;
     GameObject botBrick = null;
+    GameObject sellBrick = null;
     bool canMove = true;
 
     //Init
@@ -85,17 +86,12 @@ public class Scrapyard : MonoBehaviour
                 {
                     isMarketBrick = true;
                     selectedBrick = targets[i].gameObject;
-                    UpdateBrickSnap();
                     break;
                 }
                 else if (botBricks.Contains(targets[i].gameObject) && targets[i].gameObject.GetComponent<Image>().color != Color.clear)
                 {
                     isMarketBrick = false;
                     botBrick = targets[i].gameObject;
-                    selectedBrick = Instantiate(botTile, transform.parent);
-                    selectedBrick.GetComponent<Image>().sprite = botBrick.GetComponent<Image>().sprite;
-                    botBrick.GetComponent<Image>().color = Color.clear;
-                    UpdateBrickSnap();
                     break;
                 }
             }
@@ -104,9 +100,11 @@ public class Scrapyard : MonoBehaviour
         {
             if (holdingScreenTimer < maxTapTimer)
             {
-                if (selectedBrick && !isMarketBrick)
+                if (botBrick && !isMarketBrick)
                 {
-                    ConfirmSell(selectedBrick.GetComponent<Image>().sprite.name);
+                    sellBrick = botBrick;
+                    botBrick = null;
+                    ConfirmSell();
                 }
             }
             else if (selectedBrick)
@@ -148,6 +146,12 @@ public class Scrapyard : MonoBehaviour
             holdingScreenTimer += Time.unscaledDeltaTime;
             if (holdingScreenTimer >= maxTapTimer)
             {
+                if(botBrick && !selectedBrick)
+                {
+                    selectedBrick = Instantiate(botTile, transform.parent);
+                    selectedBrick.GetComponent<Image>().sprite = botBrick.GetComponent<Image>().sprite;
+                    botBrick.GetComponent<Image>().color = Color.clear;
+                }
                 UpdateBrickSnap();
             }
         }
@@ -394,16 +398,19 @@ public class Scrapyard : MonoBehaviour
     }
 
     //Button for confirming sold bricks
-    public void ConfirmSell(string brick)
+    public void ConfirmSell()
     {
         canMove = false;
         confirmSell.SetActive(true);
     }
 
     //Button for selling confirmed bricks
-    public void CompleteConfirmedSell(string brick)
+    public void CompleteConfirmedSell()
     {
         canMove = true;
+        sellBrick.GetComponent<Image>().color = Color.clear;
+        sellBrick = null;
+        UpdateGameplayBot();
         UpdateScrapyard();
     }
 
