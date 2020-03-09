@@ -65,6 +65,10 @@ public class GameController : MonoBehaviour
 
     public GameObject loseLifePanel;
     public GameObject retryText;
+
+    public GameObject scrapyard;
+    public GameObject hud;
+
     //public LevelData[] allLevelData;
     public Game easyGame;
     public Game mediumGame;
@@ -179,6 +183,7 @@ public class GameController : MonoBehaviour
     }
 
     void Start () {
+        scrapyard.SetActive(false);
         pauseMenu.SetActive(false);
         levelMenu.SetActive(true);
         isPaused = true;
@@ -203,6 +208,7 @@ public class GameController : MonoBehaviour
         GameObject.Find("SpeedUp").SetActive(false);
         GameObject.Find("SpeedDown").SetActive(false);
 #endif
+        hud.SetActive(false);
     }
 
     void RefreshBotIcons()
@@ -286,6 +292,7 @@ public class GameController : MonoBehaviour
 
     void StartGame()
     {
+        bot.gameObject.SetActive(true);
         LoadLevelData(1);
         InvokeRepeating("GameOverCheck", 1.0f, 0.2f);
     }
@@ -389,6 +396,7 @@ public class GameController : MonoBehaviour
     //Used for external Canvas buttons for touchscreen controls
     public void PauseGame()
     {
+        hud.SetActive(false);
         mainPanel.SetActive(true);
         helpPanel.SetActive(false);
         pauseMenu.SetActive(true);
@@ -401,6 +409,7 @@ public class GameController : MonoBehaviour
     //Used for external Canvas buttons for touchscreen controls
     public void ResumeGame()
     {
+        hud.SetActive(true);
         pauseMenu.SetActive(false);
         isPaused = false;
         Time.timeScale = 1.0f;
@@ -432,6 +441,29 @@ public class GameController : MonoBehaviour
         mainPanel.SetActive(true);
     }
 
+    public void LoadNewLevel()
+    {
+        scrapyard.SetActive(false);
+        bot.gameObject.SetActive(true);
+        currentScene = Mathf.Min(currentScene + 1, game.levelDataArr.Length);
+        if (OnNewLevel != null)
+        {
+            OnNewLevel();
+        }
+        LoadLevelData(currentScene);
+    }
+
+    void LoadScrapyard()
+    {
+        hud.SetActive(false);
+        isPaused = true;
+        Time.timeScale = 0;
+        bot.gameObject.SetActive(false);
+        SceneManager.LoadScene(1);
+        scrapyard.SetActive(true);
+        scrapyard.GetComponent<Scrapyard>().UpdateScrapyard();
+    }
+
     public void Update()
     {
         if (!isBotDead && !isPaused)
@@ -458,12 +490,7 @@ public class GameController : MonoBehaviour
                 }
                 else
                 {*/
-                currentScene = Mathf.Min(currentScene + 1, game.levelDataArr.Length);
-                if (OnNewLevel != null)
-                {
-                    OnNewLevel();
-                }
-                LoadLevelData(currentScene);
+                LoadScrapyard();
                 //}
             }
 
@@ -475,7 +502,11 @@ public class GameController : MonoBehaviour
 
         if (isPaused)
         {
-            if(levelMenu.activeSelf)
+            if(scrapyard.activeSelf)
+            {
+
+            }
+            else if(levelMenu.activeSelf)
             {
                 if(Input.GetKeyDown(KeyCode.Alpha1))
                 {
@@ -765,6 +796,7 @@ public class GameController : MonoBehaviour
     }
 
     public void LoadLevelData(int levelNumber) {
+        hud.SetActive(true);
         SceneManager.LoadScene(Mathf.Min(SceneManager.sceneCountInBuildSettings - 1,levelNumber));
         levelNumberString.text = "Level: " + levelNumber;  
         levelData = game.levelDataArr[levelNumber-1];

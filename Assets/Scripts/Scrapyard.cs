@@ -408,7 +408,7 @@ public class Scrapyard : MonoBehaviour
     //Button for closing the scrapyard and loading the next level
     public void NextLevel()
     {
-
+        GameController.Instance.LoadNewLevel();
     }
 
     //Button for quitting game
