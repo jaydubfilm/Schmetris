@@ -230,8 +230,12 @@ public class GameController : MonoBehaviour
         SaveData targetFile = saveManager.GetSave(index);
         if(targetFile != null && targetFile.game != "" && targetFile.bot.Length > 0)
         {
+            //Position icon base
             GameObject newGrid = Instantiate(iconGrid, target);
-            newGrid.GetComponent<RectTransform>().anchoredPosition = new Vector2(10, 0);
+            RectTransform newGridTransform = newGrid.GetComponent<RectTransform>();
+            newGridTransform.pivot = new Vector2(0, 0.5f);
+            newGridTransform.sizeDelta = Vector2.one * 5;
+            newGridTransform.anchoredPosition = new Vector2(100, 0);
 
             int minX = -1;
             int maxX = -1;
