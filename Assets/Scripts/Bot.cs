@@ -240,14 +240,10 @@ public class Bot : MonoBehaviour
         GameController.OnNewLevel -= OnNewLevel;
     }
 
-    void Awake() 
+    bool init = false;
+    public void Init()
     {
         DontDestroyOnLoad(this.gameObject);
-    }
-
-    bool init = false;
-    public void Start()
-    {
         init = true;
         settings = GameController.Instance.settings;
         maxBotRadius = settings.maxBotRadius;
@@ -282,6 +278,8 @@ public class Bot : MonoBehaviour
         }
 
         OnNewLevel();
+
+        gameObject.SetActive(false);
     }
 
      // Update is called once per frame

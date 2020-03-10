@@ -61,7 +61,7 @@ public class GameController : MonoBehaviour
     public GameObject mainPanel;
     public GameObject helpPanel;
     public GameObject loadPanel;
-    public GameObject savePanel;
+    public GameObject levelPanel;
 
     public GameObject loseLifePanel;
     public GameObject retryText;
@@ -119,7 +119,6 @@ public class GameController : MonoBehaviour
 
     bool isRestarting = false;
     public SaveManager saveManager = null;
-    public Transform[] saveIcons;
     public Transform[] loadIcons;
     public GameObject iconGrid;
     public GameObject iconColumn;
@@ -175,6 +174,7 @@ public class GameController : MonoBehaviour
             }
             tilesAtlas = Resources.LoadAll<Sprite>(atlasResource);
             RefreshBotIcons();
+            bot.Init();
         }
         else
         {
@@ -185,6 +185,7 @@ public class GameController : MonoBehaviour
     void Start () {
         scrapyard.SetActive(false);
         pauseMenu.SetActive(false);
+        loadPanel.SetActive(false);
         levelMenu.SetActive(true);
         isPaused = true;
         Time.timeScale = 0;
@@ -213,11 +214,6 @@ public class GameController : MonoBehaviour
 
     void RefreshBotIcons()
     {
-        for (int i = 0; i < saveIcons.Length; i++)
-        {
-            BuildBotIcon(i, saveIcons[i]);
-        }
-
         for (int i = 0; i < loadIcons.Length; i++)
         {
             BuildBotIcon(i, loadIcons[i]);
@@ -341,6 +337,8 @@ public class GameController : MonoBehaviour
                 bot.SetTileMap(newMap);
             }
 
+            loadPanel.SetActive(false);
+            levelPanel.SetActive(false);
             hud.SetActive(false);
             isPaused = true;
             Time.timeScale = 0;
@@ -401,8 +399,6 @@ public class GameController : MonoBehaviour
         mainPanel.SetActive(true);
         helpPanel.SetActive(false);
         pauseMenu.SetActive(true);
-        savePanel.SetActive(false);
-        loadPanel.SetActive(false);
         isPaused = true;
         Time.timeScale = 0;
     }
@@ -437,8 +433,6 @@ public class GameController : MonoBehaviour
     public void PauseMenu()
     {
         helpPanel.SetActive(false);
-        savePanel.SetActive(false);
-        loadPanel.SetActive(false);
         mainPanel.SetActive(true);
     }
 
@@ -453,6 +447,12 @@ public class GameController : MonoBehaviour
             OnNewLevel();
         }
         LoadLevelData(currentScene);
+    }
+
+    public void MainLevelPanel()
+    {
+        levelPanel.SetActive(true);
+        loadPanel.SetActive(false);
     }
 
     void LoadScrapyard()
@@ -505,56 +505,11 @@ public class GameController : MonoBehaviour
 
         if (isPaused)
         {
-            if(scrapyard.activeSelf)
+            if (scrapyard.activeSelf)
             {
 
             }
-            else if(levelMenu.activeSelf)
-            {
-                if(Input.GetKeyDown(KeyCode.Alpha1))
-                {
-                    EasyGame();
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha2))
-                {
-                    MediumGame();
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha3))
-                {
-                    HardGame();
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha4))
-                {
-                    QuitGame();
-                }
-            }
-            else if(helpPanel.activeSelf)
-            {
-                if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    PauseMenu();
-                }
-            }
-            else if (savePanel.activeSelf)
-            {
-                if (Input.GetKeyDown(KeyCode.Alpha1))
-                {
-                    SaveGame(0);
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha2))
-                {
-                    SaveGame(1);
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha3))
-                {
-                    SaveGame(2);
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha4))
-                {
-                    PauseMenu();
-                }
-            }
-            else if(loadPanel.activeSelf)
+            else if (loadPanel.activeSelf)
             {
                 if (Input.GetKeyDown(KeyCode.Alpha1))
                 {
@@ -570,10 +525,40 @@ public class GameController : MonoBehaviour
                 }
                 else if (Input.GetKeyDown(KeyCode.Alpha4))
                 {
+                    MainLevelPanel();
+                }
+            }
+            else if (levelMenu.activeSelf)
+            {
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    EasyGame();
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    MediumGame();
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    HardGame();
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha4))
+                {
+                    LoadMenu();
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha5))
+                {
+                    QuitGame();
+                }
+            }
+            else if (helpPanel.activeSelf)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
                     PauseMenu();
                 }
             }
-            else if(Input.GetKeyDown(KeyCode.Alpha1))
+            else if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 ResumeGame();
             }
@@ -591,14 +576,6 @@ public class GameController : MonoBehaviour
                 HelpMenu();
             }
             else if (Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                SaveMenu();
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha5))
-            {
-                LoadMenu();
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha6))
             {
                 QuitGame();
             }
@@ -654,13 +631,7 @@ public class GameController : MonoBehaviour
     public void LoadMenu()
     {
         loadPanel.SetActive(true);
-        mainPanel.SetActive(false);
-    }
-
-    public void SaveMenu()
-    {
-        savePanel.SetActive(true);
-        mainPanel.SetActive(false);
+        levelPanel.SetActive(false);
     }
 
     //Used for external Canvas buttons for touchscreen controls
