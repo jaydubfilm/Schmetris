@@ -53,6 +53,10 @@ public class Scrapyard : MonoBehaviour
     GameObject botBrick = null;
     GameObject sellBrick = null;
     bool canMove = true;
+    bool isTranslating = false;
+    GameObject coreBrick = null;
+    const float botBounds = 100.0f;
+    Vector3 prevMousePos = Vector3.zero;
 
     //Init
     private void Start()
@@ -86,12 +90,15 @@ public class Scrapyard : MonoBehaviour
                 {
                     isMarketBrick = true;
                     selectedBrick = targets[i].gameObject;
+                    isTranslating = false;
                     break;
                 }
                 else if (botBricks.Contains(targets[i].gameObject) && targets[i].gameObject.GetComponent<Image>().color != Color.clear)
                 {
                     isMarketBrick = false;
                     botBrick = targets[i].gameObject;
+                    isTranslating = botBrick == coreBrick;
+                    prevMousePos = Input.mousePosition;
                     break;
                 }
             }
@@ -102,9 +109,16 @@ public class Scrapyard : MonoBehaviour
             {
                 if (botBrick && !isMarketBrick)
                 {
-                    sellBrick = botBrick;
-                    botBrick = null;
-                    ConfirmSell();
+                    if (!isTranslating)
+                    {
+                        sellBrick = botBrick;
+                        botBrick = null;
+                        ConfirmSell();
+                    }
+                    else
+                    {
+                        botBrick = null;
+                    }
                 }
             }
             else if (selectedBrick)
@@ -148,9 +162,20 @@ public class Scrapyard : MonoBehaviour
             {
                 if(botBrick && !selectedBrick)
                 {
-                    selectedBrick = Instantiate(botTile, transform.parent);
-                    selectedBrick.GetComponent<Image>().sprite = botBrick.GetComponent<Image>().sprite;
-                    botBrick.GetComponent<Image>().color = Color.clear;
+                    if (!isTranslating)
+                    {
+                        selectedBrick = Instantiate(botTile, transform.parent);
+                        selectedBrick.GetComponent<Image>().sprite = botBrick.GetComponent<Image>().sprite;
+                        botBrick.GetComponent<Image>().color = Color.clear;
+                    }
+                    else
+                    {
+                        Vector2 newBotPos = botDisplay.GetComponent<RectTransform>().anchoredPosition + new Vector2(Input.mousePosition.x - prevMousePos.x, Input.mousePosition.y - prevMousePos.y);
+                        newBotPos.x = Mathf.Clamp(newBotPos.x, -botBounds, botBounds);
+                        newBotPos.y = Mathf.Clamp(newBotPos.y, -botBounds, botBounds);
+                        botDisplay.GetComponent<RectTransform>().anchoredPosition = newBotPos;
+                        prevMousePos = Input.mousePosition;
+                    }
                 }
                 UpdateBrickSnap();
             }
@@ -251,6 +276,8 @@ public class Scrapyard : MonoBehaviour
                 {
                     newTileImage.color = Color.clear;
                 }
+                if (x == 6 && y == 6)
+                    coreBrick = newTile;
                 botBricks.Add(newTile);
             }
         }
