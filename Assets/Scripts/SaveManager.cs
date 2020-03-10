@@ -25,6 +25,16 @@ public class SaveManager
         return saveData.saveFiles[index];
     }
 
+    //Return layout from save number
+    public SaveData GetLayout(int index)
+    {
+        if (!hasSaveData)
+        {
+            Init();
+        }
+        return saveData.savedLayouts[index];
+    }
+
     //Save data to save number
     public void SetSave(int index, int lives, int money, int level, string game, Sprite[,] bot)
     {
@@ -45,7 +55,31 @@ public class SaveManager
             }
         }
 
-        saveData.Save(newData, index);
+        saveData.SaveData(newData, index);
+        SaveGame();
+    }
+
+    //Save layout to save number
+    public void SetLayout(int index, Sprite[,] bot)
+    {
+        SaveData newData = new SaveData();
+        newData.lives = 0;
+        newData.money = 0;
+        newData.level = 0;
+        newData.game = "LAYOUT";
+
+        newData.bot = new BotData[bot.GetLength(0)];
+        for (int x = 0; x < bot.GetLength(0); x++)
+        {
+            newData.bot[x] = new BotData();
+            newData.bot[x].botRow = new string[bot.GetLength(1)];
+            for (int y = 0; y < bot.GetLength(1); y++)
+            {
+                newData.bot[x].botRow[y] = bot[x, y] ? bot[x, y].name : "";
+            }
+        }
+
+        saveData.SaveLayout(newData, index);
         SaveGame();
     }
 
@@ -58,6 +92,29 @@ public class SaveManager
         }
         fullSavePath = Application.persistentDataPath + saveDirectory + saveFile;
         LoadData();
+
+        while (saveData.saveFiles.Count < maxSaveFiles)
+        {
+            SaveData newData = new SaveData();
+            newData.lives = 0;
+            newData.money = 0;
+            newData.level = 0;
+            newData.game = "";
+            newData.bot = new BotData[1] { new BotData() };
+            newData.bot[0].botRow = new string[1] { "" };
+            saveData.saveFiles.Add(newData);
+        }
+        while (saveData.savedLayouts.Count < maxSaveFiles)
+        {
+            SaveData newData = new SaveData();
+            newData.lives = 0;
+            newData.money = 0;
+            newData.level = 0;
+            newData.game = "";
+            newData.bot = new BotData[1] { new BotData() };
+            newData.bot[0].botRow = new string[1] { "" };
+            saveData.savedLayouts.Add(newData);
+        }
     }
 
     //Generate initial save data
@@ -74,6 +131,17 @@ public class SaveManager
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
             saveData.saveFiles.Add(newData);
+        }
+        while (saveData.savedLayouts.Count < maxSaveFiles)
+        {
+            SaveData newData = new SaveData();
+            newData.lives = 0;
+            newData.money = 0;
+            newData.level = 0;
+            newData.game = "";
+            newData.bot = new BotData[1] { new BotData() };
+            newData.bot[0].botRow = new string[1] { "" };
+            saveData.savedLayouts.Add(newData);
         }
         SaveGame();
     }
@@ -113,11 +181,18 @@ public class SaveManager
 public class GameData
 {
     public List<SaveData> saveFiles = new List<SaveData>();
+    public List<SaveData> savedLayouts = new List<SaveData>();
 
     //Save new data over file at index
-    public void Save(SaveData newFile, int index)
+    public void SaveData(SaveData newFile, int index)
     {
         saveFiles[index] = newFile;
+    }
+
+    //Save new data over layout at index
+    public void SaveLayout(SaveData newLayout, int index)
+    {
+        savedLayouts[index] = newLayout;
     }
 }
 

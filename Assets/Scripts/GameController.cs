@@ -303,6 +303,12 @@ public class GameController : MonoBehaviour
         RefreshBotIcons();
     }
 
+    public void SaveLayout(int index)
+    {
+        saveManager.SetLayout(index, bot.GetTileMap());
+        RefreshBotIcons();
+    }
+
     public void LoadGame(int index)
     {
         SaveData loadData = saveManager.GetSave(index);
@@ -349,6 +355,29 @@ public class GameController : MonoBehaviour
             bot.gameObject.SetActive(false);
             SceneManager.LoadScene(1);
             scrapyard.SetActive(true);
+            scrapyard.GetComponent<Scrapyard>().UpdateScrapyard();
+        }
+    }
+
+    public void LoadLayout(int index)
+    {
+        SaveData loadData = saveManager.GetLayout(index);
+        if (loadData != null && loadData.game != "")
+        {
+            //~Best way to load a tilemap?
+            if (loadData.bot.Length > 0)
+            {
+                Sprite[,] newMap = new Sprite[loadData.bot.Length, loadData.bot[0].botRow.Length];
+                for (int x = 0; x < newMap.GetLength(0); x++)
+                {
+                    for (int y = 0; y < newMap.GetLength(1); y++)
+                    {
+                        if (loadData.bot[x].botRow[y] != "")
+                            newMap[x, y] = tilesAtlas.Single<Sprite>(s => s.name == loadData.bot[x].botRow[y]);
+                    }
+                }
+                bot.SetTileMap(newMap);
+            }
             scrapyard.GetComponent<Scrapyard>().UpdateScrapyard();
         }
     }

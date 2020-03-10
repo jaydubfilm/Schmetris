@@ -23,6 +23,8 @@ public class Scrapyard : MonoBehaviour
     //Scrapyard submenus
     public GameObject saveMenu;
     public GameObject loadMenu;
+    public GameObject saveLayoutMenu;
+    public GameObject loadLayoutMenu;
     public GameObject confirmPurchase;
     public GameObject failPurchase;
     public GameObject confirmSell;
@@ -30,6 +32,8 @@ public class Scrapyard : MonoBehaviour
     //Saving and loading
     public Transform[] saveSlots;
     public Transform[] loadSlots;
+    public Transform[] saveLayoutSlots;
+    public Transform[] loadLayoutSlots;
     const string tileAtlasResource = "MasterDiceSprites";
     Sprite[] tilesAtlas;
     const float iconSize = 5.0f;
@@ -288,17 +292,27 @@ public class Scrapyard : MonoBehaviour
     {
         for (int i = 0; i < saveSlots.Length; i++)
         {
-            BuildBotIcon(i, saveSlots[i]);
+            BuildBotIcon(i, saveSlots[i], false);
         }
 
         for (int i = 0; i < loadSlots.Length; i++)
         {
-            BuildBotIcon(i, loadSlots[i]);
+            BuildBotIcon(i, loadSlots[i], false);
+        }
+
+        for (int i = 0; i < saveLayoutSlots.Length; i++)
+        {
+            BuildBotIcon(i, saveLayoutSlots[i], true);
+        }
+
+        for (int i = 0; i < loadLayoutSlots.Length; i++)
+        {
+            BuildBotIcon(i, loadLayoutSlots[i], true);
         }
     }
 
     //Create individual bot icon
-    void BuildBotIcon(int index, Transform target)
+    void BuildBotIcon(int index, Transform target, bool isLayout)
     {
         //Remove existing bot icon
         if (target.GetComponentInChildren<VerticalLayoutGroup>())
@@ -307,7 +321,7 @@ public class Scrapyard : MonoBehaviour
         }
 
         //Load saved bot
-        SaveData targetFile = GameController.Instance.saveManager.GetSave(index);
+        SaveData targetFile = isLayout ? GameController.Instance.saveManager.GetLayout(index) : GameController.Instance.saveManager.GetSave(index);
         if (targetFile != null && targetFile.game != "" && targetFile.bot.Length > 0)
         {
             //Position icon base
@@ -399,15 +413,17 @@ public class Scrapyard : MonoBehaviour
     }
 
     //Button for saving current bot as a layout
-    public void SaveLayout()
+    public void SaveLayoutMenu()
     {
-
+        canMove = false;
+        saveLayoutMenu.SetActive(true);
     }
 
     //Button for replacing bot with a loaded layout
-    public void LoadLayout()
+    public void LoadLayoutMenu()
     {
-
+        canMove = false;
+        loadLayoutMenu.SetActive(true);
     }
 
     //Button for opening save game menu
@@ -481,6 +497,7 @@ public class Scrapyard : MonoBehaviour
     {
         GameController.Instance.SaveGame(index);
         RefreshBotIcons();
+        CloseSubMenu();
     }
 
     //Buttons for loading game from a chosen slot
@@ -489,12 +506,28 @@ public class Scrapyard : MonoBehaviour
         GameController.Instance.LoadGame(index);
     }
 
+    //Buttons for saving layout to a chosen slot
+    public void SaveLayout(int index)
+    {
+        GameController.Instance.SaveLayout(index);
+        RefreshBotIcons();
+        CloseSubMenu();
+    }
+
+    //Buttons for loading layout from a chosen slot
+    public void LoadLayout(int index)
+    {
+        GameController.Instance.LoadLayout(index);
+    }
+
     //Button for closing a sub-menu and returning to the main scrapyard
     public void CloseSubMenu()
     {
         canMove = true;
         saveMenu.SetActive(false);
         loadMenu.SetActive(false);
+        saveLayoutMenu.SetActive(false);
+        loadLayoutMenu.SetActive(false);
         confirmPurchase.SetActive(false);
         failPurchase.SetActive(false);
         confirmSell.SetActive(false);
