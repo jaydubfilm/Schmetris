@@ -459,7 +459,7 @@ public class Scrapyard : MonoBehaviour
     //Buttons for loading game from a chosen slot
     public void LoadGame(int index)
     {
-
+        GameController.Instance.LoadGame(index);
     }
 
     //Button for closing a sub-menu and returning to the main scrapyard

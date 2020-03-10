@@ -341,12 +341,13 @@ public class GameController : MonoBehaviour
                 bot.SetTileMap(newMap);
             }
 
-            LoadLevelData(currentScene);
-            InvokeRepeating("GameOverCheck", 1.0f, 0.2f);
-        }
-        else
-        {
-            StartGame();
+            hud.SetActive(false);
+            isPaused = true;
+            Time.timeScale = 0;
+            bot.gameObject.SetActive(false);
+            SceneManager.LoadScene(1);
+            scrapyard.SetActive(true);
+            scrapyard.GetComponent<Scrapyard>().UpdateScrapyard();
         }
     }
 
