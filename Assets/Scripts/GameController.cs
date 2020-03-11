@@ -269,7 +269,7 @@ public class GameController : MonoBehaviour
 
             if (minX > -1 && minY > -1)
             {
-                for (int y = maxY; y >= minY; y--)
+                for (int y = minY; y <= maxY; y++)
                 {
                     GameObject newColumn = Instantiate(iconColumn, newGrid.transform);
                     for (int x = minX; x <= maxX ; x++)

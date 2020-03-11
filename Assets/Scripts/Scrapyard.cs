@@ -62,6 +62,9 @@ public class Scrapyard : MonoBehaviour
     const float botBounds = 100.0f;
     Vector3 prevMousePos = Vector3.zero;
 
+    //Resource
+    public RectTransform fuelBar;
+
     //Init
     private void Start()
     {
@@ -265,7 +268,7 @@ public class Scrapyard : MonoBehaviour
         botDisplay.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
         //Fill grid with existing bricks
-        for (int y = botMap.GetLength(1) - 1; y >= 0; y--)
+        for (int y = 0; y < botMap.GetLength(1); y++)
         {
             GameObject newColumn = Instantiate(botColumn, botDisplay.transform);
             for (int x = 0; x < botMap.GetLength(0); x++)
@@ -365,7 +368,7 @@ public class Scrapyard : MonoBehaviour
             //Build bot icon
             if (minX > -1 && minY > -1)
             {
-                for (int y = maxY; y >= minY; y--)
+                for (int y = minX; y <= maxY; y++)
                 {
                     GameObject newColumn = Instantiate(botColumn, newGrid.transform);
                     for (int x = minX; x <= maxX; x++)
@@ -531,5 +534,17 @@ public class Scrapyard : MonoBehaviour
         confirmPurchase.SetActive(false);
         failPurchase.SetActive(false);
         confirmSell.SetActive(false);
+    }
+
+    //Button for buying fuel resources
+    public void BuyFuel()
+    {
+
+    }
+
+    //Button for selling fuel resources
+    public void SellFuel()
+    {
+
     }
 }
