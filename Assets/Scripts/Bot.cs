@@ -54,6 +54,7 @@ public class Bot : MonoBehaviour
     GameObject coreBrick; 
     Tilemap startTileMap;
     Sprite[,] savedTileMap;
+    float savedFuelStores = 0;
     public Grid startingBrickGrid;
     public GameObject blockPrefab;
     public GameObject bitPrefab;
@@ -63,6 +64,10 @@ public class Bot : MonoBehaviour
     private List<GameObject> pathList = new List<GameObject>();
     private List<Vector2Int> pathArrList = new List<Vector2Int>();
     public List<GameObject> fuelBrickList = new List<GameObject>();
+
+    //Fuel container storage
+    public List<GameObject> fuelContainerList = new List<GameObject>();
+    float fuelBurnRate = 1.0f;
 
     private AudioSource source;
     public AudioClip tripleSound;
@@ -101,7 +106,8 @@ public class Bot : MonoBehaviour
                 }
             }
             fuelBrickList = new List<GameObject>();
-            if(powerGrid)
+            UpdateFuelContainers();
+            if (powerGrid)
                 Destroy(powerGrid.gameObject);
             //OnLevelRestart();
         }
@@ -154,6 +160,7 @@ public class Bot : MonoBehaviour
                     savedTileMap[brickPos.x, brickPos.y] = Brick.GetComponent<SpriteRenderer>().sprite;
             }
         }
+        savedFuelStores = GetStoredFuel();
     }
 
     void OnGameRestart()
@@ -220,6 +227,7 @@ public class Bot : MonoBehaviour
 
         AddStartingBricks();
         powerGridRefreshFlag = true;
+        SetStoredFuel(savedFuelStores);
     }
 
     private void OnEnable()
@@ -301,6 +309,27 @@ public class Bot : MonoBehaviour
         if ((orphanCheckFlag)&&(settings.Schmetris==false)) {
             StartCoroutine(WaitAndReleaseOrphans(0.2f));
             orphanCheckFlag = false;
+        }
+
+        if (fuelBrickList.Count == 0)
+        {
+            float fuelDrop = Time.deltaTime * fuelBurnRate;
+            for(int i =0;i<fuelContainerList.Count;i++)
+            {
+                Brick fuelCheck = fuelContainerList[i].GetComponent<Brick>();
+                if(fuelCheck.storedFuel >= fuelDrop)
+                {
+                    fuelCheck.storedFuel -= fuelDrop;
+                    fuelDrop = 0;
+                }
+                else
+                {
+                    fuelDrop -= fuelCheck.storedFuel;
+                    fuelCheck.storedFuel = 0;
+                }
+                if(fuelDrop <= 0)
+                    break;
+            }
         }
     }
 
@@ -1389,6 +1418,11 @@ public class Bot : MonoBehaviour
 
         tripleCheckFlag = true;
 
+        if(newBrickScript.storedFuelMax > 0)
+        {
+            fuelContainerList.Add(newBrick);
+        }
+
         return newBrick;
      
     }
@@ -1892,7 +1926,7 @@ public class Bot : MonoBehaviour
     
     public bool HasFuel() {
         if (fuelBrickList.Count == 0)
-            return false;
+            return GetFuelPercent() > 0;
         else { // activate new fuel cell
             if (fuelBrickList[0]==null)
                 Debug.Log("wtf");
@@ -1900,6 +1934,88 @@ public class Bot : MonoBehaviour
             if (fuel.active==false)
                 fuel.Activate();
             return true;
+        }
+    }
+
+    void UpdateFuelContainers()
+    {
+        fuelContainerList = new List<GameObject>();
+        foreach(GameObject ContainerCheck in brickList)
+        {
+            if(ContainerCheck.GetComponent<Brick>().storedFuelMax > 0)
+            {
+                fuelContainerList.Add(ContainerCheck);
+            }
+        }
+    }
+
+    public float GetFuelPercent()
+    {
+        if (fuelContainerList.Count > 0)
+        {
+            float currentFuel = 0;
+            float maxFuel = 0;
+            foreach(GameObject FuelContainer in fuelContainerList)
+            {
+                Brick fuelBrick = FuelContainer.GetComponent<Brick>();
+                currentFuel += fuelBrick.storedFuel;
+                maxFuel += fuelBrick.storedFuelMax;
+            }
+            return currentFuel / maxFuel;
+        }
+        return 0;
+    }
+
+    public float GetStoredFuel()
+    {
+        if (fuelContainerList.Count > 0)
+        {
+            float currentFuel = 0;
+            foreach (GameObject FuelContainer in fuelContainerList)
+            {
+                Brick fuelBrick = FuelContainer.GetComponent<Brick>();
+                currentFuel += fuelBrick.storedFuel;
+            }
+            return currentFuel;
+        }
+        return 0;
+    }
+
+    public float GetMaxStoredFuel()
+    {
+        if (fuelContainerList.Count > 0)
+        {
+            float maxFuel = 0;
+            foreach (GameObject FuelContainer in fuelContainerList)
+            {
+                Brick fuelBrick = FuelContainer.GetComponent<Brick>();
+                maxFuel += fuelBrick.storedFuelMax;
+            }
+            return maxFuel;
+        }
+        return 0;
+    }
+
+    public void SetStoredFuel(float newStored)
+    {
+        savedFuelStores = newStored;
+        if (fuelContainerList.Count > 0)
+        {
+            float totalFuel = newStored;
+            foreach (GameObject FuelContainer in fuelContainerList)
+            {
+                Brick fuelBrick = FuelContainer.GetComponent<Brick>();
+                if(totalFuel <= fuelBrick.storedFuelMax)
+                {
+                    fuelBrick.storedFuel = totalFuel;
+                    totalFuel = 0;
+                }
+                else
+                {
+                    fuelBrick.storedFuel = fuelBrick.storedFuelMax;
+                    totalFuel -= fuelBrick.storedFuelMax;
+                }
+            }
         }
     }
 

@@ -93,6 +93,9 @@ public class GameController : MonoBehaviour
     public GameObject livesIcon;
     List<GameObject> livesUI = new List<GameObject>();
 
+    public RectTransform fuelBar;
+    float maxFuelWidth = 0;
+
     public static float timeRemaining = 10.0f;
     public int currentScene = 1;
     public static int spawnRow = 25;
@@ -210,6 +213,7 @@ public class GameController : MonoBehaviour
         GameObject.Find("SpeedDown").SetActive(false);
 #endif
         hud.SetActive(false);
+        maxFuelWidth = fuelBar.sizeDelta.x;
     }
 
     void RefreshBotIcons()
@@ -355,6 +359,7 @@ public class GameController : MonoBehaviour
             bot.gameObject.SetActive(false);
             SceneManager.LoadScene(1);
             scrapyard.SetActive(true);
+            scrapyard.GetComponent<Scrapyard>().LoadScrapyardResources();
             scrapyard.GetComponent<Scrapyard>().UpdateScrapyard();
         }
     }
@@ -497,6 +502,7 @@ public class GameController : MonoBehaviour
         bot.gameObject.SetActive(false);
         SceneManager.LoadScene(1);
         scrapyard.SetActive(true);
+        scrapyard.GetComponent<Scrapyard>().LoadScrapyardResources();
         scrapyard.GetComponent<Scrapyard>().UpdateScrapyard();
     }
 
@@ -514,6 +520,12 @@ public class GameController : MonoBehaviour
                 SpeedDown();
             }
 
+            //Update fuel remaining
+            Vector2 fuelSize = fuelBar.sizeDelta;
+            fuelSize.x = maxFuelWidth * bot.GetFuelPercent();
+            fuelBar.sizeDelta = fuelSize;
+
+            //Update time remaining
             timeRemaining -= Time.deltaTime;
             levelTimer.text = "Time remaining: " + Mathf.Round(timeRemaining);
             if (timeRemaining < 0)

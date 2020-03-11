@@ -64,6 +64,9 @@ public class Scrapyard : MonoBehaviour
 
     //Resource
     public RectTransform fuelBar;
+    float maxFuelWidth = 0;
+    float currentFuel = 0;
+    float currentFuelMax = 0;
 
     //Init
     private void Start()
@@ -79,6 +82,7 @@ public class Scrapyard : MonoBehaviour
         {
             tempMarketList.Add(MarketItem);
         }
+        maxFuelWidth = fuelBar.sizeDelta.x;
     }
 
     //Check for brick dragging
@@ -202,12 +206,24 @@ public class Scrapyard : MonoBehaviour
         }
     }
 
+    //Add player stored resources to scrapyard upon opening
+    public void LoadScrapyardResources()
+    {
+        currentFuel = GameController.Instance.bot.GetStoredFuel();
+        currentFuelMax = GameController.Instance.bot.GetMaxStoredFuel();
+    }
+
     //Update scrapyard UI on opening
     public void UpdateScrapyard()
     {
         transactionAmount = GameController.Instance.money;
         playerMoney.text = "Money: $" + GameController.Instance.money.ToString();
         transactionMoney.text = "After: $" + transactionAmount;
+
+        Vector2 fuelSize = fuelBar.sizeDelta;
+        fuelSize.x = maxFuelWidth * (currentFuelMax > 0 ? currentFuel / currentFuelMax : 0);
+        fuelBar.sizeDelta = fuelSize;
+
         CloseSubMenu();
         RefreshBotIcons();
         BuildBotGrid();
@@ -238,6 +254,7 @@ public class Scrapyard : MonoBehaviour
     //Update player's bot from editable bot grid
     void UpdateGameplayBot()
     {
+        //Update bot map
         Sprite[,] botMap = GameController.Instance.bot.GetTileMap();
         for (int x = 0; x < botMap.GetLength(0); x++)
         {
@@ -250,6 +267,9 @@ public class Scrapyard : MonoBehaviour
             }
         }
         GameController.Instance.bot.SetTileMap(botMap);
+
+        //Update bot resources
+        GameController.Instance.bot.SetStoredFuel(currentFuel);
     }
 
     //Create editable bot grid
@@ -539,12 +559,16 @@ public class Scrapyard : MonoBehaviour
     //Button for buying fuel resources
     public void BuyFuel()
     {
-
+        currentFuel = Mathf.Min(currentFuelMax, currentFuel + 10);
+        UpdateGameplayBot();
+        UpdateScrapyard();
     }
 
     //Button for selling fuel resources
     public void SellFuel()
     {
-
+        currentFuel = Mathf.Max(0, currentFuel - 10);
+        UpdateGameplayBot();
+        UpdateScrapyard();
     }
 }

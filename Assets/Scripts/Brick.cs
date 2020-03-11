@@ -73,6 +73,10 @@ public class Brick : MonoBehaviour
     //Store change in brick's health if power level changes
     int healthDiff = 0;
 
+    //Brick's capacity to act as a resource container
+    public float storedFuelMax = 0;
+    public float storedFuel = 0;
+
     //Return adjusted brick level based on available power
     public int GetPoweredLevel()
     {
@@ -309,6 +313,8 @@ public class Brick : MonoBehaviour
 
         if (brickType == 1)
             bot.fuelBrickList.Remove(gameObject);
+        if (storedFuelMax > 0)
+            bot.fuelContainerList.Remove(gameObject);
         bot.RefreshNeighborLists();
         bot.orphanCheckFlag = true;
     }
