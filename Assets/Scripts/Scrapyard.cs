@@ -146,7 +146,8 @@ public class Scrapyard : MonoBehaviour
                         targets[i].gameObject.GetComponent<Image>().sprite = selectedBrick.GetComponent<Image>().sprite;
                         if(isMarketBrick)
                         {
-                            tempMarketList.Remove(selectedBrick.GetComponent<Image>().sprite.name);
+                            //~For now, don't remove purchased bricks from market
+                            //tempMarketList.Remove(selectedBrick.GetComponent<Image>().sprite.name);
                         }
                         else
                         {
