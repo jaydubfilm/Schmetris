@@ -47,6 +47,8 @@ public class Scrapyard : MonoBehaviour
     public List<string> marketList = new List<string>();
     public List<string> tempMarketList = new List<string>();
     List<GameObject> marketSelection = new List<GameObject>();
+    List<int> marketPrices = new List<int>();
+    public GameObject pricePrefab;
 
     //Brick moving
     GraphicRaycaster raycaster;
@@ -148,6 +150,8 @@ public class Scrapyard : MonoBehaviour
                         {
                             //~For now, don't remove purchased bricks from market
                             //tempMarketList.Remove(selectedBrick.GetComponent<Image>().sprite.name);
+                            transactionAmount -= marketPrices[tempMarketList.IndexOf(selectedBrick.GetComponent<Image>().sprite.name)];
+                            UpdateUI();
                         }
                         else
                         {
@@ -209,6 +213,8 @@ public class Scrapyard : MonoBehaviour
     {
         if(selectedBrick)
         {
+            if(selectedBrick.GetComponentInChildren<Text>())
+                selectedBrick.GetComponentInChildren<Text>().enabled = false;
             selectedBrick.transform.parent = transform.parent;
             selectedBrick.GetComponent<RectTransform>().anchorMin = Vector2.zero;
             selectedBrick.GetComponent<RectTransform>().anchorMax = Vector2.zero;
@@ -224,12 +230,18 @@ public class Scrapyard : MonoBehaviour
         currentFuelMax = GameController.Instance.bot.GetMaxStoredFuel();
     }
 
+    //Update money UI
+    void UpdateUI()
+    {
+        playerMoney.text = "Money: $" + GameController.Instance.money.ToString();
+        transactionMoney.text = "After: $" + transactionAmount;
+    }
+
     //Update scrapyard UI on opening
     public void UpdateScrapyard()
     {
         transactionAmount = GameController.Instance.money;
-        playerMoney.text = "Money: $" + GameController.Instance.money.ToString();
-        transactionMoney.text = "After: $" + transactionAmount;
+        UpdateUI();
 
         Vector2 fuelSize = fuelBar.sizeDelta;
         fuelSize.x = maxFuelWidth * (currentFuelMax > 0 ? currentFuel / currentFuelMax : 0);
@@ -259,6 +271,11 @@ public class Scrapyard : MonoBehaviour
             Image newTileImage = newTile.GetComponent<Image>();
             newTileImage.sprite = tilesAtlas.Single<Sprite>(s => s.name == tempMarketList[i]);
             marketSelection.Add(newTile);
+
+            int price = 100;
+            GameObject newPrice = Instantiate(pricePrefab, newTile.transform);
+            newPrice.GetComponent<Text>().text = "$" + price;
+            marketPrices.Add(price);
         }
     }
 
@@ -519,6 +536,12 @@ public class Scrapyard : MonoBehaviour
     public void NextLevel()
     {
         GameController.Instance.LoadNewLevel();
+    }
+
+    //Button for return bot to state of confirmed changes
+    public void ResetChanges()
+    {
+        UpdateScrapyard();
     }
 
     //Button for quitting game
