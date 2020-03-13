@@ -65,6 +65,7 @@ public class GameController : MonoBehaviour
 
     public GameObject loseLifePanel;
     public GameObject retryText;
+    public GameObject levelCompleteText;
 
     public GameObject scrapyard;
     public GameObject hud;
@@ -201,6 +202,7 @@ public class GameController : MonoBehaviour
         speedMultiplier = settings.defaultSpeedLevel;
         loseLifePanel.SetActive(false);
         retryText.SetActive(false);
+        levelCompleteText.SetActive(false);
         gameOverPanel.SetActive(false);
         restartText.SetActive(false);
         levelNumberString = GameObject.Find("Level").GetComponent<Text>();
@@ -534,19 +536,14 @@ public class GameController : MonoBehaviour
 
             //Update time remaining
             timeRemaining -= Time.deltaTime;
-            levelTimer.text = "Time remaining: " + Mathf.Round(timeRemaining);
+            levelTimer.text = "Time remaining: " + Mathf.Max(0, Mathf.Round(timeRemaining));
             if (timeRemaining < 0)
             {
-                /*if (currentScene > game.levelDataArr.Length)
+                levelCompleteText.SetActive(true);
+                if (blockList.Count == 0)
                 {
-                    levelTimer.enabled = false;
-                    levelNumberString.enabled = false;
-                    GameController.Instance.EndGame("OUT OF LEVELS");
+                    LoadScrapyard();
                 }
-                else
-                {*/
-                LoadScrapyard();
-                //}
             }
 
             BlockSpawnCheck();
@@ -837,6 +834,7 @@ public class GameController : MonoBehaviour
         enemySpawnTimer = enemySpawnRate;
         timeRemaining = levelData.levelDuration;
 
+        levelCompleteText.SetActive(false);
         levelMenu.SetActive(false);
         pauseMenu.SetActive(false);
         isPaused = false;
@@ -951,23 +949,29 @@ public class GameController : MonoBehaviour
     }
 
     void EnemySpawnCheck() {
-        enemySpawnTimer -= Time.deltaTime * adjustedSpeed;
-        if (enemySpawnTimer <= 0)
+        if (timeRemaining > 0)
         {
-            int spawnType = ProbabilityPicker(speciesProbArr);
-            enemySpawnTimer = enemySpawnRate;
-            SpawnEnemy(spawnType);
+            enemySpawnTimer -= Time.deltaTime * adjustedSpeed;
+            if (enemySpawnTimer <= 0)
+            {
+                int spawnType = ProbabilityPicker(speciesProbArr);
+                enemySpawnTimer = enemySpawnRate;
+                SpawnEnemy(spawnType);
+            }
         }
     }
 
     void BlockSpawnCheck() {
-        blockSpawnTimer -= Time.deltaTime * adjustedSpeed;
-        if (blockSpawnTimer<= 0)
+        if (timeRemaining > 0)
         {
-            int blockType = ProbabilityPicker(blockProbArr);
+            blockSpawnTimer -= Time.deltaTime * adjustedSpeed;
+            if (blockSpawnTimer <= 0)
+            {
+                int blockType = ProbabilityPicker(blockProbArr);
 
-            blockSpawnTimer = levelData.blockSpawnRate;
-            SpawnBlock(Random.Range(-ScreenStuff.screenRadius,ScreenStuff.screenRadius), blockType);
+                blockSpawnTimer = levelData.blockSpawnRate;
+                SpawnBlock(Random.Range(-ScreenStuff.screenRadius, ScreenStuff.screenRadius), blockType);
+            }
         }
     }
 
