@@ -15,7 +15,7 @@ public class Scrapyard : MonoBehaviour
     List<GameObject> botBricks = new List<GameObject>();
 
     //Bot zoom limits
-    float currentSize = 20.0f;
+    float currentSize = 40.0f;
     const float minSize = 10.0f;
     const float maxSize = 70.0f;
     const float sizeChange = 10.0f;
@@ -296,6 +296,7 @@ public class Scrapyard : MonoBehaviour
         Sprite[,] botMap = GameController.Instance.bot.GetTileMap();
         botDisplay = Instantiate(botGrid, botParent);
         botDisplay.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        botDisplay.GetComponent<RectTransform>().sizeDelta = Vector2.one * currentSize;
 
         //Fill grid with existing bricks
         for (int y = 0; y < botMap.GetLength(1); y++)
