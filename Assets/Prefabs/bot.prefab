@@ -88,7 +88,9 @@ MonoBehaviour:
   powerWarning: {fileID: 5515604555638627983, guid: 5eb9884e0b57449d8b33f38d7cf509e9,
     type: 3}
   fuelBrickList: []
+  fuelContainerList: []
   tripleSound: {fileID: 8300000, guid: f0cd4d87d7e925248b91fc9187c53c42, type: 3}
+  resourceSound: {fileID: 8300000, guid: 637fc1c2e205cea4ca58e3e24edd34d8, type: 3}
   tripleDelay: 0.1
   tripleWaitFlag: 0
 --- !u!50 &3160574865307964100

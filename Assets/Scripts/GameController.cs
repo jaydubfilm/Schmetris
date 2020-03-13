@@ -131,12 +131,15 @@ public class GameController : MonoBehaviour
 
     Text speedText;
     int speedMultiplier = 2;
-    float[] speedOptions = new float[] { 0.5f, 0.75f, 1.0f, 1.5f, 2.0f };
     public float adjustedSpeed
     {
         get
         {
-            return speedOptions[speedMultiplier];
+            if(settings.speedLevels.Length == 0 || speedMultiplier >= settings.speedLevels.Length)
+            {
+                return 1.0f;
+            }
+            return settings.speedLevels[speedMultiplier];
         }
     }
    
@@ -195,6 +198,7 @@ public class GameController : MonoBehaviour
         lives = 3;
         bgPanelArr = new GameObject[4];
         SpawnBGPanels();
+        speedMultiplier = settings.defaultSpeedLevel;
         loseLifePanel.SetActive(false);
         retryText.SetActive(false);
         gameOverPanel.SetActive(false);
@@ -303,7 +307,7 @@ public class GameController : MonoBehaviour
 
     public void SaveGame(int index)
     {
-        saveManager.SetSave(index, lives, money, currentScene, game.name, bot.GetTileMap());
+        saveManager.SetSave(index, lives, money, currentScene, game.name, bot.GetSavedFuel(), bot.GetTileMap());
         RefreshBotIcons();
     }
 
@@ -351,6 +355,9 @@ public class GameController : MonoBehaviour
                 bot.SetTileMap(newMap);
             }
 
+            //Resources
+            bot.SetStoredFuel(loadData.fuel);
+
             loadPanel.SetActive(false);
             levelPanel.SetActive(false);
             hud.SetActive(false);
@@ -390,7 +397,7 @@ public class GameController : MonoBehaviour
     //Used for external Canvas buttons for touchscreen controls
     public void SpeedUp()
     {
-        speedMultiplier = Mathf.Min(speedMultiplier + 1, speedOptions.Length - 1);
+        speedMultiplier = Mathf.Min(speedMultiplier + 1, settings.speedLevels.Length - 1);
         speedText.text = "x" + adjustedSpeed.ToString() + " Speed";
         if (OnSpeedChange != null)
         {

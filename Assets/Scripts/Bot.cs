@@ -71,6 +71,7 @@ public class Bot : MonoBehaviour
 
     private AudioSource source;
     public AudioClip tripleSound;
+    public AudioClip resourceSound;
     GameSettings settings;
 
     float startTime;
@@ -80,6 +81,11 @@ public class Bot : MonoBehaviour
     public Sprite[,] GetTileMap()
     {
         return savedTileMap;
+    }
+
+    public float GetSavedFuel()
+    {
+        return savedFuelStores;
     }
 
     bool tileMapSet = false;
@@ -1607,17 +1613,23 @@ public class Bot : MonoBehaviour
 
         List<BrickBitPair> brickBitPairList = new List<BrickBitPair>();
 
-        foreach (GameObject bitObj in block.bitList) {
+        foreach (GameObject bitObj in block.bitList)
+        {
             Bit bit = bitObj.GetComponent<Bit>();
             Vector2Int bitMapCoords = cMap.GetMapCoordsBit(bitObj);
             Vector2Int botCoords = cMap.MapCoordsToBotCoords(bitMapCoords);
-           if (IsValidBrickPos(botCoords)){
+            if (IsValidBrickPos(botCoords))
+            {
                 int brickType = bit.ConvertToBrickType();
-                GameObject newBrick = AddBrick(botCoords,brickType,bit.bitLevel);
-                if (newBrick!=null) {
-                    BrickBitPair brickBitPair = new BrickBitPair(newBrick,bitObj);
-                    brickBitPairList.Add(brickBitPair);
-                    GameController.Instance.money++;
+                if(!AddResourceCheck(BrickAtBotArr(cMap.MapCoordsToBotCoords(bitMapCoords + hitDir)), bitObj, brickType, bit.bitLevel))
+                {
+                    GameObject newBrick = AddBrick(botCoords, brickType, bit.bitLevel);
+                    if (newBrick != null)
+                    {
+                        BrickBitPair brickBitPair = new BrickBitPair(newBrick, bitObj);
+                        brickBitPairList.Add(brickBitPair);
+                        GameController.Instance.money++;
+                    }
                 }
             }
         }
@@ -1651,6 +1663,27 @@ public class Bot : MonoBehaviour
         }
 
         StartCoroutine(WaitAndTripleCheck(0.2f));
+    }
+
+    bool AddResourceCheck(GameObject container, GameObject bitObj, int type, int level)
+    {
+        return false;
+        if (type == 1)
+        {
+            if (container)
+            {
+                Brick containerBrick = container.GetComponent<Brick>();
+                if (containerBrick.storedFuel < containerBrick.storedFuelMax && containerBrick.storedFuelMax > 0)
+                {
+                    source.PlayOneShot(resourceSound, 1.0f);
+                    containerBrick.storedFuel += masterBrickList[type].GetComponent<Fuel>().maxFuelArr[level];
+                    Destroy(bitObj);
+                    GameController.Instance.money++;
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public class BrickBitPair{

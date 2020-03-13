@@ -36,12 +36,13 @@ public class SaveManager
     }
 
     //Save data to save number
-    public void SetSave(int index, int lives, int money, int level, string game, Sprite[,] bot)
+    public void SetSave(int index, int lives, int money, int level, string game, float fuel, Sprite[,] bot)
     {
         SaveData newData = new SaveData();
         newData.lives = lives;
         newData.money = money;
         newData.level = level;
+        newData.fuel = fuel;
         newData.game = game;
 
         newData.bot = new BotData[bot.GetLength(0)];
@@ -66,6 +67,7 @@ public class SaveManager
         newData.lives = 0;
         newData.money = 0;
         newData.level = 0;
+        newData.fuel = 0;
         newData.game = "LAYOUT";
 
         newData.bot = new BotData[bot.GetLength(0)];
@@ -99,6 +101,7 @@ public class SaveManager
             newData.lives = 0;
             newData.money = 0;
             newData.level = 0;
+            newData.fuel = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -110,6 +113,7 @@ public class SaveManager
             newData.lives = 0;
             newData.money = 0;
             newData.level = 0;
+            newData.fuel = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -127,6 +131,7 @@ public class SaveManager
             newData.lives = 0;
             newData.money = 0;
             newData.level = 0;
+            newData.fuel = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -138,6 +143,7 @@ public class SaveManager
             newData.lives = 0;
             newData.money = 0;
             newData.level = 0;
+            newData.fuel = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -200,12 +206,12 @@ public class GameData
 [Serializable]
 public class SaveData
 {
-    public int lives;      //Remaining lives
-    public int money;      //Collected money
-    public int level;      //Level reached in chosen game
-    //~What about time remaining?  Or are we always starting at the beginning of a level?  In which case account for money earned later
-    public string game;    //Which Game settings is this save associated with?
-    public BotData[] bot;  //Bot tilemap for reloading save
+    public int lives;       //Remaining lives
+    public int money;       //Collected money
+    public int level;       //Level reached in chosen game
+    public string game;     //Which Game settings is this save associated with?
+    public float fuel;      //Stored fuel
+    public BotData[] bot;   //Bot tilemap for reloading save
 }
 
 //Separate serialization for bot map as 2D array serialization isn't automatically supported

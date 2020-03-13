@@ -22,4 +22,6 @@ public class GameSettings : ScriptableObject
     public int maxBotRadius = 6;
     public float ghostMoveSpeed = 30f;
     public int blockRadius = 3;
+    public float[] speedLevels = new float[] { 0.5f, 0.75f, 1.0f, 1.5f, 2.0f };
+    public int defaultSpeedLevel = 2;
 }
