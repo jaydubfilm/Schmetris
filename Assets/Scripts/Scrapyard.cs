@@ -191,6 +191,16 @@ public class Scrapyard : MonoBehaviour
                 UpdateBrickSnap();
             }
         }
+
+        //Keyboard controls
+        if(Input.GetKeyDown(KeyCode.Equals))
+        {
+            ZoomIn();
+        }
+        else if (Input.GetKeyDown(KeyCode.Minus))
+        {
+            ZoomOut();
+        }
     }
 
     //Snap brick to block closest to player drag position
