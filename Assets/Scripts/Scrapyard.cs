@@ -69,9 +69,10 @@ public class Scrapyard : MonoBehaviour
     float maxFuelWidth = 0;
     float currentFuel = 0;
     float currentFuelMax = 0;
+    bool hasResources = false;
 
     //Init
-    private void Start()
+    void Init()
     {
         raycaster = GetComponent<GraphicRaycaster>();
         if (GameController.Instance.saveManager == null)
@@ -85,6 +86,7 @@ public class Scrapyard : MonoBehaviour
             tempMarketList.Add(MarketItem);
         }
         maxFuelWidth = fuelBar.sizeDelta.x;
+        hasResources = true;
     }
 
     //Check for brick dragging
@@ -240,6 +242,11 @@ public class Scrapyard : MonoBehaviour
     //Update scrapyard UI on opening
     public void UpdateScrapyard()
     {
+        if(!hasResources)
+        {
+            Init();
+        }
+
         transactionAmount = GameController.Instance.money;
         UpdateUI();
 
@@ -272,7 +279,7 @@ public class Scrapyard : MonoBehaviour
             newTileImage.sprite = tilesAtlas.Single<Sprite>(s => s.name == tempMarketList[i]);
             marketSelection.Add(newTile);
 
-            int price = 100;
+            int price = 20;
             GameObject newPrice = Instantiate(pricePrefab, newTile.transform);
             newPrice.GetComponent<Text>().text = "$" + price;
             marketPrices.Add(price);
