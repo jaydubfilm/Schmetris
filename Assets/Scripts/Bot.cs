@@ -393,10 +393,9 @@ public class Bot : MonoBehaviour
 
         // check to see if bump would bump core 
 
-        Vector2Int testVector = coreV2-startCoords;
-
+        /*Vector2Int testVector = coreV2-startCoords;
         if (((testVector.x==0)&&bumpDirV2.x==0)||((testVector.y==0)&&bumpDirV2.y==0))
-            return; 
+            return; */
 
         // find end of line
 
@@ -404,12 +403,21 @@ public class Bot : MonoBehaviour
        
         Vector2Int endCoords = startCoords;
 
-        while (bumpDirV2 != Vector2.zero && (IsValidScreenPos(endCoords + bumpDirV2)) && (BrickAtScreenArr((endCoords + bumpDirV2)) != null))
+        Brick resource = null;
+        while (bumpDirV2 != Vector2.zero && resource == null && (IsValidScreenPos(endCoords + bumpDirV2)) && (BrickAtScreenArr((endCoords + bumpDirV2)) != null))
         {
-            endCoords += bumpDirV2;
-            length++;
-            if (endCoords == coreV2)
-                return;
+            Brick resourceCheck = BrickAtScreenArr(endCoords).GetComponent<Brick>();
+            if (AddResourceCheck(BrickAtScreenArr(endCoords + bumpDirV2), resourceCheck.gameObject, resourceCheck.brickType, resourceCheck.brickLevel))
+            {
+                resource = resourceCheck;
+            }
+            else
+            {
+                endCoords += bumpDirV2;
+                length++;
+                if (endCoords == coreV2)
+                    return;
+            }
         }
 
         // if last brick is pushed out of bounds - orphan it
@@ -417,7 +425,15 @@ public class Bot : MonoBehaviour
             BrickAtScreenArr(endCoords).GetComponent<Brick>().MakeOrphan();
             length--;
         }
-        
+
+        // if last brick is added to a container, collect it
+        if (resource)
+        {
+            resource.RemoveBrickFromBotArray();
+            AddResource(BrickAtScreenArr(endCoords + bumpDirV2).GetComponent<Brick>(), resource.gameObject, resource.brickType, resource.brickLevel);
+            length--;
+        }
+
         // shift all bricks by one
         for (int l = length ; l > 0 ; l --)
         {
@@ -1621,7 +1637,8 @@ public class Bot : MonoBehaviour
             if (IsValidBrickPos(botCoords))
             {
                 int brickType = bit.ConvertToBrickType();
-                if(!AddResourceCheck(BrickAtBotArr(cMap.MapCoordsToBotCoords(bitMapCoords + hitDir)), bitObj, brickType, bit.bitLevel))
+                GameObject containerTest = BrickAtBotArr(cMap.MapCoordsToBotCoords(bitMapCoords + hitDir));
+                if (!AddResourceCheck(containerTest, bitObj, brickType, bit.bitLevel))
                 {
                     GameObject newBrick = AddBrick(botCoords, brickType, bit.bitLevel);
                     if (newBrick != null)
@@ -1630,6 +1647,10 @@ public class Bot : MonoBehaviour
                         brickBitPairList.Add(brickBitPair);
                         GameController.Instance.money++;
                     }
+                }
+                else
+                {
+                    AddResource(containerTest.GetComponent<Brick>(), bitObj, brickType, bit.bitLevel);
                 }
             }
         }
@@ -1667,7 +1688,6 @@ public class Bot : MonoBehaviour
 
     bool AddResourceCheck(GameObject container, GameObject bitObj, int type, int level)
     {
-        return false;
         if (type == 1)
         {
             if (container)
@@ -1675,15 +1695,19 @@ public class Bot : MonoBehaviour
                 Brick containerBrick = container.GetComponent<Brick>();
                 if (containerBrick.storedFuel < containerBrick.storedFuelMax && containerBrick.storedFuelMax > 0)
                 {
-                    source.PlayOneShot(resourceSound, 1.0f);
-                    containerBrick.storedFuel += masterBrickList[type].GetComponent<Fuel>().maxFuelArr[level];
-                    Destroy(bitObj);
-                    GameController.Instance.money++;
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    void AddResource(Brick containerBrick, GameObject resource, int type, int level)
+    {
+        source.PlayOneShot(resourceSound, 1.0f);
+        containerBrick.storedFuel += masterBrickList[type].GetComponent<Fuel>().maxFuelArr[level];
+        Destroy(resource);
+        GameController.Instance.money++;
     }
 
     public class BrickBitPair{

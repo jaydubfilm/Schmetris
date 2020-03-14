@@ -217,14 +217,14 @@ public class Scrapyard : MonoBehaviour
         {
             if(selectedBrick.GetComponentInChildren<Text>())
                 selectedBrick.GetComponentInChildren<Text>().enabled = false;
-            selectedBrick.transform.parent = transform.parent;
+            selectedBrick.transform.SetParent(transform.parent);
             selectedBrick.GetComponent<RectTransform>().anchorMin = Vector2.zero;
             selectedBrick.GetComponent<RectTransform>().anchorMax = Vector2.zero;
             selectedBrick.GetComponent<RectTransform>().sizeDelta = Vector2.one * currentSize;
             selectedBrick.GetComponent<RectTransform>().anchoredPosition = Input.mousePosition;
         }
     }
-
+    
     //Add player stored resources to scrapyard upon opening
     public void LoadScrapyardResources()
     {
