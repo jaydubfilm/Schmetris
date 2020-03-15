@@ -540,8 +540,18 @@ public class GameController : MonoBehaviour
             if (timeRemaining < 0)
             {
                 levelCompleteText.SetActive(true);
-                if (blockList.Count == 0)
+                bool hasBlocks = false;
+                for (int i = 0; i < blockList.Count; i++)
                 {
+                    if (blockList[i])
+                    {
+                        hasBlocks = true;
+                        break;
+                    }
+                }
+                if (!hasBlocks)
+                {
+                    blockList = new List<GameObject>();
                     LoadScrapyard();
                 }
             }

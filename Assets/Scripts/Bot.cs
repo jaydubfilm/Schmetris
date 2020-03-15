@@ -429,8 +429,8 @@ public class Bot : MonoBehaviour
         // if last brick is added to a container, collect it
         if (resource)
         {
-            resource.RemoveBrickFromBotArray();
             AddResource(BrickAtScreenArr(endCoords + bumpDirV2).GetComponent<Brick>(), resource.gameObject, resource.brickType, resource.brickLevel);
+            resource.DestroyBrick();
             length--;
         }
 
@@ -1629,8 +1629,10 @@ public class Bot : MonoBehaviour
 
         List<BrickBitPair> brickBitPairList = new List<BrickBitPair>();
 
-        foreach (GameObject bitObj in block.bitList)
+        //foreach (GameObject bitObj in block.bitList)
+        for(int i = 0;i<block.bitList.Count;i++)
         {
+            GameObject bitObj = block.bitList[i];
             Bit bit = bitObj.GetComponent<Bit>();
             Vector2Int bitMapCoords = cMap.GetMapCoordsBit(bitObj);
             Vector2Int botCoords = cMap.MapCoordsToBotCoords(bitMapCoords);
@@ -1651,6 +1653,8 @@ public class Bot : MonoBehaviour
                 else
                 {
                     AddResource(containerTest.GetComponent<Brick>(), bitObj, brickType, bit.bitLevel);
+                    bitObj.GetComponent<Bit>().RemoveFromBlock("");
+                    i--;
                 }
             }
         }
@@ -1706,7 +1710,6 @@ public class Bot : MonoBehaviour
     {
         source.PlayOneShot(resourceSound, 1.0f);
         containerBrick.storedFuel += masterBrickList[type].GetComponent<Fuel>().maxFuelArr[level];
-        Destroy(resource);
         GameController.Instance.money++;
     }
 
