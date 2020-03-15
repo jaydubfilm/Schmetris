@@ -28,6 +28,7 @@ public class Scrapyard : MonoBehaviour
     public GameObject confirmPurchase;
     public GameObject failPurchase;
     public GameObject confirmSell;
+    public GameObject confirmLevel;
 
     //Saving and loading
     public Transform[] saveSlots;
@@ -542,6 +543,21 @@ public class Scrapyard : MonoBehaviour
     //Button for closing the scrapyard and loading the next level
     public void NextLevel()
     {
+        canMove = false;
+        if (transactionAmount >= 0)
+        {
+            confirmLevel.SetActive(true);
+        }
+        else
+        {
+            failPurchase.SetActive(true);
+        }
+    }
+
+    //Button for confirm move to next level
+    public void ConfirmNextLevel()
+    {
+        CompleteConfirmedPurchase();
         GameController.Instance.LoadNewLevel();
     }
 
@@ -596,6 +612,7 @@ public class Scrapyard : MonoBehaviour
         confirmPurchase.SetActive(false);
         failPurchase.SetActive(false);
         confirmSell.SetActive(false);
+        confirmLevel.SetActive(false);
     }
 
     //Button for buying fuel resources
