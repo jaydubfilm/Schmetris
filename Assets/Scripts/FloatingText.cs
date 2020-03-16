@@ -12,11 +12,13 @@ public class FloatingText : MonoBehaviour
     const float floatSpeed = 100.0f;
     const float fadeTime = 1.0f;
 
-    public void Init(string message, Vector3 target)
+    public void Init(string message, Vector3 target, int size, Color color)
     {
         scoreText = GetComponent<Text>();
         targetPos = target;
         scoreText.text = message;
+        scoreText.fontSize = size;
+        scoreText.color = color;
         StartCoroutine(FadeOverTime());
     }
 

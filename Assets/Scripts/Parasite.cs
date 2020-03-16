@@ -11,6 +11,9 @@ public class Parasite : MonoBehaviour
     public float attackTimer;
     public GameObject attackPrefab;
 
+    //Resources upon destroying
+    bool hasScored = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -65,4 +68,36 @@ public class Parasite : MonoBehaviour
         }
     }
 
+    public void ScoreEnemy()
+    {
+        if (hasScored)
+            return;
+        hasScored = true;
+
+        if (data.redYield > 0)
+        {
+            GameController.Instance.bot.AddRawResource(ResourceType.Red, data.redYield);
+            GameController.Instance.CreateFloatingText(data.redYield.ToString(), transform.position + new Vector3(1, 1, 0), 30, Color.red);
+        }
+        if (data.blueYield > 0)
+        {
+            GameController.Instance.bot.AddRawResource(ResourceType.Blue, data.blueYield);
+            GameController.Instance.CreateFloatingText(data.blueYield.ToString(), transform.position + new Vector3(-1, 1, 0), 30, Color.blue);
+        }
+        if (data.yellowYield > 0)
+        {
+            GameController.Instance.bot.AddRawResource(ResourceType.Yellow, data.yellowYield);
+            GameController.Instance.CreateFloatingText(data.yellowYield.ToString(), transform.position + new Vector3(1, -1, 0), 30, Color.yellow);
+        }
+        if (data.greenYield > 0)
+        {
+            GameController.Instance.bot.AddRawResource(ResourceType.Green, data.greenYield);
+            GameController.Instance.CreateFloatingText(data.greenYield.ToString(), transform.position + new Vector3(-1, -1, 0), 30, Color.green);
+        }
+        if (data.greyYield > 0)
+        {
+            GameController.Instance.bot.AddRawResource(ResourceType.Grey, data.greyYield);
+            GameController.Instance.CreateFloatingText(data.greyYield.ToString(), transform.position, 30, Color.grey);
+        }
+    }
 }

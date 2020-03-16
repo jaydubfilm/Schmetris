@@ -768,13 +768,13 @@ public class GameController : MonoBehaviour
         noFuelString.color = Color.white;
     }
 
-    public void CreateFloatingText(string message, Vector3 worldPos)
+    public void CreateFloatingText(string message, Vector3 worldPos, int size, Color color)
     {
         GameObject scoreFX = Instantiate(scoreIncreasePrefab);
         scoreFX.transform.SetParent(GetComponentInChildren<Canvas>().transform);
         scoreFX.transform.rotation = Quaternion.identity;
         scoreFX.transform.position = Camera.main.WorldToScreenPoint(worldPos);
-        scoreFX.GetComponent<FloatingText>().Init(message, moneyString.transform.position);
+        scoreFX.GetComponent<FloatingText>().Init(message, moneyString.transform.position, size, color);
     }
 
     //Like restart but resets only the current level - for when player has lost a life but not gotten a game over

@@ -37,8 +37,11 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (hP<=0) 
+        if (hP <= 0)
+        {
+            ScoreEnemy();
             DestroyEnemy();
+        }
    
         MoveTowardsBot();
     }
@@ -57,6 +60,35 @@ public class Enemy : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, bot.transform.position, step);
         }
     }   
+
+    public void ScoreEnemy()
+    {
+        if(data.redYield > 0)
+        {
+            GameController.Instance.bot.AddRawResource(ResourceType.Red, data.redYield);
+            GameController.Instance.CreateFloatingText(data.redYield.ToString(), transform.position + new Vector3(1, 1, 0), 30, Color.red);
+        }
+        if (data.blueYield > 0)
+        {
+            GameController.Instance.bot.AddRawResource(ResourceType.Blue, data.blueYield);
+            GameController.Instance.CreateFloatingText(data.blueYield.ToString(), transform.position + new Vector3(-1, 1, 0), 30, Color.blue);
+        }
+        if (data.yellowYield > 0)
+        {
+            GameController.Instance.bot.AddRawResource(ResourceType.Yellow, data.yellowYield);
+            GameController.Instance.CreateFloatingText(data.yellowYield.ToString(), transform.position + new Vector3(1, -1, 0), 30, Color.yellow);
+        }
+        if (data.greenYield > 0)
+        {
+            GameController.Instance.bot.AddRawResource(ResourceType.Green, data.greenYield);
+            GameController.Instance.CreateFloatingText(data.greenYield.ToString(), transform.position + new Vector3(-1, -1, 0), 30, Color.green);
+        }
+        if (data.greyYield > 0)
+        {
+            GameController.Instance.bot.AddRawResource(ResourceType.Grey, data.greyYield);
+            GameController.Instance.CreateFloatingText(data.greyYield.ToString(), transform.position, 30, Color.grey);
+        }
+    }
 
     public void DestroyEnemy() {
         GameController.Instance.enemyList.Remove(gameObject);

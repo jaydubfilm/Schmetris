@@ -1549,8 +1549,9 @@ public class Bot : MonoBehaviour
         // enemies turn into bricks once they collide with Bot
 
         GameObject newBrick = AddBrick(bCoords, brickType, 0);
-        newBrick.GetComponent<Parasite>().data = enemy.data;
-        newBrick.GetComponent<Parasite>().targetBrick = enemy.targetBrick;
+        Parasite parasite = newBrick.GetComponent<Parasite>();
+        parasite.data = enemy.data;
+        parasite.targetBrick = enemy.targetBrick;
         newBrick.GetComponent<Brick>().brickHP = enemy.hP;
         GameController.Instance.enemyList.Add(newBrick);
 
@@ -1763,6 +1764,34 @@ public class Bot : MonoBehaviour
         source.PlayOneShot(resourceSound, 1.0f);
         containerBrick.storedFuel += masterBrickList[type].GetComponent<Fuel>().maxFuelArr[level];
         GameController.Instance.money++;
+    }
+
+    public void AddRawResource(ResourceType resourceType, int amount)
+    {
+        List<GameObject> containerList = new List<GameObject>();
+        switch (resourceType)
+        {
+            case ResourceType.Blue:
+                savedBlueStored += amount;
+                SetStoredResource(resourceType, savedBlueStored);
+                break;
+            case ResourceType.Red:
+                savedFuelStores += amount;
+                SetStoredResource(resourceType, savedFuelStores);
+                break;
+            case ResourceType.Yellow:
+                savedYellowStores += amount;
+                SetStoredResource(resourceType, savedYellowStores);
+                break;
+            case ResourceType.Green:
+                savedGreenStores += amount;
+                SetStoredResource(resourceType, savedGreenStores);
+                break;
+            case ResourceType.Grey:
+                savedGreyStores += amount;
+                SetStoredResource(resourceType, savedGreyStores);
+                break;
+        }
     }
 
     public class BrickBitPair{

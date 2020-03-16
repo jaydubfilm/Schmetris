@@ -139,6 +139,10 @@ public class Brick : MonoBehaviour
                 healthBar.SetSize(normalizedHealth);
             }
         }
+        else if (IsParasite())
+        {
+            GetComponent<Parasite>().ScoreEnemy();
+        }
     }
 
     public int BitBrickCollide(GameObject bitObj) {
@@ -411,7 +415,7 @@ public class Brick : MonoBehaviour
 
             int scoreIncrease = (int)Mathf.Pow(brickMoneyMultiplier, brickLevel);
             GameController.Instance.money += scoreIncrease;
-            GameController.Instance.CreateFloatingText("$" + scoreIncrease, transform.position);
+            GameController.Instance.CreateFloatingText("$" + scoreIncrease, transform.position, 40, Color.white);
         }
     }
 
