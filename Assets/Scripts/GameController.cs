@@ -604,47 +604,8 @@ public class GameController : MonoBehaviour
             {
 
             }
-            else if (loadPanel.activeSelf)
-            {
-                if (Input.GetKeyDown(KeyCode.Alpha1))
-                {
-                    LoadGame(0);
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha2))
-                {
-                    LoadGame(1);
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha3))
-                {
-                    LoadGame(2);
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha4))
-                {
-                    MainLevelPanel();
-                }
-            }
             else if (levelMenu.activeSelf)
             {
-                if (Input.GetKeyDown(KeyCode.Alpha1))
-                {
-                    EasyGame();
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha2))
-                {
-                    MediumGame();
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha3))
-                {
-                    HardGame();
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha4))
-                {
-                    LoadMenu();
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha5))
-                {
-                    QuitGame();
-                }
             }
             else if (helpPanel.activeSelf)
             {
@@ -657,11 +618,6 @@ public class GameController : MonoBehaviour
             {
                 ResumeGame();
             }
-            /*else if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                EndGame("Life Lost");
-                StartCoroutine(ReplayOnLevelDelay());
-            }*/
             else if (!isRestarting && Input.GetKeyDown(KeyCode.Alpha2))
             {
                 RestartGame();
