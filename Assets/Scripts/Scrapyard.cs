@@ -70,6 +70,22 @@ public class Scrapyard : MonoBehaviour
     float maxFuelWidth = 0;
     float currentFuel = 0;
     float currentFuelMax = 0;
+    public RectTransform blueBar;
+    float maxBlueWidth = 0;
+    float currentBlue = 0;
+    float currentBlueMax = 0;
+    public RectTransform greenBar;
+    float maxGreenWidth = 0;
+    float currentGreen = 0;
+    float currentGreenMax = 0;
+    public RectTransform yellowBar;
+    float maxYellowWidth = 0;
+    float currentYellow = 0;
+    float currentYellowMax = 0;
+    public RectTransform greyBar;
+    float maxGreyWidth = 0;
+    float currentGrey = 0;
+    float currentGreyMax = 0;
     bool hasResources = false;
 
     //Init
@@ -87,6 +103,10 @@ public class Scrapyard : MonoBehaviour
             tempMarketList.Add(MarketItem);
         }
         maxFuelWidth = fuelBar.sizeDelta.x;
+        maxBlueWidth = blueBar.sizeDelta.x;
+        maxGreenWidth = greenBar.sizeDelta.x;
+        maxYellowWidth = yellowBar.sizeDelta.x;
+        maxGreyWidth = greyBar.sizeDelta.x;
         hasResources = true;
     }
 
@@ -229,8 +249,16 @@ public class Scrapyard : MonoBehaviour
     //Add player stored resources to scrapyard upon opening
     public void LoadScrapyardResources()
     {
-        currentFuel = GameController.Instance.bot.GetStoredFuel();
-        currentFuelMax = GameController.Instance.bot.GetMaxStoredFuel();
+        currentFuel = GameController.Instance.bot.GetStoredResource(ResourceType.Red);
+        currentFuelMax = GameController.Instance.bot.GetResourceCapacity(ResourceType.Red);
+        currentBlue = GameController.Instance.bot.GetStoredResource(ResourceType.Blue);
+        currentBlueMax = GameController.Instance.bot.GetResourceCapacity(ResourceType.Blue);
+        currentYellow = GameController.Instance.bot.GetStoredResource(ResourceType.Yellow);
+        currentYellowMax = GameController.Instance.bot.GetResourceCapacity(ResourceType.Yellow);
+        currentGreen = GameController.Instance.bot.GetStoredResource(ResourceType.Green);
+        currentGreenMax = GameController.Instance.bot.GetResourceCapacity(ResourceType.Green);
+        currentGrey = GameController.Instance.bot.GetStoredResource(ResourceType.Grey);
+        currentGreyMax = GameController.Instance.bot.GetResourceCapacity(ResourceType.Grey);
     }
 
     //Update money UI
@@ -250,6 +278,22 @@ public class Scrapyard : MonoBehaviour
 
         transactionAmount = GameController.Instance.money;
         UpdateUI();
+
+        Vector2 blueSize = blueBar.sizeDelta;
+        blueSize.x = maxBlueWidth * (currentBlueMax > 0 ? currentBlue / currentBlueMax : 0);
+        blueBar.sizeDelta = blueSize;
+
+        Vector2 yellowSize = yellowBar.sizeDelta;
+        yellowSize.x = maxYellowWidth * (currentYellowMax > 0 ? currentYellow / currentYellowMax : 0);
+        yellowBar.sizeDelta = yellowSize;
+
+        Vector2 greenSize = greenBar.sizeDelta;
+        greenSize.x = maxGreenWidth * (currentGreenMax > 0 ? currentGreen / currentGreenMax : 0);
+        greenBar.sizeDelta = greenSize;
+
+        Vector2 greySize = greyBar.sizeDelta;
+        greySize.x = maxGreyWidth * (currentGreyMax > 0 ? currentGrey / currentGreyMax : 0);
+        greyBar.sizeDelta = greySize;
 
         Vector2 fuelSize = fuelBar.sizeDelta;
         fuelSize.x = maxFuelWidth * (currentFuelMax > 0 ? currentFuel / currentFuelMax : 0);
@@ -305,7 +349,11 @@ public class Scrapyard : MonoBehaviour
         GameController.Instance.bot.SetTileMap(botMap);
 
         //Update bot resources
-        GameController.Instance.bot.SetStoredFuel(currentFuel);
+        GameController.Instance.bot.SetStoredResource(ResourceType.Red, currentFuel);
+        GameController.Instance.bot.SetStoredResource(ResourceType.Blue, currentBlue);
+        GameController.Instance.bot.SetStoredResource(ResourceType.Yellow, currentYellow);
+        GameController.Instance.bot.SetStoredResource(ResourceType.Green, currentGreen);
+        GameController.Instance.bot.SetStoredResource(ResourceType.Grey, currentGrey);
     }
 
     //Create editable bot grid
@@ -615,18 +663,52 @@ public class Scrapyard : MonoBehaviour
         confirmLevel.SetActive(false);
     }
 
-    //Button for buying fuel resources
-    public void BuyFuel()
+    //Button for buying resources
+    public void BuyResource(string resource)
     {
-        currentFuel = Mathf.Min(currentFuelMax, currentFuel + 10);
+        switch (resource)
+        {
+            case "RED":
+                currentFuel = Mathf.Min(currentFuelMax, currentFuel + 10);
+                break;
+            case "BLUE":
+                currentBlue = Mathf.Min(currentBlueMax, currentBlue + 10);
+                break;
+            case "YELLOW":
+                currentYellow = Mathf.Min(currentYellowMax, currentYellow + 10);
+                break;
+            case "GREEN":
+                currentGreen = Mathf.Min(currentGreenMax, currentGreen + 10);
+                break;
+            case "GREY":
+                currentGrey = Mathf.Min(currentGreyMax, currentGrey + 10);
+                break;
+        }
         UpdateGameplayBot();
         UpdateScrapyard();
     }
 
-    //Button for selling fuel resources
-    public void SellFuel()
+    //Button for selling resources
+    public void SellResource(string resource)
     {
-        currentFuel = Mathf.Max(0, currentFuel - 10);
+        switch (resource)
+        {
+            case "RED":
+                currentFuel = Mathf.Max(0, currentFuel - 10);
+                break;
+            case "BLUE":
+                currentBlue = Mathf.Max(0, currentBlue - 10);
+                break;
+            case "YELLOW":
+                currentYellow = Mathf.Max(0, currentYellow - 10);
+                break;
+            case "GREEN":
+                currentGreen = Mathf.Max(0, currentGreen - 10);
+                break;
+            case "GREY":
+                currentGrey = Mathf.Max(0, currentGrey - 10);
+                break;
+        }
         UpdateGameplayBot();
         UpdateScrapyard();
     }

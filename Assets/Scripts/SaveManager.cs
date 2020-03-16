@@ -36,13 +36,17 @@ public class SaveManager
     }
 
     //Save data to save number
-    public void SetSave(int index, int lives, int money, int level, string game, float fuel, Sprite[,] bot)
+    public void SetSave(int index, int lives, int money, int level, string game, float fuel, float blue, float green, float yellow, float grey, Sprite[,] bot)
     {
         SaveData newData = new SaveData();
         newData.lives = lives;
         newData.money = money;
         newData.level = level;
         newData.fuel = fuel;
+        newData.blue = blue;
+        newData.green = green;
+        newData.yellow = yellow;
+        newData.grey = grey;
         newData.game = game;
 
         newData.bot = new BotData[bot.GetLength(0)];
@@ -68,6 +72,10 @@ public class SaveManager
         newData.money = 0;
         newData.level = 0;
         newData.fuel = 0;
+        newData.blue = 0;
+        newData.green = 0;
+        newData.yellow = 0;
+        newData.grey = 0;
         newData.game = "LAYOUT";
 
         newData.bot = new BotData[bot.GetLength(0)];
@@ -102,6 +110,10 @@ public class SaveManager
             newData.money = 0;
             newData.level = 0;
             newData.fuel = 0;
+            newData.blue = 0;
+            newData.green = 0;
+            newData.yellow = 0;
+            newData.grey = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -114,6 +126,10 @@ public class SaveManager
             newData.money = 0;
             newData.level = 0;
             newData.fuel = 0;
+            newData.blue = 0;
+            newData.green = 0;
+            newData.yellow = 0;
+            newData.grey = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -132,6 +148,10 @@ public class SaveManager
             newData.money = 0;
             newData.level = 0;
             newData.fuel = 0;
+            newData.blue = 0;
+            newData.green = 0;
+            newData.yellow = 0;
+            newData.grey = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -144,6 +164,10 @@ public class SaveManager
             newData.money = 0;
             newData.level = 0;
             newData.fuel = 0;
+            newData.blue = 0;
+            newData.green = 0;
+            newData.yellow = 0;
+            newData.grey = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -211,6 +235,10 @@ public class SaveData
     public int level;       //Level reached in chosen game
     public string game;     //Which Game settings is this save associated with?
     public float fuel;      //Stored fuel
+    public float blue;      //Stored blue resource
+    public float green;     //Stored green resource
+    public float yellow;    //Stored yellow resource
+    public float grey;      //Stored grey resource
     public BotData[] bot;   //Bot tilemap for reloading save
 }
 

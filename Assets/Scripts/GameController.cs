@@ -96,6 +96,14 @@ public class GameController : MonoBehaviour
 
     public RectTransform fuelBar;
     float maxFuelWidth = 0;
+    public RectTransform blueBar;
+    float maxBlueWidth = 0;
+    public RectTransform greenBar;
+    float maxGreenWidth = 0;
+    public RectTransform yellowBar;
+    float maxYellowWidth = 0;
+    public RectTransform greyBar;
+    float maxGreyWidth = 0;
 
     public static float timeRemaining = 10.0f;
     public int currentScene = 1;
@@ -220,6 +228,10 @@ public class GameController : MonoBehaviour
 #endif
         hud.SetActive(false);
         maxFuelWidth = fuelBar.sizeDelta.x;
+        maxBlueWidth = blueBar.sizeDelta.x;
+        maxYellowWidth = yellowBar.sizeDelta.x;
+        maxGreenWidth = greenBar.sizeDelta.x;
+        maxGreyWidth = greyBar.sizeDelta.x;
     }
 
     void RefreshBotIcons()
@@ -309,7 +321,7 @@ public class GameController : MonoBehaviour
 
     public void SaveGame(int index)
     {
-        saveManager.SetSave(index, lives, money, currentScene, game.name, bot.GetSavedFuel(), bot.GetTileMap());
+        saveManager.SetSave(index, lives, money, currentScene, game.name, bot.GetSavedFuel(), bot.GetSavedBlue(), bot.GetSavedGreen(), bot.GetSavedYellow(), bot.GetSavedGrey(), bot.GetTileMap());
         RefreshBotIcons();
     }
 
@@ -358,7 +370,11 @@ public class GameController : MonoBehaviour
             }
 
             //Resources
-            bot.SetStoredFuel(loadData.fuel);
+            bot.SetStoredResource(ResourceType.Red, loadData.fuel);
+            bot.SetStoredResource(ResourceType.Blue, loadData.blue);
+            bot.SetStoredResource(ResourceType.Yellow, loadData.yellow);
+            bot.SetStoredResource(ResourceType.Green, loadData.green);
+            bot.SetStoredResource(ResourceType.Grey, loadData.grey);
 
             loadPanel.SetActive(false);
             levelPanel.SetActive(false);
@@ -531,8 +547,28 @@ public class GameController : MonoBehaviour
 
             //Update fuel remaining
             Vector2 fuelSize = fuelBar.sizeDelta;
-            fuelSize.x = maxFuelWidth * bot.GetFuelPercent();
+            fuelSize.x = maxFuelWidth * bot.GetResourcePercent(ResourceType.Red);
             fuelBar.sizeDelta = fuelSize;
+
+            //Update blue resource remaining
+            Vector2 blueSize = blueBar.sizeDelta;
+            blueSize.x = maxBlueWidth * bot.GetResourcePercent(ResourceType.Blue);
+            blueBar.sizeDelta = blueSize;
+
+            //Update fuel remaining
+            Vector2 greenSize = greenBar.sizeDelta;
+            greenSize.x = maxGreenWidth * bot.GetResourcePercent(ResourceType.Green);
+            greenBar.sizeDelta = greenSize;
+
+            //Update fuel remaining
+            Vector2 yellowSize = yellowBar.sizeDelta;
+            yellowSize.x = maxYellowWidth * bot.GetResourcePercent(ResourceType.Yellow);
+            yellowBar.sizeDelta = yellowSize;
+
+            //Update fuel remaining
+            Vector2 greySize = greyBar.sizeDelta;
+            greySize.x = maxGreyWidth * bot.GetResourcePercent(ResourceType.Grey);
+            greyBar.sizeDelta = greySize;
 
             //Update time remaining
             timeRemaining -= Time.deltaTime;
