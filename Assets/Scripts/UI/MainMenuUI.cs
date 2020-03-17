@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 //Controls all main menu functions
 public class MainMenuUI : MonoBehaviour
@@ -22,8 +20,8 @@ public class MainMenuUI : MonoBehaviour
     }
     MenuState activeState = MenuState.None;
 
-    //Init
-    private void Awake()
+    //Open menu
+    public void OpenMenu()
     {
         //Close all sub-menus
         newGamePanel.SetActive(false);

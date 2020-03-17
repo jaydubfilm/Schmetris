@@ -58,10 +58,6 @@ public class GameController : MonoBehaviour
 
     public GameObject levelMenu;
     public GameObject pauseMenu;
-    public GameObject mainPanel;
-    public GameObject helpPanel;
-    public GameObject loadPanel;
-    public GameObject levelPanel;
 
     public GameObject loseLifePanel;
     public GameObject retryText;
@@ -190,6 +186,7 @@ public class GameController : MonoBehaviour
             tilesAtlas = Resources.LoadAll<Sprite>(atlasResource);
             RefreshBotIcons();
             bot.Init();
+            bot.gameObject.SetActive(false);
         }
         else
         {
@@ -198,21 +195,10 @@ public class GameController : MonoBehaviour
     }
 
     void Start () {
-        scrapyard.SetActive(false);
-        pauseMenu.SetActive(false);
-        loadPanel.SetActive(false);
-        levelMenu.SetActive(true);
-        isPaused = true;
-        Time.timeScale = 0;
         lives = 3;
         bgPanelArr = new GameObject[4];
         SpawnBGPanels();
         speedMultiplier = settings.defaultSpeedLevel;
-        loseLifePanel.SetActive(false);
-        retryText.SetActive(false);
-        levelCompleteText.SetActive(false);
-        gameOverPanel.SetActive(false);
-        restartText.SetActive(false);
         levelNumberString = GameObject.Find("Level").GetComponent<Text>();
         levelTimer = GameObject.Find("Timer").GetComponent<Text>();
         quitString = GameObject.Find("Quit").GetComponent<Text>();
@@ -226,12 +212,12 @@ public class GameController : MonoBehaviour
         GameObject.Find("SpeedUp").SetActive(false);
         GameObject.Find("SpeedDown").SetActive(false);
 #endif
-        hud.SetActive(false);
         maxFuelWidth = fuelBar.sizeDelta.x;
         maxBlueWidth = blueBar.sizeDelta.x;
         maxYellowWidth = yellowBar.sizeDelta.x;
         maxGreenWidth = greenBar.sizeDelta.x;
         maxGreyWidth = greyBar.sizeDelta.x;
+        StartMenu();
     }
 
     void RefreshBotIcons()
@@ -315,6 +301,13 @@ public class GameController : MonoBehaviour
     void StartGame()
     {
         bot.gameObject.SetActive(true);
+
+        bot.OnLevelRestart();
+        if (OnNewLevel != null)
+        {
+            OnNewLevel();
+        }
+
         LoadLevelData(1);
         InvokeRepeating("GameOverCheck", 1.0f, 0.2f);
     }
@@ -376,8 +369,6 @@ public class GameController : MonoBehaviour
             bot.SetStoredResource(ResourceType.Green, loadData.green);
             bot.SetStoredResource(ResourceType.Grey, loadData.grey);
 
-            loadPanel.SetActive(false);
-            levelPanel.SetActive(false);
             hud.SetActive(false);
             isPaused = true;
             Time.timeScale = 0;
@@ -455,13 +446,33 @@ public class GameController : MonoBehaviour
         StartGame();
     }
 
+    //Open initial game menu
+    public void StartMenu()
+    {
+        scrapyard.SetActive(false);
+        pauseMenu.SetActive(false);
+        hud.SetActive(false);
+        levelMenu.SetActive(true);
+        loseLifePanel.SetActive(false);
+        retryText.SetActive(false);
+        levelCompleteText.SetActive(false);
+        gameOverPanel.SetActive(false);
+        restartText.SetActive(false);
+        isPaused = true;
+        Time.timeScale = 0;
+        bot.gameObject.SetActive(false);
+        bot.ResetTileMap();
+        bot.Init();
+        SceneManager.LoadScene(1);
+        levelMenu.GetComponent<MainMenuUI>().OpenMenu();
+    }
+
     //Used for external Canvas buttons for touchscreen controls
     public void PauseGame()
     {
         hud.SetActive(false);
-        mainPanel.SetActive(true);
-        helpPanel.SetActive(false);
         pauseMenu.SetActive(true);
+        pauseMenu.GetComponent<PauseMenuUI>().OpenMenu();
         isPaused = true;
         Time.timeScale = 0;
     }
@@ -485,20 +496,6 @@ public class GameController : MonoBehaviour
         StartCoroutine(RestartLevelOnDelay());
     }
 
-    //Used for external Canvas buttons for touchscreen controls
-    public void HelpMenu()
-    {
-        mainPanel.SetActive(false);
-        helpPanel.SetActive(true);
-    }
-
-    //Used for external Canvas buttons for touchscreen controls
-    public void PauseMenu()
-    {
-        helpPanel.SetActive(false);
-        mainPanel.SetActive(true);
-    }
-
     public void LoadNewLevel()
     {
         scrapyard.SetActive(false);
@@ -510,12 +507,6 @@ public class GameController : MonoBehaviour
             OnNewLevel();
         }
         LoadLevelData(currentScene);
-    }
-
-    public void MainLevelPanel()
-    {
-        levelPanel.SetActive(true);
-        loadPanel.SetActive(false);
     }
 
     void LoadScrapyard()
@@ -598,40 +589,7 @@ public class GameController : MonoBehaviour
                 EnemySpawnCheck();
         }
 
-        if (isPaused)
-        {
-            if (scrapyard.activeSelf)
-            {
-
-            }
-            else if (levelMenu.activeSelf)
-            {
-            }
-            else if (helpPanel.activeSelf)
-            {
-                if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    PauseMenu();
-                }
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                ResumeGame();
-            }
-            else if (!isRestarting && Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                RestartGame();
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                HelpMenu();
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                QuitGame();
-            }
-        }
-        else
+        if (!isPaused)
         {
             if(Input.GetKeyDown(KeyCode.Escape))
             {
@@ -677,12 +635,6 @@ public class GameController : MonoBehaviour
                 }
             }
         }
-    }
-
-    public void LoadMenu()
-    {
-        loadPanel.SetActive(true);
-        levelPanel.SetActive(false);
     }
 
     //Used for external Canvas buttons for touchscreen controls
@@ -821,6 +773,8 @@ public class GameController : MonoBehaviour
     }
 
     public void LoadLevelData(int levelNumber) {
+        speedMultiplier = settings.defaultSpeedLevel;
+        speedText.text = "x" + adjustedSpeed.ToString() + " Speed";
         hud.SetActive(true);
         SceneManager.LoadScene(Mathf.Min(SceneManager.sceneCountInBuildSettings - 1,levelNumber));
         levelNumberString.text = "Level: " + levelNumber;  

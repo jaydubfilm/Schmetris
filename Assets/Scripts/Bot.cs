@@ -64,6 +64,7 @@ public class Bot : MonoBehaviour
     GameObject coreBrick; 
     Tilemap startTileMap;
     Sprite[,] savedTileMap;
+    Sprite[,] startSprites;
     float savedFuelStores = 0;
     float savedBlueStored = 0;
     float savedGreenStores = 0;
@@ -95,6 +96,61 @@ public class Bot : MonoBehaviour
     float startTime;
     public float tripleDelay = 0.5f;
     float delay;
+    bool isReset = false;
+
+    public void ResetTileMap()
+    {
+        savedTileMap = new Sprite[maxBotWidth, maxBotHeight];
+        tileMapSet = false;
+        if (init)
+        {
+            while (brickList.Count > 0)
+            {
+                GameObject brick = brickList[0];
+                if (brick)
+                {
+                    Brick newBrick = brick.GetComponent<Brick>();
+                    SetBrickAtBotArr(newBrick.arrPos, null);
+                    brickTypeArr[newBrick.arrPos.x, newBrick.arrPos.y] = -1;
+                    if (newBrick.IsParasite())
+                        GameController.Instance.enemyList.Remove(gameObject);
+                }
+                if (brickList.Contains(brick))
+                {
+                    brickList.Remove(brick);
+                    Destroy(brick);
+                }
+            }
+            fuelBrickList = new List<GameObject>();
+            UpdateContainers();
+            if (powerGrid)
+                Destroy(powerGrid.gameObject);
+        }
+        isReset = true;
+
+        /*BoundsInt bounds = startingBrickGrid.GetComponent<Tilemap>().cellBounds;
+        Vector3Int origin = startingBrickGrid.GetComponent<Tilemap>().origin;
+
+        savedTileMap = new Sprite[maxBotWidth, maxBotHeight];
+        int localX = 0;
+        int localY = 0;
+        for (int x = origin.x; x < origin.x + bounds.size.x; x++)
+        {
+            for (int y = origin.y; y < origin.y + bounds.size.y; y++)
+            {
+                Vector3Int posV3 = new Vector3Int(x, y, 0);
+                Sprite newSprite = startingBrickGrid.GetComponent<Tilemap>().GetSprite(posV3);
+                savedTileMap[localX, localY] = newSprite;
+                localY++;
+            }
+            localY = 0;
+            localX++;
+        }
+
+        SetTileMap(savedTileMap);
+        botRotation = 0;
+        isRotating = false;*/
+    }
 
     public Sprite[,] GetTileMap()
     {
@@ -331,7 +387,7 @@ public class Bot : MonoBehaviour
         AddStartingBricks();
         powerGridRefreshFlag = true;
 
-        if(tileMapSet)
+        if (tileMapSet)
         {
             OnLevelRestart();
             tileMapSet = false;
@@ -339,7 +395,6 @@ public class Bot : MonoBehaviour
 
         OnNewLevel();
 
-        gameObject.SetActive(false);
     }
 
      // Update is called once per frame
