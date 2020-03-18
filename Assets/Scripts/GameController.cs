@@ -262,9 +262,10 @@ public class GameController : MonoBehaviour
 
     public void StartLevel(int level)
     {
-        bot.ResetTileMap();
-        bot.Init();
         bot.gameObject.SetActive(true);
+        bot.OnLevelRestart();
+
+        currentScene = level;
         if (OnNewLevel != null)
         {
             OnNewLevel();
@@ -402,6 +403,7 @@ public class GameController : MonoBehaviour
         highestScene = 1;
         lives = 3;
         speedMultiplier = settings.defaultSpeedLevel;
+        bot.ResetTileMap();
         LoadMapScreen();
     }
 
@@ -412,6 +414,7 @@ public class GameController : MonoBehaviour
         highestScene = 1;
         lives = 3;
         speedMultiplier = settings.defaultSpeedLevel;
+        bot.ResetTileMap();
         LoadMapScreen();
     }
 
@@ -422,6 +425,7 @@ public class GameController : MonoBehaviour
         highestScene = 1;
         lives = 3;
         speedMultiplier = settings.defaultSpeedLevel;
+        bot.ResetTileMap();
         LoadMapScreen();
     }
 
@@ -440,7 +444,6 @@ public class GameController : MonoBehaviour
         Time.timeScale = 0;
         bot.gameObject.SetActive(false);
         bot.ResetTileMap();
-        bot.Init();
         SceneManager.LoadScene(1);
         startMenu.GetComponent<MainMenuUI>().OpenMenu();
     }

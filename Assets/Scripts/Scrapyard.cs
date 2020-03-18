@@ -21,18 +21,16 @@ public class Scrapyard : MonoBehaviour
     const float sizeChange = 10.0f;
 
     //Scrapyard submenus
-    public GameObject saveMenu;
-    public GameObject loadMenu;
     public GameObject saveLayoutMenu;
     public GameObject loadLayoutMenu;
     public GameObject confirmPurchase;
     public GameObject failPurchase;
     public GameObject confirmSell;
     public GameObject confirmLevel;
+    public GameObject helpPanel;
+    public GameObject confirmMap;
 
     //Saving and loading
-    public Transform[] saveSlots;
-    public Transform[] loadSlots;
     public Transform[] saveLayoutSlots;
     public Transform[] loadLayoutSlots;
     const string tileAtlasResource = "MasterDiceSprites";
@@ -398,16 +396,6 @@ public class Scrapyard : MonoBehaviour
     //Create bot icons for save files
     void RefreshBotIcons()
     {
-        for (int i = 0; i < saveSlots.Length; i++)
-        {
-            BuildBotIcon(i, saveSlots[i], false);
-        }
-
-        for (int i = 0; i < loadSlots.Length; i++)
-        {
-            BuildBotIcon(i, loadSlots[i], false);
-        }
-
         for (int i = 0; i < saveLayoutSlots.Length; i++)
         {
             BuildBotIcon(i, saveLayoutSlots[i], true);
@@ -534,20 +522,6 @@ public class Scrapyard : MonoBehaviour
         loadLayoutMenu.SetActive(true);
     }
 
-    //Button for opening save game menu
-    public void SaveGameMenu()
-    {
-        canMove = false;
-        saveMenu.SetActive(true);
-    }
-
-    //Button for opening load game menu
-    public void LoadGameMenu()
-    {
-        canMove = false;
-        loadMenu.SetActive(true);
-    }
-
     //Button for confirming sold bricks
     public void ConfirmSell()
     {
@@ -615,24 +589,18 @@ public class Scrapyard : MonoBehaviour
         UpdateScrapyard();
     }
 
-    //Button for quitting game
-    public void QuitGame()
+    //Button for returning to map screen
+    public void MapScreen()
     {
-        GameController.Instance.StartMenu();
+        canMove = false;
+        confirmMap.SetActive(true);
     }
 
-    //Buttons for saving game to a chosen slot
-    public void SaveGame(int index)
+    //Button for confirming return to map screen
+    public void ConfirmMapScreen()
     {
-        GameController.Instance.SaveGame(index);
-        RefreshBotIcons();
-        CloseSubMenu();
-    }
-
-    //Buttons for loading game from a chosen slot
-    public void LoadGame(int index)
-    {
-        GameController.Instance.LoadGame(index);
+        CompleteConfirmedPurchase();
+        GameController.Instance.LoadMapScreen();
     }
 
     //Buttons for saving layout to a chosen slot
@@ -653,14 +621,21 @@ public class Scrapyard : MonoBehaviour
     public void CloseSubMenu()
     {
         canMove = true;
-        saveMenu.SetActive(false);
-        loadMenu.SetActive(false);
+        helpPanel.SetActive(false);
         saveLayoutMenu.SetActive(false);
         loadLayoutMenu.SetActive(false);
         confirmPurchase.SetActive(false);
         failPurchase.SetActive(false);
         confirmSell.SetActive(false);
         confirmLevel.SetActive(false);
+        confirmMap.SetActive(false);
+    }
+
+    //Button for showing help panel
+    public void HelpPanel()
+    {
+        canMove = false;
+        helpPanel.SetActive(true);
     }
 
     //Button for buying resources

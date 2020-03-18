@@ -98,35 +98,21 @@ public class Bot : MonoBehaviour
     float delay;
     bool isReset = false;
 
+    const float baseCapacity = 500.0f;
+    const float startRed = 30.0f;
+    const float startBlue = 0;
+    const float startGreen = 0;
+    const float startYellow = 0;
+    const float startGrey = 0;
+
     public void ResetTileMap()
     {
-        savedTileMap = new Sprite[maxBotWidth, maxBotHeight];
-        tileMapSet = false;
-        if (init)
-        {
-            while (brickList.Count > 0)
-            {
-                GameObject brick = brickList[0];
-                if (brick)
-                {
-                    Brick newBrick = brick.GetComponent<Brick>();
-                    SetBrickAtBotArr(newBrick.arrPos, null);
-                    brickTypeArr[newBrick.arrPos.x, newBrick.arrPos.y] = -1;
-                    if (newBrick.IsParasite())
-                        GameController.Instance.enemyList.Remove(gameObject);
-                }
-                if (brickList.Contains(brick))
-                {
-                    brickList.Remove(brick);
-                    Destroy(brick);
-                }
-            }
-            fuelBrickList = new List<GameObject>();
-            UpdateContainers();
-            if (powerGrid)
-                Destroy(powerGrid.gameObject);
-        }
-        isReset = true;
+        SetTileMap(startSprites);
+        savedBlueStored = startBlue;
+        savedFuelStores = startRed;
+        savedGreenStores = startGreen;
+        savedGreyStores = startGrey;
+        savedYellowStores = startYellow;
     }
 
     public Sprite[,] GetTileMap()
@@ -242,6 +228,21 @@ public class Bot : MonoBehaviour
         savedGreenStores = GetStoredResource(ResourceType.Green);
         savedYellowStores = GetStoredResource(ResourceType.Yellow);
         savedGreyStores = GetStoredResource(ResourceType.Grey);
+    }
+
+    public void SaveStartSprites()
+    {
+        startSprites = new Sprite[maxBotWidth, maxBotHeight];
+        foreach (GameObject Brick in brickList)
+        {
+            if (Brick && Brick.GetComponent<Brick>())
+            {
+                //~What to do about parasites?
+                Vector2Int brickPos = Brick.GetComponent<Brick>().arrPos;
+                if (!Brick.GetComponent<Brick>().IsParasite())
+                    startSprites[brickPos.x, brickPos.y] = Brick.GetComponent<SpriteRenderer>().sprite;
+            }
+        }
     }
 
     void OnGameRestart()
@@ -370,8 +371,7 @@ public class Bot : MonoBehaviour
             tileMapSet = false;
         }
 
-        OnNewLevel();
-
+        SaveStartSprites();
     }
 
      // Update is called once per frame
