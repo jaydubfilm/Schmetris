@@ -28,7 +28,7 @@ public class GameController : MonoBehaviour
         set
         {
             _money = value;
-            moneyString.text = "$" + _money;
+            hud.SetMoney(_money);
         }
     }
 
@@ -43,7 +43,7 @@ public class GameController : MonoBehaviour
         set
         {
             _lives = value;
-            UpdateLivesUI();
+            hud.SetLives(_lives);
         }
     }
 
@@ -61,45 +61,20 @@ public class GameController : MonoBehaviour
 
     public GameObject loseLifePanel;
     public GameObject retryText;
-    public GameObject levelCompleteText;
 
     public GameObject scrapyard;
-    public GameObject hud;
+    public GameUI hud;
 
     //public LevelData[] allLevelData;
     public Game easyGame;
     public Game mediumGame;
     public Game hardGame;
     public Game game;
-    // public LevelData currentGame;
+
     public Bot bot;
     public GameSettings settings;
 
-    Text levelTimer;
-    Text levelNumberString;
-
-    Text quitString;
-
-    Text moneyString;
     public GameObject scoreIncreasePrefab;
-
-    Text noFuelString;
-    float noFuelAlpha = 0;
-
-    public Transform livesGroup;
-    public GameObject livesIcon;
-    List<GameObject> livesUI = new List<GameObject>();
-
-    public RectTransform fuelBar;
-    float maxFuelWidth = 0;
-    public RectTransform blueBar;
-    float maxBlueWidth = 0;
-    public RectTransform greenBar;
-    float maxGreenWidth = 0;
-    public RectTransform yellowBar;
-    float maxYellowWidth = 0;
-    public RectTransform greyBar;
-    float maxGreyWidth = 0;
 
     public static float timeRemaining = 10.0f;
     public int currentScene = 1;
@@ -123,7 +98,6 @@ public class GameController : MonoBehaviour
     float enemySpawnRate;
 
     public float blockSpeed;
-    Bounds collisionBubble;
 
     bool isRestarting = false;
     public SaveManager saveManager = null;
@@ -134,7 +108,6 @@ public class GameController : MonoBehaviour
     const string atlasResource = "MasterDiceSprites";
     Sprite[] tilesAtlas;
 
-    Text speedText;
     int speedMultiplier = 2;
     public float adjustedSpeed
     {
@@ -145,19 +118,6 @@ public class GameController : MonoBehaviour
                 return 1.0f;
             }
             return settings.speedLevels[speedMultiplier];
-        }
-    }
-   
-    void UpdateLivesUI()
-    {
-        while(_lives < livesUI.Count && livesUI.Count > 0)
-        {
-            Destroy(livesUI[0]);
-            livesUI.RemoveAt(0);
-        }
-        while(_lives > livesUI.Count)
-        {
-            livesUI.Add(Instantiate(livesIcon, livesGroup));
         }
     }
 
@@ -199,24 +159,6 @@ public class GameController : MonoBehaviour
         bgPanelArr = new GameObject[4];
         SpawnBGPanels();
         speedMultiplier = settings.defaultSpeedLevel;
-        levelNumberString = GameObject.Find("Level").GetComponent<Text>();
-        levelTimer = GameObject.Find("Timer").GetComponent<Text>();
-        quitString = GameObject.Find("Quit").GetComponent<Text>();
-        moneyString = GameObject.Find("Money").GetComponent<Text>();
-        noFuelString = GameObject.Find("NoFuel").GetComponent<Text>();
-        speedText = GameObject.Find("Speed").GetComponent<Text>();
-#if UNITY_IOS || UNITY_ANDROID
-        quitString.enabled = false;
-#else
-        quitString.GetComponentInChildren<Image>().enabled = false;
-        GameObject.Find("SpeedUp").SetActive(false);
-        GameObject.Find("SpeedDown").SetActive(false);
-#endif
-        maxFuelWidth = fuelBar.sizeDelta.x;
-        maxBlueWidth = blueBar.sizeDelta.x;
-        maxYellowWidth = yellowBar.sizeDelta.x;
-        maxGreenWidth = greenBar.sizeDelta.x;
-        maxGreyWidth = greyBar.sizeDelta.x;
         StartMenu();
     }
 
@@ -369,7 +311,7 @@ public class GameController : MonoBehaviour
             bot.SetStoredResource(ResourceType.Green, loadData.green);
             bot.SetStoredResource(ResourceType.Grey, loadData.grey);
 
-            hud.SetActive(false);
+            hud.gameObject.SetActive(false);
             isPaused = true;
             Time.timeScale = 0;
             bot.gameObject.SetActive(false);
@@ -407,7 +349,7 @@ public class GameController : MonoBehaviour
     public void SpeedUp()
     {
         speedMultiplier = Mathf.Min(speedMultiplier + 1, settings.speedLevels.Length - 1);
-        speedText.text = "x" + adjustedSpeed.ToString() + " Speed";
+        hud.SetSpeed(adjustedSpeed);
         if (OnSpeedChange != null)
         {
             OnSpeedChange();
@@ -418,7 +360,7 @@ public class GameController : MonoBehaviour
     public void SpeedDown()
     {
         speedMultiplier = Mathf.Max(speedMultiplier - 1, 0);
-        speedText.text = "x" + adjustedSpeed.ToString() + " Speed";
+        hud.SetSpeed(adjustedSpeed);
         if (OnSpeedChange != null)
         {
             OnSpeedChange();
@@ -451,11 +393,11 @@ public class GameController : MonoBehaviour
     {
         scrapyard.SetActive(false);
         pauseMenu.SetActive(false);
-        hud.SetActive(false);
+        hud.gameObject.SetActive(false);
         levelMenu.SetActive(true);
         loseLifePanel.SetActive(false);
         retryText.SetActive(false);
-        levelCompleteText.SetActive(false);
+        hud.SetLevelCompletePopup(false);
         gameOverPanel.SetActive(false);
         restartText.SetActive(false);
         isPaused = true;
@@ -470,7 +412,7 @@ public class GameController : MonoBehaviour
     //Used for external Canvas buttons for touchscreen controls
     public void PauseGame()
     {
-        hud.SetActive(false);
+        hud.gameObject.SetActive(false);
         pauseMenu.SetActive(true);
         pauseMenu.GetComponent<PauseMenuUI>().OpenMenu();
         isPaused = true;
@@ -480,20 +422,10 @@ public class GameController : MonoBehaviour
     //Used for external Canvas buttons for touchscreen controls
     public void ResumeGame()
     {
-        hud.SetActive(true);
+        hud.gameObject.SetActive(true);
         pauseMenu.SetActive(false);
         isPaused = false;
         Time.timeScale = 1.0f;
-    }
-
-    //Used for external Canvas buttons for touchscreen controls
-    public void RestartGame()
-    {
-        lives = 0;
-        isBotDead = true;
-        gameOverPanel.GetComponent<Text>().text = "Game Over";
-        loseLifePanel.GetComponent<Text>().text = "Life Lost";
-        StartCoroutine(RestartLevelOnDelay());
     }
 
     public void LoadNewLevel()
@@ -511,7 +443,7 @@ public class GameController : MonoBehaviour
 
     void LoadScrapyard()
     {
-        hud.SetActive(false);
+        hud.gameObject.SetActive(false);
         isPaused = true;
         Time.timeScale = 0;
         bot.OnNewLevel();
@@ -536,37 +468,11 @@ public class GameController : MonoBehaviour
                 SpeedDown();
             }
 
-            //Update fuel remaining
-            Vector2 fuelSize = fuelBar.sizeDelta;
-            fuelSize.x = maxFuelWidth * bot.GetResourcePercent(ResourceType.Red);
-            fuelBar.sizeDelta = fuelSize;
-
-            //Update blue resource remaining
-            Vector2 blueSize = blueBar.sizeDelta;
-            blueSize.x = maxBlueWidth * bot.GetResourcePercent(ResourceType.Blue);
-            blueBar.sizeDelta = blueSize;
-
-            //Update fuel remaining
-            Vector2 greenSize = greenBar.sizeDelta;
-            greenSize.x = maxGreenWidth * bot.GetResourcePercent(ResourceType.Green);
-            greenBar.sizeDelta = greenSize;
-
-            //Update fuel remaining
-            Vector2 yellowSize = yellowBar.sizeDelta;
-            yellowSize.x = maxYellowWidth * bot.GetResourcePercent(ResourceType.Yellow);
-            yellowBar.sizeDelta = yellowSize;
-
-            //Update fuel remaining
-            Vector2 greySize = greyBar.sizeDelta;
-            greySize.x = maxGreyWidth * bot.GetResourcePercent(ResourceType.Grey);
-            greyBar.sizeDelta = greySize;
-
             //Update time remaining
             timeRemaining -= Time.deltaTime;
-            levelTimer.text = "Time remaining: " + Mathf.Max(0, Mathf.Round(timeRemaining));
+            hud.SetTimer(timeRemaining);
             if (timeRemaining < 0)
             {
-                levelCompleteText.SetActive(true);
                 bool hasBlocks = false;
                 for (int i = 0; i < blockList.Count; i++)
                 {
@@ -607,9 +513,6 @@ public class GameController : MonoBehaviour
             ReplayLevel();
         }
 
-        noFuelAlpha = Mathf.Max(0, noFuelAlpha - Time.deltaTime);
-        noFuelString.color = new Color(1, 1, 1, noFuelAlpha);
-
         if (!isPaused)
         {
             ScrollBackground();
@@ -647,15 +550,6 @@ public class GameController : MonoBehaviour
 #endif
     }
 
-    IEnumerator ReplayOnLevelDelay()
-    {
-        pauseMenu.SetActive(false);
-        isPaused = false;
-        Time.timeScale = 1.0f;
-        yield return new WaitForSecondsRealtime(1.0f);
-        ReplayLevel();
-    }
-
     IEnumerator RestartLevelOnDelay()
     {
         isRestarting = true;
@@ -670,19 +564,13 @@ public class GameController : MonoBehaviour
         Restart();
     }
 
-    public void NoFuelMessage()
-    {
-        noFuelAlpha = 1;
-        noFuelString.color = Color.white;
-    }
-
     public void CreateFloatingText(string message, Vector3 worldPos, int size, Color color)
     {
         GameObject scoreFX = Instantiate(scoreIncreasePrefab);
         scoreFX.transform.SetParent(GetComponentInChildren<Canvas>().transform);
         scoreFX.transform.rotation = Quaternion.identity;
         scoreFX.transform.position = Camera.main.WorldToScreenPoint(worldPos);
-        scoreFX.GetComponent<FloatingText>().Init(message, moneyString.transform.position, size, color);
+        scoreFX.GetComponent<FloatingText>().Init(message, hud.moneyText.transform.position, size, color);
     }
 
     //Like restart but resets only the current level - for when player has lost a life but not gotten a game over
@@ -774,10 +662,10 @@ public class GameController : MonoBehaviour
 
     public void LoadLevelData(int levelNumber) {
         speedMultiplier = settings.defaultSpeedLevel;
-        speedText.text = "x" + adjustedSpeed.ToString() + " Speed";
-        hud.SetActive(true);
+        hud.SetSpeed(adjustedSpeed);
+        hud.gameObject.SetActive(true);
         SceneManager.LoadScene(Mathf.Min(SceneManager.sceneCountInBuildSettings - 1,levelNumber));
-        levelNumberString.text = "Level: " + levelNumber;  
+        hud.SetLevel(levelNumber);
         levelData = game.levelDataArr[levelNumber-1];
         blockSpawns = levelData.blocks;
         speciesSpawnData = levelData.speciesSpawnData;
@@ -790,7 +678,7 @@ public class GameController : MonoBehaviour
         enemySpawnTimer = enemySpawnRate;
         timeRemaining = levelData.levelDuration;
 
-        levelCompleteText.SetActive(false);
+        hud.SetLevelCompletePopup(false);
         levelMenu.SetActive(false);
         pauseMenu.SetActive(false);
         isPaused = false;

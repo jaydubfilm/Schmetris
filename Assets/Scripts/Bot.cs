@@ -2423,7 +2423,7 @@ public class Bot : MonoBehaviour
 
         if (!HasFuel())
         {
-            GameController.Instance.NoFuelMessage();
+            GameController.Instance.hud.SetNoFuelPopup(true);
             return;
         }
 

@@ -618,7 +618,7 @@ public class Scrapyard : MonoBehaviour
     //Button for quitting game
     public void QuitGame()
     {
-        GameController.Instance.QuitGame();
+        GameController.Instance.StartMenu();
     }
 
     //Buttons for saving game to a chosen slot
