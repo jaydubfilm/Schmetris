@@ -252,9 +252,9 @@ public class GameController : MonoBehaviour
 
     public void StartLevel(int level)
     {
+        bot.ResetTileMap();
+        bot.Init();
         bot.gameObject.SetActive(true);
-
-        bot.OnLevelRestart();
         if (OnNewLevel != null)
         {
             OnNewLevel();
@@ -338,9 +338,6 @@ public class GameController : MonoBehaviour
             bot.gameObject.SetActive(false);
             SceneManager.LoadScene(1);
             LoadMapScreen();
-            /*scrapyard.SetActive(true);
-            scrapyard.GetComponent<Scrapyard>().LoadScrapyardResources();
-            scrapyard.GetComponent<Scrapyard>().UpdateScrapyard();*/
         }
     }
 

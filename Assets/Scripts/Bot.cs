@@ -127,29 +127,6 @@ public class Bot : MonoBehaviour
                 Destroy(powerGrid.gameObject);
         }
         isReset = true;
-
-        /*BoundsInt bounds = startingBrickGrid.GetComponent<Tilemap>().cellBounds;
-        Vector3Int origin = startingBrickGrid.GetComponent<Tilemap>().origin;
-
-        savedTileMap = new Sprite[maxBotWidth, maxBotHeight];
-        int localX = 0;
-        int localY = 0;
-        for (int x = origin.x; x < origin.x + bounds.size.x; x++)
-        {
-            for (int y = origin.y; y < origin.y + bounds.size.y; y++)
-            {
-                Vector3Int posV3 = new Vector3Int(x, y, 0);
-                Sprite newSprite = startingBrickGrid.GetComponent<Tilemap>().GetSprite(posV3);
-                savedTileMap[localX, localY] = newSprite;
-                localY++;
-            }
-            localY = 0;
-            localX++;
-        }
-
-        SetTileMap(savedTileMap);
-        botRotation = 0;
-        isRotating = false;*/
     }
 
     public Sprite[,] GetTileMap()
