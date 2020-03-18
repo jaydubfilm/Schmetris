@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using System.Collections.Generic;
 
 //Controls all map menu functions
 public class LevelMenuUI : MonoBehaviour
@@ -9,6 +11,11 @@ public class LevelMenuUI : MonoBehaviour
     public GameObject loadPanel;
     public GameObject savePanel;
     public GameObject confirmQuitPanel;
+
+    //Levels UI
+    public GameObject levelButtonPrefab;
+    public HorizontalLayoutGroup levelGrid;
+    List<GameObject> levelButtons = new List<GameObject>();
 
     //Menu state for determining active controls
     enum MenuState
@@ -33,6 +40,42 @@ public class LevelMenuUI : MonoBehaviour
 
         //Activate main menu
         MainMenu();
+    }
+
+    //Update active levels
+    void UpdateLevels()
+    {
+        //Remove old levels
+        for(int i = 0;i<levelButtons.Count;i++)
+        {
+            Destroy(levelButtons[i]);
+        }
+        levelButtons = new List<GameObject>();
+
+        //Add new level buttons
+        for (int i = 0; i < GameController.Instance.game.levelDataArr.Length; i++)
+        {
+            GameObject newLevel = Instantiate(levelButtonPrefab, levelGrid.transform);
+            newLevel.GetComponent<Text>().text = "Level " + (i + 1).ToString();
+            if(i < GameController.Instance.highestScene)
+            {
+                int index = i + 1;
+                newLevel.GetComponent<Button>().onClick.AddListener(()=> { PlayLevel(index); });
+            }
+            else
+            {
+                newLevel.GetComponent<Button>().interactable = false;
+            }
+            levelButtons.Add(newLevel);
+        }
+
+        //Update grid positioning to center
+        if(levelButtons.Count > 0)
+        {
+            RectOffset newPadding = levelGrid.padding;
+            newPadding.left = (int)(-levelButtons[0].GetComponent<RectTransform>().sizeDelta.x * levelButtons.Count / 2.0f);
+            levelGrid.padding = newPadding;
+        }
     }
 
     //Update keyboard controls
@@ -149,6 +192,7 @@ public class LevelMenuUI : MonoBehaviour
         switch (activeState)
         {
             case MenuState.Main:
+                UpdateLevels();
                 mainPanel.SetActive(true);
                 break;
             case MenuState.Help:
@@ -205,6 +249,7 @@ public class LevelMenuUI : MonoBehaviour
     //Open the scrapyard
     public void Scrapyard()
     {
+        GameController.Instance.LoadScrapyard();
     }
 
     //Load an existing game slot
@@ -216,5 +261,12 @@ public class LevelMenuUI : MonoBehaviour
     //Save to an existing game slot
     public void SaveGameSlot(int index)
     {
+        GameController.Instance.SaveGame(index);
+    }
+
+    //Play selected level
+    public void PlayLevel(int index)
+    {
+        GameController.Instance.StartLevel(index);
     }
 }

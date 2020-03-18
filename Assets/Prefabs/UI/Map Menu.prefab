@@ -2093,6 +2093,9 @@ MonoBehaviour:
   loadPanel: {fileID: 3987833075837179160}
   savePanel: {fileID: 6472100200273240413}
   confirmQuitPanel: {fileID: 2334537645386015953}
+  levelButtonPrefab: {fileID: 1147265763174416411, guid: 6cf4574ebbd49f74f8e5ea7d6da06807,
+    type: 3}
+  levelGrid: {fileID: 3693486819016046535}
 --- !u!1 &7566780755873912529
 GameObject:
   m_ObjectHideFlags: 0

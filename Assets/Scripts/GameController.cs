@@ -47,6 +47,13 @@ public class GameController : MonoBehaviour
         }
     }
 
+    //Menu screens
+    public GameObject startMenu;
+    public GameObject mapMenu;
+    public GameObject pauseMenu;
+    public GameObject scrapyard;
+    public GameUI hud;
+
     public bool isBotDead = false;
     public bool isPaused = false;
 
@@ -55,15 +62,9 @@ public class GameController : MonoBehaviour
     public GameObject gameOverPanel;
     public Text progressText;
     public GameObject restartText;
-
-    public GameObject levelMenu;
-    public GameObject pauseMenu;
-
     public GameObject loseLifePanel;
     public GameObject retryText;
-
-    public GameObject scrapyard;
-    public GameUI hud;
+    public GameObject scoreIncreasePrefab;
 
     //public LevelData[] allLevelData;
     public Game easyGame;
@@ -74,10 +75,9 @@ public class GameController : MonoBehaviour
     public Bot bot;
     public GameSettings settings;
 
-    public GameObject scoreIncreasePrefab;
-
     public static float timeRemaining = 10.0f;
     public int currentScene = 1;
+    public int highestScene = 1;
     public static int spawnRow = 25;
     //public static int bitCount = 10;
 
@@ -102,6 +102,8 @@ public class GameController : MonoBehaviour
     bool isRestarting = false;
     public SaveManager saveManager = null;
     public Transform[] loadIcons;
+    public Transform[] saveIcons;
+    public Transform[] mapLoadIcons;
     public GameObject iconGrid;
     public GameObject iconColumn;
     public GameObject iconTile;
@@ -167,6 +169,14 @@ public class GameController : MonoBehaviour
         for (int i = 0; i < loadIcons.Length; i++)
         {
             BuildBotIcon(i, loadIcons[i]);
+        }
+        for (int i = 0; i < mapLoadIcons.Length; i++)
+        {
+            BuildBotIcon(i, mapLoadIcons[i]);
+        }
+        for (int i = 0; i < saveIcons.Length; i++)
+        {
+            BuildBotIcon(i, saveIcons[i]);
         }
     }
 
@@ -240,7 +250,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    void StartGame()
+    public void StartLevel(int level)
     {
         bot.gameObject.SetActive(true);
 
@@ -250,13 +260,23 @@ public class GameController : MonoBehaviour
             OnNewLevel();
         }
 
-        LoadLevelData(1);
+        LoadLevelData(level);
         InvokeRepeating("GameOverCheck", 1.0f, 0.2f);
+    }
+
+    public void LoadMapScreen()
+    {
+        startMenu.SetActive(false);
+        scrapyard.SetActive(false);
+        hud.gameObject.SetActive(false);
+        pauseMenu.SetActive(false);
+        mapMenu.GetComponent<LevelMenuUI>().OpenMenu();
+        mapMenu.SetActive(true);
     }
 
     public void SaveGame(int index)
     {
-        saveManager.SetSave(index, lives, money, currentScene, game.name, bot.GetSavedFuel(), bot.GetSavedBlue(), bot.GetSavedGreen(), bot.GetSavedYellow(), bot.GetSavedGrey(), bot.GetTileMap());
+        saveManager.SetSave(index, lives, money, highestScene, game.name, bot.GetSavedFuel(), bot.GetSavedBlue(), bot.GetSavedGreen(), bot.GetSavedYellow(), bot.GetSavedGrey(), bot.GetTileMap());
         RefreshBotIcons();
     }
 
@@ -274,6 +294,7 @@ public class GameController : MonoBehaviour
             lives = loadData.lives;
             money = loadData.money;
             currentScene = loadData.level;
+            highestScene = currentScene;
 
             //~Add in resource loading?
             if (easyGame.name == loadData.game)
@@ -316,9 +337,10 @@ public class GameController : MonoBehaviour
             Time.timeScale = 0;
             bot.gameObject.SetActive(false);
             SceneManager.LoadScene(1);
-            scrapyard.SetActive(true);
+            LoadMapScreen();
+            /*scrapyard.SetActive(true);
             scrapyard.GetComponent<Scrapyard>().LoadScrapyardResources();
-            scrapyard.GetComponent<Scrapyard>().UpdateScrapyard();
+            scrapyard.GetComponent<Scrapyard>().UpdateScrapyard();*/
         }
     }
 
@@ -371,21 +393,24 @@ public class GameController : MonoBehaviour
     public void EasyGame()
     {
         game = easyGame;
-        StartGame();
+        highestScene = 1;
+        LoadMapScreen();
     }
 
     //Used for external Canvas buttons for touchscreen controls
     public void MediumGame()
     {
         game = mediumGame;
-        StartGame();
+        highestScene = 1;
+        LoadMapScreen();
     }
 
     //Used for external Canvas buttons for touchscreen controls
     public void HardGame()
     {
         game = hardGame;
-        StartGame();
+        highestScene = 1;
+        LoadMapScreen();
     }
 
     //Open initial game menu
@@ -394,7 +419,8 @@ public class GameController : MonoBehaviour
         scrapyard.SetActive(false);
         pauseMenu.SetActive(false);
         hud.gameObject.SetActive(false);
-        levelMenu.SetActive(true);
+        mapMenu.SetActive(false);
+        startMenu.SetActive(true);
         loseLifePanel.SetActive(false);
         retryText.SetActive(false);
         hud.SetLevelCompletePopup(false);
@@ -406,7 +432,7 @@ public class GameController : MonoBehaviour
         bot.ResetTileMap();
         bot.Init();
         SceneManager.LoadScene(1);
-        levelMenu.GetComponent<MainMenuUI>().OpenMenu();
+        startMenu.GetComponent<MainMenuUI>().OpenMenu();
     }
 
     //Used for external Canvas buttons for touchscreen controls
@@ -438,15 +464,16 @@ public class GameController : MonoBehaviour
         {
             OnNewLevel();
         }
-        LoadLevelData(currentScene);
+        LoadLevelData(highestScene);
     }
 
-    void LoadScrapyard()
+    public void LoadScrapyard()
     {
         hud.gameObject.SetActive(false);
+        mapMenu.SetActive(false);
         isPaused = true;
         Time.timeScale = 0;
-        bot.OnNewLevel();
+        //bot.OnNewLevel();
         bot.gameObject.SetActive(false);
         SceneManager.LoadScene(1);
         scrapyard.SetActive(true);
@@ -484,7 +511,9 @@ public class GameController : MonoBehaviour
                 }
                 if (!hasBlocks)
                 {
+                    highestScene = Mathf.Min(highestScene + 1, game.levelDataArr.Length);
                     blockList = new List<GameObject>();
+                    bot.OnNewLevel();
                     LoadScrapyard();
                 }
             }
@@ -679,8 +708,9 @@ public class GameController : MonoBehaviour
         timeRemaining = levelData.levelDuration;
 
         hud.SetLevelCompletePopup(false);
-        levelMenu.SetActive(false);
+        startMenu.SetActive(false);
         pauseMenu.SetActive(false);
+        mapMenu.SetActive(false);
         isPaused = false;
         Time.timeScale = 1.0f;
     }
