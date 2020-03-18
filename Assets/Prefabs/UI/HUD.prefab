@@ -787,7 +787,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 6341776246183116782}
         m_MethodName: SpeedUp
         m_Mode: 1
         m_Arguments:
@@ -941,6 +941,7 @@ MonoBehaviour:
   levelText: {fileID: 2495208235152123329}
   timerText: {fileID: 2495208235272578219}
   speedText: {fileID: 507736350071393088}
+  progressText: {fileID: 366027939120809936}
   livesGroup: {fileID: 3617652193299155120}
   livesIcon: {fileID: 7543317960770530623, guid: 243eb06fcb375c04fabd9114fcc40087,
     type: 3}
@@ -951,6 +952,10 @@ MonoBehaviour:
   greyBar: {fileID: 7614025562311855211}
   noFuelDisplay: {fileID: 3694217860506587345}
   levelCompleteDisplay: {fileID: 6961089466144550224}
+  lifeLostDisplay: {fileID: 1488407907439979541}
+  returnButton: {fileID: 6454189424059811381}
+  gameOverDisplay: {fileID: 2765532229028423110}
+  continueButton: {fileID: 7734691456029200358}
 --- !u!1 &3776381937717725507
 GameObject:
   m_ObjectHideFlags: 0
@@ -1149,7 +1154,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 6341776246183116782}
         m_MethodName: PauseGame
         m_Mode: 1
         m_Arguments:
@@ -2025,7 +2030,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 6341776246183116782}
         m_MethodName: SpeedDown
         m_Mode: 1
         m_Arguments:
@@ -2425,26 +2430,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Level Over Text
       objectReference: {fileID: 0}
-    - target: {fileID: 1530804759272705349, guid: 5e65644cf5a82497185c3404eac3216e,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2937331914014890216, guid: 5e65644cf5a82497185c3404eac3216e,
-        type: 3}
-      propertyPath: m_FontData.m_FontSize
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 2937331914014890216, guid: 5e65644cf5a82497185c3404eac3216e,
-        type: 3}
-      propertyPath: m_Text
-      value: Press any key to retry level
-      objectReference: {fileID: 0}
-    - target: {fileID: 2937331914014890216, guid: 5e65644cf5a82497185c3404eac3216e,
-        type: 3}
-      propertyPath: m_RaycastTarget
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3426909144174931870, guid: 5e65644cf5a82497185c3404eac3216e,
         type: 3}
       propertyPath: m_FontData.m_FontSize
@@ -2453,12 +2438,27 @@ PrefabInstance:
     - target: {fileID: 3426909144174931870, guid: 5e65644cf5a82497185c3404eac3216e,
         type: 3}
       propertyPath: m_Text
-      value: YOU DIED
+      value: LIFE LOST
       objectReference: {fileID: 0}
     - target: {fileID: 3426909144174931870, guid: 5e65644cf5a82497185c3404eac3216e,
         type: 3}
       propertyPath: m_RaycastTarget
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4902713958754621344, guid: 5e65644cf5a82497185c3404eac3216e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 6341776246183116782}
+    - target: {fileID: 4902713958754621344, guid: 5e65644cf5a82497185c3404eac3216e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ReturnToScrapyard
+      objectReference: {fileID: 0}
+    - target: {fileID: 4902713958754621344, guid: 5e65644cf5a82497185c3404eac3216e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 5329981903019599797, guid: 5e65644cf5a82497185c3404eac3216e,
         type: 3}
@@ -2570,26 +2570,23 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 6822854653107174879, guid: 5e65644cf5a82497185c3404eac3216e,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6822854653107174879, guid: 5e65644cf5a82497185c3404eac3216e,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6822854653107174879, guid: 5e65644cf5a82497185c3404eac3216e,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5e65644cf5a82497185c3404eac3216e, type: 3}
+--- !u!1 &1488407907439979541 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 342808225873317269, guid: 5e65644cf5a82497185c3404eac3216e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1181637831950688640}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &5677248509024640095 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6822854653107174879, guid: 5e65644cf5a82497185c3404eac3216e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1181637831950688640}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6454189424059811381 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5329981903019599797, guid: 5e65644cf5a82497185c3404eac3216e,
     type: 3}
   m_PrefabInstance: {fileID: 1181637831950688640}
   m_PrefabAsset: {fileID: 0}
@@ -2605,15 +2602,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: Game Over Text
       objectReference: {fileID: 0}
-    - target: {fileID: 1530804759272705349, guid: 5e65644cf5a82497185c3404eac3216e,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3426909144174931870, guid: 5e65644cf5a82497185c3404eac3216e,
         type: 3}
       propertyPath: m_FontData.m_FontSize
       value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 4902713958754621344, guid: 5e65644cf5a82497185c3404eac3216e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 6341776246183116782}
+    - target: {fileID: 4902713958754621344, guid: 5e65644cf5a82497185c3404eac3216e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ReturnToMainMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 4902713958754621344, guid: 5e65644cf5a82497185c3404eac3216e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6822854653107174879, guid: 5e65644cf5a82497185c3404eac3216e,
         type: 3}
@@ -2720,26 +2727,23 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 6822854653107174879, guid: 5e65644cf5a82497185c3404eac3216e,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6822854653107174879, guid: 5e65644cf5a82497185c3404eac3216e,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6822854653107174879, guid: 5e65644cf5a82497185c3404eac3216e,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5e65644cf5a82497185c3404eac3216e, type: 3}
+--- !u!1 &2765532229028423110 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 342808225873317269, guid: 5e65644cf5a82497185c3404eac3216e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2495208233516460115}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &8939474301303788940 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6822854653107174879, guid: 5e65644cf5a82497185c3404eac3216e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2495208233516460115}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7734691456029200358 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5329981903019599797, guid: 5e65644cf5a82497185c3404eac3216e,
     type: 3}
   m_PrefabInstance: {fileID: 2495208233516460115}
   m_PrefabAsset: {fileID: 0}

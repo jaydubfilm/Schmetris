@@ -740,11 +740,7 @@ MonoBehaviour:
   hud: {fileID: 3821141159295645164}
   isBotDead: 0
   isPaused: 0
-  gameOverPanel: {fileID: 1154038573}
   progressText: {fileID: 385124473}
-  restartText: {fileID: 3821141159295645163}
-  loseLifePanel: {fileID: 954041905}
-  retryText: {fileID: 887070794}
   scoreIncreasePrefab: {fileID: 1390986891220089146, guid: 2f58309bcd325b045b76c2709e3fe960,
     type: 3}
   easyGame: {fileID: 11400000, guid: 50fd8217ad0454a93a1e1c4f40a7c99e, type: 2}
@@ -754,6 +750,7 @@ MonoBehaviour:
   bot: {fileID: 1162166409}
   settings: {fileID: 11400000, guid: 7b02eee40b211405a8626adc4d7495ef, type: 2}
   currentScene: 1
+  highestScene: 1
   bgPanelArr: []
   bgPanel: {fileID: 6436523624224430614, guid: b5bf3d8b53ea54527ac6215a9568df94, type: 3}
   speciesSpawnData: []
@@ -811,24 +808,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2310951518095704255, guid: 6bb54112c1cb75749a625a31757af4e6,
     type: 3}
   m_PrefabInstance: {fileID: 2329543995152741234}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &887070794 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5635773472847866827, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
-    type: 3}
-  m_PrefabInstance: {fileID: 3821141159295645162}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &954041905 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 216254231577231851, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
-    type: 3}
-  m_PrefabInstance: {fileID: 3821141159295645162}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1154038573 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3586710146923071544, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
-    type: 3}
-  m_PrefabInstance: {fileID: 3821141159295645162}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &1162166409 stripped
 MonoBehaviour:
@@ -1834,16 +1813,6 @@ PrefabInstance:
       propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2211948381598246374, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 828699281}
-    - target: {fileID: 2211948381598246374, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SpeedUp
-      objectReference: {fileID: 0}
     - target: {fileID: 2322143761172007144, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -1878,16 +1847,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3721811707071076488, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 828699281}
-    - target: {fileID: 3721811707071076488, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SpeedDown
       objectReference: {fileID: 0}
     - target: {fileID: 3821141158908561465, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
         type: 3}
@@ -2184,16 +2143,6 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 6563139088369581925, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 828699281}
-    - target: {fileID: 6563139088369581925, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: PauseGame
-      objectReference: {fileID: 0}
     - target: {fileID: 7620937806617088948, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
         type: 3}
       propertyPath: m_RootOrder
@@ -2276,12 +2225,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 369c240a1f1ea4a74ba5c1c78ac988ec, type: 3}
---- !u!1 &3821141159295645163 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9002851712186130968, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
-    type: 3}
-  m_PrefabInstance: {fileID: 3821141159295645162}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3821141159295645164 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5739040500690752016, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,

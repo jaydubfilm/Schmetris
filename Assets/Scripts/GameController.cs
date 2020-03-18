@@ -59,11 +59,6 @@ public class GameController : MonoBehaviour
 
     //public static int bgAdjustFlag = 0;
     
-    public GameObject gameOverPanel;
-    public Text progressText;
-    public GameObject restartText;
-    public GameObject loseLifePanel;
-    public GameObject retryText;
     public GameObject scoreIncreasePrefab;
 
     //public LevelData[] allLevelData;
@@ -128,9 +123,24 @@ public class GameController : MonoBehaviour
         if (!isBotDead)
         {
             isBotDead = true;
-            gameOverPanel.GetComponent<Text>().text = endgameMessage + " - Game Over";
-            loseLifePanel.GetComponent<Text>().text = endgameMessage + " - Life Lost";
             lives--;
+            if (lives == 0)
+            {
+                hud.SetProgressText("Level " + currentScene + " attained. $" + money + " Salvaged.");
+                if (OnGameOver != null)
+                {
+                    OnGameOver();
+                }
+                hud.SetGameOverPopup(true, endgameMessage);
+            }
+            else
+            {
+                if (OnLoseLife != null)
+                {
+                    OnLoseLife();
+                }
+                hud.SetLifeLostPopup(true, endgameMessage);
+            }
         }
     }
 
@@ -261,7 +271,6 @@ public class GameController : MonoBehaviour
         }
 
         LoadLevelData(level);
-        InvokeRepeating("GameOverCheck", 1.0f, 0.2f);
     }
 
     public void LoadMapScreen()
@@ -391,6 +400,8 @@ public class GameController : MonoBehaviour
     {
         game = easyGame;
         highestScene = 1;
+        lives = 3;
+        speedMultiplier = settings.defaultSpeedLevel;
         LoadMapScreen();
     }
 
@@ -399,6 +410,8 @@ public class GameController : MonoBehaviour
     {
         game = mediumGame;
         highestScene = 1;
+        lives = 3;
+        speedMultiplier = settings.defaultSpeedLevel;
         LoadMapScreen();
     }
 
@@ -407,6 +420,8 @@ public class GameController : MonoBehaviour
     {
         game = hardGame;
         highestScene = 1;
+        lives = 3;
+        speedMultiplier = settings.defaultSpeedLevel;
         LoadMapScreen();
     }
 
@@ -418,11 +433,9 @@ public class GameController : MonoBehaviour
         hud.gameObject.SetActive(false);
         mapMenu.SetActive(false);
         startMenu.SetActive(true);
-        loseLifePanel.SetActive(false);
-        retryText.SetActive(false);
+        hud.SetLifeLostPopup(false);
         hud.SetLevelCompletePopup(false);
-        gameOverPanel.SetActive(false);
-        restartText.SetActive(false);
+        hud.SetGameOverPopup(false);
         isPaused = true;
         Time.timeScale = 0;
         bot.gameObject.SetActive(false);
@@ -482,15 +495,6 @@ public class GameController : MonoBehaviour
     {
         if (!isBotDead && !isPaused)
         {
-            //Adjust game speed
-            if (Input.GetKeyDown(KeyCode.Equals))
-            {
-                SpeedUp();
-            }
-            else if (Input.GetKeyDown(KeyCode.Minus))
-            {
-                SpeedDown();
-            }
 
             //Update time remaining
             timeRemaining -= Time.deltaTime;
@@ -519,24 +523,6 @@ public class GameController : MonoBehaviour
 
             if (enemySpawnRate > 0)
                 EnemySpawnCheck();
-        }
-
-        if (!isPaused)
-        {
-            if(Input.GetKeyDown(KeyCode.Escape))
-            {
-                PauseGame();
-            }
-        }
-
-        if(!isRestarting && restartText.activeSelf && Input.anyKeyDown)
-        {
-            isRestarting = true;
-            Restart();
-        }
-        else if(retryText.activeSelf && Input.anyKeyDown)
-        {
-            ReplayLevel();
         }
 
         if (!isPaused)
@@ -576,19 +562,6 @@ public class GameController : MonoBehaviour
 #endif
     }
 
-    IEnumerator RestartLevelOnDelay()
-    {
-        isRestarting = true;
-        pauseMenu.SetActive(false);
-        isPaused = false;
-        Time.timeScale = 1.0f;
-        if (OnGameOver != null)
-        {
-            OnGameOver();
-        }
-        yield return new WaitForSecondsRealtime(1.0f);
-        Restart();
-    }
 
     public void CreateFloatingText(string message, Vector3 worldPos, int size, Color color)
     {
@@ -597,79 +570,6 @@ public class GameController : MonoBehaviour
         scoreFX.transform.rotation = Quaternion.identity;
         scoreFX.transform.position = Camera.main.WorldToScreenPoint(worldPos);
         scoreFX.GetComponent<FloatingText>().Init(message, hud.moneyText.transform.position, size, color);
-    }
-
-    //Like restart but resets only the current level - for when player has lost a life but not gotten a game over
-    void ReplayLevel()
-    {
-        isBotDead = false;
-        loseLifePanel.SetActive(false);
-        retryText.SetActive(false);
-        gameOverPanel.SetActive(false);
-        restartText.SetActive(false);
-        LoadLevelData(currentScene);
-        if(OnLevelRestart != null)
-        {
-            OnLevelRestart();
-        }
-    }
-
-    void Restart()
-    {
-        isBotDead = false;
-        lives = 3;
-        money = 0;
-        loseLifePanel.SetActive(false);
-        retryText.SetActive(false);
-        gameOverPanel.SetActive(false);
-        restartText.SetActive(false);
-        isRestarting = false;
-        currentScene = 1;
-        LoadLevelData(currentScene);
-        if(OnGameRestart != null)
-        {
-            OnGameRestart();
-        }
-    }
-
-    IEnumerator DelayedRestart()
-    {
-        yield return new WaitForSeconds(2.0f);
-        restartText.SetActive(true);
-    }
-
-    IEnumerator DelayedReload()
-    {
-        yield return new WaitForSeconds(2.0f);
-        retryText.SetActive(true);
-    }
-
-    void GameOverCheck(){
-        if (lives == 0)
-        {
-            if(!gameOverPanel.activeSelf && !isRestarting)
-            {
-                progressText.text = "Level " + currentScene + " attained. $" + money + " Salvaged.";
-                StartCoroutine(DelayedRestart());
-                if (OnGameOver != null)
-                {
-                    OnGameOver();
-                }
-                gameOverPanel.SetActive(true);
-            }
-        }
-        else if (isBotDead && !isRestarting)
-        {
-            if (!loseLifePanel.activeSelf)
-            {
-                StartCoroutine(DelayedReload());
-                if (OnLoseLife != null)
-                {
-                    OnLoseLife();
-                }
-                loseLifePanel.SetActive(true);
-            }
-        }
     }
 
     public int[] GetSpawnProbabilities() {
@@ -688,6 +588,8 @@ public class GameController : MonoBehaviour
 
     public void LoadLevelData(int levelNumber) {
         speedMultiplier = settings.defaultSpeedLevel;
+        hud.SetGameOverPopup(false);
+        hud.SetLifeLostPopup(false);
         hud.SetSpeed(adjustedSpeed);
         hud.gameObject.SetActive(true);
         SceneManager.LoadScene(Mathf.Min(SceneManager.sceneCountInBuildSettings - 1,levelNumber));
@@ -708,6 +610,7 @@ public class GameController : MonoBehaviour
         startMenu.SetActive(false);
         pauseMenu.SetActive(false);
         mapMenu.SetActive(false);
+        isBotDead = false;
         isPaused = false;
         Time.timeScale = 1.0f;
     }
