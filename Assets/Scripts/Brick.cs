@@ -73,18 +73,6 @@ public class Brick : MonoBehaviour
     //Store change in brick's health if power level changes
     int healthDiff = 0;
 
-    //Brick's capacity to act as a resource container
-    public float storedFuelMax = 0;
-    public float storedFuel = 0;
-    public float blueCapacity = 0;
-    public float blueStored = 0;
-    public float greenCapacity = 0;
-    public float greenStored = 0;
-    public float yellowCapacity = 0;
-    public float yellowStored = 0;
-    public float greyCapacity = 0;
-    public float greyStored = 0;
-
     //Return adjusted brick level based on available power
     public int GetPoweredLevel()
     {
@@ -325,16 +313,7 @@ public class Brick : MonoBehaviour
 
         if (brickType == 1)
             bot.fuelBrickList.Remove(gameObject);
-        if (storedFuelMax > 0)
-            bot.fuelContainerList.Remove(gameObject);
-        if (blueCapacity > 0)
-            bot.blueContainerList.Remove(gameObject);
-        if (greenCapacity > 0)
-            bot.greenContainerList.Remove(gameObject);
-        if (yellowCapacity > 0)
-            bot.yellowContainerList.Remove(gameObject);
-        if (greyCapacity > 0)
-            bot.greyContainerList.Remove(gameObject);
+
         bot.RefreshNeighborLists();
         bot.orphanCheckFlag = true;
     }

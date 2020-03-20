@@ -80,14 +80,6 @@ public class Bot : MonoBehaviour
     private List<Vector2Int> pathArrList = new List<Vector2Int>();
     public List<GameObject> fuelBrickList = new List<GameObject>();
 
-    //Resource containers
-    public List<GameObject> fuelContainerList = new List<GameObject>();
-    public List<GameObject> blueContainerList = new List<GameObject>();
-    public List<GameObject> greenContainerList = new List<GameObject>();
-    public List<GameObject> yellowContainerList = new List<GameObject>();
-    public List<GameObject> greyContainerList = new List<GameObject>();
-    float fuelBurnRate = 1.0f;
-
     private AudioSource source;
     public AudioClip tripleSound;
     public AudioClip resourceSound;
@@ -98,12 +90,20 @@ public class Bot : MonoBehaviour
     float delay;
     bool isReset = false;
 
+    //Resources
     const float baseCapacity = 500.0f;
     const float startRed = 30.0f;
     const float startBlue = 0;
     const float startGreen = 0;
     const float startYellow = 0;
     const float startGrey = 0;
+    float totalCapacity = 0;
+    float storedRed = 0;
+    float storedBlue = 0;
+    float storedGreen = 0;
+    float storedYellow = 0;
+    float storedGrey = 0;
+    float fuelBurnRate = 1.0f;
 
     public void ResetTileMap()
     {
@@ -113,6 +113,13 @@ public class Bot : MonoBehaviour
         savedGreenStores = startGreen;
         savedGreyStores = startGrey;
         savedYellowStores = startYellow;
+
+        totalCapacity = baseCapacity;
+        storedRed = startRed;
+        storedBlue = startBlue;
+        storedGreen = startGreen;
+        storedYellow = startYellow;
+        storedGrey = startGrey;
     }
 
     public Sprite[,] GetTileMap()
@@ -169,7 +176,6 @@ public class Bot : MonoBehaviour
                 }
             }
             fuelBrickList = new List<GameObject>();
-            UpdateContainers();
             if (powerGrid)
                 Destroy(powerGrid.gameObject);
             //OnLevelRestart();
@@ -397,23 +403,7 @@ public class Bot : MonoBehaviour
 
         if (fuelBrickList.Count == 0)
         {
-            float fuelDrop = Time.deltaTime * fuelBurnRate;
-            for(int i =0;i<fuelContainerList.Count;i++)
-            {
-                Brick fuelCheck = fuelContainerList[i].GetComponent<Brick>();
-                if(fuelCheck.storedFuel >= fuelDrop)
-                {
-                    fuelCheck.storedFuel -= fuelDrop;
-                    fuelDrop = 0;
-                }
-                else
-                {
-                    fuelDrop -= fuelCheck.storedFuel;
-                    fuelCheck.storedFuel = 0;
-                }
-                if(fuelDrop <= 0)
-                    break;
-            }
+            storedRed = Mathf.Max(0, storedRed - fuelBurnRate * Time.deltaTime);
         }
     }
 
@@ -1518,17 +1508,6 @@ public class Bot : MonoBehaviour
 
         tripleCheckFlag = true;
 
-        if (newBrickScript.storedFuelMax > 0)
-            fuelContainerList.Add(newBrick);
-        if (newBrickScript.blueCapacity > 0)
-            blueContainerList.Add(newBrick);
-        if (newBrickScript.greenCapacity > 0)
-            greenContainerList.Add(newBrick);
-        if (newBrickScript.yellowCapacity > 0)
-            yellowContainerList.Add(newBrick);
-        if (newBrickScript.greyCapacity > 0)
-            greyContainerList.Add(newBrick);
-
         return newBrick;
      
     }
@@ -1782,7 +1761,7 @@ public class Bot : MonoBehaviour
             if (container)
             {
                 Brick containerBrick = container.GetComponent<Brick>();
-                if (containerBrick.storedFuel < containerBrick.storedFuelMax && containerBrick.storedFuelMax > 0)
+                if (containerBrick.arrPos == coreV2 && storedBlue + storedRed + storedGreen + storedYellow + storedGrey < totalCapacity)
                 {
                     return true;
                 }
@@ -1794,7 +1773,12 @@ public class Bot : MonoBehaviour
     void AddResource(Brick containerBrick, GameObject resource, int type, int level)
     {
         source.PlayOneShot(resourceSound, 1.0f);
-        containerBrick.storedFuel += masterBrickList[type].GetComponent<Fuel>().maxFuelArr[level];
+        storedRed += masterBrickList[type].GetComponent<Fuel>().maxFuelArr[level];
+        float totalResources = storedBlue + storedRed + storedGreen + storedYellow + storedGrey;
+        if(totalResources > totalCapacity)
+        {
+            storedRed -= totalResources - totalCapacity;
+        }
         GameController.Instance.money++;
     }
 
@@ -2110,287 +2094,82 @@ public class Bot : MonoBehaviour
         }
     }
 
-    void UpdateContainers()
-    {
-        fuelContainerList = new List<GameObject>();
-        blueContainerList = new List<GameObject>();
-        greenContainerList = new List<GameObject>();
-        yellowContainerList = new List<GameObject>();
-        greyContainerList = new List<GameObject>();
-        foreach(GameObject ContainerCheck in brickList)
-        {
-            if(ContainerCheck.GetComponent<Brick>().storedFuelMax > 0)
-                fuelContainerList.Add(ContainerCheck);
-            if (ContainerCheck.GetComponent<Brick>().blueCapacity > 0)
-                blueContainerList.Add(ContainerCheck);
-            if (ContainerCheck.GetComponent<Brick>().greenCapacity > 0)
-                greenContainerList.Add(ContainerCheck);
-            if (ContainerCheck.GetComponent<Brick>().yellowCapacity > 0)
-                yellowContainerList.Add(ContainerCheck);
-            if (ContainerCheck.GetComponent<Brick>().greyCapacity > 0)
-                greyContainerList.Add(ContainerCheck);
-        }
-    }
-
     public float GetResourcePercent(ResourceType resourceType)
     {
-        List<GameObject> containerList = new List<GameObject>();
+        if (totalCapacity == 0)
+            return 0;
+
         switch (resourceType)
         {
             case ResourceType.Blue:
-                containerList = blueContainerList;
-                break;
+                return storedBlue / totalCapacity;
             case ResourceType.Red:
-                containerList = fuelContainerList;
-                break;
+                return storedRed / totalCapacity;
             case ResourceType.Yellow:
-                containerList = yellowContainerList;
-                break;
+                return storedYellow / totalCapacity;
             case ResourceType.Green:
-                containerList = greenContainerList;
-                break;
+                return storedGreen / totalCapacity;
             case ResourceType.Grey:
-                containerList = greyContainerList;
-                break;
+                return storedGrey / totalCapacity;
         }
 
-        if (containerList.Count > 0)
-        {
-            float currentResource = 0;
-            float maxResource = 0;
-            foreach (GameObject Container in containerList)
-            {
-                Brick targetBrick = Container.GetComponent<Brick>();
-                switch(resourceType)
-                {
-                    case ResourceType.Blue:
-                        currentResource += targetBrick.blueStored;
-                        maxResource += targetBrick.blueCapacity;
-                        break;
-                    case ResourceType.Red:
-                        currentResource += targetBrick.storedFuel;
-                        maxResource += targetBrick.storedFuelMax;
-                        break;
-                    case ResourceType.Yellow:
-                        currentResource += targetBrick.yellowStored;
-                        maxResource += targetBrick.yellowCapacity;
-                        break;
-                    case ResourceType.Green:
-                        currentResource += targetBrick.greenStored;
-                        maxResource += targetBrick.greenCapacity;
-                        break;
-                    case ResourceType.Grey:
-                        currentResource += targetBrick.greyStored;
-                        maxResource += targetBrick.greyCapacity;
-                        break;
-                }
-            }
-            return currentResource / maxResource;
-        }
         return 0;
     }
 
     public float GetStoredResource(ResourceType resourceType)
     {
-        List<GameObject> containerList = new List<GameObject>();
         switch (resourceType)
         {
             case ResourceType.Blue:
-                containerList = blueContainerList;
-                break;
+                return storedBlue;
             case ResourceType.Red:
-                containerList = fuelContainerList;
-                break;
+                return storedRed;
             case ResourceType.Yellow:
-                containerList = yellowContainerList;
-                break;
+                return storedYellow;
             case ResourceType.Green:
-                containerList = greenContainerList;
-                break;
+                return storedGreen;
             case ResourceType.Grey:
-                containerList = greyContainerList;
-                break;
+                return storedGrey;
         }
 
-        if (containerList.Count > 0)
-        {
-            float currentResource = 0;
-            foreach (GameObject Container in containerList)
-            {
-                Brick targetBrick = Container.GetComponent<Brick>();
-                switch (resourceType)
-                {
-                    case ResourceType.Blue:
-                        currentResource += targetBrick.blueStored;
-                        break;
-                    case ResourceType.Red:
-                        currentResource += targetBrick.storedFuel;
-                        break;
-                    case ResourceType.Yellow:
-                        currentResource += targetBrick.yellowStored;
-                        break;
-                    case ResourceType.Green:
-                        currentResource += targetBrick.greenStored;
-                        break;
-                    case ResourceType.Grey:
-                        currentResource += targetBrick.greyStored;
-                        break;
-                }
-            }
-            return currentResource;
-        }
         return 0;
     }
 
     public float GetResourceCapacity(ResourceType resourceType)
     {
-        List<GameObject> containerList = new List<GameObject>();
-        switch (resourceType)
-        {
-            case ResourceType.Blue:
-                containerList = blueContainerList;
-                break;
-            case ResourceType.Red:
-                containerList = fuelContainerList;
-                break;
-            case ResourceType.Yellow:
-                containerList = yellowContainerList;
-                break;
-            case ResourceType.Green:
-                containerList = greenContainerList;
-                break;
-            case ResourceType.Grey:
-                containerList = greyContainerList;
-                break;
-        }
-
-        if (containerList.Count > 0)
-        {
-            float currentResource = 0;
-            foreach (GameObject Container in containerList)
-            {
-                Brick targetBrick = Container.GetComponent<Brick>();
-                switch (resourceType)
-                {
-                    case ResourceType.Blue:
-                        currentResource += targetBrick.blueCapacity;
-                        break;
-                    case ResourceType.Red:
-                        currentResource += targetBrick.storedFuelMax;
-                        break;
-                    case ResourceType.Yellow:
-                        currentResource += targetBrick.yellowCapacity;
-                        break;
-                    case ResourceType.Green:
-                        currentResource += targetBrick.greenCapacity;
-                        break;
-                    case ResourceType.Grey:
-                        currentResource += targetBrick.greyCapacity;
-                        break;
-                }
-            }
-            return currentResource;
-        }
-        return 0;
+        return totalCapacity;
     }
 
     public void SetStoredResource(ResourceType resourceType, float amount)
     {
-        List<GameObject> containerList = new List<GameObject>();
+        float totalResources = storedBlue + storedRed + storedGreen + storedYellow + storedGrey;
+        if(totalResources > totalCapacity)
+        {
+            amount = Mathf.Max(0, amount - (totalResources - totalCapacity));
+        }
+
         switch (resourceType)
         {
             case ResourceType.Blue:
                 savedBlueStored = amount;
-                containerList = blueContainerList;
+                storedBlue = amount;
                 break;
             case ResourceType.Red:
                 savedFuelStores = amount;
-                containerList = fuelContainerList;
+                storedRed = amount;
                 break;
             case ResourceType.Yellow:
                 savedYellowStores = amount;
-                containerList = yellowContainerList;
+                storedYellow = amount;
                 break;
             case ResourceType.Green:
                 savedGreenStores = amount;
-                containerList = greenContainerList;
+                storedGreen = amount;
                 break;
             case ResourceType.Grey:
                 savedGreyStores = amount;
-                containerList = greyContainerList;
+                storedGrey = amount;
                 break;
-        }
-
-        if (containerList.Count > 0)
-        {
-            float totalResource = amount;
-            foreach (GameObject Container in containerList)
-            {
-                Brick targetBrick = Container.GetComponent<Brick>();
-                switch (resourceType)
-                {
-                    case ResourceType.Blue:
-                        if (totalResource <= targetBrick.blueCapacity)
-                        {
-                            targetBrick.blueStored = totalResource;
-                            totalResource = 0;
-                        }
-                        else
-                        {
-                            targetBrick.blueStored = targetBrick.blueCapacity;
-                            totalResource -= targetBrick.blueCapacity;
-                        }
-                        break;
-                    case ResourceType.Red:
-                        if (totalResource <= targetBrick.storedFuelMax)
-                        {
-                            targetBrick.storedFuel = totalResource;
-                            totalResource = 0;
-                        }
-                        else
-                        {
-                            targetBrick.storedFuel = targetBrick.storedFuelMax;
-                            totalResource -= targetBrick.storedFuelMax;
-                        }
-                        break;
-                    case ResourceType.Yellow:
-                        if (totalResource <= targetBrick.yellowCapacity)
-                        {
-                            targetBrick.yellowStored = totalResource;
-                            totalResource = 0;
-                        }
-                        else
-                        {
-                            targetBrick.yellowStored = targetBrick.yellowCapacity;
-                            totalResource -= targetBrick.yellowCapacity;
-                        }
-                        break;
-                    case ResourceType.Green:
-                        if (totalResource <= targetBrick.greenCapacity)
-                        {
-                            targetBrick.greenStored = totalResource;
-                            totalResource = 0;
-                        }
-                        else
-                        {
-                            targetBrick.greenStored = targetBrick.greenCapacity;
-                            totalResource -= targetBrick.greenCapacity;
-                        }
-                        break;
-                    case ResourceType.Grey:
-                        if (totalResource <= targetBrick.greyCapacity)
-                        {
-                            targetBrick.greyStored = totalResource;
-                            totalResource = 0;
-                        }
-                        else
-                        {
-                            targetBrick.greyStored = targetBrick.greyCapacity;
-                            totalResource -= targetBrick.greyCapacity;
-                        }
-                        break;
-                }
-            }
         }
     }
 
