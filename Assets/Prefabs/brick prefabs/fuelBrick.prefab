@@ -42,10 +42,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 419dad0985ef34bdba2d0c81b2c4e4c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fuelLevel: 0
-  fuelPeriod: 1
   maxFuelArr: 0a0000002800000096000000f401000008070000
-  active: 0
+  fuelLevel: 0
+  fuelDiff: 0
 --- !u!1001 &394039869704156002
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -76,7 +75,7 @@ PrefabInstance:
     - target: {fileID: 4003891918765245268, guid: f98fd79dc605e406c93ee8d3b2c5e47e,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7022978686448341203, guid: f98fd79dc605e406c93ee8d3b2c5e47e,
         type: 3}

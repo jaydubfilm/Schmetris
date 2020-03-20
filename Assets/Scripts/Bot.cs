@@ -434,10 +434,7 @@ public class Bot : MonoBehaviour
             orphanCheckFlag = false;
         }
 
-        if (fuelBrickList.Count == 0)
-        {
-            storedRed = Mathf.Max(0, storedRed - fuelBurnRate * Time.deltaTime);
-        }
+        storedRed = Mathf.Max(0, storedRed - fuelBurnRate * Time.deltaTime);
     }
 
 
@@ -2117,18 +2114,10 @@ public class Bot : MonoBehaviour
         if (botRotation == -1)
             botRotation = 3;
     }
-    
-    public bool HasFuel() {
-        if (fuelBrickList.Count == 0)
-            return GetResourcePercent(ResourceType.Red) > 0;
-        else { // activate new fuel cell
-            if (fuelBrickList[0]==null)
-                Debug.Log("wtf");
-            Fuel fuel = fuelBrickList[0].GetComponent<Fuel>();
-            if (fuel.active==false)
-                fuel.Activate();
-            return true;
-        }
+
+    public bool HasFuel()
+    {
+        return GetResourcePercent(ResourceType.Red) > 0;
     }
 
     public float GetResourcePercent(ResourceType resourceType)
