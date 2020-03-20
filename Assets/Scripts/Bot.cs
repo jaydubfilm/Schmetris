@@ -1796,7 +1796,7 @@ public class Bot : MonoBehaviour
             Container containerBrick = container.GetComponent<Container>();
             if (containerBrick && containerBrick.IsOpenDirection(hitDir) && totalResources < totalCapacity)
             {
-                return bitType == 1 || bitType == 5;
+                return bitType == 0 || bitType == 1 || bitType == 3 || bitType == 5;
             }
         }
         return false;
@@ -1809,11 +1809,25 @@ public class Bot : MonoBehaviour
 
         switch(type)
         {
+            case 0:
+                storedYellow += masterBrickList[type].GetComponent<Yellectrons>().maxResource[level];
+                if (totalResources > totalCapacity)
+                {
+                    storedYellow -= totalResources - totalCapacity;
+                }
+                break;
             case 1:
                 storedRed += masterBrickList[type].GetComponent<Fuel>().maxFuelArr[level];
                 if (totalResources > totalCapacity)
                 {
                     storedRed -= totalResources - totalCapacity;
+                }
+                break;
+            case 3:
+                storedBlue += masterBrickList[type].GetComponent<Gun>().maxResource[level];
+                if (totalResources > totalCapacity)
+                {
+                    storedBlue -= totalResources - totalCapacity;
                 }
                 break;
             case 5:
@@ -1849,6 +1863,28 @@ public class Bot : MonoBehaviour
             case ResourceType.Grey:
                 savedGreyStores += amount;
                 SetStoredResource(resourceType, savedGreyStores);
+                break;
+        }
+    }
+
+    public void SubtractResource(ResourceType resourceType, float amount)
+    {
+        switch (resourceType)
+        {
+            case ResourceType.Blue:
+                storedBlue = Mathf.Max(0, storedBlue - amount);
+                break;
+            case ResourceType.Red:
+                storedRed = Mathf.Max(0, storedRed - amount);
+                break;
+            case ResourceType.Yellow:
+                storedYellow = Mathf.Max(0, storedYellow - amount);
+                break;
+            case ResourceType.Green:
+                storedGreen = Mathf.Max(0, storedGreen - amount);
+                break;
+            case ResourceType.Grey:
+                storedGrey = Mathf.Max(0, storedGrey - amount);
                 break;
         }
     }
@@ -2177,7 +2213,6 @@ public class Bot : MonoBehaviour
 
     public void SetStoredResource(ResourceType resourceType, float amount)
     {
-        float totalResources = storedBlue + storedRed + storedGreen + storedYellow + storedGrey;
         if(totalResources > totalCapacity)
         {
             amount = Mathf.Max(0, amount - (totalResources - totalCapacity));
