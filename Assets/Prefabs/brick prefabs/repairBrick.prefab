@@ -27,6 +27,13 @@ MonoBehaviour:
   - 5
   healingSymbol: {fileID: 8426587966987511266, guid: 4c3b08cf452254872acc73392fd2982a,
     type: 3}
+  maxResource: 0a00000032000000fa000000e20400006a180000
+  burnRate:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
 --- !u!1001 &2098854822358412987
 PrefabInstance:
   m_ObjectHideFlags: 0

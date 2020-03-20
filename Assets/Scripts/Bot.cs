@@ -1796,7 +1796,7 @@ public class Bot : MonoBehaviour
             Container containerBrick = container.GetComponent<Container>();
             if (containerBrick && containerBrick.IsOpenDirection(hitDir) && totalResources < totalCapacity)
             {
-                return bitType == 0 || bitType == 1 || bitType == 3 || bitType == 5;
+                return bitType == 0 || bitType == 1 || bitType == 2 || bitType == 3 || bitType == 5;
             }
         }
         return false;
@@ -1821,6 +1821,13 @@ public class Bot : MonoBehaviour
                 if (totalResources > totalCapacity)
                 {
                     storedRed -= totalResources - totalCapacity;
+                }
+                break;
+            case 2:
+                storedGreen += masterBrickList[type].GetComponent<Repair>().maxResource[level];
+                if (totalResources > totalCapacity)
+                {
+                    storedGreen -= totalResources - totalCapacity;
                 }
                 break;
             case 3:
