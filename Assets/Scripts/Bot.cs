@@ -79,6 +79,7 @@ public class Bot : MonoBehaviour
     private List<GameObject> pathList = new List<GameObject>();
     private List<Vector2Int> pathArrList = new List<Vector2Int>();
     public List<GameObject> fuelBrickList = new List<GameObject>();
+    List<Container> containerList = new List<Container>();
 
     private AudioSource source;
     public AudioClip tripleSound;
@@ -91,7 +92,6 @@ public class Bot : MonoBehaviour
     bool isReset = false;
 
     //Resources
-    const float baseCapacity = 500.0f;
     const float startRed = 30.0f;
     const float startBlue = 0;
     const float startGreen = 0;
@@ -105,6 +105,33 @@ public class Bot : MonoBehaviour
     float storedGrey = 0;
     float fuelBurnRate = 1.0f;
 
+    float totalResources
+    {
+        get
+        {
+            return storedRed + storedBlue + storedGreen + storedYellow + storedGrey;
+        }
+    }
+
+    public void AddContainer(Container container)
+    {
+        if(!containerList.Contains(container))
+        {
+            containerList.Add(container);
+            totalCapacity += container.capacity;
+        }
+    }
+
+    public void RemoveContainer(Container container)
+    {
+        if(containerList.Contains(container))
+        {
+            containerList.Remove(container);
+            //~Cut excess resources
+            totalCapacity -= container.capacity;
+        }
+    }
+
     public void ResetTileMap()
     {
         SetTileMap(startSprites);
@@ -114,7 +141,6 @@ public class Bot : MonoBehaviour
         savedGreyStores = startGrey;
         savedYellowStores = startYellow;
 
-        totalCapacity = baseCapacity;
         storedRed = startRed;
         storedBlue = startBlue;
         storedGreen = startGreen;
@@ -176,6 +202,13 @@ public class Bot : MonoBehaviour
                 }
             }
             fuelBrickList = new List<GameObject>();
+            
+            while(containerList.Count > 0)
+            {
+                RemoveContainer(containerList[0]);
+            }
+            containerList = new List<Container>();
+
             if (powerGrid)
                 Destroy(powerGrid.gameObject);
             //OnLevelRestart();
@@ -475,7 +508,7 @@ public class Bot : MonoBehaviour
         while (bumpDirV2 != Vector2.zero && resource == null && (IsValidScreenPos(endCoords + bumpDirV2)) && (BrickAtScreenArr((endCoords + bumpDirV2)) != null))
         {
             Brick resourceCheck = BrickAtScreenArr(endCoords).GetComponent<Brick>();
-            if (AddResourceCheck(BrickAtScreenArr(endCoords + bumpDirV2), resourceCheck.gameObject, resourceCheck.brickType, resourceCheck.brickLevel))
+            if (AddResourceCheck(BrickAtScreenArr(endCoords + bumpDirV2), resourceCheck.gameObject, resourceCheck.brickType, resourceCheck.brickLevel, bumpDirV2))
             {
                 resource = resourceCheck;
             }
@@ -1432,7 +1465,12 @@ public class Bot : MonoBehaviour
             t += Time.deltaTime;
         }
         botBody.transform.rotation = finalRotation;
-        foreach (GameObject brickObj in brickList) {    
+        foreach (GameObject brickObj in brickList) {
+            Container brickContainer = brickObj.GetComponent<Container>();
+            if (brickContainer)
+            {
+                brickContainer.SetOpenDirection(brickContainer.startDirection + botBody.transform.eulerAngles.z);
+            }
             brickObj.GetComponent<Brick>().RotateUpright();
         }
         isRotating = false;
@@ -1704,7 +1742,7 @@ public class Bot : MonoBehaviour
             {
                 int brickType = bit.ConvertToBrickType();
                 GameObject containerTest = BrickAtBotArr(cMap.MapCoordsToBotCoords(bitMapCoords + hitDir));
-                if (!AddResourceCheck(containerTest, bitObj, brickType, bit.bitLevel))
+                if (!AddResourceCheck(containerTest, bitObj, brickType, bit.bitLevel, hitDir))
                 {
                     GameObject newBrick = AddBrick(botCoords, brickType, bit.bitLevel);
                     if (newBrick != null)
@@ -1754,14 +1792,14 @@ public class Bot : MonoBehaviour
         StartCoroutine(WaitAndTripleCheck(0.2f));
     }
 
-    bool AddResourceCheck(GameObject container, GameObject bitObj, int type, int level)
+    bool AddResourceCheck(GameObject container, GameObject bitObj, int type, int level, Vector2Int hitDir)
     {
         if (type == 1)
         {
             if (container)
             {
-                Brick containerBrick = container.GetComponent<Brick>();
-                if (containerBrick.arrPos == coreV2 && storedBlue + storedRed + storedGreen + storedYellow + storedGrey < totalCapacity)
+                Container containerBrick = container.GetComponent<Container>();
+                if (containerBrick && containerBrick.IsOpenDirection(hitDir) && totalResources < totalCapacity)
                 {
                     return true;
                 }
@@ -1784,7 +1822,6 @@ public class Bot : MonoBehaviour
 
     public void AddRawResource(ResourceType resourceType, int amount)
     {
-        List<GameObject> containerList = new List<GameObject>();
         switch (resourceType)
         {
             case ResourceType.Blue:
