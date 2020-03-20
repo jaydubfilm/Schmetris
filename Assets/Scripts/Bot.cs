@@ -505,7 +505,7 @@ public class Bot : MonoBehaviour
         while (bumpDirV2 != Vector2.zero && resource == null && (IsValidScreenPos(endCoords + bumpDirV2)) && (BrickAtScreenArr((endCoords + bumpDirV2)) != null))
         {
             Brick resourceCheck = BrickAtScreenArr(endCoords).GetComponent<Brick>();
-            if (AddResourceCheck(BrickAtScreenArr(endCoords + bumpDirV2), resourceCheck.gameObject, resourceCheck.brickType, resourceCheck.brickLevel, bumpDirV2))
+            if (AddResourceCheck(BrickAtScreenArr(endCoords + bumpDirV2), resourceCheck.brickType, bumpDirV2))
             {
                 resource = resourceCheck;
             }
@@ -527,7 +527,7 @@ public class Bot : MonoBehaviour
         // if last brick is added to a container, collect it
         if (resource)
         {
-            AddResource(BrickAtScreenArr(endCoords + bumpDirV2).GetComponent<Brick>(), resource.gameObject, resource.brickType, resource.brickLevel);
+            AddResource(BrickAtScreenArr(endCoords + bumpDirV2).GetComponent<Brick>(), resource.brickType, resource.brickLevel);
             resource.DestroyBrick();
             length--;
         }
@@ -1739,7 +1739,7 @@ public class Bot : MonoBehaviour
             {
                 int brickType = bit.ConvertToBrickType();
                 GameObject containerTest = BrickAtBotArr(cMap.MapCoordsToBotCoords(bitMapCoords + hitDir));
-                if (!AddResourceCheck(containerTest, bitObj, brickType, bit.bitLevel, hitDir))
+                if (!AddResourceCheck(containerTest, brickType, hitDir))
                 {
                     GameObject newBrick = AddBrick(botCoords, brickType, bit.bitLevel);
                     if (newBrick != null)
@@ -1751,7 +1751,7 @@ public class Bot : MonoBehaviour
                 }
                 else
                 {
-                    AddResource(containerTest.GetComponent<Brick>(), bitObj, brickType, bit.bitLevel);
+                    AddResource(containerTest.GetComponent<Brick>(), brickType, bit.bitLevel);
                     bitObj.GetComponent<Bit>().RemoveFromBlock("");
                     i--;
                 }
@@ -1789,32 +1789,41 @@ public class Bot : MonoBehaviour
         StartCoroutine(WaitAndTripleCheck(0.2f));
     }
 
-    bool AddResourceCheck(GameObject container, GameObject bitObj, int type, int level, Vector2Int hitDir)
+    bool AddResourceCheck(GameObject container, int bitType, Vector2Int hitDir)
     {
-        if (type == 1)
+        if (container)
         {
-            if (container)
+            Container containerBrick = container.GetComponent<Container>();
+            if (containerBrick && containerBrick.IsOpenDirection(hitDir) && totalResources < totalCapacity)
             {
-                Container containerBrick = container.GetComponent<Container>();
-                if (containerBrick && containerBrick.IsOpenDirection(hitDir) && totalResources < totalCapacity)
-                {
-                    return true;
-                }
+                return bitType == 1 || bitType == 5;
             }
         }
         return false;
     }
 
-    void AddResource(Brick containerBrick, GameObject resource, int type, int level)
+    void AddResource(Brick containerBrick, int type, int level)
     {
         source.PlayOneShot(resourceSound, 1.0f);
-        storedRed += masterBrickList[type].GetComponent<Fuel>().maxFuelArr[level];
-        float totalResources = storedBlue + storedRed + storedGreen + storedYellow + storedGrey;
-        if(totalResources > totalCapacity)
-        {
-            storedRed -= totalResources - totalCapacity;
-        }
         GameController.Instance.money++;
+
+        switch(type)
+        {
+            case 1:
+                storedRed += masterBrickList[type].GetComponent<Fuel>().maxFuelArr[level];
+                if (totalResources > totalCapacity)
+                {
+                    storedRed -= totalResources - totalCapacity;
+                }
+                break;
+            case 5:
+                storedGrey += masterBrickList[type].GetComponent<Greyscale>().maxResource[level];
+                if (totalResources > totalCapacity)
+                {
+                    storedGrey -= totalResources - totalCapacity;
+                }
+                break;
+        }
     }
 
     public void AddRawResource(ResourceType resourceType, int amount)
