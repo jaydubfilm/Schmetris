@@ -2278,8 +2278,7 @@ public class Bot : MonoBehaviour
                 coreCol = ScreenStuff.leftEdgeCol;
         }
 
-        GameController.Instance.MoveBot(-direction);
-
+        GameController.Instance.MoveBot(-direction);      
         CollisionCheck(0, 1);
 
         //GameController.bgAdjustFlag = -direction;
@@ -2478,6 +2477,8 @@ public class Bot : MonoBehaviour
         }
         return cMap;
     }
+
+    
 }
 
 
