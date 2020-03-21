@@ -2194,6 +2194,25 @@ public class Bot : MonoBehaviour
         return 0;
     }
 
+    public float GetBurnRate(ResourceType resourceType)
+    {
+        switch (resourceType)
+        {
+            case ResourceType.Blue:
+                return 0;
+            case ResourceType.Red:
+                return fuelBurnRate;
+            case ResourceType.Yellow:
+                return 0;
+            case ResourceType.Green:
+                return 0;
+            case ResourceType.Grey:
+                return 0;
+        }
+
+        return 0;
+    }
+
     public float GetStoredResource(ResourceType resourceType)
     {
         switch (resourceType)
