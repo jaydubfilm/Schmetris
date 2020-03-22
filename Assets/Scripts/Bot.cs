@@ -677,7 +677,7 @@ public class Bot : MonoBehaviour
     public void TripleTestBot()
     {
         foreach (GameObject brickObj in brickList){
-            if (!brickObj.GetComponent<Parasite>() && TripleTestBrick(brickObj.GetComponent<Brick>().arrPos) == true) {
+            if (!brickObj.GetComponent<Parasite>() && !brickObj.GetComponent<CraftedPart>() && TripleTestBrick(brickObj.GetComponent<Brick>().arrPos) == true) {
                 return;
             }   
         }

@@ -111,6 +111,11 @@ public class Brick : MonoBehaviour
             return true;
     }
 
+    public bool IsCrafted()
+    {
+        return GetComponent<CraftedPart>() != null;
+    }
+
     public void AdjustHP(int damage) {
         brickHP+=damage;
      
