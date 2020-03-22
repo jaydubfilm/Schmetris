@@ -193,23 +193,23 @@ public class GameUI : MonoBehaviour
         //Resources
         Vector2 barSize = redBar.sizeDelta;
         redBar.sizeDelta = new Vector2(resourceBarWidth * GameController.Instance.bot.GetResourcePercent(ResourceType.Red), barSize.y);
-        redResources.text = Mathf.RoundToInt(GameController.Instance.bot.GetStoredResource(ResourceType.Red)).ToString();
+        redResources.text = Mathf.RoundToInt(GameController.Instance.bot.storedRed).ToString();
         redBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Red)).ToString() + "/s";
 
         blueBar.sizeDelta = new Vector2(resourceBarWidth * GameController.Instance.bot.GetResourcePercent(ResourceType.Blue), barSize.y);
-        blueResources.text = Mathf.RoundToInt(GameController.Instance.bot.GetStoredResource(ResourceType.Blue)).ToString();
+        blueResources.text = Mathf.RoundToInt(GameController.Instance.bot.storedBlue).ToString();
         blueBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Blue)).ToString() + "/s";
 
         greenBar.sizeDelta = new Vector2(resourceBarWidth * GameController.Instance.bot.GetResourcePercent(ResourceType.Green), barSize.y);
-        greenResources.text = Mathf.RoundToInt(GameController.Instance.bot.GetStoredResource(ResourceType.Green)).ToString();
+        greenResources.text = Mathf.RoundToInt(GameController.Instance.bot.storedGreen).ToString();
         greenBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Green)).ToString() + "/s";
 
         yellowBar.sizeDelta = new Vector2(resourceBarWidth * GameController.Instance.bot.GetResourcePercent(ResourceType.Yellow), barSize.y);
-        yellowResources.text = Mathf.RoundToInt(GameController.Instance.bot.GetStoredResource(ResourceType.Yellow)).ToString();
+        yellowResources.text = Mathf.RoundToInt(GameController.Instance.bot.storedYellow).ToString();
         yellowBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Yellow)).ToString() + "/s";
 
         greyBar.sizeDelta = new Vector2(resourceBarWidth * GameController.Instance.bot.GetResourcePercent(ResourceType.Grey), barSize.y);
-        greyResources.text = Mathf.RoundToInt(GameController.Instance.bot.GetStoredResource(ResourceType.Grey)).ToString();
+        greyResources.text = Mathf.RoundToInt(GameController.Instance.bot.storedGrey).ToString();
         greyBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Grey)).ToString() + "/s";
 
     }

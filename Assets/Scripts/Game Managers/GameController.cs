@@ -99,6 +99,8 @@ public class GameController : MonoBehaviour
     public Transform[] loadIcons;
     public Transform[] saveIcons;
     public Transform[] mapLoadIcons;
+    public Transform[] saveLayoutSlots;
+    public Transform[] loadLayoutSlots;
     public GameObject iconGrid;
     public GameObject iconColumn;
     public GameObject iconTile;
@@ -179,31 +181,40 @@ public class GameController : MonoBehaviour
         StartMenu();
     }
 
-    void RefreshBotIcons()
+    public void RefreshBotIcons()
     {
         for (int i = 0; i < loadIcons.Length; i++)
         {
-            BuildBotIcon(i, loadIcons[i]);
+            BuildBotIcon(i, loadIcons[i], false);
         }
         for (int i = 0; i < mapLoadIcons.Length; i++)
         {
-            BuildBotIcon(i, mapLoadIcons[i]);
+            BuildBotIcon(i, mapLoadIcons[i], false);
         }
         for (int i = 0; i < saveIcons.Length; i++)
         {
-            BuildBotIcon(i, saveIcons[i]);
+            BuildBotIcon(i, saveIcons[i], false);
+        }
+        for (int i = 0; i < saveLayoutSlots.Length; i++)
+        {
+            BuildBotIcon(i, saveLayoutSlots[i], true);
+        }
+
+        for (int i = 0; i < loadLayoutSlots.Length; i++)
+        {
+            BuildBotIcon(i, loadLayoutSlots[i], true);
         }
     }
 
-    void BuildBotIcon(int index, Transform target )
+    void BuildBotIcon(int index, Transform target, bool isLayout)
     {
         if(target.GetComponentInChildren<VerticalLayoutGroup>())
         {
             Destroy(target.GetComponentInChildren<VerticalLayoutGroup>().gameObject);
         }
 
-        SaveData targetFile = saveManager.GetSave(index);
-        if(targetFile != null && targetFile.game != "" && targetFile.bot.Length > 0)
+        SaveData targetFile = isLayout ? saveManager.GetLayout(index) : saveManager.GetSave(index);
+        if (targetFile != null && targetFile.game != "" && targetFile.bot.Length > 0)
         {
             //Position icon base
             GameObject newGrid = Instantiate(iconGrid, target);
@@ -291,7 +302,7 @@ public class GameController : MonoBehaviour
 
     public void SaveGame(int index)
     {
-        saveManager.SetSave(index, lives, money, highestScene, game.name, bot.GetSavedFuel(), bot.GetSavedBlue(), bot.GetSavedGreen(), bot.GetSavedYellow(), bot.GetSavedGrey(), bot.GetTileMap());
+        saveManager.SetSave(index, lives, money, highestScene, game.name, bot.GetSavedResource(ResourceType.Red), bot.GetSavedResource(ResourceType.Blue), bot.GetSavedResource(ResourceType.Green), bot.GetSavedResource(ResourceType.Yellow), bot.GetSavedResource(ResourceType.Grey), bot.GetTileMap());
         RefreshBotIcons();
     }
 
@@ -341,11 +352,11 @@ public class GameController : MonoBehaviour
             }
 
             //Resources
-            bot.SetStoredResource(ResourceType.Red, loadData.fuel);
-            bot.SetStoredResource(ResourceType.Blue, loadData.blue);
-            bot.SetStoredResource(ResourceType.Yellow, loadData.yellow);
-            bot.SetStoredResource(ResourceType.Green, loadData.green);
-            bot.SetStoredResource(ResourceType.Grey, loadData.grey);
+            bot.SetSavedResource(ResourceType.Red, loadData.fuel);
+            bot.SetSavedResource(ResourceType.Blue, loadData.blue);
+            bot.SetSavedResource(ResourceType.Yellow, loadData.yellow);
+            bot.SetSavedResource(ResourceType.Green, loadData.green);
+            bot.SetSavedResource(ResourceType.Grey, loadData.grey);
 
             hud.gameObject.SetActive(false);
             isPaused = true;

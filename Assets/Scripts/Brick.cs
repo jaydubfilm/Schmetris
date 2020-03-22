@@ -311,9 +311,6 @@ public class Brick : MonoBehaviour
         if (bot.BrickAtBotArr(bot.coreV2)==null)
             GameController.Instance.EndGame("CORE DESTROYED");
 
-        if (brickType == 1)
-            bot.fuelBrickList.Remove(gameObject);
-
         if (GetComponent<Container>())
             bot.RemoveContainer(GetComponent<Container>());
 

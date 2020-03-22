@@ -31,8 +31,6 @@ public class Scrapyard : MonoBehaviour
     public GameObject confirmMap;
 
     //Saving and loading
-    public Transform[] saveLayoutSlots;
-    public Transform[] loadLayoutSlots;
     const string tileAtlasResource = "MasterDiceSprites";
     Sprite[] tilesAtlas;
     const float iconSize = 5.0f;
@@ -65,26 +63,28 @@ public class Scrapyard : MonoBehaviour
 
     //Resource
     public RectTransform fuelBar;
-    float maxFuelWidth = 0;
+    float maxBarWidth = 0;
+    float maxCapacity = 0;
     float currentFuel = 0;
-    float currentFuelMax = 0;
     public RectTransform blueBar;
-    float maxBlueWidth = 0;
     float currentBlue = 0;
-    float currentBlueMax = 0;
     public RectTransform greenBar;
-    float maxGreenWidth = 0;
     float currentGreen = 0;
-    float currentGreenMax = 0;
     public RectTransform yellowBar;
-    float maxYellowWidth = 0;
     float currentYellow = 0;
-    float currentYellowMax = 0;
     public RectTransform greyBar;
-    float maxGreyWidth = 0;
     float currentGrey = 0;
-    float currentGreyMax = 0;
     bool hasResources = false;
+    public Text redAmount;
+    public Text blueAmount;
+    public Text yellowAmount;
+    public Text greenAmount;
+    public Text greyAmount;
+    public Text redBurnRate;
+    public Text blueBurnRate;
+    public Text yellowBurnRate;
+    public Text greenBurnRate;
+    public Text greyBurnRate;
 
     //Init
     void Init()
@@ -100,11 +100,7 @@ public class Scrapyard : MonoBehaviour
         {
             tempMarketList.Add(MarketItem);
         }
-        maxFuelWidth = fuelBar.sizeDelta.x;
-        maxBlueWidth = blueBar.sizeDelta.x;
-        maxGreenWidth = greenBar.sizeDelta.x;
-        maxYellowWidth = yellowBar.sizeDelta.x;
-        maxGreyWidth = greyBar.sizeDelta.x;
+        maxBarWidth = fuelBar.sizeDelta.x;
         hasResources = true;
     }
 
@@ -247,16 +243,12 @@ public class Scrapyard : MonoBehaviour
     //Add player stored resources to scrapyard upon opening
     public void LoadScrapyardResources()
     {
-        currentFuel = GameController.Instance.bot.GetStoredResource(ResourceType.Red);
-        currentFuelMax = GameController.Instance.bot.GetResourceCapacity(ResourceType.Red);
-        currentBlue = GameController.Instance.bot.GetStoredResource(ResourceType.Blue);
-        currentBlueMax = GameController.Instance.bot.GetResourceCapacity(ResourceType.Blue);
-        currentYellow = GameController.Instance.bot.GetStoredResource(ResourceType.Yellow);
-        currentYellowMax = GameController.Instance.bot.GetResourceCapacity(ResourceType.Yellow);
-        currentGreen = GameController.Instance.bot.GetStoredResource(ResourceType.Green);
-        currentGreenMax = GameController.Instance.bot.GetResourceCapacity(ResourceType.Green);
-        currentGrey = GameController.Instance.bot.GetStoredResource(ResourceType.Grey);
-        currentGreyMax = GameController.Instance.bot.GetResourceCapacity(ResourceType.Grey);
+        maxCapacity = GameController.Instance.bot.GetResourceCapacity();
+        currentFuel = GameController.Instance.bot.GetSavedResource(ResourceType.Red);
+        currentBlue = GameController.Instance.bot.GetSavedResource(ResourceType.Blue);
+        currentYellow = GameController.Instance.bot.GetSavedResource(ResourceType.Yellow);
+        currentGreen = GameController.Instance.bot.GetSavedResource(ResourceType.Green);
+        currentGrey = GameController.Instance.bot.GetSavedResource(ResourceType.Grey);
     }
 
     //Update money UI
@@ -278,27 +270,37 @@ public class Scrapyard : MonoBehaviour
         UpdateUI();
 
         Vector2 blueSize = blueBar.sizeDelta;
-        blueSize.x = maxBlueWidth * (currentBlueMax > 0 ? currentBlue / currentBlueMax : 0);
+        blueSize.x = maxBarWidth * (maxCapacity > 0 ? currentBlue / maxCapacity : 0);
         blueBar.sizeDelta = blueSize;
+        blueAmount.text = Mathf.RoundToInt(currentBlue).ToString();
+        blueBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Blue)).ToString() + "/s";
 
         Vector2 yellowSize = yellowBar.sizeDelta;
-        yellowSize.x = maxYellowWidth * (currentYellowMax > 0 ? currentYellow / currentYellowMax : 0);
+        yellowSize.x = maxBarWidth * (maxCapacity > 0 ? currentYellow / maxCapacity : 0);
         yellowBar.sizeDelta = yellowSize;
+        yellowAmount.text = Mathf.RoundToInt(currentYellow).ToString();
+        yellowBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Yellow)).ToString() + "/s";
 
         Vector2 greenSize = greenBar.sizeDelta;
-        greenSize.x = maxGreenWidth * (currentGreenMax > 0 ? currentGreen / currentGreenMax : 0);
+        greenSize.x = maxBarWidth * (maxCapacity > 0 ? currentGreen / maxCapacity : 0);
         greenBar.sizeDelta = greenSize;
+        greenAmount.text = Mathf.RoundToInt(currentGreen).ToString();
+        greenBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Green)).ToString() + "/s";
 
         Vector2 greySize = greyBar.sizeDelta;
-        greySize.x = maxGreyWidth * (currentGreyMax > 0 ? currentGrey / currentGreyMax : 0);
+        greySize.x = maxBarWidth * (maxCapacity > 0 ? currentGrey / maxCapacity : 0);
         greyBar.sizeDelta = greySize;
+        greyAmount.text = Mathf.RoundToInt(currentGrey).ToString();
+        greyBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Grey)).ToString() + "/s";
 
         Vector2 fuelSize = fuelBar.sizeDelta;
-        fuelSize.x = maxFuelWidth * (currentFuelMax > 0 ? currentFuel / currentFuelMax : 0);
+        fuelSize.x = maxBarWidth * (maxCapacity > 0 ? currentFuel / maxCapacity : 0);
         fuelBar.sizeDelta = fuelSize;
+        redAmount.text = Mathf.RoundToInt(currentFuel).ToString();
+        redBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Red)).ToString() + "/s";
 
         CloseSubMenu();
-        RefreshBotIcons();
+        GameController.Instance.RefreshBotIcons();
         BuildBotGrid();
         BuildMarketplace();
     }
@@ -347,11 +349,11 @@ public class Scrapyard : MonoBehaviour
         GameController.Instance.bot.SetTileMap(botMap);
 
         //Update bot resources
-        GameController.Instance.bot.SetStoredResource(ResourceType.Red, currentFuel);
-        GameController.Instance.bot.SetStoredResource(ResourceType.Blue, currentBlue);
-        GameController.Instance.bot.SetStoredResource(ResourceType.Yellow, currentYellow);
-        GameController.Instance.bot.SetStoredResource(ResourceType.Green, currentGreen);
-        GameController.Instance.bot.SetStoredResource(ResourceType.Grey, currentGrey);
+        GameController.Instance.bot.SetSavedResource(ResourceType.Red, currentFuel);
+        GameController.Instance.bot.SetSavedResource(ResourceType.Blue, currentBlue);
+        GameController.Instance.bot.SetSavedResource(ResourceType.Yellow, currentYellow);
+        GameController.Instance.bot.SetSavedResource(ResourceType.Green, currentGreen);
+        GameController.Instance.bot.SetSavedResource(ResourceType.Grey, currentGrey);
     }
 
     //Create editable bot grid
@@ -389,95 +391,6 @@ public class Scrapyard : MonoBehaviour
                 if (x == 6 && y == 6)
                     coreBrick = newTile;
                 botBricks.Add(newTile);
-            }
-        }
-    }
-
-    //Create bot icons for save files
-    void RefreshBotIcons()
-    {
-        for (int i = 0; i < saveLayoutSlots.Length; i++)
-        {
-            BuildBotIcon(i, saveLayoutSlots[i], true);
-        }
-
-        for (int i = 0; i < loadLayoutSlots.Length; i++)
-        {
-            BuildBotIcon(i, loadLayoutSlots[i], true);
-        }
-    }
-
-    //Create individual bot icon
-    void BuildBotIcon(int index, Transform target, bool isLayout)
-    {
-        //Remove existing bot icon
-        if (target.GetComponentInChildren<VerticalLayoutGroup>())
-        {
-            Destroy(target.GetComponentInChildren<VerticalLayoutGroup>().gameObject);
-        }
-
-        //Load saved bot
-        SaveData targetFile = isLayout ? GameController.Instance.saveManager.GetLayout(index) : GameController.Instance.saveManager.GetSave(index);
-        if (targetFile != null && targetFile.game != "" && targetFile.bot.Length > 0)
-        {
-            //Position icon base
-            GameObject newGrid = Instantiate(botGrid, target);
-            RectTransform newGridTransform = newGrid.GetComponent<RectTransform>();
-            newGridTransform.pivot = new Vector2(0, 0.5f);
-            newGridTransform.sizeDelta = Vector2.one * iconSize;
-            newGridTransform.anchoredPosition = new Vector2(iconPos, 0);
-
-            int minX = -1;
-            int maxX = -1;
-            int minY = -1;
-            int maxY = -1;
-
-            //Determine the dimensions for a square bot icon
-            for (int y = 0; y < targetFile.bot.Length; y++)
-            {
-                for (int x = 0; x < targetFile.bot[0].botRow.Length; x++)
-                {
-                    if (targetFile.bot[x].botRow[y] != "")
-                    {
-                        maxX = x;
-                        maxY = y;
-                        if (minX == -1)
-                        {
-                            minX = x;
-                        }
-                        if (minY == -1)
-                        {
-                            minY = y;
-                        }
-                    }
-                }
-            }
-
-            minX = Mathf.Min(minX, minY);
-            minY = minX;
-            maxX = Mathf.Max(maxX, maxY);
-            maxY = maxX;
-
-            //Build bot icon
-            if (minX > -1 && minY > -1)
-            {
-                for (int y = minX; y <= maxY; y++)
-                {
-                    GameObject newColumn = Instantiate(botColumn, newGrid.transform);
-                    for (int x = minX; x <= maxX; x++)
-                    {
-                        GameObject newTile = Instantiate(botTile, newColumn.transform);
-                        Image newTileImage = newTile.GetComponent<Image>();
-                        if (targetFile.bot[x].botRow[y] != "")
-                        {
-                            newTileImage.sprite = tilesAtlas.Single<Sprite>(s => s.name == targetFile.bot[x].botRow[y]);
-                        }
-                        else
-                        {
-                            newTileImage.color = Color.clear;
-                        }
-                    }
-                }
             }
         }
     }
@@ -607,7 +520,6 @@ public class Scrapyard : MonoBehaviour
     public void SaveLayout(int index)
     {
         GameController.Instance.SaveLayout(index);
-        RefreshBotIcons();
         CloseSubMenu();
     }
 
@@ -644,19 +556,19 @@ public class Scrapyard : MonoBehaviour
         switch (resource)
         {
             case "RED":
-                currentFuel = Mathf.Min(currentFuelMax, currentFuel + 10);
+                currentFuel = Mathf.Min(maxCapacity, currentFuel + 10);
                 break;
             case "BLUE":
-                currentBlue = Mathf.Min(currentBlueMax, currentBlue + 10);
+                currentBlue = Mathf.Min(maxCapacity, currentBlue + 10);
                 break;
             case "YELLOW":
-                currentYellow = Mathf.Min(currentYellowMax, currentYellow + 10);
+                currentYellow = Mathf.Min(maxCapacity, currentYellow + 10);
                 break;
             case "GREEN":
-                currentGreen = Mathf.Min(currentGreenMax, currentGreen + 10);
+                currentGreen = Mathf.Min(maxCapacity, currentGreen + 10);
                 break;
             case "GREY":
-                currentGrey = Mathf.Min(currentGreyMax, currentGrey + 10);
+                currentGrey = Mathf.Min(maxCapacity, currentGrey + 10);
                 break;
         }
         UpdateGameplayBot();

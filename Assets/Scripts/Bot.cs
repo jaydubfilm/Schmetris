@@ -78,7 +78,6 @@ public class Bot : MonoBehaviour
 
     private List<GameObject> pathList = new List<GameObject>();
     private List<Vector2Int> pathArrList = new List<Vector2Int>();
-    public List<GameObject> fuelBrickList = new List<GameObject>();
     List<Container> containerList = new List<Container>();
 
     private AudioSource source;
@@ -98,11 +97,72 @@ public class Bot : MonoBehaviour
     const float startYellow = 0;
     const float startGrey = 0;
     float totalCapacity = 0;
-    float storedRed = 0;
-    float storedBlue = 0;
-    float storedGreen = 0;
-    float storedYellow = 0;
-    float storedGrey = 0;
+
+    float _storedRed = 0;
+    public float storedRed
+    {
+        set
+        {
+            _storedRed = Mathf.Clamp(value, 0, totalCapacity - (storedBlue + storedGreen + storedYellow + storedGrey));
+        }
+        get
+        {
+            return _storedRed;
+        }
+    }
+
+    float _storedBlue = 0;
+    public float storedBlue
+    {
+        set
+        {
+            _storedBlue = Mathf.Clamp(value, 0, totalCapacity - (storedRed + storedGreen + storedYellow + storedGrey));
+        }
+        get
+        {
+            return _storedBlue;
+        }
+    }
+
+    float _storedGreen = 0;
+    public float storedGreen
+    {
+        set
+        {
+            _storedGreen = Mathf.Clamp(value, 0, totalCapacity - (storedRed + storedBlue + storedYellow + storedGrey));
+        }
+        get
+        {
+            return _storedGreen;
+        }
+    }
+
+    float _storedYellow = 0;
+    public float storedYellow
+    {
+        set
+        {
+            _storedYellow = Mathf.Clamp(value, 0, totalCapacity - (storedRed + storedBlue + storedGreen + storedGrey));
+        }
+        get
+        {
+            return _storedYellow;
+        }
+    }
+
+    float _storedGrey = 0;
+    public float storedGrey
+    {
+        set
+        {
+            _storedGrey = Mathf.Clamp(value, 0, totalCapacity - (storedRed + storedBlue + storedGreen + storedYellow));
+        }
+        get
+        {
+            return _storedGrey;
+        }
+    }
+
     float fuelBurnRate = 1.0f;
 
     float totalResources
@@ -153,29 +213,50 @@ public class Bot : MonoBehaviour
         return savedTileMap;
     }
 
-    public float GetSavedFuel()
+    public float GetSavedResource(ResourceType resourceType)
     {
-        return savedFuelStores;
+        switch(resourceType)
+        {
+            case ResourceType.Blue:
+                return savedBlueStored;
+            case ResourceType.Green:
+                return savedGreenStores;
+            case ResourceType.Grey:
+                return savedGreyStores;
+            case ResourceType.Red:
+                return savedFuelStores;
+            case ResourceType.Yellow:
+                return savedYellowStores;
+        }
+
+        return 0;
     }
 
-    public float GetSavedBlue()
+    public void SetSavedResource(ResourceType resourceType, float amount)
     {
-        return savedBlueStored;
-    }
-
-    public float GetSavedGreen()
-    {
-        return savedGreenStores;
-    }
-
-    public float GetSavedYellow()
-    {
-        return savedYellowStores;
-    }
-
-    public float GetSavedGrey()
-    {
-        return savedGreyStores;
+        switch (resourceType)
+        {
+            case ResourceType.Blue:
+                savedBlueStored = amount;
+                storedBlue = amount;
+                break;
+            case ResourceType.Green:
+                savedGreenStores = amount;
+                storedGreen = amount;
+                break;
+            case ResourceType.Grey:
+                savedGreyStores = amount;
+                storedGrey = amount;
+                break;
+            case ResourceType.Red:
+                savedFuelStores = amount;
+                storedRed = amount;
+                break;
+            case ResourceType.Yellow:
+                savedYellowStores = amount;
+                storedYellow = amount;
+                break;
+        }
     }
 
     bool tileMapSet = false;
@@ -201,7 +282,6 @@ public class Bot : MonoBehaviour
                     Destroy(brick);
                 }
             }
-            fuelBrickList = new List<GameObject>();
             
             while(containerList.Count > 0)
             {
@@ -262,11 +342,11 @@ public class Bot : MonoBehaviour
                     savedTileMap[brickPos.x, brickPos.y] = Brick.GetComponent<SpriteRenderer>().sprite;
             }
         }
-        savedFuelStores = GetStoredResource(ResourceType.Red);
-        savedBlueStored = GetStoredResource(ResourceType.Blue);
-        savedGreenStores = GetStoredResource(ResourceType.Green);
-        savedYellowStores = GetStoredResource(ResourceType.Yellow);
-        savedGreyStores = GetStoredResource(ResourceType.Grey);
+        savedFuelStores = storedRed;
+        savedBlueStored = storedBlue;
+        savedGreenStores = storedGreen;
+        savedYellowStores = storedYellow;
+        savedGreyStores = storedGrey;
     }
 
     public void SaveStartSprites()
@@ -348,11 +428,12 @@ public class Bot : MonoBehaviour
 
         AddStartingBricks();
         powerGridRefreshFlag = true;
-        SetStoredResource(ResourceType.Red, savedFuelStores);
-        SetStoredResource(ResourceType.Blue, savedBlueStored);
-        SetStoredResource(ResourceType.Yellow, savedYellowStores);
-        SetStoredResource(ResourceType.Green, savedGreenStores);
-        SetStoredResource(ResourceType.Grey, savedGreyStores);
+
+        storedRed = savedFuelStores;
+        storedBlue = savedBlueStored;
+        storedYellow = savedYellowStores;
+        storedGreen = savedGreenStores;
+        storedGrey = savedGreyStores;
     }
 
     private void OnEnable()
@@ -1811,87 +1892,18 @@ public class Bot : MonoBehaviour
         {
             case 0:
                 storedYellow += masterBrickList[type].GetComponent<Yellectrons>().maxResource[level];
-                if (totalResources > totalCapacity)
-                {
-                    storedYellow -= totalResources - totalCapacity;
-                }
                 break;
             case 1:
                 storedRed += masterBrickList[type].GetComponent<Fuel>().maxFuelArr[level];
-                if (totalResources > totalCapacity)
-                {
-                    storedRed -= totalResources - totalCapacity;
-                }
                 break;
             case 2:
                 storedGreen += masterBrickList[type].GetComponent<Repair>().maxResource[level];
-                if (totalResources > totalCapacity)
-                {
-                    storedGreen -= totalResources - totalCapacity;
-                }
                 break;
             case 3:
                 storedBlue += masterBrickList[type].GetComponent<Gun>().maxResource[level];
-                if (totalResources > totalCapacity)
-                {
-                    storedBlue -= totalResources - totalCapacity;
-                }
                 break;
             case 5:
                 storedGrey += masterBrickList[type].GetComponent<Greyscale>().maxResource[level];
-                if (totalResources > totalCapacity)
-                {
-                    storedGrey -= totalResources - totalCapacity;
-                }
-                break;
-        }
-    }
-
-    public void AddRawResource(ResourceType resourceType, int amount)
-    {
-        switch (resourceType)
-        {
-            case ResourceType.Blue:
-                savedBlueStored += amount;
-                SetStoredResource(resourceType, savedBlueStored);
-                break;
-            case ResourceType.Red:
-                savedFuelStores += amount;
-                SetStoredResource(resourceType, savedFuelStores);
-                break;
-            case ResourceType.Yellow:
-                savedYellowStores += amount;
-                SetStoredResource(resourceType, savedYellowStores);
-                break;
-            case ResourceType.Green:
-                savedGreenStores += amount;
-                SetStoredResource(resourceType, savedGreenStores);
-                break;
-            case ResourceType.Grey:
-                savedGreyStores += amount;
-                SetStoredResource(resourceType, savedGreyStores);
-                break;
-        }
-    }
-
-    public void SubtractResource(ResourceType resourceType, float amount)
-    {
-        switch (resourceType)
-        {
-            case ResourceType.Blue:
-                storedBlue = Mathf.Max(0, storedBlue - amount);
-                break;
-            case ResourceType.Red:
-                storedRed = Mathf.Max(0, storedRed - amount);
-                break;
-            case ResourceType.Yellow:
-                storedYellow = Mathf.Max(0, storedYellow - amount);
-                break;
-            case ResourceType.Green:
-                storedGreen = Mathf.Max(0, storedGreen - amount);
-                break;
-            case ResourceType.Grey:
-                storedGrey = Mathf.Max(0, storedGrey - amount);
                 break;
         }
     }
@@ -2196,6 +2208,7 @@ public class Bot : MonoBehaviour
 
     public float GetBurnRate(ResourceType resourceType)
     {
+        //~
         switch (resourceType)
         {
             case ResourceType.Blue:
@@ -2213,60 +2226,9 @@ public class Bot : MonoBehaviour
         return 0;
     }
 
-    public float GetStoredResource(ResourceType resourceType)
-    {
-        switch (resourceType)
-        {
-            case ResourceType.Blue:
-                return storedBlue;
-            case ResourceType.Red:
-                return storedRed;
-            case ResourceType.Yellow:
-                return storedYellow;
-            case ResourceType.Green:
-                return storedGreen;
-            case ResourceType.Grey:
-                return storedGrey;
-        }
-
-        return 0;
-    }
-
-    public float GetResourceCapacity(ResourceType resourceType)
+    public float GetResourceCapacity()
     {
         return totalCapacity;
-    }
-
-    public void SetStoredResource(ResourceType resourceType, float amount)
-    {
-        if(totalResources > totalCapacity)
-        {
-            amount = Mathf.Max(0, amount - (totalResources - totalCapacity));
-        }
-
-        switch (resourceType)
-        {
-            case ResourceType.Blue:
-                savedBlueStored = amount;
-                storedBlue = amount;
-                break;
-            case ResourceType.Red:
-                savedFuelStores = amount;
-                storedRed = amount;
-                break;
-            case ResourceType.Yellow:
-                savedYellowStores = amount;
-                storedYellow = amount;
-                break;
-            case ResourceType.Green:
-                savedGreenStores = amount;
-                storedGreen = amount;
-                break;
-            case ResourceType.Grey:
-                savedGreyStores = amount;
-                storedGrey = amount;
-                break;
-        }
     }
 
     void MoveBot(int direction) {

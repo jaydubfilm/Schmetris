@@ -2983,14 +2983,6 @@ MonoBehaviour:
   confirmLevel: {fileID: 3687044298229031770}
   helpPanel: {fileID: 5159911069426827891}
   confirmMap: {fileID: 7146875319113065766}
-  saveLayoutSlots:
-  - {fileID: 2345714048256735737}
-  - {fileID: 990913164906773148}
-  - {fileID: 9168280650367617835}
-  loadLayoutSlots:
-  - {fileID: 6092390041461323450}
-  - {fileID: 7317247973007166353}
-  - {fileID: 4344020708390329380}
   playerMoney: {fileID: 5835760222644997047}
   transactionMoney: {fileID: 8811657191263269754}
   marketParent: {fileID: 8586088181024178613}
@@ -3008,6 +3000,16 @@ MonoBehaviour:
   greenBar: {fileID: 998978031574976229}
   yellowBar: {fileID: 7520172016076915716}
   greyBar: {fileID: 7924112581110730651}
+  redAmount: {fileID: 6843421887252278797}
+  blueAmount: {fileID: 5351829247850368070}
+  yellowAmount: {fileID: 2855315556604841315}
+  greenAmount: {fileID: 8928602665211844754}
+  greyAmount: {fileID: 2490578436570444001}
+  redBurnRate: {fileID: 8195251418982352359}
+  blueBurnRate: {fileID: 9079851295050900620}
+  yellowBurnRate: {fileID: 2287619414835253332}
+  greenBurnRate: {fileID: 6751826210403378640}
+  greyBurnRate: {fileID: 3367948448681958087}
 --- !u!223 &7533438584670130256
 Canvas:
   m_ObjectHideFlags: 0
