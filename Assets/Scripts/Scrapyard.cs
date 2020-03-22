@@ -32,6 +32,7 @@ public class Scrapyard : MonoBehaviour
 
     //Saving and loading
     const string tileAtlasResource = "MasterDiceSprites";
+    const string craftingAtlasResource = "PartSprites";
     Sprite[] tilesAtlas;
     const float iconSize = 5.0f;
     const float iconPos = 100.0f;
@@ -86,6 +87,8 @@ public class Scrapyard : MonoBehaviour
     public Text greenBurnRate;
     public Text greyBurnRate;
 
+    //Crafting
+
     //Init
     void Init()
     {
@@ -96,7 +99,8 @@ public class Scrapyard : MonoBehaviour
             GameController.Instance.saveManager.Init();
         }
         tilesAtlas = Resources.LoadAll<Sprite>(tileAtlasResource);
-        foreach(string MarketItem in marketList)
+        tilesAtlas = tilesAtlas.Concat<Sprite>(Resources.LoadAll<Sprite>(craftingAtlasResource)).ToArray<Sprite>();
+        foreach (string MarketItem in marketList)
         {
             tempMarketList.Add(MarketItem);
         }

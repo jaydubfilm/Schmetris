@@ -1590,7 +1590,7 @@ public class Bot : MonoBehaviour
 
         // check to see if brickType is valid - MAKE FUNCTION!!
 
-        if ((type > 8) || (type < 0))
+        if ((type == 8 || type == 7) || (type < 0))
         {
             return null;
         }

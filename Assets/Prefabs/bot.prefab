@@ -73,6 +73,7 @@ MonoBehaviour:
   - {fileID: 5570540888293643073, guid: 01c4b15ca06cf4fa8aa6b7519021dae8, type: 3}
   - {fileID: 6703889337379585221, guid: c6511eeda86244a65939ca538c048ea0, type: 3}
   - {fileID: 3786325451140840089, guid: 06d2c88f29e3441339002e2924aa7c83, type: 3}
+  - {fileID: 6715254118685096965, guid: ca6ae26aff763214a84880dee0b2b3d1, type: 3}
   brickList: []
   powerGrid: {fileID: 6811822890141058021, guid: 615e256f41e1542db8dff35ad956b506,
     type: 3}
@@ -87,8 +88,6 @@ MonoBehaviour:
     type: 3}
   powerWarning: {fileID: 5515604555638627983, guid: 5eb9884e0b57449d8b33f38d7cf509e9,
     type: 3}
-  fuelBrickList: []
-  fuelContainerList: []
   tripleSound: {fileID: 8300000, guid: f0cd4d87d7e925248b91fc9187c53c42, type: 3}
   resourceSound: {fileID: 8300000, guid: 637fc1c2e205cea4ca58e3e24edd34d8, type: 3}
   tripleDelay: 0.1

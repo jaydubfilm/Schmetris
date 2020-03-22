@@ -105,6 +105,7 @@ public class GameController : MonoBehaviour
     public GameObject iconColumn;
     public GameObject iconTile;
     const string atlasResource = "MasterDiceSprites";
+    const string craftingAtlasResource = "PartSprites";
     Sprite[] tilesAtlas;
 
     //Carl Added...
@@ -163,6 +164,7 @@ public class GameController : MonoBehaviour
                 saveManager.Init();
             }
             tilesAtlas = Resources.LoadAll<Sprite>(atlasResource);
+            tilesAtlas = tilesAtlas.Concat<Sprite>(Resources.LoadAll<Sprite>(craftingAtlasResource)).ToArray<Sprite>();
             RefreshBotIcons();
             bot.Init();
             bot.gameObject.SetActive(false);

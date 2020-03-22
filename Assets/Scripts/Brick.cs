@@ -209,7 +209,7 @@ public class Brick : MonoBehaviour
         Animator anim;
         float animDuration;
 
-        if (brickType == 0 && (bot.BrickAtBotArr(bot.coreV2) == null))
+        if (brickType == 9 && (bot.BrickAtBotArr(bot.coreV2) == null))
             GameController.Instance.EndGame("CORE DESTROYED");
 
         if (brickType == 6) {
