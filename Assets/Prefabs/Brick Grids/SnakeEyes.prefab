@@ -131,7 +131,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TileAssetArray.Array.data[0].m_Data
       value: 
-      objectReference: {fileID: 11400000, guid: 65bea6086cad14089847563d97e031d5,
+      objectReference: {fileID: 11400000, guid: 48e3563e76d67f04084ed49bcfd46148,
         type: 2}
     - target: {fileID: 9006336496831312556, guid: 63b5c22be8ea94dc7a3dd3364f966d90,
         type: 3}
@@ -142,7 +142,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TileSpriteArray.Array.data[0].m_Data
       value: 
-      objectReference: {fileID: 21300064, guid: 9f7498e23d5354d0ca77d1ca3e66d168,
+      objectReference: {fileID: -7538142330943618203, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
         type: 3}
     - target: {fileID: 9006336496831312556, guid: 63b5c22be8ea94dc7a3dd3364f966d90,
         type: 3}

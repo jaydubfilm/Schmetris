@@ -111,6 +111,11 @@ public class Brick : MonoBehaviour
             return true;
     }
 
+    public bool IsCrafted()
+    {
+        return GetComponent<CraftedPart>() != null;
+    }
+
     public void AdjustHP(int damage) {
         brickHP+=damage;
      
@@ -209,7 +214,7 @@ public class Brick : MonoBehaviour
         Animator anim;
         float animDuration;
 
-        if (brickType == 0 && (bot.BrickAtBotArr(bot.coreV2) == null))
+        if (brickType == 9 && (bot.BrickAtBotArr(bot.coreV2) == null))
             GameController.Instance.EndGame("CORE DESTROYED");
 
         if (brickType == 6) {
@@ -311,9 +316,6 @@ public class Brick : MonoBehaviour
         if (bot.BrickAtBotArr(bot.coreV2)==null)
             GameController.Instance.EndGame("CORE DESTROYED");
 
-        if (brickType == 1)
-            bot.fuelBrickList.Remove(gameObject);
-
         if (GetComponent<Container>())
             bot.RemoveContainer(GetComponent<Container>());
 
@@ -394,6 +396,11 @@ public class Brick : MonoBehaviour
             GetComponent<SpriteRenderer>().sprite = spriteArr[brickLevel];
             if (brickType == 1)
                 gameObject.GetComponent<Fuel>().UpgradeFuelLevel();
+
+            if(GetComponent<Container>())
+            {
+                bot.UpdateContainers();
+            }
 
             int scoreIncrease = (int)Mathf.Pow(brickMoneyMultiplier, brickLevel);
             GameController.Instance.money += scoreIncrease;
