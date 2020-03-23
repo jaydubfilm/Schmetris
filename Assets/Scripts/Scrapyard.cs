@@ -387,6 +387,8 @@ public class Scrapyard : MonoBehaviour
                 if (botMap[x, y])
                 {
                     newTileImage.sprite = botMap[x, y];
+                    if(CanUpgrade(newTileImage.sprite))
+                        newTile.transform.GetChild(0).gameObject.SetActive(true);
                 }
                 else
                 {
@@ -514,7 +516,7 @@ public class Scrapyard : MonoBehaviour
                         currentGreen -= targetPart.greenToCraft[i];
                         currentYellow -= targetPart.yellowToCraft[i];
                         currentGrey -= targetPart.greyToCraft[i];
-                        transactionAmount += targetPart.moneyToCraft[i];
+                        transactionAmount -= targetPart.moneyToCraft[i];
                         sellBrick.GetComponent<Image>().sprite = targetPart.GetComponent<Brick>().spriteArr[i];
                         break;
                     }
@@ -522,8 +524,7 @@ public class Scrapyard : MonoBehaviour
             }
         }
 
-        UpdateGameplayBot();
-        UpdateScrapyard();
+        CompleteConfirmedPurchase();
     }
 
     //Button for completing a brick conversion to resources
