@@ -74,6 +74,8 @@ MonoBehaviour:
   - {fileID: 6703889337379585221, guid: c6511eeda86244a65939ca538c048ea0, type: 3}
   - {fileID: 3786325451140840089, guid: 06d2c88f29e3441339002e2924aa7c83, type: 3}
   - {fileID: 6715254118685096965, guid: ca6ae26aff763214a84880dee0b2b3d1, type: 3}
+  - {fileID: 6715254118685096965, guid: 0f3ca62c40e3c9047a172548b2d8766a, type: 3}
+  - {fileID: 6715254118685096965, guid: bbc47c93e7771e14f8326a99a159fd41, type: 3}
   brickList: []
   powerGrid: {fileID: 6811822890141058021, guid: 615e256f41e1542db8dff35ad956b506,
     type: 3}

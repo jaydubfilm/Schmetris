@@ -3344,6 +3344,8 @@ MonoBehaviour:
   greyBurnRate: {fileID: 3367948448681958087}
   craftableParts:
   - {fileID: 6715254118685096965, guid: ca6ae26aff763214a84880dee0b2b3d1, type: 3}
+  - {fileID: 6715254118685096965, guid: 0f3ca62c40e3c9047a172548b2d8766a, type: 3}
+  - {fileID: 6715254118685096965, guid: bbc47c93e7771e14f8326a99a159fd41, type: 3}
 --- !u!223 &7533438584670130256
 Canvas:
   m_ObjectHideFlags: 0

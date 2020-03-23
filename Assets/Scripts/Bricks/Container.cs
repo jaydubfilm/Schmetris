@@ -4,7 +4,7 @@
 public class Container : MonoBehaviour
 {
     //Total resource capacity
-    public float capacity;
+    public float[] capacity;
 
     //Directional container
     public GameObject directionPrefab;

@@ -173,12 +173,23 @@ public class Bot : MonoBehaviour
         }
     }
 
+    public void UpdateContainers()
+    {
+        float newCapacity = 0;
+        foreach(Container ContainerCheck in containerList)
+        {
+            newCapacity += ContainerCheck.capacity[ContainerCheck.GetComponent<Brick>().brickLevel];
+        }
+        //~Cut excess resources
+        totalCapacity = newCapacity;
+    }
+
     public void AddContainer(Container container)
     {
         if(!containerList.Contains(container))
         {
             containerList.Add(container);
-            totalCapacity += container.capacity;
+            totalCapacity += container.capacity[container.GetComponent<Brick>().brickLevel];
         }
     }
 
@@ -188,7 +199,7 @@ public class Bot : MonoBehaviour
         {
             containerList.Remove(container);
             //~Cut excess resources
-            totalCapacity -= container.capacity;
+            totalCapacity -= container.capacity[container.GetComponent<Brick>().brickLevel];
         }
     }
 
