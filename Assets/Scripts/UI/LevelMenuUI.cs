@@ -39,6 +39,7 @@ public class LevelMenuUI : MonoBehaviour
         savePanel.SetActive(false);
 
         //Activate main menu
+        UpdateLevels();
         MainMenu();
     }
 
