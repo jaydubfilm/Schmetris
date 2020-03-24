@@ -41,24 +41,37 @@ public class MosquitoAI : MonoBehaviour
     [FoldoutGroup("Weapon")]
     public int bulletDamage = 1;
 
+    [FoldoutGroup("Death")]
+    public float timeUntilBlast = 5;
+
+    [Tooltip("Range of the blast (how many columns and rows are affected)")]
+    [FoldoutGroup("Death")]
+    public float blastRadius = 5;
+
+    [FoldoutGroup("Death")]
+    public int blastDamage = 5;
+
+
     public GameObject mosquitoShield;
 
     bool attackMode;
     bool attached;
+    bool dying;
+    float timeOfDeath;
 
     private void Start()
     {
-
-        aiDestinationSetter = GetComponent<AIDestinationSetter>();
         aiPath = GetComponent<AIPath>();
+        aiDestinationSetter = GetComponent<AIDestinationSetter>();
+        aiDestinationSetter.target = FindObjectOfType<Bot>().transform;
         player = aiDestinationSetter.target;
 
-        //create a shieldat the player position if one does not exist
-        if (!player.GetComponentInChildren<MosquitoShield>())
+        //create a shield at the player position if one does not exist
+        if (player.GetComponentInChildren<MosquitoShield>() == null)
         {
+
             Instantiate(mosquitoShield, player.transform, false);
             transform.localPosition = Vector3.zero;
-
         }
 
         enemyDistance.preWrapMode = WrapMode.PingPong;
@@ -66,6 +79,8 @@ public class MosquitoAI : MonoBehaviour
 
         spring = GetComponent<SpringJoint2D>();
         rb = GetComponent<Rigidbody2D>();
+
+        blastRadius = blastRadius * ScreenStuff.colSize;
     }
 
     private void Update()
@@ -81,23 +96,37 @@ public class MosquitoAI : MonoBehaviour
         }
         else
         {
-            if(Time.time > impulseBurstFrequency)
-            {
-
+            if(Time.time > impulseBurstFrequency)           
                 SetRandomTimer();
-            }
-
+            
             FireCheck();
         }
  
 
         Vector3 dir = (player.position - transform.position).normalized;
-        Debug.DrawRay(transform.position, dir * 1000, Color.red);
 
+
+        //Death Procedure
+        if(dying == true)
+        {
+
+            if(Time.timeSinceLevelLoad - timeOfDeath > timeUntilBlast)
+            {
+                print(Time.timeSinceLevelLoad - timeOfDeath);
+                DeathBlast();
+            }
+        }
+
+        //testing
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Death();
+            print(ScreenStuff.colSize);
+        }
 
     }
 
-
+    
     void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.gameObject.layer == 13)
@@ -109,7 +138,6 @@ public class MosquitoAI : MonoBehaviour
             spring.connectedBody = player.GetComponent<Rigidbody2D>();
             spring.autoConfigureDistance = false;
             spring.enableCollision = true;
-            print("attached");
             attackMode = true;
 
             storedTime = Time.time;
@@ -147,7 +175,6 @@ public class MosquitoAI : MonoBehaviour
     void FireCheck()
     {
 
-        print("firing");
         if (Time.time - storedTime > rateOfFire)
         {
 
@@ -162,4 +189,35 @@ public class MosquitoAI : MonoBehaviour
         Vector3 dir = (player.position - thisBullet.transform.position).normalized;
         thisBullet.MosquitoBulletBehaviour(player.position, bulletSprite, dir, bulletLifetime, bulletSpeed, bulletDamage);
     }
+
+    void Death()
+    {
+
+        timeOfDeath = Time.timeSinceLevelLoad;
+        dying = true;
+    }
+
+    void DeathBlast()
+    {
+
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(new Vector2(transform.position.x, transform.position.y), blastRadius);
+
+        for (int i = 0; i < colliders.Length; i++)
+        {
+
+            if (colliders[i].GetComponent<Brick>())
+            {
+
+                colliders[i].GetComponent<Brick>().AdjustHP(-blastDamage);
+            }
+        }
+        
+        //Instantiate Explosion here
+        Destroy(gameObject);
+    }
+
+    //void OnDrawGizmosSelected()
+    //{
+    //    Gizmos.DrawSphere(transform.position, blastRadius);
+    //}
 }

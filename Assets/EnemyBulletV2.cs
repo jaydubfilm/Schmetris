@@ -8,22 +8,31 @@ public class EnemyBulletV2 : MonoBehaviour
     float speed = 1;
     public bool isInvader;
     public bool isMosquito;
+    public bool isMama;
     float timeAtInstantiation;
     float bulletDuration;
     int bulletDamage;
     Vector3 dirToPlayer;
     SpriteRenderer spriteRenderer;
+    Rigidbody2D rb2d;
+    Transform target;
 
     private void Start()
     {
-
+        rb2d = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(isInvader)
+        #region Invader
+
+        if (isInvader)
             transform.Translate(-transform.up * speed * Time.deltaTime);
+
+        #endregion
+
+        #region Mosquito
 
         if (isMosquito)
         {
@@ -35,6 +44,20 @@ public class EnemyBulletV2 : MonoBehaviour
                 Destroy(gameObject);
             }
         }
+        #endregion
+
+        #region Mama
+
+        if (isMama)
+        {
+            rb2d.bodyType = RigidbodyType2D.Dynamic;
+
+            Vector3 angleToPlayer = (target.position -transform.position).normalized;
+            rb2d.AddForce(new Vector2(angleToPlayer.x, angleToPlayer.y) * speed);
+
+        }
+
+        #endregion
     }
 
     void Damage(Brick brick)
@@ -49,7 +72,6 @@ public class EnemyBulletV2 : MonoBehaviour
         //hit a block on player ship
         if(other.transform.GetComponentInParent<Brick>() != null)
         {
-            print("dealing " + bulletDamage);
             Damage(other.transform.GetComponentInParent<Brick>());
             Destroy(gameObject);
             return;
@@ -57,7 +79,6 @@ public class EnemyBulletV2 : MonoBehaviour
 
         if (other.transform.GetComponentInParent<Bit>() != null)
         {
-            print("hit floating brick");
             Destroy(gameObject);
             //hit a floating brick
             return;
@@ -68,7 +89,6 @@ public class EnemyBulletV2 : MonoBehaviour
     {
 
         BulletSetup(sprite, bulletSpeed, bulletLifetime, damageDealt);
-
         dirToPlayer = dir;
         transform.LookAt(target);
         isMosquito = true;
@@ -80,6 +100,17 @@ public class EnemyBulletV2 : MonoBehaviour
         BulletSetup(sprite, bulletSpeed, bulletLifetime, damageDealt);
         transform.eulerAngles = new Vector3(0, 90, 0);
         isInvader = true;
+    }
+
+    public void MamaBulletBehaviour(Transform player, Sprite sprite, float bulletSpeed, float bulletLifetime, int damageDealt)
+    {
+
+        BulletSetup(sprite, bulletSpeed, bulletLifetime, damageDealt);
+        target = player;
+        print("Fire mama");
+
+        transform.eulerAngles = new Vector3(0, 90, 0);
+        isMama = true;
     }
 
     void BulletSetup(Sprite sprite, float bulletSpeed, float bulletLifetime, int damageDealt)
