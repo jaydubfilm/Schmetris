@@ -28,11 +28,11 @@ MonoBehaviour:
     probability: 3
   - block: {fileID: 8639198243880090134, guid: 80e57895ab51b4fb591ba9d29d8b237b, type: 3}
     probability: 2
-  - block: {fileID: 8136126349772497620, guid: 381bf456d798d4284b024eadf422a681, type: 3}
-    probability: 2
   - block: {fileID: 2589978003207516240, guid: e215a09cb11b7426cabf3b57049ca5b1, type: 3}
     probability: 1
   - block: {fileID: 6215762431153503963, guid: 0de4a4f3435814b5db99a2dea142f90a, type: 3}
+    probability: 2
+  - block: {fileID: 8136126349772497620, guid: 381bf456d798d4284b024eadf422a681, type: 3}
     probability: 2
   speciesSpawnData:
   - species: {fileID: 822335604602250409, guid: 5b93156cd52954237adcfe43c62642b2,

@@ -26,12 +26,8 @@ MonoBehaviour:
     probability: 3
   - block: {fileID: 2589978003207516240, guid: e215a09cb11b7426cabf3b57049ca5b1, type: 3}
     probability: 1
-  - block: {fileID: 8136126349772497620, guid: 381bf456d798d4284b024eadf422a681, type: 3}
-    probability: 2
   - block: {fileID: 8639198243880090134, guid: 80e57895ab51b4fb591ba9d29d8b237b, type: 3}
     probability: 2
-  - block: {fileID: 8053527841708647293, guid: 1c867cf67048f4bf89365a468581df26, type: 3}
-    probability: 1
   - block: {fileID: 8480972586710585632, guid: 934b8c0b6a23b4092bdf57addff8b22d, type: 3}
     probability: 3
   speciesSpawnData:
