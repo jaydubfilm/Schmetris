@@ -92,6 +92,11 @@ public class InvaderMovement : MonoBehaviour
         else
             getTime = false;
 
+        //testing
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Death();
+        }
 
         #endregion
 
@@ -120,4 +125,10 @@ public class InvaderMovement : MonoBehaviour
         EnemyBulletV2 thisBullet = Instantiate(bullet, transform.position, transform.rotation).GetComponent<EnemyBulletV2>();
         thisBullet.InvaderBulletBehaviour(bulletSprite, bulletSpeed, bulletDuration, bulletDamage); 
     }
+    void Death()
+    {
+
+        Destroy(gameObject);
+    }
+
 }

@@ -89,11 +89,9 @@ public class MosquitoAI : MonoBehaviour
         aiPath.maxSpeed = followSpeed;
 
         if (attackMode == false)
-        {            
-       
             //constantly adjust spring distance
             spring.distance = enemyDistance.Evaluate(Time.time);
-        }
+        
         else
         {
             if(Time.time > impulseBurstFrequency)           
@@ -121,7 +119,7 @@ public class MosquitoAI : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             Death();
-            print(ScreenStuff.colSize);
+            //print(ScreenStuff.colSize);
         }
 
     }
