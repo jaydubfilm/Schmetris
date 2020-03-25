@@ -94,5 +94,7 @@ public class Enemy : MonoBehaviour
         GameController.Instance.enemyList.Remove(gameObject);
         Destroy(gameObject);
     }
+
+
 }
 

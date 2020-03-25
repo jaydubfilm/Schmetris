@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
   m_Name: Enemy Prototype
   m_EditorClassIdentifier: 
-  levelDuration: 45
+  levelDuration: 90
   blocks:
   - block: {fileID: 8459872569636080655, guid: c5aaf9792745f4939903666a24e35fee, type: 3}
     probability: 1
@@ -25,9 +25,15 @@ MonoBehaviour:
   - block: {fileID: 3908810048976006719, guid: 0c609c432c86b42ad9631220ee8db9c6, type: 3}
     probability: 2
   speciesSpawnData:
-  - species: {fileID: 4772868703973222878, guid: c2906289b3f75423a85d7faeb2570317,
+  - species: {fileID: 6665343524019512472, guid: 8bc22f63738327c4db2366c87d9be969,
+      type: 3}
+    probability: 1
+  - species: {fileID: 7297659341976442939, guid: dad323699b9f9dc4fbdd435e03ff6c7b,
+      type: 3}
+    probability: 1
+  - species: {fileID: 7899793524970067225, guid: 5b632cba15d5abc49a020b986a1a594c,
       type: 3}
     probability: 1
   blockSpawnRate: 0.3
-  enemySpawnRate: 0
+  enemySpawnRate: 6
   blockSpeed: 7.5

@@ -6,21 +6,38 @@ using Sirenix.OdinInspector;
 
 public class InvaderMovement : MonoBehaviour
 {
+
+    [FoldoutGroup("Movement")]
     public float speed = 1;
-    
+
+    [FoldoutGroup("Movement")]
     [Tooltip("The distance frome the edge of the screen at which the Invader will reverse direction (screen width ranges 0 - 1)")]
     public float margin = 0.05f;
 
+    [FoldoutGroup("Movement")]
     [Tooltip("The distance frome the player along the x axis at which the enemy will fire")]
     public float fireOnProximity = 3;
 
-    public float rateOfFire;
+    [FoldoutGroup("Weapon")]
     public GameObject bullet;
+    [FoldoutGroup("Weapon")]
+    public int bulletDamage = 1;
+
+    [FoldoutGroup("Weapon")]
+    public float rateOfFire;
+
+    [FoldoutGroup("Weapon")]
     public float bulletSpeed = 3f;
+
+    [FoldoutGroup("Weapon")]
+    public float bulletDuration;
+
+    [FoldoutGroup("Weapon")]
+    public Sprite bulletSprite;
 
     Transform player;
 
-    public bool movingRight;
+    bool movingRight;
     Vector3 pos;
     bool getTime;
     float storedTime;
@@ -89,10 +106,10 @@ public class InvaderMovement : MonoBehaviour
     void FireCheck()
     {
 
-        print("firing");
         if (Time.time - storedTime > rateOfFire)
         {
 
+            print("firing");
             Fire();
             storedTime = Time.time;
         }
@@ -100,7 +117,7 @@ public class InvaderMovement : MonoBehaviour
     void Fire()
     {
 
-        InvaderBullet thisBullet = Instantiate(bullet, transform.position, transform.rotation).GetComponent<InvaderBullet>();
-        thisBullet.speed = bulletSpeed;
+        EnemyBulletV2 thisBullet = Instantiate(bullet, transform.position, transform.rotation).GetComponent<EnemyBulletV2>();
+        thisBullet.InvaderBulletBehaviour(bulletSprite, bulletSpeed, bulletDuration, bulletDamage); 
     }
 }
