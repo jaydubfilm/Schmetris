@@ -508,7 +508,7 @@ public class GameController : MonoBehaviour
         bot.gameObject.SetActive(false);
         SceneManager.LoadScene(1);
         scrapyard.SetActive(true);
-        scrapyard.GetComponent<Scrapyard>().LoadScrapyardResources();
+        scrapyard.GetComponent<Scrapyard>().LoadBotComponents();
         scrapyard.GetComponent<Scrapyard>().UpdateScrapyard();
     }
 
