@@ -320,6 +320,153 @@ public class Scrapyard : MonoBehaviour
         BuildMarketplace();
     }
 
+    //Snap brick to block closest to player drag position
+    void UpdateBrickSnap()
+    {
+        selectedBrick.GetComponent<RectTransform>().sizeDelta = Vector2.one * currentSize;
+        selectedBrick.GetComponent<RectTransform>().anchoredPosition = Input.mousePosition;
+    }
+
+    //Update keyboard and mouse controls
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0) && canMove)
+        {
+            //Start tap timer - is player trying to click something or drag something?
+            holdingScreenTimer = 0;
+            PointerEventData pointer = new PointerEventData(EventSystem.current);
+            pointer.position = Input.mousePosition;
+            List<RaycastResult> targets = new List<RaycastResult>();
+            raycaster.Raycast(pointer, targets);
+            for (int i = 0; i < targets.Count; i++)
+            {
+                //An item is being purchased from the marketplace
+                if (marketSelection.Contains(targets[i].gameObject))
+                {
+                    isMarketBrick = true;
+                    selectedBrick = targets[i].gameObject;
+                    isTranslating = false;
+                    break;
+                }
+
+                //An existing brick is being edited
+                else if (botBricks.Contains(targets[i].gameObject) && targets[i].gameObject.GetComponent<Image>().color != Color.clear)
+                {
+                    isMarketBrick = false;
+                    botBrick = targets[i].gameObject;
+                    isTranslating = botBrick == coreBrick;
+                    prevMousePos = Input.mousePosition;
+                    break;
+                }
+            }
+        }
+        else if (Input.GetMouseButtonUp(0) && canMove)
+        {
+            //A brick has been clicked - show interact options
+            if (holdingScreenTimer < maxTapTimer)
+            {
+                if (botBrick && !isMarketBrick)
+                {
+                    sellBrick = botBrick;
+                    botBrick = null;
+                    BrickOptions();
+                }
+            }
+            else if (selectedBrick)
+            {
+                //A brick has been dragged - drop it in the most appropriate spot
+                PointerEventData pointer = new PointerEventData(EventSystem.current);
+                pointer.position = Input.mousePosition;
+                List<RaycastResult> targets = new List<RaycastResult>();
+                raycaster.Raycast(pointer, targets);
+                for (int i = 0; i < targets.Count; i++)
+                {
+                    if (botBricks.Contains(targets[i].gameObject) && targets[i].gameObject.GetComponent<Image>().color == Color.clear)
+                    {
+                        targets[i].gameObject.GetComponent<Image>().color = Color.white;
+                        targets[i].gameObject.GetComponent<Image>().sprite = selectedBrick.GetComponent<Image>().sprite;
+                        if (isMarketBrick)
+                        {
+                            //~For now, don't remove purchased bricks from market
+                            //tempMarketList.Remove(selectedBrick.GetComponent<Image>().sprite.name);
+                            transactionAmount -= marketPrices[tempMarketList.IndexOf(selectedBrick.GetComponent<Image>().sprite.name)];
+                            UpdateResources();
+                        }
+                        else
+                        {
+                            botBrick = null;
+                        }
+                        break;
+                    }
+                }
+                Destroy(selectedBrick);
+                BuildMarketplace();
+                if (botBrick)
+                {
+                    botBrick.GetComponent<Image>().color = Color.white;
+                }
+            }
+            holdingScreenTimer = 0;
+            selectedBrick = null;
+            botBrick = null;
+        }
+        else if (Input.GetMouseButton(0) && canMove)
+        {
+            holdingScreenTimer += Time.unscaledDeltaTime;
+            if (holdingScreenTimer >= maxTapTimer)
+            {
+                if (botBrick && !selectedBrick)
+                {
+                    //Reposition selected brick
+                    if (!isTranslating)
+                    {
+                        selectedBrick = Instantiate(botTile, transform.parent);
+                        selectedBrick.GetComponent<Image>().sprite = botBrick.GetComponent<Image>().sprite;
+                        botBrick.GetComponent<Image>().color = Color.clear;
+
+                        if (selectedBrick.GetComponentInChildren<Text>())
+                            selectedBrick.GetComponentInChildren<Text>().enabled = false;
+                        selectedBrick.transform.SetParent(transform.parent);
+                        selectedBrick.GetComponent<RectTransform>().anchorMin = Vector2.zero;
+                        selectedBrick.GetComponent<RectTransform>().anchorMax = Vector2.zero;
+                    }
+
+                    //Core selected - reposition bot instead
+                    else
+                    {
+                        Vector2 newBotPos = botDisplay.GetComponent<RectTransform>().anchoredPosition + new Vector2(Input.mousePosition.x - prevMousePos.x, Input.mousePosition.y - prevMousePos.y);
+                        newBotPos.x = Mathf.Clamp(newBotPos.x, -botBounds, botBounds);
+                        newBotPos.y = Mathf.Clamp(newBotPos.y, -botBounds, botBounds);
+                        botDisplay.GetComponent<RectTransform>().anchoredPosition = newBotPos;
+                        prevMousePos = Input.mousePosition;
+                    }
+                }
+                else if (selectedBrick)
+                {
+                    if (selectedBrick.transform.parent != transform.parent)
+                    {
+                        if (selectedBrick.GetComponentInChildren<Text>())
+                            selectedBrick.GetComponentInChildren<Text>().enabled = false;
+                        selectedBrick.transform.SetParent(transform.parent);
+                        selectedBrick.GetComponent<RectTransform>().anchorMin = Vector2.zero;
+                        selectedBrick.GetComponent<RectTransform>().anchorMax = Vector2.zero;
+                    }
+                    UpdateBrickSnap();
+                }
+            }
+        }
+
+        //Keyboard controls
+        if (Input.GetKeyDown(KeyCode.Equals))
+        {
+            ZoomIn();
+        }
+        else if (Input.GetKeyDown(KeyCode.Minus))
+        {
+            ZoomOut();
+        }
+    }
+
     //Button for buying resources
     public void BuyResource(string resource)
     {
@@ -649,134 +796,7 @@ public class Scrapyard : MonoBehaviour
         UpdateScrapyard();
     }
 
-    //Check for brick dragging
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0) && canMove)
-        {
-            holdingScreenTimer = 0;
-            PointerEventData pointer = new PointerEventData(EventSystem.current);
-            pointer.position = Input.mousePosition;
-            List<RaycastResult> targets = new List<RaycastResult>();
-            raycaster.Raycast(pointer, targets);
-            for (int i = 0; i < targets.Count; i++)
-            {
-                if (marketSelection.Contains(targets[i].gameObject))
-                {
-                    isMarketBrick = true;
-                    selectedBrick = targets[i].gameObject;
-                    isTranslating = false;
-                    break;
-                }
-                else if (botBricks.Contains(targets[i].gameObject) && targets[i].gameObject.GetComponent<Image>().color != Color.clear)
-                {
-                    isMarketBrick = false;
-                    botBrick = targets[i].gameObject;
-                    isTranslating = botBrick == coreBrick;
-                    prevMousePos = Input.mousePosition;
-                    break;
-                }
-            }
-        }
-        else if (Input.GetMouseButtonUp(0) && canMove)
-        {
-            if (holdingScreenTimer < maxTapTimer)
-            {
-                if (botBrick && !isMarketBrick)
-                {
-                    sellBrick = botBrick;
-                    botBrick = null;
-                    BrickOptions();
-                }
-            }
-            else if (selectedBrick)
-            {
-                PointerEventData pointer = new PointerEventData(EventSystem.current);
-                pointer.position = Input.mousePosition;
-                List<RaycastResult> targets = new List<RaycastResult>();
-                raycaster.Raycast(pointer, targets);
-                for (int i = 0; i < targets.Count; i++)
-                {
-                    if (botBricks.Contains(targets[i].gameObject) && targets[i].gameObject.GetComponent<Image>().color == Color.clear)
-                    {
-                        targets[i].gameObject.GetComponent<Image>().color = Color.white;
-                        targets[i].gameObject.GetComponent<Image>().sprite = selectedBrick.GetComponent<Image>().sprite;
-                        if (isMarketBrick)
-                        {
-                            //~For now, don't remove purchased bricks from market
-                            //tempMarketList.Remove(selectedBrick.GetComponent<Image>().sprite.name);
-                            transactionAmount -= marketPrices[tempMarketList.IndexOf(selectedBrick.GetComponent<Image>().sprite.name)];
-                            UpdateResources();
-                        }
-                        else
-                        {
-                            botBrick = null;
-                        }
-                        break;
-                    }
-                }
-                Destroy(selectedBrick);
-                BuildMarketplace();
-                if (botBrick)
-                {
-                    botBrick.GetComponent<Image>().color = Color.white;
-                }
-            }
-            holdingScreenTimer = 0;
-            selectedBrick = null;
-            botBrick = null;
-        }
-        else if (Input.GetMouseButton(0) && canMove)
-        {
-            holdingScreenTimer += Time.unscaledDeltaTime;
-            if (holdingScreenTimer >= maxTapTimer)
-            {
-                if (botBrick && !selectedBrick)
-                {
-                    if (!isTranslating)
-                    {
-                        selectedBrick = Instantiate(botTile, transform.parent);
-                        selectedBrick.GetComponent<Image>().sprite = botBrick.GetComponent<Image>().sprite;
-                        botBrick.GetComponent<Image>().color = Color.clear;
-                    }
-                    else
-                    {
-                        Vector2 newBotPos = botDisplay.GetComponent<RectTransform>().anchoredPosition + new Vector2(Input.mousePosition.x - prevMousePos.x, Input.mousePosition.y - prevMousePos.y);
-                        newBotPos.x = Mathf.Clamp(newBotPos.x, -botBounds, botBounds);
-                        newBotPos.y = Mathf.Clamp(newBotPos.y, -botBounds, botBounds);
-                        botDisplay.GetComponent<RectTransform>().anchoredPosition = newBotPos;
-                        prevMousePos = Input.mousePosition;
-                    }
-                }
-                UpdateBrickSnap();
-            }
-        }
-
-        //Keyboard controls
-        if(Input.GetKeyDown(KeyCode.Equals))
-        {
-            ZoomIn();
-        }
-        else if (Input.GetKeyDown(KeyCode.Minus))
-        {
-            ZoomOut();
-        }
-    }
-
-    //Snap brick to block closest to player drag position
-    void UpdateBrickSnap()
-    {
-        if(selectedBrick)
-        {
-            if(selectedBrick.GetComponentInChildren<Text>())
-                selectedBrick.GetComponentInChildren<Text>().enabled = false;
-            selectedBrick.transform.SetParent(transform.parent);
-            selectedBrick.GetComponent<RectTransform>().anchorMin = Vector2.zero;
-            selectedBrick.GetComponent<RectTransform>().anchorMax = Vector2.zero;
-            selectedBrick.GetComponent<RectTransform>().sizeDelta = Vector2.one * currentSize;
-            selectedBrick.GetComponent<RectTransform>().anchoredPosition = Input.mousePosition;
-        }
-    }
+    //~~~
 
     //Check if this part is upgradeable with player's existing resources
     bool CanUpgrade(Sprite selectedPart)
@@ -795,7 +815,6 @@ public class Scrapyard : MonoBehaviour
                 }
             }
         }
-
         return false;
     }
 

@@ -42,6 +42,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 419dad0985ef34bdba2d0c81b2c4e4c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flashingSymbol: {fileID: 3667978834399064118}
   maxFuelArr: 0a00000032000000fa000000e20400006a180000
   fuelLevel: 0
   fuelDiff: 0
@@ -134,6 +135,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f98fd79dc605e406c93ee8d3b2c5e47e, type: 3}
+--- !u!1 &3667978834399064118 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4003891918765245268, guid: f98fd79dc605e406c93ee8d3b2c5e47e,
+    type: 3}
+  m_PrefabInstance: {fileID: 394039869704156002}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7211977261221537056
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -54,6 +54,8 @@ public class Bot : MonoBehaviour
     public int[,] brickTypeArr;
     public GameObject[] masterBrickList;
     public List<GameObject> brickList;
+    public List<GameObject> fuelBrickList = new List<GameObject>();
+
     int[,] pathArr;
     public PowerGrid powerGrid;
     public PowerGrid powerGridPrefab;
@@ -300,6 +302,8 @@ public class Bot : MonoBehaviour
             }
             containerList = new List<Container>();
 
+            fuelBrickList = new List<GameObject>();
+
             if (powerGrid)
                 Destroy(powerGrid.gameObject);
             //OnLevelRestart();
@@ -526,7 +530,18 @@ public class Bot : MonoBehaviour
             orphanCheckFlag = false;
         }
 
-        storedRed = Mathf.Max(0, storedRed - fuelBurnRate * Time.deltaTime);
+        if (storedRed > 0)
+        {
+            storedRed = Mathf.Max(0, storedRed - fuelBurnRate * Time.deltaTime);
+            if(fuelBrickList.Count > 0)
+            {
+                fuelBrickList[0].GetComponent<Fuel>().CancelBurnFuel();
+            }
+        }
+        else if (fuelBrickList.Count > 0)
+        {
+            fuelBrickList[0].GetComponent<Fuel>().BurnFuel(fuelBurnRate * Time.deltaTime);
+        }
     }
 
 
@@ -2192,7 +2207,7 @@ public class Bot : MonoBehaviour
 
     public bool HasFuel()
     {
-        return GetResourcePercent(ResourceType.Red) > 0;
+        return GetResourcePercent(ResourceType.Red) > 0 || fuelBrickList.Count > 0;
     }
 
     public float GetResourcePercent(ResourceType resourceType)
