@@ -7,6 +7,7 @@ public class Container : MonoBehaviour
     public float[] capacity;
 
     //Directional container
+    public bool canCollect = true;
     public GameObject directionPrefab;
     public float startDirection = 0;
     float openDirection = 0;
@@ -16,14 +17,19 @@ public class Container : MonoBehaviour
     private void Awake()
     {
         GameController.Instance.bot.AddContainer(this);
-        directionIcon = Instantiate(directionPrefab, transform);
-        directionIcon.transform.localPosition = Vector3.zero;
-        SetOpenDirection(startDirection);
+        if (canCollect)
+        {
+            directionIcon = Instantiate(directionPrefab, transform);
+            directionIcon.transform.localPosition = Vector3.zero;
+            SetOpenDirection(startDirection);
+        }
     }
 
     //Adjust open direction when bot rotates
     public void SetOpenDirection(float newDirection)
     {
+        if (!canCollect)
+            return;
         while(newDirection >= 360)
         {
             newDirection -= 360;
@@ -39,6 +45,9 @@ public class Container : MonoBehaviour
     //Check if incoming resource is hitting the open side of the container
     public bool IsOpenDirection(Vector2Int hitDir)
     {
+        if (!canCollect)
+            return false;
+
         switch(openDirection)
         {
             case 0:

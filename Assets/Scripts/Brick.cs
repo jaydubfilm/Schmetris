@@ -319,6 +319,12 @@ public class Brick : MonoBehaviour
         if (GetComponent<Container>())
             bot.RemoveContainer(GetComponent<Container>());
 
+        if (bot.fuelBrickList.Contains(gameObject))
+        {
+            GetComponent<Fuel>().CancelBurnFuel();
+            bot.fuelBrickList.Remove(gameObject);
+        }
+
         bot.RefreshNeighborLists();
         bot.orphanCheckFlag = true;
     }
