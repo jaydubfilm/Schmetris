@@ -321,8 +321,8 @@ public class GameController : MonoBehaviour
         {
             lives = loadData.lives;
             money = loadData.money;
-            currentScene = loadData.level;
-            highestScene = currentScene;
+            highestScene = loadData.level;
+            currentScene = highestScene;
 
             //~Add in resource loading?
             if (easyGame.name == loadData.game)
@@ -508,7 +508,7 @@ public class GameController : MonoBehaviour
         bot.gameObject.SetActive(false);
         SceneManager.LoadScene(1);
         scrapyard.SetActive(true);
-        scrapyard.GetComponent<Scrapyard>().LoadScrapyardResources();
+        scrapyard.GetComponent<Scrapyard>().LoadBotComponents();
         scrapyard.GetComponent<Scrapyard>().UpdateScrapyard();
     }
 
