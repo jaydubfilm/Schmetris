@@ -109,9 +109,9 @@ public class Scrapyard : MonoBehaviour
     Sprite[,] botMap;
 
     //Temp prices
-    int resourceChange = 10;
-    int resourceCost = 10;
-    int resourceSell = 5;
+    int resourceChange = 1;
+    int resourceCost = 2;
+    int resourceSell = 1;
     int brickCost = 20;
     int brickSell = 10;
 
