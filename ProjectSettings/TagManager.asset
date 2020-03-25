@@ -20,9 +20,9 @@ TagManager:
   - Brick
   - Enemy
   - DynamicObstacle
-  - 
-  - 
-  - 
+  - Mosquito
+  - MosquitoShield
+  - Bullet
   - 
   - 
   - 
