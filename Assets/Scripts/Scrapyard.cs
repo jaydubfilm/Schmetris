@@ -62,6 +62,8 @@ public class Scrapyard : MonoBehaviour
     public List<string> tempMarketList = new List<string>();
     List<int> marketPrices = new List<int>();
     public List<string> marketList = new List<string>();
+    int maxMarketItems = 5;
+    int marketIndex = 0;
 
     //Crafting components
     public GameObject[] containerParts;
@@ -199,7 +201,7 @@ public class Scrapyard : MonoBehaviour
         marketSelection = new List<GameObject>();
 
         //Add new items to marketplace
-        for (int i = 0; i < tempMarketList.Count; i++)
+        for (int i = marketIndex; i < marketIndex + maxMarketItems; i++)
         {
             GameObject newTile = Instantiate(botTile, marketParent.transform);
             Image newTileImage = newTile.GetComponent<Image>();
@@ -414,6 +416,20 @@ public class Scrapyard : MonoBehaviour
     {
         currentSize = Mathf.Max(currentSize - sizeChange, minSize);
         botDisplay.GetComponent<RectTransform>().sizeDelta = Vector2.one * currentSize;
+    }
+
+    //Button for scrolling left in the market
+    public void MarketLeft()
+    {
+        marketIndex = Mathf.Max(0, marketIndex - 1);
+        BuildMarketplace();
+    }
+
+    //Button for scrolling right in the market
+    public void MarketRight()
+    {
+        marketIndex = Mathf.Min(marketList.Count - maxMarketItems, marketIndex + 1);
+        BuildMarketplace();
     }
 
     //Button for saving current bot as a layout
