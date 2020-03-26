@@ -35,6 +35,9 @@ public class InvaderMovement : MonoBehaviour
     [FoldoutGroup("Weapon")]
     public Sprite bulletSprite;
 
+    [Tooltip("Used to sort enemies from least to most powerful. Used to determine targets when firing")]
+    public int strength = 1;
+
     Transform player;
 
     bool movingRight;

@@ -45,6 +45,9 @@ public class Mama : MonoBehaviour
     [FoldoutGroup("Death")]
     public int blastDamage = 5;
 
+    [Tooltip("Used to sort enemies from least to most powerful. Used to determine targets when firing")]
+    public int strength = 3;
+
     bool dying;
 
     AIPath aiPath;
