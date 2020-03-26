@@ -328,13 +328,6 @@ public class Scrapyard : MonoBehaviour
                 if (botMap[x, y])
                 {
                     newTileImage.sprite = botMap[x, y];
-                    List<CraftedPart> checkUpgrades = GetUpgradeList(newTileImage.sprite);
-                    foreach (CraftedPart CheckPart in checkUpgrades)
-                    {
-                        //~
-                        if(CanUpgrade(newTileImage.sprite,CheckPart))
-                            newTile.transform.GetChild(0).gameObject.SetActive(true);
-                    }
                 }
                 else
                 {
@@ -346,6 +339,24 @@ public class Scrapyard : MonoBehaviour
 
                 botBricks.Add(newTile);
             }
+        }
+
+        UpdateUpgradeGlows();
+    }
+
+    //Update available upgrade glows
+    void UpdateUpgradeGlows()
+    {
+        foreach(GameObject BotTile in botBricks)
+        {
+            bool canUpgrade = false;
+            List<CraftedPart> checkUpgrades = GetUpgradeList(BotTile.GetComponent<Image>().sprite);
+            foreach (CraftedPart CheckPart in checkUpgrades)
+            {
+                if (CanUpgrade(BotTile.GetComponent<Image>().sprite, CheckPart))
+                    canUpgrade = true;
+            }
+            BotTile.transform.GetChild(0).gameObject.SetActive(canUpgrade);
         }
     }
 
@@ -439,6 +450,8 @@ public class Scrapyard : MonoBehaviour
         redAmount.text = Mathf.RoundToInt(currentFuel).ToString();
         redBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Red)).ToString() + "/s";
         redAmount.text += " (+" + Mathf.RoundToInt(excessRed).ToString() + ")";
+
+        UpdateUpgradeGlows();
     }
 
     //Update temp bot capacity based on assets in the bot grid
@@ -999,10 +1012,7 @@ public class Scrapyard : MonoBehaviour
             {
                 if (selectedPart == targetPart.basePartToCraft[i])
                 {
-                    if ((currentBlue + excessBlue) >= targetPart.blueToCraft[i] && (currentFuel + excessRed) >= targetPart.redToCraft[i] && (currentGreen + excessGreen) >= targetPart.greenToCraft[i] && (currentYellow + excessYellow) >= targetPart.yellowToCraft[i] && (currentGrey + excessGrey) >= targetPart.greyToCraft[i] && GameController.Instance.money >= targetPart.moneyToCraft[i])
-                    {
-                        upgradeList.Add(targetPart);
-                    }
+                    upgradeList.Add(targetPart);
                 }
             }
         }
