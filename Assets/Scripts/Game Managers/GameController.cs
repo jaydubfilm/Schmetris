@@ -304,7 +304,7 @@ public class GameController : MonoBehaviour
 
     public void SaveGame(int index)
     {
-        saveManager.SetSave(index, lives, money, highestScene, game.name, bot.GetSavedResource(ResourceType.Red), bot.GetSavedResource(ResourceType.Blue), bot.GetSavedResource(ResourceType.Green), bot.GetSavedResource(ResourceType.Yellow), bot.GetSavedResource(ResourceType.Grey), bot.GetTileMap());
+        saveManager.SetSave(index, lives, money, highestScene, game.name, bot);
         RefreshBotIcons();
     }
 
@@ -359,6 +359,11 @@ public class GameController : MonoBehaviour
             bot.SetSavedResource(ResourceType.Yellow, loadData.yellow);
             bot.SetSavedResource(ResourceType.Green, loadData.green);
             bot.SetSavedResource(ResourceType.Grey, loadData.grey);
+            bot.hangarRed = loadData.hangarRed;
+            bot.hangarBlue = loadData.hangarBlue;
+            bot.hangarGreen = loadData.hangarGreen;
+            bot.hangarYellow = loadData.hangarYellow;
+            bot.hangarGrey = loadData.hangarGrey;
 
             hud.gameObject.SetActive(false);
             isPaused = true;

@@ -36,27 +36,33 @@ public class SaveManager
     }
 
     //Save data to save number
-    public void SetSave(int index, int lives, int money, int level, string game, float fuel, float blue, float green, float yellow, float grey, Sprite[,] bot)
+    public void SetSave(int index, int lives, int money, int level, string game, Bot bot)
     {
         SaveData newData = new SaveData();
         newData.lives = lives;
         newData.money = money;
         newData.level = level;
-        newData.fuel = fuel;
-        newData.blue = blue;
-        newData.green = green;
-        newData.yellow = yellow;
-        newData.grey = grey;
+        newData.fuel = bot.GetSavedResource(ResourceType.Red);
+        newData.blue = bot.GetSavedResource(ResourceType.Blue);
+        newData.green = bot.GetSavedResource(ResourceType.Green);
+        newData.yellow = bot.GetSavedResource(ResourceType.Yellow);
+        newData.grey = bot.GetSavedResource(ResourceType.Grey);
+        newData.hangarRed = bot.hangarRed;
+        newData.hangarBlue = bot.hangarBlue;
+        newData.hangarGreen = bot.hangarGreen;
+        newData.hangarYellow = bot.hangarYellow;
+        newData.hangarGrey = bot.hangarGrey;
         newData.game = game;
 
-        newData.bot = new BotData[bot.GetLength(0)];
-        for(int x = 0;x < bot.GetLength(0);x++)
+        Sprite[,] botMap = bot.GetTileMap();
+        newData.bot = new BotData[botMap.GetLength(0)];
+        for(int x = 0;x < botMap.GetLength(0);x++)
         {
             newData.bot[x] = new BotData();
-            newData.bot[x].botRow = new string[bot.GetLength(1)];
-            for(int y = 0;y<bot.GetLength(1);y++)
+            newData.bot[x].botRow = new string[botMap.GetLength(1)];
+            for(int y = 0;y< botMap.GetLength(1);y++)
             {
-                newData.bot[x].botRow[y] = bot[x, y] ? bot[x, y].name : "";
+                newData.bot[x].botRow[y] = botMap[x, y] ? botMap[x, y].name : "";
             }
         }
 
@@ -76,6 +82,11 @@ public class SaveManager
         newData.green = 0;
         newData.yellow = 0;
         newData.grey = 0;
+        newData.hangarRed = 0;
+        newData.hangarBlue = 0;
+        newData.hangarGreen = 0;
+        newData.hangarYellow = 0;
+        newData.hangarGrey = 0;
         newData.game = "LAYOUT";
 
         newData.bot = new BotData[bot.GetLength(0)];
@@ -114,6 +125,11 @@ public class SaveManager
             newData.green = 0;
             newData.yellow = 0;
             newData.grey = 0;
+            newData.hangarRed = 0;
+            newData.hangarBlue = 0;
+            newData.hangarGreen = 0;
+            newData.hangarYellow = 0;
+            newData.hangarGrey = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -130,6 +146,11 @@ public class SaveManager
             newData.green = 0;
             newData.yellow = 0;
             newData.grey = 0;
+            newData.hangarRed = 0;
+            newData.hangarBlue = 0;
+            newData.hangarGreen = 0;
+            newData.hangarYellow = 0;
+            newData.hangarGrey = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -152,6 +173,11 @@ public class SaveManager
             newData.green = 0;
             newData.yellow = 0;
             newData.grey = 0;
+            newData.hangarRed = 0;
+            newData.hangarBlue = 0;
+            newData.hangarGreen = 0;
+            newData.hangarYellow = 0;
+            newData.hangarGrey = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -168,6 +194,11 @@ public class SaveManager
             newData.green = 0;
             newData.yellow = 0;
             newData.grey = 0;
+            newData.hangarRed = 0;
+            newData.hangarBlue = 0;
+            newData.hangarGreen = 0;
+            newData.hangarYellow = 0;
+            newData.hangarGrey = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -239,6 +270,11 @@ public class SaveData
     public float green;     //Stored green resource
     public float yellow;    //Stored yellow resource
     public float grey;      //Stored grey resource
+    public float hangarRed; //Excess red resource
+    public float hangarBlue; //Excess blue resource
+    public float hangarGreen; //Excess green resource
+    public float hangarYellow; //Excess yellow resource
+    public float hangarGrey; //Excess grey resource
     public BotData[] bot;   //Bot tilemap for reloading save
 }
 

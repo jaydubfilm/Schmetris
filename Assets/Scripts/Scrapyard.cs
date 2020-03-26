@@ -99,13 +99,11 @@ public class Scrapyard : MonoBehaviour
     float currentGreen = 0;
     float currentYellow = 0;
     float currentGrey = 0;
-    float totalResources
-    {
-        get
-        {
-            return currentFuel + currentBlue + currentGreen + currentYellow + currentGrey;
-        }
-    }
+    float excessRed = 0;
+    float excessBlue = 0;
+    float excessGreen = 0;
+    float excessYellow = 0;
+    float excessGrey = 0;
     int currentMoney = 0;
     int transactionAmount = 0;
     Sprite[,] botMap;
@@ -158,6 +156,11 @@ public class Scrapyard : MonoBehaviour
         currentYellow = GameController.Instance.bot.GetSavedResource(ResourceType.Yellow);
         currentGreen = GameController.Instance.bot.GetSavedResource(ResourceType.Green);
         currentGrey = GameController.Instance.bot.GetSavedResource(ResourceType.Grey);
+        excessRed = GameController.Instance.bot.hangarRed;
+        excessBlue = GameController.Instance.bot.hangarBlue;
+        excessGreen = GameController.Instance.bot.hangarGreen;
+        excessYellow = GameController.Instance.bot.hangarYellow;
+        excessGrey = GameController.Instance.bot.hangarGrey;
 
         //Load bot map
         botMap = GameController.Instance.bot.GetTileMap();
@@ -187,6 +190,11 @@ public class Scrapyard : MonoBehaviour
         GameController.Instance.bot.SetSavedResource(ResourceType.Yellow, currentYellow);
         GameController.Instance.bot.SetSavedResource(ResourceType.Green, currentGreen);
         GameController.Instance.bot.SetSavedResource(ResourceType.Grey, currentGrey);
+        GameController.Instance.bot.hangarRed = excessRed;
+        GameController.Instance.bot.hangarBlue = excessBlue;
+        GameController.Instance.bot.hangarGreen = excessGreen;
+        GameController.Instance.bot.hangarYellow = excessYellow;
+        GameController.Instance.bot.hangarGrey = excessGrey;
     }
 
     //Update marketplace with available purchases
@@ -260,28 +268,93 @@ public class Scrapyard : MonoBehaviour
     //Update scrapyard resource UI
     void UpdateResources()
     {
+        if(currentFuel > maxCapacity)
+        {
+            excessRed += currentFuel - maxCapacity;
+            currentFuel = maxCapacity;
+        }
+        else if (currentFuel < maxCapacity)
+        {
+            float shiftExcess = Mathf.Min(excessRed, maxCapacity - currentFuel);
+            currentFuel += shiftExcess;
+            excessRed -= shiftExcess;
+        }
+
+        if (currentBlue > maxCapacity)
+        {
+            excessBlue += currentBlue - maxCapacity;
+            currentBlue = maxCapacity;
+        }
+        else if (currentBlue < maxCapacity)
+        {
+            float shiftExcess = Mathf.Min(excessBlue, maxCapacity - currentBlue);
+            currentBlue += shiftExcess;
+            excessBlue -= shiftExcess;
+        }
+
+        if (currentGreen > maxCapacity)
+        {
+            excessGreen += currentGreen - maxCapacity;
+            currentGreen = maxCapacity;
+        }
+        else if (currentGreen < maxCapacity)
+        {
+            float shiftExcess = Mathf.Min(excessGreen, maxCapacity - currentGreen);
+            currentGreen += shiftExcess;
+            excessGreen -= shiftExcess;
+        }
+
+        if (currentYellow > maxCapacity)
+        {
+            excessYellow += currentYellow - maxCapacity;
+            currentYellow = maxCapacity;
+        }
+        else if (currentYellow < maxCapacity)
+        {
+            float shiftExcess = Mathf.Min(excessYellow, maxCapacity - currentYellow);
+            currentYellow += shiftExcess;
+            excessYellow -= shiftExcess;
+        }
+
+        if (currentGrey > maxCapacity)
+        {
+            excessGrey += currentGrey - maxCapacity;
+            currentGrey = maxCapacity;
+        }
+        else if (currentGrey < maxCapacity)
+        {
+            float shiftExcess = Mathf.Min(excessGrey, maxCapacity - currentGrey);
+            currentGrey += shiftExcess;
+            excessGrey -= shiftExcess;
+        }
+
         playerMoney.text = "Money: $" + currentMoney.ToString();
         transactionMoney.text = "After: $" + transactionAmount;
 
         blueBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentBlue / maxCapacity : 0), blueBar.sizeDelta.y);
         blueAmount.text = Mathf.RoundToInt(currentBlue).ToString();
         blueBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Blue)).ToString() + "/s";
+        blueAmount.text += " (+" + Mathf.RoundToInt(excessBlue).ToString() + ")";
 
         yellowBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentYellow / maxCapacity : 0), yellowBar.sizeDelta.y);
         yellowAmount.text = Mathf.RoundToInt(currentYellow).ToString();
         yellowBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Yellow)).ToString() + "/s";
+        yellowAmount.text += " (+" + Mathf.RoundToInt(excessYellow).ToString() + ")";
 
         greenBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentGreen / maxCapacity : 0), greenBar.sizeDelta.y);
         greenAmount.text = Mathf.RoundToInt(currentGreen).ToString();
         greenBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Green)).ToString() + "/s";
+        greenAmount.text += " (+" + Mathf.RoundToInt(excessGreen).ToString() + ")";
 
         greyBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentGrey / maxCapacity : 0), greyBar.sizeDelta.y);
         greyAmount.text = Mathf.RoundToInt(currentGrey).ToString();
         greyBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Grey)).ToString() + "/s";
+        greyAmount.text += " (+" + Mathf.RoundToInt(excessGrey).ToString() + ")";
 
         fuelBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentFuel / maxCapacity : 0), fuelBar.sizeDelta.y);
         redAmount.text = Mathf.RoundToInt(currentFuel).ToString();
         redBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Red)).ToString() + "/s";
+        redAmount.text += " (+" + Mathf.RoundToInt(excessRed).ToString() + ")";
     }
 
     //Update temp bot capacity based on assets in the bot grid
@@ -473,29 +546,19 @@ public class Scrapyard : MonoBehaviour
         switch (resource)
         {
             case "RED":
-                if (totalResources - currentFuel > maxCapacity - resourceChange)
-                    return;
-                currentFuel = Mathf.Min(maxCapacity, currentFuel + resourceChange);
+                currentFuel += resourceChange;
                 break;
             case "BLUE":
-                if (totalResources - currentBlue > maxCapacity - resourceChange)
-                    return;
-                currentBlue = Mathf.Min(maxCapacity, currentBlue + resourceChange);
+                currentBlue += resourceChange;
                 break;
             case "YELLOW":
-                if (totalResources - currentYellow > maxCapacity - resourceChange)
-                    return;
-                currentYellow = Mathf.Min(maxCapacity, currentYellow + resourceChange);
+                currentYellow += resourceChange;
                 break;
             case "GREEN":
-                if (totalResources - currentGreen > maxCapacity - resourceChange)
-                    return;
-                currentGreen = Mathf.Min(maxCapacity, currentGreen + resourceChange);
+                currentGreen += resourceChange;
                 break;
             case "GREY":
-                if (totalResources - currentGrey > maxCapacity - resourceChange)
-                    return;
-                currentGrey = Mathf.Min(maxCapacity, currentGrey + resourceChange);
+                currentGrey += resourceChange;
                 break;
         }
 
@@ -758,11 +821,11 @@ public class Scrapyard : MonoBehaviour
     public void CompleteConfirmedConvert()
     {
         canMove = true;
-        currentFuel = Mathf.Min(currentFuel + tempRedAmount, maxCapacity - (totalResources - currentFuel));
-        currentBlue = Mathf.Min(currentBlue + tempBlueAmount, maxCapacity - (totalResources - currentBlue));
-        currentYellow = Mathf.Min(currentYellow + tempYellowAmount, maxCapacity - (totalResources - currentYellow));
-        currentGreen = Mathf.Min(currentGreen + tempGreenAmount, maxCapacity - (totalResources - currentGreen));
-        currentGrey = Mathf.Min(currentGrey + tempGreyAmount, maxCapacity - (totalResources - currentGrey));
+        currentFuel += tempRedAmount;
+        currentBlue += tempBlueAmount;
+        currentYellow += tempYellowAmount;
+        currentGreen += tempGreenAmount;
+        currentGrey += tempGreyAmount;
         tempRedAmount = 0;
         tempBlueAmount = 0;
         tempYellowAmount = 0;
@@ -808,7 +871,7 @@ public class Scrapyard : MonoBehaviour
             {
                 if(selectedPart == targetPart.basePartToCraft[i])
                 {
-                    if(currentBlue >= targetPart.blueToCraft[i] && currentFuel >= targetPart.redToCraft[i] && currentGreen >= targetPart.greenToCraft[i] && currentYellow >= targetPart.yellowToCraft[i] && currentGrey >= targetPart.greyToCraft[i] && GameController.Instance.money >= targetPart.moneyToCraft[i])
+                    if((currentBlue + excessBlue) >= targetPart.blueToCraft[i] && (currentFuel + excessRed) >= targetPart.redToCraft[i] && (currentGreen + excessGreen) >= targetPart.greenToCraft[i] && (currentYellow + excessYellow) >= targetPart.yellowToCraft[i] && (currentGrey + excessGrey) >= targetPart.greyToCraft[i] && GameController.Instance.money >= targetPart.moneyToCraft[i])
                     {
                         return true;
                     }
@@ -831,7 +894,7 @@ public class Scrapyard : MonoBehaviour
             {
                 if (selectedPart == targetPart.basePartToCraft[i])
                 {
-                    if (currentBlue >= targetPart.blueToCraft[i] && currentFuel >= targetPart.redToCraft[i] && currentGreen >= targetPart.greenToCraft[i] && currentYellow >= targetPart.yellowToCraft[i] && currentGrey >= targetPart.greyToCraft[i] && GameController.Instance.money >= targetPart.moneyToCraft[i])
+                    if ((currentBlue + excessBlue) >= targetPart.blueToCraft[i] && (currentFuel + excessRed) >= targetPart.redToCraft[i] && (currentGreen + excessGreen) >= targetPart.greenToCraft[i] && (currentYellow + excessYellow) >= targetPart.yellowToCraft[i] && (currentGrey + excessGrey) >= targetPart.greyToCraft[i] && GameController.Instance.money >= targetPart.moneyToCraft[i])
                     {
                         currentBlue -= targetPart.blueToCraft[i];
                         currentFuel -= targetPart.redToCraft[i];
