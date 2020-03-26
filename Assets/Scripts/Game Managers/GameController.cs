@@ -308,9 +308,9 @@ public class GameController : MonoBehaviour
         RefreshBotIcons();
     }
 
-    public void SaveLayout(int index)
+    public void SaveLayout(int index, Sprite[,] map)
     {
-        saveManager.SetLayout(index, bot.GetTileMap());
+        saveManager.SetLayout(index, map);
         RefreshBotIcons();
     }
 

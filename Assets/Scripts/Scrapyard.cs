@@ -19,11 +19,12 @@ public class Scrapyard : MonoBehaviour
     public GameObject confirmUpgrade;
     public GameObject confirmConvert;
     public GameObject brickOptions;
-    public Button sellOption;
-    public Button upgradeOption;
-    public Button convertOption;
     public Text sellText;
     public Text convertText;
+    public Text upgradeText;
+    public GameObject brickOptionsPrefab;
+    List<GameObject> brickOptionButtons = new List<GameObject>();
+    public Transform brickOptionsGrid;
 
     //Resources UI
     public Text playerMoney;
@@ -107,6 +108,7 @@ public class Scrapyard : MonoBehaviour
     int currentMoney = 0;
     int transactionAmount = 0;
     Sprite[,] botMap;
+    List<GameObject> uncommittedBricks = new List<GameObject>();
 
     //Temp prices
     int resourceChange = 1;
@@ -116,12 +118,14 @@ public class Scrapyard : MonoBehaviour
     int brickSell = 10;
 
     //Sub-menu text amounts
-    int tempSellAmount = 0;
+    int tempMoneyAmount = 0;
     int tempRedAmount = 0;
     int tempBlueAmount = 0;
     int tempGreenAmount = 0;
     int tempYellowAmount = 0;
     int tempGreyAmount = 0;
+    List<CraftedPart> tempUpgrades = new List<CraftedPart>();
+    string tempUpgrade = "";
 
     //Init - Load resources before building UI
     void LoadComponents()
@@ -169,6 +173,9 @@ public class Scrapyard : MonoBehaviour
     //Update bot with scrapyard changes
     public void SaveBotComponents()
     {
+        //Make sure all bricks are attached to bot
+        SnapBricksToBot();
+
         //Save bot map
         for (int x = 0; x < botMap.GetLength(0); x++)
         {
@@ -195,6 +202,78 @@ public class Scrapyard : MonoBehaviour
         GameController.Instance.bot.hangarGreen = excessGreen;
         GameController.Instance.bot.hangarYellow = excessYellow;
         GameController.Instance.bot.hangarGrey = excessGrey;
+    }
+
+    //Attach all floating bricks to the main bot before saving
+    void SnapBricksToBot()
+    {
+        //~Does sprite have a sprite-filled path back to core?
+        //~If not, find shortest route to core, move sprite to last spriteless space before bot
+
+        List<Vector2Int> checkedCoords = new List<Vector2Int>();
+        Vector2Int startPoint = GameController.Instance.bot.coreV2;
+        for(int i = 0;i<GameController.Instance.bot.maxBotRadius;i++)
+        {
+            for(int x = 0;x <= i; x++)
+            {
+                Vector2Int testCoord = new Vector2Int(x, i);
+                if(!checkedCoords.Contains(testCoord))
+                {
+                    if(!IsCoreConnected(testCoord))
+                    {
+                        ConnectToCore();
+                    }
+                    checkedCoords.Add(testCoord);
+                }
+                if (!checkedCoords.Contains(testCoord * -1))
+                {
+                    if (!IsCoreConnected(testCoord * -1))
+                    {
+                        ConnectToCore();
+                    }
+                    checkedCoords.Add(testCoord * -1);
+                }
+            }
+
+            for (int y = 0; y <= i; y++)
+            {
+                Vector2Int testCoord = new Vector2Int(-i, y);
+                if (!checkedCoords.Contains(testCoord))
+                {
+                    if (!IsCoreConnected(testCoord))
+                    {
+                        ConnectToCore();
+                    }
+                    checkedCoords.Add(testCoord);
+                }
+                if (!checkedCoords.Contains(testCoord * -1))
+                {
+                    if (!IsCoreConnected(testCoord * -1))
+                    {
+                        ConnectToCore();
+                    }
+                    checkedCoords.Add(testCoord * -1);
+                }
+            }
+        }
+    }
+
+    //Check if a brick has a route back to the core
+    bool IsCoreConnected(Vector2Int coords)
+    {
+        for (int x = 0; x < botMap.GetLength(0); x++)
+        {
+            for (int y = 0; y < botMap.GetLength(1); y++)
+            {
+            }
+        }
+        return true;
+    }
+
+    //Connect unconnected sprite to closest possible point to core
+    void ConnectToCore()
+    {
+
     }
 
     //Update marketplace with available purchases
@@ -249,8 +328,13 @@ public class Scrapyard : MonoBehaviour
                 if (botMap[x, y])
                 {
                     newTileImage.sprite = botMap[x, y];
-                    if (CanUpgrade(newTileImage.sprite))
-                        newTile.transform.GetChild(0).gameObject.SetActive(true);
+                    List<CraftedPart> checkUpgrades = GetUpgradeList(newTileImage.sprite);
+                    foreach (CraftedPart CheckPart in checkUpgrades)
+                    {
+                        //~
+                        if(CanUpgrade(newTileImage.sprite,CheckPart))
+                            newTile.transform.GetChild(0).gameObject.SetActive(true);
+                    }
                 }
                 else
                 {
@@ -456,6 +540,7 @@ public class Scrapyard : MonoBehaviour
                 {
                     if (botBricks.Contains(targets[i].gameObject) && targets[i].gameObject.GetComponent<Image>().color == Color.clear)
                     {
+                        uncommittedBricks.Add(targets[i].gameObject);
                         targets[i].gameObject.GetComponent<Image>().color = Color.white;
                         targets[i].gameObject.GetComponent<Image>().sprite = selectedBrick.GetComponent<Image>().sprite;
                         if (isMarketBrick)
@@ -476,6 +561,7 @@ public class Scrapyard : MonoBehaviour
                 BuildMarketplace();
                 if (botBrick)
                 {
+                    uncommittedBricks.Add(botBrick);
                     botBrick.GetComponent<Image>().color = Color.white;
                 }
             }
@@ -490,12 +576,13 @@ public class Scrapyard : MonoBehaviour
             {
                 if (botBrick && !selectedBrick)
                 {
-                    //Reposition selected brick
-                    if (!isTranslating)
+                    //Reposition selected brick (if able)
+                    if (!isTranslating && uncommittedBricks.Contains(botBrick))
                     {
                         selectedBrick = Instantiate(botTile, transform.parent);
                         selectedBrick.GetComponent<Image>().sprite = botBrick.GetComponent<Image>().sprite;
                         botBrick.GetComponent<Image>().color = Color.clear;
+                        uncommittedBricks.Remove(botBrick);
 
                         if (selectedBrick.GetComponentInChildren<Text>())
                             selectedBrick.GetComponentInChildren<Text>().enabled = false;
@@ -505,7 +592,7 @@ public class Scrapyard : MonoBehaviour
                     }
 
                     //Core selected - reposition bot instead
-                    else
+                    else if (isTranslating)
                     {
                         Vector2 newBotPos = botDisplay.GetComponent<RectTransform>().anchoredPosition + new Vector2(Input.mousePosition.x - prevMousePos.x, Input.mousePosition.y - prevMousePos.y);
                         newBotPos.x = Mathf.Clamp(newBotPos.x, -botBounds, botBounds);
@@ -667,8 +754,8 @@ public class Scrapyard : MonoBehaviour
     public void ConfirmSell()
     {
         canMove = false;
-        tempSellAmount = brickSell;
-        sellText.text = "SELL FOR $" + tempSellAmount + "?";
+        tempMoneyAmount = uncommittedBricks.Contains(sellBrick) ? brickCost : brickSell;
+        sellText.text = "SELL FOR $" + tempMoneyAmount + "?";
         brickOptions.SetActive(false);
         confirmSell.SetActive(true);
     }
@@ -698,34 +785,80 @@ public class Scrapyard : MonoBehaviour
         convertText.text = "CONVERT FOR ";
         if(tempRedAmount > 0)
         {
-            convertText.text += tempRedAmount.ToString() + " RED,";
+            convertText.text += tempRedAmount.ToString() + " RED, ";
         }
         if (tempBlueAmount > 0)
         {
-            convertText.text += tempBlueAmount.ToString() + " BLUE,";
+            convertText.text += tempBlueAmount.ToString() + " BLUE, ";
         }
         if (tempGreenAmount > 0)
         {
-            convertText.text += tempGreenAmount.ToString() + " GREEN,";
+            convertText.text += tempGreenAmount.ToString() + " GREEN, ";
         }
         if (tempYellowAmount > 0)
         {
-            convertText.text += tempYellowAmount.ToString() + " YELLOW,";
+            convertText.text += tempYellowAmount.ToString() + " YELLOW, ";
         }
         if (tempGreyAmount > 0)
         {
-            convertText.text += tempGreyAmount.ToString() + " GREY,";
+            convertText.text += tempGreyAmount.ToString() + " GREY, ";
         }
-        convertText.text = convertText.text.Substring(0, convertText.text.Length - 1);
+        convertText.text = convertText.text.Substring(0, convertText.text.Length - 2);
         convertText.text += "?";
         brickOptions.SetActive(false);
         confirmConvert.SetActive(true);
     }
 
     //Button for confirming brick upgrade
-    public void ConfirmUpgrade()
+    public void ConfirmUpgrade(string upgradeName)
     {
         canMove = false;
+        tempUpgrade = upgradeName;
+        foreach (CraftedPart TempPart in tempUpgrades)
+        {
+            for(int i = 0;i<TempPart.scrapyardName.Length;i++)
+            {
+                if(tempUpgrade == TempPart.scrapyardName[i])
+                {
+                    tempMoneyAmount = TempPart.moneyToCraft[i];
+                    tempRedAmount = TempPart.redToCraft[i];
+                    tempBlueAmount = TempPart.blueToCraft[i];
+                    tempGreenAmount = TempPart.greenToCraft[i];
+                    tempYellowAmount = TempPart.yellowToCraft[i];
+                    tempGreyAmount = TempPart.greyToCraft[i];
+                    break;
+                }
+            }
+        }
+
+        upgradeText.text = "UPGRADE TO " + upgradeName + " FOR ";
+        if(tempMoneyAmount > 0)
+        {
+            upgradeText.text += "$" + tempMoneyAmount.ToString() + ", ";
+        }
+        if (tempRedAmount > 0)
+        {
+            upgradeText.text += tempRedAmount.ToString() + " RED, ";
+        }
+        if (tempBlueAmount > 0)
+        {
+            upgradeText.text += tempBlueAmount.ToString() + " BLUE, ";
+        }
+        if (tempGreenAmount > 0)
+        {
+            upgradeText.text += tempGreenAmount.ToString() + " GREEN, ";
+        }
+        if (tempYellowAmount > 0)
+        {
+            upgradeText.text += tempYellowAmount.ToString() + " YELLOW, ";
+        }
+        if (tempGreyAmount > 0)
+        {
+            upgradeText.text += tempGreyAmount.ToString() + " GREY, ";
+        }
+        upgradeText.text = upgradeText.text.Substring(0, upgradeText.text.Length - 2);
+        upgradeText.text += "?";
+
         brickOptions.SetActive(false);
         confirmUpgrade.SetActive(true);
     }
@@ -755,9 +888,59 @@ public class Scrapyard : MonoBehaviour
     public void BrickOptions()
     {
         canMove = false;
-        sellOption.interactable = CanSell(sellBrick);
-        convertOption.interactable = CanConvert(sellBrick);
-        upgradeOption.interactable = CanUpgrade(sellBrick.GetComponent<Image>().sprite);
+
+        for (int i = 0; i < brickOptionButtons.Count; i++)
+        {
+            Destroy(brickOptionButtons[i]);
+        }
+        brickOptionButtons = new List<GameObject>();
+
+        GameObject sellButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
+        sellButton.GetComponent<Text>().text = "SELL";
+        if (CanSell(sellBrick))
+        {
+            sellButton.GetComponent<Button>().onClick.AddListener(() => { ConfirmSell(); });
+        }
+        else
+        {
+            sellButton.GetComponent<Button>().interactable = false;
+        }
+        brickOptionButtons.Add(sellButton);
+
+        GameObject convertButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
+        convertButton.GetComponent<Text>().text = "CONVERT";
+        if (CanConvert(sellBrick))
+        {
+            convertButton.GetComponent<Button>().onClick.AddListener(() => { ConfirmConvert(); });
+        }
+        else
+        {
+            convertButton.GetComponent<Button>().interactable = false;
+        }
+        brickOptionButtons.Add(convertButton);
+
+        tempUpgrades = GetUpgradeList(sellBrick.GetComponent<Image>().sprite);
+        foreach (CraftedPart TempPart in tempUpgrades)
+        {
+            GameObject upgradeButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
+            string targetUpgrade = GetUpgradeName(sellBrick.GetComponent<Image>().sprite, TempPart);
+            upgradeButton.GetComponent<Text>().text = "UPGRADE: " + targetUpgrade;
+            if (CanUpgrade(sellBrick.GetComponent<Image>().sprite, TempPart))
+            {
+                upgradeButton.GetComponent<Button>().onClick.AddListener(() => { ConfirmUpgrade(targetUpgrade); });
+            }
+            else
+            {
+                upgradeButton.GetComponent<Button>().interactable = false;
+            }
+            brickOptionButtons.Add(upgradeButton);
+        }
+
+        GameObject backButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
+        backButton.GetComponent<Text>().text = "BACK";
+        backButton.GetComponent<Button>().onClick.AddListener(() => { CloseSubMenu(); });
+        brickOptionButtons.Add(backButton);
+
         brickOptions.SetActive(true);
     }
 
@@ -805,14 +988,65 @@ public class Scrapyard : MonoBehaviour
         return false;
     }
 
+    //Check what upgrades are available for the selected part
+    List<CraftedPart> GetUpgradeList(Sprite selectedPart)
+    {
+        List<CraftedPart> upgradeList = new List<CraftedPart>();
+        foreach (GameObject Upgrade in craftableParts)
+        {
+            CraftedPart targetPart = Upgrade.GetComponent<CraftedPart>();
+            for (int i = 0; i < targetPart.basePartToCraft.Length; i++)
+            {
+                if (selectedPart == targetPart.basePartToCraft[i])
+                {
+                    if ((currentBlue + excessBlue) >= targetPart.blueToCraft[i] && (currentFuel + excessRed) >= targetPart.redToCraft[i] && (currentGreen + excessGreen) >= targetPart.greenToCraft[i] && (currentYellow + excessYellow) >= targetPart.yellowToCraft[i] && (currentGrey + excessGrey) >= targetPart.greyToCraft[i] && GameController.Instance.money >= targetPart.moneyToCraft[i])
+                    {
+                        upgradeList.Add(targetPart);
+                    }
+                }
+            }
+        }
+        return upgradeList;
+    }
+
+    //Check if the player can afford the selected upgrade
+    bool CanUpgrade(Sprite selectedPart, CraftedPart selectedUpgrade)
+    {
+        for (int i = 0; i < selectedUpgrade.basePartToCraft.Length; i++)
+        {
+            if (selectedPart == selectedUpgrade.basePartToCraft[i])
+            {
+                return (currentBlue + excessBlue) >= selectedUpgrade.blueToCraft[i] && (currentFuel + excessRed) >= selectedUpgrade.redToCraft[i] && (currentGreen + excessGreen) >= selectedUpgrade.greenToCraft[i] && (currentYellow + excessYellow) >= selectedUpgrade.yellowToCraft[i] && (currentGrey + excessGrey) >= selectedUpgrade.greyToCraft[i] && GameController.Instance.money >= selectedUpgrade.moneyToCraft[i];
+            }
+        }
+        return false;
+    }
+
+    //Get the name of the player's target upgrade
+    string GetUpgradeName(Sprite selectedPart, CraftedPart selectedUpgrade)
+    {
+        for (int i = 0; i < selectedUpgrade.basePartToCraft.Length; i++)
+        {
+            if (selectedPart == selectedUpgrade.basePartToCraft[i])
+            {
+                return selectedUpgrade.scrapyardName[i];
+            }
+        }
+        return "";
+    }
+
     //Button for selling confirmed bricks
     public void CompleteConfirmedSell()
     {
         canMove = true;
+        if(uncommittedBricks.Contains(sellBrick))
+        {
+            uncommittedBricks.Remove(sellBrick);
+        }
         sellBrick.GetComponent<Image>().color = Color.clear;
         sellBrick = null;
-        transactionAmount += tempSellAmount;
-        tempSellAmount = 0;
+        transactionAmount += tempMoneyAmount;
+        tempMoneyAmount = 0;
         UpdateResources();
         CloseSubMenu();
     }
@@ -837,6 +1071,42 @@ public class Scrapyard : MonoBehaviour
         CloseSubMenu();
     }
 
+    //Button for completing a brick upgrade
+    public void CompleteConfirmedUpgrade()
+    {
+        canMove = true;
+
+        foreach (CraftedPart TempPart in tempUpgrades)
+        {
+            for (int i = 0; i < TempPart.scrapyardName.Length; i++)
+            {
+                if (tempUpgrade == TempPart.scrapyardName[i])
+                {
+                    currentBlue -= TempPart.blueToCraft[i];
+                    currentFuel -= TempPart.redToCraft[i];
+                    currentGreen -= TempPart.greenToCraft[i];
+                    currentYellow -= TempPart.yellowToCraft[i];
+                    currentGrey -= TempPart.greyToCraft[i];
+                    transactionAmount -= TempPart.moneyToCraft[i];
+                    sellBrick.GetComponent<Image>().sprite = TempPart.GetComponent<Brick>().spriteArr[i];
+                    break;
+                }
+            }
+        }
+
+        tempUpgrade = "";
+        tempUpgrades = new List<CraftedPart>();
+        tempMoneyAmount = 0;
+        tempRedAmount = 0;
+        tempBlueAmount = 0;
+        tempYellowAmount = 0;
+        tempGreyAmount = 0;
+        tempGreenAmount = 0;
+        sellBrick = null;
+        UpdateResources();
+        CloseSubMenu();
+    }
+
     //Button for confirming return to map screen
     public void ConfirmMapScreen()
     {
@@ -848,6 +1118,7 @@ public class Scrapyard : MonoBehaviour
     public void CompleteConfirmedPurchase()
     {
         canMove = true;
+        uncommittedBricks = new List<GameObject>();
         SaveBotComponents();
         UpdateScrapyard();
     }
@@ -855,69 +1126,30 @@ public class Scrapyard : MonoBehaviour
     //Button for return bot to state of confirmed changes
     public void ResetChanges()
     {
+        uncommittedBricks = new List<GameObject>();
         LoadBotComponents();
         UpdateScrapyard();
-    }
-
-    //~~~
-
-    //Check if this part is upgradeable with player's existing resources
-    bool CanUpgrade(Sprite selectedPart)
-    {
-        foreach(GameObject Upgrade in craftableParts)
-        {
-            CraftedPart targetPart = Upgrade.GetComponent<CraftedPart>();
-            for (int i = 0;i< targetPart.basePartToCraft.Length;i++)
-            {
-                if(selectedPart == targetPart.basePartToCraft[i])
-                {
-                    if((currentBlue + excessBlue) >= targetPart.blueToCraft[i] && (currentFuel + excessRed) >= targetPart.redToCraft[i] && (currentGreen + excessGreen) >= targetPart.greenToCraft[i] && (currentYellow + excessYellow) >= targetPart.yellowToCraft[i] && (currentGrey + excessGrey) >= targetPart.greyToCraft[i] && GameController.Instance.money >= targetPart.moneyToCraft[i])
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    //Button for completing a brick upgrade
-    public void CompleteConfirmedUpgrade()
-    {
-        canMove = true;
-
-        Sprite selectedPart = sellBrick.GetComponent<Image>().sprite;
-        foreach (GameObject Upgrade in craftableParts)
-        {
-            CraftedPart targetPart = Upgrade.GetComponent<CraftedPart>();
-            for (int i = 0; i < targetPart.basePartToCraft.Length; i++)
-            {
-                if (selectedPart == targetPart.basePartToCraft[i])
-                {
-                    if ((currentBlue + excessBlue) >= targetPart.blueToCraft[i] && (currentFuel + excessRed) >= targetPart.redToCraft[i] && (currentGreen + excessGreen) >= targetPart.greenToCraft[i] && (currentYellow + excessYellow) >= targetPart.yellowToCraft[i] && (currentGrey + excessGrey) >= targetPart.greyToCraft[i] && GameController.Instance.money >= targetPart.moneyToCraft[i])
-                    {
-                        currentBlue -= targetPart.blueToCraft[i];
-                        currentFuel -= targetPart.redToCraft[i];
-                        currentGreen -= targetPart.greenToCraft[i];
-                        currentYellow -= targetPart.yellowToCraft[i];
-                        currentGrey -= targetPart.greyToCraft[i];
-                        transactionAmount -= targetPart.moneyToCraft[i];
-                        sellBrick.GetComponent<Image>().sprite = targetPart.GetComponent<Brick>().spriteArr[i];
-                        break;
-                    }
-                }
-            }
-        }
-
-        CompleteConfirmedPurchase();
     }
 
     //Buttons for saving layout to a chosen slot
     public void SaveLayout(int index)
     {
-        GameController.Instance.SaveLayout(index);
+        Sprite[,] layoutMap = new Sprite[botMap.GetLength(0), botMap.GetLength(1)];
+        for (int x = 0; x < layoutMap.GetLength(0); x++)
+        {
+            for (int y = 0; y < layoutMap.GetLength(1); y++)
+            {
+                if (botBricks[x + y * layoutMap.GetLength(1)].GetComponent<Image>().color != Color.clear)
+                    layoutMap[x, y] = botBricks[x + y * layoutMap.GetLength(1)].GetComponent<Image>().sprite;
+                else
+                    layoutMap[x, y] = null;
+            }
+        }
+        GameController.Instance.SaveLayout(index, layoutMap);
         CloseSubMenu();
     }
+
+    //~~~
 
     //Buttons for loading layout from a chosen slot
     public void LoadLayout(int index)

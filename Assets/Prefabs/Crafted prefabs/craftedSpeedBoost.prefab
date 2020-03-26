@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4703832597231c74f85d38247767409f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scrapyardName:
+  - Speed Boost
   moneyToCraft: 90010000
   redToCraft: 64000000
   blueToCraft: 00000000

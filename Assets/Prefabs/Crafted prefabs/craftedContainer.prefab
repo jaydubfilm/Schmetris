@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4703832597231c74f85d38247767409f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scrapyardName:
+  - Container 1
+  - Container 2
+  - Container 3
   moneyToCraft: 2c010000e8030000d0070000
   redToCraft: 000000000000000000000000
   blueToCraft: 000000000000000000000000
@@ -38,6 +42,7 @@ MonoBehaviour:
   - 100
   - 200
   - 500
+  canCollect: 1
   directionPrefab: {fileID: 7089365747845026864, guid: e1bba3a06e61f6648920e512bcc9ab01,
     type: 3}
   startDirection: 0
