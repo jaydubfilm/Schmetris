@@ -207,73 +207,197 @@ public class Scrapyard : MonoBehaviour
     //Attach all floating bricks to the main bot before saving
     void SnapBricksToBot()
     {
-        //~Does sprite have a sprite-filled path back to core?
-        //~If not, find shortest route to core, move sprite to last spriteless space before bot
-
+        //Starting at the center, check all bricks to make sure they're connected to the main bot
         List<Vector2Int> checkedCoords = new List<Vector2Int>();
         Vector2Int startPoint = GameController.Instance.bot.coreV2;
-        for(int i = 0;i<GameController.Instance.bot.maxBotRadius;i++)
+        for(int i = 0;i<=GameController.Instance.bot.maxBotRadius;i++)
         {
             for(int x = 0;x <= i; x++)
             {
-                Vector2Int testCoord = new Vector2Int(x, i);
-                if(!checkedCoords.Contains(testCoord))
+                Vector2Int testCoordA = new Vector2Int(startPoint.x + x, startPoint.y + i);
+                Vector2Int testCoordB = new Vector2Int(startPoint.x - x, startPoint.y - i);
+                if (!checkedCoords.Contains(testCoordA))
                 {
-                    if(!IsCoreConnected(testCoord))
+                    if (botBricks[testCoordA.x + testCoordA.y * botMap.GetLength(1)].GetComponent<Image>().color != Color.clear)
                     {
-                        ConnectToCore();
+                        if (!IsCoreConnected(testCoordA, new List<Vector2Int>()))
+                        {
+                            ConnectToCore(testCoordA);
+                        }
                     }
-                    checkedCoords.Add(testCoord);
+                    checkedCoords.Add(testCoordA);
                 }
-                if (!checkedCoords.Contains(testCoord * -1))
+                if (!checkedCoords.Contains(testCoordB))
                 {
-                    if (!IsCoreConnected(testCoord * -1))
+                    if (botBricks[testCoordB.x + testCoordB.y * botMap.GetLength(1)].GetComponent<Image>().color != Color.clear)
                     {
-                        ConnectToCore();
+                        if (!IsCoreConnected(testCoordB, new List<Vector2Int>()))
+                        {
+                            ConnectToCore(testCoordB);
+                        }
                     }
-                    checkedCoords.Add(testCoord * -1);
+                    checkedCoords.Add(testCoordB);
                 }
             }
 
             for (int y = 0; y <= i; y++)
             {
-                Vector2Int testCoord = new Vector2Int(-i, y);
-                if (!checkedCoords.Contains(testCoord))
+                Vector2Int testCoordA = new Vector2Int(startPoint.x - i, startPoint.y + y);
+                Vector2Int testCoordB = new Vector2Int(startPoint.x + i, startPoint.y - y);
+                if (!checkedCoords.Contains(testCoordA))
                 {
-                    if (!IsCoreConnected(testCoord))
+                    if (botBricks[testCoordA.x + testCoordA.y * botMap.GetLength(1)].GetComponent<Image>().color != Color.clear)
                     {
-                        ConnectToCore();
+                        if (!IsCoreConnected(testCoordA, new List<Vector2Int>()))
+                        {
+                            ConnectToCore(testCoordA);
+                        }
                     }
-                    checkedCoords.Add(testCoord);
+                    checkedCoords.Add(testCoordA);
                 }
-                if (!checkedCoords.Contains(testCoord * -1))
+                if (!checkedCoords.Contains(testCoordB))
                 {
-                    if (!IsCoreConnected(testCoord * -1))
+                    if (botBricks[testCoordB.x + testCoordB.y * botMap.GetLength(1)].GetComponent<Image>().color != Color.clear)
                     {
-                        ConnectToCore();
+                        if (!IsCoreConnected(testCoordB, new List<Vector2Int>()))
+                        {
+                            ConnectToCore(testCoordB);
+                        }
                     }
-                    checkedCoords.Add(testCoord * -1);
+                    checkedCoords.Add(testCoordB);
                 }
             }
         }
     }
 
     //Check if a brick has a route back to the core
-    bool IsCoreConnected(Vector2Int coords)
+    bool IsCoreConnected(Vector2Int coords, List<Vector2Int> checkedCoords)
     {
-        for (int x = 0; x < botMap.GetLength(0); x++)
+        //Don't check the same brick twice
+        checkedCoords.Add(coords);
+
+        //No brick found - this path is unconnected
+        if (coords.x < 0 || coords.y < 0 || coords.x >= botMap.GetLength(0) || coords.y >= botMap.GetLength(1))
+            return false;
+        if (botBricks[coords.x + coords.y * botMap.GetLength(1)].GetComponent<Image>().color == Color.clear)
+            return false;
+
+        //This brick is the core - this path is connected
+        if (coords == GameController.Instance.bot.coreV2)
+            return true;
+
+        //Check all bricks adjacent to this one for a route to the core
+        Vector2Int[] adjacentCoords = new Vector2Int[] { new Vector2Int(coords.x, coords.y + 1), new Vector2Int(coords.x, coords.y - 1), new Vector2Int(coords.x + 1, coords.y), new Vector2Int(coords.x - 1, coords.y) };
+        for(int i = 0;i<adjacentCoords.Length;i++)
         {
-            for (int y = 0; y < botMap.GetLength(1); y++)
+            if(!checkedCoords.Contains(adjacentCoords[i]))
             {
+                if(IsCoreConnected(adjacentCoords[i], checkedCoords))
+                {
+                    return true;
+                }
             }
         }
-        return true;
+
+        //No route found
+        return false;
     }
 
     //Connect unconnected sprite to closest possible point to core
-    void ConnectToCore()
+    void ConnectToCore(Vector2Int target)
     {
+        //Find shortest path between here and core
+        //List<Vector2Int> corePath = GetRouteToCore(target, new List<Vector2Int>());
 
+        //Find the closest point to the core that this sprite could be moved to
+        Image currentBrick = botBricks[target.x + target.y * botMap.GetLength(1)].GetComponent<Image>();
+        Vector2Int startPoint = GameController.Instance.bot.coreV2;
+        /*for(int i = corePath.Count - 1;i >=0;i--)
+        {
+            Image testBrick = botBricks[corePath[i].x + corePath[i].y * botMap.GetLength(1)].GetComponent<Image>();
+            if (testBrick.color == Color.clear)
+            {
+                //Snap target brick to bot
+                testBrick.sprite = currentBrick.sprite;
+                testBrick.color = Color.white;
+                currentBrick.color = Color.clear;
+                break;
+            }
+        }*/
+        while(startPoint != target)
+        {
+            if (startPoint.x < target.x)
+                startPoint.x++;
+            else if (startPoint.x > target.x)
+                startPoint.x--;
+
+            Image testBrick = botBricks[startPoint.x + startPoint.y * botMap.GetLength(1)].GetComponent<Image>();
+            if (testBrick.color == Color.clear)
+            {
+                //Snap target brick to bot
+                testBrick.sprite = currentBrick.sprite;
+                testBrick.color = Color.white;
+                currentBrick.color = Color.clear;
+                break;
+            }
+
+            if (startPoint.y < target.y)
+                startPoint.y++;
+            else if (startPoint.y > target.y)
+                startPoint.y--;
+
+            Image testBrick2 = botBricks[startPoint.x + startPoint.y * botMap.GetLength(1)].GetComponent<Image>();
+            if (testBrick2.color == Color.clear)
+            {
+                //Snap target brick to bot
+                testBrick2.sprite = currentBrick.sprite;
+                testBrick2.color = Color.white;
+                currentBrick.color = Color.clear;
+                break;
+            }
+        }
+    }
+
+    //Return a route between the current point and the core
+    List<Vector2Int> GetRouteToCore (Vector2Int coords, List<Vector2Int> routeCoords)
+    {
+        //Don't check the same brick twice in this path
+        List<Vector2Int> newRouteCoords = new List<Vector2Int>();
+        foreach(Vector2Int oldCoord in routeCoords)
+        {
+            newRouteCoords.Add(oldCoord);
+        }
+        newRouteCoords.Add(coords);
+
+        //Coords are off the bot grid - there is no path to return here
+        if (coords.x < 0 || coords.y < 0 || coords.x >= botMap.GetLength(0) || coords.y >= botMap.GetLength(1))
+            return new List<Vector2Int>();
+
+        //This brick is the core - return this path
+        if (coords == GameController.Instance.bot.coreV2)
+            return newRouteCoords;
+
+        //Check all bricks adjacent to this one for a route to the core - keep the shortest one
+        List<Vector2Int> shortestRoute = new List<Vector2Int>();
+        Vector2Int[] adjacentCoords = new Vector2Int[] { new Vector2Int(coords.x, coords.y + 1), new Vector2Int(coords.x, coords.y - 1), new Vector2Int(coords.x + 1, coords.y), new Vector2Int(coords.x - 1, coords.y) };
+        for (int i = 0; i < adjacentCoords.Length; i++)
+        {
+            if (!newRouteCoords.Contains(adjacentCoords[i]) && Vector2.Distance((Vector2)adjacentCoords[i], (Vector2)GameController.Instance.bot.coreV2) < Vector2.Distance((Vector2)coords, (Vector2)GameController.Instance.bot.coreV2))
+            {
+                List<Vector2Int> compareRoute = GetRouteToCore(adjacentCoords[i], newRouteCoords);
+                if(compareRoute.Count != 0 && compareRoute[compareRoute.Count - 1] == GameController.Instance.bot.coreV2 && (shortestRoute.Count == 0 || compareRoute.Count < shortestRoute.Count))
+                {
+                    shortestRoute = new List<Vector2Int>();
+                    foreach (Vector2Int oldCoord in compareRoute)
+                    {
+                        shortestRoute.Add(oldCoord);
+                    }
+                }
+            }
+        }
+
+        //Return shortest path
+        return shortestRoute;
     }
 
     //Update marketplace with available purchases
@@ -581,6 +705,8 @@ public class Scrapyard : MonoBehaviour
             holdingScreenTimer = 0;
             selectedBrick = null;
             botBrick = null;
+            UpdateUpgradeGlows();
+
         }
         else if (Input.GetMouseButton(0) && canMove)
         {
