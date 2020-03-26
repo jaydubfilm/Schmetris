@@ -1159,11 +1159,216 @@ public class Scrapyard : MonoBehaviour
         CloseSubMenu();
     }
 
-    //~~~
-
     //Buttons for loading layout from a chosen slot
     public void LoadLayout(int index)
     {
-        GameController.Instance.LoadLayout(index);
+        Sprite[,] newMap = GameController.Instance.LoadLayout(index);
+        if (newMap != null)
+        {
+            //Remove all exising bot changes - we're overwriting with the layout
+            ResetChanges();
+
+            //Calculate costs of layout
+            int totalMoneyCost = 0;
+            float totalRedCost = 0;
+            float totalBlueCost = 0;
+            float totalGreenCost = 0;
+            float totalYellowCost = 0;
+            float totalGreyCost = 0;
+            List<Sprite> unmatchedBricks = new List<Sprite>();
+            foreach (GameObject CheckBrick in botBricks)
+            {
+                unmatchedBricks.Add(CheckBrick.GetComponent<Image>().sprite);
+            }
+
+            for (int x = 0; x < newMap.GetLength(0); x++)
+            {
+                for (int y = 0; y < newMap.GetLength(1); y++)
+                {
+                    //For each sprite in the new layout, look for matches in the old bot
+                    Brick craftedPart = GetCraftedPart(newMap[x, y]);
+                    List<Sprite> partUpgrades = GetSpriteUpgradeList(newMap[x, y]);
+                    for (int i = partUpgrades.Count - 1; i >= 0; i--)
+                    {
+                        //If player already owns the part in question, waive costs and use the old part instead
+                        if(unmatchedBricks.Contains(partUpgrades[i]))
+                        {
+                            unmatchedBricks.Remove(partUpgrades[i]);
+                            break;
+                        }
+
+                        //Otherwise, player must pay the buy/upgrade costs associated with the new brick
+                        else
+                        {
+                            if(!craftedPart || i == 0)
+                            {
+                                totalMoneyCost += brickCost;
+                            }
+                            else if (craftedPart)
+                            {
+                                CraftedPart upgradedPart = craftedPart.GetComponent<CraftedPart>();
+                                totalMoneyCost += upgradedPart.moneyToCraft[i];
+                                totalRedCost += upgradedPart.redToCraft[i];
+                                totalBlueCost += upgradedPart.blueToCraft[i];
+                                totalGreenCost += upgradedPart.greenToCraft[i];
+                                totalYellowCost += upgradedPart.yellowToCraft[i];
+                                totalGreyCost += upgradedPart.greyToCraft[i];
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Sell unused player bricks
+            for (int i = 0; i < unmatchedBricks.Count; i++)
+            {
+                totalMoneyCost -= brickSell;
+            }
+
+            //If player is short on resources, add their purchase cost to the amount
+            if (totalRedCost <= excessRed)
+            {
+                excessRed -= totalRedCost;
+                totalRedCost = 0;
+            }
+            else
+            {
+                totalRedCost -= excessRed;
+                excessRed = 0;
+                currentFuel -= totalRedCost;
+                if (currentFuel < 0)
+                {
+                    int resourceIncrease = Mathf.CeilToInt(-currentFuel / (float)resourceChange);
+                    currentFuel += resourceIncrease * resourceChange;
+                    totalMoneyCost += resourceIncrease * resourceCost;
+                }
+            }
+
+            if (totalBlueCost <= excessBlue)
+            {
+                excessBlue -= totalBlueCost;
+                totalBlueCost = 0;
+            }
+            else
+            {
+                totalBlueCost -= excessBlue;
+                excessBlue = 0;
+                currentBlue -= totalBlueCost;
+                if (currentBlue < 0)
+                {
+                    int resourceIncrease = Mathf.CeilToInt(-currentBlue / (float)resourceChange);
+                    currentBlue += resourceIncrease * resourceChange;
+                    totalMoneyCost += resourceIncrease * resourceCost;
+                }
+            }
+
+            if (totalGreenCost <= excessGreen)
+            {
+                excessGreen -= totalGreenCost;
+                totalGreenCost = 0;
+            }
+            else
+            {
+                totalGreenCost -= excessGreen;
+                excessGreen = 0;
+                currentGreen -= totalGreenCost;
+                if (currentGreen < 0)
+                {
+                    int resourceIncrease = Mathf.CeilToInt(-currentGreen / (float)resourceChange);
+                    currentGreen += resourceIncrease * resourceChange;
+                    totalMoneyCost += resourceIncrease * resourceCost;
+                }
+            }
+
+            if (totalYellowCost <= excessYellow)
+            {
+                excessYellow -= totalYellowCost;
+                totalYellowCost = 0;
+            }
+            else
+            {
+                totalYellowCost -= excessYellow;
+                excessYellow = 0;
+                currentYellow -= totalYellowCost;
+                if (currentYellow < 0)
+                {
+                    int resourceIncrease = Mathf.CeilToInt(-currentYellow / (float)resourceChange);
+                    currentYellow += resourceIncrease * resourceChange;
+                    totalMoneyCost += resourceIncrease * resourceCost;
+                }
+            }
+
+            if (totalGreyCost <= excessGrey)
+            {
+                excessGrey -= totalGreyCost;
+                totalGreyCost = 0;
+            }
+            else
+            {
+                totalGreyCost -= excessGrey;
+                excessGrey = 0;
+                currentGrey -= totalGreyCost;
+                if (currentGrey < 0)
+                {
+                    int resourceIncrease = Mathf.CeilToInt(-currentGrey / (float)resourceChange);
+                    currentGrey += resourceIncrease * resourceChange;
+                    totalMoneyCost += resourceIncrease * resourceCost;
+                }
+            }
+
+            //Update bot map and transaction amounts
+            transactionAmount -= totalMoneyCost;
+            botMap = newMap;
+            BuildBotGrid();
+            UpdateResources();
+        }
+
+        CloseSubMenu();
+    }
+
+    //Return the crafted brick associated with this sprite
+    Brick GetCraftedPart(Sprite targetSprite)
+    {
+        Brick craftedMatch = null;
+        foreach (GameObject CraftCheck in craftableParts)
+        {
+            Brick craftedPart = CraftCheck.GetComponent<Brick>();
+            for (int i = 0; i < craftedPart.spriteArr.Length; i++)
+            {
+                if (targetSprite == craftedPart.spriteArr[i])
+                {
+                    craftedMatch = craftedPart;
+                    break;
+                }
+            }
+        }
+        return craftedMatch;
+    }
+
+    //Return the upgrades required in order to get to this sprite
+    List<Sprite> GetSpriteUpgradeList(Sprite targetSprite)
+    {
+        //Find the correct crafted brick
+        Brick craftedMatch = GetCraftedPart(targetSprite);
+
+        //Find levels before reaching this upgrade
+        List<Sprite> upgradeList = new List<Sprite>();
+        if (craftedMatch)
+        {
+            for (int i = 0; i < craftedMatch.spriteArr.Length; i++)
+            {
+                if (targetSprite == craftedMatch.spriteArr[i])
+                {
+                    break;
+                }
+                else
+                {
+                    upgradeList.Add(craftedMatch.spriteArr[i]);
+                }
+            }
+        }
+
+        upgradeList.Add(targetSprite);
+        return upgradeList;
     }
 }

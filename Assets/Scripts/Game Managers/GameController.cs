@@ -374,12 +374,11 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void LoadLayout(int index)
+    public Sprite[,] LoadLayout(int index)
     {
         SaveData loadData = saveManager.GetLayout(index);
         if (loadData != null && loadData.game != "")
         {
-            //~Best way to load a tilemap?
             if (loadData.bot.Length > 0)
             {
                 Sprite[,] newMap = new Sprite[loadData.bot.Length, loadData.bot[0].botRow.Length];
@@ -391,10 +390,10 @@ public class GameController : MonoBehaviour
                             newMap[x, y] = tilesAtlas.Single<Sprite>(s => s.name == loadData.bot[x].botRow[y]);
                     }
                 }
-                bot.SetTileMap(newMap);
+                return newMap;
             }
-            scrapyard.GetComponent<Scrapyard>().UpdateScrapyard();
         }
+        return null;
     }
 
     //Used for external Canvas buttons for touchscreen controls
