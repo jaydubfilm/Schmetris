@@ -190,6 +190,10 @@ public class GameUI : MonoBehaviour
             }
         }
 
+        //Don't update gameplay UI if bot is destroyed
+        if (GameController.Instance.isBotDead)
+            return;
+
         //Resources
         Vector2 barSize = redBar.sizeDelta;
         redBar.sizeDelta = new Vector2(resourceBarWidth * GameController.Instance.bot.GetResourcePercent(ResourceType.Red), barSize.y);

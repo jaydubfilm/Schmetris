@@ -354,16 +354,16 @@ public class GameController : MonoBehaviour
             }
 
             //Resources
-            bot.SetSavedResource(ResourceType.Red, loadData.fuel);
-            bot.SetSavedResource(ResourceType.Blue, loadData.blue);
-            bot.SetSavedResource(ResourceType.Yellow, loadData.yellow);
-            bot.SetSavedResource(ResourceType.Green, loadData.green);
-            bot.SetSavedResource(ResourceType.Grey, loadData.grey);
-            bot.hangarRed = loadData.hangarRed;
-            bot.hangarBlue = loadData.hangarBlue;
-            bot.hangarGreen = loadData.hangarGreen;
-            bot.hangarYellow = loadData.hangarYellow;
-            bot.hangarGrey = loadData.hangarGrey;
+            bot.SetSavedResource(ResourceType.Red, loadData.fuel, false);
+            bot.SetSavedResource(ResourceType.Blue, loadData.blue, false);
+            bot.SetSavedResource(ResourceType.Yellow, loadData.yellow, false);
+            bot.SetSavedResource(ResourceType.Green, loadData.green, false);
+            bot.SetSavedResource(ResourceType.Grey, loadData.grey, false);
+            bot.SetSavedResource(ResourceType.Red, Mathf.Max(0, loadData.hangarRed), true);
+            bot.SetSavedResource(ResourceType.Blue, Mathf.Max(0, loadData.hangarBlue), true);
+            bot.SetSavedResource(ResourceType.Green, Mathf.Max(0, loadData.hangarGreen), true);
+            bot.SetSavedResource(ResourceType.Yellow, Mathf.Max(0, loadData.hangarYellow), true);
+            bot.SetSavedResource(ResourceType.Grey, Mathf.Max(0, loadData.hangarGrey), true);
 
             hud.gameObject.SetActive(false);
             isPaused = true;

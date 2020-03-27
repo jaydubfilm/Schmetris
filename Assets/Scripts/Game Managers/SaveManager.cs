@@ -42,16 +42,16 @@ public class SaveManager
         newData.lives = lives;
         newData.money = money;
         newData.level = level;
-        newData.fuel = bot.GetSavedResource(ResourceType.Red);
-        newData.blue = bot.GetSavedResource(ResourceType.Blue);
-        newData.green = bot.GetSavedResource(ResourceType.Green);
-        newData.yellow = bot.GetSavedResource(ResourceType.Yellow);
-        newData.grey = bot.GetSavedResource(ResourceType.Grey);
-        newData.hangarRed = bot.hangarRed;
-        newData.hangarBlue = bot.hangarBlue;
-        newData.hangarGreen = bot.hangarGreen;
-        newData.hangarYellow = bot.hangarYellow;
-        newData.hangarGrey = bot.hangarGrey;
+        newData.fuel = bot.GetSavedResource(ResourceType.Red, false);
+        newData.blue = bot.GetSavedResource(ResourceType.Blue, false);
+        newData.green = bot.GetSavedResource(ResourceType.Green, false);
+        newData.yellow = bot.GetSavedResource(ResourceType.Yellow, false);
+        newData.grey = bot.GetSavedResource(ResourceType.Grey, false);
+        newData.hangarRed = bot.GetSavedResource(ResourceType.Red, true);
+        newData.hangarBlue = bot.GetSavedResource(ResourceType.Blue, true);
+        newData.hangarGreen = bot.GetSavedResource(ResourceType.Green, true);
+        newData.hangarYellow = bot.GetSavedResource(ResourceType.Yellow, true);
+        newData.hangarGrey = bot.GetSavedResource(ResourceType.Grey, true);
         newData.game = game;
 
         Sprite[,] botMap = bot.GetTileMap();

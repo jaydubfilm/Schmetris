@@ -155,16 +155,16 @@ public class Scrapyard : MonoBehaviour
         //Load bot resources
         currentMoney = GameController.Instance.money;
         transactionAmount = currentMoney;
-        currentFuel = GameController.Instance.bot.GetSavedResource(ResourceType.Red);
-        currentBlue = GameController.Instance.bot.GetSavedResource(ResourceType.Blue);
-        currentYellow = GameController.Instance.bot.GetSavedResource(ResourceType.Yellow);
-        currentGreen = GameController.Instance.bot.GetSavedResource(ResourceType.Green);
-        currentGrey = GameController.Instance.bot.GetSavedResource(ResourceType.Grey);
-        excessRed = GameController.Instance.bot.hangarRed;
-        excessBlue = GameController.Instance.bot.hangarBlue;
-        excessGreen = GameController.Instance.bot.hangarGreen;
-        excessYellow = GameController.Instance.bot.hangarYellow;
-        excessGrey = GameController.Instance.bot.hangarGrey;
+        currentFuel = GameController.Instance.bot.GetSavedResource(ResourceType.Red, false);
+        currentBlue = GameController.Instance.bot.GetSavedResource(ResourceType.Blue, false);
+        currentYellow = GameController.Instance.bot.GetSavedResource(ResourceType.Yellow, false);
+        currentGreen = GameController.Instance.bot.GetSavedResource(ResourceType.Green, false);
+        currentGrey = GameController.Instance.bot.GetSavedResource(ResourceType.Grey, false);
+        excessRed = GameController.Instance.bot.GetSavedResource(ResourceType.Red, true);
+        excessBlue = GameController.Instance.bot.GetSavedResource(ResourceType.Blue, true);
+        excessGreen = GameController.Instance.bot.GetSavedResource(ResourceType.Green, true);
+        excessYellow = GameController.Instance.bot.GetSavedResource(ResourceType.Yellow, true);
+        excessGrey = GameController.Instance.bot.GetSavedResource(ResourceType.Grey, true);
 
         //Load bot map
         botMap = GameController.Instance.bot.GetTileMap();
@@ -192,16 +192,16 @@ public class Scrapyard : MonoBehaviour
         //Save bot resources
         currentMoney = transactionAmount;
         GameController.Instance.money = currentMoney;
-        GameController.Instance.bot.SetSavedResource(ResourceType.Red, currentFuel);
-        GameController.Instance.bot.SetSavedResource(ResourceType.Blue, currentBlue);
-        GameController.Instance.bot.SetSavedResource(ResourceType.Yellow, currentYellow);
-        GameController.Instance.bot.SetSavedResource(ResourceType.Green, currentGreen);
-        GameController.Instance.bot.SetSavedResource(ResourceType.Grey, currentGrey);
-        GameController.Instance.bot.hangarRed = excessRed;
-        GameController.Instance.bot.hangarBlue = excessBlue;
-        GameController.Instance.bot.hangarGreen = excessGreen;
-        GameController.Instance.bot.hangarYellow = excessYellow;
-        GameController.Instance.bot.hangarGrey = excessGrey;
+        GameController.Instance.bot.SetSavedResource(ResourceType.Red, currentFuel, false);
+        GameController.Instance.bot.SetSavedResource(ResourceType.Blue, currentBlue, false);
+        GameController.Instance.bot.SetSavedResource(ResourceType.Yellow, currentYellow, false);
+        GameController.Instance.bot.SetSavedResource(ResourceType.Green, currentGreen, false);
+        GameController.Instance.bot.SetSavedResource(ResourceType.Grey, currentGrey, false);
+        GameController.Instance.bot.SetSavedResource(ResourceType.Red, excessRed, true);
+        GameController.Instance.bot.SetSavedResource(ResourceType.Blue, excessBlue, true);
+        GameController.Instance.bot.SetSavedResource(ResourceType.Green, excessGreen, true);
+        GameController.Instance.bot.SetSavedResource(ResourceType.Yellow, excessYellow, true);
+        GameController.Instance.bot.SetSavedResource(ResourceType.Grey, excessGrey, true);
     }
 
     //Attach all floating bricks to the main bot before saving

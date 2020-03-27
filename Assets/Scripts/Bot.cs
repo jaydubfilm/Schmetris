@@ -75,6 +75,11 @@ public class Bot : MonoBehaviour
     float savedGreenStores = 0;
     float savedYellowStores = 0;
     float savedGreyStores = 0;
+    float savedHangarRed = 0;
+    float savedHangarBlue = 0;
+    float savedHangarGreen = 0;
+    float savedHangarYellow = 0;
+    float savedHangarGrey = 0;
     public Grid startingBrickGrid;
     public GameObject blockPrefab;
     public GameObject bitPrefab;
@@ -113,14 +118,14 @@ public class Bot : MonoBehaviour
     {
         set
         {
-            if (value > totalCapacity)
+            if (value > 0 && value > totalCapacity)
             {
                 _storedRed = totalCapacity;
                 hangarRed += value - totalCapacity;
             }
             else
             {
-                _storedRed = value;
+                _storedRed = Mathf.Max(0, value);
             }
         }
         get
@@ -134,14 +139,14 @@ public class Bot : MonoBehaviour
     {
         set
         {
-            if (value > totalCapacity)
+            if (value > 0 && value > totalCapacity)
             {
                 _storedBlue = totalCapacity;
                 hangarBlue += value - totalCapacity;
             }
             else
             {
-                _storedBlue = value;
+                _storedBlue = Mathf.Max(0, value);
             }
         }
         get
@@ -155,14 +160,14 @@ public class Bot : MonoBehaviour
     {
         set
         {
-            if (value > totalCapacity)
+            if (value > 0 && value > totalCapacity)
             {
                 _storedGreen = totalCapacity;
                 hangarGreen += value - totalCapacity;
             }
             else
             {
-                _storedGreen = value;
+                _storedGreen = Mathf.Max(0, value);
             }
         }
         get
@@ -176,14 +181,14 @@ public class Bot : MonoBehaviour
     {
         set
         {
-            if (value > totalCapacity)
+            if (value > 0 && value > totalCapacity)
             {
                 _storedYellow = totalCapacity;
                 hangarYellow += value - totalCapacity;
             }
             else
             {
-                _storedYellow = value;
+                _storedYellow = Mathf.Max(0, value);
             }
         }
         get
@@ -197,14 +202,14 @@ public class Bot : MonoBehaviour
     {
         set
         {
-            if (value > totalCapacity)
+            if (value > 0 && value > totalCapacity)
             {
                 _storedGrey = totalCapacity;
                 hangarGrey += value - totalCapacity;
             }
             else
             {
-                _storedGrey = value;
+                _storedGrey = Mathf.Max(0, value);
             }
         }
         get
@@ -269,12 +274,22 @@ public class Bot : MonoBehaviour
         savedGreenStores = startGreen;
         savedGreyStores = startGrey;
         savedYellowStores = startYellow;
+        savedHangarRed = 0;
+        savedHangarBlue = 0;
+        savedHangarGreen = 0;
+        savedHangarYellow = 0;
+        savedHangarGrey = 0;
 
         storedRed = startRed;
         storedBlue = startBlue;
         storedGreen = startGreen;
         storedYellow = startYellow;
         storedGrey = startGrey;
+        hangarRed = 0;
+        hangarBlue = 0;
+        hangarGreen = 0;
+        hangarYellow = 0;
+        hangarGrey = 0;
     }
 
     public Sprite[,] GetTileMap()
@@ -282,48 +297,88 @@ public class Bot : MonoBehaviour
         return savedTileMap;
     }
 
-    public float GetSavedResource(ResourceType resourceType)
+    public float GetSavedResource(ResourceType resourceType, bool isHangar)
     {
         switch(resourceType)
         {
             case ResourceType.Blue:
-                return savedBlueStored;
+                return isHangar ? savedHangarBlue : savedBlueStored;
             case ResourceType.Green:
-                return savedGreenStores;
+                return isHangar ? savedHangarGreen : savedGreenStores;
             case ResourceType.Grey:
-                return savedGreyStores;
+                return isHangar ? savedHangarGrey : savedGreyStores;
             case ResourceType.Red:
-                return savedFuelStores;
+                return isHangar ? savedHangarRed : savedFuelStores;
             case ResourceType.Yellow:
-                return savedYellowStores;
+                return isHangar ? savedHangarYellow : savedYellowStores;
         }
 
         return 0;
     }
 
-    public void SetSavedResource(ResourceType resourceType, float amount)
+    public void SetSavedResource(ResourceType resourceType, float amount, bool isHangar)
     {
         switch (resourceType)
         {
             case ResourceType.Blue:
-                savedBlueStored = amount;
-                storedBlue = amount;
+                if (isHangar)
+                {
+                    savedHangarBlue = amount;
+                    hangarBlue = amount;
+                }
+                else
+                {
+                    savedBlueStored = amount;
+                    storedBlue = amount;
+                }
                 break;
             case ResourceType.Green:
-                savedGreenStores = amount;
-                storedGreen = amount;
+                if (isHangar)
+                {
+                    savedHangarGreen = amount;
+                    hangarGreen = amount;
+                }
+                else
+                {
+                    savedGreenStores = amount;
+                    storedGreen = amount;
+                }
                 break;
             case ResourceType.Grey:
-                savedGreyStores = amount;
-                storedGrey = amount;
+                if (isHangar)
+                {
+                    savedHangarGrey = amount;
+                    hangarGrey = amount;
+                }
+                else
+                {
+                    savedGreyStores = amount;
+                    storedGrey = amount;
+                }
                 break;
             case ResourceType.Red:
-                savedFuelStores = amount;
-                storedRed = amount;
+                if (isHangar)
+                {
+                    savedHangarRed = amount;
+                    hangarRed = amount;
+                }
+                else
+                {
+                    savedFuelStores = amount;
+                    storedRed = amount;
+                }
                 break;
             case ResourceType.Yellow:
-                savedYellowStores = amount;
-                storedYellow = amount;
+                if (isHangar)
+                {
+                    savedHangarYellow = amount;
+                    hangarYellow = amount;
+                }
+                else
+                {
+                    savedYellowStores = amount;
+                    storedYellow = amount;
+                }
                 break;
         }
     }
@@ -418,6 +473,11 @@ public class Bot : MonoBehaviour
         savedGreenStores = storedGreen;
         savedYellowStores = storedYellow;
         savedGreyStores = storedGrey;
+        savedHangarRed = hangarRed;
+        savedHangarBlue = hangarBlue;
+        savedHangarGreen = hangarGreen;
+        savedHangarYellow = hangarYellow;
+        savedHangarGrey = hangarGrey;
     }
 
     public void SaveStartSprites()
@@ -505,6 +565,11 @@ public class Bot : MonoBehaviour
         storedYellow = savedYellowStores;
         storedGreen = savedGreenStores;
         storedGrey = savedGreyStores;
+        hangarRed = savedHangarRed;
+        hangarBlue = savedHangarBlue;
+        hangarGreen = savedHangarGreen;
+        hangarYellow = savedHangarYellow;
+        hangarGrey = savedHangarGrey;
     }
 
     private void OnEnable()
@@ -568,7 +633,7 @@ public class Bot : MonoBehaviour
      // Update is called once per frame
     void Update()
     {
-        if (GameController.Instance.isPaused)
+        if (GameController.Instance.isPaused || !BrickAtBotArr(coreV2))
             return;
 
         MoveCheck();
@@ -587,8 +652,8 @@ public class Bot : MonoBehaviour
         }
 
         //Backup fuel supply if core runs out
-        Brick coreBurn = BrickAtBotArr(coreV2).GetComponent<Brick>();
-        if (!coreBurn.hasResources)
+        Brick coreBurn = BrickAtBotArr(coreV2) ? BrickAtBotArr(coreV2).GetComponent<Brick>() : null;
+        if (coreBurn && !coreBurn.hasResources)
         {
             if (storedRed > 0)
             {
@@ -603,7 +668,7 @@ public class Bot : MonoBehaviour
                 fuelBrickList[0].GetComponent<Fuel>().BurnFuel(coreBurn.redBurn[coreBurn.GetPoweredLevel()] * Time.deltaTime);
             }
         }
-        else if (fuelBrickList.Count > 0)
+        else if (coreBurn && fuelBrickList.Count > 0)
         {
             fuelBrickList[0].GetComponent<Fuel>().CancelBurnFuel();
         }
