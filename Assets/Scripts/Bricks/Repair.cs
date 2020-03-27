@@ -19,7 +19,6 @@ public class Repair : MonoBehaviour
 
     //Resources
     public int[] maxResource;
-    public float[] burnRate;
 
     //Init
     void Start()
@@ -45,13 +44,10 @@ public class Repair : MonoBehaviour
     //Check for something to heal and available resources
     void TryHeal()
     {
-        if (GameController.Instance.bot.storedGreen >= burnRate[brick.GetPoweredLevel()])
+        GameObject target = FindNewTarget();
+        if (target && brick.TryBurnResources(healPower[brick.GetPoweredLevel()]))
         {
-            GameObject target = FindNewTarget();
-            if (target)
-            {
-                HealTarget(target.GetComponent<Brick>());
-            }
+            HealTarget(target.GetComponent<Brick>());
         }
     }
 
@@ -83,8 +79,6 @@ public class Repair : MonoBehaviour
     //Heal damaged brick, consume resources, and restart timer
     public void HealTarget(Brick targetBrick)
     {
-        GameController.Instance.bot.storedGreen -= burnRate[brick.GetPoweredLevel()];
-
         targetBrick.AdjustHP(healPower[brick.GetPoweredLevel()]);
         if (targetBrick.brickHP >= targetBrick.brickMaxHP[targetBrick.GetPoweredLevel()])
         {

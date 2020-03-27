@@ -19,7 +19,6 @@ public class Gun : MonoBehaviour
 
     //Resources
     public int[] maxResource;
-    public float[] burnPerShot;
 
     //Init
     void Start()
@@ -44,13 +43,10 @@ public class Gun : MonoBehaviour
     //Check for targets and ammo and try to shoot
     void TryFire()
     {
-        if (GameController.Instance.bot.storedBlue >= burnPerShot[parentBrick.GetPoweredLevel()])
+        GameObject target = FindTarget();
+        if (target != null)
         {
-            GameObject target = FindTarget();
-            if (target != null)
-            {
-                FireGun(target.transform.position);
-            }
+            FireGun(target.transform.position);
         }
     }
 
@@ -77,8 +73,6 @@ public class Gun : MonoBehaviour
     //Shoot at target, burn resources, and begin reload
     public void FireGun(Vector3 targetPos)
     {
-        GameController.Instance.bot.storedBlue -= burnPerShot[parentBrick.GetPoweredLevel()];
-
         GameObject newBulletObj = Instantiate(bullet[parentBrick.GetPoweredLevel()], transform.position, Quaternion.identity);
         Vector3 dirV3 = Vector3.Normalize(targetPos - transform.position);
         Bullet newBullet = newBulletObj.GetComponent<Bullet>();

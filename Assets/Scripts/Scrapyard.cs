@@ -880,7 +880,7 @@ public class Scrapyard : MonoBehaviour
                     tempRedAmount = Resource.GetComponent<Fuel>() ? Resource.GetComponent<Fuel>().maxFuelArr[i] : 0;
                     tempYellowAmount = Resource.GetComponent<Yellectrons>() ? Resource.GetComponent<Yellectrons>().maxResource[i] : 0;
                     tempGreyAmount = Resource.GetComponent<Greyscale>() ? Resource.GetComponent<Greyscale>().maxResource[i] : 0;
-                    tempGreenAmount = Resource.GetComponent<Repair>() ? Resource.GetComponent<Repair>().maxResource[i] : 0;
+                    tempGreenAmount = (Resource.GetComponent<Repair>() && Resource.GetComponent<Repair>().maxResource.Length > 0) ? Resource.GetComponent<Repair>().maxResource[i] : 0;
                     tempBlueAmount = Resource.GetComponent<Gun>() ? Resource.GetComponent<Gun>().maxResource[i] : 0;
                     break;
                 }
@@ -1085,7 +1085,7 @@ public class Scrapyard : MonoBehaviour
                 {
                     if (targetPart == resourceBrick.spriteArr[i])
                     {
-                        return Resource.GetComponent<Fuel>() || Resource.GetComponent<Yellectrons>() || Resource.GetComponent<Greyscale>() || Resource.GetComponent<Repair>() || Resource.GetComponent<Gun>();
+                        return Resource.GetComponent<Fuel>() || Resource.GetComponent<Yellectrons>() || Resource.GetComponent<Greyscale>() || (Resource.GetComponent<Repair>() && Resource.GetComponent<Repair>().maxResource.Length > 0) || Resource.GetComponent<Gun>();
                     }
                 }
             }
