@@ -212,59 +212,22 @@ public class Scrapyard : MonoBehaviour
         Vector2Int startPoint = GameController.Instance.bot.coreV2;
         for(int i = 0;i<=GameController.Instance.bot.maxBotRadius;i++)
         {
-            for(int x = 0;x <= i; x++)
+            for(int b = -i;b <= i; b++)
             {
-                Vector2Int testCoordA = new Vector2Int(startPoint.x + x, startPoint.y + i);
-                Vector2Int testCoordB = new Vector2Int(startPoint.x - x, startPoint.y - i);
-                if (!checkedCoords.Contains(testCoordA))
+                Vector2Int[] testCoords = new Vector2Int[] { new Vector2Int(startPoint.x + b, startPoint.y + i), new Vector2Int(startPoint.x - i, startPoint.y + b), new Vector2Int(startPoint.x - b, startPoint.y - i), new Vector2Int(startPoint.x + i, startPoint.y - b) };
+                foreach (Vector2Int coords in testCoords)
                 {
-                    if (botBricks[testCoordA.x + testCoordA.y * botMap.GetLength(1)].GetComponent<Image>().color != Color.clear)
+                    if (!checkedCoords.Contains(coords))
                     {
-                        if (!IsCoreConnected(testCoordA, new List<Vector2Int>()))
+                        if (botBricks[coords.x + coords.y * botMap.GetLength(1)].GetComponent<Image>().color != Color.clear)
                         {
-                            ConnectToCore(testCoordA);
+                            if (!IsCoreConnected(coords, new List<Vector2Int>()))
+                            {
+                                ConnectToCore(coords);
+                            }
                         }
+                        checkedCoords.Add(coords);
                     }
-                    checkedCoords.Add(testCoordA);
-                }
-                if (!checkedCoords.Contains(testCoordB))
-                {
-                    if (botBricks[testCoordB.x + testCoordB.y * botMap.GetLength(1)].GetComponent<Image>().color != Color.clear)
-                    {
-                        if (!IsCoreConnected(testCoordB, new List<Vector2Int>()))
-                        {
-                            ConnectToCore(testCoordB);
-                        }
-                    }
-                    checkedCoords.Add(testCoordB);
-                }
-            }
-
-            for (int y = 0; y <= i; y++)
-            {
-                Vector2Int testCoordA = new Vector2Int(startPoint.x - i, startPoint.y + y);
-                Vector2Int testCoordB = new Vector2Int(startPoint.x + i, startPoint.y - y);
-                if (!checkedCoords.Contains(testCoordA))
-                {
-                    if (botBricks[testCoordA.x + testCoordA.y * botMap.GetLength(1)].GetComponent<Image>().color != Color.clear)
-                    {
-                        if (!IsCoreConnected(testCoordA, new List<Vector2Int>()))
-                        {
-                            ConnectToCore(testCoordA);
-                        }
-                    }
-                    checkedCoords.Add(testCoordA);
-                }
-                if (!checkedCoords.Contains(testCoordB))
-                {
-                    if (botBricks[testCoordB.x + testCoordB.y * botMap.GetLength(1)].GetComponent<Image>().color != Color.clear)
-                    {
-                        if (!IsCoreConnected(testCoordB, new List<Vector2Int>()))
-                        {
-                            ConnectToCore(testCoordB);
-                        }
-                    }
-                    checkedCoords.Add(testCoordB);
                 }
             }
         }
@@ -474,11 +437,14 @@ public class Scrapyard : MonoBehaviour
         foreach(GameObject BotTile in botBricks)
         {
             bool canUpgrade = false;
-            List<CraftedPart> checkUpgrades = GetUpgradeList(BotTile.GetComponent<Image>().sprite);
-            foreach (CraftedPart CheckPart in checkUpgrades)
+            if (BotTile.GetComponent<Image>().color != Color.clear)
             {
-                if (CanUpgrade(BotTile.GetComponent<Image>().sprite, CheckPart))
-                    canUpgrade = true;
+                List<CraftedPart> checkUpgrades = GetUpgradeList(BotTile.GetComponent<Image>().sprite);
+                foreach (CraftedPart CheckPart in checkUpgrades)
+                {
+                    if (CanUpgrade(BotTile.GetComponent<Image>().sprite, CheckPart))
+                        canUpgrade = true;
+                }
             }
             BotTile.transform.GetChild(0).gameObject.SetActive(canUpgrade);
         }
