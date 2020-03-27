@@ -30,7 +30,7 @@ MonoBehaviour:
     probability: 1
   - species: {fileID: 7297659341976442939, guid: dad323699b9f9dc4fbdd435e03ff6c7b,
       type: 3}
-    probability: 1
+    probability: 3
   - species: {fileID: 7899793524970067225, guid: 5b632cba15d5abc49a020b986a1a594c,
       type: 3}
     probability: 1

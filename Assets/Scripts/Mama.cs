@@ -48,12 +48,17 @@ public class Mama : MonoBehaviour
     [Tooltip("Used to sort enemies from least to most powerful. Used to determine targets when firing")]
     public int strength = 3;
 
+    public GameObject debugExplosion;
+
+
     bool dying;
 
     AIPath aiPath;
     Transform player;
     AIDestinationSetter aiDestinationSetter;
     Rigidbody2D rb2d;
+    SpriteRenderer spriteRenderer;
+
     public float force;
     float timer;
     float timeSinceFire;
@@ -71,7 +76,9 @@ public class Mama : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>();
         timer = Time.time;
         aiPath.maxSpeed = followSpeed;
-        
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+
     }
 
     // Update is called once per frame
@@ -100,6 +107,14 @@ public class Mama : MonoBehaviour
         //Death Procedure
         if (dying == true)
         {
+            //change enemy color as it dies
+            float timeUntilFlashing = timeUntilBlast - 1.5f;
+
+            if (Time.timeSinceLevelLoad - timeOfDeath < timeUntilBlast)
+            {
+                Color enemyColor = new Color(spriteRenderer.color.r, 1 - ((Time.timeSinceLevelLoad - timeOfDeath) / timeUntilFlashing), 1 - ((Time.timeSinceLevelLoad - timeOfDeath) / timeUntilFlashing));
+                spriteRenderer.color = enemyColor;
+            }
 
             if (Time.timeSinceLevelLoad - timeOfDeath > timeUntilBlast)
             {
@@ -165,7 +180,10 @@ public class Mama : MonoBehaviour
                 colliders[i].GetComponent<Brick>().AdjustHP(-blastDamage);
             }
         }
-            
+
+        GameObject blastSphere = Instantiate(debugExplosion, transform.position, Quaternion.identity, null);
+        blastSphere.transform.localScale = new Vector3(blastRadius * 2, blastRadius * 2, blastRadius * 2);
+
         //Instantiate Explosion here
         Destroy(gameObject);
     }

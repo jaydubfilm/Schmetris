@@ -247,6 +247,8 @@ MonoBehaviour:
   strength: 2
   mosquitoShield: {fileID: 1842814450953131543, guid: 4812b6d8b1ab07a43b5aa89e731f6262,
     type: 3}
+  debugExplosion: {fileID: 7524407400947348946, guid: 5497074458701d3468023bc84a64de09,
+    type: 3}
 --- !u!58 &7297659341976442916
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -316,4 +318,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8b209c609c5f8640adaa1a6f7f44327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameController: {fileID: 0}
   strength: 2
+  hp: 0

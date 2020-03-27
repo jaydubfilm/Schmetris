@@ -55,18 +55,22 @@ public class MosquitoAI : MonoBehaviour
     public int strength = 2;
 
     public GameObject mosquitoShield;
+    public GameObject debugExplosion;
 
     bool attackMode;
     bool attached;
     bool dying;
     float timeOfDeath;
+    SpriteRenderer spriteRenderer;
 
     private void Start()
     {
+
         aiPath = GetComponent<AIPath>();
         aiDestinationSetter = GetComponent<AIDestinationSetter>();
         aiDestinationSetter.target = FindObjectOfType<Bot>().transform;
         player = aiDestinationSetter.target;
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         //create a shield at the player position if one does not exist
         if (player.GetComponentInChildren<MosquitoShield>() == null)
@@ -110,7 +114,16 @@ public class MosquitoAI : MonoBehaviour
         if(dying == true)
         {
 
-            if(Time.timeSinceLevelLoad - timeOfDeath > timeUntilBlast)
+            //change enemy color as it dies
+            float timeUntilFlashing = timeUntilBlast - 1.5f;
+
+            if (Time.timeSinceLevelLoad - timeOfDeath < timeUntilBlast)
+            {
+                Color enemyColor = new Color( spriteRenderer.color.r, 1 - ((Time.timeSinceLevelLoad - timeOfDeath) / timeUntilFlashing), 1 - ((Time.timeSinceLevelLoad - timeOfDeath) / timeUntilFlashing));
+                spriteRenderer.color = enemyColor;
+            }
+
+            if (Time.timeSinceLevelLoad - timeOfDeath > timeUntilBlast)
             {
                 print(Time.timeSinceLevelLoad - timeOfDeath);
                 DeathBlast();
@@ -211,6 +224,9 @@ public class MosquitoAI : MonoBehaviour
             }
         }
         
+        GameObject blastSphere = Instantiate(debugExplosion, transform.position, Quaternion.identity, null);
+        blastSphere.transform.localScale = new Vector3(blastRadius * 2, blastRadius * 2, blastRadius * 2);
+
         //Instantiate Explosion here
         Destroy(gameObject);
     }
