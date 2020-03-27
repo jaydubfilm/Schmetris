@@ -304,13 +304,13 @@ public class GameController : MonoBehaviour
 
     public void SaveGame(int index)
     {
-        saveManager.SetSave(index, lives, money, highestScene, game.name, bot.GetSavedResource(ResourceType.Red), bot.GetSavedResource(ResourceType.Blue), bot.GetSavedResource(ResourceType.Green), bot.GetSavedResource(ResourceType.Yellow), bot.GetSavedResource(ResourceType.Grey), bot.GetTileMap());
+        saveManager.SetSave(index, lives, money, highestScene, game.name, bot);
         RefreshBotIcons();
     }
 
-    public void SaveLayout(int index)
+    public void SaveLayout(int index, Sprite[,] map)
     {
-        saveManager.SetLayout(index, bot.GetTileMap());
+        saveManager.SetLayout(index, map);
         RefreshBotIcons();
     }
 
@@ -321,8 +321,8 @@ public class GameController : MonoBehaviour
         {
             lives = loadData.lives;
             money = loadData.money;
-            currentScene = loadData.level;
-            highestScene = currentScene;
+            highestScene = loadData.level;
+            currentScene = highestScene;
 
             //~Add in resource loading?
             if (easyGame.name == loadData.game)
@@ -359,6 +359,11 @@ public class GameController : MonoBehaviour
             bot.SetSavedResource(ResourceType.Yellow, loadData.yellow);
             bot.SetSavedResource(ResourceType.Green, loadData.green);
             bot.SetSavedResource(ResourceType.Grey, loadData.grey);
+            bot.hangarRed = loadData.hangarRed;
+            bot.hangarBlue = loadData.hangarBlue;
+            bot.hangarGreen = loadData.hangarGreen;
+            bot.hangarYellow = loadData.hangarYellow;
+            bot.hangarGrey = loadData.hangarGrey;
 
             hud.gameObject.SetActive(false);
             isPaused = true;
@@ -508,7 +513,7 @@ public class GameController : MonoBehaviour
         bot.gameObject.SetActive(false);
         SceneManager.LoadScene(1);
         scrapyard.SetActive(true);
-        scrapyard.GetComponent<Scrapyard>().LoadScrapyardResources();
+        scrapyard.GetComponent<Scrapyard>().LoadBotComponents();
         scrapyard.GetComponent<Scrapyard>().UpdateScrapyard();
     }
 
@@ -798,6 +803,8 @@ public class GameController : MonoBehaviour
         float xPos = Random.Range(ScreenStuff.leftEdgeOfWorld,ScreenStuff.rightEdgeOfWorld);
         Vector3 vpos = new Vector3(xPos, ScreenStuff.RowToYPosition(spawnRow), 0);
         newEnemyObj = Instantiate(speciesSpawnData[type].species, vpos, Quaternion.identity);
+        enemyList.Add(newEnemyObj);
+        newEnemyObj.GetComponent<EnemyGeneral>().gameController = this;
 
         return newEnemyObj;
     }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Sirenix.OdinInspector;
+
 //Basic gun brick
 public class GunSniper : MonoBehaviour
 { 
@@ -7,7 +8,6 @@ public class GunSniper : MonoBehaviour
     public float[] rateOfFire;
     public int[] attackPower;
     public float[] range;
-    public float speed;
 
     //Components
     Brick parentBrick;
@@ -20,6 +20,9 @@ public class GunSniper : MonoBehaviour
     //Resources
     public int[] maxResource;
     public float[] burnPerShot;
+    GameObject target;
+
+    public float speed;
 
     //Init
     void Start()
@@ -44,11 +47,15 @@ public class GunSniper : MonoBehaviour
     //Check for targets and ammo and try to shoot
     void TryFire()
     {
+        print("try fire 0");
         if (GameController.Instance.bot.storedBlue >= burnPerShot[parentBrick.GetPoweredLevel()])
         {
-            GameObject target = FindTarget();
+            print("try fire 1");
+            target = FindTarget();
             if (target != null)
             {
+                print("try fire target found");
+
                 FireGun(target.transform.position);
             }
         }
@@ -64,62 +71,73 @@ public class GunSniper : MonoBehaviour
         {
             if (enemyObj)
             {
-                //Strongest enemy type yet selected
-                if (enemyObj.GetComponent<EnemyGeneral>().strength > enemyStregth)
+                if (enemyObj.GetComponentInChildren<SpriteRenderer>().isVisible)
                 {
-
-                    float dist = Vector3.Distance(enemyObj.transform.position, transform.position);
-                    enemyStregth = enemyObj.GetComponent<EnemyGeneral>().strength;
-                    closestDistance = dist;
-                    target = enemyObj;
-                }
-
-                //same enemy type as the current strongest enemy
-                else if (enemyObj.GetComponent<EnemyGeneral>().strength == enemyStregth)
-                {
-
-                    float dist = Vector3.Distance(enemyObj.transform.position, transform.position);
-
-                    //first pass - set this as current target
-                    if (target == null)
+                    //Strongest enemy type yet selected
+                    if (enemyObj.GetComponent<EnemyGeneral>().strength > enemyStregth)
                     {
 
+                        float dist = Vector3.Distance(enemyObj.transform.position, transform.position);
+                        enemyStregth = enemyObj.GetComponent<EnemyGeneral>().strength;
                         closestDistance = dist;
                         target = enemyObj;
-
                     }
 
-                    else
+                    //same enemy type as the current strongest enemy
+                    else if (enemyObj.GetComponent<EnemyGeneral>().strength == enemyStregth)
                     {
-                        //This is the nearest enemy of this type
-                        if ((dist < closestDistance))
+
+                        float dist = Vector3.Distance(enemyObj.transform.position, transform.position);
+
+                        //first pass - set this as current target
+                        if (target == null)
                         {
 
                             closestDistance = dist;
                             target = enemyObj;
                         }
+
+                        else
+                        {
+                            //This is the nearest enemy of this type
+                            if ((dist < closestDistance))
+                            {
+
+                                closestDistance = dist;
+                                target = enemyObj;
+                            }
+                        }
                     }
                 }            
             }
         }
+
+        if (target != null)
+        {
+            print("target is " + target.name);
+        }
+
         return target;
     }
 
     //Shoot at target, burn resources, and begin reload
     public void FireGun(Vector3 targetPos)
     {
-        GameController.Instance.bot.storedBlue -= burnPerShot[parentBrick.GetPoweredLevel()];
 
+        GameController.Instance.bot.storedBlue -= burnPerShot[parentBrick.GetPoweredLevel()];
         GameObject newBulletObj = Instantiate(bullet[parentBrick.GetPoweredLevel()], transform.position, Quaternion.identity);
-        Vector3 dirV3 = Vector3.Normalize(targetPos - transform.position);
+        //Vector3 dirV3 = Vector3.Normalize(targetPos - transform.position);
         Bullet newBullet = newBulletObj.GetComponent<Bullet>();
-        newBullet.direction = new Vector2(dirV3.x, dirV3.y);
+        newBullet.direction = Vector3.Normalize(targetPos - transform.position); //new Vector2(dirV3.x, dirV3.y);
         newBullet.speed = speed;
         newBullet.damage = attackPower[parentBrick.GetPoweredLevel()];
         newBullet.range = range[parentBrick.GetPoweredLevel()];
+        //newBullet.SetAsHoming(target.transform);
 
         fireTimer = rateOfFire[parentBrick.GetPoweredLevel()];
     }
+
+   
 
 
 }

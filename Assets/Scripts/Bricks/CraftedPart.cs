@@ -4,6 +4,7 @@
 public class CraftedPart : MonoBehaviour
 {
     //Costs associated with upgrading bot to associated level
+    public string[] scrapyardName;
     public int[] moneyToCraft;
     public int[] redToCraft;
     public int[] blueToCraft;

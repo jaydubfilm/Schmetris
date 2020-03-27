@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4703832597231c74f85d38247767409f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scrapyardName:
+  - Refinery 1
+  - Refinery 2
   moneyToCraft: 20030000dc050000
   redToCraft: 0000000000000000
   blueToCraft: 0000000032000000

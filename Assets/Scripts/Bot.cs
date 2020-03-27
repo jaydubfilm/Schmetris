@@ -54,6 +54,8 @@ public class Bot : MonoBehaviour
     public int[,] brickTypeArr;
     public GameObject[] masterBrickList;
     public List<GameObject> brickList;
+    public List<GameObject> fuelBrickList = new List<GameObject>();
+
     int[,] pathArr;
     public PowerGrid powerGrid;
     public PowerGrid powerGridPrefab;
@@ -97,13 +99,26 @@ public class Bot : MonoBehaviour
     const float startYellow = 0;
     const float startGrey = 0;
     float totalCapacity = 0;
+    public float hangarRed = 0;
+    public float hangarBlue = 0;
+    public float hangarGreen = 0;
+    public float hangarYellow = 0;
+    public float hangarGrey = 0;
 
     float _storedRed = 0;
     public float storedRed
     {
         set
         {
-            _storedRed = Mathf.Clamp(value, 0, totalCapacity - (storedBlue + storedGreen + storedYellow + storedGrey));
+            if (value > totalCapacity)
+            {
+                _storedRed = totalCapacity;
+                hangarRed += value - totalCapacity;
+            }
+            else
+            {
+                _storedRed = value;
+            }
         }
         get
         {
@@ -116,7 +131,15 @@ public class Bot : MonoBehaviour
     {
         set
         {
-            _storedBlue = Mathf.Clamp(value, 0, totalCapacity - (storedRed + storedGreen + storedYellow + storedGrey));
+            if (value > totalCapacity)
+            {
+                _storedBlue = totalCapacity;
+                hangarBlue += value - totalCapacity;
+            }
+            else
+            {
+                _storedBlue = value;
+            }
         }
         get
         {
@@ -129,7 +152,15 @@ public class Bot : MonoBehaviour
     {
         set
         {
-            _storedGreen = Mathf.Clamp(value, 0, totalCapacity - (storedRed + storedBlue + storedYellow + storedGrey));
+            if (value > totalCapacity)
+            {
+                _storedGreen = totalCapacity;
+                hangarGreen += value - totalCapacity;
+            }
+            else
+            {
+                _storedGreen = value;
+            }
         }
         get
         {
@@ -142,7 +173,15 @@ public class Bot : MonoBehaviour
     {
         set
         {
-            _storedYellow = Mathf.Clamp(value, 0, totalCapacity - (storedRed + storedBlue + storedGreen + storedGrey));
+            if (value > totalCapacity)
+            {
+                _storedYellow = totalCapacity;
+                hangarYellow += value - totalCapacity;
+            }
+            else
+            {
+                _storedYellow = value;
+            }
         }
         get
         {
@@ -155,7 +194,15 @@ public class Bot : MonoBehaviour
     {
         set
         {
-            _storedGrey = Mathf.Clamp(value, 0, totalCapacity - (storedRed + storedBlue + storedGreen + storedYellow));
+            if (value > totalCapacity)
+            {
+                _storedGrey = totalCapacity;
+                hangarGrey += value - totalCapacity;
+            }
+            else
+            {
+                _storedGrey = value;
+            }
         }
         get
         {
@@ -180,8 +227,13 @@ public class Bot : MonoBehaviour
         {
             newCapacity += ContainerCheck.capacity[ContainerCheck.GetComponent<Brick>().brickLevel];
         }
-        //~Cut excess resources
+
         totalCapacity = newCapacity;
+        storedRed = storedRed;
+        storedBlue = storedBlue;
+        storedYellow = storedYellow;
+        storedGreen = storedGreen;
+        storedGrey = storedGrey;
     }
 
     public void AddContainer(Container container)
@@ -198,8 +250,13 @@ public class Bot : MonoBehaviour
         if(containerList.Contains(container))
         {
             containerList.Remove(container);
-            //~Cut excess resources
+
             totalCapacity -= container.capacity[container.GetComponent<Brick>().brickLevel];
+            storedRed = storedRed;
+            storedBlue = storedBlue;
+            storedYellow = storedYellow;
+            storedGreen = storedGreen;
+            storedGrey = storedGrey;
         }
     }
 
@@ -299,6 +356,8 @@ public class Bot : MonoBehaviour
                 RemoveContainer(containerList[0]);
             }
             containerList = new List<Container>();
+
+            fuelBrickList = new List<GameObject>();
 
             if (powerGrid)
                 Destroy(powerGrid.gameObject);
@@ -526,7 +585,18 @@ public class Bot : MonoBehaviour
             orphanCheckFlag = false;
         }
 
-        storedRed = Mathf.Max(0, storedRed - fuelBurnRate * Time.deltaTime);
+        if (storedRed > 0)
+        {
+            storedRed = Mathf.Max(0, storedRed - fuelBurnRate * Time.deltaTime);
+            if(fuelBrickList.Count > 0)
+            {
+                fuelBrickList[0].GetComponent<Fuel>().CancelBurnFuel();
+            }
+        }
+        else if (fuelBrickList.Count > 0)
+        {
+            fuelBrickList[0].GetComponent<Fuel>().BurnFuel(fuelBurnRate * Time.deltaTime);
+        }
     }
 
 
@@ -1886,7 +1956,7 @@ public class Bot : MonoBehaviour
         if (container)
         {
             Container containerBrick = container.GetComponent<Container>();
-            if (containerBrick && containerBrick.IsOpenDirection(hitDir) && totalResources < totalCapacity)
+            if (containerBrick && containerBrick.IsOpenDirection(hitDir))
             {
                 return bitType == 0 || bitType == 1 || bitType == 2 || bitType == 3 || bitType == 5;
             }
@@ -2192,7 +2262,7 @@ public class Bot : MonoBehaviour
 
     public bool HasFuel()
     {
-        return GetResourcePercent(ResourceType.Red) > 0;
+        return GetResourcePercent(ResourceType.Red) > 0 || fuelBrickList.Count > 0;
     }
 
     public float GetResourcePercent(ResourceType resourceType)

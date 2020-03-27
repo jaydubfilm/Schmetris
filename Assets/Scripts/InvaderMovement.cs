@@ -128,7 +128,7 @@ public class InvaderMovement : MonoBehaviour
         EnemyBulletV2 thisBullet = Instantiate(bullet, transform.position, transform.rotation).GetComponent<EnemyBulletV2>();
         thisBullet.InvaderBulletBehaviour(bulletSprite, bulletSpeed, bulletDuration, bulletDamage); 
     }
-    void Death()
+    public void Death()
     {
 
         Destroy(gameObject);

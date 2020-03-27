@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4703832597231c74f85d38247767409f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scrapyardName:
+  - Blaster 1
+  - Blaster 2
+  - Blaster 3
   moneyToCraft: fa000000e8030000c4090000
   redToCraft: 000000000000000000000000
   blueToCraft: 000000000000000000000000

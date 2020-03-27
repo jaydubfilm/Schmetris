@@ -22,8 +22,8 @@ TagManager:
   - DynamicObstacle
   - Mosquito
   - MosquitoShield
-  - Bullet
-  - 
+  - EnemyBullet
+  - PlayerBullet
   - 
   - 
   - 

@@ -71,7 +71,7 @@ PrefabInstance:
         type: 3}
       propertyPath: startingBrickGrid
       value: 
-      objectReference: {fileID: 928859113127395548, guid: 9d6ccddf4c56ab1408eaa858f69e91c7,
+      objectReference: {fileID: 8172990591126716318, guid: f9f591750f5ee3c4db820a6d16876239,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82b6f551126f44c5192203aabd1bde66, type: 3}

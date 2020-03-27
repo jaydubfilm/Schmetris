@@ -189,7 +189,7 @@ public class MosquitoAI : MonoBehaviour
         thisBullet.MosquitoBulletBehaviour(player.position, bulletSprite, dir, bulletLifetime, bulletSpeed, bulletDamage);
     }
 
-    void Death()
+    public void Death()
     {
 
         timeOfDeath = Time.timeSinceLevelLoad;

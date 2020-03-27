@@ -144,7 +144,7 @@ public class Mama : MonoBehaviour
         thisBullet.MamaBulletBehaviour(player, bulletSprite, bulletSpeed, bulletLifetime, bulletDamage);
     }
 
-    void Death()
+    public void Death()
     {
 
         timeOfDeath = Time.timeSinceLevelLoad;
