@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelDuration: 90
   blocks:
-  - block: {fileID: 8459872569636080655, guid: c5aaf9792745f4939903666a24e35fee, type: 3}
+  - block: {fileID: 8639198243880090134, guid: 80e57895ab51b4fb591ba9d29d8b237b, type: 3}
     probability: 1
   - block: {fileID: 8711779262324829158, guid: b20727edf559f4948bb5d7a6c66b1694, type: 3}
     probability: 1
@@ -30,7 +30,7 @@ MonoBehaviour:
     probability: 1
   - species: {fileID: 7297659341976442939, guid: dad323699b9f9dc4fbdd435e03ff6c7b,
       type: 3}
-    probability: 1
+    probability: 3
   - species: {fileID: 7899793524970067225, guid: 5b632cba15d5abc49a020b986a1a594c,
       type: 3}
     probability: 1

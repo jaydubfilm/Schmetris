@@ -51,20 +51,26 @@ public class MosquitoAI : MonoBehaviour
     [FoldoutGroup("Death")]
     public int blastDamage = 5;
 
+    [Tooltip("Used to sort enemies from least to most powerful. Used to determine targets when firing")]
+    public int strength = 2;
 
     public GameObject mosquitoShield;
+    public GameObject debugExplosion;
 
     bool attackMode;
     bool attached;
     bool dying;
     float timeOfDeath;
+    SpriteRenderer spriteRenderer;
 
     private void Start()
     {
+
         aiPath = GetComponent<AIPath>();
         aiDestinationSetter = GetComponent<AIDestinationSetter>();
         aiDestinationSetter.target = FindObjectOfType<Bot>().transform;
         player = aiDestinationSetter.target;
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         //create a shield at the player position if one does not exist
         if (player.GetComponentInChildren<MosquitoShield>() == null)
@@ -89,11 +95,9 @@ public class MosquitoAI : MonoBehaviour
         aiPath.maxSpeed = followSpeed;
 
         if (attackMode == false)
-        {            
-       
             //constantly adjust spring distance
             spring.distance = enemyDistance.Evaluate(Time.time);
-        }
+        
         else
         {
             if(Time.time > impulseBurstFrequency)           
@@ -110,9 +114,17 @@ public class MosquitoAI : MonoBehaviour
         if(dying == true)
         {
 
-            if(Time.timeSinceLevelLoad - timeOfDeath > timeUntilBlast)
+            //change enemy color as it dies
+            float timeUntilFlashing = timeUntilBlast - 1.5f;
+
+            if (Time.timeSinceLevelLoad - timeOfDeath < timeUntilBlast)
             {
-                print(Time.timeSinceLevelLoad - timeOfDeath);
+                Color enemyColor = new Color( spriteRenderer.color.r, 1 - ((Time.timeSinceLevelLoad - timeOfDeath) / timeUntilFlashing), 1 - ((Time.timeSinceLevelLoad - timeOfDeath) / timeUntilFlashing));
+                spriteRenderer.color = enemyColor;
+            }
+
+            if (Time.timeSinceLevelLoad - timeOfDeath > timeUntilBlast)
+            {
                 DeathBlast();
             }
         }
@@ -121,7 +133,6 @@ public class MosquitoAI : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             Death();
-            print(ScreenStuff.colSize);
         }
 
     }
@@ -190,7 +201,7 @@ public class MosquitoAI : MonoBehaviour
         thisBullet.MosquitoBulletBehaviour(player.position, bulletSprite, dir, bulletLifetime, bulletSpeed, bulletDamage);
     }
 
-    void Death()
+    public void Death()
     {
 
         timeOfDeath = Time.timeSinceLevelLoad;
@@ -212,6 +223,9 @@ public class MosquitoAI : MonoBehaviour
             }
         }
         
+        GameObject blastSphere = Instantiate(debugExplosion, transform.position, Quaternion.identity, null);
+        blastSphere.transform.localScale = new Vector3(blastRadius * 2, blastRadius * 2, blastRadius * 2);
+
         //Instantiate Explosion here
         Destroy(gameObject);
     }

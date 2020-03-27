@@ -24,6 +24,31 @@ MonoBehaviour:
   basePartToCraft:
   - {fileID: 21300118, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - {fileID: 1150943649307258273, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4, type: 3}
+--- !u!114 &-7453650479651476620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6715254118685096965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b914c0d59b64ccf43a72b0afbb93885d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rateOfFire:
+  - 3
+  - 2
+  - 1
+  attackPower: 030000000500000007000000
+  range:
+  - 35
+  bullet:
+  - {fileID: 7918598799021602830, guid: aa18f778adbd1ed409676d0df638f9aa, type: 3}
+  maxResource: 
+  burnPerShot:
+  - 0
+  speed: 111
 --- !u!1001 &6167074758492475587
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -59,49 +84,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
-      propertyPath: spriteArr.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
       propertyPath: brickMaxHP.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
-      propertyPath: requiredPower.Array.size
+      propertyPath: spriteArr.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
-      propertyPath: greyBurn.Array.size
-      value: 2
+      propertyPath: brickType
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
-      propertyPath: yellowBurn.Array.size
-      value: 2
+      propertyPath: brickHP
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
-      propertyPath: greenBurn.Array.size
-      value: 2
+      propertyPath: brickMaxHP.Array.data[0]
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
-      propertyPath: blueBurn.Array.size
-      value: 2
+      propertyPath: brickMaxHP.Array.data[1]
+      value: 80
       objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: redBurn.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: healthBar
-      value: 
-      objectReference: {fileID: 8955500789032862693}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: spriteArr.Array.data[0]
@@ -116,74 +126,18 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
-      propertyPath: spriteArr.Array.data[2]
+      propertyPath: healthBar
       value: 
-      objectReference: {fileID: 4884881085475494843, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
-        type: 3}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: brickMaxHP.Array.data[0]
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: brickMaxHP.Array.data[1]
-      value: 80
-      objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: brickMaxHP.Array.data[2]
-      value: 80
-      objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: brickHP
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: brickType
-      value: 21
-      objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: requiredPower.Array.data[0]
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: requiredPower.Array.data[1]
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: requiredPower.Array.data[2]
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: requiredPower.Array.data[3]
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: greyBurn.Array.data[0]
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: greyBurn.Array.data[1]
-      value: 2
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 8955500789032862693}
     - target: {fileID: 3272617812009182816, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -4.0166664
       objectReference: {fileID: 0}
     - target: {fileID: 3272617812009182816, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1.5576326
       objectReference: {fileID: 0}
     - target: {fileID: 3272617812009182816, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
