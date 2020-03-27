@@ -207,73 +207,160 @@ public class Scrapyard : MonoBehaviour
     //Attach all floating bricks to the main bot before saving
     void SnapBricksToBot()
     {
-        //~Does sprite have a sprite-filled path back to core?
-        //~If not, find shortest route to core, move sprite to last spriteless space before bot
-
+        //Starting at the center, check all bricks to make sure they're connected to the main bot
         List<Vector2Int> checkedCoords = new List<Vector2Int>();
         Vector2Int startPoint = GameController.Instance.bot.coreV2;
-        for(int i = 0;i<GameController.Instance.bot.maxBotRadius;i++)
+        for(int i = 0;i<=GameController.Instance.bot.maxBotRadius;i++)
         {
-            for(int x = 0;x <= i; x++)
+            for(int b = -i;b <= i; b++)
             {
-                Vector2Int testCoord = new Vector2Int(x, i);
-                if(!checkedCoords.Contains(testCoord))
+                Vector2Int[] testCoords = new Vector2Int[] { new Vector2Int(startPoint.x + b, startPoint.y + i), new Vector2Int(startPoint.x - i, startPoint.y + b), new Vector2Int(startPoint.x - b, startPoint.y - i), new Vector2Int(startPoint.x + i, startPoint.y - b) };
+                foreach (Vector2Int coords in testCoords)
                 {
-                    if(!IsCoreConnected(testCoord))
+                    if (!checkedCoords.Contains(coords))
                     {
-                        ConnectToCore();
+                        if (botBricks[coords.x + coords.y * botMap.GetLength(1)].GetComponent<Image>().color != Color.clear)
+                        {
+                            if (!IsCoreConnected(coords, new List<Vector2Int>()))
+                            {
+                                ConnectToCore(coords);
+                            }
+                        }
+                        checkedCoords.Add(coords);
                     }
-                    checkedCoords.Add(testCoord);
-                }
-                if (!checkedCoords.Contains(testCoord * -1))
-                {
-                    if (!IsCoreConnected(testCoord * -1))
-                    {
-                        ConnectToCore();
-                    }
-                    checkedCoords.Add(testCoord * -1);
-                }
-            }
-
-            for (int y = 0; y <= i; y++)
-            {
-                Vector2Int testCoord = new Vector2Int(-i, y);
-                if (!checkedCoords.Contains(testCoord))
-                {
-                    if (!IsCoreConnected(testCoord))
-                    {
-                        ConnectToCore();
-                    }
-                    checkedCoords.Add(testCoord);
-                }
-                if (!checkedCoords.Contains(testCoord * -1))
-                {
-                    if (!IsCoreConnected(testCoord * -1))
-                    {
-                        ConnectToCore();
-                    }
-                    checkedCoords.Add(testCoord * -1);
                 }
             }
         }
     }
 
     //Check if a brick has a route back to the core
-    bool IsCoreConnected(Vector2Int coords)
+    bool IsCoreConnected(Vector2Int coords, List<Vector2Int> checkedCoords)
     {
-        for (int x = 0; x < botMap.GetLength(0); x++)
+        //Don't check the same brick twice
+        checkedCoords.Add(coords);
+
+        //No brick found - this path is unconnected
+        if (coords.x < 0 || coords.y < 0 || coords.x >= botMap.GetLength(0) || coords.y >= botMap.GetLength(1))
+            return false;
+        if (botBricks[coords.x + coords.y * botMap.GetLength(1)].GetComponent<Image>().color == Color.clear)
+            return false;
+
+        //This brick is the core - this path is connected
+        if (coords == GameController.Instance.bot.coreV2)
+            return true;
+
+        //Check all bricks adjacent to this one for a route to the core
+        Vector2Int[] adjacentCoords = new Vector2Int[] { new Vector2Int(coords.x, coords.y + 1), new Vector2Int(coords.x, coords.y - 1), new Vector2Int(coords.x + 1, coords.y), new Vector2Int(coords.x - 1, coords.y) };
+        for(int i = 0;i<adjacentCoords.Length;i++)
         {
-            for (int y = 0; y < botMap.GetLength(1); y++)
+            if(!checkedCoords.Contains(adjacentCoords[i]))
             {
+                if(IsCoreConnected(adjacentCoords[i], checkedCoords))
+                {
+                    return true;
+                }
             }
         }
-        return true;
+
+        //No route found
+        return false;
     }
 
     //Connect unconnected sprite to closest possible point to core
-    void ConnectToCore()
+    void ConnectToCore(Vector2Int target)
     {
+        //Find shortest path between here and core
+        //List<Vector2Int> corePath = GetRouteToCore(target, new List<Vector2Int>());
 
+        //Find the closest point to the core that this sprite could be moved to
+        Image currentBrick = botBricks[target.x + target.y * botMap.GetLength(1)].GetComponent<Image>();
+        Vector2Int startPoint = GameController.Instance.bot.coreV2;
+        /*for(int i = corePath.Count - 1;i >=0;i--)
+        {
+            Image testBrick = botBricks[corePath[i].x + corePath[i].y * botMap.GetLength(1)].GetComponent<Image>();
+            if (testBrick.color == Color.clear)
+            {
+                //Snap target brick to bot
+                testBrick.sprite = currentBrick.sprite;
+                testBrick.color = Color.white;
+                currentBrick.color = Color.clear;
+                break;
+            }
+        }*/
+        while(startPoint != target)
+        {
+            if (startPoint.x < target.x)
+                startPoint.x++;
+            else if (startPoint.x > target.x)
+                startPoint.x--;
+
+            Image testBrick = botBricks[startPoint.x + startPoint.y * botMap.GetLength(1)].GetComponent<Image>();
+            if (testBrick.color == Color.clear)
+            {
+                //Snap target brick to bot
+                testBrick.sprite = currentBrick.sprite;
+                testBrick.color = Color.white;
+                currentBrick.color = Color.clear;
+                break;
+            }
+
+            if (startPoint.y < target.y)
+                startPoint.y++;
+            else if (startPoint.y > target.y)
+                startPoint.y--;
+
+            Image testBrick2 = botBricks[startPoint.x + startPoint.y * botMap.GetLength(1)].GetComponent<Image>();
+            if (testBrick2.color == Color.clear)
+            {
+                //Snap target brick to bot
+                testBrick2.sprite = currentBrick.sprite;
+                testBrick2.color = Color.white;
+                currentBrick.color = Color.clear;
+                break;
+            }
+        }
+    }
+
+    //Return a route between the current point and the core
+    List<Vector2Int> GetRouteToCore (Vector2Int coords, List<Vector2Int> routeCoords)
+    {
+        //Don't check the same brick twice in this path
+        List<Vector2Int> newRouteCoords = new List<Vector2Int>();
+        foreach(Vector2Int oldCoord in routeCoords)
+        {
+            newRouteCoords.Add(oldCoord);
+        }
+        newRouteCoords.Add(coords);
+
+        //Coords are off the bot grid - there is no path to return here
+        if (coords.x < 0 || coords.y < 0 || coords.x >= botMap.GetLength(0) || coords.y >= botMap.GetLength(1))
+            return new List<Vector2Int>();
+
+        //This brick is the core - return this path
+        if (coords == GameController.Instance.bot.coreV2)
+            return newRouteCoords;
+
+        //Check all bricks adjacent to this one for a route to the core - keep the shortest one
+        List<Vector2Int> shortestRoute = new List<Vector2Int>();
+        Vector2Int[] adjacentCoords = new Vector2Int[] { new Vector2Int(coords.x, coords.y + 1), new Vector2Int(coords.x, coords.y - 1), new Vector2Int(coords.x + 1, coords.y), new Vector2Int(coords.x - 1, coords.y) };
+        for (int i = 0; i < adjacentCoords.Length; i++)
+        {
+            if (!newRouteCoords.Contains(adjacentCoords[i]) && Vector2.Distance((Vector2)adjacentCoords[i], (Vector2)GameController.Instance.bot.coreV2) < Vector2.Distance((Vector2)coords, (Vector2)GameController.Instance.bot.coreV2))
+            {
+                List<Vector2Int> compareRoute = GetRouteToCore(adjacentCoords[i], newRouteCoords);
+                if(compareRoute.Count != 0 && compareRoute[compareRoute.Count - 1] == GameController.Instance.bot.coreV2 && (shortestRoute.Count == 0 || compareRoute.Count < shortestRoute.Count))
+                {
+                    shortestRoute = new List<Vector2Int>();
+                    foreach (Vector2Int oldCoord in compareRoute)
+                    {
+                        shortestRoute.Add(oldCoord);
+                    }
+                }
+            }
+        }
+
+        //Return shortest path
+        return shortestRoute;
     }
 
     //Update marketplace with available purchases
@@ -328,13 +415,6 @@ public class Scrapyard : MonoBehaviour
                 if (botMap[x, y])
                 {
                     newTileImage.sprite = botMap[x, y];
-                    List<CraftedPart> checkUpgrades = GetUpgradeList(newTileImage.sprite);
-                    foreach (CraftedPart CheckPart in checkUpgrades)
-                    {
-                        //~
-                        if(CanUpgrade(newTileImage.sprite,CheckPart))
-                            newTile.transform.GetChild(0).gameObject.SetActive(true);
-                    }
                 }
                 else
                 {
@@ -346,6 +426,27 @@ public class Scrapyard : MonoBehaviour
 
                 botBricks.Add(newTile);
             }
+        }
+
+        UpdateUpgradeGlows();
+    }
+
+    //Update available upgrade glows
+    void UpdateUpgradeGlows()
+    {
+        foreach(GameObject BotTile in botBricks)
+        {
+            bool canUpgrade = false;
+            if (BotTile.GetComponent<Image>().color != Color.clear)
+            {
+                List<CraftedPart> checkUpgrades = GetUpgradeList(BotTile.GetComponent<Image>().sprite);
+                foreach (CraftedPart CheckPart in checkUpgrades)
+                {
+                    if (CanUpgrade(BotTile.GetComponent<Image>().sprite, CheckPart))
+                        canUpgrade = true;
+                }
+            }
+            BotTile.transform.GetChild(0).gameObject.SetActive(canUpgrade);
         }
     }
 
@@ -439,6 +540,8 @@ public class Scrapyard : MonoBehaviour
         redAmount.text = Mathf.RoundToInt(currentFuel).ToString();
         redBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Red)).ToString() + "/s";
         redAmount.text += " (+" + Mathf.RoundToInt(excessRed).ToString() + ")";
+
+        UpdateUpgradeGlows();
     }
 
     //Update temp bot capacity based on assets in the bot grid
@@ -568,6 +671,8 @@ public class Scrapyard : MonoBehaviour
             holdingScreenTimer = 0;
             selectedBrick = null;
             botBrick = null;
+            UpdateUpgradeGlows();
+
         }
         else if (Input.GetMouseButton(0) && canMove)
         {
@@ -999,10 +1104,7 @@ public class Scrapyard : MonoBehaviour
             {
                 if (selectedPart == targetPart.basePartToCraft[i])
                 {
-                    if ((currentBlue + excessBlue) >= targetPart.blueToCraft[i] && (currentFuel + excessRed) >= targetPart.redToCraft[i] && (currentGreen + excessGreen) >= targetPart.greenToCraft[i] && (currentYellow + excessYellow) >= targetPart.yellowToCraft[i] && (currentGrey + excessGrey) >= targetPart.greyToCraft[i] && GameController.Instance.money >= targetPart.moneyToCraft[i])
-                    {
-                        upgradeList.Add(targetPart);
-                    }
+                    upgradeList.Add(targetPart);
                 }
             }
         }
@@ -1149,11 +1251,216 @@ public class Scrapyard : MonoBehaviour
         CloseSubMenu();
     }
 
-    //~~~
-
     //Buttons for loading layout from a chosen slot
     public void LoadLayout(int index)
     {
-        GameController.Instance.LoadLayout(index);
+        Sprite[,] newMap = GameController.Instance.LoadLayout(index);
+        if (newMap != null)
+        {
+            //Remove all exising bot changes - we're overwriting with the layout
+            ResetChanges();
+
+            //Calculate costs of layout
+            int totalMoneyCost = 0;
+            float totalRedCost = 0;
+            float totalBlueCost = 0;
+            float totalGreenCost = 0;
+            float totalYellowCost = 0;
+            float totalGreyCost = 0;
+            List<Sprite> unmatchedBricks = new List<Sprite>();
+            foreach (GameObject CheckBrick in botBricks)
+            {
+                unmatchedBricks.Add(CheckBrick.GetComponent<Image>().sprite);
+            }
+
+            for (int x = 0; x < newMap.GetLength(0); x++)
+            {
+                for (int y = 0; y < newMap.GetLength(1); y++)
+                {
+                    //For each sprite in the new layout, look for matches in the old bot
+                    Brick craftedPart = GetCraftedPart(newMap[x, y]);
+                    List<Sprite> partUpgrades = GetSpriteUpgradeList(newMap[x, y]);
+                    for (int i = partUpgrades.Count - 1; i >= 0; i--)
+                    {
+                        //If player already owns the part in question, waive costs and use the old part instead
+                        if(unmatchedBricks.Contains(partUpgrades[i]))
+                        {
+                            unmatchedBricks.Remove(partUpgrades[i]);
+                            break;
+                        }
+
+                        //Otherwise, player must pay the buy/upgrade costs associated with the new brick
+                        else
+                        {
+                            if(!craftedPart || i == 0)
+                            {
+                                totalMoneyCost += brickCost;
+                            }
+                            else if (craftedPart)
+                            {
+                                CraftedPart upgradedPart = craftedPart.GetComponent<CraftedPart>();
+                                totalMoneyCost += upgradedPart.moneyToCraft[i];
+                                totalRedCost += upgradedPart.redToCraft[i];
+                                totalBlueCost += upgradedPart.blueToCraft[i];
+                                totalGreenCost += upgradedPart.greenToCraft[i];
+                                totalYellowCost += upgradedPart.yellowToCraft[i];
+                                totalGreyCost += upgradedPart.greyToCraft[i];
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Sell unused player bricks
+            for (int i = 0; i < unmatchedBricks.Count; i++)
+            {
+                totalMoneyCost -= brickSell;
+            }
+
+            //If player is short on resources, add their purchase cost to the amount
+            if (totalRedCost <= excessRed)
+            {
+                excessRed -= totalRedCost;
+                totalRedCost = 0;
+            }
+            else
+            {
+                totalRedCost -= excessRed;
+                excessRed = 0;
+                currentFuel -= totalRedCost;
+                if (currentFuel < 0)
+                {
+                    int resourceIncrease = Mathf.CeilToInt(-currentFuel / (float)resourceChange);
+                    currentFuel += resourceIncrease * resourceChange;
+                    totalMoneyCost += resourceIncrease * resourceCost;
+                }
+            }
+
+            if (totalBlueCost <= excessBlue)
+            {
+                excessBlue -= totalBlueCost;
+                totalBlueCost = 0;
+            }
+            else
+            {
+                totalBlueCost -= excessBlue;
+                excessBlue = 0;
+                currentBlue -= totalBlueCost;
+                if (currentBlue < 0)
+                {
+                    int resourceIncrease = Mathf.CeilToInt(-currentBlue / (float)resourceChange);
+                    currentBlue += resourceIncrease * resourceChange;
+                    totalMoneyCost += resourceIncrease * resourceCost;
+                }
+            }
+
+            if (totalGreenCost <= excessGreen)
+            {
+                excessGreen -= totalGreenCost;
+                totalGreenCost = 0;
+            }
+            else
+            {
+                totalGreenCost -= excessGreen;
+                excessGreen = 0;
+                currentGreen -= totalGreenCost;
+                if (currentGreen < 0)
+                {
+                    int resourceIncrease = Mathf.CeilToInt(-currentGreen / (float)resourceChange);
+                    currentGreen += resourceIncrease * resourceChange;
+                    totalMoneyCost += resourceIncrease * resourceCost;
+                }
+            }
+
+            if (totalYellowCost <= excessYellow)
+            {
+                excessYellow -= totalYellowCost;
+                totalYellowCost = 0;
+            }
+            else
+            {
+                totalYellowCost -= excessYellow;
+                excessYellow = 0;
+                currentYellow -= totalYellowCost;
+                if (currentYellow < 0)
+                {
+                    int resourceIncrease = Mathf.CeilToInt(-currentYellow / (float)resourceChange);
+                    currentYellow += resourceIncrease * resourceChange;
+                    totalMoneyCost += resourceIncrease * resourceCost;
+                }
+            }
+
+            if (totalGreyCost <= excessGrey)
+            {
+                excessGrey -= totalGreyCost;
+                totalGreyCost = 0;
+            }
+            else
+            {
+                totalGreyCost -= excessGrey;
+                excessGrey = 0;
+                currentGrey -= totalGreyCost;
+                if (currentGrey < 0)
+                {
+                    int resourceIncrease = Mathf.CeilToInt(-currentGrey / (float)resourceChange);
+                    currentGrey += resourceIncrease * resourceChange;
+                    totalMoneyCost += resourceIncrease * resourceCost;
+                }
+            }
+
+            //Update bot map and transaction amounts
+            transactionAmount -= totalMoneyCost;
+            botMap = newMap;
+            BuildBotGrid();
+            UpdateResources();
+        }
+
+        CloseSubMenu();
+    }
+
+    //Return the crafted brick associated with this sprite
+    Brick GetCraftedPart(Sprite targetSprite)
+    {
+        Brick craftedMatch = null;
+        foreach (GameObject CraftCheck in craftableParts)
+        {
+            Brick craftedPart = CraftCheck.GetComponent<Brick>();
+            for (int i = 0; i < craftedPart.spriteArr.Length; i++)
+            {
+                if (targetSprite == craftedPart.spriteArr[i])
+                {
+                    craftedMatch = craftedPart;
+                    break;
+                }
+            }
+        }
+        return craftedMatch;
+    }
+
+    //Return the upgrades required in order to get to this sprite
+    List<Sprite> GetSpriteUpgradeList(Sprite targetSprite)
+    {
+        //Find the correct crafted brick
+        Brick craftedMatch = GetCraftedPart(targetSprite);
+
+        //Find levels before reaching this upgrade
+        List<Sprite> upgradeList = new List<Sprite>();
+        if (craftedMatch)
+        {
+            for (int i = 0; i < craftedMatch.spriteArr.Length; i++)
+            {
+                if (targetSprite == craftedMatch.spriteArr[i])
+                {
+                    break;
+                }
+                else
+                {
+                    upgradeList.Add(craftedMatch.spriteArr[i]);
+                }
+            }
+        }
+
+        upgradeList.Add(targetSprite);
+        return upgradeList;
     }
 }
