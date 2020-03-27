@@ -21,8 +21,8 @@ public class VerticalShieldPieceExt : MonoBehaviour
     {
         if (isEndPiece)
         {
-            if (attachedSprite.enabled == false) 
-            spriteRenderer.enabled = false;
+            if (attachedSprite.enabled == false)
+                spriteRenderer.enabled = false;
         }
     }
 }
