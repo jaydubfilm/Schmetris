@@ -55,8 +55,8 @@ public class GunSniper : MonoBehaviour
             if (target != null)
             {
                 print("try fire target found");
-
-                FireGun(target.transform.position);
+                if(Vector3.Distance(target.transform.position, transform.position) < range[parentBrick.GetPoweredLevel()])
+                    FireGun(target.transform.position);
             }
         }
     }

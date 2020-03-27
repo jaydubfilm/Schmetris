@@ -125,7 +125,6 @@ public class MosquitoAI : MonoBehaviour
 
             if (Time.timeSinceLevelLoad - timeOfDeath > timeUntilBlast)
             {
-                print(Time.timeSinceLevelLoad - timeOfDeath);
                 DeathBlast();
             }
         }

@@ -107,7 +107,7 @@ public class EnemyBulletV2 : MonoBehaviour
 
         BulletSetup(sprite, bulletSpeed, bulletLifetime, damageDealt);
         target = player;
-        print("Fire mama");
+        //print("Fire mama");
 
         transform.eulerAngles = new Vector3(0, 90, 0);
         isMama = true;

@@ -118,7 +118,6 @@ public class Mama : MonoBehaviour
 
             if (Time.timeSinceLevelLoad - timeOfDeath > timeUntilBlast)
             {
-                print(Time.timeSinceLevelLoad - timeOfDeath);
                 DeathBlast();
             }
         }

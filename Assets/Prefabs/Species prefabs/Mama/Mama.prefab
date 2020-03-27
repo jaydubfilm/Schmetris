@@ -221,6 +221,8 @@ MonoBehaviour:
   blastRadius: 5
   blastDamage: 5
   strength: 3
+  debugExplosion: {fileID: 7524407400947348946, guid: 5497074458701d3468023bc84a64de09,
+    type: 3}
   force: 22.53
 --- !u!58 &7899793524970067222
 CircleCollider2D:

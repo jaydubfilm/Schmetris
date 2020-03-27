@@ -117,7 +117,6 @@ public class InvaderMovement : MonoBehaviour
         if (Time.time - storedTime > rateOfFire)
         {
 
-            print("firing");
             Fire();
             storedTime = Time.time;
         }
