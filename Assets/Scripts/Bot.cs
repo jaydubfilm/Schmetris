@@ -56,6 +56,9 @@ public class Bot : MonoBehaviour
     public List<GameObject> brickList;
     public List<GameObject> fuelBrickList = new List<GameObject>();
 
+    //These bricks require resources to run
+    public List<Brick> resourceBurnBricks = new List<Brick>();
+
     int[,] pathArr;
     public PowerGrid powerGrid;
     public PowerGrid powerGridPrefab;
@@ -209,8 +212,6 @@ public class Bot : MonoBehaviour
             return _storedGrey;
         }
     }
-
-    float fuelBurnRate = 1.0f;
 
     float totalResources
     {
@@ -585,17 +586,26 @@ public class Bot : MonoBehaviour
             orphanCheckFlag = false;
         }
 
-        if (storedRed > 0)
+        //Backup fuel supply if core runs out
+        Brick coreBurn = BrickAtBotArr(coreV2).GetComponent<Brick>();
+        if (!coreBurn.hasResources)
         {
-            storedRed = Mathf.Max(0, storedRed - fuelBurnRate * Time.deltaTime);
-            if(fuelBrickList.Count > 0)
+            if (storedRed > 0)
             {
-                fuelBrickList[0].GetComponent<Fuel>().CancelBurnFuel();
+                storedRed = Mathf.Max(0, storedRed - coreBurn.redBurn[coreBurn.GetPoweredLevel()] * Time.deltaTime);
+                if (fuelBrickList.Count > 0)
+                {
+                    fuelBrickList[0].GetComponent<Fuel>().CancelBurnFuel();
+                }
+            }
+            else if (fuelBrickList.Count > 0)
+            {
+                fuelBrickList[0].GetComponent<Fuel>().BurnFuel(coreBurn.redBurn[coreBurn.GetPoweredLevel()] * Time.deltaTime);
             }
         }
         else if (fuelBrickList.Count > 0)
         {
-            fuelBrickList[0].GetComponent<Fuel>().BurnFuel(fuelBurnRate * Time.deltaTime);
+            fuelBrickList[0].GetComponent<Fuel>().CancelBurnFuel();
         }
     }
 
@@ -2289,22 +2299,42 @@ public class Bot : MonoBehaviour
 
     public float GetBurnRate(ResourceType resourceType)
     {
-        //~
+        float burnRate = 0;
         switch (resourceType)
         {
             case ResourceType.Blue:
-                return 0;
+                foreach (Brick burnBrick in resourceBurnBricks)
+                {
+                    burnRate += burnBrick.blueBurn[burnBrick.GetPoweredLevel()];
+                }
+                break;
             case ResourceType.Red:
-                return fuelBurnRate;
+                foreach (Brick burnBrick in resourceBurnBricks)
+                {
+                    burnRate += burnBrick.redBurn[burnBrick.GetPoweredLevel()];
+                }
+                break;
             case ResourceType.Yellow:
-                return 0;
+                foreach (Brick burnBrick in resourceBurnBricks)
+                {
+                    burnRate += burnBrick.yellowBurn[burnBrick.GetPoweredLevel()];
+                }
+                break;
             case ResourceType.Green:
-                return 0;
+                foreach (Brick burnBrick in resourceBurnBricks)
+                {
+                    burnRate += burnBrick.greenBurn[burnBrick.GetPoweredLevel()];
+                }
+                break;
             case ResourceType.Grey:
-                return 0;
+                foreach (Brick burnBrick in resourceBurnBricks)
+                {
+                    burnRate += burnBrick.greyBurn[burnBrick.GetPoweredLevel()];
+                }
+                break;
         }
 
-        return 0;
+        return burnRate;
     }
 
     public float GetResourceCapacity()

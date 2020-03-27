@@ -43,8 +43,9 @@ public class PowerGrid : MonoBehaviour
 
         foreach (GameObject brickObj in bot.brickList){
             Brick brick = brickObj.GetComponent<Brick>();
-            if (brick.brickType == 0 || brick.brickType == 9) {
-                int r = brick.brickType == 0 ? brick.brickLevel+1 : brick.brickLevel + 2;
+            PowerSource brickPower = brick.GetComponent<PowerSource>();
+            if (brickPower) {
+                int r = brick.hasResources ? brickPower.powerAtLevel[brick.brickLevel] : brickPower.powerAtLevel[0];
                 Vector2Int sourcePos = brick.arrPos;
                 for (int x = -r;x<=r;x++) {
                     for (int y = -r; y<=r; y++) {
@@ -67,7 +68,7 @@ public class PowerGrid : MonoBehaviour
             Parasite parasite = brickObj.GetComponent<Parasite>();
             if (parasite==null) {
                 Brick brick = brickObj.GetComponent<Brick>();
-                if (brick.brickType!=0 || brick.brickType != 9) {
+                if (!brick.GetComponent<PowerSource>()) {
                     if (PowerAtBotCoords(brick.arrPos)==0) {
                         brick.MakeOrphan();
                         zoneReminder = true;
@@ -77,6 +78,10 @@ public class PowerGrid : MonoBehaviour
                     {
                         brick.isPowered = PowerAtBotCoords(brick.arrPos) > brick.brickLevel;
                     }
+                }
+                else
+                {
+                    brick.isPowered = true;
                 }
             }
         }

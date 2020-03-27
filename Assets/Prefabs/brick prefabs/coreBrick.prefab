@@ -13,6 +13,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxResource: 0a00000032000000fa000000e20400006a180000
+--- !u!114 &4543552202584301478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6471613597453367622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f147746bdeee8a40a40986577672ad6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  powerAtLevel: 0100000002000000030000000400000005000000
 --- !u!1 &7379883055455801689
 GameObject:
   m_ObjectHideFlags: 0

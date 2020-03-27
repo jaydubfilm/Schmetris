@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Brick : MonoBehaviour
 {
+
     const int brickMoneyMultiplier = 10;
 
     public Vector2Int arrPos;
@@ -15,6 +16,15 @@ public class Brick : MonoBehaviour
     public int[] brickMaxHP;
     public static int brickMaxLevel = 5;
     public static float brickMoveSpeed = 20f;
+
+    //Resource burn rates
+    public bool passiveBurn = false;
+    public bool hasResources = true;
+    public float[] redBurn;
+    public float[] blueBurn;
+    public float[] greenBurn;
+    public float[] yellowBurn;
+    public float[] greyBurn;
 
     public AudioClip addBrickSound;
     private AudioSource source;
@@ -94,10 +104,77 @@ public class Brick : MonoBehaviour
         FixedJoint2D fj = gameObject.GetComponent<FixedJoint2D>();
         fj.connectedBody = parentBot.GetComponent<Rigidbody2D>();
         InvokeRepeating("CheckHP",0.5f,0.1f);
+
+        bool burnsResource = false;
+        foreach(float Resource in redBurn)
+        {
+            if(Resource > 0)
+            {
+                burnsResource = true;
+                break;
+            }
+        }
+        foreach (float Resource in blueBurn)
+        {
+            if (Resource > 0)
+            {
+                burnsResource = true;
+                break;
+            }
+        }
+        foreach (float Resource in greenBurn)
+        {
+            if (Resource > 0)
+            {
+                burnsResource = true;
+                break;
+            }
+        }
+        foreach (float Resource in yellowBurn)
+        {
+            if (Resource > 0)
+            {
+                burnsResource = true;
+                break;
+            }
+        }
+        foreach (float Resource in greyBurn)
+        {
+            if (Resource > 0)
+            {
+                burnsResource = true;
+                break;
+            }
+        }
+        if(burnsResource)
+        {
+            bot.resourceBurnBricks.Add(this);
+        }
     }
 
-    void Update () {
-      
+    //If resources burn constantly, apply here
+    void Update()
+    {
+        if (passiveBurn)
+        {
+            hasResources = TryBurnResources(Time.deltaTime);
+        }
+    }
+
+    //Burn corresponding resource amounts, if able
+    public bool TryBurnResources(float interval)
+    {
+        int burnLevel = GetPoweredLevel();
+        if (bot.storedRed >= interval * redBurn[burnLevel] && bot.storedBlue >= interval * blueBurn[burnLevel] && bot.storedGreen >= interval * greenBurn[burnLevel] && bot.storedYellow >= interval * yellowBurn[burnLevel] && bot.storedGrey >= interval * greyBurn[burnLevel])
+        {
+            bot.storedRed -= interval * redBurn[burnLevel];
+            bot.storedBlue -= interval * blueBurn[burnLevel];
+            bot.storedGreen -= interval * greenBurn[burnLevel];
+            bot.storedYellow -= interval * yellowBurn[burnLevel];
+            bot.storedGrey -= interval * greyBurn[burnLevel];
+            return true;
+        }
+        return false;
     }
 
     void CheckHP(){
@@ -324,6 +401,9 @@ public class Brick : MonoBehaviour
             GetComponent<Fuel>().CancelBurnFuel();
             bot.fuelBrickList.Remove(gameObject);
         }
+
+        if (bot.resourceBurnBricks.Contains(this))
+            bot.resourceBurnBricks.Remove(this);
 
         bot.RefreshNeighborLists();
         bot.orphanCheckFlag = true;
