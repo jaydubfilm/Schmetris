@@ -18,6 +18,13 @@ MonoBehaviour:
   brickLevel: 0
   brickHP: 10
   brickMaxHP: 0500000005000000050000000500000005000000
+  passiveBurn: 0
+  hasResources: 1
+  redBurn: []
+  blueBurn: []
+  greenBurn: []
+  yellowBurn: []
+  greyBurn: []
   addBrickSound: {fileID: 8300000, guid: d2bdca082fbef3e4fb8bbed30f5d03d8, type: 3}
   spriteArr:
   - {fileID: 21300078, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
@@ -27,6 +34,7 @@ MonoBehaviour:
   - {fileID: 21300086, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - {fileID: 21300088, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - {fileID: 21300090, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+  requiredPower: 0100000002000000030000000400000005000000
   parentBot: {fileID: 0}
   neighborList: []
   healthBar: {fileID: 0}

@@ -14,9 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   arrPos: {x: 0, y: 0}
   brickType: 1
+  ID: 0
   brickLevel: 0
   brickHP: 10
-  brickMaxHP: 10
+  brickMaxHP: 
+  passiveBurn: 0
+  hasResources: 1
+  redBurn: []
+  blueBurn: []
+  greenBurn: []
+  yellowBurn: []
+  greyBurn: []
   addBrickSound: {fileID: 8300000, guid: d2bdca082fbef3e4fb8bbed30f5d03d8, type: 3}
   spriteArr:
   - {fileID: 21300078, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
@@ -26,8 +34,10 @@ MonoBehaviour:
   - {fileID: 21300086, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - {fileID: 21300088, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - {fileID: 21300090, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+  requiredPower: 0100000002000000030000000400000005000000
   parentBot: {fileID: 0}
   neighborList: []
+  healthBar: {fileID: 0}
 --- !u!1001 &6406064603019123139
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35,16 +45,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 622827001879522502, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+    - target: {fileID: 473111014832974600, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
-      propertyPath: m_Name
-      value: redBrick
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7233765132151845338, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 20b838be47e0e41949fc2f5e84e3ecbc, type: 2}
     - target: {fileID: 504040540746106522, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: m_Sprite
@@ -56,50 +61,10 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 473111014832974600, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+    - target: {fileID: 622827001879522502, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 1.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.y
-      value: 1.28
-      objectReference: {fileID: 0}
-    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: m_Size.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: m_Size.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: m_UsedByEffector
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: m_UsedByComposite
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
-        type: 3}
-      propertyPath: m_AutoTiling
-      value: 0
+      propertyPath: m_Name
+      value: redBrick
       objectReference: {fileID: 0}
     - target: {fileID: 3272617812009182816, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
@@ -166,6 +131,51 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 1.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_UsedByEffector
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_UsedByComposite
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975410284886842984, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_AutoTiling
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7233765132151845338, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 20b838be47e0e41949fc2f5e84e3ecbc, type: 2}
     m_RemovedComponents:
     - {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6cd0d4289632642bfa007f1e1c33c1a3, type: 3}

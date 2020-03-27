@@ -30,6 +30,7 @@ public class Brick : MonoBehaviour
     private AudioSource source;
   
     public Sprite[] spriteArr;
+    public int[] requiredPower;
     
     public GameObject parentBot;
     Bot bot;
