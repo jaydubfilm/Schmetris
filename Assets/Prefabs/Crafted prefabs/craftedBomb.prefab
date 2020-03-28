@@ -26,6 +26,22 @@ MonoBehaviour:
   - {fileID: 21300082, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - {fileID: 21300084, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - {fileID: 21300086, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+--- !u!114 &-1096315518493956992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6715254118685096965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 370b691a92f6c4eafb520420c9e7274a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 140000002800000064000000
+  range: 320000003200000032000000
+  bombEffect: {fileID: 4168938144742612567, guid: 3587e99bcb9dfca468d23457b7fdd40d,
+    type: 3}
 --- !u!1001 &6167074758492475587
 PrefabInstance:
   m_ObjectHideFlags: 0
