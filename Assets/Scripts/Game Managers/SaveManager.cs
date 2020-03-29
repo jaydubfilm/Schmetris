@@ -54,6 +54,8 @@ public class SaveManager
         newData.hangarGrey = bot.GetSavedResource(ResourceType.Grey, true);
         newData.game = game;
 
+        //~
+
         Sprite[,] botMap = bot.GetTileMap();
         newData.bot = new BotData[botMap.GetLength(0)];
         for(int x = 0;x < botMap.GetLength(0);x++)
@@ -88,6 +90,8 @@ public class SaveManager
         newData.hangarYellow = 0;
         newData.hangarGrey = 0;
         newData.game = "LAYOUT";
+
+        //~
 
         newData.bot = new BotData[bot.GetLength(0)];
         for (int x = 0; x < bot.GetLength(0); x++)
@@ -133,6 +137,7 @@ public class SaveManager
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
+            newData.containers = new List<ContainerData>();
             saveData.saveFiles.Add(newData);
         }
         while (saveData.savedLayouts.Count < maxSaveFiles)
@@ -154,6 +159,7 @@ public class SaveManager
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
+            newData.containers = new List<ContainerData>();
             saveData.savedLayouts.Add(newData);
         }
     }
@@ -181,6 +187,7 @@ public class SaveManager
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
+            newData.containers = new List<ContainerData>();
             saveData.saveFiles.Add(newData);
         }
         while (saveData.savedLayouts.Count < maxSaveFiles)
@@ -202,6 +209,7 @@ public class SaveManager
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
+            newData.containers = new List<ContainerData>();
             saveData.savedLayouts.Add(newData);
         }
         SaveGame();
@@ -276,6 +284,15 @@ public class SaveData
     public float hangarYellow; //Excess yellow resource
     public float hangarGrey; //Excess grey resource
     public BotData[] bot;   //Bot tilemap for reloading save
+    public List<ContainerData> containers;  //Containers in bot, to be properly rotated after building
+}
+
+//Separate serialization for containers which have unique characteristics
+[Serializable]
+public class ContainerData
+{
+    public Vector2Int coords;
+    public float openDirection;
 }
 
 //Separate serialization for bot map as 2D array serialization isn't automatically supported

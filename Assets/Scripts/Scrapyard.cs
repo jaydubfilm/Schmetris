@@ -106,6 +106,11 @@ public class Scrapyard : MonoBehaviour
     float excessYellow = 0;
     float excessGrey = 0;
     int currentMoney = 0;
+    float redBurn = 0;
+    float blueBurn = 0;
+    float greenBurn = 0;
+    float yellowBurn = 0;
+    float greyBurn = 0;
     int transactionAmount = 0;
     Sprite[,] botMap;
     List<GameObject> uncommittedBricks = new List<GameObject>();
@@ -450,9 +455,55 @@ public class Scrapyard : MonoBehaviour
         }
     }
 
+    //Update scrapyard burn rate UI
+    void UpdateBurnRates()
+    {
+        redBurn = 0;
+        blueBurn = 0;
+        greenBurn = 0;
+        yellowBurn = 0;
+        greyBurn = 0;
+
+        foreach(GameObject CheckBrick in botBricks)
+        {
+            Image checkImage = CheckBrick.GetComponent<Image>();
+            if(checkImage.color != Color.clear)
+            {
+                foreach(GameObject BrickPrefab in GameController.Instance.bot.masterBrickList)
+                {
+                    Brick brickRef = BrickPrefab.GetComponent<Brick>();
+                    for(int i = 0;i<brickRef.spriteArr.Length;i++)
+                    {
+                        if(checkImage.sprite == brickRef.spriteArr[i])
+                        {
+                            if(brickRef.passiveBurn)
+                            {
+                                redBurn += brickRef.redBurn[i];
+                                blueBurn += brickRef.blueBurn[i];
+                                greenBurn += brickRef.greenBurn[i];
+                                yellowBurn += brickRef.yellowBurn[i];
+                                greyBurn += brickRef.greyBurn[i];
+                            }
+                            else if (brickRef.GetComponent<Repair>())
+                            {
+                                Repair repairRef = brickRef.GetComponent<Repair>();
+
+                            } else if (brickRef.GetComponent<Gun>())
+                            {
+                                Gun gunRef = brickRef.GetComponent<Gun>();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     //Update scrapyard resource UI
     void UpdateResources()
     {
+        UpdateBurnRates();
+
         if(currentFuel > maxCapacity)
         {
             excessRed += currentFuel - maxCapacity;
@@ -518,27 +569,27 @@ public class Scrapyard : MonoBehaviour
 
         blueBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentBlue / maxCapacity : 0), blueBar.sizeDelta.y);
         blueAmount.text = Mathf.RoundToInt(currentBlue).ToString();
-        blueBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Blue)).ToString() + "/s";
+        blueBurnRate.text = "-" + Mathf.RoundToInt(blueBurn).ToString() + "/s";
         blueAmount.text += " (+" + Mathf.RoundToInt(excessBlue).ToString() + ")";
 
         yellowBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentYellow / maxCapacity : 0), yellowBar.sizeDelta.y);
         yellowAmount.text = Mathf.RoundToInt(currentYellow).ToString();
-        yellowBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Yellow)).ToString() + "/s";
+        yellowBurnRate.text = "-" + Mathf.RoundToInt(yellowBurn).ToString() + "/s";
         yellowAmount.text += " (+" + Mathf.RoundToInt(excessYellow).ToString() + ")";
 
         greenBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentGreen / maxCapacity : 0), greenBar.sizeDelta.y);
         greenAmount.text = Mathf.RoundToInt(currentGreen).ToString();
-        greenBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Green)).ToString() + "/s";
+        greenBurnRate.text = "-" + Mathf.RoundToInt(greenBurn).ToString() + "/s";
         greenAmount.text += " (+" + Mathf.RoundToInt(excessGreen).ToString() + ")";
 
         greyBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentGrey / maxCapacity : 0), greyBar.sizeDelta.y);
         greyAmount.text = Mathf.RoundToInt(currentGrey).ToString();
-        greyBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Grey)).ToString() + "/s";
+        greyBurnRate.text = "-" + Mathf.RoundToInt(greyBurn).ToString() + "/s";
         greyAmount.text += " (+" + Mathf.RoundToInt(excessGrey).ToString() + ")";
 
         fuelBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentFuel / maxCapacity : 0), fuelBar.sizeDelta.y);
         redAmount.text = Mathf.RoundToInt(currentFuel).ToString();
-        redBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Red)).ToString() + "/s";
+        redBurnRate.text = "-" + Mathf.RoundToInt(redBurn).ToString() + "/s";
         redAmount.text += " (+" + Mathf.RoundToInt(excessRed).ToString() + ")";
 
         UpdateUpgradeGlows();

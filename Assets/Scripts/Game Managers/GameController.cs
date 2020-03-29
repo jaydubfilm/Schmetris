@@ -338,7 +338,6 @@ public class GameController : MonoBehaviour
                 game = hardGame;
             }
 
-            //~Best way to load a tilemap?
             if (loadData.bot.Length > 0)
             {
                 Sprite[,] newMap = new Sprite[loadData.bot.Length, loadData.bot[0].botRow.Length];
@@ -352,6 +351,8 @@ public class GameController : MonoBehaviour
                 }
                 bot.SetTileMap(newMap);
             }
+
+            //~
 
             //Resources
             bot.SetSavedResource(ResourceType.Red, loadData.fuel, false);
@@ -376,6 +377,8 @@ public class GameController : MonoBehaviour
 
     public Sprite[,] LoadLayout(int index)
     {
+        //~
+
         SaveData loadData = saveManager.GetLayout(index);
         if (loadData != null && loadData.game != "")
         {
