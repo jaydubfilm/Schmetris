@@ -60,11 +60,18 @@ public class Bullet : MonoBehaviour
         //Homing
         else 
         {
-            rb2d.bodyType = RigidbodyType2D.Dynamic;
+            //rb2d.bodyType = RigidbodyType2D.Dynamic;
 
             Vector3 angleToPlayer = (homingTarget.position - transform.position).normalized;
-            rb2d.AddForce(new Vector2(angleToPlayer.x, angleToPlayer.y) * speed * 200* Time.deltaTime);
 
+            Vector2 step = new Vector2(angleToPlayer.x, angleToPlayer.y) * speed * Time.deltaTime;
+            range -= step.magnitude;
+            if (range < 0)
+                Destroy(gameObject);
+            transform.position += new Vector3(step.x, step.y, 0);
+            //rb2d.AddForce(new Vector2(angleToPlayer.x, angleToPlayer.y) * speed * 200* Time.deltaTime);
+
+            //saftey check
             if(GetComponentInChildren<SpriteRenderer>().isVisible == false)
             {
                 Destroy(gameObject);
@@ -88,7 +95,7 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    public void SetAsHoming(Transform target)
+    public void SetAsHoming(Transform target, bool trueOrFalse)
     {
 
         homingTarget = target;

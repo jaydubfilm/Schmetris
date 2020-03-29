@@ -8,6 +8,7 @@ public class GunSniper : MonoBehaviour
     public float[] rateOfFire;
     public int[] attackPower;
     public float[] range;
+    bool isInvader;
 
     //Components
     Brick parentBrick;
@@ -105,6 +106,10 @@ public class GunSniper : MonoBehaviour
 
                                 closestDistance = dist;
                                 target = enemyObj;
+                                if (enemyObj.GetComponent<InvaderMovement>())
+                                    isInvader = true;
+                                else
+                                    isInvader = false;
                             }
                         }
                     }
@@ -133,7 +138,8 @@ public class GunSniper : MonoBehaviour
         newBullet.damage = attackPower[parentBrick.GetPoweredLevel()];
         newBullet.range = range[parentBrick.GetPoweredLevel()];
         //newBullet.SetAsHoming(target.transform);
-
+        if(isInvader)
+            newBullet.SetAsHoming(target.transform, true);
         fireTimer = rateOfFire[parentBrick.GetPoweredLevel()];
     }
 

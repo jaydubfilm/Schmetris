@@ -126,6 +126,8 @@ public class GunTripleShot : MonoBehaviour
             //newBullet.SetAsHoming(target.transform);
 
             fireTimer = rateOfFire[parentBrick.GetPoweredLevel()];
+            if (targets[i].GetComponent<InvaderMovement>())
+                newBullet.SetAsHoming (targets[i].transform, true);
         }
     }
 
