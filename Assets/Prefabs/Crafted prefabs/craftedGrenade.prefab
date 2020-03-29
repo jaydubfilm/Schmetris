@@ -24,6 +24,35 @@ MonoBehaviour:
   basePartToCraft:
   - {fileID: 21300116, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - {fileID: -2406110358308530341, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4, type: 3}
+--- !u!114 &-7240547758085240179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6715254118685096965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9bed86fb78964442964b9e1f4a6c440, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rateOfFire:
+  - 3
+  - 2
+  - 1
+  attackPower: 010000000200000003000000
+  range:
+  - 35
+  - 40
+  - 46
+  bullet:
+  - {fileID: 7918598799021602830, guid: 4ad4d727f591df6478cb82f871da7cad, type: 3}
+  maxResource: 00000000
+  burnPerShot:
+  - 0
+  - 0
+  - 0
+  speed: 23
 --- !u!1001 &6167074758492475587
 PrefabInstance:
   m_ObjectHideFlags: 0

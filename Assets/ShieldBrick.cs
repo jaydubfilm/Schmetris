@@ -51,13 +51,15 @@ public class ShieldBrick : MonoBehaviour
         shieldHp += damage;
         foreach (Brick brick in childTrigger.protectedList)
         {
+            if(brick != null)
+            { 
+                outlineSR = brick.transform.GetComponentInChildren<OutlineCheck>().transform.GetComponent<SpriteRenderer>();
 
-            outlineSR = brick.transform.GetComponentInChildren<OutlineCheck>().transform.GetComponent<SpriteRenderer>();
-            if (shieldHp < hpAtStart * 0.67f)
-                outlineSR.color = Color.yellow;
-            if (shieldHp < hpAtStart * 0.35f)
-                outlineSR.color = Color.red;
-
+                if (shieldHp < hpAtStart * 0.67f)
+                    outlineSR.color = Color.yellow;
+                if (shieldHp < hpAtStart * 0.35f)
+                    outlineSR.color = Color.red;
+            }
         }
 
         

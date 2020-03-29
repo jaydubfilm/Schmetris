@@ -93,6 +93,7 @@ GameObject:
   - component: {fileID: 2992056171915422378}
   - component: {fileID: 219272288}
   - component: {fileID: 219272286}
+  - component: {fileID: -4983901011547185539}
   m_Layer: 0
   m_Name: Enemy Invader
   m_TagString: Moveable
@@ -199,3 +200,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &-4983901011547185539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6665343524019512472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8b209c609c5f8640adaa1a6f7f44327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameController: {fileID: 0}
+  strength: 0
+  hp: 5

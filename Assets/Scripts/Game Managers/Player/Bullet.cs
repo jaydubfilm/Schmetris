@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Sirenix.OdinInspector;
 public class Bullet : MonoBehaviour
 {
     public float speed;
@@ -13,6 +13,13 @@ public class Bullet : MonoBehaviour
     public bool homing;
     Transform homingTarget;
     Rigidbody2D rb2d;
+    public bool isGrenade;
+    [ShowIf("isGrenade", true)]
+    public float blastRadius;
+    [ShowIf("isGrenade", true)]
+    public float blastForce;
+    public GameObject debugSphere;
+    Vector3 startPos;
 
     // Start is called before the first frame update
     void Start()
@@ -20,6 +27,7 @@ public class Bullet : MonoBehaviour
         enemyMask = LayerMask.GetMask("Enemy");
         brickMask = LayerMask.GetMask("Brick");
         rb2d = GetComponent<Rigidbody2D>();
+        startPos = transform.position;
     }
 
     // Update is called once per frame
@@ -58,9 +66,8 @@ public class Bullet : MonoBehaviour
         }
 
         //Homing
-        else 
+        else
         {
-            //rb2d.bodyType = RigidbodyType2D.Dynamic;
 
             Vector3 angleToPlayer = (homingTarget.position - transform.position).normalized;
 
@@ -69,28 +76,56 @@ public class Bullet : MonoBehaviour
             if (range < 0)
                 Destroy(gameObject);
             transform.position += new Vector3(step.x, step.y, 0);
-            //rb2d.AddForce(new Vector2(angleToPlayer.x, angleToPlayer.y) * speed * 200* Time.deltaTime);
 
             //saftey check
-            if(GetComponentInChildren<SpriteRenderer>().isVisible == false)
+            if (GetComponentInChildren<SpriteRenderer>().isVisible == false)
             {
                 Destroy(gameObject);
             }
         }
 
-       
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-
         if (collision.transform.GetComponent<EnemyGeneral>())
         {
-            print(collision.gameObject.name + " Hit");
-            EnemyGeneral enemyGeneral = collision.transform.GetComponent<EnemyGeneral>();
-            enemyGeneral.hp -= damage;
-            if (enemyGeneral.hp < 0)
-                enemyGeneral.EnemyDeath();
+
+                EnemyGeneral enemyGeneral = collision.transform.GetComponent<EnemyGeneral>();
+
+            if (isGrenade == false)
+            {
+
+                enemyGeneral.hp -= damage;
+                CheckKillEnemy(enemyGeneral);
+            }
+            else
+            {
+
+                Collider2D[] colliders = Physics2D.OverlapCircleAll(new Vector2(transform.position.x, transform.position.y), blastRadius);
+
+                for (int i = 0; i < colliders.Length; i++)
+                {
+
+                    if (colliders[i].GetComponent<EnemyGeneral>())
+                    {
+
+                        colliders[i].GetComponent<EnemyGeneral>().hp -= damage;
+                        CheckKillEnemy(enemyGeneral);
+                        if (colliders[i].GetComponent<Rigidbody2D>())
+                        {
+                            //colliders[i].GetComponent<Rigidbody2D>().AddForce(colliders[i].transform.position - startPos * blastForce, ForceMode2D.Impulse);
+                        }
+
+                        GameObject debugSphereInstance = Instantiate(debugSphere, transform.position, Quaternion.identity);
+                        debugSphereInstance.transform.localScale = new Vector3(blastRadius * 2, blastRadius * 2, blastRadius * 2);
+
+
+                    }
+                }
+            }
+
             Destroy(gameObject);
         }
     }
@@ -100,5 +135,15 @@ public class Bullet : MonoBehaviour
 
         homingTarget = target;
         homing = true;
+        //rb2d.bodyType = RigidbodyType2D.Dynamic;
+        //rb2d.gravityScale = 0;
+    }
+
+    void CheckKillEnemy(EnemyGeneral enemyGeneral)
+    {
+
+        if (enemyGeneral.hp < 0)
+            enemyGeneral.EnemyDeath();
+        Destroy(gameObject);
     }
 }
