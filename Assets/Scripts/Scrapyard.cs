@@ -487,10 +487,20 @@ public class Scrapyard : MonoBehaviour
                             else if (brickRef.GetComponent<Repair>())
                             {
                                 Repair repairRef = brickRef.GetComponent<Repair>();
-
-                            } else if (brickRef.GetComponent<Gun>())
+                                redBurn += repairRef.GetConvertedBurnRate(ResourceType.Red, i);
+                                blueBurn += repairRef.GetConvertedBurnRate(ResourceType.Blue, i);
+                                greenBurn += repairRef.GetConvertedBurnRate(ResourceType.Green, i);
+                                yellowBurn += repairRef.GetConvertedBurnRate(ResourceType.Yellow, i);
+                                greyBurn += repairRef.GetConvertedBurnRate(ResourceType.Grey, i);
+                            }
+                            else if (brickRef.GetComponent<Gun>())
                             {
                                 Gun gunRef = brickRef.GetComponent<Gun>();
+                                redBurn += gunRef.GetConvertedBurnRate(ResourceType.Red, i);
+                                blueBurn += gunRef.GetConvertedBurnRate(ResourceType.Blue, i);
+                                greenBurn += gunRef.GetConvertedBurnRate(ResourceType.Green, i);
+                                yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
+                                greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
                             }
                         }
                     }

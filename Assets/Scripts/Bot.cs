@@ -2365,38 +2365,38 @@ public class Bot : MonoBehaviour
     public float GetBurnRate(ResourceType resourceType)
     {
         float burnRate = 0;
-        switch (resourceType)
+
+        foreach (Brick brickRef in resourceBurnBricks)
         {
-            case ResourceType.Blue:
-                foreach (Brick burnBrick in resourceBurnBricks)
+            if (brickRef.passiveBurn)
+            {
+                switch (resourceType)
                 {
-                    burnRate += burnBrick.blueBurn[burnBrick.GetPoweredLevel()];
+                    case ResourceType.Blue:
+                        burnRate += brickRef.blueBurn[brickRef.GetPoweredLevel()];
+                        break;
+                    case ResourceType.Red:
+                        burnRate += brickRef.redBurn[brickRef.GetPoweredLevel()];
+                        break;
+                    case ResourceType.Yellow:
+                        burnRate += brickRef.yellowBurn[brickRef.GetPoweredLevel()];
+                        break;
+                    case ResourceType.Green:
+                        burnRate += brickRef.greenBurn[brickRef.GetPoweredLevel()];
+                        break;
+                    case ResourceType.Grey:
+                        burnRate += brickRef.greyBurn[brickRef.GetPoweredLevel()];
+                        break;
                 }
-                break;
-            case ResourceType.Red:
-                foreach (Brick burnBrick in resourceBurnBricks)
-                {
-                    burnRate += burnBrick.redBurn[burnBrick.GetPoweredLevel()];
-                }
-                break;
-            case ResourceType.Yellow:
-                foreach (Brick burnBrick in resourceBurnBricks)
-                {
-                    burnRate += burnBrick.yellowBurn[burnBrick.GetPoweredLevel()];
-                }
-                break;
-            case ResourceType.Green:
-                foreach (Brick burnBrick in resourceBurnBricks)
-                {
-                    burnRate += burnBrick.greenBurn[burnBrick.GetPoweredLevel()];
-                }
-                break;
-            case ResourceType.Grey:
-                foreach (Brick burnBrick in resourceBurnBricks)
-                {
-                    burnRate += burnBrick.greyBurn[burnBrick.GetPoweredLevel()];
-                }
-                break;
+            }
+            else if (brickRef.GetComponent<Repair>())
+            {
+                burnRate += brickRef.GetComponent<Repair>().GetConvertedBurnRate(resourceType, brickRef.GetPoweredLevel());
+            }
+            else if (brickRef.GetComponent<Gun>())
+            {
+                burnRate += brickRef.GetComponent<Gun>().GetConvertedBurnRate(resourceType, brickRef.GetPoweredLevel());
+            }
         }
 
         return burnRate;

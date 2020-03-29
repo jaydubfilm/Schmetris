@@ -74,6 +74,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
+      propertyPath: greyBurn.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: yellowBurn.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: greenBurn.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: blueBurn.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: redBurn.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 8955500789032862693}
