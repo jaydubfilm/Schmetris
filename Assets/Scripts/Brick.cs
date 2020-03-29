@@ -313,10 +313,8 @@ public class Brick : MonoBehaviour
         if (brickType == 9 && (bot.BrickAtBotArr(bot.coreV2) == null))
             GameController.Instance.EndGame("CORE DESTROYED");
 
-        if (brickType == 6) {
-            Bomb bomb = GetComponent<Bomb>();
-            int damage = bomb.damage[GetPoweredLevel()];
-            BombEnemies(damage, bomb.bombEffect);
+        if (GetComponent<Bomb>()) {
+            GetComponent<Bomb>().BombEnemies(GetPoweredLevel());
         }
 
         if ((brickType == 1)&&(GetComponent<Fuel>().fuelLevel>0))
@@ -344,44 +342,6 @@ public class Brick : MonoBehaviour
     IEnumerator DestroyAfterAnimation(float duration){
         yield return new WaitForSeconds(duration);
         Destroy(gameObject); 
-    }
-
-    IEnumerator WaitAndBombEnemies(int damage, GameObject effect){
-        yield return new WaitForSeconds(0.5f);
-        BombEnemies(damage, effect);
-    }
-
-    public void BombEnemies(int damage, GameObject effect)
-    {
-        List<GameObject> enemyArr = new List<GameObject>();
-
-        for (int x = 0; x < GameController.Instance.enemyList.Count; x++)
-        {
-            if (GameController.Instance.enemyList[x])
-            {
-                enemyArr.Add(GameController.Instance.enemyList[x]);
-            }
-            else
-            {
-                GameController.Instance.enemyList.RemoveAt(x--);
-            }
-        }
-
-        for (int x = 0; x < enemyArr.Count; x++)
-        {
-            Brick brick = enemyArr[x].GetComponent<Brick>();
-            if (brick != null)
-            {
-                brick.AdjustHP(-damage);
-                GameObject explosion = Instantiate(effect, brick.transform.position, Quaternion.identity);
-            }
-            else
-            {
-                Enemy enemy = enemyArr[x].GetComponent<Enemy>();
-                enemy.hP -= damage;
-                GameObject explosion = Instantiate(effect, enemy.transform.position, Quaternion.identity);
-            }
-        }
     }
 
     public void DestroyBrick() {
