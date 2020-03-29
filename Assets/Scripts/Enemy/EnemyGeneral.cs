@@ -11,11 +11,32 @@ public class EnemyGeneral : MonoBehaviour
     public int strength;
 
     public int hp;
+    public bool isParasite;
+    int hpLastFrame;
+    Enemy enemy;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (isParasite)
+        {
+            enemy = GetComponent<Enemy>();
+            hp = enemy.hP;
+            hpLastFrame = hp;
+        }
+    }
+
+    private void Update()
+    {
+        if (isParasite)
+        {
+            if (hpLastFrame != hp)
+            {
+                enemy.hP = hp;
+            }
+
+            hpLastFrame = hp;
+        }
     }
 
     // Update is called once per frame

@@ -48,7 +48,7 @@ public class GrenadeGun : MonoBehaviour
     //Check for targets and ammo and try to shoot
     void TryFire()
     {
-
+        
         if (GameController.Instance.bot.storedBlue >= burnPerShot[parentBrick.GetPoweredLevel()])
         {
 
@@ -75,44 +75,48 @@ public class GrenadeGun : MonoBehaviour
                 if (enemyObj.GetComponentInChildren<SpriteRenderer>().isVisible)
                 {
                     //Strongest enemy type yet selected
-                    if (enemyObj.GetComponent<EnemyGeneral>().strength > enemyStregth)
+                    if (enemyObj.GetComponent<EnemyGeneral>())
                     {
-
-                        float dist = Vector3.Distance(enemyObj.transform.position, transform.position);
-                        enemyStregth = enemyObj.GetComponent<EnemyGeneral>().strength;
-                        closestDistance = dist;
-                        target = enemyObj;
-                    }
-
-                    //same enemy type as the current strongest enemy
-                    else if (enemyObj.GetComponent<EnemyGeneral>().strength == enemyStregth)
-                    {
-
-                        float dist = Vector3.Distance(enemyObj.transform.position, transform.position);
-
-                        //first pass - set this as current target
-                        if (target == null)
+                        EnemyGeneral eg = enemyObj.GetComponent<EnemyGeneral>();
+                        if (eg.strength > enemyStregth)
                         {
 
+                            float dist = Vector3.Distance(enemyObj.transform.position, transform.position);
+                            enemyStregth = enemyObj.GetComponent<EnemyGeneral>().strength;
                             closestDistance = dist;
                             target = enemyObj;
                         }
 
-                        else
+                            //same enemy type as the current strongest enemy
+                        else if (eg.strength == enemyStregth)
                         {
-                            //This is the nearest enemy of this type
-                            if ((dist < closestDistance))
+
+                            float dist = Vector3.Distance(enemyObj.transform.position, transform.position);
+
+                            //first pass - set this as current target
+                            if (target == null)
                             {
 
                                 closestDistance = dist;
                                 target = enemyObj;
-                                if (enemyObj.GetComponent<InvaderMovement>())
-                                    isInvader = true;
-                                else
-                                    isInvader = false;
+                            }
+
+                            else
+                            {
+                                //This is the nearest enemy of this type
+                                if ((dist < closestDistance))
+                                {
+
+                                    closestDistance = dist;
+                                    target = enemyObj;
+                                    if (enemyObj.GetComponent<InvaderMovement>())
+                                        isInvader = true;
+                                    else
+                                        isInvader = false;
+                                }
                             }
                         }
-                    }
+                    }                                  
                 }            
             }
         }

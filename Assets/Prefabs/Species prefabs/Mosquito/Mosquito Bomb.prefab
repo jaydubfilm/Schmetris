@@ -320,4 +320,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameController: {fileID: 0}
   strength: 2
-  hp: 0
+  hp: 3
+  isParasite: 0

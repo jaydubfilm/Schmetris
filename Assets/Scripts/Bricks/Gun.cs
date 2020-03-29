@@ -16,6 +16,7 @@ public class Gun : MonoBehaviour
     float fireTimer;
     public GameObject[] bullet;
     Vector2Int direction;
+    Transform enemyTarget;
 
     //Resources
     public int[] maxResource;
@@ -46,6 +47,7 @@ public class Gun : MonoBehaviour
         GameObject target = FindTarget();
         if (target != null)
         {
+            enemyTarget = target.transform;
             FireGun(target.transform.position);
         }
     }
@@ -76,6 +78,7 @@ public class Gun : MonoBehaviour
         GameObject newBulletObj = Instantiate(bullet[parentBrick.GetPoweredLevel()], transform.position, Quaternion.identity);
         Vector3 dirV3 = Vector3.Normalize(targetPos - transform.position);
         Bullet newBullet = newBulletObj.GetComponent<Bullet>();
+        newBullet.SetAsHoming(enemyTarget, true);
         newBullet.direction = new Vector2(dirV3.x, dirV3.y);
         newBullet.speed = speed;
         newBullet.damage = attackPower[parentBrick.GetPoweredLevel()];

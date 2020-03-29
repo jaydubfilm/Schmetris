@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7079861966070696574}
   - component: {fileID: 2882636461149170949}
   - component: {fileID: 3866926942209692544}
+  - component: {fileID: 4139199961014452939}
   m_Layer: 0
   m_Name: Bullet 1
   m_TagString: Moveable
@@ -50,6 +51,11 @@ MonoBehaviour:
   damage: 0
   direction: {x: 0, y: 0}
   range: 0
+  homing: 1
+  isGrenade: 0
+  blastRadius: 0
+  blastForce: 0
+  debugSphere: {fileID: 0}
 --- !u!58 &7079861966070696574
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -65,7 +71,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.66
 --- !u!212 &2882636461149170949
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -136,3 +142,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 1
+--- !u!58 &4139199961014452939
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7857921322564960265}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5

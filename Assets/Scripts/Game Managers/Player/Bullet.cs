@@ -92,13 +92,15 @@ public class Bullet : MonoBehaviour
         if (collision.transform.GetComponent<EnemyGeneral>())
         {
 
-                EnemyGeneral enemyGeneral = collision.transform.GetComponent<EnemyGeneral>();
+            EnemyGeneral enemyGeneral = collision.transform.GetComponent<EnemyGeneral>();
 
             if (isGrenade == false)
             {
 
                 enemyGeneral.hp -= damage;
                 CheckKillEnemy(enemyGeneral);
+                print("hit");
+
             }
             else
             {
@@ -113,19 +115,20 @@ public class Bullet : MonoBehaviour
 
                         colliders[i].GetComponent<EnemyGeneral>().hp -= damage;
                         CheckKillEnemy(enemyGeneral);
-                        if (colliders[i].GetComponent<Rigidbody2D>())
-                        {
-                            //colliders[i].GetComponent<Rigidbody2D>().AddForce(colliders[i].transform.position - startPos * blastForce, ForceMode2D.Impulse);
-                        }
-
+                       
                         GameObject debugSphereInstance = Instantiate(debugSphere, transform.position, Quaternion.identity);
                         debugSphereInstance.transform.localScale = new Vector3(blastRadius * 2, blastRadius * 2, blastRadius * 2);
-
-
                     }
+
+                    //if (colliders[i].GetComponent<Enemy>())
+                    //{
+                    //    colliders[i].GetComponent<Enemy>().hP -= damage;
+                    //    GameObject debugSphereInstance = Instantiate(debugSphere, transform.position, Quaternion.identity);
+                    //    debugSphereInstance.transform.localScale = new Vector3(blastRadius * 2, blastRadius * 2, blastRadius * 2);
+                    //}
+                    print("test");
                 }
             }
-
             Destroy(gameObject);
         }
     }

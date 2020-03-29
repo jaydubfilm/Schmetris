@@ -96,10 +96,7 @@ public class GunTripleShot : MonoBehaviour
                 }
             }
         }
-        for (int i = 0; i < targets.Count; i++)
-        {
-
-        }
+        
         return targets;
               
     }
