@@ -39,6 +39,8 @@ public class Brick : MonoBehaviour
     public List<GameObject> neighborList = new List<GameObject>();
     public HealthBar healthBar;
 
+    public List<ShieldBrick> activeShields = new List<ShieldBrick>();
+
     //Is this brick fully powered by the grid?
     bool _isPowered = false;
     public bool isPowered
@@ -195,7 +197,23 @@ public class Brick : MonoBehaviour
     }
 
     public void AdjustHP(int damage) {
-        brickHP+=damage;
+        List<ShieldBrick> destroyList = new List<ShieldBrick>();
+
+        if(activeShields.Count == 0)
+            brickHP+=damage;
+        else
+        {
+            foreach (ShieldBrick shield in activeShields)
+            {
+                shield.ReceiveDamage(damage / activeShields.Count);
+                destroyList.Add(shield);
+            }
+
+            foreach (ShieldBrick shield in destroyList)
+            {
+                shield.DestroyShield();
+            }
+        }
      
         if (brickHP>0){
             if (brickHP>=brickMaxHP[GetPoweredLevel()]) {

@@ -12,12 +12,10 @@ public class ShieldCurveCheck : MonoBehaviour
     BoxCollider2D collider;
     SpriteRenderer spriteRenderer;
 
-    //public SpriteRenderer ShieldFlatPiece2, ShieldFlatPiece1, ShieldFlatPiece0, ShieldFlatPiece_1, ShieldFlatPiece_2, Shield_Curve_Outer_UL, Shield_Curve_Outer_UR, Shield_Curve_Outer_DL, Shield_Curve_Outer_DR, Shield_Curve_Inner_UL, Shield_Curve_Inner_UR, Shield_Curve_Inner_DL, Shield_Curve_Inner_DR;
 
     void OnEnable()
     {
         thisBrick = GetComponentInParent<Brick>();
-
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.enabled = false;
         collider = GetComponent<BoxCollider2D>();
@@ -36,8 +34,10 @@ public class ShieldCurveCheck : MonoBehaviour
 
             if (other.transform.GetComponent<VerticalShieldPieceExt>())
             {
+
                 if (spriteRenderer.enabled == true)
                 {
+
                     other.GetComponent<SpriteRenderer>().enabled = false;
                 }
             }
@@ -51,6 +51,7 @@ public class ShieldCurveCheck : MonoBehaviour
 
         if (other.transform.GetComponent<HorizontalShieldPiece>())
         {
+
             if (innerPiece == false)
             {
 

@@ -26,6 +26,7 @@ public class ScreenStuff : MonoBehaviour
 
     void Start()
     {
+
         rows = GameController.Instance.settings.rows;
         colSize = GameController.Instance.settings.colSize;
         rowSize = GameController.Instance.settings.rowSize;
