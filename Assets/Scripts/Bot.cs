@@ -415,7 +415,7 @@ public class Bot : MonoBehaviour
                 RemoveContainer(containerList[0]);
             }
             containerList = new List<Container>();
-
+            resourceBurnBricks = new List<Brick>();
             fuelBrickList = new List<GameObject>();
 
             if (powerGrid)

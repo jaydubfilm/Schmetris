@@ -174,7 +174,11 @@ public class Scrapyard : MonoBehaviour
         excessGrey = GameController.Instance.bot.GetSavedResource(ResourceType.Grey, true);
 
         //Load bot map
-        containers = GameController.Instance.bot.savedContainerData;
+        containers = new List<ContainerData>();
+        foreach(ContainerData containerData in GameController.Instance.bot.savedContainerData)
+        {
+            containers.Add(containerData);
+        }
         botMap = GameController.Instance.bot.GetTileMap();
     }
 
@@ -185,7 +189,11 @@ public class Scrapyard : MonoBehaviour
         SnapBricksToBot();
 
         //Save bot map
-        GameController.Instance.bot.savedContainerData = containers;
+        GameController.Instance.bot.savedContainerData = new List<ContainerData>();
+        foreach (ContainerData containerData in containers)
+        {
+            GameController.Instance.bot.savedContainerData.Add(containerData);
+        }
         for (int x = 0; x < botMap.GetLength(0); x++)
         {
             for (int y = 0; y < botMap.GetLength(1); y++)
@@ -310,6 +318,18 @@ public class Scrapyard : MonoBehaviour
                 testBrick.sprite = currentBrick.sprite;
                 testBrick.color = Color.white;
                 currentBrick.color = Color.clear;
+
+                int containerCheck = GetContainerIndex(currentBrick.gameObject);
+                if (containerCheck != -1)
+                {
+                    containerObjects[containerCheck] = testBrick.gameObject;
+                    int coordCheck = botBricks.IndexOf(containerObjects[containerCheck]);
+                    int yCol = Mathf.FloorToInt(coordCheck / botMap.GetLength(1));
+                    containers[containerCheck].coords = new Vector2Int(coordCheck - yCol * botMap.GetLength(1), yCol);
+                    containerObjects[containerCheck].transform.GetChild(1).localEulerAngles = new Vector3(0, 0, containers[containerCheck].openDirection);
+                    containerObjects[containerCheck].transform.GetChild(1).gameObject.SetActive(true);
+                    currentBrick.transform.GetChild(1).gameObject.SetActive(false);
+                }
                 break;
             }
 
@@ -325,6 +345,18 @@ public class Scrapyard : MonoBehaviour
                 testBrick2.sprite = currentBrick.sprite;
                 testBrick2.color = Color.white;
                 currentBrick.color = Color.clear;
+
+                int containerCheck = GetContainerIndex(currentBrick.gameObject);
+                if (containerCheck != -1)
+                {
+                    containerObjects[containerCheck] = testBrick.gameObject;
+                    int coordCheck = botBricks.IndexOf(containerObjects[containerCheck]);
+                    int yCol = Mathf.FloorToInt(coordCheck / botMap.GetLength(1));
+                    containers[containerCheck].coords = new Vector2Int(coordCheck - yCol * botMap.GetLength(1), yCol);
+                    containerObjects[containerCheck].transform.GetChild(1).localEulerAngles = new Vector3(0, 0, containers[containerCheck].openDirection);
+                    containerObjects[containerCheck].transform.GetChild(1).gameObject.SetActive(true);
+                    currentBrick.transform.GetChild(1).gameObject.SetActive(false);
+                }
                 break;
             }
         }
