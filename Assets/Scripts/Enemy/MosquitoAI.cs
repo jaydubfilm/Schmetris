@@ -77,7 +77,7 @@ public class MosquitoAI : MonoBehaviour
         {
 
             Instantiate(mosquitoShield, player.transform, false);
-            transform.localPosition = Vector3.zero;
+            //transform.localPosition = Vector3.zero;
         }
 
         enemyDistance.preWrapMode = WrapMode.PingPong;
