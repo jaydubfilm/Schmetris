@@ -643,6 +643,23 @@ public class Scrapyard : MonoBehaviour
         }
     }
 
+    //Is this sprite a type of open container?
+    bool IsOpenContainer(GameObject targetPart)
+    {
+        foreach (GameObject ContainerPart in containerParts)
+        {
+            Brick targetContainer = ContainerPart.GetComponent<Brick>();
+            for (int i = 0; i < targetContainer.spriteArr.Length; i++)
+            {
+                if (targetContainer.spriteArr[i] == targetPart.GetComponent<Image>().sprite)
+                {
+                    return targetContainer.GetComponent<Container>().canCollect;
+                }
+            }
+        }
+        return false;
+    }
+
     //Update all scrapyard UI on loading or saving bot
     public void UpdateScrapyard()
     {
@@ -727,6 +744,21 @@ public class Scrapyard : MonoBehaviour
                         targets[i].gameObject.GetComponent<Image>().sprite = selectedBrick.GetComponent<Image>().sprite;
                         if (isMarketBrick)
                         {
+                            if(IsOpenContainer(targets[i].gameObject))
+                            {
+                                containerObjects.Add(targets[i].gameObject);
+                                int coordCheck = botBricks.IndexOf(targets[i].gameObject);
+                                int yCol = Mathf.FloorToInt(coordCheck / botMap.GetLength(1));
+
+                                ContainerData newContainer = new ContainerData();
+                                newContainer.coords = new Vector2Int(coordCheck - yCol * botMap.GetLength(1), yCol);
+                                newContainer.openDirection = 0;
+                                containers.Add(newContainer);
+
+                                targets[i].gameObject.transform.GetChild(1).localEulerAngles = Vector3.zero;
+                                targets[i].gameObject.transform.GetChild(1).gameObject.SetActive(true);
+                            }
+
                             //~For now, don't remove purchased bricks from market
                             //tempMarketList.Remove(selectedBrick.GetComponent<Image>().sprite.name);
                             transactionAmount -= marketPrices[tempMarketList.IndexOf(selectedBrick.GetComponent<Image>().sprite.name)];
@@ -734,6 +766,16 @@ public class Scrapyard : MonoBehaviour
                         }
                         else
                         {
+                            int containerCheck = GetContainerIndex(botBrick);
+                            if (containerCheck != -1)
+                            {
+                                containerObjects[containerCheck] = targets[i].gameObject;
+                                int coordCheck = botBricks.IndexOf(containerObjects[containerCheck]);
+                                int yCol = Mathf.FloorToInt(coordCheck / botMap.GetLength(1));
+                                containers[containerCheck].coords = new Vector2Int(coordCheck - yCol * botMap.GetLength(1), yCol);
+                                containerObjects[containerCheck].transform.GetChild(1).localEulerAngles = new Vector3(0, 0, containers[containerCheck].openDirection);
+                                containerObjects[containerCheck].transform.GetChild(1).gameObject.SetActive(true);
+                            }
                             botBrick = null;
                         }
                         break;
@@ -763,6 +805,11 @@ public class Scrapyard : MonoBehaviour
                     //Reposition selected brick (if able)
                     if (!isTranslating && uncommittedBricks.Contains(botBrick))
                     {
+                        if (GetContainerIndex(botBrick) != -1)
+                        {
+                            botBrick.transform.GetChild(1).gameObject.SetActive(false);
+                        }
+
                         selectedBrick = Instantiate(botTile, transform.parent);
                         selectedBrick.GetComponent<Image>().sprite = botBrick.GetComponent<Image>().sprite;
                         botBrick.GetComponent<Image>().color = Color.clear;
@@ -1124,7 +1171,7 @@ public class Scrapyard : MonoBehaviour
         }
         brickOptionButtons.Add(convertButton);
 
-        if(IsContainer(sellBrick))
+        if(GetContainerIndex(sellBrick) != -1)
         {
             GameObject leftButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
             leftButton.GetComponent<Text>().text = "ROTATE LEFT";
@@ -1180,14 +1227,14 @@ public class Scrapyard : MonoBehaviour
     }
 
     //Check if this part is a rotatable container
-    bool IsContainer(GameObject selectedPart)
+    int GetContainerIndex(GameObject selectedPart)
     {
-        foreach(GameObject container in containerObjects)
+        for (int i = 0;i<containerObjects.Count;i++)
         {
-            if (selectedPart == container)
-                return true;
+            if (selectedPart == containerObjects[i])
+                return i;
         }
-        return false;
+        return -1;
     }
 
     //Check if this part can be sold
@@ -1269,6 +1316,15 @@ public class Scrapyard : MonoBehaviour
         {
             uncommittedBricks.Remove(sellBrick);
         }
+
+        if (containerObjects.Contains(sellBrick))
+        {
+            int index = containerObjects.IndexOf(sellBrick);
+            containerObjects.RemoveAt(index);
+            containers.RemoveAt(index);
+            sellBrick.transform.GetChild(1).gameObject.SetActive(false);
+        }
+
         sellBrick.GetComponent<Image>().color = Color.clear;
         sellBrick = null;
         transactionAmount += tempMoneyAmount;
@@ -1291,6 +1347,15 @@ public class Scrapyard : MonoBehaviour
         tempYellowAmount = 0;
         tempGreyAmount = 0;
         tempGreenAmount = 0;
+
+        if (containerObjects.Contains(sellBrick))
+        {
+            int index = containerObjects.IndexOf(sellBrick);
+            containerObjects.RemoveAt(index);
+            containers.RemoveAt(index);
+            sellBrick.transform.GetChild(1).gameObject.SetActive(false);
+        }
+
         sellBrick.GetComponent<Image>().color = Color.clear;
         sellBrick = null;
         UpdateResources();
@@ -1318,6 +1383,21 @@ public class Scrapyard : MonoBehaviour
                     break;
                 }
             }
+        }
+
+        if (!containerObjects.Contains(sellBrick) && IsOpenContainer(sellBrick))
+        {
+            containerObjects.Add(sellBrick);
+            int coordCheck = botBricks.IndexOf(sellBrick);
+            int yCol = Mathf.FloorToInt(coordCheck / botMap.GetLength(1));
+
+            ContainerData newContainer = new ContainerData();
+            newContainer.coords = new Vector2Int(coordCheck - yCol * botMap.GetLength(1), yCol);
+            newContainer.openDirection = 0;
+            containers.Add(newContainer);
+
+            sellBrick.transform.GetChild(1).localEulerAngles = Vector3.zero;
+            sellBrick.transform.GetChild(1).gameObject.SetActive(true);
         }
 
         tempUpgrade = "";

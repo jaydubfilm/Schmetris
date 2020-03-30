@@ -588,7 +588,7 @@ public class Bot : MonoBehaviour
 
         foreach(ContainerData containerData in savedContainerData)
         {
-            BrickAtBotArr(containerData.coords).GetComponent<Container>().SetOpenDirection(containerData.openDirection);
+            BrickAtBotArr(containerData.coords).GetComponent<Container>().SetOpenDirection(containerData.openDirection, true);
         }
     }
 
@@ -1723,7 +1723,7 @@ public class Bot : MonoBehaviour
             Container brickContainer = brickObj.GetComponent<Container>();
             if (brickContainer)
             {
-                brickContainer.SetOpenDirection(brickContainer.startDirection + botBody.transform.eulerAngles.z);
+                brickContainer.SetOpenDirection(brickContainer.startDirection + botBody.transform.eulerAngles.z, false);
             }
             brickObj.GetComponent<Brick>().RotateUpright();
         }
