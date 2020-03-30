@@ -89,6 +89,7 @@ public class Bot : MonoBehaviour
     private List<GameObject> pathList = new List<GameObject>();
     private List<Vector2Int> pathArrList = new List<Vector2Int>();
     List<Container> containerList = new List<Container>();
+    public List<ContainerData> savedContainerData = new List<ContainerData>();
 
     private AudioSource source;
     public AudioClip tripleSound;
@@ -290,6 +291,8 @@ public class Bot : MonoBehaviour
         hangarGreen = 0;
         hangarYellow = 0;
         hangarGrey = 0;
+
+        savedContainerData = new List<ContainerData>();
     }
 
     public Sprite[,] GetTileMap()
@@ -478,6 +481,18 @@ public class Bot : MonoBehaviour
         savedHangarGreen = hangarGreen;
         savedHangarYellow = hangarYellow;
         savedHangarGrey = hangarGrey;
+
+        savedContainerData = new List<ContainerData>();
+        foreach(Container container in containerList)
+        {
+            if (container.canCollect)
+            {
+                ContainerData newData = new ContainerData();
+                newData.coords = container.GetComponent<Brick>().arrPos;
+                newData.openDirection = container.GetOpenDirection();
+                savedContainerData.Add(newData);
+            }
+        }
     }
 
     public void SaveStartSprites()
@@ -570,6 +585,11 @@ public class Bot : MonoBehaviour
         hangarGreen = savedHangarGreen;
         hangarYellow = savedHangarYellow;
         hangarGrey = savedHangarGrey;
+
+        foreach(ContainerData containerData in savedContainerData)
+        {
+            BrickAtBotArr(containerData.coords).GetComponent<Container>().SetOpenDirection(containerData.openDirection, true);
+        }
     }
 
     private void OnEnable()
@@ -1189,7 +1209,7 @@ public class Bot : MonoBehaviour
         StartCoroutine(SlideGhost(ghostRb1,newPos));
         StartCoroutine(SlideGhost(ghostRb2,newPos));
         obj3.GetComponent<Brick>().UpgradeBrick();
-        //~Adjust position of unattached side bricksets
+
         StartCoroutine(WaitAndTripleCheck(0.2f));
     }
 
@@ -1703,7 +1723,7 @@ public class Bot : MonoBehaviour
             Container brickContainer = brickObj.GetComponent<Container>();
             if (brickContainer)
             {
-                brickContainer.SetOpenDirection(brickContainer.startDirection + botBody.transform.eulerAngles.z);
+                brickContainer.SetOpenDirection(brickContainer.startDirection + botBody.transform.eulerAngles.z, false);
             }
             brickObj.GetComponent<Brick>().RotateUpright();
         }
@@ -2365,38 +2385,38 @@ public class Bot : MonoBehaviour
     public float GetBurnRate(ResourceType resourceType)
     {
         float burnRate = 0;
-        switch (resourceType)
+
+        foreach (Brick brickRef in resourceBurnBricks)
         {
-            case ResourceType.Blue:
-                foreach (Brick burnBrick in resourceBurnBricks)
+            if (brickRef.passiveBurn)
+            {
+                switch (resourceType)
                 {
-                    burnRate += burnBrick.blueBurn[burnBrick.GetPoweredLevel()];
+                    case ResourceType.Blue:
+                        burnRate += brickRef.blueBurn[brickRef.GetPoweredLevel()];
+                        break;
+                    case ResourceType.Red:
+                        burnRate += brickRef.redBurn[brickRef.GetPoweredLevel()];
+                        break;
+                    case ResourceType.Yellow:
+                        burnRate += brickRef.yellowBurn[brickRef.GetPoweredLevel()];
+                        break;
+                    case ResourceType.Green:
+                        burnRate += brickRef.greenBurn[brickRef.GetPoweredLevel()];
+                        break;
+                    case ResourceType.Grey:
+                        burnRate += brickRef.greyBurn[brickRef.GetPoweredLevel()];
+                        break;
                 }
-                break;
-            case ResourceType.Red:
-                foreach (Brick burnBrick in resourceBurnBricks)
-                {
-                    burnRate += burnBrick.redBurn[burnBrick.GetPoweredLevel()];
-                }
-                break;
-            case ResourceType.Yellow:
-                foreach (Brick burnBrick in resourceBurnBricks)
-                {
-                    burnRate += burnBrick.yellowBurn[burnBrick.GetPoweredLevel()];
-                }
-                break;
-            case ResourceType.Green:
-                foreach (Brick burnBrick in resourceBurnBricks)
-                {
-                    burnRate += burnBrick.greenBurn[burnBrick.GetPoweredLevel()];
-                }
-                break;
-            case ResourceType.Grey:
-                foreach (Brick burnBrick in resourceBurnBricks)
-                {
-                    burnRate += burnBrick.greyBurn[burnBrick.GetPoweredLevel()];
-                }
-                break;
+            }
+            else if (brickRef.GetComponent<Repair>())
+            {
+                burnRate += brickRef.GetComponent<Repair>().GetConvertedBurnRate(resourceType, brickRef.GetPoweredLevel());
+            }
+            else if (brickRef.GetComponent<Gun>())
+            {
+                burnRate += brickRef.GetComponent<Gun>().GetConvertedBurnRate(resourceType, brickRef.GetPoweredLevel());
+            }
         }
 
         return burnRate;

@@ -308,9 +308,9 @@ public class GameController : MonoBehaviour
         RefreshBotIcons();
     }
 
-    public void SaveLayout(int index, Sprite[,] map)
+    public void SaveLayout(int index, Sprite[,] map, List<ContainerData> containers)
     {
-        saveManager.SetLayout(index, map);
+        saveManager.SetLayout(index, map, containers);
         RefreshBotIcons();
     }
 
@@ -324,7 +324,7 @@ public class GameController : MonoBehaviour
             highestScene = loadData.level;
             currentScene = highestScene;
 
-            //~Add in resource loading?
+            //~Add in Resource loading?
             if (easyGame.name == loadData.game)
             {
                 game = easyGame;
@@ -338,7 +338,7 @@ public class GameController : MonoBehaviour
                 game = hardGame;
             }
 
-            //~Best way to load a tilemap?
+            bot.savedContainerData = loadData.containers;
             if (loadData.bot.Length > 0)
             {
                 Sprite[,] newMap = new Sprite[loadData.bot.Length, loadData.bot[0].botRow.Length];

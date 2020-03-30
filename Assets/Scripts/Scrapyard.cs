@@ -55,6 +55,8 @@ public class Scrapyard : MonoBehaviour
     const string craftingAtlasResource = "PartSprites";
     Sprite[] tilesAtlas;
     GameObject botDisplay;
+    List<ContainerData> containers = new List<ContainerData>();
+    List<GameObject> containerObjects = new List<GameObject>();
 
     //Market UI
     public Transform marketParent;
@@ -106,6 +108,11 @@ public class Scrapyard : MonoBehaviour
     float excessYellow = 0;
     float excessGrey = 0;
     int currentMoney = 0;
+    float redBurn = 0;
+    float blueBurn = 0;
+    float greenBurn = 0;
+    float yellowBurn = 0;
+    float greyBurn = 0;
     int transactionAmount = 0;
     Sprite[,] botMap;
     List<GameObject> uncommittedBricks = new List<GameObject>();
@@ -167,6 +174,7 @@ public class Scrapyard : MonoBehaviour
         excessGrey = GameController.Instance.bot.GetSavedResource(ResourceType.Grey, true);
 
         //Load bot map
+        containers = GameController.Instance.bot.savedContainerData;
         botMap = GameController.Instance.bot.GetTileMap();
     }
 
@@ -177,6 +185,7 @@ public class Scrapyard : MonoBehaviour
         SnapBricksToBot();
 
         //Save bot map
+        GameController.Instance.bot.savedContainerData = containers;
         for (int x = 0; x < botMap.GetLength(0); x++)
         {
             for (int y = 0; y < botMap.GetLength(1); y++)
@@ -398,6 +407,7 @@ public class Scrapyard : MonoBehaviour
             Destroy(botDisplay);
         }
         botBricks = new List<GameObject>();
+        containerObjects = new List<GameObject>();
 
         //Generate empty grid
         botDisplay = Instantiate(botGrid, botParent);
@@ -415,10 +425,23 @@ public class Scrapyard : MonoBehaviour
                 if (botMap[x, y])
                 {
                     newTileImage.sprite = botMap[x, y];
+                    bool isContainer = false;
+                    foreach(ContainerData container in containers)
+                    {
+                        if (container.coords == new Vector2Int(x, y))
+                        {
+                            isContainer = true;
+                            newTile.transform.GetChild(1).localEulerAngles = new Vector3(0, 0, container.openDirection);
+                        }
+                    }
+                    if (isContainer)
+                        containerObjects.Add(newTile);
+                    newTile.transform.GetChild(1).gameObject.SetActive(isContainer);
                 }
                 else
                 {
                     newTileImage.color = Color.clear;
+                    newTile.transform.GetChild(1).gameObject.SetActive(false);
                 }
 
                 if (GameController.Instance.bot.coreV2 == new Vector2Int(x,y))
@@ -450,9 +473,65 @@ public class Scrapyard : MonoBehaviour
         }
     }
 
+    //Update scrapyard burn rate UI
+    void UpdateBurnRates()
+    {
+        redBurn = 0;
+        blueBurn = 0;
+        greenBurn = 0;
+        yellowBurn = 0;
+        greyBurn = 0;
+
+        foreach(GameObject CheckBrick in botBricks)
+        {
+            Image checkImage = CheckBrick.GetComponent<Image>();
+            if(checkImage.color != Color.clear)
+            {
+                foreach(GameObject BrickPrefab in GameController.Instance.bot.masterBrickList)
+                {
+                    Brick brickRef = BrickPrefab.GetComponent<Brick>();
+                    for(int i = 0;i<brickRef.spriteArr.Length;i++)
+                    {
+                        if(checkImage.sprite == brickRef.spriteArr[i])
+                        {
+                            if(brickRef.passiveBurn)
+                            {
+                                redBurn += brickRef.redBurn[i];
+                                blueBurn += brickRef.blueBurn[i];
+                                greenBurn += brickRef.greenBurn[i];
+                                yellowBurn += brickRef.yellowBurn[i];
+                                greyBurn += brickRef.greyBurn[i];
+                            }
+                            else if (brickRef.GetComponent<Repair>())
+                            {
+                                Repair repairRef = brickRef.GetComponent<Repair>();
+                                redBurn += repairRef.GetConvertedBurnRate(ResourceType.Red, i);
+                                blueBurn += repairRef.GetConvertedBurnRate(ResourceType.Blue, i);
+                                greenBurn += repairRef.GetConvertedBurnRate(ResourceType.Green, i);
+                                yellowBurn += repairRef.GetConvertedBurnRate(ResourceType.Yellow, i);
+                                greyBurn += repairRef.GetConvertedBurnRate(ResourceType.Grey, i);
+                            }
+                            else if (brickRef.GetComponent<Gun>())
+                            {
+                                Gun gunRef = brickRef.GetComponent<Gun>();
+                                redBurn += gunRef.GetConvertedBurnRate(ResourceType.Red, i);
+                                blueBurn += gunRef.GetConvertedBurnRate(ResourceType.Blue, i);
+                                greenBurn += gunRef.GetConvertedBurnRate(ResourceType.Green, i);
+                                yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
+                                greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     //Update scrapyard resource UI
     void UpdateResources()
     {
+        UpdateBurnRates();
+
         if(currentFuel > maxCapacity)
         {
             excessRed += currentFuel - maxCapacity;
@@ -518,27 +597,27 @@ public class Scrapyard : MonoBehaviour
 
         blueBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentBlue / maxCapacity : 0), blueBar.sizeDelta.y);
         blueAmount.text = Mathf.RoundToInt(currentBlue).ToString();
-        blueBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Blue)).ToString() + "/s";
+        blueBurnRate.text = "-" + Mathf.RoundToInt(blueBurn).ToString() + "/s";
         blueAmount.text += " (+" + Mathf.RoundToInt(excessBlue).ToString() + ")";
 
         yellowBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentYellow / maxCapacity : 0), yellowBar.sizeDelta.y);
         yellowAmount.text = Mathf.RoundToInt(currentYellow).ToString();
-        yellowBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Yellow)).ToString() + "/s";
+        yellowBurnRate.text = "-" + Mathf.RoundToInt(yellowBurn).ToString() + "/s";
         yellowAmount.text += " (+" + Mathf.RoundToInt(excessYellow).ToString() + ")";
 
         greenBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentGreen / maxCapacity : 0), greenBar.sizeDelta.y);
         greenAmount.text = Mathf.RoundToInt(currentGreen).ToString();
-        greenBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Green)).ToString() + "/s";
+        greenBurnRate.text = "-" + Mathf.RoundToInt(greenBurn).ToString() + "/s";
         greenAmount.text += " (+" + Mathf.RoundToInt(excessGreen).ToString() + ")";
 
         greyBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentGrey / maxCapacity : 0), greyBar.sizeDelta.y);
         greyAmount.text = Mathf.RoundToInt(currentGrey).ToString();
-        greyBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Grey)).ToString() + "/s";
+        greyBurnRate.text = "-" + Mathf.RoundToInt(greyBurn).ToString() + "/s";
         greyAmount.text += " (+" + Mathf.RoundToInt(excessGrey).ToString() + ")";
 
         fuelBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentFuel / maxCapacity : 0), fuelBar.sizeDelta.y);
         redAmount.text = Mathf.RoundToInt(currentFuel).ToString();
-        redBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Red)).ToString() + "/s";
+        redBurnRate.text = "-" + Mathf.RoundToInt(redBurn).ToString() + "/s";
         redAmount.text += " (+" + Mathf.RoundToInt(excessRed).ToString() + ")";
 
         UpdateUpgradeGlows();
@@ -562,6 +641,23 @@ public class Scrapyard : MonoBehaviour
                 }
             }
         }
+    }
+
+    //Is this sprite a type of open container?
+    bool IsOpenContainer(GameObject targetPart)
+    {
+        foreach (GameObject ContainerPart in containerParts)
+        {
+            Brick targetContainer = ContainerPart.GetComponent<Brick>();
+            for (int i = 0; i < targetContainer.spriteArr.Length; i++)
+            {
+                if (targetContainer.spriteArr[i] == targetPart.GetComponent<Image>().sprite)
+                {
+                    return targetContainer.GetComponent<Container>().canCollect;
+                }
+            }
+        }
+        return false;
     }
 
     //Update all scrapyard UI on loading or saving bot
@@ -648,6 +744,21 @@ public class Scrapyard : MonoBehaviour
                         targets[i].gameObject.GetComponent<Image>().sprite = selectedBrick.GetComponent<Image>().sprite;
                         if (isMarketBrick)
                         {
+                            if(IsOpenContainer(targets[i].gameObject))
+                            {
+                                containerObjects.Add(targets[i].gameObject);
+                                int coordCheck = botBricks.IndexOf(targets[i].gameObject);
+                                int yCol = Mathf.FloorToInt(coordCheck / botMap.GetLength(1));
+
+                                ContainerData newContainer = new ContainerData();
+                                newContainer.coords = new Vector2Int(coordCheck - yCol * botMap.GetLength(1), yCol);
+                                newContainer.openDirection = 0;
+                                containers.Add(newContainer);
+
+                                targets[i].gameObject.transform.GetChild(1).localEulerAngles = Vector3.zero;
+                                targets[i].gameObject.transform.GetChild(1).gameObject.SetActive(true);
+                            }
+
                             //~For now, don't remove purchased bricks from market
                             //tempMarketList.Remove(selectedBrick.GetComponent<Image>().sprite.name);
                             transactionAmount -= marketPrices[tempMarketList.IndexOf(selectedBrick.GetComponent<Image>().sprite.name)];
@@ -655,6 +766,16 @@ public class Scrapyard : MonoBehaviour
                         }
                         else
                         {
+                            int containerCheck = GetContainerIndex(botBrick);
+                            if (containerCheck != -1)
+                            {
+                                containerObjects[containerCheck] = targets[i].gameObject;
+                                int coordCheck = botBricks.IndexOf(containerObjects[containerCheck]);
+                                int yCol = Mathf.FloorToInt(coordCheck / botMap.GetLength(1));
+                                containers[containerCheck].coords = new Vector2Int(coordCheck - yCol * botMap.GetLength(1), yCol);
+                                containerObjects[containerCheck].transform.GetChild(1).localEulerAngles = new Vector3(0, 0, containers[containerCheck].openDirection);
+                                containerObjects[containerCheck].transform.GetChild(1).gameObject.SetActive(true);
+                            }
                             botBrick = null;
                         }
                         break;
@@ -684,6 +805,11 @@ public class Scrapyard : MonoBehaviour
                     //Reposition selected brick (if able)
                     if (!isTranslating && uncommittedBricks.Contains(botBrick))
                     {
+                        if (GetContainerIndex(botBrick) != -1)
+                        {
+                            botBrick.transform.GetChild(1).gameObject.SetActive(false);
+                        }
+
                         selectedBrick = Instantiate(botTile, transform.parent);
                         selectedBrick.GetComponent<Image>().sprite = botBrick.GetComponent<Image>().sprite;
                         botBrick.GetComponent<Image>().color = Color.clear;
@@ -855,6 +981,27 @@ public class Scrapyard : MonoBehaviour
         helpPanel.SetActive(true);
     }
 
+    //Button for rotating containers
+    public void ConfirmRotate(int direction)
+    {
+        canMove = true;
+        for (int i = 0;i< containerObjects.Count;i++)
+        {
+            if (sellBrick == containerObjects[i])
+            {
+                containers[i].openDirection -= 90 * direction;
+                while (containers[i].openDirection < 0)
+                    containers[i].openDirection += 360;
+                while (containers[i].openDirection >= 360)
+                    containers[i].openDirection -= 360;
+                sellBrick.transform.GetChild(1).localEulerAngles = new Vector3(0, 0, containers[i].openDirection);
+                break;
+            }
+        }
+        sellBrick = null;
+        CloseSubMenu();
+    }
+
     //Button for confirming sold bricks
     public void ConfirmSell()
     {
@@ -1024,6 +1171,19 @@ public class Scrapyard : MonoBehaviour
         }
         brickOptionButtons.Add(convertButton);
 
+        if(GetContainerIndex(sellBrick) != -1)
+        {
+            GameObject leftButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
+            leftButton.GetComponent<Text>().text = "ROTATE LEFT";
+            leftButton.GetComponent<Button>().onClick.AddListener(() => { ConfirmRotate(-1); });
+            brickOptionButtons.Add(leftButton);
+
+            GameObject rightButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
+            rightButton.GetComponent<Text>().text = "ROTATE RIGHT";
+            rightButton.GetComponent<Button>().onClick.AddListener(() => { ConfirmRotate(1); });
+            brickOptionButtons.Add(rightButton);
+        }
+
         tempUpgrades = GetUpgradeList(sellBrick.GetComponent<Image>().sprite);
         foreach (CraftedPart TempPart in tempUpgrades)
         {
@@ -1064,6 +1224,17 @@ public class Scrapyard : MonoBehaviour
         confirmConvert.SetActive(false);
         confirmUpgrade.SetActive(false);
         brickOptions.SetActive(false);
+    }
+
+    //Check if this part is a rotatable container
+    int GetContainerIndex(GameObject selectedPart)
+    {
+        for (int i = 0;i<containerObjects.Count;i++)
+        {
+            if (selectedPart == containerObjects[i])
+                return i;
+        }
+        return -1;
     }
 
     //Check if this part can be sold
@@ -1145,6 +1316,15 @@ public class Scrapyard : MonoBehaviour
         {
             uncommittedBricks.Remove(sellBrick);
         }
+
+        if (containerObjects.Contains(sellBrick))
+        {
+            int index = containerObjects.IndexOf(sellBrick);
+            containerObjects.RemoveAt(index);
+            containers.RemoveAt(index);
+            sellBrick.transform.GetChild(1).gameObject.SetActive(false);
+        }
+
         sellBrick.GetComponent<Image>().color = Color.clear;
         sellBrick = null;
         transactionAmount += tempMoneyAmount;
@@ -1167,6 +1347,15 @@ public class Scrapyard : MonoBehaviour
         tempYellowAmount = 0;
         tempGreyAmount = 0;
         tempGreenAmount = 0;
+
+        if (containerObjects.Contains(sellBrick))
+        {
+            int index = containerObjects.IndexOf(sellBrick);
+            containerObjects.RemoveAt(index);
+            containers.RemoveAt(index);
+            sellBrick.transform.GetChild(1).gameObject.SetActive(false);
+        }
+
         sellBrick.GetComponent<Image>().color = Color.clear;
         sellBrick = null;
         UpdateResources();
@@ -1194,6 +1383,21 @@ public class Scrapyard : MonoBehaviour
                     break;
                 }
             }
+        }
+
+        if (!containerObjects.Contains(sellBrick) && IsOpenContainer(sellBrick))
+        {
+            containerObjects.Add(sellBrick);
+            int coordCheck = botBricks.IndexOf(sellBrick);
+            int yCol = Mathf.FloorToInt(coordCheck / botMap.GetLength(1));
+
+            ContainerData newContainer = new ContainerData();
+            newContainer.coords = new Vector2Int(coordCheck - yCol * botMap.GetLength(1), yCol);
+            newContainer.openDirection = 0;
+            containers.Add(newContainer);
+
+            sellBrick.transform.GetChild(1).localEulerAngles = Vector3.zero;
+            sellBrick.transform.GetChild(1).gameObject.SetActive(true);
         }
 
         tempUpgrade = "";
@@ -1247,7 +1451,7 @@ public class Scrapyard : MonoBehaviour
                     layoutMap[x, y] = null;
             }
         }
-        GameController.Instance.SaveLayout(index, layoutMap);
+        GameController.Instance.SaveLayout(index, layoutMap, containers);
         CloseSubMenu();
     }
 
@@ -1411,6 +1615,7 @@ public class Scrapyard : MonoBehaviour
             //Update bot map and transaction amounts
             transactionAmount -= totalMoneyCost;
             botMap = newMap;
+            containers = GameController.Instance.saveManager.GetLayoutContainers(index);
             BuildBotGrid();
             UpdateResources();
         }
