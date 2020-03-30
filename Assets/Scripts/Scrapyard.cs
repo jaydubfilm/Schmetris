@@ -116,6 +116,7 @@ public class Scrapyard : MonoBehaviour
     int transactionAmount = 0;
     Sprite[,] botMap;
     List<GameObject> uncommittedBricks = new List<GameObject>();
+    bool hasChanges = false;
 
     //Temp prices
     int resourceChange = 1;
@@ -180,6 +181,7 @@ public class Scrapyard : MonoBehaviour
             containers.Add(containerData);
         }
         botMap = GameController.Instance.bot.GetTileMap();
+        hasChanges = false;
     }
 
     //Update bot with scrapyard changes
@@ -219,6 +221,7 @@ public class Scrapyard : MonoBehaviour
         GameController.Instance.bot.SetSavedResource(ResourceType.Green, excessGreen, true);
         GameController.Instance.bot.SetSavedResource(ResourceType.Yellow, excessYellow, true);
         GameController.Instance.bot.SetSavedResource(ResourceType.Grey, excessGrey, true);
+        hasChanges = false;
     }
 
     //Attach all floating bricks to the main bot before saving
@@ -418,14 +421,37 @@ public class Scrapyard : MonoBehaviour
         //Add new items to marketplace
         for (int i = marketIndex; i < marketIndex + maxMarketItems; i++)
         {
+            int storeIndex = i;
+            if(storeIndex >= tempMarketList.Count)
+            {
+                storeIndex -= tempMarketList.Count;
+            }
+            else if (storeIndex < 0)
+            {
+                storeIndex += tempMarketList.Count;
+            }
+
             GameObject newTile = Instantiate(botTile, marketParent.transform);
             Image newTileImage = newTile.GetComponent<Image>();
-            newTileImage.sprite = tilesAtlas.Single<Sprite>(s => s.name == tempMarketList[i]);
+            newTileImage.sprite = tilesAtlas.Single<Sprite>(s => s.name == tempMarketList[storeIndex]);
             marketSelection.Add(newTile);
 
+            string partName = "Brick";
+            foreach(GameObject marketItem in craftableParts)
+            {
+                Brick marketPart = marketItem.GetComponent<Brick>();
+                for (int n = 0; n < marketPart.spriteArr.Length; n++)
+                {
+                    if(newTileImage.sprite == marketPart.spriteArr[n])
+                    {
+                        partName = marketPart.GetComponent<CraftedPart>().scrapyardName[n];
+                        break;
+                    }
+                }
+            }
             int price = brickCost;
             GameObject newPrice = Instantiate(pricePrefab, newTile.transform);
-            newPrice.GetComponent<Text>().text = "$" + price;
+            newPrice.GetComponent<Text>().text = partName + " - $" + price;
             marketPrices.Add(price);
         }
     }
@@ -795,6 +821,7 @@ public class Scrapyard : MonoBehaviour
                             //tempMarketList.Remove(selectedBrick.GetComponent<Image>().sprite.name);
                             transactionAmount -= marketPrices[tempMarketList.IndexOf(selectedBrick.GetComponent<Image>().sprite.name)];
                             UpdateResources();
+                            hasChanges = true;
                         }
                         else
                         {
@@ -809,6 +836,7 @@ public class Scrapyard : MonoBehaviour
                                 containerObjects[containerCheck].transform.GetChild(1).gameObject.SetActive(true);
                             }
                             botBrick = null;
+                            hasChanges = true;
                         }
                         break;
                     }
@@ -918,6 +946,7 @@ public class Scrapyard : MonoBehaviour
 
         transactionAmount -= resourceCost;
         UpdateResources();
+        hasChanges = true;
     }
 
     //Button for selling resources
@@ -954,6 +983,7 @@ public class Scrapyard : MonoBehaviour
 
         transactionAmount += resourceSell;
         UpdateResources();
+        hasChanges = true;
     }
 
     //Button for rotating bot 90 degrees clockwise
@@ -985,14 +1015,22 @@ public class Scrapyard : MonoBehaviour
     //Button for scrolling left in the market
     public void MarketLeft()
     {
-        marketIndex = Mathf.Max(0, marketIndex - 1);
+        marketIndex--;
+        if(marketIndex < 0)
+        {
+            marketIndex += tempMarketList.Count;
+        }
         BuildMarketplace();
     }
 
     //Button for scrolling right in the market
     public void MarketRight()
     {
-        marketIndex = Mathf.Min(marketList.Count - maxMarketItems, marketIndex + 1);
+        marketIndex++;
+        if (marketIndex >= tempMarketList.Count)
+        {
+            marketIndex -= tempMarketList.Count;
+        }
         BuildMarketplace();
     }
 
@@ -1036,6 +1074,7 @@ public class Scrapyard : MonoBehaviour
         }
         sellBrick = null;
         CloseSubMenu();
+        hasChanges = true;
     }
 
     //Button for confirming sold bricks
@@ -1093,8 +1132,10 @@ public class Scrapyard : MonoBehaviour
         }
         convertText.text = convertText.text.Substring(0, convertText.text.Length - 2);
         convertText.text += "?";
-        brickOptions.SetActive(false);
-        confirmConvert.SetActive(true);
+
+        //brickOptions.SetActive(false);
+        //confirmConvert.SetActive(true);
+        CompleteConfirmedConvert();
     }
 
     //Button for confirming brick upgrade
@@ -1154,8 +1195,15 @@ public class Scrapyard : MonoBehaviour
     //Button for returning to map screen
     public void MapScreen()
     {
-        canMove = false;
-        confirmMap.SetActive(true);
+        if (hasChanges)
+        {
+            canMove = false;
+            confirmMap.SetActive(true);
+        }
+        else
+        {
+            ConfirmMapScreen();
+        }
     }
 
     //Button for confirming market purchases
@@ -1367,6 +1415,7 @@ public class Scrapyard : MonoBehaviour
         tempMoneyAmount = 0;
         UpdateResources();
         CloseSubMenu();
+        hasChanges = true;
     }
 
     //Button for completing a brick conversion to resources
@@ -1396,6 +1445,7 @@ public class Scrapyard : MonoBehaviour
         sellBrick = null;
         UpdateResources();
         CloseSubMenu();
+        hasChanges = true;
     }
 
     //Button for completing a brick upgrade
@@ -1447,6 +1497,7 @@ public class Scrapyard : MonoBehaviour
         sellBrick = null;
         UpdateResources();
         CloseSubMenu();
+        hasChanges = true;
     }
 
     //Button for confirming return to map screen
@@ -1657,6 +1708,7 @@ public class Scrapyard : MonoBehaviour
         }
 
         CloseSubMenu();
+        hasChanges = true;
     }
 
     //Return the crafted brick associated with this sprite
