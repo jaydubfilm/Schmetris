@@ -376,8 +376,6 @@ public class GameController : MonoBehaviour
 
     public Sprite[,] LoadLayout(int index)
     {
-        //~
-
         SaveData loadData = saveManager.GetLayout(index);
         if (loadData != null && loadData.game != "")
         {

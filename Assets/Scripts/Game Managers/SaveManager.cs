@@ -35,6 +35,16 @@ public class SaveManager
         return saveData.savedLayouts[index];
     }
 
+    //Return containers from save number
+    public List<ContainerData> GetLayoutContainers(int index)
+    {
+        if(!hasSaveData)
+        {
+            Init();
+        }
+        return saveData.savedLayouts[index].containers;
+    }
+
     //Save data to save number
     public void SetSave(int index, int lives, int money, int level, string game, Bot bot)
     {

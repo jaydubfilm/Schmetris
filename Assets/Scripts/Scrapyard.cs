@@ -1615,6 +1615,7 @@ public class Scrapyard : MonoBehaviour
             //Update bot map and transaction amounts
             transactionAmount -= totalMoneyCost;
             botMap = newMap;
+            containers = GameController.Instance.saveManager.GetLayoutContainers(index);
             BuildBotGrid();
             UpdateResources();
         }
