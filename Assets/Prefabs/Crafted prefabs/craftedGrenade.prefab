@@ -39,8 +39,7 @@ MonoBehaviour:
   rateOfFire:
   - 3
   - 2
-  - 1
-  attackPower: 010000000200000003000000
+  attackPower: 0a00000032000000
   range:
   - 35
   - 40

@@ -20,6 +20,7 @@ public class Bullet : MonoBehaviour
     public float blastForce;
     public GameObject debugSphere;
     Vector3 startPos;
+    public bool isBlaster;
 
     // Start is called before the first frame update
     void Start()
@@ -89,9 +90,16 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.transform.GetComponent<EnemyGeneral>())
-        {
+       
 
+        if (collision.transform.GetComponent<Asteroid>())
+        {
+            Asteroid asteroid = collision.transform.GetComponent<Asteroid>();
+            asteroid.AdjustHP(damage, transform);
+        }
+
+        else if (collision.transform.GetComponent<EnemyGeneral>())
+        {
             EnemyGeneral enemyGeneral = collision.transform.GetComponent<EnemyGeneral>();
 
             if (isGrenade == false)
@@ -102,6 +110,9 @@ public class Bullet : MonoBehaviour
                 print("hit");
 
             }
+
+            
+
             else
             {
 
