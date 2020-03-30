@@ -3475,6 +3475,8 @@ MonoBehaviour:
     type: 3}
   botTile: {fileID: 4616789134438494566, guid: 5ad518e0e5c34d24ba79fd60602ad835, type: 3}
   botParent: {fileID: 4809533744009525904}
+  containerIcon: {fileID: 7089365747845026864, guid: e1bba3a06e61f6648920e512bcc9ab01,
+    type: 3}
   marketParent: {fileID: 8586088181024178613}
   pricePrefab: {fileID: 3689730829853018508, guid: e4ee2be3a0761db45acbbafcd659243a,
     type: 3}

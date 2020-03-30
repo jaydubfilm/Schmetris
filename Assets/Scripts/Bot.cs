@@ -89,6 +89,7 @@ public class Bot : MonoBehaviour
     private List<GameObject> pathList = new List<GameObject>();
     private List<Vector2Int> pathArrList = new List<Vector2Int>();
     List<Container> containerList = new List<Container>();
+    public List<ContainerData> savedContainerData = new List<ContainerData>();
 
     private AudioSource source;
     public AudioClip tripleSound;
@@ -290,6 +291,8 @@ public class Bot : MonoBehaviour
         hangarGreen = 0;
         hangarYellow = 0;
         hangarGrey = 0;
+
+        savedContainerData = new List<ContainerData>();
     }
 
     public Sprite[,] GetTileMap()
@@ -478,6 +481,18 @@ public class Bot : MonoBehaviour
         savedHangarGreen = hangarGreen;
         savedHangarYellow = hangarYellow;
         savedHangarGrey = hangarGrey;
+
+        savedContainerData = new List<ContainerData>();
+        foreach(Container container in containerList)
+        {
+            if (container.canCollect)
+            {
+                ContainerData newData = new ContainerData();
+                newData.coords = container.GetComponent<Brick>().arrPos;
+                newData.openDirection = container.GetOpenDirection();
+                savedContainerData.Add(newData);
+            }
+        }
     }
 
     public void SaveStartSprites()
@@ -570,6 +585,11 @@ public class Bot : MonoBehaviour
         hangarGreen = savedHangarGreen;
         hangarYellow = savedHangarYellow;
         hangarGrey = savedHangarGrey;
+
+        foreach(ContainerData containerData in savedContainerData)
+        {
+            BrickAtBotArr(containerData.coords).GetComponent<Container>().SetOpenDirection(containerData.openDirection);
+        }
     }
 
     private void OnEnable()
@@ -1189,7 +1209,7 @@ public class Bot : MonoBehaviour
         StartCoroutine(SlideGhost(ghostRb1,newPos));
         StartCoroutine(SlideGhost(ghostRb2,newPos));
         obj3.GetComponent<Brick>().UpgradeBrick();
-        //~Adjust position of unattached side bricksets
+
         StartCoroutine(WaitAndTripleCheck(0.2f));
     }
 

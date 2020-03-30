@@ -55,6 +55,8 @@ public class Scrapyard : MonoBehaviour
     const string craftingAtlasResource = "PartSprites";
     Sprite[] tilesAtlas;
     GameObject botDisplay;
+    List<ContainerData> containers = new List<ContainerData>();
+    List<GameObject> containerObjects = new List<GameObject>();
 
     //Market UI
     public Transform marketParent;
@@ -172,6 +174,7 @@ public class Scrapyard : MonoBehaviour
         excessGrey = GameController.Instance.bot.GetSavedResource(ResourceType.Grey, true);
 
         //Load bot map
+        containers = GameController.Instance.bot.savedContainerData;
         botMap = GameController.Instance.bot.GetTileMap();
     }
 
@@ -182,6 +185,7 @@ public class Scrapyard : MonoBehaviour
         SnapBricksToBot();
 
         //Save bot map
+        GameController.Instance.bot.savedContainerData = containers;
         for (int x = 0; x < botMap.GetLength(0); x++)
         {
             for (int y = 0; y < botMap.GetLength(1); y++)
@@ -403,6 +407,7 @@ public class Scrapyard : MonoBehaviour
             Destroy(botDisplay);
         }
         botBricks = new List<GameObject>();
+        containerObjects = new List<GameObject>();
 
         //Generate empty grid
         botDisplay = Instantiate(botGrid, botParent);
@@ -420,10 +425,23 @@ public class Scrapyard : MonoBehaviour
                 if (botMap[x, y])
                 {
                     newTileImage.sprite = botMap[x, y];
+                    bool isContainer = false;
+                    foreach(ContainerData container in containers)
+                    {
+                        if (container.coords == new Vector2Int(x, y))
+                        {
+                            isContainer = true;
+                            newTile.transform.GetChild(1).localEulerAngles = new Vector3(0, 0, container.openDirection);
+                        }
+                    }
+                    if (isContainer)
+                        containerObjects.Add(newTile);
+                    newTile.transform.GetChild(1).gameObject.SetActive(isContainer);
                 }
                 else
                 {
                     newTileImage.color = Color.clear;
+                    newTile.transform.GetChild(1).gameObject.SetActive(false);
                 }
 
                 if (GameController.Instance.bot.coreV2 == new Vector2Int(x,y))
@@ -916,6 +934,27 @@ public class Scrapyard : MonoBehaviour
         helpPanel.SetActive(true);
     }
 
+    //Button for rotating containers
+    public void ConfirmRotate(int direction)
+    {
+        canMove = true;
+        for (int i = 0;i< containerObjects.Count;i++)
+        {
+            if (sellBrick == containerObjects[i])
+            {
+                containers[i].openDirection -= 90 * direction;
+                while (containers[i].openDirection < 0)
+                    containers[i].openDirection += 360;
+                while (containers[i].openDirection >= 360)
+                    containers[i].openDirection -= 360;
+                sellBrick.transform.GetChild(1).localEulerAngles = new Vector3(0, 0, containers[i].openDirection);
+                break;
+            }
+        }
+        sellBrick = null;
+        CloseSubMenu();
+    }
+
     //Button for confirming sold bricks
     public void ConfirmSell()
     {
@@ -1085,6 +1124,19 @@ public class Scrapyard : MonoBehaviour
         }
         brickOptionButtons.Add(convertButton);
 
+        if(IsContainer(sellBrick))
+        {
+            GameObject leftButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
+            leftButton.GetComponent<Text>().text = "ROTATE LEFT";
+            leftButton.GetComponent<Button>().onClick.AddListener(() => { ConfirmRotate(-1); });
+            brickOptionButtons.Add(leftButton);
+
+            GameObject rightButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
+            rightButton.GetComponent<Text>().text = "ROTATE RIGHT";
+            rightButton.GetComponent<Button>().onClick.AddListener(() => { ConfirmRotate(1); });
+            brickOptionButtons.Add(rightButton);
+        }
+
         tempUpgrades = GetUpgradeList(sellBrick.GetComponent<Image>().sprite);
         foreach (CraftedPart TempPart in tempUpgrades)
         {
@@ -1125,6 +1177,17 @@ public class Scrapyard : MonoBehaviour
         confirmConvert.SetActive(false);
         confirmUpgrade.SetActive(false);
         brickOptions.SetActive(false);
+    }
+
+    //Check if this part is a rotatable container
+    bool IsContainer(GameObject selectedPart)
+    {
+        foreach(GameObject container in containerObjects)
+        {
+            if (selectedPart == container)
+                return true;
+        }
+        return false;
     }
 
     //Check if this part can be sold
@@ -1308,7 +1371,7 @@ public class Scrapyard : MonoBehaviour
                     layoutMap[x, y] = null;
             }
         }
-        GameController.Instance.SaveLayout(index, layoutMap);
+        GameController.Instance.SaveLayout(index, layoutMap, containers);
         CloseSubMenu();
     }
 

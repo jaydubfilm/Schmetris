@@ -53,8 +53,7 @@ public class SaveManager
         newData.hangarYellow = bot.GetSavedResource(ResourceType.Yellow, true);
         newData.hangarGrey = bot.GetSavedResource(ResourceType.Grey, true);
         newData.game = game;
-
-        //~
+        newData.containers = bot.savedContainerData;
 
         Sprite[,] botMap = bot.GetTileMap();
         newData.bot = new BotData[botMap.GetLength(0)];
@@ -73,7 +72,7 @@ public class SaveManager
     }
 
     //Save layout to save number
-    public void SetLayout(int index, Sprite[,] bot)
+    public void SetLayout(int index, Sprite[,] bot, List<ContainerData> containers)
     {
         SaveData newData = new SaveData();
         newData.lives = 0;
@@ -91,8 +90,7 @@ public class SaveManager
         newData.hangarGrey = 0;
         newData.game = "LAYOUT";
 
-        //~
-
+        newData.containers = containers;
         newData.bot = new BotData[bot.GetLength(0)];
         for (int x = 0; x < bot.GetLength(0); x++)
         {

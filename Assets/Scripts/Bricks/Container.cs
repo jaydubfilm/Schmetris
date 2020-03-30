@@ -13,6 +13,11 @@ public class Container : MonoBehaviour
     float openDirection = 0;
     GameObject directionIcon;
 
+    public float GetOpenDirection()
+    {
+        return openDirection;
+    }
+
     //Init
     private void Awake()
     {
