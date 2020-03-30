@@ -349,7 +349,7 @@ public class Scrapyard : MonoBehaviour
                 int containerCheck = GetContainerIndex(currentBrick.gameObject);
                 if (containerCheck != -1)
                 {
-                    containerObjects[containerCheck] = testBrick.gameObject;
+                    containerObjects[containerCheck] = testBrick2.gameObject;
                     int coordCheck = botBricks.IndexOf(containerObjects[containerCheck]);
                     int yCol = Mathf.FloorToInt(coordCheck / botMap.GetLength(1));
                     containers[containerCheck].coords = new Vector2Int(coordCheck - yCol * botMap.GetLength(1), yCol);
@@ -817,6 +817,10 @@ public class Scrapyard : MonoBehaviour
                 BuildMarketplace();
                 if (botBrick)
                 {
+                    if(IsOpenContainer(botBrick))
+                    {
+                        botBrick.transform.GetChild(1).gameObject.SetActive(true);
+                    }
                     uncommittedBricks.Add(botBrick);
                     botBrick.GetComponent<Image>().color = Color.white;
                 }
