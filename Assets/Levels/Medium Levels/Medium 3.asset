@@ -9,31 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
+  m_Script: {fileID: 11500000, guid: 56d9469693edebc4daacb64737469c99, type: 3}
   m_Name: Medium 3
   m_EditorClassIdentifier: 
-  levelDuration: 45
-  blocks:
-  - block: {fileID: 3908810048976006719, guid: 0c609c432c86b42ad9631220ee8db9c6, type: 3}
-    probability: 4
-  - block: {fileID: 8459872569636080655, guid: c5aaf9792745f4939903666a24e35fee, type: 3}
-    probability: 3
-  - block: {fileID: 6586000856215307100, guid: 13542a77c414c46db8f6099c038c65f3, type: 3}
-    probability: 2
-  - block: {fileID: 2504952749312006462, guid: 0c7cbcbf4167340d69dd1a153f1af914, type: 3}
-    probability: 1
-  - block: {fileID: 5399240307803968247, guid: ab069a2ca412044889730906a907b7c5, type: 3}
-    probability: 3
-  - block: {fileID: 2589978003207516240, guid: e215a09cb11b7426cabf3b57049ca5b1, type: 3}
-    probability: 1
-  - block: {fileID: 8639198243880090134, guid: 80e57895ab51b4fb591ba9d29d8b237b, type: 3}
-    probability: 2
-  - block: {fileID: 8480972586710585632, guid: 934b8c0b6a23b4092bdf57addff8b22d, type: 3}
-    probability: 3
-  speciesSpawnData:
-  - species: {fileID: 822335604602250409, guid: 5b93156cd52954237adcfe43c62642b2,
-      type: 3}
-    probability: 1
-  blockSpawnRate: 0.3
-  enemySpawnRate: 10
-  blockSpeed: 7.5
+  levelSections:
+  - {fileID: 11400000, guid: 266c8dd9ba42a4ce6a28f6cf90b341b7, type: 2}

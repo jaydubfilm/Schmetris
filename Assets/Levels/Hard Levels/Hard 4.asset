@@ -9,12 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
+  m_Script: {fileID: 11500000, guid: 56d9469693edebc4daacb64737469c99, type: 3}
   m_Name: Hard 4
   m_EditorClassIdentifier: 
-  levelDuration: 0
-  blocks: []
-  speciesSpawnData: []
-  blockSpawnRate: 0
-  enemySpawnRate: 0
-  blockSpeed: 0
+  levelSections:
+  - {fileID: 11400000, guid: c2702f21b06bf41da9ec5908e0545bcc, type: 2}
