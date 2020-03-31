@@ -1,0 +1,823 @@
+fileFormatVersion: 2
+guid: f18ab1838bd1e964396858c0fff61244
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8408603840109760354
+    second: Collect Greyscale_0
+  - first:
+      213: -7070933372610582130
+    second: Collect Greyscale_1
+  - first:
+      213: 4975998042999316611
+    second: Collect Greyscale_2
+  - first:
+      213: 4021028990791327164
+    second: Collect Greyscale_3
+  - first:
+      213: 7747431864906292501
+    second: Collect Greyscale_4
+  - first:
+      213: -7471624597860379574
+    second: Collect Greyscale_5
+  - first:
+      213: 994015113790114816
+    second: Collect Greyscale_6
+  - first:
+      213: 2878572210362816702
+    second: Collect Greyscale_7
+  - first:
+      213: 5836212126523309019
+    second: Collect Greyscale_8
+  - first:
+      213: 5913689888818712857
+    second: Collect Greyscale_9
+  - first:
+      213: -9027977941809076021
+    second: Collect Greyscale_10
+  - first:
+      213: -8874588455384859938
+    second: Collect Greyscale_11
+  - first:
+      213: 4503831117969874879
+    second: Collect Greyscale_12
+  - first:
+      213: 4547760692107144732
+    second: Collect Greyscale_13
+  - first:
+      213: 1516246218410331239
+    second: Collect Greyscale_14
+  - first:
+      213: 9095316443219973298
+    second: Collect Greyscale_15
+  - first:
+      213: 5599223925016450117
+    second: Collect Greyscale_16
+  - first:
+      213: 2208303221513557608
+    second: Collect Greyscale_17
+  - first:
+      213: -1477456770139721936
+    second: Collect Greyscale_18
+  - first:
+      213: 7566633033050794932
+    second: Collect Greyscale_19
+  - first:
+      213: 401386277746450036
+    second: Collect Greyscale_20
+  - first:
+      213: 5035850405608758074
+    second: Collect Greyscale_21
+  - first:
+      213: -6693880416498054957
+    second: Collect Greyscale_22
+  - first:
+      213: 2031487646747257167
+    second: Collect Greyscale_23
+  - first:
+      213: 4189012711640966156
+    second: Collect Greyscale_24
+  - first:
+      213: 319413518564085998
+    second: Collect Greyscale_25
+  - first:
+      213: -5406063309884361303
+    second: Collect Greyscale_26
+  - first:
+      213: -837733332394826773
+    second: Collect Greyscale_27
+  - first:
+      213: 5813767323216410934
+    second: Collect Greyscale_28
+  - first:
+      213: -6823332770996144294
+    second: Collect Greyscale_29
+  externalObjects: {}
+  serializedVersion: 10
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Collect Greyscale_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1185
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c914b0e3bec09bd478ec391c78391f53
+      internalID: 8408603840109760354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_1
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 1185
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 83cee202136b82c4099179f135db0fc9
+      internalID: -7070933372610582130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_2
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 1185
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 48e1d46515294254b9a818e70e141b78
+      internalID: 4975998042999316611
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_3
+      rect:
+        serializedVersion: 2
+        x: 711
+        y: 1185
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e874750928d677d4d8e19b24d78d0f8f
+      internalID: 4021028990791327164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_4
+      rect:
+        serializedVersion: 2
+        x: 948
+        y: 1185
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 462b48b0f20ecd0458ac98678dce3238
+      internalID: 7747431864906292501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 948
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 33ec0fbf218290b43bd73ecc50665e5d
+      internalID: -7471624597860379574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_6
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 948
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7127ef368fdaf0f4db3c4bf2c25c2aea
+      internalID: 994015113790114816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_7
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 948
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b87219565b710444195e19e30065889b
+      internalID: 2878572210362816702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_8
+      rect:
+        serializedVersion: 2
+        x: 711
+        y: 948
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5794ab8e123414643a4a763d0c288a0b
+      internalID: 5836212126523309019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_9
+      rect:
+        serializedVersion: 2
+        x: 948
+        y: 948
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd5c080a3adc9d144aebf74cab6b6912
+      internalID: 5913689888818712857
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 711
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 56688bb0a31eced49be90e341e0b4529
+      internalID: -9027977941809076021
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_11
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 711
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84759fdb4ec51834687189a0af1e0449
+      internalID: -8874588455384859938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_12
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 711
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c34ad876db977fb4dbaf6f8ca11c06ce
+      internalID: 4503831117969874879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_13
+      rect:
+        serializedVersion: 2
+        x: 711
+        y: 711
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2bd80d3810ba08144a558b65e60aa454
+      internalID: 4547760692107144732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_14
+      rect:
+        serializedVersion: 2
+        x: 948
+        y: 711
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5f4c0f5acb35c2747a8f2df81042086b
+      internalID: 1516246218410331239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 474
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2dd5272de9ee42140a1b4c5d7f82c53c
+      internalID: 9095316443219973298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_16
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 474
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6804fc3ee2cc82c439bb28710a827a86
+      internalID: 5599223925016450117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_17
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 474
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f7acff7bc602bfc42859ac529f38bd39
+      internalID: 2208303221513557608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_18
+      rect:
+        serializedVersion: 2
+        x: 711
+        y: 474
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b3b5965a56802b49b4e3e44bccf36ee
+      internalID: -1477456770139721936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_19
+      rect:
+        serializedVersion: 2
+        x: 948
+        y: 474
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5b4baad939a91a14781b5e07fccbc872
+      internalID: 7566633033050794932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 237
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30455ebeb57221c4e80a1376245b9d07
+      internalID: 401386277746450036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_21
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 237
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 546cff34bc58e1e4f9d5426e9bde3790
+      internalID: 5035850405608758074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_22
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 237
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 234e0c71514e2d64fb6b5245f7c18578
+      internalID: -6693880416498054957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_23
+      rect:
+        serializedVersion: 2
+        x: 711
+        y: 237
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 80a257de84c9e184ea95586a2e4c42dd
+      internalID: 2031487646747257167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_24
+      rect:
+        serializedVersion: 2
+        x: 948
+        y: 237
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 19b0f1a37c254b94998ed9b2f070845f
+      internalID: 4189012711640966156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_25
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ce6e3d631cea0e048a72a45653adc9e1
+      internalID: 319413518564085998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_26
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 0
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 75c34d0bd6a458a4f98dcd70533b2c5d
+      internalID: -5406063309884361303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_27
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 0
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c08a1383493ee1543bd6ed042563656d
+      internalID: -837733332394826773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_28
+      rect:
+        serializedVersion: 2
+        x: 711
+        y: 0
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: caede64b37143a146b848f48926b3c85
+      internalID: 5813767323216410934
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Collect Greyscale_29
+      rect:
+        serializedVersion: 2
+        x: 948
+        y: 0
+        width: 237
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e7a447e495e1fd4697c5cce53bb2aa4
+      internalID: -6823332770996144294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

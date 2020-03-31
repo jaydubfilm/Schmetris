@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//This script goes on a child of the shield brick, and is used to detect what bricks should be shielded
+
 public class ShieldTrigger : MonoBehaviour
 {
     public bool check;

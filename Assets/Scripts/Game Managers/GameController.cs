@@ -290,6 +290,11 @@ public class GameController : MonoBehaviour
         }
 
         LoadLevelData(level);
+        if (level == 1)
+        {
+            if(TutorialManager.Instance != null)
+                TutorialManager.Instance.TutorialPopup(0, true, true, 1);
+        }
     }
 
     public void LoadMapScreen()
@@ -438,6 +443,7 @@ public class GameController : MonoBehaviour
         speedMultiplier = settings.defaultSpeedLevel;
         bot.ResetTileMap();
         LoadMapScreen();
+
     }
 
     //Used for external Canvas buttons for touchscreen controls
@@ -449,6 +455,7 @@ public class GameController : MonoBehaviour
         speedMultiplier = settings.defaultSpeedLevel;
         bot.ResetTileMap();
         LoadMapScreen();
+
     }
 
     //Open initial game menu

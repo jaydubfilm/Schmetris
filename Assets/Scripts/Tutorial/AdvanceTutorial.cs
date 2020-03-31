@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OutlineCheck : MonoBehaviour
+public class AdvanceTutorial : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()

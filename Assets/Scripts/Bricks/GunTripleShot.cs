@@ -54,7 +54,6 @@ public class GunTripleShot : MonoBehaviour
         
         if (GameController.Instance.bot.storedBlue >= burnPerShot[parentBrick.GetPoweredLevel()])
         {
-            print("try fire ");
             targets = FindTargets();
             if (targets.Count > 0)
             {

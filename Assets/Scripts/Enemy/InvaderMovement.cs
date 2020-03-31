@@ -18,6 +18,10 @@ public class InvaderMovement : MonoBehaviour
     [Tooltip("The distance frome the player along the x axis at which the enemy will fire")]
     public float fireOnProximity = 3;
 
+    [FoldoutGroup("Movement")]
+    [Tooltip("The number of rows the invader drops down apon reaching the edge of the screen")]
+    public float dropDownDistance = 4;
+
     [FoldoutGroup("Weapon")]
     public GameObject bullet;
     [FoldoutGroup("Weapon")]
@@ -108,7 +112,7 @@ public class InvaderMovement : MonoBehaviour
     void ShiftDownOneRow()
     {
 
-        transform.position = new Vector3(transform.position.x, transform.position.y - ScreenStuff.rowSize);
+        transform.position = new Vector3(transform.position.x, transform.position.y - (ScreenStuff.rowSize * dropDownDistance));
     }
 
     void FireCheck()
