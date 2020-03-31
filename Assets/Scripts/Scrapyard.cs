@@ -13,7 +13,6 @@ public class Scrapyard : MonoBehaviour
     public GameObject confirmPurchase;
     public GameObject failPurchase;
     public GameObject confirmSell;
-    public GameObject confirmLevel;
     public GameObject helpPanel;
     public GameObject confirmMap;
     public GameObject confirmUpgrade;
@@ -119,7 +118,7 @@ public class Scrapyard : MonoBehaviour
     bool hasChanges = false;
 
     //Temp prices
-    int resourceChange = 1;
+    float resourceChange = 1;
     int resourceCost = 2;
     int resourceSell = 1;
     int brickCost = 20;
@@ -922,6 +921,40 @@ public class Scrapyard : MonoBehaviour
         }
     }
 
+    //Buttons for buying resources at different quantities
+    public void BuyOneResource(string resource)
+    {
+        resourceChange = 1;
+        BuyResource(resource);
+    }
+    public void BuyTenResource(string resource)
+    {
+        resourceChange = 10;
+        BuyResource(resource);
+    }
+    public void BuyMaxResource(string resource)
+    {
+        switch (resource)
+        {
+            case "RED":
+                resourceChange = maxCapacity - currentFuel;
+                break;
+            case "BLUE":
+                resourceChange = maxCapacity - currentBlue;
+                break;
+            case "YELLOW":
+                resourceChange = maxCapacity - currentYellow;
+                break;
+            case "GREEN":
+                resourceChange = maxCapacity - currentGreen;
+                break;
+            case "GREY":
+                resourceChange = maxCapacity - currentGrey;
+                break;
+        }
+        BuyResource(resource);
+    }
+
     //Button for buying resources
     public void BuyResource(string resource)
     {
@@ -944,9 +977,43 @@ public class Scrapyard : MonoBehaviour
                 break;
         }
 
-        transactionAmount -= resourceCost;
+        transactionAmount -= Mathf.RoundToInt(resourceCost * resourceChange);
         UpdateResources();
         hasChanges = true;
+    }
+
+    //Buttons for selling different quantities of resources
+    public void SellOneResource(string resource)
+    {
+        resourceChange = 1;
+        SellResource(resource);
+    }
+    public void SellTenResource(string resource)
+    {
+        resourceChange = 10;
+        SellResource(resource);
+    }
+    public void SellMaxResource(string resource)
+    {
+        switch (resource)
+        {
+            case "RED":
+                resourceChange = currentFuel;
+                break;
+            case "BLUE":
+                resourceChange = currentBlue;
+                break;
+            case "YELLOW":
+                resourceChange = currentYellow;
+                break;
+            case "GREEN":
+                resourceChange = currentGreen;
+                break;
+            case "GREY":
+                resourceChange = currentGrey;
+                break;
+        }
+        SellResource(resource);
     }
 
     //Button for selling resources
@@ -981,7 +1048,7 @@ public class Scrapyard : MonoBehaviour
                 break;
         }
 
-        transactionAmount += resourceSell;
+        transactionAmount += Mathf.RoundToInt(resourceSell * resourceChange);
         UpdateResources();
         hasChanges = true;
     }
@@ -1303,7 +1370,6 @@ public class Scrapyard : MonoBehaviour
         confirmPurchase.SetActive(false);
         failPurchase.SetActive(false);
         confirmSell.SetActive(false);
-        confirmLevel.SetActive(false);
         confirmMap.SetActive(false);
         confirmConvert.SetActive(false);
         confirmUpgrade.SetActive(false);
