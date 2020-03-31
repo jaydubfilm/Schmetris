@@ -100,6 +100,7 @@ public class Brick : MonoBehaviour
         healthBar = GetComponentInChildren<HealthBar>();
         healthBar.gameObject.SetActive(false);
         _isPowered = false;
+        isPowered = true;
     }
 
     void Start () {
