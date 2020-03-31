@@ -429,6 +429,7 @@ public class GameController : MonoBehaviour
         game = easyGame;
         highestScene = 1;
         lives = 3;
+        money = 0;
         speedMultiplier = settings.defaultSpeedLevel;
         bot.ResetTileMap();
         LoadMapScreen();
@@ -440,6 +441,7 @@ public class GameController : MonoBehaviour
         game = mediumGame;
         highestScene = 1;
         lives = 3;
+        money = 0;
         speedMultiplier = settings.defaultSpeedLevel;
         bot.ResetTileMap();
         LoadMapScreen();
@@ -452,6 +454,7 @@ public class GameController : MonoBehaviour
         game = hardGame;
         highestScene = 1;
         lives = 3;
+        money = 0;
         speedMultiplier = settings.defaultSpeedLevel;
         bot.ResetTileMap();
         LoadMapScreen();

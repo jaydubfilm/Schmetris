@@ -1262,7 +1262,12 @@ public class Scrapyard : MonoBehaviour
     //Button for returning to map screen
     public void MapScreen()
     {
-        if (hasChanges)
+        if (transactionAmount < 0)
+        {
+            canMove = false;
+            failPurchase.SetActive(true);
+        }
+        else if (hasChanges)
         {
             canMove = false;
             confirmMap.SetActive(true);
