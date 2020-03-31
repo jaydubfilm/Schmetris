@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 
 //Controls all map menu functions
@@ -10,6 +11,7 @@ public class LevelMenuUI : MonoBehaviour
     public GameObject helpPanel;
     public GameObject loadPanel;
     public GameObject savePanel;
+    public GameObject savedPanel;
     public GameObject confirmQuitPanel;
 
     //Levels UI
@@ -37,6 +39,7 @@ public class LevelMenuUI : MonoBehaviour
         confirmQuitPanel.SetActive(false);
         loadPanel.SetActive(false);
         savePanel.SetActive(false);
+        savedPanel.SetActive(false);
 
         //Activate main menu
         UpdateLevels();
@@ -262,12 +265,23 @@ public class LevelMenuUI : MonoBehaviour
     //Save to an existing game slot
     public void SaveGameSlot(int index)
     {
-        GameController.Instance.SaveGame(index);
+        StartCoroutine(SavedGameUI(index));
     }
 
     //Play selected level
     public void PlayLevel(int index)
     {
         GameController.Instance.StartLevel(index);
+    }
+
+    //Game saved indicator
+    IEnumerator SavedGameUI(int index)
+    {
+        savedPanel.SetActive(true);
+        yield return 0;
+        GameController.Instance.SaveGame(index);
+        yield return new WaitForSecondsRealtime(0.25f);
+        savedPanel.SetActive(false);
+        SetMenuState(MenuState.Main);
     }
 }
