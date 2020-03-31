@@ -36,13 +36,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b914c0d59b64ccf43a72b0afbb93885d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rateOfFire: []
-  attackPower: 
-  range: []
-  bullet: []
-  maxResource: 
-  burnPerShot: []
-  speed: 0
+  rateOfFire:
+  - 5
+  - 3
+  attackPower: 0a0000001e000000
+  range:
+  - 50
+  - 50
+  bullet:
+  - {fileID: 7918598799021602830, guid: aa18f778adbd1ed409676d0df638f9aa, type: 3}
+  - {fileID: 7918598799021602830, guid: aa18f778adbd1ed409676d0df638f9aa, type: 3}
+  maxResource: 00000000
+  burnPerShot:
+  - 0
+  speed: 100
 --- !u!1001 &6167074758492475587
 PrefabInstance:
   m_ObjectHideFlags: 0

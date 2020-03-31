@@ -10,21 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
-  m_Name: Enemy Prototype
+  m_Name: Tutorial Level 1
   m_EditorClassIdentifier: 
   levelDuration: 90
   blocks:
-  - block: {fileID: 8639198243880090134, guid: 80e57895ab51b4fb591ba9d29d8b237b, type: 3}
-    probability: 1
-  - block: {fileID: 8711779262324829158, guid: b20727edf559f4948bb5d7a6c66b1694, type: 3}
-    probability: 1
   - block: {fileID: 5399240307803968247, guid: ab069a2ca412044889730906a907b7c5, type: 3}
-    probability: 3
-  - block: {fileID: 8480972586710585632, guid: 934b8c0b6a23b4092bdf57addff8b22d, type: 3}
-    probability: 4
-  - block: {fileID: 3908810048976006719, guid: 0c609c432c86b42ad9631220ee8db9c6, type: 3}
-    probability: 2
+    probability: 1
   speciesSpawnData: []
-  blockSpawnRate: 0.3
+  blockSpawnRate: 100
   enemySpawnRate: 6
   blockSpeed: 7.5

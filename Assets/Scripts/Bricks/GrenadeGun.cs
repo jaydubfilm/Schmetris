@@ -48,16 +48,18 @@ public class GrenadeGun : MonoBehaviour
     //Check for targets and ammo and try to shoot
     void TryFire()
     {
-        
-        if (GameController.Instance.bot.storedBlue >= burnPerShot[parentBrick.GetPoweredLevel()])
+        if (GameController.Instance.enemyList.Count > 0)
         {
-
-            target = FindTarget();
-            if (target != null)
+            if (GameController.Instance.bot.storedGrey >= burnPerShot[parentBrick.GetPoweredLevel()])
             {
 
-                if(Vector3.Distance(target.transform.position, transform.position) < range[parentBrick.GetPoweredLevel()])
-                    FireGun(target.transform.position);
+                target = FindTarget();
+                if (target != null)
+                {
+
+                    if (Vector3.Distance(target.transform.position, transform.position) < range[parentBrick.GetPoweredLevel()])
+                        FireGun(target.transform.position);
+                }
             }
         }
     }

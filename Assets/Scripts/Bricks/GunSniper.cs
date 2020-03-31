@@ -48,16 +48,18 @@ public class GunSniper : MonoBehaviour
     //Check for targets and ammo and try to shoot
     void TryFire()
     {
+        if(GameController.Instance.enemyList.Count > 0) { 
         print("try fire 0");
-        if (GameController.Instance.bot.storedBlue >= burnPerShot[parentBrick.GetPoweredLevel()])
-        {
-            print("try fire 1");
-            target = FindTarget();
-            if (target != null)
+            if (GameController.Instance.bot.storedBlue >= burnPerShot[parentBrick.GetPoweredLevel()])
             {
-                print("try fire target found");
-                if(Vector3.Distance(target.transform.position, transform.position) < range[parentBrick.GetPoweredLevel()])
-                    FireGun(target.transform.position);
+                print("try fire 1");
+                target = FindTarget();
+                if (target != null)
+                {
+                    print("try fire target found");
+                    if (Vector3.Distance(target.transform.position, transform.position) < range[parentBrick.GetPoweredLevel()])
+                        FireGun(target.transform.position);
+                }
             }
         }
     }

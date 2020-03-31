@@ -48,9 +48,9 @@ MonoBehaviour:
   - {fileID: 7918598799021602830, guid: 4ad4d727f591df6478cb82f871da7cad, type: 3}
   maxResource: 00000000
   burnPerShot:
-  - 0
-  - 0
-  - 0
+  - 1
+  - 1
+  - 1
   speed: 23
 --- !u!1001 &6167074758492475587
 PrefabInstance:

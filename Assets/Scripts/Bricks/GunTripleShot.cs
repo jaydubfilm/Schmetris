@@ -41,6 +41,8 @@ public class GunTripleShot : MonoBehaviour
         if (fireTimer <= 0)
         {
             TryFire();
+            fireTimer = rateOfFire[parentBrick.GetPoweredLevel()];
+
         }
         else
         {
@@ -51,18 +53,23 @@ public class GunTripleShot : MonoBehaviour
     //Check for targets and ammo and try to shoot
     void TryFire()
     {
-        
-        if (GameController.Instance.bot.storedBlue >= burnPerShot[parentBrick.GetPoweredLevel()])
+        print("trying to fire sniper");
+        if (GameController.Instance.enemyList.Count > 0)
         {
-            targets = FindTargets();
-            if (targets.Count > 0)
+            print("enemies detected");
+            if (GameController.Instance.bot.storedBlue >= burnPerShot[parentBrick.GetPoweredLevel()])
             {
-                print("Found Targets");
-                if (targets[0] != null)
+                print("enough stored blue");
+                targets = FindTargets();
+                if (targets.Count > 0)
                 {
-                    //print("try fire target found");
-                    if (Vector3.Distance(targets[0].transform.position, transform.position) < range[parentBrick.GetPoweredLevel()])
-                        FireGun();
+                    print("Found Targets");
+                    if (targets[0] != null)
+                    {
+                        //print("try fire target found");
+                        if (Vector3.Distance(targets[0].transform.position, transform.position) < range[parentBrick.GetPoweredLevel()])
+                            FireGun();
+                    }
                 }
             }
         }
@@ -83,6 +90,7 @@ public class GunTripleShot : MonoBehaviour
                 {
                     if (!targets.Contains(enemyObj))
                     {
+                        print(enemyObj.name);
                         float dist = Vector3.Distance(enemyObj.transform.position, transform.position);
                         if ((dist < closestDistance) && (dist <= range[parentBrick.GetPoweredLevel()]))
                         {

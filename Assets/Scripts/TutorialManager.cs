@@ -19,6 +19,8 @@ public class TutorialManager : MonoBehaviour
     [ShowInInspector]
     int currentQueue;
 
+    public Transform playerPos;
+
     //public Game
     // Start is called before the first frame update
     void Awake()
@@ -86,10 +88,10 @@ public class TutorialManager : MonoBehaviour
     }
 
     [Button]
-    public void Test()
+    public void TestSpawnSingle()
     {
-
-        TutorialPopup(0, false, false, 1);
+        GameController.Instance.SpawnBlock(ScreenStuff.XPositionToCol(playerPos.position.x), 0);
+        //TutorialPopup(0, false, false, 1);
     }
 
     public void CloseCurrent()
