@@ -1822,4 +1822,12 @@ public class Scrapyard : MonoBehaviour
         upgradeList.Add(targetSprite);
         return upgradeList;
     }
+
+    //Debug buttons for adding and removing money
+    public void AdjustMoney(int amount)
+    {
+        hasChanges = true;
+        transactionAmount += amount;
+        UpdateResources();
+    }
 }
