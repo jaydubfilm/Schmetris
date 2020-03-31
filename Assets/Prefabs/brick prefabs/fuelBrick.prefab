@@ -20,11 +20,36 @@ MonoBehaviour:
   brickMaxHP: 0500000005000000050000000500000005000000
   passiveBurn: 0
   hasResources: 1
-  redBurn: []
-  blueBurn: []
-  greenBurn: []
-  yellowBurn: []
-  greyBurn: []
+  redBurn:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  blueBurn:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  greenBurn:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  yellowBurn:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  greyBurn:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   addBrickSound: {fileID: 8300000, guid: d2bdca082fbef3e4fb8bbed30f5d03d8, type: 3}
   spriteArr:
   - {fileID: 21300078, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}

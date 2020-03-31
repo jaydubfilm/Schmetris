@@ -36,22 +36,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dfda079a2a8dfa4c984bc9e9c1747eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rateOfFire:
-  - 3
-  - 2
-  attackPower: 050000000a000000
-  range:
-  - 35
-  - 45
-  - 55
-  bullet:
-  - {fileID: 7918598799021602830, guid: aa18f778adbd1ed409676d0df638f9aa, type: 3}
+  rateOfFire: []
+  attackPower: 
+  range: []
+  bullet: []
   maxResource: 
-  burnPerShot:
-  - 0
+  burnPerShot: []
   numberOfEnemies: 3
   targets: []
-  speed: 50
+  speed: 0
 --- !u!1001 &6167074758492475587
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -93,6 +86,31 @@ PrefabInstance:
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: brickMaxHP.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: greyBurn.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: yellowBurn.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: greenBurn.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: blueBurn.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: redBurn.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
@@ -147,6 +165,16 @@ PrefabInstance:
         type: 3}
       propertyPath: brickLevel
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: blueBurn.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: blueBurn.Array.data[1]
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3272617812009182816, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}

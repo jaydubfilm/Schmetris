@@ -21,6 +21,26 @@ public class Gun : MonoBehaviour
     //Resources
     public int[] maxResource;
 
+    //Return the resources of set type converted to per-second units
+    public float GetConvertedBurnRate(ResourceType resourceType, int level)
+    {
+        float secondRate = rateOfFire[level] > 0 ? 1.0f / rateOfFire[level] : 0;
+        switch (resourceType)
+        {
+            case ResourceType.Red:
+                return GetComponent<Brick>().redBurn[level] * secondRate;
+            case ResourceType.Blue:
+                return GetComponent<Brick>().blueBurn[level] * secondRate;
+            case ResourceType.Green:
+                return GetComponent<Brick>().greenBurn[level] * secondRate;
+            case ResourceType.Yellow:
+                return GetComponent<Brick>().yellowBurn[level] * secondRate;
+            case ResourceType.Grey:
+                return GetComponent<Brick>().greyBurn[level] * secondRate;
+        }
+        return 0;
+    }
+
     //Init
     void Start()
     {
@@ -45,7 +65,7 @@ public class Gun : MonoBehaviour
     void TryFire()
     {
         GameObject target = FindTarget();
-        if (target != null)
+        if (target != null && parentBrick.TryBurnResources(1.0f))
         {
             enemyTarget = target.transform;
             FireGun(target.transform.position);

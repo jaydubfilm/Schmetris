@@ -13,6 +13,11 @@ public class Container : MonoBehaviour
     float openDirection = 0;
     GameObject directionIcon;
 
+    public float GetOpenDirection()
+    {
+        return openDirection;
+    }
+
     //Init
     private void Awake()
     {
@@ -21,12 +26,12 @@ public class Container : MonoBehaviour
         {
             directionIcon = Instantiate(directionPrefab, transform);
             directionIcon.transform.localPosition = Vector3.zero;
-            SetOpenDirection(startDirection);
+            SetOpenDirection(startDirection, false);
         }
     }
 
     //Adjust open direction when bot rotates
-    public void SetOpenDirection(float newDirection)
+    public void SetOpenDirection(float newDirection, bool overrideStart)
     {
         if (!canCollect)
             return;
@@ -39,6 +44,8 @@ public class Container : MonoBehaviour
             newDirection += 360;
         }
         openDirection = newDirection;
+        if (overrideStart)
+            startDirection = openDirection;
         directionIcon.transform.localEulerAngles = new Vector3(0, 0, openDirection);
     }
 

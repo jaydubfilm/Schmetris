@@ -20,6 +20,26 @@ public class Repair : MonoBehaviour
     //Resources
     public int[] maxResource;
 
+    //Return the resources of set type converted to per-second units
+    public float GetConvertedBurnRate(ResourceType resourceType, int level)
+    {
+        float secondRate = healRate[level] > 0 ? healPower[level] / healRate[level] : 0;
+        switch(resourceType)
+        {
+            case ResourceType.Red:
+                return GetComponent<Brick>().redBurn[level] * secondRate;
+            case ResourceType.Blue:
+                return GetComponent<Brick>().blueBurn[level] * secondRate;
+            case ResourceType.Green:
+                return GetComponent<Brick>().greenBurn[level] * secondRate;
+            case ResourceType.Yellow:
+                return GetComponent<Brick>().yellowBurn[level] * secondRate;
+            case ResourceType.Grey:
+                return GetComponent<Brick>().greyBurn[level] * secondRate;
+        }
+        return 0;
+    }
+
     //Init
     void Start()
     {

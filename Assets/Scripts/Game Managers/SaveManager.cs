@@ -35,6 +35,16 @@ public class SaveManager
         return saveData.savedLayouts[index];
     }
 
+    //Return containers from save number
+    public List<ContainerData> GetLayoutContainers(int index)
+    {
+        if(!hasSaveData)
+        {
+            Init();
+        }
+        return saveData.savedLayouts[index].containers;
+    }
+
     //Save data to save number
     public void SetSave(int index, int lives, int money, int level, string game, Bot bot)
     {
@@ -53,6 +63,7 @@ public class SaveManager
         newData.hangarYellow = bot.GetSavedResource(ResourceType.Yellow, true);
         newData.hangarGrey = bot.GetSavedResource(ResourceType.Grey, true);
         newData.game = game;
+        newData.containers = bot.savedContainerData;
 
         Sprite[,] botMap = bot.GetTileMap();
         newData.bot = new BotData[botMap.GetLength(0)];
@@ -71,7 +82,7 @@ public class SaveManager
     }
 
     //Save layout to save number
-    public void SetLayout(int index, Sprite[,] bot)
+    public void SetLayout(int index, Sprite[,] bot, List<ContainerData> containers)
     {
         SaveData newData = new SaveData();
         newData.lives = 0;
@@ -89,6 +100,7 @@ public class SaveManager
         newData.hangarGrey = 0;
         newData.game = "LAYOUT";
 
+        newData.containers = containers;
         newData.bot = new BotData[bot.GetLength(0)];
         for (int x = 0; x < bot.GetLength(0); x++)
         {
@@ -133,6 +145,7 @@ public class SaveManager
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
+            newData.containers = new List<ContainerData>();
             saveData.saveFiles.Add(newData);
         }
         while (saveData.savedLayouts.Count < maxSaveFiles)
@@ -154,6 +167,7 @@ public class SaveManager
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
+            newData.containers = new List<ContainerData>();
             saveData.savedLayouts.Add(newData);
         }
     }
@@ -181,6 +195,7 @@ public class SaveManager
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
+            newData.containers = new List<ContainerData>();
             saveData.saveFiles.Add(newData);
         }
         while (saveData.savedLayouts.Count < maxSaveFiles)
@@ -202,6 +217,7 @@ public class SaveManager
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
+            newData.containers = new List<ContainerData>();
             saveData.savedLayouts.Add(newData);
         }
         SaveGame();
@@ -276,6 +292,15 @@ public class SaveData
     public float hangarYellow; //Excess yellow resource
     public float hangarGrey; //Excess grey resource
     public BotData[] bot;   //Bot tilemap for reloading save
+    public List<ContainerData> containers;  //Containers in bot, to be properly rotated after building
+}
+
+//Separate serialization for containers which have unique characteristics
+[Serializable]
+public class ContainerData
+{
+    public Vector2Int coords;
+    public float openDirection;
 }
 
 //Separate serialization for bot map as 2D array serialization isn't automatically supported

@@ -37,12 +37,6 @@ MonoBehaviour:
   - {fileID: 7857921322564960265, guid: 1933b0d57ff2b496c8bc86da64f1edc9, type: 3}
   - {fileID: 7857921322564960265, guid: 1933b0d57ff2b496c8bc86da64f1edc9, type: 3}
   maxResource: 0a00000032000000fa000000e20400006a180000
-  burnPerShot:
-  - 1
-  - 2
-  - 3
-  - 4
-  - 5
 --- !u!1001 &5846229295879346946
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -74,6 +68,31 @@ PrefabInstance:
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: brickMaxHP.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: greyBurn.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: yellowBurn.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: greenBurn.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: blueBurn.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: redBurn.Array.size
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
