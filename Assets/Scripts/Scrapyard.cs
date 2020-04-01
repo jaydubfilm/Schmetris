@@ -56,6 +56,9 @@ public class Scrapyard : MonoBehaviour
     GameObject botDisplay;
     List<ContainerData> containers = new List<ContainerData>();
     List<GameObject> containerObjects = new List<GameObject>();
+    public Text healedPopup;
+    bool hasShownHealPopup = false;
+    float healFadeDelay = 0;
 
     //Market UI
     public Transform marketParent;
@@ -768,6 +771,13 @@ public class Scrapyard : MonoBehaviour
         UpdateResources();
         GameController.Instance.RefreshBotIcons();
         BuildMarketplace();
+
+        if(!hasShownHealPopup && GameController.Instance.bot.hasDamagedCells)
+        {
+            hasShownHealPopup = true;
+            healedPopup.gameObject.SetActive(true);
+            healedPopup.color = Color.white;
+        }
     }
 
     //Snap brick to block closest to player drag position
@@ -780,6 +790,16 @@ public class Scrapyard : MonoBehaviour
     //Update keyboard and mouse controls
     private void Update()
     {
+        //Fade out popup message
+        if (healFadeDelay < 0.75f)
+        {
+            healFadeDelay += Time.unscaledDeltaTime;
+        }
+        else
+        {
+            healedPopup.color = new Color(1, 1, 1, Mathf.Max(0, healedPopup.color.a - Time.unscaledDeltaTime));
+        }
+
         if (Input.GetMouseButtonDown(0) && canMove)
         {
             //Start tap timer - is player trying to click something or drag something?

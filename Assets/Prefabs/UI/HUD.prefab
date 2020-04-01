@@ -688,7 +688,7 @@ GameObject:
   - component: {fileID: 3517443945581037429}
   - component: {fileID: 3694217860506587345}
   m_Layer: 5
-  m_Name: NoFuel
+  m_Name: PopupMessage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1424,7 +1424,7 @@ MonoBehaviour:
   greenBurnRate: {fileID: 8675279702153844323}
   yellowBurnRate: {fileID: 831985686737428426}
   greyBurnRate: {fileID: 7452734685204041728}
-  noFuelDisplay: {fileID: 3694217860506587345}
+  popupDisplay: {fileID: 3694217860506587345}
   levelCompleteDisplay: {fileID: 6961089466144550224}
   lifeLostDisplay: {fileID: 1488407907439979541}
   returnButton: {fileID: 6454189424059811381}
