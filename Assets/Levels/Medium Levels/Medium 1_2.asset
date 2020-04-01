@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
   m_Name: Medium 1_2
   m_EditorClassIdentifier: 
-  levelDuration: 20
+  levelDuration: 15
   blocks:
   - block: {fileID: 3908810048976006719, guid: 0c609c432c86b42ad9631220ee8db9c6, type: 3}
     probability: 4
@@ -38,9 +38,6 @@ MonoBehaviour:
   - species: {fileID: 822335604602250409, guid: 5b93156cd52954237adcfe43c62642b2,
       type: 3}
     probability: 1
-  - species: {fileID: 7297659341976442939, guid: dad323699b9f9dc4fbdd435e03ff6c7b,
-      type: 3}
-    probability: 0
-  blockSpawnRate: 0.3
+  blockSpawnRate: 0.4
   enemySpawnRate: 9
   blockSpeed: 7.5

@@ -240,7 +240,7 @@ MonoBehaviour:
   bulletLifetime: 2
   bullet: {fileID: 4678426597054703440, guid: 830515e21ff0d524da08aba3cfcb73d6, type: 3}
   bulletSprite: {fileID: 21300014, guid: 9c31eaa9bdedaca4b8a21a1282db0a35, type: 3}
-  bulletDamage: 1
+  bulletDamage: 3
   timeUntilBlast: 10
   blastRadius: 5
   blastDamage: 5
