@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfca86bbe879bb643965c120dd9fc50e, type: 3}
+  m_Name: Crafted Shield
+  m_EditorClassIdentifier: 
+  brick: {fileID: 6715254118685096965, guid: 1d9fc7273f0a34644bd726fea75930e2, type: 3}
+  brickLevels:
+  - buyPrice: 7875
+    sellPrice: 0
+  - buyPrice: 12375
+    sellPrice: 0

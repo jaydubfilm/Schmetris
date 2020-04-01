@@ -66,7 +66,6 @@ public class Scrapyard : MonoBehaviour
     public GameObject resourceBurnPrefab;
     List<GameObject> marketSelection = new List<GameObject>();
     public List<string> tempMarketList = new List<string>();
-    List<int> marketPrices = new List<int>();
     public List<string> marketList = new List<string>();
     int maxMarketItems = 5;
     int marketIndex = 0;
@@ -462,10 +461,8 @@ public class Scrapyard : MonoBehaviour
             }
 
             int price = GetBrickCost(newTileImage.sprite);
-
             GameObject newPrice = Instantiate(pricePrefab, newTile.transform);
             newPrice.GetComponent<Text>().text = partName + " - $" + price;
-            marketPrices.Add(price);
 
             if(redBurn || blueBurn || greenBurn || yellowBurn || greyBurn)
             {
@@ -855,7 +852,7 @@ public class Scrapyard : MonoBehaviour
                     {
                         if (isMarketBrick)
                         {
-                            if (transactionAmount >= marketPrices[tempMarketList.IndexOf(selectedBrick.GetComponent<Image>().sprite.name)])
+                            if (transactionAmount >= GetBrickCost(selectedBrick.GetComponent<Image>().sprite))
                             {
                                 uncommittedBricks.Add(targets[i].gameObject);
                                 targets[i].gameObject.GetComponent<Image>().color = Color.white;
@@ -878,7 +875,7 @@ public class Scrapyard : MonoBehaviour
 
                                 //~For now, don't remove purchased bricks from market
                                 //tempMarketList.Remove(selectedBrick.GetComponent<Image>().sprite.name);
-                                transactionAmount -= marketPrices[tempMarketList.IndexOf(selectedBrick.GetComponent<Image>().sprite.name)];
+                                transactionAmount -= GetBrickCost(selectedBrick.GetComponent<Image>().sprite);
                                 UpdateResources();
                                 hasChanges = true;
                                 CompleteConfirmedPurchase();
@@ -1978,7 +1975,7 @@ public class Scrapyard : MonoBehaviour
             {
                 if(brickCheck.spriteArr[i] == targetBrick)
                 {
-                    return marketCheck.brickLevels[i].buyPrice;
+                    return Mathf.RoundToInt(GameController.Instance.costMultiplier * marketCheck.brickLevels[i].buyPrice);
                 }
             }
         }
@@ -2008,15 +2005,15 @@ public class Scrapyard : MonoBehaviour
         switch(resourceType)
         {
             case "RED":
-                return 10;
+                return Mathf.RoundToInt(GameController.Instance.costMultiplier * 10);
             case "BLUE":
-                return 20;
+                return Mathf.RoundToInt(GameController.Instance.costMultiplier * 20);
             case "GREEN":
-                return 25;
+                return Mathf.RoundToInt(GameController.Instance.costMultiplier * 25);
             case "YELLOW":
-                return 15;
+                return Mathf.RoundToInt(GameController.Instance.costMultiplier * 15);
             case "GREY":
-                return 20;
+                return Mathf.RoundToInt(GameController.Instance.costMultiplier * 20);
         }
         return 0;
     }

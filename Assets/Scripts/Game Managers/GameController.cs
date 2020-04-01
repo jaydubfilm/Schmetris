@@ -114,7 +114,13 @@ public class GameController : MonoBehaviour
     //Carl Added...
     public DynamicPathfindingManager enemyPathfinding;
 
-
+    public float costMultiplier
+    {
+        get
+        {
+            return game.storeCostMultiplier;
+        }
+    }
 
     int speedMultiplier = 2;
     public float adjustedSpeed
