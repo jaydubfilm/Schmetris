@@ -1003,6 +1003,8 @@ MonoBehaviour:
   marketParent: {fileID: 8586088181024178613}
   pricePrefab: {fileID: 3689730829853018508, guid: e4ee2be3a0761db45acbbafcd659243a,
     type: 3}
+  resourceBurnPrefab: {fileID: 3689730829853018508, guid: b0ca8011f4f1ab449adc02d46bf95f51,
+    type: 3}
   tempMarketList: []
   marketList:
   - Container01

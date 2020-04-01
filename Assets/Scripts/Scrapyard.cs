@@ -60,6 +60,7 @@ public class Scrapyard : MonoBehaviour
     //Market UI
     public Transform marketParent;
     public GameObject pricePrefab;
+    public GameObject resourceBurnPrefab;
     List<GameObject> marketSelection = new List<GameObject>();
     public List<string> tempMarketList = new List<string>();
     List<int> marketPrices = new List<int>();
@@ -436,6 +437,11 @@ public class Scrapyard : MonoBehaviour
             marketSelection.Add(newTile);
 
             string partName = "Brick";
+            bool redBurn = false;
+            bool blueBurn = false;
+            bool greenBurn = false;
+            bool yellowBurn = false;
+            bool greyBurn = false;
             foreach(GameObject marketItem in craftableParts)
             {
                 Brick marketPart = marketItem.GetComponent<Brick>();
@@ -444,6 +450,11 @@ public class Scrapyard : MonoBehaviour
                     if(newTileImage.sprite == marketPart.spriteArr[n])
                     {
                         partName = marketPart.GetComponent<CraftedPart>().scrapyardName[n];
+                        redBurn = marketPart.redBurn[n] > 0;
+                        blueBurn = marketPart.blueBurn[n] > 0;
+                        greenBurn = marketPart.greenBurn[n] > 0;
+                        yellowBurn = marketPart.yellowBurn[n] > 0;
+                        greyBurn = marketPart.greyBurn[n] > 0;
                         break;
                     }
                 }
@@ -452,6 +463,32 @@ public class Scrapyard : MonoBehaviour
             GameObject newPrice = Instantiate(pricePrefab, newTile.transform);
             newPrice.GetComponent<Text>().text = partName + " - $" + price;
             marketPrices.Add(price);
+
+            if(redBurn || blueBurn || greenBurn || yellowBurn || greyBurn)
+            {
+                GameObject newBurn = Instantiate(resourceBurnPrefab, newTile.transform);
+                Transform newBurnChild = newBurn.GetComponentInChildren<HorizontalLayoutGroup>().transform;
+                if(!greyBurn)
+                {
+                    Destroy(newBurnChild.GetChild(4).gameObject);
+                }
+                if (!yellowBurn)
+                {
+                    Destroy(newBurnChild.GetChild(3).gameObject);
+                }
+                if (!greenBurn)
+                {
+                    Destroy(newBurnChild.GetChild(2).gameObject);
+                }
+                if (!blueBurn)
+                {
+                    Destroy(newBurnChild.GetChild(1).gameObject);
+                }
+                if (!redBurn)
+                {
+                    Destroy(newBurnChild.GetChild(0).gameObject);
+                }
+            }
         }
     }
 
@@ -893,8 +930,11 @@ public class Scrapyard : MonoBehaviour
                         botBrick.GetComponent<Image>().color = Color.clear;
                         uncommittedBricks.Remove(botBrick);
 
-                        if (selectedBrick.GetComponentInChildren<Text>())
-                            selectedBrick.GetComponentInChildren<Text>().enabled = false;
+                        if(selectedBrick.GetComponentInChildren<Text>())
+                        {
+                            Destroy(selectedBrick.GetComponentInChildren<Text>().gameObject);
+                        }
+ 
                         selectedBrick.transform.SetParent(transform.parent);
                         selectedBrick.GetComponent<RectTransform>().anchorMin = Vector2.zero;
                         selectedBrick.GetComponent<RectTransform>().anchorMax = Vector2.zero;
@@ -912,10 +952,12 @@ public class Scrapyard : MonoBehaviour
                 }
                 else if (selectedBrick)
                 {
+                    if (selectedBrick.GetComponentInChildren<Text>())
+                    {
+                        Destroy(selectedBrick.GetComponentInChildren<Text>().gameObject);
+                    }
                     if (selectedBrick.transform.parent != transform.parent)
                     {
-                        if (selectedBrick.GetComponentInChildren<Text>())
-                            selectedBrick.GetComponentInChildren<Text>().enabled = false;
                         selectedBrick.transform.SetParent(transform.parent);
                         selectedBrick.GetComponent<RectTransform>().anchorMin = Vector2.zero;
                         selectedBrick.GetComponent<RectTransform>().anchorMax = Vector2.zero;
