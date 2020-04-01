@@ -39,6 +39,21 @@ public class EnemyGeneral : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        GameController.OnLevelComplete += OnLevelComplete;
+    }
+
+    private void OnDisable()
+    {
+        GameController.OnLevelComplete -= OnLevelComplete;
+    }
+
+    void OnLevelComplete()
+    {
+        GetComponent<Rigidbody2D>().velocity = new Vector3(0, -GameController.Instance.blockSpeed * GameController.Instance.adjustedSpeed, 0);
+    }
+
     // Update is called once per frame
     public void EnemyDeath()
     {

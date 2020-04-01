@@ -15,12 +15,14 @@ public class Enemy : MonoBehaviour
     {
         GameController.OnGameOver += DestroyEnemy;
         GameController.OnLoseLife += DestroyEnemy;
+        GameController.OnLevelComplete += OnLevelComplete;
     }
 
     private void OnDisable()
     {
         GameController.OnGameOver -= DestroyEnemy;
         GameController.OnLoseLife -= DestroyEnemy;
+        GameController.OnLevelComplete -= OnLevelComplete;
     }
 
     // Start is called before the first frame update
@@ -42,8 +44,15 @@ public class Enemy : MonoBehaviour
             ScoreEnemy();
             DestroyEnemy();
         }
-   
-        MoveTowardsBot();
+        else if (!GameController.Instance.isLevelCompleteQueued)
+        {
+            MoveTowardsBot();
+        }
+    }
+
+    void OnLevelComplete()
+    {
+        rb2d.velocity = new Vector3(0, -GameController.Instance.blockSpeed * GameController.Instance.adjustedSpeed, 0);
     }
 
     public void MoveTowardsBot(){

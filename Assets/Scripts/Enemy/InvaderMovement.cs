@@ -59,9 +59,11 @@ public class InvaderMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameController.Instance.isLevelCompleteQueued)
+            return;
 
         #region MOVEMENT
-        if(movingRight == true)        
+        if (movingRight == true)        
             transform.Translate(Vector3.right * speed * Time.deltaTime);   
         else      
             transform.Translate(Vector3.right * -speed * Time.deltaTime);

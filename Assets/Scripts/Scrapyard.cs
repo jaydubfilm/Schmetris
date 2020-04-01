@@ -60,6 +60,7 @@ public class Scrapyard : MonoBehaviour
     //Market UI
     public Transform marketParent;
     public GameObject pricePrefab;
+    public GameObject resourceBurnPrefab;
     List<GameObject> marketSelection = new List<GameObject>();
     public List<string> tempMarketList = new List<string>();
     List<int> marketPrices = new List<int>();
@@ -436,6 +437,11 @@ public class Scrapyard : MonoBehaviour
             marketSelection.Add(newTile);
 
             string partName = "Brick";
+            bool redBurn = false;
+            bool blueBurn = false;
+            bool greenBurn = false;
+            bool yellowBurn = false;
+            bool greyBurn = false;
             foreach(GameObject marketItem in craftableParts)
             {
                 Brick marketPart = marketItem.GetComponent<Brick>();
@@ -444,6 +450,11 @@ public class Scrapyard : MonoBehaviour
                     if(newTileImage.sprite == marketPart.spriteArr[n])
                     {
                         partName = marketPart.GetComponent<CraftedPart>().scrapyardName[n];
+                        redBurn = marketPart.redBurn[n] > 0;
+                        blueBurn = marketPart.blueBurn[n] > 0;
+                        greenBurn = marketPart.greenBurn[n] > 0;
+                        yellowBurn = marketPart.yellowBurn[n] > 0;
+                        greyBurn = marketPart.greyBurn[n] > 0;
                         break;
                     }
                 }
@@ -452,6 +463,32 @@ public class Scrapyard : MonoBehaviour
             GameObject newPrice = Instantiate(pricePrefab, newTile.transform);
             newPrice.GetComponent<Text>().text = partName + " - $" + price;
             marketPrices.Add(price);
+
+            if(redBurn || blueBurn || greenBurn || yellowBurn || greyBurn)
+            {
+                GameObject newBurn = Instantiate(resourceBurnPrefab, newTile.transform);
+                Transform newBurnChild = newBurn.GetComponentInChildren<HorizontalLayoutGroup>().transform;
+                if(!greyBurn)
+                {
+                    Destroy(newBurnChild.GetChild(4).gameObject);
+                }
+                if (!yellowBurn)
+                {
+                    Destroy(newBurnChild.GetChild(3).gameObject);
+                }
+                if (!greenBurn)
+                {
+                    Destroy(newBurnChild.GetChild(2).gameObject);
+                }
+                if (!blueBurn)
+                {
+                    Destroy(newBurnChild.GetChild(1).gameObject);
+                }
+                if (!redBurn)
+                {
+                    Destroy(newBurnChild.GetChild(0).gameObject);
+                }
+            }
         }
     }
 
@@ -796,34 +833,48 @@ public class Scrapyard : MonoBehaviour
                 {
                     if (botBricks.Contains(targets[i].gameObject) && targets[i].gameObject.GetComponent<Image>().color == Color.clear)
                     {
-                        uncommittedBricks.Add(targets[i].gameObject);
-                        targets[i].gameObject.GetComponent<Image>().color = Color.white;
-                        targets[i].gameObject.GetComponent<Image>().sprite = selectedBrick.GetComponent<Image>().sprite;
                         if (isMarketBrick)
                         {
-                            if(IsOpenContainer(targets[i].gameObject))
+                            if (transactionAmount >= marketPrices[tempMarketList.IndexOf(selectedBrick.GetComponent<Image>().sprite.name)])
                             {
-                                containerObjects.Add(targets[i].gameObject);
-                                int coordCheck = botBricks.IndexOf(targets[i].gameObject);
-                                int yCol = Mathf.FloorToInt(coordCheck / botMap.GetLength(1));
+                                uncommittedBricks.Add(targets[i].gameObject);
+                                targets[i].gameObject.GetComponent<Image>().color = Color.white;
+                                targets[i].gameObject.GetComponent<Image>().sprite = selectedBrick.GetComponent<Image>().sprite;
 
-                                ContainerData newContainer = new ContainerData();
-                                newContainer.coords = new Vector2Int(coordCheck - yCol * botMap.GetLength(1), yCol);
-                                newContainer.openDirection = 0;
-                                containers.Add(newContainer);
+                                if (IsOpenContainer(targets[i].gameObject))
+                                {
+                                    containerObjects.Add(targets[i].gameObject);
+                                    int coordCheck = botBricks.IndexOf(targets[i].gameObject);
+                                    int yCol = Mathf.FloorToInt(coordCheck / botMap.GetLength(1));
 
-                                targets[i].gameObject.transform.GetChild(1).localEulerAngles = Vector3.zero;
-                                targets[i].gameObject.transform.GetChild(1).gameObject.SetActive(true);
+                                    ContainerData newContainer = new ContainerData();
+                                    newContainer.coords = new Vector2Int(coordCheck - yCol * botMap.GetLength(1), yCol);
+                                    newContainer.openDirection = 0;
+                                    containers.Add(newContainer);
+
+                                    targets[i].gameObject.transform.GetChild(1).localEulerAngles = Vector3.zero;
+                                    targets[i].gameObject.transform.GetChild(1).gameObject.SetActive(true);
+                                }
+
+                                //~For now, don't remove purchased bricks from market
+                                //tempMarketList.Remove(selectedBrick.GetComponent<Image>().sprite.name);
+                                transactionAmount -= marketPrices[tempMarketList.IndexOf(selectedBrick.GetComponent<Image>().sprite.name)];
+                                UpdateResources();
+                                hasChanges = true;
+                                CompleteConfirmedPurchase();
                             }
-
-                            //~For now, don't remove purchased bricks from market
-                            //tempMarketList.Remove(selectedBrick.GetComponent<Image>().sprite.name);
-                            transactionAmount -= marketPrices[tempMarketList.IndexOf(selectedBrick.GetComponent<Image>().sprite.name)];
-                            UpdateResources();
-                            hasChanges = true;
+                            else
+                            {
+                                canMove = false;
+                                failPurchase.SetActive(true);
+                            }
                         }
                         else
                         {
+                            uncommittedBricks.Add(targets[i].gameObject);
+                            targets[i].gameObject.GetComponent<Image>().color = Color.white;
+                            targets[i].gameObject.GetComponent<Image>().sprite = selectedBrick.GetComponent<Image>().sprite;
+
                             int containerCheck = GetContainerIndex(botBrick);
                             if (containerCheck != -1)
                             {
@@ -836,6 +887,7 @@ public class Scrapyard : MonoBehaviour
                             }
                             botBrick = null;
                             hasChanges = true;
+                            CompleteConfirmedPurchase();
                         }
                         break;
                     }
@@ -866,7 +918,7 @@ public class Scrapyard : MonoBehaviour
                 if (botBrick && !selectedBrick)
                 {
                     //Reposition selected brick (if able)
-                    if (!isTranslating && uncommittedBricks.Contains(botBrick))
+                    if (!isTranslating && /*uncommittedBricks.Contains(botBrick)*/false)
                     {
                         if (GetContainerIndex(botBrick) != -1)
                         {
@@ -878,8 +930,11 @@ public class Scrapyard : MonoBehaviour
                         botBrick.GetComponent<Image>().color = Color.clear;
                         uncommittedBricks.Remove(botBrick);
 
-                        if (selectedBrick.GetComponentInChildren<Text>())
-                            selectedBrick.GetComponentInChildren<Text>().enabled = false;
+                        if(selectedBrick.GetComponentInChildren<Text>())
+                        {
+                            Destroy(selectedBrick.GetComponentInChildren<Text>().gameObject);
+                        }
+ 
                         selectedBrick.transform.SetParent(transform.parent);
                         selectedBrick.GetComponent<RectTransform>().anchorMin = Vector2.zero;
                         selectedBrick.GetComponent<RectTransform>().anchorMax = Vector2.zero;
@@ -897,10 +952,12 @@ public class Scrapyard : MonoBehaviour
                 }
                 else if (selectedBrick)
                 {
+                    if (selectedBrick.GetComponentInChildren<Text>())
+                    {
+                        Destroy(selectedBrick.GetComponentInChildren<Text>().gameObject);
+                    }
                     if (selectedBrick.transform.parent != transform.parent)
                     {
-                        if (selectedBrick.GetComponentInChildren<Text>())
-                            selectedBrick.GetComponentInChildren<Text>().enabled = false;
                         selectedBrick.transform.SetParent(transform.parent);
                         selectedBrick.GetComponent<RectTransform>().anchorMin = Vector2.zero;
                         selectedBrick.GetComponent<RectTransform>().anchorMax = Vector2.zero;
@@ -958,28 +1015,38 @@ public class Scrapyard : MonoBehaviour
     //Button for buying resources
     public void BuyResource(string resource)
     {
-        switch (resource)
+        int cost = Mathf.RoundToInt(resourceCost * resourceChange);
+        if (transactionAmount >= cost)
         {
-            case "RED":
-                currentFuel += resourceChange;
-                break;
-            case "BLUE":
-                currentBlue += resourceChange;
-                break;
-            case "YELLOW":
-                currentYellow += resourceChange;
-                break;
-            case "GREEN":
-                currentGreen += resourceChange;
-                break;
-            case "GREY":
-                currentGrey += resourceChange;
-                break;
-        }
+            switch (resource)
+            {
+                case "RED":
+                    currentFuel += resourceChange;
+                    break;
+                case "BLUE":
+                    currentBlue += resourceChange;
+                    break;
+                case "YELLOW":
+                    currentYellow += resourceChange;
+                    break;
+                case "GREEN":
+                    currentGreen += resourceChange;
+                    break;
+                case "GREY":
+                    currentGrey += resourceChange;
+                    break;
+            }
 
-        transactionAmount -= Mathf.RoundToInt(resourceCost * resourceChange);
-        UpdateResources();
-        hasChanges = true;
+            transactionAmount -= cost;
+            UpdateResources();
+            hasChanges = true;
+            CompleteConfirmedPurchase();
+        }
+        else
+        {
+            canMove = false;
+            failPurchase.SetActive(true);
+        }
     }
 
     //Buttons for selling different quantities of resources
@@ -1051,6 +1118,7 @@ public class Scrapyard : MonoBehaviour
         transactionAmount += Mathf.RoundToInt(resourceSell * resourceChange);
         UpdateResources();
         hasChanges = true;
+        CompleteConfirmedPurchase();
     }
 
     //Button for rotating bot 90 degrees clockwise
@@ -1142,6 +1210,7 @@ public class Scrapyard : MonoBehaviour
         sellBrick = null;
         CloseSubMenu();
         hasChanges = true;
+        CompleteConfirmedPurchase();
     }
 
     //Button for confirming sold bricks
@@ -1487,6 +1556,7 @@ public class Scrapyard : MonoBehaviour
         UpdateResources();
         CloseSubMenu();
         hasChanges = true;
+        CompleteConfirmedPurchase();
     }
 
     //Button for completing a brick conversion to resources
@@ -1517,6 +1587,7 @@ public class Scrapyard : MonoBehaviour
         UpdateResources();
         CloseSubMenu();
         hasChanges = true;
+        CompleteConfirmedPurchase();
     }
 
     //Button for completing a brick upgrade
@@ -1569,6 +1640,7 @@ public class Scrapyard : MonoBehaviour
         UpdateResources();
         CloseSubMenu();
         hasChanges = true;
+        CompleteConfirmedPurchase();
     }
 
     //Button for confirming return to map screen
@@ -1630,6 +1702,16 @@ public class Scrapyard : MonoBehaviour
             float totalYellowCost = 0;
             float totalGreyCost = 0;
             List<Sprite> unmatchedBricks = new List<Sprite>();
+            float tempExcessRed = excessRed;
+            float tempCurrentRed = currentFuel;
+            float tempExcessBlue = excessBlue;
+            float tempCurrentBlue = currentBlue;
+            float tempExcessGreen = excessGreen;
+            float tempCurrentGreen = currentGreen;
+            float tempExcessYellow = excessYellow;
+            float tempCurrentYellow = currentYellow;
+            float tempExcessGrey = excessGrey;
+            float tempCurrentGrey = currentGrey;
             foreach (GameObject CheckBrick in botBricks)
             {
                 unmatchedBricks.Add(CheckBrick.GetComponent<Image>().sprite);
@@ -1645,7 +1727,7 @@ public class Scrapyard : MonoBehaviour
                     for (int i = partUpgrades.Count - 1; i >= 0; i--)
                     {
                         //If player already owns the part in question, waive costs and use the old part instead
-                        if(unmatchedBricks.Contains(partUpgrades[i]))
+                        if (unmatchedBricks.Contains(partUpgrades[i]))
                         {
                             unmatchedBricks.Remove(partUpgrades[i]);
                             break;
@@ -1654,7 +1736,7 @@ public class Scrapyard : MonoBehaviour
                         //Otherwise, player must pay the buy/upgrade costs associated with the new brick
                         else
                         {
-                            if(!craftedPart || i == 0)
+                            if (!craftedPart || i == 0)
                             {
                                 totalMoneyCost += brickCost;
                             }
@@ -1680,106 +1762,127 @@ public class Scrapyard : MonoBehaviour
             }
 
             //If player is short on resources, add their purchase cost to the amount
-            if (totalRedCost <= excessRed)
+            if (totalRedCost <= tempExcessRed)
             {
-                excessRed -= totalRedCost;
+                tempExcessRed -= totalRedCost;
                 totalRedCost = 0;
             }
             else
             {
-                totalRedCost -= excessRed;
-                excessRed = 0;
-                currentFuel -= totalRedCost;
-                if (currentFuel < 0)
+                totalRedCost -= tempExcessRed;
+                tempExcessRed = 0;
+                tempCurrentRed -= totalRedCost;
+                if (tempCurrentRed < 0)
                 {
-                    int resourceIncrease = Mathf.CeilToInt(-currentFuel / (float)resourceChange);
-                    currentFuel += resourceIncrease * resourceChange;
+                    int resourceIncrease = Mathf.CeilToInt(-tempCurrentRed / (float)resourceChange);
+                    tempCurrentRed += resourceIncrease * resourceChange;
                     totalMoneyCost += resourceIncrease * resourceCost;
                 }
             }
 
-            if (totalBlueCost <= excessBlue)
+            if (totalBlueCost <= tempExcessBlue)
             {
-                excessBlue -= totalBlueCost;
+                tempExcessBlue -= totalBlueCost;
                 totalBlueCost = 0;
             }
             else
             {
-                totalBlueCost -= excessBlue;
-                excessBlue = 0;
-                currentBlue -= totalBlueCost;
-                if (currentBlue < 0)
+                totalBlueCost -= tempExcessBlue;
+                tempExcessBlue = 0;
+                tempCurrentBlue -= totalBlueCost;
+                if (tempCurrentBlue < 0)
                 {
-                    int resourceIncrease = Mathf.CeilToInt(-currentBlue / (float)resourceChange);
-                    currentBlue += resourceIncrease * resourceChange;
+                    int resourceIncrease = Mathf.CeilToInt(-tempCurrentBlue / (float)resourceChange);
+                    tempCurrentBlue += resourceIncrease * resourceChange;
                     totalMoneyCost += resourceIncrease * resourceCost;
                 }
             }
 
-            if (totalGreenCost <= excessGreen)
+            if (totalGreenCost <= tempExcessGreen)
             {
-                excessGreen -= totalGreenCost;
+                tempExcessGreen -= totalGreenCost;
                 totalGreenCost = 0;
             }
             else
             {
-                totalGreenCost -= excessGreen;
-                excessGreen = 0;
-                currentGreen -= totalGreenCost;
-                if (currentGreen < 0)
+                totalGreenCost -= tempExcessGreen;
+                tempExcessGreen = 0;
+                tempCurrentGreen -= totalGreenCost;
+                if (tempCurrentGreen < 0)
                 {
-                    int resourceIncrease = Mathf.CeilToInt(-currentGreen / (float)resourceChange);
-                    currentGreen += resourceIncrease * resourceChange;
+                    int resourceIncrease = Mathf.CeilToInt(-tempCurrentGreen / (float)resourceChange);
+                    tempCurrentGreen += resourceIncrease * resourceChange;
                     totalMoneyCost += resourceIncrease * resourceCost;
                 }
             }
 
-            if (totalYellowCost <= excessYellow)
+            if (totalYellowCost <= tempExcessYellow)
             {
-                excessYellow -= totalYellowCost;
+                tempExcessYellow -= totalYellowCost;
                 totalYellowCost = 0;
             }
             else
             {
-                totalYellowCost -= excessYellow;
-                excessYellow = 0;
-                currentYellow -= totalYellowCost;
-                if (currentYellow < 0)
+                totalYellowCost -= tempExcessYellow;
+                tempExcessYellow = 0;
+                tempCurrentYellow -= totalYellowCost;
+                if (tempCurrentYellow < 0)
                 {
-                    int resourceIncrease = Mathf.CeilToInt(-currentYellow / (float)resourceChange);
-                    currentYellow += resourceIncrease * resourceChange;
+                    int resourceIncrease = Mathf.CeilToInt(-tempCurrentYellow / (float)resourceChange);
+                    tempCurrentYellow += resourceIncrease * resourceChange;
                     totalMoneyCost += resourceIncrease * resourceCost;
                 }
             }
 
-            if (totalGreyCost <= excessGrey)
+            if (totalGreyCost <= tempExcessGrey)
             {
-                excessGrey -= totalGreyCost;
+                tempExcessGrey -= totalGreyCost;
                 totalGreyCost = 0;
             }
             else
             {
-                totalGreyCost -= excessGrey;
-                excessGrey = 0;
-                currentGrey -= totalGreyCost;
-                if (currentGrey < 0)
+                totalGreyCost -= tempExcessGrey;
+                tempExcessGrey = 0;
+                tempCurrentGrey -= totalGreyCost;
+                if (tempCurrentGrey < 0)
                 {
-                    int resourceIncrease = Mathf.CeilToInt(-currentGrey / (float)resourceChange);
-                    currentGrey += resourceIncrease * resourceChange;
+                    int resourceIncrease = Mathf.CeilToInt(-tempCurrentGrey / (float)resourceChange);
+                    tempCurrentGrey += resourceIncrease * resourceChange;
                     totalMoneyCost += resourceIncrease * resourceCost;
                 }
             }
 
             //Update bot map and transaction amounts
-            transactionAmount -= totalMoneyCost;
-            botMap = newMap;
-            containers = GameController.Instance.saveManager.GetLayoutContainers(index);
-            BuildBotGrid();
-            UpdateResources();
+            if (totalMoneyCost <= transactionAmount)
+            {
+                transactionAmount -= totalMoneyCost;
+                excessRed = tempExcessRed;
+                currentFuel = tempCurrentRed;
+                excessBlue = tempExcessBlue;
+                currentBlue = tempCurrentBlue;
+                excessGreen = tempExcessGreen;
+                currentGreen = tempCurrentGreen;
+                excessYellow = tempExcessYellow;
+                currentYellow = tempCurrentYellow;
+                excessGrey = tempExcessGrey;
+                currentGrey = tempCurrentGrey;
+                botMap = newMap;
+                containers = GameController.Instance.saveManager.GetLayoutContainers(index);
+                BuildBotGrid();
+                UpdateResources();
+                hasChanges = true;
+                CompleteConfirmedPurchase();
+            }
+            else
+            {
+                canMove = false;
+                failPurchase.SetActive(true);
+            }
         }
-
-        CloseSubMenu();
-        hasChanges = true;
+        else
+        {
+            CloseSubMenu();
+        }
     }
 
     //Return the crafted brick associated with this sprite
@@ -1831,8 +1934,17 @@ public class Scrapyard : MonoBehaviour
     //Debug buttons for adding and removing money
     public void AdjustMoney(int amount)
     {
-        hasChanges = true;
-        transactionAmount += amount;
-        UpdateResources();
+        if (transactionAmount + amount >= 0)
+        {
+            hasChanges = true;
+            transactionAmount += amount;
+            UpdateResources();
+            CompleteConfirmedPurchase();
+        }
+        else
+        {
+            canMove = false;
+            failPurchase.SetActive(true);
+        }
     }
 }
