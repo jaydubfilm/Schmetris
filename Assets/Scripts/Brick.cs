@@ -165,6 +165,24 @@ public class Brick : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        GameController.OnLevelComplete += OnLevelComplete;
+    }
+
+    private void OnDisable()
+    {
+        GameController.OnLevelComplete -= OnLevelComplete;
+    }
+
+    void OnLevelComplete()
+    {
+        if(IsParasite())
+        {
+            MakeOrphan();
+        }
+    }
+
     //Burn corresponding resource amounts, if able
     public bool TryBurnResources(float interval)
     {

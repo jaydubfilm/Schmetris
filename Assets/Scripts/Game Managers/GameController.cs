@@ -10,7 +10,7 @@ public class GameController : MonoBehaviour
 {
     //Game-wide events - Individual assets can connect to these to perform actions on specific game/level events (end, restart, etc)
     public delegate void GameEvent();
-    public static event GameEvent OnGameOver, OnGameRestart, OnLoseLife, OnLevelRestart, OnNewLevel, OnSpeedChange;
+    public static event GameEvent OnGameOver, OnGameRestart, OnLoseLife, OnLevelRestart, OnNewLevel, OnSpeedChange, OnLevelComplete;
 
     public static GameController Instance { get; private set; }
     public List<GameObject> blockList;
@@ -87,7 +87,7 @@ public class GameController : MonoBehaviour
     LevelData levelData;
     int levelSection = 0;
     bool isTimedLevel = false;
-    bool isLevelCompleteQueued = false;
+    public bool isLevelCompleteQueued = false;
     BlockSpawnData[] blockSpawns;
     public SpeciesSpawnData[] speciesSpawnData;
    
@@ -642,7 +642,14 @@ public class GameController : MonoBehaviour
     {
         if(sectionNumber >= levelData.levelSections.Length)
         {
-            isLevelCompleteQueued = true;
+            if (!isLevelCompleteQueued)
+            {
+                isLevelCompleteQueued = true;
+                if (OnLevelComplete != null)
+                {
+                    OnLevelComplete();
+                }
+            }
             return;
         }
 

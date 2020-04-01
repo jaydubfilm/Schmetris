@@ -84,6 +84,8 @@ public class Mama : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameController.Instance.isLevelCompleteQueued)
+            return;
 
         //Every x seconds, check the distance between the enemy and the player. Back away if we're too close. 
         if (Time.time - timer > distanceCheckTimer)
