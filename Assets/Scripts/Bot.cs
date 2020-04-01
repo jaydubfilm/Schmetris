@@ -2019,7 +2019,7 @@ public class Bot : MonoBehaviour
                     {
                         BrickBitPair brickBitPair = new BrickBitPair(newBrick, bitObj);
                         brickBitPairList.Add(brickBitPair);
-                        GameController.Instance.money++;
+                        //GameController.Instance.money++;
                     }
                 }
                 else
@@ -2078,7 +2078,7 @@ public class Bot : MonoBehaviour
     void AddResource(Brick containerBrick, int type, int level)
     {
         source.PlayOneShot(resourceSound, 1.0f);
-        GameController.Instance.money++;
+        //GameController.Instance.money++;
 
         switch(type)
         {

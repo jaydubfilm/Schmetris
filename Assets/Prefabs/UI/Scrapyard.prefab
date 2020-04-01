@@ -1019,6 +1019,8 @@ MonoBehaviour:
   - Sniper01
   - Missile01
   - Blaster01
+  marketData:
+  - {fileID: 11400000, guid: 790b41dcc764b4043a5422bc5fb2fd7f, type: 2}
   containerParts:
   - {fileID: 6715254118685096965, guid: ca6ae26aff763214a84880dee0b2b3d1, type: 3}
   - {fileID: 6715254118685096965, guid: bbc47c93e7771e14f8326a99a159fd41, type: 3}
