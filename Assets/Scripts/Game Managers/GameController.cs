@@ -308,6 +308,7 @@ public class GameController : MonoBehaviour
         pauseMenu.SetActive(false);
         mapMenu.GetComponent<LevelMenuUI>().OpenMenu();
         mapMenu.SetActive(true);
+        bot.hasDamagedCells = false;
     }
 
     public void SaveGame(int index)
@@ -819,7 +820,9 @@ public class GameController : MonoBehaviour
                 int blockType = ProbabilityPicker(blockProbArr);
 
                 blockSpawnTimer = levelData.levelSections[levelSection].blockSpawnRate;
-                SpawnBlock(Random.Range(-ScreenStuff.screenRadius, ScreenStuff.screenRadius), blockType);
+                GameObject newBlock = null;
+                while(newBlock == null)
+                    newBlock = TrySpawnBlock(Random.Range(-ScreenStuff.screenRadius, ScreenStuff.screenRadius), blockType);
                
 
             }
@@ -859,13 +862,18 @@ public class GameController : MonoBehaviour
     }
 
 
-    public GameObject SpawnBlock(int col, int type)
+    public GameObject TrySpawnBlock(int col, int type)
     {
-        GameObject newBlockObj;
+        GameObject newBlockObj = null;
         
         Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(col), ScreenStuff.RowToYPosition(spawnRow), 0);
         int rotation = Random.Range(0,4);
         float rotationAngle = rotation * 90.0f;
+
+        bool canSpawnBlock = true;
+        //~
+        if (!canSpawnBlock)
+            return null;
         
         newBlockObj = (GameObject) Instantiate(blockSpawns[type].block, vpos, Quaternion.Euler(0f,0f,rotationAngle));
         Block newBlock = newBlockObj.GetComponent<Block>();

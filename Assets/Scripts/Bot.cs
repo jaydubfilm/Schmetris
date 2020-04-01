@@ -84,7 +84,7 @@ public class Bot : MonoBehaviour
     public GameObject blockPrefab;
     public GameObject bitPrefab;
     public GameObject powerWarning;
-
+    public bool hasDamagedCells = false;
 
     private List<GameObject> pathList = new List<GameObject>();
     private List<Vector2Int> pathArrList = new List<Vector2Int>();
@@ -599,6 +599,7 @@ public class Bot : MonoBehaviour
         GameController.OnLevelRestart += OnLevelRestart;
         GameController.OnLoseLife += OnLoseLife;
         GameController.OnNewLevel += OnNewLevel;
+        GameController.OnLevelComplete += OnLevelComplete;
     }
 
     private void OnDisable()
@@ -608,6 +609,21 @@ public class Bot : MonoBehaviour
         GameController.OnLevelRestart -= OnLevelRestart;
         GameController.OnLoseLife -= OnLoseLife;
         GameController.OnNewLevel -= OnNewLevel;
+        GameController.OnLevelComplete -= OnLevelComplete;
+    }
+
+    void OnLevelComplete()
+    {
+        hasDamagedCells = false;
+        foreach(GameObject brickObject in brickList)
+        {
+            Brick checkBrick = brickObject.GetComponent<Brick>();
+            if (checkBrick.brickHP < checkBrick.brickMaxHP[checkBrick.GetPoweredLevel()])
+            {
+                hasDamagedCells = true;
+                break;
+            }
+        }
     }
 
     bool init = false;
@@ -672,7 +688,7 @@ public class Bot : MonoBehaviour
         }
 
         //Backup fuel supply if core runs out
-        Brick coreBurn = BrickAtBotArr(coreV2) ? BrickAtBotArr(coreV2).GetComponent<Brick>() : null;
+        Brick coreBurn = (!GameController.Instance.isLevelCompleteQueued && BrickAtBotArr(coreV2)) ? BrickAtBotArr(coreV2).GetComponent<Brick>() : null;
         if (coreBurn && !coreBurn.hasResources)
         {
             if (storedRed > 0)
@@ -688,7 +704,7 @@ public class Bot : MonoBehaviour
                 fuelBrickList[0].GetComponent<Fuel>().BurnFuel(coreBurn.redBurn[coreBurn.GetPoweredLevel()] * Time.deltaTime);
             }
         }
-        else if (coreBurn && fuelBrickList.Count > 0)
+        else if (fuelBrickList.Count > 0)
         {
             fuelBrickList[0].GetComponent<Fuel>().CancelBurnFuel();
         }

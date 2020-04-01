@@ -186,6 +186,9 @@ public class Brick : MonoBehaviour
     //Burn corresponding resource amounts, if able
     public bool TryBurnResources(float interval)
     {
+        if (GameController.Instance.isLevelCompleteQueued)
+            return true;
+
         int burnLevel = GetPoweredLevel();
         if (bot.storedRed >= interval * redBurn[burnLevel] && bot.storedBlue >= interval * blueBurn[burnLevel] && bot.storedGreen >= interval * greenBurn[burnLevel] && bot.storedYellow >= interval * yellowBurn[burnLevel] && bot.storedGrey >= interval * greyBurn[burnLevel])
         {

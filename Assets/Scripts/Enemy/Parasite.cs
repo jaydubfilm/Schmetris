@@ -53,7 +53,7 @@ public class Parasite : MonoBehaviour
         if (brick.neighborList.Count==0)
             return;
         foreach (GameObject neighbor in brick.neighborList) {
-            if (neighbor.GetComponent<Brick>().IsCore()) {
+            if (neighbor && neighbor.GetComponent<Brick>().IsCore()) {
                 targetBrick = neighbor;
                 return;
             }
