@@ -66,10 +66,10 @@ public class Scrapyard : MonoBehaviour
     public GameObject resourceBurnPrefab;
     List<GameObject> marketSelection = new List<GameObject>();
     public List<string> tempMarketList = new List<string>();
-    List<int> marketPrices = new List<int>();
     public List<string> marketList = new List<string>();
     int maxMarketItems = 5;
     int marketIndex = 0;
+    public MarketData[] marketData;
 
     //Crafting components
     public GameObject[] containerParts;
@@ -123,10 +123,7 @@ public class Scrapyard : MonoBehaviour
 
     //Temp prices
     float resourceChange = 1;
-    int resourceCost = 2;
     int resourceSell = 1;
-    int brickCost = 20;
-    int brickSell = 10;
 
     //Sub-menu text amounts
     int tempMoneyAmount = 0;
@@ -462,10 +459,10 @@ public class Scrapyard : MonoBehaviour
                     }
                 }
             }
-            int price = brickCost;
+
+            int price = GetBrickCost(newTileImage.sprite);
             GameObject newPrice = Instantiate(pricePrefab, newTile.transform);
             newPrice.GetComponent<Text>().text = partName + " - $" + price;
-            marketPrices.Add(price);
 
             if(redBurn || blueBurn || greenBurn || yellowBurn || greyBurn)
             {
@@ -855,7 +852,7 @@ public class Scrapyard : MonoBehaviour
                     {
                         if (isMarketBrick)
                         {
-                            if (transactionAmount >= marketPrices[tempMarketList.IndexOf(selectedBrick.GetComponent<Image>().sprite.name)])
+                            if (transactionAmount >= GetBrickCost(selectedBrick.GetComponent<Image>().sprite))
                             {
                                 uncommittedBricks.Add(targets[i].gameObject);
                                 targets[i].gameObject.GetComponent<Image>().color = Color.white;
@@ -878,7 +875,7 @@ public class Scrapyard : MonoBehaviour
 
                                 //~For now, don't remove purchased bricks from market
                                 //tempMarketList.Remove(selectedBrick.GetComponent<Image>().sprite.name);
-                                transactionAmount -= marketPrices[tempMarketList.IndexOf(selectedBrick.GetComponent<Image>().sprite.name)];
+                                transactionAmount -= GetBrickCost(selectedBrick.GetComponent<Image>().sprite);
                                 UpdateResources();
                                 hasChanges = true;
                                 CompleteConfirmedPurchase();
@@ -1035,7 +1032,7 @@ public class Scrapyard : MonoBehaviour
     //Button for buying resources
     public void BuyResource(string resource)
     {
-        int cost = Mathf.RoundToInt(resourceCost * resourceChange);
+        int cost = Mathf.RoundToInt(GetResourcePrice(resource) * resourceChange);
         if (transactionAmount >= cost)
         {
             switch (resource)
@@ -1135,7 +1132,7 @@ public class Scrapyard : MonoBehaviour
                 break;
         }
 
-        transactionAmount += Mathf.RoundToInt(resourceSell * resourceChange);
+        transactionAmount += Mathf.RoundToInt(GetResourceSellValue(resource) * resourceChange);
         UpdateResources();
         hasChanges = true;
         CompleteConfirmedPurchase();
@@ -1237,7 +1234,7 @@ public class Scrapyard : MonoBehaviour
     public void ConfirmSell()
     {
         canMove = false;
-        tempMoneyAmount = uncommittedBricks.Contains(sellBrick) ? brickCost : brickSell;
+        tempMoneyAmount = uncommittedBricks.Contains(sellBrick) ? GetBrickCost(sellBrick.GetComponent<Image>().sprite) : GetBrickSell(sellBrick.GetComponent<Image>().sprite);
         sellText.text = "SELL FOR $" + tempMoneyAmount + "?";
         brickOptions.SetActive(false);
         confirmSell.SetActive(true);
@@ -1758,7 +1755,7 @@ public class Scrapyard : MonoBehaviour
                         {
                             if (!craftedPart || i == 0)
                             {
-                                totalMoneyCost += brickCost;
+                                totalMoneyCost += GetBrickCost(newMap[x,y]);
                             }
                             else if (craftedPart)
                             {
@@ -1778,7 +1775,7 @@ public class Scrapyard : MonoBehaviour
             //Sell unused player bricks
             for (int i = 0; i < unmatchedBricks.Count; i++)
             {
-                totalMoneyCost -= brickSell;
+                totalMoneyCost -= GetBrickSell(unmatchedBricks[i]);
             }
 
             //If player is short on resources, add their purchase cost to the amount
@@ -1796,7 +1793,7 @@ public class Scrapyard : MonoBehaviour
                 {
                     int resourceIncrease = Mathf.CeilToInt(-tempCurrentRed / (float)resourceChange);
                     tempCurrentRed += resourceIncrease * resourceChange;
-                    totalMoneyCost += resourceIncrease * resourceCost;
+                    totalMoneyCost += resourceIncrease * GetResourcePrice("RED");
                 }
             }
 
@@ -1814,7 +1811,7 @@ public class Scrapyard : MonoBehaviour
                 {
                     int resourceIncrease = Mathf.CeilToInt(-tempCurrentBlue / (float)resourceChange);
                     tempCurrentBlue += resourceIncrease * resourceChange;
-                    totalMoneyCost += resourceIncrease * resourceCost;
+                    totalMoneyCost += resourceIncrease * GetResourcePrice("BLUE");
                 }
             }
 
@@ -1832,7 +1829,7 @@ public class Scrapyard : MonoBehaviour
                 {
                     int resourceIncrease = Mathf.CeilToInt(-tempCurrentGreen / (float)resourceChange);
                     tempCurrentGreen += resourceIncrease * resourceChange;
-                    totalMoneyCost += resourceIncrease * resourceCost;
+                    totalMoneyCost += resourceIncrease * GetResourcePrice("GREEN");
                 }
             }
 
@@ -1850,7 +1847,7 @@ public class Scrapyard : MonoBehaviour
                 {
                     int resourceIncrease = Mathf.CeilToInt(-tempCurrentYellow / (float)resourceChange);
                     tempCurrentYellow += resourceIncrease * resourceChange;
-                    totalMoneyCost += resourceIncrease * resourceCost;
+                    totalMoneyCost += resourceIncrease * GetResourcePrice("YELLOW");
                 }
             }
 
@@ -1868,7 +1865,7 @@ public class Scrapyard : MonoBehaviour
                 {
                     int resourceIncrease = Mathf.CeilToInt(-tempCurrentGrey / (float)resourceChange);
                     tempCurrentGrey += resourceIncrease * resourceChange;
-                    totalMoneyCost += resourceIncrease * resourceCost;
+                    totalMoneyCost += resourceIncrease * GetResourcePrice("GREY");
                 }
             }
 
@@ -1966,5 +1963,77 @@ public class Scrapyard : MonoBehaviour
             canMove = false;
             failPurchase.SetActive(true);
         }
+    }
+
+    //Determine the market cost of the brick in question
+    int GetBrickCost(Sprite targetBrick)
+    {
+        foreach(MarketData marketCheck in marketData)
+        {
+            Brick brickCheck = marketCheck.brick.GetComponent<Brick>();
+            for(int i = 0;i<marketCheck.brickLevels.Length;i++)
+            {
+                if(brickCheck.spriteArr[i] == targetBrick)
+                {
+                    return Mathf.RoundToInt(GameController.Instance.costMultiplier * marketCheck.brickLevels[i].buyPrice);
+                }
+            }
+        }
+        return 0;
+    }
+
+    //Determine the market sell price of the brick in question
+    int GetBrickSell(Sprite targetBrick)
+    {
+        foreach (MarketData marketCheck in marketData)
+        {
+            Brick brickCheck = marketCheck.brick.GetComponent<Brick>();
+            for (int i = 0; i < marketCheck.brickLevels.Length; i++)
+            {
+                if (brickCheck.spriteArr[i] == targetBrick)
+                {
+                    return marketCheck.brickLevels[i].sellPrice;
+                }
+            }
+        }
+        return 0;
+    }
+
+    //Return the market price of the specified resource type
+    int GetResourcePrice(string resourceType)
+    {
+        switch(resourceType)
+        {
+            case "RED":
+                return Mathf.RoundToInt(GameController.Instance.costMultiplier * 10);
+            case "BLUE":
+                return Mathf.RoundToInt(GameController.Instance.costMultiplier * 20);
+            case "GREEN":
+                return Mathf.RoundToInt(GameController.Instance.costMultiplier * 25);
+            case "YELLOW":
+                return Mathf.RoundToInt(GameController.Instance.costMultiplier * 15);
+            case "GREY":
+                return Mathf.RoundToInt(GameController.Instance.costMultiplier * 20);
+        }
+        return 0;
+    }
+
+    //Return the market sell value of the specified resource type
+    int GetResourceSellValue(string resourceType)
+    {
+        switch (resourceType)
+        {
+            case "RED":
+                return 5;
+            case "BLUE":
+                return 15;
+            case "GREEN":
+                return 20;
+            case "YELLOW":
+                return 10;
+            case "GREY":
+                return 15;
+        }
+        return 0;
     }
 }

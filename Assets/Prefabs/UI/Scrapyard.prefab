@@ -1019,6 +1019,22 @@ MonoBehaviour:
   - Sniper01
   - Missile01
   - Blaster01
+  marketData:
+  - {fileID: 11400000, guid: 3f57c4429a0828543be8b506eda88d35, type: 2}
+  - {fileID: 11400000, guid: a408d58af79d21842999e821ee3c9756, type: 2}
+  - {fileID: 11400000, guid: a427fc0a96fa3614da52db7f8c9d626e, type: 2}
+  - {fileID: 11400000, guid: f35c724b9e15ae04c9b70a22f121782a, type: 2}
+  - {fileID: 11400000, guid: be21fbb3a3b973441ba34c9d9b2e1597, type: 2}
+  - {fileID: 11400000, guid: 790b41dcc764b4043a5422bc5fb2fd7f, type: 2}
+  - {fileID: 11400000, guid: 4ea6d5b98ff73964da42a6899b6141a6, type: 2}
+  - {fileID: 11400000, guid: 3e9fb79222c06164daef20d3fe5065c2, type: 2}
+  - {fileID: 11400000, guid: 3f91d8e9ea6d7044fad0b5986c06bf5e, type: 2}
+  - {fileID: 11400000, guid: a6c54def95fa45045836c25844ee8c9a, type: 2}
+  - {fileID: 11400000, guid: ae0a356003b43f142a0ca25394592b5a, type: 2}
+  - {fileID: 11400000, guid: fb89df5bef70a7d4db54127c0580f125, type: 2}
+  - {fileID: 11400000, guid: 6199fcd5340c4fc459d2287f8619333b, type: 2}
+  - {fileID: 11400000, guid: 59145cf7c942a624b8071d1eab9abea0, type: 2}
+  - {fileID: 11400000, guid: 3cf820ad3e4ff3a4bbf858f7483584ba, type: 2}
   containerParts:
   - {fileID: 6715254118685096965, guid: ca6ae26aff763214a84880dee0b2b3d1, type: 3}
   - {fileID: 6715254118685096965, guid: bbc47c93e7771e14f8326a99a159fd41, type: 3}
