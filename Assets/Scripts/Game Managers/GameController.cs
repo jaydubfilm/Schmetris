@@ -536,7 +536,12 @@ public class GameController : MonoBehaviour
 
             //Update time remaining
             timeRemaining -= Time.deltaTime;
-            hud.SetTimer(timeRemaining);
+            float totalTimeRemaining = timeRemaining;
+            for(int i = levelSection + 1;i < levelData.levelSections.Length;i++)
+            {
+                totalTimeRemaining += levelData.levelSections[i].levelDuration;
+            }
+            hud.SetTimer(totalTimeRemaining);
             if (isTimedLevel && timeRemaining < 0)
             {
                 LoadNextLevelSection();
