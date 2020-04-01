@@ -100,6 +100,7 @@ public class Brick : MonoBehaviour
         healthBar = GetComponentInChildren<HealthBar>();
         healthBar.gameObject.SetActive(false);
         _isPowered = false;
+        isPowered = true;
     }
 
     void Start () {
@@ -161,6 +162,24 @@ public class Brick : MonoBehaviour
         if (passiveBurn)
         {
             hasResources = TryBurnResources(Time.deltaTime);
+        }
+    }
+
+    private void OnEnable()
+    {
+        GameController.OnLevelComplete += OnLevelComplete;
+    }
+
+    private void OnDisable()
+    {
+        GameController.OnLevelComplete -= OnLevelComplete;
+    }
+
+    void OnLevelComplete()
+    {
+        if(IsParasite())
+        {
+            MakeOrphan();
         }
     }
 

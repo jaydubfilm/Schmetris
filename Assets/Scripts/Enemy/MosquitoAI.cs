@@ -91,6 +91,8 @@ public class MosquitoAI : MonoBehaviour
 
     private void Update()
     {
+        if (GameController.Instance.isLevelCompleteQueued)
+            return;
 
         aiPath.maxSpeed = followSpeed;
 
@@ -140,7 +142,10 @@ public class MosquitoAI : MonoBehaviour
     
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.layer == 13)
+        if (GameController.Instance.isLevelCompleteQueued)
+            return;
+
+        if (collision.gameObject.layer == 13)
         {
 
             aiPath.canMove = false;

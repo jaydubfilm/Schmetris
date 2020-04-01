@@ -10,7 +10,7 @@ public class GameController : MonoBehaviour
 {
     //Game-wide events - Individual assets can connect to these to perform actions on specific game/level events (end, restart, etc)
     public delegate void GameEvent();
-    public static event GameEvent OnGameOver, OnGameRestart, OnLoseLife, OnLevelRestart, OnNewLevel, OnSpeedChange;
+    public static event GameEvent OnGameOver, OnGameRestart, OnLoseLife, OnLevelRestart, OnNewLevel, OnSpeedChange, OnLevelComplete;
 
     public static GameController Instance { get; private set; }
     public List<GameObject> blockList;
@@ -85,6 +85,9 @@ public class GameController : MonoBehaviour
     int[] speciesProbArr;
 
     LevelData levelData;
+    int levelSection = 0;
+    bool isTimedLevel = false;
+    public bool isLevelCompleteQueued = false;
     BlockSpawnData[] blockSpawns;
     public SpeciesSpawnData[] speciesSpawnData;
    
@@ -429,6 +432,7 @@ public class GameController : MonoBehaviour
         game = easyGame;
         highestScene = 1;
         lives = 3;
+        money = 0;
         speedMultiplier = settings.defaultSpeedLevel;
         bot.ResetTileMap();
         LoadMapScreen();
@@ -440,6 +444,7 @@ public class GameController : MonoBehaviour
         game = mediumGame;
         highestScene = 1;
         lives = 3;
+        money = 0;
         speedMultiplier = settings.defaultSpeedLevel;
         bot.ResetTileMap();
         LoadMapScreen();
@@ -452,6 +457,7 @@ public class GameController : MonoBehaviour
         game = hardGame;
         highestScene = 1;
         lives = 3;
+        money = 0;
         speedMultiplier = settings.defaultSpeedLevel;
         bot.ResetTileMap();
         LoadMapScreen();
@@ -530,8 +536,17 @@ public class GameController : MonoBehaviour
 
             //Update time remaining
             timeRemaining -= Time.deltaTime;
-            hud.SetTimer(timeRemaining);
-            if (timeRemaining < 0)
+            float totalTimeRemaining = timeRemaining;
+            for(int i = levelSection + 1;i < levelData.levelSections.Length;i++)
+            {
+                totalTimeRemaining += levelData.levelSections[i].levelDuration;
+            }
+            hud.SetTimer(totalTimeRemaining);
+            if (isTimedLevel && timeRemaining < 0)
+            {
+                LoadNextLevelSection();
+            }
+            if (isLevelCompleteQueued)
             {
                 bool hasBlocks = false;
                 for (int i = 0; i < blockList.Count; i++)
@@ -618,33 +633,61 @@ public class GameController : MonoBehaviour
         return pArr;
     }
 
-    public void LoadLevelData(int levelNumber) {
-        speedMultiplier = settings.defaultSpeedLevel;
-        hud.SetGameOverPopup(false);
-        hud.SetLifeLostPopup(false);
-        hud.SetSpeed(adjustedSpeed);
-        hud.gameObject.SetActive(true);
-        SceneManager.LoadScene(Mathf.Min(SceneManager.sceneCountInBuildSettings - 1,levelNumber));
-        hud.SetLevel(levelNumber);
-        levelData = game.levelDataArr[levelNumber-1];
-        blockSpawns = levelData.blocks;
-        speciesSpawnData = levelData.speciesSpawnData;
-        blockSpeed = levelData.blockSpeed;
+    public void LoadNextLevelSection()
+    {
+        LoadLevelSection(levelSection + 1);
+    }
+
+    public void LoadLevelSection(int sectionNumber)
+    {
+        if(sectionNumber >= levelData.levelSections.Length)
+        {
+            if (!isLevelCompleteQueued)
+            {
+                isLevelCompleteQueued = true;
+                if (OnLevelComplete != null)
+                {
+                    OnLevelComplete();
+                }
+            }
+            return;
+        }
+
+        levelSection = sectionNumber;
+
+        blockSpawns = levelData.levelSections[levelSection].blocks;
+        speciesSpawnData = levelData.levelSections[levelSection].speciesSpawnData;
+        blockSpeed = levelData.levelSections[levelSection].blockSpeed;
         blockProbArr = GetSpawnProbabilities();
         speciesProbArr = GetSpeciesProbabilities();
-        
-        blockSpawnTimer = levelData.blockSpawnRate;
-        enemySpawnRate = levelData.enemySpawnRate;
-        enemySpawnTimer = enemySpawnRate;
-        timeRemaining = levelData.levelDuration;
 
+        blockSpawnTimer = levelData.levelSections[levelSection].blockSpawnRate;
+        enemySpawnRate = levelData.levelSections[levelSection].enemySpawnRate;
+        enemySpawnTimer = enemySpawnRate;
+        timeRemaining = levelData.levelSections[levelSection].levelDuration;
+        isTimedLevel = timeRemaining > 0;
+
+        hud.SetGameOverPopup(false);
+        hud.SetLifeLostPopup(false);
         hud.SetLevelCompletePopup(false);
         startMenu.SetActive(false);
         pauseMenu.SetActive(false);
         mapMenu.SetActive(false);
+        hud.gameObject.SetActive(true);
+
         isBotDead = false;
         isPaused = false;
         Time.timeScale = 1.0f;
+    }
+
+    public void LoadLevelData(int levelNumber) {
+        isLevelCompleteQueued = false;
+        speedMultiplier = settings.defaultSpeedLevel;
+        hud.SetSpeed(adjustedSpeed);
+        SceneManager.LoadScene(Mathf.Min(SceneManager.sceneCountInBuildSettings - 1,levelNumber));
+        hud.SetLevel(levelNumber);
+        levelData = game.levelDataArr[levelNumber-1];
+        LoadLevelSection(0);
     }
 
     void ScrollBackground() {
@@ -755,7 +798,7 @@ public class GameController : MonoBehaviour
     }
 
     void EnemySpawnCheck() {
-        if (timeRemaining > 0)
+        if (!isLevelCompleteQueued)
         {
             enemySpawnTimer -= Time.deltaTime * adjustedSpeed;
             if (enemySpawnTimer <= 0)
@@ -768,14 +811,14 @@ public class GameController : MonoBehaviour
     }
 
     void BlockSpawnCheck() {
-        if (timeRemaining > 0)
+        if (!isLevelCompleteQueued)
         {
             blockSpawnTimer -= Time.deltaTime * adjustedSpeed;
             if (blockSpawnTimer <= 0)
             {
                 int blockType = ProbabilityPicker(blockProbArr);
 
-                blockSpawnTimer = levelData.blockSpawnRate;
+                blockSpawnTimer = levelData.levelSections[levelSection].blockSpawnRate;
                 SpawnBlock(Random.Range(-ScreenStuff.screenRadius, ScreenStuff.screenRadius), blockType);
                
 

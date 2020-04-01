@@ -9,52 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
+  m_Script: {fileID: 11500000, guid: 56d9469693edebc4daacb64737469c99, type: 3}
   m_Name: Hard 5
   m_EditorClassIdentifier: 
-  levelDuration: 100
-  blocks:
-  - block: {fileID: 2840699409229192888, guid: d4798ab7ce4f540febf6cac94e97ede0, type: 3}
-    probability: 3
-  - block: {fileID: 798731784141526963, guid: e1ccf596e5441483aa2bfe98aa35da02, type: 3}
-    probability: 3
-  - block: {fileID: 8146263361562881765, guid: 8d1f4aa6e94e1439bb017982bbae21df, type: 3}
-    probability: 2
-  - block: {fileID: 2504952749312006462, guid: 0c7cbcbf4167340d69dd1a153f1af914, type: 3}
-    probability: 2
-  - block: {fileID: 7819013081260522018, guid: 4852dde73c1e045f387cf29703e4be2e, type: 3}
-    probability: 1
-  - block: {fileID: 5399240307803968247, guid: ab069a2ca412044889730906a907b7c5, type: 3}
-    probability: 4
-  - block: {fileID: 6215762431153503963, guid: 0de4a4f3435814b5db99a2dea142f90a, type: 3}
-    probability: 2
-  - block: {fileID: 8639198243880090134, guid: 80e57895ab51b4fb591ba9d29d8b237b, type: 3}
-    probability: 2
-  - block: {fileID: 8136126349772497620, guid: 381bf456d798d4284b024eadf422a681, type: 3}
-    probability: 2
-  - block: {fileID: 8053527841708647293, guid: 1c867cf67048f4bf89365a468581df26, type: 3}
-    probability: 2
-  - block: {fileID: 7795786923777034734, guid: 18f8ab660824a44428846637b403b141, type: 3}
-    probability: 1
-  - block: {fileID: 4549165937086163763, guid: ff8e5b172656142a1a67c0ab6493f235, type: 3}
-    probability: 1
-  - block: {fileID: 6367725818298108430, guid: 34c549bb2268a498386ac8cac0bb0f75, type: 3}
-    probability: 1
-  - block: {fileID: 2237821119791837071, guid: 2208ab367e11b4feb9833f86114109f5, type: 3}
-    probability: 1
-  - block: {fileID: 425179514009561603, guid: 453421c91121748bfaba2cc33cf64a5d, type: 3}
-    probability: 1
-  - block: {fileID: 3661152122392825465, guid: 296de58e07dae4e7bb9513be26382c00, type: 3}
-    probability: 1
-  - block: {fileID: 6267196920841992883, guid: fe474e83d6bd349f8ae8f86f24485f3e, type: 3}
-    probability: 1
-  speciesSpawnData:
-  - species: {fileID: 822335604602250409, guid: 5b93156cd52954237adcfe43c62642b2,
-      type: 3}
-    probability: 1
-  - species: {fileID: 5277106986393640395, guid: 28f46922a8ca84764a7fc71259c21536,
-      type: 3}
-    probability: 1
-  blockSpawnRate: 0.2
-  enemySpawnRate: 8
-  blockSpeed: 7.5
+  levelSections:
+  - {fileID: 11400000, guid: e5497aa67dcbd40c3a4e451605584c41, type: 2}
