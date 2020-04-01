@@ -58,9 +58,13 @@ public class TutorialManager : MonoBehaviour
             //check if we're showing the queued obj for this module (ie the module has already been disabled)
             if (moduleList[queue].activeSelf == true)
             {
-
                 moduleList[queue].SetActive(false);
                 return;
+            }
+            else
+            {
+                moduleList[module].SetActive(false);
+                //return;
             }
 
             //disable 
