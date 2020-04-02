@@ -77,6 +77,10 @@ public class PowerGrid : MonoBehaviour
                     else
                     {
                         brick.isPowered = PowerAtBotCoords(brick.arrPos) >= brick.requiredPower[brick.brickLevel];
+                        if(!brick.isPowered)
+                        {
+                            GameController.Instance.hud.SetUnpoweredPopup(true);
+                        }
                     }
                 }
                 else
