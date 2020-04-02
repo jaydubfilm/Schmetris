@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0
-  damage: 1
+  damage: 10
   direction: {x: 0, y: 0}
   range: 0
   homing: 1
@@ -106,6 +106,7 @@ MonoBehaviour:
   blastForce: 5000
   debugSphere: {fileID: 7524407400947348946, guid: 5497074458701d3468023bc84a64de09,
     type: 3}
+  isBlaster: 0
 --- !u!96 &8986431536807626049
 TrailRenderer:
   serializedVersion: 2

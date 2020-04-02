@@ -10,10 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56d9469693edebc4daacb64737469c99, type: 3}
-  m_Name: Medium 5
+  m_Name: J Test Level
   m_EditorClassIdentifier: 
   levelSections:
-  - {fileID: 11400000, guid: af2fd2476c8314a8db6db80c066a1530, type: 2}
-  - {fileID: 11400000, guid: 37e9bc03102c34ff58efe5a5d13a8760, type: 2}
-  - {fileID: 11400000, guid: ad7c967874f664d16a83d6f7a36fcb12, type: 2}
-  - {fileID: 11400000, guid: 77efef5ab1dfa4ce49e65ed0eac818ad, type: 2}
+  - {fileID: 11400000, guid: 3673d2a3d55154d6b84ae2e76357ed0c, type: 2}

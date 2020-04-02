@@ -19,7 +19,9 @@ MonoBehaviour:
   LOCALIDINFILE_Hash1_Fix2_0: []
   LOCALIDINFILE_Hash5_Fix2_0: []
   LOCALIDINFILE_Hash7_Fix2_0: []
-  LOCALIDINFILE_Hash9: []
+  LOCALIDINFILE_Hash9:
+  - i1: -1
+    i2: -1
   LOCALIDINFILE_Hash_BookMarks:
   - list:
     - activeObject:
@@ -28,11 +30,35 @@ MonoBehaviour:
       list: []
   LOCALIDINFILE_Hash3:
   - activeObject:
-      i1: -1034872773
-      i2: 1699118721
+      i1: 914651150
+      i2: 1843692455
     list:
-    - i1: -1034872773
-      i2: 1699118721
+    - i1: 914651150
+      i2: 1843692455
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: 828699279
+      i2: 0
+    list:
+    - i1: 828699279
+      i2: 0
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
   - activeObject:
       i1: -1
       i2: -1
@@ -70,11 +96,17 @@ MonoBehaviour:
     - i1: -1
       i2: -1
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -1265576706
+      i2: 1625369431
     list:
-    - i1: -1
-      i2: -1
+    - i1: -1265576706
+      i2: 1625369431
+  - activeObject:
+      i1: -1265576706
+      i2: 1625369431
+    list:
+    - i1: -1265576706
+      i2: 1625369431
   - activeObject:
       i1: -1
       i2: -1
@@ -112,49 +144,11 @@ MonoBehaviour:
     - i1: -1
       i2: -1
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -1265576706
+      i2: 1625369431
     list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-    - i1: -1
-      i2: -1
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-    - i1: -1
-      i2: -1
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
+    - i1: -1265576706
+      i2: 1625369431
   - activeObject:
       i1: -1
       i2: -1
@@ -426,8 +420,6 @@ MonoBehaviour:
     FavString: []
     list:
     - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
     GUIDsActiveGameObject: 
@@ -439,8 +431,6 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 0}
-    - {fileID: 0}
     - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
@@ -528,10 +518,12 @@ MonoBehaviour:
   Hash7: []
   Hash7_Fix2_0: []
   Hash8: []
-  Hash9: []
-  Hash10: []
+  Hash9:
+  - {fileID: 0}
+  Hash10:
+  - list: 00000000f8b2fcff
   _enableRegistrator: 0
-  _saveInFolder: SCENE
+  _saveInFolder: FOLDER
   _mFavoritCategorySelected: 0
   m_GetHash_IconImageKey: []
   m_GetHash_IconImageValue: []
