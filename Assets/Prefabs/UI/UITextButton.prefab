@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 1168728413758035645}
   - component: {fileID: 3139784406664016186}
   - component: {fileID: 1150229920146035947}
+  - component: {fileID: -5433278844435435985}
   m_Layer: 5
-  m_Name: BrickOptionButton
+  m_Name: UITextButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -121,3 +122,16 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &-5433278844435435985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2938630971087145502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 772f236fc634d1343bf0d4652d244c21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonAudio: {fileID: 8300000, guid: 34e4aa119f111ed438b80342504106fd, type: 3}

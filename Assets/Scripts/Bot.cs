@@ -94,6 +94,7 @@ public class Bot : MonoBehaviour
     private AudioSource source;
     public AudioClip tripleSound;
     public AudioClip resourceSound;
+    public AudioClip brickAttachSound;
     GameSettings settings;
 
     float startTime;
@@ -2017,6 +2018,7 @@ public class Bot : MonoBehaviour
                     GameObject newBrick = AddBrick(botCoords, brickType, bit.bitLevel);
                     if (newBrick != null)
                     {
+                        source.PlayOneShot(brickAttachSound, 0.5f);
                         BrickBitPair brickBitPair = new BrickBitPair(newBrick, bitObj);
                         brickBitPairList.Add(brickBitPair);
                         //GameController.Instance.money++;
