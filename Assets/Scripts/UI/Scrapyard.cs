@@ -1457,7 +1457,8 @@ public class Scrapyard : MonoBehaviour
     {
         canMove = false;
 
-        brickNameText.text = GetBrickName(sellBrick.GetComponent<Image>().sprite);
+        string brickType = GetBrickName(sellBrick.GetComponent<Image>().sprite, false);
+        brickNameText.text = GetBrickName(sellBrick.GetComponent<Image>().sprite, true);
 
         for (int i = 0; i < brickOptionButtons.Count; i++)
         {
@@ -1477,6 +1478,18 @@ public class Scrapyard : MonoBehaviour
         }
         brickOptionButtons.Add(sellButton);
 
+        GameObject sellAllButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
+        sellAllButton.GetComponent<Text>().text = "SELL ALL " + brickType + " bricks";
+        if (CanSell(sellBrick))
+        {
+            sellAllButton.GetComponent<Button>().onClick.AddListener(() => { ConfirmSellAll(); });
+        }
+        else
+        {
+            sellAllButton.GetComponent<Button>().interactable = false;
+        }
+        brickOptionButtons.Add(sellAllButton);
+
         GameObject convertButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
         convertButton.GetComponent<Text>().text = "CONVERT";
         if (CanConvert(sellBrick))
@@ -1489,7 +1502,19 @@ public class Scrapyard : MonoBehaviour
         }
         brickOptionButtons.Add(convertButton);
 
-        if(GetContainerIndex(sellBrick) != -1)
+        GameObject convertAllButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
+        convertAllButton.GetComponent<Text>().text = "CONVERT ALL " + brickType + " bricks";
+        if (CanConvert(sellBrick))
+        {
+            convertAllButton.GetComponent<Button>().onClick.AddListener(() => { ConfirmConvertAll(); });
+        }
+        else
+        {
+            convertAllButton.GetComponent<Button>().interactable = false;
+        }
+        brickOptionButtons.Add(convertAllButton);
+
+        if (GetContainerIndex(sellBrick) != -1)
         {
             GameObject leftButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
             leftButton.GetComponent<Text>().text = "ROTATE LEFT";
@@ -1654,6 +1679,41 @@ public class Scrapyard : MonoBehaviour
         CompleteConfirmedPurchase();
     }
 
+    //Button for selling all of a specified brick type
+    public void ConfirmSellAll()
+    {
+        canMove = true;
+        string brickType = GetBrickName(sellBrick.GetComponent<Image>().sprite, false);
+        for (int i = 0; i < botBricks.Count; i++)
+        {
+            Image botImage = botBricks[i].GetComponent<Image>();
+            if(botImage.color != Color.clear && botBricks[i] != coreBrick && brickType == GetBrickName(botImage.sprite,false))
+            {
+                if (uncommittedBricks.Contains(botBricks[i]))
+                {
+                    uncommittedBricks.Remove(botBricks[i]);
+                }
+
+                if (containerObjects.Contains(botBricks[i]))
+                {
+                    int index = containerObjects.IndexOf(botBricks[i]);
+                    containerObjects.RemoveAt(index);
+                    containers.RemoveAt(index);
+                    botBricks[i].transform.GetChild(1).gameObject.SetActive(false);
+                }
+
+                transactionAmount += GetBrickSell(botImage.sprite);
+
+                botBricks[i].GetComponent<Image>().color = Color.clear;
+            }
+        }
+        sellBrick = null;
+        UpdateResources();
+        CloseSubMenu();
+        hasChanges = true;
+        CompleteConfirmedPurchase();
+    }
+
     //Button for completing a brick conversion to resources
     public void CompleteConfirmedConvert()
     {
@@ -1678,6 +1738,58 @@ public class Scrapyard : MonoBehaviour
         }
 
         sellBrick.GetComponent<Image>().color = Color.clear;
+        sellBrick = null;
+        UpdateResources();
+        CloseSubMenu();
+        hasChanges = true;
+        CompleteConfirmedPurchase();
+    }
+
+    //Button for converting all of a specified brick type to resources
+    public void ConfirmConvertAll()
+    {
+        canMove = true;
+        string brickType = GetBrickName(sellBrick.GetComponent<Image>().sprite, false);
+
+        for (int i = 0; i < botBricks.Count; i++)
+        {
+            Image botImage = botBricks[i].GetComponent<Image>();
+            if (botImage.color != Color.clear && botBricks[i] != coreBrick && brickType == GetBrickName(botImage.sprite, false))
+            {
+                if (uncommittedBricks.Contains(botBricks[i]))
+                {
+                    uncommittedBricks.Remove(botBricks[i]);
+                }
+
+                if (containerObjects.Contains(botBricks[i]))
+                {
+                    int index = containerObjects.IndexOf(botBricks[i]);
+                    containerObjects.RemoveAt(index);
+                    containers.RemoveAt(index);
+                    botBricks[i].transform.GetChild(1).gameObject.SetActive(false);
+                }
+
+                foreach (GameObject Resource in convertableParts)
+                {
+                    Brick resourceBrick = Resource.GetComponent<Brick>();
+                    for (int r = 0; r < resourceBrick.spriteArr.Length; r++)
+                    {
+                        if (botImage.sprite == resourceBrick.spriteArr[r])
+                        {
+                            currentFuel += Resource.GetComponent<Fuel>() ? Resource.GetComponent<Fuel>().maxFuelArr[r] : 0;
+                            currentBlue += Resource.GetComponent<Gun>() ? Resource.GetComponent<Gun>().maxResource[r] : 0;
+                            currentYellow += Resource.GetComponent<Yellectrons>() ? Resource.GetComponent<Yellectrons>().maxResource[r] : 0;
+                            currentGreen += (Resource.GetComponent<Repair>() && Resource.GetComponent<Repair>().maxResource.Length > 0) ? Resource.GetComponent<Repair>().maxResource[r] : 0;
+                            currentGrey += Resource.GetComponent<Greyscale>() ? Resource.GetComponent<Greyscale>().maxResource[r] : 0;
+                            break;
+                        }
+                    }
+                }
+
+                botBricks[i].GetComponent<Image>().color = Color.clear;
+            }
+        }
+
         sellBrick = null;
         UpdateResources();
         CloseSubMenu();
@@ -2078,7 +2190,7 @@ public class Scrapyard : MonoBehaviour
     }
 
     //Determine the market name of the brick in question
-    string GetBrickName(Sprite targetBrick)
+    string GetBrickName(Sprite targetBrick, bool useLevel)
     {
         foreach (MarketData marketCheck in marketData)
         {
@@ -2087,7 +2199,14 @@ public class Scrapyard : MonoBehaviour
             {
                 if (brickCheck.spriteArr[i] == targetBrick)
                 {
-                    return marketCheck.marketName + " " + (i + 1).ToString();
+                    if (useLevel)
+                    {
+                        return marketCheck.marketName + " " + (i + 1).ToString();
+                    }
+                    else
+                    {
+                        return marketCheck.marketName;
+                    }
                 }
             }
         }
