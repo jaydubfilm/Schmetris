@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5902128f472564b98abfcdfed45089dc, type: 3}
   m_Name: Feb9_Medium
   m_EditorClassIdentifier: 
+  storeCostMultiplier: 0.1
   levelDataArr:
   - {fileID: 11400000, guid: 3d83a6d2a40788d41b169419472fd2b0, type: 2}
   - {fileID: 11400000, guid: 08589a7db9d7f3648b57164ca7874f61, type: 2}

@@ -214,9 +214,9 @@ MonoBehaviour:
   bulletSpeed: 1.8
   bulletLifetime: 10
   bullet: {fileID: 4678426597054703440, guid: 830515e21ff0d524da08aba3cfcb73d6, type: 3}
-  bulletScale: 3
+  bulletScale: 1
   bulletSprite: {fileID: 21300010, guid: 9bc0d6fc7ce03d34887e913e42cfc8c6, type: 3}
-  bulletDamage: 1
+  bulletDamage: 5
   timeUntilBlast: 5
   blastRadius: 5
   blastDamage: 5
