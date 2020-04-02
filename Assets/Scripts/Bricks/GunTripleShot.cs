@@ -20,8 +20,6 @@ public class GunTripleShot : MonoBehaviour
     Vector2Int direction;
 
     //Resources
-    public int[] maxResource;
-    public float[] burnPerShot;
     public int numberOfEnemies = 3;
     public List <GameObject> targets = new List<GameObject>();
 
@@ -57,19 +55,15 @@ public class GunTripleShot : MonoBehaviour
         if (GameController.Instance.enemyList.Count > 0)
         {
             print("enemies detected");
-            if (GameController.Instance.bot.storedBlue >= burnPerShot[parentBrick.GetPoweredLevel()])
+            targets = FindTargets();
+            if (targets.Count > 0)
             {
-                print("enough stored blue");
-                targets = FindTargets();
-                if (targets.Count > 0)
+                print("Found Targets");
+                if (targets[0] != null)
                 {
-                    print("Found Targets");
-                    if (targets[0] != null)
-                    {
-                        //print("try fire target found");
-                        if (Vector3.Distance(targets[0].transform.position, transform.position) < range[parentBrick.GetPoweredLevel()])
-                            FireGun();
-                    }
+                    //print("try fire target found");
+                    if (Vector3.Distance(targets[0].transform.position, transform.position) < range[parentBrick.GetPoweredLevel()] && parentBrick.TryBurnResources(1.0f))
+                        FireGun();
                 }
             }
         }
@@ -119,7 +113,6 @@ public class GunTripleShot : MonoBehaviour
         for (int i = 0; i < targets.Count; i++)
         {
 
-            GameController.Instance.bot.storedBlue -= burnPerShot[parentBrick.GetPoweredLevel()];
             GameObject newBulletObj = Instantiate(bullet[parentBrick.GetPoweredLevel()], transform.position, Quaternion.identity);
             //Vector3 dirV3 = Vector3.Normalize(targetPos - transform.position);
             Bullet newBullet = newBulletObj.GetComponent<Bullet>();
@@ -135,7 +128,23 @@ public class GunTripleShot : MonoBehaviour
         }
     }
 
-   
-
-
+    //Return the resources of set type converted to per-second units
+    public float GetConvertedBurnRate(ResourceType resourceType, int level)
+    {
+        float secondRate = rateOfFire[level] > 0 ? 1.0f / rateOfFire[level] : 0;
+        switch (resourceType)
+        {
+            case ResourceType.Red:
+                return GetComponent<Brick>().redBurn[level] * secondRate;
+            case ResourceType.Blue:
+                return GetComponent<Brick>().blueBurn[level] * secondRate;
+            case ResourceType.Green:
+                return GetComponent<Brick>().greenBurn[level] * secondRate;
+            case ResourceType.Yellow:
+                return GetComponent<Brick>().yellowBurn[level] * secondRate;
+            case ResourceType.Grey:
+                return GetComponent<Brick>().greyBurn[level] * secondRate;
+        }
+        return 0;
+    }
 }

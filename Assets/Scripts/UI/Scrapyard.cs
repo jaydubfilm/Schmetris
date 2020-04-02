@@ -615,6 +615,42 @@ public class Scrapyard : MonoBehaviour
                                 yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
                                 greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
                             }
+                            else if (brickRef.GetComponent<Blaster>())
+                            {
+                                Blaster gunRef = brickRef.GetComponent<Blaster>();
+                                redBurn += gunRef.GetConvertedBurnRate(ResourceType.Red, i);
+                                blueBurn += gunRef.GetConvertedBurnRate(ResourceType.Blue, i);
+                                greenBurn += gunRef.GetConvertedBurnRate(ResourceType.Green, i);
+                                yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
+                                greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
+                            }
+                            else if (brickRef.GetComponent<GunSniper>())
+                            {
+                                GunSniper gunRef = brickRef.GetComponent<GunSniper>();
+                                redBurn += gunRef.GetConvertedBurnRate(ResourceType.Red, i);
+                                blueBurn += gunRef.GetConvertedBurnRate(ResourceType.Blue, i);
+                                greenBurn += gunRef.GetConvertedBurnRate(ResourceType.Green, i);
+                                yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
+                                greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
+                            }
+                            else if (brickRef.GetComponent<GrenadeGun>())
+                            {
+                                GrenadeGun gunRef = brickRef.GetComponent<GrenadeGun>();
+                                redBurn += gunRef.GetConvertedBurnRate(ResourceType.Red, i);
+                                blueBurn += gunRef.GetConvertedBurnRate(ResourceType.Blue, i);
+                                greenBurn += gunRef.GetConvertedBurnRate(ResourceType.Green, i);
+                                yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
+                                greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
+                            }
+                            else if (brickRef.GetComponent<GunTripleShot>())
+                            {
+                                GunTripleShot gunRef = brickRef.GetComponent<GunTripleShot>();
+                                redBurn += gunRef.GetConvertedBurnRate(ResourceType.Red, i);
+                                blueBurn += gunRef.GetConvertedBurnRate(ResourceType.Blue, i);
+                                greenBurn += gunRef.GetConvertedBurnRate(ResourceType.Green, i);
+                                yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
+                                greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
+                            }
                         }
                     }
                 }
@@ -692,27 +728,27 @@ public class Scrapyard : MonoBehaviour
 
         blueBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentBlue / maxCapacity : 0), blueBar.sizeDelta.y);
         blueAmount.text = Mathf.RoundToInt(currentBlue).ToString();
-        blueBurnRate.text = "-" + Mathf.RoundToInt(blueBurn).ToString() + "/s";
+        blueBurnRate.text = "-" + Mathf.CeilToInt(blueBurn).ToString() + "/s";
         blueAmount.text += " (+" + Mathf.RoundToInt(excessBlue).ToString() + ")";
 
         yellowBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentYellow / maxCapacity : 0), yellowBar.sizeDelta.y);
         yellowAmount.text = Mathf.RoundToInt(currentYellow).ToString();
-        yellowBurnRate.text = "-" + Mathf.RoundToInt(yellowBurn).ToString() + "/s";
+        yellowBurnRate.text = "-" + Mathf.CeilToInt(yellowBurn).ToString() + "/s";
         yellowAmount.text += " (+" + Mathf.RoundToInt(excessYellow).ToString() + ")";
 
         greenBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentGreen / maxCapacity : 0), greenBar.sizeDelta.y);
         greenAmount.text = Mathf.RoundToInt(currentGreen).ToString();
-        greenBurnRate.text = "-" + Mathf.RoundToInt(greenBurn).ToString() + "/s";
+        greenBurnRate.text = "-" + Mathf.CeilToInt(greenBurn).ToString() + "/s";
         greenAmount.text += " (+" + Mathf.RoundToInt(excessGreen).ToString() + ")";
 
         greyBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentGrey / maxCapacity : 0), greyBar.sizeDelta.y);
         greyAmount.text = Mathf.RoundToInt(currentGrey).ToString();
-        greyBurnRate.text = "-" + Mathf.RoundToInt(greyBurn).ToString() + "/s";
+        greyBurnRate.text = "-" + Mathf.CeilToInt(greyBurn).ToString() + "/s";
         greyAmount.text += " (+" + Mathf.RoundToInt(excessGrey).ToString() + ")";
 
         fuelBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentFuel / maxCapacity : 0), fuelBar.sizeDelta.y);
         redAmount.text = Mathf.RoundToInt(currentFuel).ToString();
-        redBurnRate.text = "-" + Mathf.RoundToInt(redBurn).ToString() + "/s";
+        redBurnRate.text = "-" + Mathf.CeilToInt(redBurn).ToString() + "/s";
         redAmount.text += " (+" + Mathf.RoundToInt(excessRed).ToString() + ")";
 
         UpdateUpgradeGlows();

@@ -19,8 +19,6 @@ public class GrenadeGun : MonoBehaviour
     Vector2Int direction;
 
     //Resources
-    public int[] maxResource;
-    public float[] burnPerShot;
     GameObject target;
 
     public float speed;
@@ -50,16 +48,12 @@ public class GrenadeGun : MonoBehaviour
     {
         if (GameController.Instance.enemyList.Count > 0)
         {
-            if (GameController.Instance.bot.storedGrey >= burnPerShot[parentBrick.GetPoweredLevel()])
+            target = FindTarget();
+            if (target != null)
             {
 
-                target = FindTarget();
-                if (target != null)
-                {
-
-                    if (Vector3.Distance(target.transform.position, transform.position) < range[parentBrick.GetPoweredLevel()])
-                        FireGun(target.transform.position);
-                }
+                if (Vector3.Distance(target.transform.position, transform.position) < range[parentBrick.GetPoweredLevel()] && parentBrick.TryBurnResources(1.0f))
+                    FireGun(target.transform.position);
             }
         }
     }
@@ -132,7 +126,6 @@ public class GrenadeGun : MonoBehaviour
     public void FireGun(Vector3 targetPos)
     {
 
-        GameController.Instance.bot.storedBlue -= burnPerShot[parentBrick.GetPoweredLevel()];
         GameObject newBulletObj = Instantiate(bullet[parentBrick.GetPoweredLevel()], transform.position, Quaternion.identity);
         //Vector3 dirV3 = Vector3.Normalize(targetPos - transform.position);
         Bullet newBullet = newBulletObj.GetComponent<Bullet>();
@@ -146,7 +139,23 @@ public class GrenadeGun : MonoBehaviour
         fireTimer = rateOfFire[parentBrick.GetPoweredLevel()];
     }
 
-   
-
-
+    //Return the resources of set type converted to per-second units
+    public float GetConvertedBurnRate(ResourceType resourceType, int level)
+    {
+        float secondRate = rateOfFire[level] > 0 ? 1.0f / rateOfFire[level] : 0;
+        switch (resourceType)
+        {
+            case ResourceType.Red:
+                return GetComponent<Brick>().redBurn[level] * secondRate;
+            case ResourceType.Blue:
+                return GetComponent<Brick>().blueBurn[level] * secondRate;
+            case ResourceType.Green:
+                return GetComponent<Brick>().greenBurn[level] * secondRate;
+            case ResourceType.Yellow:
+                return GetComponent<Brick>().yellowBurn[level] * secondRate;
+            case ResourceType.Grey:
+                return GetComponent<Brick>().greyBurn[level] * secondRate;
+        }
+        return 0;
+    }
 }
