@@ -117,6 +117,31 @@ public class GameUI : MonoBehaviour
         popupDisplay.color = isActive ? Color.white : Color.clear;
     }
 
+    //Toggle 'Unpowered Brick' popup
+    bool hasShownUnpowered = false;
+    public void SetUnpoweredPopup(bool isActive)
+    {
+        if (hasShownUnpowered)
+            return;
+        hasShownUnpowered = true;
+        if (isActive)
+            popupDisplay.text = "Unpowered cell";
+        popupDisplay.color = isActive ? Color.white : Color.clear;
+    }
+
+    //Toggle 'Out of Resources' popup
+    bool hasShownResources = false;
+    public void SetResourcesPopup(bool isActive)
+    {
+        if (hasShownResources)
+            return;
+        hasShownResources = true;
+        if (isActive)
+            popupDisplay.text = "Low resources";
+        popupDisplay.color = isActive ? Color.white : Color.clear;
+    }
+
+
     //Toggle 'Level Complete' popup
     public void SetLevelCompletePopup(bool isActive)
     {

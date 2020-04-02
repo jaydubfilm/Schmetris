@@ -1095,7 +1095,7 @@ PrefabInstance:
     - target: {fileID: 3139784406664016186, guid: 28935d0ef5ec90e45813477e5e2b10bb,
         type: 3}
       propertyPath: m_Text
-      value: 3 - Hard
+      value: 3 - Testing
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28935d0ef5ec90e45813477e5e2b10bb, type: 3}
