@@ -106,7 +106,7 @@ public class Bot : MonoBehaviour
 
     //Resources
     const float startRed = 30.0f;
-    const float startRedTutorial = 60.0f;
+    const float startRedTutorial = 500f;
     const float startBlue = 0;
     const float startGreen = 0;
     const float startYellow = 0;

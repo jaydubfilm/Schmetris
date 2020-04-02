@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
-  m_Name: Turorial Part 1 Section 1 - Empty
+  m_Name: Turorial Part 1 Section 4 - Fuel Shortage
   m_EditorClassIdentifier: 
   levelDuration: 0
   blocks:
   - block: {fileID: 3648368997759183085, guid: 9a3740cc5187eb9488a81064d7e23015, type: 3}
     probability: 1
   speciesSpawnData: []
-  blockSpawnRate: 2
+  blockSpawnRate: 50
   enemySpawnRate: 0
   blockSpeed: 10

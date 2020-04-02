@@ -36,17 +36,27 @@ public class TutorialManager : MonoBehaviour
     int asteroidHits;
     bool greyHasFallen;
 
+    int currentSection;
+    int frameCounter;
+    public Sprite greyScale;
+    public Sprite level1GreyScale;
+    public Sprite level2GreyScale;
+
+    bool collected1Greyscale;
+    bool level1Upgraded;
+    public List<GameObject> greyScaleAtSectionStart = new List<GameObject>();
+    bool beganGreyscaleSection;
+    bool hasHadFuelWarning;
+    Bot playerBot;
+
+
     //public Game
     // Start is called before the first frame update
     void Awake()
     {
 
         Instance = this;
-    }
-
-    private void Start()
-    {
-        
+        playerBot = playerPos.GetComponent<Bot>();
     }
 
     private void Update()
@@ -65,25 +75,103 @@ public class TutorialManager : MonoBehaviour
         }
 
 
-        //Check for new pieces
-        
+        //Check for new pieces        
         if (GameController.Instance.blockList.Count > countLastFrame)
         {
-            print("Block Falling");
+            //print("Block Falling");
             foreach (GameObject block in GameController.Instance.blockList)
             {
-                if (greyHasFallen == false)
-                {
-                    if (block.GetComponentInChildren<Bit>().bitType == 7)
-                    {
-                        TutorialPopup(4, true, true, true);
-                        print(block.gameObject.name);
-                        greyHasFallen = true;
-                    }
-                }
+                //if (greyHasFallen == false)
+                //{
+                //    if (block.GetComponentInChildren<Bit>().bitType == 7)
+                //    {
+                //        TutorialPopup(4, true, true, true);
+                //        print(block.gameObject.name);
+                //        greyHasFallen = true;
+                //    }
+                //}
             }
         }
         countLastFrame = GameController.Instance.blockList.Count;
+
+        //Section Specific Behaviours
+        if(currentSection == 2)
+        {
+
+           
+
+            if(frameCounter == 60)
+            {
+                print("checking sprites");
+                List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
+                foreach (SpriteRenderer SR in childSprites)
+                {
+                    //collect your first greyscale
+                    if (collected1Greyscale == false)
+                    {
+                        print(SR.sprite.name);
+                        if (SR.sprite == greyScale)
+                        {
+                            if (beganGreyscaleSection == false)
+                            {
+                                greyScaleAtSectionStart.Add(SR.gameObject);
+                            }
+                            else
+                            {
+                                if (!greyScaleAtSectionStart.Contains(SR.gameObject))
+                                {
+                                    TutorialPopup(4, false, true, false);
+                                    collected1Greyscale = true;
+                                    return;
+                                }
+                            }
+                        }
+
+                    }
+                    //level up greyscale
+                    if (collected1Greyscale == true && level1Upgraded == false)
+                    {
+                        if (SR.sprite == level1GreyScale)
+                        {
+                            CloseCurrent();
+                            TutorialPopup(5, true, true, false);
+                            level1Upgraded = true;
+                            return;
+                        }
+                    }
+                    //level up greyscale 2
+                    if (collected1Greyscale == true && level1Upgraded == true)
+                    {
+                        if (SR.sprite == level2GreyScale)
+                        {
+                            CloseCurrent();
+                            SetFuel(10);
+                            TutorialPopup(6, true, true, false);
+                            level1Upgraded = true;
+                            GameController.Instance.LoadNextLevelSection();
+                            return;
+                        }
+                    }
+                }
+                beganGreyscaleSection = true;
+                frameCounter = 0;
+            }
+
+            frameCounter++;
+        }
+
+        if (hasHadFuelWarning == false && beganGreyscaleSection == true)
+        {
+            if (playerBot.storedRed < 5)
+            {
+
+                hasHadFuelWarning = true;
+                TutorialPopup(6, true, true, true);
+            }
+
+            if (playerBot.HasFuel() == false)
+                NextWith2SecondDelay();
+        }
     }
 
     //is sequential marks events that should happen chronologically
@@ -237,14 +325,33 @@ public class TutorialManager : MonoBehaviour
                 CloseCurrent();
                 TutorialPopup(1, true, true, false);
                 break;
+            default:
+                break;
         }
     }
 
 
     [Button]
-    public void SetFuel()
+    public void SetFuel(int fuel)
     {
-        playerPos.GetComponent<Bot>().SetFuelAmt(200);
 
+        playerPos.GetComponent<Bot>().SetFuelAmt(fuel);
+    }
+
+    public void OnLevelChange(int newSection)
+    {
+        currentSection = newSection;
+        print("loaded scene " + newSection);
+        switch (newSection)
+        {
+            case 2: //greyscale
+                TutorialPopup(4, true, true, true);
+                break;
+
+
+
+            default:
+                break;
+        }
     }
 }
