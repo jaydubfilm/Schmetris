@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfca86bbe879bb643965c120dd9fc50e, type: 3}
   m_Name: Crafted Triple Shot
   m_EditorClassIdentifier: 
+  marketName: Triple Shot
   brick: {fileID: 6715254118685096965, guid: 9311fe627d3edb7408a7d1d25f1b78a0, type: 3}
   brickLevels:
   - buyPrice: 10950

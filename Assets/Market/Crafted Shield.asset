@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfca86bbe879bb643965c120dd9fc50e, type: 3}
   m_Name: Crafted Shield
   m_EditorClassIdentifier: 
+  marketName: Shield
   brick: {fileID: 6715254118685096965, guid: 1d9fc7273f0a34644bd726fea75930e2, type: 3}
   brickLevels:
   - buyPrice: 7875

@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfca86bbe879bb643965c120dd9fc50e, type: 3}
   m_Name: Crafted Armor
   m_EditorClassIdentifier: 
+  marketName: Armor
   brick: {fileID: 6715254118685096965, guid: 0f3ca62c40e3c9047a172548b2d8766a, type: 3}
   brickLevels:
-  - buyPrice: 9450
-    sellPrice: 6300
-  - buyPrice: 13950
-    sellPrice: 9300
+  - buyPrice: 3450
+    sellPrice: 2300
+  - buyPrice: 7950
+    sellPrice: 5300

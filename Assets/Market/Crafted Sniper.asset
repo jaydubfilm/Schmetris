@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfca86bbe879bb643965c120dd9fc50e, type: 3}
   m_Name: Crafted Sniper
   m_EditorClassIdentifier: 
+  marketName: Sniper
   brick: {fileID: 6715254118685096965, guid: 4e1f9ede3f7d6f343b8896c0ab4fc67e, type: 3}
   brickLevels:
-  - buyPrice: 41100
-    sellPrice: 27400
-  - buyPrice: 49200
-    sellPrice: 32800
+  - buyPrice: 5100
+    sellPrice: 3400
+  - buyPrice: 13200
+    sellPrice: 8800

@@ -978,6 +978,7 @@ MonoBehaviour:
   brickOptionsPrefab: {fileID: 2938630971087145502, guid: 28935d0ef5ec90e45813477e5e2b10bb,
     type: 3}
   brickOptionsGrid: {fileID: 6774185881056288699}
+  brickNameText: {fileID: 1829589192810397998}
   playerMoney: {fileID: 5835760222644997047}
   transactionMoney: {fileID: 8811657191263269754}
   fuelBar: {fileID: 6271399059011867033}
@@ -1030,7 +1031,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3f91d8e9ea6d7044fad0b5986c06bf5e, type: 2}
   - {fileID: 11400000, guid: a6c54def95fa45045836c25844ee8c9a, type: 2}
   - {fileID: 11400000, guid: ae0a356003b43f142a0ca25394592b5a, type: 2}
-  - {fileID: 11400000, guid: fb89df5bef70a7d4db54127c0580f125, type: 2}
   - {fileID: 11400000, guid: 6199fcd5340c4fc459d2287f8619333b, type: 2}
   - {fileID: 11400000, guid: 59145cf7c942a624b8071d1eab9abea0, type: 2}
   - {fileID: 11400000, guid: 3cf820ad3e4ff3a4bbf858f7483584ba, type: 2}
@@ -1053,7 +1053,6 @@ MonoBehaviour:
   - {fileID: 6715254118685096965, guid: 9311fe627d3edb7408a7d1d25f1b78a0, type: 3}
   - {fileID: 6715254118685096965, guid: bebd53362cafce14589b1351869f9cea, type: 3}
   - {fileID: 6715254118685096965, guid: 4e1f9ede3f7d6f343b8896c0ab4fc67e, type: 3}
-  - {fileID: 6715254118685096965, guid: 020ae0b96c2eae54393981dc74d98c75, type: 3}
   - {fileID: 6715254118685096965, guid: 4fa7b42a9b8974a4e856d53bb1f8ce20, type: 3}
 --- !u!223 &7533438584670130256
 Canvas:

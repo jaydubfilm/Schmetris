@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfca86bbe879bb643965c120dd9fc50e, type: 3}
   m_Name: Crafted Mechanic
   m_EditorClassIdentifier: 
+  marketName: Mechanic
   brick: {fileID: 6715254118685096965, guid: 8b472fce400270f40bfa2f9d3b7279e9, type: 3}
   brickLevels:
   - buyPrice: 50775

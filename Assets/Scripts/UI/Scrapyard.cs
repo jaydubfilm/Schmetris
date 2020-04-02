@@ -24,6 +24,7 @@ public class Scrapyard : MonoBehaviour
     public GameObject brickOptionsPrefab;
     List<GameObject> brickOptionButtons = new List<GameObject>();
     public Transform brickOptionsGrid;
+    public Text brickNameText;
 
     //Resources UI
     public Text playerMoney;
@@ -1383,6 +1384,8 @@ public class Scrapyard : MonoBehaviour
     {
         canMove = false;
 
+        brickNameText.text = GetBrickName(sellBrick.GetComponent<Image>().sprite);
+
         for (int i = 0; i < brickOptionButtons.Count; i++)
         {
             Destroy(brickOptionButtons[i]);
@@ -1997,6 +2000,23 @@ public class Scrapyard : MonoBehaviour
             }
         }
         return 0;
+    }
+
+    //Determine the market name of the brick in question
+    string GetBrickName(Sprite targetBrick)
+    {
+        foreach (MarketData marketCheck in marketData)
+        {
+            Brick brickCheck = marketCheck.brick.GetComponent<Brick>();
+            for (int i = 0; i < marketCheck.brickLevels.Length; i++)
+            {
+                if (brickCheck.spriteArr[i] == targetBrick)
+                {
+                    return marketCheck.marketName + " " + (i + 1).ToString();
+                }
+            }
+        }
+        return "";
     }
 
     //Return the market price of the specified resource type
