@@ -25,6 +25,7 @@ public class Scrapyard : MonoBehaviour
     List<GameObject> brickOptionButtons = new List<GameObject>();
     public Transform brickOptionsGrid;
     public Text brickNameText;
+    public Text upgradePopup;
 
     //Resources UI
     public Text playerMoney;
@@ -552,6 +553,7 @@ public class Scrapyard : MonoBehaviour
     //Update available upgrade glows
     void UpdateUpgradeGlows()
     {
+        bool hasUpgrades = false;
         foreach(GameObject BotTile in botBricks)
         {
             bool canUpgrade = false;
@@ -561,11 +563,15 @@ public class Scrapyard : MonoBehaviour
                 foreach (CraftedPart CheckPart in checkUpgrades)
                 {
                     if (CanUpgrade(BotTile.GetComponent<Image>().sprite, CheckPart))
+                    {
                         canUpgrade = true;
+                        hasUpgrades = true;
+                    }
                 }
             }
             BotTile.transform.GetChild(0).gameObject.SetActive(canUpgrade);
         }
+        upgradePopup.gameObject.SetActive(hasUpgrades);
     }
 
     //Update scrapyard burn rate UI
@@ -1328,6 +1334,63 @@ public class Scrapyard : MonoBehaviour
         CompleteConfirmedConvert();
     }
 
+    //Return a string of required upgrade resources
+    string GetUpgradeString(string upgradeName)
+    {
+        string upgradeString = "";
+
+        int moneyString = 0;
+        int redString = 0;
+        int blueString = 0;
+        int greenString = 0;
+        int yellowString = 0;
+        int greyString = 0;
+        foreach (GameObject partCheck in craftableParts)
+        {
+            CraftedPart TempPart = partCheck.GetComponent<CraftedPart>();
+            for (int i = 0; i < TempPart.scrapyardName.Length; i++)
+            {
+                if (upgradeName == TempPart.scrapyardName[i])
+                {
+                    moneyString = TempPart.moneyToCraft[i];
+                    redString = TempPart.redToCraft[i];
+                    blueString = TempPart.blueToCraft[i];
+                    greenString = TempPart.greenToCraft[i];
+                    yellowString = TempPart.yellowToCraft[i];
+                    greyString = TempPart.greyToCraft[i];
+                    break;
+                }
+            }
+        }
+
+        if (moneyString > 0)
+        {
+            upgradeString += "$" + moneyString.ToString() + ", ";
+        }
+        if (redString > 0)
+        {
+            upgradeString += redString.ToString() + " RED, ";
+        }
+        if (blueString > 0)
+        {
+            upgradeString += blueString.ToString() + " BLUE, ";
+        }
+        if (greenString > 0)
+        {
+            upgradeString += greenString.ToString() + " GREEN, ";
+        }
+        if (yellowString > 0)
+        {
+            upgradeString += yellowString.ToString() + " YELLOW, ";
+        }
+        if (greyString > 0)
+        {
+            upgradeString += greyString.ToString() + " GREY, ";
+        }
+        upgradeString = upgradeString.Substring(0, upgradeString.Length - 2);
+        return upgradeString;
+    }
+
     //Button for confirming brick upgrade
     public void ConfirmUpgrade(string upgradeName)
     {
@@ -1350,33 +1413,7 @@ public class Scrapyard : MonoBehaviour
             }
         }
 
-        upgradeText.text = "UPGRADE TO " + upgradeName + " FOR ";
-        if(tempMoneyAmount > 0)
-        {
-            upgradeText.text += "$" + tempMoneyAmount.ToString() + ", ";
-        }
-        if (tempRedAmount > 0)
-        {
-            upgradeText.text += tempRedAmount.ToString() + " RED, ";
-        }
-        if (tempBlueAmount > 0)
-        {
-            upgradeText.text += tempBlueAmount.ToString() + " BLUE, ";
-        }
-        if (tempGreenAmount > 0)
-        {
-            upgradeText.text += tempGreenAmount.ToString() + " GREEN, ";
-        }
-        if (tempYellowAmount > 0)
-        {
-            upgradeText.text += tempYellowAmount.ToString() + " YELLOW, ";
-        }
-        if (tempGreyAmount > 0)
-        {
-            upgradeText.text += tempGreyAmount.ToString() + " GREY, ";
-        }
-        upgradeText.text = upgradeText.text.Substring(0, upgradeText.text.Length - 2);
-        upgradeText.text += "?";
+        upgradeText.text = "UPGRADE TO " + upgradeName + " FOR " + GetUpgradeString(upgradeName) + "?";
 
         brickOptions.SetActive(false);
         confirmUpgrade.SetActive(true);
@@ -1470,7 +1507,7 @@ public class Scrapyard : MonoBehaviour
         {
             GameObject upgradeButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
             string targetUpgrade = GetUpgradeName(sellBrick.GetComponent<Image>().sprite, TempPart);
-            upgradeButton.GetComponent<Text>().text = "UPGRADE: " + targetUpgrade;
+            upgradeButton.GetComponent<Text>().text = "UPGRADE: " + targetUpgrade + " (" + GetUpgradeString(targetUpgrade) + ")";
             if (CanUpgrade(sellBrick.GetComponent<Image>().sprite, TempPart))
             {
                 upgradeButton.GetComponent<Button>().onClick.AddListener(() => { ConfirmUpgrade(targetUpgrade); });
@@ -1480,6 +1517,8 @@ public class Scrapyard : MonoBehaviour
                 upgradeButton.GetComponent<Button>().interactable = false;
             }
             brickOptionButtons.Add(upgradeButton);
+            upgradeButton.GetComponent<RectTransform>().sizeDelta = new Vector2(1000, 30);
+            upgradeButton.GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Wrap;
         }
 
         GameObject backButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
