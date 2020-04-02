@@ -305,8 +305,11 @@ public class GameController : MonoBehaviour
         {
             if (TutorialManager.Instance != null && tutorialHasStarted == false)
             {
-                TutorialManager.Instance.TutorialPopup(0, true, true, true);
+                TutorialManager.Instance.TutorialPopup(0, true, true, true);                
                 tutorialHasStarted = true;
+                TutorialManager.Instance.playerPos.GetComponent<Bot>().SetFuelAmt(60);
+                print("fuel");
+
             }
         }
     }

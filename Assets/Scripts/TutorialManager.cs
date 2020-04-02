@@ -40,7 +40,13 @@ public class TutorialManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+
         Instance = this;
+    }
+
+    private void Start()
+    {
+        
     }
 
     private void Update()
@@ -232,5 +238,13 @@ public class TutorialManager : MonoBehaviour
                 TutorialPopup(1, true, true, false);
                 break;
         }
+    }
+
+
+    [Button]
+    public void SetFuel()
+    {
+        playerPos.GetComponent<Bot>().SetFuelAmt(200);
+
     }
 }

@@ -106,6 +106,7 @@ public class Bot : MonoBehaviour
 
     //Resources
     const float startRed = 30.0f;
+    const float startRedTutorial = 60.0f;
     const float startBlue = 0;
     const float startGreen = 0;
     const float startYellow = 0;
@@ -274,7 +275,14 @@ public class Bot : MonoBehaviour
     {
         SetTileMap(startSprites);
         savedBlueStored = startBlue;
-        savedFuelStores = startRed;
+
+        if (TutorialManager.Instance != null)
+            savedFuelStores = startRedTutorial;
+        else
+        {
+            savedFuelStores = startRed;
+        //    print("set to 60");
+        }
         savedGreenStores = startGreen;
         savedGreyStores = startGrey;
         savedYellowStores = startYellow;
@@ -284,7 +292,17 @@ public class Bot : MonoBehaviour
         savedHangarYellow = 0;
         savedHangarGrey = 0;
 
-        storedRed = startRed;
+        if (TutorialManager.Instance != null)
+        {
+
+            storedRed = startRedTutorial;
+        }
+        else
+        {
+            storedRed = startRed;
+            //print("set to 60");
+
+        }
         storedBlue = startBlue;
         storedGreen = startGreen;
         storedYellow = startYellow;
@@ -2681,6 +2699,11 @@ public class Bot : MonoBehaviour
         return cMap;
     }
 
+    public void SetFuelAmt(int value)
+    {
+        storedRed = value;
+        print(value);
+    }
     
 }
 

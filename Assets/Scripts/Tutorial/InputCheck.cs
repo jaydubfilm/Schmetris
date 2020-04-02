@@ -66,7 +66,6 @@ public class InputCheck : MonoBehaviour
                 {
                     startFade = false;
                     alpha = 0;
-                    print("zero");
                 }
             }
 
@@ -74,8 +73,8 @@ public class InputCheck : MonoBehaviour
             {
                 if (Time.time - timeAtInput > timeBeforeFade + timeUntilNextPrompt)
                 {
-                    print("next");
                     TutorialManager.Instance.TutorialPopup(2, true, true, true);
+                    //start asteroid shit
                     queueNext = true;
                 }
             }
