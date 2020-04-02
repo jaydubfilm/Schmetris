@@ -29,3 +29,25 @@ MonoBehaviour:
   maxBotRadius: 6
   ghostMoveSpeed: 30
   blockRadius: 3
+  speedLevels:
+  - 0.5
+  - 0.75
+  - 1
+  - 1.5
+  - 2
+  defaultSpeedLevel: 2
+  reddite:
+    buyPrice: 10
+    sellPrice: 5
+  blueSalt:
+    buyPrice: 20
+    sellPrice: 15
+  greenAlgae:
+    buyPrice: 25
+    sellPrice: 20
+  yellectrons:
+    buyPrice: 15
+    sellPrice: 10
+  greyscale:
+    buyPrice: 20
+    sellPrice: 15

@@ -2005,15 +2005,15 @@ public class Scrapyard : MonoBehaviour
         switch(resourceType)
         {
             case "RED":
-                return Mathf.RoundToInt(GameController.Instance.costMultiplier * 10);
+                return Mathf.RoundToInt(GameController.Instance.costMultiplier * GameController.Instance.settings.reddite.buyPrice);
             case "BLUE":
-                return Mathf.RoundToInt(GameController.Instance.costMultiplier * 20);
+                return Mathf.RoundToInt(GameController.Instance.costMultiplier * GameController.Instance.settings.blueSalt.buyPrice);
             case "GREEN":
-                return Mathf.RoundToInt(GameController.Instance.costMultiplier * 25);
+                return Mathf.RoundToInt(GameController.Instance.costMultiplier * GameController.Instance.settings.greenAlgae.buyPrice);
             case "YELLOW":
-                return Mathf.RoundToInt(GameController.Instance.costMultiplier * 15);
+                return Mathf.RoundToInt(GameController.Instance.costMultiplier * GameController.Instance.settings.yellectrons.buyPrice);
             case "GREY":
-                return Mathf.RoundToInt(GameController.Instance.costMultiplier * 20);
+                return Mathf.RoundToInt(GameController.Instance.costMultiplier * GameController.Instance.settings.greyscale.buyPrice);
         }
         return 0;
     }
@@ -2024,15 +2024,15 @@ public class Scrapyard : MonoBehaviour
         switch (resourceType)
         {
             case "RED":
-                return 5;
+                return GameController.Instance.settings.reddite.sellPrice;
             case "BLUE":
-                return 15;
+                return GameController.Instance.settings.blueSalt.sellPrice;
             case "GREEN":
-                return 20;
+                return GameController.Instance.settings.greenAlgae.sellPrice;
             case "YELLOW":
-                return 10;
+                return GameController.Instance.settings.yellectrons.sellPrice;
             case "GREY":
-                return 15;
+                return GameController.Instance.settings.greyscale.sellPrice;
         }
         return 0;
     }

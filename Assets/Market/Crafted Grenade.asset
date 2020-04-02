@@ -15,6 +15,6 @@ MonoBehaviour:
   brick: {fileID: 6715254118685096965, guid: bebd53362cafce14589b1351869f9cea, type: 3}
   brickLevels:
   - buyPrice: 11325
-    sellPrice: 0
+    sellPrice: 7550
   - buyPrice: 19875
-    sellPrice: 0
+    sellPrice: 13250
