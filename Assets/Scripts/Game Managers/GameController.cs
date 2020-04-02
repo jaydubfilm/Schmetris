@@ -825,12 +825,11 @@ public class GameController : MonoBehaviour
             {
                 int blockType = ProbabilityPicker(blockProbArr);
 
-                blockSpawnTimer = levelData.levelSections[levelSection].blockSpawnRate;
-                GameObject newBlock = null;
-                while(newBlock == null)
-                    newBlock = TrySpawnBlock(Random.Range(-ScreenStuff.screenRadius, ScreenStuff.screenRadius), blockType);
-               
+                if (SpawnBlock(Random.Range(-ScreenStuff.screenRadius, ScreenStuff.screenRadius), blockType) != null)
+                {
+                    blockSpawnTimer = levelData.levelSections[levelSection].blockSpawnRate;
 
+                }
             }
         }
     }
@@ -868,24 +867,60 @@ public class GameController : MonoBehaviour
     }
 
 
-    public GameObject TrySpawnBlock(int col, int type)
+    public GameObject SpawnBlock(int col, int type)
     {
         GameObject newBlockObj = null;
-        
+
         Vector3 vpos = new Vector3(ScreenStuff.ColToXPosition(col), ScreenStuff.RowToYPosition(spawnRow), 0);
-        int rotation = Random.Range(0,4);
+        int rotation = Random.Range(0, 4);
         float rotationAngle = rotation * 90.0f;
 
-        bool canSpawnBlock = true;
-        //~
-        if (!canSpawnBlock)
-            return null;
-        
-        newBlockObj = (GameObject) Instantiate(blockSpawns[type].block, vpos, Quaternion.Euler(0f,0f,rotationAngle));
+        newBlockObj = (GameObject)Instantiate(blockSpawns[type].block, vpos, Quaternion.Euler(0f, 0f, rotationAngle));
         Block newBlock = newBlockObj.GetComponent<Block>();
         newBlock.bot = bot;
         newBlock.blockRotation = rotation;
-     
+
+        bool canSpawnHere = false;
+        //do
+        //{
+        ContactFilter2D newFilter = new ContactFilter2D();
+        newFilter.NoFilter();
+        newFilter.SetLayerMask(1 << LayerMask.NameToLayer("Bit"));
+        List<Collider2D> bitHits = new List<Collider2D>();
+        newBlockObj.GetComponent<Rigidbody2D>().OverlapCollider(newFilter, bitHits);
+        canSpawnHere = true;
+        foreach (Collider2D hit in bitHits)
+        {
+            if (hit.transform.parent != newBlockObj.transform)
+            {
+                canSpawnHere = false;
+                break;
+            }
+        }
+        Rigidbody2D[] childBodies = newBlockObj.GetComponentsInChildren<Rigidbody2D>();
+        foreach (Rigidbody2D childBody in childBodies)
+        {
+            List<Collider2D> childHits = new List<Collider2D>();
+            childBody.GetComponent<Rigidbody2D>().OverlapCollider(newFilter, childHits);
+            foreach (Collider2D hit in childHits)
+            {
+                if (hit.transform.parent != newBlockObj.transform)
+                {
+                    canSpawnHere = false;
+                    break;
+                }
+            }
+        }
+        if (!canSpawnHere)
+        {
+            //vpos.x = ScreenStuff.ColToXPosition(Random.Range(-ScreenStuff.screenRadius, ScreenStuff.screenRadius));
+            // newBlockObj.transform.position = vpos;
+            Destroy(newBlockObj);
+            return null;
+        }
+        //}
+        //while (!canSpawnHere);
+
         blockList.Add(newBlockObj);
 
         //Added by Carl
