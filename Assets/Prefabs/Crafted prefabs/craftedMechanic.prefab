@@ -22,7 +22,7 @@ MonoBehaviour:
   yellowToCraft: 0000000000000000
   greyToCraft: 3c00000064000000
   basePartToCraft:
-  - {fileID: 21300150, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+  - {fileID: 21300148, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - {fileID: 8468476409486650183, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4, type: 3}
 --- !u!114 &-2972653085496134036
 MonoBehaviour:
@@ -170,12 +170,12 @@ PrefabInstance:
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: requiredPower.Array.data[0]
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: requiredPower.Array.data[1]
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfca86bbe879bb643965c120dd9fc50e, type: 3}
   m_Name: Blue Salt
   m_EditorClassIdentifier: 
+  marketName: Blue Salt
   brick: {fileID: 6450636027791030212, guid: 8d224d3a4016a47ea86d7ab7283122ab, type: 3}
   brickLevels:
   - buyPrice: 200

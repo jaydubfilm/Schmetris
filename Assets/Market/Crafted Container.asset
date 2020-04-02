@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfca86bbe879bb643965c120dd9fc50e, type: 3}
   m_Name: Crafted Container
   m_EditorClassIdentifier: 
+  marketName: Container
   brick: {fileID: 6715254118685096965, guid: bbc47c93e7771e14f8326a99a159fd41, type: 3}
   brickLevels:
-  - buyPrice: 9525
-    sellPrice: 6350
+  - buyPrice: 3525
+    sellPrice: 2350
+  - buyPrice: 9225
+    sellPrice: 6150
   - buyPrice: 15225
     sellPrice: 10150
-  - buyPrice: 21225
-    sellPrice: 14150

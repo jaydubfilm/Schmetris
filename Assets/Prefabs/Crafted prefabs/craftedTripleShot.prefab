@@ -46,9 +46,6 @@ MonoBehaviour:
   bullet:
   - {fileID: 7918598799021602830, guid: aa18f778adbd1ed409676d0df638f9aa, type: 3}
   - {fileID: 7918598799021602830, guid: aa18f778adbd1ed409676d0df638f9aa, type: 3}
-  maxResource: 00000000
-  burnPerShot:
-  - 0
   numberOfEnemies: 3
   targets: []
   speed: 75
@@ -122,6 +119,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
+      propertyPath: requiredPower.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 8955500789032862693}
@@ -182,6 +184,26 @@ PrefabInstance:
         type: 3}
       propertyPath: blueBurn.Array.data[1]
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: requiredPower.Array.data[2]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: requiredPower.Array.data[3]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: requiredPower.Array.data[0]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: requiredPower.Array.data[1]
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3272617812009182816, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}

@@ -3,7 +3,7 @@
 [CreateAssetMenu(fileName = "New Market Data", menuName = "Market Data")]
 public class MarketData : ScriptableObject
 {
-    //public string marketName;
+    public string marketName;
     public GameObject brick;
     public MarketLevelData[] brickLevels;
 }
