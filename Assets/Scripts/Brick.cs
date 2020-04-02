@@ -26,7 +26,6 @@ public class Brick : MonoBehaviour
     public float[] yellowBurn;
     public float[] greyBurn;
 
-    public AudioClip addBrickSound;
     private AudioSource source;
   
     public Sprite[] spriteArr;
@@ -254,6 +253,7 @@ public class Brick : MonoBehaviour
         {
             GetComponent<Parasite>().ScoreEnemy();
         }
+
     }
 
     public int BitBrickCollide(GameObject bitObj) {
@@ -328,9 +328,16 @@ public class Brick : MonoBehaviour
             return false;
     }
 
+    bool isExploding = false;
     public void ExplodeBrick() {
+        if (isExploding)
+            return;
+        isExploding = true;
+
         Animator anim;
         float animDuration;
+
+        bot.queueDestroyedBrick = true;
 
         if (brickType == 9 && (bot.BrickAtBotArr(bot.coreV2) == null))
             GameController.Instance.EndGame("CORE DESTROYED");

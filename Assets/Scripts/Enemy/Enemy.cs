@@ -72,7 +72,8 @@ public class Enemy : MonoBehaviour
 
     public void ScoreEnemy()
     {
-        if(data.redYield > 0)
+
+        if (data.redYield > 0)
         {
             GameController.Instance.bot.storedRed += data.redYield;
             GameController.Instance.CreateFloatingText(data.redYield.ToString(), transform.position + new Vector3(1, 1, 0), 30, Color.red);

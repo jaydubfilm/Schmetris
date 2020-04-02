@@ -277,3 +277,4 @@ MonoBehaviour:
   strength: 3
   hp: 0
   isParasite: 0
+  deathSound: {fileID: 8300000, guid: 3f33676c236271a4d8aad3781ac1c4a3, type: 3}

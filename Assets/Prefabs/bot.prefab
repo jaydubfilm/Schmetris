@@ -109,6 +109,8 @@ MonoBehaviour:
   tripleSound: {fileID: 8300000, guid: f0cd4d87d7e925248b91fc9187c53c42, type: 3}
   resourceSound: {fileID: 8300000, guid: 637fc1c2e205cea4ca58e3e24edd34d8, type: 3}
   brickAttachSound: {fileID: 8300000, guid: dae029bafa398d04ca487c185b9cf21b, type: 3}
+  brickDestroySound: {fileID: 8300000, guid: 1958df7b2bdfc514aa786ba53c4ff7bc, type: 3}
+  queueDestroyedBrick: 0
   tripleDelay: 0.1
   hangarRed: 0
   hangarBlue: 0

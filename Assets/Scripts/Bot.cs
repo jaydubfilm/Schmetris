@@ -95,6 +95,8 @@ public class Bot : MonoBehaviour
     public AudioClip tripleSound;
     public AudioClip resourceSound;
     public AudioClip brickAttachSound;
+    public AudioClip brickDestroySound;
+    public bool queueDestroyedBrick = false;
     GameSettings settings;
 
     float startTime;
@@ -670,6 +672,12 @@ public class Bot : MonoBehaviour
      // Update is called once per frame
     void Update()
     {
+        if(queueDestroyedBrick)
+        {
+            queueDestroyedBrick = false;
+            Camera.main.GetComponent<AudioSource>().PlayOneShot(brickDestroySound, 0.5f);
+        }
+
         if (GameController.Instance.isPaused || !BrickAtBotArr(coreV2))
             return;
 
@@ -2018,7 +2026,7 @@ public class Bot : MonoBehaviour
                     GameObject newBrick = AddBrick(botCoords, brickType, bit.bitLevel);
                     if (newBrick != null)
                     {
-                        source.PlayOneShot(brickAttachSound, 0.5f);
+                        source.PlayOneShot(brickAttachSound, 0.75f);
                         BrickBitPair brickBitPair = new BrickBitPair(newBrick, bitObj);
                         brickBitPairList.Add(brickBitPair);
                         //GameController.Instance.money++;
