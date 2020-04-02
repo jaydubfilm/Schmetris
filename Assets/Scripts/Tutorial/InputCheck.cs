@@ -57,7 +57,7 @@ public class InputCheck : MonoBehaviour
             if(startFade == true)
             {
                 alpha = 1 - ((Time.time - timeAtInput) * fadeSpeed);
-                print(alpha);
+//                print(alpha);
                 Color imageColor = new Color(image.color.r, image.color.g, image.color.b, alpha);
                 image.color = imageColor;
                 Color textColor = new Color(text.color.r, text.color.g, text.color.b, alpha);
@@ -75,7 +75,7 @@ public class InputCheck : MonoBehaviour
                 if (Time.time - timeAtInput > timeBeforeFade + timeUntilNextPrompt)
                 {
                     print("next");
-                    TutorialManager.Instance.TutorialPopup(2, true, true, 0);
+                    TutorialManager.Instance.TutorialPopup(2, true, true, true);
                     queueNext = true;
                 }
             }

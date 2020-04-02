@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: TutorialGame
   m_EditorClassIdentifier: 
   levelDataArr:
-  - {fileID: 11400000, guid: e5062a2caa88fd648b4960002b16e05b, type: 2}
-  - {fileID: 11400000, guid: cfd18be4bae19c54bbbdb0e7efb47e04, type: 2}
-  - {fileID: 11400000, guid: e5062a2caa88fd648b4960002b16e05b, type: 2}
-  - {fileID: 11400000, guid: e5062a2caa88fd648b4960002b16e05b, type: 2}
-  - {fileID: 11400000, guid: e5062a2caa88fd648b4960002b16e05b, type: 2}
-  - {fileID: 11400000, guid: cfd18be4bae19c54bbbdb0e7efb47e04, type: 2}
+  - {fileID: 11400000, guid: 8fca509950b0739409cf12413315b912, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

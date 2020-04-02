@@ -13,7 +13,6 @@ public class Asteroid : MonoBehaviour
         block = GetComponent<Block>();
     }
 
-    // Update is called once per frame
     public void AdjustHP(int damage, Transform bullet)
     {
         print("hit asteroid") ;

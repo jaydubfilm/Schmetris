@@ -17,6 +17,8 @@ public class GameController : MonoBehaviour
     public List<GameObject> enemyList;
     public List<GameObject> bitReference;
 
+    bool tutorialHasStarted;
+
     //Player earned score/money - adjust UI to match every time money is updated
     int _money = 0;
     public int money
@@ -295,8 +297,11 @@ public class GameController : MonoBehaviour
         LoadLevelData(level);
         if (level == 1)
         {
-            if(TutorialManager.Instance != null)
-                TutorialManager.Instance.TutorialPopup(0, true, true, 1);
+            if (TutorialManager.Instance != null && tutorialHasStarted == false)
+            {
+                TutorialManager.Instance.TutorialPopup(0, true, true, true);
+                tutorialHasStarted = true;
+            }
         }
     }
 

@@ -1213,7 +1213,7 @@ PrefabInstance:
     - target: {fileID: 1155076957758060548, guid: 32dbadfe9985b4079802a97eaf87597d,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1155076957758060548, guid: 32dbadfe9985b4079802a97eaf87597d,
         type: 3}
@@ -1230,6 +1230,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5299670929539330577, guid: 32dbadfe9985b4079802a97eaf87597d,
+        type: 3}
+      propertyPath: startingBrickGrid
+      value: 
+      objectReference: {fileID: 2930960629295356326, guid: ce0d7a852ffe27748a730d778da741ef,
+        type: 3}
     - target: {fileID: 6980908553092519166, guid: 32dbadfe9985b4079802a97eaf87597d,
         type: 3}
       propertyPath: m_Name
@@ -1271,7 +1277,7 @@ RectTransform:
   m_Children:
   - {fileID: 1082627348}
   m_Father: {fileID: 2035807704}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1469,7 +1475,7 @@ RectTransform:
   m_Children:
   - {fileID: 901220598}
   m_Father: {fileID: 2035807704}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1645,7 +1651,7 @@ GameObject:
   - component: {fileID: 311959832}
   - component: {fileID: 311959831}
   m_Layer: 5
-  m_Name: Container
+  m_Name: Welcome
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1752,8 +1758,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 1371480166}
-    ActiveGameObject: {fileID: 1371480166}
+    - {fileID: 714195395}
+    ActiveGameObject: {fileID: 714195395}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -1764,8 +1770,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 963341166}
-    ActiveGameObject: {fileID: 963341166}
+    - {fileID: 1988869051}
+    ActiveGameObject: {fileID: 1988869051}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -1776,8 +1782,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 1371480166}
-    ActiveGameObject: {fileID: 1371480166}
+    - {fileID: 616324683}
+    ActiveGameObject: {fileID: 616324683}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -1788,80 +1794,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 177099119}
-    ActiveGameObject: {fileID: 177099119}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1864781175}
-    ActiveGameObject: {fileID: 1864781175}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1864781175}
-    ActiveGameObject: {fileID: 1864781175}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 177099119}
-    ActiveGameObject: {fileID: 177099119}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1925248199}
-    ActiveGameObject: {fileID: 1925248199}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1509168912}
-    ActiveGameObject: {fileID: 1509168912}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1925248199}
-    ActiveGameObject: {fileID: 1925248199}
+    - {fileID: 1282002471}
+    ActiveGameObject: {fileID: 1282002471}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -1884,8 +1818,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
+    - {fileID: 1082627347}
+    ActiveGameObject: {fileID: 1082627347}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -1896,92 +1830,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 2037009376}
-    ActiveGameObject: {fileID: 2037009376}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1689425625}
-    ActiveGameObject: {fileID: 1689425625}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 127504816}
-    ActiveGameObject: {fileID: 127504816}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 597861203}
-    ActiveGameObject: {fileID: 597861203}
+    - {fileID: 1022774020}
+    ActiveGameObject: {fileID: 1022774020}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -2016,8 +1866,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 793538380}
-    ActiveGameObject: {fileID: 793538380}
+    - {fileID: 1988869051}
+    ActiveGameObject: {fileID: 1988869051}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -2028,8 +1878,164 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 127504816}
-    ActiveGameObject: {fileID: 127504816}
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1988869051}
+    ActiveGameObject: {fileID: 1988869051}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 828699279}
+    ActiveGameObject: {fileID: 828699279}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 616324683}
+    ActiveGameObject: {fileID: 616324683}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1988869051}
+    ActiveGameObject: {fileID: 1988869051}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 828699279}
+    ActiveGameObject: {fileID: 828699279}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1988869051}
+    ActiveGameObject: {fileID: 1988869051}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -2091,9 +2097,6 @@ MonoBehaviour:
   - go: {fileID: 1290766077}
     guid: 
     path: 
-  - go: {fileID: 0}
-    guid: 
-    path: 
   - go: {fileID: 127504816}
     guid: 
     path: 
@@ -2110,6 +2113,9 @@ MonoBehaviour:
     guid: 
     path: 
   - go: {fileID: 1245532362}
+    guid: 
+    path: 
+  - go: {fileID: 469191952}
     guid: 
     path: 
   Hash6:
@@ -2131,12 +2137,12 @@ MonoBehaviour:
   - list: f0000000b600000090000000ff000000000000000000000000000000000000000000000008000000a0000000
   - list: f2000000c5000000a1000000ff000000000000000000000000000000000000000000000001000000a0000000
   - list: f2000000c5000000a1000000ff000000000000000000000000000000000000000000000008000000a0000000
-  - list: f2000000c5000000a1000000ff000000000000000000000000000000000000000000000008000000a0000000
-  - list: f2000000c5000000a1000000ff000000000000000000000000000000000000000000000000000000a0000000
+  - list: f2000000c5000000a1000000ff00000000000000980000009c0000009f000000ff00000000000000a0000000
   - list: f0000000b600000090000000ff000000000000000000000000000000000000000000000008000000a0000000
   - list: f2000000c5000000a1000000ff000000000000000000000000000000000000000000000001000000a0000000
   - list: f0000000b600000090000000ff000000000000000000000000000000000000000000000008000000a0000000
   - list: f2000000c5000000a1000000ff000000000000000000000000000000000000000000000001000000a0000000
+  - list: 9a000000d9000000a2000000ff000000000000000000000000000000000000000000000008000000a0000000
   Hash7: []
   Hash7_Fix2_0: []
   Hash8: []
@@ -2333,6 +2339,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 411502972}
   m_CullTransparentMesh: 0
+--- !u!1 &469191952
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 469191953}
+  m_Layer: 5
+  m_Name: Press Key
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &469191953
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469191952}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1388233700}
+  m_Father: {fileID: 2035807704}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &597861203
 GameObject:
   m_ObjectHideFlags: 0
@@ -2361,7 +2403,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 311959830}
-  - {fileID: 1388233700}
   m_Father: {fileID: 2035807704}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2382,7 +2423,7 @@ GameObject:
   - component: {fileID: 616324685}
   - component: {fileID: 616324684}
   m_Layer: 5
-  m_Name: Container
+  m_Name: Collect GreyScale
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2824,12 +2865,12 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: 
+      - m_Target: {fileID: 1988869053}
+        m_MethodName: CloseCurrent
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -3023,7 +3064,7 @@ GameObject:
   m_Component:
   - component: {fileID: 768727134}
   m_Layer: 5
-  m_Name: Asteroids Hit 3
+  m_Name: Asteroids Hit 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3042,7 +3083,7 @@ RectTransform:
   m_Children:
   - {fileID: 1423759631}
   m_Father: {fileID: 2035807704}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3234,7 +3275,7 @@ RectTransform:
   m_Children:
   - {fileID: 1914562658}
   m_Father: {fileID: 2035807704}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3514,6 +3555,7 @@ MonoBehaviour:
   highestScene: 1
   bgPanelArr: []
   bgPanel: {fileID: 6436523624224430614, guid: b5bf3d8b53ea54527ac6215a9568df94, type: 3}
+  isLevelCompleteQueued: 0
   speciesSpawnData: []
   blockSpeed: 0
   loadIcons:
@@ -3557,7 +3599,7 @@ Transform:
   - {fileID: 1988869052}
   - {fileID: 32833780}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &828699283
 MonoBehaviour:
@@ -3781,7 +3823,7 @@ GameObject:
   - component: {fileID: 901220600}
   - component: {fileID: 901220599}
   m_Layer: 5
-  m_Name: Container
+  m_Name: 3rd Greyscale
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4051,7 +4093,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 935346085}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 058cba836c1846c3aa1c5fd2e28aea77, type: 3}
   m_Name: 
@@ -4791,7 +4833,7 @@ GameObject:
   - component: {fileID: 1022774023}
   - component: {fileID: 1022774022}
   m_Layer: 5
-  m_Name: Container
+  m_Name: Asteroids Appear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4880,7 +4922,7 @@ GameObject:
   - component: {fileID: 1029637572}
   - component: {fileID: 1029637571}
   m_Layer: 5
-  m_Name: Container
+  m_Name: Death By OverHeating
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5061,7 +5103,7 @@ GameObject:
   - component: {fileID: 1082627350}
   - component: {fileID: 1082627349}
   m_Layer: 5
-  m_Name: Container
+  m_Name: First GreyScale
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5714,7 +5756,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1988869053}
-        m_MethodName: CloseCurrent
+        m_MethodName: NextWith2SecondDelay
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5772,12 +5814,12 @@ GameObject:
   - component: {fileID: 1245532364}
   - component: {fileID: 1245532363}
   m_Layer: 5
-  m_Name: Container
+  m_Name: LVL 2 Upgrade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1245532363
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5870,7 +5912,7 @@ RectTransform:
   m_Children:
   - {fileID: 616324686}
   m_Father: {fileID: 2035807704}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5889,7 +5931,7 @@ GameObject:
   - component: {fileID: 1290766080}
   - component: {fileID: 1290766079}
   m_Layer: 5
-  m_Name: Container
+  m_Name: Death By Smashed Core
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6019,7 +6061,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Too many hits too quickly.  Try again. \r\n\n\n\n\r"
+  m_text: "You failed to protect your core.  Try again. \r\n\n\r"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0079084f6fb3f8b49a7603605ab7fb1b, type: 2}
   m_sharedMaterial: {fileID: -8765588738649571948, guid: 0079084f6fb3f8b49a7603605ab7fb1b,
@@ -6065,7 +6107,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 41
+  m_firstOverflowCharacterIndex: 47
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -6089,12 +6131,12 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1346194923}
-    characterCount: 45
+    characterCount: 49
     spriteCount: 0
-    spaceCount: 12
-    wordCount: 7
+    spaceCount: 11
+    wordCount: 8
     linkCount: 0
-    lineCount: 6
+    lineCount: 4
     pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
@@ -6291,7 +6333,7 @@ RectTransform:
   m_Children:
   - {fileID: 1245532365}
   m_Father: {fileID: 2035807704}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6394,7 +6436,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1988869053}
-        m_MethodName: CloseCurrent
+        m_MethodName: CloseAndOpenNextUnpaused
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6453,7 +6495,7 @@ GameObject:
   - component: {fileID: 1388233702}
   - component: {fileID: 1388233701}
   m_Layer: 5
-  m_Name: Queue
+  m_Name: Press Key
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6471,8 +6513,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 617237080}
-  m_Father: {fileID: 597861204}
-  m_RootOrder: 1
+  m_Father: {fileID: 469191953}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6542,7 +6584,7 @@ GameObject:
   - component: {fileID: 1423759633}
   - component: {fileID: 1423759632}
   m_Layer: 5
-  m_Name: Container
+  m_Name: Asteroids Hit 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6652,7 +6694,7 @@ RectTransform:
   m_Children:
   - {fileID: 1029637573}
   m_Father: {fileID: 2035807704}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6850,7 +6892,7 @@ RectTransform:
   m_Children:
   - {fileID: 1022774021}
   m_Father: {fileID: 2035807704}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -7194,7 +7236,7 @@ GameObject:
   - component: {fileID: 1914562660}
   - component: {fileID: 1914562659}
   m_Layer: 5
-  m_Name: Container
+  m_Name: Asteroids Hit 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7286,7 +7328,7 @@ RectTransform:
   m_Children:
   - {fileID: 1290766078}
   m_Father: {fileID: 2035807704}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -7337,11 +7379,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   font: {fileID: 11400000, guid: 0079084f6fb3f8b49a7603605ab7fb1b, type: 2}
-  moduleList:
+  sequentialModuleList:
   - {fileID: 311959829}
   - {fileID: 1388233699}
   - {fileID: 2117779387}
-  - {fileID: 0}
+  - {fileID: 1022774020}
+  - {fileID: 616324683}
+  - {fileID: 616324683}
+  nonSequentialModuleList:
+  - {fileID: 1914562657}
+  - {fileID: 1423759630}
+  - {fileID: 1290766077}
+  - {fileID: 1029637570}
   playerPos: {fileID: 0}
 --- !u!224 &2004178472 stripped
 RectTransform:
@@ -7378,6 +7427,7 @@ RectTransform:
   m_LocalScale: {x: 2.17536, y: 2.17536, z: 2.17536}
   m_Children:
   - {fileID: 597861204}
+  - {fileID: 469191953}
   - {fileID: 2037009377}
   - {fileID: 1689425626}
   - {fileID: 1282002472}
@@ -7433,7 +7483,7 @@ RectTransform:
   m_Children:
   - {fileID: 2117779388}
   m_Father: {fileID: 2035807704}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -7452,7 +7502,7 @@ GameObject:
   - component: {fileID: 2117779390}
   - component: {fileID: 2117779389}
   m_Layer: 5
-  m_Name: Container
+  m_Name: Get In Get Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

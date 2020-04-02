@@ -281,6 +281,10 @@ public class Brick : MonoBehaviour
                 bot.GetComponent<Overheat>().AddHeat();
             }
             bit.RemoveFromBlock("explode");
+
+            if (TutorialManager.Instance != null) TutorialManager.Instance.OnAsteroidHit();
+                    
+
         } 
         else
         {
@@ -330,7 +334,11 @@ public class Brick : MonoBehaviour
         float animDuration;
 
         if (brickType == 9 && (bot.BrickAtBotArr(bot.coreV2) == null))
+        { 
             GameController.Instance.EndGame("CORE DESTROYED");
+            if (TutorialManager.Instance != null)
+                TutorialManager.Instance.TutorialPopup(2, true, true, false);
+    }
 
         if (GetComponent<Bomb>()) {
             GetComponent<Bomb>().BombEnemies(GetPoweredLevel());
