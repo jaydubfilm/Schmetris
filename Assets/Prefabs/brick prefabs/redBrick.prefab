@@ -50,7 +50,7 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  addBrickSound: {fileID: 8300000, guid: d2bdca082fbef3e4fb8bbed30f5d03d8, type: 3}
+  destroyBrickSound: {fileID: 8300000, guid: 5ecc48d54c2d61948b4c0aa4c1b8ce67, type: 3}
   spriteArr:
   - {fileID: 21300078, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - {fileID: 21300080, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
@@ -63,6 +63,7 @@ MonoBehaviour:
   parentBot: {fileID: 0}
   neighborList: []
   healthBar: {fileID: 0}
+  activeShields: []
 --- !u!1001 &6406064603019123139
 PrefabInstance:
   m_ObjectHideFlags: 0

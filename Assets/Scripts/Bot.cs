@@ -84,7 +84,7 @@ public class Bot : MonoBehaviour
     public GameObject blockPrefab;
     public GameObject bitPrefab;
     public GameObject powerWarning;
-
+    public bool hasDamagedCells = false;
 
     private List<GameObject> pathList = new List<GameObject>();
     private List<Vector2Int> pathArrList = new List<Vector2Int>();
@@ -94,6 +94,9 @@ public class Bot : MonoBehaviour
     private AudioSource source;
     public AudioClip tripleSound;
     public AudioClip resourceSound;
+    public AudioClip brickAttachSound;
+    public AudioClip brickDestroySound;
+    public bool queueDestroyedBrick = false;
     GameSettings settings;
 
     float startTime;
@@ -599,6 +602,7 @@ public class Bot : MonoBehaviour
         GameController.OnLevelRestart += OnLevelRestart;
         GameController.OnLoseLife += OnLoseLife;
         GameController.OnNewLevel += OnNewLevel;
+        GameController.OnLevelComplete += OnLevelComplete;
     }
 
     private void OnDisable()
@@ -608,6 +612,21 @@ public class Bot : MonoBehaviour
         GameController.OnLevelRestart -= OnLevelRestart;
         GameController.OnLoseLife -= OnLoseLife;
         GameController.OnNewLevel -= OnNewLevel;
+        GameController.OnLevelComplete -= OnLevelComplete;
+    }
+
+    void OnLevelComplete()
+    {
+        hasDamagedCells = false;
+        foreach(GameObject brickObject in brickList)
+        {
+            Brick checkBrick = brickObject.GetComponent<Brick>();
+            if (checkBrick.brickHP < checkBrick.brickMaxHP[checkBrick.GetPoweredLevel()])
+            {
+                hasDamagedCells = true;
+                break;
+            }
+        }
     }
 
     bool init = false;
@@ -653,6 +672,12 @@ public class Bot : MonoBehaviour
      // Update is called once per frame
     void Update()
     {
+        if(queueDestroyedBrick)
+        {
+            queueDestroyedBrick = false;
+            Camera.main.GetComponent<AudioSource>().PlayOneShot(brickDestroySound, 0.5f);
+        }
+
         if (GameController.Instance.isPaused || !BrickAtBotArr(coreV2))
             return;
 
@@ -672,7 +697,7 @@ public class Bot : MonoBehaviour
         }
 
         //Backup fuel supply if core runs out
-        Brick coreBurn = BrickAtBotArr(coreV2) ? BrickAtBotArr(coreV2).GetComponent<Brick>() : null;
+        Brick coreBurn = (!GameController.Instance.isLevelCompleteQueued && BrickAtBotArr(coreV2)) ? BrickAtBotArr(coreV2).GetComponent<Brick>() : null;
         if (coreBurn && !coreBurn.hasResources)
         {
             if (storedRed > 0)
@@ -688,7 +713,7 @@ public class Bot : MonoBehaviour
                 fuelBrickList[0].GetComponent<Fuel>().BurnFuel(coreBurn.redBurn[coreBurn.GetPoweredLevel()] * Time.deltaTime);
             }
         }
-        else if (coreBurn && fuelBrickList.Count > 0)
+        else if (fuelBrickList.Count > 0)
         {
             fuelBrickList[0].GetComponent<Fuel>().CancelBurnFuel();
         }
@@ -2001,9 +2026,10 @@ public class Bot : MonoBehaviour
                     GameObject newBrick = AddBrick(botCoords, brickType, bit.bitLevel);
                     if (newBrick != null)
                     {
+                        source.PlayOneShot(brickAttachSound, 0.75f);
                         BrickBitPair brickBitPair = new BrickBitPair(newBrick, bitObj);
                         brickBitPairList.Add(brickBitPair);
-                        GameController.Instance.money++;
+                        //GameController.Instance.money++;
                     }
                 }
                 else
@@ -2062,7 +2088,7 @@ public class Bot : MonoBehaviour
     void AddResource(Brick containerBrick, int type, int level)
     {
         source.PlayOneShot(resourceSound, 1.0f);
-        GameController.Instance.money++;
+        //GameController.Instance.money++;
 
         switch(type)
         {

@@ -40,7 +40,7 @@ public class GameUI : MonoBehaviour
     public Text greyBurnRate;
 
     //Popups
-    public Text noFuelDisplay;
+    public Text popupDisplay;
     public GameObject levelCompleteDisplay;
     public GameObject lifeLostDisplay;
     public GameObject returnButton;
@@ -104,7 +104,17 @@ public class GameUI : MonoBehaviour
     //Toggle 'No Fuel' popup
     public void SetNoFuelPopup(bool isActive)
     {
-        noFuelDisplay.color = isActive ? Color.white : Color.clear;
+        if (isActive)
+            popupDisplay.text = "Out of reddite";
+        popupDisplay.color = isActive ? Color.white : Color.clear;
+    }
+
+    //Toggle 'Insufficient Power' popup
+    public void SetNoPowerPopup(bool isActive)
+    {
+        if (isActive)
+            popupDisplay.text = "Insufficient yellectricity";
+        popupDisplay.color = isActive ? Color.white : Color.clear;
     }
 
     //Toggle 'Level Complete' popup
@@ -157,7 +167,7 @@ public class GameUI : MonoBehaviour
     public void Update()
     {
         //Fade out no fuel popup
-        noFuelDisplay.color = new Color(1, 1, 1, Mathf.Max(0, noFuelDisplay.color.a - Time.deltaTime));
+        popupDisplay.color = new Color(1, 1, 1, Mathf.Max(0, popupDisplay.color.a - Time.unscaledDeltaTime));
 
         //Keyboard controls
         if (continueButton.activeSelf)

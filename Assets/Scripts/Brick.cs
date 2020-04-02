@@ -26,7 +26,6 @@ public class Brick : MonoBehaviour
     public float[] yellowBurn;
     public float[] greyBurn;
 
-    public AudioClip addBrickSound;
     private AudioSource source;
   
     public Sprite[] spriteArr;
@@ -186,6 +185,9 @@ public class Brick : MonoBehaviour
     //Burn corresponding resource amounts, if able
     public bool TryBurnResources(float interval)
     {
+        if (GameController.Instance.isLevelCompleteQueued)
+            return true;
+
         int burnLevel = GetPoweredLevel();
         if (bot.storedRed >= interval * redBurn[burnLevel] && bot.storedBlue >= interval * blueBurn[burnLevel] && bot.storedGreen >= interval * greenBurn[burnLevel] && bot.storedYellow >= interval * yellowBurn[burnLevel] && bot.storedGrey >= interval * greyBurn[burnLevel])
         {
@@ -251,6 +253,7 @@ public class Brick : MonoBehaviour
         {
             GetComponent<Parasite>().ScoreEnemy();
         }
+
     }
 
     public int BitBrickCollide(GameObject bitObj) {
@@ -329,9 +332,16 @@ public class Brick : MonoBehaviour
             return false;
     }
 
+    bool isExploding = false;
     public void ExplodeBrick() {
+        if (isExploding)
+            return;
+        isExploding = true;
+
         Animator anim;
         float animDuration;
+
+        bot.queueDestroyedBrick = true;
 
         if (brickType == 9 && (bot.BrickAtBotArr(bot.coreV2) == null))
         { 
@@ -495,8 +505,8 @@ public class Brick : MonoBehaviour
             }
 
             int scoreIncrease = (int)Mathf.Pow(brickMoneyMultiplier, brickLevel);
-            GameController.Instance.money += scoreIncrease;
-            GameController.Instance.CreateFloatingText("$" + scoreIncrease, transform.position, 40, Color.white);
+            //GameController.Instance.money += scoreIncrease;
+            //GameController.Instance.CreateFloatingText("$" + scoreIncrease, transform.position, 40, Color.white);
         }
     }
 

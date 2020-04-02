@@ -131,6 +131,7 @@ MonoBehaviour:
   speed: 17
   margin: 0.1
   fireOnProximity: 3
+  dropDownDistance: 4
   bullet: {fileID: 4678426597054703440, guid: 830515e21ff0d524da08aba3cfcb73d6, type: 3}
   bulletDamage: 1
   rateOfFire: 0.1
@@ -153,6 +154,8 @@ MonoBehaviour:
   gameController: {fileID: 0}
   strength: 1
   hp: 1
+  isParasite: 0
+  deathSound: {fileID: 0}
 --- !u!50 &219272288
 Rigidbody2D:
   serializedVersion: 4
@@ -215,3 +218,5 @@ MonoBehaviour:
   gameController: {fileID: 0}
   strength: 0
   hp: 5
+  isParasite: 0
+  deathSound: {fileID: 8300000, guid: 3f33676c236271a4d8aad3781ac1c4a3, type: 3}

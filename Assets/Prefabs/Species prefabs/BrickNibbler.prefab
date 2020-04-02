@@ -42,6 +42,7 @@ MonoBehaviour:
   strength: 1
   hp: 0
   isParasite: 1
+  deathSound: {fileID: 8300000, guid: 3f33676c236271a4d8aad3781ac1c4a3, type: 3}
 --- !u!1001 &5284172809694481783
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -110,6 +111,11 @@ PrefabInstance:
       propertyPath: redYield
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 7261516919247563701, guid: c2906289b3f75423a85d7faeb2570317,
+        type: 3}
+      propertyPath: deathSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 3f33676c236271a4d8aad3781ac1c4a3, type: 3}
     - target: {fileID: 7484416850874066765, guid: c2906289b3f75423a85d7faeb2570317,
         type: 3}
       propertyPath: m_LocalPosition.x

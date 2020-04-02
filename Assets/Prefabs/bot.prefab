@@ -89,6 +89,8 @@ MonoBehaviour:
   - {fileID: 6715254118685096965, guid: 020ae0b96c2eae54393981dc74d98c75, type: 3}
   - {fileID: 6715254118685096965, guid: 4fa7b42a9b8974a4e856d53bb1f8ce20, type: 3}
   brickList: []
+  fuelBrickList: []
+  resourceBurnBricks: []
   powerGrid: {fileID: 6811822890141058021, guid: 615e256f41e1542db8dff35ad956b506,
     type: 3}
   powerGridPrefab: {fileID: 6811822890141058021, guid: 615e256f41e1542db8dff35ad956b506,
@@ -102,9 +104,19 @@ MonoBehaviour:
     type: 3}
   powerWarning: {fileID: 5515604555638627983, guid: 5eb9884e0b57449d8b33f38d7cf509e9,
     type: 3}
+  hasDamagedCells: 0
+  savedContainerData: []
   tripleSound: {fileID: 8300000, guid: f0cd4d87d7e925248b91fc9187c53c42, type: 3}
   resourceSound: {fileID: 8300000, guid: 637fc1c2e205cea4ca58e3e24edd34d8, type: 3}
+  brickAttachSound: {fileID: 8300000, guid: dae029bafa398d04ca487c185b9cf21b, type: 3}
+  brickDestroySound: {fileID: 8300000, guid: 1958df7b2bdfc514aa786ba53c4ff7bc, type: 3}
+  queueDestroyedBrick: 0
   tripleDelay: 0.1
+  hangarRed: 0
+  hangarBlue: 0
+  hangarGreen: 0
+  hangarYellow: 0
+  hangarGrey: 0
   tripleWaitFlag: 0
 --- !u!50 &3160574865307964100
 Rigidbody2D:

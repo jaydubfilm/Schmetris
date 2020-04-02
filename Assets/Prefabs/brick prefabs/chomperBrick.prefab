@@ -18,6 +18,7 @@ MonoBehaviour:
   attackTimer: 0
   attackPrefab: {fileID: 7857921322564960265, guid: 6a99a139e66c5f144ac5cbe03e6cf77a,
     type: 3}
+  deathSound: {fileID: 8300000, guid: 3f33676c236271a4d8aad3781ac1c4a3, type: 3}
 --- !u!1001 &4336688489745208927
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfca86bbe879bb643965c120dd9fc50e, type: 3}
+  m_Name: Crafted Armor
+  m_EditorClassIdentifier: 
+  brick: {fileID: 6715254118685096965, guid: 0f3ca62c40e3c9047a172548b2d8766a, type: 3}
+  brickLevels:
+  - buyPrice: 9450
+    sellPrice: 6300
+  - buyPrice: 13950
+    sellPrice: 9300

@@ -15,6 +15,8 @@ public class EnemyGeneral : MonoBehaviour
     int hpLastFrame;
     Enemy enemy;
 
+    public AudioClip deathSound;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -57,6 +59,7 @@ public class EnemyGeneral : MonoBehaviour
     // Update is called once per frame
     public void EnemyDeath()
     {
+        Camera.main.GetComponent<AudioSource>().PlayOneShot(deathSound, 1.0f);
 
         gameController.enemyList.Remove(gameObject);
 

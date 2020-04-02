@@ -24,4 +24,10 @@ public class GameSettings : ScriptableObject
     public int blockRadius = 3;
     public float[] speedLevels = new float[] { 0.5f, 0.75f, 1.0f, 1.5f, 2.0f };
     public int defaultSpeedLevel = 2;
+
+    public MarketLevelData reddite;
+    public MarketLevelData blueSalt;
+    public MarketLevelData greenAlgae;
+    public MarketLevelData yellectrons;
+    public MarketLevelData greyscale;
 }

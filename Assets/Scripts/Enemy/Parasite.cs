@@ -13,6 +13,7 @@ public class Parasite : MonoBehaviour
 
     //Resources upon destroying
     bool hasScored = false;
+    public AudioClip deathSound;
 
     // Start is called before the first frame update
     void Start()
@@ -53,7 +54,7 @@ public class Parasite : MonoBehaviour
         if (brick.neighborList.Count==0)
             return;
         foreach (GameObject neighbor in brick.neighborList) {
-            if (neighbor.GetComponent<Brick>().IsCore()) {
+            if (neighbor && neighbor.GetComponent<Brick>().IsCore()) {
                 targetBrick = neighbor;
                 return;
             }
@@ -72,6 +73,8 @@ public class Parasite : MonoBehaviour
         if (hasScored)
             return;
         hasScored = true;
+
+        Camera.main.GetComponent<AudioSource>().PlayOneShot(deathSound, 1.0f);
 
         if (data.redYield > 0)
         {

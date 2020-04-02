@@ -87,6 +87,7 @@ public class PowerGrid : MonoBehaviour
         }
 
         if (zoneReminder) {
+            GameController.Instance.hud.SetNoPowerPopup(true);
             FlashGridCells();
         }
     }

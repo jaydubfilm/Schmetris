@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 7
   maxHP: 50
-  attackRate: 2
-  damage: 1
+  attackRate: 1
+  damage: 3
   speed: 5
   redYield: 3
   blueYield: 0
