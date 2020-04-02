@@ -1975,7 +1975,7 @@ public class Scrapyard : MonoBehaviour
             {
                 if(brickCheck.spriteArr[i] == targetBrick)
                 {
-                    return Mathf.RoundToInt(GameController.Instance.costMultiplier * marketCheck.brickLevels[i].buyPrice);
+                    return brickCheck.GetComponent<CraftedPart>() ? Mathf.RoundToInt(GameController.Instance.costMultiplier * marketCheck.brickLevels[i].buyPrice) : marketCheck.brickLevels[i].buyPrice;
                 }
             }
         }
@@ -1992,7 +1992,7 @@ public class Scrapyard : MonoBehaviour
             {
                 if (brickCheck.spriteArr[i] == targetBrick)
                 {
-                    return marketCheck.brickLevels[i].sellPrice;
+                    return brickCheck.GetComponent<CraftedPart>() ? Mathf.RoundToInt(GameController.Instance.costMultiplier * marketCheck.brickLevels[i].sellPrice) : marketCheck.brickLevels[i].sellPrice;
                 }
             }
         }
@@ -2005,15 +2005,15 @@ public class Scrapyard : MonoBehaviour
         switch(resourceType)
         {
             case "RED":
-                return Mathf.RoundToInt(GameController.Instance.costMultiplier * GameController.Instance.settings.reddite.buyPrice);
+                return GameController.Instance.settings.reddite.buyPrice;
             case "BLUE":
-                return Mathf.RoundToInt(GameController.Instance.costMultiplier * GameController.Instance.settings.blueSalt.buyPrice);
+                return GameController.Instance.settings.blueSalt.buyPrice;
             case "GREEN":
-                return Mathf.RoundToInt(GameController.Instance.costMultiplier * GameController.Instance.settings.greenAlgae.buyPrice);
+                return GameController.Instance.settings.greenAlgae.buyPrice;
             case "YELLOW":
-                return Mathf.RoundToInt(GameController.Instance.costMultiplier * GameController.Instance.settings.yellectrons.buyPrice);
+                return GameController.Instance.settings.yellectrons.buyPrice;
             case "GREY":
-                return Mathf.RoundToInt(GameController.Instance.costMultiplier * GameController.Instance.settings.greyscale.buyPrice);
+                return GameController.Instance.settings.greyscale.buyPrice;
         }
         return 0;
     }
