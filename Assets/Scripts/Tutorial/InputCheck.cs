@@ -18,6 +18,8 @@ public class InputCheck : MonoBehaviour
     bool startFade;
     bool queueNext;
     private bool canDetect = true;
+    public bool QueueAdditional;
+    public float queueDelay;
 
     // Start is called before the first frame update
     void Start()
@@ -69,13 +71,17 @@ public class InputCheck : MonoBehaviour
                 }
             }
 
-            if (queueNext == false)
+            if (QueueAdditional == true)
             {
-                if (Time.time - timeAtInput > timeBeforeFade + timeUntilNextPrompt)
+                if (queueNext == false)
                 {
-                    TutorialManager.Instance.TutorialPopup(2, true, true, true);
-                    //start asteroid shit
-                    queueNext = true;
+                    if (Time.time - timeAtInput > timeBeforeFade + timeUntilNextPrompt)
+                    {
+                        GameController.Instance.LoadNextLevelSection();
+                        //"Get In, Get out"....
+                        TutorialManager.Instance.TutorialPopup(2, true, true, true);
+                        queueNext = true;
+                    }
                 }
             }
         }

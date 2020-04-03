@@ -307,8 +307,7 @@ public class GameController : MonoBehaviour
             {
                 TutorialManager.Instance.TutorialPopup(0, true, true, true);                
                 tutorialHasStarted = true;
-                TutorialManager.Instance.playerPos.GetComponent<Bot>().SetFuelAmt(60);
-                print("fuel");
+                TutorialManager.Instance.playerPos.GetComponent<Bot>().SetFuelAmt(500);
 
             }
         }
@@ -693,6 +692,7 @@ public class GameController : MonoBehaviour
         isBotDead = false;
         isPaused = false;
         Time.timeScale = 1.0f;
+        TutorialManager.Instance.OnLevelChange(sectionNumber);
     }
 
     public void LoadLevelData(int levelNumber) {

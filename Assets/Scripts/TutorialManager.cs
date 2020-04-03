@@ -36,23 +36,46 @@ public class TutorialManager : MonoBehaviour
     int asteroidHits;
     bool greyHasFallen;
 
+    int currentSection;
+    int frameCounter;
+    public Sprite greyScale;
+    public Sprite level1GreyScale;
+    public Sprite level2GreyScale;
+    public Sprite red;
+
+
+    bool collected1Greyscale;
+    bool level1Upgraded;
+    public List<GameObject> greyScaleAtSectionStart = new List<GameObject>();
+    public List<GameObject> redSprites = new List<GameObject>();
+
+    bool beganGreyscaleSection;
+    bool hasHadFuelWarning;
+    Bot playerBot;
+    bool outOfFuel;
+    bool redDropTimer;
+    float timeToRedDrop = 5.5f;
+    float timerStartRedDrop;
+    bool hasSpawnedRed;
+    bool collectRed;
+    int redCounter;
+    int frameChecks;
+
+
+
     //public Game
     // Start is called before the first frame update
     void Awake()
     {
 
         Instance = this;
-    }
-
-    private void Start()
-    {
-        
+        playerBot = playerPos.GetComponent<Bot>();
     }
 
     private void Update()
     {
-        
-        if(timer)
+
+        if (timer)
         {
 
             float timerPosition = Time.time - timerStartTime;
@@ -61,30 +84,183 @@ public class TutorialManager : MonoBehaviour
             {
                 TutorialPopup(storedModule, storedPause, true, storedSequential);
                 timer = false;
-            }           
+            }
         }
 
 
-        //Check for new pieces
-        
+        //Check for new pieces        
         if (GameController.Instance.blockList.Count > countLastFrame)
         {
-            print("Block Falling");
+            //print("Block Falling");
             foreach (GameObject block in GameController.Instance.blockList)
             {
-                if (greyHasFallen == false)
-                {
-                    if (block.GetComponentInChildren<Bit>().bitType == 7)
-                    {
-                        TutorialPopup(4, true, true, true);
-                        print(block.gameObject.name);
-                        greyHasFallen = true;
-                    }
-                }
+                //if (greyHasFallen == false)
+                //{
+                //    if (block.GetComponentInChildren<Bit>().bitType == 7)
+                //    {
+                //        TutorialPopup(4, true, true, true);
+                //        print(block.gameObject.name);
+                //        greyHasFallen = true;
+                //    }
+                //}
             }
         }
         countLastFrame = GameController.Instance.blockList.Count;
+
+        //Section Specific Behaviours
+        if (currentSection == 2)
+        {
+
+
+
+            if (frameCounter == 60)
+            {
+                print("checking sprites");
+                List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
+                foreach (SpriteRenderer SR in childSprites)
+                {
+                    //collect your first greyscale
+                    if (collected1Greyscale == false)
+                    {
+//                        print(SR.sprite.name);
+                        if (SR.sprite == greyScale)
+                        {
+                            if (beganGreyscaleSection == false)
+                            {
+                                greyScaleAtSectionStart.Add(SR.gameObject);
+                            }
+                            else
+                            {
+                                if (!greyScaleAtSectionStart.Contains(SR.gameObject))
+                                {
+                                    TutorialPopup(4, false, true, false);
+                                    collected1Greyscale = true;
+                                    return;
+                                }
+                            }
+                        }
+
+                    }
+                    //level up greyscale
+                    if (collected1Greyscale == true && level1Upgraded == false)
+                    {
+                        if (SR.sprite == level1GreyScale)
+                        {
+                            CloseCurrent();
+                            TutorialPopup(5, true, true, false);
+                            level1Upgraded = true;
+                            return;
+                        }
+                    }
+                    //level up greyscale 2
+                    if (collected1Greyscale == true && level1Upgraded == true)
+                    {
+                        if (SR.sprite == level2GreyScale)
+                        {
+                            CloseCurrent();
+                            SetFuel(10);
+                            GameController.Instance.LoadNextLevelSection();
+                            TutorialPopup(6, true, true, false);
+                            level1Upgraded = true;
+                            return;
+                        }
+                    }
+                }
+                beganGreyscaleSection = true;
+                frameCounter = 0;
+            }
+
+            frameCounter++;
+        }
+
+        if (beganGreyscaleSection == true)
+        {
+            if (hasHadFuelWarning == false)
+            {
+                if (playerBot.storedRed < 5)
+                {
+
+                    hasHadFuelWarning = true;
+                    TutorialPopup(6, true, true, true);
+                }
+            }
+
+            if (playerBot.storedRed == 0 && outOfFuel == false)
+            {
+                print("out of fuel");
+                NextWith2SecondDelay();
+                outOfFuel = true;
+                timerStartRedDrop = Time.time;
+                redDropTimer = true;
+            }
+
+            if (redDropTimer == true)
+            {
+                print(Time.time - timerStartRedDrop);
+                if (Time.time - timerStartRedDrop > timeToRedDrop)
+                {
+                    SpawnSingle();
+                    redDropTimer = false;
+                    frameCounter = 0;
+                    hasSpawnedRed = true;
+                }
+            }
+
+
+            if (hasSpawnedRed)
+            {
+                if (frameCounter == 60)
+                {
+                    frameChecks++;
+                    print("checking sprites");
+                    List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
+                    foreach (SpriteRenderer SR in childSprites)
+                    {
+                        if (SR.sprite == red || frameChecks >= 17)
+                        {
+                            CloseAndOpenNextUnpaused();
+                            GameController.Instance.LoadNextLevelSection();
+                            frameCounter = 0;
+                            collectRed = true;
+                            hasSpawnedRed = false;
+                            print("Last");
+                        }
+                    }
+                }
+
+                frameCounter++;
+            }
+
+            if (collectRed)
+            {
+                if (frameCounter == 60)
+                {
+                    print("checking sprites");
+                    List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
+                    foreach (SpriteRenderer SR in childSprites)
+                    {                        
+                            if (SR.sprite == red)
+                            {
+                                if (!redSprites.Contains(SR.gameObject))
+                                {
+                                    print("got 1");
+                                    redSprites.Add(SR.gameObject);
+                                    redCounter++;
+                                    if (redCounter >= 3)
+                                    {
+                                        print("got 3");
+                                        CloseAndOpenNextUnpaused();
+                                    }
+                                }                                
+                            }                        
+                    }
+                    frameCounter = 0;
+                }
+                frameCounter++;
+            }
+        }
     }
+    
 
     //is sequential marks events that should happen chronologically
     public void TutorialPopup(int module, bool pauseGame, bool toggleOnOff, bool isSequential)
@@ -133,10 +309,16 @@ public class TutorialManager : MonoBehaviour
         {
             //enable the module
             if (isSequential)
-                sequentialModuleList[module].SetActive(true);
-            else
-                nonSequentialModuleList[module].SetActive(true);
+                if (module < sequentialModuleList.Count)
+                {
+                    sequentialModuleList[module].SetActive(true);
+                }
 
+            if (!isSequential)
+                if (module < nonSequentialModuleList.Count)
+                {
+                    nonSequentialModuleList[module].SetActive(true);
+                }
 
             //Only save our position in the list if this is a sequential event
             if (isSequential) currentSequencedModule = module;
@@ -149,7 +331,7 @@ public class TutorialManager : MonoBehaviour
     }
 
     [Button]
-    public void TestSpawnSingle()
+    public void SpawnSingle()
     {
         GameController.Instance.SpawnBlock(ScreenStuff.XPositionToCol(playerPos.position.x), 0);
         //TutorialPopup(0, false, false, 1);
@@ -237,14 +419,41 @@ public class TutorialManager : MonoBehaviour
                 CloseCurrent();
                 TutorialPopup(1, true, true, false);
                 break;
+            default:
+                break;
         }
     }
 
 
     [Button]
-    public void SetFuel()
+    public void SetFuel(int fuel)
     {
-        playerPos.GetComponent<Bot>().SetFuelAmt(200);
 
+        playerPos.GetComponent<Bot>().SetFuelAmt(fuel);
+    }
+
+    public void OnLevelChange(int newSection)
+    {
+        currentSection = newSection;
+        print("loaded scene " + newSection);
+        switch (newSection)
+        {
+            case 2: //greyscale
+                TutorialPopup(4, true, true, true);
+                break;
+
+
+
+            default:
+                break;
+        }
+    }
+
+    public void ToScrapYard()
+    {
+        //GameController.Instance.LoadNextLevelSection();
+
+        GameController.Instance.LoadNextLevelSection();
+        CloseCurrent();
     }
 }
