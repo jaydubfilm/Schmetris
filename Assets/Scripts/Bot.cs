@@ -2702,7 +2702,7 @@ public class Bot : MonoBehaviour
     public void SetFuelAmt(int value)
     {
         storedRed = value;
-        print(value);
+
     }
     
 }
