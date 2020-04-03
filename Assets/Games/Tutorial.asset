@@ -12,19 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5902128f472564b98abfcdfed45089dc, type: 3}
   m_Name: Tutorial
   m_EditorClassIdentifier: 
+  storeCostMultiplier: 1
   levelDataArr:
-  - {fileID: 11400000, guid: 32465a5c11ea4462594d0788d2e6408c, type: 2}
-  - {fileID: 11400000, guid: e5a046040edef43df988441666bd4fe3, type: 2}
-  - {fileID: 11400000, guid: f8277493d48ff4dff973fe2017a95ccb, type: 2}
-  - {fileID: 11400000, guid: 1928ce2eb99cb4864b4164fe8e8f97b6, type: 2}
-  - {fileID: 11400000, guid: e5a046040edef43df988441666bd4fe3, type: 2}
-  - {fileID: 11400000, guid: e5a046040edef43df988441666bd4fe3, type: 2}
-  - {fileID: 11400000, guid: e5a046040edef43df988441666bd4fe3, type: 2}
-  - {fileID: 11400000, guid: e5a046040edef43df988441666bd4fe3, type: 2}
-  - {fileID: 11400000, guid: e5a046040edef43df988441666bd4fe3, type: 2}
-  - {fileID: 11400000, guid: e5a046040edef43df988441666bd4fe3, type: 2}
-  - {fileID: 11400000, guid: e5a046040edef43df988441666bd4fe3, type: 2}
-  - {fileID: 11400000, guid: e5a046040edef43df988441666bd4fe3, type: 2}
-  - {fileID: 11400000, guid: e5a046040edef43df988441666bd4fe3, type: 2}
-  - {fileID: 11400000, guid: e5a046040edef43df988441666bd4fe3, type: 2}
-  - {fileID: 11400000, guid: e5a046040edef43df988441666bd4fe3, type: 2}
+  - {fileID: 11400000, guid: 48df46167f1ce294d838cd425ce38f06, type: 2}
+  - {fileID: 11400000, guid: 7c4a827665b710545a7e0fdbc39e3507, type: 2}
+  - {fileID: 11400000, guid: c7b02e27a165877458acac2aeadd3b2a, type: 2}
+  - {fileID: 11400000, guid: ad1e719847f617e4c9d71c28e79c2860, type: 2}
+  - {fileID: 11400000, guid: 06a8ba273e7281a44b5ca5f4a467cc95, type: 2}
