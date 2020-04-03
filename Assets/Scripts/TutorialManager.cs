@@ -455,5 +455,6 @@ public class TutorialManager : MonoBehaviour
 
         GameController.Instance.LoadNextLevelSection();
         CloseCurrent();
+        Destroy(gameObject);
     }
 }
