@@ -1066,24 +1066,7 @@ public class Scrapyard : MonoBehaviour
     }
     public void BuyMaxResource(string resource)
     {
-        switch (resource)
-        {
-            case "RED":
-                resourceChange = maxCapacity - currentFuel;
-                break;
-            case "BLUE":
-                resourceChange = maxCapacity - currentBlue;
-                break;
-            case "YELLOW":
-                resourceChange = maxCapacity - currentYellow;
-                break;
-            case "GREEN":
-                resourceChange = maxCapacity - currentGreen;
-                break;
-            case "GREY":
-                resourceChange = maxCapacity - currentGrey;
-                break;
-        }
+        resourceChange = transactionAmount / GetResourcePrice(resource);
         BuyResource(resource);
     }
 
