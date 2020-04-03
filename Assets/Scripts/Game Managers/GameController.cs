@@ -323,10 +323,18 @@ public class GameController : MonoBehaviour
         scrapyard.SetActive(false);
         hud.gameObject.SetActive(false);
         pauseMenu.SetActive(false);
-        mapMenu.GetComponent<LevelMenuUI>().OpenMenu();
-        mapMenu.SetActive(true);
         bot.hasDamagedCells = false;
-        audioController.FadeInMusic(audioController.menuMusic, 8.0f, 1.0f);
+        if (highestScene == 1)
+        {
+            StartLevel(1);
+
+        }
+        else
+        {
+            mapMenu.GetComponent<LevelMenuUI>().OpenMenu();
+            mapMenu.SetActive(true);
+            audioController.FadeInMusic(audioController.menuMusic, 8.0f, 1.0f);
+        }
     }
 
     public void SaveGame(int index)

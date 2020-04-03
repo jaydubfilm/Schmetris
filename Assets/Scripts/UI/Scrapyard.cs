@@ -814,9 +814,7 @@ public class Scrapyard : MonoBehaviour
 
         if(!hasShownHealPopup && GameController.Instance.bot.hasDamagedCells)
         {
-            hasShownHealPopup = true;
             healedPopup.gameObject.SetActive(true);
-            healedPopup.color = Color.white;
         }
     }
 
@@ -830,14 +828,31 @@ public class Scrapyard : MonoBehaviour
     //Update keyboard and mouse controls
     private void Update()
     {
-        //Fade out popup message
+        //Fade popup message
         if (healFadeDelay < 0.75f)
         {
             healFadeDelay += Time.unscaledDeltaTime;
         }
+        else if (healedPopup.gameObject.activeSelf && !hasShownHealPopup)
+        {
+            Color healColor = healedPopup.color;
+            healColor.a += Time.unscaledDeltaTime;
+            if(healColor.a >= 1)
+            {
+                hasShownHealPopup = true;
+                healFadeDelay = 0;
+            }
+            healedPopup.color = healColor;
+        }
         else
         {
-            healedPopup.color = new Color(1, 1, 1, Mathf.Max(0, healedPopup.color.a - Time.unscaledDeltaTime));
+            Color healColor = healedPopup.color;
+            healColor.a -= Time.unscaledDeltaTime;
+            if (healColor.a <= 0)
+            {
+                healedPopup.gameObject.SetActive(false);
+            }
+            healedPopup.color = healColor;
         }
 
         if (Input.GetMouseButtonDown(0) && canMove)
