@@ -24,6 +24,8 @@ public class Scrapyard : MonoBehaviour
     public GameObject brickOptionsPrefab;
     List<GameObject> brickOptionButtons = new List<GameObject>();
     public Transform brickOptionsGrid;
+    public Text brickNameText;
+    public Text upgradePopup;
 
     //Resources UI
     public Text playerMoney;
@@ -551,6 +553,7 @@ public class Scrapyard : MonoBehaviour
     //Update available upgrade glows
     void UpdateUpgradeGlows()
     {
+        bool hasUpgrades = false;
         foreach(GameObject BotTile in botBricks)
         {
             bool canUpgrade = false;
@@ -560,11 +563,15 @@ public class Scrapyard : MonoBehaviour
                 foreach (CraftedPart CheckPart in checkUpgrades)
                 {
                     if (CanUpgrade(BotTile.GetComponent<Image>().sprite, CheckPart))
+                    {
                         canUpgrade = true;
+                        hasUpgrades = true;
+                    }
                 }
             }
             BotTile.transform.GetChild(0).gameObject.SetActive(canUpgrade);
         }
+        upgradePopup.gameObject.SetActive(hasUpgrades);
     }
 
     //Update scrapyard burn rate UI
@@ -608,6 +615,42 @@ public class Scrapyard : MonoBehaviour
                             else if (brickRef.GetComponent<Gun>())
                             {
                                 Gun gunRef = brickRef.GetComponent<Gun>();
+                                redBurn += gunRef.GetConvertedBurnRate(ResourceType.Red, i);
+                                blueBurn += gunRef.GetConvertedBurnRate(ResourceType.Blue, i);
+                                greenBurn += gunRef.GetConvertedBurnRate(ResourceType.Green, i);
+                                yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
+                                greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
+                            }
+                            else if (brickRef.GetComponent<Blaster>())
+                            {
+                                Blaster gunRef = brickRef.GetComponent<Blaster>();
+                                redBurn += gunRef.GetConvertedBurnRate(ResourceType.Red, i);
+                                blueBurn += gunRef.GetConvertedBurnRate(ResourceType.Blue, i);
+                                greenBurn += gunRef.GetConvertedBurnRate(ResourceType.Green, i);
+                                yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
+                                greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
+                            }
+                            else if (brickRef.GetComponent<GunSniper>())
+                            {
+                                GunSniper gunRef = brickRef.GetComponent<GunSniper>();
+                                redBurn += gunRef.GetConvertedBurnRate(ResourceType.Red, i);
+                                blueBurn += gunRef.GetConvertedBurnRate(ResourceType.Blue, i);
+                                greenBurn += gunRef.GetConvertedBurnRate(ResourceType.Green, i);
+                                yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
+                                greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
+                            }
+                            else if (brickRef.GetComponent<GrenadeGun>())
+                            {
+                                GrenadeGun gunRef = brickRef.GetComponent<GrenadeGun>();
+                                redBurn += gunRef.GetConvertedBurnRate(ResourceType.Red, i);
+                                blueBurn += gunRef.GetConvertedBurnRate(ResourceType.Blue, i);
+                                greenBurn += gunRef.GetConvertedBurnRate(ResourceType.Green, i);
+                                yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
+                                greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
+                            }
+                            else if (brickRef.GetComponent<GunTripleShot>())
+                            {
+                                GunTripleShot gunRef = brickRef.GetComponent<GunTripleShot>();
                                 redBurn += gunRef.GetConvertedBurnRate(ResourceType.Red, i);
                                 blueBurn += gunRef.GetConvertedBurnRate(ResourceType.Blue, i);
                                 greenBurn += gunRef.GetConvertedBurnRate(ResourceType.Green, i);
@@ -691,27 +734,27 @@ public class Scrapyard : MonoBehaviour
 
         blueBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentBlue / maxCapacity : 0), blueBar.sizeDelta.y);
         blueAmount.text = Mathf.RoundToInt(currentBlue).ToString();
-        blueBurnRate.text = "-" + Mathf.RoundToInt(blueBurn).ToString() + "/s";
+        blueBurnRate.text = "-" + Mathf.CeilToInt(blueBurn).ToString() + "/s";
         blueAmount.text += " (+" + Mathf.RoundToInt(excessBlue).ToString() + ")";
 
         yellowBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentYellow / maxCapacity : 0), yellowBar.sizeDelta.y);
         yellowAmount.text = Mathf.RoundToInt(currentYellow).ToString();
-        yellowBurnRate.text = "-" + Mathf.RoundToInt(yellowBurn).ToString() + "/s";
+        yellowBurnRate.text = "-" + Mathf.CeilToInt(yellowBurn).ToString() + "/s";
         yellowAmount.text += " (+" + Mathf.RoundToInt(excessYellow).ToString() + ")";
 
         greenBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentGreen / maxCapacity : 0), greenBar.sizeDelta.y);
         greenAmount.text = Mathf.RoundToInt(currentGreen).ToString();
-        greenBurnRate.text = "-" + Mathf.RoundToInt(greenBurn).ToString() + "/s";
+        greenBurnRate.text = "-" + Mathf.CeilToInt(greenBurn).ToString() + "/s";
         greenAmount.text += " (+" + Mathf.RoundToInt(excessGreen).ToString() + ")";
 
         greyBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentGrey / maxCapacity : 0), greyBar.sizeDelta.y);
         greyAmount.text = Mathf.RoundToInt(currentGrey).ToString();
-        greyBurnRate.text = "-" + Mathf.RoundToInt(greyBurn).ToString() + "/s";
+        greyBurnRate.text = "-" + Mathf.CeilToInt(greyBurn).ToString() + "/s";
         greyAmount.text += " (+" + Mathf.RoundToInt(excessGrey).ToString() + ")";
 
         fuelBar.sizeDelta = new Vector2(maxBarWidth * (maxCapacity > 0 ? currentFuel / maxCapacity : 0), fuelBar.sizeDelta.y);
         redAmount.text = Mathf.RoundToInt(currentFuel).ToString();
-        redBurnRate.text = "-" + Mathf.RoundToInt(redBurn).ToString() + "/s";
+        redBurnRate.text = "-" + Mathf.CeilToInt(redBurn).ToString() + "/s";
         redAmount.text += " (+" + Mathf.RoundToInt(excessRed).ToString() + ")";
 
         UpdateUpgradeGlows();
@@ -1291,6 +1334,63 @@ public class Scrapyard : MonoBehaviour
         CompleteConfirmedConvert();
     }
 
+    //Return a string of required upgrade resources
+    string GetUpgradeString(string upgradeName)
+    {
+        string upgradeString = "";
+
+        int moneyString = 0;
+        int redString = 0;
+        int blueString = 0;
+        int greenString = 0;
+        int yellowString = 0;
+        int greyString = 0;
+        foreach (GameObject partCheck in craftableParts)
+        {
+            CraftedPart TempPart = partCheck.GetComponent<CraftedPart>();
+            for (int i = 0; i < TempPart.scrapyardName.Length; i++)
+            {
+                if (upgradeName == TempPart.scrapyardName[i])
+                {
+                    moneyString = TempPart.moneyToCraft[i];
+                    redString = TempPart.redToCraft[i];
+                    blueString = TempPart.blueToCraft[i];
+                    greenString = TempPart.greenToCraft[i];
+                    yellowString = TempPart.yellowToCraft[i];
+                    greyString = TempPart.greyToCraft[i];
+                    break;
+                }
+            }
+        }
+
+        if (moneyString > 0)
+        {
+            upgradeString += "$" + moneyString.ToString() + ", ";
+        }
+        if (redString > 0)
+        {
+            upgradeString += redString.ToString() + " RED, ";
+        }
+        if (blueString > 0)
+        {
+            upgradeString += blueString.ToString() + " BLUE, ";
+        }
+        if (greenString > 0)
+        {
+            upgradeString += greenString.ToString() + " GREEN, ";
+        }
+        if (yellowString > 0)
+        {
+            upgradeString += yellowString.ToString() + " YELLOW, ";
+        }
+        if (greyString > 0)
+        {
+            upgradeString += greyString.ToString() + " GREY, ";
+        }
+        upgradeString = upgradeString.Substring(0, upgradeString.Length - 2);
+        return upgradeString;
+    }
+
     //Button for confirming brick upgrade
     public void ConfirmUpgrade(string upgradeName)
     {
@@ -1313,33 +1413,7 @@ public class Scrapyard : MonoBehaviour
             }
         }
 
-        upgradeText.text = "UPGRADE TO " + upgradeName + " FOR ";
-        if(tempMoneyAmount > 0)
-        {
-            upgradeText.text += "$" + tempMoneyAmount.ToString() + ", ";
-        }
-        if (tempRedAmount > 0)
-        {
-            upgradeText.text += tempRedAmount.ToString() + " RED, ";
-        }
-        if (tempBlueAmount > 0)
-        {
-            upgradeText.text += tempBlueAmount.ToString() + " BLUE, ";
-        }
-        if (tempGreenAmount > 0)
-        {
-            upgradeText.text += tempGreenAmount.ToString() + " GREEN, ";
-        }
-        if (tempYellowAmount > 0)
-        {
-            upgradeText.text += tempYellowAmount.ToString() + " YELLOW, ";
-        }
-        if (tempGreyAmount > 0)
-        {
-            upgradeText.text += tempGreyAmount.ToString() + " GREY, ";
-        }
-        upgradeText.text = upgradeText.text.Substring(0, upgradeText.text.Length - 2);
-        upgradeText.text += "?";
+        upgradeText.text = "UPGRADE TO " + upgradeName + " FOR " + GetUpgradeString(upgradeName) + "?";
 
         brickOptions.SetActive(false);
         confirmUpgrade.SetActive(true);
@@ -1383,6 +1457,9 @@ public class Scrapyard : MonoBehaviour
     {
         canMove = false;
 
+        string brickType = GetBrickName(sellBrick.GetComponent<Image>().sprite, false);
+        brickNameText.text = GetBrickName(sellBrick.GetComponent<Image>().sprite, true);
+
         for (int i = 0; i < brickOptionButtons.Count; i++)
         {
             Destroy(brickOptionButtons[i]);
@@ -1401,6 +1478,18 @@ public class Scrapyard : MonoBehaviour
         }
         brickOptionButtons.Add(sellButton);
 
+        GameObject sellAllButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
+        sellAllButton.GetComponent<Text>().text = "SELL ALL " + brickType + " bricks";
+        if (CanSell(sellBrick))
+        {
+            sellAllButton.GetComponent<Button>().onClick.AddListener(() => { ConfirmSellAll(); });
+        }
+        else
+        {
+            sellAllButton.GetComponent<Button>().interactable = false;
+        }
+        brickOptionButtons.Add(sellAllButton);
+
         GameObject convertButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
         convertButton.GetComponent<Text>().text = "CONVERT";
         if (CanConvert(sellBrick))
@@ -1413,7 +1502,19 @@ public class Scrapyard : MonoBehaviour
         }
         brickOptionButtons.Add(convertButton);
 
-        if(GetContainerIndex(sellBrick) != -1)
+        GameObject convertAllButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
+        convertAllButton.GetComponent<Text>().text = "CONVERT ALL " + brickType + " bricks";
+        if (CanConvert(sellBrick))
+        {
+            convertAllButton.GetComponent<Button>().onClick.AddListener(() => { ConfirmConvertAll(); });
+        }
+        else
+        {
+            convertAllButton.GetComponent<Button>().interactable = false;
+        }
+        brickOptionButtons.Add(convertAllButton);
+
+        if (GetContainerIndex(sellBrick) != -1)
         {
             GameObject leftButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
             leftButton.GetComponent<Text>().text = "ROTATE LEFT";
@@ -1431,7 +1532,7 @@ public class Scrapyard : MonoBehaviour
         {
             GameObject upgradeButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
             string targetUpgrade = GetUpgradeName(sellBrick.GetComponent<Image>().sprite, TempPart);
-            upgradeButton.GetComponent<Text>().text = "UPGRADE: " + targetUpgrade;
+            upgradeButton.GetComponent<Text>().text = "UPGRADE: " + targetUpgrade + " (" + GetUpgradeString(targetUpgrade) + ")";
             if (CanUpgrade(sellBrick.GetComponent<Image>().sprite, TempPart))
             {
                 upgradeButton.GetComponent<Button>().onClick.AddListener(() => { ConfirmUpgrade(targetUpgrade); });
@@ -1441,6 +1542,8 @@ public class Scrapyard : MonoBehaviour
                 upgradeButton.GetComponent<Button>().interactable = false;
             }
             brickOptionButtons.Add(upgradeButton);
+            upgradeButton.GetComponent<RectTransform>().sizeDelta = new Vector2(1000, 30);
+            upgradeButton.GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Wrap;
         }
 
         GameObject backButton = Instantiate(brickOptionsPrefab, brickOptionsGrid);
@@ -1576,6 +1679,41 @@ public class Scrapyard : MonoBehaviour
         CompleteConfirmedPurchase();
     }
 
+    //Button for selling all of a specified brick type
+    public void ConfirmSellAll()
+    {
+        canMove = true;
+        string brickType = GetBrickName(sellBrick.GetComponent<Image>().sprite, false);
+        for (int i = 0; i < botBricks.Count; i++)
+        {
+            Image botImage = botBricks[i].GetComponent<Image>();
+            if(botImage.color != Color.clear && botBricks[i] != coreBrick && brickType == GetBrickName(botImage.sprite,false))
+            {
+                if (uncommittedBricks.Contains(botBricks[i]))
+                {
+                    uncommittedBricks.Remove(botBricks[i]);
+                }
+
+                if (containerObjects.Contains(botBricks[i]))
+                {
+                    int index = containerObjects.IndexOf(botBricks[i]);
+                    containerObjects.RemoveAt(index);
+                    containers.RemoveAt(index);
+                    botBricks[i].transform.GetChild(1).gameObject.SetActive(false);
+                }
+
+                transactionAmount += GetBrickSell(botImage.sprite);
+
+                botBricks[i].GetComponent<Image>().color = Color.clear;
+            }
+        }
+        sellBrick = null;
+        UpdateResources();
+        CloseSubMenu();
+        hasChanges = true;
+        CompleteConfirmedPurchase();
+    }
+
     //Button for completing a brick conversion to resources
     public void CompleteConfirmedConvert()
     {
@@ -1600,6 +1738,58 @@ public class Scrapyard : MonoBehaviour
         }
 
         sellBrick.GetComponent<Image>().color = Color.clear;
+        sellBrick = null;
+        UpdateResources();
+        CloseSubMenu();
+        hasChanges = true;
+        CompleteConfirmedPurchase();
+    }
+
+    //Button for converting all of a specified brick type to resources
+    public void ConfirmConvertAll()
+    {
+        canMove = true;
+        string brickType = GetBrickName(sellBrick.GetComponent<Image>().sprite, false);
+
+        for (int i = 0; i < botBricks.Count; i++)
+        {
+            Image botImage = botBricks[i].GetComponent<Image>();
+            if (botImage.color != Color.clear && botBricks[i] != coreBrick && brickType == GetBrickName(botImage.sprite, false))
+            {
+                if (uncommittedBricks.Contains(botBricks[i]))
+                {
+                    uncommittedBricks.Remove(botBricks[i]);
+                }
+
+                if (containerObjects.Contains(botBricks[i]))
+                {
+                    int index = containerObjects.IndexOf(botBricks[i]);
+                    containerObjects.RemoveAt(index);
+                    containers.RemoveAt(index);
+                    botBricks[i].transform.GetChild(1).gameObject.SetActive(false);
+                }
+
+                foreach (GameObject Resource in convertableParts)
+                {
+                    Brick resourceBrick = Resource.GetComponent<Brick>();
+                    for (int r = 0; r < resourceBrick.spriteArr.Length; r++)
+                    {
+                        if (botImage.sprite == resourceBrick.spriteArr[r])
+                        {
+                            currentFuel += Resource.GetComponent<Fuel>() ? Resource.GetComponent<Fuel>().maxFuelArr[r] : 0;
+                            currentBlue += Resource.GetComponent<Gun>() ? Resource.GetComponent<Gun>().maxResource[r] : 0;
+                            currentYellow += Resource.GetComponent<Yellectrons>() ? Resource.GetComponent<Yellectrons>().maxResource[r] : 0;
+                            currentGreen += (Resource.GetComponent<Repair>() && Resource.GetComponent<Repair>().maxResource.Length > 0) ? Resource.GetComponent<Repair>().maxResource[r] : 0;
+                            currentGrey += Resource.GetComponent<Greyscale>() ? Resource.GetComponent<Greyscale>().maxResource[r] : 0;
+                            break;
+                        }
+                    }
+                }
+
+                botBricks[i].GetComponent<Image>().color = Color.clear;
+            }
+        }
+
         sellBrick = null;
         UpdateResources();
         CloseSubMenu();
@@ -1997,6 +2187,30 @@ public class Scrapyard : MonoBehaviour
             }
         }
         return 0;
+    }
+
+    //Determine the market name of the brick in question
+    string GetBrickName(Sprite targetBrick, bool useLevel)
+    {
+        foreach (MarketData marketCheck in marketData)
+        {
+            Brick brickCheck = marketCheck.brick.GetComponent<Brick>();
+            for (int i = 0; i < marketCheck.brickLevels.Length; i++)
+            {
+                if (brickCheck.spriteArr[i] == targetBrick)
+                {
+                    if (useLevel)
+                    {
+                        return marketCheck.marketName + " " + (i + 1).ToString();
+                    }
+                    else
+                    {
+                        return marketCheck.marketName;
+                    }
+                }
+            }
+        }
+        return "";
     }
 
     //Return the market price of the specified resource type

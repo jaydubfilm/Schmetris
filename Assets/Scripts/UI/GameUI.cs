@@ -117,6 +117,31 @@ public class GameUI : MonoBehaviour
         popupDisplay.color = isActive ? Color.white : Color.clear;
     }
 
+    //Toggle 'Unpowered Brick' popup
+    bool hasShownUnpowered = false;
+    public void SetUnpoweredPopup(bool isActive)
+    {
+        if (hasShownUnpowered)
+            return;
+        hasShownUnpowered = true;
+        if (isActive)
+            popupDisplay.text = "Unpowered cell";
+        popupDisplay.color = isActive ? Color.white : Color.clear;
+    }
+
+    //Toggle 'Out of Resources' popup
+    bool hasShownResources = false;
+    public void SetResourcesPopup(bool isActive)
+    {
+        if (hasShownResources)
+            return;
+        hasShownResources = true;
+        if (isActive)
+            popupDisplay.text = "Low resources";
+        popupDisplay.color = isActive ? Color.white : Color.clear;
+    }
+
+
     //Toggle 'Level Complete' popup
     public void SetLevelCompletePopup(bool isActive)
     {
@@ -208,27 +233,27 @@ public class GameUI : MonoBehaviour
         Vector2 barSize = redBar.sizeDelta;
         redBar.sizeDelta = new Vector2(resourceBarWidth * GameController.Instance.bot.GetResourcePercent(ResourceType.Red), barSize.y);
         redResources.text = Mathf.RoundToInt(GameController.Instance.bot.storedRed).ToString();
-        redBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Red)).ToString() + "/s";
+        redBurnRate.text = "-" + Mathf.CeilToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Red)).ToString() + "/s";
         redResources.text += " (+" + Mathf.RoundToInt(GameController.Instance.bot.hangarRed).ToString() + ")";
 
         blueBar.sizeDelta = new Vector2(resourceBarWidth * GameController.Instance.bot.GetResourcePercent(ResourceType.Blue), barSize.y);
         blueResources.text = Mathf.RoundToInt(GameController.Instance.bot.storedBlue).ToString();
-        blueBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Blue)).ToString() + "/s";
+        blueBurnRate.text = "-" + Mathf.CeilToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Blue)).ToString() + "/s";
         blueResources.text += " (+" + Mathf.RoundToInt(GameController.Instance.bot.hangarBlue).ToString() + ")";
 
         greenBar.sizeDelta = new Vector2(resourceBarWidth * GameController.Instance.bot.GetResourcePercent(ResourceType.Green), barSize.y);
         greenResources.text = Mathf.RoundToInt(GameController.Instance.bot.storedGreen).ToString();
-        greenBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Green)).ToString() + "/s";
+        greenBurnRate.text = "-" + Mathf.CeilToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Green)).ToString() + "/s";
         greenResources.text += " (+" + Mathf.RoundToInt(GameController.Instance.bot.hangarGreen).ToString() + ")";
 
         yellowBar.sizeDelta = new Vector2(resourceBarWidth * GameController.Instance.bot.GetResourcePercent(ResourceType.Yellow), barSize.y);
         yellowResources.text = Mathf.RoundToInt(GameController.Instance.bot.storedYellow).ToString();
-        yellowBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Yellow)).ToString() + "/s";
+        yellowBurnRate.text = "-" + Mathf.CeilToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Yellow)).ToString() + "/s";
         yellowResources.text += " (+" + Mathf.RoundToInt(GameController.Instance.bot.hangarYellow).ToString() + ")";
 
         greyBar.sizeDelta = new Vector2(resourceBarWidth * GameController.Instance.bot.GetResourcePercent(ResourceType.Grey), barSize.y);
         greyResources.text = Mathf.RoundToInt(GameController.Instance.bot.storedGrey).ToString();
-        greyBurnRate.text = "-" + Mathf.RoundToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Grey)).ToString() + "/s";
+        greyBurnRate.text = "-" + Mathf.CeilToInt(GameController.Instance.bot.GetBurnRate(ResourceType.Grey)).ToString() + "/s";
         greyResources.text += " (+" + Mathf.RoundToInt(GameController.Instance.bot.hangarGrey).ToString() + ")";
     }
 

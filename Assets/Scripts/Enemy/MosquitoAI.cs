@@ -92,7 +92,16 @@ public class MosquitoAI : MonoBehaviour
     private void Update()
     {
         if (GameController.Instance.isLevelCompleteQueued)
+        {
+            aiPath.enabled = false;
+            aiDestinationSetter.enabled = false;
+            if (spring)
+            {
+                Destroy(spring);
+            }
+            GetComponent<Rigidbody2D>().velocity = new Vector3(0, -GameController.Instance.blockSpeed * GameController.Instance.adjustedSpeed, 0);
             return;
+        }
 
         aiPath.maxSpeed = followSpeed;
 
@@ -162,6 +171,8 @@ public class MosquitoAI : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        if (GameController.Instance.isLevelCompleteQueued)
+            return;
 
         if (collision.gameObject.layer == 13)
         {

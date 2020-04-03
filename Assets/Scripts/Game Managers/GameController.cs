@@ -113,6 +113,8 @@ public class GameController : MonoBehaviour
     const string craftingAtlasResource = "PartSprites";
     Sprite[] tilesAtlas;
 
+    AudioController audioController;
+
     //Carl Added...
     public DynamicPathfindingManager enemyPathfinding;
 
@@ -179,6 +181,7 @@ public class GameController : MonoBehaviour
             RefreshBotIcons();
             bot.Init();
             bot.gameObject.SetActive(false);
+            audioController = GetComponent<AudioController>();
         }
         else
         {
@@ -322,6 +325,7 @@ public class GameController : MonoBehaviour
         mapMenu.GetComponent<LevelMenuUI>().OpenMenu();
         mapMenu.SetActive(true);
         bot.hasDamagedCells = false;
+        audioController.FadeInMusic(audioController.menuMusic, 8.0f, 1.0f);
     }
 
     public void SaveGame(int index)
@@ -495,6 +499,7 @@ public class GameController : MonoBehaviour
         bot.ResetTileMap();
         SceneManager.LoadScene(1);
         startMenu.GetComponent<MainMenuUI>().OpenMenu();
+        audioController.FadeInMusic(audioController.menuMusic, 8.0f, 1.0f);
     }
 
     //Used for external Canvas buttons for touchscreen controls
@@ -541,6 +546,7 @@ public class GameController : MonoBehaviour
         scrapyard.SetActive(true);
         scrapyard.GetComponent<Scrapyard>().LoadBotComponents();
         scrapyard.GetComponent<Scrapyard>().UpdateScrapyard();
+        audioController.FadeInMusic(audioController.menuMusic, 8.0f, 1.0f);
     }
 
     public void Update()
@@ -703,6 +709,7 @@ public class GameController : MonoBehaviour
         hud.SetLevel(levelNumber);
         levelData = game.levelDataArr[levelNumber-1];
         LoadLevelSection(0);
+        audioController.FadeInMusic(audioController.gameMusic, 17.0f, 1.0f);
     }
 
     void ScrollBackground() {

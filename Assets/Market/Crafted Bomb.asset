@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfca86bbe879bb643965c120dd9fc50e, type: 3}
   m_Name: Crafted Bomb
   m_EditorClassIdentifier: 
+  marketName: Bomb
   brick: {fileID: 6715254118685096965, guid: e2b94cb4673225f4e804b26aeaf9d8a2, type: 3}
   brickLevels:
-  - buyPrice: 2925
-    sellPrice: 1950
-  - buyPrice: 6825
-    sellPrice: 4550
-  - buyPrice: 22725
-    sellPrice: 15150
+  - buyPrice: 2325
+    sellPrice: 1550
+  - buyPrice: 3825
+    sellPrice: 2550
+  - buyPrice: 7725
+    sellPrice: 5150

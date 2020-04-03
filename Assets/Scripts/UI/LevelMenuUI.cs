@@ -13,6 +13,7 @@ public class LevelMenuUI : MonoBehaviour
     public GameObject savePanel;
     public GameObject savedPanel;
     public GameObject confirmQuitPanel;
+    public GameObject confirmFuelPanel;
 
     //Levels UI
     public GameObject levelButtonPrefab;
@@ -27,7 +28,8 @@ public class LevelMenuUI : MonoBehaviour
         Help,
         Load,
         Save,
-        QuitGame
+        QuitGame,
+        ConfirmLevel
     }
     MenuState activeState = MenuState.None;
 
@@ -40,6 +42,7 @@ public class LevelMenuUI : MonoBehaviour
         loadPanel.SetActive(false);
         savePanel.SetActive(false);
         savedPanel.SetActive(false);
+        confirmFuelPanel.SetActive(false);
 
         //Activate main menu
         UpdateLevels();
@@ -161,6 +164,16 @@ public class LevelMenuUI : MonoBehaviour
                     MainMenu();
                 }
                 break;
+            case MenuState.ConfirmLevel:
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    ConfirmPlayLevel();
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    MainMenu();
+                }
+                break;
         }
     }
 
@@ -189,6 +202,9 @@ public class LevelMenuUI : MonoBehaviour
             case MenuState.QuitGame:
                 confirmQuitPanel.SetActive(false);
                 break;
+            case MenuState.ConfirmLevel:
+                confirmFuelPanel.SetActive(false);
+                break;
         }
 
         //Transition into new menu state
@@ -210,6 +226,9 @@ public class LevelMenuUI : MonoBehaviour
                 break;
             case MenuState.QuitGame:
                 confirmQuitPanel.SetActive(true);
+                break;
+            case MenuState.ConfirmLevel:
+                confirmFuelPanel.SetActive(true);
                 break;
         }
     }
@@ -269,9 +288,24 @@ public class LevelMenuUI : MonoBehaviour
     }
 
     //Play selected level
+    int tempLevelIndex = 0;
     public void PlayLevel(int index)
     {
-        GameController.Instance.StartLevel(index);
+        if (GameController.Instance.bot.GetSavedResource(ResourceType.Red, false) == 0)
+        {
+            tempLevelIndex = index;
+            SetMenuState(MenuState.ConfirmLevel);
+        }
+        else
+        {
+            GameController.Instance.StartLevel(index);
+        }
+    }
+
+    //Play selected level ignoring fuel popup
+    public void ConfirmPlayLevel()
+    {
+        GameController.Instance.StartLevel(tempLevelIndex);
     }
 
     //Game saved indicator

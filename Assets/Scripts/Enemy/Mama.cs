@@ -85,7 +85,11 @@ public class Mama : MonoBehaviour
     void Update()
     {
         if (GameController.Instance.isLevelCompleteQueued)
+        {
+            aiPath.enabled = false;
+            aiDestinationSetter.enabled = false;
             return;
+        }
 
         //Every x seconds, check the distance between the enemy and the player. Back away if we're too close. 
         if (Time.time - timer > distanceCheckTimer)

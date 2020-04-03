@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfca86bbe879bb643965c120dd9fc50e, type: 3}
   m_Name: Yellectrons
   m_EditorClassIdentifier: 
+  marketName: Yellectron
   brick: {fileID: 6471613597453367622, guid: 7544aff9065454f41ab1fd0a0491acc2, type: 3}
   brickLevels:
   - buyPrice: 150

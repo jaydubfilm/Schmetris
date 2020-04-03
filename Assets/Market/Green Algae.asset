@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfca86bbe879bb643965c120dd9fc50e, type: 3}
   m_Name: Green Algae
   m_EditorClassIdentifier: 
+  marketName: Green Algae
   brick: {fileID: 1550391163482342013, guid: 4041c7b358034436bb0a62aaef31deb4, type: 3}
   brickLevels:
   - buyPrice: 250

@@ -19,7 +19,6 @@ public class Brick : MonoBehaviour
 
     //Resource burn rates
     public bool passiveBurn = false;
-    public bool hasResources = true;
     public float[] redBurn;
     public float[] blueBurn;
     public float[] greenBurn;
@@ -39,6 +38,27 @@ public class Brick : MonoBehaviour
     public HealthBar healthBar;
 
     public List<ShieldBrick> activeShields = new List<ShieldBrick>();
+
+    bool _hasResources = true;
+    public bool hasResources
+    {
+        get
+        {
+            return _hasResources;
+        }
+        set
+        {
+            if (_hasResources != value)
+            {
+                _hasResources = value;
+                GetComponent<SpriteRenderer>().color = (hasResources && _isPowered) ? Color.white : Color.gray;
+                if (!_hasResources)
+                {
+                    GameController.Instance.hud.SetResourcesPopup(true);
+                }
+            }
+        }
+    }
 
     //Is this brick fully powered by the grid?
     bool _isPowered = false;
@@ -78,7 +98,7 @@ public class Brick : MonoBehaviour
                 }
             }
             _isPowered = value;
-            GetComponent<SpriteRenderer>().color = _isPowered ? Color.white : Color.gray;
+            GetComponent<SpriteRenderer>().color = (hasResources && _isPowered) ? Color.white : Color.gray;
         }
     }
 
@@ -160,7 +180,7 @@ public class Brick : MonoBehaviour
     {
         if (passiveBurn)
         {
-            hasResources = TryBurnResources(Time.deltaTime);
+            TryBurnResources(Time.deltaTime);
         }
     }
 
@@ -196,8 +216,10 @@ public class Brick : MonoBehaviour
             bot.storedGreen -= interval * greenBurn[burnLevel];
             bot.storedYellow -= interval * yellowBurn[burnLevel];
             bot.storedGrey -= interval * greyBurn[burnLevel];
+            hasResources = true;
             return true;
         }
+        hasResources = false;
         return false;
     }
 

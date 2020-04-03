@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfca86bbe879bb643965c120dd9fc50e, type: 3}
   m_Name: Crafted Blaster
   m_EditorClassIdentifier: 
+  marketName: Blaster
   brick: {fileID: 6715254118685096965, guid: 4fa7b42a9b8974a4e856d53bb1f8ce20, type: 3}
   brickLevels:
   - buyPrice: 7875

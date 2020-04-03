@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfca86bbe879bb643965c120dd9fc50e, type: 3}
   m_Name: Reddite
   m_EditorClassIdentifier: 
+  marketName: Reddite
   brick: {fileID: 7832514841687427558, guid: cd35053b0c8664eae8a7476325bcd771, type: 3}
   brickLevels:
   - buyPrice: 100
