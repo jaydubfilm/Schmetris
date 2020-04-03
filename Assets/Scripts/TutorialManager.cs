@@ -265,7 +265,7 @@ public class TutorialManager : MonoBehaviour
     //is sequential marks events that should happen chronologically
     public void TutorialPopup(int module, bool pauseGame, bool toggleOnOff, bool isSequential)
     {
-        print("called");
+//        print("called");
         //pause
         if (pauseGame == true)
         {
@@ -298,7 +298,7 @@ public class TutorialManager : MonoBehaviour
             else 
             {
                 nonSequentialModuleList[module].SetActive(false);
-                print("disabling");
+//                print("disabling");
             }
 
 
@@ -356,7 +356,7 @@ public class TutorialManager : MonoBehaviour
             TutorialPopup(j, false, false, false);
         }
 
-        print("close " + sequentialModuleList[currentSequencedModule]);
+        //print("close " + sequentialModuleList[currentSequencedModule]);
     }
 
     public void OpenNextUnpaused()
@@ -435,7 +435,7 @@ public class TutorialManager : MonoBehaviour
     public void OnLevelChange(int newSection)
     {
         currentSection = newSection;
-        print("loaded scene " + newSection);
+//        print("loaded scene " + newSection);
         switch (newSection)
         {
             case 2: //greyscale
