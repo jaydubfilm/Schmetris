@@ -41,13 +41,26 @@ public class TutorialManager : MonoBehaviour
     public Sprite greyScale;
     public Sprite level1GreyScale;
     public Sprite level2GreyScale;
+    public Sprite red;
+
 
     bool collected1Greyscale;
     bool level1Upgraded;
     public List<GameObject> greyScaleAtSectionStart = new List<GameObject>();
+    public List<GameObject> redSprites = new List<GameObject>();
+
     bool beganGreyscaleSection;
     bool hasHadFuelWarning;
     Bot playerBot;
+    bool outOfFuel;
+    bool redDropTimer;
+    float timeToRedDrop = 5.5f;
+    float timerStartRedDrop;
+    bool hasSpawnedRed;
+    bool collectRed;
+    int redCounter;
+    int frameChecks;
+
 
 
     //public Game
@@ -61,8 +74,8 @@ public class TutorialManager : MonoBehaviour
 
     private void Update()
     {
-        
-        if(timer)
+
+        if (timer)
         {
 
             float timerPosition = Time.time - timerStartTime;
@@ -71,7 +84,7 @@ public class TutorialManager : MonoBehaviour
             {
                 TutorialPopup(storedModule, storedPause, true, storedSequential);
                 timer = false;
-            }           
+            }
         }
 
 
@@ -95,12 +108,12 @@ public class TutorialManager : MonoBehaviour
         countLastFrame = GameController.Instance.blockList.Count;
 
         //Section Specific Behaviours
-        if(currentSection == 2)
+        if (currentSection == 2)
         {
 
-           
 
-            if(frameCounter == 60)
+
+            if (frameCounter == 60)
             {
                 print("checking sprites");
                 List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
@@ -109,7 +122,7 @@ public class TutorialManager : MonoBehaviour
                     //collect your first greyscale
                     if (collected1Greyscale == false)
                     {
-                        print(SR.sprite.name);
+//                        print(SR.sprite.name);
                         if (SR.sprite == greyScale)
                         {
                             if (beganGreyscaleSection == false)
@@ -146,9 +159,9 @@ public class TutorialManager : MonoBehaviour
                         {
                             CloseCurrent();
                             SetFuel(10);
+                            GameController.Instance.LoadNextLevelSection();
                             TutorialPopup(6, true, true, false);
                             level1Upgraded = true;
-                            GameController.Instance.LoadNextLevelSection();
                             return;
                         }
                     }
@@ -160,19 +173,94 @@ public class TutorialManager : MonoBehaviour
             frameCounter++;
         }
 
-        if (hasHadFuelWarning == false && beganGreyscaleSection == true)
+        if (beganGreyscaleSection == true)
         {
-            if (playerBot.storedRed < 5)
+            if (hasHadFuelWarning == false)
             {
+                if (playerBot.storedRed < 5)
+                {
 
-                hasHadFuelWarning = true;
-                TutorialPopup(6, true, true, true);
+                    hasHadFuelWarning = true;
+                    TutorialPopup(6, true, true, true);
+                }
             }
 
-            if (playerBot.HasFuel() == false)
+            if (playerBot.storedRed == 0 && outOfFuel == false)
+            {
+                print("out of fuel");
                 NextWith2SecondDelay();
+                outOfFuel = true;
+                timerStartRedDrop = Time.time;
+                redDropTimer = true;
+            }
+
+            if (redDropTimer == true)
+            {
+                print(Time.time - timerStartRedDrop);
+                if (Time.time - timerStartRedDrop > timeToRedDrop)
+                {
+                    SpawnSingle();
+                    redDropTimer = false;
+                    frameCounter = 0;
+                    hasSpawnedRed = true;
+                }
+            }
+
+
+            if (hasSpawnedRed)
+            {
+                if (frameCounter == 60)
+                {
+                    frameChecks++;
+                    print("checking sprites");
+                    List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
+                    foreach (SpriteRenderer SR in childSprites)
+                    {
+                        if (SR.sprite == red || frameChecks >= 17)
+                        {
+                            CloseAndOpenNextUnpaused();
+                            GameController.Instance.LoadNextLevelSection();
+                            frameCounter = 0;
+                            collectRed = true;
+                            hasSpawnedRed = false;
+                            print("Last");
+                        }
+                    }
+                }
+
+                frameCounter++;
+            }
+
+            if (collectRed)
+            {
+                if (frameCounter == 60)
+                {
+                    print("checking sprites");
+                    List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
+                    foreach (SpriteRenderer SR in childSprites)
+                    {                        
+                            if (SR.sprite == red)
+                            {
+                                if (!redSprites.Contains(SR.gameObject))
+                                {
+                                    print("got 1");
+                                    redSprites.Add(SR.gameObject);
+                                    redCounter++;
+                                    if (redCounter >= 3)
+                                    {
+                                        print("got 3");
+                                        CloseAndOpenNextUnpaused();
+                                    }
+                                }                                
+                            }                        
+                    }
+                    frameCounter = 0;
+                }
+                frameCounter++;
+            }
         }
     }
+    
 
     //is sequential marks events that should happen chronologically
     public void TutorialPopup(int module, bool pauseGame, bool toggleOnOff, bool isSequential)
@@ -221,10 +309,16 @@ public class TutorialManager : MonoBehaviour
         {
             //enable the module
             if (isSequential)
-                sequentialModuleList[module].SetActive(true);
-            else
-                nonSequentialModuleList[module].SetActive(true);
+                if (module < sequentialModuleList.Count)
+                {
+                    sequentialModuleList[module].SetActive(true);
+                }
 
+            if (!isSequential)
+                if (module < nonSequentialModuleList.Count)
+                {
+                    nonSequentialModuleList[module].SetActive(true);
+                }
 
             //Only save our position in the list if this is a sequential event
             if (isSequential) currentSequencedModule = module;
@@ -237,7 +331,7 @@ public class TutorialManager : MonoBehaviour
     }
 
     [Button]
-    public void TestSpawnSingle()
+    public void SpawnSingle()
     {
         GameController.Instance.SpawnBlock(ScreenStuff.XPositionToCol(playerPos.position.x), 0);
         //TutorialPopup(0, false, false, 1);
@@ -353,5 +447,13 @@ public class TutorialManager : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    public void ToScrapYard()
+    {
+        //GameController.Instance.LoadNextLevelSection();
+
+        GameController.Instance.LoadNextLevelSection();
+        CloseCurrent();
     }
 }
