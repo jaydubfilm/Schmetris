@@ -39,9 +39,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   capacity:
+  - 100
+  - 200
   - 500
-  - 750
-  - 1000
   canCollect: 0
   directionPrefab: {fileID: 7089365747845026864, guid: e1bba3a06e61f6648920e512bcc9ab01,
     type: 3}

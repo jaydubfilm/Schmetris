@@ -1459,6 +1459,7 @@ public class Scrapyard : MonoBehaviour
 
         string brickType = GetBrickName(sellBrick.GetComponent<Image>().sprite, false);
         brickNameText.text = GetBrickName(sellBrick.GetComponent<Image>().sprite, true);
+        brickNameText.GetComponentInChildren<Image>().sprite = sellBrick.GetComponent<Image>().sprite;
 
         for (int i = 0; i < brickOptionButtons.Count; i++)
         {
