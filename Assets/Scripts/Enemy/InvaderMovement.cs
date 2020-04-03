@@ -101,11 +101,7 @@ public class InvaderMovement : MonoBehaviour
         else
             getTime = false;
 
-        //testing
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            Death();
-        }
+       
 
         #endregion
 
@@ -135,8 +131,15 @@ public class InvaderMovement : MonoBehaviour
     }
     public void Death()
     {
-
+        GameController.Instance.enemyList.Remove(gameObject);
         Destroy(gameObject);
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.GetComponent<Brick>())
+        {
+            Death();
+        }
+    }
 }

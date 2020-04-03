@@ -310,6 +310,7 @@ public class GameController : MonoBehaviour
             {
                 TutorialManager.Instance.TutorialPopup(0, true, true, true);                
                 tutorialHasStarted = true;
+                TutorialManager.Instance.isBotDead = false;
                 TutorialManager.Instance.playerPos.GetComponent<Bot>().SetFuelAmt(500);
 
             }

@@ -128,12 +128,7 @@ public class Mama : MonoBehaviour
             }
         }
 
-        //testing
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            Death();
-            print(ScreenStuff.colSize);
-        }
+       
     }
 
     void BackAwayFromPlayer()
@@ -190,6 +185,7 @@ public class Mama : MonoBehaviour
         blastSphere.transform.localScale = new Vector3(blastRadius * 2, blastRadius * 2, blastRadius * 2);
 
         //Instantiate Explosion here
+        GameController.Instance.enemyList.Remove(gameObject);
         Destroy(gameObject);
     }
 }

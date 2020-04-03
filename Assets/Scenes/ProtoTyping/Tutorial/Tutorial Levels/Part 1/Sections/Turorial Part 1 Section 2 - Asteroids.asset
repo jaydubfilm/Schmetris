@@ -19,6 +19,6 @@ MonoBehaviour:
   - block: {fileID: 8711779262324829158, guid: b20727edf559f4948bb5d7a6c66b1694, type: 3}
     probability: 1
   speciesSpawnData: []
-  blockSpawnRate: 2
+  blockSpawnRate: 1
   enemySpawnRate: 0
   blockSpeed: 10

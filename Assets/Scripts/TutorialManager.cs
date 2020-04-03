@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using Sirenix.OdinInspector;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -49,6 +50,9 @@ public class TutorialManager : MonoBehaviour
     public List<GameObject> greyScaleAtSectionStart = new List<GameObject>();
     public List<GameObject> redSprites = new List<GameObject>();
 
+    public GameObject gameTimer;
+    public Text levelComplete;
+
     bool beganGreyscaleSection;
     bool hasHadFuelWarning;
     Bot playerBot;
@@ -60,6 +64,7 @@ public class TutorialManager : MonoBehaviour
     bool collectRed;
     int redCounter;
     int frameChecks;
+    public bool isBotDead;
 
 
 
@@ -122,7 +127,7 @@ public class TutorialManager : MonoBehaviour
                     //collect your first greyscale
                     if (collected1Greyscale == false)
                     {
-//                        print(SR.sprite.name);
+                        //                        print(SR.sprite.name);
                         if (SR.sprite == greyScale)
                         {
                             if (beganGreyscaleSection == false)
@@ -238,29 +243,40 @@ public class TutorialManager : MonoBehaviour
                     print("checking sprites");
                     List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
                     foreach (SpriteRenderer SR in childSprites)
-                    {                        
-                            if (SR.sprite == red)
+                    {
+                        if (SR.sprite == red)
+                        {
+                            if (!redSprites.Contains(SR.gameObject))
                             {
-                                if (!redSprites.Contains(SR.gameObject))
+                                print("got 1");
+                                redSprites.Add(SR.gameObject);
+                                redCounter++;
+                                if (redCounter >= 3)
                                 {
-                                    print("got 1");
-                                    redSprites.Add(SR.gameObject);
-                                    redCounter++;
-                                    if (redCounter >= 3)
-                                    {
-                                        print("got 3");
-                                        CloseAndOpenNextUnpaused();
-                                    }
-                                }                                
-                            }                        
+                                    print("got 3");
+                                    CloseAndOpenNextUnpaused();
+                                }
+                            }
+                        }
                     }
                     frameCounter = 0;
                 }
                 frameCounter++;
             }
         }
+        //player death
+        if (GameController.Instance.isBotDead == true && isBotDead == false);
+        {
+
+            ResetVariables();
+        }
+        isBotDead = GameController.Instance.isBotDead;
     }
-    
+
+    void ResetVariables()
+    {
+
+    }
 
     //is sequential marks events that should happen chronologically
     public void TutorialPopup(int module, bool pauseGame, bool toggleOnOff, bool isSequential)
@@ -452,9 +468,11 @@ public class TutorialManager : MonoBehaviour
     public void ToScrapYard()
     {
         //GameController.Instance.LoadNextLevelSection();
-
+        print("to scrappy");
         GameController.Instance.LoadNextLevelSection();
         CloseCurrent();
+        gameTimer.SetActive(true);
+        levelComplete.enabled = true;
         Destroy(gameObject);
     }
 }

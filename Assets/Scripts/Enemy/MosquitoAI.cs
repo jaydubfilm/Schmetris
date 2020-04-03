@@ -140,12 +140,7 @@ public class MosquitoAI : MonoBehaviour
             }
         }
 
-        //testing
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            Death();
-        }
-
+       
     }
 
     
@@ -243,6 +238,7 @@ public class MosquitoAI : MonoBehaviour
         blastSphere.transform.localScale = new Vector3(blastRadius * 2, blastRadius * 2, blastRadius * 2);
 
         //Instantiate Explosion here
+        GameController.Instance.enemyList.Remove(gameObject);
         Destroy(gameObject);
     }
 

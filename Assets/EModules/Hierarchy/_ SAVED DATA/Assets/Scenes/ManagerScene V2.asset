@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -685826432, guid: 9d97897b2ac2c7b42a4abfb7663c32a7, type: 3}
-  m_Name: ManagerScene 1
+  m_Name: ManagerScene
   m_EditorClassIdentifier: 
   LOCALIDINFILE_HashFreeze: []
   LOCALIDINFILE_Hash1: []
@@ -19,16 +19,52 @@ MonoBehaviour:
   LOCALIDINFILE_Hash1_Fix2_0: []
   LOCALIDINFILE_Hash5_Fix2_0: []
   LOCALIDINFILE_Hash7_Fix2_0: []
-  LOCALIDINFILE_Hash9: []
+  LOCALIDINFILE_Hash9:
+  - i1: -1
+    i2: -1
   LOCALIDINFILE_Hash_BookMarks:
-  - list: []
+  - list:
+    - activeObject:
+        i1: -1
+        i2: -1
+      list: []
   LOCALIDINFILE_Hash3:
   - activeObject:
+      i1: 828699279
+      i2: 0
+    list:
+    - i1: 828699279
+      i2: 0
+  - activeObject:
+      i1: 828699279
+      i2: 0
+    list:
+    - i1: 828699279
+      i2: 0
+  - activeObject:
+      i1: 828699279
+      i2: 0
+    list:
+    - i1: 828699279
+      i2: 0
+  - activeObject:
       i1: -1
       i2: -1
     list:
     - i1: -1
       i2: -1
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: -910704012
+      i2: 889678755
+    list:
+    - i1: -910704012
+      i2: 889678755
   - activeObject:
       i1: -1
       i2: -1
@@ -113,20 +149,6 @@ MonoBehaviour:
     list:
     - i1: -1
       i2: -1
-    - i1: -1
-      i2: -1
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-    - i1: -1
-      i2: -1
-    - i1: -1
-      i2: -1
   - activeObject:
       i1: -1
       i2: -1
@@ -151,35 +173,11 @@ MonoBehaviour:
     list:
     - i1: -1
       i2: -1
+  LOCALIDINFILE_Hash4:
   - activeObject:
       i1: -1
       i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-    - i1: -1
-      i2: -1
-    - i1: -1
-      i2: -1
-  LOCALIDINFILE_Hash4: []
+    list: []
   LOCALIDINFILE_m_Hash_IconImageKey: []
   HashFreezeHashKeys: []
   HashFreezeHashValues: 
@@ -192,7 +190,18 @@ MonoBehaviour:
     SKIP_COLOR: 0
     NO_EXPAND_ITEMS: 0
     name: Default
-    array: []
+    array:
+    - FavParams: 0
+      FavString: []
+      list: []
+      ActiveGameObject: {fileID: 0}
+      GUIDsList: []
+      GUIDsActiveGameObject: 
+      PATHsList: []
+      PATHsActiveGameObject: 
+      InstanceID: -1132760537
+      wasInit: 0
+      CashedBool: 0
     FavParams: 0
     InstanceID: -31627530
     Hierarchy_ScrollY: 0
@@ -375,22 +384,6 @@ MonoBehaviour:
     FavString: []
     list:
     - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
     GUIDsActiveGameObject: 
@@ -487,7 +480,17 @@ MonoBehaviour:
     FavString: []
     list:
     - {fileID: 0}
-    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
@@ -497,15 +500,28 @@ MonoBehaviour:
     InstanceID: 0
     wasInit: 0
     CashedBool: 0
-  Hash4: []
+  Hash4:
+  - FavParams: 0
+    FavString: []
+    list: []
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: -1132760537
+    wasInit: 0
+    CashedBool: 0
   Hash5: []
   Hash5_Fix2_0: []
   Hash6: []
   Hash7: []
   Hash7_Fix2_0: []
   Hash8: []
-  Hash9: []
-  Hash10: []
+  Hash9:
+  - {fileID: 0}
+  Hash10:
+  - list: 00000000
   _enableRegistrator: 0
   _saveInFolder: SCENE
   _mFavoritCategorySelected: 0

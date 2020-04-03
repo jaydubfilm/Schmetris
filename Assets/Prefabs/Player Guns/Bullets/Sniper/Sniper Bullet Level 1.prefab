@@ -101,6 +101,11 @@ MonoBehaviour:
   direction: {x: 0, y: 0}
   range: 0
   homing: 0
+  isGrenade: 0
+  blastRadius: 0
+  blastForce: 0
+  debugSphere: {fileID: 0}
+  isBlaster: 0
 --- !u!96 &8986431536807626049
 TrailRenderer:
   serializedVersion: 2
@@ -179,7 +184,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.8962264, g: 0.4734916, b: 0.021137413, a: 1}
+      key0: {r: 0.019607857, g: 0.24242967, b: 0.8980392, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 1}
       key2: {r: 1, g: 1, b: 1, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
