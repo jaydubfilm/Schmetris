@@ -143,24 +143,32 @@ public class GameController : MonoBehaviour
     {
         if (!isBotDead)
         {
-            isBotDead = true;
-            lives--;
-            if (lives == 0)
+            if (TutorialManager.Instance != null)
             {
-                hud.SetProgressText("Level " + currentScene + " attained. $" + money + " Salvaged.");
-                if (OnGameOver != null)
-                {
-                    OnGameOver();
-                }
-                hud.SetGameOverPopup(true, endgameMessage);
+                RestartOnDestroy();
+                print("restarted);
             }
-            else
-            {
-                if (OnLoseLife != null)
+            else {
+
+                isBotDead = true;
+                lives--;
+                if (lives == 0)
                 {
-                    OnLoseLife();
+                    hud.SetProgressText("Level " + currentScene + " attained. $" + money + " Salvaged.");
+                    if (OnGameOver != null)
+                    {
+                        OnGameOver();
+                    }
+                    hud.SetGameOverPopup(true, endgameMessage);
                 }
-                hud.SetLifeLostPopup(true, endgameMessage);
+                else
+                {
+                    if (OnLoseLife != null)
+                    {
+                        OnLoseLife();
+                    }
+                    hud.SetLifeLostPopup(true, endgameMessage);
+                }
             }
         }
     }
@@ -543,6 +551,17 @@ public class GameController : MonoBehaviour
         LoadLevelData(highestScene);
     }
 
+    public void RestartOnDestroy()
+    {
+        hud.gameObject.SetActive(false);
+        mapMenu.SetActive(false);
+        isPaused = true;
+        Time.timeScale = 0;
+        bot.gameObject.SetActive(false);
+        SceneManager.LoadScene(1);
+        StartLevel(currentScene);
+    }
+
     public void LoadScrapyard()
     {
         hud.gameObject.SetActive(false);
@@ -717,8 +736,8 @@ public class GameController : MonoBehaviour
         SceneManager.LoadScene(Mathf.Min(SceneManager.sceneCountInBuildSettings - 1,levelNumber));
         hud.SetLevel(levelNumber);
         levelData = game.levelDataArr[levelNumber-1];
-        LoadLevelSection(0);
         audioController.FadeInMusic(audioController.gameMusic, 17.0f, 1.0f);
+        LoadLevelSection(0);
     }
 
     void ScrollBackground() {

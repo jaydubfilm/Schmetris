@@ -481,6 +481,6 @@ public class TutorialManager : MonoBehaviour
     [Button]
     public void Respawn()
     {
-        //GameController.Instance.
+        GameController.Instance.RestartOnDestroy();
     }
 }
