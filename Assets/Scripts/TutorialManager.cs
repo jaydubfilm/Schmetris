@@ -89,6 +89,7 @@ public class TutorialManager : MonoBehaviour
             {
                 TutorialPopup(storedModule, storedPause, true, storedSequential);
                 timer = false;
+                print("triggered with delay");
             }
         }
 
@@ -152,7 +153,7 @@ public class TutorialManager : MonoBehaviour
                         if (SR.sprite == level1GreyScale)
                         {
                             CloseCurrent();
-                            TutorialPopup(5, true, true, false);
+                            TutorialPopup(5, false, true, false);
                             level1Upgraded = true;
                             return;
                         }
@@ -162,10 +163,10 @@ public class TutorialManager : MonoBehaviour
                     {
                         if (SR.sprite == level2GreyScale)
                         {
-                            CloseCurrent();
-                            SetFuel(10);
+                            SetFuel(16);
                             GameController.Instance.LoadNextLevelSection();
-                            TutorialPopup(6, true, true, false);
+                            CloseCurrent();
+                            TutorialPopup(6, false, true, false);
                             level1Upgraded = true;
                             return;
                         }
@@ -177,7 +178,7 @@ public class TutorialManager : MonoBehaviour
 
             frameCounter++;
         }
-
+        //fuel warning
         if (beganGreyscaleSection == true)
         {
             if (hasHadFuelWarning == false)
@@ -186,7 +187,7 @@ public class TutorialManager : MonoBehaviour
                 {
 
                     hasHadFuelWarning = true;
-                    TutorialPopup(6, true, true, true);
+                    TutorialPopup(6, false, true, true);
                 }
             }
 
@@ -201,7 +202,7 @@ public class TutorialManager : MonoBehaviour
 
             if (redDropTimer == true)
             {
-                print(Time.time - timerStartRedDrop);
+
                 if (Time.time - timerStartRedDrop > timeToRedDrop)
                 {
                     SpawnSingle();
@@ -251,7 +252,7 @@ public class TutorialManager : MonoBehaviour
                                 print("got 1");
                                 redSprites.Add(SR.gameObject);
                                 redCounter++;
-                                if (redCounter >= 3)
+                                if (redCounter == 3)
                                 {
                                     print("got 3");
                                     CloseAndOpenNextUnpaused();
@@ -264,19 +265,21 @@ public class TutorialManager : MonoBehaviour
                 frameCounter++;
             }
         }
-        //player death
-        if (GameController.Instance.isBotDead == true && isBotDead == false);
-        {
+        ////player death
+        //if (GameController.Instance.isBotDead == true && isBotDead == false)
+        //{
 
-            ResetVariables();
-        }
-        isBotDead = GameController.Instance.isBotDead;
+        //    ResetVariables();
+        //}
+        //isBotDead = GameController.Instance.isBotDead;
     }
 
-    void ResetVariables()
-    {
+    //void ResetVariables()
+    //{
 
-    }
+    //    collected1Greyscale = false;
+
+    //}
 
     //is sequential marks events that should happen chronologically
     public void TutorialPopup(int module, bool pauseGame, bool toggleOnOff, bool isSequential)
@@ -378,7 +381,7 @@ public class TutorialManager : MonoBehaviour
     public void OpenNextUnpaused()
        
     {
-
+        CloseCurrent();
         TutorialPopup(currentSequencedModule + 1, false, true, true);
     }
 
@@ -424,16 +427,17 @@ public class TutorialManager : MonoBehaviour
 
         asteroidHits += 1;
         print(asteroidHits);
+        print(asteroidHits);
 
         switch (asteroidHits)
         {
             case 1:
                 CloseCurrent();
-                TutorialPopup(0, true, true, false);
+                TutorialPopup(0, false, true, false);
                 break;
             case 2:
                 CloseCurrent();
-                TutorialPopup(1, true, true, false);
+                TutorialPopup(1, false, true, false);
                 break;
             default:
                 break;
@@ -455,10 +459,8 @@ public class TutorialManager : MonoBehaviour
         switch (newSection)
         {
             case 2: //greyscale
-                TutorialPopup(4, true, true, true);
+                TutorialPopup(4, false, true, true);
                 break;
-
-
 
             default:
                 break;
@@ -474,5 +476,11 @@ public class TutorialManager : MonoBehaviour
         gameTimer.SetActive(true);
         levelComplete.enabled = true;
         Destroy(gameObject);
+    }
+
+    [Button]
+    public void Respawn()
+    {
+        //GameController.Instance.
     }
 }

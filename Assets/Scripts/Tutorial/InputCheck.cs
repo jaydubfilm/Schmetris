@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Events;
 
 public class InputCheck : MonoBehaviour
 {
@@ -17,21 +18,32 @@ public class InputCheck : MonoBehaviour
     float timeAtInput;
     bool startFade;
     bool queueNext;
+    public bool needsInput;
     private bool canDetect = true;
     public bool QueueAdditional;
-    public float queueDelay;
+    public bool queuedIsSequential;
+    //public float queueDelay;
+    public bool changeSectionOnFinish;
+    public bool runEventOnFinish;
+    public UnityEvent eventOnFinish;
 
     // Start is called before the first frame update
     void Start()
     {
         image = GetComponent<Image>();
         text = GetComponentInChildren<TextMeshProUGUI>();
+        if (inputDetected == false && canDetect == true && needsInput == false)
+        {
+            inputDetected = true;
+            timeAtInput = Time.time;
+            print("keypress");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (inputDetected == false && canDetect == true)
+        if (inputDetected == false && canDetect == true && needsInput == true)
         { 
 
             if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S))
@@ -43,7 +55,10 @@ public class InputCheck : MonoBehaviour
             }
         }
 
-        if(inputDetected == true)
+       
+
+
+            if (inputDetected == true)
         {
 
             if(Time.time -timeAtInput > timeBeforeFade && canDetect == true)
@@ -58,7 +73,7 @@ public class InputCheck : MonoBehaviour
 
             if(startFade == true)
             {
-                alpha = 1 - ((Time.time - timeAtInput) * fadeSpeed);
+                alpha = 0.686f - ((Time.time - timeAtInput) * fadeSpeed);
 //                print(alpha);
                 Color imageColor = new Color(image.color.r, image.color.g, image.color.b, alpha);
                 image.color = imageColor;
@@ -67,6 +82,16 @@ public class InputCheck : MonoBehaviour
                 if (alpha < 0)
                 {
                     startFade = false;
+
+                    if (runEventOnFinish)
+                    {
+                        eventOnFinish.Invoke();
+                    }
+
+                    if (changeSectionOnFinish)
+                    {
+                        GameController.Instance.LoadNextLevelSection();
+                    }
                     alpha = 0;
                 }
             }
@@ -77,9 +102,11 @@ public class InputCheck : MonoBehaviour
                 {
                     if (Time.time - timeAtInput > timeBeforeFade + timeUntilNextPrompt)
                     {
-                        GameController.Instance.LoadNextLevelSection();
+
+                        //GameController.Instance.LoadNextLevelSection();
                         //"Get In, Get out"....
-                        TutorialManager.Instance.TutorialPopup(2, true, true, true);
+
+                        TutorialManager.Instance.CloseAndOpenNextUnpaused();
                         queueNext = true;
                     }
                 }

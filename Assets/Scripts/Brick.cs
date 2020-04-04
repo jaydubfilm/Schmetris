@@ -307,7 +307,9 @@ public class Brick : MonoBehaviour
             }
             bit.RemoveFromBlock("explode");
 
-            if (TutorialManager.Instance != null) TutorialManager.Instance.OnAsteroidHit();
+            if (TutorialManager.Instance != null) {
+                TutorialManager.Instance.OnAsteroidHit();
+            }
                     
 
         } 

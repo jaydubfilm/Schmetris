@@ -15,6 +15,8 @@ MonoBehaviour:
   levelDuration: 0
   blocks:
   - block: {fileID: 8480972586710585632, guid: 934b8c0b6a23b4092bdf57addff8b22d, type: 3}
+    probability: 2
+  - block: {fileID: 6215762431153503963, guid: 0de4a4f3435814b5db99a2dea142f90a, type: 3}
     probability: 1
   speciesSpawnData: []
   blockSpawnRate: 2
