@@ -60,7 +60,7 @@ public class GameController : MonoBehaviour
     public bool isPaused = false;
 
     //public static int bgAdjustFlag = 0;
-    
+
     public GameObject scoreIncreasePrefab;
 
     //public LevelData[] allLevelData;
@@ -82,7 +82,7 @@ public class GameController : MonoBehaviour
     public GameObject bgPanel;
 
     int columnNum = ScreenStuff.cols;
-  
+
     int[] blockProbArr;
     int[] speciesProbArr;
 
@@ -92,7 +92,7 @@ public class GameController : MonoBehaviour
     public bool isLevelCompleteQueued = false;
     BlockSpawnData[] blockSpawns;
     public SpeciesSpawnData[] speciesSpawnData;
-   
+
     float blockSpawnTimer = 3f;
     float enemySpawnTimer;
     float enemySpawnRate;
@@ -131,7 +131,7 @@ public class GameController : MonoBehaviour
     {
         get
         {
-            if(settings.speedLevels.Length == 0 || speedMultiplier >= settings.speedLevels.Length)
+            if (settings.speedLevels.Length == 0 || speedMultiplier >= settings.speedLevels.Length)
             {
                 return 1.0f;
             }
@@ -141,28 +141,42 @@ public class GameController : MonoBehaviour
 
     public void EndGame(string endgameMessage)
     {
+        
         if (!isBotDead)
         {
             isBotDead = true;
             lives--;
+            print("this1");
+
             if (lives == 0)
-            {
+            {                   
+                print("this1");
                 hud.SetProgressText("Level " + currentScene + " attained. $" + money + " Salvaged.");
                 if (OnGameOver != null)
                 {
                     OnGameOver();
                 }
-                hud.SetGameOverPopup(true, endgameMessage);
+                hud.SetGameOverPopup(true, endgameMessage);                  
             }
             else
             {
-                if (OnLoseLife != null)
+                if (TutorialManager.Instance == null)
                 {
-                    OnLoseLife();
+                    if (OnLoseLife != null)
+                    {
+                        OnLoseLife();
+                    }
+                    hud.SetLifeLostPopup(true, endgameMessage);
                 }
-                hud.SetLifeLostPopup(true, endgameMessage);
+                else
+                {
+                    TutorialManager.Instance.CloseCurrent();
+                    TutorialManager.Instance.TutorialPopup(2, false, true, false);
+                }
+
             }
         }
+        
     }
 
     private void Awake()
@@ -189,7 +203,8 @@ public class GameController : MonoBehaviour
         }
     }
 
-    void Start () {
+    void Start()
+    {
         lives = 3;
         bgPanelArr = new GameObject[4];
         SpawnBGPanels();
@@ -224,7 +239,7 @@ public class GameController : MonoBehaviour
 
     void BuildBotIcon(int index, Transform target, bool isLayout)
     {
-        if(target.GetComponentInChildren<VerticalLayoutGroup>())
+        if (target.GetComponentInChildren<VerticalLayoutGroup>())
         {
             Destroy(target.GetComponentInChildren<VerticalLayoutGroup>().gameObject);
         }
@@ -248,15 +263,15 @@ public class GameController : MonoBehaviour
             {
                 for (int x = 0; x < targetFile.bot[0].botRow.Length; x++)
                 {
-                    if(targetFile.bot[x].botRow[y] != "")
+                    if (targetFile.bot[x].botRow[y] != "")
                     {
                         maxX = x;
                         maxY = y;
-                        if(minX == -1)
+                        if (minX == -1)
                         {
                             minX = x;
                         }
-                        if(minY == -1)
+                        if (minY == -1)
                         {
                             minY = y;
                         }
@@ -274,7 +289,7 @@ public class GameController : MonoBehaviour
                 for (int y = minY; y <= maxY; y++)
                 {
                     GameObject newColumn = Instantiate(iconColumn, newGrid.transform);
-                    for (int x = minX; x <= maxX ; x++)
+                    for (int x = minX; x <= maxX; x++)
                     {
                         GameObject newTile = Instantiate(iconTile, newColumn.transform);
                         Image newTileImage = newTile.GetComponent<Image>();
@@ -308,7 +323,7 @@ public class GameController : MonoBehaviour
         {
             if (TutorialManager.Instance != null && tutorialHasStarted == false)
             {
-                TutorialManager.Instance.TutorialPopup(0, true, true, false);                
+                TutorialManager.Instance.TutorialPopup(0, false, true, true);
                 tutorialHasStarted = true;
                 TutorialManager.Instance.isBotDead = false;
                 TutorialManager.Instance.playerPos.GetComponent<Bot>().SetFuelAmt(500);
@@ -381,7 +396,7 @@ public class GameController : MonoBehaviour
                 {
                     for (int y = 0; y < newMap.GetLength(1); y++)
                     {
-                        if(loadData.bot[x].botRow[y] != "")
+                        if (loadData.bot[x].botRow[y] != "")
                             newMap[x, y] = tilesAtlas.Single<Sprite>(s => s.name == loadData.bot[x].botRow[y]);
                     }
                 }
@@ -543,6 +558,17 @@ public class GameController : MonoBehaviour
         LoadLevelData(highestScene);
     }
 
+    public void RestartOnDestroy()
+    {
+        hud.gameObject.SetActive(false);
+        mapMenu.SetActive(false);
+        isPaused = true;
+        Time.timeScale = 0;
+        bot.gameObject.SetActive(false);
+        SceneManager.LoadScene(1);
+        StartLevel(currentScene);
+    }
+
     public void LoadScrapyard()
     {
         hud.gameObject.SetActive(false);
@@ -566,7 +592,7 @@ public class GameController : MonoBehaviour
             //Update time remaining
             timeRemaining -= Time.deltaTime;
             float totalTimeRemaining = timeRemaining;
-            for(int i = levelSection + 1;i < levelData.levelSections.Length;i++)
+            for (int i = levelSection + 1; i < levelData.levelSections.Length; i++)
             {
                 totalTimeRemaining += levelData.levelSections[i].levelDuration;
             }
@@ -648,14 +674,16 @@ public class GameController : MonoBehaviour
         scoreFX.GetComponent<FloatingText>().Init(message, hud.moneyText.transform.position, size, color);
     }
 
-    public int[] GetSpawnProbabilities() {
+    public int[] GetSpawnProbabilities()
+    {
         int[] pArr = new int[blockSpawns.Length];
         for (int d = 0; d < blockSpawns.Length; d++)
             pArr[d] = blockSpawns[d].probability;
         return pArr;
     }
 
-    public int[] GetSpeciesProbabilities() {
+    public int[] GetSpeciesProbabilities()
+    {
         int[] pArr = new int[speciesSpawnData.Length];
         for (int d = 0; d < speciesSpawnData.Length; d++)
             pArr[d] = speciesSpawnData[d].probability;
@@ -669,7 +697,7 @@ public class GameController : MonoBehaviour
 
     public void LoadLevelSection(int sectionNumber)
     {
-        if(sectionNumber >= levelData.levelSections.Length)
+        if (sectionNumber >= levelData.levelSections.Length)
         {
             if (!isLevelCompleteQueued)
             {
@@ -710,40 +738,45 @@ public class GameController : MonoBehaviour
         TutorialManager.Instance.OnLevelChange(sectionNumber);
     }
 
-    public void LoadLevelData(int levelNumber) {
+    public void LoadLevelData(int levelNumber)
+    {
         isLevelCompleteQueued = false;
         speedMultiplier = settings.defaultSpeedLevel;
         hud.SetSpeed(adjustedSpeed);
-        SceneManager.LoadScene(Mathf.Min(SceneManager.sceneCountInBuildSettings - 1,levelNumber));
+        SceneManager.LoadScene(Mathf.Min(SceneManager.sceneCountInBuildSettings - 1, levelNumber));
         hud.SetLevel(levelNumber);
-        levelData = game.levelDataArr[levelNumber-1];
-        LoadLevelSection(0);
+        levelData = game.levelDataArr[levelNumber - 1];
         audioController.FadeInMusic(audioController.gameMusic, 17.0f, 1.0f);
+        LoadLevelSection(0);
     }
 
-    void ScrollBackground() {
+    void ScrollBackground()
+    {
         Vector3[] bV3 = new Vector3[4];
-        Vector3 panelUpV3 = new Vector3(0,2*settings.bgHeight,0);
-        Vector3 panelLeftV3 = new Vector3(-2*settings.bgWidth,0,0);
-        Vector3 panelRightV3 = new Vector3(2*settings.bgWidth,0,0);
+        Vector3 panelUpV3 = new Vector3(0, 2 * settings.bgHeight, 0);
+        Vector3 panelLeftV3 = new Vector3(-2 * settings.bgWidth, 0, 0);
+        Vector3 panelRightV3 = new Vector3(2 * settings.bgWidth, 0, 0);
 
         if (bgPanelArr[0] == null)
             return;
 
         // scroll Background Down
 
-        for (int x = 0;x<4;x++) {    
+        for (int x = 0; x < 4; x++)
+        {
             bV3[x] = bgPanelArr[x].transform.position;
-            bV3[x] += new Vector3 (0,-settings.bgScrollSpeed * Time.unscaledDeltaTime,0);
+            bV3[x] += new Vector3(0, -settings.bgScrollSpeed * Time.unscaledDeltaTime, 0);
         }
 
         // flip bottom BG to top
 
-        if (bV3[1].y < bV3[0].y && bV3[0].y < 0.0f) {
+        if (bV3[1].y < bV3[0].y && bV3[0].y < 0.0f)
+        {
             bV3[1] += panelUpV3;
             bV3[3] += panelUpV3;
         }
-        if (bV3[0].y < bV3[1].y && bV3[1].y < 0.0f) {
+        if (bV3[0].y < bV3[1].y && bV3[1].y < 0.0f)
+        {
             bV3[0] += panelUpV3;
             bV3[2] += panelUpV3;
         }
@@ -774,27 +807,31 @@ public class GameController : MonoBehaviour
 
         // flip left BG to right
 
-        if (bV3[0].x < bV3[2].x && bV3[2].x < 0.0f) {
+        if (bV3[0].x < bV3[2].x && bV3[2].x < 0.0f)
+        {
             bV3[0] += panelRightV3;
             bV3[1] += panelRightV3;
         }
-        if (bV3[2].x < bV3[0].x && bV3[0].x < 0.0f) {
+        if (bV3[2].x < bV3[0].x && bV3[0].x < 0.0f)
+        {
             bV3[2] += panelRightV3;
             bV3[3] += panelRightV3;
         }
-    
+
         // flip right BG to left
 
-        if (bV3[0].x > bV3[2].x && bV3[2].x > 0.0f) {
+        if (bV3[0].x > bV3[2].x && bV3[2].x > 0.0f)
+        {
             bV3[0] += panelLeftV3;
             bV3[1] += panelLeftV3;
         }
-        if (bV3[2].x > bV3[0].x && bV3[0].x > 0.0f) {
+        if (bV3[2].x > bV3[0].x && bV3[0].x > 0.0f)
+        {
             bV3[2] += panelLeftV3;
             bV3[3] += panelLeftV3;
         }
 
-        for (int x=0;x<4;x++)
+        for (int x = 0; x < 4; x++)
             bgPanelArr[x].transform.position = bV3[x];
     }
 
@@ -828,7 +865,8 @@ public class GameController : MonoBehaviour
         }
     }
 
-    void EnemySpawnCheck() {
+    void EnemySpawnCheck()
+    {
         if (!isLevelCompleteQueued)
         {
             enemySpawnTimer -= Time.deltaTime * adjustedSpeed;
@@ -841,7 +879,8 @@ public class GameController : MonoBehaviour
         }
     }
 
-    void BlockSpawnCheck() {
+    void BlockSpawnCheck()
+    {
         if (!isLevelCompleteQueued)
         {
             blockSpawnTimer -= Time.deltaTime * adjustedSpeed;
@@ -868,20 +907,21 @@ public class GameController : MonoBehaviour
         for (int x = 0; x < num; x++)
             sum += pArr[x];
 
-        int r = Random.Range(1, sum+1);
-        for (int x=0; x < num; x++)
-        { 
+        int r = Random.Range(1, sum + 1);
+        for (int x = 0; x < num; x++)
+        {
             r -= pArr[x];
-            if (r<=0)
+            if (r <= 0)
                 return x;
         }
-        return (num-1);
+        return (num - 1);
     }
 
-    public GameObject SpawnEnemy(int type) {
+    public GameObject SpawnEnemy(int type)
+    {
         GameObject newEnemyObj;
 
-        float xPos = Random.Range(ScreenStuff.leftEdgeOfWorld,ScreenStuff.rightEdgeOfWorld);
+        float xPos = Random.Range(ScreenStuff.leftEdgeOfWorld, ScreenStuff.rightEdgeOfWorld);
         Vector3 vpos = new Vector3(xPos, ScreenStuff.RowToYPosition(spawnRow), 0);
         newEnemyObj = Instantiate(speciesSpawnData[type].species, vpos, Quaternion.identity);
         enemyList.Add(newEnemyObj);
@@ -955,16 +995,18 @@ public class GameController : MonoBehaviour
     }
 
 
-    void SpawnBGPanels() {
-        for (int x = 0;x<4;x++) {
+    void SpawnBGPanels()
+    {
+        for (int x = 0; x < 4; x++)
+        {
             bgPanelArr[x] = new GameObject();
-            bgPanelArr[x] = Instantiate(bgPanel,new Vector3(0,0,0),Quaternion.identity);
+            bgPanelArr[x] = Instantiate(bgPanel, new Vector3(0, 0, 0), Quaternion.identity);
             bgPanelArr[x].transform.localScale = settings.bgScale;
             DontDestroyOnLoad(bgPanelArr[x]);
         }
-        bgPanelArr[0].transform.position = new Vector3(0,settings.bgHeight,settings.bgZDepth);
-        bgPanelArr[1].transform.position = new Vector3(0,0,settings.bgZDepth);
-        bgPanelArr[2].transform.position = new Vector3(settings.bgWidth,settings.bgHeight,settings.bgZDepth);
-        bgPanelArr[3].transform.position = new Vector3(settings.bgWidth,0,settings.bgZDepth);
+        bgPanelArr[0].transform.position = new Vector3(0, settings.bgHeight, settings.bgZDepth);
+        bgPanelArr[1].transform.position = new Vector3(0, 0, settings.bgZDepth);
+        bgPanelArr[2].transform.position = new Vector3(settings.bgWidth, settings.bgHeight, settings.bgZDepth);
+        bgPanelArr[3].transform.position = new Vector3(settings.bgWidth, 0, settings.bgZDepth);
     }
 }

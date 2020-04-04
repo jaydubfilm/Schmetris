@@ -368,11 +368,11 @@ public class Brick : MonoBehaviour
         bot.queueDestroyedBrick = true;
 
         if (brickType == 9 && (bot.BrickAtBotArr(bot.coreV2) == null))
-        { 
-            GameController.Instance.EndGame("CORE DESTROYED");
-            if (TutorialManager.Instance != null)
-                TutorialManager.Instance.TutorialPopup(2, true, true, false);
-    }
+        {
+           
+                GameController.Instance.EndGame("CORE DESTROYED");
+        
+        }
 
         if (GetComponent<Bomb>()) {
             GetComponent<Bomb>().BombEnemies(GetPoweredLevel());
@@ -430,9 +430,11 @@ public class Brick : MonoBehaviour
         if (IsParasite())
             GameController.Instance.enemyList.Remove(gameObject);
 
-        if (bot.BrickAtBotArr(bot.coreV2)==null)
-            GameController.Instance.EndGame("CORE DESTROYED");
-
+        if (bot.BrickAtBotArr(bot.coreV2) == null)
+        {
+          
+                GameController.Instance.EndGame("CORE DESTROYED");
+        }
         if (GetComponent<Container>())
             bot.RemoveContainer(GetComponent<Container>());
 

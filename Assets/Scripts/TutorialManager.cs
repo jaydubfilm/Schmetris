@@ -65,6 +65,7 @@ public class TutorialManager : MonoBehaviour
     int redCounter;
     int frameChecks;
     public bool isBotDead;
+    public Text levelOverText;
 
 
 
@@ -75,6 +76,8 @@ public class TutorialManager : MonoBehaviour
 
         Instance = this;
         playerBot = playerPos.GetComponent<Bot>();
+        gameTimer.SetActive(false);
+        levelOverText.enabled = false;
     }
 
     private void Update()
@@ -89,7 +92,6 @@ public class TutorialManager : MonoBehaviour
             {
                 TutorialPopup(storedModule, storedPause, true, storedSequential);
                 timer = false;
-                print("triggered with delay");
             }
         }
 
@@ -121,7 +123,6 @@ public class TutorialManager : MonoBehaviour
 
             if (frameCounter == 60)
             {
-                print("checking sprites");
                 List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
                 foreach (SpriteRenderer SR in childSprites)
                 {
@@ -218,7 +219,6 @@ public class TutorialManager : MonoBehaviour
                 if (frameCounter == 60)
                 {
                     frameChecks++;
-                    print("checking sprites");
                     List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
                     foreach (SpriteRenderer SR in childSprites)
                     {
@@ -229,7 +229,6 @@ public class TutorialManager : MonoBehaviour
                             frameCounter = 0;
                             collectRed = true;
                             hasSpawnedRed = false;
-                            print("Last");
                         }
                     }
                 }
@@ -241,7 +240,6 @@ public class TutorialManager : MonoBehaviour
             {
                 if (frameCounter == 60)
                 {
-                    print("checking sprites");
                     List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
                     foreach (SpriteRenderer SR in childSprites)
                     {
@@ -249,12 +247,12 @@ public class TutorialManager : MonoBehaviour
                         {
                             if (!redSprites.Contains(SR.gameObject))
                             {
-                                print("got 1");
+                                //print("got 1");
                                 redSprites.Add(SR.gameObject);
                                 redCounter++;
                                 if (redCounter == 3)
                                 {
-                                    print("got 3");
+                                    //print("got 3");
                                     CloseAndOpenNextUnpaused();
                                 }
                             }
@@ -274,12 +272,24 @@ public class TutorialManager : MonoBehaviour
         //isBotDead = GameController.Instance.isBotDead;
     }
 
-    //void ResetVariables()
-    //{
+    void ResetVariables()
+    {
 
-    //    collected1Greyscale = false;
+        collected1Greyscale = false;
+        level1Upgraded = false;
+        //levelComplete = false;
+        beganGreyscaleSection = false;
+        hasHadFuelWarning = false;
+        outOfFuel = false;
+        redDropTimer = false;        
+        timerStartRedDrop = 0;
+        hasSpawnedRed= false;
+        collectRed = false;
+        redCounter =0;
+        frameChecks =0;
+        isBotDead = false;
 
-    //}
+}
 
     //is sequential marks events that should happen chronologically
     public void TutorialPopup(int module, bool pauseGame, bool toggleOnOff, bool isSequential)
@@ -426,8 +436,7 @@ public class TutorialManager : MonoBehaviour
     {
 
         asteroidHits += 1;
-        print(asteroidHits);
-        print(asteroidHits);
+       
 
         switch (asteroidHits)
         {
@@ -470,17 +479,44 @@ public class TutorialManager : MonoBehaviour
     public void ToScrapYard()
     {
         //GameController.Instance.LoadNextLevelSection();
-        print("to scrappy");
         GameController.Instance.LoadNextLevelSection();
         CloseCurrent();
         gameTimer.SetActive(true);
         levelComplete.enabled = true;
+        levelOverText.enabled = true;
+
         Destroy(gameObject);
     }
 
     [Button]
     public void Respawn()
     {
+        CloseCurrent();
+        ResetVariables();
         GameController.Instance.RestartOnDestroy();
+        SetFuel(200);
+        foreach (GameObject item in sequentialModuleList)
+        {
+            if (item.GetComponent<InputCheck>())
+            {
+                item.GetComponent<InputCheck>().Reset();
+            }
+        }
+
+        foreach (GameObject item in nonSequentialModuleList)
+        {
+            if (item.GetComponent<InputCheck>())
+            {
+                item.GetComponent<InputCheck>().Reset();
+            }
+        }
+        TutorialPopup(0, false, true, true);
+        GameController.Instance.lives = 3;
+    }
+
+    public void WhiteEnergy()
+    {
+        TutorialPopup(7, false, true, false);
+
     }
 }

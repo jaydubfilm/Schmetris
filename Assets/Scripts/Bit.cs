@@ -57,8 +57,8 @@ public class Bit : MonoBehaviour
         } else  
             gameObject.transform.parent = null;
 
-       
-        RotateUpright();
+
+        //RotateUpright();
         ID = bitType*1000;
     }
 
