@@ -80,6 +80,8 @@ public class TutorialManager : MonoBehaviour
         levelOverText.enabled = false;
     }
 
+    
+
     private void Update()
     {
 
@@ -494,7 +496,7 @@ public class TutorialManager : MonoBehaviour
         CloseCurrent();
         ResetVariables();
         GameController.Instance.RestartOnDestroy();
-        SetFuel(200);
+        SetFuel(1000);
         foreach (GameObject item in sequentialModuleList)
         {
             if (item.GetComponent<InputCheck>())

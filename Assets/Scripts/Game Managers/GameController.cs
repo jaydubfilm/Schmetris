@@ -171,6 +171,10 @@ public class GameController : MonoBehaviour
                 }
                 else
                 {
+                    if (OnLoseLife != null)
+                    {
+                        OnLoseLife();
+                    }
                     TutorialManager.Instance.CloseCurrent();
                     TutorialManager.Instance.TutorialPopup(2, false, true, false);
                 }
@@ -327,7 +331,7 @@ public class GameController : MonoBehaviour
                 TutorialManager.Instance.TutorialPopup(0, false, true, true);
                 tutorialHasStarted = true;
                 TutorialManager.Instance.isBotDead = false;
-                TutorialManager.Instance.playerPos.GetComponent<Bot>().SetFuelAmt(500);
+                TutorialManager.Instance.playerPos.GetComponent<Bot>().SetFuelAmt(1000);
 
             }
         }

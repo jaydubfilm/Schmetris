@@ -16,32 +16,32 @@ public class InputCheck : MonoBehaviour
     public float timeBeforeFade;
     public float fadeSpeed;
     public float timeUntilNextPrompt = 6;
-    bool inputDetected;
-    float timeAtInput;
-    bool startFade;
-    bool queueNext;
+    public bool inputDetected;
+    public float timeAtInput;
+    public bool startFade;
+    public bool queueNext;
     public bool needsInput;
-    private bool canDetect = true;
+    public bool canDetect = true;
     public bool QueueAdditional;
     public bool queuedIsSequential;
-    //public float queueDelay;
     public bool changeSectionOnFinish;
     public bool runEventOnFinish;
     public UnityEvent eventOnFinish;
 
     bool startAdditionalAtStart;
-    public float timeBeforeFadeAtStart;
-    public float fadeSpeedAtStart;
+    float timeBeforeFadeAtStart;
+    float fadeSpeedAtStart;
     bool inputDetectedAtStart;
     float timeAtInputAtStart;
     bool startFadeAtStart;
     bool queueNextAtStart;
-    public bool needsInputAtStart;
+    bool needsInputAtStart;
     private bool canDetectAtStart;
-    public bool QueueAdditionalAtStart;
-    public bool queuedIsSequentialAtStart;
-    public bool changeSectionOnFinishAtStart;
-    public bool runEventOnFinishAtStart;
+    bool QueueAdditionalAtStart;
+    bool queuedIsSequentialAtStart;
+    bool changeSectionOnFinishAtStart;
+    bool runEventOnFinishAtStart;
+    bool started;
 
 
     // Start is called before the first frame update
@@ -70,6 +70,8 @@ public class InputCheck : MonoBehaviour
             inputDetected = true;
             timeAtInput = Time.time;
         }
+        //gameObject.SetActive( false);
+        started = true;
     }
 
     void OnEnable()
@@ -82,9 +84,12 @@ public class InputCheck : MonoBehaviour
         }
 
         alpha = 0.686f;
-
+        fadeSpeed = 0.5f;
+        timeBeforeFade = 3;
 
     }
+
+    
 
     // Update is called once per frame
     void Update()
@@ -121,12 +126,11 @@ public class InputCheck : MonoBehaviour
                 image.color = imageColor;
                 Color textColor = new Color(text.color.r, text.color.g, text.color.b, alpha);
                 text.color = textColor;
-                if (alpha < 0)
+                if (alpha <= 0)
                 {
 
                     
 
-                    startFade = false;
 
                     if (runEventOnFinish)
                     {
@@ -140,6 +144,7 @@ public class InputCheck : MonoBehaviour
                     alpha = 0;
                     //Reset();
                     startAdditional = true;
+                    startFade = false;
 
                 }
             }
@@ -164,32 +169,33 @@ public class InputCheck : MonoBehaviour
 
     public  void Reset()
     {
-
-        //if (inputDetected == false && canDetect == true && needsInput == false)
-        //{
-        //    timeAtInput = Time.time;
-        //}
-        //gameObject.SetActive(false);
-        inputDetected = false;
-        alpha = 0.686f;
-        image = GetComponent<Image>();
-        text = GetComponentInChildren<TextMeshProUGUI>();
-        image.color = new Color(image.color.r, image.color.g, image.color.b, 0.686f);
-        text.color = new Color(text.color.r, text.color.g, text.color.b, 0.686f);
-        startAdditional = startAdditionalAtStart;
-        timeBeforeFade = timeBeforeFadeAtStart;
-        fadeSpeed = fadeSpeedAtStart;
-        inputDetected = false;
-        startFade = startFadeAtStart;
-        queueNext = queueNextAtStart;
-        needsInput = needsInputAtStart;
-        canDetect = canDetectAtStart;
-        QueueAdditional = QueueAdditionalAtStart;
-        queuedIsSequential = queuedIsSequentialAtStart;
-        changeSectionOnFinish = changeSectionOnFinishAtStart;
-        runEventOnFinish = runEventOnFinishAtStart;
-        gameObject.SetActive( false);
-
+        if (started == true)
+        {
+            //if (inputDetected == false && canDetect == true && needsInput == false)
+            //{
+            //    timeAtInput = Time.time;
+            //}
+            //gameObject.SetActive(false);
+            inputDetected = false;
+            alpha = 0.686f;
+            image = GetComponent<Image>();
+            text = GetComponentInChildren<TextMeshProUGUI>();
+            image.color = new Color(image.color.r, image.color.g, image.color.b, 0.686f);
+            text.color = new Color(text.color.r, text.color.g, text.color.b, 0.686f);
+            startAdditional = startAdditionalAtStart;
+            timeBeforeFade = timeBeforeFadeAtStart;
+            fadeSpeed = fadeSpeedAtStart;
+            inputDetected = false;
+            startFade = startFadeAtStart;
+            queueNext = queueNextAtStart;
+            needsInput = needsInputAtStart;
+            canDetect = true;
+            QueueAdditional = QueueAdditionalAtStart;
+            queuedIsSequential = queuedIsSequentialAtStart;
+            changeSectionOnFinish = changeSectionOnFinishAtStart;
+            runEventOnFinish = runEventOnFinishAtStart;
+            gameObject.SetActive(false);
+        }
     }
 
     [Button]
