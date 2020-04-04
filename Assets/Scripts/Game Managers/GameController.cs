@@ -143,32 +143,24 @@ public class GameController : MonoBehaviour
     {
         if (!isBotDead)
         {
-            if (TutorialManager.Instance != null)
+            isBotDead = true;
+            lives--;
+            if (lives == 0)
             {
-                RestartOnDestroy();
-                print("restarted);
+                hud.SetProgressText("Level " + currentScene + " attained. $" + money + " Salvaged.");
+                if (OnGameOver != null)
+                {
+                    OnGameOver();
+                }
+                hud.SetGameOverPopup(true, endgameMessage);
             }
-            else {
-
-                isBotDead = true;
-                lives--;
-                if (lives == 0)
+            else
+            {
+                if (OnLoseLife != null)
                 {
-                    hud.SetProgressText("Level " + currentScene + " attained. $" + money + " Salvaged.");
-                    if (OnGameOver != null)
-                    {
-                        OnGameOver();
-                    }
-                    hud.SetGameOverPopup(true, endgameMessage);
+                    OnLoseLife();
                 }
-                else
-                {
-                    if (OnLoseLife != null)
-                    {
-                        OnLoseLife();
-                    }
-                    hud.SetLifeLostPopup(true, endgameMessage);
-                }
+                hud.SetLifeLostPopup(true, endgameMessage);
             }
         }
     }
@@ -316,7 +308,7 @@ public class GameController : MonoBehaviour
         {
             if (TutorialManager.Instance != null && tutorialHasStarted == false)
             {
-                TutorialManager.Instance.TutorialPopup(0, false, true, true);                
+                TutorialManager.Instance.TutorialPopup(0, true, true, false);                
                 tutorialHasStarted = true;
                 TutorialManager.Instance.isBotDead = false;
                 TutorialManager.Instance.playerPos.GetComponent<Bot>().SetFuelAmt(500);
@@ -551,17 +543,6 @@ public class GameController : MonoBehaviour
         LoadLevelData(highestScene);
     }
 
-    public void RestartOnDestroy()
-    {
-        hud.gameObject.SetActive(false);
-        mapMenu.SetActive(false);
-        isPaused = true;
-        Time.timeScale = 0;
-        bot.gameObject.SetActive(false);
-        SceneManager.LoadScene(1);
-        StartLevel(currentScene);
-    }
-
     public void LoadScrapyard()
     {
         hud.gameObject.SetActive(false);
@@ -736,8 +717,8 @@ public class GameController : MonoBehaviour
         SceneManager.LoadScene(Mathf.Min(SceneManager.sceneCountInBuildSettings - 1,levelNumber));
         hud.SetLevel(levelNumber);
         levelData = game.levelDataArr[levelNumber-1];
-        audioController.FadeInMusic(audioController.gameMusic, 17.0f, 1.0f);
         LoadLevelSection(0);
+        audioController.FadeInMusic(audioController.gameMusic, 17.0f, 1.0f);
     }
 
     void ScrollBackground() {
