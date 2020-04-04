@@ -166,7 +166,6 @@ public class TutorialManager : MonoBehaviour
                     {
                         if (SR.sprite == level2GreyScale)
                         {
-                            SetFuel(16);
                             GameController.Instance.LoadNextLevelSection();
                             CloseCurrent();
                             TutorialPopup(6, false, true, false);
