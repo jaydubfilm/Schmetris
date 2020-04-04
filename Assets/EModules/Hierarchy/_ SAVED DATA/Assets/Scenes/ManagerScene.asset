@@ -19,9 +19,7 @@ MonoBehaviour:
   LOCALIDINFILE_Hash1_Fix2_0: []
   LOCALIDINFILE_Hash5_Fix2_0: []
   LOCALIDINFILE_Hash7_Fix2_0: []
-  LOCALIDINFILE_Hash9:
-  - i1: -1
-    i2: -1
+  LOCALIDINFILE_Hash9: []
   LOCALIDINFILE_Hash_BookMarks:
   - list:
     - activeObject:
@@ -30,149 +28,149 @@ MonoBehaviour:
       list: []
   LOCALIDINFILE_Hash3:
   - activeObject:
-      i1: 828699279
-      i2: 0
-    list:
-    - i1: 828699279
-      i2: 0
-  - activeObject:
-      i1: 828699279
-      i2: 0
-    list:
-    - i1: 828699279
-      i2: 0
-  - activeObject:
-      i1: 828699279
-      i2: 0
-    list:
-    - i1: 828699279
-      i2: 0
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -910704012
+      i1: -2057402311
       i2: 889678755
     list:
-    - i1: -910704012
+    - i1: -2057402311
       i2: 889678755
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -838107760
+      i2: 848068888
     list:
-    - i1: -1
-      i2: -1
+    - i1: -838107760
+      i2: 848068888
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -296353301
+      i2: 50350611
     list:
-    - i1: -1
-      i2: -1
+    - i1: -296353301
+      i2: 50350611
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: 2112455669
+      i2: 1773936917
     list:
-    - i1: -1
-      i2: -1
+    - i1: 2112455669
+      i2: 1773936917
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -796669800
+      i2: 1332567623
     list:
-    - i1: -1
-      i2: -1
+    - i1: -796669800
+      i2: 1332567623
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: 944150250
+      i2: 545872724
     list:
-    - i1: -1
-      i2: -1
+    - i1: 944150250
+      i2: 545872724
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -796669800
+      i2: 1332567623
     list:
-    - i1: -1
-      i2: -1
+    - i1: -796669800
+      i2: 1332567623
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: 944150250
+      i2: 545872724
     list:
-    - i1: -1
-      i2: -1
+    - i1: 944150250
+      i2: 545872724
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: 522498721
+      i2: 1058232440
     list:
-    - i1: -1
-      i2: -1
+    - i1: 522498721
+      i2: 1058232440
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -1920169641
+      i2: 889678755
     list:
-    - i1: -1
-      i2: -1
+    - i1: -1920169641
+      i2: 889678755
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -1479149078
+      i2: 2043900674
     list:
-    - i1: -1
-      i2: -1
+    - i1: -1479149078
+      i2: 2043900674
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: 1969769887
+      i2: 877079442
     list:
-    - i1: -1
-      i2: -1
+    - i1: 1969769887
+      i2: 877079442
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -1479149078
+      i2: 2043900674
     list:
-    - i1: -1
-      i2: -1
+    - i1: -1479149078
+      i2: 2043900674
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -1920169641
+      i2: 889678755
     list:
-    - i1: -1
-      i2: -1
+    - i1: -1920169641
+      i2: 889678755
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -2057402311
+      i2: 889678755
     list:
-    - i1: -1
-      i2: -1
+    - i1: -2057402311
+      i2: 889678755
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -838107760
+      i2: 848068888
     list:
-    - i1: -1
-      i2: -1
+    - i1: -838107760
+      i2: 848068888
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -296353301
+      i2: 50350611
     list:
-    - i1: -1
-      i2: -1
+    - i1: -296353301
+      i2: 50350611
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: 2112455669
+      i2: 1773936917
     list:
-    - i1: -1
-      i2: -1
+    - i1: 2112455669
+      i2: 1773936917
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -296353301
+      i2: 50350611
     list:
-    - i1: -1
-      i2: -1
+    - i1: -296353301
+      i2: 50350611
+  - activeObject:
+      i1: -328140031
+      i2: 641218682
+    list:
+    - i1: -328140031
+      i2: 641218682
+  - activeObject:
+      i1: 828699279
+      i2: 0
+    list:
+    - i1: 828699279
+      i2: 0
+  - activeObject:
+      i1: 614334638
+      i2: 610988785
+    list:
+    - i1: 614334638
+      i2: 610988785
+  - activeObject:
+      i1: -1265576706
+      i2: 1625369431
+    list:
+    - i1: -1265576706
+      i2: 1625369431
+  - activeObject:
+      i1: 614334638
+      i2: 610988785
+    list:
+    - i1: 614334638
+      i2: 610988785
   LOCALIDINFILE_Hash4:
   - activeObject:
       i1: -1
@@ -518,12 +516,10 @@ MonoBehaviour:
   Hash7: []
   Hash7_Fix2_0: []
   Hash8: []
-  Hash9:
-  - {fileID: 0}
-  Hash10:
-  - list: 00000000
+  Hash9: []
+  Hash10: []
   _enableRegistrator: 0
-  _saveInFolder: SCENE
+  _saveInFolder: FOLDER
   _mFavoritCategorySelected: 0
   m_GetHash_IconImageKey: []
   m_GetHash_IconImageValue: []
