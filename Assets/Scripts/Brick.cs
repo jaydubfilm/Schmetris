@@ -51,8 +51,9 @@ public class Brick : MonoBehaviour
             if (_hasResources != value)
             {
                 _hasResources = value;
-                GetComponent<SpriteRenderer>().color = (hasResources && _isPowered) ? Color.white : Color.gray;
-                if (!_hasResources)
+                bool fullResourceCheck = hasResources || (IsCore() && bot.HasFuel());
+                GetComponent<SpriteRenderer>().color = (fullResourceCheck && _isPowered) ? Color.white : Color.gray;
+                if (!fullResourceCheck)
                 {
                     GameController.Instance.hud.SetResourcesPopup(true);
                 }
@@ -98,7 +99,8 @@ public class Brick : MonoBehaviour
                 }
             }
             _isPowered = value;
-            GetComponent<SpriteRenderer>().color = (hasResources && _isPowered) ? Color.white : Color.gray;
+            bool fullResourceCheck = hasResources || (IsCore() && bot.HasFuel());
+            GetComponent<SpriteRenderer>().color = (fullResourceCheck && _isPowered) ? Color.white : Color.gray;
         }
     }
 
