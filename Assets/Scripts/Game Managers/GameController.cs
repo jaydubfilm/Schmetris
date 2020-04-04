@@ -337,14 +337,14 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void LoadMapScreen()
+    public void LoadMapScreen(bool isNewGame)
     {
         startMenu.SetActive(false);
         scrapyard.SetActive(false);
         hud.gameObject.SetActive(false);
         pauseMenu.SetActive(false);
         bot.hasDamagedCells = false;
-        if (highestScene == 1)
+        if (isNewGame && highestScene == 1)
         {
             StartLevel(1);
 
@@ -425,7 +425,7 @@ public class GameController : MonoBehaviour
             Time.timeScale = 0;
             bot.gameObject.SetActive(false);
             SceneManager.LoadScene(1);
-            LoadMapScreen();
+            LoadMapScreen(false);
         }
     }
 
@@ -482,7 +482,7 @@ public class GameController : MonoBehaviour
         money = 0;
         speedMultiplier = settings.defaultSpeedLevel;
         bot.ResetTileMap();
-        LoadMapScreen();
+        LoadMapScreen(true);
     }
 
     //Used for external Canvas buttons for touchscreen controls
@@ -494,7 +494,7 @@ public class GameController : MonoBehaviour
         money = 0;
         speedMultiplier = settings.defaultSpeedLevel;
         bot.ResetTileMap();
-        LoadMapScreen();
+        LoadMapScreen(true);
 
     }
 
@@ -507,7 +507,7 @@ public class GameController : MonoBehaviour
         money = 0;
         speedMultiplier = settings.defaultSpeedLevel;
         bot.ResetTileMap();
-        LoadMapScreen();
+        LoadMapScreen(true);
 
     }
 

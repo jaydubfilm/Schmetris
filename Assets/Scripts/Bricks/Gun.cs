@@ -8,6 +8,7 @@ public class Gun : MonoBehaviour
     public int[] attackPower;
     public float[] range;
     public float speed;
+    public AudioClip fireSound;
 
     //Components
     Brick parentBrick;
@@ -105,6 +106,8 @@ public class Gun : MonoBehaviour
         newBullet.range = range[parentBrick.GetPoweredLevel()];
 
         fireTimer = rateOfFire[parentBrick.GetPoweredLevel()];
+
+        GameController.Instance.bot.GetComponent<AudioSource>().PlayOneShot(fireSound, 0.5f);
     }
 
 

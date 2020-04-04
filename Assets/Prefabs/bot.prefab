@@ -106,10 +106,11 @@ MonoBehaviour:
     type: 3}
   hasDamagedCells: 0
   savedContainerData: []
-  tripleSound: {fileID: 8300000, guid: f0cd4d87d7e925248b91fc9187c53c42, type: 3}
+  tripleSound: {fileID: 8300000, guid: f5996aba92b156b4fbd98d92801e4193, type: 3}
   resourceSound: {fileID: 8300000, guid: 637fc1c2e205cea4ca58e3e24edd34d8, type: 3}
   brickAttachSound: {fileID: 8300000, guid: dae029bafa398d04ca487c185b9cf21b, type: 3}
   brickDestroySound: {fileID: 8300000, guid: 1958df7b2bdfc514aa786ba53c4ff7bc, type: 3}
+  brickBumpSound: {fileID: 8300000, guid: 5114e7b0487db684c812c5ca40be7536, type: 3}
   queueDestroyedBrick: 0
   tripleDelay: 0.1
   hangarRed: 0

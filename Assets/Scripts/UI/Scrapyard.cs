@@ -137,6 +137,17 @@ public class Scrapyard : MonoBehaviour
     List<CraftedPart> tempUpgrades = new List<CraftedPart>();
     string tempUpgrade = "";
 
+    //Audio
+    AudioSource audioSource;
+    public AudioClip brickAttachSound;
+    public AudioClip brickClickSound;
+
+    //Init
+    private void Awake()
+    {
+        audioSource = Camera.main.GetComponent<AudioSource>();
+    }
+
     //Init - Load resources before building UI
     void LoadComponents()
     {
@@ -892,6 +903,7 @@ public class Scrapyard : MonoBehaviour
             {
                 if (botBrick && !isMarketBrick)
                 {
+                    audioSource.PlayOneShot(brickClickSound,0.5f);
                     sellBrick = botBrick;
                     botBrick = null;
                     BrickOptions();
@@ -934,6 +946,7 @@ public class Scrapyard : MonoBehaviour
                                 //~For now, don't remove purchased bricks from market
                                 //tempMarketList.Remove(selectedBrick.GetComponent<Image>().sprite.name);
                                 transactionAmount -= GetBrickCost(selectedBrick.GetComponent<Image>().sprite);
+                                audioSource.PlayOneShot(brickAttachSound, 0.5f);
                                 UpdateResources();
                                 hasChanges = true;
                                 CompleteConfirmedPurchase();
@@ -962,6 +975,7 @@ public class Scrapyard : MonoBehaviour
                             }
                             botBrick = null;
                             hasChanges = true;
+                            audioSource.PlayOneShot(brickAttachSound, 0.5f);
                             CompleteConfirmedPurchase();
                         }
                         break;
@@ -1853,7 +1867,7 @@ public class Scrapyard : MonoBehaviour
     public void ConfirmMapScreen()
     {
         CompleteConfirmedPurchase();
-        GameController.Instance.LoadMapScreen();
+        GameController.Instance.LoadMapScreen(false);
     }
 
     //Button for completing confirmed market purchases

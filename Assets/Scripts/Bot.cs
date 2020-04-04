@@ -96,6 +96,7 @@ public class Bot : MonoBehaviour
     public AudioClip resourceSound;
     public AudioClip brickAttachSound;
     public AudioClip brickDestroySound;
+    public AudioClip brickBumpSound;
     public bool queueDestroyedBrick = false;
     GameSettings settings;
 
@@ -693,7 +694,7 @@ public class Bot : MonoBehaviour
         if(queueDestroyedBrick)
         {
             queueDestroyedBrick = false;
-            Camera.main.GetComponent<AudioSource>().PlayOneShot(brickDestroySound, 0.5f);
+            source.PlayOneShot(brickDestroySound, 0.5f);
         }
 
         if (GameController.Instance.isPaused || !BrickAtBotArr(coreV2))
@@ -783,6 +784,8 @@ public class Bot : MonoBehaviour
 
 
     public void BumpColumn(Vector2Int startArrPos, Vector2Int bumpDirV2) {
+
+        source.PlayOneShot(brickBumpSound, 0.5f);
 
         if ((IsValidBrickPos(startArrPos)==false)||(BrickAtBotArr(startArrPos)==null)||(startArrPos==coreV2))
             return;
@@ -2047,7 +2050,7 @@ public class Bot : MonoBehaviour
                     GameObject newBrick = AddBrick(botCoords, brickType, bit.bitLevel);
                     if (newBrick != null)
                     {
-                        source.PlayOneShot(brickAttachSound, 0.75f);
+                        source.PlayOneShot(brickAttachSound, 1.0f);
                         BrickBitPair brickBitPair = new BrickBitPair(newBrick, bitObj);
                         brickBitPairList.Add(brickBitPair);
                         //GameController.Instance.money++;
