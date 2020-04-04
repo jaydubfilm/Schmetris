@@ -8,6 +8,7 @@ public class GunSniper : MonoBehaviour
     public float[] rateOfFire;
     public int[] attackPower;
     public float[] range;
+    public AudioClip fireSound;
     bool isInvader;
 
     //Components
@@ -137,6 +138,7 @@ public class GunSniper : MonoBehaviour
         if(isInvader)
             newBullet.SetAsHoming(target.transform, true);
         fireTimer = rateOfFire[parentBrick.GetPoweredLevel()];
+        GameController.Instance.bot.GetComponent<AudioSource>().PlayOneShot(fireSound, 0.5f);
     }
 
     //Return the resources of set type converted to per-second units

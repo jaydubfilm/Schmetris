@@ -28,6 +28,7 @@ MonoBehaviour:
   - 20
   - 30
   speed: 10
+  fireSound: {fileID: 8300000, guid: 148419aae38b8ed4b96c3db524ce0761, type: 3}
   bullet:
   - {fileID: 7857921322564960265, guid: 1933b0d57ff2b496c8bc86da64f1edc9, type: 3}
   - {fileID: 7857921322564960265, guid: 1933b0d57ff2b496c8bc86da64f1edc9, type: 3}

@@ -43,12 +43,10 @@ MonoBehaviour:
   range:
   - 50
   - 50
+  fireSound: {fileID: 8300000, guid: 148419aae38b8ed4b96c3db524ce0761, type: 3}
   bullet:
   - {fileID: 7918598799021602830, guid: aa18f778adbd1ed409676d0df638f9aa, type: 3}
   - {fileID: 7918598799021602830, guid: aa18f778adbd1ed409676d0df638f9aa, type: 3}
-  maxResource: 00000000
-  burnPerShot:
-  - 0
   speed: 100
 --- !u!1001 &6167074758492475587
 PrefabInstance:
