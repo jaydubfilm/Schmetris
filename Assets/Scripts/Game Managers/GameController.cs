@@ -839,6 +839,10 @@ public class GameController : MonoBehaviour
             v.x += xOffset;
             mo.transform.position = v;
         }
+
+        Vector3 cameraOff = Camera.main.transform.position;
+        cameraOff.x += xOffset;
+        Camera.main.transform.position = cameraOff;
     }
 
     void EnemySpawnCheck() {

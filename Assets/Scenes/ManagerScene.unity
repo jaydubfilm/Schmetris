@@ -852,8 +852,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 828699279}
-    ActiveGameObject: {fileID: 828699279}
+    - {fileID: 789353583}
+    ActiveGameObject: {fileID: 789353583}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -924,8 +924,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
+    - {fileID: 828699279}
+    ActiveGameObject: {fileID: 828699279}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -936,8 +936,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
+    - {fileID: 828699279}
+    ActiveGameObject: {fileID: 828699279}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -1221,6 +1221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4791c903a80af4f8b82f239a90458b7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  smoothing: 100
 --- !u!82 &789353588
 AudioSource:
   m_ObjectHideFlags: 0
