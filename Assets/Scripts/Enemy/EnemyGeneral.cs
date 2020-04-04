@@ -90,9 +90,9 @@ public class EnemyGeneral : MonoBehaviour
 
     private void OnDestroy()
     {
-        if(gameController.enemyList.Contains(gameObject))
+        if(GameController.Instance.enemyList.Contains(gameObject))
         {
-            gameController.enemyList.Remove(gameObject);
+            GameController.Instance.enemyList.Remove(gameObject);
         }
     }
 

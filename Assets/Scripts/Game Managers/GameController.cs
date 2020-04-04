@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour
     public List<GameObject> blockList;
     public List<GameObject> enemyList;
     public List<GameObject> bitReference;
+    public List<GameObject> enemyReference;
 
     bool tutorialHasStarted;
 
