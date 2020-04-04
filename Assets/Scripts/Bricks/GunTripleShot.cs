@@ -10,6 +10,7 @@ public class GunTripleShot : MonoBehaviour
     public float[] rateOfFire;
     public int[] attackPower;
     public float[] range;
+    public AudioClip fireSound;
 
     //Components
     Brick parentBrick;
@@ -126,6 +127,7 @@ public class GunTripleShot : MonoBehaviour
             if (targets[i].GetComponent<InvaderMovement>())
                 newBullet.SetAsHoming (targets[i].transform, true);
         }
+        GameController.Instance.bot.GetComponent<AudioSource>().PlayOneShot(fireSound, 0.5f);
     }
 
     //Return the resources of set type converted to per-second units
