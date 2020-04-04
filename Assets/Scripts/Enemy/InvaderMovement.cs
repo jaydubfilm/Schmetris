@@ -131,7 +131,6 @@ public class InvaderMovement : MonoBehaviour
     }
     public void Death()
     {
-        GameController.Instance.enemyList.Remove(gameObject);
         Destroy(gameObject);
     }
 

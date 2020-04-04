@@ -92,6 +92,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 7c94ad49fbf20ca46aae89895a6a39d0,
         type: 3}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: healthBar
+      value: 
+      objectReference: {fileID: 1581482970382452089}
     - target: {fileID: 3272617812009182816, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -190,3 +195,15 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4336688489745208927}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1581482970382452089 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3016722724022129446, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+    type: 3}
+  m_PrefabInstance: {fileID: 4336688489745208927}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2649964058dcf4b42b90a47c11a5d664, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

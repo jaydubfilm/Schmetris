@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour
     public List<GameObject> blockList;
     public List<GameObject> enemyList;
     public List<GameObject> bitReference;
+    public List<GameObject> enemyReference;
 
     bool tutorialHasStarted;
 
@@ -735,7 +736,8 @@ public class GameController : MonoBehaviour
         isBotDead = false;
         isPaused = false;
         Time.timeScale = 1.0f;
-        TutorialManager.Instance.OnLevelChange(sectionNumber);
+        if(TutorialManager.Instance)
+            TutorialManager.Instance.OnLevelChange(sectionNumber);
     }
 
     public void LoadLevelData(int levelNumber)
@@ -863,6 +865,10 @@ public class GameController : MonoBehaviour
             v.x += xOffset;
             mo.transform.position = v;
         }
+
+        Vector3 cameraOff = Camera.main.transform.position;
+        cameraOff.x += xOffset;
+        Camera.main.transform.position = cameraOff;
     }
 
     void EnemySpawnCheck()

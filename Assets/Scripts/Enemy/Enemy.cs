@@ -29,7 +29,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         hP = data.maxHP;
-        GameController.Instance.enemyList.Add(gameObject);
+        //GameController.Instance.enemyList.Add(gameObject);
         rb2d = GetComponent<Rigidbody2D>();
         Vector3 dest = GameController.Instance.bot.transform.position;
         brickMask = LayerMask.GetMask("Brick");
@@ -68,10 +68,14 @@ public class Enemy : MonoBehaviour
         {
             transform.position = Vector3.MoveTowards(transform.position, bot.transform.position, step);
         }
-    }   
+    }
 
+    bool hasScored = false;
     public void ScoreEnemy()
     {
+        if (hasScored)
+            return;
+        hasScored = true;
 
         if (data.redYield > 0)
         {
@@ -101,7 +105,6 @@ public class Enemy : MonoBehaviour
     }
 
     public void DestroyEnemy() {
-        GameController.Instance.enemyList.Remove(gameObject);
         Destroy(gameObject);
     }
 

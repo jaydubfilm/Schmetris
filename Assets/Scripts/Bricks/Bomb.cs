@@ -38,8 +38,8 @@ public class Bomb : MonoBehaviour
             }
             else
             {
-                Enemy enemy = enemyArr[x].GetComponent<Enemy>();
-                enemy.hP -= damage[level];
+                EnemyGeneral enemy = enemyArr[x].GetComponent<EnemyGeneral>();
+                enemy.AdjustHP(-damage[level]);
                 GameObject explosion = Instantiate(bombEffect, enemy.transform.position, Quaternion.identity);
             }
         }
