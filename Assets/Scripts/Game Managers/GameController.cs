@@ -718,7 +718,8 @@ public class GameController : MonoBehaviour
         isBotDead = false;
         isPaused = false;
         Time.timeScale = 1.0f;
-        TutorialManager.Instance.OnLevelChange(sectionNumber);
+        if(TutorialManager.Instance)
+            TutorialManager.Instance.OnLevelChange(sectionNumber);
     }
 
     public void LoadLevelData(int levelNumber) {

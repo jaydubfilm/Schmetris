@@ -1476,7 +1476,8 @@ public class Bot : MonoBehaviour
                 GameObject newEnemyObj;
                 int type = orphanBrick.ConvertToEnemyType();
                 newEnemyObj = Instantiate(GameController.Instance.speciesSpawnData[type].species, orphanBrick.transform.position, Quaternion.identity);
-                newEnemyObj.GetComponent<Enemy>().hP = orphanBrick.brickHP;
+                newEnemyObj.GetComponent<EnemyGeneral>().hp = orphanBrick.brickHP;
+                newEnemyObj.GetComponent<EnemyGeneral>().AdjustHP(0);
             } else {
                 GameObject newBitObj;
                 Vector3 bPos = orphanBrick.transform.position;
@@ -1898,7 +1899,9 @@ public class Bot : MonoBehaviour
         Parasite parasite = newBrick.GetComponent<Parasite>();
         parasite.data = enemy.data;
         parasite.targetBrick = enemy.targetBrick;
-        newBrick.GetComponent<Brick>().brickHP = enemy.hP;
+        newBrick.GetComponent<Brick>().brickMaxHP[0] = enemy.data.maxHP;
+        newBrick.GetComponent<Brick>().brickHP = enemy.GetComponent<EnemyGeneral>().hp;
+        newBrick.GetComponent<Brick>().AdjustHP(0);
         GameController.Instance.enemyList.Add(newBrick);
 
         enemy.DestroyEnemy();

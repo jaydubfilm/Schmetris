@@ -111,27 +111,32 @@ public class Brick : MonoBehaviour
         return isPowered ? brickLevel : 0;
     }
 
-    void Awake () {
+    void Awake()
+    {
         brickLevel = 0;
-        brickHP = brickMaxHP[brickLevel];
         source = GetComponent<AudioSource>();
         rb2D = gameObject.GetComponent<Rigidbody2D>();
         healthBar = GetComponentInChildren<HealthBar>();
-        healthBar.gameObject.SetActive(false);
         _isPowered = false;
         isPowered = true;
+        if (!IsParasite())
+        {
+            brickHP = brickMaxHP[brickLevel];
+            healthBar.gameObject.SetActive(false);
+        }
     }
 
-    void Start () {
+    void Start()
+    {
         bot = parentBot.GetComponent<Bot>();
         FixedJoint2D fj = gameObject.GetComponent<FixedJoint2D>();
         fj.connectedBody = parentBot.GetComponent<Rigidbody2D>();
-        InvokeRepeating("CheckHP",0.5f,0.1f);
+        InvokeRepeating("CheckHP", 0.5f, 0.1f);
 
         bool burnsResource = false;
-        foreach(float Resource in redBurn)
+        foreach (float Resource in redBurn)
         {
-            if(Resource > 0)
+            if (Resource > 0)
             {
                 burnsResource = true;
                 break;
@@ -169,7 +174,7 @@ public class Brick : MonoBehaviour
                 break;
             }
         }
-        if(burnsResource)
+        if (burnsResource)
         {
             bot.resourceBurnBricks.Add(this);
         }
@@ -257,17 +262,23 @@ public class Brick : MonoBehaviour
                 shield.DestroyShield();
             }
         }
-     
-        if (brickHP>0){
-            if (brickHP>=brickMaxHP[GetPoweredLevel()]) {
-                brickHP = brickMaxHP[GetPoweredLevel()];  
+
+        if (brickHP > 0)
+        {
+            if (brickHP >= brickMaxHP[GetPoweredLevel()])
+            {
+                brickHP = brickMaxHP[GetPoweredLevel()];
                 healthBar.gameObject.SetActive(false);
-            } else if (healthBar.gameObject.activeInHierarchy==false) {
+            }
+            else if (!healthBar.gameObject.activeSelf)
+            {
                 healthBar.gameObject.SetActive(true);
-                float normalizedHealth = (float)brickHP/(float)brickMaxHP[GetPoweredLevel()];
+                float normalizedHealth = (float)brickHP / (float)brickMaxHP[GetPoweredLevel()];
                 healthBar.SetSize(normalizedHealth);
-            } else {
-                float normalizedHealth = (float)brickHP/(float)brickMaxHP[GetPoweredLevel()];
+            }
+            else
+            {
+                float normalizedHealth = (float)brickHP / (float)brickMaxHP[GetPoweredLevel()];
                 healthBar.SetSize(normalizedHealth);
             }
         }
@@ -363,7 +374,8 @@ public class Brick : MonoBehaviour
         Animator anim;
         float animDuration;
 
-        bot.queueDestroyedBrick = true;
+        if(!IsParasite())
+            bot.queueDestroyedBrick = true;
 
         if (brickType == 9 && (bot.BrickAtBotArr(bot.coreV2) == null))
         { 

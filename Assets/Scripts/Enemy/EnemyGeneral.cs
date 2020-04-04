@@ -14,8 +14,38 @@ public class EnemyGeneral : MonoBehaviour
     public bool isParasite;
     int hpLastFrame;
     Enemy enemy;
+    int maxHP;
+    public HealthBar healthBar;
 
     public AudioClip deathSound;
+
+    public void AdjustHP(int adjust)
+    {
+        hp += adjust;
+        if(hp <= 0)
+        {
+            EnemyDeath();
+        }
+        else
+        {
+            if (hp >= maxHP)
+            {
+                hp = maxHP;
+                healthBar.gameObject.SetActive(false);
+            }
+            else if (!healthBar.gameObject.activeSelf)
+            {
+                healthBar.gameObject.SetActive(true);
+                float normalizedHealth = (float)hp / (float)maxHP;
+                healthBar.SetSize(normalizedHealth);
+            }
+            else
+            {
+                float normalizedHealth = (float)hp / (float)maxHP;
+                healthBar.SetSize(normalizedHealth);
+            }
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +56,8 @@ public class EnemyGeneral : MonoBehaviour
             hp = enemy.hP;
             hpLastFrame = hp;
         }
+        maxHP = hp;
+        healthBar.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -56,12 +88,23 @@ public class EnemyGeneral : MonoBehaviour
         GetComponent<Rigidbody2D>().velocity = new Vector3(0, -GameController.Instance.blockSpeed * GameController.Instance.adjustedSpeed, 0);
     }
 
+    private void OnDestroy()
+    {
+        if(gameController.enemyList.Contains(gameObject))
+        {
+            gameController.enemyList.Remove(gameObject);
+        }
+    }
+
     // Update is called once per frame
     public void EnemyDeath()
     {
         Camera.main.GetComponent<AudioSource>().PlayOneShot(deathSound, 1.0f);
 
-        gameController.enemyList.Remove(gameObject);
+        if (gameController.enemyList.Contains(gameObject))
+        {
+            gameController.enemyList.Remove(gameObject);
+        }
 
         if (GetComponent<MosquitoAI>())
         {
@@ -74,6 +117,11 @@ public class EnemyGeneral : MonoBehaviour
         else if (GetComponent<InvaderMovement>())
         {
             GetComponent<InvaderMovement>().Death();
+        }
+        else if (GetComponent<Enemy>())
+        {
+            GetComponent<Enemy>().ScoreEnemy();
+            GetComponent<Enemy>().DestroyEnemy();
         }
     }
 }
