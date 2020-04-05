@@ -90,7 +90,7 @@ PrefabInstance:
     - target: {fileID: 8146263361562881765, guid: 8d1f4aa6e94e1439bb017982bbae21df,
         type: 3}
       propertyPath: m_Name
-      value: asteroid2.0
+      value: asteroid5.5
       objectReference: {fileID: 0}
     - target: {fileID: 8182654815151543667, guid: 8d1f4aa6e94e1439bb017982bbae21df,
         type: 3}
@@ -102,5 +102,6 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 1.4
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 8d1f4aa6e94e1439bb017982bbae21df, type: 3}

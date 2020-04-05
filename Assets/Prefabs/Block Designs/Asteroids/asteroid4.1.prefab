@@ -20,7 +20,7 @@ PrefabInstance:
     - target: {fileID: 4270379508308473956, guid: 2bf086c39835f424f8e5c4d9749f56ee,
         type: 3}
       propertyPath: m_Name
-      value: asteroid2.0
+      value: asteroid4.1
       objectReference: {fileID: 0}
     - target: {fileID: 7416877456567727591, guid: 2bf086c39835f424f8e5c4d9749f56ee,
         type: 3}
@@ -82,7 +82,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 2bf086c39835f424f8e5c4d9749f56ee, type: 3}
 --- !u!4 &3085084794924045308 stripped
 Transform:

@@ -70,7 +70,7 @@ public class Blaster : MonoBehaviour
             if (asteroid)
             {
 
-                if (asteroid.GetComponent<Asteroid>())
+                if (asteroid.GetComponentInChildren<Asteroid>())
                 {
 
                     if (asteroid.transform.position.y > transform.position.y)

@@ -75,12 +75,13 @@ PrefabInstance:
     - target: {fileID: 8319017433535808421, guid: 9b9d6e95896a24eada93a5dcd516ada5,
         type: 3}
       propertyPath: m_Name
-      value: asteroid2.0
+      value: asteroid5.4
       objectReference: {fileID: 0}
     - target: {fileID: 8692705596795354627, guid: 9b9d6e95896a24eada93a5dcd516ada5,
         type: 3}
       propertyPath: m_ConnectedAnchor.x
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 9b9d6e95896a24eada93a5dcd516ada5, type: 3}

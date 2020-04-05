@@ -81,9 +81,9 @@ public class Bullet : MonoBehaviour
 
         //Look for asteroids in path
         RaycastHit2D r4 = Physics2D.Raycast(transform.position, direction, step.magnitude, bitMask);
-        if (r4.collider != null && r4.collider.GetComponentInParent<Asteroid>())
+        if (r4.collider != null && r4.collider.GetComponent<Asteroid>())
         {
-            TryDamageTarget(r4.collider.transform.parent.gameObject);
+            TryDamageTarget(r4.collider.gameObject);
         }
 
         //Move bullet
