@@ -486,7 +486,7 @@ MonoBehaviour:
   isPaused: 0
   scoreIncreasePrefab: {fileID: 1390986891220089146, guid: 2f58309bcd325b045b76c2709e3fe960,
     type: 3}
-  easyGame: {fileID: 11400000, guid: 692fc6d5c9d8e5a4d875c96bcf7d95da, type: 2}
+  easyGame: {fileID: 11400000, guid: 50fd8217ad0454a93a1e1c4f40a7c99e, type: 2}
   mediumGame: {fileID: 11400000, guid: 09e004c250ae945c0bdf823dea62f452, type: 2}
   hardGame: {fileID: 11400000, guid: 6986c8fe8c2a94ba3831dee022b695c5, type: 2}
   game: {fileID: 11400000, guid: f6aba2d92368340b08c63d73ea319ea0, type: 2}
@@ -869,6 +869,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 290506179628189947, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 382071881037960624, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -1239,6 +1244,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1714371786785922907, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1912261922279189043, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
         type: 3}
       propertyPath: m_RaycastTarget
@@ -1437,6 +1447,11 @@ PrefabInstance:
     - target: {fileID: 2874624803131589292, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2874624803131589292, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2889662540257225010, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
@@ -2937,6 +2952,11 @@ PrefabInstance:
     - target: {fileID: 8811715085570708840, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811715085570708840, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8819142828508004296, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,

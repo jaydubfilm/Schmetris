@@ -1005,6 +1005,7 @@ MonoBehaviour:
   botTile: {fileID: 4616789134438494566, guid: 5ad518e0e5c34d24ba79fd60602ad835, type: 3}
   botParent: {fileID: 4809533744009525904}
   healedPopup: {fileID: 335207961558224838}
+  hasShownHealPopup: 1
   marketParent: {fileID: 8586088181024178613}
   pricePrefab: {fileID: 3689730829853018508, guid: e4ee2be3a0761db45acbbafcd659243a,
     type: 3}

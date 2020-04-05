@@ -95,7 +95,7 @@ MonoBehaviour:
   yellowToCraft: 3200000064000000
   greyToCraft: 2800000050000000
   basePartToCraft:
-  - {fileID: 21300068, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+  - {fileID: 21300066, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - {fileID: 5269245548873788233, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4, type: 3}
 --- !u!114 &-6463552720997527892
 MonoBehaviour:
@@ -181,6 +181,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
+      propertyPath: requiredPower.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
       propertyPath: brickType
       value: 14
       objectReference: {fileID: 0}
@@ -225,6 +230,26 @@ PrefabInstance:
         type: 3}
       propertyPath: yellowBurn.Array.data[1]
       value: 0.33
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: requiredPower.Array.data[2]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: requiredPower.Array.data[3]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: requiredPower.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
+        type: 3}
+      propertyPath: requiredPower.Array.data[1]
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3272617812009182816, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
