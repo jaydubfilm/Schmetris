@@ -147,11 +147,11 @@ public class GameController : MonoBehaviour
         {
             isBotDead = true;
             lives--;
-            print("this1");
+            
 
             if (lives == 0)
             {                   
-                print("this1");
+            
                 hud.SetProgressText("Level " + currentScene + " attained. $" + money + " Salvaged.");
                 if (OnGameOver != null)
                 {

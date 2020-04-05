@@ -37,7 +37,7 @@ public class TutorialManager : MonoBehaviour
     int asteroidHits;
     bool greyHasFallen;
 
-    int currentSection;
+    public int currentSection;
     int frameCounter;
     public Sprite greyScale;
     public Sprite level1GreyScale;
@@ -67,7 +67,7 @@ public class TutorialManager : MonoBehaviour
     public bool isBotDead;
     public Text levelOverText;
     public Text warningText;
-
+    public GameObject tutorialPanel;
 
     //public Game
     // Start is called before the first frame update
@@ -120,7 +120,7 @@ public class TutorialManager : MonoBehaviour
         countLastFrame = GameController.Instance.blockList.Count;
 
         //Section Specific Behaviours
-        if (currentSection == 2)
+        if (currentSection == 2 || currentSection == 3)
         {
 
 
@@ -225,7 +225,7 @@ public class TutorialManager : MonoBehaviour
                     List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
                     foreach (SpriteRenderer SR in childSprites)
                     {
-                        if (SR.sprite == red || frameChecks >= 17)
+                        if (SR.sprite == red || frameChecks >= 45)
                         {
                             CloseAndOpenNextUnpaused();
                             GameController.Instance.LoadNextLevelSection();
@@ -488,7 +488,8 @@ public class TutorialManager : MonoBehaviour
         levelComplete.enabled = true;
         levelOverText.enabled = true;
         warningText.enabled = true;
-
+        SetFuel(40);
+        Destroy(tutorialPanel);
 
         Destroy(gameObject);
     }
