@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
   m_Name: Turorial Part 1 Section 2 - Asteroids
   m_EditorClassIdentifier: 
-  levelDuration: 22
+  levelDuration: 16
   blocks:
   - block: {fileID: 3908810048976006719, guid: 0c609c432c86b42ad9631220ee8db9c6, type: 3}
     probability: 2

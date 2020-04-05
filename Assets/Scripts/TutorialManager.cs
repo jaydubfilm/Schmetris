@@ -67,6 +67,8 @@ public class TutorialManager : MonoBehaviour
     public GameObject tutorialPanel;
     public GameObject levelComplete;
 
+    //public PowerGridPrefab tutorialGrid;
+
     //public Game
     // Start is called before the first frame update
     void Awake()

@@ -320,6 +320,7 @@ public class GameController : MonoBehaviour
         if (isTutorial)
         {
             bot.SetTutorialStart();
+
         }
         bot.gameObject.SetActive(true);
         bot.OnLevelRestart();

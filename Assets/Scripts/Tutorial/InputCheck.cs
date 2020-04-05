@@ -27,6 +27,7 @@ public class InputCheck : MonoBehaviour
     public bool changeSectionOnFinish;
     public bool runEventOnFinish;
     public UnityEvent eventOnFinish;
+    public bool additionalIsEvent;
 
     bool startAdditionalAtStart;
     float timeBeforeFadeAtStart;
@@ -132,7 +133,7 @@ public class InputCheck : MonoBehaviour
                 if (alpha <= 0)
                 {
 
-                    if (runEventOnFinish)
+                    if (runEventOnFinish && additionalIsEvent == false)
                     {
                         eventOnFinish.Invoke();
                     }
@@ -160,7 +161,17 @@ public class InputCheck : MonoBehaviour
                         //GameController.Instance.LoadNextLevelSection();
                         //"Get In, Get out"....
 
-                        TutorialManager.Instance.CloseAndOpenNextUnpaused();
+                        if (additionalIsEvent == true)
+                        {
+
+                            eventOnFinish.Invoke();
+                        }
+                        else
+                        {
+
+                            TutorialManager.Instance.CloseAndOpenNextUnpaused();
+                        }
+
                         queueNext = true;
                         gameObject.SetActive(false);
 
