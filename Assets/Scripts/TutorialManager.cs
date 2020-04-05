@@ -57,7 +57,7 @@ public class TutorialManager : MonoBehaviour
     Bot playerBot;
     bool outOfFuel;
     bool redDropTimer;
-    float timeToRedDrop = 5.5f;
+    float timeToRedDrop = 0;
     float timerStartRedDrop;
     bool hasSpawnedRed;
     bool collectRed;
@@ -65,6 +65,7 @@ public class TutorialManager : MonoBehaviour
     int frameChecks;
     public bool isBotDead;
     public GameObject tutorialPanel;
+    public GameObject levelComplete;
 
     //public Game
     // Start is called before the first frame update
@@ -169,6 +170,8 @@ public class TutorialManager : MonoBehaviour
 
                     hasHadFuelWarning = true;
                     TutorialPopup(5, false, true, true);
+                    GameController.Instance.LoadNextLevelSection();
+
                 }
             }
 
@@ -186,7 +189,7 @@ public class TutorialManager : MonoBehaviour
 
                 if (Time.time - timerStartRedDrop > timeToRedDrop)
                 {
-                    SpawnSingle();
+                    //SpawnSingle();
                     redDropTimer = false;
                     frameCounter = 0;
                     hasSpawnedRed = true;
@@ -205,7 +208,7 @@ public class TutorialManager : MonoBehaviour
                         if (SR.sprite == red || frameChecks >= 45)
                         {
                             CloseAndOpenNextUnpaused();
-                            GameController.Instance.LoadNextLevelSection();
+                            //GameController.Instance.LoadNextLevelSection();
                             frameCounter = 0;
                             collectRed = true;
                             hasSpawnedRed = false;
