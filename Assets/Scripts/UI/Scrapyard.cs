@@ -176,16 +176,16 @@ public class Scrapyard : MonoBehaviour
         //Load bot resources
         currentMoney = GameController.Instance.money;
         transactionAmount = currentMoney;
-        currentFuel = GameController.Instance.bot.GetSavedResource(ResourceType.Red, false);
-        currentBlue = GameController.Instance.bot.GetSavedResource(ResourceType.Blue, false);
-        currentYellow = GameController.Instance.bot.GetSavedResource(ResourceType.Yellow, false);
-        currentGreen = GameController.Instance.bot.GetSavedResource(ResourceType.Green, false);
-        currentGrey = GameController.Instance.bot.GetSavedResource(ResourceType.Grey, false);
-        excessRed = GameController.Instance.bot.GetSavedResource(ResourceType.Red, true);
-        excessBlue = GameController.Instance.bot.GetSavedResource(ResourceType.Blue, true);
-        excessGreen = GameController.Instance.bot.GetSavedResource(ResourceType.Green, true);
-        excessYellow = GameController.Instance.bot.GetSavedResource(ResourceType.Yellow, true);
-        excessGrey = GameController.Instance.bot.GetSavedResource(ResourceType.Grey, true);
+        currentFuel = GameController.Instance.bot.totalReddite;
+        currentBlue = GameController.Instance.bot.totalBlueSalt;
+        currentYellow = GameController.Instance.bot.totalYellectrons;
+        currentGreen = GameController.Instance.bot.totalGreenAlgae;
+        currentGrey = GameController.Instance.bot.totalGreyscale;
+        excessRed = 0;
+        excessBlue = 0;
+        excessGreen = 0;
+        excessYellow = 0;
+        excessGrey = 0;
 
         //Load bot map
         containers = new List<ContainerData>();
@@ -224,16 +224,11 @@ public class Scrapyard : MonoBehaviour
         //Save bot resources
         currentMoney = transactionAmount;
         GameController.Instance.money = currentMoney;
-        GameController.Instance.bot.SetSavedResource(ResourceType.Red, currentFuel, false);
-        GameController.Instance.bot.SetSavedResource(ResourceType.Blue, currentBlue, false);
-        GameController.Instance.bot.SetSavedResource(ResourceType.Yellow, currentYellow, false);
-        GameController.Instance.bot.SetSavedResource(ResourceType.Green, currentGreen, false);
-        GameController.Instance.bot.SetSavedResource(ResourceType.Grey, currentGrey, false);
-        GameController.Instance.bot.SetSavedResource(ResourceType.Red, excessRed, true);
-        GameController.Instance.bot.SetSavedResource(ResourceType.Blue, excessBlue, true);
-        GameController.Instance.bot.SetSavedResource(ResourceType.Green, excessGreen, true);
-        GameController.Instance.bot.SetSavedResource(ResourceType.Yellow, excessYellow, true);
-        GameController.Instance.bot.SetSavedResource(ResourceType.Grey, excessGrey, true);
+        GameController.Instance.bot.totalReddite = currentFuel + excessRed;
+        GameController.Instance.bot.totalBlueSalt = currentBlue + excessBlue;
+        GameController.Instance.bot.totalYellectrons = currentYellow + excessYellow;
+        GameController.Instance.bot.totalGreenAlgae = currentGreen + excessGreen;
+        GameController.Instance.bot.totalGreyscale = currentGrey + excessGrey;
         hasChanges = false;
     }
 
