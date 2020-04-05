@@ -68,11 +68,11 @@ public class InputCheck : MonoBehaviour
         changeSectionOnFinishAtStart = changeSectionOnFinish;
         runEventOnFinishAtStart = runEventOnFinish;
 
-        if (inputDetected == false && canDetect == true && needsInput == false)
-        {
-            inputDetected = true;
-            timeAtInput = Time.time;
-        }
+        //if (inputDetected == false && canDetect == true && needsInput == false)
+        //{
+        //    inputDetected = true;
+        //    timeAtInput = Time.time;
+        //}
         //gameObject.SetActive( false);
         started = true;
     }
@@ -131,9 +131,6 @@ public class InputCheck : MonoBehaviour
                 text.color = textColor;
                 if (alpha <= 0)
                 {
-
-                    
-
 
                     if (runEventOnFinish)
                     {

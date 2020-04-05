@@ -76,7 +76,10 @@ public class TutorialManager : MonoBehaviour
         gameTimer.SetActive(false);
     }
 
-
+    private void OnDestroy()
+    {
+        Instance = null;
+    }
 
     private void Update()
     {
@@ -169,6 +172,7 @@ public class TutorialManager : MonoBehaviour
                 {
 
                     hasHadFuelWarning = true;
+                    //low fuel warning message
                     TutorialPopup(5, false, true, true);
                     GameController.Instance.LoadNextLevelSection();
 
@@ -178,7 +182,7 @@ public class TutorialManager : MonoBehaviour
             if (playerBot.storedRed < 14 && outOfFuel == false)
             {
                 print("out of fuel");
-                NextWith2SecondDelay();
+                //NextWith2SecondDelay();
                 outOfFuel = true;
                 timerStartRedDrop = Time.time;
                 redDropTimer = true;
@@ -199,6 +203,7 @@ public class TutorialManager : MonoBehaviour
 
             if (hasSpawnedRed)
             {
+                           // CloseAndOpenNextUnpaused();
                 if (frameCounter == 60)
                 {
                     frameChecks++;
@@ -207,7 +212,7 @@ public class TutorialManager : MonoBehaviour
                     {
                         if (SR.sprite == red || frameChecks >= 45)
                         {
-                            CloseAndOpenNextUnpaused();
+                            //SingleRed
                             //GameController.Instance.LoadNextLevelSection();
                             frameCounter = 0;
                             collectRed = true;
@@ -236,7 +241,9 @@ public class TutorialManager : MonoBehaviour
                                 if (redCounter == 3)
                                 {
                                     //print("got 3");
-                                    CloseAndOpenNextUnpaused();
+                                    //back to yard
+
+                                    //CloseAndOpenNextUnpaused();
                                 }
                             }
                         }
