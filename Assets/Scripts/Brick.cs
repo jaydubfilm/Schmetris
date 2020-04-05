@@ -84,6 +84,14 @@ public class Brick : MonoBehaviour
                         fuelBrick.fuelLevel = Mathf.Min(fuelBrick.maxFuelArr[brickLevel], fuelBrick.fuelLevel + fuelBrick.fuelDiff);
                         fuelBrick.fuelDiff = 0;
                     }
+
+                    ShieldBrick shieldBrick = GetComponent<ShieldBrick>();
+                    if (shieldBrick)
+                    {
+                        shieldBrick.shieldHp = Mathf.Min(shieldBrick.healthAtLevel[brickLevel], shieldBrick.shieldHp + shieldBrick.shieldHealthDiff);
+                        shieldBrick.shieldHealthDiff = 0;
+                        shieldBrick.UpdateShieldSize();
+                    }
                 }
                 else
                 {
@@ -95,6 +103,14 @@ public class Brick : MonoBehaviour
                     {
                         fuelBrick.fuelDiff = Mathf.Max(0, fuelBrick.fuelLevel - fuelBrick.maxFuelArr[0]);
                         fuelBrick.fuelLevel = Mathf.Min(fuelBrick.fuelLevel, fuelBrick.maxFuelArr[0]);
+                    }
+
+                    ShieldBrick shieldBrick = GetComponent<ShieldBrick>();
+                    if (shieldBrick)
+                    {
+                        shieldBrick.shieldHealthDiff = Mathf.Max(0, shieldBrick.shieldHp - shieldBrick.healthAtLevel[0]);
+                        shieldBrick.shieldHp = Mathf.Min(shieldBrick.shieldHp, shieldBrick.healthAtLevel[0]);
+                        shieldBrick.UpdateShieldSize();
                     }
                 }
             }
@@ -247,21 +263,33 @@ public class Brick : MonoBehaviour
     }
 
     public void AdjustHP(int damage) {
-        List<ShieldBrick> destroyList = new List<ShieldBrick>();
 
-        if(activeShields.Count == 0)
-            brickHP+=damage;
+        if (IsParasite() || damage > 0 || activeShields.Count == 0)
+        {
+            brickHP += damage;
+        }
         else
         {
+            ShieldBrick blockingShield = null;
+            float blockedPercent = 0;
             foreach (ShieldBrick shield in activeShields)
             {
-                shield.ReceiveDamage(damage / activeShields.Count);
-                destroyList.Add(shield);
+                if (shield && (!blockingShield || shield.percentBlockedAtLevel[shield.GetComponent<Brick>().GetPoweredLevel()] > blockedPercent))
+                {
+                    blockingShield = shield;
+                    blockedPercent = shield.percentBlockedAtLevel[shield.GetComponent<Brick>().GetPoweredLevel()];
+                }
             }
 
-            foreach (ShieldBrick shield in destroyList)
+            if (blockingShield)
             {
-                shield.DestroyShield();
+                int damageBlocked = Mathf.RoundToInt(blockedPercent * damage);
+                brickHP += damage - damageBlocked;
+                blockingShield.shieldHp += damageBlocked;
+            }
+            else
+            {
+                brickHP += damage;
             }
         }
 
@@ -388,6 +416,11 @@ public class Brick : MonoBehaviour
         
         }
 
+        if(GetComponent<ShieldBrick>())
+        {
+            GetComponent<ShieldBrick>().ToggleShield(false);
+        }
+
         if (GetComponent<Bomb>()) {
             GetComponent<Bomb>().BombEnemies(GetPoweredLevel());
         }
@@ -443,6 +476,18 @@ public class Brick : MonoBehaviour
         bot.brickList.Remove(gameObject);
         if (IsParasite())
             GameController.Instance.enemyList.Remove(gameObject);
+
+        for(int i = 0;i<activeShields.Count;i++)
+        {
+            if(activeShields[i])
+            {
+                activeShields[i--].GetComponentInChildren<ShieldTrigger>().OnExitShield(this);
+            }
+            else
+            {
+                activeShields.RemoveAt(i--);
+            }
+        }
 
         if (bot.BrickAtBotArr(bot.coreV2) == null)
         {
@@ -538,6 +583,11 @@ public class Brick : MonoBehaviour
             GetComponent<SpriteRenderer>().sprite = spriteArr[brickLevel];
             if (brickType == 1)
                 gameObject.GetComponent<Fuel>().UpgradeFuelLevel();
+
+            if (GetComponent<ShieldBrick>())
+            {
+                GetComponent<ShieldBrick>().UpdateShieldSize();
+            }
 
             if(GetComponent<Container>())
             {
