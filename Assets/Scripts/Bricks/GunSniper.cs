@@ -49,11 +49,9 @@ public class GunSniper : MonoBehaviour
     {
         if (GameController.Instance.enemyList.Count > 0)
         {
-            print("try fire 0");
             target = FindTarget();
             if (target != null)
             {
-                print("try fire target found");
                 if (Vector3.Distance(target.transform.position, transform.position) < range[parentBrick.GetPoweredLevel()] && parentBrick.TryBurnResources(1.0f))
                     FireGun(target.transform.position);
             }
@@ -73,7 +71,7 @@ public class GunSniper : MonoBehaviour
                 if (enemyObj.GetComponentInChildren<SpriteRenderer>().isVisible)
                 {
                     //Strongest enemy type yet selected
-                    if (enemyObj.GetComponent<EnemyGeneral>().strength > enemyStregth)
+                    if (enemyObj.GetComponent<EnemyGeneral>() && enemyObj.GetComponent<EnemyGeneral>().strength > enemyStregth)
                     {
 
                         float dist = Vector3.Distance(enemyObj.transform.position, transform.position);
@@ -83,7 +81,7 @@ public class GunSniper : MonoBehaviour
                     }
 
                     //same enemy type as the current strongest enemy
-                    else if (enemyObj.GetComponent<EnemyGeneral>().strength == enemyStregth)
+                    else if (enemyObj.GetComponent<EnemyGeneral>() && enemyObj.GetComponent<EnemyGeneral>().strength == enemyStregth)
                     {
 
                         float dist = Vector3.Distance(enemyObj.transform.position, transform.position);

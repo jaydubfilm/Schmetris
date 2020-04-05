@@ -50,11 +50,9 @@ public class Blaster : MonoBehaviour
     //Check for targets and ammo and try to shoot
     void TryFire()
     {
-        print("try fire 0");
         target = FindTarget();
         if (target != null)
         {
-            print("try fire target found");
             if (Vector3.Distance(target.transform.position, transform.position) < range[parentBrick.GetPoweredLevel()] && parentBrick.TryBurnResources(1.0f))
                 FireGun(target.transform.position);
         }

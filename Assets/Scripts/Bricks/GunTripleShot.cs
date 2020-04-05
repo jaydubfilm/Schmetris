@@ -52,14 +52,11 @@ public class GunTripleShot : MonoBehaviour
     //Check for targets and ammo and try to shoot
     void TryFire()
     {
-        print("trying to fire sniper");
         if (GameController.Instance.enemyList.Count > 0)
         {
-            print("enemies detected");
             targets = FindTargets();
             if (targets.Count > 0)
             {
-                print("Found Targets");
                 if (targets[0] != null)
                 {
                     //print("try fire target found");

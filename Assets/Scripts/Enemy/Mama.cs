@@ -66,6 +66,8 @@ public class Mama : MonoBehaviour
     float storedTime;
     private float timeOfDeath;
 
+    public GameObject parasitePrefab;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -183,6 +185,15 @@ public class Mama : MonoBehaviour
 
         GameObject blastSphere = Instantiate(debugExplosion, transform.position, Quaternion.identity, null);
         blastSphere.transform.localScale = new Vector3(blastRadius * 2, blastRadius * 2, blastRadius * 2);
+
+        //Spawn parasites in blast range
+        for(int i = 0;i<4;i++)
+        {
+            Vector3 blastOffset = new Vector3(Random.Range(-blastRadius / 2.0f, blastRadius / 2.0f), Random.Range(-blastRadius / 2.0f, blastRadius / 2.0f), 0);
+            GameObject newParasite = Instantiate(parasitePrefab, transform.position + blastOffset, Quaternion.identity);
+            GameController.Instance.enemyList.Add(newParasite);
+            newParasite.GetComponent<EnemyGeneral>().gameController = GameController.Instance;
+        }
 
         //Instantiate Explosion here
         Destroy(gameObject);

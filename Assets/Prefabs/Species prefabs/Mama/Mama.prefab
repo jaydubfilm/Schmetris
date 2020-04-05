@@ -225,6 +225,8 @@ MonoBehaviour:
   debugExplosion: {fileID: 7524407400947348946, guid: 5497074458701d3468023bc84a64de09,
     type: 3}
   force: 22.53
+  parasitePrefab: {fileID: 822335604602250409, guid: 5b93156cd52954237adcfe43c62642b2,
+    type: 3}
 --- !u!58 &7899793524970067222
 CircleCollider2D:
   m_ObjectHideFlags: 0
