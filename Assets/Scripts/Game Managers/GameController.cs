@@ -419,16 +419,11 @@ public class GameController : MonoBehaviour
             }
 
             //Resources
-            bot.SetSavedResource(ResourceType.Red, loadData.fuel, false);
-            bot.SetSavedResource(ResourceType.Blue, loadData.blue, false);
-            bot.SetSavedResource(ResourceType.Yellow, loadData.yellow, false);
-            bot.SetSavedResource(ResourceType.Green, loadData.green, false);
-            bot.SetSavedResource(ResourceType.Grey, loadData.grey, false);
-            bot.SetSavedResource(ResourceType.Red, Mathf.Max(0, loadData.hangarRed), true);
-            bot.SetSavedResource(ResourceType.Blue, Mathf.Max(0, loadData.hangarBlue), true);
-            bot.SetSavedResource(ResourceType.Green, Mathf.Max(0, loadData.hangarGreen), true);
-            bot.SetSavedResource(ResourceType.Yellow, Mathf.Max(0, loadData.hangarYellow), true);
-            bot.SetSavedResource(ResourceType.Grey, Mathf.Max(0, loadData.hangarGrey), true);
+            bot.totalReddite = loadData.totalReddite;
+            bot.totalBlueSalt = loadData.totalBlueSalt;
+            bot.totalGreenAlgae = loadData.totalGreenAlgae;
+            bot.totalYellectrons = loadData.totalYellectrons;
+            bot.totalGreyscale = loadData.totalGreyscale;
 
             hud.gameObject.SetActive(false);
             isPaused = true;
@@ -631,6 +626,7 @@ public class GameController : MonoBehaviour
                 {
                     highestScene = Mathf.Min(highestScene + 1, game.levelDataArr.Length);
                     blockList = new List<GameObject>();
+                    bot.SaveBotResources();
                     bot.OnNewLevel();
                     scrapyard.GetComponent<Scrapyard>().hasShownHealPopup = false;
                     LoadScrapyard();
@@ -888,7 +884,7 @@ public class GameController : MonoBehaviour
 
     void EnemySpawnCheck()
     {
-        if (!isLevelCompleteQueued)
+        if (!isLevelCompleteQueued && speciesSpawnData.Length > 0)
         {
             enemySpawnTimer -= Time.deltaTime * adjustedSpeed;
             if (enemySpawnTimer <= 0)
