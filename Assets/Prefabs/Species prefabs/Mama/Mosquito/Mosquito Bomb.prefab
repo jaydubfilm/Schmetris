@@ -320,8 +320,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameController: {fileID: 0}
-  strength: 2
-  hp: 3
+  strength: 10
+  hp: 10
   isParasite: 0
   healthBar: {fileID: 4933331793814636626}
   deathSound: {fileID: 8300000, guid: 3f33676c236271a4d8aad3781ac1c4a3, type: 3}

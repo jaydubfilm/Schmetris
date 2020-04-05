@@ -37,9 +37,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rateOfFire:
-  - 5
   - 3
-  attackPower: 050000000a000000
+  - 2
+  attackPower: 140000001e000000
   range:
   - 30
   - 30
