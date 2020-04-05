@@ -60,11 +60,11 @@ public class MainMenuUI : MonoBehaviour
                 {
                     NewMediumGame();
                 }
-                else if (Input.GetKeyDown(KeyCode.Alpha3))
+                /*else if (Input.GetKeyDown(KeyCode.Alpha3))
                 {
                     NewHardGame();
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha4))
+                }*/
+                else if (Input.GetKeyDown(KeyCode.Alpha3))
                 {
                     MainMenu();
                 }
