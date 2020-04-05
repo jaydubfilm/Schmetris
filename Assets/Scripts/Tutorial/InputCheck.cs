@@ -117,7 +117,7 @@ public class InputCheck : MonoBehaviour
             if(Time.time -timeAtInput > timeBeforeFade && canDetect == true)
             {
 
-                timeAtInput = Time.time;
+                //timeAtInput = Time.time;
                 startFade = true;
                 canDetect = false;
             }
@@ -148,7 +148,8 @@ public class InputCheck : MonoBehaviour
                     //Reset();
                     startAdditional = true;
                     startFade = false;
-
+                    if (QueueAdditional == false)
+                        gameObject.SetActive(false);
                 }
             }
 
@@ -164,6 +165,8 @@ public class InputCheck : MonoBehaviour
 
                         TutorialManager.Instance.CloseAndOpenNextUnpaused();
                         queueNext = true;
+                        gameObject.SetActive(false);
+
                     }
                 }
             }
@@ -204,6 +207,7 @@ public class InputCheck : MonoBehaviour
     [Button]
     public void ShowTime()
     {
-        print(timeAtInput);
+        print(Time.time - timeAtInput);
+        print(timeBeforeFade + timeUntilNextPrompt);
     }
 }

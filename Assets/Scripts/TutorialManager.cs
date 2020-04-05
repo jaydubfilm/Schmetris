@@ -72,6 +72,7 @@ public class TutorialManager : MonoBehaviour
     {
         Instance = this;
         playerBot = playerPos.GetComponent<Bot>();
+        gameTimer.SetActive(false);
     }
 
 
@@ -92,23 +93,7 @@ public class TutorialManager : MonoBehaviour
         }
 
 
-        //Check for new pieces        
-        if (GameController.Instance.blockList.Count > countLastFrame)
-        {
-            //print("Block Falling");
-            foreach (GameObject block in GameController.Instance.blockList)
-            {
-                //if (greyHasFallen == false)
-                //{
-                //    if (block.GetComponentInChildren<Bit>().bitType == 7)
-                //    {
-                //        TutorialPopup(4, true, true, true);
-                //        print(block.gameObject.name);
-                //        greyHasFallen = true;
-                //    }
-                //}
-            }
-        }
+       
         countLastFrame = GameController.Instance.blockList.Count;
 
         //Section Specific Behaviours
@@ -179,7 +164,7 @@ public class TutorialManager : MonoBehaviour
         {
             if (hasHadFuelWarning == false)
             {
-                if (playerBot.storedRed < 5)
+                if (playerBot.storedRed < 21)
                 {
 
                     hasHadFuelWarning = true;
@@ -187,7 +172,7 @@ public class TutorialManager : MonoBehaviour
                 }
             }
 
-            if (playerBot.storedRed == 0 && outOfFuel == false)
+            if (playerBot.storedRed < 14 && outOfFuel == false)
             {
                 print("out of fuel");
                 NextWith2SecondDelay();
@@ -289,7 +274,39 @@ public class TutorialManager : MonoBehaviour
     //is sequential marks events that should happen chronologically
     public void TutorialPopup(int module, bool pauseGame, bool toggleOnOff, bool isSequential)
     {
-//        print("called");
+        //Bump the asteroid popups if there's already a message up
+        if(isSequential == false && toggleOnOff == true && (module == 0 || module == 1))
+        {
+            //print("this is an asteroid " + module + " " + isSequential);
+            foreach (GameObject item in sequentialModuleList)
+            {
+                if (item.GetComponent<Image>() && item.activeSelf == true)
+                {
+                    if (item.GetComponent<Image>().color.a >= 0)
+                    {
+                        //print("Asteroid Message held for " + item.name);
+                        asteroidHits--;
+                        return;
+                    }
+                }
+            }
+
+            foreach (GameObject item in nonSequentialModuleList)
+            {
+                if (item.GetComponent<Image>() && item.activeSelf == true)
+                {
+                    if (item.GetComponent<Image>().color.a >= 0)
+                    {
+                        asteroidHits--;
+                        //print("Asteroid Message held for " + item.name);
+                        return;
+                    }
+                }
+            }
+        }
+
+        
+        
         //pause
         if (pauseGame == true)
         {
@@ -436,11 +453,11 @@ public class TutorialManager : MonoBehaviour
         switch (asteroidHits)
         {
             case 1:
-                CloseCurrent();
+                //CloseCurrent();
                 TutorialPopup(0, false, true, false);
                 break;
             case 2:
-                CloseCurrent();
+                //CloseCurrent();
                 TutorialPopup(1, false, true, false);
                 break;
             default:
@@ -449,7 +466,7 @@ public class TutorialManager : MonoBehaviour
     }
 
 
-    [Button]
+    //[Button]
     public void SetFuel(int fuel)
     {
 
@@ -463,6 +480,7 @@ public class TutorialManager : MonoBehaviour
         switch (newSection)
         {
             case 2: //greyscale
+                CloseCurrent();
                 TutorialPopup(4, false, true, true);
                 break;
 

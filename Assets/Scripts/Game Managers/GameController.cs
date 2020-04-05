@@ -330,12 +330,10 @@ public class GameController : MonoBehaviour
             
             if (TutorialManager.Instance != null && tutorialHasStarted == false)
             {
-                //TutorialManager.Instance.TutorialPopup(0, false, true, true);
                 TutorialManager.Instance.CloseAndOpenWithDelaySequential(0, false, 2.2f);
 
                 tutorialHasStarted = true;
-                //TutorialManager.Instance.isBotDead = false;
-                //TutorialManager.Instance.playerPos.GetComponent<Bot>().SetFuelAmt(1000);
+               
             }
 
            
