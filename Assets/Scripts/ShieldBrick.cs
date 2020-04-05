@@ -1,81 +1,121 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Sirenix.OdinInspector;
 
+//Brick that reduces damage dealt to nearby bricks
 public class ShieldBrick : MonoBehaviour
 {
+    //Components
     Brick parentBrick;
     BoxCollider2D box2D;
-
-    public int shieldHp;
-    [Range(1, 5)]
-    public int radius = 1;
     ShieldTrigger childTrigger;
     SpriteRenderer outlineSR;
-    int hpAtStart;
 
+    //Shield info
+    public int[] radiusAtLevel;
+    public int[] healthAtLevel;
+    public float[] percentBlockedAtLevel;
+    public float[] rechargeSpeedAtLevel;
 
-    // Start is called before the first frame update
+    //Handle changes to shield level while active
+    bool hasShield = false;
+    public float shieldHealthDiff = 0;
+    float _shieldHp = 0;
+    public float shieldHp
+    {
+        get
+        {
+            return _shieldHp;
+        }
+        set
+        {
+            _shieldHp = value;
+            if (parentBrick)
+            {
+                _shieldHp = Mathf.Clamp(_shieldHp, 0, healthAtLevel[parentBrick.GetPoweredLevel()]);
+                UpdateShieldColour();
+                if(shieldHp == 0)
+                {
+                    ToggleShield(false);
+                }
+            }
+        }
+    }
+    [Range(1, 5)]
+    public int radius = 1;
+
+    //Shield display
+    public Color fullShieldColor = Color.green;
+    public Color emptyShieldColor = Color.red;
+
+    //Init
     void Start()
     {
-
+        parentBrick = GetComponent<Brick>();
         childTrigger = GetComponentInChildren<ShieldTrigger>();
-        box2D = childTrigger.transform.GetComponent<BoxCollider2D>();
-        hpAtStart = shieldHp;
-        SetShieldSize();
-        //outlineSR = childTrigger.transform.GetComponent<SpriteRenderer>();
+        box2D = childTrigger.GetComponent<BoxCollider2D>();
+        shieldHp = healthAtLevel[parentBrick.GetPoweredLevel()];
+        UpdateShieldSize();
     }
 
-    [Button]
-    public void SetShieldSize()
+    //Update shield radius when power level changes
+    public void UpdateShieldSize()
     {
-
-        float newSize = ConvertRadius(radius);
-        box2D.size = new Vector2(newSize, newSize);
-        childTrigger.CheckRadius();
+        radius = radiusAtLevel[GetComponent<Brick>().GetPoweredLevel()];
+        SetShieldSize();
     }
 
+    //Shield radius converted to bot units
     float ConvertRadius(int radius)
     {
-       
         float convertedRadius = (ScreenStuff.colSize * 3) + (ScreenStuff.colSize * 2 * (radius - 1));
         return convertedRadius;
     }
 
-    [Button]
-    public void ReceiveDamage(int damage)
+    //Recharge shield, or destroy it if resources have run out
+    private void Update()
     {
-
-        shieldHp += damage;
-        foreach (Brick brick in childTrigger.protectedList)
+        if(parentBrick.hasResources && GameController.Instance.bot.brickList.Contains(gameObject))
         {
-            if(brick != null)
-            { 
-                outlineSR = brick.transform.GetComponentInChildren<OutlineCheck>().transform.GetComponent<SpriteRenderer>();
-
-                if (shieldHp < hpAtStart * 0.67f)
-                    outlineSR.color = Color.yellow;
-                if (shieldHp < hpAtStart * 0.35f)
-                    outlineSR.color = Color.red;
-            }
+            shieldHp += rechargeSpeedAtLevel[parentBrick.GetPoweredLevel()] * Time.deltaTime;
+            ToggleShield(true);
         }
-
-        
+        else
+        {
+            ToggleShield(false);
+        }
     }
 
-    public void DestroyShield()
+    //Adjust shield colour based on current health
+    public void UpdateShieldColour()
     {
-        //destroy shield
-        if (shieldHp <= 0)
+        Color shieldColor = emptyShieldColor + (fullShieldColor - emptyShieldColor) * shieldHp / healthAtLevel[parentBrick.GetPoweredLevel()];
+        foreach (Brick brick in childTrigger.protectedList)
         {
-            foreach (Brick protectedBrick in childTrigger.protectedList)
+            if (brick != null && brick.GetComponentInChildren<OutlineCheck>())
             {
-
-                Destroy(protectedBrick.GetComponentInChildren<OutlineCheck>().gameObject);
-                protectedBrick.activeShields.Remove(this);
-                print("dead");
+                brick.GetComponentInChildren<OutlineCheck>().GetComponent<SpriteRenderer>().color = shieldColor;
             }
+        }
+    }
+
+    //Turn shield on or off
+    public void ToggleShield(bool setActive)
+    {
+        if(hasShield != setActive)
+        {
+            hasShield = setActive;
+            childTrigger.SetShieldOutline(hasShield);
+        }
+    }
+
+    //Update size of shield trigger to match radius
+    [Button]
+    public void SetShieldSize()
+    {
+        if (box2D)
+        {
+            float newSize = ConvertRadius(radius);
+            box2D.size = new Vector2(newSize, newSize);
         }
     }
 }
