@@ -73,6 +73,7 @@ public class TutorialManager : MonoBehaviour
 
         Instance = this;
         playerBot = playerPos.GetComponent<Bot>();
+        gameTimer.SetActive(false);
     }
 
 
