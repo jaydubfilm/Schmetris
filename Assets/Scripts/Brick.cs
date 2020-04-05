@@ -90,7 +90,6 @@ public class Brick : MonoBehaviour
                     {
                         shieldBrick.shieldHp = Mathf.Min(shieldBrick.healthAtLevel[brickLevel], shieldBrick.shieldHp + shieldBrick.shieldHealthDiff);
                         shieldBrick.shieldHealthDiff = 0;
-                        shieldBrick.UpdateShieldSize();
                     }
                 }
                 else
@@ -110,7 +109,6 @@ public class Brick : MonoBehaviour
                     {
                         shieldBrick.shieldHealthDiff = Mathf.Max(0, shieldBrick.shieldHp - shieldBrick.healthAtLevel[0]);
                         shieldBrick.shieldHp = Mathf.Min(shieldBrick.shieldHp, shieldBrick.healthAtLevel[0]);
-                        shieldBrick.UpdateShieldSize();
                     }
                 }
             }
@@ -583,11 +581,6 @@ public class Brick : MonoBehaviour
             GetComponent<SpriteRenderer>().sprite = spriteArr[brickLevel];
             if (brickType == 1)
                 gameObject.GetComponent<Fuel>().UpgradeFuelLevel();
-
-            if (GetComponent<ShieldBrick>())
-            {
-                GetComponent<ShieldBrick>().UpdateShieldSize();
-            }
 
             if(GetComponent<Container>())
             {
