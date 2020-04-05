@@ -70,7 +70,6 @@ public class TutorialManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-
         Instance = this;
         playerBot = playerPos.GetComponent<Bot>();
     }

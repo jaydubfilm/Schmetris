@@ -214,11 +214,11 @@ public class GameUI : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Equals))
             {
-                SpeedUp();
+               // SpeedUp();
             }
             else if (Input.GetKeyDown(KeyCode.Minus))
             {
-                SpeedDown();
+               // SpeedDown();
             }
             else if (Input.GetKeyDown(KeyCode.Escape))
             {
