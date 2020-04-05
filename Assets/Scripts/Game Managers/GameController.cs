@@ -601,7 +601,7 @@ public class GameController : MonoBehaviour
             {
                 totalTimeRemaining += levelData.levelSections[i].levelDuration;
             }
-            hud.SetTimer(totalTimeRemaining);
+            hud.SetTimer(isTimedLevel, totalTimeRemaining);
             if (isTimedLevel && timeRemaining < 0)
             {
                 LoadNextLevelSection();
