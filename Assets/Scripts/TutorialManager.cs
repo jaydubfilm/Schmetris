@@ -76,6 +76,18 @@ public class TutorialManager : MonoBehaviour
         gameTimer.SetActive(false);
     }
 
+    void OnEnable()
+    {
+        gameTimer.SetActive(false);
+        levelComplete.SetActive(false);
+    }
+
+    void OnDisable()
+    {
+        gameTimer.SetActive(true);
+        levelComplete.SetActive(true);
+    }
+
     private void OnDestroy()
     {
         Instance = null;
@@ -504,7 +516,6 @@ public class TutorialManager : MonoBehaviour
         //GameController.Instance.LoadNextLevelSection();
         GameController.Instance.LoadNextLevelSection();
         CloseCurrent();
-        gameTimer.SetActive(true);
         SetFuel(40);
         tutorialPanel.SetActive(false);
         this.enabled = false;
@@ -514,27 +525,57 @@ public class TutorialManager : MonoBehaviour
     [Button]
     public void Respawn()
     {
-        CloseCurrent();
-        ResetVariables();
-        GameController.Instance.RestartOnDestroy();
-        SetFuel(1000);
-        foreach (GameObject item in sequentialModuleList)
+        if (this.enabled)
         {
-            if (item.GetComponent<InputCheck>())
+            CloseCurrent();
+            ResetVariables();
+            GameController.Instance.RestartOnDestroy();
+            SetFuel(1000);
+            foreach (GameObject item in sequentialModuleList)
             {
-                item.GetComponent<InputCheck>().Reset();
+                if (item.GetComponent<InputCheck>())
+                {
+                    item.GetComponent<InputCheck>().Reset();
+                }
             }
+
+            foreach (GameObject item in nonSequentialModuleList)
+            {
+                if (item.GetComponent<InputCheck>())
+                {
+                    item.GetComponent<InputCheck>().Reset();
+                }
+            }
+            TutorialManager.Instance.CloseAndOpenWithDelaySequential(0, false, 2.2f);
+            GameController.Instance.lives = 3;
+        }
+    }
+
+    public void CloseTutorial()
+    {
+        if (this.enabled)
+        {
+            CloseCurrent();
+            foreach (GameObject item in sequentialModuleList)
+            {
+                if (item.GetComponent<InputCheck>())
+                {
+                    item.GetComponent<InputCheck>().Reset();
+                }
+            }
+
+            foreach (GameObject item in nonSequentialModuleList)
+            {
+                if (item.GetComponent<InputCheck>())
+                {
+                    item.GetComponent<InputCheck>().Reset();
+                }
+            }
+            ResetVariables();
+            tutorialPanel.SetActive(false);
+            this.enabled = false;
         }
 
-        foreach (GameObject item in nonSequentialModuleList)
-        {
-            if (item.GetComponent<InputCheck>())
-            {
-                item.GetComponent<InputCheck>().Reset();
-            }
-        }
-        TutorialManager.Instance.CloseAndOpenWithDelaySequential(0, false, 2.2f);
-        GameController.Instance.lives = 3;
     }
 
     public void WhiteEnergy()

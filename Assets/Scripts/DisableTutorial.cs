@@ -19,7 +19,7 @@ public class DisableTutorial : MonoBehaviour
                 tutorialManager.enabled = false;
             if (tutorialPanel != null)
                 tutorialPanel.SetActive(false);
-            Destroy(tutorialManager);
+            //Destroy(tutorialManager);
         }
         else
         {
