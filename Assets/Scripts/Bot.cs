@@ -437,6 +437,11 @@ public class Bot : MonoBehaviour
     //Rebuild player's available resources from total supply
     public void LoadBotResources()
     {
+        hangarRed = 0;
+        hangarBlue = 0;
+        hangarGreen = 0;
+        hangarGrey = 0;
+        hangarYellow = 0;
         storedRed = totalReddite;
         storedBlue = totalBlueSalt;
         storedGreen = totalGreenAlgae;
