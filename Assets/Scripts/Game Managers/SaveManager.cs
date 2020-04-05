@@ -52,16 +52,11 @@ public class SaveManager
         newData.lives = lives;
         newData.money = money;
         newData.level = level;
-        newData.fuel = bot.GetSavedResource(ResourceType.Red, false);
-        newData.blue = bot.GetSavedResource(ResourceType.Blue, false);
-        newData.green = bot.GetSavedResource(ResourceType.Green, false);
-        newData.yellow = bot.GetSavedResource(ResourceType.Yellow, false);
-        newData.grey = bot.GetSavedResource(ResourceType.Grey, false);
-        newData.hangarRed = bot.GetSavedResource(ResourceType.Red, true);
-        newData.hangarBlue = bot.GetSavedResource(ResourceType.Blue, true);
-        newData.hangarGreen = bot.GetSavedResource(ResourceType.Green, true);
-        newData.hangarYellow = bot.GetSavedResource(ResourceType.Yellow, true);
-        newData.hangarGrey = bot.GetSavedResource(ResourceType.Grey, true);
+        newData.totalReddite = bot.totalReddite;
+        newData.totalBlueSalt = bot.totalBlueSalt;
+        newData.totalGreenAlgae = bot.totalGreenAlgae;
+        newData.totalYellectrons = bot.totalYellectrons;
+        newData.totalGreyscale = bot.totalGreyscale;
         newData.game = game;
         newData.containers = bot.savedContainerData;
 
@@ -88,16 +83,11 @@ public class SaveManager
         newData.lives = 0;
         newData.money = 0;
         newData.level = 0;
-        newData.fuel = 0;
-        newData.blue = 0;
-        newData.green = 0;
-        newData.yellow = 0;
-        newData.grey = 0;
-        newData.hangarRed = 0;
-        newData.hangarBlue = 0;
-        newData.hangarGreen = 0;
-        newData.hangarYellow = 0;
-        newData.hangarGrey = 0;
+        newData.totalReddite = 0;
+        newData.totalBlueSalt = 0;
+        newData.totalGreenAlgae = 0;
+        newData.totalYellectrons = 0;
+        newData.totalGreyscale = 0;
         newData.game = "LAYOUT";
 
         newData.containers = containers;
@@ -132,16 +122,11 @@ public class SaveManager
             newData.lives = 0;
             newData.money = 0;
             newData.level = 0;
-            newData.fuel = 0;
-            newData.blue = 0;
-            newData.green = 0;
-            newData.yellow = 0;
-            newData.grey = 0;
-            newData.hangarRed = 0;
-            newData.hangarBlue = 0;
-            newData.hangarGreen = 0;
-            newData.hangarYellow = 0;
-            newData.hangarGrey = 0;
+            newData.totalReddite = 0;
+            newData.totalBlueSalt = 0;
+            newData.totalGreenAlgae = 0;
+            newData.totalYellectrons = 0;
+            newData.totalGreyscale = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -154,16 +139,11 @@ public class SaveManager
             newData.lives = 0;
             newData.money = 0;
             newData.level = 0;
-            newData.fuel = 0;
-            newData.blue = 0;
-            newData.green = 0;
-            newData.yellow = 0;
-            newData.grey = 0;
-            newData.hangarRed = 0;
-            newData.hangarBlue = 0;
-            newData.hangarGreen = 0;
-            newData.hangarYellow = 0;
-            newData.hangarGrey = 0;
+            newData.totalReddite = 0;
+            newData.totalBlueSalt = 0;
+            newData.totalGreenAlgae = 0;
+            newData.totalYellectrons = 0;
+            newData.totalGreyscale = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -182,16 +162,11 @@ public class SaveManager
             newData.lives = 0;
             newData.money = 0;
             newData.level = 0;
-            newData.fuel = 0;
-            newData.blue = 0;
-            newData.green = 0;
-            newData.yellow = 0;
-            newData.grey = 0;
-            newData.hangarRed = 0;
-            newData.hangarBlue = 0;
-            newData.hangarGreen = 0;
-            newData.hangarYellow = 0;
-            newData.hangarGrey = 0;
+            newData.totalReddite = 0;
+            newData.totalBlueSalt = 0;
+            newData.totalGreenAlgae = 0;
+            newData.totalYellectrons = 0;
+            newData.totalGreyscale = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -204,16 +179,11 @@ public class SaveManager
             newData.lives = 0;
             newData.money = 0;
             newData.level = 0;
-            newData.fuel = 0;
-            newData.blue = 0;
-            newData.green = 0;
-            newData.yellow = 0;
-            newData.grey = 0;
-            newData.hangarRed = 0;
-            newData.hangarBlue = 0;
-            newData.hangarGreen = 0;
-            newData.hangarYellow = 0;
-            newData.hangarGrey = 0;
+            newData.totalReddite = 0;
+            newData.totalBlueSalt = 0;
+            newData.totalGreenAlgae = 0;
+            newData.totalYellectrons = 0;
+            newData.totalGreyscale = 0;
             newData.game = "";
             newData.bot = new BotData[1] { new BotData() };
             newData.bot[0].botRow = new string[1] { "" };
@@ -281,16 +251,11 @@ public class SaveData
     public int money;       //Collected money
     public int level;       //Level reached in chosen game
     public string game;     //Which Game settings is this save associated with?
-    public float fuel;      //Stored fuel
-    public float blue;      //Stored blue resource
-    public float green;     //Stored green resource
-    public float yellow;    //Stored yellow resource
-    public float grey;      //Stored grey resource
-    public float hangarRed; //Excess red resource
-    public float hangarBlue; //Excess blue resource
-    public float hangarGreen; //Excess green resource
-    public float hangarYellow; //Excess yellow resource
-    public float hangarGrey; //Excess grey resource
+    public float totalReddite;      //Stored fuel
+    public float totalBlueSalt;      //Stored blue resource
+    public float totalGreenAlgae;     //Stored green resource
+    public float totalYellectrons;    //Stored yellow resource
+    public float totalGreyscale;      //Stored grey resource
     public BotData[] bot;   //Bot tilemap for reloading save
     public List<ContainerData> containers;  //Containers in bot, to be properly rotated after building
 }

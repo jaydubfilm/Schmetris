@@ -171,7 +171,7 @@ public class TutorialManager : MonoBehaviour
         {
             if (hasHadFuelWarning == false)
             {
-                if (playerBot.storedRed < 10)
+                if (playerBot.storedRed < 21)
                 {
 
                     hasHadFuelWarning = true;
@@ -179,7 +179,7 @@ public class TutorialManager : MonoBehaviour
                 }
             }
 
-            if (playerBot.storedRed < 5 && outOfFuel == false)
+            if (playerBot.storedRed < 14 && outOfFuel == false)
             {
                 print("out of fuel");
                 NextWith2SecondDelay();

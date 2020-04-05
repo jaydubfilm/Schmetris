@@ -17,7 +17,7 @@ public class EnableDisableObj : MonoBehaviour
         else obj.SetActive(false);
 
         if(setFuelAmt)
-            TutorialManager.Instance.SetFuel(16);
+            TutorialManager.Instance.SetFuel(27);
 
     }
 

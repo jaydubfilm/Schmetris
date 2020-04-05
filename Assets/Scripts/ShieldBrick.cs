@@ -54,14 +54,6 @@ public class ShieldBrick : MonoBehaviour
         childTrigger = GetComponentInChildren<ShieldTrigger>();
         box2D = childTrigger.GetComponent<BoxCollider2D>();
         shieldHp = healthAtLevel[parentBrick.GetPoweredLevel()];
-        UpdateShieldSize();
-    }
-
-    //Update shield radius when power level changes
-    public void UpdateShieldSize()
-    {
-        radius = radiusAtLevel[GetComponent<Brick>().GetPoweredLevel()];
-        SetShieldSize();
     }
 
     //Shield radius converted to bot units
@@ -82,6 +74,12 @@ public class ShieldBrick : MonoBehaviour
         else
         {
             ToggleShield(false);
+        }
+
+        if (radius != radiusAtLevel[GetComponent<Brick>().GetPoweredLevel()])
+        {
+            radius = radiusAtLevel[GetComponent<Brick>().GetPoweredLevel()];
+            SetShieldSize();
         }
     }
 
@@ -114,6 +112,7 @@ public class ShieldBrick : MonoBehaviour
     {
         if (box2D)
         {
+            radius = radiusAtLevel[parentBrick.GetPoweredLevel()];
             float newSize = ConvertRadius(radius);
             box2D.size = new Vector2(newSize, newSize);
         }

@@ -70,16 +70,6 @@ public class Bot : MonoBehaviour
     Tilemap startTileMap;
     Sprite[,] savedTileMap;
     Sprite[,] startSprites;
-    float savedFuelStores = 0;
-    float savedBlueStored = 0;
-    float savedGreenStores = 0;
-    float savedYellowStores = 0;
-    float savedGreyStores = 0;
-    float savedHangarRed = 0;
-    float savedHangarBlue = 0;
-    float savedHangarGreen = 0;
-    float savedHangarYellow = 0;
-    float savedHangarGrey = 0;
     public Grid startingBrickGrid;
     public GameObject blockPrefab;
     public GameObject bitPrefab;
@@ -113,11 +103,16 @@ public class Bot : MonoBehaviour
     const float startYellow = 0;
     const float startGrey = 0;
     float totalCapacity = 0;
-    public float hangarRed = 0;
-    public float hangarBlue = 0;
-    public float hangarGreen = 0;
-    public float hangarYellow = 0;
-    public float hangarGrey = 0;
+    float hangarRed = 0;
+    float hangarBlue = 0;
+    float hangarGreen = 0;
+    float hangarYellow = 0;
+    float hangarGrey = 0;
+    public float totalReddite = 0;
+    public float totalBlueSalt = 0;
+    public float totalGreenAlgae = 0;
+    public float totalYellectrons = 0;
+    public float totalGreyscale = 0;
 
     float _storedRed = 0;
     public float storedRed
@@ -275,44 +270,20 @@ public class Bot : MonoBehaviour
     public void ResetTileMap()
     {
         SetTileMap(startSprites);
-        savedBlueStored = startBlue;
-
-        if (TutorialManager.Instance != null)
-            savedFuelStores = startRedTutorial;
-        else
-        {
-            savedFuelStores = startRed;
-        //    print("set to 60");
-        }
-        savedGreenStores = startGreen;
-        savedGreyStores = startGrey;
-        savedYellowStores = startYellow;
-        savedHangarRed = 0;
-        savedHangarBlue = 0;
-        savedHangarGreen = 0;
-        savedHangarYellow = 0;
-        savedHangarGrey = 0;
 
         if (TutorialManager.Instance != null)
         {
-
-            storedRed = startRedTutorial;
+            totalReddite = startRedTutorial;
         }
         else
         {
-            storedRed = startRed;
-            //print("set to 60");
-
+            totalReddite = startRed;
+            //    print("set to 60");
         }
-        storedBlue = startBlue;
-        storedGreen = startGreen;
-        storedYellow = startYellow;
-        storedGrey = startGrey;
-        hangarRed = 0;
-        hangarBlue = 0;
-        hangarGreen = 0;
-        hangarYellow = 0;
-        hangarGrey = 0;
+        totalGreenAlgae = startGreen;
+        totalGreyscale = startGrey;
+        totalYellectrons = startYellow;
+        totalBlueSalt = startBlue;
 
         savedContainerData = new List<ContainerData>();
     }
@@ -320,92 +291,6 @@ public class Bot : MonoBehaviour
     public Sprite[,] GetTileMap()
     {
         return savedTileMap;
-    }
-
-    public float GetSavedResource(ResourceType resourceType, bool isHangar)
-    {
-        switch(resourceType)
-        {
-            case ResourceType.Blue:
-                return isHangar ? savedHangarBlue : savedBlueStored;
-            case ResourceType.Green:
-                return isHangar ? savedHangarGreen : savedGreenStores;
-            case ResourceType.Grey:
-                return isHangar ? savedHangarGrey : savedGreyStores;
-            case ResourceType.Red:
-                return isHangar ? savedHangarRed : savedFuelStores;
-            case ResourceType.Yellow:
-                return isHangar ? savedHangarYellow : savedYellowStores;
-        }
-
-        return 0;
-    }
-
-    public void SetSavedResource(ResourceType resourceType, float amount, bool isHangar)
-    {
-        switch (resourceType)
-        {
-            case ResourceType.Blue:
-                if (isHangar)
-                {
-                    savedHangarBlue = amount;
-                    hangarBlue = amount;
-                }
-                else
-                {
-                    savedBlueStored = amount;
-                    storedBlue = amount;
-                }
-                break;
-            case ResourceType.Green:
-                if (isHangar)
-                {
-                    savedHangarGreen = amount;
-                    hangarGreen = amount;
-                }
-                else
-                {
-                    savedGreenStores = amount;
-                    storedGreen = amount;
-                }
-                break;
-            case ResourceType.Grey:
-                if (isHangar)
-                {
-                    savedHangarGrey = amount;
-                    hangarGrey = amount;
-                }
-                else
-                {
-                    savedGreyStores = amount;
-                    storedGrey = amount;
-                }
-                break;
-            case ResourceType.Red:
-                if (isHangar)
-                {
-                    savedHangarRed = amount;
-                    hangarRed = amount;
-                }
-                else
-                {
-                    savedFuelStores = amount;
-                    storedRed = amount;
-                }
-                break;
-            case ResourceType.Yellow:
-                if (isHangar)
-                {
-                    savedHangarYellow = amount;
-                    hangarYellow = amount;
-                }
-                else
-                {
-                    savedYellowStores = amount;
-                    storedYellow = amount;
-                }
-                break;
-        }
     }
 
     bool tileMapSet = false;
@@ -493,16 +378,6 @@ public class Bot : MonoBehaviour
                     savedTileMap[brickPos.x, brickPos.y] = Brick.GetComponent<SpriteRenderer>().sprite;
             }
         }
-        savedFuelStores = storedRed;
-        savedBlueStored = storedBlue;
-        savedGreenStores = storedGreen;
-        savedYellowStores = storedYellow;
-        savedGreyStores = storedGrey;
-        savedHangarRed = hangarRed;
-        savedHangarBlue = hangarBlue;
-        savedHangarGreen = hangarGreen;
-        savedHangarYellow = hangarYellow;
-        savedHangarGrey = hangarGrey;
 
         savedContainerData = new List<ContainerData>();
         foreach(Container container in containerList)
@@ -563,6 +438,26 @@ public class Bot : MonoBehaviour
         OnNewLevel();
     }
 
+    //Rebuild player's available resources from total supply
+    public void LoadBotResources()
+    {
+        storedRed = totalReddite;
+        storedBlue = totalBlueSalt;
+        storedGreen = totalGreenAlgae;
+        storedYellow = totalYellectrons;
+        storedGrey = totalGreyscale;
+    }
+
+    //Save player's available resources to total supply
+    public void SaveBotResources()
+    {
+        totalReddite = storedRed + hangarRed;
+        totalBlueSalt = storedBlue + hangarBlue;
+        totalGreenAlgae = storedGreen + hangarGreen;
+        totalYellectrons = storedYellow + hangarYellow;
+        totalGreyscale = storedGrey + hangarGrey;
+    }
+
     //Rebuild player's bot from the start of this level
     public void OnLevelRestart()
     {
@@ -597,28 +492,17 @@ public class Bot : MonoBehaviour
         AddStartingBricks();
         powerGridRefreshFlag = true;
 
-        storedRed = savedFuelStores;
-        storedBlue = savedBlueStored;
-        storedYellow = savedYellowStores;
-        storedGreen = savedGreenStores;
-        storedGrey = savedGreyStores;
-        hangarRed = savedHangarRed;
-        hangarBlue = savedHangarBlue;
-        hangarGreen = savedHangarGreen;
-        hangarYellow = savedHangarYellow;
-        hangarGrey = savedHangarGrey;
-
         foreach(ContainerData containerData in savedContainerData)
         {
             BrickAtBotArr(containerData.coords).GetComponent<Container>().SetOpenDirection(containerData.openDirection, true);
         }
+
+        LoadBotResources();
     }
 
     private void OnEnable()
     {
         GameController.OnGameOver += OnGameOver;
-        GameController.OnGameRestart += OnGameRestart;
-        GameController.OnLevelRestart += OnLevelRestart;
         GameController.OnLoseLife += OnLoseLife;
         GameController.OnNewLevel += OnNewLevel;
         GameController.OnLevelComplete += OnLevelComplete;
@@ -627,8 +511,6 @@ public class Bot : MonoBehaviour
     private void OnDisable()
     {
         GameController.OnGameOver -= OnGameOver;
-        GameController.OnGameRestart -= OnGameRestart;
-        GameController.OnLevelRestart -= OnLevelRestart;
         GameController.OnLoseLife -= OnLoseLife;
         GameController.OnNewLevel -= OnNewLevel;
         GameController.OnLevelComplete -= OnLevelComplete;
