@@ -622,6 +622,7 @@ public class GameController : MonoBehaviour
                     highestScene = Mathf.Min(highestScene + 1, game.levelDataArr.Length);
                     blockList = new List<GameObject>();
                     bot.OnNewLevel();
+                    scrapyard.GetComponent<Scrapyard>().hasShownHealPopup = false;
                     LoadScrapyard();
                 }
             }

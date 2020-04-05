@@ -105,7 +105,7 @@ public class GameUI : MonoBehaviour
     public void SetNoFuelPopup(bool isActive)
     {
         if (isActive)
-            popupDisplay.text = "Out of reddite";
+            popupDisplay.text = "Out of reddite" + '\n' + "Press SPACE to self-destruct";
         popupDisplay.color = isActive ? Color.white : Color.clear;
     }
 

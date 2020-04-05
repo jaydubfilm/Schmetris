@@ -731,6 +731,10 @@ public class Bot : MonoBehaviour
             {
                 fuelBrickList[0].GetComponent<Fuel>().BurnFuel(coreBurn.redBurn[coreBurn.GetPoweredLevel()] * Time.deltaTime);
             }
+            else if (!GameController.Instance.isBotDead && Input.GetKeyDown(KeyCode.Space))
+            {
+                coreBurn.ExplodeBrick();
+            }
         }
         else if (fuelBrickList.Count > 0)
         {

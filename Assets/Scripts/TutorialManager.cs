@@ -66,7 +66,7 @@ public class TutorialManager : MonoBehaviour
     int frameChecks;
     public bool isBotDead;
     public Text levelOverText;
-
+    public Text warningText;
 
 
     //public Game
@@ -78,9 +78,11 @@ public class TutorialManager : MonoBehaviour
         playerBot = playerPos.GetComponent<Bot>();
         gameTimer.SetActive(false);
         levelOverText.enabled = false;
+        levelOverText.enabled = false;
+        warningText.enabled = false;
     }
 
-    
+
 
     private void Update()
     {
@@ -189,7 +191,7 @@ public class TutorialManager : MonoBehaviour
                 {
 
                     hasHadFuelWarning = true;
-                    TutorialPopup(6, false, true, true);
+                    TutorialPopup(5, false, true, true);
                 }
             }
 
@@ -485,6 +487,8 @@ public class TutorialManager : MonoBehaviour
         gameTimer.SetActive(true);
         levelComplete.enabled = true;
         levelOverText.enabled = true;
+        warningText.enabled = true;
+
 
         Destroy(gameObject);
     }
@@ -519,5 +523,11 @@ public class TutorialManager : MonoBehaviour
     {
         TutorialPopup(7, false, true, false);
 
+    }
+
+    [Button]
+    void checkSection()
+    {
+        print(currentSection);
     }
 }

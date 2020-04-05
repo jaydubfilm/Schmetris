@@ -59,7 +59,7 @@ public class Scrapyard : MonoBehaviour
     List<ContainerData> containers = new List<ContainerData>();
     List<GameObject> containerObjects = new List<GameObject>();
     public Text healedPopup;
-    bool hasShownHealPopup = false;
+    public bool hasShownHealPopup = false;
     float healFadeDelay = 0;
 
     //Market UI

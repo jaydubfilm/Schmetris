@@ -8,7 +8,7 @@ public class EnableDisableObj : MonoBehaviour
     //enables or disables obj on start
     public bool enable;
     public GameObject obj;
-    public bool setFuel;
+    public bool setFuelAmt;
 
 
     void Start()
@@ -16,7 +16,7 @@ public class EnableDisableObj : MonoBehaviour
         if (enable) obj.SetActive(true);
         else obj.SetActive(false);
 
-        if(setFuel)
+        if(setFuelAmt)
             TutorialManager.Instance.SetFuel(16);
 
     }

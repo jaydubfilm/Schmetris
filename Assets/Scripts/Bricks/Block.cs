@@ -31,6 +31,14 @@ public class Block : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody2D>();
         GameController.OnSpeedChange += UpdateBlockSpeed;
         UpdateBlockSpeed();
+        StartCoroutine(WaitAndRotateBits());
+    }
+
+    //Allow all bits to initialize properly before rotating them
+    IEnumerator WaitAndRotateBits()
+    {
+        yield return new WaitForEndOfFrame();
+        RotateBitsUpright();
     }
 
     private void OnDestroy()

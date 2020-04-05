@@ -22,7 +22,7 @@ MonoBehaviour:
   yellowToCraft: 0000000000000000
   greyToCraft: 0000000000000000
   basePartToCraft:
-  - {fileID: 21300130, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+  - {fileID: 21300128, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4, type: 3}
 --- !u!1001 &6167074758492475587
 PrefabInstance:

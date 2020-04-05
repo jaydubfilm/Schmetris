@@ -47,8 +47,11 @@ public class InputCheck : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        alpha = 0.686f;
         image = GetComponent<Image>();
         text = GetComponentInChildren<TextMeshProUGUI>();
+        image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
+        text.color = new Color(text.color.r, text.color.g, text.color.b, alpha);
 
 
         startAdditionalAtStart = startAdditional;
