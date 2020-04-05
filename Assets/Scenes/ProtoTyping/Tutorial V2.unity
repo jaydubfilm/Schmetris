@@ -325,6 +325,30 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 1434363000}
+    ActiveGameObject: {fileID: 1434363000}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1434363000}
+    ActiveGameObject: {fileID: 1434363000}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 1988869051}
     ActiveGameObject: {fileID: 1988869051}
     GUIDsList: []
@@ -579,30 +603,6 @@ MonoBehaviour:
     list:
     - {fileID: 2035674089}
     ActiveGameObject: {fileID: 2035674089}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1988869051}
-    ActiveGameObject: {fileID: 1988869051}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 561679052}
-    ActiveGameObject: {fileID: 561679052}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -2140,6 +2140,38 @@ PrefabInstance:
       propertyPath: eventOnFinish.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1988869053}
+    - target: {fileID: 1434363002, guid: 369c240a1f1ea4a74ba5c1c78ac988ec, type: 3}
+      propertyPath: eventOnFinish.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1434363002, guid: 369c240a1f1ea4a74ba5c1c78ac988ec, type: 3}
+      propertyPath: changeSectionOnFinish
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1434363002, guid: 369c240a1f1ea4a74ba5c1c78ac988ec, type: 3}
+      propertyPath: eventOnFinish.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1434363002, guid: 369c240a1f1ea4a74ba5c1c78ac988ec, type: 3}
+      propertyPath: eventOnFinish.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1434363002, guid: 369c240a1f1ea4a74ba5c1c78ac988ec, type: 3}
+      propertyPath: eventOnFinish.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1988869053}
+    - target: {fileID: 1434363002, guid: 369c240a1f1ea4a74ba5c1c78ac988ec, type: 3}
+      propertyPath: eventOnFinish.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ToScrapYard
+      objectReference: {fileID: 0}
+    - target: {fileID: 1434363002, guid: 369c240a1f1ea4a74ba5c1c78ac988ec, type: 3}
+      propertyPath: eventOnFinish.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 1434363002, guid: 369c240a1f1ea4a74ba5c1c78ac988ec, type: 3}
+      propertyPath: runEventOnFinish
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 15787154675888590, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
         type: 3}
       propertyPath: m_AnchorMin.y
