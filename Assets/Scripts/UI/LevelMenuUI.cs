@@ -292,7 +292,7 @@ public class LevelMenuUI : MonoBehaviour
     int tempLevelIndex = 0;
     public void PlayLevel(int index)
     {
-        bool hasFuel = GameController.Instance.bot.GetSavedResource(ResourceType.Red, false) > 0;
+        bool hasFuel = GameController.Instance.bot.totalReddite > 0;
 
         //Look for fuel bricks in bot map
         Sprite[,] botMap = GameController.Instance.bot.GetTileMap();
