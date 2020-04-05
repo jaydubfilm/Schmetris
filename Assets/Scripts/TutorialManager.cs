@@ -171,7 +171,7 @@ public class TutorialManager : MonoBehaviour
         {
             if (hasHadFuelWarning == false)
             {
-                if (playerBot.storedRed < 5)
+                if (playerBot.storedRed < 10)
                 {
 
                     hasHadFuelWarning = true;
@@ -179,7 +179,7 @@ public class TutorialManager : MonoBehaviour
                 }
             }
 
-            if (playerBot.storedRed == 0 && outOfFuel == false)
+            if (playerBot.storedRed < 5 && outOfFuel == false)
             {
                 print("out of fuel");
                 NextWith2SecondDelay();
@@ -284,14 +284,15 @@ public class TutorialManager : MonoBehaviour
         //Bump the asteroid popups if there's already a message up
         if(isSequential == false && toggleOnOff == true && (module == 0 || module == 1))
         {
-            print("this is an asteroid " + module + " " + isSequential);
+            //print("this is an asteroid " + module + " " + isSequential);
             foreach (GameObject item in sequentialModuleList)
             {
                 if (item.GetComponent<Image>() && item.activeSelf == true)
                 {
                     if (item.GetComponent<Image>().color.a >= 0)
                     {
-                        print("Asteroid Message held for " + item.name);
+                        //print("Asteroid Message held for " + item.name);
+                        asteroidHits--;
                         return;
                     }
                 }
@@ -303,7 +304,8 @@ public class TutorialManager : MonoBehaviour
                 {
                     if (item.GetComponent<Image>().color.a >= 0)
                     {
-                        print("Asteroid Message held for " + item.name);
+                        asteroidHits--;
+                        //print("Asteroid Message held for " + item.name);
                         return;
                     }
                 }
@@ -471,7 +473,7 @@ public class TutorialManager : MonoBehaviour
     }
 
 
-    [Button]
+    //[Button]
     public void SetFuel(int fuel)
     {
 

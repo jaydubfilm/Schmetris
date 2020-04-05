@@ -742,7 +742,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "What are the chances!  \r\nTry to collect another.\n"
+  m_text: "What are the chances!  \r\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0079084f6fb3f8b49a7603605ab7fb1b, type: 2}
   m_sharedMaterial: {fileID: -8765588738649571948, guid: 0079084f6fb3f8b49a7603605ab7fb1b,
@@ -2199,7 +2199,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 3821141159295645162}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1259147573}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
@@ -4726,12 +4726,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 142.80003}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &1259147573 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 216254231577231851, guid: 369c240a1f1ea4a74ba5c1c78ac988ec,
-    type: 3}
-  m_PrefabInstance: {fileID: 3821141159295645162}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1273193608
 GameObject:
   m_ObjectHideFlags: 0
@@ -5241,6 +5235,42 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 148833906}
+    ActiveGameObject: {fileID: 148833906}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1632833010}
+    ActiveGameObject: {fileID: 1632833010}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1910371051}
+    ActiveGameObject: {fileID: 1910371051}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 307340046}
     ActiveGameObject: {fileID: 307340046}
     GUIDsList: []
@@ -5483,42 +5513,6 @@ MonoBehaviour:
     list:
     - {fileID: 1239552207}
     ActiveGameObject: {fileID: 1239552207}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1259147573}
-    ActiveGameObject: {fileID: 1259147573}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1624152715}
-    ActiveGameObject: {fileID: 1624152715}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 3821141159295645165}
-    ActiveGameObject: {fileID: 3821141159295645165}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -6744,7 +6738,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e72ac7350302944418441e7ebd033502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeBeforeFade: 3
+  timeBeforeFade: 4.3
   fadeSpeed: 0.5
   timeUntilNextPrompt: 6
   inputDetected: 0
