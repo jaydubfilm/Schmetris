@@ -19,7 +19,7 @@ public class GameController : MonoBehaviour
     public List<GameObject> enemyReference;
     int level1TimesPlayed;
 
-    bool tutorialHasStarted;
+    public bool tutorialHasStarted;
 
     //Player earned score/money - adjust UI to match every time money is updated
     int _money = 0;
@@ -327,12 +327,7 @@ public class GameController : MonoBehaviour
         LoadLevelData(level);
         if (level == 1)
         {
-            //if (TutorialManager.Instance != null && tutorialHasStarted == true )
-            //{
-            //    TutorialManager.Instance.Respawn();
-            //}
-            level1TimesPlayed++;
-            print(level1TimesPlayed);
+            
             if (TutorialManager.Instance != null && tutorialHasStarted == false)
             {
                 //TutorialManager.Instance.TutorialPopup(0, false, true, true);

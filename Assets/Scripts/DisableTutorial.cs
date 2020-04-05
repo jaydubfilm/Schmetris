@@ -6,18 +6,27 @@ public class DisableTutorial : MonoBehaviour
 {
 
 
-
-    public GameObject tutorialManager;
+    public bool disableTutorial;
+    public TutorialManager tutorialManager;
     public GameObject tutorialPanel;
 
     
-    // Update is called once per frame
     public void RemoveTutorial()
     {
-       if(tutorialManager != null)
-            Destroy(tutorialManager);
-       if(tutorialPanel != null)
-            Destroy(tutorialPanel);
-
+        if (disableTutorial == true)
+        {
+            if (tutorialManager != null)
+                tutorialManager.enabled = false;
+            if (tutorialPanel != null)
+                tutorialPanel.SetActive(false);
+        }
+        else
+        {
+            GameController.Instance.tutorialHasStarted = false;
+            if (tutorialManager != null)
+                tutorialManager.enabled = true;
+            if (tutorialPanel != null)
+                tutorialPanel.SetActive(true);
+        }
     }
 }

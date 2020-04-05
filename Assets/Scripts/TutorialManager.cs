@@ -489,9 +489,9 @@ public class TutorialManager : MonoBehaviour
         levelOverText.enabled = true;
         warningText.enabled = true;
         SetFuel(40);
-        Destroy(tutorialPanel);
-
-        Destroy(gameObject);
+        tutorialPanel.SetActive(false);
+        this.enabled = false;
+        //Destroy(gameObject);
     }
 
     [Button]
