@@ -26,6 +26,7 @@ public class Bullet : MonoBehaviour
     LayerMask enemyMask;
     LayerMask brickMask;
     LayerMask mosquitoMask;
+    LayerMask bitMask;
     Rigidbody2D rb2d;
 
     //Debug
@@ -37,6 +38,7 @@ public class Bullet : MonoBehaviour
         enemyMask = LayerMask.GetMask("Enemy");
         brickMask = LayerMask.GetMask("Brick");
         mosquitoMask = LayerMask.GetMask("Mosquito");
+        bitMask = LayerMask.GetMask("Bit");
         rb2d = GetComponent<Rigidbody2D>();
     }
 
@@ -77,6 +79,12 @@ public class Bullet : MonoBehaviour
             TryDamageTarget(r3.collider.gameObject);
         }
 
+        //Look for asteroids in path
+        RaycastHit2D r4 = Physics2D.Raycast(transform.position, direction, step.magnitude, bitMask);
+        if (r4.collider != null && r4.collider.GetComponentInParent<Asteroid>())
+        {
+            TryDamageTarget(r4.collider.transform.parent.gameObject);
+        }
 
         //Move bullet
         transform.position += new Vector3(step.x, step.y, 0);
