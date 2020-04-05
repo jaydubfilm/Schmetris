@@ -72,8 +72,9 @@ public class GameUI : MonoBehaviour
     }
 
     //Update displayed time
-    public void SetTimer(float time)
+    public void SetTimer(bool isActive, float time)
     {
+        timerText.enabled = isActive;
         timerText.text = "Time remaining: " + Mathf.Max(0, Mathf.Round(time));
         if(time <= 0 && !levelCompleteDisplay.activeSelf)
         {

@@ -51,7 +51,6 @@ public class TutorialManager : MonoBehaviour
     public List<GameObject> redSprites = new List<GameObject>();
 
     public GameObject gameTimer;
-    public Text levelComplete;
 
     bool beganGreyscaleSection;
     bool hasHadFuelWarning;
@@ -65,8 +64,6 @@ public class TutorialManager : MonoBehaviour
     int redCounter;
     int frameChecks;
     public bool isBotDead;
-    public Text levelOverText;
-    public Text warningText;
     public GameObject tutorialPanel;
 
     //public Game
@@ -76,10 +73,6 @@ public class TutorialManager : MonoBehaviour
 
         Instance = this;
         playerBot = playerPos.GetComponent<Bot>();
-        gameTimer.SetActive(false);
-        levelOverText.enabled = false;
-        levelOverText.enabled = false;
-        warningText.enabled = false;
     }
 
 
@@ -502,9 +495,6 @@ public class TutorialManager : MonoBehaviour
         GameController.Instance.LoadNextLevelSection();
         CloseCurrent();
         gameTimer.SetActive(true);
-        levelComplete.enabled = true;
-        levelOverText.enabled = true;
-        warningText.enabled = true;
         SetFuel(40);
         tutorialPanel.SetActive(false);
         this.enabled = false;
