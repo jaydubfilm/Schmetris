@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5902128f472564b98abfcdfed45089dc, type: 3}
   m_Name: TutorialGame
   m_EditorClassIdentifier: 
+  storeCostMultiplier: 1
   levelDataArr:
   - {fileID: 11400000, guid: 8fca509950b0739409cf12413315b912, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 48df46167f1ce294d838cd425ce38f06, type: 2}
+  - {fileID: 11400000, guid: 7c4a827665b710545a7e0fdbc39e3507, type: 2}
+  - {fileID: 11400000, guid: c7b02e27a165877458acac2aeadd3b2a, type: 2}
+  - {fileID: 11400000, guid: ad1e719847f617e4c9d71c28e79c2860, type: 2}
+  - {fileID: 11400000, guid: 06a8ba273e7281a44b5ca5f4a467cc95, type: 2}

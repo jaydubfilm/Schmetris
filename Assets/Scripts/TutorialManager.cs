@@ -37,7 +37,7 @@ public class TutorialManager : MonoBehaviour
     int asteroidHits;
     bool greyHasFallen;
 
-    int currentSection;
+    public int currentSection;
     int frameCounter;
     public Sprite greyScale;
     public Sprite level1GreyScale;
@@ -66,8 +66,8 @@ public class TutorialManager : MonoBehaviour
     int frameChecks;
     public bool isBotDead;
     public Text levelOverText;
-
-
+    public Text warningText;
+    public GameObject tutorialPanel;
 
     //public Game
     // Start is called before the first frame update
@@ -78,9 +78,11 @@ public class TutorialManager : MonoBehaviour
         playerBot = playerPos.GetComponent<Bot>();
         gameTimer.SetActive(false);
         levelOverText.enabled = false;
+        levelOverText.enabled = false;
+        warningText.enabled = false;
     }
 
-    
+
 
     private void Update()
     {
@@ -118,7 +120,7 @@ public class TutorialManager : MonoBehaviour
         countLastFrame = GameController.Instance.blockList.Count;
 
         //Section Specific Behaviours
-        if (currentSection == 2)
+        if (currentSection == 2 || currentSection == 3)
         {
 
 
@@ -189,7 +191,7 @@ public class TutorialManager : MonoBehaviour
                 {
 
                     hasHadFuelWarning = true;
-                    TutorialPopup(6, false, true, true);
+                    TutorialPopup(5, false, true, true);
                 }
             }
 
@@ -223,7 +225,7 @@ public class TutorialManager : MonoBehaviour
                     List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
                     foreach (SpriteRenderer SR in childSprites)
                     {
-                        if (SR.sprite == red || frameChecks >= 17)
+                        if (SR.sprite == red || frameChecks >= 45)
                         {
                             CloseAndOpenNextUnpaused();
                             GameController.Instance.LoadNextLevelSection();
@@ -485,6 +487,9 @@ public class TutorialManager : MonoBehaviour
         gameTimer.SetActive(true);
         levelComplete.enabled = true;
         levelOverText.enabled = true;
+        warningText.enabled = true;
+        SetFuel(40);
+        Destroy(tutorialPanel);
 
         Destroy(gameObject);
     }
@@ -519,5 +524,11 @@ public class TutorialManager : MonoBehaviour
     {
         TutorialPopup(7, false, true, false);
 
+    }
+
+    [Button]
+    void checkSection()
+    {
+        print(currentSection);
     }
 }
