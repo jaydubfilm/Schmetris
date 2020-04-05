@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 65f35afedbc00411294e1f9827632ded, type: 3}
-  m_Name: Tutorial 2_1
+  m_Name: Tutorial 2_2
   m_EditorClassIdentifier: 
-  levelDuration: 10
+  levelDuration: 15
   blocks:
   - block: {fileID: 488350703338922660, guid: c33749ff23fca4621a66b4e1b8c7ad26, type: 3}
     probability: 1
@@ -30,7 +30,12 @@ MonoBehaviour:
     probability: 3
   - block: {fileID: 2589978003207516240, guid: e215a09cb11b7426cabf3b57049ca5b1, type: 3}
     probability: 2
-  speciesSpawnData: []
+  - block: {fileID: 8729059966470195979, guid: b44f27243f54d46b387a3f92aeb512c8, type: 3}
+    probability: 3
+  speciesSpawnData:
+  - species: {fileID: 7297659341976442939, guid: dad323699b9f9dc4fbdd435e03ff6c7b,
+      type: 3}
+    probability: 1
   blockSpawnRate: 0.3
-  enemySpawnRate: 4
+  enemySpawnRate: 6
   blockSpeed: 7.5

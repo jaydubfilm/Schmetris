@@ -241,11 +241,11 @@ MonoBehaviour:
   bulletLifetime: 2
   bullet: {fileID: 4678426597054703440, guid: 830515e21ff0d524da08aba3cfcb73d6, type: 3}
   bulletSprite: {fileID: 21300014, guid: 9c31eaa9bdedaca4b8a21a1282db0a35, type: 3}
-  bulletDamage: 3
+  bulletDamage: 10
   timeUntilBlast: 10
   blastRadius: 5
   blastDamage: 5
-  strength: 2
+  strength: 8
   mosquitoShield: {fileID: 1842814450953131543, guid: 4812b6d8b1ab07a43b5aa89e731f6262,
     type: 3}
   debugExplosion: {fileID: 7524407400947348946, guid: 5497074458701d3468023bc84a64de09,
