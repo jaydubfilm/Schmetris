@@ -76,7 +76,7 @@ public class GameUI : MonoBehaviour
     {
         timerText.enabled = isActive;
         timerText.text = "Time remaining: " + Mathf.Max(0, Mathf.Round(time));
-        if(time <= 0 && !levelCompleteDisplay.activeSelf)
+        if((!TutorialManager.Instance || !TutorialManager.Instance.enabled) && isActive && time <= 0 && !levelCompleteDisplay.activeSelf)
         {
             SetLevelCompletePopup(true);
         }

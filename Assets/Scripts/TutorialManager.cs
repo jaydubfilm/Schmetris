@@ -75,7 +75,10 @@ public class TutorialManager : MonoBehaviour
         gameTimer.SetActive(false);
     }
 
-
+    private void OnDestroy()
+    {
+        Instance = null;
+    }
 
     private void Update()
     {
