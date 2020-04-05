@@ -65,9 +65,10 @@ PrefabInstance:
     - target: {fileID: 4939782655615511966, guid: c41aa069d16104f9da47f7decf2ee067,
         type: 3}
       propertyPath: m_Name
-      value: block
+      value: asteroid9.0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: c41aa069d16104f9da47f7decf2ee067, type: 3}
 --- !u!4 &1444792338239463036 stripped
 Transform:
