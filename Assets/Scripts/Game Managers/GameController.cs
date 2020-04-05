@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
     public List<GameObject> enemyList;
     public List<GameObject> bitReference;
     public List<GameObject> enemyReference;
+    int level1TimesPlayed;
 
     bool tutorialHasStarted;
 
@@ -326,14 +327,23 @@ public class GameController : MonoBehaviour
         LoadLevelData(level);
         if (level == 1)
         {
+            //if (TutorialManager.Instance != null && tutorialHasStarted == true )
+            //{
+            //    TutorialManager.Instance.Respawn();
+            //}
+            level1TimesPlayed++;
+            print(level1TimesPlayed);
             if (TutorialManager.Instance != null && tutorialHasStarted == false)
             {
-                TutorialManager.Instance.TutorialPopup(0, false, true, true);
-                tutorialHasStarted = true;
-                TutorialManager.Instance.isBotDead = false;
-                TutorialManager.Instance.playerPos.GetComponent<Bot>().SetFuelAmt(1000);
+                //TutorialManager.Instance.TutorialPopup(0, false, true, true);
+                TutorialManager.Instance.CloseAndOpenWithDelaySequential(0, false, 2.2f);
 
+                tutorialHasStarted = true;
+                //TutorialManager.Instance.isBotDead = false;
+                //TutorialManager.Instance.playerPos.GetComponent<Bot>().SetFuelAmt(1000);
             }
+
+           
         }
     }
 

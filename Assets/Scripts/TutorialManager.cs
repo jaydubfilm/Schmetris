@@ -516,7 +516,7 @@ public class TutorialManager : MonoBehaviour
                 item.GetComponent<InputCheck>().Reset();
             }
         }
-        TutorialPopup(0, false, true, true);
+        TutorialManager.Instance.CloseAndOpenWithDelaySequential(0, false, 2.2f);
         GameController.Instance.lives = 3;
     }
 

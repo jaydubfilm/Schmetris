@@ -88,7 +88,7 @@ public class InputCheck : MonoBehaviour
 
         alpha = 0.686f;
         fadeSpeed = 0.5f;
-        timeBeforeFade = 3;
+        //timeBeforeFade = 3;
 
     }
 
