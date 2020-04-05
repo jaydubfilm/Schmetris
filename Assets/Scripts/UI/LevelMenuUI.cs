@@ -288,10 +288,27 @@ public class LevelMenuUI : MonoBehaviour
     }
 
     //Play selected level
+    public List<Sprite> fuelSprites = new List<Sprite>();
     int tempLevelIndex = 0;
     public void PlayLevel(int index)
     {
-        if (GameController.Instance.bot.GetSavedResource(ResourceType.Red, false) == 0)
+        bool hasFuel = GameController.Instance.bot.GetSavedResource(ResourceType.Red, false) > 0;
+
+        //Look for fuel bricks in bot map
+        Sprite[,] botMap = GameController.Instance.bot.GetTileMap();
+        for (int x = 0; x < botMap.GetLength(0); x++)
+        {
+            for (int y = 0; y < botMap.GetLength(1); y++)
+            {
+                if(fuelSprites.Contains(botMap[x,y]))
+                {
+                    hasFuel = true;
+                    break;
+                }
+            }
+        }
+
+        if (!hasFuel)
         {
             tempLevelIndex = index;
             SetMenuState(MenuState.ConfirmLevel);

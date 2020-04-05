@@ -18,6 +18,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300012, guid: 0af25fd342af74c2fa8014bc588a148b,
         type: 3}
+    - target: {fileID: 2008068205311469601, guid: 4041c7b358034436bb0a62aaef31deb4,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3029761191453176019, guid: 4041c7b358034436bb0a62aaef31deb4,
         type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.x
@@ -81,7 +86,7 @@ PrefabInstance:
     - target: {fileID: 4196681304116509050, guid: 4041c7b358034436bb0a62aaef31deb4,
         type: 3}
       propertyPath: spriteArr.Array.size
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4196681304116509050, guid: 4041c7b358034436bb0a62aaef31deb4,
         type: 3}

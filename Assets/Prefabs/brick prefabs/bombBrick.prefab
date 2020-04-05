@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: e8030000d0070000b80b0000a00f000088130000
+  range: 
   bombEffect: {fileID: 4168938144742612567, guid: 3587e99bcb9dfca468d23457b7fdd40d,
     type: 3}
 --- !u!1001 &3400431258289026775
@@ -80,7 +81,7 @@ PrefabInstance:
     - target: {fileID: 5604668986800053905, guid: 354dc29582bdf47619ec4a75051b9b49,
         type: 3}
       propertyPath: spriteArr.Array.size
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5604668986800053905, guid: 354dc29582bdf47619ec4a75051b9b49,
         type: 3}

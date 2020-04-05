@@ -1044,6 +1044,14 @@ MonoBehaviour:
   levelButtonPrefab: {fileID: 2938630971087145502, guid: 28935d0ef5ec90e45813477e5e2b10bb,
     type: 3}
   levelGrid: {fileID: 3693486819016046535}
+  fuelSprites:
+  - {fileID: 21300078, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+  - {fileID: 21300080, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+  - {fileID: 21300082, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+  - {fileID: 21300084, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+  - {fileID: 21300086, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+  - {fileID: 21300088, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+  - {fileID: 21300090, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
 --- !u!1 &7566780755873912529
 GameObject:
   m_ObjectHideFlags: 0
