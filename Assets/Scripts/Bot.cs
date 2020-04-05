@@ -267,19 +267,15 @@ public class Bot : MonoBehaviour
         }
     }
 
+    public void SetTutorialStart()
+    {
+        totalReddite = startRedTutorial;
+    }
+
     public void ResetTileMap()
     {
         SetTileMap(startSprites);
-
-        if (TutorialManager.Instance != null)
-        {
-            totalReddite = startRedTutorial;
-        }
-        else
-        {
-            totalReddite = startRed;
-            //    print("set to 60");
-        }
+        totalReddite = startRed;
         totalGreenAlgae = startGreen;
         totalGreyscale = startGrey;
         totalYellectrons = startYellow;

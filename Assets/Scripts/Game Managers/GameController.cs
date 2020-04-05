@@ -315,6 +315,12 @@ public class GameController : MonoBehaviour
 
     public void StartLevel(int level)
     {
+        bool isTutorial = level == 1 && TutorialManager.Instance && TutorialManager.Instance.enabled && !tutorialHasStarted;
+
+        if (isTutorial)
+        {
+            bot.SetTutorialStart();
+        }
         bot.gameObject.SetActive(true);
         bot.OnLevelRestart();
 
@@ -325,18 +331,10 @@ public class GameController : MonoBehaviour
         }
 
         LoadLevelData(level);
-        if (level == 1)
+        if (isTutorial)
         {
-            
-            if (TutorialManager.Instance != null && tutorialHasStarted == false)
-            {
-                TutorialManager.Instance.CloseAndOpenWithDelaySequential(0, false, 2.2f);
-
-                tutorialHasStarted = true;
-               
-            }
-
-           
+            TutorialManager.Instance.CloseAndOpenWithDelaySequential(0, false, 2.2f);
+            tutorialHasStarted = true;
         }
     }
 
@@ -350,7 +348,6 @@ public class GameController : MonoBehaviour
         if (isNewGame && highestScene == 1)
         {
             StartLevel(1);
-
         }
         else
         {
