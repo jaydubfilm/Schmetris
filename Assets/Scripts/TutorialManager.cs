@@ -575,6 +575,7 @@ public class TutorialManager : MonoBehaviour
             }
             ResetVariables();
             tutorialPanel.SetActive(false);
+            GameController.Instance.tutorialHasStarted = false;
             this.enabled = false;
         }
 
