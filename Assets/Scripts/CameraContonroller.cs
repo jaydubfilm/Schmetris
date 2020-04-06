@@ -17,6 +17,6 @@ public class CameraContonroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = Vector3.Lerp(transform.position, startPos, 1 / smoothing);
+        transform.position = Vector3.Lerp(transform.position, startPos, smoothing * Time.deltaTime);
     }
 }
