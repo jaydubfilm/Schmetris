@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class TutorialManager : MonoBehaviour
 {
-
+    public bool tutorialHasFinished;
     public static TutorialManager Instance { get; private set; }
     public TMP_FontAsset font;
 
@@ -517,6 +517,7 @@ public class TutorialManager : MonoBehaviour
     {
         //GameController.Instance.LoadNextLevelSection();
         GameController.Instance.LoadNextLevelSection();
+        tutorialHasFinished = true;
         CloseCurrent();
         SetFuel(40);
         tutorialPanel.SetActive(false);

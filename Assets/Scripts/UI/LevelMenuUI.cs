@@ -315,6 +315,7 @@ public class LevelMenuUI : MonoBehaviour
         }
         else
         {
+           
             GameController.Instance.StartLevel(index);
         }
     }
