@@ -66,6 +66,7 @@ public class TutorialManager : MonoBehaviour
     public bool isBotDead;
     public GameObject tutorialPanel;
     public GameObject levelComplete;
+    GameObject fuelFreezeObj;
 
     //public PowerGridPrefab tutorialGrid;
 
@@ -76,6 +77,7 @@ public class TutorialManager : MonoBehaviour
         Instance = this;
         playerBot = playerPos.GetComponent<Bot>();
         gameTimer.SetActive(false);
+        fuelFreezeObj = GetComponentInChildren<FreezeFuel>(true).gameObject;
     }
 
     void OnEnable()
@@ -296,6 +298,7 @@ public class TutorialManager : MonoBehaviour
         isBotDead = false;
         frameCounter = 0;
         //asteroidHits = 0;
+        fuelFreezeObj.SetActive(false);
 
 }
 
@@ -520,6 +523,7 @@ public class TutorialManager : MonoBehaviour
     public void ToScrapYard()
     {
         //GameController.Instance.LoadNextLevelSection();
+        GameController.Instance.game = GameController.Instance.easyNonTutorial;
         GameController.Instance.LoadNextLevelSection();
         tutorialHasFinished = true;
         CloseCurrent();
@@ -581,6 +585,7 @@ public class TutorialManager : MonoBehaviour
             ResetVariables();
             tutorialPanel.SetActive(false);
             GameController.Instance.tutorialHasStarted = false;
+
             this.enabled = false;
         }
 

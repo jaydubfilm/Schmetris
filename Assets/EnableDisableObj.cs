@@ -11,7 +11,7 @@ public class EnableDisableObj : MonoBehaviour
     public bool setFuelAmt;
 
 
-    void Start()
+    void OnEnable()
     {
         if (enable) obj.SetActive(true);
         else obj.SetActive(false);
