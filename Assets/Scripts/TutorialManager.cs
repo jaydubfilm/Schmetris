@@ -184,10 +184,12 @@ public class TutorialManager : MonoBehaviour
             {
                 if (playerBot.storedRed < 21)
                 {
-
+                    
                     hasHadFuelWarning = true;
                     //low fuel warning message
-                    TutorialPopup(5, false, true, true);
+                    if(nonSequentialModuleList[2].gameObject.activeSelf == false)
+                        TutorialPopup(5, false, true, true);
+
                     GameController.Instance.LoadNextLevelSection();
 
                 }
@@ -292,6 +294,8 @@ public class TutorialManager : MonoBehaviour
         redCounter =0;
         frameChecks =0;
         isBotDead = false;
+        frameCounter = 0;
+        //asteroidHits = 0;
 
 }
 
