@@ -282,7 +282,7 @@ public class TutorialManager : MonoBehaviour
         //isBotDead = GameController.Instance.isBotDead;
     }
 
-    void ResetVariables()
+    public void ResetVariables()
     {
 
         collected1Greyscale = false;

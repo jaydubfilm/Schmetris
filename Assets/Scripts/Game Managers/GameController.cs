@@ -473,6 +473,14 @@ public class GameController : MonoBehaviour
     //Used for external Canvas buttons for touchscreen controls
     public void EasyGame()
     {
+        if(TutorialManager.Instance)
+        {
+            TutorialManager.Instance.CloseTutorial();
+            TutorialManager.Instance.enabled = true;
+            tutorialHasStarted = false;
+            TutorialManager.Instance.tutorialHasFinished = false;
+            TutorialManager.Instance.tutorialPanel.SetActive(true);
+        }
         game = easyNonTutorial;
         highestScene = 1;
         lives = 3;
