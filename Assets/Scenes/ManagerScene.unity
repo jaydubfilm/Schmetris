@@ -2995,6 +2995,7 @@ MonoBehaviour:
   scoreIncreasePrefab: {fileID: 1390986891220089146, guid: 2f58309bcd325b045b76c2709e3fe960,
     type: 3}
   easyGame: {fileID: 11400000, guid: 692fc6d5c9d8e5a4d875c96bcf7d95da, type: 2}
+  easyNonTutorial: {fileID: 11400000, guid: 9794c443145520a48a48e48ab276f977, type: 2}
   mediumGame: {fileID: 11400000, guid: 09e004c250ae945c0bdf823dea62f452, type: 2}
   hardGame: {fileID: 11400000, guid: 6986c8fe8c2a94ba3831dee022b695c5, type: 2}
   game: {fileID: 11400000, guid: f6aba2d92368340b08c63d73ea319ea0, type: 2}
@@ -4282,6 +4283,18 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 828699279}
+    ActiveGameObject: {fileID: 828699279}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 1047375223}
     ActiveGameObject: {fileID: 1047375223}
     GUIDsList: []
@@ -4512,18 +4525,6 @@ MonoBehaviour:
     list:
     - {fileID: 1175877848}
     ActiveGameObject: {fileID: 1175877848}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 828699279}
-    ActiveGameObject: {fileID: 828699279}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []

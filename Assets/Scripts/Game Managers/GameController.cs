@@ -67,6 +67,7 @@ public class GameController : MonoBehaviour
 
     //public LevelData[] allLevelData;
     public Game easyGame;
+    public Game easyNonTutorial;
     public Game mediumGame;
     public Game hardGame;
     public Game game;
@@ -319,8 +320,8 @@ public class GameController : MonoBehaviour
 
         if (isTutorial)
         {
+            game = easyGame;
             bot.SetTutorialStart();
-
         }
         bot.gameObject.SetActive(true);
         bot.OnLevelRestart();
@@ -381,9 +382,9 @@ public class GameController : MonoBehaviour
             currentScene = highestScene;
 
             //~Add in Resource loading?
-            if (easyGame.name == loadData.game)
+            if (easyGame.name == loadData.game || easyNonTutorial.name == loadData.game)
             {
-                game = easyGame;
+                game = easyNonTutorial;
             }
             else if (mediumGame.name == loadData.game)
             {
@@ -472,7 +473,7 @@ public class GameController : MonoBehaviour
     //Used for external Canvas buttons for touchscreen controls
     public void EasyGame()
     {
-        game = easyGame;
+        game = easyNonTutorial;
         highestScene = 1;
         lives = 3;
         money = 0;

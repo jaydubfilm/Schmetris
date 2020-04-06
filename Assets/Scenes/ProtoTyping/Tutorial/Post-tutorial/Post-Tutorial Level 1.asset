@@ -14,8 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelSections:
   - {fileID: 11400000, guid: 0546c68d913e20c4e80b087f02385513, type: 2}
-  - {fileID: 11400000, guid: f6496bddc969d2d4d9da1aee71dc3ab8, type: 2}
-  - {fileID: 11400000, guid: 9fb85c4bc18c2954b9af39f8ba9c0d84, type: 2}
-  - {fileID: 11400000, guid: 3e0b1ad313efde045be55e4ef3729858, type: 2}
-  - {fileID: 11400000, guid: 92fd2537c453111418f1896610b93096, type: 2}
-  - {fileID: 11400000, guid: 55132876d4584c04e97640ddbdeee0cd, type: 2}
+  - {fileID: 11400000, guid: cce7162effd2f7249a8b3da101282b55, type: 2}
+  - {fileID: 11400000, guid: 09f799e56bfcfde469100c5cdbd53bd2, type: 2}

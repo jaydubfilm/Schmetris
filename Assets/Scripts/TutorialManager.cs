@@ -516,6 +516,7 @@ public class TutorialManager : MonoBehaviour
     public void ToScrapYard()
     {
         //GameController.Instance.LoadNextLevelSection();
+        GameController.Instance.game = GameController.Instance.easyNonTutorial;
         GameController.Instance.LoadNextLevelSection();
         tutorialHasFinished = true;
         CloseCurrent();
