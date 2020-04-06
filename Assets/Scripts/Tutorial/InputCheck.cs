@@ -98,6 +98,9 @@ public class InputCheck : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameController.Instance.isPaused)
+            return;
+
         if (inputDetected == false && canDetect == true && needsInput == true)
         { 
 

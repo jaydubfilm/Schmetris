@@ -163,7 +163,7 @@ public class GameController : MonoBehaviour
             }
             else
             {
-                if (TutorialManager.Instance == null)
+                if (TutorialManager.Instance == null || !TutorialManager.Instance.enabled)
                 {
                     if (OnLoseLife != null)
                     {

@@ -99,6 +99,8 @@ public class TutorialManager : MonoBehaviour
 
     private void Update()
     {
+        if (GameController.Instance.isPaused)
+            return;
 
         if (timer)
         {
@@ -339,7 +341,7 @@ public class TutorialManager : MonoBehaviour
         
         
         //pause
-        if (pauseGame == true)
+        if (pauseGame == true || GameController.Instance.isPaused)
         {
 
             GameController.Instance.hud.gameObject.SetActive(false);
