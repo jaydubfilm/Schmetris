@@ -179,7 +179,7 @@ MonoBehaviour:
   slowdownDistance: 0.6
   pickNextWaypointDist: 2
   endReachedDistance: 9
-  alwaysDrawGizmos: 0
+  alwaysDrawGizmos: 1
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
   constrainInsideGraph: 0
@@ -209,7 +209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7805bd06c1fe4214e943de0b55468349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followSpeed: 2.5
+  followSpeed: 4.57
   distanceCheckTimer: 0.5
   rateOfFire: 4
   bulletSpeed: 1.8
@@ -236,13 +236,13 @@ CircleCollider2D:
   m_GameObject: {fileID: 7899793524970067225}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 5df8495ce22be764b85be4114febb01e, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 4.16
+  m_Radius: 2.12
 --- !u!50 &7899793524970067223
 Rigidbody2D:
   serializedVersion: 4
@@ -354,40 +354,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 0.25
       objectReference: {fileID: 0}
-    - target: {fileID: 5279422275133036959, guid: 93b1610f808934ace932500850b28cbd,
-        type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7031506243419954022, guid: 93b1610f808934ace932500850b28cbd,
-        type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7034820671878427800, guid: 93b1610f808934ace932500850b28cbd,
-        type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7329869826025696605, guid: 93b1610f808934ace932500850b28cbd,
         type: 3}
       propertyPath: m_Name
       value: HealthBar
-      objectReference: {fileID: 0}
-    - target: {fileID: 7329869826025696605, guid: 93b1610f808934ace932500850b28cbd,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7329869826025696605, guid: 93b1610f808934ace932500850b28cbd,
-        type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8058627140781510796, guid: 93b1610f808934ace932500850b28cbd,
-        type: 3}
-      propertyPath: m_Layer
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93b1610f808934ace932500850b28cbd, type: 3}
