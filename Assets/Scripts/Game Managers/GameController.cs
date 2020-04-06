@@ -616,7 +616,8 @@ public class GameController : MonoBehaviour
                 }
                 if (!hasBlocks)
                 {
-                    highestScene = Mathf.Min(highestScene + 1, game.levelDataArr.Length);
+                    if(currentScene == highestScene)
+                        highestScene = Mathf.Min(highestScene + 1, game.levelDataArr.Length);
                     blockList = new List<GameObject>();
                     bot.SaveBotResources();
                     bot.OnNewLevel();
