@@ -65,12 +65,12 @@ MonoBehaviour:
   maxBotHeight: 0
   masterBrickList:
   - {fileID: 6471613597453367622, guid: 7544aff9065454f41ab1fd0a0491acc2, type: 3}
-  - {fileID: 5783272881628935429, guid: 9d22e820e24b44098990a011ff255f7e, type: 3}
+  - {fileID: 7832514841687427558, guid: cd35053b0c8664eae8a7476325bcd771, type: 3}
   - {fileID: 1550391163482342013, guid: 4041c7b358034436bb0a62aaef31deb4, type: 3}
   - {fileID: 6450636027791030212, guid: 8d224d3a4016a47ea86d7ab7283122ab, type: 3}
   - {fileID: 1862860024383603479, guid: fa5d2e263149748858c26ba1a2f86ef0, type: 3}
-  - {fileID: 7097192913053656470, guid: 354dc29582bdf47619ec4a75051b9b49, type: 3}
-  - {fileID: 5570540888293643073, guid: 01c4b15ca06cf4fa8aa6b7519021dae8, type: 3}
+  - {fileID: 8612316627368212548, guid: 354dc29582bdf47619ec4a75051b9b49, type: 3}
+  - {fileID: 35830340098875311, guid: 95cb7349a9d4e4a6e99463544b69a6a1, type: 3}
   - {fileID: 6703889337379585221, guid: c6511eeda86244a65939ca538c048ea0, type: 3}
   - {fileID: 3786325451140840089, guid: 06d2c88f29e3441339002e2924aa7c83, type: 3}
   - {fileID: 6715254118685096965, guid: ca6ae26aff763214a84880dee0b2b3d1, type: 3}
@@ -113,11 +113,11 @@ MonoBehaviour:
   brickBumpSound: {fileID: 8300000, guid: 5114e7b0487db684c812c5ca40be7536, type: 3}
   queueDestroyedBrick: 0
   tripleDelay: 0.1
-  hangarRed: 0
-  hangarBlue: 0
-  hangarGreen: 0
-  hangarYellow: 0
-  hangarGrey: 0
+  totalReddite: 0
+  totalBlueSalt: 0
+  totalGreenAlgae: 0
+  totalYellectrons: 0
+  totalGreyscale: 0
   tripleWaitFlag: 0
 --- !u!50 &3160574865307964100
 Rigidbody2D:

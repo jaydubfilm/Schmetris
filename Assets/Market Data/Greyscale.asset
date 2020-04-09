@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Greyscale
   m_EditorClassIdentifier: 
   marketName: Greyscale
-  brick: {fileID: 7097192913053656470, guid: 354dc29582bdf47619ec4a75051b9b49, type: 3}
+  brick: {fileID: 8612316627368212548, guid: 354dc29582bdf47619ec4a75051b9b49, type: 3}
   brickLevels:
   - buyPrice: 200
     sellPrice: 150
