@@ -6,6 +6,14 @@ using Sirenix.OdinInspector;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+//The Tutorial Manager Manages the tutorial level in these ways:
+// - triggers progression through the level sections
+// - enables and disbles information panels in the tutorial panel in the UI hierarchy
+    // - There are 2 lists of information panels:
+        // - SequentialModuleList stores UI Popups scheduled to appear in order
+        // - nonSequentialModuleList stores UI popups that can be triggered dynamically, such as hitting an asteroid
+
+
 public class TutorialManager : MonoBehaviour
 {
     public bool tutorialHasFinished;
@@ -121,9 +129,6 @@ public class TutorialManager : MonoBehaviour
         //Section Specific Behaviours
         if (currentSection == 2 || currentSection == 3)
         {
-
-
-
             if (frameCounter == 60)
             {
                 List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
@@ -132,7 +137,6 @@ public class TutorialManager : MonoBehaviour
                     //collect your first greyscale
                     if (collected1Greyscale == false)
                     {
-                        //                        print(SR.sprite.name);
                         if (SR.sprite == greyScale)
                         {
                             if (beganGreyscaleSection == false)
@@ -149,7 +153,6 @@ public class TutorialManager : MonoBehaviour
                                 }
                             }
                         }
-
                     }
                     //level up greyscale
                     if (collected1Greyscale == true && level1Upgraded == false)
@@ -189,20 +192,19 @@ public class TutorialManager : MonoBehaviour
                 if (playerBot.storedRed < 21)
                 {
                     
-                    hasHadFuelWarning = true;
                     //low fuel warning message
+                    hasHadFuelWarning = true;
                     if(nonSequentialModuleList[2].gameObject.activeSelf == false)
                         TutorialPopup(5, false, true, true);
 
                     GameController.Instance.LoadNextLevelSection();
-
                 }
             }
 
             if (playerBot.storedRed < 14 && outOfFuel == false)
             {
+
                 print("out of fuel");
-                //NextWith2SecondDelay();
                 outOfFuel = true;
                 timerStartRedDrop = Time.time;
                 redDropTimer = true;
@@ -213,7 +215,7 @@ public class TutorialManager : MonoBehaviour
 
                 if (Time.time - timerStartRedDrop > timeToRedDrop)
                 {
-                    //SpawnSingle();
+                
                     redDropTimer = false;
                     frameCounter = 0;
                     hasSpawnedRed = true;
@@ -223,17 +225,18 @@ public class TutorialManager : MonoBehaviour
 
             if (hasSpawnedRed)
             {
-                           // CloseAndOpenNextUnpaused();
+                
                 if (frameCounter == 60)
                 {
+
                     frameChecks++;
                     List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
                     foreach (SpriteRenderer SR in childSprites)
                     {
+
                         if (SR.sprite == red || frameChecks >= 45)
                         {
-                            //SingleRed
-                            //GameController.Instance.LoadNextLevelSection();
+                
                             frameCounter = 0;
                             collectRed = true;
                             hasSpawnedRed = false;
@@ -246,25 +249,22 @@ public class TutorialManager : MonoBehaviour
 
             if (collectRed)
             {
+
                 if (frameCounter == 60)
                 {
+
                     List<SpriteRenderer> childSprites = new List<SpriteRenderer>(playerPos.GetComponentsInChildren<SpriteRenderer>());
                     foreach (SpriteRenderer SR in childSprites)
                     {
+
                         if (SR.sprite == red)
                         {
+
                             if (!redSprites.Contains(SR.gameObject))
                             {
-                                //print("got 1");
-                                redSprites.Add(SR.gameObject);
-                                redCounter++;
-                                if (redCounter == 3)
-                                {
-                                    //print("got 3");
-                                    //back to yard
 
-                                    //CloseAndOpenNextUnpaused();
-                                }
+                                redSprites.Add(SR.gameObject);
+                                redCounter++;                        
                             }
                         }
                     }
@@ -272,22 +272,15 @@ public class TutorialManager : MonoBehaviour
                 }
                 frameCounter++;
             }
-        }
-        ////player death
-        //if (GameController.Instance.isBotDead == true && isBotDead == false)
-        //{
-
-        //    ResetVariables();
-        //}
-        //isBotDead = GameController.Instance.isBotDead;
+        }       
     }
 
+    //Called when the player dies, quits or when we exit to menus
     public void ResetVariables()
     {
 
         collected1Greyscale = false;
         level1Upgraded = false;
-        //levelComplete = false;
         beganGreyscaleSection = false;
         hasHadFuelWarning = false;
         outOfFuel = false;
@@ -299,7 +292,6 @@ public class TutorialManager : MonoBehaviour
         frameChecks =0;
         isBotDead = false;
         frameCounter = 0;
-        //asteroidHits = 0;
         fuelFreezeObj.SetActive(false);
 
 }
@@ -359,20 +351,13 @@ public class TutorialManager : MonoBehaviour
         //disable
         if (toggleOnOff == false)
         {
-            //if (isSequential && module < sequentialModuleList.Count)
-            //    sequentialModuleList[module].SetActive(false);
-            //else if (module < nonSequentialModuleList.Count)
-            //{
-            //    nonSequentialModuleList[module].SetActive(false);
-            //    print("disabling");
-            //}
-
+            
             if (isSequential)
                 sequentialModuleList[module].SetActive(false);
             else 
             {
+
                 nonSequentialModuleList[module].SetActive(false);
-//                print("disabling");
             }
 
 
@@ -395,9 +380,7 @@ public class TutorialManager : MonoBehaviour
                 }
 
             //Only save our position in the list if this is a sequential event
-            if (isSequential) currentSequencedModule = module;
-            
-
+            if (isSequential) currentSequencedModule = module;           
         }
 
       
@@ -408,14 +391,10 @@ public class TutorialManager : MonoBehaviour
     public void SpawnSingle()
     {
         GameController.Instance.SpawnBlock(ScreenStuff.XPositionToCol(playerPos.position.x), 0);
-        //TutorialPopup(0, false, false, 1);
     }
 
     public void CloseCurrent()
     {
-
-        //TutorialPopup(currentSequencedModule, false, false, true);
-        //TutorialPopup(currentNonSequencedModule, false, false, false);
 
         for (int i = 0; i < sequentialModuleList.Count; i++)
         {
@@ -423,19 +402,16 @@ public class TutorialManager : MonoBehaviour
             TutorialPopup(i, false, false, true);
         }
 
-
         for (int j = 0; j < nonSequentialModuleList.Count; j++)
         {
 
             TutorialPopup(j, false, false, false);
         }
-
-        //print("close " + sequentialModuleList[currentSequencedModule]);
     }
 
-    public void OpenNextUnpaused()
-       
+    public void OpenNextUnpaused()       
     {
+
         CloseCurrent();
         TutorialPopup(currentSequencedModule + 1, false, true, true);
     }
@@ -449,30 +425,31 @@ public class TutorialManager : MonoBehaviour
 
     public void CloseAndOpenWithDelaySequential(int module, bool pauseGame, float delay)
     {
+
         CloseCurrent();
         timerDuration = delay;
         timerStartTime = Time.time;
         storedModule = module;
         storedPause = pauseGame;
         storedSequential = true;
-
         timer = true;
     }
 
     public void CloseAndOpenWithDelayNonSequential(int module, bool pauseGame, float delay)
     {
+
         CloseCurrent();
         timerDuration = delay;
         timerStartTime = Time.time;
         storedModule = module;
         storedPause = pauseGame;
         storedSequential = false;
-
         timer = true;
     }
 
     public void NextWith2SecondDelay()
     {
+
         CloseAndOpenWithDelaySequential(currentSequencedModule + 1, false, 2);
     }
 
@@ -486,11 +463,9 @@ public class TutorialManager : MonoBehaviour
         switch (asteroidHits)
         {
             case 1:
-                //CloseCurrent();
                 TutorialPopup(0, false, true, false);
                 break;
             case 2:
-                //CloseCurrent();
                 TutorialPopup(1, false, true, false);
                 break;
             default:
@@ -498,8 +473,6 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-
-    //[Button]
     public void SetFuel(int fuel)
     {
 
@@ -509,7 +482,6 @@ public class TutorialManager : MonoBehaviour
     public void OnLevelChange(int newSection)
     {
         currentSection = newSection;
-//        print("loaded scene " + newSection);
         switch (newSection)
         {
             case 2: //greyscale
@@ -524,7 +496,6 @@ public class TutorialManager : MonoBehaviour
 
     public void ToScrapYard()
     {
-        //GameController.Instance.LoadNextLevelSection();
         GameController.Instance.game = GameController.Instance.easyNonTutorial;
         GameController.Instance.LoadNextLevelSection();
         tutorialHasFinished = true;
@@ -532,7 +503,6 @@ public class TutorialManager : MonoBehaviour
         SetFuel(40);
         tutorialPanel.SetActive(false);
         this.enabled = false;
-        //Destroy(gameObject);
     }
 
     [Button]

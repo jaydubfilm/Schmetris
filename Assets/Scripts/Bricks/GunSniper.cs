@@ -126,13 +126,11 @@ public class GunSniper : MonoBehaviour
     {
 
         GameObject newBulletObj = Instantiate(bullet[parentBrick.GetPoweredLevel()], transform.position, Quaternion.identity);
-        //Vector3 dirV3 = Vector3.Normalize(targetPos - transform.position);
         Bullet newBullet = newBulletObj.GetComponent<Bullet>();
-        newBullet.direction = Vector3.Normalize(targetPos - transform.position); //new Vector2(dirV3.x, dirV3.y);
+        newBullet.direction = Vector3.Normalize(targetPos - transform.position); 
         newBullet.speed = speed;
         newBullet.damage = attackPower[parentBrick.GetPoweredLevel()];
         newBullet.range = range[parentBrick.GetPoweredLevel()];
-        //newBullet.SetAsHoming(target.transform);
         if(isInvader)
             newBullet.SetAsHoming(target.transform, true);
         fireTimer = rateOfFire[parentBrick.GetPoweredLevel()];
