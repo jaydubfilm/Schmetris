@@ -114,7 +114,7 @@ public class Bullet : MonoBehaviour
         bool hasHitTarget = false;
         if(targetEnemy.GetComponent<Asteroid>())
         {
-            targetEnemy.GetComponent<Asteroid>().AdjustHP(damage, transform);
+            targetEnemy.GetComponent<Asteroid>().AdjustHP(-damage);
             hasHitTarget = true;
         }
         else if (targetEnemy.GetComponent<EnemyGeneral>())
