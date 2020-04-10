@@ -17,6 +17,11 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.y
       value: 1.4
       objectReference: {fileID: 0}
+    - target: {fileID: 5496091840246309525, guid: 637d08315e9e943fbb1768f0d909685e,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: 2.8
+      objectReference: {fileID: 0}
     - target: {fileID: 6211319359654917596, guid: 637d08315e9e943fbb1768f0d909685e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -71,6 +76,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7179124988953582075, guid: 637d08315e9e943fbb1768f0d909685e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 8907295934458619936, guid: 637d08315e9e943fbb1768f0d909685e,
         type: 3}

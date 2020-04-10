@@ -32,6 +32,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: asteroid7.2
       objectReference: {fileID: 0}
+    - target: {fileID: 3071447820559698592, guid: ecd198fa1c55d41d0acf3f00f0c4a3dd,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3357077203023504625, guid: ecd198fa1c55d41d0acf3f00f0c4a3dd,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3357077203023504625, guid: ecd198fa1c55d41d0acf3f00f0c4a3dd,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5485281744761635322, guid: ecd198fa1c55d41d0acf3f00f0c4a3dd,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.4
+      objectReference: {fileID: 0}
     - target: {fileID: 7623794472135050669, guid: ecd198fa1c55d41d0acf3f00f0c4a3dd,
         type: 3}
       propertyPath: m_LocalPosition.x

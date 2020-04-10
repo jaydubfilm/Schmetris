@@ -72,6 +72,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: -1.4
       objectReference: {fileID: 0}
+    - target: {fileID: 4197918012996698714, guid: 13542a77c414c46db8f6099c038c65f3,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: 1.4
+      objectReference: {fileID: 0}
     - target: {fileID: 5816270322479382266, guid: 13542a77c414c46db8f6099c038c65f3,
         type: 3}
       propertyPath: m_ConnectedAnchor.x
@@ -81,6 +86,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: asteroid5.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452493213696635983, guid: 13542a77c414c46db8f6099c038c65f3,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.8
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1712323260266807456, guid: 13542a77c414c46db8f6099c038c65f3, type: 3}

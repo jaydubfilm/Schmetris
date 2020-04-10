@@ -22,6 +22,11 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.y
       value: -1.4
       objectReference: {fileID: 0}
+    - target: {fileID: 6604208667603549928, guid: 81335e38cdcb94b69a74f84eb1a4e5c4,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6665711575774252834, guid: 81335e38cdcb94b69a74f84eb1a4e5c4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -86,6 +91,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1950466206349590030, guid: 331682f46a80d4fd68b016eed77a791e,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1950466206349590030, guid: 331682f46a80d4fd68b016eed77a791e,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: 2.8
+      objectReference: {fileID: 0}
     - target: {fileID: 3102176250444234999, guid: 331682f46a80d4fd68b016eed77a791e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -151,6 +166,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5380392398010628711, guid: 331682f46a80d4fd68b016eed77a791e,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: 1.4
+      objectReference: {fileID: 0}
     - target: {fileID: 5588263413039614893, guid: 331682f46a80d4fd68b016eed77a791e,
         type: 3}
       propertyPath: m_ConnectedAnchor.x
@@ -165,6 +185,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: asteroid8.0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9048058775360435540, guid: 331682f46a80d4fd68b016eed77a791e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 9048058775360435540, guid: 331682f46a80d4fd68b016eed77a791e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.4
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3931667145320611060, guid: 331682f46a80d4fd68b016eed77a791e, type: 3}

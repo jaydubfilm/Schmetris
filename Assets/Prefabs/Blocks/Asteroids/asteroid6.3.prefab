@@ -72,10 +72,25 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2539353218334934112, guid: 57ed487530ef643979620d88cc0ad5e3,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2539353218334934112, guid: 57ed487530ef643979620d88cc0ad5e3,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.4
+      objectReference: {fileID: 0}
     - target: {fileID: 5048806719720106807, guid: 57ed487530ef643979620d88cc0ad5e3,
         type: 3}
       propertyPath: m_Name
       value: asteroid6.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5397230489986180955, guid: 57ed487530ef643979620d88cc0ad5e3,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 8691285575114998942, guid: 57ed487530ef643979620d88cc0ad5e3,
         type: 3}
@@ -86,6 +101,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ConnectedAnchor.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203712463405561172, guid: 57ed487530ef643979620d88cc0ad5e3,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: 2.8
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 771732894756628683, guid: 57ed487530ef643979620d88cc0ad5e3, type: 3}

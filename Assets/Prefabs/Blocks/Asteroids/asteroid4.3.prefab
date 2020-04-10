@@ -17,6 +17,16 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.y
       value: -1.4
       objectReference: {fileID: 0}
+    - target: {fileID: 333858475911482088, guid: 030f48f216a4a4f20a4077a6683ef3fd,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 333858475911482088, guid: 030f48f216a4a4f20a4077a6683ef3fd,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: -2.8
+      objectReference: {fileID: 0}
     - target: {fileID: 600171707805206148, guid: 030f48f216a4a4f20a4077a6683ef3fd,
         type: 3}
       propertyPath: m_Name
@@ -31,6 +41,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3773597611248611735, guid: 030f48f216a4a4f20a4077a6683ef3fd,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3773597611248611735, guid: 030f48f216a4a4f20a4077a6683ef3fd,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5236516787849620868, guid: 030f48f216a4a4f20a4077a6683ef3fd,
         type: 3}
@@ -87,6 +107,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5971447800579521229, guid: 030f48f216a4a4f20a4077a6683ef3fd,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5971447800579521229, guid: 030f48f216a4a4f20a4077a6683ef3fd,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: 1.4
+      objectReference: {fileID: 0}
     - target: {fileID: 6195081394377394951, guid: 030f48f216a4a4f20a4077a6683ef3fd,
         type: 3}
       propertyPath: m_ConnectedAnchor.x
@@ -96,6 +126,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ConnectedAnchor.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7071286561548861874, guid: 030f48f216a4a4f20a4077a6683ef3fd,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7071286561548861874, guid: 030f48f216a4a4f20a4077a6683ef3fd,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.4
       objectReference: {fileID: 0}
     - target: {fileID: 7279435753425629304, guid: 030f48f216a4a4f20a4077a6683ef3fd,
         type: 3}
