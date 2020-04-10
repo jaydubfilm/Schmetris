@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -685826432, guid: 9d97897b2ac2c7b42a4abfb7663c32a7, type: 3}
-  m_Name: ManagerScene
+  m_Name: Tutorial
   m_EditorClassIdentifier: 
   LOCALIDINFILE_HashFreeze: []
   LOCALIDINFILE_Hash1: []
@@ -18,7 +18,27 @@ MonoBehaviour:
   LOCALIDINFILE_Hash7: []
   LOCALIDINFILE_Hash1_Fix2_0: []
   LOCALIDINFILE_Hash5_Fix2_0:
-  - i1: 1175877848
+  - i1: 665106413
+    i2: 0
+  - i1: 1277993750
+    i2: 0
+  - i1: -1265576706
+    i2: 1625369431
+  - i1: -551410536
+    i2: 1551896222
+  - i1: -1034872773
+    i2: 1699118721
+  - i1: 650482969
+    i2: 1839314011
+  - i1: 1953280525
+    i2: 0
+  - i1: 1966464727
+    i2: 0
+  - i1: 495973175
+    i2: 0
+  - i1: 811252323
+    i2: 0
+  - i1: 860502978
     i2: 0
   LOCALIDINFILE_Hash7_Fix2_0: []
   LOCALIDINFILE_Hash9: []
@@ -26,11 +46,49 @@ MonoBehaviour:
   - list: []
   LOCALIDINFILE_Hash3:
   - activeObject:
-      i1: -2128832891
-      i2: 1192567940
+      i1: 261274828
+      i2: 0
     list:
-    - i1: -2128832891
-      i2: 1192567940
+    - i1: 261274828
+      i2: 0
+    - i1: 35248682
+      i2: 0
+  - activeObject:
+      i1: 261274828
+      i2: 0
+    list:
+    - i1: 261274828
+      i2: 0
+  - activeObject:
+      i1: 1149004166
+      i2: 0
+    list:
+    - i1: 1149004166
+      i2: 0
+  - activeObject:
+      i1: 35248682
+      i2: 0
+    list:
+    - i1: 35248682
+      i2: 0
+    - i1: 261274828
+      i2: 0
+    - i1: 1149004166
+      i2: 0
+  - activeObject:
+      i1: 35248682
+      i2: 0
+    list:
+    - i1: 35248682
+      i2: 0
+    - i1: 261274828
+      i2: 0
+  - activeObject:
+      i1: 35248682
+      i2: 0
+    list:
+    - i1: 35248682
+      i2: 0
   - activeObject:
       i1: 828699279
       i2: 0
@@ -38,11 +96,59 @@ MonoBehaviour:
     - i1: 828699279
       i2: 0
   - activeObject:
-      i1: -2128832891
-      i2: 1192567940
+      i1: 35248682
+      i2: 0
     list:
-    - i1: -2128832891
-      i2: 1192567940
+    - i1: 35248682
+      i2: 0
+  - activeObject:
+      i1: 828699279
+      i2: 0
+    list:
+    - i1: 828699279
+      i2: 0
+  - activeObject:
+      i1: -1265576706
+      i2: 1625369431
+    list:
+    - i1: -1265576706
+      i2: 1625369431
+  - activeObject:
+      i1: 828699279
+      i2: 0
+    list:
+    - i1: 828699279
+      i2: 0
+  - activeObject:
+      i1: 35248682
+      i2: 0
+    list:
+    - i1: 35248682
+      i2: 0
+  - activeObject:
+      i1: -1265576706
+      i2: 1625369431
+    list:
+    - i1: -1265576706
+      i2: 1625369431
+  - activeObject:
+      i1: 35248682
+      i2: 0
+    list:
+    - i1: 35248682
+      i2: 0
+  - activeObject:
+      i1: 32833778
+      i2: 0
+    list:
+    - i1: 32833778
+      i2: 0
+  - activeObject:
+      i1: 828699279
+      i2: 0
+    list:
+    - i1: 828699279
+      i2: 0
   - activeObject:
       i1: -1265576706
       i2: 1625369431
@@ -74,101 +180,23 @@ MonoBehaviour:
     - i1: 828699279
       i2: 0
   - activeObject:
+      i1: 828699279
+      i2: 0
+    list:
+    - i1: 828699279
+      i2: 0
+  - activeObject:
       i1: -1265576706
       i2: 1625369431
     list:
     - i1: -1265576706
       i2: 1625369431
   - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
       i1: 828699279
       i2: 0
     list:
     - i1: 828699279
       i2: 0
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: 828699279
-      i2: 0
-    list:
-    - i1: 828699279
-      i2: 0
-  - activeObject:
-      i1: 1175877848
-      i2: 0
-    list:
-    - i1: 1175877848
-      i2: 0
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: 2136783315
-      i2: 33880967
-    list:
-    - i1: 2136783315
-      i2: 33880967
-  - activeObject:
-      i1: 307340046
-      i2: 0
-    list:
-    - i1: 307340046
-      i2: 0
-  - activeObject:
-      i1: 828699279
-      i2: 0
-    list:
-    - i1: 828699279
-      i2: 0
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
   LOCALIDINFILE_Hash4: []
   LOCALIDINFILE_m_Hash_IconImageKey: []
   HashFreezeHashKeys: []
@@ -191,11 +219,11 @@ MonoBehaviour:
       GUIDsActiveGameObject: 
       PATHsList: []
       PATHsActiveGameObject: 
-      InstanceID: -151653475
+      InstanceID: 0
       wasInit: 0
       CashedBool: 0
     FavParams: 0
-    InstanceID: 963954487
+    InstanceID: 2087892189
     Hierarchy_ScrollY: 0
     Window_ScrollY: 0
     ColabsedItems: 
@@ -208,17 +236,6 @@ MonoBehaviour:
     FavString: []
     list:
     - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
     - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
@@ -255,6 +272,21 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
     - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
@@ -501,7 +533,7 @@ MonoBehaviour:
     GUIDsActiveGameObject: 
     PATHsList: []
     PATHsActiveGameObject: 
-    InstanceID: -151653475
+    InstanceID: 0
     wasInit: 0
     CashedBool: 0
   Hash5: []
@@ -509,8 +541,48 @@ MonoBehaviour:
   - go: {fileID: 0}
     guid: 
     path: 
+  - go: {fileID: 0}
+    guid: 
+    path: 
+  - go: {fileID: 0}
+    guid: 
+    path: 
+  - go: {fileID: 0}
+    guid: 
+    path: 
+  - go: {fileID: 0}
+    guid: 
+    path: 
+  - go: {fileID: 0}
+    guid: 
+    path: 
+  - go: {fileID: 0}
+    guid: 
+    path: 
+  - go: {fileID: 0}
+    guid: 
+    path: 
+  - go: {fileID: 0}
+    guid: 
+    path: 
+  - go: {fileID: 0}
+    guid: 
+    path: 
+  - go: {fileID: 0}
+    guid: 
+    path: 
   Hash6:
   - list: 9c000000b3000000b1000000ff000000000000000000000000000000000000000000000000000000a0000000
+  - list: 2400000089000000c5000000ff00000000000000ff000000ff000000ff000000ff00000000000000a0000000
+  - list: f0000000b600000090000000ff000000000000000000000000000000000000000000000000000000a0000000
+  - list: c20000002300000040000000ff00000000000000ff000000ff000000ff000000ff00000000000000a0000000
+  - list: ff0000006700000003000000ff00000000000000ff000000ff000000ff000000ff00000000000000a0000000
+  - list: 120000001a00000059000000ff00000000000000ff000000ff000000ff000000ff00000000000000a0000000
+  - list: 9a000000d9000000a2000000ff000000000000000000000000000000000000000000000008000000a0000000
+  - list: 9a000000d9000000a2000000ff000000000000000000000000000000000000000000000001000000a0000000
+  - list: 9a000000d9000000a2000000ff000000000000000000000000000000000000000000000001000000a0000000
+  - list: 9a000000d9000000a2000000ff000000000000000000000000000000000000000000000008000000a0000000
+  - list: 9a000000d9000000a2000000ff000000000000000000000000000000000000000000000001000000a0000000
   Hash7: []
   Hash7_Fix2_0: []
   Hash8: []
