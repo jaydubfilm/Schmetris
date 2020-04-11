@@ -222,7 +222,7 @@ PrefabInstance:
     - target: {fileID: 622827001879522502, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: m_Name
-      value: coreBrick
+      value: powerBrick
       objectReference: {fileID: 0}
     - target: {fileID: 852922627913053500, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
@@ -232,7 +232,7 @@ PrefabInstance:
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: spriteArr.Array.size
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}

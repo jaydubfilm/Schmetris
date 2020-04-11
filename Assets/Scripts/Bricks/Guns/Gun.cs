@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-//Basic gun brick
+//Basic gun brick that unique guns can inherit from
 public class Gun : MonoBehaviour
 { 
     //Gun data
@@ -8,21 +8,19 @@ public class Gun : MonoBehaviour
     public int[] attackPower;
     public float[] range;
     public float speed;
+    public bool isHoming = true;
     public AudioClip fireSound;
 
     //Components
-    Brick parentBrick;
+    protected Brick parentBrick;
 
     //Bullets
-    float fireTimer;
+    protected float fireTimer;
     public GameObject[] bullet;
     Vector2Int direction;
     Transform enemyTarget;
 
-    //Resources
-    public int[] maxResource;
-
-    //Return the resources of set type converted to per-second units
+    //Return the burn rate of resources of set type converted to per-second units
     public float GetConvertedBurnRate(ResourceType resourceType, int level)
     {
         float secondRate = rateOfFire[level] > 0 ? 1.0f / rateOfFire[level] : 0;
@@ -69,38 +67,23 @@ public class Gun : MonoBehaviour
         if (target != null && parentBrick.TryBurnResources(1.0f))
         {
             enemyTarget = target.transform;
-            FireGun(target.transform.position);
+            FireGun();
         }
     }
 
-    //Look for closest enemy in range
-    public GameObject FindTarget()
+    //Find something to fire at - implemented by gun classes
+    protected virtual GameObject FindTarget()
     {
-        float closestDistance = 99;
-        GameObject target = null;
-        foreach (GameObject enemyObj in GameController.Instance.enemyList)
-        {
-            if (enemyObj)
-            {
-                float dist = Vector3.Distance(enemyObj.transform.position, transform.position);
-                if ((dist < closestDistance) && (dist <= range[parentBrick.GetPoweredLevel()]))
-                {
-                    closestDistance = dist;
-                    target = enemyObj;
-                }
-            }
-        }
-        return target;
+        return null;
     }
 
     //Shoot at target, burn resources, and begin reload
-    public void FireGun(Vector3 targetPos)
+    protected virtual void FireGun()
     {
         GameObject newBulletObj = Instantiate(bullet[parentBrick.GetPoweredLevel()], transform.position, Quaternion.identity);
-        Vector3 dirV3 = Vector3.Normalize(targetPos - transform.position);
         Bullet newBullet = newBulletObj.GetComponent<Bullet>();
-        newBullet.SetAsHoming(enemyTarget, true);
-        newBullet.direction = new Vector2(dirV3.x, dirV3.y);
+        newBullet.SetAsHoming(enemyTarget, isHoming);
+        newBullet.direction = Vector3.Normalize(enemyTarget.position - transform.position);
         newBullet.speed = speed;
         newBullet.damage = attackPower[parentBrick.GetPoweredLevel()];
         newBullet.range = range[parentBrick.GetPoweredLevel()];
@@ -109,6 +92,4 @@ public class Gun : MonoBehaviour
 
         GameController.Instance.bot.GetComponent<AudioSource>().PlayOneShot(fireSound, 0.5f);
     }
-
-
 }

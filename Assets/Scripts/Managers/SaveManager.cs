@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
+//Controls saving and loading of app data
 public class SaveManager
 {
     //Where to save game data
@@ -25,7 +26,7 @@ public class SaveManager
         return saveData.saveFiles[index];
     }
 
-    //Return layout from save number
+    //Return bot layout from save number
     public SaveData GetLayout(int index)
     {
         if (!hasSaveData)
@@ -264,8 +265,8 @@ public class SaveData
 [Serializable]
 public class ContainerData
 {
-    public Vector2Int coords;
-    public float openDirection;
+    public Vector2Int coords;   //Where is this container located on the bot?
+    public float openDirection; //What direction is the container facing?
 }
 
 //Separate serialization for bot map as 2D array serialization isn't automatically supported

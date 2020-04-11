@@ -18,12 +18,6 @@ public class ScreenStuff : MonoBehaviour
 
     public Sprite bgSprite;
 
-
-    void Awake()
-    {
-     
-    }
-
     void Start()
     {
 

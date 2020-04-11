@@ -1,19 +1,23 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+//Controls background music throughout app
 public class AudioController : MonoBehaviour
 {
+    //Components
     AudioSource audioSource;
 
+    //Audio files
     public AudioClip menuMusic;
     public AudioClip gameMusic;
 
+    //Init
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
     }
 
+    //Stop old background music, fade new music in over time
     public void FadeInMusic(AudioClip clip, float startTime, float fadeTime)
     {
         if (clip != audioSource.clip)
@@ -27,6 +31,7 @@ public class AudioController : MonoBehaviour
         }
     }
 
+    //Fade audio source to target volume over time
     IEnumerator FadeMusic(float fadeTime, float volume)
     {
         float time = 0;
