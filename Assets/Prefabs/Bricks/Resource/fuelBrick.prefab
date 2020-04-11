@@ -55,7 +55,6 @@ MonoBehaviour:
   - {fileID: 21300082, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - {fileID: 21300084, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - {fileID: 21300086, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
-  - {fileID: 21300088, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   requiredPower: 0100000002000000030000000400000005000000
   parentBot: {fileID: 0}
   neighborList: []

@@ -2013,7 +2013,7 @@ public class Bot : MonoBehaviour
                 storedGreen += masterBrickList[type].GetComponent<Repair>().maxResource[level];
                 break;
             case 3:
-                storedBlue += masterBrickList[type].GetComponent<Gun>().maxResource[level];
+                storedBlue += masterBrickList[type].GetComponent<BlueSaltGun>().maxResource[level];
                 break;
             case 5:
                 storedGrey += masterBrickList[type].GetComponent<Greyscale>().maxResource[level];
@@ -2353,22 +2353,6 @@ public class Bot : MonoBehaviour
             else if (brickRef.GetComponent<Gun>())
             {
                 burnRate += brickRef.GetComponent<Gun>().GetConvertedBurnRate(resourceType, brickRef.GetPoweredLevel());
-            }
-            else if (brickRef.GetComponent<Blaster>())
-            {
-                burnRate += brickRef.GetComponent<Blaster>().GetConvertedBurnRate(resourceType, brickRef.GetPoweredLevel());
-            }
-            else if (brickRef.GetComponent<GunSniper>())
-            {
-                burnRate += brickRef.GetComponent<GunSniper>().GetConvertedBurnRate(resourceType, brickRef.GetPoweredLevel());
-            }
-            else if (brickRef.GetComponent<GrenadeGun>())
-            {
-                burnRate += brickRef.GetComponent<GrenadeGun>().GetConvertedBurnRate(resourceType, brickRef.GetPoweredLevel());
-            }
-            else if (brickRef.GetComponent<GunTripleShot>())
-            {
-                burnRate += brickRef.GetComponent<GunTripleShot>().GetConvertedBurnRate(resourceType, brickRef.GetPoweredLevel());
             }
         }
 

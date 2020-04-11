@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &5508672362324926572
+--- !u!114 &-2912354128113821741
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6450636027791030212}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8c7db3d282814364af56bd7f0c437b3, type: 3}
+  m_Script: {fileID: 11500000, guid: 993c30695d4be3a47bd62e1b25b56351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rateOfFire:
@@ -28,6 +28,7 @@ MonoBehaviour:
   - 20
   - 30
   speed: 10
+  isHoming: 1
   fireSound: {fileID: 8300000, guid: 148419aae38b8ed4b96c3db524ce0761, type: 3}
   bullet:
   - {fileID: 7857921322564960265, guid: 1933b0d57ff2b496c8bc86da64f1edc9, type: 3}
@@ -64,7 +65,7 @@ PrefabInstance:
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}
       propertyPath: spriteArr.Array.size
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2818472979878041537, guid: 6cd0d4289632642bfa007f1e1c33c1a3,
         type: 3}

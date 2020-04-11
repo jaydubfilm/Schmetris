@@ -43,9 +43,9 @@ MonoBehaviour:
   range:
   - 35
   - 40
-  - 46
   fireSound: {fileID: 8300000, guid: 148419aae38b8ed4b96c3db524ce0761, type: 3}
   bullet:
+  - {fileID: 7918598799021602830, guid: 4ad4d727f591df6478cb82f871da7cad, type: 3}
   - {fileID: 7918598799021602830, guid: 4ad4d727f591df6478cb82f871da7cad, type: 3}
   speed: 23
 --- !u!1001 &6167074758492475587

@@ -10,7 +10,6 @@ public class Bullet : MonoBehaviour
     public float range;
 
     //Extra stats
-    public bool isBlaster;
     public bool isGrenade;
     [ShowIf("isGrenade", true)]
     public float blastRadius;

@@ -627,42 +627,6 @@ public class Scrapyard : MonoBehaviour
                                 yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
                                 greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
                             }
-                            else if (brickRef.GetComponent<Blaster>())
-                            {
-                                Blaster gunRef = brickRef.GetComponent<Blaster>();
-                                redBurn += gunRef.GetConvertedBurnRate(ResourceType.Red, i);
-                                blueBurn += gunRef.GetConvertedBurnRate(ResourceType.Blue, i);
-                                greenBurn += gunRef.GetConvertedBurnRate(ResourceType.Green, i);
-                                yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
-                                greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
-                            }
-                            else if (brickRef.GetComponent<GunSniper>())
-                            {
-                                GunSniper gunRef = brickRef.GetComponent<GunSniper>();
-                                redBurn += gunRef.GetConvertedBurnRate(ResourceType.Red, i);
-                                blueBurn += gunRef.GetConvertedBurnRate(ResourceType.Blue, i);
-                                greenBurn += gunRef.GetConvertedBurnRate(ResourceType.Green, i);
-                                yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
-                                greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
-                            }
-                            else if (brickRef.GetComponent<GrenadeGun>())
-                            {
-                                GrenadeGun gunRef = brickRef.GetComponent<GrenadeGun>();
-                                redBurn += gunRef.GetConvertedBurnRate(ResourceType.Red, i);
-                                blueBurn += gunRef.GetConvertedBurnRate(ResourceType.Blue, i);
-                                greenBurn += gunRef.GetConvertedBurnRate(ResourceType.Green, i);
-                                yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
-                                greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
-                            }
-                            else if (brickRef.GetComponent<GunTripleShot>())
-                            {
-                                GunTripleShot gunRef = brickRef.GetComponent<GunTripleShot>();
-                                redBurn += gunRef.GetConvertedBurnRate(ResourceType.Red, i);
-                                blueBurn += gunRef.GetConvertedBurnRate(ResourceType.Blue, i);
-                                greenBurn += gunRef.GetConvertedBurnRate(ResourceType.Green, i);
-                                yellowBurn += gunRef.GetConvertedBurnRate(ResourceType.Yellow, i);
-                                greyBurn += gunRef.GetConvertedBurnRate(ResourceType.Grey, i);
-                            }
                         }
                     }
                 }
@@ -1306,7 +1270,7 @@ public class Scrapyard : MonoBehaviour
                     tempYellowAmount = Resource.GetComponent<Yellectrons>() ? Resource.GetComponent<Yellectrons>().maxResource[i] : 0;
                     tempGreyAmount = Resource.GetComponent<Greyscale>() ? Resource.GetComponent<Greyscale>().maxResource[i] : 0;
                     tempGreenAmount = (Resource.GetComponent<Repair>() && Resource.GetComponent<Repair>().maxResource.Length > 0) ? Resource.GetComponent<Repair>().maxResource[i] : 0;
-                    tempBlueAmount = Resource.GetComponent<Gun>() ? Resource.GetComponent<Gun>().maxResource[i] : 0;
+                    tempBlueAmount = Resource.GetComponent<BlueSaltGun>() ? Resource.GetComponent<BlueSaltGun>().maxResource[i] : 0;
                     break;
                 }
             }
@@ -1608,7 +1572,7 @@ public class Scrapyard : MonoBehaviour
                 {
                     if (targetPart == resourceBrick.spriteArr[i])
                     {
-                        return Resource.GetComponent<Fuel>() || Resource.GetComponent<Yellectrons>() || Resource.GetComponent<Greyscale>() || (Resource.GetComponent<Repair>() && Resource.GetComponent<Repair>().maxResource.Length > 0) || Resource.GetComponent<Gun>();
+                        return Resource.GetComponent<Fuel>() || Resource.GetComponent<Yellectrons>() || Resource.GetComponent<Greyscale>() || (Resource.GetComponent<Repair>() && Resource.GetComponent<Repair>().maxResource.Length > 0) || Resource.GetComponent<BlueSaltGun>();
                     }
                 }
             }
@@ -1785,7 +1749,7 @@ public class Scrapyard : MonoBehaviour
                         if (botImage.sprite == resourceBrick.spriteArr[r])
                         {
                             currentFuel += Resource.GetComponent<Fuel>() ? Resource.GetComponent<Fuel>().maxFuelArr[r] : 0;
-                            currentBlue += Resource.GetComponent<Gun>() ? Resource.GetComponent<Gun>().maxResource[r] : 0;
+                            currentBlue += Resource.GetComponent<BlueSaltGun>() ? Resource.GetComponent<BlueSaltGun>().maxResource[r] : 0;
                             currentYellow += Resource.GetComponent<Yellectrons>() ? Resource.GetComponent<Yellectrons>().maxResource[r] : 0;
                             currentGreen += (Resource.GetComponent<Repair>() && Resource.GetComponent<Repair>().maxResource.Length > 0) ? Resource.GetComponent<Repair>().maxResource[r] : 0;
                             currentGrey += Resource.GetComponent<Greyscale>() ? Resource.GetComponent<Greyscale>().maxResource[r] : 0;
