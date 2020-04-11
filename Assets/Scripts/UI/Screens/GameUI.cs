@@ -46,6 +46,8 @@ public class GameUI : MonoBehaviour
     public GameObject returnButton;
     public GameObject gameOverDisplay;
     public GameObject continueButton;
+    bool hasShownUnpowered = false;
+    bool hasShownResources = false;
 
     //Init
     private void Awake()
@@ -119,7 +121,6 @@ public class GameUI : MonoBehaviour
     }
 
     //Toggle 'Unpowered Brick' popup
-    bool hasShownUnpowered = false;
     public void SetUnpoweredPopup(bool isActive)
     {
         if (hasShownUnpowered)
@@ -131,7 +132,6 @@ public class GameUI : MonoBehaviour
     }
 
     //Toggle 'Out of Resources' popup
-    bool hasShownResources = false;
     public void SetResourcesPopup(bool isActive)
     {
         if (hasShownResources)
@@ -192,7 +192,7 @@ public class GameUI : MonoBehaviour
     //Update display
     public void Update()
     {
-        //Fade out no fuel popup
+        //Fade out popups
         popupDisplay.color = new Color(1, 1, 1, Mathf.Max(0, popupDisplay.color.a - Time.unscaledDeltaTime));
 
         //Keyboard controls

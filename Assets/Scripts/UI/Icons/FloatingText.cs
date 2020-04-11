@@ -1,17 +1,17 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+//Flying text asset used for score and resource gain effects
 public class FloatingText : MonoBehaviour
 {
+    //Components
     Text scoreText;
-
     Vector3 targetPos = Vector3.zero;
-
     const float floatSpeed = 100.0f;
     const float fadeTime = 1.0f;
 
+    //Specifics of text effect to be set at spawn
     public void Init(string message, Vector3 target, int size, Color color)
     {
         scoreText = GetComponent<Text>();
@@ -22,12 +22,13 @@ public class FloatingText : MonoBehaviour
         StartCoroutine(FadeOverTime());
     }
 
-    // Update is called once per frame
+    //Move toward target position
     void Update()
     {
         transform.position += (targetPos - transform.position).normalized * floatSpeed * Time.deltaTime;
     }
 
+    //Fade out over time and destroy once completely invisible
     IEnumerator FadeOverTime()
     {
         float time = 0;

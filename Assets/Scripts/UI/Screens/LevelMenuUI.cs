@@ -20,6 +20,10 @@ public class LevelMenuUI : MonoBehaviour
     public HorizontalLayoutGroup levelGrid;
     List<GameObject> levelButtons = new List<GameObject>();
 
+    //Pre-level fuel check
+    public List<Sprite> fuelSprites = new List<Sprite>();
+    int tempLevelIndex = 0;
+
     //Menu state for determining active controls
     enum MenuState
     {
@@ -288,8 +292,6 @@ public class LevelMenuUI : MonoBehaviour
     }
 
     //Play selected level
-    public List<Sprite> fuelSprites = new List<Sprite>();
-    int tempLevelIndex = 0;
     public void PlayLevel(int index)
     {
         bool hasFuel = GameController.Instance.bot.totalReddite > 0;

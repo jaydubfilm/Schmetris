@@ -22,12 +22,6 @@ public class PowerGrid : MonoBehaviour
         InvokeRepeating("Refresh",1.0f,0.2f);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-      
-    }
-
     public void Refresh() {
 
         if (!bot.powerGridRefreshFlag || bot.tripleCheckFlag || bot.tripleWaitFlag)

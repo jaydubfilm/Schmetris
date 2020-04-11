@@ -12,12 +12,6 @@ public class Overheat : MonoBehaviour
 
     public Sprite[] heatSpriteArr;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-    
-    }
-
     private void OnEnable()
     {
         GameController.OnGameRestart += ResetHeat;
