@@ -135,8 +135,6 @@ public class Mama : MonoBehaviour
 
     void BackAwayFromPlayer()
     {
-
-        print("pushing");
         Vector3 angleFromPlayer = (transform.position - player.position).normalized;
         rb2d.AddForce(new Vector2(angleFromPlayer.x, angleFromPlayer.y) * force);
         Debug.DrawRay(transform.position, angleFromPlayer);
