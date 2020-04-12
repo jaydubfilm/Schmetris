@@ -189,8 +189,6 @@ public class Mama : MonoBehaviour
         {
             Vector3 blastOffset = new Vector3(Random.Range(-blastRadius / 2.0f, blastRadius / 2.0f), Random.Range(-blastRadius / 2.0f, blastRadius / 2.0f), 0);
             GameObject newParasite = Instantiate(parasitePrefab, transform.position + blastOffset, Quaternion.identity);
-            GameController.Instance.enemyList.Add(newParasite);
-            newParasite.GetComponent<EnemyGeneral>().gameController = GameController.Instance;
         }
 
         //Instantiate Explosion here

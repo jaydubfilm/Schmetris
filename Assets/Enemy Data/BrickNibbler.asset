@@ -17,6 +17,7 @@ MonoBehaviour:
   attackRate: 1
   damage: 3
   speed: 5
+  dangerLevel: 1
   redYield: 3
   blueYield: 0
   yellowYield: 3

@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e8e59a7ae94c4517b7488b1f5bd33ea, type: 3}
   m_Name: Invader
   m_EditorClassIdentifier: 
-  type: 7
-  maxHP: 50
-  attackRate: 1
-  damage: 3
-  speed: 5
+  type: -1
+  maxHP: 5
+  attackRate: 0
+  damage: 0
+  speed: 0
+  dangerLevel: 0
   redYield: 0
   blueYield: 0
   yellowYield: 0

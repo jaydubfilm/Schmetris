@@ -39,7 +39,7 @@ public class Bomb : MonoBehaviour
             }
             else
             {
-                EnemyGeneral enemy = enemyArr[x].GetComponent<EnemyGeneral>();
+                Enemy enemy = enemyArr[x].GetComponent<Enemy>();
                 enemy.AdjustHP(-damage[level]);
                 GameObject explosion = Instantiate(bombEffect, enemy.transform.position, Quaternion.identity);
             }

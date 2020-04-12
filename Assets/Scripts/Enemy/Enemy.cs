@@ -10,10 +10,12 @@ public class Enemy : MonoBehaviour
     public int hp;
     bool hasScored = false;
     bool isDestroyed = false;
+    public int strength;
 
     //Components
     Rigidbody2D rb2d;
     public HealthBar healthBar;
+    public AudioClip deathSound;
 
     //Init
     void Start()
@@ -25,8 +27,10 @@ public class Enemy : MonoBehaviour
     protected virtual void Init()
     {
         hp = data.maxHP;
+        strength = data.dangerLevel;
         rb2d = GetComponent<Rigidbody2D>();
         GameController.Instance.enemyList.Add(gameObject);
+        healthBar.gameObject.SetActive(false);
     }
 
     //Listen for events only enabled
@@ -43,6 +47,15 @@ public class Enemy : MonoBehaviour
         GameController.OnGameOver -= DestroyEnemyOnGameEvent;
         GameController.OnLoseLife -= DestroyEnemyOnGameEvent;
         GameController.OnLevelComplete -= OnLevelComplete;
+    }
+
+    //Remove from targetable enemies when destroyed
+    private void OnDestroy()
+    {
+        if (GameController.Instance.enemyList.Contains(gameObject))
+        {
+            GameController.Instance.enemyList.Remove(gameObject);
+        }
     }
 
     //Update movement only if level isn't complete and enemy isn't destroyed
@@ -86,7 +99,13 @@ public class Enemy : MonoBehaviour
     //Player has destroyed the enemy
     protected virtual void OnEnemyDeath()
     {
+        if (GameController.Instance.enemyList.Contains(gameObject))
+        {
+            GameController.Instance.enemyList.Remove(gameObject);
+        }
+        isDestroyed = true;
         ScoreEnemy();
+        Camera.main.GetComponent<AudioSource>().PlayOneShot(deathSound, 1.0f);
     }
 
     //Award player resources for destroying the enemy

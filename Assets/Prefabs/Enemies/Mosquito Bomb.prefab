@@ -319,10 +319,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8b209c609c5f8640adaa1a6f7f44327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameController: {fileID: 0}
-  strength: 10
+  data: {fileID: 11400000, guid: 741c602da0ef05d48883f4aabb7479b8, type: 2}
   hp: 10
-  isParasite: 0
+  strength: 10
   healthBar: {fileID: 4933331793814636626}
   deathSound: {fileID: 8300000, guid: 3f33676c236271a4d8aad3781ac1c4a3, type: 3}
 --- !u!1001 &2136077753051519286

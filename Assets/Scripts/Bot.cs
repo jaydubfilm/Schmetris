@@ -1367,8 +1367,8 @@ public class Bot : MonoBehaviour
                 GameObject newEnemyObj;
                 int type = orphanBrick.ConvertToEnemyType();
                 newEnemyObj = Instantiate(GameController.Instance.enemyReference[type], orphanBrick.transform.position, Quaternion.identity);
-                newEnemyObj.GetComponent<EnemyGeneral>().hp = orphanBrick.brickHP;
-                newEnemyObj.GetComponent<EnemyGeneral>().AdjustHP(0);
+                newEnemyObj.GetComponent<Enemy>().hp = orphanBrick.brickHP;
+                newEnemyObj.GetComponent<Enemy>().AdjustHP(0);
             } else {
                 GameObject newBitObj;
                 Vector3 bPos = orphanBrick.transform.position;

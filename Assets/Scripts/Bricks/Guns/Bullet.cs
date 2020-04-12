@@ -116,9 +116,9 @@ public class Bullet : MonoBehaviour
             targetEnemy.GetComponent<Asteroid>().AdjustHP(-damage);
             hasHitTarget = true;
         }
-        else if (targetEnemy.GetComponent<EnemyGeneral>())
+        else if (targetEnemy.GetComponent<Enemy>())
         {
-            targetEnemy.GetComponent<EnemyGeneral>().AdjustHP(-damage);
+            targetEnemy.GetComponent<Enemy>().AdjustHP(-damage);
             hasHitTarget = true;
         }
         else if (targetEnemy.GetComponent<Brick>() && targetEnemy.GetComponent<Brick>().IsParasite())
@@ -135,11 +135,11 @@ public class Bullet : MonoBehaviour
                 Collider2D[] colliders = Physics2D.OverlapCircleAll(new Vector2(transform.position.x, transform.position.y), blastRadius);
                 for (int i = 0; i < colliders.Length; i++)
                 {
-                    if (colliders[i].GetComponent<EnemyGeneral>())
+                    if (colliders[i].GetComponent<Enemy>())
                     {
                         //Damage already deal to targetEnemy, so skip this one
                         if(colliders[i] != targetEnemy)
-                            colliders[i].GetComponent<EnemyGeneral>().AdjustHP(-damage);
+                            colliders[i].GetComponent<Enemy>().AdjustHP(-damage);
 
                         GameObject debugSphereInstance = Instantiate(debugSphere, transform.position, Quaternion.identity);
                         debugSphereInstance.transform.localScale = new Vector3(blastRadius * 2, blastRadius * 2, blastRadius * 2);

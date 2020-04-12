@@ -942,9 +942,6 @@ public class GameController : MonoBehaviour
         float xPos = Random.Range(ScreenStuff.leftEdgeOfWorld, ScreenStuff.rightEdgeOfWorld);
         Vector3 vpos = new Vector3(xPos, ScreenStuff.RowToYPosition(spawnRow), 0);
         newEnemyObj = Instantiate(speciesSpawnData[type].species, vpos, Quaternion.identity);
-        enemyList.Add(newEnemyObj);
-        newEnemyObj.GetComponent<EnemyGeneral>().gameController = this;
-
         return newEnemyObj;
     }
 

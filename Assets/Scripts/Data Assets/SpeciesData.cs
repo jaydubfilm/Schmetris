@@ -8,12 +8,15 @@ public class SpeciesData : ScriptableObject
     public int type;
 
     //Enemy stats
+    [Header("Stats")]
     public int maxHP;
     public float attackRate;
     public int damage;
     public float speed;
+    public int dangerLevel;    //Some guns will prioritize enemies with a higher danger level
 
     //Resources the player gains when the enemy is destroyed
+    [Header("Resources")]
     public int redYield = 0;
     public int blueYield = 0;
     public int yellowYield = 0;
