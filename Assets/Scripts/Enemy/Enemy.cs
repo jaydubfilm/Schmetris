@@ -83,13 +83,13 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            if(hp >= data.maxHP && !healthBar.gameObject.activeSelf)
-            {
-                healthBar.gameObject.SetActive(true);
-            }
-            else if (hp < data.maxHP && healthBar.gameObject.activeSelf)
+            if(hp >= data.maxHP && healthBar.gameObject.activeSelf)
             {
                 healthBar.gameObject.SetActive(false);
+            }
+            else if (hp < data.maxHP && !healthBar.gameObject.activeSelf)
+            {
+                healthBar.gameObject.SetActive(true);
             }
             float normalizedHealth = (float)hp / (float)data.maxHP;
             healthBar.SetSize(normalizedHealth);

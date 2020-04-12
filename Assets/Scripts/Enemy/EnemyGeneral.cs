@@ -11,9 +11,5 @@
         {
             GetComponent<Mama>().Death();
         }
-        else if (GetComponent<InvaderMovement>())
-        {
-            GetComponent<InvaderMovement>().Death();
-        }
     }
 }

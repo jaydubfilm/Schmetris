@@ -31,5 +31,12 @@ public class ParasiteBit : Enemy
             transform.position = Vector3.MoveTowards(transform.position, bot.transform.position, step);
         }
     }
+
+    //Destroy after awarding points
+    protected override void OnEnemyDeath()
+    {
+        base.OnEnemyDeath();
+        Destroy(gameObject);
+    }
 }
 
