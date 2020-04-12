@@ -93,7 +93,6 @@ public class Bot : MonoBehaviour
     float startTime;
     public float tripleDelay = 0.5f;
     float delay;
-    bool isReset = false;
 
     //Resources
     const float startRed = 30.0f;
@@ -786,7 +785,7 @@ public class Bot : MonoBehaviour
     public void TripleTestBot()
     {
         foreach (GameObject brickObj in brickList){
-            if (!brickObj.GetComponent<Parasite>() && !brickObj.GetComponent<CraftedPart>() && TripleTestBrick(brickObj.GetComponent<Brick>().arrPos) == true) {
+            if (!brickObj.GetComponent<Brick>().IsParasite() && !brickObj.GetComponent<CraftedPart>() && TripleTestBrick(brickObj.GetComponent<Brick>().arrPos) == true) {
                 return;
             }   
         }
@@ -1791,11 +1790,7 @@ public class Bot : MonoBehaviour
         GameObject newBrick = AddBrick(bCoords, brickType, 0);
         Parasite parasite = newBrick.GetComponent<Parasite>();
         parasite.data = enemy.data;
-        newBrick.GetComponent<Brick>().brickMaxHP[0] = enemy.data.maxHP;
-        newBrick.GetComponent<Brick>().brickHP = enemy.GetComponent<Enemy>().hp;
-        newBrick.GetComponent<Brick>().AdjustHP(0);
-        GameController.Instance.enemyList.Add(newBrick);
-
+        parasite.newHP = enemy.hp;
         enemy.DestroyEnemyOnGameEvent();
 
         StartCoroutine(WaitAndTripleCheck(0.2f));
@@ -2043,11 +2038,9 @@ public class Bot : MonoBehaviour
         return arrPos - coreV2;
     }
 
-    bool isHoldingScreen = false;
     float holdingScreenTimer = 0;
     const float maxTapTimer = 0.15f;
     const float slideBuffer = 50.0f;
-    float moveBuffer = 25.0f;
     Vector3 prevMousePos = Vector3.zero;
     Vector3 bufferedMovePos = Vector3.zero;
     float rotateBuffer = 200.0f;
@@ -2058,14 +2051,12 @@ public class Bot : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
-            isHoldingScreen = true;
             prevMousePos = Input.mousePosition;
             bufferedMovePos = Input.mousePosition;
             holdingScreenTimer = 0;
         }
         else if (Input.GetMouseButton(0))
         {
-            isHoldingScreen = true;
             if(holdingScreenTimer < maxTapTimer)
             {
                 holdingScreenTimer += Time.deltaTime;
@@ -2178,54 +2169,15 @@ public class Bot : MonoBehaviour
                 }
             }
             bufferTimer = 0;
-            isHoldingScreen = false;
             hasRotated = false;
             holdingScreenTimer = 0;
         }
         else
         {
             bufferTimer = 0;
-            isHoldingScreen = false;
             hasRotated = false;
             holdingScreenTimer = 0;
         }
-
-        /*if (!isHoldingScreen && Input.GetMouseButton(0))
-        {
-            isHoldingScreen = true;
-            holdingScreenTimer = 0;
-            prevMouse = Input.mousePosition.x;
-        }
-        else if (isHoldingScreen && !Input.GetMouseButton(0))
-        {
-            if (holdingScreenTimer <= maxTapTimer)
-            {
-                if (Input.mousePosition.x < Screen.width / 2.0f)
-                {
-                    Rotate(-1);
-                }
-                else
-                {
-                    Rotate(1);
-                }
-            }
-            isHoldingScreen = false;
-            prevMouse = 0;
-        }
-        else if (isHoldingScreen)
-        {
-            holdingScreenTimer += Time.unscaledDeltaTime;
-            if (holdingScreenTimer > maxTapTimer && Mathf.Abs(prevMouse - Input.mousePosition.x) > moveBuffer)
-            {
-                if (startTime + delay <= Time.time)
-                {
-                    startTime = Time.time;
-                    delay = shortPause;
-                    MoveBot(Input.mousePosition.x < prevMouse ? -1 : 1);
-                    prevMouse = Input.mousePosition.x;
-                }
-            }
-        }*/
     }
 
     void MoveCheck()

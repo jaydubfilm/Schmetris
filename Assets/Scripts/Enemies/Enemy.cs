@@ -161,7 +161,7 @@ public class Enemy : MonoBehaviour
     }
 
     //A game function such as level completion has destroyed the enemy - don't award resources
-    public void DestroyEnemyOnGameEvent()
+    public virtual void DestroyEnemyOnGameEvent()
     {
         Destroy(gameObject);
     }

@@ -12,7 +12,7 @@ public class Bit : MonoBehaviour
     public int bitLevel=0;
     GameObject parentObj;
     Block parentBlock;
-    LayerMask brickMask; 
+    LayerMask brickMask;
 
     bool CanCollideFlag;
     public bool hasBounced = false;

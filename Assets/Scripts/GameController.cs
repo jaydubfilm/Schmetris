@@ -102,7 +102,6 @@ public class GameController : MonoBehaviour
 
     public float blockSpeed;
 
-    bool isRestarting = false;
     public SaveManager saveManager = null;
     public Transform[] loadIcons;
     public Transform[] saveIcons;

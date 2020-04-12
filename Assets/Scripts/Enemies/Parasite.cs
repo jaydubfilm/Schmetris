@@ -1,46 +1,63 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Parasite : MonoBehaviour
+//Parasite behaviour once attached as a Brick
+public class Parasite : Enemy
 {
-
-    public SpeciesData data;
+    //Components
     public GameObject targetBrick;
     public Brick brick;
+
+    //Attack effect
     public float attackTimer;
     public GameObject attackPrefab;
 
-    //Resources upon destroying
-    bool hasScored = false;
-    public AudioClip deathSound;
+    //Parasites become higher priority once attached
+    public int dangerLevelOverride;
+    public int newHP;
 
-    // Start is called before the first frame update
-    void Start()
+    protected override void Init()
     {
+        base.Init();
+        hp = newHP;
         brick = gameObject.GetComponent<Brick>();
         attackTimer = 0;
+        strength = dangerLevelOverride;
+        brick.brickMaxHP[0] = data.maxHP;
+        brick.brickHP = newHP;
+        AdjustHP(0);
         StartCoroutine(WaitAndSetAttackRate());
     }
 
-    // Update is called once per frame
-    void Update()
+    //Attack attached brick
+    protected override void UpdateLiveBehaviour()
     {
+        base.UpdateLiveBehaviour();
         attackTimer -= Time.deltaTime;
         if (attackTimer < 0) {
             AttackTarget();
             attackTimer = data.attackRate;
-        }   
+        }
     }
 
+    //Destroy brick component once scored
+    protected override void OnEnemyDeath()
+    {
+        base.OnEnemyDeath();
+        GetComponent<Brick>().ExplodeBrick();
+    }
+
+    //Wait a moment after attaching to start attacking
     IEnumerator WaitAndSetAttackRate()
     {
         yield return new WaitForSeconds(1.0f);
         attackTimer = data.attackRate;
     }
-
-    public void AttackTarget() {
-        if (targetBrick == null) 
+    
+    //Deal damage to brick
+    public void AttackTarget()
+    {
+        if (targetBrick == null)
             ChooseNewTarget();
         if (targetBrick != null)
         {
@@ -50,56 +67,38 @@ public class Parasite : MonoBehaviour
         }
     }
 
-    public void ChooseNewTarget() {
-        if (brick.neighborList.Count==0)
+    //Find a new brick if not attached to anything
+    public void ChooseNewTarget()
+    {
+        if (brick.neighborList.Count == 0)
             return;
-        foreach (GameObject neighbor in brick.neighborList) {
-            if (neighbor && neighbor.GetComponent<Brick>().IsCore()) {
+        foreach (GameObject neighbor in brick.neighborList)
+        {
+            if (neighbor && neighbor.GetComponent<Brick>().IsCore())
+            {
                 targetBrick = neighbor;
                 return;
             }
-         }
+        }
 
-        int targetInt = Random.Range(0,brick.neighborList.Count);
+        int targetInt = Random.Range(0, brick.neighborList.Count);
         targetBrick = brick.neighborList[targetInt];
-        if (targetBrick.GetComponent<Brick>().IsParasite()) {
+        if (targetBrick.GetComponent<Brick>().IsParasite())
+        {
             targetBrick = null;
             return;
         }
     }
 
-    public void ScoreEnemy()
+    //Separate Parasite from Bot at end of level
+    protected override void OnLevelComplete()
     {
-        if (hasScored)
-            return;
-        hasScored = true;
+        GetComponent<Brick>().MakeOrphan();
+    }
 
-        Camera.main.GetComponent<AudioSource>().PlayOneShot(deathSound, 1.0f);
-
-        if (data.redYield > 0)
-        {
-            GameController.Instance.bot.storedRed += data.redYield;
-            GameController.Instance.CreateFloatingText(data.redYield.ToString(), transform.position + new Vector3(1, 1, 0), 30, Color.red);
-        }
-        if (data.blueYield > 0)
-        {
-            GameController.Instance.bot.storedBlue += data.blueYield;
-            GameController.Instance.CreateFloatingText(data.blueYield.ToString(), transform.position + new Vector3(-1, 1, 0), 30, Color.blue);
-        }
-        if (data.yellowYield > 0)
-        {
-            GameController.Instance.bot.storedYellow += data.yellowYield;
-            GameController.Instance.CreateFloatingText(data.yellowYield.ToString(), transform.position + new Vector3(1, -1, 0), 30, Color.yellow);
-        }
-        if (data.greenYield > 0)
-        {
-            GameController.Instance.bot.storedGreen += data.greenYield;
-            GameController.Instance.CreateFloatingText(data.greenYield.ToString(), transform.position + new Vector3(-1, -1, 0), 30, Color.green);
-        }
-        if (data.greyYield > 0)
-        {
-            GameController.Instance.bot.storedGrey += data.greyYield;
-            GameController.Instance.CreateFloatingText(data.greyYield.ToString(), transform.position, 30, Color.grey);
-        }
+    //Make sure this element is properly removed from the Bot before destroying it
+    public override void DestroyEnemyOnGameEvent()
+    {
+        GetComponent<Brick>().DestroyBrick();
     }
 }

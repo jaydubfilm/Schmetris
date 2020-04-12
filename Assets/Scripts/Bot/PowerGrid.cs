@@ -66,8 +66,7 @@ public class PowerGrid : MonoBehaviour
         for (int x = 0; x < count; x++)
         {
             GameObject brickObj = bot.brickList[x];
-            Parasite parasite = brickObj.GetComponent<Parasite>();
-            if (parasite == null)
+            if (!brickObj.GetComponent<Brick>().IsParasite())
             {
                 Brick brick = brickObj.GetComponent<Brick>();
                 if (!brick.GetComponent<PowerSource>())

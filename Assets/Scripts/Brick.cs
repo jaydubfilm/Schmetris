@@ -262,7 +262,11 @@ public class Brick : MonoBehaviour
 
     public void AdjustHP(int damage) {
 
-        if (IsParasite() || damage > 0 || activeShields.Count == 0)
+        if(IsParasite())
+        {
+            GetComponent<Parasite>().AdjustHP(damage);
+        }
+        else if (damage > 0 || activeShields.Count == 0)
         {
             brickHP += damage;
         }
@@ -291,7 +295,7 @@ public class Brick : MonoBehaviour
             }
         }
 
-        if (brickHP > 0)
+        if (!IsParasite() && brickHP > 0)
         {
             if (brickHP >= brickMaxHP[GetPoweredLevel()])
             {
@@ -310,11 +314,6 @@ public class Brick : MonoBehaviour
                 healthBar.SetSize(normalizedHealth);
             }
         }
-        else if (IsParasite())
-        {
-            GetComponent<Parasite>().ScoreEnemy();
-        }
-
     }
 
     public int BitBrickCollide(GameObject bitObj) {
@@ -472,8 +471,8 @@ public class Brick : MonoBehaviour
         bot.SetBrickAtBotArr(arrPos,null);
         bot.brickTypeArr[arrPos.x,arrPos.y]=-1;
         bot.brickList.Remove(gameObject);
-        if (IsParasite())
-            GameController.Instance.enemyList.Remove(gameObject);
+        //if (IsParasite())
+        //    GameController.Instance.enemyList.Remove(gameObject);
 
         for(int i = 0;i<activeShields.Count;i++)
         {
