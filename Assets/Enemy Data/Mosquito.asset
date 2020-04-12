@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: -1
   maxHP: 10
-  attackRate: 0
-  damage: 0
-  speed: 0
+  attackRate: 0.5
+  damage: 10
+  speed: 5
   dangerLevel: 10
   redYield: 0
   blueYield: 0

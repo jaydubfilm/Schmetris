@@ -96,7 +96,6 @@ GameObject:
   - component: {fileID: 7297659341976442916}
   - component: {fileID: 7297659341976442917}
   - component: {fileID: 7297659341976442915}
-  - component: {fileID: 3563256583152494441}
   m_Layer: 12
   m_Name: Mosquito Bomb
   m_TagString: Moveable
@@ -210,7 +209,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 552c43e47a90562478c0374da55031f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followSpeed: 5
+  data: {fileID: 11400000, guid: 741c602da0ef05d48883f4aabb7479b8, type: 2}
+  hp: 0
+  strength: 8
+  healthBar: {fileID: 4933331793814636626}
+  deathSound: {fileID: 8300000, guid: 3f33676c236271a4d8aad3781ac1c4a3, type: 3}
   impulseBurstFrequency: 1
   enemyDistance:
     serializedVersion: 2
@@ -236,18 +239,15 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  rateOfFire: 0.5
+  mosquitoShield: {fileID: 1842814450953131543, guid: 4812b6d8b1ab07a43b5aa89e731f6262,
+    type: 3}
   bulletSpeed: 25
   bulletLifetime: 2
   bullet: {fileID: 4678426597054703440, guid: 830515e21ff0d524da08aba3cfcb73d6, type: 3}
   bulletSprite: {fileID: 21300014, guid: 9c31eaa9bdedaca4b8a21a1282db0a35, type: 3}
-  bulletDamage: 10
   timeUntilBlast: 10
   blastRadius: 5
   blastDamage: 5
-  strength: 8
-  mosquitoShield: {fileID: 1842814450953131543, guid: 4812b6d8b1ab07a43b5aa89e731f6262,
-    type: 3}
   debugExplosion: {fileID: 7524407400947348946, guid: 5497074458701d3468023bc84a64de09,
     type: 3}
 --- !u!58 &7297659341976442916
@@ -307,23 +307,6 @@ SpringJoint2D:
   m_Distance: 1.3955511
   m_DampingRatio: 0.58
   m_Frequency: 0.78
---- !u!114 &3563256583152494441
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7297659341976442939}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8b209c609c5f8640adaa1a6f7f44327, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: 741c602da0ef05d48883f4aabb7479b8, type: 2}
-  hp: 10
-  strength: 10
-  healthBar: {fileID: 4933331793814636626}
-  deathSound: {fileID: 8300000, guid: 3f33676c236271a4d8aad3781ac1c4a3, type: 3}
 --- !u!1001 &2136077753051519286
 PrefabInstance:
   m_ObjectHideFlags: 0

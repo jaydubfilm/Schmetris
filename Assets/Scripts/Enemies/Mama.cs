@@ -1,182 +1,152 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Pathfinding;
-using Sirenix.OdinInspector;
 
-public class Mama : MonoBehaviour
+//Large Parasite-spawning enemy
+public class Mama : Enemy
 {
-
-    [FoldoutGroup("Movement")]
-    public float followSpeed = 3;
+    //Enemy stats from Asset
+    float followSpeed;
+    float rateOfFire;
+    int bulletDamage = 1;
 
     [Tooltip("How frequently we check the distance")]
-    [FoldoutGroup("Movement")]
     public float distanceCheckTimer = 1f;
 
-    [FoldoutGroup("Weapon")]
-    public float rateOfFire;
-
-    [FoldoutGroup("Weapon")]
+    //Bullets
     public float bulletSpeed;
-
-    [FoldoutGroup("Weapon")]
     public float bulletLifetime = 2;
-
-    [FoldoutGroup("Weapon")]
     public GameObject bullet;
-
-    [FoldoutGroup("Weapon")]
     public float bulletScale = 3;
-
-    [FoldoutGroup("Weapon")]
     public Sprite bulletSprite;
+    float timer;
+    float timeSinceFire;
 
-    [FoldoutGroup("Weapon")]
-    public int bulletDamage = 1;
-
-    [FoldoutGroup("Death")]
+    //Death effect
     public float timeUntilBlast = 5;
-
-    [Tooltip("Range of the blast (how many columns and rows are affected)")]
-    [FoldoutGroup("Death")]
     public float blastRadius = 5;
-
-    [FoldoutGroup("Death")]
     public int blastDamage = 5;
-
-    [Tooltip("Used to sort enemies from least to most powerful. Used to determine targets when firing")]
-    public int strength = 3;
-
     public GameObject debugExplosion;
+    public GameObject parasitePrefab;
+    float timeOfDeath;
+    SpriteRenderer spriteRenderer;
 
-
-    bool dying;
-
+    //Movement
     AIPath aiPath;
     Transform player;
     AIDestinationSetter aiDestinationSetter;
-    Rigidbody2D rb2d;
-    SpriteRenderer spriteRenderer;
-
     public float force;
-    float timer;
-    float timeSinceFire;
-    bool backAway;
     float storedTime;
-    private float timeOfDeath;
 
-    public GameObject parasitePrefab;
 
-    // Start is called before the first frame update
-    void Start()
+    //Init
+    protected override void Init()
     {
+        base.Init();
+        followSpeed = data.speed;
+        rateOfFire = data.attackRate;
+        bulletDamage = data.damage;
         aiPath = GetComponent<AIPath>();
         aiDestinationSetter = GetComponent<AIDestinationSetter>();
         aiDestinationSetter.target = FindObjectOfType<Bot>().transform;
         player = aiDestinationSetter.target;
-        rb2d = GetComponent<Rigidbody2D>();
         timer = Time.time;
         aiPath.maxSpeed = followSpeed;
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-
-
     }
 
-    // Update is called once per frame
-    void Update()
+    //While alive, keep within range of player and shoot
+    protected override void UpdateLiveBehaviour()
     {
-        if (GameController.Instance.isLevelCompleteQueued)
-        {
-            aiPath.enabled = false;
-            aiDestinationSetter.enabled = false;
-            return;
-        }
+        base.UpdateLiveBehaviour();
 
         //Every x seconds, check the distance between the enemy and the player. Back away if we're too close. 
         if (Time.time - timer > distanceCheckTimer)
         {
-            if (Vector3.Distance(transform.position, player.position) < aiPath.endReachedDistance)           
-                backAway = true;
+            if (Vector3.Distance(transform.position, player.position) < aiPath.endReachedDistance)
+            {
+                BackAwayFromPlayer();
+            }
             else
             {
-                backAway = false;
-
                 //When the enemy is not too close, but near enough to fire
                 if (Vector3.Distance(transform.position, player.position) < aiPath.endReachedDistance + 2)
+                {
                     FireCheck();
+                }
             }
-                
+
         }
-        
-        if(backAway == true)
-            BackAwayFromPlayer();
-
-        //Death Procedure
-        if (dying == true)
-        {
-            //change enemy color as it dies
-            float timeUntilFlashing = timeUntilBlast - 1.5f;
-
-            if (Time.timeSinceLevelLoad - timeOfDeath < timeUntilBlast)
-            {
-                Color enemyColor = new Color(spriteRenderer.color.r, 1 - ((Time.timeSinceLevelLoad - timeOfDeath) / timeUntilFlashing), 1 - ((Time.timeSinceLevelLoad - timeOfDeath) / timeUntilFlashing));
-                spriteRenderer.color = enemyColor;
-            }
-
-            if (Time.timeSinceLevelLoad - timeOfDeath > timeUntilBlast)
-            {
-                DeathBlast();
-            }
-        }
-
-       
     }
 
+    //Once dead, count down to explosion and release of Parasites
+    protected override void UpdateDeathBehaviour()
+    {
+        base.UpdateDeathBehaviour();
+
+        //change enemy color as it dies
+        float timeUntilFlashing = timeUntilBlast - 1.5f;
+
+        if (Time.timeSinceLevelLoad - timeOfDeath < timeUntilBlast)
+        {
+            Color enemyColor = new Color(spriteRenderer.color.r, 1 - ((Time.timeSinceLevelLoad - timeOfDeath) / timeUntilFlashing), 1 - ((Time.timeSinceLevelLoad - timeOfDeath) / timeUntilFlashing));
+            spriteRenderer.color = enemyColor;
+        }
+        else if (Time.timeSinceLevelLoad - timeOfDeath > timeUntilBlast)
+        {
+            DeathBlast();
+        }
+    }
+
+    //Begin explosion timer when hp hits 0
+    protected override void OnEnemyDeath()
+    {
+        base.OnEnemyDeath();
+        timeOfDeath = Time.timeSinceLevelLoad;
+    }
+
+    //Turn off AI pathfinding on level completion
+    protected override void OnLevelComplete()
+    {
+        base.OnLevelComplete();
+        aiPath.enabled = false;
+        aiDestinationSetter.enabled = false;
+    }
+
+    //Keep a certain distance away from player
     void BackAwayFromPlayer()
     {
         Vector3 angleFromPlayer = (transform.position - player.position).normalized;
         rb2d.AddForce(new Vector2(angleFromPlayer.x, angleFromPlayer.y) * force);
-        Debug.DrawRay(transform.position, angleFromPlayer);
     }
 
+    //Count down time until enemy can shoot again
     void FireCheck()
     {
-
         if (Time.time - storedTime > rateOfFire)
         {
-
             Fire();
             storedTime = Time.time;
         }
     }
+
+    //Shoot at player
     void Fire()
     {
-
         EnemyBulletV2 thisBullet = Instantiate(bullet, transform.position, Quaternion.identity).GetComponent<EnemyBulletV2>();
         thisBullet.transform.localScale = new Vector3(thisBullet.transform.localScale.x * bulletScale, thisBullet.transform.localScale.y * bulletScale, thisBullet.transform.localScale.z * bulletScale);
         Vector3 dir = (player.position - thisBullet.transform.position).normalized;
         thisBullet.MamaBulletBehaviour(player, bulletSprite, bulletSpeed, bulletLifetime, bulletDamage);
     }
 
-    public void Death()
-    {
-
-        timeOfDeath = Time.timeSinceLevelLoad;
-        dying = true;
-    }
-
+    //Explode and release Parasites when destroyed
     void DeathBlast()
     {
-
         Collider2D[] colliders = Physics2D.OverlapCircleAll(new Vector2(transform.position.x, transform.position.y), blastRadius);
 
         for (int i = 0; i < colliders.Length; i++)
         {
-
             if (colliders[i].GetComponent<Brick>())
             {
-
                 colliders[i].GetComponent<Brick>().AdjustHP(-blastDamage);
             }
         }

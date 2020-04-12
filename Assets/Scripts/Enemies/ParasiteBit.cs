@@ -17,9 +17,9 @@ public class ParasiteBit : Enemy
     }
 
     //Move toward and attach to a targeted brick
-    protected override void UpdateMovement()
+    protected override void UpdateLiveBehaviour()
     {
-        base.UpdateMovement();
+        base.UpdateLiveBehaviour();
         float step = data.speed * Time.deltaTime;
         RaycastHit2D rH = Physics2D.BoxCast(transform.position, Vector2.one * ScreenStuff.colSize, 0, bot.transform.position - transform.position, step, brickMask);
         if (rH.collider != null)

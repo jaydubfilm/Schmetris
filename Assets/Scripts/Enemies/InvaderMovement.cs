@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Sirenix.OdinInspector;
 
 //Space Invader type enemy
 public class InvaderMovement : Enemy
@@ -44,9 +43,9 @@ public class InvaderMovement : Enemy
     }
 
     //Update enemy behaviours
-    protected override void UpdateMovement()
+    protected override void UpdateLiveBehaviour()
     {
-        base.UpdateMovement();
+        base.UpdateLiveBehaviour();
 
         #region MOVEMENT
         if (movingRight == true)
@@ -123,7 +122,7 @@ public class InvaderMovement : Enemy
     //Player can destroy this enemy type by running into it
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.GetComponent<Brick>())
+        if (collision.gameObject.GetComponent<Brick>() && !isDestroyed)
         {
             OnEnemyDeath();
         }

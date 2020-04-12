@@ -9,11 +9,11 @@ public class Enemy : MonoBehaviour
     //Enemy stats adjusted during gameplay
     public int hp;
     bool hasScored = false;
-    bool isDestroyed = false;
+    protected bool isDestroyed = false;
     public int strength;
 
     //Components
-    Rigidbody2D rb2d;
+    protected Rigidbody2D rb2d;
     public HealthBar healthBar;
     public AudioClip deathSound;
 
@@ -61,14 +61,23 @@ public class Enemy : MonoBehaviour
     //Update movement only if level isn't complete and enemy isn't destroyed
     private void Update()
     {
-        if(!isDestroyed && !GameController.Instance.isLevelCompleteQueued)
+        if (!GameController.Instance.isLevelCompleteQueued)
         {
-            UpdateMovement();
+            if (isDestroyed)
+                UpdateDeathBehaviour();
+            else
+                UpdateLiveBehaviour();
         }
     }
 
-    //Enemy movement behaviour
-    protected virtual void UpdateMovement()
+    //Enemy behaviour while hp is above 0
+    protected virtual void UpdateLiveBehaviour()
+    {
+
+    }
+
+    //Enemy behaviour after hp runs out
+    protected virtual void UpdateDeathBehaviour()
     {
 
     }
@@ -76,6 +85,9 @@ public class Enemy : MonoBehaviour
     //Update enemy health bar and check for death when health is changed
     public void AdjustHP(int adjust)
     {
+        if (isDestroyed)
+            return;
+
         hp = Mathf.Min(data.maxHP, hp + adjust);
         if (hp <= 0)
         {
@@ -143,7 +155,7 @@ public class Enemy : MonoBehaviour
     }
 
     //Stop enemy action when level is finished
-    void OnLevelComplete()
+    protected virtual void OnLevelComplete()
     {
         rb2d.velocity = new Vector3(0, -GameController.Instance.blockSpeed * GameController.Instance.adjustedSpeed, 0);
     }
