@@ -860,7 +860,7 @@ public class Bot : MonoBehaviour
         List<GameObject> m2Orphans = FindUpgradeOrphans(m2Pos, arrPos);
         List<GameObject> arrOrphans = FindUpgradeOrphans(arrPos, arrPos);
 
-        if ((IsConnectedToCore(sideBrick1))||(IsConnectedToCore(sideBrick2)))
+        if ((sideBrick1 && !sideBrick1.GetComponent<Brick>().IsParasite() && IsConnectedToCore(sideBrick1)) || (sideBrick2 && !sideBrick2.GetComponent<Brick>().IsParasite() && IsConnectedToCore(sideBrick2)))
             centreIsStable = true;
         
         SetBrickAtBotArr(m1Pos,matchBrick1);

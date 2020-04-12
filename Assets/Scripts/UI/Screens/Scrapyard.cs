@@ -123,10 +123,6 @@ public class Scrapyard : MonoBehaviour
     List<GameObject> uncommittedBricks = new List<GameObject>();
     bool hasChanges = false;
 
-    //Temp prices
-    float resourceChange = 1;
-    int resourceSell = 1;
-
     //Sub-menu text amounts
     int tempMoneyAmount = 0;
     int tempRedAmount = 0;
@@ -136,6 +132,7 @@ public class Scrapyard : MonoBehaviour
     int tempGreyAmount = 0;
     List<CraftedPart> tempUpgrades = new List<CraftedPart>();
     string tempUpgrade = "";
+    float resourceChange = 1;
 
     //Audio
     AudioSource audioSource;
