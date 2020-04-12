@@ -1223,12 +1223,9 @@ public class Bot : MonoBehaviour
         for (int x = 0; x < 4; x++)
         {
             Vector2Int testCoords = arrPos + directionV2Arr[x];
-            if (IsValidBrickPos(testCoords))
+            if (IsValidBrickPos(testCoords) && BrickAtBotArr(testCoords) != null && !BrickAtBotArr(testCoords).GetComponent<Brick>().IsParasite() && testCoords != coreV2)
             {
-                if (BrickAtBotArr(testCoords) != null)
-                {
-                    hasNeighbor = true;
-                }
+                hasNeighbor = true;
             }
         }
 
@@ -1245,6 +1242,10 @@ public class Bot : MonoBehaviour
         if (isValidBrickPos)
         {
             return arrPos;
+        }
+        else if (isRecursing)
+        {
+            return coreV2;
         }
         else
         {
@@ -1665,7 +1666,9 @@ public class Bot : MonoBehaviour
     }
 
     public GameObject BrickAtBotArr(Vector2Int arrPos) {
-        return brickArr[arrPos.x,arrPos.y];
+        if(arrPos.x >= 0 && arrPos.x < maxBotWidth && arrPos.y >= 0 && arrPos.y < maxBotHeight)
+            return brickArr[arrPos.x,arrPos.y];
+        return null;
     }
 
     public GameObject BrickAtScreenArr(Vector2Int arrPos) {
@@ -1788,13 +1791,12 @@ public class Bot : MonoBehaviour
         GameObject newBrick = AddBrick(bCoords, brickType, 0);
         Parasite parasite = newBrick.GetComponent<Parasite>();
         parasite.data = enemy.data;
-        parasite.targetBrick = enemy.targetBrick;
         newBrick.GetComponent<Brick>().brickMaxHP[0] = enemy.data.maxHP;
-        newBrick.GetComponent<Brick>().brickHP = enemy.GetComponent<EnemyGeneral>().hp;
+        newBrick.GetComponent<Brick>().brickHP = enemy.GetComponent<Enemy>().hp;
         newBrick.GetComponent<Brick>().AdjustHP(0);
         GameController.Instance.enemyList.Add(newBrick);
 
-        enemy.DestroyEnemy();
+        enemy.DestroyEnemyOnGameEvent();
 
         StartCoroutine(WaitAndTripleCheck(0.2f));
     }

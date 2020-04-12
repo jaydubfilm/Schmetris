@@ -53,7 +53,7 @@ public class EnemyGeneral : MonoBehaviour
         if (isParasite)
         {
             enemy = GetComponent<ParasiteBit>();
-            hp = enemy.hP;
+            hp = enemy.hp;
             hpLastFrame = hp;
         }
         maxHP = hp;
@@ -66,7 +66,7 @@ public class EnemyGeneral : MonoBehaviour
         {
             if (hpLastFrame != hp)
             {
-                enemy.hP = hp;
+                enemy.hp = hp;
             }
 
             hpLastFrame = hp;
@@ -120,8 +120,7 @@ public class EnemyGeneral : MonoBehaviour
         }
         else if (GetComponent<ParasiteBit>())
         {
-            GetComponent<ParasiteBit>().ScoreEnemy();
-            GetComponent<ParasiteBit>().DestroyEnemy();
+            GetComponent<ParasiteBit>().AdjustHP(-maxHP);
         }
     }
 }
