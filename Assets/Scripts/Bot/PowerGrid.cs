@@ -98,6 +98,8 @@ public class PowerGrid : MonoBehaviour
             GameController.Instance.hud.SetNoPowerPopup(true);
             FlashGridCells();
         }
+
+        bot.UpdateContainers();
     }
 
     //Reminder effect showing player where the power grid ends

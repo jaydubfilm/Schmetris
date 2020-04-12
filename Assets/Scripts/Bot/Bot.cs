@@ -94,6 +94,17 @@ public class Bot : MonoBehaviour
     public float tripleDelay = 0.5f;
     float delay;
 
+    //Touch controls
+    float holdingScreenTimer = 0;
+    const float maxTapTimer = 0.15f;
+    const float slideBuffer = 50.0f;
+    Vector3 prevMousePos = Vector3.zero;
+    Vector3 bufferedMovePos = Vector3.zero;
+    float rotateBuffer = 200.0f;
+    float bufferTimer = 0;
+    float bufferMaxTime = 3.0f;
+    bool hasRotated = false;
+
     //Resources
     const float startRed = 30.0f;
     const float startRedTutorial = 500f;
@@ -2038,15 +2049,6 @@ public class Bot : MonoBehaviour
         return arrPos - coreV2;
     }
 
-    float holdingScreenTimer = 0;
-    const float maxTapTimer = 0.15f;
-    const float slideBuffer = 50.0f;
-    Vector3 prevMousePos = Vector3.zero;
-    Vector3 bufferedMovePos = Vector3.zero;
-    float rotateBuffer = 200.0f;
-    float bufferTimer = 0;
-    float bufferMaxTime = 3.0f;
-    bool hasRotated = false;
     void TouchInputCheck()
     {
         if(Input.GetMouseButtonDown(0))
