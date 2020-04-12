@@ -65,7 +65,7 @@ public class Bit : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!hasBounced && CanCollideFlag && !GetComponent<Enemy>()) {
+        if (!hasBounced && CanCollideFlag && !GetComponent<ParasiteBit>()) {
             //RaycastHit2D rH = Physics2D.Raycast(transform.position, Vector2.down, ScreenStuff.colSize/2,brickMask); 
             RaycastHit2D rH = Physics2D.BoxCast(transform.position, Vector2.one * ScreenStuff.colSize, 0, Vector2.down, Mathf.Max(ScreenStuff.colSize / 2.0f, parentBlock ? parentBlock.rb.velocity.magnitude * Time.fixedDeltaTime : ScreenStuff.colSize / 2.0f), brickMask);
             if (rH.collider!=null) {

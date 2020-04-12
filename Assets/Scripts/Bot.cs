@@ -1740,7 +1740,7 @@ public class Bot : MonoBehaviour
 
     public void ResolveEnemyCollision (GameObject enemyObj)
     {
-        Enemy enemy = enemyObj.GetComponent<Enemy>();
+        ParasiteBit enemy = enemyObj.GetComponent<ParasiteBit>();
         if (enemy == null)
             return;
         float rA = transform.rotation.eulerAngles.z;

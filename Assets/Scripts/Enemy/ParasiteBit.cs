@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class ParasiteBit : MonoBehaviour
 {
     public int hP;
     public SpeciesData data;

@@ -13,7 +13,7 @@ public class EnemyGeneral : MonoBehaviour
     public int hp;
     public bool isParasite;
     int hpLastFrame;
-    Enemy enemy;
+    ParasiteBit enemy;
     int maxHP;
     public HealthBar healthBar;
 
@@ -118,10 +118,10 @@ public class EnemyGeneral : MonoBehaviour
         {
             GetComponent<InvaderMovement>().Death();
         }
-        else if (GetComponent<Enemy>())
+        else if (GetComponent<ParasiteBit>())
         {
-            GetComponent<Enemy>().ScoreEnemy();
-            GetComponent<Enemy>().DestroyEnemy();
+            GetComponent<ParasiteBit>().ScoreEnemy();
+            GetComponent<ParasiteBit>().DestroyEnemy();
         }
     }
 }
