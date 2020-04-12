@@ -52,7 +52,7 @@ public class EnemyGeneral : MonoBehaviour
     {
         if (isParasite)
         {
-            enemy = GetComponent<Enemy>();
+            enemy = GetComponent<ParasiteBit>();
             hp = enemy.hP;
             hpLastFrame = hp;
         }
