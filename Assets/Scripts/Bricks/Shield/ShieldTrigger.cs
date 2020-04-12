@@ -66,7 +66,7 @@ public class ShieldTrigger : MonoBehaviour
         {
             targetBrick.activeShields.Add(parentBrick);
         }
-        if (targetBrick.activeShields.Contains(parentBrick) && !targetBrick.GetComponentInChildren<OutlineCheck>())
+        if (targetBrick.activeShields.Contains(parentBrick) && !targetBrick.GetComponentInChildren<OutlineCheck>(false))
         {
             Instantiate(outline, targetBrick.transform.position, targetBrick.transform.rotation, targetBrick.transform);
             parentBrick.UpdateShieldColour();
@@ -80,9 +80,9 @@ public class ShieldTrigger : MonoBehaviour
         {
             targetBrick.activeShields.Remove(parentBrick);
         }
-        if (targetBrick.activeShields.Count == 0 && targetBrick.GetComponentInChildren<OutlineCheck>())
+        if (targetBrick.activeShields.Count == 0 && targetBrick.GetComponentInChildren<OutlineCheck>(false))
         {
-            DestroyImmediate(targetBrick.GetComponentInChildren<OutlineCheck>().gameObject);
+            targetBrick.GetComponentInChildren<OutlineCheck>(false).RemoveShieldOutline();
         }
     }
 

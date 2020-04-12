@@ -9,6 +9,7 @@ public class Bomb : MonoBehaviour
     public int[] range;
     public GameObject bombEffect;
 
+    //Damage all enemies within radius and spawn bomb effects
     public void BombEnemies(int level)
     {
         List<GameObject> enemyArr = new List<GameObject>();

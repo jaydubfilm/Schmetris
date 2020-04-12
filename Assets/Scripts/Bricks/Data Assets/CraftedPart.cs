@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-//Component requiring crafting to upgrade
+//Component requiring crafting to upgrade - Could potentially be combined with MarketData assets
 public class CraftedPart : MonoBehaviour
 {
     //Costs associated with upgrading bot to associated level

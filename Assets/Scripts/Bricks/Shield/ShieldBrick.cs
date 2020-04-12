@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Sirenix.OdinInspector;
 
 //Brick that reduces damage dealt to nearby bricks
 public class ShieldBrick : MonoBehaviour
@@ -89,9 +88,9 @@ public class ShieldBrick : MonoBehaviour
         Color shieldColor = emptyShieldColor + (fullShieldColor - emptyShieldColor) * shieldHp / healthAtLevel[parentBrick.GetPoweredLevel()];
         foreach (Brick brick in childTrigger.protectedList)
         {
-            if (brick != null && brick.GetComponentInChildren<OutlineCheck>())
+            if (brick != null && brick.GetComponentInChildren<OutlineCheck>(false))
             {
-                brick.GetComponentInChildren<OutlineCheck>().GetComponent<SpriteRenderer>().color = shieldColor;
+                brick.GetComponentInChildren<OutlineCheck>(false).SetShieldColor(shieldColor);
             }
         }
     }
@@ -107,7 +106,6 @@ public class ShieldBrick : MonoBehaviour
     }
 
     //Update size of shield trigger to match radius
-    [Button]
     public void SetShieldSize()
     {
         if (box2D)

@@ -1,69 +1,79 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+//Tracks the power level of each brick on the bot
 public class PowerGrid : MonoBehaviour
 {
-    public int[,] grid;
+    //Components
     Bot bot;
-    public int width;
     public GameObject gridSymbol;
 
-    //float timer;
-    
-    // Start is called before the first frame update
+    //Bot grid
+    public int[,] grid;
+    public int width;
 
+    //Init
     void Awake()
     {
         bot = transform.parent.gameObject.GetComponent<Bot>();
         width = bot.maxBotWidth;
-        grid = new int[width,width];
-        //timer = Time.time;
-        InvokeRepeating("Refresh",1.0f,0.2f);
+        grid = new int[width, width];
+        InvokeRepeating("Refresh", 1.0f, 0.2f);
     }
 
-    public void Refresh() {
+    //Check for changes in power levels and update connected bricks if needed
+    public void Refresh()
+    {
 
         if (!bot.powerGridRefreshFlag || bot.tripleCheckFlag || bot.tripleWaitFlag)
             return;
 
-        for (int x = 0;x<width;x++)
-            for (int y = 0;y<width;y++)
-                grid[x,y] = 0;
-        
+        for (int x = 0; x < width; x++)
+            for (int y = 0; y < width; y++)
+                grid[x, y] = 0;
+
         // update Power Grid levels
-        if (bot.brickList.Count==0)
+        if (bot.brickList.Count == 0)
             return;
 
-        foreach (GameObject brickObj in bot.brickList){
+        foreach (GameObject brickObj in bot.brickList)
+        {
             Brick brick = brickObj.GetComponent<Brick>();
             PowerSource brickPower = brick.GetComponent<PowerSource>();
-            if (brickPower) {
+            if (brickPower)
+            {
                 int r = brick.hasResources ? brickPower.powerAtLevel[brick.brickLevel] : brickPower.powerAtLevel[0];
                 Vector2Int sourcePos = brick.arrPos;
-                for (int x = -r;x<=r;x++) {
-                    for (int y = -r; y<=r; y++) {
-                        if (IsValidGridPos(new Vector2Int(sourcePos.x+x,sourcePos.y+y))){
-                            int increase = r-Mathf.Max(Mathf.Abs(x),Mathf.Abs(y))+1;
-                            grid[sourcePos.x+x,sourcePos.y+y]+=increase;
+                for (int x = -r; x <= r; x++)
+                {
+                    for (int y = -r; y <= r; y++)
+                    {
+                        if (IsValidGridPos(new Vector2Int(sourcePos.x + x, sourcePos.y + y)))
+                        {
+                            int increase = r - Mathf.Max(Mathf.Abs(x), Mathf.Abs(y)) + 1;
+                            grid[sourcePos.x + x, sourcePos.y + y] += increase;
                         }
                     }
                 }
             }
-        }   
+        }
 
         // make bricks with no power orphans
 
         int count = bot.brickList.Count;
         bool zoneReminder = false;
 
-        for (int x = 0; x<count ;x++) {
+        for (int x = 0; x < count; x++)
+        {
             GameObject brickObj = bot.brickList[x];
             Parasite parasite = brickObj.GetComponent<Parasite>();
-            if (parasite==null) {
+            if (parasite == null)
+            {
                 Brick brick = brickObj.GetComponent<Brick>();
-                if (!brick.GetComponent<PowerSource>()) {
-                    if (PowerAtBotCoords(brick.arrPos)==0) {
+                if (!brick.GetComponent<PowerSource>())
+                {
+                    if (PowerAtBotCoords(brick.arrPos) == 0)
+                    {
                         brick.MakeOrphan();
                         zoneReminder = true;
                         count--;
@@ -71,7 +81,7 @@ public class PowerGrid : MonoBehaviour
                     else
                     {
                         brick.isPowered = PowerAtBotCoords(brick.arrPos) >= brick.requiredPower[brick.brickLevel];
-                        if(!brick.isPowered)
+                        if (!brick.isPowered)
                         {
                             GameController.Instance.hud.SetUnpoweredPopup(true);
                         }
@@ -84,38 +94,44 @@ public class PowerGrid : MonoBehaviour
             }
         }
 
-        if (zoneReminder) {
+        if (zoneReminder)
+        {
             GameController.Instance.hud.SetNoPowerPopup(true);
             FlashGridCells();
         }
     }
 
-    public void FlashGridCells(){
-        for (int x = 0;x<width;x++) {
-            for (int y = 0;y<width;y++) {
-                if (grid[x,y]>0) {
-                    Vector2Int botPos = new Vector2Int(x,y);
+    //Reminder effect showing player where the power grid ends
+    public void FlashGridCells()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < width; y++)
+            {
+                if (grid[x, y] > 0)
+                {
+                    Vector2Int botPos = new Vector2Int(x, y);
                     Vector3 symbolPos = bot.BotCoordsToScreenPos(botPos);
-                    GameObject newSymbol = Instantiate (gridSymbol,symbolPos,Quaternion.identity);
-                    StartCoroutine(FlashGridCell(botPos,newSymbol));
+                    GameObject newSymbol = Instantiate(gridSymbol, symbolPos, Quaternion.identity);
+                    StartCoroutine(FlashGridCell(botPos, newSymbol));
                 }
             }
         }
     }
 
-
-
-    IEnumerator FlashGridCell(Vector2Int botPos, GameObject symbol){
-        
+    //Animate power icons flashing
+    IEnumerator FlashGridCell(Vector2Int botPos, GameObject symbol)
+    {
         SpriteRenderer gridCellSprite = symbol.GetComponent<SpriteRenderer>();
 
         Color tmpColor = gridCellSprite.color;
         float fadeTime = 1.0f;
         tmpColor.a = 0.5f;
-        while (tmpColor.a > 0f) {
+        while (tmpColor.a > 0f)
+        {
             tmpColor.a -= Time.deltaTime / fadeTime;
             gridCellSprite.color = tmpColor;
-            if (tmpColor.a <=0)
+            if (tmpColor.a <= 0)
                 tmpColor.a = 0;
             yield return null;
             gridCellSprite.color = tmpColor;
@@ -123,26 +139,18 @@ public class PowerGrid : MonoBehaviour
         Destroy(symbol);
     }
 
-    IEnumerator WaitFlashNoPower(GameObject brickObj) {
-        yield return new WaitForSeconds(0.1f);
-        GameObject pWarning = Instantiate(bot.powerWarning,brickObj.transform);
-    }
-
-
-    public bool IsValidGridPos(Vector2Int gridArrPos) {
-        if (((gridArrPos.x>=0)&&(gridArrPos.x<width))&&((gridArrPos.y>=0)&&(gridArrPos.y<width)))
+    //Is this coordinate within the grid bounds?
+    public bool IsValidGridPos(Vector2Int gridArrPos)
+    {
+        if (((gridArrPos.x >= 0) && (gridArrPos.x < width)) && ((gridArrPos.y >= 0) && (gridArrPos.y < width)))
             return true;
         else
             return false;
     }
 
-    public int PowerAtBotCoords(Vector2Int arrPos){
-        return grid[arrPos.x,arrPos.y];
+    //How much power is available at these coordinates?
+    public int PowerAtBotCoords(Vector2Int arrPos)
+    {
+        return grid[arrPos.x, arrPos.y];
     }
-
-    public void WarningFlash(){
-
-
-    }
-
 }

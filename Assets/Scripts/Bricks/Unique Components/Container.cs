@@ -13,6 +13,7 @@ public class Container : MonoBehaviour
     float openDirection = 0;
     GameObject directionIcon;
 
+    //Which direction does this container gather resources from?
     public float GetOpenDirection()
     {
         return openDirection;
