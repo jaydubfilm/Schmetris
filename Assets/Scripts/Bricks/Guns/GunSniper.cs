@@ -29,7 +29,8 @@ public class GunSniper : Gun
         }
 
         //Track invaders if targeted
-        isHoming = target.GetComponent<InvaderMovement>();
+        if(target)
+            isHoming = target.GetComponent<InvaderMovement>();
 
         return target;
     }
