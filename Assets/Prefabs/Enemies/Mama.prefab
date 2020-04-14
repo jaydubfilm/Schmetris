@@ -95,7 +95,6 @@ GameObject:
   - component: {fileID: 7899793524970067217}
   - component: {fileID: 7899793524970067222}
   - component: {fileID: 7899793524970067223}
-  - component: {fileID: 6637799704403826039}
   m_Layer: 10
   m_Name: Mama
   m_TagString: Moveable
@@ -209,24 +208,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7805bd06c1fe4214e943de0b55468349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followSpeed: 4.57
+  data: {fileID: 11400000, guid: eabc675fd43cb934692f9470ff732d07, type: 2}
+  hp: 0
+  strength: 3
+  healthBar: {fileID: 3564478155408768166}
+  deathSound: {fileID: 8300000, guid: 3f33676c236271a4d8aad3781ac1c4a3, type: 3}
   distanceCheckTimer: 0.5
-  rateOfFire: 4
   bulletSpeed: 1.8
   bulletLifetime: 10
   bullet: {fileID: 4678426597054703440, guid: 830515e21ff0d524da08aba3cfcb73d6, type: 3}
   bulletScale: 1
   bulletSprite: {fileID: 21300010, guid: 9bc0d6fc7ce03d34887e913e42cfc8c6, type: 3}
-  bulletDamage: 5
   timeUntilBlast: 5
   blastRadius: 5
   blastDamage: 5
-  strength: 3
   debugExplosion: {fileID: 7524407400947348946, guid: 5497074458701d3468023bc84a64de09,
     type: 3}
-  force: 22.53
   parasitePrefab: {fileID: 822335604602250409, guid: 5b93156cd52954237adcfe43c62642b2,
     type: 3}
+  force: 22.53
 --- !u!58 &7899793524970067222
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -264,24 +264,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &6637799704403826039
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7899793524970067225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8b209c609c5f8640adaa1a6f7f44327, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameController: {fileID: 0}
-  strength: 3
-  hp: 0
-  isParasite: 0
-  healthBar: {fileID: 3564478155408768166}
-  deathSound: {fileID: 8300000, guid: 3f33676c236271a4d8aad3781ac1c4a3, type: 3}
 --- !u!1001 &7540707728309693890
 PrefabInstance:
   m_ObjectHideFlags: 0
