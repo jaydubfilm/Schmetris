@@ -1,27 +1,31 @@
 ﻿using UnityEngine;
 
-//Asteroid bits
-public class Asteroid : MonoBehaviour
+namespace StarSalvager.Prototype
 {
-    //Components
-    Bit bit;
-
-    //Health
-    public int hP;
-
-    //Init
-    void Start()
+    [System.Obsolete("Prototype Only Script")]
+//Asteroid bits
+    public class Asteroid : MonoBehaviour
     {
-        bit = GetComponent<Bit>();
-    }
+        //Components
+        Bit bit;
 
-    //Adjust health and check if bit is destroyed
-    public void AdjustHP(int amount)
-    {
-        hP += amount;
-        if (hP <= 0)
+        //Health
+        public int hP;
+
+        //Init
+        void Start()
         {
-            bit.RemoveFromBlock("explode");
+            bit = GetComponent<Bit>();
+        }
+
+        //Adjust health and check if bit is destroyed
+        public void AdjustHP(int amount)
+        {
+            hP += amount;
+            if (hP <= 0)
+            {
+                bit.RemoveFromBlock("explode");
+            }
         }
     }
 }

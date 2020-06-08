@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
 using Pathfinding;
 
-public class DynamicPathfindingManager : MonoBehaviour
+namespace StarSalvager.Prototype
 {
-
-
-    //TODO adjust offsetDistance dynamically to account for object speed
-    public float offsetDistance = 1;
-    Bit[] childBlock;
-    bool recheckNextFrame;
-
-    //Called from GameController, equips bricks with pathfinding obstacles
-    public void SetDynamicObstacle(GameObject block)
+    [System.Obsolete("Prototype Only Script")]
+    public class DynamicPathfindingManager : MonoBehaviour
     {
-        childBlock = block.GetComponentsInChildren<Bit>();
+
+
+        //TODO adjust offsetDistance dynamically to account for object speed
+        public float offsetDistance = 1;
+        Bit[] childBlock;
+        bool recheckNextFrame;
+
+        //Called from GameController, equips bricks with pathfinding obstacles
+        public void SetDynamicObstacle(GameObject block)
+        {
+            childBlock = block.GetComponentsInChildren<Bit>();
 
 
             for (int i = 0; i < childBlock.Length; i++)
@@ -35,11 +38,13 @@ public class DynamicPathfindingManager : MonoBehaviour
 
                 //Add scripts to our new object
                 obstacle.gameObject.AddComponent<DynamicGridObstacle>().enabled = true;
-                obstacle.gameObject.AddComponent<AiObstaclePlacement>().AssignObj(childBlock[i].gameObject, offsetDistance);
+                obstacle.gameObject.AddComponent<AiObstaclePlacement>()
+                    .AssignObj(childBlock[i].gameObject, offsetDistance);
+
+            }
+
 
         }
 
-
     }
-
 }

@@ -1,42 +1,47 @@
 ﻿using UnityEngine;
 
-//Parasite enemy type
-public class ParasiteBit : Enemy
+namespace StarSalvager.Prototype
 {
-    //Enemy targeting
-    LayerMask brickMask;
-    Bot bot;
-
-    //Init
-    protected override void Init()
+    [System.Obsolete("Prototype Only Script")]
+//Parasite enemy type
+    public class ParasiteBit : Enemy
     {
-        base.Init();
-        Vector3 dest = GameController.Instance.bot.transform.position;
-        brickMask = LayerMask.GetMask("Brick");
-        bot = GameController.Instance.bot;
-    }
+        //Enemy targeting
+        LayerMask brickMask;
+        Bot bot;
 
-    //Move toward and attach to a targeted brick
-    protected override void UpdateLiveBehaviour()
-    {
-        base.UpdateLiveBehaviour();
-        float step = data.speed * Time.deltaTime;
-        RaycastHit2D rH = Physics2D.BoxCast(transform.position, Vector2.one * ScreenStuff.colSize, 0, bot.transform.position - transform.position, step, brickMask);
-        if (rH.collider != null)
+        //Init
+        protected override void Init()
         {
-            bot.ResolveEnemyCollision(gameObject);
+            base.Init();
+            Vector3 dest = GameController.Instance.bot.transform.position;
+            brickMask = LayerMask.GetMask("Brick");
+            bot = GameController.Instance.bot;
         }
-        else
+
+        //Move toward and attach to a targeted brick
+        protected override void UpdateLiveBehaviour()
         {
-            transform.position = Vector3.MoveTowards(transform.position, bot.transform.position, step);
+            base.UpdateLiveBehaviour();
+            float step = data.speed * Time.deltaTime;
+            RaycastHit2D rH = Physics2D.BoxCast(transform.position, Vector2.one * ScreenStuff.colSize, 0,
+                bot.transform.position - transform.position, step, brickMask);
+            if (rH.collider != null)
+            {
+                bot.ResolveEnemyCollision(gameObject);
+            }
+            else
+            {
+                transform.position = Vector3.MoveTowards(transform.position, bot.transform.position, step);
+            }
+        }
+
+        //Destroy after awarding points
+        protected override void OnEnemyDeath()
+        {
+            base.OnEnemyDeath();
+            Destroy(gameObject);
         }
     }
 
-    //Destroy after awarding points
-    protected override void OnEnemyDeath()
-    {
-        base.OnEnemyDeath();
-        Destroy(gameObject);
-    }
 }
-

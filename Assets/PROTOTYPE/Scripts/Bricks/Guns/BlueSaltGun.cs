@@ -1,28 +1,33 @@
 ﻿using UnityEngine;
 
-//Basic resource-yield gun
-public class BlueSaltGun : Gun
+namespace StarSalvager.Prototype
 {
-    //Resources
-    public int[] maxResource;
-
-    //Look for closest enemy in range
-    protected override GameObject FindTarget()
+    [System.Obsolete("Prototype Only Script")]
+//Basic resource-yield gun
+    public class BlueSaltGun : Gun
     {
-        float closestDistance = float.MaxValue;
-        GameObject target = null;
-        foreach (GameObject enemyObj in GameController.Instance.enemyList)
+        //Resources
+        public int[] maxResource;
+
+        //Look for closest enemy in range
+        protected override GameObject FindTarget()
         {
-            if (enemyObj)
+            float closestDistance = float.MaxValue;
+            GameObject target = null;
+            foreach (GameObject enemyObj in GameController.Instance.enemyList)
             {
-                float dist = Vector3.Distance(enemyObj.transform.position, transform.position);
-                if ((dist < closestDistance) && (dist <= range[parentBrick.GetPoweredLevel()]))
+                if (enemyObj)
                 {
-                    closestDistance = dist;
-                    target = enemyObj;
+                    float dist = Vector3.Distance(enemyObj.transform.position, transform.position);
+                    if ((dist < closestDistance) && (dist <= range[parentBrick.GetPoweredLevel()]))
+                    {
+                        closestDistance = dist;
+                        target = enemyObj;
+                    }
                 }
             }
+
+            return target;
         }
-        return target;
     }
 }

@@ -1,20 +1,24 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-//Attach to buttons to play a sound effect when they're clicked
-public class PlayAudioOnButton : MonoBehaviour
+namespace StarSalvager.Prototype
 {
-    //Components
-    AudioSource audioSource;
-
-    //Sound to play on click
-    public AudioClip buttonAudio;
-    public float volume = 0.5f;
-
-    //Init
-    private void Awake()
+    [System.Obsolete("Prototype Only Script")]
+//Attach to buttons to play a sound effect when they're clicked
+    public class PlayAudioOnButton : MonoBehaviour
     {
-        audioSource = Camera.main.GetComponent<AudioSource>();
-        GetComponent<Button>().onClick.AddListener(() => { audioSource.PlayOneShot(buttonAudio, volume); });
+        //Components
+        AudioSource audioSource;
+
+        //Sound to play on click
+        public AudioClip buttonAudio;
+        public float volume = 0.5f;
+
+        //Init
+        private void Awake()
+        {
+            audioSource = Camera.main.GetComponent<AudioSource>();
+            GetComponent<Button>().onClick.AddListener(() => { audioSource.PlayOneShot(buttonAudio, volume); });
+        }
     }
 }

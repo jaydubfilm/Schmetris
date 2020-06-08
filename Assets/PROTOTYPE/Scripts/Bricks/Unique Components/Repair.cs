@@ -1,149 +1,154 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-//Healing brick
-public class Repair : MonoBehaviour
+namespace StarSalvager.Prototype
 {
-    //Healing stats
-    public int[] healPower;
-    public float[] healRange;
-    public float[] healRate;
-
-    //Components
-    Bot bot;
-    Brick brick;
-
-    //Heal effect
-    float healTimer;
-    public GameObject healingSymbol;
-
-    //Resources
-    public int[] maxResource;
-
-    //Return the resources of set type converted to per-second units
-    public float GetConvertedBurnRate(ResourceType resourceType, int level)
+    [System.Obsolete("Prototype Only Script")]//Healing brick
+    public class Repair : MonoBehaviour
     {
-        float secondRate = healRate[level] > 0 ? healPower[level] / healRate[level] : 0;
-        switch(resourceType)
-        {
-            case ResourceType.Red:
-                return GetComponent<Brick>().redBurn[level] * secondRate;
-            case ResourceType.Blue:
-                return GetComponent<Brick>().blueBurn[level] * secondRate;
-            case ResourceType.Green:
-                return GetComponent<Brick>().greenBurn[level] * secondRate;
-            case ResourceType.Yellow:
-                return GetComponent<Brick>().yellowBurn[level] * secondRate;
-            case ResourceType.Grey:
-                return GetComponent<Brick>().greyBurn[level] * secondRate;
-        }
-        return 0;
-    }
+        //Healing stats
+        public int[] healPower;
+        public float[] healRange;
+        public float[] healRate;
 
-    //Init
-    void Start()
-    {
-        bot = GameController.Instance.bot;
-        brick = GetComponent<Brick>();
-        healTimer = healRate[brick.GetPoweredLevel()];
-    }
+        //Components
+        Bot bot;
+        Brick brick;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (healTimer <= 0)
-        {
-            TryHeal();
-        }
-        else
-        {
-            healTimer -= Time.deltaTime;
-        }
-    }
+        //Heal effect
+        float healTimer;
+        public GameObject healingSymbol;
 
-    //Check for something to heal and available resources
-    void TryHeal()
-    {
-        GameObject target = FindNewTarget();
-        if (target && brick.TryBurnResources(healPower[brick.GetPoweredLevel()]))
-        {
-            HealTarget(target.GetComponent<Brick>());
-        }
-    }
+        //Resources
+        public int[] maxResource;
 
-    //Find closest damaged brick in range
-    public GameObject FindNewTarget()
-    {
-        float closestDistance = 99;
-        GameObject newTarget = null;
-
-        foreach (GameObject brickObj in bot.brickList)
+        //Return the resources of set type converted to per-second units
+        public float GetConvertedBurnRate(ResourceType resourceType, int level)
         {
-            Brick brick = brickObj.GetComponent<Brick>();
-            if (!brick.IsParasite())
+            float secondRate = healRate[level] > 0 ? healPower[level] / healRate[level] : 0;
+            switch (resourceType)
             {
-                if (brick.brickHP < brick.brickMaxHP[brick.GetPoweredLevel()])
+                case ResourceType.Red:
+                    return GetComponent<Brick>().redBurn[level] * secondRate;
+                case ResourceType.Blue:
+                    return GetComponent<Brick>().blueBurn[level] * secondRate;
+                case ResourceType.Green:
+                    return GetComponent<Brick>().greenBurn[level] * secondRate;
+                case ResourceType.Yellow:
+                    return GetComponent<Brick>().yellowBurn[level] * secondRate;
+                case ResourceType.Grey:
+                    return GetComponent<Brick>().greyBurn[level] * secondRate;
+            }
+
+            return 0;
+        }
+
+        //Init
+        void Start()
+        {
+            bot = GameController.Instance.bot;
+            brick = GetComponent<Brick>();
+            healTimer = healRate[brick.GetPoweredLevel()];
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            if (healTimer <= 0)
+            {
+                TryHeal();
+            }
+            else
+            {
+                healTimer -= Time.deltaTime;
+            }
+        }
+
+        //Check for something to heal and available resources
+        void TryHeal()
+        {
+            GameObject target = FindNewTarget();
+            if (target && brick.TryBurnResources(healPower[brick.GetPoweredLevel()]))
+            {
+                HealTarget(target.GetComponent<Brick>());
+            }
+        }
+
+        //Find closest damaged brick in range
+        public GameObject FindNewTarget()
+        {
+            float closestDistance = 99;
+            GameObject newTarget = null;
+
+            foreach (GameObject brickObj in bot.brickList)
+            {
+                Brick brick = brickObj.GetComponent<Brick>();
+                if (!brick.IsParasite())
                 {
-                    float dist = Vector3.Distance(brickObj.transform.position, transform.position);
-                    if ((dist < closestDistance) && (dist < healRange[brick.GetPoweredLevel()]))
+                    if (brick.brickHP < brick.brickMaxHP[brick.GetPoweredLevel()])
                     {
-                        closestDistance = dist;
-                        newTarget = brickObj;
+                        float dist = Vector3.Distance(brickObj.transform.position, transform.position);
+                        if ((dist < closestDistance) && (dist < healRange[brick.GetPoweredLevel()]))
+                        {
+                            closestDistance = dist;
+                            newTarget = brickObj;
+                        }
                     }
                 }
             }
-        }
-        return newTarget;
-    }
 
-    //Heal damaged brick, consume resources, and restart timer
-    public void HealTarget(Brick targetBrick)
-    {
-        targetBrick.AdjustHP(healPower[brick.GetPoweredLevel()]);
-        if (targetBrick.brickHP >= targetBrick.brickMaxHP[targetBrick.GetPoweredLevel()])
+            return newTarget;
+        }
+
+        //Heal damaged brick, consume resources, and restart timer
+        public void HealTarget(Brick targetBrick)
         {
-            targetBrick.brickHP = targetBrick.brickMaxHP[targetBrick.GetPoweredLevel()];
+            targetBrick.AdjustHP(healPower[brick.GetPoweredLevel()]);
+            if (targetBrick.brickHP >= targetBrick.brickMaxHP[targetBrick.GetPoweredLevel()])
+            {
+                targetBrick.brickHP = targetBrick.brickMaxHP[targetBrick.GetPoweredLevel()];
+            }
+
+            GameObject newHealSymbol = Instantiate(healingSymbol, gameObject.transform);
+            StartCoroutine(MoveSymbol(newHealSymbol, targetBrick.transform));
+            StartCoroutine(FadeOutSymbol(newHealSymbol));
+
+            healTimer = healRate[brick.GetPoweredLevel()];
         }
 
-        GameObject newHealSymbol = Instantiate(healingSymbol, gameObject.transform);
-        StartCoroutine(MoveSymbol(newHealSymbol, targetBrick.transform));
-        StartCoroutine(FadeOutSymbol(newHealSymbol));
-
-        healTimer = healRate[brick.GetPoweredLevel()];
-    }
-
-    //Move healing effect toward brick
-    IEnumerator MoveSymbol(GameObject symbol, Transform target)
-    {
-        Transform originalPos = gameObject.transform;
-        Vector3 newPos = target.position;
-        float duration = (newPos - originalPos.position).magnitude / 2.0f;
-        float t = 0.0f;
-        while (symbol && t < duration)
+        //Move healing effect toward brick
+        IEnumerator MoveSymbol(GameObject symbol, Transform target)
         {
-            symbol.transform.position = Vector3.Lerp(originalPos.position, newPos, t / duration);
-            yield return null;
-            t += Time.deltaTime;
+            Transform originalPos = gameObject.transform;
+            Vector3 newPos = target.position;
+            float duration = (newPos - originalPos.position).magnitude / 2.0f;
+            float t = 0.0f;
+            while (symbol && t < duration)
+            {
+                symbol.transform.position = Vector3.Lerp(originalPos.position, newPos, t / duration);
+                yield return null;
+                t += Time.deltaTime;
+            }
         }
-    }
 
-    //Fade healing effect over time
-    IEnumerator FadeOutSymbol(GameObject symbol)
-    {
-        SpriteRenderer spriteR = symbol.GetComponent<SpriteRenderer>();
-
-        Color tmpColor = spriteR.color;
-        float fadeTime = 1.0f;
-        while (tmpColor.a > 0f)
+        //Fade healing effect over time
+        IEnumerator FadeOutSymbol(GameObject symbol)
         {
-            tmpColor.a -= Time.deltaTime / fadeTime;
-            spriteR.color = tmpColor;
-            if (tmpColor.a <= 0)
-                tmpColor.a = 0;
-            yield return null;
-            spriteR.color = tmpColor;
-        }
+            SpriteRenderer spriteR = symbol.GetComponent<SpriteRenderer>();
 
-        Destroy(symbol);
+            Color tmpColor = spriteR.color;
+            float fadeTime = 1.0f;
+            while (tmpColor.a > 0f)
+            {
+                tmpColor.a -= Time.deltaTime / fadeTime;
+                spriteR.color = tmpColor;
+                if (tmpColor.a <= 0)
+                    tmpColor.a = 0;
+                yield return null;
+                spriteR.color = tmpColor;
+            }
+
+            Destroy(symbol);
+        }
     }
 }

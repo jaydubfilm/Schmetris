@@ -1,30 +1,36 @@
 ﻿using UnityEngine;
 
-public class EnemyBullet : MonoBehaviour
+namespace StarSalvager.Prototype
 {
-    Transform target = null;
-    float duration = 0.1f;
-    Vector3 startPos;
-    float startDuration;
 
-    public void Init(Transform newTarget)
+    [System.Obsolete("Prototype Only Script")]
+    public class EnemyBullet : MonoBehaviour
     {
-        startPos = transform.position;
-        startDuration = duration;
-        target = newTarget;
-    }
+        Transform target = null;
+        float duration = 0.1f;
+        Vector3 startPos;
+        float startDuration;
 
-    // Update is called once per frame
-    void Update()
-    {
-        duration = Mathf.Max(0, duration - Time.deltaTime);
-        if (!target || duration <= 0)
+        public void Init(Transform newTarget)
         {
-            Destroy(gameObject);
+            startPos = transform.position;
+            startDuration = duration;
+            target = newTarget;
         }
-        else
+
+        // Update is called once per frame
+        void Update()
         {
-            transform.position = startPos + (target.position - startPos) * (startDuration - duration) / startDuration;
+            duration = Mathf.Max(0, duration - Time.deltaTime);
+            if (!target || duration <= 0)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                transform.position =
+                    startPos + (target.position - startPos) * (startDuration - duration) / startDuration;
+            }
         }
     }
 }

@@ -2,23 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnableDisableObj : MonoBehaviour
+namespace StarSalvager.Prototype
 {
-
-    //enables or disables obj on start
-    public bool enable;
-    public GameObject obj;
-    public bool setFuelAmt;
-
-
-    void OnEnable()
+    [System.Obsolete("Prototype Only Script")]
+    public class EnableDisableObj : MonoBehaviour
     {
-        if (enable) obj.SetActive(true);
-        else obj.SetActive(false);
 
-        if(setFuelAmt)
-            TutorialManager.Instance.SetFuel(27);
+        //enables or disables obj on start
+        public bool enable;
+        public GameObject obj;
+        public bool setFuelAmt;
+
+
+        void OnEnable()
+        {
+            if (enable) obj.SetActive(true);
+            else obj.SetActive(false);
+
+            if (setFuelAmt)
+                TutorialManager.Instance.SetFuel(27);
+
+        }
 
     }
-
 }

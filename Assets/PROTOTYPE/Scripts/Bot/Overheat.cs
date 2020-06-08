@@ -1,86 +1,92 @@
 ﻿using UnityEngine;
 
-//Bot overheat effect
-public class Overheat : MonoBehaviour
+namespace StarSalvager.Prototype
 {
-    //Bot overheat stats
-    public int maxHeatLevel = 3;
-    public float coolDownDuration = 3.0f;
-
-    //Current heat level
-    private int heatLevel = 0;
-    private float lastHitTime;
-
-    //Components
-    public Sprite[] heatSpriteArr;
-
-    //Add events when overheat is active
-    private void OnEnable()
+    [System.Obsolete("Prototype Only Script")]
+//Bot overheat effect
+    public class Overheat : MonoBehaviour
     {
-        GameController.OnGameRestart += ResetHeat;
-        GameController.OnLevelRestart += ResetHeat;
-    }
+        //Bot overheat stats
+        public int maxHeatLevel = 3;
+        public float coolDownDuration = 3.0f;
 
-    //Stop listening for events when inactive
-    private void OnDisable()
-    {
-        GameController.OnGameRestart -= ResetHeat;
-        GameController.OnLevelRestart -= ResetHeat;
-    }
+        //Current heat level
+        private int heatLevel = 0;
+        private float lastHitTime;
 
-    //Remove overheating in between levels
-    void ResetHeat()
-    {
-        heatLevel = 0;
-    }
+        //Components
+        public Sprite[] heatSpriteArr;
 
-    //Add heat when bricks are destroyed
-    public void AddHeat()
-    {
-        heatLevel++;
-        UpdateHeatSprite();
-        if (heatLevel > maxHeatLevel)
+        //Add events when overheat is active
+        private void OnEnable()
         {
-            GameController.Instance.EndGame("CORE OVERHEATED");
+            GameController.OnGameRestart += ResetHeat;
+            GameController.OnLevelRestart += ResetHeat;
         }
-        lastHitTime = Time.time;
-    }
 
-    //Increase heat sprite opacity as heat level increases
-    void UpdateHeatSprite()
-    {
-        int rad = gameObject.GetComponent<Bot>().maxBotRadius;
-        Color overlayColor;
-        GameObject heatOverlay;
-        GameObject coreBrick;
+        //Stop listening for events when inactive
+        private void OnDisable()
+        {
+            GameController.OnGameRestart -= ResetHeat;
+            GameController.OnLevelRestart -= ResetHeat;
+        }
 
-        float l;
+        //Remove overheating in between levels
+        void ResetHeat()
+        {
+            heatLevel = 0;
+        }
 
-        coreBrick = gameObject.GetComponent<Bot>().brickArr[rad, rad];
+        //Add heat when bricks are destroyed
+        public void AddHeat()
+        {
+            heatLevel++;
+            UpdateHeatSprite();
+            if (heatLevel > maxHeatLevel)
+            {
+                GameController.Instance.EndGame("CORE OVERHEATED");
+            }
 
-        if (coreBrick == null)
-            return;
+            lastHitTime = Time.time;
+        }
 
-        heatOverlay = coreBrick.transform.Find("HeatOverlay").gameObject;
-        overlayColor = heatOverlay.GetComponent<SpriteRenderer>().color;
-        l = (float)heatLevel;
-        overlayColor.a = l / maxHeatLevel;
-        heatOverlay.GetComponent<SpriteRenderer>().color = overlayColor;
-    }
+        //Increase heat sprite opacity as heat level increases
+        void UpdateHeatSprite()
+        {
+            int rad = gameObject.GetComponent<Bot>().maxBotRadius;
+            Color overlayColor;
+            GameObject heatOverlay;
+            GameObject coreBrick;
 
-    //Lower heat over time
-    public void RemoveHeat()
-    {
-        heatLevel--;
-        UpdateHeatSprite();
-        lastHitTime = Time.time;
-    }
+            float l;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if ((heatLevel > 0) && ((Time.time - lastHitTime) > coolDownDuration)) {
-            RemoveHeat();
+            coreBrick = gameObject.GetComponent<Bot>().brickArr[rad, rad];
+
+            if (coreBrick == null)
+                return;
+
+            heatOverlay = coreBrick.transform.Find("HeatOverlay").gameObject;
+            overlayColor = heatOverlay.GetComponent<SpriteRenderer>().color;
+            l = (float) heatLevel;
+            overlayColor.a = l / maxHeatLevel;
+            heatOverlay.GetComponent<SpriteRenderer>().color = overlayColor;
+        }
+
+        //Lower heat over time
+        public void RemoveHeat()
+        {
+            heatLevel--;
+            UpdateHeatSprite();
+            lastHitTime = Time.time;
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            if ((heatLevel > 0) && ((Time.time - lastHitTime) > coolDownDuration))
+            {
+                RemoveHeat();
+            }
         }
     }
 }

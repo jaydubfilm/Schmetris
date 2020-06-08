@@ -2,29 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cell : MonoBehaviour
+namespace StarSalvager.Prototype
 {
-    public int xOffset;
-    public int yOffset;
-    public int matchType;
-
-    // Start is called before the first frame update
-    void Start()
+    [System.Obsolete("Prototype Only Script")]
+    public class Cell : MonoBehaviour
     {
-        xOffset = Mathf.RoundToInt((transform.position.x - transform.parent.position.x) / ScreenStuff.colSize);
-        yOffset = Mathf.RoundToInt((transform.position.y - transform.parent.position.y) / ScreenStuff.rowSize);
-    }
+        public int xOffset;
+        public int yOffset;
+        public int matchType;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        // Start is called before the first frame update
+        void Start()
+        {
+            xOffset = Mathf.RoundToInt((transform.position.x - transform.parent.position.x) / ScreenStuff.colSize);
+            yOffset = Mathf.RoundToInt((transform.position.y - transform.parent.position.y) / ScreenStuff.rowSize);
+        }
 
-    public void ExplodeCell() {
-        Animator anim;
+        // Update is called once per frame
+        void Update()
+        {
 
-        anim = gameObject.GetComponentInChildren<Bit>().GetComponent<Animator>();
-        anim.enabled = true;
+        }
+
+        public void ExplodeCell()
+        {
+            Animator anim;
+
+            anim = gameObject.GetComponentInChildren<Bit>().GetComponent<Animator>();
+            anim.enabled = true;
+        }
     }
 }

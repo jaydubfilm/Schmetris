@@ -1,21 +1,25 @@
 ﻿using UnityEngine;
 
-//Camera smoothing controls
-public class CameraController : MonoBehaviour
+namespace StarSalvager.Prototype
 {
-    Vector3 startPos;
-    public float smoothing = 4.0f;
-
-    //Init
-    void Start()
+    [System.Obsolete("Prototype Only Script")]
+//Camera smoothing controls
+    public class CameraController : MonoBehaviour
     {
-        DontDestroyOnLoad(this);
-        startPos = transform.position;
-    }
+        Vector3 startPos;
+        public float smoothing = 4.0f;
 
-    //Smooth camera to center over bot
-    void Update()
-    {
-        transform.position = Vector3.Lerp(transform.position, startPos, smoothing * Time.deltaTime);
+        //Init
+        void Start()
+        {
+            DontDestroyOnLoad(this);
+            startPos = transform.position;
+        }
+
+        //Smooth camera to center over bot
+        void Update()
+        {
+            transform.position = Vector3.Lerp(transform.position, startPos, smoothing * Time.deltaTime);
+        }
     }
 }

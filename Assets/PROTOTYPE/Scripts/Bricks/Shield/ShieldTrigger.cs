@@ -1,148 +1,157 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-//This script goes on a child of the shield brick, and is used to detect what bricks should be shielded
-public class ShieldTrigger : MonoBehaviour
+namespace StarSalvager.Prototype
 {
-    //Components
-    Bot parentBot;
-    ShieldBrick parentBrick;
-    public GameObject outline;
-
-    //Shield stats
-    bool hasShield = false;
-
-    //Bricks within range
-    public List<Brick> protectedList = new List<Brick>();
-
-    //Init
-    void Start()
+    [System.Obsolete("Prototype Only Script")]//This script goes on a child of the shield brick, and is used to detect what bricks should be shielded
+    public class ShieldTrigger : MonoBehaviour
     {
-        parentBrick = GetComponentInParent<ShieldBrick>();
-        parentBot = GetComponentInParent<Bot>();
-    }
+        //Components
+        Bot parentBot;
+        ShieldBrick parentBrick;
+        public GameObject outline;
 
-    //Toggle shield outline when shield is activated or deactivated
-    public void SetShieldOutline(bool isActive)
-    {
-        if (hasShield != isActive)
+        //Shield stats
+        bool hasShield = false;
+
+        //Bricks within range
+        public List<Brick> protectedList = new List<Brick>();
+
+        //Init
+        void Start()
         {
-            hasShield = isActive;
-            if (hasShield)
+            parentBrick = GetComponentInParent<ShieldBrick>();
+            parentBot = GetComponentInParent<Bot>();
+        }
+
+        //Toggle shield outline when shield is activated or deactivated
+        public void SetShieldOutline(bool isActive)
+        {
+            if (hasShield != isActive)
             {
-                for(int i = 0;i<protectedList.Count;i++)
+                hasShield = isActive;
+                if (hasShield)
                 {
-                    if (protectedList[i])
+                    for (int i = 0; i < protectedList.Count; i++)
                     {
-                        AddShield(protectedList[i]);
+                        if (protectedList[i])
+                        {
+                            AddShield(protectedList[i]);
+                        }
+                        else
+                        {
+                            protectedList.RemoveAt(i--);
+                        }
                     }
-                    else
+                }
+                else
+                {
+                    for (int i = 0; i < protectedList.Count; i++)
                     {
-                        protectedList.RemoveAt(i--);
+                        if (protectedList[i])
+                        {
+                            RemoveShield(protectedList[i]);
+                        }
+                        else
+                        {
+                            protectedList.RemoveAt(i--);
+                        }
                     }
                 }
             }
-            else
+        }
+
+        //Add a shield to this object
+        public void AddShield(Brick targetBrick)
+        {
+            if (!targetBrick.IsParasite() && !targetBrick.activeShields.Contains(parentBrick))
             {
-                for (int i = 0; i < protectedList.Count; i++)
+                targetBrick.activeShields.Add(parentBrick);
+            }
+
+            if (targetBrick.activeShields.Contains(parentBrick) &&
+                !targetBrick.GetComponentInChildren<OutlineCheck>(false))
+            {
+                Instantiate(outline, targetBrick.transform.position, targetBrick.transform.rotation,
+                    targetBrick.transform);
+                parentBrick.UpdateShieldColour();
+            }
+        }
+
+        //Remove a shield from this object
+        public void RemoveShield(Brick targetBrick)
+        {
+            if (targetBrick.activeShields.Contains(parentBrick))
+            {
+                targetBrick.activeShields.Remove(parentBrick);
+            }
+
+            if (targetBrick.activeShields.Count == 0 && targetBrick.GetComponentInChildren<OutlineCheck>(false))
+            {
+                targetBrick.GetComponentInChildren<OutlineCheck>(false).RemoveShieldOutline();
+            }
+        }
+
+        //An object has entered shield range
+        void OnEnterShield(Brick targetBrick)
+        {
+            if (targetBrick && !protectedList.Contains(targetBrick) &&
+                parentBot.brickList.Contains(targetBrick.gameObject))
+            {
+                protectedList.Add(targetBrick);
+                if (hasShield)
                 {
-                    if (protectedList[i])
-                    {
-                        RemoveShield(protectedList[i]);
-                    }
-                    else
-                    {
-                        protectedList.RemoveAt(i--);
-                    }
+                    AddShield(targetBrick);
                 }
             }
         }
-    }
 
-    //Add a shield to this object
-    public void AddShield(Brick targetBrick)
-    {
-        if (!targetBrick.IsParasite() && !targetBrick.activeShields.Contains(parentBrick))
+        //An object has left shield range
+        public void OnExitShield(Brick targetBrick)
         {
-            targetBrick.activeShields.Add(parentBrick);
-        }
-        if (targetBrick.activeShields.Contains(parentBrick) && !targetBrick.GetComponentInChildren<OutlineCheck>(false))
-        {
-            Instantiate(outline, targetBrick.transform.position, targetBrick.transform.rotation, targetBrick.transform);
-            parentBrick.UpdateShieldColour();
-        }
-    }
-
-    //Remove a shield from this object
-    public void RemoveShield(Brick targetBrick)
-    {
-        if (targetBrick.activeShields.Contains(parentBrick))
-        {
-            targetBrick.activeShields.Remove(parentBrick);
-        }
-        if (targetBrick.activeShields.Count == 0 && targetBrick.GetComponentInChildren<OutlineCheck>(false))
-        {
-            targetBrick.GetComponentInChildren<OutlineCheck>(false).RemoveShieldOutline();
-        }
-    }
-
-    //An object has entered shield range
-    void OnEnterShield(Brick targetBrick)
-    {
-        if(targetBrick && !protectedList.Contains(targetBrick) && parentBot.brickList.Contains(targetBrick.gameObject))
-        {
-            protectedList.Add(targetBrick);
-            if(hasShield)
+            if (targetBrick && protectedList.Contains(targetBrick))
             {
-                AddShield(targetBrick);
-            }
-        }
-    }
-
-    //An object has left shield range
-    public void OnExitShield(Brick targetBrick)
-    {
-        if(targetBrick && protectedList.Contains(targetBrick))
-        {
-            protectedList.Remove(targetBrick);
-            RemoveShield(targetBrick);
-        }
-    }
-
-    //Update bricks in range
-    private void Update()
-    {
-        //Get bricks in range this frame
-        List<Brick> bricksInRange = new List<Brick>();
-        Collider2D[] boxCheck = Physics2D.OverlapBoxAll(transform.position, GetComponent<BoxCollider2D>().size, 0);
-        foreach(Collider2D collision in boxCheck)
-        {
-            if(collision.GetComponent<Brick>())
-            {
-                bricksInRange.Add(collision.GetComponent<Brick>());
+                protectedList.Remove(targetBrick);
+                RemoveShield(targetBrick);
             }
         }
 
-        //Parent brick is always in range
-        bricksInRange.Add(parentBrick.GetComponent<Brick>());
-
-        //Remove bricks that have moved out of range or no longer exist
-        for(int i = 0;i<protectedList.Count;i++)
+        //Update bricks in range
+        private void Update()
         {
-            if(!protectedList[i])
+            //Get bricks in range this frame
+            List<Brick> bricksInRange = new List<Brick>();
+            Collider2D[] boxCheck = Physics2D.OverlapBoxAll(transform.position, GetComponent<BoxCollider2D>().size, 0);
+            foreach (Collider2D collision in boxCheck)
             {
-                protectedList.RemoveAt(i--);
+                if (collision.GetComponent<Brick>())
+                {
+                    bricksInRange.Add(collision.GetComponent<Brick>());
+                }
             }
-            else if (!GameController.Instance.bot.brickList.Contains(protectedList[i].gameObject) || !bricksInRange.Contains(protectedList[i]))
-            {
-                OnExitShield(protectedList[i--]);
-            }
-        }
 
-        //Add shield to new bricks
-        foreach(Brick brickInRange in bricksInRange)
-        {
-            OnEnterShield(brickInRange);
+            //Parent brick is always in range
+            bricksInRange.Add(parentBrick.GetComponent<Brick>());
+
+            //Remove bricks that have moved out of range or no longer exist
+            for (int i = 0; i < protectedList.Count; i++)
+            {
+                if (!protectedList[i])
+                {
+                    protectedList.RemoveAt(i--);
+                }
+                else if (!GameController.Instance.bot.brickList.Contains(protectedList[i].gameObject) ||
+                         !bricksInRange.Contains(protectedList[i]))
+                {
+                    OnExitShield(protectedList[i--]);
+                }
+            }
+
+            //Add shield to new bricks
+            foreach (Brick brickInRange in bricksInRange)
+            {
+                OnEnterShield(brickInRange);
+            }
         }
     }
 }

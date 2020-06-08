@@ -2,44 +2,49 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-//Flying text asset used for score and resource gain effects
-public class FloatingText : MonoBehaviour
+namespace StarSalvager.Prototype
 {
-    //Components
-    Text scoreText;
-    Vector3 targetPos = Vector3.zero;
-    const float floatSpeed = 100.0f;
-    const float fadeTime = 1.0f;
-
-    //Specifics of text effect to be set at spawn
-    public void Init(string message, Vector3 target, int size, Color color)
+    [System.Obsolete("Prototype Only Script")]
+//Flying text asset used for score and resource gain effects
+    public class FloatingText : MonoBehaviour
     {
-        scoreText = GetComponent<Text>();
-        targetPos = target;
-        scoreText.text = message;
-        scoreText.fontSize = size;
-        scoreText.color = color;
-        StartCoroutine(FadeOverTime());
-    }
+        //Components
+        Text scoreText;
+        Vector3 targetPos = Vector3.zero;
+        const float floatSpeed = 100.0f;
+        const float fadeTime = 1.0f;
 
-    //Move toward target position
-    void Update()
-    {
-        transform.position += (targetPos - transform.position).normalized * floatSpeed * Time.deltaTime;
-    }
-
-    //Fade out over time and destroy once completely invisible
-    IEnumerator FadeOverTime()
-    {
-        float time = 0;
-        while(time < fadeTime)
+        //Specifics of text effect to be set at spawn
+        public void Init(string message, Vector3 target, int size, Color color)
         {
-            time += Time.deltaTime;
-            Color textColor = scoreText.color;
-            textColor.a = 1 - time / fadeTime;
-            scoreText.color = textColor;
-            yield return 0;
+            scoreText = GetComponent<Text>();
+            targetPos = target;
+            scoreText.text = message;
+            scoreText.fontSize = size;
+            scoreText.color = color;
+            StartCoroutine(FadeOverTime());
         }
-        Destroy(gameObject);
+
+        //Move toward target position
+        void Update()
+        {
+            transform.position += (targetPos - transform.position).normalized * floatSpeed * Time.deltaTime;
+        }
+
+        //Fade out over time and destroy once completely invisible
+        IEnumerator FadeOverTime()
+        {
+            float time = 0;
+            while (time < fadeTime)
+            {
+                time += Time.deltaTime;
+                Color textColor = scoreText.color;
+                textColor.a = 1 - time / fadeTime;
+                scoreText.color = textColor;
+                yield return 0;
+            }
+
+            Destroy(gameObject);
+        }
     }
 }

@@ -2,26 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FuelBar : MonoBehaviour
+namespace StarSalvager.Prototype
 {
-    private Transform bar;
-
-
-    // Start is called before the first frame update
-    void Awake()
+    [System.Obsolete("Prototype Only Script")]
+    public class FuelBar : MonoBehaviour
     {
-        DontDestroyOnLoad(this);
-        bar = transform.Find("Bar");
+        private Transform bar;
 
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        // Start is called before the first frame update
+        void Awake()
+        {
+            DontDestroyOnLoad(this);
+            bar = transform.Find("Bar");
 
-    public void SetLevel (float levelNormalized){
-        bar.localScale = new Vector3(levelNormalized,1f);
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
+
+        public void SetLevel(float levelNormalized)
+        {
+            bar.localScale = new Vector3(levelNormalized, 1f);
+        }
     }
 }

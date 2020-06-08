@@ -3,29 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //This script is culled from UI Buttons To disable the tutorial assets so they don't interfere with other levels
-
-public class DisableTutorial : MonoBehaviour
+namespace StarSalvager.Prototype
 {
-    public bool disableTutorial;
-    public TutorialManager tutorialManager;
-    public GameObject tutorialPanel;
-    
-    public void RemoveTutorial()
+    [System.Obsolete("Prototype Only Script")]
+    public class DisableTutorial : MonoBehaviour
     {
-        if (disableTutorial == true)
+        public bool disableTutorial;
+        public TutorialManager tutorialManager;
+        public GameObject tutorialPanel;
+
+        public void RemoveTutorial()
         {
-            if (tutorialManager != null)
-                tutorialManager.enabled = false;
-            if (tutorialPanel != null)
-                tutorialPanel.SetActive(false);
-        }
-        else
-        {
-            GameController.Instance.tutorialHasStarted = false;
-            if (tutorialManager != null)
-                tutorialManager.enabled = true;
-            if (tutorialPanel != null)
-                tutorialPanel.SetActive(true);
+            if (disableTutorial == true)
+            {
+                if (tutorialManager != null)
+                    tutorialManager.enabled = false;
+                if (tutorialPanel != null)
+                    tutorialPanel.SetActive(false);
+            }
+            else
+            {
+                GameController.Instance.tutorialHasStarted = false;
+                if (tutorialManager != null)
+                    tutorialManager.enabled = true;
+                if (tutorialPanel != null)
+                    tutorialPanel.SetActive(true);
+            }
         }
     }
 }
