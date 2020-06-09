@@ -1,17 +1,24 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using StarSalvager;
+using Newtonsoft.Json;
+using Sirenix.OdinInspector;
+using StarSalvager.Utilities;
 using UnityEngine;
 
 namespace StarSalvager
 {
     public class Bot : MonoBehaviour, IHealth, IInput
     {
+        [SerializeField]
+        public float TESTBitSize;
         //============================================================================================================//
+
         
-        private List<AttachableBase> attachedBlocks;
+        public List<AttachableBase> attachedBlocks => _attachedBlocks ?? (_attachedBlocks = new List<AttachableBase>());
+
+        [SerializeField, ReadOnly]
+        private List<AttachableBase> _attachedBlocks;
         
         //============================================================================================================//
 
@@ -19,13 +26,15 @@ namespace StarSalvager
         private float _startingHealth;
         public float CurrentHealth => _currentHealth;
         private float _currentHealth;
+
+        private new Transform transform;
         
         //============================================================================================================//
 
         // Start is called before the first frame update
         private void Start()
         {
-
+            transform = gameObject.transform;
         }
 
         // Update is called once per frame
@@ -35,19 +44,67 @@ namespace StarSalvager
         }
         
         //============================================================================================================//
-        public void AttachNewBit(Vector2Int coordinate, AttachableBase newAttachable, DIRECTION direction)
+
+        public void Rotate(ROTATION rotation)
         {
-            var target = attachedBlocks
-                .FirstOrDefault(b => b.Coordinate == coordinate);
+            Quaternion toRotate;
+            switch (rotation)
+            {
+                case ROTATION.CW:
+                    toRotate = Quaternion.Euler(0, 0, -90);
+                    break;
+                case ROTATION.CCW:
+                    toRotate = Quaternion.Euler(0, 0, 90);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rotation), rotation, null);
+            }
+            transform.rotation = transform.rotation * toRotate;
             
-            if(target == null)
-                throw new NullReferenceException($"Trying to add {newAttachable.name} to {coordinate}, but {coordinate} block does not exist");
-            
-            AttachNewBit(target, newAttachable, direction);
+            foreach (var attachedBlock in attachedBlocks)
+            {
+                attachedBlock.RotateCoordinate(rotation);
+            }
         }
-        public void AttachNewBit(AttachableBase target, AttachableBase newAttachable, DIRECTION direction)
+        
+        //============================================================================================================//
+
+        public void AttachNewBit(Vector2Int coordinate, AttachableBase newAttachable)
         {
+            newAttachable.Coordinate = coordinate;
+            newAttachable.SetAttached(true);
+            newAttachable.transform.position = Vector2.one * coordinate * TESTBitSize;
+            newAttachable.transform.SetParent(transform);
             
+            attachedBlocks.Add(newAttachable);
+        }
+
+        public void PushNewBit(AttachableBase newAttachable, DIRECTION direction)
+        {
+            var newCoord = direction.ToVector2Int();
+
+            CoordinateOccupied(direction, ref newCoord);
+
+            newAttachable.Coordinate = newCoord;
+            newAttachable.SetAttached(true);
+            newAttachable.transform.position = Vector2.one * newCoord * TESTBitSize;
+            newAttachable.transform.SetParent(transform);
+            
+            attachedBlocks.Add(newAttachable);
+        }
+
+        private bool CoordinateOccupied(DIRECTION direction, ref Vector2Int coordinate)
+        {
+            var check = coordinate;
+            var exists = attachedBlocks
+                .Any(b => b.Coordinate == check);
+
+            if (!exists)
+                return false;
+
+            coordinate += direction.ToVector2Int();
+
+            return CoordinateOccupied(direction, ref coordinate);
         }
         
 
@@ -70,5 +127,6 @@ namespace StarSalvager
         }
         
         //============================================================================================================//
+
     }
 }
