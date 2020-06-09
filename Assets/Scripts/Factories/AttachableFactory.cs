@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace StarSalvager.Factories
 {
+    //Based on: https://www.dofactory.com/net/factory-method-design-pattern
     public class AttachableFactory : Singleton<AttachableFactory>
     {
         [SerializeField]
@@ -15,6 +16,13 @@ namespace StarSalvager.Factories
         private BitFactory _bitFactory;
         private PartFactory _partFactory;
     
+        /// <summary>
+        /// Obtains a FactoryBase of Type T
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        //TODO Investigate whether or not I can combine both factories into single Factory
         public T GetFactory<T>() where T: FactoryBase
         {
             var typeName = typeof(T).Name;

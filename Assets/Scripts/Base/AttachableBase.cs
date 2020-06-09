@@ -41,6 +41,7 @@ namespace StarSalvager
         public void SetAttached(bool isAttached)
         {
             Attached = isAttached;
+            collider.usedByComposite = isAttached;
         }
 
         public void RotateCoordinate(ROTATION rotation)
