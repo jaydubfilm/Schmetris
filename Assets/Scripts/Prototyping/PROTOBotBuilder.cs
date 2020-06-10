@@ -15,6 +15,7 @@ public class PROTOBotBuilder : MonoBehaviour
 
     }
 
+    //FIXME Need to update this so that Unity uses both Inputs again
     // Update is called once per frame
     private void Update()
     {
@@ -24,32 +25,20 @@ public class PROTOBotBuilder : MonoBehaviour
             {
                 CreateBit(DIRECTION.LEFT);
             }
-
+        
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 CreateBit(DIRECTION.RIGHT);
             }
-
+        
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 CreateBit(DIRECTION.UP);
             }
-
+        
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 CreateBit(DIRECTION.DOWN);
-            }
-        }
-        else
-        {
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                bot.Rotate(ROTATION.CCW);
-            }
-
-            if (Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                bot.Rotate(ROTATION.CW);
             }
         }
 
@@ -57,7 +46,7 @@ public class PROTOBotBuilder : MonoBehaviour
         {
             bot.ExportLayout();
         }
-
+        
         if (Input.GetKeyDown(KeyCode.I))
         {
             bot.ImportLayout(importTest);

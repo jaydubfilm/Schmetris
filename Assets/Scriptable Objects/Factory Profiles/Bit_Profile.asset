@@ -15,9 +15,40 @@ MonoBehaviour:
   Prefab: {fileID: 4611369530616709383, guid: 81ca8fa4359ebc149be244e25fdbcb99, type: 3}
   profiles:
   - bitType: 0
+    _name: Asteroid
+    _sprites:
+    - {fileID: 21300002, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - bitType: 1
+    _name: Bluesalt
+    _sprites:
+    - {fileID: 21300110, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+    - {fileID: 21300112, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+    - {fileID: 21300114, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - bitType: 2
+    _name: Greenium
+    _sprites:
+    - {fileID: 21300142, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+    - {fileID: 21300144, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+    - {fileID: 21300146, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - bitType: 3
+    _name: Greyscale
+    _sprites:
+    - {fileID: 21300126, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+    - {fileID: 21300128, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+    - {fileID: 21300130, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - bitType: 4
+    _name: Reddite
+    _sprites:
+    - {fileID: 21300078, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+    - {fileID: 21300080, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+    - {fileID: 21300082, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - bitType: 5
+    _name: Yelletron
+    _sprites:
+    - {fileID: 21300062, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+    - {fileID: 21300064, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+    - {fileID: 21300066, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   - bitType: 6
+    _name: Energy
+    _sprites:
+    - {fileID: 21300000, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}

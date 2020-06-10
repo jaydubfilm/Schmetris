@@ -4,13 +4,20 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
+using Input = StarSalvager.Utilities.Inputs.Input;
 
 namespace StarSalvager
 {
     public class Bot : MonoBehaviour, IHealth, IInput
     {
         [SerializeField]
-        public float TESTBitSize;
+        public float TEST_BitSize = 1.28f;
+
+        [SerializeField] 
+        public float TEST_Speed;
+
+        [ReadOnly]
+        public float TEST_PlayerInput;
         //============================================================================================================//
 
         
@@ -33,13 +40,18 @@ namespace StarSalvager
         // Start is called before the first frame update
         private void Start()
         {
+            InitInput();
+            
             transform = gameObject.transform;
         }
 
         // Update is called once per frame
         private void Update()
         {
-
+            if (TEST_PlayerInput == 0f)
+                return;
+                
+            transform.position += Vector3.right * (TEST_PlayerInput * TEST_Speed * Time.deltaTime);
         }
         
         //============================================================================================================//
@@ -72,7 +84,7 @@ namespace StarSalvager
         {
             newAttachable.Coordinate = coordinate;
             newAttachable.SetAttached(true);
-            newAttachable.transform.position = Vector2.one * coordinate * TESTBitSize;
+            newAttachable.transform.position = transform.position + (Vector3)(Vector2.one * coordinate * TEST_BitSize);
             newAttachable.transform.SetParent(transform);
             
             attachedBlocks.Add(newAttachable);
@@ -86,7 +98,7 @@ namespace StarSalvager
 
             newAttachable.Coordinate = newCoord;
             newAttachable.SetAttached(true);
-            newAttachable.transform.position = Vector2.one * newCoord * TESTBitSize;
+            newAttachable.transform.position = transform.position + (Vector3)(Vector2.one * newCoord * TEST_BitSize);
             newAttachable.transform.SetParent(transform);
             
             attachedBlocks.Add(newAttachable);
@@ -115,9 +127,27 @@ namespace StarSalvager
         
         //============================================================================================================//
         
+        //TODO This needs to be fleshed out further
         public void InitInput()
         {
-            throw new System.NotImplementedException();
+            
+            Input.Actions.Default.SideMovement.Enable();
+            Input.Actions.Default.SideMovement.performed += ctx =>
+            {
+                TEST_PlayerInput = ctx.ReadValue<float>();
+            };
+            
+            Input.Actions.Default.Rotate.Enable();
+            Input.Actions.Default.Rotate.performed += ctx =>
+            {
+                var rot = ctx.ReadValue<float>();
+                
+                if(rot < 0)
+                    Rotate(ROTATION.CCW);
+                else if(rot > 0)
+                    Rotate(ROTATION.CW);
+            };
+
         }
 
         public void DeInitInput()

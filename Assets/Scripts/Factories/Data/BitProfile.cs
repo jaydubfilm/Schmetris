@@ -4,15 +4,31 @@ using UnityEngine;
 namespace StarSalvager.Factories.Data
 {
     [System.Serializable]
-    public struct BitProfile: IProfile
+    public struct BitProfile : IProfile
     {
         public int Type => (int) bitType;
-        [FoldoutGroup("$Name")]
+
+        [SerializeField, FoldoutGroup("$Name")]
         public BIT_TYPE bitType;
-        [ShowInInspector, FoldoutGroup("$Name")]
-        public string Name { get; set; }
-        [ShowInInspector, FoldoutGroup("$Name")]
-        public Sprite[] Sprites { get; set; }
+
+        public string Name
+        {
+            get => _name;
+            set => _name = value;
+        }
+
+        [SerializeField, FoldoutGroup("$Name")]
+        private string _name;
+
+
+        public Sprite[] Sprites
+        {
+            get => _sprites;
+            set => _sprites = value;
+        }
+
+        [SerializeField, FoldoutGroup("$Name")]
+        private Sprite[] _sprites;
     }
 
 }
