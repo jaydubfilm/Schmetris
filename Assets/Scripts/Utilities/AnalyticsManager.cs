@@ -57,7 +57,6 @@ namespace StarSalvager.Utilities
                     break;
                 case AnalyticsEventType.LevelComplete:
                     result = ReportLevelComplete(eventDataParameter.ToString(), eventDataDictionary);
-                    analyticsResultSuccessful = false;
                     break;
                 case AnalyticsEventType.TutorialStart:
                     result = ReportTutorialStart(eventDataDictionary);
