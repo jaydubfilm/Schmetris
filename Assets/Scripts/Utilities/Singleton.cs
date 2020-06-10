@@ -2,7 +2,7 @@
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace StarSalvager
+namespace StarSalvager.Utilities
 {
     public class Singleton<T> : MonoBehaviour where T: Object
     {

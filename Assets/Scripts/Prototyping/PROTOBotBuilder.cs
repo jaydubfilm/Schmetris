@@ -1,22 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using StarSalvager;
+﻿using StarSalvager;
 using StarSalvager.Factories;
-using StarSalvager.Utilities;
+using StarSalvager.Utilities.Extensions;
 using UnityEngine;
 
 public class PROTOBotBuilder : MonoBehaviour
 {
-    [SerializeField, TextArea]
-    private string importTest;
+    [SerializeField, TextArea] private string importTest;
 
-    [SerializeField]
-    private Bot bot;
-    
+    [SerializeField] private Bot bot;
+
     // Start is called before the first frame update
     private void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -28,17 +24,17 @@ public class PROTOBotBuilder : MonoBehaviour
             {
                 CreateBit(DIRECTION.LEFT);
             }
-            
+
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 CreateBit(DIRECTION.RIGHT);
             }
-            
+
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 CreateBit(DIRECTION.UP);
             }
-            
+
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 CreateBit(DIRECTION.DOWN);
@@ -50,7 +46,7 @@ public class PROTOBotBuilder : MonoBehaviour
             {
                 bot.Rotate(ROTATION.CCW);
             }
-            
+
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 bot.Rotate(ROTATION.CW);
@@ -61,6 +57,7 @@ public class PROTOBotBuilder : MonoBehaviour
         {
             bot.ExportLayout();
         }
+
         if (Input.GetKeyDown(KeyCode.I))
         {
             bot.ImportLayout(importTest);
@@ -69,7 +66,12 @@ public class PROTOBotBuilder : MonoBehaviour
 
     private void CreateBit(DIRECTION direction)
     {
-        var newBit = AttachableFactory.Instance.GetFactory<BitFactory>().CreateObject<AttachableBase>();
+        var newBit = AttachableFactory.Instance
+            .GetFactory<BitAttachableFactory>()
+            .CreateObject<AttachableBase>(
+                (BIT_TYPE) Random.Range(0, 7),
+                Random.Range(0, 3));
+
         bot.PushNewBit(newBit, direction);
     }
 }

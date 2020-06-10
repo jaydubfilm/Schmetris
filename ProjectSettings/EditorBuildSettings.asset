@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Scenes/Prototyping.unity
+    path: Assets/_Scenes/AlexB_Prototyping.unity
     guid: 1b0fe85a4155fb34886a20a119847f89
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: bf0c805c5e0627a4998d083738cc59b3,
