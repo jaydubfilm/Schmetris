@@ -1,26 +1,26 @@
-﻿using StarSalvager.Utilities;
+﻿using StarSalvager.Factories.Data;
+using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
 namespace StarSalvager.Factories
 {
-    public class PartFactory : FactoryBase
+    public class PartAttachableFactory : AttachableFactoryBase<PartProfile, PART_TYPE>
     {
-        public PartFactory(GameObject prefab) : base(prefab)
+        public PartAttachableFactory(AttachableProfileScriptableObject factoryProfile) : base(factoryProfile)
         {
         }
         
         public GameObject CreateGameObject(BlockData blockData)
         {
-            var temp = Object.Instantiate(prefab).GetComponent<Part>();
+            var temp = Object.Instantiate(factoryProfile.Prefab).GetComponent<Part>();
             temp.LoadBlockData(blockData);
 
             return temp.gameObject;
         }
         public T CreateObject<T>(BlockData blockData)
         {
-            var temp = Object.Instantiate(prefab).GetComponent<Part>();
-            temp.LoadBlockData(blockData);
+            var temp = CreateGameObject(blockData);
 
             return temp.GetComponent<T>();
 

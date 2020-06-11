@@ -1,4 +1,5 @@
-﻿using StarSalvager.Utilities.JsonDataTypes;
+﻿using StarSalvager.Factories;
+using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
 namespace StarSalvager
