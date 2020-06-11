@@ -6,39 +6,41 @@ namespace StarSalvager
 {
     public class Testing : MonoBehaviour
     {
-        public GameObject[] m_obstacles;
-        public GameObject[] m_agents;
+        private GameObject[] m_obstacles;
+        private GameObject[] m_agents;
+        private Vector2[] m_agentDestinations;
+        private WorldGrid m_grid;
         
         void Start()
         {
-            m_obstacles = new GameObject[100];
+            m_grid = new WorldGrid(100, 100, 2);
+            m_obstacles = new GameObject[200];
+            m_agents = new GameObject[20];
+            m_agentDestinations = new Vector2[20];
 
             for (int i = 0; i < m_obstacles.Length; i++)
             {
                 GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 m_obstacles[i] = sphere;
-
-                m_obstacles[i].transform.position = new Vector2(Random.Range(-200, 200), Random.Range(-200, 200));
+                m_obstacles[i].transform.position = m_grid.GetRandomGridWorldPosition();
             }
-
-            m_agents = new GameObject[500];
 
             for (int i = 0; i < m_agents.Length; i++)
             {
                 GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 m_agents[i] = sphere;
-
-                m_agents[i].transform.position = new Vector2(Random.Range(-200, -190), Random.Range(-200, 200));
+                m_agents[i].transform.position = m_grid.GetRandomGridWorldPosition();
+                m_agentDestinations[i] = m_grid.GetRandomGridWorldPosition();
             }
         }
 
         void Update()
         {
-            Vector3 destination = new Vector3(0, 0);
             float velocity = 2.0f;
             
             for (int i = 0; i < m_agents.Length; i++)
             {
+                Vector3 destination = m_agentDestinations[i];
                 Vector2 direction = new Vector2(destination.x - m_agents[i].transform.position.x, destination.y - m_agents[i].transform.position.y);
                 direction.Normalize();
                 direction += calculateForceAtPoint(m_agents[i].transform.position, m_obstacles);
