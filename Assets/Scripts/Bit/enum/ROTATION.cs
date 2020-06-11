@@ -1,8 +1,8 @@
 ﻿namespace StarSalvager
 {
-    public enum ROTATION
+    public enum ROTATION : int
     {
-        CW,
-        CCW
+        CW = 0,
+        CCW = 1
     }
 }

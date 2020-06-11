@@ -2,57 +2,26 @@
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
+using Input = StarSalvager.Utilities.Inputs.Input;
 
-public class PROTOBotBuilder : MonoBehaviour
+public class PROTOBotBuilder : MonoBehaviour, IInput
 {
+    //================================================================================================================//
+    
     [SerializeField, TextArea] private string importTest;
 
     [SerializeField] private Bot bot;
+    
+    //================================================================================================================//
 
     // Start is called before the first frame update
     private void Start()
     {
-
+        InitInput();
     }
-
-    //FIXME Need to update this so that Unity uses both Inputs again
-    // Update is called once per frame
-    private void Update()
-    {
-        if (Input.GetKey(KeyCode.LeftAlt))
-        {
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                CreateBit(DIRECTION.LEFT);
-            }
-        
-            if (Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                CreateBit(DIRECTION.RIGHT);
-            }
-        
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                CreateBit(DIRECTION.UP);
-            }
-        
-            if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                CreateBit(DIRECTION.DOWN);
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            bot.ExportLayout();
-        }
-        
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            bot.ImportLayout(importTest);
-        }
-    }
-
+    
+    //================================================================================================================//
+    
     private void CreateBit(DIRECTION direction)
     {
         var newBit = AttachableFactory.Instance
@@ -63,4 +32,49 @@ public class PROTOBotBuilder : MonoBehaviour
 
         bot.PushNewBit(newBit, direction);
     }
+    
+    //================================================================================================================//
+
+    public void InitInput()
+    {
+        Input.Actions.Prototyping.Left.Enable();
+        Input.Actions.Prototyping.Left.performed += ctx =>
+        {
+            CreateBit(DIRECTION.LEFT);
+        };
+        Input.Actions.Prototyping.Right.Enable();
+        Input.Actions.Prototyping.Right.performed += ctx =>
+        {
+            CreateBit(DIRECTION.RIGHT);
+        };
+        Input.Actions.Prototyping.Up.Enable();
+        Input.Actions.Prototyping.Up.performed += ctx =>
+        {
+            CreateBit(DIRECTION.UP);
+        };
+        Input.Actions.Prototyping.Down.Enable();
+        Input.Actions.Prototyping.Down.performed += ctx =>
+        {
+            CreateBit(DIRECTION.DOWN);
+        };
+        
+        Input.Actions.Prototyping.Export.Enable();
+        Input.Actions.Prototyping.Export.performed += ctx =>
+        {
+            bot.ExportLayout();
+        };
+        Input.Actions.Prototyping.Import.Enable();
+        Input.Actions.Prototyping.Import.performed += ctx =>
+        {
+            bot.ImportLayout(importTest);
+        };
+    }
+
+    public void DeInitInput()
+    {
+        throw new System.NotImplementedException();
+    }
+    
+    //================================================================================================================//
+    
 }
