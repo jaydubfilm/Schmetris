@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace StarSalvager
 {
@@ -42,6 +39,11 @@ namespace StarSalvager
         private void OnCollisionEnter2D(Collision2D other)
         {
             Debug.Log($"{gameObject.name} Collided with {other.gameObject.name}");
+            
+            if (!other.gameObject.CompareTag("Player"))
+                return;
+            
+            OnCollide(other.gameObject.GetComponent<Bot>());
         }
         
         //============================================================================================================//
@@ -56,7 +58,7 @@ namespace StarSalvager
         /// <summary>
         /// Called when the object contacts a bot
         /// </summary>
-        protected abstract void OnCollide();
+        protected abstract void OnCollide(Bot bot);
         
         //============================================================================================================//
     }

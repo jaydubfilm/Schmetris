@@ -76,38 +76,7 @@ namespace StarSalvager
         }
 
         //============================================================================================================//
-        //TODO Might want to use Rigidbody motion instead of Transform. Investigate.
-
-        private void MoveBot()
-        {
-            transform.position += Vector3.right * (_currentInput * TEST_Speed * Time.deltaTime);
-        }
-
-
-        private void RotateBot()
-        {
-            var rotation = transform.rotation;
-
-            //Rotates towards the target rotation.
-            rotation = Quaternion.RotateTowards(rotation, targetRotation, TEST_RotSpeed * Time.deltaTime);
-            transform.rotation = rotation;
-
-            //Here we check how close to the final rotation we are.
-            var remainingDegrees = Quaternion.Angle(rotation, targetRotation);
-
-            //If we're within 1deg we will count it as complete, otherwise continue to rotate.
-            if (remainingDegrees > 1f)
-                return;
-
-            _rotating = false;
-            //Force set the rotation to the target, in case the bot is not exactly on target
-            transform.rotation = targetRotation;
-            targetRotation = Quaternion.identity;
-        }
-
-        //============================================================================================================//
-
-
+        
         /// <summary>
         /// Triggers a rotation 90deg in the specified direction. If the player is already rotating, it adds 90deg onto
         /// the target rotation.
@@ -147,6 +116,97 @@ namespace StarSalvager
         }
         
         //============================================================================================================//
+        
+        //TODO Might want to use Rigidbody motion instead of Transform. Investigate.
+
+        private void MoveBot()
+        {
+            transform.position += Vector3.right * (_currentInput * TEST_Speed * Time.deltaTime);
+        }
+
+
+        private void RotateBot()
+        {
+            var rotation = transform.rotation;
+
+            //Rotates towards the target rotation.
+            rotation = Quaternion.RotateTowards(rotation, targetRotation, TEST_RotSpeed * Time.deltaTime);
+            transform.rotation = rotation;
+
+            //Here we check how close to the final rotation we are.
+            var remainingDegrees = Quaternion.Angle(rotation, targetRotation);
+
+            //If we're within 1deg we will count it as complete, otherwise continue to rotate.
+            if (remainingDegrees > 1f)
+                return;
+
+            _rotating = false;
+            //Force set the rotation to the target, in case the bot is not exactly on target
+            transform.rotation = targetRotation;
+            targetRotation = Quaternion.identity;
+        }
+
+        //============================================================================================================//
+
+        public bool TryAddNewAttachable(AttachableBase attachable)
+        {
+            if (attachable is Bit bit)
+            {
+                //TODO Need to get the coordinate of the collision
+                GetClosestAttachable(bit.transform.position);
+                
+                switch (bit.Type)
+                {
+                    case BIT_TYPE.BLACK:
+                        //TODO Destroy both this and collided Bit
+                        break;
+                    case BIT_TYPE.BLUE:
+                    case BIT_TYPE.GREEN:
+                    case BIT_TYPE.GREY:
+                    case BIT_TYPE.RED:
+                    case BIT_TYPE.YELLOW:
+                        //TODO Add these to the block depending on its relative position
+                        break;
+                    case BIT_TYPE.WHITE:
+                        //TODO Destroy collided Bit
+                        //TODO Try and shift collided row (Depending on direction)
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            //TODO Need to add other options here (ie Enemy) 
+            
+            
+            
+            return false;
+        }
+
+        public void GetClosestAttachable(Vector2 worldPosition)
+        {
+            var botPosition = (Vector2)transform.position;
+
+            var calculated = (worldPosition - botPosition) / TEST_BitSize;
+            var coordinate = new Vector2Int(Mathf.RoundToInt(calculated.x), Mathf.RoundToInt(calculated.y));
+
+            var smallestDist = 999f;
+            AttachableBase selected = null;
+            foreach (var attached in attachedBlocks)
+            {
+                var dist = Vector2Int.Distance(attached.Coordinate, coordinate);
+                if (dist >= smallestDist)
+                    continue;
+
+                smallestDist = dist;
+                selected = attached;
+            }
+            
+            //FIXME Need to consider that there may not be any attached blocks
+            
+            Debug.Log($"Calculated: {calculated}, Coordinate: {coordinate}, Closest: {selected.gameObject.name} {selected.Coordinate}", selected);
+        }
+        
+        //============================================================================================================//
 
         public void AttachNewBit(Vector2Int coordinate, AttachableBase newAttachable)
         {
@@ -157,6 +217,8 @@ namespace StarSalvager
             
             attachedBlocks.Add(newAttachable);
         }
+        
+        #if DEVELOPMENT_BUILD || UNITY_EDITOR
 
         public void PushNewBit(AttachableBase newAttachable, DIRECTION direction)
         {
@@ -185,6 +247,8 @@ namespace StarSalvager
 
             return CoordinateOccupied(direction, ref coordinate);
         }
+        
+        #endif
         
 
         //============================================================================================================//

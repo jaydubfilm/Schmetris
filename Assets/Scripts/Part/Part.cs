@@ -8,7 +8,7 @@ namespace StarSalvager
         public PART_TYPE Type { get =>_type; set => _type = value; }
         private PART_TYPE _type;
 
-        protected override void OnCollide()
+        protected override void OnCollide(Bot bot)
         {
             throw new System.NotImplementedException();
         }
