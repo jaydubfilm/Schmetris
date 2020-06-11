@@ -11,35 +11,31 @@ namespace StarSalvager
         
         void Start()
         {
-            m_obstacles = new GameObject[5];
+            m_obstacles = new GameObject[100];
 
             for (int i = 0; i < m_obstacles.Length; i++)
             {
-                GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 m_obstacles[i] = sphere;
+
+                m_obstacles[i].transform.position = new Vector2(Random.Range(-200, 200), Random.Range(-200, 200));
             }
 
-            m_obstacles[0].transform.position = new Vector2(0, 0);
-            m_obstacles[1].transform.position = new Vector2(-2, -1);
-            m_obstacles[2].transform.position = new Vector2(4, 1);
-            m_obstacles[3].transform.position = new Vector2(-1, -4);
-            m_obstacles[4].transform.position = new Vector2(2, 3);
-
-            m_agents = new GameObject[1];
+            m_agents = new GameObject[500];
 
             for (int i = 0; i < m_agents.Length; i++)
             {
                 GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 m_agents[i] = sphere;
-            }
 
-            m_agents[0].transform.position = new Vector2(-10, 0);
+                m_agents[i].transform.position = new Vector2(Random.Range(-200, -190), Random.Range(-200, 200));
+            }
         }
 
         void Update()
         {
-            Vector3 destination = new Vector3(10, 0);
-            float velocity = 1.25f;
+            Vector3 destination = new Vector3(0, 0);
+            float velocity = 2.0f;
             
             for (int i = 0; i < m_agents.Length; i++)
             {
@@ -67,12 +63,12 @@ namespace StarSalvager
 
         private Vector2 getForce(Vector2 agentPosition, Vector2 obstaclePosition)
         {
-            /*if (Mathf.Abs(agentPosition.x - obstaclePosition.x) + Mathf.Abs(agentPosition.y - obstaclePosition.y) > 4)
+            if (Mathf.Abs(agentPosition.x - obstaclePosition.x) + Mathf.Abs(agentPosition.y - obstaclePosition.y) > 20)
             {
                 return new Vector2(0, 0);
-            }*/
+            }
 
-            float magnitude = 1 / Vector2.SqrMagnitude(obstaclePosition - agentPosition);
+            float magnitude = 5.0f / Vector2.SqrMagnitude(obstaclePosition - agentPosition);
             Vector2 direction = new Vector2(agentPosition.x - obstaclePosition.x, agentPosition.y - obstaclePosition.y);
             direction.Normalize();
             direction *= magnitude;
