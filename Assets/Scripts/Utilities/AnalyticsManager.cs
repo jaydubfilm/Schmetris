@@ -15,13 +15,13 @@ namespace StarSalvager.Utilities
             GameOver,
             LevelStart,
             LevelComplete,
+            FirstInteraction,
             TutorialStart,
             TutorialStep,
             TutorialComplete,
             TutorialSkip,
             MissionUnlock,
-            MissionComplete,
-            None
+            MissionComplete
         }
 
         private static int m_recentAnalyticEvents = 0;
@@ -29,21 +29,15 @@ namespace StarSalvager.Utilities
 
         public static bool ReportAnalyticsEvent(AnalyticsEventType eventType, Dictionary<string, object> eventDataDictionary = null, object eventDataParameter = null)
         {
-            if (eventDataDictionary != null && 
-                (ProcessDictionarySizeRestrictionsExceeded(eventDataDictionary) || 
-                ProcessRecentAnalyticEventCapMet()))
-            {
-                return false;
-            }
-
-            if (ProcessRecentAnalyticEventCapMet())
+            //Check to confirm if too many analytic events have been sent recently or the dictionary input is too large. If either is true, unity analytics won't accept the message, so we avoid sending it at all
+            if ((eventDataDictionary != null && ProcessDictionarySizeRestrictionsExceeded(eventDataDictionary)) || 
+                ProcessRecentAnalyticEventCapMet())
             {
                 return false;
             }
             
-            AnalyticsResult? result = null;
-            
-            bool analyticsResultSuccessful = false;
+            //Call the corresponding function for the eventType
+            AnalyticsResult result;
             switch(eventType)
             {
                 case AnalyticsEventType.GameStart:
@@ -57,6 +51,9 @@ namespace StarSalvager.Utilities
                     break;
                 case AnalyticsEventType.LevelComplete:
                     result = ReportLevelComplete(eventDataParameter.ToString(), eventDataDictionary);
+                    break;
+                case AnalyticsEventType.FirstInteraction:
+                    result = ReportFirstInteraction(eventDataDictionary);
                     break;
                 case AnalyticsEventType.TutorialStart:
                     result = ReportTutorialStart(eventDataDictionary);
@@ -76,57 +73,52 @@ namespace StarSalvager.Utilities
                 case AnalyticsEventType.MissionComplete:
                     result = ReportMissionComplete(eventDataDictionary);
                     break;
-                case AnalyticsEventType.None:
-                    analyticsResultSuccessful = false;
+                default:
+                    Debug.Log("AnalyticsEventType not implemented in switch case");
+                    return false;
                     break;
             }
 
-            if (result != null)
-            {
-                Debug.Log(eventType.ToString() + " with result of " + result);
-            }
+            //Temporary testing line to print the result of the analyticevent
+            Debug.Log(eventType.ToString() + " with result of " + result);
 
-            return (result != null && result == AnalyticsResult.Ok);
+            return (result == AnalyticsResult.Ok);
         }
 
         //TODO: Add checking to clear recent analytic events from the cap at the turn of the hour, if that turns out to be how it works
         //TODO: Ensure that the game tracks analytic event cap even through the game being restarted, in some persistent storage
         public static bool ProcessRecentAnalyticEventCapMet()
         {
-            
+            //Check if recent analytic events have met cap. If not, increment the cap, and allow the message to be sent
             if (m_recentAnalyticEvents < m_recentAnalyticEventsCap)
             {
+                //m_recentAnalyticEvents++;
                 return false;
             }
 
-            //m_recentAnalyticEvents++;
             return true;
         }
 
         public static bool ProcessDictionarySizeRestrictionsExceeded(Dictionary<string, object> eventData)
         {
+            //Check if the dictionary length exceeds the cap. The cap for unity analytics is 10, in code we will cap to 9 since that 10 includes mandatory variables of standard events
             if (eventData.Count > 9)
             {
                 Debug.Log("Dictionary length too long to return as analytic event");
                 return true;
             }
 
+            //Confirm that the sum of all key/value pairs don't exceed 500 characters. 
             int dictionaryCharacterLength = 0;
             foreach (KeyValuePair<string, object> entry in eventData)
             {
-                int entryCharacterLength = entry.Key.Length + entry.Value.ToString().Length;
-                if (entryCharacterLength > 100)
-                {
-                    Debug.Log("Dictionary entry " + entry.Key + " has exceeded 100 characters, which is too large to return as analytic event parameter, at length" + entryCharacterLength);
-                    return true;
-                }
-
-                dictionaryCharacterLength += entryCharacterLength;
+                //TODO: convert the entry.value.ToString().Length into something that accounts for the size of each variable as per https://docs.unity3d.com/Manual/UnityAnalyticsEventLimits.html
+                dictionaryCharacterLength += entry.Key.Length + entry.Value.ToString().Length;
             }
 
             if (dictionaryCharacterLength > 500)
             {
-                Debug.Log("Dictionary has exceeded 500 characters, which is too large to return as analytic event parameter, at length" + dictionaryCharacterLength);
+                Debug.Log("Sum of key/value pairs in dictionary exceeded 500 characters, which is too large to return as analytic event parameter, at length" + dictionaryCharacterLength);
                 return true;
             }
 
@@ -151,6 +143,11 @@ namespace StarSalvager.Utilities
         private static AnalyticsResult ReportLevelComplete(string levelName, Dictionary<string, object> eventData = null)
         {
             return AnalyticsEvent.LevelComplete(levelName, eventData);
+        }
+
+        private static AnalyticsResult ReportFirstInteraction(Dictionary<string, object> eventData = null)
+        {
+            return AnalyticsEvent.FirstInteraction(eventData: eventData);
         }
 
         private static AnalyticsResult ReportTutorialStart(Dictionary<string, object> eventData = null)

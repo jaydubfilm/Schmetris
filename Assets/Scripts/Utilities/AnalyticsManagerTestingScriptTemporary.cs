@@ -10,25 +10,15 @@ namespace StarSalvager
         // Start is called before the first frame update
         void Start()
         {
-            /*Dictionary<string, object> dictionary = new Dictionary<string, object>();
-            dictionary.Add("carroeij12", 1);
-            dictionary.Add("carroeij11", 1);
-            dictionary.Add("carroeij0", 1);
-            dictionary.Add("carroeij9", 1);
-            dictionary.Add("carroeij8", 1);
-            dictionary.Add("carroeij7", 1);
-            dictionary.Add("carroeij6", 1);
-            dictionary.Add("carroeij5", 1);
-            dictionary.Add("carroeij4", 1);
-            dictionary.Add("carroeij3", 1);
-            dictionary.Add("carroeij2", 1);
-            dictionary.Add("carroeij1", 1);
-
-            print (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.GameStart, dictionary));*/
+            Dictionary<string, object> dictionary = new Dictionary<string, object>();
+            dictionary.Add("1qpriugbj12qpriugbj12qpriugbj12qpriugbjriug", 9850709841);
+            dictionary.Add("2qpriugbj12qpriugbj12qpriugbj12qpriugbjriug", 9850709841.0f);
+            dictionary.Add("3qpriugbj12qpriugbj12qpriugbj12qpriugbjriug", "string value");
+            print (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.GameStart, dictionary));
 
 
 
-            for (int i = 0; i < 100; i++)
+            /*for (int i = 0; i < 10; i++)
             {
                 if (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.GameStart))
                 {
@@ -40,7 +30,7 @@ namespace StarSalvager
                 }
             }
 
-            if (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.GameOver, eventDataParameter: 1.4f))
+            /*if (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.GameOver, eventDataParameter: 1.4f))
             {
                 print("Event sent successfully");
             }
@@ -61,6 +51,15 @@ namespace StarSalvager
 
 
             if (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete, eventDataParameter: 1.4f))
+            {
+                print("Event sent successfully");
+            }
+            else
+            {
+                print("Event failed");
+            }*/
+
+            if (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.FirstInteraction))
             {
                 print("Event sent successfully");
             }
@@ -90,6 +89,26 @@ namespace StarSalvager
             }
 
 
+            if (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.TutorialStep, eventDataParameter: 2))
+            {
+                print("Event sent successfully");
+            }
+            else
+            {
+                print("Event failed");
+            }
+
+
+            /*if (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.TutorialStep, eventDataParameter: 3))
+            {
+                print("Event sent successfully");
+            }
+            else
+            {
+                print("Event failed");
+            }
+
+
             if (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.TutorialComplete))
             {
                 print("Event sent successfully");
@@ -99,7 +118,7 @@ namespace StarSalvager
                 print("Event failed");
             }
 
-            if (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.TutorialSkip))
+            /*if (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.TutorialSkip))
             {
                 print("Event sent successfully");
             }
@@ -124,7 +143,7 @@ namespace StarSalvager
             else
             {
                 print("Event failed");
-            }
+            }*/
         }
     }
 }
