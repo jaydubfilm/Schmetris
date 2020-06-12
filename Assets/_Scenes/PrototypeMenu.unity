@@ -465,10 +465,10 @@ RectTransform:
   m_Father: {fileID: 629105500}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 350}
-  m_SizeDelta: {x: 560.4818, y: 100.29994}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -50.380005}
+  m_SizeDelta: {x: -0.00012207031, y: 100.29993}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &240558717
 MonoBehaviour:
@@ -703,10 +703,10 @@ RectTransform:
   m_Father: {fileID: 629105500}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000031948, y: 125}
-  m_SizeDelta: {x: 374.3131, y: 66.15188}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -307}
+  m_SizeDelta: {x: -135.68689, y: 66.151886}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &543377856
 GameObject:
@@ -898,10 +898,10 @@ RectTransform:
   m_Father: {fileID: 629105500}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000031948, y: -370}
-  m_SizeDelta: {x: 169.9544, y: 66.15188}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 62}
+  m_SizeDelta: {x: 273.9544, y: 66.151886}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &583903227
 MonoBehaviour:
@@ -1312,10 +1312,10 @@ RectTransform:
   m_Father: {fileID: 859822103}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 816, y: 517}
-  m_SizeDelta: {x: 140.80133, y: 57.731308}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -98.00006, y: -53.669952}
+  m_SizeDelta: {x: 140.80127, y: 57.731323}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1379158132
 GameObject:
@@ -1626,10 +1626,10 @@ RectTransform:
   m_Father: {fileID: 859822103}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -700.2003, y: -421.0003}
-  m_SizeDelta: {x: 361.6163, y: 244.00903}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 179.79968, y: -421.0003}
+  m_SizeDelta: {x: 361.61633, y: -933.99097}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1743000673
 GameObject:
@@ -1665,10 +1665,10 @@ RectTransform:
   m_Father: {fileID: 629105500}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000031948, y: 33.076}
-  m_SizeDelta: {x: 374.3131, y: 66.15188}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -398.924}
+  m_SizeDelta: {x: -135.68689, y: 66.151886}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1743000675
 MonoBehaviour:
@@ -1940,10 +1940,10 @@ RectTransform:
   m_Father: {fileID: 629105500}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 219}
-  m_SizeDelta: {x: 374.3131, y: 66.15188}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -213}
+  m_SizeDelta: {x: -135.68689, y: 66.151886}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1883232068
 MonoBehaviour:
@@ -2441,8 +2441,22 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 629105499}
-    ActiveGameObject: {fileID: 629105499}
+    - {fileID: 1883232066}
+    ActiveGameObject: {fileID: 1883232066}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1883232066}
+    - {fileID: 383152149}
+    - {fileID: 1743000673}
+    ActiveGameObject: {fileID: 1883232066}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -2465,8 +2479,22 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 1849463870}
-    ActiveGameObject: {fileID: 1849463870}
+    - {fileID: 240558715}
+    ActiveGameObject: {fileID: 240558715}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1883232066}
+    - {fileID: 383152149}
+    - {fileID: 1743000673}
+    ActiveGameObject: {fileID: 1883232066}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -2489,44 +2517,215 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 583903225}
+    ActiveGameObject: {fileID: 583903225}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 240558715}
+    ActiveGameObject: {fileID: 240558715}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 929015421}
+    - {fileID: 2126869096}
+    ActiveGameObject: {fileID: 929015421}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 929015421}
+    ActiveGameObject: {fileID: 929015421}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1685384921}
+    ActiveGameObject: {fileID: 1685384921}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 91547313}
+    ActiveGameObject: {fileID: 91547313}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 583903225}
+    ActiveGameObject: {fileID: 583903225}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1743000673}
+    ActiveGameObject: {fileID: 1743000673}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 383152149}
+    ActiveGameObject: {fileID: 383152149}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1883232066}
+    ActiveGameObject: {fileID: 1883232066}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 383152149}
+    ActiveGameObject: {fileID: 383152149}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1883232066}
+    - {fileID: 383152149}
+    - {fileID: 1743000673}
+    ActiveGameObject: {fileID: 1883232066}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1883232066}
+    ActiveGameObject: {fileID: 1883232066}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 383152149}
+    ActiveGameObject: {fileID: 383152149}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1743000673}
+    ActiveGameObject: {fileID: 1743000673}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 383152149}
+    ActiveGameObject: {fileID: 383152149}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 583903225}
+    ActiveGameObject: {fileID: 583903225}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 629105499}
     ActiveGameObject: {fileID: 629105499}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 859822099}
-    ActiveGameObject: {fileID: 859822099}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 629105499}
-    ActiveGameObject: {fileID: 629105499}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 859822099}
-    ActiveGameObject: {fileID: 859822099}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -2692,8 +2891,8 @@ RectTransform:
   m_Father: {fileID: 859822103}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 816.00006, y: 436.66995}
-  m_SizeDelta: {x: 140.80133, y: 57.731308}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -98, y: -134}
+  m_SizeDelta: {x: 140.80127, y: 57.731323}
   m_Pivot: {x: 0.5, y: 0.5}
