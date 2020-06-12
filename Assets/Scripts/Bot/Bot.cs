@@ -48,10 +48,6 @@ namespace StarSalvager
         
         //============================================================================================================//
 
-        private new Transform transform;
-
-        //============================================================================================================//
-
         // Start is called before the first frame update
         private void Start()
         {
@@ -60,8 +56,6 @@ namespace StarSalvager
             attachedBlocks.Add(this);
             
             InitInput();
-
-            transform = gameObject.transform;
         }
 
         // Update is called once per frame
@@ -284,7 +278,7 @@ namespace StarSalvager
         {
             var newCoord = direction.ToVector2Int();
 
-            CoordinateOccupied(direction, ref newCoord);
+            attachedBlocks.CoordinateOccupied(direction, ref newCoord);
 
             newAttachable.Coordinate = newCoord;
             newAttachable.SetAttached(true);
@@ -294,21 +288,7 @@ namespace StarSalvager
             attachedBlocks.Add(newAttachable);
         }
 
-        private bool CoordinateOccupied(DIRECTION direction, ref Vector2Int coordinate)
-        {
-            var check = coordinate;
-            var exists = attachedBlocks
-                .Any(b => b.Coordinate == check);
-
-            if (!exists)
-                return false;
-
-            coordinate += direction.ToVector2Int();
-
-            return CoordinateOccupied(direction, ref coordinate);
-        }
-        
-        #endif
+#endif
         
 
         //============================================================================================================//

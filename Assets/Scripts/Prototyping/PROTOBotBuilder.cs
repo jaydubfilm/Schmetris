@@ -23,12 +23,15 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
         InitInput();
     }
 
+    
     private void OnDestroy()
     {
         DeInitInput();
     }
 
     //================================================================================================================//
+
+    
     
     private void CreateBit(DIRECTION direction)
     {
