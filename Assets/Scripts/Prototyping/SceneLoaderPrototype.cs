@@ -46,6 +46,9 @@ namespace StarSalvager.Prototype
         [SerializeField, Required]
         private GameObject SceneDescriptionWindowObject;
         private TMP_Text descriptionText;
+        
+        [SerializeField]
+        private Button quitButton;
 
         [SerializeField]
         private Button resetButton;
@@ -77,6 +80,16 @@ namespace StarSalvager.Prototype
             returnToMenuButton.onClick.AddListener(() =>
             {
                 SceneManager.LoadScene(0);
+            });
+            
+            quitButton.onClick.AddListener(() =>
+            {
+                #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+                
+#else
+Application.Quit();
+#endif
             });
 
             SceneManager.sceneLoaded += (scene, mode) =>
