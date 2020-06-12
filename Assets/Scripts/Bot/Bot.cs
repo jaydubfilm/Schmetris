@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
 
 namespace StarSalvager
@@ -71,6 +72,11 @@ namespace StarSalvager
 
             if (Rotating)
                 RotateBot();
+        }
+
+        private void OnDestroy()
+        {
+            DeInitInput();
         }
 
         //============================================================================================================//
@@ -307,10 +313,7 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        protected override void OnCollide(Bot bot)
-        {
-            return;
-        }
+        protected override void OnCollide(Bot bot) { }
         public override BlockData ToBlockData()
         {
             throw new NotImplementedException();
@@ -328,36 +331,43 @@ namespace StarSalvager
         {
             
             Input.Actions.Default.SideMovement.Enable();
-            Input.Actions.Default.SideMovement.performed += ctx =>
-            {
-                if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
-                {
-                    _currentInput = 0f;
-                    return;
-                }
-                
-                _currentInput = ctx.ReadValue<float>();
-            };
+            Input.Actions.Default.SideMovement.performed += SideMovement;
             
             Input.Actions.Default.Rotate.Enable();
-            Input.Actions.Default.Rotate.performed += ctx =>
-            {
-                if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
-                    return;
-                
-                var rot = ctx.ReadValue<float>();
-                
-                if(rot < 0)
-                    Rotate(ROTATION.CCW);
-                else if(rot > 0)
-                    Rotate(ROTATION.CW);
-            };
+            Input.Actions.Default.Rotate.performed += Rotate;
 
         }
 
         public void DeInitInput()
         {
-            throw new System.NotImplementedException();
+            Input.Actions.Default.SideMovement.Disable();
+            Input.Actions.Default.SideMovement.performed -= SideMovement;
+            
+            Input.Actions.Default.Rotate.Disable();
+            Input.Actions.Default.Rotate.performed -= Rotate;
+        }
+        
+        private void SideMovement(InputAction.CallbackContext ctx)
+        {
+            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+            {
+                _currentInput = 0f;
+                return;
+            }
+                
+            _currentInput = ctx.ReadValue<float>();
+        }
+        private void Rotate(InputAction.CallbackContext ctx)
+        {
+            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+                return;
+                
+            var rot = ctx.ReadValue<float>();
+                
+            if(rot < 0)
+                Rotate(ROTATION.CCW);
+            else if(rot > 0)
+                Rotate(ROTATION.CW);
         }
         
         //============================================================================================================//

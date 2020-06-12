@@ -1,8 +1,11 @@
-﻿using StarSalvager;
+﻿using System;
+using StarSalvager;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
+using Random = UnityEngine.Random;
 
 public class PROTOBotBuilder : MonoBehaviour, IInput
 {
@@ -19,7 +22,12 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
     {
         InitInput();
     }
-    
+
+    private void OnDestroy()
+    {
+        DeInitInput();
+    }
+
     //================================================================================================================//
     
     private void CreateBit(DIRECTION direction)
@@ -41,43 +49,62 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
     public void InitInput()
     {
         Input.Actions.Prototyping.Left.Enable();
-        Input.Actions.Prototyping.Left.performed += ctx =>
-        {
-            CreateBit(DIRECTION.LEFT);
-        };
+        Input.Actions.Prototyping.Left.performed += Left;
         Input.Actions.Prototyping.Right.Enable();
-        Input.Actions.Prototyping.Right.performed += ctx =>
-        {
-            CreateBit(DIRECTION.RIGHT);
-        };
+        Input.Actions.Prototyping.Right.performed += Right;
         Input.Actions.Prototyping.Up.Enable();
-        Input.Actions.Prototyping.Up.performed += ctx =>
-        {
-            CreateBit(DIRECTION.UP);
-        };
+        Input.Actions.Prototyping.Up.performed += Up;
         Input.Actions.Prototyping.Down.Enable();
-        Input.Actions.Prototyping.Down.performed += ctx =>
-        {
-            CreateBit(DIRECTION.DOWN);
-        };
+        Input.Actions.Prototyping.Down.performed += Down;
         
         Input.Actions.Prototyping.Export.Enable();
-        Input.Actions.Prototyping.Export.performed += ctx =>
-        {
-            bot.ExportLayout();
-        };
+        Input.Actions.Prototyping.Export.performed += Export;
         Input.Actions.Prototyping.Import.Enable();
-        Input.Actions.Prototyping.Import.performed += ctx =>
-        {
-            bot.ImportLayout(importTest);
-        };
+        Input.Actions.Prototyping.Import.performed += Import;
     }
 
     public void DeInitInput()
     {
-        throw new System.NotImplementedException();
+        Input.Actions.Prototyping.Left.Disable();
+        Input.Actions.Prototyping.Left.performed -= Left;
+        Input.Actions.Prototyping.Right.Disable();
+        Input.Actions.Prototyping.Right.performed -= Right;
+        Input.Actions.Prototyping.Up.Disable();
+        Input.Actions.Prototyping.Up.performed -= Up;
+        Input.Actions.Prototyping.Down.Disable();
+        Input.Actions.Prototyping.Down.performed -= Down;
+        
+        Input.Actions.Prototyping.Export.Disable();
+        Input.Actions.Prototyping.Export.performed -= Export;
+        Input.Actions.Prototyping.Import.Disable();
+        Input.Actions.Prototyping.Import.performed -= Import;
+    }
+
+    private void Left(InputAction.CallbackContext ctx)
+    {
+        CreateBit(DIRECTION.LEFT);
+    }
+    private void Right(InputAction.CallbackContext ctx)
+    {
+        CreateBit(DIRECTION.RIGHT);
+    }
+    private void Up(InputAction.CallbackContext ctx)
+    {
+        CreateBit(DIRECTION.UP);
+    }
+    private void Down(InputAction.CallbackContext ctx)
+    {
+        CreateBit(DIRECTION.DOWN);
     }
     
+    private void Import(InputAction.CallbackContext ctx)
+    {
+        bot.ImportLayout(importTest);
+    }
+    private void Export(InputAction.CallbackContext ctx)
+    {
+        bot.ExportLayout();
+    }
     //================================================================================================================//
     
 }

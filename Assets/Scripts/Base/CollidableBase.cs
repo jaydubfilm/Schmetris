@@ -37,6 +37,19 @@ namespace StarSalvager
         }
         private SpriteRenderer _renderer;
         
+        
+        protected new Transform transform
+        {
+            get
+            {
+                if (_transform == null)
+                    _transform = gameObject.GetComponent<Transform>();
+
+                return _transform;
+            }
+        }
+        private Transform _transform;
+        
         //============================================================================================================//
 
         //TODO Consider how best to avoid using the Collision Stay
