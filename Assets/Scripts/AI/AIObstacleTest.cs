@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AIAgentTest : MonoBehaviour
+public class AIObstacleTest : MonoBehaviour
 {
     public new Transform transform;
-    public Vector2 m_agentDestination = Vector2.zero;
 
     void Awake()
     {
