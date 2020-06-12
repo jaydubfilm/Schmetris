@@ -24,6 +24,9 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
     
     private void CreateBit(DIRECTION direction)
     {
+        if(bot.Rotating)
+            return;
+        
         var newBit = AttachableFactory.Instance
             .GetFactory<BitAttachableFactory>()
             .CreateObject<AttachableBase>(

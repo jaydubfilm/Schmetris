@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 using Input = StarSalvager.Utilities.Inputs.Input;
 
 namespace StarSalvager
 {
-    public class Bot : MonoBehaviour, IHealth, IInput
+    public class Bot : AttachableBase, IInput
     {
         private static readonly Quaternion[] rotations = 
         {
@@ -35,13 +36,6 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        public float StartingHealth => _startingHealth;
-        private float _startingHealth;
-        public float CurrentHealth => _currentHealth;
-        private float _currentHealth;
-
-        //============================================================================================================//
-
         public bool HasValidInput => _currentInput != 0f;
         private float _currentInput;
 
@@ -60,6 +54,10 @@ namespace StarSalvager
         // Start is called before the first frame update
         private void Start()
         {
+            //Mark as Core coordinate
+            Coordinate = Vector2Int.zero;
+            attachedBlocks.Add(this);
+            
             InitInput();
 
             transform = gameObject.transform;
@@ -150,15 +148,28 @@ namespace StarSalvager
 
         public bool TryAddNewAttachable(AttachableBase attachable)
         {
+            if (Rotating)
+                return false;
+            
             if (attachable is Bit bit)
             {
                 //TODO Need to get the coordinate of the collision
-                GetClosestAttachable(bit.transform.position);
+                var bitCoordinate = GetRelativeCoordinate(bit.transform.position);
+                
+                var closestAttachable = GetClosestAttachable(bitCoordinate);
+
+                var legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out var direction);
+
+                if (!legalDirection)
+                    return false;
+                
+                //TODO Need to check if its legal to attach (Within threshold of connection)
                 
                 switch (bit.Type)
                 {
                     case BIT_TYPE.BLACK:
                         //TODO Destroy both this and collided Bit
+                        Destroy(attachable.gameObject);
                         break;
                     case BIT_TYPE.BLUE:
                     case BIT_TYPE.GREEN:
@@ -166,10 +177,12 @@ namespace StarSalvager
                     case BIT_TYPE.RED:
                     case BIT_TYPE.YELLOW:
                         //TODO Add these to the block depending on its relative position
+                        AttachNewBitToExisting(bit, closestAttachable, direction);
                         break;
                     case BIT_TYPE.WHITE:
                         //TODO Destroy collided Bit
                         //TODO Try and shift collided row (Depending on direction)
+                        Destroy(attachable.gameObject);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -179,37 +192,78 @@ namespace StarSalvager
             
             
             
-            return false;
+            return true;
         }
 
-        public void GetClosestAttachable(Vector2 worldPosition)
+        //FIXME I want to be able to return the Bot Core if I don't have any other attachable Bits
+        public AttachableBase GetClosestAttachable(Vector2Int checkCoordinate)
         {
-            var botPosition = (Vector2)transform.position;
-
-            var calculated = (worldPosition - botPosition) / TEST_BitSize;
-            var coordinate = new Vector2Int(Mathf.RoundToInt(calculated.x), Mathf.RoundToInt(calculated.y));
+            AttachableBase selected = null;
 
             var smallestDist = 999f;
-            AttachableBase selected = null;
+                
             foreach (var attached in attachedBlocks)
             {
-                var dist = Vector2Int.Distance(attached.Coordinate, coordinate);
+                var dist = Vector2Int.Distance(attached.Coordinate, checkCoordinate);
                 if (dist >= smallestDist)
                     continue;
 
                 smallestDist = dist;
                 selected = attached;
             }
-            
-            //FIXME Need to consider that there may not be any attached blocks
-            
-            Debug.Log($"Calculated: {calculated}, Coordinate: {coordinate}, Closest: {selected.gameObject.name} {selected.Coordinate}", selected);
+
+            return selected;
         }
+
+        private Vector2Int GetRelativeCoordinate(Vector2 worldPosition)
+        {
+            var botPosition = (Vector2)transform.position;
+
+            var calculated = (worldPosition - botPosition) / TEST_BitSize;
+            return new Vector2Int(
+                Mathf.RoundToInt(calculated.x),
+                Mathf.RoundToInt(calculated.y));
+        }
+
+        private bool CheckLegalCollision(Vector2Int lhs, Vector2Int rhs, out DIRECTION direction)
+        {
+            direction = (lhs - rhs).ToDirection();
+
+            switch (direction)
+            {
+                case DIRECTION.NULL:
+                    return false;
+                case DIRECTION.LEFT:
+                    return _currentInput < 0f;
+                case DIRECTION.UP:
+                    return true;
+                case DIRECTION.RIGHT:
+                    return _currentInput > 0f;
+                case DIRECTION.DOWN:
+                    return false;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+
+            //return direction != DIRECTION.NULL;
+        }
+
         
         //============================================================================================================//
 
         public void AttachNewBit(Vector2Int coordinate, AttachableBase newAttachable)
         {
+            newAttachable.Coordinate = coordinate;
+            newAttachable.SetAttached(true);
+            newAttachable.transform.position = transform.position + (Vector3)(Vector2.one * coordinate * TEST_BitSize);
+            newAttachable.transform.SetParent(transform);
+            
+            attachedBlocks.Add(newAttachable);
+        }
+        
+        public void AttachNewBitToExisting(AttachableBase newAttachable, AttachableBase existingAttachable, DIRECTION direction)
+        {
+            var coordinate = existingAttachable.Coordinate + direction.ToVector2Int();
             newAttachable.Coordinate = coordinate;
             newAttachable.SetAttached(true);
             newAttachable.transform.position = transform.position + (Vector3)(Vector2.one * coordinate * TEST_BitSize);
@@ -252,11 +306,21 @@ namespace StarSalvager
         
 
         //============================================================================================================//
-        public void ChangeHealth(float amount)
+
+        protected override void OnCollide(Bot bot)
         {
-            _currentHealth += amount;
+            return;
         }
-        
+        public override BlockData ToBlockData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void LoadBlockData(BlockData blockData)
+        {
+            throw new NotImplementedException();
+        }
+
         //============================================================================================================//
         
         //TODO This needs to be fleshed out further
@@ -266,12 +330,21 @@ namespace StarSalvager
             Input.Actions.Default.SideMovement.Enable();
             Input.Actions.Default.SideMovement.performed += ctx =>
             {
+                if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+                {
+                    _currentInput = 0f;
+                    return;
+                }
+                
                 _currentInput = ctx.ReadValue<float>();
             };
             
             Input.Actions.Default.Rotate.Enable();
             Input.Actions.Default.Rotate.performed += ctx =>
             {
+                if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+                    return;
+                
                 var rot = ctx.ReadValue<float>();
                 
                 if(rot < 0)
@@ -289,5 +362,6 @@ namespace StarSalvager
         
         //============================================================================================================//
 
+        
     }
 }

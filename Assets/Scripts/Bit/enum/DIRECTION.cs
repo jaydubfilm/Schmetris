@@ -6,6 +6,7 @@ namespace StarSalvager
 {
     public enum DIRECTION: int
     {
+        NULL = -1,
         LEFT,
         UP,
         RIGHT,

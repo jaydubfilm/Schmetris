@@ -25,10 +25,15 @@ namespace StarSalvager.Utilities.Extensions
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
         }
+        //FIXME This needs to consider angled directions
         public static DIRECTION ToDirection(this Vector2Int vector2Int)
         {
             if(vector2Int == Vector2Int.zero)
-                throw new ArgumentException($"Cannot convert {vector2Int} into a legal direction");
+                //throw new ArgumentException($"Cannot convert {vector2Int} into a legal direction");
+                return DIRECTION.NULL;
+            
+            if (vector2Int.x != 0 && vector2Int.y != 0)
+                return DIRECTION.NULL;
 
             if (vector2Int.x == 0)
             {
@@ -40,7 +45,10 @@ namespace StarSalvager.Utilities.Extensions
                 return vector2Int.x > 0 ? DIRECTION.RIGHT : DIRECTION.LEFT;
             }
             
-            throw new ArgumentException($"Cannot convert {vector2Int} into a legal direction");
+            //throw new ArgumentException($"Cannot convert {vector2Int} into a legal direction");
+            return DIRECTION.NULL;
         }
+        
+
     }
 }
