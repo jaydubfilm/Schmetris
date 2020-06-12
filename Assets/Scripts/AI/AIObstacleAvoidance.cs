@@ -7,62 +7,94 @@ namespace StarSalvager
 {
     public class AIObstacleAvoidance : MonoBehaviour
     {
+        public AIObstacleTest m_AIObstacleTestPrefab;
         public AIAgentTest m_AIAgentTestPrefab;
 
-        private GameObject[] m_obstacles;
+        private AIObstacleTest[] m_obstacles;
         private AIAgentTest[] m_agents;
         private WorldGrid m_grid;
 
-        private const float m_agentVelocity = 2.0f;
+        private const float m_gridCellSize = 2.0f;
+        private const float m_agentVelocity = 3.0f;
         private const int m_agentGridScanRadius = 3;
-        private const float m_obstacleMass = 3.5f;
-        
+        private const float m_obstacleMass = 10.0f;
+
+        //Temporary variables, simulating the movement speed of falling obstacles
+        private const float m_timeToMoveBetweenCells = 3.0f;
+        private float m_timer = 1.5f;
+        private Vector2 m_obstaclePositionAdjuster = new Vector2(0.0f, m_gridCellSize);
+
         void Start()
         {
-            m_grid = new WorldGrid(100, 20, 2);
-            m_obstacles = new GameObject[200];
-            m_agents = new AIAgentTest[40];
+            m_grid = new WorldGrid(100, 100, m_gridCellSize);
+            m_obstacles = new AIObstacleTest[1000];
+            m_agents = new AIAgentTest[200];
 
             //Temporary for testing - instantiate large numbers of test agents and obstacles. In the future, this w
             for (int i = 0; i < m_obstacles.Length; i++)
             {
-                GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                m_obstacles[i] = sphere;
-                m_obstacles[i].transform.position = m_grid.GetRandomGridWorldPosition();
-                m_grid.AddObstacleToGridSquare(m_obstacles[i]);
+                AIObstacleTest newObstacle = GameObject.Instantiate(m_AIObstacleTestPrefab);
+                m_obstacles[i] = newObstacle;
+                Vector2 position = m_grid.GetRandomGridSquareWorldPosition();
+                m_obstacles[i].transform.position = position;
+                m_grid.SetObstacleInGridSquare(position, true);
             }
 
             for (int i = 0; i < m_agents.Length; i++)
             {
                 AIAgentTest newAgent = GameObject.Instantiate(m_AIAgentTestPrefab);
                 m_agents[i] = newAgent;
-                m_agents[i].transform.position = m_grid.GetRandomGridWorldPosition();
-                m_agents[i].m_agentDestination = m_grid.GetRandomGridWorldPosition();
+                m_agents[i].transform.position = m_grid.GetRandomGridSquareWorldPosition();
+                m_agents[i].m_agentDestination = m_grid.GetRandomGridSquareWorldPosition();
             }
+            //End Temporary code
         }
 
         void Update()
         {
+            //Temporary code to simulate the speed of downward movement for obstacles and move the prefabs on screen downward
+            m_timer += Time.deltaTime;
+            if (m_timer >= m_timeToMoveBetweenCells)
+            {
+                m_timer -= m_timeToMoveBetweenCells;
+                m_grid.MoveObstacleMarkersDownwardOnGrid();
+            }
+
+            Vector3 amountShiftDown = new Vector3(0, (m_gridCellSize * Time.deltaTime) / m_timeToMoveBetweenCells, 0);
+            foreach (AIObstacleTest obstacle in m_obstacles)
+            {
+                obstacle.transform.position = obstacle.transform.position - amountShiftDown;
+            }
+            //End Temporary code
+
             //Iterate through all agents, and for each one, add the forces from nearby obstacles to their current direction vector
             //After adding the forces, normalize and multiply by the velocity to ensure consistent speed
             for (int i = 0; i < m_agents.Length; i++)
             {
+                Vector3 position = m_agents[i].transform.position;
                 Vector3 destination = m_agents[i].m_agentDestination;
-                Vector2 direction = new Vector2(destination.x - m_agents[i].transform.position.x, destination.y - m_agents[i].transform.position.y);
+
+                if (position == destination)
+                {
+                    continue;
+                }
+
+                Vector2 direction = new Vector2(destination.x - position.x, destination.y - position.y);
                 direction.Normalize();
                 direction *= m_agentVelocity;
 
-                direction += calculateForceAtPoint(m_agents[i].transform.position);
+                direction += CalculateForceAtPoint(position);
                 direction.Normalize();
                 direction *= m_agentVelocity;
                 Vector3 vec3Direction = direction;
-                m_agents[i].transform.position = m_agents[i].transform.position + (vec3Direction * Time.deltaTime);
+                m_agents[i].transform.position = position + (vec3Direction * Time.deltaTime);
             }
         }
 
         //Check all nearby squares to the agent to see if any contain an obstacle. For any obstacles in those squares, add the force they apply on the agent.
-        private Vector2 calculateForceAtPoint(Vector2 agentPosition)
+        private Vector2 CalculateForceAtPoint(Vector2 agentPosition)
         {
+            //Calculate the min and max grid positions of an m_agentGridScanRadius large box around the agent
             Vector2 force = new Vector2(0, 0);
             Vector2Int agentGridPosition = m_grid.GetGridPositionOfVector(agentPosition);
             Vector2Int agentGridScanMinimum = new Vector2Int (
@@ -72,13 +104,14 @@ namespace StarSalvager
                 Math.Min(m_grid.m_width - 1, agentGridPosition.x + m_agentGridScanRadius), 
                 Math.Min(m_grid.m_height - 1, agentGridPosition.y + m_agentGridScanRadius));
 
+            //Check each position in the box for a marker for containing an obstacle
             for (int i = agentGridScanMinimum.x; i <= agentGridScanMaximum.x; i++)
             {
                 for (int k = agentGridScanMinimum.y; k <= agentGridScanMaximum.y; k++)
                 {
-                    foreach (GameObject obstacle in m_grid.GetGridSquareAtPosition(i, k).m_obstaclesInSquare)
+                    if (m_grid.GetGridSquareAtPosition(i, k).m_obstacleInSquare)
                     {
-                        Vector2 obstacleForce = getForce(agentPosition, obstacle.transform.position);
+                        Vector2 obstacleForce = GetForce(agentPosition, CalculateObstaclePositionChange(i, k));
                         force.x += obstacleForce.x;
                         force.y += obstacleForce.y;
                     }
@@ -88,8 +121,15 @@ namespace StarSalvager
             return force;
         }
 
+        //Returns the position of the obstacle at this location in the grid, by getting the grid center position and
+        //infering where it is in relation to that based on the timer and the obstacles movement speed
+        private Vector2 CalculateObstaclePositionChange(int x, int y)
+        {
+            return m_grid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * ((m_timer / m_timeToMoveBetweenCells) - 0.5f);
+        }
+
         //Create a "reverse gravity" force for the agent from the obstacle, using a mass value and the distance between them
-        private Vector2 getForce(Vector2 agentPosition, Vector2 obstaclePosition)
+        private Vector2 GetForce(Vector2 agentPosition, Vector2 obstaclePosition)
         {
             float magnitude = m_obstacleMass / Vector2.SqrMagnitude(obstaclePosition - agentPosition);
             Vector2 direction = new Vector2(agentPosition.x - obstaclePosition.x, agentPosition.y - obstaclePosition.y);

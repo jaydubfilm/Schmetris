@@ -7,16 +7,11 @@ namespace StarSalvager
     public class GridSquare
     {
         //Note - list isn't necessary, things move down at constant rate. Make single obstacle reference and design better
-        public List<GameObject> m_obstaclesInSquare { get; private set; } = new List<GameObject>();
+        public bool m_obstacleInSquare { get; private set; } = false;
 
-        public void AddObstacleToSquare(GameObject obstacle)
+        public void SetObstacleInSquare (bool occupied)
         {
-            m_obstaclesInSquare.Add(obstacle);
-        }
-
-        public void RemoveObstacleFromSquare(GameObject obstacle)
-        {
-            m_obstaclesInSquare.Remove(obstacle);
+            m_obstacleInSquare = occupied;
         }
     }
 }
