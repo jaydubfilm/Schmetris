@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c491dd903d253844990b12794e409f0, type: 3}
+  m_Name: EnemyStandard2
+  m_EditorClassIdentifier: 
+  m_enemyName: {fileID: 11400000, guid: 20423eb3bbe7b3f4fa9e33b6661c342c, type: 2}
+  m_enemySprite: {fileID: 11400000, guid: 9a25a4af48112ad4c87d41d92443169e, type: 2}
+  m_enemyHealth: {fileID: 11400000, guid: 4b64a2741262c1441ba254c1e0a703f9, type: 2}
+  m_enemyMovementType: 0
+  m_enemyMovementSpeed: {fileID: 11400000, guid: f2709e08197ebae4182d84a1d8ee8035,
+    type: 2}
