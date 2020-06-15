@@ -9,37 +9,31 @@ namespace StarSalvager.ScriptableObjects
         public enum EnemyMovementType
         {
             Standard,
-            Zigzag
+            Zigzag,
+            Orbit
+        }
+
+        public enum EnemyAttackType
+        {
+            Fast,
+            Slow
         }
 
         [SerializeField]
-        private StringScriptableObject m_enemyName;
+        public ENEMY_TYPE enemyType;
 
         [SerializeField]
-        private SpriteScriptableObject m_enemySprite;
-
-        [SerializeField]
-        private IntScriptableObject m_enemyHealth;
+        private Sprite m_enemySprite;
 
         [SerializeField]
         private EnemyMovementType m_enemyMovementType;
 
         [SerializeField]
-        private FloatScriptableObject m_enemyMovementSpeed;
-
-        public String GetName()
-        {
-            return m_enemyName.GetValue();
-        }
+        private EnemyAttackType m_enemyAttackType;
 
         public Sprite GetSprite()
         {
-            return m_enemySprite.GetValue();
-        }
-
-        public int GetHealth()
-        {
-            return m_enemyHealth.GetValue();
+            return m_enemySprite;
         }
     }
 }

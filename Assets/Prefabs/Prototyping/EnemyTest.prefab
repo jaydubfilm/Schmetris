@@ -44,7 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e32b50cd4991a5747aef65edd87f60b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_enemyType: {fileID: 0}
+  transform: {fileID: 0}
+  m_agentDestination: {x: 0, y: 0}
+  m_enemyType: {fileID: 11400000, guid: 760fffc099c7bbc4b88d705780c6da3d, type: 2}
 --- !u!212 &5668200487094951123
 SpriteRenderer:
   m_ObjectHideFlags: 0

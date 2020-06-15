@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c491dd903d253844990b12794e409f0, type: 3}
   m_Name: EnemyStandard1
   m_EditorClassIdentifier: 
-  m_enemyName: {fileID: 11400000, guid: 63a5608f3a3ed69488b02a3ad99050fb, type: 2}
-  m_enemySprite: {fileID: 11400000, guid: ccdfe9cf99133d942ad7cbdbbe295e69, type: 2}
-  m_enemyHealth: {fileID: 11400000, guid: 5c3693f4f8635c2459146f5e6b9e92e9, type: 2}
+  m_enemyName: Enemy1
+  m_enemySprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
+    type: 3}
+  m_enemyHealth: 100
   m_enemyMovementType: 0
-  m_enemyMovementSpeed: {fileID: 11400000, guid: fcfb8e9720a38f043b88c86ea5f7cccc,
-    type: 2}
+  m_enemyMovementSpeed: 2.5

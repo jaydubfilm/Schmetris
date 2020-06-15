@@ -99,7 +99,7 @@ namespace StarSalvager
             return m_anchorPoint + ((new Vector2(worldPositionVector.x, worldPositionVector.y) + m_adjustToMiddleOfGridSquare) * m_gridSquareSize);
         }
 
-        private GridSquare GetGridSquareAtWorldPosition(Vector2 worldPosition)
+        public GridSquare GetGridSquareAtWorldPosition(Vector2 worldPosition)
         {
             return GetGridSquareAtPosition(GetGridPositionOfVector(worldPosition));
         }

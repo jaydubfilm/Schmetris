@@ -5,22 +5,22 @@ using System;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine.Jobs;
+using StarSalvager.Factories;
 
 namespace StarSalvager
 {
     public class AIObstacleAvoidance : MonoBehaviour
     {
         public AIObstacleTest m_AIObstacleTestPrefab;
-        public AIAgentTest m_AIAgentTestPrefab;
+        public Enemy m_EnemyPrefab;
 
         private AIObstacleTest[] m_obstacles;
-        private AIAgentTest[] m_agents;
+        private Enemy[] m_enemies;
         private WorldGrid m_grid;
 
         private const float m_gridCellSize = 2.0f;
-        private const float m_agentVelocity = 3.0f;
         private const int m_agentGridScanRadius = 3;
-        private const float m_obstacleMass = 10.0f;
+        private const float m_obstacleMass = 4.0f;
 
         //Temporary variables, simulating the movement speed of falling obstacles
         private const float m_timeToMoveBetweenCells = 3.0f;
@@ -37,7 +37,7 @@ namespace StarSalvager
         {
             m_grid = new WorldGrid(100, 100, m_gridCellSize);
             m_obstacles = new AIObstacleTest[1000];
-            m_agents = new AIAgentTest[200];
+            m_enemies = new Enemy[200];
 
             Transform[] transformArray = new Transform[m_obstacles.Length];
 
@@ -52,12 +52,12 @@ namespace StarSalvager
                 m_grid.SetObstacleInGridSquare(position, true);
             }
 
-            for (int i = 0; i < m_agents.Length; i++)
+            for (int i = 0; i < m_enemies.Length; i++)
             {
-                AIAgentTest newAgent = GameObject.Instantiate(m_AIAgentTestPrefab);
-                m_agents[i] = newAgent;
-                m_agents[i].transform.position = m_grid.GetRandomGridSquareWorldPosition();
-                m_agents[i].m_agentDestination = m_grid.GetRandomGridSquareWorldPosition();
+                Enemy newEnemy = EnemyFactory.Instance.CreateObject<Enemy>(ENEMY_TYPE.Enemy3);
+                m_enemies[i] = newEnemy;
+                m_enemies[i].transform.position = m_grid.GetRandomGridSquareWorldPosition();
+                m_enemies[i].m_agentDestination = m_grid.GetRandomGridSquareWorldPosition();
             }
 
             m_obstacleTransformAccessArray = new TransformAccessArray(transformArray);
@@ -94,25 +94,21 @@ namespace StarSalvager
 
             //Iterate through all agents, and for each one, add the forces from nearby obstacles to their current direction vector
             //After adding the forces, normalize and multiply by the velocity to ensure consistent speed
-            for (int i = 0; i < m_agents.Length; i++)
+            for (int i = 0; i < m_enemies.Length; i++)
             {
-                Vector3 position = m_agents[i].transform.position;
-                Vector3 destination = m_agents[i].m_agentDestination;
-
-                if (position == destination)
-                {
-                    continue;
-                }
+                Vector3 position = m_enemies[i].transform.position;
+                Vector3 destination = m_enemies[i].m_agentDestination;
 
                 Vector2 direction = new Vector2(destination.x - position.x, destination.y - position.y);
                 direction.Normalize();
-                direction *= m_agentVelocity;
 
-                direction += CalculateForceAtPoint(position);
-                direction.Normalize();
-                direction *= m_agentVelocity;
-                Vector3 vec3Direction = direction;
-                m_agents[i].transform.position = position + (vec3Direction * Time.deltaTime);
+                if (!position.Equals(destination))
+                {
+                    direction += CalculateForceAtPoint(position);
+                    direction.Normalize();
+                }
+
+                m_enemies[i].ProcessMovement(direction);
             }
         }
 

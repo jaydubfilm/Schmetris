@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c491dd903d253844990b12794e409f0, type: 3}
   m_Name: EnemyStandard3
   m_EditorClassIdentifier: 
-  m_enemyName: {fileID: 11400000, guid: 48e02bbcb0d4c784686435b4d1d28a6b, type: 2}
-  m_enemySprite: {fileID: 11400000, guid: 9a25a4af48112ad4c87d41d92443169e, type: 2}
-  m_enemyHealth: {fileID: 11400000, guid: 5c3693f4f8635c2459146f5e6b9e92e9, type: 2}
+  enemyType: 2
+  m_enemySprite: {fileID: 1413532432770694319, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
+    type: 3}
   m_enemyMovementType: 0
-  m_enemyMovementSpeed: {fileID: 11400000, guid: fcfb8e9720a38f043b88c86ea5f7cccc,
-    type: 2}
+  m_enemyAttackType: 0
