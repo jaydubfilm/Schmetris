@@ -16,11 +16,15 @@ namespace StarSalvager.Factories
 
         [SerializeField, Required] 
         private  AttachableProfileScriptableObject partProfile;
+
+        [SerializeField, Required] 
+        private GameObject shapePrefab;
         
         //============================================================================================================//
     
-        private BitAttachableFactory _bitAttachableFactory;
-        private PartAttachableFactory _partAttachableFactory;
+        private FactoryBase _bitAttachableFactory;
+        private FactoryBase _partAttachableFactory;
+        private FactoryBase _shapeFactory;
         
         //============================================================================================================//
     
@@ -41,6 +45,9 @@ namespace StarSalvager.Factories
 
                 case nameof(PartAttachableFactory):
                     return (_partAttachableFactory ?? (_partAttachableFactory = new PartAttachableFactory(partProfile))) as T;
+                
+                case nameof(ShapeFactory):
+                    return (_shapeFactory ?? (_shapeFactory = new ShapeFactory(shapePrefab))) as T;
             
                 default:
                     throw new ArgumentOutOfRangeException(nameof(typeName), typeName, null);

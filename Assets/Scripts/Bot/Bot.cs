@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
 
 namespace StarSalvager
@@ -47,10 +48,6 @@ namespace StarSalvager
         
         //============================================================================================================//
 
-        private new Transform transform;
-
-        //============================================================================================================//
-
         // Start is called before the first frame update
         private void Start()
         {
@@ -59,8 +56,6 @@ namespace StarSalvager
             attachedBlocks.Add(this);
             
             InitInput();
-
-            transform = gameObject.transform;
         }
 
         // Update is called once per frame
@@ -71,6 +66,11 @@ namespace StarSalvager
 
             if (Rotating)
                 RotateBot();
+        }
+
+        private void OnDestroy()
+        {
+            DeInitInput();
         }
 
         //============================================================================================================//
@@ -278,7 +278,7 @@ namespace StarSalvager
         {
             var newCoord = direction.ToVector2Int();
 
-            CoordinateOccupied(direction, ref newCoord);
+            attachedBlocks.CoordinateOccupied(direction, ref newCoord);
 
             newAttachable.Coordinate = newCoord;
             newAttachable.SetAttached(true);
@@ -288,29 +288,12 @@ namespace StarSalvager
             attachedBlocks.Add(newAttachable);
         }
 
-        private bool CoordinateOccupied(DIRECTION direction, ref Vector2Int coordinate)
-        {
-            var check = coordinate;
-            var exists = attachedBlocks
-                .Any(b => b.Coordinate == check);
-
-            if (!exists)
-                return false;
-
-            coordinate += direction.ToVector2Int();
-
-            return CoordinateOccupied(direction, ref coordinate);
-        }
-        
-        #endif
+#endif
         
 
         //============================================================================================================//
 
-        protected override void OnCollide(Bot bot)
-        {
-            return;
-        }
+        protected override void OnCollide(Bot bot) { }
         public override BlockData ToBlockData()
         {
             throw new NotImplementedException();
@@ -328,36 +311,43 @@ namespace StarSalvager
         {
             
             Input.Actions.Default.SideMovement.Enable();
-            Input.Actions.Default.SideMovement.performed += ctx =>
-            {
-                if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
-                {
-                    _currentInput = 0f;
-                    return;
-                }
-                
-                _currentInput = ctx.ReadValue<float>();
-            };
+            Input.Actions.Default.SideMovement.performed += SideMovement;
             
             Input.Actions.Default.Rotate.Enable();
-            Input.Actions.Default.Rotate.performed += ctx =>
-            {
-                if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
-                    return;
-                
-                var rot = ctx.ReadValue<float>();
-                
-                if(rot < 0)
-                    Rotate(ROTATION.CCW);
-                else if(rot > 0)
-                    Rotate(ROTATION.CW);
-            };
+            Input.Actions.Default.Rotate.performed += Rotate;
 
         }
 
         public void DeInitInput()
         {
-            throw new System.NotImplementedException();
+            Input.Actions.Default.SideMovement.Disable();
+            Input.Actions.Default.SideMovement.performed -= SideMovement;
+            
+            Input.Actions.Default.Rotate.Disable();
+            Input.Actions.Default.Rotate.performed -= Rotate;
+        }
+        
+        private void SideMovement(InputAction.CallbackContext ctx)
+        {
+            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+            {
+                _currentInput = 0f;
+                return;
+            }
+                
+            _currentInput = ctx.ReadValue<float>();
+        }
+        private void Rotate(InputAction.CallbackContext ctx)
+        {
+            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+                return;
+                
+            var rot = ctx.ReadValue<float>();
+                
+            if(rot < 0)
+                Rotate(ROTATION.CCW);
+            else if(rot > 0)
+                Rotate(ROTATION.CW);
         }
         
         //============================================================================================================//

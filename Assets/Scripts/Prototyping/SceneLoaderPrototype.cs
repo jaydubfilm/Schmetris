@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -16,9 +15,12 @@ namespace StarSalvager.Prototype
         public class SceneData
         {
             [SerializeField]
-            private int SceneIndex;
+            public int SceneIndex;
             [SerializeField]
             private string SceneTitle;
+
+            [SerializeField, TextArea]
+            public string SceneDescription;
             [Required]
             [SerializeField]
             private Button button;
@@ -41,6 +43,13 @@ namespace StarSalvager.Prototype
         [SerializeField, Required]
         private GameObject SceneSelectionWindowObject;
 
+        [SerializeField, Required]
+        private GameObject SceneDescriptionWindowObject;
+        private TMP_Text descriptionText;
+        
+        [SerializeField]
+        private Button quitButton;
+
         [SerializeField]
         private Button resetButton;
         [SerializeField]
@@ -51,10 +60,12 @@ namespace StarSalvager.Prototype
             DontDestroyOnLoad(gameObject);
             DontDestroyOnLoad(EventSystem.current.gameObject);
             
+            descriptionText = SceneDescriptionWindowObject.GetComponentInChildren<TMP_Text>();
+            
             resetButton.gameObject.SetActive(false);
             returnToMenuButton.gameObject.SetActive(false);
-            
-            
+            SceneDescriptionWindowObject.SetActive(false);
+
             foreach (var sceneData in _sceneDatas)
             {
                 sceneData.Init();
@@ -70,12 +81,31 @@ namespace StarSalvager.Prototype
             {
                 SceneManager.LoadScene(0);
             });
+            
+            quitButton.onClick.AddListener(() =>
+            {
+                #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+                
+#else
+Application.Quit();
+#endif
+            });
 
             SceneManager.sceneLoaded += (scene, mode) =>
             {
-                SceneSelectionWindowObject.SetActive(scene.buildIndex == 0);
-                resetButton.gameObject.SetActive(scene.buildIndex != 0);
-                returnToMenuButton.gameObject.SetActive(scene.buildIndex != 0);
+                var index = scene.buildIndex;
+                SceneSelectionWindowObject.SetActive(index == 0);
+                SceneDescriptionWindowObject.SetActive(index != 0);
+                
+                resetButton.gameObject.SetActive(index != 0);
+                returnToMenuButton.gameObject.SetActive(index != 0);
+                
+                var data = _sceneDatas.FirstOrDefault(d => d.SceneIndex == index);
+
+                if (data != null)
+                    descriptionText.text = data.SceneDescription;
+
             };
         }
     }

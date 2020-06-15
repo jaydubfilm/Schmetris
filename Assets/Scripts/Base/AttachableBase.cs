@@ -15,6 +15,7 @@ namespace StarSalvager
         /// <summary>
         /// Offset from center block
         /// </summary>
+        [DisableInEditorMode]
         public Vector2Int Coordinate;
 
         [SerializeField, ReadOnly]
