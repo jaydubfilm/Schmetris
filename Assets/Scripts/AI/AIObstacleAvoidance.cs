@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Unity.Collections;
+using Unity.Jobs;
+using UnityEngine.Jobs;
 
 namespace StarSalvager
 {
@@ -24,11 +27,19 @@ namespace StarSalvager
         private float m_timer = 1.5f;
         private Vector2 m_obstaclePositionAdjuster = new Vector2(0.0f, m_gridCellSize);
 
+        //Variables used for job scheduling system
+        PositionUpdateJob m_positionUpdateJob;
+
+        TransformAccessArray m_obstacleTransformAccessArray;
+
+
         void Start()
         {
             m_grid = new WorldGrid(100, 100, m_gridCellSize);
             m_obstacles = new AIObstacleTest[1000];
             m_agents = new AIAgentTest[200];
+
+            Transform[] transformArray = new Transform[m_obstacles.Length];
 
             //Temporary for testing - instantiate large numbers of test agents and obstacles. In the future, this w
             for (int i = 0; i < m_obstacles.Length; i++)
@@ -37,6 +48,7 @@ namespace StarSalvager
                 m_obstacles[i] = newObstacle;
                 Vector2 position = m_grid.GetRandomGridSquareWorldPosition();
                 m_obstacles[i].transform.position = position;
+                transformArray[i] = m_obstacles[i].transform;
                 m_grid.SetObstacleInGridSquare(position, true);
             }
 
@@ -47,7 +59,19 @@ namespace StarSalvager
                 m_agents[i].transform.position = m_grid.GetRandomGridSquareWorldPosition();
                 m_agents[i].m_agentDestination = m_grid.GetRandomGridSquareWorldPosition();
             }
+
+            m_obstacleTransformAccessArray = new TransformAccessArray(transformArray);
             //End Temporary code
+        }
+
+        struct PositionUpdateJob : IJobParallelForTransform
+        {
+            public Vector3 distanceToMove;
+
+            public void Execute(int i, TransformAccess transform)
+            {
+                transform.position -= distanceToMove;
+            }
         }
 
         void Update()
@@ -61,11 +85,12 @@ namespace StarSalvager
             }
 
             Vector3 amountShiftDown = new Vector3(0, (m_gridCellSize * Time.deltaTime) / m_timeToMoveBetweenCells, 0);
-            foreach (AIObstacleTest obstacle in m_obstacles)
+            m_positionUpdateJob = new PositionUpdateJob()
             {
-                obstacle.transform.position = obstacle.transform.position - amountShiftDown;
-            }
-            //End Temporary code
+                distanceToMove = amountShiftDown,
+            };
+
+            m_positionUpdateJob.Schedule(m_obstacleTransformAccessArray);
 
             //Iterate through all agents, and for each one, add the forces from nearby obstacles to their current direction vector
             //After adding the forces, normalize and multiply by the velocity to ensure consistent speed
@@ -137,5 +162,11 @@ namespace StarSalvager
             direction *= magnitude;
             return direction;
         }
+
+        private void OnDestroy()
+        {
+            m_obstacleTransformAccessArray.Dispose();
+        }
     }
 }
+ 

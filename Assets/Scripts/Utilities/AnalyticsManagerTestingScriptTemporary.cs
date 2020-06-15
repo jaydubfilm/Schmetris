@@ -10,11 +10,11 @@ namespace StarSalvager
         // Start is called before the first frame update
         void Start()
         {
-            Dictionary<string, object> dictionary = new Dictionary<string, object>();
+            /*Dictionary<string, object> dictionary = new Dictionary<string, object>();
             dictionary.Add("1qpriugbj12qpriugbj12qpriugbj12qpriugbjriug", 9850709841);
             dictionary.Add("2qpriugbj12qpriugbj12qpriugbj12qpriugbjriug", 9850709841.0f);
             dictionary.Add("3qpriugbj12qpriugbj12qpriugbj12qpriugbjriug", "string value");
-            print (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.GameStart, dictionary));
+            print (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.GameStart, dictionary));*/
 
 
 
@@ -99,7 +99,7 @@ namespace StarSalvager
             }
 
 
-            /*if (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.TutorialStep, eventDataParameter: 3))
+            if (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.TutorialStep, eventDataParameter: 3))
             {
                 print("Event sent successfully");
             }
@@ -109,7 +109,7 @@ namespace StarSalvager
             }
 
 
-            if (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.TutorialComplete))
+            /*if (AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.TutorialComplete))
             {
                 print("Event sent successfully");
             }
