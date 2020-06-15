@@ -8,9 +8,11 @@ namespace StarSalvager
     [RequireComponent(typeof(BoxCollider2D))]
     public abstract class CollidableBase : MonoBehaviour
     {
-        private const int CHECK_FREQUENCY = 5;
+        private const int CHECK_FREQUENCY = 1;
 
         private int checks;
+
+        protected bool useCollision = true;
         //============================================================================================================//
         
         protected new BoxCollider2D collider
@@ -55,6 +57,9 @@ namespace StarSalvager
         //TODO Consider how best to avoid using the Collision Stay
         private void OnCollisionStay2D(Collision2D other)
         {
+            if (!useCollision)
+                return;
+            
             //This currently reduces the amount of total GetComponent calls 
             //This isn't a long term solution, though solves the problem for now.
             if (checks == CHECK_FREQUENCY)
@@ -68,6 +73,7 @@ namespace StarSalvager
                 checks++;
                 return;
             }
+            
             //Debug.Log($"{gameObject.name} Collided with {other.gameObject.name}");
             
             if (!other.gameObject.CompareTag("Player"))
@@ -81,6 +87,11 @@ namespace StarSalvager
         public void SetSprite(Sprite sprite)
         {
             renderer.sprite = sprite;
+        }
+
+        public void SetColor(Color color)
+        {
+            renderer.color = color;
         }
         
         //============================================================================================================//

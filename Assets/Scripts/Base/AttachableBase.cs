@@ -10,6 +10,11 @@ namespace StarSalvager
     /// </summary>
     public abstract class AttachableBase : CollidableBase, IHealth
     {
+        private static readonly Quaternion[] rotations =
+        {
+            Quaternion.Euler(0,0,90),
+            Quaternion.Euler(0,0,-90)
+        };
         //============================================================================================================//
         
         /// <summary>
@@ -56,15 +61,18 @@ namespace StarSalvager
                     _temp.x = Coordinate.y;
                     _temp.y = Coordinate.x * -1;
                     
-                    
                     break;
                 case ROTATION.CCW:
                     _temp.x = Coordinate.y * -1;
                     _temp.y = Coordinate.x;
+                    
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(rotation), rotation, null);
             }
+            
+            //Rotate opposite of the Core rotation 
+            transform.localRotation *= rotations[(int)rotation];
 
             Coordinate = _temp;
         }
