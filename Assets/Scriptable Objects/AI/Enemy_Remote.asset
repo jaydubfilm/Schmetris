@@ -10,28 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8fa192c68b547b643846fae7ca70b319, type: 3}
-  m_Name: EnemyProfile
+  m_Name: Enemy_Remote
   m_EditorClassIdentifier: 
-  m_enemyPrefab: {fileID: 0}
-  m_enemyProfiles:
-  - enemyType: 0
+  m_enemyRemoteData:
+  - _enemyType: 0
     _enemyID: 0
     _name: 
     _health: 0
-    _movementSpeed: 1
+    _movementSpeed: 0
     _attackDamage: 0
     _attackSpeed: 0
-  - enemyType: 1
+  - _enemyType: 1
     _enemyID: 0
     _name: 
     _health: 0
-    _movementSpeed: 3
+    _movementSpeed: 2
     _attackDamage: 0
     _attackSpeed: 0
-  - enemyType: 2
+  - _enemyType: 2
     _enemyID: 0
     _name: 
     _health: 0
-    _movementSpeed: 8
+    _movementSpeed: 10
     _attackDamage: 0
     _attackSpeed: 0

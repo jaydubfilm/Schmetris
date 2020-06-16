@@ -8,13 +8,12 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Enemy_Profile", menuName = "Star Salvager/Scriptable Objects/Enemy Profile")]
     public class EnemyProfileScriptableObject : ScriptableObject
     {
-        public GameObject m_enemyPrefab;
-        public List<EnemyProfile> m_enemyProfiles = new List<EnemyProfile>();
+        public List<EnemyProfileData> m_enemyProfileData = new List<EnemyProfileData>();
 
-        public EnemyProfile GetProfile(ENEMY_TYPE Type)
+        public EnemyProfileData GetEnemyProfileData(ENEMY_TYPE Type)
         {
-            return m_enemyProfiles
-                .FirstOrDefault(p => p.enemyType == Type);
+            return m_enemyProfileData
+                .FirstOrDefault(p => p.EnemyType == Type);
         }
     }
 

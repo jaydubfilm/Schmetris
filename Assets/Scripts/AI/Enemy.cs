@@ -10,8 +10,6 @@ namespace StarSalvager
         public new Transform transform;
         public Vector2 m_agentDestination = Vector2.zero;
 
-        [SerializeField] private EnemyTypeScriptableObject m_enemyType;
-
         private SpriteRenderer m_spriteRenderer;
 
         public EnemyData m_enemyData;
@@ -20,8 +18,11 @@ namespace StarSalvager
         {
             transform = gameObject.transform;
             m_spriteRenderer = GetComponent<SpriteRenderer>();
+        }
 
-            m_spriteRenderer.sprite = m_enemyType.GetSprite();
+        private void Start()
+        {
+            m_spriteRenderer.sprite = m_enemyData.GetSprite();
         }
 
         public void ProcessMovement(Vector3 direction)

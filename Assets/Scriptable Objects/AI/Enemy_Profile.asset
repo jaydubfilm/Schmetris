@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c491dd903d253844990b12794e409f0, type: 3}
+  m_Name: Enemy_Profile
+  m_EditorClassIdentifier: 
+  m_enemyProfileData:
+  - _enemyType: 0
+    _sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
+      type: 3}
+    _movementType: 0
+    _attackType: 0
+  - _enemyType: 1
+    _sprite: {fileID: 8171182780678829371, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
+      type: 3}
+    _movementType: 0
+    _attackType: 0
+  - _enemyType: 2
+    _sprite: {fileID: -7768236642965716457, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
+      type: 3}
+    _movementType: 0
+    _attackType: 0

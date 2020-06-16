@@ -4,12 +4,12 @@ using UnityEngine;
 namespace StarSalvager.Factories.Data
 {
     [System.Serializable]
-    public struct EnemyProfile
+    public struct EnemyRemoteData
     {
-        public int Type => (int)enemyType;
+        public int Type => (int)_enemyType;
 
         [SerializeField]
-        public ENEMY_TYPE enemyType;
+        private ENEMY_TYPE _enemyType;
 
         [SerializeField]
         private int _enemyID;
@@ -29,40 +29,39 @@ namespace StarSalvager.Factories.Data
         [SerializeField]
         private float _attackSpeed;
 
+        public ENEMY_TYPE EnemyType
+        {
+            get => _enemyType;
+        }
+
         public int EnemyID
         {
             get => _enemyID;
-            set => _enemyID = value;
         }
 
         public string Name
         {
             get => _name;
-            set => _name = value;
         }
 
         public int Health
         {
             get => _health;
-            set => _health = value;
         }
 
         public float MovementSpeed
         {
             get => _movementSpeed;
-            set => _movementSpeed = value;
         }
 
         public float AttackDamage
         {
             get => _attackDamage;
-            set => _attackDamage = value;
         }
 
         public float AttackSpeed
         {
             get => _attackSpeed;
-            set => _attackSpeed = value;
         }
     }
 }
