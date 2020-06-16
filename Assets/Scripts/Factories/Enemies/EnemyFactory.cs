@@ -9,39 +9,43 @@ using StarSalvager.Factories.Data;
 
 namespace StarSalvager.Factories
 {
-    public class EnemyFactory : Singleton<EnemyFactory>
+    public class EnemyFactory : FactoryBase
     {
-        [SerializeField, Required]
-        private EnemyProfileScriptableObject m_enemyProfiles;
-
-        [SerializeField, Required]
-        private EnemyRemoteDataScriptableObject m_enemyRemoteDatas;
-
-        [SerializeField, Required]
-        private GameObject enemyPrefab;
+        private readonly EnemyProfileScriptableObject m_enemyProfile;
+        private readonly EnemyRemoteDataScriptableObject m_enemyRemoteData;
+        private readonly GameObject m_prefab;
 
         private List<EnemyData> enemyDatas = new List<EnemyData>();
 
         //============================================================================================================//
 
+        public EnemyFactory(EnemyProfileScriptableObject enemyProfile, EnemyRemoteDataScriptableObject enemyRemoteData)
+        {
+            m_enemyProfile = enemyProfile;
+            m_enemyRemoteData = enemyRemoteData;
+            m_prefab = m_enemyProfile.m_prefab;
+        }
+
+        //============================================================================================================//
+
         private EnemyData SetupEnemyData(ENEMY_TYPE enemyType)
         {
-            EnemyProfileData enemyProfile = m_enemyProfiles.GetEnemyProfileData(enemyType);
-            EnemyRemoteData remoteData = m_enemyRemoteDatas.GetRemoteData(enemyType);
+            EnemyProfileData profile = m_enemyProfile.GetEnemyProfileData(enemyType);
+            EnemyRemoteData remoteData = m_enemyRemoteData.GetRemoteData(enemyType);
 
-            EnemyData enemyData = new EnemyData(remoteData.EnemyType, remoteData.EnemyID, remoteData.Name, remoteData.Health, remoteData.MovementSpeed, remoteData.AttackDamage, remoteData.AttackSpeed, enemyProfile.MovementType, enemyProfile.AttackType, enemyProfile.Sprite);
+            EnemyData enemyData = new EnemyData(remoteData.EnemyType, remoteData.EnemyID, remoteData.Name, remoteData.Health, remoteData.MovementSpeed, remoteData.AttackDamage, remoteData.AttackSpeed, profile.MovementType, profile.AttackType, profile.Sprite);
 
             enemyDatas.Add(enemyData);
 
             return enemyData;
         }
 
-        public GameObject CreateGameObject()
+        public override GameObject CreateGameObject()
         {
-            return GameObject.Instantiate(enemyPrefab);
+            return GameObject.Instantiate(m_prefab);
         }
 
-        public T CreateObject<T>()
+        public override T CreateObject<T>()
         {
             return CreateGameObject().GetComponent<T>();
         }

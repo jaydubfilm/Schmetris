@@ -54,7 +54,7 @@ namespace StarSalvager
 
             for (int i = 0; i < m_enemies.Length; i++)
             {
-                Enemy newEnemy = EnemyFactory.Instance.CreateObject<Enemy>(ENEMY_TYPE.Enemy2);
+                Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(ENEMY_TYPE.Enemy1);
                 m_enemies[i] = newEnemy;
                 m_enemies[i].transform.position = m_grid.GetRandomGridSquareWorldPosition();
                 m_enemies[i].m_agentDestination = m_grid.GetRandomGridSquareWorldPosition();

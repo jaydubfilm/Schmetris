@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c491dd903d253844990b12794e409f0, type: 3}
   m_Name: Enemy_Profile
   m_EditorClassIdentifier: 
+  m_prefab: {fileID: 6795578211728555506, guid: 6c7e3580e3ea810439e76c98bbd9c53b,
+    type: 3}
   m_enemyProfileData:
   - m_enemyType: 0
     m_sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,

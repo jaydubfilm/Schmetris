@@ -22,7 +22,7 @@ namespace StarSalvager.Prototype
             if(temp != null)
                 DestroyImmediate(temp);
         
-            var newShape = AttachableFactory.Instance
+            var newShape = FactoryManager.Instance
                 .GetFactory<ShapeFactory>()
                 .CreateObject<Shape>(
                     (BIT_TYPE) Random.Range(0, 7),

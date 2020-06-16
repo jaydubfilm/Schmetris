@@ -31,7 +31,7 @@ namespace StarSalvager.Factories
 
         public T CreateObject<T>(BIT_TYPE bitType, int totalBits)
         {
-            var bitFactory = AttachableFactory.Instance.GetFactory<BitAttachableFactory>();
+            var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
             
             var shape = CreateObject<Shape>();
             for (var i = 0; i < totalBits; i++)

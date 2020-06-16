@@ -7,7 +7,7 @@ using UnityEngine;
 namespace StarSalvager.Factories
 {
     //Based on: https://www.dofactory.com/net/factory-method-design-pattern
-    public class AttachableFactory : Singleton<AttachableFactory>
+    public class FactoryManager : Singleton<FactoryManager>
     {
         //============================================================================================================//
         
@@ -15,16 +15,23 @@ namespace StarSalvager.Factories
         private AttachableProfileScriptableObject bitProfile;
 
         [SerializeField, Required] 
-        private  AttachableProfileScriptableObject partProfile;
+        private AttachableProfileScriptableObject partProfile;
 
         [SerializeField, Required] 
         private GameObject shapePrefab;
-        
+
+        [SerializeField, Required]
+        private EnemyProfileScriptableObject enemyProfile;
+
+        [SerializeField, Required]
+        private EnemyRemoteDataScriptableObject enemyRemoteData;
+
         //============================================================================================================//
-    
+
         private FactoryBase _bitAttachableFactory;
         private FactoryBase _partAttachableFactory;
         private FactoryBase _shapeFactory;
+        private FactoryBase _enemyFactory;
         
         //============================================================================================================//
     
@@ -48,7 +55,10 @@ namespace StarSalvager.Factories
                 
                 case nameof(ShapeFactory):
                     return (_shapeFactory ?? (_shapeFactory = new ShapeFactory(shapePrefab))) as T;
-            
+
+                case nameof(EnemyFactory):
+                    return (_enemyFactory ?? (_enemyFactory = new EnemyFactory(enemyProfile, enemyRemoteData))) as T;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(typeName), typeName, null);
             }

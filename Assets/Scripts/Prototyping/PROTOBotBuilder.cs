@@ -38,7 +38,7 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
         if(bot.Rotating)
             return;
         
-        var newBit = AttachableFactory.Instance
+        var newBit = FactoryManager.Instance
             .GetFactory<BitAttachableFactory>()
             .CreateObject<AttachableBase>(
                 (BIT_TYPE) Random.Range(0, 7),

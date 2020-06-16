@@ -36,10 +36,10 @@ namespace StarSalvager.Utilities.Extensions
                 switch (block.ClassType)
                 {
                     case nameof(Bit):
-                        attachable = AttachableFactory.Instance.GetFactory<BitAttachableFactory>().CreateObject<AttachableBase>(block);
+                        attachable = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<AttachableBase>(block);
                         break;
                     case nameof(Part):
-                        attachable = AttachableFactory.Instance.GetFactory<PartAttachableFactory>().CreateObject<AttachableBase>(block);
+                        attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<AttachableBase>(block);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(block.ClassType), block.ClassType, null);
