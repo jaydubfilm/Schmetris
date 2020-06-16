@@ -6,62 +6,62 @@ namespace StarSalvager.Factories.Data
     [System.Serializable]
     public struct EnemyRemoteData
     {
-        public int Type => (int)_enemyType;
+        public int Type => (int)m_enemyType;
 
         [SerializeField]
-        private ENEMY_TYPE _enemyType;
+        private ENEMY_TYPE m_enemyType;
 
         [SerializeField]
-        private int _enemyID;
+        private int m_enemyID;
 
         [SerializeField]
-        private string _name;
+        private string m_name;
 
         [SerializeField]
-        private int _health;
+        private int m_health;
 
         [SerializeField]
-        private float _movementSpeed;
+        private float m_movementSpeed;
 
         [SerializeField]
-        private float _attackDamage;
+        private float m_attackDamage;
 
         [SerializeField]
-        private float _attackSpeed;
+        private float m_attackSpeed;
 
         public ENEMY_TYPE EnemyType
         {
-            get => _enemyType;
+            get => m_enemyType;
         }
 
         public int EnemyID
         {
-            get => _enemyID;
+            get => m_enemyID;
         }
 
         public string Name
         {
-            get => _name;
+            get => m_name;
         }
 
         public int Health
         {
-            get => _health;
+            get => m_health;
         }
 
         public float MovementSpeed
         {
-            get => _movementSpeed;
+            get => m_movementSpeed;
         }
 
         public float AttackDamage
         {
-            get => _attackDamage;
+            get => m_attackDamage;
         }
 
         public float AttackSpeed
         {
-            get => _attackSpeed;
+            get => m_attackSpeed;
         }
     }
 }

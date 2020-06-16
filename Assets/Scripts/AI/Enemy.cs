@@ -22,12 +22,12 @@ namespace StarSalvager
 
         private void Start()
         {
-            m_spriteRenderer.sprite = m_enemyData.GetSprite();
+            m_spriteRenderer.sprite = m_enemyData.Sprite;
         }
 
         public void ProcessMovement(Vector3 direction)
         {
-            transform.position = transform.position + (direction * m_enemyData.GetMovementSpeed() * Time.deltaTime);
+            transform.position = transform.position + (direction * m_enemyData.MovementSpeed * Time.deltaTime);
         }
     }
 }

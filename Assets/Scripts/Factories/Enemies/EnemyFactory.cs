@@ -50,7 +50,7 @@ namespace StarSalvager.Factories
 
         public T CreateObject<T>(ENEMY_TYPE enemyType)
         {
-            EnemyData enemyData = enemyDatas.FirstOrDefault(p => p.GetEnemyType() == enemyType);
+            EnemyData enemyData = enemyDatas.FirstOrDefault(p => p.EnemyType == enemyType);
 
             if (enemyData == null)
             {

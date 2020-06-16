@@ -31,54 +31,54 @@ namespace StarSalvager
             m_sprite = sprite;
         }
 
-        public ENEMY_TYPE GetEnemyType()
+        public ENEMY_TYPE EnemyType
         {
-            return m_enemyType;
+            get => m_enemyType;
         }
 
-        public int GetEnemyID()
+        public int EnemyID
         {
-            return m_enemyID;
+            get => m_enemyID;
         }
 
-        public string GetName()
+        public string Name
         {
-            return m_name;
+            get => m_name;
         }
 
-        public int GetHealth()
+        public int Health
         {
-            return m_health;
+            get => m_health;
         }
 
-        public float GetMovementSpeed()
+        public float MovementSpeed
         {
-            return m_movementSpeed;
+            get => m_movementSpeed;
         }
 
-        public float GetAttackDamage()
+        public float AttackDamage
         {
-            return m_attackDamage;
+            get => m_attackDamage;
         }
 
-        public float GetAttackSpeed()
+        public float AttackSpeed
         {
-            return m_attackSpeed;
-        }
-        
-        public ENEMY_MOVETYPE GetMovementType()
-        {
-            return m_movementType;
+            get => m_attackSpeed;
         }
 
-        public ENEMY_ATTACKTYPE GetAttackType()
+        public ENEMY_MOVETYPE MovementType
         {
-            return m_attackType;
+            get => m_movementType;
         }
-        
-        public Sprite GetSprite()
+
+        public ENEMY_ATTACKTYPE AttackType
         {
-            return m_sprite;
+            get => m_attackType;
+        }
+
+        public Sprite Sprite
+        {
+            get => m_sprite;
         }
     }
 }

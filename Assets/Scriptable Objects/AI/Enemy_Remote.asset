@@ -13,24 +13,24 @@ MonoBehaviour:
   m_Name: Enemy_Remote
   m_EditorClassIdentifier: 
   m_enemyRemoteData:
-  - _enemyType: 0
-    _enemyID: 0
-    _name: 
-    _health: 0
-    _movementSpeed: 0
-    _attackDamage: 0
-    _attackSpeed: 0
-  - _enemyType: 1
-    _enemyID: 0
-    _name: 
-    _health: 0
-    _movementSpeed: 2
-    _attackDamage: 0
-    _attackSpeed: 0
-  - _enemyType: 2
-    _enemyID: 0
-    _name: 
-    _health: 0
-    _movementSpeed: 10
-    _attackDamage: 0
-    _attackSpeed: 0
+  - m_enemyType: 0
+    m_enemyID: 0
+    m_name: 
+    m_health: 0
+    m_movementSpeed: 0
+    m_attackDamage: 0
+    m_attackSpeed: 0
+  - m_enemyType: 1
+    m_enemyID: 0
+    m_name: 
+    m_health: 0
+    m_movementSpeed: 3
+    m_attackDamage: 0
+    m_attackSpeed: 0
+  - m_enemyType: 2
+    m_enemyID: 0
+    m_name: 
+    m_health: 0
+    m_movementSpeed: 10
+    m_attackDamage: 0
+    m_attackSpeed: 0

@@ -13,18 +13,18 @@ MonoBehaviour:
   m_Name: Enemy_Profile
   m_EditorClassIdentifier: 
   m_enemyProfileData:
-  - _enemyType: 0
-    _sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
+  - m_enemyType: 0
+    m_sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
       type: 3}
-    _movementType: 0
-    _attackType: 0
-  - _enemyType: 1
-    _sprite: {fileID: 8171182780678829371, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
+    m_movementType: 0
+    m_attackType: 0
+  - m_enemyType: 1
+    m_sprite: {fileID: 8171182780678829371, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
       type: 3}
-    _movementType: 0
-    _attackType: 0
-  - _enemyType: 2
-    _sprite: {fileID: -7768236642965716457, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
+    m_movementType: 0
+    m_attackType: 0
+  - m_enemyType: 2
+    m_sprite: {fileID: -7768236642965716457, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
       type: 3}
-    _movementType: 0
-    _attackType: 0
+    m_movementType: 0
+    m_attackType: 0
