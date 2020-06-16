@@ -22,21 +22,19 @@ namespace StarSalvager.Factories
 
         private List<EnemyData> enemyDatas = new List<EnemyData>();
 
-        private void Awake()
-        {
-            base.Awake();
-
-            foreach (EnemyProfileData enemyProfile in m_enemyProfiles.m_enemyProfileData)
-            {
-                EnemyRemoteData remoteData = m_enemyRemoteDatas.GetRemoteData(enemyProfile.EnemyType);
-
-                EnemyData enemyData = new EnemyData(remoteData.EnemyType, remoteData.EnemyID, remoteData.Name, remoteData.Health, remoteData.MovementSpeed, remoteData.AttackDamage, remoteData.AttackSpeed, enemyProfile.MovementType, enemyProfile.AttackType, enemyProfile.Sprite);
-
-                enemyDatas.Add(enemyData);
-            }
-        }
-
         //============================================================================================================//
+
+        private EnemyData SetupEnemyData(ENEMY_TYPE enemyType)
+        {
+            EnemyProfileData enemyProfile = m_enemyProfiles.GetEnemyProfileData(enemyType);
+            EnemyRemoteData remoteData = m_enemyRemoteDatas.GetRemoteData(enemyType);
+
+            EnemyData enemyData = new EnemyData(remoteData.EnemyType, remoteData.EnemyID, remoteData.Name, remoteData.Health, remoteData.MovementSpeed, remoteData.AttackDamage, remoteData.AttackSpeed, enemyProfile.MovementType, enemyProfile.AttackType, enemyProfile.Sprite);
+
+            enemyDatas.Add(enemyData);
+
+            return enemyData;
+        }
 
         public GameObject CreateGameObject()
         {
@@ -53,6 +51,11 @@ namespace StarSalvager.Factories
         public T CreateObject<T>(ENEMY_TYPE enemyType)
         {
             EnemyData enemyData = enemyDatas.FirstOrDefault(p => p.GetEnemyType() == enemyType);
+
+            if (enemyData == null)
+            {
+                enemyData = SetupEnemyData(enemyType);
+            }
 
             var enemy = CreateObject<Enemy>();
 

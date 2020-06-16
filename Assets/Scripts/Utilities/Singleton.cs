@@ -8,7 +8,7 @@ namespace StarSalvager.Utilities
     {
         public static T Instance => _instance;
         private static T _instance;
-        protected void Awake()
+        private void Awake()
         {
             if (Instance != null)
             {
