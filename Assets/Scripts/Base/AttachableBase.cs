@@ -1,5 +1,6 @@
 ﻿using System;
 using Sirenix.OdinInspector;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
@@ -10,11 +11,7 @@ namespace StarSalvager
     /// </summary>
     public abstract class AttachableBase : CollidableBase, IHealth
     {
-        private static readonly Quaternion[] rotations =
-        {
-            Quaternion.Euler(0,0,90),
-            Quaternion.Euler(0,0,-90)
-        };
+
         //============================================================================================================//
         
         /// <summary>
@@ -72,7 +69,7 @@ namespace StarSalvager
             }
             
             //Rotate opposite of the Core rotation 
-            transform.localRotation *= rotations[(int)rotation];
+            transform.localRotation *= rotation.ToInverseQuaternion();
 
             Coordinate = _temp;
         }

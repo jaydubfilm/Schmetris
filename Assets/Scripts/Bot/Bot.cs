@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
-using Sirenix.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
@@ -13,14 +12,8 @@ namespace StarSalvager
 {
     public class Bot : AttachableBase, IInput
     {
-        private static readonly Quaternion[] rotations = 
-        {
-            Quaternion.Euler(0, 0, -90),
-            Quaternion.Euler(0, 0, 90)
-        };
         
         //============================================================================================================//
-        
         [SerializeField, BoxGroup("PROTOTYPE")]
         public float TEST_BitSize = 1.28f;
 
@@ -40,9 +33,12 @@ namespace StarSalvager
 
         public bool Moving => _moving;
         private bool _moving;
-        private Vector2 targetPosition;
+        
+        public DIRECTION MoveDirection => _moveDirection;
         private DIRECTION _moveDirection;
         //public bool HasValidInput => _currentInput != 0f;
+
+        private Vector2 targetPosition;
         private float _currentInput;
 
         public float DelayedAutoStartTime = 0.2f;
@@ -52,7 +48,10 @@ namespace StarSalvager
         public bool Rotating => _rotating;
 
         private bool _rotating;
-        private Quaternion targetRotation;
+        private float targetRotation;
+
+        private CompositeCollider2D CompositeCollider2D;
+        private new Rigidbody2D rigidbody;
         
         //============================================================================================================//
 
@@ -61,6 +60,8 @@ namespace StarSalvager
         // Start is called before the first frame update
         private void Start()
         {
+            rigidbody = GetComponent<Rigidbody2D>();
+            CompositeCollider2D = GetComponent<CompositeCollider2D>();
             useCollision = false;
             
             //Mark as Core coordinate
@@ -73,12 +74,27 @@ namespace StarSalvager
         // Update is called once per frame
         private void Update()
         {
+            
+
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Equals))
+                TEST_Speed += 100;
+            else if (UnityEngine.Input.GetKeyDown(KeyCode.Minus))
+                TEST_Speed -= 100;
+        }
+
+        private void FixedUpdate()
+        {
             if (Moving)
                 MoveBot();
-
+            
             if (Rotating)
                 RotateBot();
         }
+
+        //private void OnGUI()
+        //{
+        //    GUI.Box(new Rect(10,10,100,50), $"Speed: {TEST_Speed}" );
+        //}
 
         private void OnDestroy()
         {
@@ -99,25 +115,16 @@ namespace StarSalvager
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void Rotate(ROTATION rotation)
         {
-            Quaternion toRotate;
-            switch (rotation)
-            {
-                case ROTATION.CW:
-                case ROTATION.CCW:
-                    toRotate = rotations[(int) rotation];
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(rotation), rotation, null);
-            }
+            float toRotate = rotation.ToAngle();
 
             //If we're already rotating, we need to add the direction to the target
             if (Rotating)
             {
-                targetRotation *= toRotate;
+                targetRotation += toRotate;
             }
             else
             {
-                targetRotation = transform.rotation * toRotate;
+                targetRotation = rigidbody.rotation + toRotate;
             }
             
             foreach (var attachedBlock in attachedBlocks)
@@ -134,9 +141,9 @@ namespace StarSalvager
 
         public void Move(float direction)
         {
-            if(_currentInput < 0)
+            if(direction < 0)
                 Move(DIRECTION.LEFT);
-            else if(_currentInput > 0)
+            else if(direction > 0)
                 Move(DIRECTION.RIGHT);
         }
         public void Move(DIRECTION direction)
@@ -177,14 +184,17 @@ namespace StarSalvager
 
         private void MoveBot()
         {
-            var position = transform.position;
             
-            position = Vector2.MoveTowards(position, targetPosition, TEST_Speed * Time.deltaTime);
-            transform.position = position;
+            var position = rigidbody.position;
+
+            //TODO See if this will be enough for the current setup, or if we will need something more robust.
+            position = Vector2.MoveTowards(position, targetPosition, TEST_Speed * Time.fixedDeltaTime);
+
+            //Using MovePosition() for the kinematic object since I still want it to interpolate nicely there (In the physics) 
+            rigidbody.MovePosition(position);
 
             var remainingDistance = Vector2.Distance(position, targetPosition);
-
-            if (remainingDistance > 0.1f)
+            if (remainingDistance > 0.2f)
                 return;
 
             
@@ -202,23 +212,23 @@ namespace StarSalvager
             }
 
             _moving = false;
-            transform.position = position;
+            rigidbody.position = targetPosition;
             targetPosition = Vector2.zero;
             _moveDirection = DIRECTION.NULL;
             _dasTimer = 0f;
         }
 
-
         private void RotateBot()
         {
-            var rotation = transform.rotation;
+            var rotation = rigidbody.rotation;
 
             //Rotates towards the target rotation.
-            rotation = Quaternion.RotateTowards(rotation, targetRotation, TEST_RotSpeed * Time.deltaTime);
-            transform.rotation = rotation;
+            //rotation = Quaternion.RotateTowards(rotation, targetRotation, TEST_RotSpeed * Time.deltaTime);
+            rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, TEST_RotSpeed * Time.fixedDeltaTime);
+            rigidbody.rotation = rotation;
 
             //Here we check how close to the final rotation we are.
-            var remainingDegrees = Quaternion.Angle(rotation, targetRotation);
+            var remainingDegrees = Mathf.Abs(Mathf.DeltaAngle(rotation, targetRotation));
 
             //If we're within 1deg we will count it as complete, otherwise continue to rotate.
             if (remainingDegrees > 1f)
@@ -226,10 +236,9 @@ namespace StarSalvager
 
             _rotating = false;
             
-            
             //Force set the rotation to the target, in case the bot is not exactly on target
-            transform.rotation = targetRotation;
-            targetRotation = Quaternion.identity;
+            rigidbody.rotation = targetRotation;
+            targetRotation = 0f;
         }
         
         #endregion //Movement
@@ -239,7 +248,7 @@ namespace StarSalvager
         #region Check For Legal Bit Attach
 
         //FIXME Might want to have it so that the checks don't consider ups & downs at all
-        public bool TryAddNewAttachable(AttachableBase attachable)
+        public bool TryAddNewAttachable(AttachableBase attachable, DIRECTION connectionDirection, Vector2 point)
         {
             if (Rotating)
                 return false;
@@ -253,34 +262,45 @@ namespace StarSalvager
                 
                 //TODO Need to get the coordinate of the collision
                 var bitCoordinate = GetRelativeCoordinate(bit.transform.position);
+                
+                //Debug.DrawRay((Vector2)pointCoordinate, Vector3.up * 1.28f, Color.yellow);
+                //Debug.Break();
 
                 //----------------------------------------------------------------------------------------------------//
                 
-                //closestAttachable = GetClosestAttachable(bitCoordinate);
-                //legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
+                closestAttachable = GetClosestAttachable(point);
+                legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
                 
                 //----------------------------------------------------------------------------------------------------//
 
                 //FIXME This is not working correctly, as the closestAttachable is not being assigned correctly.
-                var closestAttachables = GetClosestAttachables(bitCoordinate);
-                foreach (var attachableBase in closestAttachables)
-                {
-                    if(attachableBase == null)
-                        continue;
-                    
-                    legalDirection = CheckLegalCollision(bitCoordinate, attachableBase.Coordinate, out direction);
-
-                    if (!legalDirection) 
-                        continue;
-                    
-                    closestAttachable = attachableBase;
-                    break;
-                }
+                //var closestAttachables = GetClosestAttachables(bitCoordinate);
+                //foreach (var attachableBase in closestAttachables)
+                //{
+                //    if(attachableBase == null)
+                //        continue;
+                //    
+                //    legalDirection = CheckLegalCollision(bitCoordinate, attachableBase.Coordinate, out direction);
+//
+                //    if (!legalDirection) 
+                //        continue;
+                //    
+                //    closestAttachable = attachableBase;
+                //    break;
+                //}
                 
                 //----------------------------------------------------------------------------------------------------//
+                
+                
 
                 if (!legalDirection)
-                    return false;
+                {
+                    if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
+                    {
+                        //Debug.Log($"Non-legal direction {direction}", attachable);
+                        return false;
+                    }
+                }
                 
                 //TODO Need to check if its legal to attach (Within threshold of connection)
                 switch (bit.Type)
@@ -295,19 +315,19 @@ namespace StarSalvager
                     case BIT_TYPE.RED:
                     case BIT_TYPE.YELLOW:
                         
-                        var coordinate = closestAttachable.Coordinate + direction.ToVector2Int();
-
-                        if (attachedBlocks.Any(a => a.Coordinate == coordinate))
-                        {
-                            Debug.Log($"Checking Coordinate: {bitCoordinate} with {attachable.gameObject.name}", attachable.gameObject);
-                            Debug.Log($"Closest: {closestAttachable.gameObject.name}\n([0] {closestAttachables[0].gameObject.name} = {CheckLegalCollision(bitCoordinate, closestAttachables[0].Coordinate, out _)}, [1] {closestAttachables[1]?.gameObject.name} = {CheckLegalCollision(bitCoordinate, closestAttachables[1].Coordinate, out _)})");
-                            Debug.Log($"Attaching new bit [{coordinate}] to {closestAttachable.Coordinate}");
-                            //throw new Exception();
-                            Debug.Break();
-                        }
+                        //var coordinate = closestAttachable.Coordinate + direction.ToVector2Int();
+//
+                        //if (attachedBlocks.Any(a => a.Coordinate == coordinate))
+                        //{
+                        //    Debug.Log($"Checking Coordinate: {bitCoordinate} with {attachable.gameObject.name}", attachable.gameObject);
+                        //    //Debug.Log($"Closest: {closestAttachable.gameObject.name}\n([0] {closestAttachables[0].gameObject.name} = {CheckLegalCollision(bitCoordinate, closestAttachables[0].Coordinate, out _)}, [1] {closestAttachables[1]?.gameObject.name} = {CheckLegalCollision(bitCoordinate, closestAttachables[1].Coordinate, out _)})");
+                        //    Debug.Log($"Attaching new bit [{coordinate}] to {closestAttachable.Coordinate}");
+                        //    //throw new Exception();
+                        //    Debug.Break();
+                        //}
                         
                         //TODO Add these to the block depending on its relative position
-                        AttachNewBitToExisting(bit, closestAttachable, direction);
+                        AttachNewBitToExisting(bit, closestAttachable, connectionDirection);
                         
                         
                         
@@ -339,6 +359,29 @@ namespace StarSalvager
                 attached.SetColor(Color.white);
                 
                 var dist = Vector2Int.Distance(attached.Coordinate, checkCoordinate);
+                if (dist > smallestDist)
+                    continue;
+
+                smallestDist = dist;
+                selected = attached;
+            }
+
+            selected.SetColor(Color.magenta);
+            
+            return selected;
+        }
+        
+        public AttachableBase GetClosestAttachable(Vector2 checkPosition)
+        {
+            AttachableBase selected = null;
+
+            var smallestDist = 999f;
+                
+            foreach (var attached in attachedBlocks)
+            {
+                attached.SetColor(Color.white);
+                
+                var dist = Vector2.Distance(attached.transform.position, checkPosition);
                 if (dist > smallestDist)
                     continue;
 
@@ -435,15 +478,17 @@ namespace StarSalvager
             newAttachable.transform.SetParent(transform);
             
             attachedBlocks.Add(newAttachable);
+            
+            CompositeCollider2D.GenerateGeometry();
         }
-        
         public void AttachNewBitToExisting(AttachableBase newAttachable, AttachableBase existingAttachable, DIRECTION direction)
         {
             var coordinate = existingAttachable.Coordinate + direction.ToVector2Int();
 
+            //Checks for attempts to add attachable to occupied location
             if (attachedBlocks.Any(a => a.Coordinate == coordinate))
             {
-                //throw new Exception();
+                Debug.LogError($"Prevented attaching {newAttachable.gameObject.name} to occupied location {coordinate}", newAttachable);
                 PushNewBit(newAttachable, direction, existingAttachable.Coordinate);
                 return;
             }
@@ -457,10 +502,10 @@ namespace StarSalvager
             attachedBlocks.Add(newAttachable);
 
             CheckForCombosAround(coordinate);
+            
+            CompositeCollider2D.GenerateGeometry();
         }
         
-        #if DEVELOPMENT_BUILD || UNITY_EDITOR
-
         public void PushNewBit(AttachableBase newAttachable, DIRECTION direction)
         {
             var newCoord = direction.ToVector2Int();
@@ -473,6 +518,8 @@ namespace StarSalvager
             newAttachable.transform.SetParent(transform);
             
             attachedBlocks.Add(newAttachable);
+            
+            CompositeCollider2D.GenerateGeometry();
         }
         public void PushNewBit(AttachableBase newAttachable, DIRECTION direction, Vector2Int startCoord)
         {
@@ -486,9 +533,10 @@ namespace StarSalvager
             newAttachable.transform.SetParent(transform);
             
             attachedBlocks.Add(newAttachable);
+            
+            CompositeCollider2D.GenerateGeometry();
         }
 
-#endif
         #endregion //Attach Bits
 
         //============================================================================================================//
