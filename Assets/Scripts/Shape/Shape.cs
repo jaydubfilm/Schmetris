@@ -72,7 +72,7 @@ public class Shape : CollidableBase
     
     //================================================================================================================//
 
-    protected override void OnCollide(Bot bot)
+    protected override void OnCollide(GameObject _)
     {
         
     }

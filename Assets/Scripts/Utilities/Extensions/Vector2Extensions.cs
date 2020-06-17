@@ -17,5 +17,10 @@ namespace StarSalvager.Utilities.Extensions
 
             return vector2Int.ToDirection();
         }
+        
+        public static Vector2 ToVector2(this DIRECTION direction)
+        {
+            return direction.ToVector2Int();
+        }
     }
 }

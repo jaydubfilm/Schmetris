@@ -8,9 +8,12 @@ namespace StarSalvager
     [RequireComponent(typeof(BoxCollider2D))]
     public abstract class CollidableBase : MonoBehaviour
     {
-        private const int CHECK_FREQUENCY = 5;
+        //private const int CHECK_FREQUENCY = 1;
+//
+        //private int checks;
+        protected bool useCollision = true;
 
-        private int checks;
+        protected virtual string CollisionTag => "Player";
         //============================================================================================================//
         
         protected new BoxCollider2D collider
@@ -52,28 +55,28 @@ namespace StarSalvager
         
         //============================================================================================================//
 
+        private void OnCollisionEnter2D(Collision2D other)
+        {
+            if (!useCollision)
+                return;
+            
+            if (!other.gameObject.CompareTag(CollisionTag))
+                return;
+
+            //FIXME I should be able to store the bot, so i can reduce my calls to GetComponent
+            OnCollide(other.gameObject);
+        }
+        
         //TODO Consider how best to avoid using the Collision Stay
         private void OnCollisionStay2D(Collision2D other)
         {
-            //This currently reduces the amount of total GetComponent calls 
-            //This isn't a long term solution, though solves the problem for now.
-            if (checks == CHECK_FREQUENCY)
-            {
-                checks = 0;
-                return;
-            }
-            
-            if (checks != 0)
-            {
-                checks++;
-                return;
-            }
-            //Debug.Log($"{gameObject.name} Collided with {other.gameObject.name}");
-            
-            if (!other.gameObject.CompareTag("Player"))
+            if (!useCollision)
                 return;
             
-            OnCollide(other.gameObject.GetComponent<Bot>());
+            if (!other.gameObject.CompareTag(CollisionTag))
+                return;
+
+            OnCollide(other.gameObject);
         }
         
         //============================================================================================================//
@@ -82,13 +85,18 @@ namespace StarSalvager
         {
             renderer.sprite = sprite;
         }
+
+        public void SetColor(Color color)
+        {
+            renderer.color = color;
+        }
         
         //============================================================================================================//
 
         /// <summary>
         /// Called when the object contacts a bot
         /// </summary>
-        protected abstract void OnCollide(Bot bot);
+        protected abstract void OnCollide(GameObject gameObject);
         
         //============================================================================================================//
     }

@@ -14,6 +14,14 @@ namespace StarSalvager.Factories
         public BitAttachableFactory(AttachableProfileScriptableObject factoryProfile) : base(factoryProfile)
         {
         }
+
+        public void UpdateBitData(BIT_TYPE bitType, int level, ref Bit bit)
+        {
+            var profile = factoryProfile.GetProfile(bitType);
+            var sprite = profile.GetSprite(level);
+            
+            bit.SetSprite(sprite);
+        }
         
         //============================================================================================================//
         
