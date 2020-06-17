@@ -3,6 +3,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace StarSalvager
 {
@@ -22,8 +23,6 @@ namespace StarSalvager
 
         [SerializeField, ReadOnly]
         private bool Attached;
-
-        
 
         //============================================================================================================//
 

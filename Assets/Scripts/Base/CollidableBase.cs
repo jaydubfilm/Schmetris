@@ -12,6 +12,8 @@ namespace StarSalvager
 //
         //private int checks;
         protected bool useCollision = true;
+
+        protected virtual string CollisionTag => "Player";
         //============================================================================================================//
         
         protected new BoxCollider2D collider
@@ -58,11 +60,11 @@ namespace StarSalvager
             if (!useCollision)
                 return;
             
-            if (!other.gameObject.CompareTag("Player"))
+            if (!other.gameObject.CompareTag(CollisionTag))
                 return;
 
             //FIXME I should be able to store the bot, so i can reduce my calls to GetComponent
-            OnCollide(other.gameObject.GetComponent<Bot>());
+            OnCollide(other.gameObject);
         }
         
         //TODO Consider how best to avoid using the Collision Stay
@@ -70,34 +72,11 @@ namespace StarSalvager
         {
             if (!useCollision)
                 return;
-
-            //This currently reduces the amount of total GetComponent calls 
-            //This isn't a long term solution, though solves the problem for now.
-            //if (checks == CHECK_FREQUENCY)
-            //{
-            //    checks = 0;
-            //    return;
-            //}
-            //
-            //if (checks++ != 0)
-            //    return;
             
-            //Debug.Log($"{gameObject.name} Collided with {other.gameObject.name}");
-            
-            if (!other.gameObject.CompareTag("Player"))
+            if (!other.gameObject.CompareTag(CollisionTag))
                 return;
 
-            var bot = other.gameObject.GetComponent<Bot>();
-            
-            //FIXME This should trigger a falling state, not destroy the object
-            if (bot.Rotating)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            
-            
-            OnCollide(bot);
+            OnCollide(other.gameObject);
         }
         
         //============================================================================================================//
@@ -117,7 +96,7 @@ namespace StarSalvager
         /// <summary>
         /// Called when the object contacts a bot
         /// </summary>
-        protected abstract void OnCollide(Bot bot);
+        protected abstract void OnCollide(GameObject gameObject);
         
         //============================================================================================================//
     }

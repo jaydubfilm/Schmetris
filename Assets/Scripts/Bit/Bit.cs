@@ -1,4 +1,5 @@
 ﻿using System;
+using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
@@ -22,8 +23,29 @@ namespace StarSalvager
         
         //============================================================================================================//
 
-        protected override void OnCollide(Bot bot)
+        public void IncreaseLevel()
         {
+            level++;
+            
+            //TODO Get the new sprite for the level
+            Debug.Log($"Upgrade {gameObject.name} to level {level}", this);
+
+            var bit = this;
+            AttachableFactory.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(_type, level, ref bit);
+        }
+        
+        //============================================================================================================//
+
+        protected override void OnCollide(GameObject _gameObject)
+        {
+            var bot = _gameObject.GetComponent<Bot>();
+            
+            if (bot.Rotating)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
             //return the direction to shoot the ray
             if (!TryGetRayDirectionFromBot(bot.MoveDirection, out var rayDirection))

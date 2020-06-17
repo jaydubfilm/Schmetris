@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
@@ -255,51 +256,25 @@ namespace StarSalvager
             
             if (attachable is Bit bit)
             {
-                bool legalDirection = false;
-                DIRECTION direction = DIRECTION.NULL;
-                AttachableBase closestAttachable = null;
-                
-                
+                bool legalDirection;
+                var direction = DIRECTION.NULL;
+
+
                 //TODO Need to get the coordinate of the collision
                 var bitCoordinate = GetRelativeCoordinate(bit.transform.position);
-                
-                //Debug.DrawRay((Vector2)pointCoordinate, Vector3.up * 1.28f, Color.yellow);
-                //Debug.Break();
 
                 //----------------------------------------------------------------------------------------------------//
                 
-                closestAttachable = GetClosestAttachable(point);
+                var closestAttachable = GetClosestAttachable(point);
                 legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
                 
                 //----------------------------------------------------------------------------------------------------//
 
-                //FIXME This is not working correctly, as the closestAttachable is not being assigned correctly.
-                //var closestAttachables = GetClosestAttachables(bitCoordinate);
-                //foreach (var attachableBase in closestAttachables)
-                //{
-                //    if(attachableBase == null)
-                //        continue;
-                //    
-                //    legalDirection = CheckLegalCollision(bitCoordinate, attachableBase.Coordinate, out direction);
-//
-                //    if (!legalDirection) 
-                //        continue;
-                //    
-                //    closestAttachable = attachableBase;
-                //    break;
-                //}
-                
-                //----------------------------------------------------------------------------------------------------//
-                
-                
-
                 if (!legalDirection)
                 {
+                    //Make sure that the attachable isn't overlapping the bot before we say its impossible to 
                     if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
-                    {
-                        //Debug.Log($"Non-legal direction {direction}", attachable);
                         return false;
-                    }
                 }
                 
                 //TODO Need to check if its legal to attach (Within threshold of connection)
@@ -315,21 +290,8 @@ namespace StarSalvager
                     case BIT_TYPE.RED:
                     case BIT_TYPE.YELLOW:
                         
-                        //var coordinate = closestAttachable.Coordinate + direction.ToVector2Int();
-//
-                        //if (attachedBlocks.Any(a => a.Coordinate == coordinate))
-                        //{
-                        //    Debug.Log($"Checking Coordinate: {bitCoordinate} with {attachable.gameObject.name}", attachable.gameObject);
-                        //    //Debug.Log($"Closest: {closestAttachable.gameObject.name}\n([0] {closestAttachables[0].gameObject.name} = {CheckLegalCollision(bitCoordinate, closestAttachables[0].Coordinate, out _)}, [1] {closestAttachables[1]?.gameObject.name} = {CheckLegalCollision(bitCoordinate, closestAttachables[1].Coordinate, out _)})");
-                        //    Debug.Log($"Attaching new bit [{coordinate}] to {closestAttachable.Coordinate}");
-                        //    //throw new Exception();
-                        //    Debug.Break();
-                        //}
-                        
                         //TODO Add these to the block depending on its relative position
                         AttachNewBitToExisting(bit, closestAttachable, connectionDirection);
-                        
-                        
                         
                         break;
                     case BIT_TYPE.WHITE:
@@ -545,36 +507,162 @@ namespace StarSalvager
 
         private void CheckForCombosAround(Vector2Int coordinate)
         {
-            int left, right, up, down;
-            //Start at 1 since we should include the original Coordinate
-            left = right = up = down = 1;
+            CheckForCombosAround(attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate && a is Bit) as Bit);
+        }
+        private void CheckForCombosAround(Bit bit)
+        {
+            var horizontalBits = new List<AttachableBase>();
+            var verticalBits = new List<AttachableBase>();
 
-            ComboCountAlgorithm(coordinate, DIRECTION.LEFT.ToVector2Int(), ref left);
-            ComboCountAlgorithm(coordinate, DIRECTION.RIGHT.ToVector2Int(), ref right);
-            ComboCountAlgorithm(coordinate, DIRECTION.UP.ToVector2Int(), ref up);
-            ComboCountAlgorithm(coordinate, DIRECTION.DOWN.ToVector2Int(), ref down);
+            ComboCountAlgorithm(bit, DIRECTION.LEFT, ref horizontalBits);
+            ComboCountAlgorithm(bit, DIRECTION.RIGHT, ref horizontalBits);
+            horizontalBits.Add(bit);
             
+            ComboCountAlgorithm(bit, DIRECTION.UP, ref verticalBits);
+            ComboCountAlgorithm(bit, DIRECTION.DOWN, ref verticalBits);
+            verticalBits.Add(bit);
+
+            var horizontalCount = horizontalBits.Count;
+            var verticalCount = verticalBits.Count;
             
+            Debug.Log($"Horizontal Count: {horizontalCount}\nVertical Count: {verticalCount}");
+
+            //TODO Need to prioritize the greater of the 2
+            
+            if (horizontalCount < 3 && verticalCount < 3)
+                return;
+            
+            //TODO If either are 3 or Greater, assume it is a combo
+
+            if (horizontalCount > verticalCount)
+                SimpleComboSolver(horizontalBits);
+            else if(verticalCount > horizontalCount)
+                SimpleComboSolver(verticalBits);
+            else
+            {
+                //TODO Decide what to do if both are equal
+            }
+
+
+            //TODO Find the piece closest to the core (0, 0)
+            //TODO Find the direction from that closest block to the Core
+            //TODO Compress all the pieces towards the closest Bit
+
+
+            //int left, right, up, down;
+            ////Start at 1 since we should include the original Coordinate
+            //left = right = up = down = 1;
+//
+            //ComboCountAlgorithm(coordinate, DIRECTION.LEFT.ToVector2Int(), ref left);
+            //ComboCountAlgorithm(coordinate, DIRECTION.RIGHT.ToVector2Int(), ref right);
+            //ComboCountAlgorithm(coordinate, DIRECTION.UP.ToVector2Int(), ref up);
+            //ComboCountAlgorithm(coordinate, DIRECTION.DOWN.ToVector2Int(), ref down);
+
+
             //Debug.Log($"Combo Checks Returned Left: {left}, Right: {right}, Up: {up}, Down: {down}");
 
         }
-
-        private bool ComboCountAlgorithm(Vector2Int coordinate, Vector2Int direction, ref int count)
+        
+        private bool ComboCountAlgorithm(Bit target, DIRECTION direction, ref List<AttachableBase> bitList)
         {
-            var nextCoord = coordinate + direction;
-            if (attachedBlocks.FirstOrDefault(a => a.Coordinate == nextCoord && a is Bit) == null)
-                return false;
-
-            count++;
-            return ComboCountAlgorithm(nextCoord, direction, ref count);
+            
+            return ComboCountAlgorithm(target.Type, target.level, target.Coordinate, direction.ToVector2Int(), ref bitList);
         }
         
+        private bool ComboCountAlgorithm(BIT_TYPE type, int level, Vector2Int coordinate, Vector2Int direction, ref List<AttachableBase> bitList)
+        {
+            var nextCoord = coordinate + direction;
+            
+            var checkBlock = attachedBlocks
+                .FirstOrDefault(a => a.Coordinate == nextCoord && a is Bit) as Bit;
+            if (checkBlock == null)
+                return false;
 
+            if (checkBlock.Type != type)
+                return false;
+
+            if (checkBlock.level != level)
+                return false;
+
+            bitList.Add(checkBlock);
+            return ComboCountAlgorithm(type, level, nextCoord, direction, ref bitList);
+        }
+
+        private void SimpleComboSolver(List<AttachableBase> comboBits)
+        {
+            AttachableBase closestToCore = null;
+            var shortest = 999f;
+            foreach (var bit in comboBits)
+            {
+                var dist = Vector2Int.Distance(bit.Coordinate, Vector2Int.zero);
+                if (!(dist < shortest)) 
+                    continue;
+                
+                shortest = dist;
+                closestToCore = bit;
+            }
+            //TODO Need to check for potential orphans
+
+            var movingBits = comboBits.Where(bit => bit != closestToCore);
+
+            StartCoroutine(MoveTowardsCoroutine(
+                movingBits,
+                closestToCore,
+                () =>
+                {
+                    var bit = closestToCore as Bit;
+                    
+                    bit.IncreaseLevel();
+                    
+                    CompositeCollider2D.GenerateGeometry();
+                    
+                    CheckForCombosAround(bit);
+                }));
+        }
+
+        private void CheckForOrphans()
+        {
+            
+        }
+
+        private IEnumerator MoveTowardsCoroutine(IEnumerable<AttachableBase> toMove, AttachableBase target, Action OnFinishedCallback)
+        {
+            var attachableBases = toMove as AttachableBase[] ?? toMove.ToArray();
+            var transforms = attachableBases.Select(b => b.transform);
+            
+            var _t = 0f;
+            var targetTransform = target.transform;
+            
+            //Move bits towards target
+            while (_t  <= 1f)
+            {
+                foreach (var bit in transforms)
+                {
+                    bit.localPosition = Vector2.Lerp(bit.localPosition, targetTransform.localPosition, _t);
+                }
+
+                _t += Time.deltaTime * 2f;
+
+                yield return null;
+            }
+            
+            //Once all bits are moved, remove from list and dispose
+            foreach (var bit in attachableBases)
+            {
+                attachedBlocks.Remove(bit);
+                Destroy(bit.gameObject);
+            }
+
+
+            OnFinishedCallback?.Invoke();
+        }
+        
+        
         #endregion
         
         //============================================================================================================//
 
-        protected override void OnCollide(Bot bot) { }
+        protected override void OnCollide(GameObject _) { }
         public override BlockData ToBlockData()
         {
             throw new NotImplementedException();
