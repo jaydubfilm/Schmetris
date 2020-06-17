@@ -26,12 +26,16 @@ namespace StarSalvager.Factories
         [SerializeField, Required]
         private EnemyRemoteDataScriptableObject enemyRemoteData;
 
+        [SerializeField, Required]
+        private ProjectileProfileScriptableObject projectileProfile;
+
         //============================================================================================================//
 
         private FactoryBase _bitAttachableFactory;
         private FactoryBase _partAttachableFactory;
         private FactoryBase _shapeFactory;
         private FactoryBase _enemyFactory;
+        private FactoryBase _projectileFactory;
         
         //============================================================================================================//
     
@@ -58,6 +62,9 @@ namespace StarSalvager.Factories
 
                 case nameof(EnemyFactory):
                     return (_enemyFactory ?? (_enemyFactory = new EnemyFactory(enemyProfile, enemyRemoteData))) as T;
+
+                case nameof(ProjectileFactory):
+                    return (_projectileFactory ?? (_projectileFactory = new ProjectileFactory(projectileProfile))) as T;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(typeName), typeName, null);

@@ -47,5 +47,6 @@ MonoBehaviour:
   partProfile: {fileID: 11400000, guid: 3636fd619e951d140997270b2e8667fb, type: 2}
   shapePrefab: {fileID: 3556400771574459110, guid: 4cdd28f9004e4354b98be3c83792613a,
     type: 3}
-  m_enemyProfile: {fileID: 11400000, guid: 4fa2566114602094e90d859fbad3cc48, type: 2}
-  m_enemyRemoteData: {fileID: 11400000, guid: 35f38950b72d35945ab897049c2a18b5, type: 2}
+  enemyProfile: {fileID: 11400000, guid: 4fa2566114602094e90d859fbad3cc48, type: 2}
+  enemyRemoteData: {fileID: 11400000, guid: 35f38950b72d35945ab897049c2a18b5, type: 2}
+  projectileProfile: {fileID: 11400000, guid: f9b0bb725a6579841b2c3e06b6d54333, type: 2}

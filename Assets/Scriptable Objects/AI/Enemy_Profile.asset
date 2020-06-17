@@ -20,13 +20,19 @@ MonoBehaviour:
       type: 3}
     m_movementType: 0
     m_attackType: 0
+    m_zigZagsPerSecond: 0
+    m_orbitRadius: 0
   - m_enemyType: 1
     m_sprite: {fileID: 8171182780678829371, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
       type: 3}
-    m_movementType: 0
-    m_attackType: 0
+    m_movementType: 1
+    m_attackType: 3
+    m_zigZagsPerSecond: 0.75
+    m_orbitRadius: 5
   - m_enemyType: 2
     m_sprite: {fileID: -7768236642965716457, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
       type: 3}
-    m_movementType: 0
+    m_movementType: 2
     m_attackType: 0
+    m_zigZagsPerSecond: 0
+    m_orbitRadius: 10

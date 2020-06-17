@@ -20,7 +20,7 @@ namespace StarSalvager
 
         private const float m_gridCellSize = 2.0f;
         private const int m_agentGridScanRadius = 3;
-        private const float m_obstacleMass = 4.0f;
+        private const float m_obstacleMass = 6.0f;
 
         //Temporary variables, simulating the movement speed of falling obstacles
         private const float m_timeToMoveBetweenCells = 3.0f;
@@ -35,9 +35,9 @@ namespace StarSalvager
 
         void Start()
         {
-            m_grid = new WorldGrid(100, 100, m_gridCellSize);
-            m_obstacles = new AIObstacleTest[1000];
-            m_enemies = new Enemy[200];
+            m_grid = new WorldGrid(50, 50, m_gridCellSize);
+            m_obstacles = new AIObstacleTest[50];
+            m_enemies = new Enemy[1];
 
             Transform[] transformArray = new Transform[m_obstacles.Length];
 
@@ -54,10 +54,10 @@ namespace StarSalvager
 
             for (int i = 0; i < m_enemies.Length; i++)
             {
-                Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(ENEMY_TYPE.Enemy2);
+                Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(ENEMY_TYPE.Enemy3);
                 m_enemies[i] = newEnemy;
                 m_enemies[i].transform.position = m_grid.GetRandomGridSquareWorldPosition();
-                m_enemies[i].m_agentDestination = m_grid.GetRandomGridSquareWorldPosition();
+                m_enemies[i].m_destination = m_grid.GetRandomGridSquareWorldPosition();
             }
 
             m_obstacleTransformAccessArray = new TransformAccessArray(transformArray);
@@ -97,7 +97,7 @@ namespace StarSalvager
             for (int i = 0; i < m_enemies.Length; i++)
             {
                 Vector3 position = m_enemies[i].transform.position;
-                Vector3 destination = m_enemies[i].m_agentDestination;
+                Vector3 destination = m_enemies[i].GetDestination();
 
                 Vector2 direction = new Vector2(destination.x - position.x, destination.y - position.y);
                 direction.Normalize();

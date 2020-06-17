@@ -8,17 +8,25 @@ namespace StarSalvager.Factories.Data
     {
         public int Type => (int)m_enemyType;
 
-        [SerializeField]
+        [SerializeField, FoldoutGroup("$EnemyType")]
         private ENEMY_TYPE m_enemyType;
 
-        [SerializeField]
+        [SerializeField, FoldoutGroup("$EnemyType")]
         private Sprite m_sprite;
 
-        [SerializeField]
+        [SerializeField, FoldoutGroup("$EnemyType")]
         private ENEMY_MOVETYPE m_movementType;
 
-        [SerializeField]
+        [SerializeField, FoldoutGroup("$EnemyType")]
         private ENEMY_ATTACKTYPE m_attackType;
+
+        //Variables that are only shown based on the EnemyType
+        [SerializeField, ShowIf("m_movementType", ENEMY_MOVETYPE.Zigzag)]
+        private float m_zigZagsPerSecond;
+
+        [SerializeField, ShowIf("m_movementType", ENEMY_MOVETYPE.Orbit)]
+        private float m_orbitRadius;
+
 
         public ENEMY_TYPE EnemyType
         {
@@ -38,6 +46,16 @@ namespace StarSalvager.Factories.Data
         public ENEMY_ATTACKTYPE AttackType
         {
             get => m_attackType;
+        }
+
+        public float ZigZagsPerSecond
+        {
+            get => m_zigZagsPerSecond;
+        }
+
+        public float OrbitRadius
+        {
+            get => m_orbitRadius;
         }
     }
 }

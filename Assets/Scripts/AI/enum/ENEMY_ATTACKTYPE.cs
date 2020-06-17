@@ -5,7 +5,9 @@ namespace StarSalvager
     [Serializable]
     public enum ENEMY_ATTACKTYPE : int
     {
-        Fast,
-        Slow
+        Forward,
+        AtPlayer,
+        Spray,
+        None
     }
 }

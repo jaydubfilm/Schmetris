@@ -8,25 +8,25 @@ namespace StarSalvager.Factories.Data
     {
         public int Type => (int)m_enemyType;
 
-        [SerializeField]
+        [SerializeField, FoldoutGroup("$EnemyType")]
         private ENEMY_TYPE m_enemyType;
 
-        [SerializeField]
+        [SerializeField, FoldoutGroup("$EnemyType")]
         private int m_enemyID;
 
-        [SerializeField]
+        [SerializeField, FoldoutGroup("$EnemyType")]
         private string m_name;
 
-        [SerializeField]
+        [SerializeField, FoldoutGroup("$EnemyType")]
         private int m_health;
 
-        [SerializeField]
+        [SerializeField, FoldoutGroup("$EnemyType")]
         private float m_movementSpeed;
 
-        [SerializeField]
+        [SerializeField, FoldoutGroup("$EnemyType")]
         private float m_attackDamage;
 
-        [SerializeField]
+        [SerializeField, FoldoutGroup("$EnemyType")]
         private float m_attackSpeed;
 
         public ENEMY_TYPE EnemyType
