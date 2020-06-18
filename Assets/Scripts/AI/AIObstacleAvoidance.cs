@@ -14,6 +14,8 @@ namespace StarSalvager
         public Bit m_bitTestPrefab;
         public Enemy m_EnemyPrefab;
 
+        public Bot m_botGameObject;
+
         private Bit[] m_bits;
         private Enemy[] m_enemies;
         private WorldGrid m_grid;
@@ -56,6 +58,7 @@ namespace StarSalvager
             {
                 Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(ENEMY_TYPE.Enemy2);
                 m_enemies[i] = newEnemy;
+                m_enemies[i].m_botGameObject = m_botGameObject;
                 m_enemies[i].transform.position = m_grid.GetRandomGridSquareWorldPosition();
                 m_enemies[i].m_destination = m_grid.GetRandomGridSquareWorldPosition();
             }
@@ -94,9 +97,9 @@ namespace StarSalvager
 
             foreach (Bit bit in m_bits)
             {
-                if (!bit.IsAttached)
+                if (bit != null && bit.IsAttached != true)
                 {
-                    transform.position -= amountShiftDown;
+                    bit.transform.position -= amountShiftDown;
                 }
             }
             //End temporary code

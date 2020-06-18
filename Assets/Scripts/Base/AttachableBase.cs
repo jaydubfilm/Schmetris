@@ -26,6 +26,7 @@ namespace StarSalvager
 
         //============================================================================================================//
 
+        public bool IsAttached => Attached;
         public float StartingHealth => _startingHealth;
         private float _startingHealth;
         public float CurrentHealth => _currentHealth;

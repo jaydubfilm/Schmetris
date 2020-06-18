@@ -21,17 +21,23 @@ namespace StarSalvager.Factories.Data
         private ENEMY_ATTACKTYPE m_attackType;
 
         //Variables that are only shown based on the EnemyType
-        [SerializeField, ShowIf("m_movementType", ENEMY_MOVETYPE.Oscillate)]
+        private bool showOscillationsPerSecond => m_movementType == ENEMY_MOVETYPE.Oscillate || m_movementType == ENEMY_MOVETYPE.OscillateHorizontal;
+        [SerializeField, ShowIf("showOscillationsPerSecond")]
         private float m_oscillationsPerSeconds;
 
-        [SerializeField, ShowIf("m_movementType", ENEMY_MOVETYPE.Oscillate), ShowIf("m_movementType", ENEMY_MOVETYPE.OscillateHorizontal)]
+        private bool showOscillationAngleRange => m_movementType == ENEMY_MOVETYPE.Oscillate || m_movementType == ENEMY_MOVETYPE.OscillateHorizontal;
+        [SerializeField, ShowIf("showOscillationAngleRange")]
         private float m_oscillationAngleRange;
 
         [SerializeField, ShowIf("m_movementType", ENEMY_MOVETYPE.Orbit)]
         private float m_orbitRadius;
 
-        [SerializeField, ShowIf("m_attackType", ENEMY_ATTACKTYPE.AtPlayerCone)]
-        private float m_atPlayerConeAngle;
+        private bool showSpreadAngle => m_attackType == ENEMY_ATTACKTYPE.AtPlayerCone || m_attackType == ENEMY_ATTACKTYPE.Spray;
+        [SerializeField, ShowIf("showSpreadAngle")]
+        private float m_spreadAngle;
+
+        [SerializeField, ShowIf("m_attackType", ENEMY_ATTACKTYPE.Spray)]
+        private int m_sprayCount;
 
 
         public ENEMY_TYPE EnemyType
@@ -69,9 +75,14 @@ namespace StarSalvager.Factories.Data
             get => m_orbitRadius;
         }
 
-        public float AtPlayerConeAngle
+        public float SpreadAngle
         {
-            get => m_atPlayerConeAngle;
+            get => m_spreadAngle;
+        }
+
+        public int SprayCount
+        {
+            get => m_sprayCount;
         }
     }
 }

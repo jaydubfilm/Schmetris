@@ -12,9 +12,12 @@ namespace StarSalvager
 
         public EnemyData m_enemyData;
 
+        public Bot m_botGameObject;
+
         private float m_fireTimer = 0;
         private float m_oscillationTimer = 0;
         private Vector3 m_currentHorizontalMovementDirection = Vector3.right;
+        private float m_horizontalMovementYLevel;
         private Vector3 m_spiralAttackDirection = Vector3.down;
 
         protected new Transform transform
@@ -44,6 +47,7 @@ namespace StarSalvager
         private void Start()
         {
             renderer.sprite = m_enemyData.Sprite;
+            m_horizontalMovementYLevel = transform.position.y;
         }
 
         private void Update()
@@ -68,41 +72,58 @@ namespace StarSalvager
         //Get the location that enemy is firing at, then create the firing projectile from the factory
         private void FireAttack()
         {
-            Vector3 fireLocation = GetFireDirection();
-            Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>().CreateObject<Projectile>(PROJECTILE_TYPE.Projectile1, fireLocation, "Player");
-            newProjectile.transform.position = transform.position;
+            List<Vector2> fireLocations = GetFireDirection();
+            foreach (Vector2 fireLocation in fireLocations)
+            {
+                Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>().CreateObject<Projectile>(PROJECTILE_TYPE.Projectile1, fireLocation, "Player");
+                newProjectile.transform.position = transform.position;
+            }
         }
 
         //Check what attack style this enemy uses, and use the appropriate method to get the firing location
-        private Vector2 GetFireDirection()
+        private List<Vector2> GetFireDirection()
         {
             //Firing styles are based on the player location. For now, hardcode this
-            Vector3 playerLocation = new Vector3(50, 50, 0);
+            Vector3 playerLocation = m_botGameObject != null ? m_botGameObject.transform.position : Vector3.right * 50;
+
+            List<Vector2> fireDirections = new List<Vector2>();
 
             switch (m_enemyData.AttackType)
             {
                 case ENEMY_ATTACKTYPE.Forward:
-                    return GetDestination() - transform.position;
+                    fireDirections.Add(GetDestination() - transform.position);
+                    break;
                 case ENEMY_ATTACKTYPE.AtPlayer:
-                    return playerLocation - transform.position;
+                    fireDirections.Add(playerLocation - transform.position);
+                    break;
                 case ENEMY_ATTACKTYPE.AtPlayerCone:
-                    return GetDestinationForRotatePositionAroundPivot(playerLocation, transform.position, Vector3.forward *  Random.Range(-m_enemyData.AtPlayerConeAngle, m_enemyData.AtPlayerConeAngle)) - transform.position;
+                    //Rotate player position around enemy position slightly by a random angle to shoot somewhere in a cone around the player
+                    fireDirections.Add(GetDestinationForRotatePositionAroundPivot(playerLocation, transform.position, Vector3.forward *  Random.Range(-m_enemyData.SpreadAngle, m_enemyData.SpreadAngle)) - transform.position);
+                    break;
                 case ENEMY_ATTACKTYPE.Down:
-                    return Vector3.down;
+                    fireDirections.Add(Vector3.down);
+                    break;
                 case ENEMY_ATTACKTYPE.Spray:
-                    return playerLocation - transform.position;
+                    //For each shot in the spray, rotate player position around enemy position slightly by a random angle to shoot somewhere in a cone around the player
+                    for (int i = 0; i < m_enemyData.SprayCount; i++)
+                    {
+                        fireDirections.Add(GetDestinationForRotatePositionAroundPivot(playerLocation, transform.position, Vector3.forward * Random.Range(-m_enemyData.SpreadAngle, m_enemyData.SpreadAngle)) - transform.position);
+                    }
+                    break;
                 case ENEMY_ATTACKTYPE.Spiral:
-                    return GetSpiralAttackDirection();
+                    //Consult spiral formula to get the angle to shoot the next shot at
+                    fireDirections.Add(GetSpiralAttackDirection());
+                    break;
             }
 
-            return playerLocation;
+            return fireDirections;
         }
 
         //Check what movement type is being used, and use the appropriate method to calculate what my current destination is
         public Vector3 GetDestination()
         {
             //Movement styles are based on the player location. For now, hardcode this
-            Vector3 playerLocation = new Vector3(50, 50, 0);
+            Vector3 playerLocation = m_botGameObject != null ? m_botGameObject.transform.position : Vector3.right * 50;
 
             switch(m_enemyData.MovementType)
             {
@@ -113,7 +134,7 @@ namespace StarSalvager
                     return GetDestinationForRotatePositionAroundPivot(playerLocation, transform.position, GetAngleInOscillation());
                 case ENEMY_MOVETYPE.OscillateHorizontal:
                     //Find destination by determining whether to move left or right and then oscillating at the angle output by the oscillate function
-                    return GetDestinationForRotatePositionAroundPivot(transform.position + Vector3.right, transform.position, GetAngleInOscillation());
+                    return GetDestinationForRotatePositionAroundPivot(transform.position + SetHorizontalDirection(), transform.position, GetAngleInOscillation());
                 case ENEMY_MOVETYPE.Orbit:
                     //If outside the orbit radius, move towards the player location. If inside it, get the destination along the edge of the circle to move clockwise around it
                     float distanceSqr = Vector2.SqrMagnitude(transform.position - playerLocation);
@@ -128,7 +149,7 @@ namespace StarSalvager
                 case ENEMY_MOVETYPE.Horizontal:
                     return transform.position + SetHorizontalDirection();
                 case ENEMY_MOVETYPE.HorizontalDescend:
-                    return playerLocation;
+                    return transform.position + SetHorizontalDescendDirection();
                 case ENEMY_MOVETYPE.Down:
                     return transform.position + Vector3.down;
 
@@ -137,6 +158,7 @@ namespace StarSalvager
             return playerLocation;
         }
 
+        //Rotate spiral attack direction around the enemy position slightly, and then return the value
         public Vector3 GetSpiralAttackDirection()
         {
             m_spiralAttackDirection = GetDestinationForRotatePositionAroundPivot(m_spiralAttackDirection + transform.position, transform.position, Vector3.forward * 30) - transform.position;
@@ -144,11 +166,12 @@ namespace StarSalvager
             return m_spiralAttackDirection;
         }
 
+        //Determine whether this horizontal mover is going left or right
         public Vector3 SetHorizontalDirection()
         {
             //Have far left and right borders on the x that they'll alternate between. Hardcode those borders for now.
             float farLeftX = 0;
-            float farRightX = 100;
+            float farRightX = 50;
 
             if (transform.position.x <= farLeftX)
             {
@@ -158,7 +181,32 @@ namespace StarSalvager
             {
                 m_currentHorizontalMovementDirection = Vector3.left;
             }
+
+            m_currentHorizontalMovementDirection += Vector3.up * (m_horizontalMovementYLevel - transform.position.y);
             
+            return m_currentHorizontalMovementDirection;
+        }
+
+        //Determine whether this horizontal mover is going left or right, and descend it every time it swaps
+        public Vector3 SetHorizontalDescendDirection()
+        {
+            //Have far left and right borders on the x that they'll alternate between. Hardcode those borders for now.
+            float farLeftX = 0;
+            float farRightX = 50;
+
+            if (transform.position.x <= farLeftX)
+            {
+                m_currentHorizontalMovementDirection = Vector3.right;
+                m_horizontalMovementYLevel -= 5;
+            }
+            else if (transform.position.x >= farRightX)
+            {
+                m_currentHorizontalMovementDirection = Vector3.left;
+                m_horizontalMovementYLevel -= 5;
+            }
+
+            m_currentHorizontalMovementDirection += Vector3.up * (m_horizontalMovementYLevel - transform.position.y);
+
             return m_currentHorizontalMovementDirection;
         }
 

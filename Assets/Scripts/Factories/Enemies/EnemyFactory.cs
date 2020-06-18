@@ -33,7 +33,7 @@ namespace StarSalvager.Factories
             EnemyProfileData profile = m_enemyProfile.GetEnemyProfileData(enemyType);
             EnemyRemoteData remoteData = m_enemyRemoteData.GetRemoteData(enemyType);
 
-            EnemyData enemyData = new EnemyData(remoteData.EnemyType, remoteData.EnemyID, remoteData.Name, remoteData.Health, remoteData.MovementSpeed, remoteData.AttackDamage, remoteData.AttackSpeed, profile.MovementType, profile.AttackType, profile.Sprite, profile.OscillationsPerSeconds, profile.OscillationAngleRange, profile.OrbitRadius, profile.AtPlayerConeAngle);
+            EnemyData enemyData = new EnemyData(remoteData.EnemyType, remoteData.EnemyID, remoteData.Name, remoteData.Health, remoteData.MovementSpeed, remoteData.AttackDamage, remoteData.AttackSpeed, profile.MovementType, profile.AttackType, profile.Sprite, profile.OscillationsPerSeconds, profile.OscillationAngleRange, profile.OrbitRadius, profile.SpreadAngle, profile.SprayCount);
 
             enemyDatas.Add(enemyData);
 

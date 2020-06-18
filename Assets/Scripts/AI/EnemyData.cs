@@ -19,9 +19,10 @@ namespace StarSalvager
         private float m_oscillationsPerSecond;
         private float m_oscillationAngleRange;
         private float m_orbitRadius;
-        private float m_atPlayerConeAngle;
+        private float m_spreadAngle;
+        private int m_sprayCount;
 
-        public EnemyData(ENEMY_TYPE enemyType, int enemyID, string name, int health, float movementSpeed, float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange, float orbitRadius, float atPlayerConeAngle)
+        public EnemyData(ENEMY_TYPE enemyType, int enemyID, string name, int health, float movementSpeed, float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange, float orbitRadius, float spreadAngle, int sprayCount)
         {
             m_enemyType = enemyType;
             m_enemyID = enemyID;
@@ -36,7 +37,8 @@ namespace StarSalvager
             m_oscillationsPerSecond = oscillationsPerSecond;
             m_oscillationAngleRange = oscillationAngleRange;
             m_orbitRadius = orbitRadius;
-            m_atPlayerConeAngle = atPlayerConeAngle;
+            m_spreadAngle = spreadAngle;
+            m_sprayCount = sprayCount;
         }
 
         public ENEMY_TYPE EnemyType
@@ -109,9 +111,14 @@ namespace StarSalvager
             get => m_orbitRadius * m_orbitRadius;
         }
 
-        public float AtPlayerConeAngle
+        public float SpreadAngle
         {
-            get => m_atPlayerConeAngle;
+            get => m_spreadAngle;
+        }
+
+        public float SprayCount
+        {
+            get => m_sprayCount;
         }
     }
 }

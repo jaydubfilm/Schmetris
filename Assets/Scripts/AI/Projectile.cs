@@ -29,7 +29,7 @@ namespace StarSalvager
 
         protected override void OnCollide(GameObject gameObject)
         {
-
+            Destroy(this.gameObject);
         }
     }
 }
