@@ -32,11 +32,12 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        public T CreateObject<T>(PROJECTILE_TYPE projectileType, Vector3 travelDirection)
+        public T CreateObject<T>(PROJECTILE_TYPE projectileType, Vector3 travelDirection, string collisionTag)
         {
             var projectile = CreateObject<Projectile>();
 
             projectile.m_projectileData = m_projectileProfile.GetProjectileProfileData(projectileType);
+            projectile.m_collisionTag = collisionTag;
             travelDirection.Normalize();
             projectile.m_travelDirectionNormalized = travelDirection;
 

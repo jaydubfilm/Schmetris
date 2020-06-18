@@ -21,11 +21,17 @@ namespace StarSalvager.Factories.Data
         private ENEMY_ATTACKTYPE m_attackType;
 
         //Variables that are only shown based on the EnemyType
-        [SerializeField, ShowIf("m_movementType", ENEMY_MOVETYPE.Zigzag)]
-        private float m_zigZagsPerSecond;
+        [SerializeField, ShowIf("m_movementType", ENEMY_MOVETYPE.Oscillate)]
+        private float m_oscillationsPerSeconds;
+
+        [SerializeField, ShowIf("m_movementType", ENEMY_MOVETYPE.Oscillate), ShowIf("m_movementType", ENEMY_MOVETYPE.OscillateHorizontal)]
+        private float m_oscillationAngleRange;
 
         [SerializeField, ShowIf("m_movementType", ENEMY_MOVETYPE.Orbit)]
         private float m_orbitRadius;
+
+        [SerializeField, ShowIf("m_attackType", ENEMY_ATTACKTYPE.AtPlayerCone)]
+        private float m_atPlayerConeAngle;
 
 
         public ENEMY_TYPE EnemyType
@@ -48,14 +54,24 @@ namespace StarSalvager.Factories.Data
             get => m_attackType;
         }
 
-        public float ZigZagsPerSecond
+        public float OscillationsPerSeconds
         {
-            get => m_zigZagsPerSecond;
+            get => m_oscillationsPerSeconds;
+        }
+
+        public float OscillationAngleRange
+        {
+            get => m_oscillationAngleRange;
         }
 
         public float OrbitRadius
         {
             get => m_orbitRadius;
+        }
+
+        public float AtPlayerConeAngle
+        {
+            get => m_atPlayerConeAngle;
         }
     }
 }

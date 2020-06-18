@@ -6,7 +6,11 @@ namespace StarSalvager
     public enum ENEMY_MOVETYPE : int
     {
         Standard,
-        Zigzag,
-        Orbit
+        Oscillate,
+        OscillateHorizontal,
+        Orbit,
+        Horizontal,
+        HorizontalDescend,
+        Down
     }
 }

@@ -7,7 +7,10 @@ namespace StarSalvager
     {
         Forward,
         AtPlayer,
+        AtPlayerCone,
+        Down,
         Spray,
+        Spiral,
         None
     }
 }

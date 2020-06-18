@@ -11,14 +11,14 @@ namespace StarSalvager
 {
     public class AIObstacleAvoidance : MonoBehaviour
     {
-        public AIObstacleTest m_AIObstacleTestPrefab;
+        public Bit m_bitTestPrefab;
         public Enemy m_EnemyPrefab;
 
-        private AIObstacleTest[] m_obstacles;
+        private Bit[] m_bits;
         private Enemy[] m_enemies;
         private WorldGrid m_grid;
 
-        private const float m_gridCellSize = 2.0f;
+        private const float m_gridCellSize = 1.0f;
         private const int m_agentGridScanRadius = 3;
         private const float m_obstacleMass = 6.0f;
 
@@ -36,25 +36,25 @@ namespace StarSalvager
         void Start()
         {
             m_grid = new WorldGrid(50, 50, m_gridCellSize);
-            m_obstacles = new AIObstacleTest[50];
+            m_bits = new Bit[50];
             m_enemies = new Enemy[1];
 
-            Transform[] transformArray = new Transform[m_obstacles.Length];
+            Transform[] transformArray = new Transform[m_bits.Length];
 
             //Temporary for testing - instantiate large numbers of test agents and obstacles. In the future, this w
-            for (int i = 0; i < m_obstacles.Length; i++)
+            for (int i = 0; i < m_bits.Length; i++)
             {
-                AIObstacleTest newObstacle = GameObject.Instantiate(m_AIObstacleTestPrefab);
-                m_obstacles[i] = newObstacle;
+                Bit newBit = GameObject.Instantiate(m_bitTestPrefab);
+                m_bits[i] = newBit;
                 Vector2 position = m_grid.GetRandomGridSquareWorldPosition();
-                m_obstacles[i].transform.position = position;
-                transformArray[i] = m_obstacles[i].transform;
+                m_bits[i].transform.position = position;
+                transformArray[i] = m_bits[i].transform;
                 m_grid.SetObstacleInGridSquare(position, true);
             }
 
             for (int i = 0; i < m_enemies.Length; i++)
             {
-                Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(ENEMY_TYPE.Enemy3);
+                Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(ENEMY_TYPE.Enemy2);
                 m_enemies[i] = newEnemy;
                 m_enemies[i].transform.position = m_grid.GetRandomGridSquareWorldPosition();
                 m_enemies[i].m_destination = m_grid.GetRandomGridSquareWorldPosition();
@@ -85,12 +85,21 @@ namespace StarSalvager
             }
 
             Vector3 amountShiftDown = new Vector3(0, (m_gridCellSize * Time.deltaTime) / m_timeToMoveBetweenCells, 0);
-            m_positionUpdateJob = new PositionUpdateJob()
+            /*m_positionUpdateJob = new PositionUpdateJob()
             {
                 distanceToMove = amountShiftDown,
             };
 
-            m_positionUpdateJob.Schedule(m_obstacleTransformAccessArray);
+            m_positionUpdateJob.Schedule(m_obstacleTransformAccessArray);*/
+
+            foreach (Bit bit in m_bits)
+            {
+                if (!bit.IsAttached)
+                {
+                    transform.position -= amountShiftDown;
+                }
+            }
+            //End temporary code
 
             //Iterate through all agents, and for each one, add the forces from nearby obstacles to their current direction vector
             //After adding the forces, normalize and multiply by the velocity to ensure consistent speed

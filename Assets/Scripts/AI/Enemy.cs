@@ -6,27 +6,44 @@ using StarSalvager.Factories;
 
 namespace StarSalvager
 {
-    public class Enemy : MonoBehaviour
+    public class Enemy : MonoBehaviour, IEnemy
     {
-        public new Transform transform;
         public Vector2 m_destination = Vector2.zero;
-
-        private SpriteRenderer m_spriteRenderer;
 
         public EnemyData m_enemyData;
 
         private float m_fireTimer = 0;
-        private float m_zigZagTimer = 0;
+        private float m_oscillationTimer = 0;
+        private Vector3 m_currentHorizontalMovementDirection = Vector3.right;
+        private Vector3 m_spiralAttackDirection = Vector3.down;
 
-        private void Awake()
+        protected new Transform transform
         {
-            transform = gameObject.transform;
-            m_spriteRenderer = GetComponent<SpriteRenderer>();
+            get
+            {
+                if (m_transform == null)
+                    m_transform = gameObject.GetComponent<Transform>();
+
+                return m_transform;
+            }
         }
+        private Transform m_transform;
+
+        protected new SpriteRenderer renderer
+        {
+            get
+            {
+                if (m_spriteRenderer == null)
+                    m_spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+
+                return m_spriteRenderer;
+            }
+        }
+        private SpriteRenderer m_spriteRenderer;
 
         private void Start()
         {
-            m_spriteRenderer.sprite = m_enemyData.Sprite;
+            renderer.sprite = m_enemyData.Sprite;
         }
 
         private void Update()
@@ -35,9 +52,9 @@ namespace StarSalvager
             if (m_enemyData.AttackType != ENEMY_ATTACKTYPE.None)
             {
                 m_fireTimer += Time.deltaTime;
-                if (m_fireTimer >= m_enemyData.AttackSpeed)
+                if (m_fireTimer >= 1 / m_enemyData.AttackSpeed)
                 {
-                    m_fireTimer -= m_enemyData.AttackSpeed;
+                    m_fireTimer -= 1 / m_enemyData.AttackSpeed;
                     FireAttack();
                 }
             }
@@ -51,13 +68,13 @@ namespace StarSalvager
         //Get the location that enemy is firing at, then create the firing projectile from the factory
         private void FireAttack()
         {
-            Vector3 fireLocation = GetFireLocation();
-            Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>().CreateObject<Projectile>(PROJECTILE_TYPE.Projectile1, fireLocation);
+            Vector3 fireLocation = GetFireDirection();
+            Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>().CreateObject<Projectile>(PROJECTILE_TYPE.Projectile1, fireLocation, "Player");
             newProjectile.transform.position = transform.position;
         }
 
         //Check what attack style this enemy uses, and use the appropriate method to get the firing location
-        private Vector2 GetFireLocation()
+        private Vector2 GetFireDirection()
         {
             //Firing styles are based on the player location. For now, hardcode this
             Vector3 playerLocation = new Vector3(50, 50, 0);
@@ -68,8 +85,14 @@ namespace StarSalvager
                     return GetDestination() - transform.position;
                 case ENEMY_ATTACKTYPE.AtPlayer:
                     return playerLocation - transform.position;
+                case ENEMY_ATTACKTYPE.AtPlayerCone:
+                    return GetDestinationForRotatePositionAroundPivot(playerLocation, transform.position, Vector3.forward *  Random.Range(-m_enemyData.AtPlayerConeAngle, m_enemyData.AtPlayerConeAngle)) - transform.position;
+                case ENEMY_ATTACKTYPE.Down:
+                    return Vector3.down;
                 case ENEMY_ATTACKTYPE.Spray:
-                    return GetDestinationForRotatePositionAroundPivot(playerLocation, transform.position, new Vector3(0, 0, Random.Range(-30, 30))) - transform.position;
+                    return playerLocation - transform.position;
+                case ENEMY_ATTACKTYPE.Spiral:
+                    return GetSpiralAttackDirection();
             }
 
             return playerLocation;
@@ -85,9 +108,12 @@ namespace StarSalvager
             {
                 case ENEMY_MOVETYPE.Standard:
                     return playerLocation;
-                case ENEMY_MOVETYPE.Zigzag:
-                    //Find destination by rotating the playerLocation around the enemy position, at the angle output by the zig zag function
-                    return GetDestinationForRotatePositionAroundPivot(playerLocation, transform.position, GetAngleInZigZag()); ;
+                case ENEMY_MOVETYPE.Oscillate:
+                    //Find destination by rotating the playerLocation around the enemy position, at the angle output by the oscillate function
+                    return GetDestinationForRotatePositionAroundPivot(playerLocation, transform.position, GetAngleInOscillation());
+                case ENEMY_MOVETYPE.OscillateHorizontal:
+                    //Find destination by determining whether to move left or right and then oscillating at the angle output by the oscillate function
+                    return GetDestinationForRotatePositionAroundPivot(transform.position + Vector3.right, transform.position, GetAngleInOscillation());
                 case ENEMY_MOVETYPE.Orbit:
                     //If outside the orbit radius, move towards the player location. If inside it, get the destination along the edge of the circle to move clockwise around it
                     float distanceSqr = Vector2.SqrMagnitude(transform.position - playerLocation);
@@ -97,37 +123,72 @@ namespace StarSalvager
                     }
                     else
                     {
-                        return GetDestinationForRotatePositionAroundPivotAtDistance(transform.position, playerLocation, new Vector3(0, 0, -5), m_enemyData.OrbitRadius);
+                        return GetDestinationForRotatePositionAroundPivotAtDistance(transform.position, playerLocation, Vector3.forward * -5, m_enemyData.OrbitRadius);
                     }
+                case ENEMY_MOVETYPE.Horizontal:
+                    return transform.position + SetHorizontalDirection();
+                case ENEMY_MOVETYPE.HorizontalDescend:
+                    return playerLocation;
+                case ENEMY_MOVETYPE.Down:
+                    return transform.position + Vector3.down;
+
             }
 
             return playerLocation;
         }
 
-        //TODO: This function is badly made and needs a rewrite when my brain isn't burned out of math
-        //Calculate the angle to move at, varying from 60 degrees clockwise and counterclockwise, for the zig zag movement
-        //Methodology - uses a timer and checks a modular value on the timer to see where we are in the zig zag cycle. if the modular is 1, 0 is at the far left end of the cycle, 0.5 is at the far right end, 1 goes back to left
-        //Future change thought process - method will work a lot cleaner if time 0 in cycle begins at 0, 0.25 is far left, 0.75 is far right, and 1 is back to center
-        public Vector3 GetAngleInZigZag()
+        public Vector3 GetSpiralAttackDirection()
         {
-            m_zigZagTimer += Time.deltaTime;
-            float modular = 1 / m_enemyData.ZigZagsPerSecond;
-            float zigZagAngleRange = 120.0f;
-            float timer = m_zigZagTimer % modular;
-            if (timer <= modular / 2)
+            m_spiralAttackDirection = GetDestinationForRotatePositionAroundPivot(m_spiralAttackDirection + transform.position, transform.position, Vector3.forward * 30) - transform.position;
+
+            return m_spiralAttackDirection;
+        }
+
+        public Vector3 SetHorizontalDirection()
+        {
+            //Have far left and right borders on the x that they'll alternate between. Hardcode those borders for now.
+            float farLeftX = 0;
+            float farRightX = 100;
+
+            if (transform.position.x <= farLeftX)
             {
-                return new Vector3(0, 0, zigZagAngleRange * (-0.5f + (timer * 2 / modular)));
+                m_currentHorizontalMovementDirection = Vector3.right;
+            }
+            else if (transform.position.x >= farRightX)
+            {
+                m_currentHorizontalMovementDirection = Vector3.left;
+            }
+            
+            return m_currentHorizontalMovementDirection;
+        }
+
+        //Calculate the angle to move at for the oscillation movement
+        //Methodology - uses a timer, with the value of the timer modification by the oscillationspersecond value, to see where we are in the zig zag cycle. 
+        //if the modular is 1, 0 is at the far left end of the cycle, 0.5 is at the far right end, 1 goes back to left
+        public Vector3 GetAngleInOscillation()
+        {
+            m_oscillationTimer += Time.deltaTime * m_enemyData.OscillationsPerSecond;
+
+            if (m_oscillationTimer > 1)
+            {
+                m_oscillationTimer -= 1;
+            }
+
+            if (m_oscillationTimer <= 0.5f)
+            {
+                float angleAdjust = m_oscillationTimer * 2;
+                return Vector3.forward * (m_enemyData.OscillationAngleRange * (-0.5f + angleAdjust));
             }
             else
             {
-                return new Vector3(0, 0, zigZagAngleRange * (0.5f - ((timer - modular / 2) * 2 / modular)));
+                float angleAdjust = (m_oscillationTimer - 0.5f) * 2;
+                return Vector3.forward * (m_enemyData.OscillationAngleRange * (0.5f - angleAdjust));
             }
         }
 
         //Rotate point around pivot by angles amount
         public Vector3 GetDestinationForRotatePositionAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
         {
-            print(angles);
             Vector3 direction = point - pivot;
             direction = Quaternion.Euler(angles) * direction;
             return (direction + pivot);

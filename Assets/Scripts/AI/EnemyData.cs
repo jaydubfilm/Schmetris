@@ -16,10 +16,12 @@ namespace StarSalvager
         private ENEMY_MOVETYPE m_movementType;
         private ENEMY_ATTACKTYPE m_attackType;
         private Sprite m_sprite;
-        private float m_zigZagsPerSecond;
+        private float m_oscillationsPerSecond;
+        private float m_oscillationAngleRange;
         private float m_orbitRadius;
+        private float m_atPlayerConeAngle;
 
-        public EnemyData(ENEMY_TYPE enemyType, int enemyID, string name, int health, float movementSpeed, float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType, Sprite sprite, float zigZagsPerSecond, float orbitRadius)
+        public EnemyData(ENEMY_TYPE enemyType, int enemyID, string name, int health, float movementSpeed, float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange, float orbitRadius, float atPlayerConeAngle)
         {
             m_enemyType = enemyType;
             m_enemyID = enemyID;
@@ -31,8 +33,10 @@ namespace StarSalvager
             m_movementType = movementType;
             m_attackType = attackType;
             m_sprite = sprite;
-            m_zigZagsPerSecond = zigZagsPerSecond;
+            m_oscillationsPerSecond = oscillationsPerSecond;
+            m_oscillationAngleRange = oscillationAngleRange;
             m_orbitRadius = orbitRadius;
+            m_atPlayerConeAngle = atPlayerConeAngle;
         }
 
         public ENEMY_TYPE EnemyType
@@ -85,9 +89,14 @@ namespace StarSalvager
             get => m_sprite;
         }
 
-        public float ZigZagsPerSecond
+        public float OscillationsPerSecond
         {
-            get => m_zigZagsPerSecond;
+            get => m_oscillationsPerSecond;
+        }
+
+        public float OscillationAngleRange
+        {
+            get => m_oscillationAngleRange;
         }
 
         public float OrbitRadius
@@ -98,6 +107,11 @@ namespace StarSalvager
         public float OrbitRadiusSqr
         {
             get => m_orbitRadius * m_orbitRadius;
+        }
+
+        public float AtPlayerConeAngle
+        {
+            get => m_atPlayerConeAngle;
         }
     }
 }

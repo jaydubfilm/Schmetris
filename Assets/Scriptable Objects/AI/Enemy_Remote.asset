@@ -24,9 +24,9 @@ MonoBehaviour:
     m_enemyID: 0
     m_name: 
     m_health: 0
-    m_movementSpeed: 3
+    m_movementSpeed: 0
     m_attackDamage: 0
-    m_attackSpeed: 2
+    m_attackSpeed: 4
   - m_enemyType: 2
     m_enemyID: 0
     m_name: 
