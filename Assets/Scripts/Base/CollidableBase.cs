@@ -90,6 +90,11 @@ namespace StarSalvager
         {
             renderer.color = color;
         }
+
+        public void SetColliderActive(bool state)
+        {
+            collider.enabled = state;
+        }
         
         //============================================================================================================//
 

@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
@@ -603,7 +605,9 @@ namespace StarSalvager
             }
             //TODO Need to check for potential orphans
 
-            var movingBits = comboBits.Where(bit => bit != closestToCore);
+            var movingBits = comboBits.Where(ab => ab != closestToCore);
+
+            CheckForOrphans(movingBits, closestToCore as Bit);
 
             StartCoroutine(MoveTowardsCoroutine(
                 movingBits,
@@ -614,14 +618,51 @@ namespace StarSalvager
                     
                     bit.IncreaseLevel();
                     
-                    CompositeCollider2D.GenerateGeometry();
-                    
                     CheckForCombosAround(bit);
                 }));
         }
 
-        private void CheckForOrphans()
+        private void CheckForOrphans(IEnumerable<AttachableBase> movingBits, Bit bitToUpgrade)
         {
+            //TODO Check to see if the bits around the moving bits will be orphaned
+
+            foreach (var movingBit in movingBits)
+            {
+                var bitsAround = this.GetAttachablesAround<Bit>(movingBit);
+
+                //Don't want to bother checking the block that we know will not move
+                if (bitsAround.Contains(bitToUpgrade))
+                    bitsAround.Remove(bitToUpgrade);
+
+                foreach (var bit in bitsAround)
+                {
+                    if (bit == null)
+                        continue;
+
+                    if (bit == bitToUpgrade)
+                        continue;
+                    
+                    if (movingBits.Contains(bit))
+                        continue;
+                    
+                    
+                    var check = HasPathToCore(bit, 
+                        movingBits
+                        .Select(b => b.Coordinate)
+                        .ToList());
+                    
+
+                    if (!check)
+                    {
+                        Debug.LogError($"{bit.gameObject.name} Has Path: {check}", bit);
+                        Debug.Break();
+                        return;
+                    }
+
+                    Debug.Log($"{bit.gameObject.name} Has Path: {check}", bit);
+                }
+
+            }
             
         }
 
@@ -629,6 +670,14 @@ namespace StarSalvager
         {
             var attachableBases = toMove as AttachableBase[] ?? toMove.ToArray();
             var transforms = attachableBases.Select(b => b.transform);
+            
+            foreach (var bit in attachableBases)
+            {
+                attachedBlocks.Remove(bit);
+                bit.SetColliderActive(false);
+            }
+            
+            CompositeCollider2D.GenerateGeometry();
             
             var _t = 0f;
             var targetTransform = target.transform;
@@ -649,7 +698,6 @@ namespace StarSalvager
             //Once all bits are moved, remove from list and dispose
             foreach (var bit in attachableBases)
             {
-                attachedBlocks.Remove(bit);
                 Destroy(bit.gameObject);
             }
 
@@ -659,7 +707,69 @@ namespace StarSalvager
         
         
         #endregion
-        
+
+        private bool HasPathToCore(Bit checking, List<Vector2Int> toIgnore = null)
+        {
+            var travelled = new List<Vector2Int>();
+            Debug.LogError("STARTED TO CHECK HERE");
+            return PathAlgorithm(checking, toIgnore, ref travelled);
+        }
+
+
+        public List<AttachableBase> CHECK_AROUND;
+        private bool PathAlgorithm(AttachableBase current, List<Vector2Int> toIgnore, ref List<Vector2Int> travelled)
+        {
+            if (current.Coordinate == Vector2Int.zero)
+                return true;
+            
+            var around = this.GetAttachablesAround<AttachableBase>(current);
+            CHECK_AROUND = new List<AttachableBase>(around);
+            
+            for (var i = 0; i < around.Count; i++)
+            {
+                if (around[i] == null)
+                    continue;
+
+                if (toIgnore.Contains(around[i].Coordinate))
+                {
+                    Debug.LogError($"toIgnore contains {around[i].Coordinate}");
+                    around[i] = null;
+                    continue;
+                }
+
+                if (!travelled.Contains(around[i].Coordinate)) 
+                    continue;
+                
+                Debug.LogError($"travelled already contains {around[i].Coordinate}");
+                around[i] = null;
+            }
+
+            if (around.All(ab => ab == null))
+            {
+                Debug.LogError($"FAILED. Nothing around {current}", current);
+                return false;
+            }
+            
+            travelled.Add(current.Coordinate);
+
+            var orderedEnumerable = around.Where(ab => ab != null).OrderBy(ab => Vector2Int.Distance(Vector2Int.zero, ab.Coordinate));
+            bool result = false;
+
+            foreach (var attachableBase in orderedEnumerable)
+            {
+                
+                result = PathAlgorithm(attachableBase, toIgnore, ref travelled);
+                
+                Debug.LogError($"{result} when checking {current.gameObject.name} to {attachableBase.gameObject.name}");
+                
+                if (result)
+                    break;
+            }
+
+            Debug.LogError($"Failed Totally at {current.Coordinate}", current);
+            return result;
+        }
+
         //============================================================================================================//
 
         protected override void OnCollide(GameObject _) { }
