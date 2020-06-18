@@ -318,6 +318,18 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 1970748057}
+    ActiveGameObject: {fileID: 1970748057}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 1967757741}
     ActiveGameObject: {fileID: 1967757741}
     GUIDsList: []
@@ -572,18 +584,6 @@ MonoBehaviour:
     list:
     - {fileID: 1970748057}
     ActiveGameObject: {fileID: 1970748057}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1967757741}
-    ActiveGameObject: {fileID: 1967757741}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -872,7 +872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1e52ffa92a94bf44908bd721a553354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generateRandomSeed: 0
+  generateRandomSeed: 1
   seed: 123456789
   bitCount: 100
   bitSize: 1.28
