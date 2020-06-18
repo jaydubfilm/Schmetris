@@ -1,7 +1,9 @@
 ﻿using System;
 using Sirenix.OdinInspector;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace StarSalvager
 {
@@ -10,6 +12,7 @@ namespace StarSalvager
     /// </summary>
     public abstract class AttachableBase : CollidableBase, IHealth
     {
+
         //============================================================================================================//
         
         /// <summary>
@@ -20,8 +23,6 @@ namespace StarSalvager
 
         [SerializeField, ReadOnly]
         private bool Attached;
-
-        
 
         //============================================================================================================//
 
@@ -56,15 +57,18 @@ namespace StarSalvager
                     _temp.x = Coordinate.y;
                     _temp.y = Coordinate.x * -1;
                     
-                    
                     break;
                 case ROTATION.CCW:
                     _temp.x = Coordinate.y * -1;
                     _temp.y = Coordinate.x;
+                    
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(rotation), rotation, null);
             }
+            
+            //Rotate opposite of the Core rotation 
+            transform.localRotation *= rotation.ToInverseQuaternion();
 
             Coordinate = _temp;
         }
