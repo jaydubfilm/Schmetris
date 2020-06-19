@@ -20,24 +20,33 @@ namespace StarSalvager.Factories.Data
 
         [SerializeField, FoldoutGroup("$EnemyType")]
         private ENEMY_ATTACKTYPE m_attackType;
+        
+        [SerializeField, FoldoutGroup("$EnemyType")]
+        private PROJECTILE_TYPE m_projectileType;
 
         //Variables that are only shown based on the EnemyType
         private bool showOscillationsPerSecond => m_movementType == ENEMY_MOVETYPE.Oscillate || m_movementType == ENEMY_MOVETYPE.OscillateHorizontal;
-        [SerializeField, ShowIf("showOscillationsPerSecond")]
+        [SerializeField, FoldoutGroup("$EnemyType"), ShowIf("showOscillationsPerSecond")]
         private float m_oscillationsPerSeconds;
 
         private bool showOscillationAngleRange => m_movementType == ENEMY_MOVETYPE.Oscillate || m_movementType == ENEMY_MOVETYPE.OscillateHorizontal;
-        [SerializeField, ShowIf("showOscillationAngleRange")]
+        [SerializeField, FoldoutGroup("$EnemyType"), ShowIf("showOscillationAngleRange")]
         private float m_oscillationAngleRange;
 
-        [SerializeField, ShowIf("m_movementType", ENEMY_MOVETYPE.Orbit)]
+        [SerializeField, FoldoutGroup("$EnemyType"), ShowIf("m_movementType", ENEMY_MOVETYPE.Orbit)]
         private float m_orbitRadius;
 
+        [SerializeField, FoldoutGroup("$EnemyType"), ShowIf("m_movementType", ENEMY_MOVETYPE.HorizontalDescend)]
+        private float m_numberCellsDescend;
+
+        [SerializeField, FoldoutGroup("$EnemyType")]
+        private bool m_addVelocityToProjectiles;
+
         private bool showSpreadAngle => m_attackType == ENEMY_ATTACKTYPE.AtPlayerCone || m_attackType == ENEMY_ATTACKTYPE.Spray;
-        [SerializeField, ShowIf("showSpreadAngle")]
+        [SerializeField, FoldoutGroup("$EnemyType"), ShowIf("showSpreadAngle")]
         private float m_spreadAngle;
 
-        [SerializeField, ShowIf("m_attackType", ENEMY_ATTACKTYPE.Spray)]
+        [SerializeField, FoldoutGroup("$EnemyType"), ShowIf("m_attackType", ENEMY_ATTACKTYPE.Spray)]
         private int m_sprayCount;
 
 
@@ -61,6 +70,11 @@ namespace StarSalvager.Factories.Data
             get => m_attackType;
         }
 
+        public PROJECTILE_TYPE ProjectileType
+        {
+            get => m_projectileType;
+        }
+
         public float OscillationsPerSeconds
         {
             get => m_oscillationsPerSeconds;
@@ -74,6 +88,16 @@ namespace StarSalvager.Factories.Data
         public float OrbitRadius
         {
             get => m_orbitRadius;
+        }
+        
+        public float NumberCellsDescend
+        {
+            get => m_numberCellsDescend;
+        }
+
+        public bool AddVelocityToProjectiles
+        {
+            get => m_addVelocityToProjectiles;
         }
 
         public float SpreadAngle

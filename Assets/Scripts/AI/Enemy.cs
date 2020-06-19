@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Factories;
+using StarSalvager.Constants;
 
 namespace StarSalvager.AI
 {
     public class Enemy : MonoBehaviour, IEnemy
     {
-        public Vector2 m_destination = Vector2.zero;
-
         public EnemyData m_enemyData;
 
         public Bot m_botGameObject;
@@ -19,6 +18,9 @@ namespace StarSalvager.AI
         private Vector3 m_currentHorizontalMovementDirection = Vector3.right;
         private float m_horizontalMovementYLevel;
         private Vector3 m_spiralAttackDirection = Vector3.down;
+        private float horizontalFarLeftX = 0;
+        private float horizontalFarRightX = Values.gridSizeX * Values.gridCellSize;
+        private Vector3 m_mostRecentMovementDirection = Vector3.zero;
 
         protected new Transform transform
         {
@@ -66,6 +68,7 @@ namespace StarSalvager.AI
 
         public void ProcessMovement(Vector3 direction)
         {
+            m_mostRecentMovementDirection = direction;
             transform.position = transform.position + (direction * m_enemyData.MovementSpeed * Time.deltaTime);
         }
 
@@ -75,8 +78,12 @@ namespace StarSalvager.AI
             List<Vector2> fireLocations = GetFireDirection();
             foreach (Vector2 fireLocation in fireLocations)
             {
-                Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>().CreateObject<Projectile>(PROJECTILE_TYPE.Projectile1, fireLocation, "Player");
+                Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>().CreateObject<Projectile>(m_enemyData.ProjectileType, fireLocation, "Player");
                 newProjectile.transform.position = transform.position;
+                if (m_enemyData.AddVelocityToProjectiles)
+                {
+                    newProjectile.m_enemyVelocityModifier = m_mostRecentMovementDirection * m_enemyData.MovementSpeed;
+                }
             }
         }
 
@@ -149,7 +156,7 @@ namespace StarSalvager.AI
                 case ENEMY_MOVETYPE.Horizontal:
                     return transform.position + SetHorizontalDirection();
                 case ENEMY_MOVETYPE.HorizontalDescend:
-                    return transform.position + SetHorizontalDescendDirection();
+                    return transform.position + SetHorizontalDirection(true);
                 case ENEMY_MOVETYPE.Down:
                     return transform.position + Vector3.down;
 
@@ -167,52 +174,34 @@ namespace StarSalvager.AI
         }
 
         //Determine whether this horizontal mover is going left or right
-        public Vector3 SetHorizontalDirection()
+        public Vector3 SetHorizontalDirection(bool isDescending = false)
         {
-            //Have far left and right borders on the x that they'll alternate between. Hardcode those borders for now.
-            float farLeftX = 0;
-            float farRightX = 70;
-
-            if (transform.position.x <= farLeftX)
+            if (transform.position.x <= horizontalFarLeftX && m_currentHorizontalMovementDirection != Vector3.right)
             {
                 m_currentHorizontalMovementDirection = Vector3.right;
+                if (isDescending)
+                {
+                    m_horizontalMovementYLevel -= Values.gridCellSize * m_enemyData.NumberCellsDescend;
+                }
             }
-            else if (transform.position.x >= farRightX)
+            else if (transform.position.x >= horizontalFarRightX && m_currentHorizontalMovementDirection != Vector3.left)
             {
                 m_currentHorizontalMovementDirection = Vector3.left;
+                if (isDescending)
+                {
+                    m_horizontalMovementYLevel -= Values.gridCellSize * m_enemyData.NumberCellsDescend;
+                }
             }
 
             //Modify the vertical level back to the stored horizontalYlevel, so enemies will return to their previous y level after avoiding an obstacle
             //TODO - this logic should apply to oscillatehorizontal but currently causes a bug with it. Resolve bug and add this functionality back
+            Vector3 addedVertical = Vector3.zero;
             if (m_enemyData.MovementType != ENEMY_MOVETYPE.OscillateHorizontal)
             {
-                m_currentHorizontalMovementDirection += Vector3.up * (m_horizontalMovementYLevel - transform.position.y);
+                addedVertical += Vector3.up * (m_horizontalMovementYLevel - transform.position.y);
             }
             
-            return m_currentHorizontalMovementDirection;
-        }
-
-        //Determine whether this horizontal mover is going left or right, and descend it every time it swaps
-        public Vector3 SetHorizontalDescendDirection()
-        {
-            //Have far left and right borders on the x that they'll alternate between. Hardcode those borders for now.
-            float farLeftX = 0;
-            float farRightX = 70;
-
-            if (transform.position.x <= farLeftX)
-            {
-                m_currentHorizontalMovementDirection = Vector3.right;
-                m_horizontalMovementYLevel -= 5;
-            }
-            else if (transform.position.x >= farRightX)
-            {
-                m_currentHorizontalMovementDirection = Vector3.left;
-                m_horizontalMovementYLevel -= 5;
-            }
-
-            m_currentHorizontalMovementDirection += Vector3.up * (m_horizontalMovementYLevel - transform.position.y);
-
-            return m_currentHorizontalMovementDirection;
+            return m_currentHorizontalMovementDirection + addedVertical;
         }
 
         //Calculate the angle to move at for the oscillation movement

@@ -54,7 +54,7 @@ namespace StarSalvager
                 {
                     if (y + 1 == m_height)
                     {
-                        SetObstacleInGridSquare(x, y, false);
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x, 0).m_obstacleInSquare);
                     }
                     else
                     {

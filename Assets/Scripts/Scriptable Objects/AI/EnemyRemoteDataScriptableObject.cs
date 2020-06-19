@@ -2,6 +2,7 @@
 using StarSalvager.Factories.Data;
 using UnityEngine;
 using System.Collections.Generic;
+using StarSalvager.AI;
 
 namespace StarSalvager.ScriptableObjects
 {

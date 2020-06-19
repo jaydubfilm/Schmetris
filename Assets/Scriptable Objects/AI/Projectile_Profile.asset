@@ -16,11 +16,11 @@ MonoBehaviour:
     type: 3}
   m_projectileProfileData:
   - m_projectileType: 0
-    m_sprite: {fileID: 21300000, guid: 6c98c680f1965944690543b9f10fba23, type: 3}
-    m_projectileSpeed: 5
+    m_sprite: {fileID: 21300012, guid: de81ab579afeed146872ab62619b3cfe, type: 3}
+    m_projectileSpeed: 6
   - m_projectileType: 1
-    m_sprite: {fileID: 21300000, guid: 3c0f528182328cc4da91d2ae4b910e2c, type: 3}
+    m_sprite: {fileID: 21300012, guid: a6d1b10b2671f96418d37196aacabe1b, type: 3}
     m_projectileSpeed: 10
   - m_projectileType: 2
-    m_sprite: {fileID: 21300000, guid: 0529418a6ac815c46ba3843abd26f082, type: 3}
+    m_sprite: {fileID: 21300014, guid: e7495963a94ea8c4d875690bf0db95e4, type: 3}
     m_projectileSpeed: 15

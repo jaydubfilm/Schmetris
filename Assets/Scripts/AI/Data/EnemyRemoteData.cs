@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using StarSalvager.AI;
 
 namespace StarSalvager.Factories.Data
 {

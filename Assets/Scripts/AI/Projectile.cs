@@ -11,6 +11,7 @@ namespace StarSalvager.AI
     {
         [NonSerialized]
         public Vector3 m_travelDirectionNormalized = Vector3.zero;
+        public Vector3 m_enemyVelocityModifier = Vector3.zero;
         [NonSerialized]
         public ProjectileProfileData m_projectileData;
 
@@ -24,7 +25,7 @@ namespace StarSalvager.AI
         // Update is called once per frame
         private void Update()
         {
-            transform.position += m_travelDirectionNormalized * m_projectileData.ProjectileSpeed * Time.deltaTime;
+            transform.position += (m_enemyVelocityModifier + (m_travelDirectionNormalized * m_projectileData.ProjectileSpeed)) * Time.deltaTime;
         }
 
         protected override void OnCollide(GameObject gameObject)

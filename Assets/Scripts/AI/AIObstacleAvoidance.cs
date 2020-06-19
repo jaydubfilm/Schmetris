@@ -7,6 +7,7 @@ using Unity.Jobs;
 using UnityEngine.Jobs;
 using StarSalvager.Factories;
 using StarSalvager.Constants;
+using UnityEngine.UI;
 
 namespace StarSalvager.AI
 {
@@ -16,6 +17,7 @@ namespace StarSalvager.AI
         public Enemy m_EnemyPrefab;
 
         public Bot m_botGameObject;
+        public Text m_enemyText;
 
         private Bit[] m_bits;
         private Enemy[] m_enemies;
@@ -52,12 +54,17 @@ namespace StarSalvager.AI
 
             for (int i = 0; i < m_enemies.Length; i++)
             {
-                Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(ENEMY_TYPE.Enemy2);
+                Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(ENEMY_TYPE.Enemy1);
                 m_enemies[i] = newEnemy;
                 m_enemies[i].m_botGameObject = m_botGameObject;
-                m_enemies[i].transform.position = m_grid.GetRandomGridSquareWorldPosition();
-                m_enemies[i].m_destination = m_grid.GetRandomGridSquareWorldPosition();
+                m_enemies[i].transform.position = m_grid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
             }
+
+            m_enemyText.text = "EnemyType: " + m_enemies[0].m_enemyData.EnemyType +
+                "\nMovementType: " + m_enemies[0].m_enemyData.MovementType +
+                "\nAttackType: " + m_enemies[0].m_enemyData.AttackType +
+                "\nMovementSpeed: " + m_enemies[0].m_enemyData.MovementSpeed +
+                "\nAttackSpeed: " + m_enemies[0].m_enemyData.AttackSpeed;
 
             m_obstacleTransformAccessArray = new TransformAccessArray(transformArray);
             //End Temporary code
@@ -73,8 +80,34 @@ namespace StarSalvager.AI
             }
         }
 
+        private int tempDemoingVariable = 0;
+
         void Update()
         {
+            if(Input.GetKeyDown("r"))
+            {
+                tempDemoingVariable++;
+                if (tempDemoingVariable == 15)
+                {
+                    tempDemoingVariable = 0;
+                }
+                Destroy(m_enemies[0].gameObject);
+                Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>((ENEMY_TYPE)tempDemoingVariable);
+                m_enemies[0] = newEnemy;
+                m_enemies[0].m_botGameObject = m_botGameObject;
+                m_enemies[0].transform.position = m_grid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
+
+                m_enemyText.text = "EnemyType: " + m_enemies[0].m_enemyData.EnemyType +
+                    "\nMovementType: " + m_enemies[0].m_enemyData.MovementType +
+                    "\nAttackType: " + m_enemies[0].m_enemyData.AttackType +
+                    "\nMovementSpeed: " + m_enemies[0].m_enemyData.MovementSpeed +
+                    "\nAttackSpeed: " + m_enemies[0].m_enemyData.AttackSpeed;
+            }
+            else if (Input.GetKeyDown("t"))
+            {
+                m_enemies[0].transform.position = m_grid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
+            }
+
             //Temporary code to simulate the speed of downward movement for obstacles and move the prefabs on screen downward
             m_timer += Time.deltaTime;
             if (m_timer >= Values.timeForAsteroidsToFall)
@@ -96,6 +129,10 @@ namespace StarSalvager.AI
                 if (bit != null && bit.IsAttached != true)
                 {
                     bit.transform.position -= amountShiftDown;
+                    if (bit.transform.position.y < 0)
+                    {
+                        bit.transform.position += Vector3.up * Values.gridSizeY * Values.gridCellSize;
+                    }
                 }
             }
             //End temporary code
