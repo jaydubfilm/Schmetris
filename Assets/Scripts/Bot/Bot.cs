@@ -327,7 +327,7 @@ namespace StarSalvager
 
             foreach (var attached in attachedBlocks)
             {
-                attached.SetColor(Color.white);
+                //attached.SetColor(Color.white);
 
                 var dist = Vector2Int.Distance(attached.Coordinate, checkCoordinate);
                 if (dist > smallestDist)
@@ -337,7 +337,7 @@ namespace StarSalvager
                 selected = attached;
             }
 
-            selected.SetColor(Color.magenta);
+            //selected.SetColor(Color.magenta);
 
             return selected;
         }
@@ -350,7 +350,7 @@ namespace StarSalvager
 
             foreach (var attached in attachedBlocks)
             {
-                attached.SetColor(Color.white);
+                //attached.SetColor(Color.white);
 
                 var dist = Vector2.Distance(attached.transform.position, checkPosition);
                 if (dist > smallestDist)
@@ -360,7 +360,7 @@ namespace StarSalvager
                 selected = attached;
             }
 
-            selected.SetColor(Color.magenta);
+            //selected.SetColor(Color.magenta);
 
             return selected;
         }
@@ -378,7 +378,7 @@ namespace StarSalvager
 
             foreach (var attached in attachedBlocks)
             {
-                attached.SetColor(Color.white);
+                //attached.SetColor(Color.white);
 
                 var dist = Vector2Int.Distance(attached.Coordinate, checkCoordinate);
 
@@ -392,8 +392,8 @@ namespace StarSalvager
                 selected[0] = attached;
             }
 
-            selected[0].SetColor(Color.magenta);
-            selected[1]?.SetColor(Color.cyan);
+            //selected[0].SetColor(Color.magenta);
+            //selected[1]?.SetColor(Color.cyan);
 
 
 
@@ -674,7 +674,7 @@ namespace StarSalvager
                 movingBits,
                 closestToCore,
                 orphans.ToArray(),
-                2f,
+                1f,
                 () =>
                 {
                     var bit = closestToCore as Bit;
@@ -685,7 +685,6 @@ namespace StarSalvager
 
                     CheckForCombosAround(bit);
                     CheckForCombosAround(orphans.Select(x => x.attachableBase as Bit));
-
                 }));
 
             //--------------------------------------------------------------------------------------------------------//
@@ -768,8 +767,8 @@ namespace StarSalvager
                     var attachedToOrphan = new List<AttachableBase>();
                     this.GetAllAttachedBits(bit, movingBits, ref attachedToOrphan);
 
-                    Debug.LogError($"Orphan Attached Count: {attachedToOrphan.Count}");
-                    Debug.Break();
+                    //Debug.LogError($"Orphan Attached Count: {attachedToOrphan.Count}");
+                    //Debug.Break();
 
                     //Debug.Log($"{newOrphanCoordinate} = {bit.Coordinate} + {travelDirection.ToVector2Int()} * {(int) travelDistance}");
 
@@ -846,13 +845,13 @@ namespace StarSalvager
                 coordinate += moveDirection.ToVector2Int();
                 var occupied = stayingBlocks.Where(x => !toIgnore.Contains(x)).FirstOrDefault(x => x.Coordinate == coordinate);
 
-                Debug.LogError($"Occupied: {occupied == null} at {coordinate} distance {distance}");
+                //Debug.LogError($"Occupied: {occupied == null} at {coordinate} distance {distance}");
                 
                 if (occupied == null)
                     clearCoordinate = coordinate;
                 
-                if(occupied != null)
-                    Debug.LogError($"{occupied.gameObject.name} is at {coordinate}", occupied);
+                //if(occupied != null)
+                //    Debug.LogError($"{occupied.gameObject.name} is at {coordinate}", occupied);
 
                 distance--;
             }

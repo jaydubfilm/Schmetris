@@ -1179,11 +1179,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneDatas:
   - SceneIndex: 1
-    SceneTitle: Ai Demo
-    SceneDescription: WASD - Move Camera
+    SceneTitle: Enemy AI Demo
+    SceneDescription: "R - Swap enemies\nT - Reset Enemy. \nWASD/Arrow Keys - Move
+      Rotate the Bot"
     button: {fileID: 1883232068}
   - SceneIndex: 2
-    SceneTitle: Bits & Bots Demo
+    SceneTitle: Combos & Levels
     SceneDescription: 'WASD/Arrow Keys - Move Rotate the Bot
 
       ALT + Arrows
@@ -2441,6 +2442,42 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 859822099}
+    ActiveGameObject: {fileID: 859822099}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 859822099}
+    ActiveGameObject: {fileID: 859822099}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1379158132}
+    ActiveGameObject: {fileID: 1379158132}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 1883232066}
     ActiveGameObject: {fileID: 1883232066}
     GUIDsList: []
@@ -2690,42 +2727,6 @@ MonoBehaviour:
     list:
     - {fileID: 1743000673}
     ActiveGameObject: {fileID: 1743000673}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 383152149}
-    ActiveGameObject: {fileID: 383152149}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 583903225}
-    ActiveGameObject: {fileID: 583903225}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 629105499}
-    ActiveGameObject: {fileID: 629105499}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
