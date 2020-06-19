@@ -60,7 +60,8 @@ namespace StarSalvager.AI
                 m_enemies[i].transform.position = m_grid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
             }
 
-            m_enemyText.text = "EnemyType: " + m_enemies[0].m_enemyData.EnemyType +
+            m_enemyText.text = "R to swap demo enemies, T to reset demo enemy position. WASD or arrow keys to move bot." +
+                "\nEnemyType: " + m_enemies[0].m_enemyData.EnemyType +
                 "\nMovementType: " + m_enemies[0].m_enemyData.MovementType +
                 "\nAttackType: " + m_enemies[0].m_enemyData.AttackType +
                 "\nMovementSpeed: " + m_enemies[0].m_enemyData.MovementSpeed +
@@ -97,7 +98,8 @@ namespace StarSalvager.AI
                 m_enemies[0].m_botGameObject = m_botGameObject;
                 m_enemies[0].transform.position = m_grid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
 
-                m_enemyText.text = "EnemyType: " + m_enemies[0].m_enemyData.EnemyType +
+                m_enemyText.text = "R to swap demo enemies, T to reset demo enemy position. WASD or arrow keys to move bot." +
+                    "\nEnemyType: " + m_enemies[0].m_enemyData.EnemyType +
                     "\nMovementType: " + m_enemies[0].m_enemyData.MovementType +
                     "\nAttackType: " + m_enemies[0].m_enemyData.AttackType +
                     "\nMovementSpeed: " + m_enemies[0].m_enemyData.MovementSpeed +
