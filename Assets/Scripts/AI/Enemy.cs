@@ -11,8 +11,6 @@ namespace StarSalvager.AI
     {
         public EnemyData m_enemyData;
 
-        public Bot m_botGameObject;
-
         private float m_fireTimer = 0;
         private float m_oscillationTimer = 0;
         private Vector3 m_currentHorizontalMovementDirection = Vector3.right;
@@ -91,7 +89,7 @@ namespace StarSalvager.AI
         private List<Vector2> GetFireDirection()
         {
             //Firing styles are based on the player location. For now, hardcode this
-            Vector3 playerLocation = m_botGameObject != null ? m_botGameObject.transform.position : Vector3.right * 50;
+            Vector3 playerLocation = LevelManager.Instance.BotGameObject != null ? LevelManager.Instance.BotGameObject.transform.position : Vector3.right * 50;
 
             List<Vector2> fireDirections = new List<Vector2>();
 
@@ -130,7 +128,7 @@ namespace StarSalvager.AI
         public Vector3 GetDestination()
         {
             //Movement styles are based on the player location. For now, hardcode this
-            Vector3 playerLocation = m_botGameObject != null ? m_botGameObject.transform.position : Vector3.right * 50;
+            Vector3 playerLocation = LevelManager.Instance.BotGameObject != null ? LevelManager.Instance.BotGameObject.transform.position : Vector3.right * 50;
 
             switch(m_enemyData.MovementType)
             {

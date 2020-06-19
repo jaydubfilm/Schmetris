@@ -16,7 +16,6 @@ namespace StarSalvager.AI
         public Bit m_bitTestPrefab;
         public Enemy m_EnemyPrefab;
 
-        public Bot m_botGameObject;
         public Text m_enemyText;
 
         private Bit[] m_bits;
@@ -56,7 +55,6 @@ namespace StarSalvager.AI
             {
                 Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(ENEMY_TYPE.Enemy1);
                 m_enemies[i] = newEnemy;
-                m_enemies[i].m_botGameObject = m_botGameObject;
                 m_enemies[i].transform.position = m_grid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
             }
 
@@ -95,7 +93,6 @@ namespace StarSalvager.AI
                 Destroy(m_enemies[0].gameObject);
                 Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>((ENEMY_TYPE)tempDemoingVariable);
                 m_enemies[0] = newEnemy;
-                m_enemies[0].m_botGameObject = m_botGameObject;
                 m_enemies[0].transform.position = m_grid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
 
                 m_enemyText.text = "R to swap demo enemies, T to reset demo enemy position. WASD or arrow keys to move bot." +
