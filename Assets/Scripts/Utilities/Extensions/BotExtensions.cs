@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
@@ -111,6 +110,28 @@ namespace StarSalvager.Utilities.Extensions
             var coord = from.Coordinate + direction.ToVector2Int();
 
             return bot.attachedBlocks.FirstOrDefault(a => a.Coordinate == coord) as T;
+        }
+        
+        public static void GetAllAttachedBits(this Bot bot, AttachableBase current, AttachableBase[] toIgnore, ref List<AttachableBase> bits)
+        {
+            var bitsAround = bot.GetAttachablesAround<AttachableBase>(current);
+
+            bits.Add(current);
+            
+            foreach (var bit in bitsAround)
+            {
+                if (bit == null)
+                    continue;
+
+                if (toIgnore.Contains(bit))
+                    continue;
+                
+                if(bits.Contains(bit))
+                    continue;
+
+                bot.GetAllAttachedBits(bit, toIgnore, ref bits);
+            }
+
         }
         
         #endregion //Obtaining Bits

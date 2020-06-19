@@ -25,6 +25,22 @@ namespace StarSalvager.Utilities.Extensions
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
         }
+        public static Vector2Int ToVector2IntReflected(this DIRECTION direction)
+        {
+            switch (direction)
+            {
+                case DIRECTION.LEFT:
+                    return DirectionVectors[2];
+                case DIRECTION.UP:
+                    return DirectionVectors[3];
+                case DIRECTION.RIGHT:
+                    return DirectionVectors[0];
+                case DIRECTION.DOWN:
+                    return DirectionVectors[1];
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+        }
         //FIXME This needs to consider angled directions
         public static DIRECTION ToDirection(this Vector2Int vector2Int)
         {

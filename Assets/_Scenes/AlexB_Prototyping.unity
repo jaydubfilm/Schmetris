@@ -330,6 +330,30 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 1970748057}
+    ActiveGameObject: {fileID: 1970748057}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1970748057}
+    ActiveGameObject: {fileID: 1970748057}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 1967757741}
     ActiveGameObject: {fileID: 1967757741}
     GUIDsList: []
@@ -560,30 +584,6 @@ MonoBehaviour:
     list:
     - {fileID: 1611434357}
     ActiveGameObject: {fileID: 1611434357}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1967757741}
-    ActiveGameObject: {fileID: 1967757741}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1970748057}
-    ActiveGameObject: {fileID: 1970748057}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -872,13 +872,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1e52ffa92a94bf44908bd721a553354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generateRandomSeed: 1
-  seed: 123456789
-  bitCount: 100
+  generateRandomSeed: 0
+  seed: 2124329150
+  bitCount: 150
   bitSize: 1.28
   BitPrefab: {fileID: 4611369530616709383, guid: 81ca8fa4359ebc149be244e25fdbcb99,
     type: 3}
-  spawnGridDimensions: {x: 20, y: 10}
+  spawnGridDimensions: {x: 25, y: 10}
 --- !u!1001 &3556400771675765153
 PrefabInstance:
   m_ObjectHideFlags: 0

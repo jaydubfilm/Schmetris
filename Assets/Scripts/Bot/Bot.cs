@@ -2,9 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 using Sirenix.OdinInspector;
-using Sirenix.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
@@ -15,7 +13,7 @@ namespace StarSalvager
 {
     public class Bot : AttachableBase, IInput
     {
-        internal struct OrphanMoveData
+        public class OrphanMoveData
         {
             public AttachableBase attachableBase;
             public DIRECTION moveDirection;
@@ -525,8 +523,18 @@ namespace StarSalvager
             CheckForCombosAround(attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate && a is Bit) as Bit);
         }
 
+        private void CheckForCombosAround(IEnumerable<Bit> bits)
+        {
+            foreach (var bit in bits)
+            {
+                CheckForCombosAround(bit);
+            }
+        }
         private void CheckForCombosAround(Bit bit)
         {
+            if (bit.level >= 2)
+                return;
+
             //fills lists with the combos to be checked
             //FIXME Need to consider each direction separately
             var horizontalBits = new List<AttachableBase>();
@@ -554,11 +562,12 @@ namespace StarSalvager
             //TODO I don't consider complex combinations (Ls Ts or 5)
             if (horizontalCount > verticalCount)
                 SimpleComboSolver(horizontalBits);
-            else if (verticalCount > horizontalCount)
+            else if (horizontalCount < verticalCount)
                 SimpleComboSolver(verticalBits);
             else
             {
                 //TODO Decide what to do if both are equal
+                Debug.LogError($"Weird combo at {bit.gameObject.name} doesnt have a solution yet", bit);
             }
         }
 
@@ -586,7 +595,7 @@ namespace StarSalvager
             //Try and get the attachableBase Bit at the new Coordinate
             var nextBit = attachedBlocks
                 .FirstOrDefault(a => a.Coordinate == nextCoords && a is Bit) as Bit;
-            
+
             if (nextBit == null)
                 return false;
 
@@ -600,7 +609,7 @@ namespace StarSalvager
 
             //Add the bit to our combo check list
             bitList.Add(nextBit);
-            
+
             //Keep checking in this direction
             return ComboCountAlgorithm(type, level, nextCoords, direction, ref bitList);
         }
@@ -614,10 +623,10 @@ namespace StarSalvager
         {
             AttachableBase closestToCore = null;
             var shortest = 999f;
-            
+
             //Decide who gets to upgrade
             //--------------------------------------------------------------------------------------------------------//
-            
+
             foreach (var bit in comboBits)
             {
                 //Need to make sure that if we choose this block, that it is connected to the core one way or another
@@ -638,14 +647,14 @@ namespace StarSalvager
                 shortest = dist;
                 closestToCore = bit;
             }
-            
+
             //Make sure that things are working
             //--------------------------------------------------------------------------------------------------------//
 
             //If no block was selected, then we've had a problem
             if (closestToCore == null)
                 throw new Exception("No Closest Core Found");
-            
+
             //See if anyone else needs to move
             //--------------------------------------------------------------------------------------------------------//
 
@@ -656,7 +665,7 @@ namespace StarSalvager
             //Get a list of orphans that may need move when we are moving our bits
             var orphans = new List<OrphanMoveData>();
             CheckForOrphans(movingBits, closestToCore, ref orphans);
-            
+
             //Move everyone who we've determined need to move
             //--------------------------------------------------------------------------------------------------------//
 
@@ -670,14 +679,18 @@ namespace StarSalvager
                 {
                     var bit = closestToCore as Bit;
 
-                    bit.IncreaseLevel();
+                    //We need to update the positions and level before we move them in case we interact with bits while they're moving
+
+                    //bit.IncreaseLevel();
 
                     CheckForCombosAround(bit);
+                    CheckForCombosAround(orphans.Select(x => x.attachableBase as Bit));
+
                 }));
-            
+
             //--------------------------------------------------------------------------------------------------------//
         }
-        
+
         /// <summary>
         /// Get any Bit/Bits that will be orphaned by the bits which will be moving
         /// </summary>
@@ -685,36 +698,36 @@ namespace StarSalvager
         /// <param name="bitToUpgrade"></param>
         /// <param name="orphanMoveData"></param>
         /// <returns></returns>
-        private IEnumerable<OrphanMoveData> CheckForOrphans(AttachableBase[] movingBits,
+        private void CheckForOrphans(AttachableBase[] movingBits,
             AttachableBase bitToUpgrade, ref List<OrphanMoveData> orphanMoveData)
         {
             //List<OrphanMoveData> orphanMoveData = null;
 
             //Check against all the bits that will be moving
             //--------------------------------------------------------------------------------------------------------//
-            
+
             foreach (var movingBit in movingBits)
             {
                 //Get the basic data about the current movingBit
                 //----------------------------------------------------------------------------------------------------//
-                
+
                 var dif = bitToUpgrade.Coordinate - movingBit.Coordinate;
                 var travelDirection = dif.ToDirection();
                 var travelDistance = dif.magnitude;
 
                 //Debug.Log($"Travel Direction: {travelDirection} distance {travelDistance}");
 
-                
+
                 //Check around moving bits (Making sure to exclude the one that doesn't move)
                 //----------------------------------------------------------------------------------------------------//
-                
+
                 //Get all the attachableBases around the specified attachable
                 var bitsAround = this.GetAttachablesAround<AttachableBase>(movingBit);
 
                 //Don't want to bother checking the block that we know will not move
                 if (bitsAround.Contains(bitToUpgrade))
                     bitsAround.Remove(bitToUpgrade);
-                
+
                 //Double check that the neighbors are connected to the core
                 //----------------------------------------------------------------------------------------------------//
 
@@ -731,6 +744,10 @@ namespace StarSalvager
                     if (movingBits.Contains(bit))
                         continue;
 
+                    //Make sure that we haven't already determined this element to be moved
+                    if (orphanMoveData != null && orphanMoveData.Any(omd => omd.attachableBase == bit))
+                        continue;
+
                     //Check that we're connected to the core
                     //------------------------------------------------------------------------------------------------//
 
@@ -739,28 +756,72 @@ namespace StarSalvager
                             .Select(b => b.Coordinate)
                             .ToList());
 
-                    if (hasPathToCore) 
+                    if (hasPathToCore)
                         continue;
-                    
+
                     //We've got an orphan, record all of the necessary data
                     //------------------------------------------------------------------------------------------------//
-                    
+
                     var newOrphanCoordinate =
                         bit.Coordinate + travelDirection.ToVector2Int() * (int) travelDistance;
 
+                    var attachedToOrphan = new List<AttachableBase>();
+                    this.GetAllAttachedBits(bit, movingBits, ref attachedToOrphan);
+
+                    Debug.LogError($"Orphan Attached Count: {attachedToOrphan.Count}");
+                    Debug.Break();
+
                     //Debug.Log($"{newOrphanCoordinate} = {bit.Coordinate} + {travelDirection.ToVector2Int()} * {(int) travelDistance}");
 
-                    if(orphanMoveData == null)
+                    if (orphanMoveData == null)
                         orphanMoveData = new List<OrphanMoveData>();
-                    
-                    orphanMoveData.Add(new OrphanMoveData
+
+                    //------------------------------------------------------------------------------------------------//
+
+                    //Loop ensures that the orphaned blocks which intend on moving, are able to reach their destination without any issues.
+                    foreach (var orphan in attachedToOrphan)
                     {
-                        attachableBase = bit,
-                        moveDirection = travelDirection,
-                        distance = travelDistance,
-                        intendedCoordinates = newOrphanCoordinate
-                    });
-                    
+                        var relative = orphan.Coordinate - bit.Coordinate;
+                        var desiredLocation = newOrphanCoordinate + relative;
+
+                        //Check only the Bits on the Bot that wont be moving
+                        var stayingBlocks = new List<AttachableBase>(attachedBlocks);
+                        foreach (var attachableBase in movingBits)
+                        {
+                            stayingBlocks.Remove(attachableBase);
+                        }
+
+                        //Checks to see if this orphan can travel unimpeded to the destination
+                        //If it cannot, set the destination to the block beside that which is blocking it.
+                        //TODO Once the desired location changes, I should 
+                        var hasClearPath = IsPathClear(stayingBlocks, movingBits, (int)travelDistance, orphan.Coordinate,
+                            travelDirection, desiredLocation, out var clearCoordinate);
+
+                        //If there's no clear solution, then we will try and solve the overlap here
+                        if (!hasClearPath && clearCoordinate == Vector2Int.zero)
+                        {
+                            //Debug.LogError("Orphan has no clear path to intended Position");
+                            
+                            //Make sure that there's no overlap between orphans new potential positions & existing staying Bits
+                            stayingBlocks.SolveCoordinateOverlap(travelDirection, ref desiredLocation);
+                        }
+                        else if (!hasClearPath)
+                        {
+                            //Debug.LogError($"Path wasn't clear. Setting designed location to {clearCoordinate} instead of {desiredLocation}");
+                            desiredLocation = clearCoordinate;
+                        }
+                        
+
+
+                        orphanMoveData.Add(new OrphanMoveData
+                        {
+                            attachableBase = orphan,
+                            moveDirection = travelDirection,
+                            distance = travelDistance,
+                            intendedCoordinates = desiredLocation
+                        });
+                    }
+
                     //------------------------------------------------------------------------------------------------//
 
                     //Debug.LogError($"{bit.gameObject.name} Has Path: {hasPathToCore}", bit);
@@ -771,14 +832,35 @@ namespace StarSalvager
 
             }
 
-            //if (orphanMoveData.Count > 0)
-            //    Debug.Log(
-            //        $"Move Data: {JsonConvert.SerializeObject(orphanMoveData.Select(ab => new {ab.attachableBase.gameObject.name, ab.distance, target = ab.intendedCoordinates.ToString()}))}");
-
-            return orphanMoveData;
         }
 
-        /// <summary>
+        private bool IsPathClear(List<AttachableBase> stayingBlocks, IEnumerable<AttachableBase> toIgnore, int distance, Vector2Int currentCoordinate, DIRECTION moveDirection, Vector2Int targetCoordinate, out Vector2Int clearCoordinate)
+        {
+            //var distance = (int) orphanMoveData.distance;
+            var coordinate = currentCoordinate;
+            
+            clearCoordinate = Vector2Int.zero;
+            
+            while (distance > 0)
+            {
+                coordinate += moveDirection.ToVector2Int();
+                var occupied = stayingBlocks.Where(x => !toIgnore.Contains(x)).FirstOrDefault(x => x.Coordinate == coordinate);
+
+                Debug.LogError($"Occupied: {occupied == null} at {coordinate} distance {distance}");
+                
+                if (occupied == null)
+                    clearCoordinate = coordinate;
+                
+                if(occupied != null)
+                    Debug.LogError($"{occupied.gameObject.name} is at {coordinate}", occupied);
+
+                distance--;
+            }
+
+            return targetCoordinate == clearCoordinate;
+        }
+
+    /// <summary>
         /// Coroutine used to move all of the relevant Bits (Bits to be upgraded, orphans) to their appropriate locations
         /// at the specified speed, and when finished trigger the Callback.
         /// </summary>
@@ -794,6 +876,8 @@ namespace StarSalvager
             //Prepare Bits to be moved
             //--------------------------------------------------------------------------------------------------------//
             
+            (target as Bit)?.IncreaseLevel();
+            
             foreach (var bit in movingBits)
             {
                 //We need to disable the collider otherwise they can collide while moving
@@ -804,6 +888,7 @@ namespace StarSalvager
 
             foreach (var omd in orphans)
             {
+                omd.attachableBase.Coordinate = omd.intendedCoordinates;
                 omd.attachableBase.SetColliderActive(false);
             }
             
@@ -866,7 +951,7 @@ namespace StarSalvager
             //Re-enable the colliders on our orphans
             foreach (var moveData in orphans)
             {
-                moveData.attachableBase.Coordinate = moveData.intendedCoordinates;
+                
                 moveData.attachableBase.SetColliderActive(true);
             }
             
@@ -886,6 +971,8 @@ namespace StarSalvager
 
         //============================================================================================================//
 
+        #region Attachable Overrides
+        
         protected override void OnCollide(GameObject _)
         {
         }
@@ -895,10 +982,12 @@ namespace StarSalvager
             throw new NotImplementedException();
         }
 
-        public override void LoadBlockData(BlockData blockData)
+        public override void LoadBlockData(BlockData _)
         {
             throw new NotImplementedException();
         }
+        
+        #endregion //Attachable Overrides
 
         //============================================================================================================//
 
