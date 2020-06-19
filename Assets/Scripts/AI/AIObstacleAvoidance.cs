@@ -13,14 +13,8 @@ namespace StarSalvager.AI
 {
     public class AIObstacleAvoidance : MonoBehaviour
     {
-        public Bit m_bitTestPrefab;
-        public Enemy m_EnemyPrefab;
-
-        public Text m_enemyText;
-
         private Bit[] m_bits;
         private Enemy[] m_enemies;
-        private WorldGrid m_grid;
 
         //Temporary variables, simulating the movement speed of falling obstacles
         private float m_timer = Values.timeForAsteroidsToFall / 2;
@@ -28,13 +22,10 @@ namespace StarSalvager.AI
 
         //Variables used for job scheduling system
         PositionUpdateJob m_positionUpdateJob;
-
         TransformAccessArray m_obstacleTransformAccessArray;
-
 
         void Start()
         {
-            m_grid = new WorldGrid(Values.gridSizeX, Values.gridSizeY, Values.gridCellSize);
             m_bits = new Bit[Values.numberBitsSpawn];
             m_enemies = new Enemy[Values.numberEnemiesSpawn];
 
@@ -43,22 +34,22 @@ namespace StarSalvager.AI
             //Temporary for testing - instantiate large numbers of test agents and obstacles. In the future, this w
             for (int i = 0; i < m_bits.Length; i++)
             {
-                Bit newBit = GameObject.Instantiate(m_bitTestPrefab);
+                Bit newBit = GameObject.Instantiate(LevelManager.Instance.BitTestPrefab);
                 m_bits[i] = newBit;
-                Vector2 position = m_grid.GetRandomGridSquareWorldPosition();
+                Vector2 position = LevelManager.Instance.WorldGrid.GetRandomGridSquareWorldPosition();
                 m_bits[i].transform.position = position;
                 transformArray[i] = m_bits[i].transform;
-                m_grid.SetObstacleInGridSquare(position, true);
+                LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
             }
 
             for (int i = 0; i < m_enemies.Length; i++)
             {
                 Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(ENEMY_TYPE.Enemy1);
                 m_enemies[i] = newEnemy;
-                m_enemies[i].transform.position = m_grid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
+                m_enemies[i].transform.position = LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
             }
 
-            m_enemyText.text = "R to swap demo enemies, T to reset demo enemy position. WASD or arrow keys to move bot." +
+            LevelManager.Instance.DemoText.text = "R to swap demo enemies, T to reset demo enemy position. WASD or arrow keys to move bot." +
                 "\nEnemyType: " + m_enemies[0].m_enemyData.EnemyType +
                 "\nMovementType: " + m_enemies[0].m_enemyData.MovementType +
                 "\nAttackType: " + m_enemies[0].m_enemyData.AttackType +
@@ -93,9 +84,9 @@ namespace StarSalvager.AI
                 Destroy(m_enemies[0].gameObject);
                 Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>((ENEMY_TYPE)tempDemoingVariable);
                 m_enemies[0] = newEnemy;
-                m_enemies[0].transform.position = m_grid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
+                m_enemies[0].transform.position = LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
 
-                m_enemyText.text = "R to swap demo enemies, T to reset demo enemy position. WASD or arrow keys to move bot." +
+                LevelManager.Instance.DemoText.text = "R to swap demo enemies, T to reset demo enemy position. WASD or arrow keys to move bot." +
                     "\nEnemyType: " + m_enemies[0].m_enemyData.EnemyType +
                     "\nMovementType: " + m_enemies[0].m_enemyData.MovementType +
                     "\nAttackType: " + m_enemies[0].m_enemyData.AttackType +
@@ -104,7 +95,7 @@ namespace StarSalvager.AI
             }
             else if (Input.GetKeyDown("t"))
             {
-                m_enemies[0].transform.position = m_grid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
+                m_enemies[0].transform.position = LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
             }
 
             //Temporary code to simulate the speed of downward movement for obstacles and move the prefabs on screen downward
@@ -112,7 +103,7 @@ namespace StarSalvager.AI
             if (m_timer >= Values.timeForAsteroidsToFall)
             {
                 m_timer -= Values.timeForAsteroidsToFall;
-                m_grid.MoveObstacleMarkersDownwardOnGrid();
+                LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid();
             }
 
             Vector3 amountShiftDown = new Vector3(0, (Values.gridCellSize * Time.deltaTime) / Values.timeForAsteroidsToFall, 0);
@@ -161,20 +152,20 @@ namespace StarSalvager.AI
         {
             //Calculate the min and max grid positions of a Values.enemyGridScanRadius large box around the agent
             Vector2 force = new Vector2(0, 0);
-            Vector2Int agentGridPosition = m_grid.GetGridPositionOfVector(agentPosition);
+            Vector2Int agentGridPosition = LevelManager.Instance.WorldGrid.GetGridPositionOfVector(agentPosition);
             Vector2Int agentGridScanMinimum = new Vector2Int (
                 Math.Max(0, agentGridPosition.x - Values.enemyGridScanRadius), 
                 Math.Max(0, agentGridPosition.y - Values.enemyGridScanRadius));
             Vector2Int agentGridScanMaximum = new Vector2Int (
-                Math.Min(m_grid.m_width - 1, agentGridPosition.x + Values.enemyGridScanRadius), 
-                Math.Min(m_grid.m_height - 1, agentGridPosition.y + Values.enemyGridScanRadius));
+                Math.Min(Values.gridSizeX - 1, agentGridPosition.x + Values.enemyGridScanRadius), 
+                Math.Min(Values.gridSizeY - 1, agentGridPosition.y + Values.enemyGridScanRadius));
 
             //Check each position in the box for a marker for containing an obstacle
             for (int i = agentGridScanMinimum.x; i <= agentGridScanMaximum.x; i++)
             {
                 for (int k = agentGridScanMinimum.y; k <= agentGridScanMaximum.y; k++)
                 {
-                    if (m_grid.GetGridSquareAtPosition(i, k).m_obstacleInSquare)
+                    if (LevelManager.Instance.WorldGrid.GetGridSquareAtPosition(i, k).m_obstacleInSquare)
                     {
                         Vector2 obstacleForce = GetForce(agentPosition, CalculateObstaclePositionChange(i, k));
                         force.x += obstacleForce.x;
@@ -190,7 +181,7 @@ namespace StarSalvager.AI
         //infering where it is in relation to that based on the timer and the obstacles movement speed
         private Vector2 CalculateObstaclePositionChange(int x, int y)
         {
-            return m_grid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * ((m_timer / Values.timeForAsteroidsToFall) - 0.5f);
+            return LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * ((m_timer / Values.timeForAsteroidsToFall) - 0.5f);
         }
 
         //Create a "reverse gravity" force for the agent from the obstacle, using a mass value and the distance between them
