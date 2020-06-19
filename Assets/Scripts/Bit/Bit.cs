@@ -28,7 +28,7 @@ namespace StarSalvager
             level++;
             
             //TODO Get the new sprite for the level
-            Debug.Log($"Upgrade {gameObject.name} to level {level}", this);
+            //Debug.Log($"Upgrade {gameObject.name} to level {level}", this);
 
             var bit = this;
             FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(_type, level, ref bit);
