@@ -41,7 +41,7 @@ namespace StarSalvager
         private SpriteRenderer _renderer;
         
         
-        protected new Transform transform
+        public new Transform transform
         {
             get
             {
