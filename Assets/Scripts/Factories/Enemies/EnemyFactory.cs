@@ -6,6 +6,7 @@ using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
 using System.Linq;
 using StarSalvager.Factories.Data;
+using StarSalvager.AI;
 
 namespace StarSalvager.Factories
 {

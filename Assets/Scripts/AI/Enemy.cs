@@ -4,7 +4,7 @@ using UnityEngine;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Factories;
 
-namespace StarSalvager
+namespace StarSalvager.AI
 {
     public class Enemy : MonoBehaviour, IEnemy
     {
@@ -171,7 +171,7 @@ namespace StarSalvager
         {
             //Have far left and right borders on the x that they'll alternate between. Hardcode those borders for now.
             float farLeftX = 0;
-            float farRightX = 50;
+            float farRightX = 70;
 
             if (transform.position.x <= farLeftX)
             {
@@ -182,7 +182,12 @@ namespace StarSalvager
                 m_currentHorizontalMovementDirection = Vector3.left;
             }
 
-            m_currentHorizontalMovementDirection += Vector3.up * (m_horizontalMovementYLevel - transform.position.y);
+            //Modify the vertical level back to the stored horizontalYlevel, so enemies will return to their previous y level after avoiding an obstacle
+            //TODO - this logic should apply to oscillatehorizontal but currently causes a bug with it. Resolve bug and add this functionality back
+            if (m_enemyData.MovementType != ENEMY_MOVETYPE.OscillateHorizontal)
+            {
+                m_currentHorizontalMovementDirection += Vector3.up * (m_horizontalMovementYLevel - transform.position.y);
+            }
             
             return m_currentHorizontalMovementDirection;
         }
@@ -192,7 +197,7 @@ namespace StarSalvager
         {
             //Have far left and right borders on the x that they'll alternate between. Hardcode those borders for now.
             float farLeftX = 0;
-            float farRightX = 50;
+            float farRightX = 70;
 
             if (transform.position.x <= farLeftX)
             {

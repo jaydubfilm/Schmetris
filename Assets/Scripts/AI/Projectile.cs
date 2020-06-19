@@ -4,8 +4,9 @@ using UnityEngine;
 using StarSalvager.Factories.Data;
 using System;
 
-namespace StarSalvager
+namespace StarSalvager.AI
 {
+    //TODO: Handle proper setting of the collisiontag
     public class Projectile : CollidableBase
     {
         [NonSerialized]
@@ -13,12 +14,11 @@ namespace StarSalvager
         [NonSerialized]
         public ProjectileProfileData m_projectileData;
 
-        public string m_collisionTag;
-        protected virtual string CollisionTag => m_collisionTag;
+        protected override string CollisionTag => "Player";
 
         private void Start()
         {
-            renderer.sprite = m_projectileData.Sprite;
+            SetSprite(m_projectileData.Sprite);
         }
 
         // Update is called once per frame

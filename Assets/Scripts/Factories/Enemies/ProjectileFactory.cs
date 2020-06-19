@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using StarSalvager.ScriptableObjects;
+using StarSalvager.AI;
 
 namespace StarSalvager.Factories
 {
@@ -32,12 +33,12 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
+        //TODO: Add setting the collisionTag for the projectile
         public T CreateObject<T>(PROJECTILE_TYPE projectileType, Vector3 travelDirection, string collisionTag)
         {
             var projectile = CreateObject<Projectile>();
 
             projectile.m_projectileData = m_projectileProfile.GetProjectileProfileData(projectileType);
-            projectile.m_collisionTag = collisionTag;
             travelDirection.Normalize();
             projectile.m_travelDirectionNormalized = travelDirection;
 

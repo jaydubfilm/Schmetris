@@ -6,8 +6,9 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine.Jobs;
 using StarSalvager.Factories;
+using StarSalvager.Constants;
 
-namespace StarSalvager
+namespace StarSalvager.AI
 {
     public class AIObstacleAvoidance : MonoBehaviour
     {
@@ -20,14 +21,9 @@ namespace StarSalvager
         private Enemy[] m_enemies;
         private WorldGrid m_grid;
 
-        private const float m_gridCellSize = 1.0f;
-        private const int m_agentGridScanRadius = 3;
-        private const float m_obstacleMass = 6.0f;
-
         //Temporary variables, simulating the movement speed of falling obstacles
-        private const float m_timeToMoveBetweenCells = 3.0f;
-        private float m_timer = 1.5f;
-        private Vector2 m_obstaclePositionAdjuster = new Vector2(0.0f, m_gridCellSize);
+        private float m_timer = Values.timeForAsteroidsToFall / 2;
+        private Vector2 m_obstaclePositionAdjuster = new Vector2(0.0f, Values.gridCellSize);
 
         //Variables used for job scheduling system
         PositionUpdateJob m_positionUpdateJob;
@@ -37,9 +33,9 @@ namespace StarSalvager
 
         void Start()
         {
-            m_grid = new WorldGrid(50, 50, m_gridCellSize);
-            m_bits = new Bit[50];
-            m_enemies = new Enemy[1];
+            m_grid = new WorldGrid(Values.gridSizeX, Values.gridSizeY, Values.gridCellSize);
+            m_bits = new Bit[Values.numberBitsSpawn];
+            m_enemies = new Enemy[Values.numberEnemiesSpawn];
 
             Transform[] transformArray = new Transform[m_bits.Length];
 
@@ -81,13 +77,13 @@ namespace StarSalvager
         {
             //Temporary code to simulate the speed of downward movement for obstacles and move the prefabs on screen downward
             m_timer += Time.deltaTime;
-            if (m_timer >= m_timeToMoveBetweenCells)
+            if (m_timer >= Values.timeForAsteroidsToFall)
             {
-                m_timer -= m_timeToMoveBetweenCells;
+                m_timer -= Values.timeForAsteroidsToFall;
                 m_grid.MoveObstacleMarkersDownwardOnGrid();
             }
 
-            Vector3 amountShiftDown = new Vector3(0, (m_gridCellSize * Time.deltaTime) / m_timeToMoveBetweenCells, 0);
+            Vector3 amountShiftDown = new Vector3(0, (Values.gridCellSize * Time.deltaTime) / Values.timeForAsteroidsToFall, 0);
             /*m_positionUpdateJob = new PositionUpdateJob()
             {
                 distanceToMove = amountShiftDown,
@@ -127,15 +123,15 @@ namespace StarSalvager
         //Check all nearby squares to the agent to see if any contain an obstacle. For any obstacles in those squares, add the force they apply on the agent.
         private Vector2 CalculateForceAtPoint(Vector2 agentPosition)
         {
-            //Calculate the min and max grid positions of an m_agentGridScanRadius large box around the agent
+            //Calculate the min and max grid positions of a Values.enemyGridScanRadius large box around the agent
             Vector2 force = new Vector2(0, 0);
             Vector2Int agentGridPosition = m_grid.GetGridPositionOfVector(agentPosition);
             Vector2Int agentGridScanMinimum = new Vector2Int (
-                Math.Max(0, agentGridPosition.x - m_agentGridScanRadius), 
-                Math.Max(0, agentGridPosition.y - m_agentGridScanRadius));
+                Math.Max(0, agentGridPosition.x - Values.enemyGridScanRadius), 
+                Math.Max(0, agentGridPosition.y - Values.enemyGridScanRadius));
             Vector2Int agentGridScanMaximum = new Vector2Int (
-                Math.Min(m_grid.m_width - 1, agentGridPosition.x + m_agentGridScanRadius), 
-                Math.Min(m_grid.m_height - 1, agentGridPosition.y + m_agentGridScanRadius));
+                Math.Min(m_grid.m_width - 1, agentGridPosition.x + Values.enemyGridScanRadius), 
+                Math.Min(m_grid.m_height - 1, agentGridPosition.y + Values.enemyGridScanRadius));
 
             //Check each position in the box for a marker for containing an obstacle
             for (int i = agentGridScanMinimum.x; i <= agentGridScanMaximum.x; i++)
@@ -158,13 +154,13 @@ namespace StarSalvager
         //infering where it is in relation to that based on the timer and the obstacles movement speed
         private Vector2 CalculateObstaclePositionChange(int x, int y)
         {
-            return m_grid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * ((m_timer / m_timeToMoveBetweenCells) - 0.5f);
+            return m_grid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * ((m_timer / Values.timeForAsteroidsToFall) - 0.5f);
         }
 
         //Create a "reverse gravity" force for the agent from the obstacle, using a mass value and the distance between them
         private Vector2 GetForce(Vector2 agentPosition, Vector2 obstaclePosition)
         {
-            float magnitude = m_obstacleMass / Vector2.SqrMagnitude(obstaclePosition - agentPosition);
+            float magnitude = Values.obstacleMass / Vector2.SqrMagnitude(obstaclePosition - agentPosition);
             Vector2 direction = new Vector2(agentPosition.x - obstaclePosition.x, agentPosition.y - obstaclePosition.y);
             direction.Normalize();
             direction *= magnitude;

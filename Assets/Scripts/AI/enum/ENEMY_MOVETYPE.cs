@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StarSalvager
+namespace StarSalvager.AI
 {
     [Serializable]
     public enum ENEMY_MOVETYPE : int
