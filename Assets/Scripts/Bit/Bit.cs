@@ -1,5 +1,6 @@
 ﻿using System;
 using StarSalvager.Factories;
+using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
@@ -53,7 +54,7 @@ namespace StarSalvager
 
             //Long ray compensates for the players high speed
             var rayLength = 1.28f * 3f;
-            var rayStartPosition = (Vector2)transform.position + -rayDirection * rayLength;
+            var rayStartPosition = (Vector2) transform.position + -rayDirection * (rayLength / 2f);
 
             
             //Checking ray against player layer mask
@@ -63,6 +64,7 @@ namespace StarSalvager
             if (hit.collider == null)
             {
                 //Debug.DrawRay(rayStartPosition, rayDirection * size, Color.yellow, 1f);
+                SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);
                 return;
             }
             
@@ -81,7 +83,8 @@ namespace StarSalvager
             switch (direction)
             {
                 case DIRECTION.NULL:
-                    return false;
+                    rayDirection = Vector2.down;
+                    return true;
                 case DIRECTION.LEFT:
                     rayDirection = Vector2.right;
                     return true;
