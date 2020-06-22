@@ -10,6 +10,15 @@ namespace StarSalvager.Utilities.Inputs
         {
             if (_bots == null || _bots.Length == 0)
                 _bots = FindObjectsOfType<Bot>();
+
+            InitInput();
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            
+            DeInitInput();
         }
 
 

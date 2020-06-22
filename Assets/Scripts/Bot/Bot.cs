@@ -788,51 +788,54 @@ namespace StarSalvager
 
                     //------------------------------------------------------------------------------------------------//
 
-                    var lastLocation = Vector2Int.zero;
+                    SolveOrphanGroupPositionChange(bit, attachedToOrphan, newOrphanCoordinate, travelDirection,
+                        (int) travelDistance, movingBits, ref orphanMoveData);
+                    
+                    
                     //Loop ensures that the orphaned blocks which intend on moving, are able to reach their destination without any issues.
-                    foreach (var orphan in attachedToOrphan)
-                    {
-                        var relative = orphan.Coordinate - bit.Coordinate;
-                        var desiredLocation = newOrphanCoordinate + relative;
-
-                        //Check only the Bits on the Bot that wont be moving
-                        var stayingBlocks = new List<AttachableBase>(attachedBlocks);
-                        foreach (var attachableBase in movingBits)
-                        {
-                            stayingBlocks.Remove(attachableBase);
-                        }
-
-                        //Checks to see if this orphan can travel unimpeded to the destination
-                        //If it cannot, set the destination to the block beside that which is blocking it.
-                        //TODO Once the desired location changes, I should 
-                        var hasClearPath = IsPathClear(stayingBlocks, movingBits, (int)travelDistance, orphan.Coordinate,
-                            travelDirection, desiredLocation, out var clearCoordinate);
-
-                        //If there's no clear solution, then we will try and solve the overlap here
-                        if (!hasClearPath && clearCoordinate == Vector2Int.zero)
-                        {
-                            Debug.LogError("Orphan has no clear path to intended Position");
-                            
-                            //Make sure that there's no overlap between orphans new potential positions & existing staying Bits
-                            //stayingBlocks.SolveCoordinateOverlap(travelDirection, ref desiredLocation);
-                            desiredLocation = lastLocation;
-                        }
-                        else if (!hasClearPath)
-                        {
-                            //Debug.LogError($"Path wasn't clear. Setting designed location to {clearCoordinate} instead of {desiredLocation}");
-                            desiredLocation = clearCoordinate;
-                        }
-
-                        lastLocation = desiredLocation;
-
-                        orphanMoveData.Add(new OrphanMoveData
-                        {
-                            attachableBase = orphan,
-                            moveDirection = travelDirection,
-                            distance = travelDistance,
-                            intendedCoordinates = desiredLocation
-                        });
-                    }
+                    //foreach (var orphan in attachedToOrphan)
+                    //{
+                    //    var relative = orphan.Coordinate - bit.Coordinate;
+                    //    var desiredLocation = newOrphanCoordinate + relative;
+//
+                    //    //Check only the Bits on the Bot that wont be moving
+                    //    var stayingBlocks = new List<AttachableBase>(attachedBlocks);
+                    //    foreach (var attachableBase in movingBits)
+                    //    {
+                    //        stayingBlocks.Remove(attachableBase);
+                    //    }
+//
+                    //    //Checks to see if this orphan can travel unimpeded to the destination
+                    //    //If it cannot, set the destination to the block beside that which is blocking it.
+                    //    //TODO Once the desired location changes, I should 
+                    //    var hasClearPath = IsPathClear(stayingBlocks, movingBits, (int)travelDistance, orphan.Coordinate,
+                    //        travelDirection, desiredLocation, out var clearCoordinate);
+//
+                    //    //If there's no clear solution, then we will try and solve the overlap here
+                    //    if (!hasClearPath && clearCoordinate == Vector2Int.zero)
+                    //    {
+                    //        Debug.LogError("Orphan has no clear path to intended Position");
+                    //        
+                    //        //Make sure that there's no overlap between orphans new potential positions & existing staying Bits
+                    //        //stayingBlocks.SolveCoordinateOverlap(travelDirection, ref desiredLocation);
+                    //        desiredLocation = lastLocation;
+                    //    }
+                    //    else if (!hasClearPath)
+                    //    {
+                    //        //Debug.LogError($"Path wasn't clear. Setting designed location to {clearCoordinate} instead of {desiredLocation}");
+                    //        desiredLocation = clearCoordinate;
+                    //    }
+//
+                    //    lastLocation = desiredLocation;
+//
+                    //    orphanMoveData.Add(new OrphanMoveData
+                    //    {
+                    //        attachableBase = orphan,
+                    //        moveDirection = travelDirection,
+                    //        distance = travelDistance,
+                    //        intendedCoordinates = desiredLocation
+                    //    });
+                    //}
 
                     //------------------------------------------------------------------------------------------------//
 
@@ -850,7 +853,7 @@ namespace StarSalvager
             var timeout = 0;
             
             //TODO Solve all potential overlaps
-            var hasIssue = false;
+            bool hasIssue;
             do
             {
                 hasIssue = false;
@@ -926,6 +929,125 @@ namespace StarSalvager
 
             } while (hasIssue);
 
+        }
+
+        /// <summary>
+        /// Solve the position change required for a single orphan. If moving a group ensure you use SolveOrphanGroupPositionChange
+        /// </summary>
+        /// <param name="orphanedBit"></param>
+        /// <param name="targetCoordinate"></param>
+        /// <param name="travelDirection"></param>
+        /// <param name="travelDistance"></param>
+        /// <param name="movingBits"></param>
+        /// <param name="orphanMoveData"></param>
+        /// <param name="lastLocation"></param>
+        private void SolveOrphanPositionChange(AttachableBase orphanedBit, Vector2Int targetCoordinate, DIRECTION travelDirection,
+            int travelDistance, IReadOnlyCollection<AttachableBase> movingBits, ref List<OrphanMoveData> orphanMoveData)
+        {
+            //Loop ensures that the orphaned blocks which intend on moving, are able to reach their destination without any issues.
+
+            //Check only the Bits on the Bot that wont be moving
+            var stayingBlocks = new List<AttachableBase>(attachedBlocks);
+            foreach (var attachableBase in movingBits)
+            {
+                stayingBlocks.Remove(attachableBase);
+            }
+
+            //Checks to see if this orphan can travel unimpeded to the destination
+            //If it cannot, set the destination to the block beside that which is blocking it.
+            //TODO Once the desired location changes, I should 
+            var hasClearPath = IsPathClear(stayingBlocks, movingBits, travelDistance, orphanedBit.Coordinate,
+                travelDirection, targetCoordinate, out var clearCoordinate);
+
+            //If there's no clear solution, then we will try and solve the overlap here
+            if (!hasClearPath && clearCoordinate == Vector2Int.zero)
+            {
+                //Debug.LogError("Orphan has no clear path to intended Position");
+                throw new Exception("NEED TO LOOK AT WHAT IS HAPPENING HERE");
+
+                //Make sure that there's no overlap between orphans new potential positions & existing staying Bits
+                //stayingBlocks.SolveCoordinateOverlap(travelDirection, ref desiredLocation);
+            }
+            else if (!hasClearPath)
+            {
+                //Debug.LogError($"Path wasn't clear. Setting designed location to {clearCoordinate} instead of {desiredLocation}");
+                targetCoordinate = clearCoordinate;
+            }
+            
+            //lastPosition = targetCoordinate;
+
+            orphanMoveData.Add(new OrphanMoveData
+            {
+                attachableBase = orphanedBit,
+                moveDirection = travelDirection,
+                distance = travelDistance,
+                intendedCoordinates = targetCoordinate
+            });
+        }
+
+
+        private void SolveOrphanGroupPositionChange(AttachableBase mainOrphan,
+            IReadOnlyList<AttachableBase> orphanGroup, Vector2Int targetCoordinate,
+            DIRECTION travelDirection, int travelDistance, IReadOnlyCollection<AttachableBase> movingBits,
+            ref List<OrphanMoveData> orphanMoveData)
+        {
+
+            if (orphanGroup.Count == 1)
+            {
+                SolveOrphanPositionChange(mainOrphan, targetCoordinate, travelDirection, travelDistance, movingBits,
+                    ref orphanMoveData);
+                return;
+            }
+            
+            
+            Debug.LogError($"Moving Orphan group, Count: {orphanGroup.Count}");
+
+            var lastLocation = Vector2Int.zero;
+
+
+            foreach (var orphan in orphanGroup)
+            {
+                var relative = orphan.Coordinate - mainOrphan.Coordinate;
+                var desiredLocation = targetCoordinate + relative;
+
+                //Check only the Bits on the Bot that wont be moving
+                var stayingBlocks = new List<AttachableBase>(attachedBlocks);
+                foreach (var attachableBase in movingBits)
+                {
+                    stayingBlocks.Remove(attachableBase);
+                }
+
+                //Checks to see if this orphan can travel unimpeded to the destination
+                //If it cannot, set the destination to the block beside that which is blocking it.
+                //TODO Once the desired location changes, I should 
+                var hasClearPath = IsPathClear(stayingBlocks, movingBits, travelDistance, orphan.Coordinate,
+                    travelDirection, desiredLocation, out var clearCoordinate);
+
+                //If there's no clear solution, then we will try and solve the overlap here
+                if (!hasClearPath && clearCoordinate == Vector2Int.zero)
+                {
+                    Debug.LogError("Orphan has no clear path to intended Position");
+
+                    //Make sure that there's no overlap between orphans new potential positions & existing staying Bits
+                    //stayingBlocks.SolveCoordinateOverlap(travelDirection, ref desiredLocation);
+                    desiredLocation = lastLocation;
+                }
+                else if (!hasClearPath)
+                {
+                    //Debug.LogError($"Path wasn't clear. Setting designed location to {clearCoordinate} instead of {desiredLocation}");
+                    desiredLocation = clearCoordinate;
+                }
+
+                lastLocation = desiredLocation;
+
+                orphanMoveData.Add(new OrphanMoveData
+                {
+                    attachableBase = orphan,
+                    moveDirection = travelDirection,
+                    distance = travelDistance,
+                    intendedCoordinates = desiredLocation
+                });
+            }
         }
 
         private bool IsPathClear(List<AttachableBase> stayingBlocks, IEnumerable<AttachableBase> toIgnore, int distance, Vector2Int currentCoordinate, DIRECTION moveDirection, Vector2Int targetCoordinate, out Vector2Int clearCoordinate)
@@ -1007,7 +1129,7 @@ namespace StarSalvager
 
             var orphanTransforms = orphans.Select(bt => bt.attachableBase.transform).ToArray();
             var orphanTransformPositions = orphanTransforms.Select(bt => bt.localPosition).ToArray();
-            var targets = orphans.Select(o =>
+            var orphanTargetPositions = orphans.Select(o =>
                 transform.InverseTransformPoint((Vector2) transform.position +
                                                 (Vector2) o.intendedCoordinates * TEST_BitSize)).ToArray();
             //--------------------------------------------------------------------------------------------------------//
@@ -1046,9 +1168,9 @@ namespace StarSalvager
                     //Debug.Log($"Start {bitTransform.position} End {position}");
 
                     bitTransform.localPosition = Vector2.Lerp(orphanTransformPositions[i],
-                        targets[i], t);
+                        orphanTargetPositions[i], t);
                     
-                    SSDebug.DrawArrow(bitTransform.position,transform.TransformPoint(targets[i]), Color.red);
+                    SSDebug.DrawArrow(bitTransform.position,transform.TransformPoint(orphanTargetPositions[i]), Color.red);
                 }
                 
                 //----------------------------------------------------------------------------------------------------//
@@ -1067,11 +1189,11 @@ namespace StarSalvager
                 Destroy(bit.gameObject);
             }
 
-            //Re-enable the colliders on our orphans
-            foreach (var moveData in orphans)
+            //Re-enable the colliders on our orphans, and ensure they're in the correct position
+            for (var i = 0; i < orphans.Length; i++)
             {
-                
-                moveData.attachableBase.SetColliderActive(true);
+                orphanTransforms[i].localPosition = orphanTargetPositions[i];
+                orphans[i].attachableBase.SetColliderActive(true);
             }
             
             //Now that everyone is where they need to be, wrap things up
