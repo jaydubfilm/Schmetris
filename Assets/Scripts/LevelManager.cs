@@ -49,7 +49,7 @@ namespace StarSalvager
         }
         private AIObstacleAvoidance m_AIObstacleAvoidance;
 
-        public new EnemyManager EnemyManager
+        private new EnemyManager EnemyManager
         {
             get
             {
