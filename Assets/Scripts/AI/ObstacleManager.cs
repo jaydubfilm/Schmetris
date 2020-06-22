@@ -16,25 +16,10 @@ namespace StarSalvager
 
         private int m_numHorizontalMovements = 0;
 
-        //Variables used for job scheduling system
-        /*PositionUpdateJob m_positionUpdateJob;
-        TransformAccessArray m_obstacleTransformAccessArray;
-
-        struct PositionUpdateJob : IJobParallelForTransform
-        {
-            public Vector3 distanceToMove;
-
-            public void Execute(int i, TransformAccess transform)
-            {
-                transform.position -= distanceToMove;
-            }
-        }*/
-
         // Start is called before the first frame update
         void Start()
         {
             m_bits = new List<Bit>();
-            //Transform[] transformArray = new Transform[m_bits.Length];
 
             for (int i = 0; i < Values.numberBitsSpawn; i++)
             {
@@ -45,8 +30,6 @@ namespace StarSalvager
                 //transformArray[i] = m_bits[i].transform;
                 LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
             }
-
-            //m_obstacleTransformAccessArray = new TransformAccessArray(transformArray);
         }
 
         // Update is called once per frame
@@ -69,30 +52,29 @@ namespace StarSalvager
                 m_numHorizontalMovements = 0;
             }
 
-            /*m_positionUpdateJob = new PositionUpdateJob()
+            for (var i = m_bits.Count - 1; i >= 0; i--)
             {
-                distanceToMove = amountShiftDown,
-            };
-
-            m_positionUpdateJob.Schedule(m_obstacleTransformAccessArray);*/
-
-            foreach (Bit bit in m_bits)
-            {
-                if (bit != null && bit.IsAttached != true)
+                var bit = m_bits[i];
+                if (bit == null)
                 {
-                    bit.transform.position -= amountShift;
-                    if (bit.transform.position.y < 0)
-                    {
-                        bit.transform.position += Vector3.up * Values.gridSizeY * Values.gridCellSize;
-                    }
+                    m_bits.RemoveAt(i);
+                    continue;
                 }
-            }
-            //End temporary code
-        }
 
-        private void OnDestroy()
-        {
-            //m_obstacleTransformAccessArray.Dispose();
+                if (bit.IsAttached)
+                {
+                    m_bits.RemoveAt(i);
+                    continue;
+                }
+
+                var pos = bit.transform.position;
+                pos -= amountShift;
+
+                if (pos.y < 0)
+                    pos += Vector3.up * (Values.gridSizeY * Values.gridCellSize);
+
+                bit.transform.position = pos;
+            }
         }
     }
 }
