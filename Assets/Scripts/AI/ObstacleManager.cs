@@ -12,14 +12,14 @@ namespace StarSalvager
 {
     public class ObstacleManager : MonoBehaviour
     {
-        private Bit[] m_bits;
+        private List<Bit> m_bits;
 
         //Temporary variables, simulating the movement speed of falling obstacles
         private float m_timer = Values.timeForAsteroidsToFall / 2;
         private Vector2 m_obstaclePositionAdjuster = new Vector2(0.0f, Values.gridCellSize);
 
         //Variables used for job scheduling system
-        PositionUpdateJob m_positionUpdateJob;
+        /*PositionUpdateJob m_positionUpdateJob;
         TransformAccessArray m_obstacleTransformAccessArray;
 
         struct PositionUpdateJob : IJobParallelForTransform
@@ -30,25 +30,25 @@ namespace StarSalvager
             {
                 transform.position -= distanceToMove;
             }
-        }
+        }*/
 
         // Start is called before the first frame update
         void Start()
         {
-            m_bits = new Bit[Values.numberBitsSpawn];
-            Transform[] transformArray = new Transform[m_bits.Length];
+            m_bits = new List<Bit>();
+            //Transform[] transformArray = new Transform[m_bits.Length];
 
-            for (int i = 0; i < m_bits.Length; i++)
+            for (int i = 0; i < Values.numberBitsSpawn; i++)
             {
                 Bit newBit = GameObject.Instantiate(LevelManager.Instance.BitTestPrefab);
-                m_bits[i] = newBit;
+                m_bits.Add(newBit);
                 Vector2 position = LevelManager.Instance.WorldGrid.GetRandomGridSquareWorldPosition();
-                m_bits[i].transform.position = position;
-                transformArray[i] = m_bits[i].transform;
+                newBit.transform.position = position;
+                //transformArray[i] = m_bits[i].transform;
                 LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
             }
 
-            m_obstacleTransformAccessArray = new TransformAccessArray(transformArray);
+            //m_obstacleTransformAccessArray = new TransformAccessArray(transformArray);
         }
 
         // Update is called once per frame
@@ -93,7 +93,7 @@ namespace StarSalvager
 
         private void OnDestroy()
         {
-            m_obstacleTransformAccessArray.Dispose();
+            //m_obstacleTransformAccessArray.Dispose();
         }
     }
 }
