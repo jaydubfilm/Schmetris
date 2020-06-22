@@ -37,6 +37,18 @@ namespace StarSalvager
         }
         private WorldGrid m_worldGrid;
 
+        public new AIObstacleAvoidance AIObstacleAvoidance
+        {
+            get
+            {
+                if (m_AIObstacleAvoidance == null)
+                    m_AIObstacleAvoidance = gameObject.GetComponent<AIObstacleAvoidance>();
+
+                return m_AIObstacleAvoidance;
+            }
+        }
+        private AIObstacleAvoidance m_AIObstacleAvoidance;
+
         public new EnemyManager EnemyManager
         {
             get
