@@ -14,5 +14,6 @@ namespace StarSalvager.Constants
         public const float timeForAsteroidsToFall = 2.5f;
         public const int enemyGridScanRadius = 3;
         public const float obstacleMass = 4.0f;
+        public const float botHorizontalSpeed = 50.0f;
     }
 }

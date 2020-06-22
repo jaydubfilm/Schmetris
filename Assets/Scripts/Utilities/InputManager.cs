@@ -5,13 +5,22 @@ namespace StarSalvager.Utilities.Inputs
     public class InputManager : SceneSingleton<InputManager>, IInput
     {
         private Bot[] _bots;
+        private ObstacleManager _obstacleManager;
 
         private void Start()
         {
             if (_bots == null || _bots.Length == 0)
                 _bots = FindObjectsOfType<Bot>();
+            if (_obstacleManager == null)
+                _obstacleManager = FindObjectOfType<ObstacleManager>();
+            InitInput();
         }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            DeInitInput();
+        }
 
         public void InitInput()
         {
@@ -37,10 +46,12 @@ namespace StarSalvager.Utilities.Inputs
         {
             var move = ctx.ReadValue<float>();
 
-            foreach (var bot in _bots)
+            /*foreach (var bot in _bots)
             {
                 bot.Move(move);
-            }
+            }*/
+
+            _obstacleManager.Move(move);
         }
 
         private void Rotate(InputAction.CallbackContext ctx)

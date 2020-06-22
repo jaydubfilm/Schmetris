@@ -59,6 +59,42 @@ namespace StarSalvager
             }
         }
 
+        public void MoveObstacleMarkersLeftOnGrid(int amount)
+        {
+            for (int x = 0; x < Values.gridSizeX; x++)
+            {
+                for (int y = 0; y < Values.gridSizeY; y++)
+                {
+                    if (x + amount >= Values.gridSizeX)
+                    {
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x + amount - Values.gridSizeX, y).m_obstacleInSquare);
+                    }
+                    else
+                    {
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x + amount, y).m_obstacleInSquare);
+                    }
+                }
+            }
+        }
+
+        public void MoveObstacleMarkersRightOnGrid(int amount)
+        {
+            for (int x = Values.gridSizeX - 1; x >= 0; x--)
+            {
+                for (int y = 0; y < Values.gridSizeY; y++)
+                {
+                    if (x - amount < 0)
+                    {
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x - amount + Values.gridSizeX, y).m_obstacleInSquare);
+                    }
+                    else
+                    {
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x - amount, y).m_obstacleInSquare);
+                    }
+                }
+            }
+        }
+
         public void SetObstacleInGridSquare(Vector2 obstaclePosition, bool occupied)
         {
             GetGridSquareAtWorldPosition(obstaclePosition).SetObstacleInSquare(occupied);
@@ -106,7 +142,7 @@ namespace StarSalvager
 
         public Vector2Int GetGridPositionOfVector(Vector2 worldLocation)
         {
-            return new Vector2Int((int) ((worldLocation.x - m_anchorPoint.x) / Values.gridCellSize), (int) ((worldLocation.y - m_anchorPoint.y) / Values.gridCellSize));
+            return new Vector2Int((int)Mathf.Floor((worldLocation.x - m_anchorPoint.x) / Values.gridCellSize), (int)Mathf.Floor((worldLocation.y - m_anchorPoint.y) / Values.gridCellSize));
         }
     }
 }
