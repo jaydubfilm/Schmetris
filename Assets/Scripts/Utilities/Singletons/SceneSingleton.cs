@@ -4,7 +4,11 @@ using Object = UnityEngine.Object;
 
 namespace StarSalvager.Utilities
 {
-    public class Singleton<T> : MonoBehaviour where T: Object
+    /// <summary>
+    /// Used for Scene Dependent Singletons (Destoy Object on Load)
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class SceneSingleton<T> : MonoBehaviour where T: Object
     {
         public static T Instance => _instance;
         private static T _instance;
@@ -16,6 +20,11 @@ namespace StarSalvager.Utilities
             }
 
             _instance = this as T;
+        }
+
+        protected virtual void OnDestroy()
+        {
+            _instance = null;
         }
     }
 }
