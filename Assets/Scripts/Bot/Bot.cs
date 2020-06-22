@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using StarSalvager.Constants;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -23,14 +24,15 @@ namespace StarSalvager
         }
 
         //============================================================================================================//
-        [SerializeField, BoxGroup("PROTOTYPE")]
-        public float TEST_BitSize = 1.28f;
 
         [SerializeField, BoxGroup("PROTOTYPE")]
         public float TEST_Speed;
 
         [SerializeField, BoxGroup("PROTOTYPE")]
         public float TEST_RotSpeed;
+        
+        [SerializeField, Range(0.5f, 10f), BoxGroup("PROTOTYPE")]
+        public float TEST_MergeSpeed = 2f;
 
         //============================================================================================================//
 
@@ -181,11 +183,11 @@ namespace StarSalvager
 
             if (Moving)
             {
-                targetPosition += toMove * TEST_BitSize;
+                targetPosition += toMove * Values.gridCellSize;
             }
             else
             {
-                targetPosition = (Vector2) transform.position + toMove * TEST_BitSize;
+                targetPosition = (Vector2) transform.position + toMove * Values.gridCellSize;
                 _dasTimer = 0f;
             }
 
@@ -412,7 +414,7 @@ namespace StarSalvager
         {
             var botPosition = (Vector2) transform.position;
 
-            var calculated = (worldPosition - botPosition) / TEST_BitSize;
+            var calculated = (worldPosition - botPosition) / Values.gridCellSize;
             return new Vector2Int(
                 Mathf.RoundToInt(calculated.x),
                 Mathf.RoundToInt(calculated.y));
@@ -453,7 +455,7 @@ namespace StarSalvager
         {
             newAttachable.Coordinate = coordinate;
             newAttachable.SetAttached(true);
-            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * TEST_BitSize);
+            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Values.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
             attachedBlocks.Add(newAttachable);
@@ -478,7 +480,7 @@ namespace StarSalvager
             newAttachable.Coordinate = coordinate;
 
             newAttachable.SetAttached(true);
-            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * TEST_BitSize);
+            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Values.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
             attachedBlocks.Add(newAttachable);
@@ -496,7 +498,7 @@ namespace StarSalvager
 
             newAttachable.Coordinate = newCoord;
             newAttachable.SetAttached(true);
-            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * newCoord * TEST_BitSize);
+            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * newCoord * Values.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
             attachedBlocks.Add(newAttachable);
@@ -512,7 +514,7 @@ namespace StarSalvager
 
             newAttachable.Coordinate = newCoord;
             newAttachable.SetAttached(true);
-            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * newCoord * TEST_BitSize);
+            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * newCoord * Values.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
             attachedBlocks.Add(newAttachable);
@@ -677,15 +679,15 @@ namespace StarSalvager
             //Move everyone who we've determined need to move
             //--------------------------------------------------------------------------------------------------------//
             
-            if(orphans.Count > 0)
-                Debug.Break();
+            //if(orphans.Count > 0)
+            //    Debug.Break();
 
             //Move all of the components that need to be moved
             StartCoroutine(MoveTowardsCoroutine(
                 movingBits,
                 closestToCore,
                 orphans.ToArray(),
-                2f,
+                TEST_MergeSpeed,
                 () =>
                 {
                     var bit = closestToCore as Bit;
@@ -847,87 +849,7 @@ namespace StarSalvager
 
             }
 
-            if (orphanMoveData?.Count == 0)
-                return;
-
-            var timeout = 0;
-            
-            //TODO Solve all potential overlaps
-            bool hasIssue;
-            do
-            {
-                hasIssue = false;
-                
-                if (timeout > 1000)
-                {
-                    throw new TimeoutException("Got Stuck trying to solve positions");
-                }
-                
-                
-                for (var i = 0; i < orphanMoveData.Count; i++)
-                {
-                    var omd = orphanMoveData[i];
-                    //var compare = orphanMoveData.FirstOrDefault(x => x != omd && x.intendedCoordinates == omd.intendedCoordinates);
-                    
-                    var compareIndex = orphanMoveData.Select((value, index) => new {value, index})
-                        .Where(x => x.value != omd && x.value.intendedCoordinates == omd.intendedCoordinates)
-                        .Select(pair => pair.index + 1)
-                        .FirstOrDefault() - 1;
-                    
-                    if (compareIndex < 0)
-                        continue;
-
-                    var compare = orphanMoveData[compareIndex];
-
-                    //If we've had an issue, we should solve it, and check everything again.
-                    hasIssue = true;
-
-                    //This value determines if we should move the omd object or the compare object when an overlap is found.
-                    var moveCompare = false;
-                    
-                    //We need access to the levels of the bits, so we will cast them here.
-                    //FIXME This could cause an issue if I'm not checking to see if they're bits
-                    var baseBit = omd.attachableBase as Bit;
-                    var compareBit = compare.attachableBase as Bit;
-
-                    //If the Bits are the same level, we'll just see who is closest, and they win the spot. Otherwise,
-                    // default to moving the omd object
-                    if (baseBit.level == compareBit.level)
-                    {
-                        var targetCoordinate = compare.intendedCoordinates;
-                        
-                        var baseDistance = Vector2Int.Distance(baseBit.Coordinate, targetCoordinate);
-                        var compareDistance = Vector2Int.Distance(compareBit.Coordinate, targetCoordinate);
-
-
-                        if (baseDistance < compareDistance)
-                            moveCompare = true;
-                        
-                    }
-                    else if (baseBit.level > compareBit.level)
-                    {
-                        moveCompare = true;
-                    }
-
-                    //Based on who we decided to move, we will offset their intended coordinate by their inverted travel direction
-                    if(moveCompare)
-                        orphanMoveData[compareIndex].intendedCoordinates += compare.moveDirection.ToVector2Int().Reflected();
-                    else
-                        orphanMoveData[i].intendedCoordinates += omd.moveDirection.ToVector2Int().Reflected();
-
-
-                    Debug.LogError(moveCompare
-                        ? $"Found overlap moving Compare {compareBit.gameObject.name} to {compare.intendedCoordinates}"
-                        : $"Found overlap moving Base {baseBit.gameObject.name} to {omd.intendedCoordinates}");
-
-
-                    break;
-                }
-
-
-                timeout++;
-
-            } while (hasIssue);
+            //SolveOverlappingOrphans(ref orphanMoveData);
 
         }
 
@@ -1000,12 +922,71 @@ namespace StarSalvager
             }
             
             
-            Debug.LogError($"Moving Orphan group, Count: {orphanGroup.Count}");
+            //Debug.LogError($"Moving Orphan group, Count: {orphanGroup.Count}");
 
-            var lastLocation = Vector2Int.zero;
+            //var lastLocation = Vector2Int.zero;
 
+            var distances = new float[orphanGroup.Count];
+
+            var index = -1;
+            var shortestDistance = 999f;
+            
+            
+            for (var i = 0; i < orphanGroup.Count; i++)
+            {
+                var orphan = orphanGroup[i];
+                var relative = orphan.Coordinate - mainOrphan.Coordinate;
+                var desiredLocation = targetCoordinate + relative;
+
+                //Check only the Bits on the Bot that wont be moving
+                var stayingBlocks = new List<AttachableBase>(attachedBlocks);
+                foreach (var attachableBase in movingBits)
+                {
+                    stayingBlocks.Remove(attachableBase);
+                }
+
+                //Checks to see if this orphan can travel unimpeded to the destination
+                //If it cannot, set the destination to the block beside that which is blocking it.
+                //TODO Once the desired location changes, I should 
+                var hasClearPath = IsPathClear(stayingBlocks, movingBits, travelDistance, orphan.Coordinate,
+                    travelDirection, desiredLocation, out var clearCoordinate);
+
+                if (!hasClearPath && clearCoordinate == Vector2Int.zero)
+                    distances[i] = 999f;
+                else if (!hasClearPath)
+                    distances[i] = Vector2Int.Distance(orphan.Coordinate, clearCoordinate);
+                else
+                    distances[i] = Vector2Int.Distance(orphan.Coordinate, desiredLocation);
+
+                if (distances[i] > shortestDistance)
+                    continue;
+
+                //index = i;
+                shortestDistance = distances[i];
+            }
+            
+            //Debug.LogError($"Shortest to move {orphanGroup[index].gameObject.name}, Distance: {shortestDistance}");
+            //Debug.Break();
 
             foreach (var orphan in orphanGroup)
+            {
+                //var relative = orphan.Coordinate - mainOrphan.Coordinate;
+                //var desiredLocation = targetCoordinate + relative;
+
+                var newCoordinate = orphan.Coordinate + travelDirection.ToVector2Int() * (int) shortestDistance;
+                
+                orphanMoveData.Add(new OrphanMoveData
+                {
+                    attachableBase = orphan,
+                    moveDirection = travelDirection,
+                    distance = shortestDistance,
+                    intendedCoordinates = newCoordinate
+                });
+            }
+            
+            
+
+            /*foreach (var orphan in orphanGroup)
             {
                 var relative = orphan.Coordinate - mainOrphan.Coordinate;
                 var desiredLocation = targetCoordinate + relative;
@@ -1024,7 +1005,7 @@ namespace StarSalvager
                     travelDirection, desiredLocation, out var clearCoordinate);
 
                 //If there's no clear solution, then we will try and solve the overlap here
-                if (!hasClearPath && clearCoordinate == Vector2Int.zero)
+                /*if (!hasClearPath && clearCoordinate == Vector2Int.zero)
                 {
                     Debug.LogError("Orphan has no clear path to intended Position");
 
@@ -1046,8 +1027,95 @@ namespace StarSalvager
                     moveDirection = travelDirection,
                     distance = travelDistance,
                     intendedCoordinates = desiredLocation
-                });
-            }
+                });#1#
+            }*/
+        }
+
+        private void SolveOverlappingOrphans(ref List<OrphanMoveData> orphanMoveData)
+        {
+            if (orphanMoveData?.Count == 0)
+                return;
+
+            var timeout = 0;
+
+            //TODO Solve all potential overlaps
+            bool hasIssue;
+            do
+            {
+                hasIssue = false;
+
+                if (timeout > 1000)
+                {
+                    throw new TimeoutException("Got Stuck trying to solve positions");
+                }
+
+
+                for (var i = 0; i < orphanMoveData.Count; i++)
+                {
+                    var omd = orphanMoveData[i];
+                    //var compare = orphanMoveData.FirstOrDefault(x => x != omd && x.intendedCoordinates == omd.intendedCoordinates);
+
+                    var compareIndex = orphanMoveData.Select((value, index) => new {value, index})
+                        .Where(x => x.value != omd &&
+                                    x.value.intendedCoordinates == omd.intendedCoordinates)
+                        .Select(pair => pair.index + 1)
+                        .FirstOrDefault() - 1;
+
+                    if (compareIndex < 0)
+                        continue;
+
+                    var compare = orphanMoveData[compareIndex];
+
+                    //If we've had an issue, we should solve it, and check everything again.
+                    hasIssue = true;
+
+                    //This value determines if we should move the omd object or the compare object when an overlap is found.
+                    var moveCompare = false;
+
+                    //We need access to the levels of the bits, so we will cast them here.
+                    //FIXME This could cause an issue if I'm not checking to see if they're bits
+                    var baseBit = omd.attachableBase as Bit;
+                    var compareBit = compare.attachableBase as Bit;
+
+                    //If the Bits are the same level, we'll just see who is closest, and they win the spot. Otherwise,
+                    // default to moving the omd object
+                    if (baseBit.level == compareBit.level)
+                    {
+                        var targetCoordinate = compare.intendedCoordinates;
+
+                        var baseDistance = Vector2Int.Distance(baseBit.Coordinate, targetCoordinate);
+                        var compareDistance = Vector2Int.Distance(compareBit.Coordinate, targetCoordinate);
+
+
+                        if (baseDistance < compareDistance)
+                            moveCompare = true;
+
+                    }
+                    else if (baseBit.level > compareBit.level)
+                    {
+                        moveCompare = true;
+                    }
+
+                    //Based on who we decided to move, we will offset their intended coordinate by their inverted travel direction
+                    if (moveCompare)
+                        orphanMoveData[compareIndex].intendedCoordinates +=
+                            compare.moveDirection.ToVector2Int().Reflected();
+                    else
+                        orphanMoveData[i].intendedCoordinates += omd.moveDirection.ToVector2Int().Reflected();
+
+
+                    Debug.LogError(moveCompare
+                        ? $"Found overlap moving Compare {compareBit.gameObject.name} to {compare.intendedCoordinates}"
+                        : $"Found overlap moving Base {baseBit.gameObject.name} to {omd.intendedCoordinates}");
+
+
+                    break;
+                }
+
+
+                timeout++;
+
+            } while (hasIssue);
         }
 
         private bool IsPathClear(List<AttachableBase> stayingBlocks, IEnumerable<AttachableBase> toIgnore, int distance, Vector2Int currentCoordinate, DIRECTION moveDirection, Vector2Int targetCoordinate, out Vector2Int clearCoordinate)
@@ -1131,7 +1199,7 @@ namespace StarSalvager
             var orphanTransformPositions = orphanTransforms.Select(bt => bt.localPosition).ToArray();
             var orphanTargetPositions = orphans.Select(o =>
                 transform.InverseTransformPoint((Vector2) transform.position +
-                                                (Vector2) o.intendedCoordinates * TEST_BitSize)).ToArray();
+                                                (Vector2) o.intendedCoordinates * Values.gridCellSize)).ToArray();
             //--------------------------------------------------------------------------------------------------------//
 
 

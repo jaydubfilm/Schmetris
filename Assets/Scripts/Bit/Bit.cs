@@ -21,6 +21,9 @@ namespace StarSalvager
         public int level { get => _level; set => _level = value; }
         [SerializeField]
         private int _level;
+
+        [SerializeField]
+        private LayerMask collisionMask;
         
         //============================================================================================================//
 
@@ -58,7 +61,7 @@ namespace StarSalvager
 
             
             //Checking ray against player layer mask
-            var hit = Physics2D.Raycast(rayStartPosition, rayDirection, rayLength,  1 << 8);
+            var hit = Physics2D.Raycast(rayStartPosition, rayDirection, rayLength,  collisionMask.value);
 
             //If nothing was hit, ray failed, thus no reason to continue
             if (hit.collider == null)
