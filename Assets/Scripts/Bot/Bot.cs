@@ -10,6 +10,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
+using Random = System.Random;
 
 namespace StarSalvager
 {
@@ -524,6 +525,128 @@ namespace StarSalvager
 
         #endregion //Attach Bits
 
+        //============================================================================================================//
+
+        [Button("Shift Random piece"), BoxGroup("PROTOTYPE")]
+        private void TestBitShift()
+        {
+            var index = UnityEngine.Random.Range(1, attachedBlocks.Count);
+            const DIRECTION dir = DIRECTION.DOWN;
+            
+            Debug.Log(attachedBlocks[index].gameObject.name, attachedBlocks[index]);
+            
+            TryShift(dir, attachedBlocks[index] as Bit);
+        }
+        private void TryShift(DIRECTION direction, Bit bit)
+        {
+            List<AttachableBase> inLine;
+            switch (direction)
+            {
+                case DIRECTION.LEFT:
+                case DIRECTION.RIGHT:
+                    inLine = attachedBlocks.Where(ab => ab.Coordinate.y == bit.Coordinate.y).ToList();
+                    break;
+                case DIRECTION.UP:
+                case DIRECTION.DOWN:
+                    inLine = attachedBlocks.Where(ab => ab.Coordinate.x == bit.Coordinate.x).ToList();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+
+            var toShift = new List<AttachableBase>();
+            var dir = direction.ToVector2Int();
+            var currentPos = bit.Coordinate;
+            
+            //Debug.Log($"{inLine.Count} in line, moving {direction}");
+
+            for (var i = 0; i < inLine.Count; i++)
+            {
+                var check = inLine.FirstOrDefault(x => x.Coordinate == currentPos);
+
+                if (check == null)
+                    break;
+
+                if (check.Coordinate == Vector2Int.zero)
+                {
+                    toShift.Clear();
+                    continue;
+                }
+
+                switch (check)
+                {
+                    case Part _:
+                        toShift.Clear();
+                        //Debug.Log("Cleared List");
+                        break;
+                    case Bit _:
+                        
+                            
+                        toShift.Add(check);
+                        //Debug.Log($"Added {check.gameObject.name}");
+                        break;
+                }
+
+                currentPos += dir;
+            }
+
+            //Debug.Log($"Shifting {toShift.Count} objects");
+            //Debug.Break();
+
+            StartCoroutine(ShiftCoroutine(toShift, 
+                direction,
+                TEST_MergeSpeed,
+                () =>
+            {
+                //TODO Need to check for floaters
+            }));
+
+        }
+
+        private IEnumerator ShiftCoroutine(List<AttachableBase> toMove, DIRECTION direction, float speed, Action OnFinishedCallback)
+        {
+            var dir = direction.ToVector2Int();
+            var transforms = toMove.Select(x => x.transform).ToArray();
+            var startPositions = transforms.Select(x => x.localPosition).ToArray();
+            var targetPositions = toMove.Select(o =>
+                transform.InverseTransformPoint((Vector2) transform.position +
+                                                ((Vector2) o.Coordinate + dir)  * Values.gridCellSize)).ToArray();
+
+            foreach (var attachableBase in toMove)
+            {
+                attachableBase.SetColliderActive(false);
+                attachableBase.Coordinate += dir;
+            }
+            
+            CompositeCollider2D.GenerateGeometry();
+
+            var t = 0f;
+
+            while (t < 1f)
+            {
+                for (var i = 0; i < transforms.Length; i++)
+                {
+                    transforms[i].localPosition = Vector2.Lerp(startPositions[i], targetPositions[i], t);
+                }
+
+                t += Time.deltaTime * speed;
+                
+                yield return null;
+            }
+            
+            for (var i = 0; i < toMove.Count; i++)
+            {
+                transforms[i].localPosition = targetPositions[i];
+                toMove[i].SetColliderActive(true);
+            }
+            
+            OnFinishedCallback?.Invoke();
+
+            yield return new WaitForEndOfFrame();
+            
+            CompositeCollider2D.GenerateGeometry();
+        }
+        
         //============================================================================================================//
 
         #region Puzzle Checks
