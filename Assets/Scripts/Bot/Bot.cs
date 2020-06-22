@@ -12,7 +12,7 @@ using Input = StarSalvager.Utilities.Inputs.Input;
 
 namespace StarSalvager
 {
-    public class Bot : AttachableBase, IInput
+    public class Bot : AttachableBase
     {
         public class OrphanMoveData
         {
@@ -77,8 +77,6 @@ namespace StarSalvager
             //Mark as Core coordinate
             Coordinate = Vector2Int.zero;
             attachedBlocks.Add(this);
-
-            InitInput();
         }
 
         // Update is called once per frame
@@ -101,22 +99,23 @@ namespace StarSalvager
                 RotateBot();
         }
 
-        //private void OnGUI()
-        //{
-        //    GUI.Box(new Rect(10,10,100,50), $"Speed: {TEST_Speed}" );
-        //}
-
-        private void OnDestroy()
-        {
-            DeInitInput();
-        }
-
         #endregion //Unity Functions
 
         //============================================================================================================//
 
         #region Input Solver
 
+        public void Rotate(float direction)
+        {
+            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+                return;
+            
+            if (direction < 0)
+                Rotate(ROTATION.CCW);
+            else if (direction > 0)
+                Rotate(ROTATION.CW);
+        }
+        
         /// <summary>
         /// Triggers a rotation 90deg in the specified direction. If the player is already rotating, it adds 90deg onto
         /// the target rotation.
@@ -151,6 +150,14 @@ namespace StarSalvager
 
         public void Move(float direction)
         {
+            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+            {
+                _currentInput = 0f;
+                return;
+            }
+            
+            _currentInput = direction;
+            
             if (direction < 0)
                 Move(DIRECTION.LEFT);
             else if (direction > 0)
@@ -1102,62 +1109,6 @@ namespace StarSalvager
         #endregion //Attachable Overrides
 
         //============================================================================================================//
-
-        //TODO This needs to be fleshed out further
-
-        #region Input
-
-        public void InitInput()
-        {
-
-            Input.Actions.Default.SideMovement.Enable();
-            Input.Actions.Default.SideMovement.performed += SideMovement;
-
-            Input.Actions.Default.Rotate.Enable();
-            Input.Actions.Default.Rotate.performed += Rotate;
-
-        }
-
-        public void DeInitInput()
-        {
-            Input.Actions.Default.SideMovement.Disable();
-            Input.Actions.Default.SideMovement.performed -= SideMovement;
-
-            Input.Actions.Default.Rotate.Disable();
-            Input.Actions.Default.Rotate.performed -= Rotate;
-        }
-
-        private void SideMovement(InputAction.CallbackContext ctx)
-        {
-            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
-            {
-                _currentInput = 0f;
-                return;
-            }
-
-            _currentInput = ctx.ReadValue<float>();
-
-            Move(_currentInput);
-
-        }
-
-        private void Rotate(InputAction.CallbackContext ctx)
-        {
-            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
-                return;
-
-            var rot = ctx.ReadValue<float>();
-
-            if (rot < 0)
-                Rotate(ROTATION.CCW);
-            else if (rot > 0)
-                Rotate(ROTATION.CW);
-        }
-
-        #endregion //Input
-
-        //============================================================================================================//
-
 
     }
 }
