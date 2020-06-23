@@ -11,9 +11,15 @@ namespace StarSalvager.Utilities.Inputs
         {
             if (_bots == null || _bots.Length == 0)
                 _bots = FindObjectsOfType<Bot>();
-            if (_obstacleManager == null)
-                _obstacleManager = FindObjectOfType<ObstacleManager>();
+
             InitInput();
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            DeInitInput();
         }
 
         protected override void OnDestroy()
@@ -57,7 +63,7 @@ namespace StarSalvager.Utilities.Inputs
         private void Rotate(InputAction.CallbackContext ctx)
         {
             var rot = ctx.ReadValue<float>();
-            
+
             foreach (var bot in _bots)
             {
                 bot.Rotate(rot);
@@ -65,4 +71,3 @@ namespace StarSalvager.Utilities.Inputs
         }
     }
 }
-
