@@ -213,7 +213,6 @@ namespace StarSalvager
         //============================================================================================================//
 
         //TODO Might want to use Rigidbody motion instead of Transform. Investigate.
-
         #region Movement
 
         private void MoveBot()
@@ -464,6 +463,14 @@ namespace StarSalvager
 
         #endregion //Check For Legal Bit Attach
 
+        //============================================================================================================//
+
+        public void TryHitAt(Vector2 hitPosition, float damage)
+        {
+            
+        }
+        
+        
         //============================================================================================================//
 
         #region Attach Bits
