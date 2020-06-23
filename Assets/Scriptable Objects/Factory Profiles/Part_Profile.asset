@@ -12,5 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19186528b266754b8291fc441243972, type: 3}
   m_Name: Part_Profile
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 0}
-  profiles: []
+  Prefab: {fileID: 8065688321784250118, guid: 27c66f460c929c14193efec09b80f5b6, type: 3}
+  profiles:
+  - partType: 0
+    _name: Core
+    _sprites:
+    - {fileID: -7538142330943618203, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4, type: 3}
+    - {fileID: 8383980901329534866, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4, type: 3}

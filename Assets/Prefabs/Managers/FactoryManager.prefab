@@ -45,6 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bitProfile: {fileID: 11400000, guid: e28447dfb0dfb5443a8105eb274b5052, type: 2}
   partProfile: {fileID: 11400000, guid: 3636fd619e951d140997270b2e8667fb, type: 2}
+  partRemoteData: {fileID: 11400000, guid: 9631580295037634aa09b50d158e6b05, type: 2}
   shapePrefab: {fileID: 3556400771574459110, guid: 4cdd28f9004e4354b98be3c83792613a,
     type: 3}
   enemyProfile: {fileID: 11400000, guid: 4fa2566114602094e90d859fbad3cc48, type: 2}
