@@ -78,7 +78,6 @@ namespace StarSalvager
 
                 if (bit.IsAttached)
                 {
-                    m_bits.RemoveAt(i);
                     continue;
                 }
 

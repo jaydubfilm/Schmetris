@@ -28,7 +28,7 @@ namespace StarSalvager
 
 #if UNITY_EDITOR
             //Draw debug lines to show the area of the grid
-            for (int x = 0; x < Values.gridSizeX; x++)
+            /*for (int x = 0; x < Values.gridSizeX; x++)
             {
                 for (int y = 0; y < Values.gridSizeY; y++)
                 {
@@ -39,7 +39,7 @@ namespace StarSalvager
                 }
             }
             Debug.DrawLine(m_anchorPoint + new Vector2(0, Values.gridSizeY) * Values.gridCellSize, m_anchorPoint + new Vector2(Values.gridSizeX, Values.gridSizeY) * Values.gridCellSize, new Color(255, 0, 0), 300f);
-            Debug.DrawLine(m_anchorPoint + new Vector2(Values.gridSizeX, 0) * Values.gridCellSize, m_anchorPoint + new Vector2(Values.gridSizeX, Values.gridSizeY) * Values.gridCellSize, new Color(255, 0, 0), 300f);
+            Debug.DrawLine(m_anchorPoint + new Vector2(Values.gridSizeX, 0) * Values.gridCellSize, m_anchorPoint + new Vector2(Values.gridSizeX, Values.gridSizeY) * Values.gridCellSize, new Color(255, 0, 0), 300f);*/
 #endif
         }
 
