@@ -30,6 +30,7 @@ namespace StarSalvager.AI
             {
                 m_timer -= Values.timeForAsteroidsToFall;
                 LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid();
+                LevelManager.Instance.ObstacleManager.SpawnNewRowOfObstacles();
             }
         }
 

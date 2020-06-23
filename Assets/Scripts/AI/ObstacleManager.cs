@@ -1,12 +1,18 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using StarSalvager.Constants;
+using StarSalvager.Factories;
+using Recycling;
+using System.Runtime.CompilerServices;
+using Sirenix.OdinInspector;
 
 namespace StarSalvager
 {
     public class ObstacleManager : MonoBehaviour
     {
         private List<Bit> m_bits;
+
+        private int m_numBitsSpawnedPerRow = Values.gridSizeX / 20;
 
         //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
         private float m_currentInput;
@@ -23,12 +29,7 @@ namespace StarSalvager
 
             for (int i = 0; i < Values.numberBitsSpawn; i++)
             {
-                Bit newBit = GameObject.Instantiate(LevelManager.Instance.BitTestPrefab);
-                m_bits.Add(newBit);
-                Vector2 position = LevelManager.Instance.WorldGrid.GetRandomGridSquareWorldPosition();
-                newBit.transform.position = position;
-                //transformArray[i] = m_bits[i].transform;
-                LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
+                SpawnObstacle(true);
             }
         }
 
@@ -85,19 +86,18 @@ namespace StarSalvager
                 Vector2 gridPosition = LevelManager.Instance.WorldGrid.GetGridPositionOfVector(bit.transform.position);
                 pos -= amountShift;
 
+                if (gridPosition.y < 0)
+                {
+                    var temp = m_bits[i];
+                    m_bits.RemoveAt(i);
+                    Recycler.Recycle(typeof(Bit), temp.gameObject);
+                    continue;
+                }
+
                 if (gridPosition.x < 0)
                     pos += Vector3.right * (Values.gridSizeX * Values.gridCellSize);
                 else if (gridPosition.x >= Values.gridSizeX)
                     pos += Vector3.left * (Values.gridSizeX * Values.gridCellSize);
-
-                if (gridPosition.y < 0)
-                    pos += Vector3.up * (Values.gridSizeY * Values.gridCellSize);
-                /*if (gridPosition.y < 0)
-                {
-                    m_bits.RemoveAt(i);
-                    Destroy(bit.gameObject);
-                    continue;
-                }*/
 
                 bit.transform.position = pos;
             }
@@ -121,6 +121,33 @@ namespace StarSalvager
             m_distanceHorizontal += direction * Values.gridCellSize;
 
             _moving = true;
+        }
+
+        public void SpawnNewRowOfObstacles()
+        {
+            for (int i = 0; i < m_numBitsSpawnedPerRow; i++)
+            {
+                SpawnObstacle();
+            }
+        }
+
+        private void SpawnObstacle(bool inRandomYLevel = false)
+        {
+            var type = (BIT_TYPE)Random.Range(0, 7);
+            Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject(type).GetComponent<Bit>();
+            m_bits.Add(newBit);
+            newBit.transform.parent = LevelManager.Instance.gameObject.transform;
+            Vector2 position;
+            if (inRandomYLevel)
+            {
+                position = LevelManager.Instance.WorldGrid.GetRandomGridSquareWorldPosition();
+            }
+            else
+            {
+                position = LevelManager.Instance.WorldGrid.GetRandomTopGridSquareWorldPosition();
+            }
+            newBit.transform.position = position;
+            LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
         }
     }
 }

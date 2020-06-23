@@ -14,7 +14,9 @@ namespace StarSalvager
 
         public WorldGrid()
         {
-            m_anchorPoint = Vector2.zero;
+            m_anchorPoint = Vector2.left * 
+                ((Values.gridSizeX / 2) * Values.gridCellSize - 
+                ((Camera.main.orthographicSize * Screen.width / Screen.height)));
 
             m_gridArray = new GridSquare[Values.gridSizeX * Values.gridSizeY];
 
@@ -138,6 +140,11 @@ namespace StarSalvager
         public Vector2 GetRandomGridSquareWorldPosition()
         {
             return GetCenterOfGridSquareInGridPosition(UnityEngine.Random.Range(0, Values.gridSizeX), UnityEngine.Random.Range(0, Values.gridSizeY));
+        }
+
+        public Vector2 GetRandomTopGridSquareWorldPosition()
+        {
+            return GetCenterOfGridSquareInGridPosition(UnityEngine.Random.Range(0, Values.gridSizeX), Values.gridSizeY - 1);
         }
 
         public Vector2Int GetGridPositionOfVector(Vector2 worldLocation)

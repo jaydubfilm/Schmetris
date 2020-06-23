@@ -77,6 +77,7 @@ namespace StarSalvager.AI
             foreach (Vector2 fireLocation in fireLocations)
             {
                 Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>().CreateObject<Projectile>(m_enemyData.ProjectileType, fireLocation, "Player");
+                newProjectile.transform.parent = LevelManager.Instance.gameObject.transform;
                 newProjectile.transform.position = transform.position;
                 if (m_enemyData.AddVelocityToProjectiles)
                 {

@@ -8,6 +8,7 @@ public class CameraController : MonoBehaviour
     Vector3 edgePos;
     Vector3 targetPos;
     public float smoothing = 4.0f;
+    private float horzExtent;
 
     //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
     private float m_currentInput;
@@ -30,6 +31,7 @@ public class CameraController : MonoBehaviour
         DontDestroyOnLoad(this);
         startPos = transform.position;
         targetPos = startPos;
+        horzExtent = (Camera.main.orthographicSize * Screen.width / Screen.height) / 2;
     }
 
     //Smooth camera to center over bot
@@ -49,7 +51,7 @@ public class CameraController : MonoBehaviour
         }
 
         Vector3 cameraOff = startPos;
-        cameraOff.x += -direction * 25.0f;
+        cameraOff.x += -direction * horzExtent;
 
         edgePos = cameraOff;
         targetPos = edgePos;

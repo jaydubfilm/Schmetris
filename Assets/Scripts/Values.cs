@@ -7,7 +7,7 @@ namespace StarSalvager.Constants
     public static class Values
     {
         public const float gridCellSize = 1.28f;
-        public const int gridSizeX = 120;
+        public const int gridSizeX = 240;
         public const int gridSizeY = 35;
         public const int numberBitsSpawn = 60;
         public const int numberEnemiesSpawn = 1;
