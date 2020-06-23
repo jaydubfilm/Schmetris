@@ -157,11 +157,18 @@ namespace StarSalvager
             }
             
             _currentInput = direction;
-            
+
             if (direction < 0)
+                _moveDirection = DIRECTION.LEFT;
+            else if (direction > 0)
+                _moveDirection = DIRECTION.RIGHT;
+            else
+                _moveDirection = DIRECTION.NULL;
+
+            /*if (direction < 0)
                 Move(DIRECTION.LEFT);
             else if (direction > 0)
-                Move(DIRECTION.RIGHT);
+                Move(DIRECTION.RIGHT);*/
         }
 
         public void Move(DIRECTION direction)

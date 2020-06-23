@@ -46,10 +46,10 @@ namespace StarSalvager.Utilities.Inputs
         {
             var move = ctx.ReadValue<float>();
 
-            /*foreach (var bot in _bots)
+            foreach (var bot in _bots)
             {
                 bot.Move(move);
-            }*/
+            }
 
             _obstacleManager.Move(move);
         }
