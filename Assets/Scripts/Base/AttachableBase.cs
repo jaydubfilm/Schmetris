@@ -35,6 +35,12 @@ namespace StarSalvager
         
         //============================================================================================================//
         
+        public void SetupHealthValues(float startingHealth, float currentHealth)
+        {
+            _startingHealth = startingHealth;
+            _currentHealth = currentHealth;
+        }
+
         public void ChangeHealth(float amount)
         {
             _currentHealth += amount;

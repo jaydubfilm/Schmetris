@@ -47,6 +47,7 @@ namespace StarSalvager.Factories
             }
             temp.SetSprite(sprite);
             temp.LoadBlockData(blockData);
+            temp.SetupHealthValues(25, 25);
 
             return temp.gameObject;
         }
