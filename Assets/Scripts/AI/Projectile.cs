@@ -17,6 +17,8 @@ namespace StarSalvager.AI
         [NonSerialized]
         public ProjectileProfileData m_projectileData;
 
+        public float DamageAmount = 0.0f;
+
         protected override string CollisionTag => "Player";
 
         private void Start()
@@ -35,7 +37,7 @@ namespace StarSalvager.AI
             Bot bot = gameObject.GetComponent<Bot>();
             if (bot != null)
             {
-
+                bot.TryHitAt(transform.position, DamageAmount);
             }
 
             Recycler.Recycle(typeof(Projectile), this.gameObject);
