@@ -38,34 +38,53 @@ namespace Recycling
 
 		//============================================================================================================//
 
-		public static void Recycle(Enum _enum, GameObject gameObject)
+		public static void Recycle(Enum @enum, GameObject gameObject)
 		{
 
-			if (!_enumDict.TryGetValue(_enum, out _bin))
+			if (!_enumDict.TryGetValue(@enum, out _bin))
 			{
 				_bin = new RecycleBin();
-				_enumDict.Add(_enum, _bin);
+				_enumDict.Add(@enum, _bin);
 
 			}
 
 			_bin.Store(gameObject);
 			gameObject.transform.parent = transform;
+			
+			gameObject.GetComponent<IRecycle>()?.OnRecycle();
 		}
-		public static bool TryGrab(Enum _enum, out GameObject _gameObject, bool returnActive = true)
+		public static bool TryGrab(Enum @enum, out GameObject gameObject, bool returnActive = true)
 		{
-			_gameObject = null;
+			gameObject = null;
 
-			if (!_enumDict.TryGetValue(_enum, out _bin)) 
+			if (!_enumDict.TryGetValue(@enum, out _bin)) 
 				return false;
-			if (!_bin.Grab(out _gameObject)) 
+			if (!_bin.Grab(out gameObject)) 
 				return false;
-			if (returnActive) _gameObject.SetActive(true);
+			if (returnActive) gameObject.SetActive(true);
 				return true;
+		}
+		
+		public static bool TryGrab<T>(Enum @enum, out T monoBehaviour, bool returnActive = true) where T: MonoBehaviour
+		{
+			monoBehaviour = null;
+
+			if (!_enumDict.TryGetValue(@enum, out _bin)) 
+				return false;
+			if (!_bin.Grab(out var gameObject)) 
+				return false;
+			
+			if (returnActive) 
+				gameObject.SetActive(true);
+
+			monoBehaviour = gameObject.GetComponent<T>();
+			
+			return true;
 		}
 		
 		//============================================================================================================//
 
-		public static void Recycle(Type type, GameObject _gameObject)
+		public static void Recycle(Type type, GameObject gameObject)
 		{
 
 			if (!_typeDict.TryGetValue(type, out _bin))
@@ -75,37 +94,51 @@ namespace Recycling
 
 			}
 
-			_bin.Store(_gameObject);
-			_gameObject.transform.parent = transform;
+			_bin.Store(gameObject);
+			gameObject.transform.parent = transform;
+			
+			gameObject.GetComponent<IRecycle>()?.OnRecycle();
+		}
+		
+		public static void Recycle<T>(GameObject gameObject)
+		{
+			Recycle(typeof(T), gameObject);
 		}
 
-		public static bool TryGrab(Type type, out GameObject _gameObject, bool returnActive = true)
+		
+		
+		public static bool TryGrab(Type type, out GameObject gameObject, bool returnActive = true)
 		{
-			_gameObject = null;
+			gameObject = null;
 
 			if (!_typeDict.TryGetValue(type, out _bin)) 
 				return false;
 			
-			if (!_bin.Grab(out _gameObject)) 
+			if (!_bin.Grab(out gameObject)) 
 				return false;
 			
-			if (returnActive) _gameObject.SetActive(true);
+			if (returnActive) gameObject.SetActive(true);
 				return true;
 		}
 		
-		public static bool TryGrab<T>(out T _object, bool returnActive = true) where T: MonoBehaviour
+		public static bool TryGrab<T>(out GameObject gameObject, bool returnActive = true)
 		{
-			_object = null;
+			return TryGrab(typeof(T), out gameObject, returnActive);
+		}
+		
+		public static bool TryGrab<T>(out T monoBehaviour, bool returnActive = true) where T: MonoBehaviour
+		{
+			monoBehaviour = null;
 
 			if (!_typeDict.TryGetValue(typeof(T), out _bin)) 
 				return false;
 			
-			if (!_bin.Grab(out var _gameObject)) 
+			if (!_bin.Grab(out var gameObject)) 
 				return false;
 			
-			if (returnActive) _gameObject.SetActive(true);
+			if (returnActive) gameObject.SetActive(true);
 
-			_object = _gameObject.GetComponent<T>();
+			monoBehaviour = gameObject.GetComponent<T>();
 			
 			return true;
 		}

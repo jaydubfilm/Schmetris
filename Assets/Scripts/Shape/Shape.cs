@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using StarSalvager;
+using StarSalvager.Constants;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
 
@@ -21,25 +22,26 @@ public class Shape : CollidableBase
     
     //================================================================================================================//
 
-    public BIT_TYPE BitType { get; private set; }
+    //public BIT_TYPE BitType { get; private set; }
 
     private List<Bit> attachedBits => _attachedBits ?? (_attachedBits = new List<Bit>());
     private List<Bit> _attachedBits;
 
-    public void Setup(BIT_TYPE bitType, List<Bit> bits)
+    public void Setup(List<Bit> bits)
     {
-        SetBitType(bitType);
+        //SetBitType(bitType);
 
         foreach (var bit in bits)
         {
+            bit.transform.parent = transform;
             attachedBits.Add(bit);
         }
     }
 
-    public void SetBitType(BIT_TYPE bitType)
-    {
-        BitType = bitType;
-    }
+    //public void SetBitType(BIT_TYPE bitType)
+    //{
+    //    BitType = bitType;
+    //}
 
     //FIXME Need to setup the global variables for BitSize
     public void PushNewBit(Bit bit, DIRECTION direction)
@@ -60,7 +62,7 @@ public class Shape : CollidableBase
 
         bit.Coordinate = newCoord;
         bit.SetAttached(true);
-        bit.transform.position = transform.position + (Vector3)(Vector2.one * newCoord * 1.28f);
+        bit.transform.position = transform.position + (Vector3)(Vector2.one * newCoord * Values.gridCellSize);
         bit.transform.SetParent(transform);
             
         attachedBits.Add(bit);

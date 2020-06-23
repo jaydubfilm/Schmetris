@@ -1,4 +1,5 @@
 ﻿using System;
+using StarSalvager.Constants;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
@@ -56,7 +57,7 @@ namespace StarSalvager
                 return;
 
             //Long ray compensates for the players high speed
-            var rayLength = 1.28f * 3f;
+            var rayLength = Values.gridCellSize * 3f;
             var rayStartPosition = (Vector2) transform.position + -rayDirection * (rayLength / 2f);
 
             
