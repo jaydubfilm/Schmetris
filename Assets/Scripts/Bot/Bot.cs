@@ -467,7 +467,14 @@ namespace StarSalvager
 
         public void TryHitAt(Vector2 hitPosition, float damage)
         {
+            var closestAttachable = GetClosestAttachable(hitPosition);
+            closestAttachable.ChangeHealth(-damage);
+
+            if (closestAttachable.CurrentHealth > 0) 
+                return;
             
+            RemoveAttachable(closestAttachable);
+            CheckForDisconnects();
         }
         
         
@@ -570,9 +577,15 @@ namespace StarSalvager
         }
         private void DetachBit(Bit bit)
         {
-            attachedBlocks.Remove(bit);
             bit.transform.parent = null;
-            bit.SetAttached(false);
+
+            RemoveAttachable(bit);
+        }
+        
+        private void RemoveAttachable(AttachableBase attachableBase)
+        {
+            attachedBlocks.Remove(attachableBase);
+            attachableBase.SetAttached(false);
             
             CompositeCollider2D.GenerateGeometry();
         }
