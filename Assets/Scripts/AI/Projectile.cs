@@ -32,6 +32,12 @@ namespace StarSalvager.AI
 
         protected override void OnCollide(GameObject gameObject)
         {
+            Bot bot = gameObject.GetComponent<Bot>();
+            if (bot != null)
+            {
+
+            }
+
             Recycler.Recycle(typeof(Projectile), this.gameObject);
         }
     }

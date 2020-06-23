@@ -26,7 +26,7 @@ namespace StarSalvager.Factories
             temp.SetSprite(sprite);
             temp.LoadBlockData(blockData);
             
-            temp.StartingHealth = 
+            //temp.StartingHealth = 
 
             temp.gameObject.name = $"{temp.Type}_{temp.level}";
             return temp.gameObject;
