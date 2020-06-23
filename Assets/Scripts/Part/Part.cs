@@ -5,8 +5,25 @@ namespace StarSalvager
 {
     public class Part : AttachableBase, IPart
     {
-        public PART_TYPE Type { get =>_type; set => _type = value; }
+        //============================================================================================================//
+
+        public PART_TYPE Type
+        {
+            get => _type;
+            set => _type = value;
+        }
+
         private PART_TYPE _type;
+        
+        public int level { get => _level; set => _level = value; }
+        [SerializeField]
+        private int _level;
+        
+        //============================================================================================================//
+        
+        
+
+        //============================================================================================================//
 
         protected override void OnCollide(GameObject _)
         {
@@ -19,16 +36,19 @@ namespace StarSalvager
             {
                 ClassType = GetType().Name,
                 Coordinate = Coordinate,
-                Type = (int)Type,
-                Level = -1
+                Type = (int) Type,
+                Level = level
             };
         }
-        
+
         public override void LoadBlockData(BlockData blockData)
         {
-            Coordinate = (Vector2Int) blockData.Coordinate;
+            Coordinate = blockData.Coordinate;
             Type = (PART_TYPE) blockData.Type;
+            level = blockData.Level;
         }
+
+        //============================================================================================================//
     }
 }
 
