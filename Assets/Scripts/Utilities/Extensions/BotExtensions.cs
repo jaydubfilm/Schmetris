@@ -57,6 +57,7 @@ namespace StarSalvager.Utilities.Extensions
         
         //============================================================================================================//
         
+        //FIXME I don't like that these are here, I want them not in the Bot, but also not here
         #region Obtaining Bits
         
         /// <summary>
@@ -112,18 +113,18 @@ namespace StarSalvager.Utilities.Extensions
             return bot.attachedBlocks.FirstOrDefault(a => a.Coordinate == coord) as T;
         }
         
-        public static void GetAllAttachedBits(this Bot bot, AttachableBase current, AttachableBase[] toIgnore, ref List<AttachableBase> bits)
+        public static void GetAllAttachedBits<T>(this Bot bot, AttachableBase current, AttachableBase[] toIgnore, ref List<T> bits) where T: AttachableBase
         {
-            var bitsAround = bot.GetAttachablesAround<AttachableBase>(current);
+            var bitsAround = bot.GetAttachablesAround<T>(current);
 
-            bits.Add(current);
+            bits.Add(current as T);
             
             foreach (var bit in bitsAround)
             {
                 if (bit == null)
                     continue;
 
-                if (toIgnore.Contains(bit))
+                if (toIgnore != null && toIgnore.Contains(bit))
                     continue;
                 
                 if(bits.Contains(bit))
@@ -170,7 +171,7 @@ namespace StarSalvager.Utilities.Extensions
                     continue;
 
                 // If ignore list contains this Coordinate, keep going
-                if (toIgnore.Contains(attachablesAround[i].Coordinate))
+                if (toIgnore != null && toIgnore.Contains(attachablesAround[i].Coordinate))
                 {
                     //Debug.LogError($"toIgnore contains {around[i].Coordinate}");
                     attachablesAround[i] = null;
