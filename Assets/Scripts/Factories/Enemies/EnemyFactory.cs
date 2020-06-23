@@ -7,6 +7,7 @@ using StarSalvager.Utilities;
 using System.Linq;
 using StarSalvager.Factories.Data;
 using StarSalvager.AI;
+using Recycling;
 
 namespace StarSalvager.Factories
 {
@@ -48,6 +49,11 @@ namespace StarSalvager.Factories
 
         public override T CreateObject<T>()
         {
+            if (Recycler.TryGrab<T>(out T newObject))
+            {
+                return newObject;
+            }
+
             return CreateGameObject().GetComponent<T>();
         }
 

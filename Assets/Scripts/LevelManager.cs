@@ -8,11 +8,8 @@ using UnityEngine.UI;
 
 namespace StarSalvager
 {
-    public class LevelManager : Singleton<LevelManager>
+    public class LevelManager : SceneSingleton<LevelManager>
     {
-        public static LevelManager Instance => m_instance;
-        private static LevelManager m_instance;
-
         [SerializeField]
         private Bot m_botGameObject;
         public Bot BotGameObject => m_botGameObject;
@@ -25,7 +22,7 @@ namespace StarSalvager
         private Text m_demoText;
         public Text DemoText => m_demoText;
 
-        public new WorldGrid WorldGrid
+        public WorldGrid WorldGrid
         {
             get
             {
@@ -37,7 +34,7 @@ namespace StarSalvager
         }
         private WorldGrid m_worldGrid;
 
-        public new AIObstacleAvoidance AIObstacleAvoidance
+        public AIObstacleAvoidance AIObstacleAvoidance
         {
             get
             {
@@ -49,7 +46,7 @@ namespace StarSalvager
         }
         private AIObstacleAvoidance m_AIObstacleAvoidance;
 
-        private new EnemyManager EnemyManager
+        private EnemyManager EnemyManager
         {
             get
             {
@@ -61,7 +58,7 @@ namespace StarSalvager
         }
         private EnemyManager m_enemyManager;
 
-        public new ObstacleManager ObstacleManager
+        public ObstacleManager ObstacleManager
         {
             get
             {
@@ -73,14 +70,21 @@ namespace StarSalvager
         }
         private ObstacleManager m_obstacleManager;
 
-        private void Awake()
+        public ProjectileManager ProjectileManager
         {
-            if (Instance != null)
+            get
             {
-                Debug.Log($"An instance of LevelManager already exists.");
-            }
+                if (m_projectileManager == null)
+                    m_projectileManager = new ProjectileManager();
 
-            m_instance = this;
+                return m_projectileManager;
+            }
+        }
+        private ProjectileManager m_projectileManager;
+
+        private void Update()
+        {
+            ProjectileManager.UpdateForces();
         }
     }
 }

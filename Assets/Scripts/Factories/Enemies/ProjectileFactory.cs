@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.AI;
+using Recycling;
 
 namespace StarSalvager.Factories
 {
@@ -28,6 +29,11 @@ namespace StarSalvager.Factories
 
         public override T CreateObject<T>()
         {
+            if (Recycler.TryGrab<T>(out T newObject))
+            {
+                return newObject;
+            }
+            
             return CreateGameObject().GetComponent<T>();
         }
 

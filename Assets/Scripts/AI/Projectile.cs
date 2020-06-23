@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using StarSalvager.Factories.Data;
 using System;
+using Recycling;
+using System.Runtime.CompilerServices;
 
 namespace StarSalvager.AI
 {
@@ -30,7 +32,7 @@ namespace StarSalvager.AI
 
         protected override void OnCollide(GameObject gameObject)
         {
-            Destroy(this.gameObject);
+            Recycler.Recycle(typeof(Projectile), this.gameObject);
         }
     }
 }

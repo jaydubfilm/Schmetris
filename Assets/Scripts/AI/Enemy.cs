@@ -82,6 +82,7 @@ namespace StarSalvager.AI
                 {
                     newProjectile.m_enemyVelocityModifier = m_mostRecentMovementDirection * m_enemyData.MovementSpeed;
                 }
+                LevelManager.Instance.ProjectileManager.AddProjectile(newProjectile);
             }
         }
 
