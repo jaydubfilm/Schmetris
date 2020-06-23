@@ -9,13 +9,10 @@ using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using Input = StarSalvager.Utilities.Inputs.Input;
-using Random = System.Random;
 
 namespace StarSalvager
 {
-    public class Bot : AttachableBase
+    public class Bot : MonoBehaviour
     {
         public class OrphanMoveData
         {
@@ -76,11 +73,19 @@ namespace StarSalvager
         {
             rigidbody = GetComponent<Rigidbody2D>();
             CompositeCollider2D = GetComponent<CompositeCollider2D>();
-            useCollision = false;
+            //useCollision = false;
 
             //Mark as Core coordinate
-            Coordinate = Vector2Int.zero;
-            attachedBlocks.Add(this);
+            //Coordinate = Vector2Int.zero;
+            var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<AttachableBase>(
+                new BlockData
+                {
+                    Type = (int)PART_TYPE.CORE,
+                    Coordinate = Vector2Int.zero,
+                    Level = 0,
+                });
+
+            AttachNewBit(Vector2Int.zero, core);
         }
 
         // Update is called once per frame
@@ -728,6 +733,10 @@ namespace StarSalvager
         }
         private void CheckForCombosAround(Bit bit)
         {
+
+            if (bit == null)
+                return;
+            
             if (bit.level >= 2)
                 return;
 
@@ -1524,26 +1533,6 @@ namespace StarSalvager
         
         #endregion //Coroutines
         
-        //============================================================================================================//
-
-        #region Attachable Overrides
-        
-        protected override void OnCollide(GameObject _)
-        {
-        }
-
-        public override BlockData ToBlockData()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void LoadBlockData(BlockData _)
-        {
-            throw new NotImplementedException();
-        }
-        
-        #endregion //Attachable Overrides
-
         //============================================================================================================//
 
     }

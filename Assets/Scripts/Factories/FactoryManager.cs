@@ -11,22 +11,25 @@ namespace StarSalvager.Factories
     {
         //============================================================================================================//
         
-        [SerializeField, Required]
+        [SerializeField, Required, BoxGroup("Attachables")]
         private AttachableProfileScriptableObject bitProfile;
 
-        [SerializeField, Required] 
+        [SerializeField, Required, BoxGroup("Attachables")] 
         private AttachableProfileScriptableObject partProfile;
+        
+        [SerializeField, Required, BoxGroup("Attachables")] 
+        private RemotePartProfileScriptableObject partRemoteData;
 
-        [SerializeField, Required] 
+        [SerializeField, Required, BoxGroup("Attachables")] 
         private GameObject shapePrefab;
 
-        [SerializeField, Required]
+        [SerializeField, Required, BoxGroup("Enemies")]
         private EnemyProfileScriptableObject enemyProfile;
 
-        [SerializeField, Required]
+        [SerializeField, Required, BoxGroup("Enemies")]
         private EnemyRemoteDataScriptableObject enemyRemoteData;
 
-        [SerializeField, Required]
+        [SerializeField, Required, BoxGroup("Projectiles")]
         private ProjectileProfileScriptableObject projectileProfile;
 
         //============================================================================================================//
@@ -55,7 +58,7 @@ namespace StarSalvager.Factories
                     return (_bitAttachableFactory ?? (_bitAttachableFactory = new BitAttachableFactory(bitProfile))) as T;
 
                 case nameof(PartAttachableFactory):
-                    return (_partAttachableFactory ?? (_partAttachableFactory = new PartAttachableFactory(partProfile))) as T;
+                    return (_partAttachableFactory ?? (_partAttachableFactory = new PartAttachableFactory(partProfile, partRemoteData))) as T;
                 
                 case nameof(ShapeFactory):
                     return (_shapeFactory ?? (_shapeFactory = new ShapeFactory(shapePrefab))) as T;
