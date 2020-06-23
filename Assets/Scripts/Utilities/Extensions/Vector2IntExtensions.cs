@@ -25,6 +25,22 @@ namespace StarSalvager.Utilities.Extensions
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
         }
+        public static DIRECTION Reflected(this DIRECTION direction)
+        {
+            switch (direction)
+            {
+                case DIRECTION.LEFT:
+                    return DIRECTION.RIGHT;
+                case DIRECTION.UP:
+                    return DIRECTION.DOWN;
+                case DIRECTION.RIGHT:
+                    return DIRECTION.LEFT;
+                case DIRECTION.DOWN:
+                    return DIRECTION.UP;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+        }
         public static Vector2Int Reflected(this Vector2Int direction)
         {
             return direction * -1;

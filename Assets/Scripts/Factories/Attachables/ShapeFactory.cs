@@ -43,6 +43,36 @@ namespace StarSalvager.Factories
             return shape.GetComponent<T>();
         }
         
+        public T CreateObject<T>(List<Bit> bits)
+        {
+            var shape = CreateObject<Shape>();
+            var baseCoordinate = bits[0].Coordinate;
+            
+            foreach (var bit in bits)
+            {
+                bit.Coordinate -= baseCoordinate;
+            }
+            
+            shape.Setup(bits);
+
+            return shape.GetComponent<T>();
+        }
+        
+        public GameObject CreateObject(List<Bit> bits)
+        {
+            var shape = CreateObject<Shape>();
+            var baseCoordinate = bits[0].Coordinate;
+            
+            foreach (var bit in bits)
+            {
+                bit.Coordinate -= baseCoordinate;
+            }
+            
+            shape.Setup(bits);
+
+            return shape.gameObject;
+        }
+        
         //============================================================================================================//
     }
 }

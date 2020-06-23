@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Constants;
+using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -303,6 +304,7 @@ namespace StarSalvager
                     case BIT_TYPE.BLACK:
                         //TODO Destroy both this and collided Bit
                         Destroy(attachable.gameObject);
+
                         break;
                     case BIT_TYPE.BLUE:
                     case BIT_TYPE.GREEN:
@@ -310,14 +312,16 @@ namespace StarSalvager
                     case BIT_TYPE.RED:
                     case BIT_TYPE.YELLOW:
 
-                        //TODO Add these to the block depending on its relative position
+                        //Add these to the block depending on its relative position
                         AttachNewBitToExisting(bit, closestAttachable, connectionDirection);
 
                         break;
                     case BIT_TYPE.WHITE:
-                        //TODO Destroy collided Bit
-                        //TODO Try and shift collided row (Depending on direction)
+                        //Destroy collided Bit
                         Destroy(attachable.gameObject);
+                        
+                        //Try and shift collided row (Depending on direction)
+                        TryShift(connectionDirection.Reflected(), closestAttachable);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -460,6 +464,8 @@ namespace StarSalvager
             newAttachable.transform.SetParent(transform);
 
             attachedBlocks.Add(newAttachable);
+            
+            CheckForCombosAround(coordinate);
 
             CompositeCollider2D.GenerateGeometry();
         }
@@ -503,6 +509,8 @@ namespace StarSalvager
             newAttachable.transform.SetParent(transform);
 
             attachedBlocks.Add(newAttachable);
+            
+            CheckForCombosAround(newCoord);
 
             CompositeCollider2D.GenerateGeometry();
         }
@@ -519,36 +527,123 @@ namespace StarSalvager
             newAttachable.transform.SetParent(transform);
 
             attachedBlocks.Add(newAttachable);
+            
+            CheckForCombosAround(newCoord);
 
             CompositeCollider2D.GenerateGeometry();
         }
 
         #endregion //Attach Bits
 
+        #region Detach Bits
+        
+        private void DetachBits(List<Bit> bits)
+        {
+            foreach (var bit in bits)
+            {
+                attachedBlocks.Remove(bit);
+            }
+
+            FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject(bits);
+            
+            CompositeCollider2D.GenerateGeometry();
+
+        }
+        private void DetachBit(Bit bit)
+        {
+            attachedBlocks.Remove(bit);
+            bit.transform.parent = null;
+            bit.SetAttached(false);
+            
+            CompositeCollider2D.GenerateGeometry();
+        }
+        
+        #endregion //Detach Bits
+        
+        
+        /// <summary>
+        /// Function will review and detach any blocks that no longer have a connection to the core.
+        /// </summary>
+        private void CheckForDisconnects()
+        {
+            var toSolve = new List<AttachableBase>(attachedBlocks);
+            
+            foreach (var attachableBase in toSolve)
+            {
+                var hasPathToCore = this.HasPathToCore(attachableBase);
+                
+                if(hasPathToCore)
+                    continue;
+
+                var attachedBits = new List<Bit>();
+                this.GetAllAttachedBits(attachableBase, null, ref attachedBits);
+
+                if (attachedBits.Count == 1)
+                {
+                    DetachBit(attachedBits[0]);
+                    continue;
+                }
+                
+                
+                DetachBits(attachedBits);
+            }
+        }
+
         //============================================================================================================//
 
+        #region Shifting Bits
+        
+        #if UNITY_EDITOR
+        
         [Button("Shift Random piece"), BoxGroup("PROTOTYPE")]
         private void TestBitShift()
         {
             var index = UnityEngine.Random.Range(1, attachedBlocks.Count);
             const DIRECTION dir = DIRECTION.DOWN;
             
-            Debug.Log(attachedBlocks[index].gameObject.name, attachedBlocks[index]);
+            //Debug.Log(attachedBlocks[index].gameObject.name, attachedBlocks[index]);
+
+            FindFurthestAttachableInDirection(attachedBlocks[index], dir.ToVector2Int().Reflected(), out var starting);
             
-            TryShift(dir, attachedBlocks[index] as Bit);
+            TryShift(dir, starting as Bit);
         }
-        private void TryShift(DIRECTION direction, Bit bit)
+        
+        private bool FindFurthestAttachableInDirection(AttachableBase currentAttachable, Vector2Int direction, out AttachableBase block)
+        {
+            block = currentAttachable;
+
+            var nextPos = currentAttachable.Coordinate + direction;
+
+            currentAttachable = attachedBlocks.FirstOrDefault(x => x.Coordinate == nextPos);
+
+            if (currentAttachable == null)
+                return false;
+
+
+            return FindFurthestAttachableInDirection(currentAttachable, direction, out block);
+
+        }
+        
+        #endif
+        
+        /// <summary>
+        /// Shits an entire row or column based on the direction and the bit selected.
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="attachable"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        private void TryShift(DIRECTION direction, AttachableBase attachable)
         {
             List<AttachableBase> inLine;
             switch (direction)
             {
                 case DIRECTION.LEFT:
                 case DIRECTION.RIGHT:
-                    inLine = attachedBlocks.Where(ab => ab.Coordinate.y == bit.Coordinate.y).ToList();
+                    inLine = attachedBlocks.Where(ab => ab.Coordinate.y == attachable.Coordinate.y).ToList();
                     break;
                 case DIRECTION.UP:
                 case DIRECTION.DOWN:
-                    inLine = attachedBlocks.Where(ab => ab.Coordinate.x == bit.Coordinate.x).ToList();
+                    inLine = attachedBlocks.Where(ab => ab.Coordinate.x == attachable.Coordinate.x).ToList();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
@@ -556,7 +651,7 @@ namespace StarSalvager
 
             var toShift = new List<AttachableBase>();
             var dir = direction.ToVector2Int();
-            var currentPos = bit.Coordinate;
+            var currentPos = attachable.Coordinate;
             
             //Debug.Log($"{inLine.Count} in line, moving {direction}");
 
@@ -593,59 +688,20 @@ namespace StarSalvager
             //Debug.Log($"Shifting {toShift.Count} objects");
             //Debug.Break();
 
-            StartCoroutine(ShiftCoroutine(toShift, 
+            StartCoroutine(ShiftInDirectionCoroutine(toShift, 
                 direction,
                 TEST_MergeSpeed,
                 () =>
             {
                 //TODO Need to check for floaters
+                CheckForDisconnects();
+                
+                CheckForCombosAround(toShift.Where(x => attachedBlocks.Contains(x) && x is Bit).Select(x => x as Bit));
             }));
 
         }
 
-        private IEnumerator ShiftCoroutine(List<AttachableBase> toMove, DIRECTION direction, float speed, Action OnFinishedCallback)
-        {
-            var dir = direction.ToVector2Int();
-            var transforms = toMove.Select(x => x.transform).ToArray();
-            var startPositions = transforms.Select(x => x.localPosition).ToArray();
-            var targetPositions = toMove.Select(o =>
-                transform.InverseTransformPoint((Vector2) transform.position +
-                                                ((Vector2) o.Coordinate + dir)  * Values.gridCellSize)).ToArray();
-
-            foreach (var attachableBase in toMove)
-            {
-                attachableBase.SetColliderActive(false);
-                attachableBase.Coordinate += dir;
-            }
-            
-            CompositeCollider2D.GenerateGeometry();
-
-            var t = 0f;
-
-            while (t < 1f)
-            {
-                for (var i = 0; i < transforms.Length; i++)
-                {
-                    transforms[i].localPosition = Vector2.Lerp(startPositions[i], targetPositions[i], t);
-                }
-
-                t += Time.deltaTime * speed;
-                
-                yield return null;
-            }
-            
-            for (var i = 0; i < toMove.Count; i++)
-            {
-                transforms[i].localPosition = targetPositions[i];
-                toMove[i].SetColliderActive(true);
-            }
-            
-            OnFinishedCallback?.Invoke();
-
-            yield return new WaitForEndOfFrame();
-            
-            CompositeCollider2D.GenerateGeometry();
-        }
+        #endregion //Shifting Bits
         
         //============================================================================================================//
 
@@ -806,7 +862,7 @@ namespace StarSalvager
             //    Debug.Break();
 
             //Move all of the components that need to be moved
-            StartCoroutine(MoveTowardsCoroutine(
+            StartCoroutine(MoveComboPiecesCoroutine(
                 movingBits,
                 closestToCore,
                 orphans.ToArray(),
@@ -1268,7 +1324,13 @@ namespace StarSalvager
             return targetCoordinate == clearCoordinate;
         }
 
-        /// <summary>
+        #endregion //Puzzle Checks
+
+        //============================================================================================================//
+        
+        #region Coroutines
+        
+                /// <summary>
         /// Coroutine used to move all of the relevant Bits (Bits to be upgraded, orphans) to their appropriate locations
         /// at the specified speed, and when finished trigger the Callback.
         /// </summary>
@@ -1279,8 +1341,8 @@ namespace StarSalvager
         /// <param name="OnFinishedCallback"></param>
         /// <returns></returns>
         //FIXME The speed of the movement is not correct!!
-        private IEnumerator MoveTowardsCoroutine(AttachableBase[] movingBits, AttachableBase target,
-            OrphanMoveData[] orphans, float speed, Action OnFinishedCallback)
+        private IEnumerator MoveComboPiecesCoroutine(AttachableBase[] movingBits, AttachableBase target,
+            IReadOnlyList<OrphanMoveData> orphans, float speed, Action OnFinishedCallback)
         {
             //Prepare Bits to be moved
             //--------------------------------------------------------------------------------------------------------//
@@ -1352,7 +1414,7 @@ namespace StarSalvager
                 //Move the orphans into their new positions
                 //----------------------------------------------------------------------------------------------------//
                 
-                for (var i = 0; i < orphans.Length; i++)
+                for (var i = 0; i < orphans.Count; i++)
                 {
                     var bitTransform = orphanTransforms[i];
                    
@@ -1381,7 +1443,7 @@ namespace StarSalvager
             }
 
             //Re-enable the colliders on our orphans, and ensure they're in the correct position
-            for (var i = 0; i < orphans.Length; i++)
+            for (var i = 0; i < orphans.Count; i++)
             {
                 orphanTransforms[i].localPosition = orphanTargetPositions[i];
                 orphans[i].attachableBase.SetColliderActive(true);
@@ -1397,10 +1459,64 @@ namespace StarSalvager
             
             //--------------------------------------------------------------------------------------------------------//
         }
+                
+                
+        /// <summary>
+        /// Moves a collection of AttachableBase 1 unit in the specified direction. Callback is triggered before the update
+        /// to the Composite collider
+        /// </summary>
+        /// <param name="toMove"></param>
+        /// <param name="direction"></param>
+        /// <param name="speed"></param>
+        /// <param name="OnFinishedCallback"></param>
+        /// <returns></returns>
+        private IEnumerator ShiftInDirectionCoroutine(IReadOnlyList<AttachableBase> toMove, DIRECTION direction, float speed, Action OnFinishedCallback)
+        {
+            var dir = direction.ToVector2Int();
+            var transforms = toMove.Select(x => x.transform).ToArray();
+            var startPositions = transforms.Select(x => x.localPosition).ToArray();
+            var targetPositions = toMove.Select(o =>
+                transform.InverseTransformPoint((Vector2) transform.position +
+                                                ((Vector2) o.Coordinate + dir)  * Values.gridCellSize)).ToArray();
 
+            foreach (var attachableBase in toMove)
+            {
+                attachableBase.SetColliderActive(false);
+                attachableBase.Coordinate += dir;
+            }
+            
+            CompositeCollider2D.GenerateGeometry();
 
-        #endregion //Puzzle Checks
+            var t = 0f;
 
+            while (t < 1f)
+            {
+                for (var i = 0; i < transforms.Length; i++)
+                {
+                    if (toMove[i].IsAttached == false)
+                        continue;
+                    
+                    transforms[i].localPosition = Vector2.Lerp(startPositions[i], targetPositions[i], t);
+                }
+
+                t += Time.deltaTime * speed;
+                
+                yield return null;
+            }
+            
+            for (var i = 0; i < toMove.Count; i++)
+            {
+                transforms[i].localPosition = targetPositions[i];
+                toMove[i].SetColliderActive(true);
+            }
+            
+            OnFinishedCallback?.Invoke();
+
+            CompositeCollider2D.GenerateGeometry();
+        }
+        
+        #endregion //Coroutines
+        
         //============================================================================================================//
 
         #region Attachable Overrides
