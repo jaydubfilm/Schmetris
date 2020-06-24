@@ -41,13 +41,13 @@ namespace StarSalvager
         }
         //============================================================================================================//
 
-        protected override void OnCollide(GameObject _gameObject)
+        protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
-            var bot = _gameObject.GetComponent<Bot>();
+            var bot = gameObject.GetComponent<Bot>();
             
             if (bot.Rotating)
             {
-                Destroy(gameObject);
+                Recycling.Recycler.Recycle<Bit>(this.gameObject);
                 return;
             }
             

@@ -83,6 +83,114 @@ namespace StarSalvager.Utilities.Extensions
         }
         
         //============================================================================================================//
+        
+        public static AttachableBase GetClosestAttachable(this IEnumerable<AttachableBase> blocks, Vector2 checkPosition)
+        {
+            AttachableBase selected = null;
+
+            var smallestDist = 999f;
+
+            foreach (var attached in blocks)
+            {
+                //attached.SetColor(Color.white);
+
+                var dist = Vector2.Distance(attached.transform.position, checkPosition);
+                if (dist > smallestDist)
+                    continue;
+
+                smallestDist = dist;
+                selected = attached;
+            }
+
+            //selected.SetColor(Color.magenta);
+
+            return selected;
+        }
+        
+        //============================================================================================================//
+        /// <summary>
+        /// Returns a list of all AttachableBase types around the from block
+        /// </summary>
+        /// <param name="from"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static List<T> GetAttachablesAround<T>(this List<AttachableBase> attachableBases, AttachableBase from) where T: AttachableBase
+        {
+            return new List<T>
+            {
+                attachableBases.GetAttachableInDirectionOf<T>(from, DIRECTION.LEFT),
+                attachableBases.GetAttachableInDirectionOf<T>(from, DIRECTION.UP),
+                attachableBases.GetAttachableInDirectionOf<T>(from, DIRECTION.RIGHT),
+                attachableBases.GetAttachableInDirectionOf<T>(from, DIRECTION.DOWN)
+            };
+        }
+        
+        /// <summary>
+        /// Returns a list of all AttachableBase types around the from block
+        /// </summary>
+        /// <param name="from"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static List<Vector2Int> GetCoordinatesAround(this List<AttachableBase> attachableBases, AttachableBase from)
+        {
+            var check = new List<AttachableBase>
+            {
+                attachableBases.GetAttachableInDirectionOf<AttachableBase>(from, DIRECTION.LEFT),
+                attachableBases.GetAttachableInDirectionOf<AttachableBase>(from, DIRECTION.UP),
+                attachableBases.GetAttachableInDirectionOf<AttachableBase>(from, DIRECTION.RIGHT),
+                attachableBases.GetAttachableInDirectionOf<AttachableBase>(from, DIRECTION.DOWN)
+            };
+
+            return check
+                .Where(ab => ab != null)
+                .Select(ab => ab.Coordinate)
+                .ToList();
+
+        }
+        
+        /// <summary>
+        /// Returns an AttachableBase in the specified direction from the target Attachable
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="direction"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T GetAttachableInDirectionOf<T>(this List<AttachableBase> attachableBases, AttachableBase from, DIRECTION direction) where T: AttachableBase
+        {
+            var coord = from.Coordinate + direction.ToVector2Int();
+
+            return attachableBases.FirstOrDefault(a => a.Coordinate == coord) as T;
+        }
+        
+        public static void GetAllAttachedBits<T>(this List<AttachableBase> attachableBases, AttachableBase current, AttachableBase[] toIgnore, ref List<T> bits) where T: AttachableBase
+        {
+            var bitsAround = attachableBases.GetAttachablesAround<T>(current);
+
+            bits.Add(current as T);
+            
+            foreach (var bit in bitsAround)
+            {
+                if (bit == null)
+                    continue;
+
+                if (toIgnore != null && toIgnore.Contains(bit))
+                    continue;
+                
+                if(bits.Contains(bit))
+                    continue;
+
+                attachableBases.GetAllAttachedBits(bit, toIgnore, ref bits);
+            }
+
+        }
+        
+        
+        //============================================================================================================//
+
+        
+        
+        //============================================================================================================//
+
 
     }
 }

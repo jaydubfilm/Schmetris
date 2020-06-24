@@ -57,88 +57,6 @@ namespace StarSalvager.Utilities.Extensions
         
         //============================================================================================================//
         
-        //FIXME I don't like that these are here, I want them not in the Bot, but also not here
-        #region Obtaining Bits
-        
-        /// <summary>
-        /// Returns a list of all AttachableBase types around the from block
-        /// </summary>
-        /// <param name="from"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static List<T> GetAttachablesAround<T>(this Bot bot, AttachableBase from) where T: AttachableBase
-        {
-            return new List<T>
-            {
-                bot.GetAttachableInDirectionOf<T>(from, DIRECTION.LEFT),
-                bot.GetAttachableInDirectionOf<T>(from, DIRECTION.UP),
-                bot.GetAttachableInDirectionOf<T>(from, DIRECTION.RIGHT),
-                bot.GetAttachableInDirectionOf<T>(from, DIRECTION.DOWN)
-            };
-        }
-        /// <summary>
-        /// Returns a list of all AttachableBase types around the from block
-        /// </summary>
-        /// <param name="from"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static List<Vector2Int> GetCoordinatesAround(this Bot bot, AttachableBase from)
-        {
-            var check = new List<AttachableBase>
-            {
-                bot.GetAttachableInDirectionOf<AttachableBase>(from, DIRECTION.LEFT),
-                bot.GetAttachableInDirectionOf<AttachableBase>(from, DIRECTION.UP),
-                bot.GetAttachableInDirectionOf<AttachableBase>(from, DIRECTION.RIGHT),
-                bot.GetAttachableInDirectionOf<AttachableBase>(from, DIRECTION.DOWN)
-            };
-
-            return check
-                .Where(ab => ab != null)
-                .Select(ab => ab.Coordinate)
-                .ToList();
-
-        }
-        
-        /// <summary>
-        /// Returns an AttachableBase in the specified direction from the target Attachable
-        /// </summary>
-        /// <param name="from"></param>
-        /// <param name="direction"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static T GetAttachableInDirectionOf<T>(this Bot bot, AttachableBase from, DIRECTION direction) where T: AttachableBase
-        {
-            var coord = from.Coordinate + direction.ToVector2Int();
-
-            return bot.attachedBlocks.FirstOrDefault(a => a.Coordinate == coord) as T;
-        }
-        
-        public static void GetAllAttachedBits<T>(this Bot bot, AttachableBase current, AttachableBase[] toIgnore, ref List<T> bits) where T: AttachableBase
-        {
-            var bitsAround = bot.GetAttachablesAround<T>(current);
-
-            bits.Add(current as T);
-            
-            foreach (var bit in bitsAround)
-            {
-                if (bit == null)
-                    continue;
-
-                if (toIgnore != null && toIgnore.Contains(bit))
-                    continue;
-                
-                if(bits.Contains(bit))
-                    continue;
-
-                bot.GetAllAttachedBits(bit, toIgnore, ref bits);
-            }
-
-        }
-        
-        #endregion //Obtaining Bits
-        
-        //============================================================================================================//
-        
         #region Path to Core Checks
         
         /// <summary>
@@ -162,7 +80,7 @@ namespace StarSalvager.Utilities.Extensions
                 return true;
 
             //Get list of attachables around the current attachable
-            var attachablesAround = bot.GetAttachablesAround<AttachableBase>(current);
+            var attachablesAround = bot.attachedBlocks.GetAttachablesAround<AttachableBase>(current);
             
             for (var i = 0; i < attachablesAround.Count; i++)
             {

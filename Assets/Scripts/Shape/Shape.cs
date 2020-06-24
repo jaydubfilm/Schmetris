@@ -1,12 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using StarSalvager;
 using StarSalvager.Constants;
+using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
-
-[RequireComponent(typeof(CompositeCollider2D), typeof(Rigidbody2D))]
+[RequireComponent(typeof(CompositeCollider2D))]
 public class Shape : CollidableBase
 {
+    //================================================================================================================//
+    
+    [SerializeField]
+    private LayerMask collisionMask;
+    
+    //================================================================================================================//
+
+    public List<Bit> AttachedBits => attachedBits;
+    private List<Bit> attachedBits => _attachedBits ?? (_attachedBits = new List<Bit>());
+    private List<Bit> _attachedBits;
+
+    //================================================================================================================//
+    
     protected new Rigidbody2D rigidbody
     {
         get
@@ -19,30 +33,25 @@ public class Shape : CollidableBase
         }
     }
     private Rigidbody2D _rigidbody;
-    
+
+    private CompositeCollider2D CompositeCollider => collider as CompositeCollider2D;
+
     //================================================================================================================//
-
-    //public BIT_TYPE BitType { get; private set; }
-
-    private List<Bit> attachedBits => _attachedBits ?? (_attachedBits = new List<Bit>());
-    private List<Bit> _attachedBits;
-
-    public void Setup(List<Bit> bits)
+    
+    public void Setup(IEnumerable<Bit> bits)
     {
-        //SetBitType(bitType);
-
         foreach (var bit in bits)
         {
             bit.transform.parent = transform;
             attachedBits.Add(bit);
         }
+        
+        CompositeCollider.GenerateGeometry();
     }
 
-    //public void SetBitType(BIT_TYPE bitType)
-    //{
-    //    BitType = bitType;
-    //}
+    //================================================================================================================//
 
+    //This is used for generating a shape, instead of using pre existing Bits
     //FIXME Need to setup the global variables for BitSize
     public void PushNewBit(Bit bit, DIRECTION direction)
     {
@@ -66,17 +75,79 @@ public class Shape : CollidableBase
         bit.transform.SetParent(transform);
             
         attachedBits.Add(bit);
+        
+        CompositeCollider.GenerateGeometry();
     }
     public void PushNewBit(Bit bit, DIRECTION direction, int fromIndex)
     {
         
     }
+
+    //================================================================================================================//
+    
+    //TODO Determine if we need to ensure the validity of the shape after removing a piece
+    public void DestroyBit(Bit bit)
+    {
+        attachedBits.Remove(bit);
+        
+        bit.SetAttached(false);
+        Recycling.Recycler.Recycle<Bit>(bit.gameObject);
+        
+        
+        CompositeCollider.GenerateGeometry();
+    }
     
     //================================================================================================================//
 
-    protected override void OnCollide(GameObject _)
+    protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
     {
+        if (!(gameObject.GetComponent<Bot>() is Bot bot))
+            return;
         
+        if (!TryGetRayDirectionFromBot(bot.MoveDirection, out var rayDirection))
+            return;
+        
+        
+        //Long ray compensates for the players high speed
+        var rayLength = Values.gridCellSize * 3f;
+        var closestAttachalbe = attachedBits.GetClosestAttachable(hitPoint);
+        
+        var rayStartPosition = (Vector2) closestAttachalbe.transform.position + -rayDirection * (rayLength / 2f);
+
+            
+        //Checking ray against player layer mask
+        var hit = Physics2D.Raycast(rayStartPosition, rayDirection, rayLength,  collisionMask.value);
+
+        //If nothing was hit, ray failed, thus no reason to continue
+        if (hit.collider == null)
+        {
+            SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);
+            return;
+        }
+        
+        //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
+        var inDirection = (-rayDirection).ToDirection();
+        bot.TryAddNewShape(this, closestAttachalbe, inDirection, hit.point);
+    }
+    
+    private bool TryGetRayDirectionFromBot(DIRECTION direction, out Vector2 rayDirection)
+    {
+        rayDirection = Vector2.zero;
+        //Returns the opposite direction based on the current players move direction.
+        switch (direction)
+        {
+            case DIRECTION.NULL:
+                rayDirection = Vector2.down;
+                return true;
+            case DIRECTION.LEFT:
+                rayDirection = Vector2.right;
+                return true;
+            case DIRECTION.RIGHT:
+                rayDirection = Vector2.left;
+                return true;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+        }
     }
     
     //================================================================================================================//

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Constants;
 using StarSalvager.Factories;
@@ -290,7 +291,7 @@ namespace StarSalvager
 
                 //----------------------------------------------------------------------------------------------------//
 
-                var closestAttachable = GetClosestAttachable(point);
+                var closestAttachable = attachedBlocks.GetClosestAttachable(point);
                 legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
 
                 //----------------------------------------------------------------------------------------------------//
@@ -307,7 +308,7 @@ namespace StarSalvager
                 {
                     case BIT_TYPE.BLACK:
                         //TODO Destroy both this and collided Bit
-                        Destroy(attachable.gameObject);
+                        Recycler.Recycle<Bit>(attachable.gameObject);
 
                         break;
                     case BIT_TYPE.BLUE:
@@ -322,13 +323,13 @@ namespace StarSalvager
                         break;
                     case BIT_TYPE.WHITE:
                         //Destroy collided Bit
-                        Destroy(attachable.gameObject);
+                        Recycler.Recycle<Bit>(attachable.gameObject);
                         
                         //Try and shift collided row (Depending on direction)
                         TryShift(connectionDirection.Reflected(), closestAttachable);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        throw new ArgumentOutOfRangeException(nameof(bit.Type), bit.Type, null);
                 }
             }
             //TODO Need to add other options here (ie Enemy) 
@@ -361,7 +362,7 @@ namespace StarSalvager
             return selected;
         }
 
-        public AttachableBase GetClosestAttachable(Vector2 checkPosition)
+        /*public AttachableBase GetClosestAttachable(Vector2 checkPosition)
         {
             AttachableBase selected = null;
 
@@ -382,7 +383,7 @@ namespace StarSalvager
             //selected.SetColor(Color.magenta);
 
             return selected;
-        }
+        }*/
 
         /// <summary>
         /// Returns the 2 closest objects
@@ -457,10 +458,61 @@ namespace StarSalvager
         #endregion //Check For Legal Bit Attach
 
         //============================================================================================================//
+        
+        #region Check for Legal Shape Attach
+
+        public bool TryAddNewShape(Shape shape, AttachableBase closestShapeBit, DIRECTION connectionDirection, Vector2 point)
+        {
+            //TODO 
+            var closestOnBot= attachedBlocks.GetClosestAttachable(point);
+
+            if (closestShapeBit is Bit closeBit)
+            {
+                switch (closeBit.Type)
+                {
+                    case BIT_TYPE.BLACK:
+                        //TODO Damage/Destroy Bits as required
+                        shape.DestroyBit(closeBit);
+                        
+                        break;
+                    case BIT_TYPE.BLUE:
+                    case BIT_TYPE.GREEN:
+                    case BIT_TYPE.GREY:
+                    case BIT_TYPE.RED:
+                    case BIT_TYPE.YELLOW:
+                        //TODO Add the entire shape to the Bot
+                        var newBotCoordinate = closestOnBot.Coordinate + connectionDirection.ToVector2Int();
+                        
+                        var closestCoordinate = closestShapeBit.Coordinate;
+                        var bitsToAdd = shape.AttachedBits.ToArray();
+                        var differences = bitsToAdd.Select(x => x.Coordinate - closestCoordinate).ToArray();
+
+                        for (var i = 0; i < bitsToAdd.Length; i++)
+                        {
+                            AttachNewBit(newBotCoordinate + differences[i], bitsToAdd[i], false, false);
+                        }
+                        
+                        Recycler.Recycle<Shape>(shape.gameObject);
+                        
+                        CheckForCombosAround(bitsToAdd);
+                        CompositeCollider2D.GenerateGeometry();
+
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(closeBit.Type), closeBit.Type, null);
+                }
+            }
+
+            return true;
+        }
+        
+        #endregion //Check for Legal Shape Attach
+        
+        //============================================================================================================//
 
         public void TryHitAt(Vector2 hitPosition, float damage)
         {
-            var closestAttachable = GetClosestAttachable(hitPosition);
+            var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
             closestAttachable.ChangeHealth(-damage);
 
             if (closestAttachable.CurrentHealth > 0) 
@@ -475,7 +527,7 @@ namespace StarSalvager
 
         #region Attach Bits
 
-        public void AttachNewBit(Vector2Int coordinate, AttachableBase newAttachable)
+        public void AttachNewBit(Vector2Int coordinate, AttachableBase newAttachable, bool checkForCombo = true, bool updateColliderGeometry = true)
         {
             newAttachable.Coordinate = coordinate;
             newAttachable.SetAttached(true);
@@ -484,13 +536,15 @@ namespace StarSalvager
 
             attachedBlocks.Add(newAttachable);
             
-            CheckForCombosAround(coordinate);
+            if(checkForCombo)
+                CheckForCombosAround(coordinate);
 
-            CompositeCollider2D.GenerateGeometry();
+            if(updateColliderGeometry)
+                CompositeCollider2D.GenerateGeometry();
         }
 
         public void AttachNewBitToExisting(AttachableBase newAttachable, AttachableBase existingAttachable,
-            DIRECTION direction)
+            DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true)
         {
             var coordinate = existingAttachable.Coordinate + direction.ToVector2Int();
 
@@ -511,12 +565,14 @@ namespace StarSalvager
 
             attachedBlocks.Add(newAttachable);
 
-            CheckForCombosAround(coordinate);
+            if(checkForCombo)
+                CheckForCombosAround(coordinate);
 
-            CompositeCollider2D.GenerateGeometry();
+            if(updateColliderGeometry)
+                CompositeCollider2D.GenerateGeometry();
         }
 
-        public void PushNewBit(AttachableBase newAttachable, DIRECTION direction)
+        public void PushNewBit(AttachableBase newAttachable, DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true)
         {
             var newCoord = direction.ToVector2Int();
 
@@ -529,12 +585,14 @@ namespace StarSalvager
 
             attachedBlocks.Add(newAttachable);
             
-            CheckForCombosAround(newCoord);
+            if(checkForCombo)
+                CheckForCombosAround(newCoord);
 
-            CompositeCollider2D.GenerateGeometry();
+            if(updateColliderGeometry)
+                CompositeCollider2D.GenerateGeometry();
         }
 
-        public void PushNewBit(AttachableBase newAttachable, DIRECTION direction, Vector2Int startCoord)
+        public void PushNewBit(AttachableBase newAttachable, DIRECTION direction, Vector2Int startCoord, bool checkForCombo = true, bool updateColliderGeometry = true)
         {
             var newCoord = startCoord + direction.ToVector2Int();
 
@@ -547,9 +605,11 @@ namespace StarSalvager
 
             attachedBlocks.Add(newAttachable);
             
-            CheckForCombosAround(newCoord);
+            if(checkForCombo)
+                CheckForCombosAround(newCoord);
 
-            CompositeCollider2D.GenerateGeometry();
+            if(updateColliderGeometry)
+                CompositeCollider2D.GenerateGeometry();
         }
 
         #endregion //Attach Bits
@@ -563,7 +623,7 @@ namespace StarSalvager
                 attachedBlocks.Remove(bit);
             }
 
-            FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject(bits);
+            FactoryManager.Instance.GetFactory<ShapeFactory>().CreateGameObject(bits);
             
             CompositeCollider2D.GenerateGeometry();
 
@@ -601,7 +661,7 @@ namespace StarSalvager
                     continue;
 
                 var attachedBits = new List<Bit>();
-                this.GetAllAttachedBits(attachableBase, null, ref attachedBits);
+                attachedBlocks.GetAllAttachedBits(attachableBase, null, ref attachedBits);
 
                 if (attachedBits.Count == 1)
                 {
@@ -942,7 +1002,7 @@ namespace StarSalvager
                 //----------------------------------------------------------------------------------------------------//
 
                 //Get all the attachableBases around the specified attachable
-                var bitsAround = this.GetAttachablesAround<AttachableBase>(movingBit);
+                var bitsAround = attachedBlocks.GetAttachablesAround<AttachableBase>(movingBit);
 
                 //Don't want to bother checking the block that we know will not move
                 if (bitsAround.Contains(bitToUpgrade))
@@ -986,7 +1046,7 @@ namespace StarSalvager
                         bit.Coordinate + travelDirection.ToVector2Int() * (int) travelDistance;
 
                     var attachedToOrphan = new List<AttachableBase>();
-                    this.GetAllAttachedBits(bit, movingBits, ref attachedToOrphan);
+                    attachedBlocks.GetAllAttachedBits(bit, movingBits, ref attachedToOrphan);
 
                     //Debug.LogError($"Orphan Attached Count: {attachedToOrphan.Count}");
                     //Debug.Break();
@@ -1468,7 +1528,8 @@ namespace StarSalvager
             //Once all bits are moved, remove from list and dispose
             foreach (var bit in movingBits)
             {
-                Destroy(bit.gameObject);
+                bit.SetAttached(false);
+                Recycler.Recycle<Bit>(bit.gameObject);
             }
 
             //Re-enable the colliders on our orphans, and ensure they're in the correct position

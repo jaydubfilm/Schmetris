@@ -5,7 +5,8 @@ namespace StarSalvager
     /// <summary>
     /// Any object that can touch a bot should use this base class
     /// </summary>
-    [RequireComponent(typeof(BoxCollider2D))]
+    //[RequireComponent(typeof(BoxCollider2D))]
+    [RequireComponent(typeof(Collider2D))]
     public abstract class CollidableBase : MonoBehaviour
     {
         //private const int CHECK_FREQUENCY = 1;
@@ -16,17 +17,17 @@ namespace StarSalvager
         protected virtual string CollisionTag => "Player";
         //============================================================================================================//
         
-        protected new BoxCollider2D collider
+        protected new Collider2D collider
         {
             get
             {
                 if (_collider == null)
-                    _collider = gameObject.GetComponent<BoxCollider2D>();
+                    _collider = gameObject.GetComponent<Collider2D>();
 
                 return _collider;
             }
         }
-        private BoxCollider2D _collider;
+        private Collider2D _collider;
 
         protected new SpriteRenderer renderer
         {
@@ -64,7 +65,7 @@ namespace StarSalvager
                 return;
 
             //FIXME I should be able to store the bot, so i can reduce my calls to GetComponent
-            OnCollide(other.gameObject);
+            OnCollide(other.gameObject, other.contacts[0].point);
         }
         
         //TODO Consider how best to avoid using the Collision Stay
@@ -76,7 +77,7 @@ namespace StarSalvager
             if (!other.gameObject.CompareTag(CollisionTag))
                 return;
 
-            OnCollide(other.gameObject);
+            OnCollide(other.gameObject, other.contacts[0].point);
         }
         
         //============================================================================================================//
@@ -101,7 +102,7 @@ namespace StarSalvager
         /// <summary>
         /// Called when the object contacts a bot
         /// </summary>
-        protected abstract void OnCollide(GameObject gameObject);
+        protected abstract void OnCollide(GameObject gameObject, Vector2 hitPoint);
         
         //============================================================================================================//
     }

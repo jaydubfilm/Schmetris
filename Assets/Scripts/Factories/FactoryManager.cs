@@ -11,13 +11,16 @@ namespace StarSalvager.Factories
     {
         //============================================================================================================//
         
-        [SerializeField, Required, BoxGroup("Attachables")]
+        [SerializeField, Required, BoxGroup("Attachables/Bits")]
         private AttachableProfileScriptableObject bitProfile;
+        
+        [SerializeField, Required, BoxGroup("Attachables/Bits")]
+        private BitRemoteDataScriptableObject bitRemoteData;
 
-        [SerializeField, Required, BoxGroup("Attachables")] 
+        [SerializeField, Required, BoxGroup("Attachables/Parts")] 
         private AttachableProfileScriptableObject partProfile;
         
-        [SerializeField, Required, BoxGroup("Attachables")] 
+        [SerializeField, Required, BoxGroup("Attachables/Parts")] 
         private RemotePartProfileScriptableObject partRemoteData;
 
         [SerializeField, Required, BoxGroup("Attachables")] 
@@ -55,7 +58,7 @@ namespace StarSalvager.Factories
             switch (typeName)
             {
                 case nameof(BitAttachableFactory):
-                    return (_bitAttachableFactory ?? (_bitAttachableFactory = new BitAttachableFactory(bitProfile))) as T;
+                    return (_bitAttachableFactory ?? (_bitAttachableFactory = new BitAttachableFactory(bitProfile, bitRemoteData))) as T;
 
                 case nameof(PartAttachableFactory):
                     return (_partAttachableFactory ?? (_partAttachableFactory = new PartAttachableFactory(partProfile, partRemoteData))) as T;
