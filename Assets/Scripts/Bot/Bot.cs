@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using StarSalvager.Constants;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
@@ -480,6 +481,10 @@ namespace StarSalvager
                     case BIT_TYPE.GREY:
                     case BIT_TYPE.RED:
                     case BIT_TYPE.YELLOW:
+                        //Debug.Log($"Attaching shape to {closestOnBot.gameObject.name}{closestOnBot.Coordinate} to {connectionDirection}", closestOnBot);
+                        //Debug.Break();
+                        //break;
+                        
                         //TODO Add the entire shape to the Bot
                         var newBotCoordinate = closestOnBot.Coordinate + connectionDirection.ToVector2Int();
                         
@@ -621,6 +626,8 @@ namespace StarSalvager
             foreach (var bit in bits)
             {
                 attachedBlocks.Remove(bit);
+                
+                //Debug.Log($"Detached group member {bit.gameObject.name}", bit);
             }
 
             FactoryManager.Instance.GetFactory<ShapeFactory>().CreateGameObject(bits);
@@ -633,6 +640,8 @@ namespace StarSalvager
             bit.transform.parent = null;
 
             RemoveAttachable(bit);
+            
+            //Debug.Log($"Detached {bit.gameObject.name}", bit);
         }
         
         private void RemoveAttachable(AttachableBase attachableBase)
@@ -645,6 +654,9 @@ namespace StarSalvager
         
         #endregion //Detach Bits
         
+        //============================================================================================================//
+        
+        #region Check for Orphans
         
         /// <summary>
         /// Function will review and detach any blocks that no longer have a connection to the core.
@@ -653,8 +665,12 @@ namespace StarSalvager
         {
             var toSolve = new List<AttachableBase>(attachedBlocks);
             
+            //FIXME Currently have an issue where I'm trying to detach the same Bits multiple times
             foreach (var attachableBase in toSolve)
             {
+                if (!attachedBlocks.Contains(attachableBase))
+                    continue;
+                
                 var hasPathToCore = this.HasPathToCore(attachableBase);
                 
                 if(hasPathToCore)
@@ -673,43 +689,12 @@ namespace StarSalvager
                 DetachBits(attachedBits);
             }
         }
+        
+        #endregion //Check for Orphans
 
         //============================================================================================================//
 
         #region Shifting Bits
-        
-        #if UNITY_EDITOR
-        
-        [Button("Shift Random piece"), BoxGroup("PROTOTYPE")]
-        private void TestBitShift()
-        {
-            var index = UnityEngine.Random.Range(1, attachedBlocks.Count);
-            const DIRECTION dir = DIRECTION.DOWN;
-            
-            //Debug.Log(attachedBlocks[index].gameObject.name, attachedBlocks[index]);
-
-            FindFurthestAttachableInDirection(attachedBlocks[index], dir.ToVector2Int().Reflected(), out var starting);
-            
-            TryShift(dir, starting as Bit);
-        }
-        
-        private bool FindFurthestAttachableInDirection(AttachableBase currentAttachable, Vector2Int direction, out AttachableBase block)
-        {
-            block = currentAttachable;
-
-            var nextPos = currentAttachable.Coordinate + direction;
-
-            currentAttachable = attachedBlocks.FirstOrDefault(x => x.Coordinate == nextPos);
-
-            if (currentAttachable == null)
-                return false;
-
-
-            return FindFurthestAttachableInDirection(currentAttachable, direction, out block);
-
-        }
-        
-        #endif
         
         /// <summary>
         /// Shits an entire row or column based on the direction and the bit selected.
@@ -746,12 +731,6 @@ namespace StarSalvager
 
                 if (check == null)
                     break;
-
-                if (check.Coordinate == Vector2Int.zero)
-                {
-                    toShift.Clear();
-                    continue;
-                }
 
                 switch (check)
                 {
@@ -806,42 +785,64 @@ namespace StarSalvager
         }
         private void CheckForCombosAround(Bit bit)
         {
-
             if (bit == null)
                 return;
             
             if (bit.level >= 2)
                 return;
 
-            //fills lists with the combos to be checked
-            //FIXME Need to consider each direction separately
-            var horizontalBits = new List<AttachableBase>();
-            var verticalBits = new List<AttachableBase>();
+            //LEFT    [0]
+            //UP      [1]
+            //RIGHT   [2]
+            //DOWN    [3]
+            var directions = new List<AttachableBase>[4];
+            
+            //Horizontal   [0]
+            //Vertical     [1]
+            var lineCount = new int[2];
 
-            ComboCountAlgorithm(bit, DIRECTION.LEFT, ref horizontalBits);
-            ComboCountAlgorithm(bit, DIRECTION.RIGHT, ref horizontalBits);
-            horizontalBits.Add(bit);
+            //Gets the data in all 4 directions
+            for (var i = 0; i < 4; i++)
+            {
+                directions[i] = new List<AttachableBase>();
+                ComboCountAlgorithm(bit, (DIRECTION)i, ref directions[i]);
+            }
 
-            ComboCountAlgorithm(bit, DIRECTION.UP, ref verticalBits);
-            ComboCountAlgorithm(bit, DIRECTION.DOWN, ref verticalBits);
-            verticalBits.Add(bit);
-
-            var horizontalCount = horizontalBits.Count;
-            var verticalCount = verticalBits.Count;
+            //Get Line counts
+            for (var i = 0; i < 2; i++)
+            {
+                //Get one direction then its reflection
+                //We add one to compensate for the bit we are using as base reference
+                lineCount[i] = directions[i].Count + directions[i + 2].Count + 1;
+            }
 
             //Debug.Log($"Horizontal Count: {horizontalCount}\nVertical Count: {verticalCount}");
 
-            //TODO Need to prioritize the greater of the 2
-
-            if (horizontalCount < 3 && verticalCount < 3)
+            //If we dont find any combos of 3 or greater, there's no point in continuing
+            if (!lineCount.Any(c => c >= 3))
                 return;
 
-            //If either are 3 or Greater, assume it is a combo
             //TODO I don't consider complex combinations (Ls Ts or 5)
-            if (horizontalCount > verticalCount)
-                SimpleComboSolver(horizontalBits);
-            else if (horizontalCount < verticalCount)
-                SimpleComboSolver(verticalBits);
+            //TODO Need to prioritize the greater of the 2
+            List<AttachableBase> line;
+            //If Horizontal is greater than vertical
+            if (lineCount[0] > lineCount[1])
+            {
+                line = new List<AttachableBase>(directions[0]);
+                line.AddRange(directions[2]);
+                line.Add(bit);
+                
+                SimpleComboSolver(line);
+            }
+            //else If Horizontal is less than vertical
+            else if (lineCount[0] < lineCount[1])
+            {
+                line = new List<AttachableBase>(directions[1]);
+                line.AddRange(directions[3]);
+                line.Add(bit);
+                
+                SimpleComboSolver(line);
+            }
             else
             {
                 //TODO Decide what to do if both are equal

@@ -28,14 +28,12 @@ namespace StarSalvager
         
         //============================================================================================================//
 
-        public void IncreaseLevel()
+        public void IncreaseLevel(int amount = 1)
         {
-            level++;
+            level += amount;
             renderer.sortingOrder = level;
-
-            //TODO Get the new sprite for the level
-            //Debug.Log($"Upgrade {gameObject.name} to level {level}", this);
-
+            
+            //Sets the gameObject info (Sprite)
             var bit = this;
             FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(_type, level, ref bit);
         }

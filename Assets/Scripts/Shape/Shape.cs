@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Recycling;
 using StarSalvager;
 using StarSalvager.Constants;
 using StarSalvager.Utilities.Debugging;
@@ -103,6 +104,12 @@ public class Shape : CollidableBase
     {
         if (!(gameObject.GetComponent<Bot>() is Bot bot))
             return;
+
+        if (bot.Rotating)
+        {
+            Destroy();
+            return;
+        }
         
         if (!TryGetRayDirectionFromBot(bot.MoveDirection, out var rayDirection))
             return;
@@ -151,5 +158,17 @@ public class Shape : CollidableBase
     }
     
     //================================================================================================================//
+
+    private void Destroy()
+    {
+        foreach (var bit in attachedBits)
+        {
+            Recycler.Recycle<Bit>(bit.gameObject);
+        }
+        
+        attachedBits.Clear();
+        
+        Recycler.Recycle<Shape>(gameObject);
+    }
 
 }
