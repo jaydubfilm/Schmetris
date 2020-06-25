@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using StarSalvager.Factories;
 using StarSalvager.Utilities.Puzzle.Data;
 using StarSalvager.Utilities.Puzzle.Interfaces;
 using UnityEngine;
@@ -54,32 +55,16 @@ namespace StarSalvager.Utilities.Puzzle.Combos
 
             //--------------------------------------------------------------------------------------------------------//
 
+            COMBO comboType;
             //TODO These values need to be setup for Remote Data
             if (comboCount >= 5)
-                outData.comboData = new ComboData
-                {
-                    type = COMBO.FIVE,
-                    addLevels = 2,
-                    points = 100
-                };
+                comboType = COMBO.FIVE;
             else if (comboCount == 4)
-            {
-                outData.comboData = new ComboData
-                {
-                    type = COMBO.FOUR,
-                    addLevels = 1,
-                    points = 50
-                };
-            }
+                comboType = COMBO.FOUR;
             else
-            {
-                outData.comboData = new ComboData
-                {
-                    type = COMBO.THREE,
-                    addLevels = 1,
-                    points = 20
-                };
-            }
+                comboType = COMBO.THREE;
+
+            outData.comboData = FactoryManager.Instance.GetFactory<ComboFactory>().GetComboData(comboType);
             
             return true;
 

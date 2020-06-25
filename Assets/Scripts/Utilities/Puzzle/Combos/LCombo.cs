@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using StarSalvager.Factories;
 using StarSalvager.Utilities.Puzzle.Data;
 using UnityEngine;
 
@@ -67,12 +68,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
 
 
 
-            outData.comboData = new ComboData
-            {
-                type = COMBO.ANGLE,
-                addLevels = 2,
-                points = 150
-            };
+            outData.comboData = FactoryManager.Instance.GetFactory<ComboFactory>().GetComboData(COMBO.ANGLE);
             
             Debug.LogError($"Found L Combo at {origin.gameObject.name}", origin);
 

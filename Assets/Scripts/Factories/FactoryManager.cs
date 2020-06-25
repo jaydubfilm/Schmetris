@@ -42,6 +42,7 @@ namespace StarSalvager.Factories
         private FactoryBase _shapeFactory;
         private FactoryBase _enemyFactory;
         private FactoryBase _projectileFactory;
+        private FactoryBase _comboFactory;
         
         //============================================================================================================//
     
@@ -71,6 +72,9 @@ namespace StarSalvager.Factories
 
                 case nameof(ProjectileFactory):
                     return (_projectileFactory ?? (_projectileFactory = new ProjectileFactory(projectileProfile))) as T;
+                
+                case nameof(ComboFactory):
+                    return (_comboFactory ?? (_comboFactory = new ComboFactory())) as T;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(typeName), typeName, null);
