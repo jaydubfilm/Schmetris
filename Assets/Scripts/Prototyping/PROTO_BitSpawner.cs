@@ -1,8 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager.Prototype
 {
@@ -37,6 +40,12 @@ namespace StarSalvager.Prototype
             CreateGrid();
         }
 
+        private void LateUpdate()
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+                SceneManager.LoadScene("AlexB_Prototyping");
+        }
+
         private void CreateGrid()
         {
             var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
@@ -55,7 +64,8 @@ namespace StarSalvager.Prototype
                         Random.Range(-spawnGridDimensions.y, spawnGridDimensions.y));
                 }
 
-                var type = (BIT_TYPE) Random.Range(0, 7);
+                //var type = (BIT_TYPE) Random.Range(0, 7);
+                var type = BIT_TYPE.GREY;
 
                 var temp = bitFactory.CreateGameObject(type).transform;
 

@@ -45,7 +45,6 @@ namespace StarSalvager.Utilities.Extensions
         {
             return direction * -1;
         }
-        //FIXME This needs to consider angled directions
         public static DIRECTION ToDirection(this Vector2Int vector2Int)
         {
             if(vector2Int == Vector2Int.zero)

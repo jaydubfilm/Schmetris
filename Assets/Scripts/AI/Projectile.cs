@@ -32,7 +32,7 @@ namespace StarSalvager.AI
             transform.position += (m_enemyVelocityModifier + (m_travelDirectionNormalized * m_projectileData.ProjectileSpeed)) * Time.deltaTime;
         }
 
-        protected override void OnCollide(GameObject gameObject)
+        protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
             Bot bot = gameObject.GetComponent<Bot>();
             if (bot != null)

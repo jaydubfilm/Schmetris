@@ -11,13 +11,16 @@ namespace StarSalvager.Factories
     {
         //============================================================================================================//
         
-        [SerializeField, Required, BoxGroup("Attachables")]
+        [SerializeField, Required, BoxGroup("Attachables/Bits")]
         private AttachableProfileScriptableObject bitProfile;
+        
+        [SerializeField, Required, BoxGroup("Attachables/Bits")]
+        private BitRemoteDataScriptableObject bitRemoteData;
 
-        [SerializeField, Required, BoxGroup("Attachables")] 
+        [SerializeField, Required, BoxGroup("Attachables/Parts")] 
         private AttachableProfileScriptableObject partProfile;
         
-        [SerializeField, Required, BoxGroup("Attachables")] 
+        [SerializeField, Required, BoxGroup("Attachables/Parts")] 
         private RemotePartProfileScriptableObject partRemoteData;
 
         [SerializeField, Required, BoxGroup("Attachables")] 
@@ -39,6 +42,7 @@ namespace StarSalvager.Factories
         private FactoryBase _shapeFactory;
         private FactoryBase _enemyFactory;
         private FactoryBase _projectileFactory;
+        private FactoryBase _comboFactory;
         
         //============================================================================================================//
     
@@ -48,14 +52,14 @@ namespace StarSalvager.Factories
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        //TODO Investigate whether or not I can combine both factories into single Factory
+        //TODO Investigate whether or not I can combine both BitAttachableFactory & PartAttachableFactory into a single 
         public T GetFactory<T>() where T: FactoryBase
         {
             var typeName = typeof(T).Name;
             switch (typeName)
             {
                 case nameof(BitAttachableFactory):
-                    return (_bitAttachableFactory ?? (_bitAttachableFactory = new BitAttachableFactory(bitProfile))) as T;
+                    return (_bitAttachableFactory ?? (_bitAttachableFactory = new BitAttachableFactory(bitProfile, bitRemoteData))) as T;
 
                 case nameof(PartAttachableFactory):
                     return (_partAttachableFactory ?? (_partAttachableFactory = new PartAttachableFactory(partProfile, partRemoteData))) as T;
@@ -68,6 +72,9 @@ namespace StarSalvager.Factories
 
                 case nameof(ProjectileFactory):
                     return (_projectileFactory ?? (_projectileFactory = new ProjectileFactory(projectileProfile))) as T;
+                
+                case nameof(ComboFactory):
+                    return (_comboFactory ?? (_comboFactory = new ComboFactory())) as T;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(typeName), typeName, null);

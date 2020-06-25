@@ -28,26 +28,24 @@ namespace StarSalvager
         
         //============================================================================================================//
 
-        public void IncreaseLevel()
+        public void IncreaseLevel(int amount = 1)
         {
-            level++;
+            level += amount;
             renderer.sortingOrder = level;
-
-            //TODO Get the new sprite for the level
-            //Debug.Log($"Upgrade {gameObject.name} to level {level}", this);
-
+            
+            //Sets the gameObject info (Sprite)
             var bit = this;
             FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(_type, level, ref bit);
         }
         //============================================================================================================//
 
-        protected override void OnCollide(GameObject _gameObject)
+        protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
-            var bot = _gameObject.GetComponent<Bot>();
+            var bot = gameObject.GetComponent<Bot>();
             
             if (bot.Rotating)
             {
-                Destroy(gameObject);
+                Recycling.Recycler.Recycle<Bit>(this.gameObject);
                 return;
             }
             
@@ -115,7 +113,6 @@ namespace StarSalvager
 
         public override void LoadBlockData(BlockData blockData)
         {
-            //FIXME Might want to consider BlockData that has Coordinate of (0, 0) or null
             Coordinate = blockData.Coordinate;
             Type = (BIT_TYPE) blockData.Type;
             level = blockData.Level;
