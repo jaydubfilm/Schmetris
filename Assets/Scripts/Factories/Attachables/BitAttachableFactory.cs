@@ -12,7 +12,6 @@ namespace StarSalvager.Factories
         
         //============================================================================================================//
         
-        //TODO This needs to consider the bit type more
         public BitAttachableFactory(AttachableProfileScriptableObject factoryProfile, BitRemoteDataScriptableObject remoteData) : base(factoryProfile)
         {
             this.remoteData = remoteData;

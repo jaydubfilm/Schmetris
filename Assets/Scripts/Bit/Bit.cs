@@ -113,7 +113,6 @@ namespace StarSalvager
 
         public override void LoadBlockData(BlockData blockData)
         {
-            //FIXME Might want to consider BlockData that has Coordinate of (0, 0) or null
             Coordinate = blockData.Coordinate;
             Type = (BIT_TYPE) blockData.Type;
             level = blockData.Level;

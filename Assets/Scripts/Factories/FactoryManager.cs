@@ -51,7 +51,7 @@ namespace StarSalvager.Factories
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        //TODO Investigate whether or not I can combine both factories into single Factory
+        //TODO Investigate whether or not I can combine both BitAttachableFactory & PartAttachableFactory into a single 
         public T GetFactory<T>() where T: FactoryBase
         {
             var typeName = typeof(T).Name;

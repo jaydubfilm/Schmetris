@@ -53,7 +53,6 @@ public class Shape : CollidableBase
     //================================================================================================================//
 
     //This is used for generating a shape, instead of using pre existing Bits
-    //FIXME Need to setup the global variables for BitSize
     public void PushNewBit(Bit bit, DIRECTION direction)
     {
         
