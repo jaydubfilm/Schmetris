@@ -186,6 +186,46 @@ namespace StarSalvager.Utilities.Extensions
         
         
         //============================================================================================================//
+        
+        
+        
+
+        /// <summary>
+        /// Algorithm function that fills the BitList with every Bit in the specified direction that matches the level
+        /// and type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="level"></param>
+        /// <param name="coordinate"></param>
+        /// <param name="direction"></param>
+        /// <param name="bitList"></param>
+        /// <returns></returns>
+        public static bool ComboCountAlgorithm(this List<AttachableBase> attachableBases, BIT_TYPE type, int level, Vector2Int coordinate, Vector2Int direction,
+            ref List<AttachableBase> bitList)
+        {
+            var nextCoords = coordinate + direction;
+
+            //Try and get the attachableBase Bit at the new Coordinate
+            var nextBit = attachableBases
+                .FirstOrDefault(a => a.Coordinate == nextCoords && a is Bit) as Bit;
+
+            if (nextBit == null)
+                return false;
+
+            //We only care about bits that share the same type
+            if (nextBit.Type != type)
+                return false;
+
+            //We only care about bits that share the same level
+            if (nextBit.level != level)
+                return false;
+
+            //Add the bit to our combo check list
+            bitList.Add(nextBit);
+
+            //Keep checking in this direction
+            return attachableBases.ComboCountAlgorithm(type, level, nextCoords, direction, ref bitList);
+        }
 
         
         

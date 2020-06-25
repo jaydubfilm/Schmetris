@@ -140,6 +140,19 @@ namespace StarSalvager.Utilities.Extensions
         #endregion //Path to Core Checks
         
         //============================================================================================================//
+        
+        /// <summary>
+        /// Fill ref List with all Bits of similar level & type in specified direction.
+        /// </summary>
+        /// <param name="bot"></param>
+        /// <param name="target"></param>
+        /// <param name="direction"></param>
+        /// <param name="bitList"></param>
+        public static void ComboCount(this Bot bot, Bit target, DIRECTION direction, ref List<AttachableBase> bitList)
+        {
+            bot.attachedBlocks.ComboCountAlgorithm(target.Type, target.level, target.Coordinate, direction.ToVector2Int(),
+                ref bitList);
+        }
 
     }
 }

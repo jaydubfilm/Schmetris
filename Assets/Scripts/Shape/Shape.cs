@@ -122,7 +122,7 @@ public class Shape : CollidableBase
         
         var rayStartPosition = (Vector2) closestAttachable.transform.position + -rayDirection * (rayLength / 2f);
 
-        Debug.Log($"Closest {closestAttachable.gameObject.name}", closestAttachable);
+        //Debug.Log($"Closest {closestAttachable.gameObject.name}", closestAttachable);
 
             
         //Checking ray against player layer mask

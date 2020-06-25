@@ -10,6 +10,8 @@ using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Utilities.Puzzle;
+using StarSalvager.Utilities.Puzzle.Data;
 using UnityEngine;
 
 namespace StarSalvager
@@ -791,7 +793,17 @@ namespace StarSalvager
             if (bit.level >= 2)
                 return;
 
-            //LEFT    [0]
+            if (!PuzzleChecker.TryGetComboData(this, bit, out var data))
+                return;
+
+            if (data.comboData.addLevels == 2)
+            {
+                AdvancedComboSolver(data.comboData, data.toMove);
+            }
+            else
+                SimpleComboSolver(data.comboData, data.toMove);
+
+            /*//LEFT    [0]
             //UP      [1]
             //RIGHT   [2]
             //DOWN    [3]
@@ -847,9 +859,10 @@ namespace StarSalvager
             {
                 //TODO Decide what to do if both are equal
                 Debug.LogError($"Weird combo at {bit.gameObject.name} doesnt have a solution yet", bit);
-            }
+            }*/
         }
 
+        /*
         private void ComboCountAlgorithm(Bit target, DIRECTION direction, ref List<AttachableBase> bitList)
         {
             ComboCountAlgorithm(target.Type, target.level, target.Coordinate, direction.ToVector2Int(),
@@ -891,14 +904,18 @@ namespace StarSalvager
 
             //Keep checking in this direction
             return ComboCountAlgorithm(type, level, nextCoords, direction, ref bitList);
-        }
+        }*/
 
+        //============================================================================================================//
+        
+        #region Combo Solvers
+        
         /// <summary>
         /// Solves movement and upgrade logic to do with simple combos of blocks.
         /// </summary>
         /// <param name="comboBits"></param>
         /// <exception cref="Exception"></exception>
-        private void SimpleComboSolver(IReadOnlyCollection<AttachableBase> comboBits)
+        private void SimpleComboSolver(ComboData comboData, IReadOnlyCollection<AttachableBase> comboBits)
         {
             AttachableBase closestToCore = null;
             var shortest = 999f;
@@ -950,6 +967,8 @@ namespace StarSalvager
             
             //if(orphans.Count > 0)
             //    Debug.Break();
+            
+            (closestToCore as Bit)?.IncreaseLevel(comboData.addLevels);
 
             //Move all of the components that need to be moved
             StartCoroutine(MoveComboPiecesCoroutine(
@@ -971,6 +990,30 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
         }
+
+        private void AdvancedComboSolver(ComboData comboData, IReadOnlyList<AttachableBase> comboBits)
+        {
+            var targetUpgrade = comboBits[0];
+            //Get a list of Bits that will be moving (Blocks that are not the chosen closest to core)
+            var movingBits = comboBits
+                .Where(ab => ab != targetUpgrade).ToArray();
+            
+            (targetUpgrade as Bit)?.IncreaseLevel(comboData.addLevels);
+            
+            StartCoroutine(MoveComboPiecesCoroutine(
+                movingBits,
+                targetUpgrade,
+                new OrphanMoveData[0], 
+                TEST_MergeSpeed,
+                () =>
+                {
+                    //Done Complex
+                }));
+        }
+        
+        #endregion //Combo Solvers
+        
+        //============================================================================================================//
 
         /// <summary>
         /// Get any Bit/Bits that will be orphaned by the bits which will be moving
@@ -1437,7 +1480,7 @@ namespace StarSalvager
             //Prepare Bits to be moved
             //--------------------------------------------------------------------------------------------------------//
             
-            (target as Bit)?.IncreaseLevel();
+            
             
             foreach (var bit in movingBits)
             {
