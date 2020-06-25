@@ -117,9 +117,12 @@ public class Shape : CollidableBase
         
         //Long ray compensates for the players high speed
         var rayLength = Values.gridCellSize * 3f;
-        var closestAttachalbe = attachedBits.GetClosestAttachable(hitPoint);
+        var closestAttachable = attachedBits.GetClosestAttachable(hitPoint);
         
-        var rayStartPosition = (Vector2) closestAttachalbe.transform.position + -rayDirection * (rayLength / 2f);
+        
+        var rayStartPosition = (Vector2) closestAttachable.transform.position + -rayDirection * (rayLength / 2f);
+
+        Debug.Log($"Closest {closestAttachable.gameObject.name}", closestAttachable);
 
             
         //Checking ray against player layer mask
@@ -132,9 +135,11 @@ public class Shape : CollidableBase
             return;
         }
         
+
+        
         //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
         var inDirection = (-rayDirection).ToDirection();
-        bot.TryAddNewShape(this, closestAttachalbe, inDirection, hit.point);
+        bot.TryAddNewShape(this, closestAttachable, inDirection, hit.point);
     }
     
     private bool TryGetRayDirectionFromBot(DIRECTION direction, out Vector2 rayDirection)
