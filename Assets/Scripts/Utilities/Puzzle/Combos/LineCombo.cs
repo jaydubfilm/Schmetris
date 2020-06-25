@@ -58,7 +58,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
             if (comboCount >= 5)
                 outData.comboData = new ComboData
                 {
-                    name = "Simple 5",
+                    type = COMBO.FIVE,
                     addLevels = 2,
                     points = 100
                 };
@@ -66,7 +66,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
             {
                 outData.comboData = new ComboData
                 {
-                    name = "Simple 4",
+                    type = COMBO.FOUR,
                     addLevels = 1,
                     points = 50
                 };
@@ -75,7 +75,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
             {
                 outData.comboData = new ComboData
                 {
-                    name = "Simple 3",
+                    type = COMBO.THREE,
                     addLevels = 1,
                     points = 20
                 };

@@ -70,7 +70,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
 
             outData.comboData = new ComboData
             {
-                name = "T Combo",
+                type = COMBO.TEE,
                 addLevels = 2,
                 points = 150
             };

@@ -6,13 +6,13 @@ namespace StarSalvager.Utilities.Puzzle.Data
 {
     public struct ComboData
     {
-        public string name;
+        public COMBO type;
         public int points;
         public int addLevels;
 
         public static ComboData zero => new ComboData
         {
-            name = string.Empty,
+            type = COMBO.NONE,
             points = 0,
             addLevels = 0
         };

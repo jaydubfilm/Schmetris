@@ -69,7 +69,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
 
             outData.comboData = new ComboData
             {
-                name = "L Combo",
+                type = COMBO.ANGLE,
                 addLevels = 2,
                 points = 150
             };
