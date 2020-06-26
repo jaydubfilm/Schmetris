@@ -12,6 +12,7 @@ namespace StarSalvager
         private string m_name;
         private int m_health;
         private float m_movementSpeed;
+        private bool m_isAttachable;
         private float m_attackDamage;
         private float m_attackSpeed;
         private ENEMY_MOVETYPE m_movementType;
@@ -26,13 +27,14 @@ namespace StarSalvager
         private float m_spreadAngle;
         private int m_sprayCount;
 
-        public EnemyData(ENEMY_TYPE enemyType, int enemyID, string name, int health, float movementSpeed, float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType, PROJECTILE_TYPE projectileType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange, float orbitRadius, float numberCellsDescend, bool addVelocityToProjectiles, float spreadAngle, int sprayCount)
+        public EnemyData(ENEMY_TYPE enemyType, int enemyID, string name, int health, float movementSpeed, bool isAttachable, float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType, PROJECTILE_TYPE projectileType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange, float orbitRadius, float numberCellsDescend, bool addVelocityToProjectiles, float spreadAngle, int sprayCount)
         {
             m_enemyType = enemyType;
             m_enemyID = enemyID;
             m_name = name;
             m_health = health;
             m_movementSpeed = movementSpeed;
+            m_isAttachable = isAttachable;
             m_attackDamage = attackDamage;
             m_attackSpeed = attackSpeed;
             m_movementType = movementType;
@@ -71,6 +73,11 @@ namespace StarSalvager
         public float MovementSpeed
         {
             get => m_movementSpeed;
+        }
+
+        public bool IsAttachable
+        {
+            get => m_isAttachable;
         }
 
         public float AttackDamage

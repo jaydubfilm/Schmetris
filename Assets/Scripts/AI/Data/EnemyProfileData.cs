@@ -19,6 +19,9 @@ namespace StarSalvager.Factories.Data
         private ENEMY_MOVETYPE m_movementType;
 
         [SerializeField, FoldoutGroup("$EnemyType")]
+        private bool m_isAttachable;
+
+        [SerializeField, FoldoutGroup("$EnemyType")]
         private ENEMY_ATTACKTYPE m_attackType;
         
         [SerializeField, FoldoutGroup("$EnemyType")]
@@ -63,6 +66,11 @@ namespace StarSalvager.Factories.Data
         public ENEMY_MOVETYPE MovementType
         {
             get => m_movementType;
+        }
+
+        public bool IsAttachable
+        {
+            get => m_isAttachable;
         }
 
         public ENEMY_ATTACKTYPE AttackType
