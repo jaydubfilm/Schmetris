@@ -379,7 +379,8 @@ namespace StarSalvager
                 //attached.SetColor(Color.white);
 
                 var dist = Vector2Int.Distance(attached.Coordinate, checkCoordinate);
-                if (dist > smallestDist)
+                //TODO: Make a new function for "closest to an attachable" and then remove the second part of this if statement
+                if (dist > smallestDist || dist == 0)
                     continue;
 
                 smallestDist = dist;
@@ -541,6 +542,8 @@ namespace StarSalvager
         {
             var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
 
+            print("DAMAGE");
+
             //FIXME Need to see how to fix this
             if (closestAttachable is IHealth closestHealth)
             {
@@ -554,8 +557,23 @@ namespace StarSalvager
             RemoveAttachable(closestAttachable);
             CheckForDisconnects();
         }
-        
-        
+
+        public void TryHitAt(IAttachable closestAttachable, float damage)
+        {
+            //FIXME Need to see how to fix this
+            if (closestAttachable is IHealth closestHealth)
+            {
+                closestHealth.ChangeHealth(-damage);
+
+                if (closestHealth.CurrentHealth > 0)
+                    return;
+
+                RemoveAttachable(closestAttachable);
+                CheckForDisconnects();
+            }
+        }
+
+
         //============================================================================================================//
 
         #region Attach Bits
@@ -659,6 +677,12 @@ namespace StarSalvager
             }
 
             var bits = attachables.OfType<Bit>().ToList();
+
+            //TODO: This is quick and dirty change to help shapes fall off ship. Remove later.
+            foreach (var bit in bits)
+            {
+                LevelManager.Instance.ObstacleManager.m_shapePieces.Add(bit);
+            }
 
             FactoryManager.Instance.GetFactory<ShapeFactory>().CreateGameObject(bits);
             
