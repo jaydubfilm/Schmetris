@@ -14,8 +14,10 @@ namespace StarSalvager
         public Vector2Int Coordinate { get; set; }
         public bool Attached { get; set; }
         
-        public float StartingHealth { get; }
-        public float CurrentHealth { get; }
+        public float StartingHealth { get { return _startingHealth; } }
+        private float _startingHealth;
+        public float CurrentHealth { get { return _currentHealth; } }
+        private float _currentHealth;
         
         //============================================================================================================//
         
@@ -40,7 +42,13 @@ namespace StarSalvager
             Attached = isAttached;
             collider.usedByComposite = isAttached;
         }
-        
+
+        public void SetupHealthValues(float startingHealth, float currentHealth)
+        {
+            _startingHealth = startingHealth;
+            _currentHealth = currentHealth;
+        }
+
         public void ChangeHealth(float amount)
         {
             throw new NotImplementedException();

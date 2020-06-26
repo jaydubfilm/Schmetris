@@ -83,13 +83,13 @@ namespace StarSalvager.Factories
             if (enemyData.IsAttachable)
             {
                 var enemy = CreateObject<EnemyAttachable>();
-                enemy.EnemyData = enemyData;
+                enemy.m_enemyData = enemyData;
                 return enemy.GetComponent<T>();
             }
             else
             {
                 var enemy = CreateObject<Enemy>();
-                enemy.EnemyData = enemyData;
+                enemy.m_enemyData = enemyData;
                 return enemy.GetComponent<T>();
             }
         }

@@ -81,7 +81,7 @@ namespace StarSalvager
                     m_bits.RemoveAt(i);
                 }
 
-                if (bit.IsAttached)
+                if (bit.Attached)
                 {
                     continue;
                 }

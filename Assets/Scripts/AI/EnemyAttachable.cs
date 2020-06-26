@@ -9,23 +9,12 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class EnemyAttachable : Enemy
+    public class EnemyAttachable : Enemy, IAttachable
     {
+        public Vector2Int Coordinate { get; set; }
+        public bool Attached { get; set; }
+
         //============================================================================================================//
-
-        public ENEMY_TYPE Type
-        {
-            get => _type;
-            set => _type = value;
-        }
-        [SerializeField]
-        private ENEMY_TYPE _type;
-        public int level { get => _level; set => _level = value; }
-        [SerializeField]
-        private int _level;
-
-        [SerializeField]
-        private LayerMask collisionMask;
 
         protected new Transform transform
         {
@@ -51,6 +40,17 @@ namespace StarSalvager.AI
         }
         private SpriteRenderer m_spriteRenderer;
 
+        public void SetAttached(bool isAttached)
+        {
+            Attached = isAttached;
+            collider.usedByComposite = isAttached;
+        }
+
+        [SerializeField]
+        private LayerMask collisionMask;
+
+        //============================================================================================================//
+
         private void Start()
         {
             renderer.sprite = m_enemyData.Sprite;
@@ -58,7 +58,7 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
-        protected void OnCollide(GameObject gameObject, Vector2 hitPoint)
+        protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
             var bot = gameObject.GetComponent<Bot>();
 
