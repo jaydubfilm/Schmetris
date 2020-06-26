@@ -6,7 +6,6 @@ namespace StarSalvager
     /// <summary>
     /// Any object that can touch a bot should use this base class
     /// </summary>
-    //[RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(Collider2D))]
     public abstract class CollidableBase : MonoBehaviour
     {
