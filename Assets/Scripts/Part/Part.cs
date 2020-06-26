@@ -1,4 +1,5 @@
-﻿using StarSalvager.Utilities.JsonDataTypes;
+﻿using Recycling;
+using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
 namespace StarSalvager
@@ -43,7 +44,12 @@ namespace StarSalvager
 
         public void ChangeHealth(float amount)
         {
-            //throw new System.NotImplementedException();
+            _currentHealth += amount;
+
+            if (_currentHealth <= 0)
+            {
+                Recycler.Recycle(typeof(Part), this.gameObject);
+            }
         }
 
         //============================================================================================================//

@@ -60,6 +60,8 @@ namespace StarSalvager.AI
 
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
+            //print("HITS");
+            
             var bot = gameObject.GetComponent<Bot>();
 
             if (bot.Rotating)

@@ -1,4 +1,5 @@
 ﻿using System;
+using Recycling;
 using StarSalvager.Constants;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
@@ -51,7 +52,12 @@ namespace StarSalvager
 
         public void ChangeHealth(float amount)
         {
-            throw new NotImplementedException();
+            _currentHealth += amount;
+
+            if (_currentHealth <= 0)
+            {
+                Recycler.Recycle(typeof(Bit), this.gameObject);
+            }
         }
 
         public void IncreaseLevel(int amount = 1)
