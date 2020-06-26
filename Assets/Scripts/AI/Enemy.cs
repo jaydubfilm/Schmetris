@@ -18,7 +18,7 @@ namespace StarSalvager.AI
         private Vector3 m_spiralAttackDirection = Vector3.down;
         private float horizontalFarLeftX = 0;
         private float horizontalFarRightX = Values.gridSizeX * Values.gridCellSize;
-        private Vector3 m_mostRecentMovementDirection = Vector3.zero;
+        protected Vector3 m_mostRecentMovementDirection = Vector3.zero;
 
         protected new Transform transform
         {
