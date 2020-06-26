@@ -68,7 +68,6 @@ namespace StarSalvager.AI
                 if (m_fireTimer >= 1 / m_enemyData.AttackSpeed)
                 {
                     m_fireTimer -= 1 / m_enemyData.AttackSpeed;
-                    print("MUNCH");
                     LevelManager.Instance.BotGameObject.TryHitAt(LevelManager.Instance.BotGameObject.GetClosestAttachable(Coordinate), m_enemyData.AttackDamage);
                 }
             }

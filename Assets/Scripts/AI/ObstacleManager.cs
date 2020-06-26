@@ -3,14 +3,15 @@ using UnityEngine;
 using StarSalvager.Constants;
 using StarSalvager.Factories;
 using Recycling;
-using System.Runtime.CompilerServices;
-using Sirenix.OdinInspector;
 
 namespace StarSalvager
 {
     public class ObstacleManager : MonoBehaviour
     {
         private List<Bit> m_bits;
+
+        //TODO: This is quick and dirty change to help shapes fall off ship. Remove everything related to shapePieces list later
+        public List<Bit> m_shapePieces;
 
         private int m_numBitsSpawnedPerRow = Values.gridSizeX / 20;
 
@@ -26,6 +27,7 @@ namespace StarSalvager
         void Start()
         {
             m_bits = new List<Bit>();
+            m_shapePieces = new List<Bit>();
 
             for (int i = 0; i < Values.numberBitsSpawn; i++)
             {
@@ -37,6 +39,14 @@ namespace StarSalvager
         // Update is called once per frame
         void Update()
         {
+            for (int i = m_shapePieces.Count - 1; i >= 0; i--)
+            {
+                if (!m_shapePieces[i].enabled)
+                {
+                    m_shapePieces.RemoveAt(i);
+                }
+            }
+            
             Vector3 amountShift = Vector3.up * ((Values.gridCellSize * Time.deltaTime) / Values.timeForAsteroidsToFall);
 
             if (m_distanceHorizontal != 0)
@@ -81,7 +91,7 @@ namespace StarSalvager
                     m_bits.RemoveAt(i);
                 }
 
-                if (bit.Attached)
+                if (bit.Attached && !m_shapePieces.Contains(bit))
                 {
                     continue;
                 }

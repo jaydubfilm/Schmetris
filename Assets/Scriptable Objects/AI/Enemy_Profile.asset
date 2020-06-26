@@ -34,9 +34,9 @@ MonoBehaviour:
   - m_enemyType: 1
     m_sprite: {fileID: 8171182780678829371, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
       type: 3}
-    m_movementType: 1
+    m_movementType: 4
     m_isAttachable: 0
-    m_attackType: 0
+    m_attackType: 6
     m_projectileType: 0
     m_oscillationsPerSeconds: 1
     m_oscillationAngleRange: 60
