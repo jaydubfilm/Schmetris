@@ -21,7 +21,7 @@ namespace StarSalvager
     {
         public class OrphanMoveData
         {
-            public AttachableBase attachableBase;
+            public IAttachable attachableBase;
             public DIRECTION moveDirection;
             public float distance;
             public Vector2Int intendedCoordinates;
@@ -40,9 +40,9 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        public List<AttachableBase> attachedBlocks => _attachedBlocks ?? (_attachedBlocks = new List<AttachableBase>());
+        public List<IAttachable> attachedBlocks => _attachedBlocks ?? (_attachedBlocks = new List<IAttachable>());
 
-        [SerializeField, ReadOnly, Space(10f)] private List<AttachableBase> _attachedBlocks;
+        [SerializeField, ReadOnly, Space(10f)] private List<IAttachable> _attachedBlocks;
 
         //============================================================================================================//
 
@@ -82,7 +82,7 @@ namespace StarSalvager
 
             //Mark as Core coordinate
             //Coordinate = Vector2Int.zero;
-            var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<AttachableBase>(
+            var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(
                 new BlockData
                 {
                     Type = (int)PART_TYPE.CORE,
@@ -96,11 +96,9 @@ namespace StarSalvager
         // Update is called once per frame
         private void Update()
         {
-
-
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Equals))
+            if (Input.GetKeyDown(KeyCode.Equals))
                 TEST_Speed += 100;
-            else if (UnityEngine.Input.GetKeyDown(KeyCode.Minus))
+            else if (Input.GetKeyDown(KeyCode.Minus))
                 TEST_Speed -= 100;
         }
 
@@ -121,7 +119,7 @@ namespace StarSalvager
 
         public void Rotate(float direction)
         {
-            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+            if (Input.GetKey(KeyCode.LeftAlt))
                 return;
             
             if (direction < 0)
@@ -152,9 +150,6 @@ namespace StarSalvager
 
             foreach (var attachedBlock in attachedBlocks)
             {
-                if (attachedBlock is Bot)
-                    continue;
-
                 attachedBlock.RotateCoordinate(rotation);
             }
 
@@ -162,9 +157,9 @@ namespace StarSalvager
 
         }
 
-        public void Move(float direction)
+        public void Move(float direction, bool move = false)
         {
-            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+            if (Input.GetKey(KeyCode.LeftAlt))
             {
                 _currentInput = 0f;
                 return;
@@ -177,12 +172,15 @@ namespace StarSalvager
             else if (direction > 0)
                 _moveDirection = DIRECTION.RIGHT;
             else
+            {
                 _moveDirection = DIRECTION.NULL;
+                return;
+            }
 
-            /*if (direction < 0)
-                Move(DIRECTION.LEFT);
-            else if (direction > 0)
-                Move(DIRECTION.RIGHT);*/
+            if (!move)
+                return;
+
+            Move(_moveDirection);
         }
 
         public void Move(DIRECTION direction)
@@ -221,6 +219,8 @@ namespace StarSalvager
 
         private void MoveBot()
         {
+            
+            
 
             var position = rigidbody.position;
 
@@ -231,6 +231,7 @@ namespace StarSalvager
             rigidbody.MovePosition(position);
 
             var remainingDistance = Vector2.Distance(position, targetPosition);
+            
             if (remainingDistance > 0.2f)
                 return;
 
@@ -244,7 +245,7 @@ namespace StarSalvager
                     return;
                 }
 
-                Move(_currentInput);
+                Move(_currentInput, true);
                 return;
             }
 
@@ -284,7 +285,7 @@ namespace StarSalvager
 
         #region Check For Legal Bit Attach
 
-        public bool TryAddNewAttachable(AttachableBase attachable, DIRECTION connectionDirection, Vector2 collisionPoint)
+        public bool TryAddNewAttachable(IAttachable attachable, DIRECTION connectionDirection, Vector2 collisionPoint)
         {
             if (Rotating)
                 return false;
@@ -372,9 +373,9 @@ namespace StarSalvager
             return true;
         }
 
-        public AttachableBase GetClosestAttachable(Vector2Int checkCoordinate)
+        public IAttachable GetClosestAttachable(Vector2Int checkCoordinate)
         {
-            AttachableBase selected = null;
+            IAttachable selected = null;
 
             var smallestDist = 999f;
 
@@ -423,9 +424,9 @@ namespace StarSalvager
         /// </summary>
         /// <param name="checkCoordinate"></param>
         /// <returns></returns>
-        public AttachableBase[] GetClosestAttachables(Vector2Int checkCoordinate)
+        public IAttachable[] GetClosestAttachables(Vector2Int checkCoordinate)
         {
-            AttachableBase[] selected = new AttachableBase[2];
+            IAttachable[] selected = new IAttachable[2];
 
             var smallestDist = 999f;
 
@@ -493,7 +494,7 @@ namespace StarSalvager
         
         #region Check for Legal Shape Attach
 
-        public bool TryAddNewShape(Shape shape, AttachableBase closestShapeBit, DIRECTION connectionDirection, Vector2 collisionPoint)
+        public bool TryAddNewShape(Shape shape, IAttachable closestShapeBit, DIRECTION connectionDirection, Vector2 collisionPoint)
         {
             var closestOnBot= attachedBlocks.GetClosestAttachable(collisionPoint);
 
@@ -544,10 +545,16 @@ namespace StarSalvager
         public void TryHitAt(Vector2 hitPosition, float damage)
         {
             var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
-            closestAttachable.ChangeHealth(-damage);
 
-            if (closestAttachable.CurrentHealth > 0) 
-                return;
+            //FIXME Need to see how to fix this
+            if (closestAttachable is IHealth closestHealth)
+            {
+                closestHealth.ChangeHealth(-damage);
+
+                if (closestHealth.CurrentHealth > 0) 
+                    return;
+            }
+            
             
             RemoveAttachable(closestAttachable);
             CheckForDisconnects();
@@ -558,7 +565,7 @@ namespace StarSalvager
 
         #region Attach Bits
 
-        public void AttachNewBit(Vector2Int coordinate, AttachableBase newAttachable, bool checkForCombo = true, bool updateColliderGeometry = true)
+        public void AttachNewBit(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true, bool updateColliderGeometry = true)
         {
             newAttachable.Coordinate = coordinate;
             newAttachable.SetAttached(true);
@@ -574,7 +581,7 @@ namespace StarSalvager
                 CompositeCollider2D.GenerateGeometry();
         }
 
-        public void AttachNewBitToExisting(AttachableBase newAttachable, AttachableBase existingAttachable,
+        public void AttachNewBitToExisting(IAttachable newAttachable, IAttachable existingAttachable,
             DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true)
         {
             var coordinate = existingAttachable.Coordinate + direction.ToVector2Int();
@@ -583,7 +590,7 @@ namespace StarSalvager
             if (attachedBlocks.Any(a => a.Coordinate == coordinate))
             {
                 Debug.LogError($"Prevented attaching {newAttachable.gameObject.name} to occupied location {coordinate}",
-                    newAttachable);
+                    newAttachable.gameObject);
                 PushNewBit(newAttachable, direction, existingAttachable.Coordinate);
                 return;
             }
@@ -603,7 +610,7 @@ namespace StarSalvager
                 CompositeCollider2D.GenerateGeometry();
         }
 
-        public void PushNewBit(AttachableBase newAttachable, DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true)
+        public void PushNewBit(IAttachable newAttachable, DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true)
         {
             var newCoord = direction.ToVector2Int();
 
@@ -623,7 +630,7 @@ namespace StarSalvager
                 CompositeCollider2D.GenerateGeometry();
         }
 
-        public void PushNewBit(AttachableBase newAttachable, DIRECTION direction, Vector2Int startCoord, bool checkForCombo = true, bool updateColliderGeometry = true)
+        public void PushNewBit(IAttachable newAttachable, DIRECTION direction, Vector2Int startCoord, bool checkForCombo = true, bool updateColliderGeometry = true)
         {
             var newCoord = startCoord + direction.ToVector2Int();
 
@@ -670,7 +677,7 @@ namespace StarSalvager
             //Debug.Log($"Detached {bit.gameObject.name}", bit);
         }
         
-        private void RemoveAttachable(AttachableBase attachableBase)
+        private void RemoveAttachable(IAttachable attachableBase)
         {
             attachedBlocks.Remove(attachableBase);
             attachableBase.SetAttached(false);
@@ -689,7 +696,7 @@ namespace StarSalvager
         /// </summary>
         private void CheckForDisconnects()
         {
-            var toSolve = new List<AttachableBase>(attachedBlocks);
+            var toSolve = new List<IAttachable>(attachedBlocks);
             
             foreach (var attachableBase in toSolve)
             {
@@ -727,9 +734,9 @@ namespace StarSalvager
         /// <param name="direction"></param>
         /// <param name="attachable"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        private void TryShift(DIRECTION direction, AttachableBase attachable)
+        private void TryShift(DIRECTION direction, IAttachable attachable)
         {
-            List<AttachableBase> inLine;
+            List<IAttachable> inLine;
             switch (direction)
             {
                 case DIRECTION.LEFT:
@@ -744,7 +751,7 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
 
-            var toShift = new List<AttachableBase>();
+            var toShift = new List<IAttachable>();
             var dir = direction.ToVector2Int();
             var currentPos = attachable.Coordinate;
             
@@ -836,9 +843,9 @@ namespace StarSalvager
         /// </summary>
         /// <param name="comboBits"></param>
         /// <exception cref="Exception"></exception>
-        private void SimpleComboSolver(ComboData comboData, IReadOnlyCollection<AttachableBase> comboBits)
+        private void SimpleComboSolver(ComboData comboData, IReadOnlyCollection<IAttachable> comboBits)
         {
-            AttachableBase closestToCore = null;
+            IAttachable closestToCore = null;
             var shortest = 999f;
 
             //Decide who gets to upgrade
@@ -912,24 +919,74 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
         }
 
-        private void AdvancedComboSolver(ComboData comboData, IReadOnlyList<AttachableBase> comboBits)
+        private void AdvancedComboSolver(ComboData comboData, IReadOnlyList<IAttachable> comboBits)
         {
-            var targetUpgrade = comboBits[0];
+            IAttachable bestAttachableOption = null;
+
+            //Decide who gets to upgrade
+            //--------------------------------------------------------------------------------------------------------//
+
+            foreach (var bit in comboBits)
+            {
+                //Need to make sure that if we choose this block, that it is connected to the core one way or another
+                var hasPath = this.HasPathToCore(bit as Bit,
+                    comboBits.Where(ab => ab != bit)
+                        .Select(b => b.Coordinate)
+                        .ToList());
+
+                //If there's no path, we cannot use this bit
+                if (!hasPath)
+                    continue;
+
+
+                bestAttachableOption = bit;
+            }
+
+            //Make sure that things are working
+            //--------------------------------------------------------------------------------------------------------//
+
+            //If no block was selected, then we've had a problem
+            if (bestAttachableOption == null)
+                throw new Exception("No Closest Core Found");
+
+            //See if anyone else needs to move
+            //--------------------------------------------------------------------------------------------------------//
+
             //Get a list of Bits that will be moving (Blocks that are not the chosen closest to core)
             var movingBits = comboBits
-                .Where(ab => ab != targetUpgrade).ToArray();
+                .Where(ab => ab != bestAttachableOption).ToArray();
+
+            //Get a list of orphans that may need move when we are moving our bits
+            var orphans = new List<OrphanMoveData>();
+            CheckForOrphans(movingBits, bestAttachableOption, ref orphans);
+
+            //Move everyone who we've determined need to move
+            //--------------------------------------------------------------------------------------------------------//
             
-            (targetUpgrade as Bit)?.IncreaseLevel(comboData.addLevels);
+            //if(orphans.Count > 0)
+            //    Debug.Break();
             
+            (bestAttachableOption as Bit)?.IncreaseLevel(comboData.addLevels);
+
+            //Move all of the components that need to be moved
             StartCoroutine(MoveComboPiecesCoroutine(
                 movingBits,
-                targetUpgrade,
-                new OrphanMoveData[0], 
+                bestAttachableOption,
+                orphans.ToArray(),
                 TEST_MergeSpeed,
                 () =>
                 {
-                    //Done Complex
+                    var bit = bestAttachableOption as Bit;
+
+                    //We need to update the positions and level before we move them in case we interact with bits while they're moving
+
+                    //bit.IncreaseLevel();
+
+                    CheckForCombosAround(bit);
+                    CheckForCombosAround(orphans.Select(x => x.attachableBase as Bit));
                 }));
+
+            //--------------------------------------------------------------------------------------------------------//
         }
         
         #endregion //Combo Solvers
@@ -943,8 +1000,8 @@ namespace StarSalvager
         /// <param name="bitToUpgrade"></param>
         /// <param name="orphanMoveData"></param>
         /// <returns></returns>
-        private void CheckForOrphans(AttachableBase[] movingBits,
-            AttachableBase bitToUpgrade, ref List<OrphanMoveData> orphanMoveData)
+        private void CheckForOrphans(IAttachable[] movingBits,
+            IAttachable bitToUpgrade, ref List<OrphanMoveData> orphanMoveData)
         {
             //List<OrphanMoveData> orphanMoveData = null;
 
@@ -967,7 +1024,7 @@ namespace StarSalvager
                 //----------------------------------------------------------------------------------------------------//
 
                 //Get all the attachableBases around the specified attachable
-                var bitsAround = attachedBlocks.GetAttachablesAround<AttachableBase>(movingBit);
+                var bitsAround = attachedBlocks.GetAttachablesAround(movingBit);
 
                 //Don't want to bother checking the block that we know will not move
                 if (bitsAround.Contains(bitToUpgrade))
@@ -1010,7 +1067,7 @@ namespace StarSalvager
                     var newOrphanCoordinate =
                         bit.Coordinate + travelDirection.ToVector2Int() * (int) travelDistance;
 
-                    var attachedToOrphan = new List<AttachableBase>();
+                    var attachedToOrphan = new List<IAttachable>();
                     attachedBlocks.GetAllAttachedBits(bit, movingBits, ref attachedToOrphan);
 
                     //Debug.LogError($"Orphan Attached Count: {attachedToOrphan.Count}");
@@ -1040,13 +1097,13 @@ namespace StarSalvager
         /// <param name="movingBits"></param>
         /// <param name="orphanMoveData"></param>
         /// <param name="lastLocation"></param>
-        private void SolveOrphanPositionChange(AttachableBase orphanedBit, Vector2Int targetCoordinate, DIRECTION travelDirection,
-            int travelDistance, IReadOnlyCollection<AttachableBase> movingBits, ref List<OrphanMoveData> orphanMoveData)
+        private void SolveOrphanPositionChange(IAttachable orphanedBit, Vector2Int targetCoordinate, DIRECTION travelDirection,
+            int travelDistance, IReadOnlyCollection<IAttachable> movingBits, ref List<OrphanMoveData> orphanMoveData)
         {
             //Loop ensures that the orphaned blocks which intend on moving, are able to reach their destination without any issues.
 
             //Check only the Bits on the Bot that wont be moving
-            var stayingBlocks = new List<AttachableBase>(attachedBlocks);
+            var stayingBlocks = new List<IAttachable>(attachedBlocks);
             foreach (var attachableBase in movingBits)
             {
                 stayingBlocks.Remove(attachableBase);
@@ -1084,9 +1141,9 @@ namespace StarSalvager
         }
 
 
-        private void SolveOrphanGroupPositionChange(AttachableBase mainOrphan,
-            IReadOnlyList<AttachableBase> orphanGroup, Vector2Int targetCoordinate,
-            DIRECTION travelDirection, int travelDistance, IReadOnlyCollection<AttachableBase> movingBits,
+        private void SolveOrphanGroupPositionChange(IAttachable mainOrphan,
+            IReadOnlyList<IAttachable> orphanGroup, Vector2Int targetCoordinate,
+            DIRECTION travelDirection, int travelDistance, IReadOnlyCollection<IAttachable> movingBits,
             ref List<OrphanMoveData> orphanMoveData)
         {
 
@@ -1115,7 +1172,7 @@ namespace StarSalvager
                 var desiredLocation = targetCoordinate + relative;
 
                 //Check only the Bits on the Bot that wont be moving
-                var stayingBlocks = new List<AttachableBase>(attachedBlocks);
+                var stayingBlocks = new List<IAttachable>(attachedBlocks);
                 foreach (var attachableBase in movingBits)
                 {
                     stayingBlocks.Remove(attachableBase);
@@ -1160,7 +1217,7 @@ namespace StarSalvager
             }
         }
         
-        private bool IsPathClear(List<AttachableBase> stayingBlocks, IEnumerable<AttachableBase> toIgnore, int distance, Vector2Int currentCoordinate, DIRECTION moveDirection, Vector2Int targetCoordinate, out Vector2Int clearCoordinate)
+        private bool IsPathClear(List<IAttachable> stayingBlocks, IEnumerable<IAttachable> toIgnore, int distance, Vector2Int currentCoordinate, DIRECTION moveDirection, Vector2Int targetCoordinate, out Vector2Int clearCoordinate)
         {
             //var distance = (int) orphanMoveData.distance;
             var coordinate = currentCoordinate;
@@ -1203,7 +1260,7 @@ namespace StarSalvager
         /// <param name="speed"></param>
         /// <param name="OnFinishedCallback"></param>
         /// <returns></returns>
-        private IEnumerator MoveComboPiecesCoroutine(AttachableBase[] movingBits, AttachableBase target,
+        private IEnumerator MoveComboPiecesCoroutine(IAttachable[] movingBits, IAttachable target,
             IReadOnlyList<OrphanMoveData> orphans, float speed, Action OnFinishedCallback)
         {
             //Prepare Bits to be moved
@@ -1216,13 +1273,13 @@ namespace StarSalvager
                 //We need to disable the collider otherwise they can collide while moving
                 //I'm also assuming that if we've confirmed the upgrade, and it cannot be cancelled
                 attachedBlocks.Remove(bit);
-                bit.SetColliderActive(false);
+                (bit as Bit)?.SetColliderActive(false);
             }
 
             foreach (var omd in orphans)
             {
                 omd.attachableBase.Coordinate = omd.intendedCoordinates;
-                omd.attachableBase.SetColliderActive(false);
+                (omd.attachableBase as Bit)?.SetColliderActive(false);
             }
             
             //We're going to want to regenerate the shape while things are moving
@@ -1309,7 +1366,7 @@ namespace StarSalvager
             for (var i = 0; i < orphans.Count; i++)
             {
                 orphanTransforms[i].localPosition = orphanTargetPositions[i];
-                orphans[i].attachableBase.SetColliderActive(true);
+                (orphans[i].attachableBase as Bit)?.SetColliderActive(true);
             }
             
             //Now that everyone is where they need to be, wrap things up
@@ -1333,7 +1390,7 @@ namespace StarSalvager
         /// <param name="speed"></param>
         /// <param name="OnFinishedCallback"></param>
         /// <returns></returns>
-        private IEnumerator ShiftInDirectionCoroutine(IReadOnlyList<AttachableBase> toMove, DIRECTION direction, float speed, Action OnFinishedCallback)
+        private IEnumerator ShiftInDirectionCoroutine(IReadOnlyList<IAttachable> toMove, DIRECTION direction, float speed, Action OnFinishedCallback)
         {
             var dir = direction.ToVector2Int();
             var transforms = toMove.Select(x => x.transform).ToArray();
@@ -1344,7 +1401,7 @@ namespace StarSalvager
 
             foreach (var attachableBase in toMove)
             {
-                attachableBase.SetColliderActive(false);
+                (attachableBase as Bit)?.SetColliderActive(false);
                 attachableBase.Coordinate += dir;
             }
             
@@ -1356,7 +1413,7 @@ namespace StarSalvager
             {
                 for (var i = 0; i < transforms.Length; i++)
                 {
-                    if (toMove[i].IsAttached == false)
+                    if (toMove[i].Attached == false)
                         continue;
                     
                     transforms[i].localPosition = Vector2.Lerp(startPositions[i], targetPositions[i], t);
@@ -1370,7 +1427,7 @@ namespace StarSalvager
             for (var i = 0; i < toMove.Count; i++)
             {
                 transforms[i].localPosition = targetPositions[i];
-                toMove[i].SetColliderActive(true);
+                (toMove[i] as Bit)?.SetColliderActive(true);
             }
             
             OnFinishedCallback?.Invoke();

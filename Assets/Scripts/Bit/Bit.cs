@@ -8,8 +8,15 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Bit : AttachableBase, IBit
+    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth
     {
+        
+        public Vector2Int Coordinate { get; set; }
+        public bool Attached { get; set; }
+        
+        public float StartingHealth { get; }
+        public float CurrentHealth { get; }
+        
         //============================================================================================================//
         
         public BIT_TYPE Type
@@ -27,6 +34,17 @@ namespace StarSalvager
         private LayerMask collisionMask;
         
         //============================================================================================================//
+        
+        public void SetAttached(bool isAttached)
+        {
+            Attached = isAttached;
+            collider.usedByComposite = isAttached;
+        }
+        
+        public void ChangeHealth(float amount)
+        {
+            throw new NotImplementedException();
+        }
 
         public void IncreaseLevel(int amount = 1)
         {
@@ -65,13 +83,13 @@ namespace StarSalvager
             //If nothing was hit, ray failed, thus no reason to continue
             if (hit.collider == null)
             {
-                //Debug.DrawRay(rayStartPosition, rayDirection * size, Color.yellow, 1f);
+                Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.yellow, 1f);
                 SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);
                 return;
             }
             
-            //Debug.DrawRay(hit.point, Vector2.up, Color.red);
-            //Debug.DrawRay(rayStartPosition, rayDirection * size, Color.green);
+            Debug.DrawRay(hit.point, Vector2.up, Color.red);
+            Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.green);
 
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
             var inDirection = (-rayDirection).ToDirection();
@@ -100,7 +118,7 @@ namespace StarSalvager
         
         //============================================================================================================//
 
-        public override BlockData ToBlockData()
+        public BlockData ToBlockData()
         {
             return new BlockData
             {
@@ -111,7 +129,7 @@ namespace StarSalvager
             };
         }
 
-        public override void LoadBlockData(BlockData blockData)
+        public void LoadBlockData(BlockData blockData)
         {
             Coordinate = blockData.Coordinate;
             Type = (BIT_TYPE) blockData.Type;
@@ -119,6 +137,9 @@ namespace StarSalvager
         }
         
         //============================================================================================================//
+
+
+
 
     }
 }

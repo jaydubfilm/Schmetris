@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using Sirenix.Utilities;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
@@ -19,7 +20,8 @@ namespace StarSalvager.Utilities.Extensions
             //TODO Need to consider that there will be parts & bits attached to the bot
 
             var data = bot.attachedBlocks
-                .Select(b => b.ToBlockData())
+                .Select(b => b as ISaveable)
+                .ForEach(b => b.ToBlockData())
                 .ToArray();
 
             var blah = JsonConvert.SerializeObject(data, Formatting.None);
@@ -35,14 +37,14 @@ namespace StarSalvager.Utilities.Extensions
 
             foreach (var block in loadedBlocks)
             {
-                AttachableBase attachable;
+                IAttachable attachable;
                 switch (block.ClassType)
                 {
                     case nameof(Bit):
-                        attachable = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<AttachableBase>(block);
+                        attachable = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<IAttachable>(block);
                         break;
                     case nameof(Part):
-                        attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<AttachableBase>(block);
+                        attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(block);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(block.ClassType), block.ClassType, null);
@@ -66,21 +68,21 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="checking"></param>
         /// <param name="toIgnore"></param>
         /// <returns></returns>
-        public static bool HasPathToCore(this Bot bot, AttachableBase checking, List<Vector2Int> toIgnore = null)
+        public static bool HasPathToCore(this Bot bot, IAttachable checking, List<Vector2Int> toIgnore = null)
         {
             var travelled = new List<Vector2Int>();
             //Debug.LogError("STARTED TO CHECK HERE");
             return bot.PathAlgorithm(checking, toIgnore, ref travelled);
         }
         
-        private static bool PathAlgorithm(this Bot bot, AttachableBase current, ICollection<Vector2Int> toIgnore, ref List<Vector2Int> travelled)
+        private static bool PathAlgorithm(this Bot bot, IAttachable current, ICollection<Vector2Int> toIgnore, ref List<Vector2Int> travelled)
         {
             //If we're on (0, 0) we've reached the core, so go back up through 
             if (current.Coordinate == Vector2Int.zero)
                 return true;
 
             //Get list of attachables around the current attachable
-            var attachablesAround = bot.attachedBlocks.GetAttachablesAround<AttachableBase>(current);
+            var attachablesAround = bot.attachedBlocks.GetAttachablesAround<IAttachable>(current);
             
             for (var i = 0; i < attachablesAround.Count; i++)
             {
@@ -148,7 +150,7 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="target"></param>
         /// <param name="direction"></param>
         /// <param name="bitList"></param>
-        public static void ComboCount(this Bot bot, Bit target, DIRECTION direction, ref List<AttachableBase> bitList)
+        public static void ComboCount(this Bot bot, Bit target, DIRECTION direction, ref List<IAttachable> bitList)
         {
             bot.attachedBlocks.ComboCountAlgorithm(target.Type, target.level, target.Coordinate, direction.ToVector2Int(),
                 ref bitList);
