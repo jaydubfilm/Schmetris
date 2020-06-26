@@ -40,7 +40,7 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
         
         var newBit = FactoryManager.Instance
             .GetFactory<BitAttachableFactory>()
-            .CreateObject<AttachableBase>(
+            .CreateObject<IAttachable>(
                 (BIT_TYPE) Random.Range(0, 7),
                 Random.Range(0, 3));
 

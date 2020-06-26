@@ -3,8 +3,15 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Part : AttachableBase, IPart
+    public class Part : CollidableBase, IAttachable, ISaveable, IPart, IHealth
     {
+        public Vector2Int Coordinate { get; set; }
+        public bool Attached { get; set; }
+        
+        public float StartingHealth { get; }
+        public float CurrentHealth { get; }
+
+        
         //============================================================================================================//
 
         public PART_TYPE Type
@@ -21,7 +28,16 @@ namespace StarSalvager
         
         //============================================================================================================//
         
+        public void SetAttached(bool isAttached)
+        {
+            Attached = isAttached;
+            collider.usedByComposite = isAttached;
+        }
         
+        public void ChangeHealth(float amount)
+        {
+            //throw new System.NotImplementedException();
+        }
 
         //============================================================================================================//
 
@@ -30,7 +46,7 @@ namespace StarSalvager
             throw new System.NotImplementedException();
         }
 
-        public override BlockData ToBlockData()
+        public BlockData ToBlockData()
         {
             return new BlockData
             {
@@ -41,7 +57,7 @@ namespace StarSalvager
             };
         }
 
-        public override void LoadBlockData(BlockData blockData)
+        public void LoadBlockData(BlockData blockData)
         {
             Coordinate = blockData.Coordinate;
             Type = (PART_TYPE) blockData.Type;
@@ -49,6 +65,9 @@ namespace StarSalvager
         }
 
         //============================================================================================================//
+
+
+
     }
 }
 

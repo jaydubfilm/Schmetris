@@ -58,6 +58,7 @@ namespace StarSalvager
 
         private void OnCollisionEnter2D(Collision2D other)
         {
+            
             if (!useCollision)
                 return;
             

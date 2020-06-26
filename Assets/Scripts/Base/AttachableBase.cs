@@ -4,11 +4,10 @@ using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace StarSalvager
 {
-    /// <summary>
+    /*/// <summary>
     /// Any object which can be connected together should derive from attachable
     /// </summary>
     public abstract class AttachableBase : CollidableBase, IHealth
@@ -86,5 +85,5 @@ namespace StarSalvager
         
         public abstract void LoadBlockData(BlockData blockData);
 
-    }
+    }*/
 }

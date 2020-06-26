@@ -7,9 +7,9 @@ namespace StarSalvager.Utilities.Puzzle.Combos
 {
     public class TCombo : LineCombo
     {
-        public override bool TryGetCombo(AttachableBase origin, List<AttachableBase>[] directions,
+        public override bool TryGetCombo(IAttachable origin, List<IAttachable>[] directions,
             (bool hasCombo, int horizontalCount, int verticalCount) lineData,
-            out (ComboData comboData, List<AttachableBase> toMove) outData)
+            out (ComboData comboData, List<IAttachable> toMove) outData)
         {
             outData = (emptyCombo, null);
 
@@ -27,13 +27,13 @@ namespace StarSalvager.Utilities.Puzzle.Combos
                 switch (directions[(int) DIRECTION.UP].Count)
                 {
                     case 0 when directions[(int) DIRECTION.DOWN].Count == 2:
-                        outData.toMove = new List<AttachableBase> {origin};
+                        outData.toMove = new List<IAttachable> {origin};
                         outData.toMove.AddRange(directions[(int) DIRECTION.DOWN]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.LEFT]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.RIGHT]);
                         break;
                     case 2 when directions[(int) DIRECTION.DOWN].Count == 0:
-                        outData.toMove = new List<AttachableBase> {origin};
+                        outData.toMove = new List<IAttachable> {origin};
                         outData.toMove.AddRange(directions[(int) DIRECTION.UP]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.LEFT]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.RIGHT]);
@@ -51,13 +51,13 @@ namespace StarSalvager.Utilities.Puzzle.Combos
                 switch (directions[(int) DIRECTION.LEFT].Count)
                 {
                     case 0 when directions[(int) DIRECTION.RIGHT].Count == 2:
-                        outData.toMove = new List<AttachableBase> {origin};
+                        outData.toMove = new List<IAttachable> {origin};
                         outData.toMove.AddRange(directions[(int) DIRECTION.UP]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.DOWN]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.RIGHT]);
                         break;
                     case 2 when directions[(int) DIRECTION.RIGHT].Count == 0:
-                        outData.toMove = new List<AttachableBase> {origin};
+                        outData.toMove = new List<IAttachable> {origin};
                         outData.toMove.AddRange(directions[(int) DIRECTION.UP]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.DOWN]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.LEFT]);
@@ -71,7 +71,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
 
             outData.comboData = FactoryManager.Instance.GetFactory<ComboFactory>().GetComboData(COMBO.TEE);
             
-            Debug.LogError($"Found T Combo at {origin.gameObject.name}", origin);
+            Debug.LogError($"Found T Combo at {origin.gameObject.name}", origin.gameObject);
 
             return true;
         }
