@@ -1,5 +1,6 @@
 ﻿using System;
 using Recycling;
+using Sirenix.OdinInspector;
 using StarSalvager.Constants;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
@@ -11,38 +12,46 @@ namespace StarSalvager
 {
     public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth
     {
-        
+        //IAttachable properties
+        //============================================================================================================//
+
+        [ShowInInspector, ReadOnly]
         public Vector2Int Coordinate { get; set; }
+        [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
-        
+        [ShowInInspector, ReadOnly]
+        public bool CanShift => true;
+
+
+        //IHealth Properties
+        //============================================================================================================//
+
         public float StartingHealth { get { return _startingHealth; } }
         private float _startingHealth;
         public float CurrentHealth { get { return _currentHealth; } }
         private float _currentHealth;
-        
+
+        //Bit Properties
         //============================================================================================================//
-        
-        public BIT_TYPE Type
-        {
-            get => _type;
-            set => _type = value;
-        }
-        [SerializeField]
-        private BIT_TYPE _type;
-        public int level { get => _level; set => _level = value; }
-        [SerializeField]
-        private int _level;
+        [ShowInInspector, ReadOnly]
+        public BIT_TYPE Type { get; set; }
+        [ShowInInspector, ReadOnly]
+        public int level { get; private set; }
 
         [SerializeField]
         private LayerMask collisionMask;
-        
+
+        //IAttachable Functions
         //============================================================================================================//
-        
+
         public void SetAttached(bool isAttached)
         {
             Attached = isAttached;
             collider.usedByComposite = isAttached;
         }
+
+        //IHealth Functions
+        //============================================================================================================//
 
         public void SetupHealthValues(float startingHealth, float currentHealth)
         {
@@ -60,27 +69,30 @@ namespace StarSalvager
             }
         }
 
+
+        //Bit Functions
+        //============================================================================================================//
+
         public void IncreaseLevel(int amount = 1)
         {
             level += amount;
             renderer.sortingOrder = level;
-            
+
             //Sets the gameObject info (Sprite)
             var bit = this;
-            FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(_type, level, ref bit);
+            FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
         }
-        //============================================================================================================//
 
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
             var bot = gameObject.GetComponent<Bot>();
-            
+
             if (bot.Rotating)
             {
                 Recycling.Recycler.Recycle<Bit>(this.gameObject);
                 return;
             }
-            
+
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
             //return the direction to shoot the ray
             if (!TryGetRayDirectionFromBot(bot.MoveDirection, out var rayDirection))
@@ -90,7 +102,7 @@ namespace StarSalvager
             var rayLength = Values.gridCellSize * 3f;
             var rayStartPosition = (Vector2) transform.position + -rayDirection * (rayLength / 2f);
 
-            
+
             //Checking ray against player layer mask
             var hit = Physics2D.Raycast(rayStartPosition, rayDirection, rayLength,  collisionMask.value);
 
@@ -101,7 +113,7 @@ namespace StarSalvager
                 SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);
                 return;
             }
-            
+
             Debug.DrawRay(hit.point, Vector2.up, Color.red);
             Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.green);
 
@@ -129,7 +141,8 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
         }
-        
+
+        //ISaveable Functions
         //============================================================================================================//
 
         public BlockData ToBlockData()
@@ -149,7 +162,7 @@ namespace StarSalvager
             Type = (BIT_TYPE) blockData.Type;
             level = blockData.Level;
         }
-        
+
         //============================================================================================================//
 
 

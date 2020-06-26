@@ -14,6 +14,8 @@ namespace StarSalvager.AI
         public Vector2Int Coordinate { get; set; }
         public bool Attached { get; set; }
 
+        public bool CanShift => true;
+
         //============================================================================================================//
 
         protected new Transform transform
@@ -39,6 +41,8 @@ namespace StarSalvager.AI
             }
         }
         private SpriteRenderer m_spriteRenderer;
+
+        
 
         public void SetAttached(bool isAttached)
         {
