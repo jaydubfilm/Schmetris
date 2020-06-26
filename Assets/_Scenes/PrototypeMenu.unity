@@ -1184,16 +1184,12 @@ MonoBehaviour:
       Rotate the Bot"
     button: {fileID: 1883232068}
   - SceneIndex: 2
-    SceneTitle: Combos & Levels
+    SceneTitle: Shapes & Combos
     SceneDescription: 'WASD/Arrow Keys - Move Rotate the Bot
 
       ALT + Arrows
       - Push new Bit onto player bot (Random Type)'
     button: {fileID: 383152150}
-  - SceneIndex: 3
-    SceneTitle: SIMPLE shape Generator
-    SceneDescription: ENTER -Generate a random shape
-    button: {fileID: 1743000677}
   SceneSelectionWindowObject: {fileID: 629105499}
   SceneDescriptionWindowObject: {fileID: 1685384921}
   quitButton: {fileID: 583903227}
@@ -1650,7 +1646,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1743000674
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2442,6 +2438,66 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 1743000673}
+    ActiveGameObject: {fileID: 1743000673}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1685384921}
+    ActiveGameObject: {fileID: 1685384921}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 859822099}
+    ActiveGameObject: {fileID: 859822099}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 859822099}
+    ActiveGameObject: {fileID: 859822099}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 629105499}
+    ActiveGameObject: {fileID: 629105499}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 859822099}
     ActiveGameObject: {fileID: 859822099}
     GUIDsList: []
@@ -2665,68 +2721,6 @@ MonoBehaviour:
     list:
     - {fileID: 1883232066}
     ActiveGameObject: {fileID: 1883232066}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 383152149}
-    ActiveGameObject: {fileID: 383152149}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1883232066}
-    - {fileID: 383152149}
-    - {fileID: 1743000673}
-    ActiveGameObject: {fileID: 1883232066}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1883232066}
-    ActiveGameObject: {fileID: 1883232066}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 383152149}
-    ActiveGameObject: {fileID: 383152149}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1743000673}
-    ActiveGameObject: {fileID: 1743000673}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
