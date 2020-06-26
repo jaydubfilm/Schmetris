@@ -9,7 +9,7 @@ namespace StarSalvager
 {
     public class EnemyManager : MonoBehaviour
     {
-        private Enemy[] m_enemies;
+        private List<Enemy> m_enemies;
 
         //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
         private float m_currentInput;
@@ -22,13 +22,13 @@ namespace StarSalvager
         // Start is called before the first frame update
         void Start()
         {
-            m_enemies = new Enemy[Values.numberEnemiesSpawn];
+            m_enemies = new List<Enemy>();
 
-            for (int i = 0; i < m_enemies.Length; i++)
+            for (int i = 0; i < Values.numberEnemiesSpawn; i++)
             {
                 Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(ENEMY_TYPE.Enemy1);
-                m_enemies[i] = newEnemy;
-                m_enemies[i].transform.position = LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
+                m_enemies.Add(newEnemy);
+                newEnemy.transform.position = LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
             }
 
             LevelManager.Instance.DemoText.text =
@@ -88,8 +88,16 @@ namespace StarSalvager
 
             //Iterate through all agents, and for each one, add the forces from nearby obstacles to their current direction vector
             //After adding the forces, normalize and multiply by the velocity to ensure consistent speed
-            for (int i = 0; i < m_enemies.Length; i++)
+            for (int i = 0; i < m_enemies.Count; i++)
             {
+                if (m_enemies[i] is EnemyAttachable enemyAttachable)
+                {
+                    if (enemyAttachable.Attached)
+                    {
+                        continue;
+                    }
+                }
+                
                 Vector3 position = m_enemies[i].transform.position;
                 Vector3 destination = m_enemies[i].GetDestination();
 

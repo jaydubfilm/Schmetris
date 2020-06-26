@@ -56,12 +56,24 @@ namespace StarSalvager.AI
             renderer.sprite = m_enemyData.Sprite;
         }
 
+        private void Update()
+        {
+            if (Attached)
+            {
+                m_fireTimer += Time.deltaTime;
+                if (m_fireTimer >= 1 / m_enemyData.AttackSpeed)
+                {
+                    m_fireTimer -= 1 / m_enemyData.AttackSpeed;
+                    print("MUNCH " + LevelManager.Instance.BotGameObject.GetClosestAttachable(Coordinate) + " FOR " + m_enemyData.AttackDamage + " AMOUNT");
+                    LevelManager.Instance.BotGameObject.TryHitAt(LevelManager.Instance.BotGameObject.GetClosestAttachable(Coordinate), m_enemyData.AttackDamage);
+                }
+            }
+        }
+
         //============================================================================================================//
 
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
-            //print("HITS");
-            
             var bot = gameObject.GetComponent<Bot>();
 
             if (bot.Rotating)
@@ -70,46 +82,16 @@ namespace StarSalvager.AI
                 return;
             }
 
-            TryGetRayDirectionFromBot(bot.MoveDirection, out var rayDirection);
-
-            //Long ray compensates for the players high speed
-            var rayLength = Values.gridCellSize * 3f;
-            var rayStartPosition = (Vector2)transform.position + -rayDirection * (rayLength / 2f);
-
-
-            //Checking ray against player layer mask
-            var hit = Physics2D.Raycast(rayStartPosition, rayDirection, rayLength, collisionMask.value);
-
             //If nothing was hit, ray failed, thus no reason to continue
-            if (hit.collider == null)
+            /*if (hit.collider == null)
             {
                 SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);
                 return;
-            }
+            }*/
 
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
             var inDirection = (-(Vector2)m_mostRecentMovementDirection).ToDirection();
-            bot.TryAddNewAttachable(this, inDirection, hit.point);
-        }
-
-        private bool TryGetRayDirectionFromBot(DIRECTION direction, out Vector2 rayDirection)
-        {
-            rayDirection = Vector2.zero;
-            //Returns the opposite direction based on the current players move direction.
-            switch (direction)
-            {
-                case DIRECTION.NULL:
-                    rayDirection = Vector2.down;
-                    return true;
-                case DIRECTION.LEFT:
-                    rayDirection = Vector2.right;
-                    return true;
-                case DIRECTION.RIGHT:
-                    rayDirection = Vector2.left;
-                    return true;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-            }
+            bot.TryAddNewAttachable(this, inDirection, hitPoint);
         }
     }
 }

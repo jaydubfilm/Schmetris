@@ -11,7 +11,7 @@ namespace StarSalvager.AI
     {
         public EnemyData m_enemyData;
 
-        private float m_fireTimer = 0;
+        protected float m_fireTimer = 0;
         private float m_oscillationTimer = 0;
         private Vector3 m_currentHorizontalMovementDirection = Vector3.right;
         private float m_horizontalMovementYLevel;
