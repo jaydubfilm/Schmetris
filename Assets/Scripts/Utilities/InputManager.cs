@@ -5,11 +5,23 @@ namespace StarSalvager.Utilities.Inputs
     public class InputManager : SceneSingleton<InputManager>, IInput
     {
         private Bot[] _bots;
+        private ObstacleManager _obstacleManager;
+        private EnemyManager _enemyManager;
+        private CameraController _cameraController;
 
         private void Start()
         {
             if (_bots == null || _bots.Length == 0)
                 _bots = FindObjectsOfType<Bot>();
+
+            if (_obstacleManager == null)
+                _obstacleManager = FindObjectOfType<ObstacleManager>();
+
+            if (_enemyManager == null)
+                _enemyManager = FindObjectOfType<EnemyManager>();
+
+            if (_cameraController == null)
+                _cameraController = FindObjectOfType<CameraController>();
 
             InitInput();
         }
@@ -17,10 +29,9 @@ namespace StarSalvager.Utilities.Inputs
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            
+
             DeInitInput();
         }
-
 
         public void InitInput()
         {
@@ -50,12 +61,17 @@ namespace StarSalvager.Utilities.Inputs
             {
                 bot.Move(move);
             }
+
+            _obstacleManager.Move(move);
+            _enemyManager.Move(move);
+            _cameraController.Move(move);
+            LevelManager.Instance.ProjectileManager.Move(move);
         }
 
         private void Rotate(InputAction.CallbackContext ctx)
         {
             var rot = ctx.ReadValue<float>();
-            
+
             foreach (var bot in _bots)
             {
                 bot.Rotate(rot);
@@ -63,4 +79,3 @@ namespace StarSalvager.Utilities.Inputs
         }
     }
 }
-

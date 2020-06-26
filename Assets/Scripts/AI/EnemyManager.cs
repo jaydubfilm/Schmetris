@@ -11,6 +11,14 @@ namespace StarSalvager
     {
         private Enemy[] m_enemies;
 
+        //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
+        private float m_currentInput;
+
+        public bool Moving => _moving;
+        private bool _moving;
+
+        private float m_distanceHorizontal = 0.0f;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -60,6 +68,23 @@ namespace StarSalvager
                 m_enemies[0].transform.position = LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
             }
 
+            Vector3 gridMovement = Vector3.zero;
+            if (m_distanceHorizontal != 0)
+            {
+                if (m_distanceHorizontal > 0)
+                {
+                    float toMove = Mathf.Min(m_distanceHorizontal, Values.botHorizontalSpeed * Time.deltaTime);
+                    gridMovement = Vector3.right * toMove;
+                    m_distanceHorizontal -= toMove;
+                }
+                else if (m_distanceHorizontal < 0)
+                {
+                    float toMove = Mathf.Min(Mathf.Abs(m_distanceHorizontal), Values.botHorizontalSpeed * Time.deltaTime);
+                    gridMovement = Vector3.left * toMove;
+                    m_distanceHorizontal += toMove;
+                }
+            }
+
 
             //Iterate through all agents, and for each one, add the forces from nearby obstacles to their current direction vector
             //After adding the forces, normalize and multiply by the velocity to ensure consistent speed
@@ -77,8 +102,30 @@ namespace StarSalvager
                     direction.Normalize();
                 }
 
+                m_enemies[i].transform.position -= gridMovement;
+
                 m_enemies[i].ProcessMovement(direction);
             }
+
+            if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)
+            {
+                Move(m_currentInput);
+            }
+        }
+
+        public void Move(float direction)
+        {
+            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+            {
+                m_currentInput = 0f;
+                return;
+            }
+
+            m_currentInput = direction;
+
+            m_distanceHorizontal += direction * Values.gridCellSize;
+
+            _moving = true;
         }
     }
 }

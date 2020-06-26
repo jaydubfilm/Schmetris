@@ -1,4 +1,5 @@
 ﻿using System;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -37,6 +38,11 @@ namespace StarSalvager
         public void ChangeHealth(float amount)
         {
             _currentHealth += amount;
+
+            if (_currentHealth <= 0)
+            {
+                Recycler.Recycle(typeof(AttachableBase), this.gameObject);
+            }
         }
         
         //============================================================================================================//

@@ -77,11 +77,14 @@ namespace StarSalvager.AI
             foreach (Vector2 fireLocation in fireLocations)
             {
                 Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>().CreateObject<Projectile>(m_enemyData.ProjectileType, fireLocation, "Player");
+                newProjectile.DamageAmount = m_enemyData.AttackDamage;
+                newProjectile.transform.parent = LevelManager.Instance.gameObject.transform;
                 newProjectile.transform.position = transform.position;
                 if (m_enemyData.AddVelocityToProjectiles)
                 {
                     newProjectile.m_enemyVelocityModifier = m_mostRecentMovementDirection * m_enemyData.MovementSpeed;
                 }
+                LevelManager.Instance.ProjectileManager.AddProjectile(newProjectile);
             }
         }
 

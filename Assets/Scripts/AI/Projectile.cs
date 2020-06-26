@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using StarSalvager.Factories.Data;
 using System;
+using Recycling;
+using System.Runtime.CompilerServices;
 
 namespace StarSalvager.AI
 {
@@ -14,6 +16,8 @@ namespace StarSalvager.AI
         public Vector3 m_enemyVelocityModifier = Vector3.zero;
         [NonSerialized]
         public ProjectileProfileData m_projectileData;
+
+        public float DamageAmount = 0.0f;
 
         protected override string CollisionTag => "Player";
 
@@ -30,7 +34,13 @@ namespace StarSalvager.AI
 
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
-            Destroy(this.gameObject);
+            Bot bot = gameObject.GetComponent<Bot>();
+            if (bot != null)
+            {
+                bot.TryHitAt(transform.position, DamageAmount);
+            }
+
+            Recycler.Recycle(typeof(Projectile), this.gameObject);
         }
     }
 }

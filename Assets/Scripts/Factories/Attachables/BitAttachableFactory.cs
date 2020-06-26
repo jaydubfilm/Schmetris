@@ -1,4 +1,5 @@
-﻿using StarSalvager.Factories.Data;
+﻿using Recycling;
+using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -36,8 +37,16 @@ namespace StarSalvager.Factories
         {
             var profile = factoryProfile.GetProfile((BIT_TYPE)blockData.Type);
             var sprite = profile.GetSprite(blockData.Level);
-            
-            var temp = Object.Instantiate(factoryProfile.Prefab).GetComponent<Bit>();
+
+            Bit temp;
+            if (Recycler.TryGrab<Bit>(out Bit newBit))
+            {
+                temp = newBit;
+            }
+            else
+            {
+                temp = Object.Instantiate(factoryProfile.Prefab).GetComponent<Bit>();
+            }
             temp.SetSprite(sprite);
             temp.LoadBlockData(blockData);
 

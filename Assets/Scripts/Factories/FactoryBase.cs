@@ -17,6 +17,6 @@ namespace StarSalvager.Factories
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public abstract T CreateObject<T>() where T: Object;
+        public abstract T CreateObject<T>() where T: MonoBehaviour;
     }   
 }

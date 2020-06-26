@@ -13,6 +13,10 @@ namespace StarSalvager.AI
 {
     public class AIObstacleAvoidance : MonoBehaviour
     {
+        //Temporary variables, simulating the movement speed of falling obstacles
+        private float m_timer = Values.timeForAsteroidsToFall / 2;
+        private Vector2 m_obstaclePositionAdjuster = new Vector2(0.0f, Values.gridCellSize);
+
         void Start()
         {
 
@@ -20,7 +24,14 @@ namespace StarSalvager.AI
 
         void Update()
         {
-
+            //Temporary code to simulate the speed of downward movement for obstacles and move the prefabs on screen downward
+            m_timer += Time.deltaTime;
+            if (m_timer >= Values.timeForAsteroidsToFall)
+            {
+                m_timer -= Values.timeForAsteroidsToFall;
+                LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid();
+                LevelManager.Instance.ObstacleManager.SpawnNewRowOfObstacles();
+            }
         }
 
         //Check all nearby squares to the agent to see if any contain an obstacle. For any obstacles in those squares, add the force they apply on the agent.
@@ -43,7 +54,7 @@ namespace StarSalvager.AI
                 {
                     if (LevelManager.Instance.WorldGrid.GetGridSquareAtPosition(i, k).m_obstacleInSquare)
                     {
-                        Vector2 obstacleForce = GetForce(agentPosition, LevelManager.Instance.ObstacleManager.CalculateObstaclePositionChange(i, k));
+                        Vector2 obstacleForce = GetForce(agentPosition, CalculateObstaclePositionChange(i, k));
                         force.x += obstacleForce.x;
                         force.y += obstacleForce.y;
                     }
@@ -61,6 +72,13 @@ namespace StarSalvager.AI
             direction.Normalize();
             direction *= magnitude;
             return direction;
+        }
+
+        //Returns the position of the obstacle at this location in the grid, by getting the grid center position and
+        //infering where it is in relation to that based on the timer and the obstacles movement speed
+        private Vector2 CalculateObstaclePositionChange(int x, int y)
+        {
+            return LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * ((m_timer / Values.timeForAsteroidsToFall) - 0.5f);
         }
     }
 }

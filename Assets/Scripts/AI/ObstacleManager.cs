@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using StarSalvager.Factories;
 using StarSalvager.Constants;
-using StarSalvager.AI;
-using StarSalvager;
-using Unity.Jobs;
-using UnityEngine.Jobs;
+using StarSalvager.Factories;
+using Recycling;
+using System.Runtime.CompilerServices;
+using Sirenix.OdinInspector;
 
 namespace StarSalvager
 {
@@ -14,86 +12,142 @@ namespace StarSalvager
     {
         private List<Bit> m_bits;
 
-        //Temporary variables, simulating the movement speed of falling obstacles
-        private float m_timer = Values.timeForAsteroidsToFall / 2;
-        private Vector2 m_obstaclePositionAdjuster = new Vector2(0.0f, Values.gridCellSize);
+        private int m_numBitsSpawnedPerRow = Values.gridSizeX / 20;
 
-        //Variables used for job scheduling system
-        /*PositionUpdateJob m_positionUpdateJob;
-        TransformAccessArray m_obstacleTransformAccessArray;
+        //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
+        private float m_currentInput;
 
-        struct PositionUpdateJob : IJobParallelForTransform
-        {
-            public Vector3 distanceToMove;
+        public bool Moving => _moving;
+        private bool _moving;
 
-            public void Execute(int i, TransformAccess transform)
-            {
-                transform.position -= distanceToMove;
-            }
-        }*/
+        private float m_distanceHorizontal = 0.0f;
 
         // Start is called before the first frame update
         void Start()
         {
             m_bits = new List<Bit>();
-            //Transform[] transformArray = new Transform[m_bits.Length];
 
             for (int i = 0; i < Values.numberBitsSpawn; i++)
             {
-                Bit newBit = GameObject.Instantiate(LevelManager.Instance.BitTestPrefab);
-                m_bits.Add(newBit);
-                Vector2 position = LevelManager.Instance.WorldGrid.GetRandomGridSquareWorldPosition();
-                newBit.transform.position = position;
-                //transformArray[i] = m_bits[i].transform;
-                LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
+                SpawnObstacle(true);
             }
-
-            //m_obstacleTransformAccessArray = new TransformAccessArray(transformArray);
         }
+
 
         // Update is called once per frame
         void Update()
         {
-            //Temporary code to simulate the speed of downward movement for obstacles and move the prefabs on screen downward
-            m_timer += Time.deltaTime;
-            if (m_timer >= Values.timeForAsteroidsToFall)
-            {
-                m_timer -= Values.timeForAsteroidsToFall;
-                LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid();
-            }
+            Vector3 amountShift = Vector3.up * ((Values.gridCellSize * Time.deltaTime) / Values.timeForAsteroidsToFall);
 
-            Vector3 amountShiftDown = new Vector3(0, (Values.gridCellSize * Time.deltaTime) / Values.timeForAsteroidsToFall, 0);
-            /*m_positionUpdateJob = new PositionUpdateJob()
+            if (m_distanceHorizontal != 0)
             {
-                distanceToMove = amountShiftDown,
-            };
+                int gridPositionXPrevious = (int)Mathf.Ceil(m_distanceHorizontal + (Values.gridCellSize / 2) / Values.gridCellSize);
 
-            m_positionUpdateJob.Schedule(m_obstacleTransformAccessArray);*/
-
-            foreach (Bit bit in m_bits)
-            {
-                if (bit != null && bit.IsAttached != true)
+                if (m_distanceHorizontal > 0)
                 {
-                    bit.transform.position -= amountShiftDown;
-                    if (bit.transform.position.y < 0)
-                    {
-                        bit.transform.position += Vector3.up * Values.gridSizeY * Values.gridCellSize;
-                    }
+                    float toMove = Mathf.Min(m_distanceHorizontal, Values.botHorizontalSpeed * Time.deltaTime);
+                    amountShift += Vector3.right * toMove;
+                    m_distanceHorizontal -= toMove;
+                }
+                else if (m_distanceHorizontal < 0)
+                {
+                    float toMove = Mathf.Min(Mathf.Abs(m_distanceHorizontal), Values.botHorizontalSpeed * Time.deltaTime);
+                    amountShift += Vector3.left * toMove;
+                    m_distanceHorizontal += toMove;
+                }
+
+                int gridPositionXCurrent = (int)Mathf.Ceil(m_distanceHorizontal + (Values.gridCellSize / 2) / Values.gridCellSize);
+                if (gridPositionXPrevious > gridPositionXCurrent)
+                {
+                    LevelManager.Instance.WorldGrid.MoveObstacleMarkersLeftOnGrid(gridPositionXPrevious - gridPositionXCurrent);
+                }
+                else if (gridPositionXPrevious < gridPositionXCurrent)
+                {
+                    LevelManager.Instance.WorldGrid.MoveObstacleMarkersRightOnGrid(gridPositionXCurrent - gridPositionXPrevious);
                 }
             }
-            //End temporary code
+
+            for (var i = m_bits.Count - 1; i >= 0; i--)
+            {
+                var bit = m_bits[i];
+                if (bit == null)
+                {
+                    m_bits.RemoveAt(i);
+                    continue;
+                }
+
+                if (bit.IsAttached)
+                {
+                    m_bits.RemoveAt(i);
+                    continue;
+                }
+
+                var pos = bit.transform.position;
+                Vector2 gridPosition = LevelManager.Instance.WorldGrid.GetGridPositionOfVector(bit.transform.position);
+                pos -= amountShift;
+
+                if (gridPosition.y < 0)
+                {
+                    var temp = m_bits[i];
+                    m_bits.RemoveAt(i);
+                    Recycler.Recycle(typeof(Bit), temp.gameObject);
+                    continue;
+                }
+
+                if (gridPosition.x < 0)
+                    pos += Vector3.right * (Values.gridSizeX * Values.gridCellSize);
+                else if (gridPosition.x >= Values.gridSizeX)
+                    pos += Vector3.left * (Values.gridSizeX * Values.gridCellSize);
+
+                bit.transform.position = pos;
+            }
+
+            if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)
+            {
+                Move(m_currentInput);
+            }
         }
 
-        //Returns the position of the obstacle at this location in the grid, by getting the grid center position and
-        //infering where it is in relation to that based on the timer and the obstacles movement speed
-        public Vector2 CalculateObstaclePositionChange(int x, int y)
+        public void Move(float direction)
         {
-            return LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * ((m_timer / Values.timeForAsteroidsToFall) - 0.5f);
+            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+            {
+                m_currentInput = 0f;
+                return;
+            }
+
+            m_currentInput = direction;
+
+            m_distanceHorizontal += direction * Values.gridCellSize;
+
+            _moving = true;
         }
 
-        private void OnDestroy()
+        public void SpawnNewRowOfObstacles()
         {
-            //m_obstacleTransformAccessArray.Dispose();
+            for (int i = 0; i < m_numBitsSpawnedPerRow; i++)
+            {
+                SpawnObstacle();
+            }
+        }
+
+        private void SpawnObstacle(bool inRandomYLevel = false)
+        {
+            var type = (BIT_TYPE)Random.Range(0, 7);
+            Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject(type).GetComponent<Bit>();
+            m_bits.Add(newBit);
+            newBit.transform.parent = LevelManager.Instance.gameObject.transform;
+            Vector2 position;
+            if (inRandomYLevel)
+            {
+                position = LevelManager.Instance.WorldGrid.GetRandomGridSquareWorldPosition();
+            }
+            else
+            {
+                position = LevelManager.Instance.WorldGrid.GetRandomTopGridSquareWorldPosition();
+            }
+            newBit.transform.position = position;
+            LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
         }
     }
 }

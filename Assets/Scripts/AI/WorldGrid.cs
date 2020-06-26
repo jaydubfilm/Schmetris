@@ -14,7 +14,9 @@ namespace StarSalvager
 
         public WorldGrid()
         {
-            m_anchorPoint = Vector2.zero;
+            m_anchorPoint = Vector2.left * 
+                ((Values.gridSizeX / 2) * Values.gridCellSize - 
+                ((Camera.main.orthographicSize * Screen.width / Screen.height)));
 
             m_gridArray = new GridSquare[Values.gridSizeX * Values.gridSizeY];
 
@@ -54,6 +56,42 @@ namespace StarSalvager
                     else
                     {
                         SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x, y + 1).m_obstacleInSquare);
+                    }
+                }
+            }
+        }
+
+        public void MoveObstacleMarkersLeftOnGrid(int amount)
+        {
+            for (int x = 0; x < Values.gridSizeX; x++)
+            {
+                for (int y = 0; y < Values.gridSizeY; y++)
+                {
+                    if (x + amount >= Values.gridSizeX)
+                    {
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x + amount - Values.gridSizeX, y).m_obstacleInSquare);
+                    }
+                    else
+                    {
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x + amount, y).m_obstacleInSquare);
+                    }
+                }
+            }
+        }
+
+        public void MoveObstacleMarkersRightOnGrid(int amount)
+        {
+            for (int x = Values.gridSizeX - 1; x >= 0; x--)
+            {
+                for (int y = 0; y < Values.gridSizeY; y++)
+                {
+                    if (x - amount < 0)
+                    {
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x - amount + Values.gridSizeX, y).m_obstacleInSquare);
+                    }
+                    else
+                    {
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x - amount, y).m_obstacleInSquare);
                     }
                 }
             }
@@ -104,9 +142,14 @@ namespace StarSalvager
             return GetCenterOfGridSquareInGridPosition(UnityEngine.Random.Range(0, Values.gridSizeX), UnityEngine.Random.Range(0, Values.gridSizeY));
         }
 
+        public Vector2 GetRandomTopGridSquareWorldPosition()
+        {
+            return GetCenterOfGridSquareInGridPosition(UnityEngine.Random.Range(0, Values.gridSizeX), Values.gridSizeY - 1);
+        }
+
         public Vector2Int GetGridPositionOfVector(Vector2 worldLocation)
         {
-            return new Vector2Int((int) ((worldLocation.x - m_anchorPoint.x) / Values.gridCellSize), (int) ((worldLocation.y - m_anchorPoint.y) / Values.gridCellSize));
+            return new Vector2Int((int)Mathf.Floor((worldLocation.x - m_anchorPoint.x) / Values.gridCellSize), (int)Mathf.Floor((worldLocation.y - m_anchorPoint.y) / Values.gridCellSize));
         }
     }
 }
