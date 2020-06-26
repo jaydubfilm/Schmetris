@@ -1,5 +1,4 @@
-﻿using System;
-using Sirenix.OdinInspector;
+﻿using Recycling;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
@@ -15,10 +14,10 @@ namespace StarSalvager
         public bool Attached { get; set; }
         [ShowInInspector, ReadOnly]
         public bool CanShift => false;
-        
+
         //IHealth Properties
         //============================================================================================================//
-        
+
         public float StartingHealth { get; }
         public float CurrentHealth { get; }
 
@@ -31,19 +30,27 @@ namespace StarSalvager
 
         //IAttachable Functions
         //============================================================================================================//
-        
+
         public void SetAttached(bool isAttached)
         {
             Attached = isAttached;
             collider.usedByComposite = isAttached;
         }
 
-        //IHealth Functions
-        //============================================================================================================//
-        
+        public void SetupHealthValues(float startingHealth, float currentHealth)
+        {
+            _startingHealth = startingHealth;
+            _currentHealth = currentHealth;
+        }
+
         public void ChangeHealth(float amount)
         {
-            //throw new System.NotImplementedException();
+            _currentHealth += amount;
+
+            if (_currentHealth <= 0)
+            {
+                Recycler.Recycle(typeof(Part), this.gameObject);
+            }
         }
 
         //Part Functions
@@ -56,7 +63,7 @@ namespace StarSalvager
 
         //ISaveable Functions
         //============================================================================================================//
-        
+
         public BlockData ToBlockData()
         {
             return new BlockData
@@ -81,4 +88,3 @@ namespace StarSalvager
 
     }
 }
-

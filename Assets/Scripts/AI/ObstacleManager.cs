@@ -76,9 +76,13 @@ namespace StarSalvager
                     continue;
                 }
 
-                if (bit.Attached)
+                if (!bit.enabled)
                 {
                     m_bits.RemoveAt(i);
+                }
+
+                if (bit.Attached)
+                {
                     continue;
                 }
 
@@ -135,7 +139,10 @@ namespace StarSalvager
         {
             var type = (BIT_TYPE)Random.Range(0, 7);
             Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject(type).GetComponent<Bit>();
-            m_bits.Add(newBit);
+            
+            //TODO: Find a more elegant solution for this if statement. This is catching the scenario where a bit is recycled and reused in the same frame, before it can be removed by the update loop, resulting in it being in the list twice.
+            if (!m_bits.Contains(newBit))
+                m_bits.Add(newBit);  
             newBit.transform.parent = LevelManager.Instance.gameObject.transform;
             Vector2 position;
             if (inRandomYLevel)

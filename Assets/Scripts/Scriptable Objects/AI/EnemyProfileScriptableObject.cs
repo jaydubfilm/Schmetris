@@ -13,6 +13,9 @@ namespace StarSalvager.ScriptableObjects
         [SerializeField, Required]
         public GameObject m_prefab;
 
+        [SerializeField, Required]
+        public GameObject m_attachablePrefab;
+
         public List<EnemyProfileData> m_enemyProfileData = new List<EnemyProfileData>();
 
         public EnemyProfileData GetEnemyProfileData(ENEMY_TYPE Type)

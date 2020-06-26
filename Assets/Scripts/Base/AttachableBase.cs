@@ -34,6 +34,12 @@ namespace StarSalvager
         
         //============================================================================================================//
         
+        public void SetupHealthValues(float startingHealth, float currentHealth)
+        {
+            _startingHealth = startingHealth;
+            _currentHealth = currentHealth;
+        }
+
         public void ChangeHealth(float amount)
         {
             _currentHealth += amount;
@@ -47,7 +53,7 @@ namespace StarSalvager
         //============================================================================================================//
 
         //TODO Might want to consider storing who we're attached to here
-        public void SetAttached(bool isAttached)
+        public virtual void SetAttached(bool isAttached)
         {
             Attached = isAttached;
             collider.usedByComposite = isAttached;

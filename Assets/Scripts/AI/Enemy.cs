@@ -7,7 +7,7 @@ using StarSalvager.Constants;
 
 namespace StarSalvager.AI
 {
-    public class Enemy : MonoBehaviour, IEnemy
+    public class Enemy : CollidableBase
     {
         public EnemyData m_enemyData;
 
@@ -18,31 +18,8 @@ namespace StarSalvager.AI
         private Vector3 m_spiralAttackDirection = Vector3.down;
         private float horizontalFarLeftX = 0;
         private float horizontalFarRightX = Values.gridSizeX * Values.gridCellSize;
-        private Vector3 m_mostRecentMovementDirection = Vector3.zero;
+        protected Vector3 m_mostRecentMovementDirection = Vector3.zero;
 
-        protected new Transform transform
-        {
-            get
-            {
-                if (m_transform == null)
-                    m_transform = gameObject.GetComponent<Transform>();
-
-                return m_transform;
-            }
-        }
-        private Transform m_transform;
-
-        protected new SpriteRenderer renderer
-        {
-            get
-            {
-                if (m_spriteRenderer == null)
-                    m_spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-
-                return m_spriteRenderer;
-            }
-        }
-        private SpriteRenderer m_spriteRenderer;
 
         private void Start()
         {
@@ -106,7 +83,7 @@ namespace StarSalvager.AI
                     break;
                 case ENEMY_ATTACKTYPE.AtPlayerCone:
                     //Rotate player position around enemy position slightly by a random angle to shoot somewhere in a cone around the player
-                    fireDirections.Add(GetDestinationForRotatePositionAroundPivot(playerLocation, transform.position, Vector3.forward *  Random.Range(-m_enemyData.SpreadAngle, m_enemyData.SpreadAngle)) - transform.position);
+                    fireDirections.Add(GetDestinationForRotatePositionAroundPivot(playerLocation, transform.position, Vector3.forward * Random.Range(-m_enemyData.SpreadAngle, m_enemyData.SpreadAngle)) - transform.position);
                     break;
                 case ENEMY_ATTACKTYPE.Down:
                     fireDirections.Add(Vector3.down);
@@ -133,7 +110,7 @@ namespace StarSalvager.AI
             //Movement styles are based on the player location. For now, hardcode this
             Vector3 playerLocation = LevelManager.Instance.BotGameObject != null ? LevelManager.Instance.BotGameObject.transform.position : Vector3.right * 50;
 
-            switch(m_enemyData.MovementType)
+            switch (m_enemyData.MovementType)
             {
                 case ENEMY_MOVETYPE.Standard:
                     return playerLocation;
@@ -201,7 +178,7 @@ namespace StarSalvager.AI
             {
                 addedVertical += Vector3.up * (m_horizontalMovementYLevel - transform.position.y);
             }
-            
+
             return m_currentHorizontalMovementDirection + addedVertical;
         }
 
@@ -245,6 +222,11 @@ namespace StarSalvager.AI
             direction *= distance;
             direction = Quaternion.Euler(angles) * direction;
             return (direction + pivot);
+        }
+
+        protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
+        {
+
         }
     }
 }

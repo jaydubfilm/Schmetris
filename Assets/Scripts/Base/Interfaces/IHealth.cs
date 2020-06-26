@@ -8,6 +8,7 @@ namespace StarSalvager
     {
         float StartingHealth { get; }
         float CurrentHealth { get; }
+        void SetupHealthValues(float startingHealth, float currentHealth);
         void ChangeHealth(float amount);
     }
 }

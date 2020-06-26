@@ -1,5 +1,5 @@
 ﻿using System;
-using Sirenix.OdinInspector;
+using Recycling;
 using StarSalvager.Constants;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
@@ -24,10 +24,12 @@ namespace StarSalvager
 
         //IHealth Properties
         //============================================================================================================//
-        
-        public float StartingHealth { get; }
-        public float CurrentHealth { get; }
-        
+
+        public float StartingHealth { get { return _startingHealth; } }
+        private float _startingHealth;
+        public float CurrentHealth { get { return _currentHealth; } }
+        private float _currentHealth;
+
         //Bit Properties
         //============================================================================================================//
         [ShowInInspector, ReadOnly]
@@ -37,7 +39,7 @@ namespace StarSalvager
 
         [SerializeField]
         private LayerMask collisionMask;
-        
+
         //IAttachable Functions
         //============================================================================================================//
 
@@ -47,14 +49,22 @@ namespace StarSalvager
             collider.usedByComposite = isAttached;
         }
 
-        //IHealth Properties
-        //============================================================================================================//
-        
+        public void SetupHealthValues(float startingHealth, float currentHealth)
+        {
+            _startingHealth = startingHealth;
+            _currentHealth = currentHealth;
+        }
+
         public void ChangeHealth(float amount)
         {
-            throw new NotImplementedException();
+            _currentHealth += amount;
+
+            if (_currentHealth <= 0)
+            {
+                Recycler.Recycle(typeof(Bit), this.gameObject);
+            }
         }
-        
+
 
         //Bit Functions
         //============================================================================================================//
@@ -63,7 +73,7 @@ namespace StarSalvager
         {
             level += amount;
             renderer.sortingOrder = level;
-            
+
             //Sets the gameObject info (Sprite)
             var bit = this;
             FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
@@ -72,13 +82,13 @@ namespace StarSalvager
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
             var bot = gameObject.GetComponent<Bot>();
-            
+
             if (bot.Rotating)
             {
                 Recycling.Recycler.Recycle<Bit>(this.gameObject);
                 return;
             }
-            
+
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
             //return the direction to shoot the ray
             if (!TryGetRayDirectionFromBot(bot.MoveDirection, out var rayDirection))
@@ -88,7 +98,7 @@ namespace StarSalvager
             var rayLength = Values.gridCellSize * 3f;
             var rayStartPosition = (Vector2) transform.position + -rayDirection * (rayLength / 2f);
 
-            
+
             //Checking ray against player layer mask
             var hit = Physics2D.Raycast(rayStartPosition, rayDirection, rayLength,  collisionMask.value);
 
@@ -99,7 +109,7 @@ namespace StarSalvager
                 SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);
                 return;
             }
-            
+
             Debug.DrawRay(hit.point, Vector2.up, Color.red);
             Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.green);
 
@@ -127,7 +137,7 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
         }
-        
+
         //ISaveable Functions
         //============================================================================================================//
 
@@ -148,7 +158,7 @@ namespace StarSalvager
             Type = (BIT_TYPE) blockData.Type;
             level = blockData.Level;
         }
-        
+
         //============================================================================================================//
 
 

@@ -336,8 +336,32 @@ namespace StarSalvager
                         throw new ArgumentOutOfRangeException(nameof(bit.Type), bit.Type, null);
                 }
             }
-            //TODO Need to add other options here (ie Enemy) 
+            else if (attachable is EnemyAttachable enemyAttachable)
+            {
+                bool legalDirection;
+                var direction = DIRECTION.NULL;
 
+
+                //Get the coordinate of the collision
+                var bitCoordinate = GetRelativeCoordinate(enemyAttachable.transform.position);
+
+                //----------------------------------------------------------------------------------------------------//
+
+                var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
+
+                //----------------------------------------------------------------------------------------------------//
+
+                if (!legalDirection)
+                {
+                    //Make sure that the attachable isn't overlapping the bot before we say its impossible to 
+                    if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
+                        return false;
+                }
+
+                //Add these to the block depending on its relative position
+                AttachNewBitToExisting(enemyAttachable, closestAttachable, connectionDirection);
+            }
 
 
             return true;
