@@ -16,7 +16,7 @@ namespace StarSalvager.Utilities
         {
             if (Instance != null)
             {
-                throw new Exception($"An instance of {nameof(T)} already exists.");
+                throw new Exception($"An instance of {typeof(T)} already exists.");
             }
 
             _instance = this as T;

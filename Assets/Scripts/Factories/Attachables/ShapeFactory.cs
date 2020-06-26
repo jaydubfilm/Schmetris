@@ -28,6 +28,20 @@ namespace StarSalvager.Factories
         }
         
         //============================================================================================================//
+        
+        public GameObject CreateGameObject(BIT_TYPE bitType, int totalBits)
+        {
+            var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
+            
+            var shape = CreateObject<Shape>();
+            for (var i = 0; i < totalBits; i++)
+            {
+                var bit = bitFactory.CreateObject<Bit>(bitType);
+                shape.PushNewBit(bit, (DIRECTION)Random.Range(0, 4));
+            }
+
+            return shape.gameObject;
+        }
 
         public T CreateObject<T>(BIT_TYPE bitType, int totalBits)
         {
@@ -58,7 +72,7 @@ namespace StarSalvager.Factories
             return shape.GetComponent<T>();
         }
         
-        public GameObject CreateObject(List<Bit> bits)
+        public GameObject CreateGameObject(List<Bit> bits)
         {
             var shape = CreateObject<Shape>();
             var baseCoordinate = bits[0].Coordinate;

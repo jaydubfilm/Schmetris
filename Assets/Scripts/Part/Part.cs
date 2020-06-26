@@ -25,7 +25,7 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        protected override void OnCollide(GameObject _)
+        protected override void OnCollide(GameObject gObj, Vector2 hitPoint)
         {
             throw new System.NotImplementedException();
         }

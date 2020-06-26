@@ -9,11 +9,13 @@ namespace StarSalvager.Factories
 {
     public class BitAttachableFactory : AttachableFactoryBase<BitProfile, BIT_TYPE>
     {
+        private BitRemoteDataScriptableObject remoteData;
+        
         //============================================================================================================//
         
-        //TODO This needs to consider the bit type more
-        public BitAttachableFactory(AttachableProfileScriptableObject factoryProfile) : base(factoryProfile)
+        public BitAttachableFactory(AttachableProfileScriptableObject factoryProfile, BitRemoteDataScriptableObject remoteData) : base(factoryProfile)
         {
+            this.remoteData = remoteData;
         }
 
         public void UpdateBitData(BIT_TYPE bitType, int level, ref Bit bit)
