@@ -20,8 +20,8 @@ namespace StarSalvager.Utilities.Extensions
             //TODO Need to consider that there will be parts & bits attached to the bot
 
             var data = bot.attachedBlocks
-                .Select(b => b as ISaveable)
-                .ForEach(b => b.ToBlockData())
+                .Where(b => b is ISaveable )
+                .ForEach(b => (b as ISaveable)?.ToBlockData())
                 .ToArray();
 
             var blah = JsonConvert.SerializeObject(data, Formatting.None);
@@ -82,7 +82,7 @@ namespace StarSalvager.Utilities.Extensions
                 return true;
 
             //Get list of attachables around the current attachable
-            var attachablesAround = bot.attachedBlocks.GetAttachablesAround<IAttachable>(current);
+            var attachablesAround = bot.attachedBlocks.GetAttachablesAround(current);
             
             for (var i = 0; i < attachablesAround.Count; i++)
             {

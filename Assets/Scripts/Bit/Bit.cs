@@ -1,4 +1,5 @@
 ﻿using System;
+using Sirenix.OdinInspector;
 using StarSalvager.Constants;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
@@ -10,41 +11,53 @@ namespace StarSalvager
 {
     public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth
     {
-        
+        //IAttachable properties
+        //============================================================================================================//
+
+        [ShowInInspector, ReadOnly]
         public Vector2Int Coordinate { get; set; }
+        [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
+        [ShowInInspector, ReadOnly]
+        public bool CanShift => true;
+
+
+        //IHealth Properties
+        //============================================================================================================//
         
         public float StartingHealth { get; }
         public float CurrentHealth { get; }
         
+        //Bit Properties
         //============================================================================================================//
-        
-        public BIT_TYPE Type
-        {
-            get => _type;
-            set => _type = value;
-        }
-        [SerializeField]
-        private BIT_TYPE _type;
-        public int level { get => _level; set => _level = value; }
-        [SerializeField]
-        private int _level;
+        [ShowInInspector, ReadOnly]
+        public BIT_TYPE Type { get; set; }
+        [ShowInInspector, ReadOnly]
+        public int level { get; private set; }
 
         [SerializeField]
         private LayerMask collisionMask;
         
+        //IAttachable Functions
         //============================================================================================================//
-        
+
         public void SetAttached(bool isAttached)
         {
             Attached = isAttached;
             collider.usedByComposite = isAttached;
         }
+
+        //IHealth Properties
+        //============================================================================================================//
         
         public void ChangeHealth(float amount)
         {
             throw new NotImplementedException();
         }
+        
+
+        //Bit Functions
+        //============================================================================================================//
 
         public void IncreaseLevel(int amount = 1)
         {
@@ -53,9 +66,8 @@ namespace StarSalvager
             
             //Sets the gameObject info (Sprite)
             var bit = this;
-            FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(_type, level, ref bit);
+            FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
         }
-        //============================================================================================================//
 
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
@@ -116,6 +128,7 @@ namespace StarSalvager
             }
         }
         
+        //ISaveable Functions
         //============================================================================================================//
 
         public BlockData ToBlockData()

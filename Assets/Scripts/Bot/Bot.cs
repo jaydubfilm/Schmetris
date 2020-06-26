@@ -19,13 +19,7 @@ namespace StarSalvager
 {
     public class Bot : MonoBehaviour
     {
-        public class OrphanMoveData
-        {
-            public IAttachable attachableBase;
-            public DIRECTION moveDirection;
-            public float distance;
-            public Vector2Int intendedCoordinates;
-        }
+        
 
         //============================================================================================================//
 
@@ -630,25 +624,27 @@ namespace StarSalvager
 
         #region Detach Bits
         
-        private void DetachBits(List<Bit> bits)
+        private void DetachBits(IReadOnlyCollection<IAttachable> attachables)
         {
-            foreach (var bit in bits)
+            foreach (var attachable in attachables)
             {
-                attachedBlocks.Remove(bit);
+                attachedBlocks.Remove(attachable);
                 
                 //Debug.Log($"Detached group member {bit.gameObject.name}", bit);
             }
+
+            var bits = attachables.OfType<Bit>().ToList();
 
             FactoryManager.Instance.GetFactory<ShapeFactory>().CreateGameObject(bits);
             
             CompositeCollider2D.GenerateGeometry();
 
         }
-        private void DetachBit(Bit bit)
+        private void DetachBit(IAttachable attachable)
         {
-            bit.transform.parent = null;
+            attachable.transform.parent = null;
 
-            RemoveAttachable(bit);
+            RemoveAttachable(attachable);
             
             //Debug.Log($"Detached {bit.gameObject.name}", bit);
         }
@@ -684,7 +680,7 @@ namespace StarSalvager
                 if(hasPathToCore)
                     continue;
 
-                var attachedBits = new List<Bit>();
+                var attachedBits = new List<IAttachable>();
                 attachedBlocks.GetAllAttachedBits(attachableBase, null, ref attachedBits);
 
                 if (attachedBits.Count == 1)
@@ -739,21 +735,13 @@ namespace StarSalvager
 
                 if (check == null)
                     break;
+                
+                if(check.CanShift)
+                    toShift.Add(check);
+                else
+                    toShift.Clear();
 
-                switch (check)
-                {
-                    case Part _:
-                        toShift.Clear();
-                        //Debug.Log("Cleared List");
-                        break;
-                    case Bit _:
-                        
-                            
-                        toShift.Add(check);
-                        //Debug.Log($"Added {check.gameObject.name}");
-                        break;
-                }
-
+                
                 currentPos += dir;
             }
 

@@ -1,31 +1,35 @@
-﻿using StarSalvager.Utilities.JsonDataTypes;
+﻿using System;
+using Sirenix.OdinInspector;
+using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
 namespace StarSalvager
 {
     public class Part : CollidableBase, IAttachable, ISaveable, IPart, IHealth
     {
+        //IAttachable Properties
+        //============================================================================================================//
+        [ShowInInspector, ReadOnly]
         public Vector2Int Coordinate { get; set; }
+        [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
+        [ShowInInspector, ReadOnly]
+        public bool CanShift => false;
+        
+        //IHealth Properties
+        //============================================================================================================//
         
         public float StartingHealth { get; }
         public float CurrentHealth { get; }
 
-        
+        //Part Properties
         //============================================================================================================//
+        [ShowInInspector, ReadOnly]
+        public PART_TYPE Type { get; set; }
+        [ShowInInspector, ReadOnly]
+        public int level { get; private set; }
 
-        public PART_TYPE Type
-        {
-            get => _type;
-            set => _type = value;
-        }
-
-        private PART_TYPE _type;
-        
-        public int level { get => _level; set => _level = value; }
-        [SerializeField]
-        private int _level;
-        
+        //IAttachable Functions
         //============================================================================================================//
         
         public void SetAttached(bool isAttached)
@@ -33,12 +37,16 @@ namespace StarSalvager
             Attached = isAttached;
             collider.usedByComposite = isAttached;
         }
+
+        //IHealth Functions
+        //============================================================================================================//
         
         public void ChangeHealth(float amount)
         {
             //throw new System.NotImplementedException();
         }
 
+        //Part Functions
         //============================================================================================================//
 
         protected override void OnCollide(GameObject gObj, Vector2 hitPoint)
@@ -46,6 +54,9 @@ namespace StarSalvager
             throw new System.NotImplementedException();
         }
 
+        //ISaveable Functions
+        //============================================================================================================//
+        
         public BlockData ToBlockData()
         {
             return new BlockData

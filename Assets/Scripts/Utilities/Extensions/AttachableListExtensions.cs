@@ -23,7 +23,7 @@ namespace StarSalvager.Utilities.Extensions
             return attachedBlocks.CoordinateOccupied(direction, ref coordinate);
         }
         
-        public static bool CoordinateOccupied(this List<Bot.OrphanMoveData> orphanMoveDatas, DIRECTION direction, Bot.OrphanMoveData omd, ref Vector2Int coordinate)
+        public static bool CoordinateOccupied(this List<OrphanMoveData> orphanMoveDatas, DIRECTION direction, OrphanMoveData omd, ref Vector2Int coordinate)
         {
             var check = coordinate;
             
@@ -61,7 +61,7 @@ namespace StarSalvager.Utilities.Extensions
             }
         }
         
-        public static void SolveCoordinateOverlap(this List<Bot.OrphanMoveData> orphanMoveData, DIRECTION moveDirection, Bot.OrphanMoveData omd, ref Vector2Int coordinate)
+        public static void SolveCoordinateOverlap(this List<OrphanMoveData> orphanMoveData, DIRECTION moveDirection, OrphanMoveData omd, ref Vector2Int coordinate)
         {
             switch (moveDirection)
             {
@@ -117,14 +117,14 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="from"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static List<T> GetAttachablesAround<T>(this List<T> attachableBases, IAttachable from) where T: IAttachable
+        public static List<IAttachable> GetAttachablesAround(this List<IAttachable> attachableBases, IAttachable from)
         {
-            return new List<T>
+            return new List<IAttachable>
             {
-                attachableBases.GetAttachableInDirectionOf<T>(from, DIRECTION.LEFT),
-                attachableBases.GetAttachableInDirectionOf<T>(from, DIRECTION.UP),
-                attachableBases.GetAttachableInDirectionOf<T>(from, DIRECTION.RIGHT),
-                attachableBases.GetAttachableInDirectionOf<T>(from, DIRECTION.DOWN)
+                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.LEFT),
+                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.UP),
+                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.RIGHT),
+                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.DOWN)
             };
         }
         
@@ -138,10 +138,10 @@ namespace StarSalvager.Utilities.Extensions
         {
             var check = new List<IAttachable>
             {
-                attachableBases.GetAttachableInDirectionOf<IAttachable>(from, DIRECTION.LEFT),
-                attachableBases.GetAttachableInDirectionOf<IAttachable>(from, DIRECTION.UP),
-                attachableBases.GetAttachableInDirectionOf<IAttachable>(from, DIRECTION.RIGHT),
-                attachableBases.GetAttachableInDirectionOf<IAttachable>(from, DIRECTION.DOWN)
+                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.LEFT),
+                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.UP),
+                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.RIGHT),
+                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.DOWN)
             };
 
             return check
@@ -158,28 +158,31 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="direction"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T GetAttachableInDirectionOf<T>(this IEnumerable<T> attachableBases, IAttachable from, DIRECTION direction) where T: IAttachable
+        public static IAttachable GetAttachableInDirectionOf(this IEnumerable<IAttachable> attachableBases, IAttachable from, DIRECTION direction)
         {
             var coord = from.Coordinate + direction.ToVector2Int();
 
             return attachableBases.FirstOrDefault(a => a.Coordinate == coord);
         }
         
-        public static void GetAllAttachedBits<T>(this List<IAttachable> attachableBases, IAttachable current, IAttachable[] toIgnore, ref List<T> bits) where T: IAttachable
+        public static void GetAllAttachedBits(this List<IAttachable> attachableBases, IAttachable current, IAttachable[] toIgnore, ref List<IAttachable> bits)
         {
             var bitsAround = attachableBases.GetAttachablesAround(current);
 
-            bits.Add((T)current);
+            bits.Add(current);
             
             foreach (var bit in bitsAround)
             {
                 if (bit == null)
                     continue;
 
+                if (!bit.CanShift)
+                    continue;
+
                 if (toIgnore != null && toIgnore.Contains(bit))
                     continue;
                 
-                if(bits.Contains((T)bit))
+                if(bits.Contains(bit))
                     continue;
 
                 attachableBases.GetAllAttachedBits(bit, toIgnore, ref bits);
