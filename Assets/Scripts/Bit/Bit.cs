@@ -61,11 +61,19 @@ namespace StarSalvager
 
         public void ChangeHealth(float amount)
         {
+            float previousHealth = _currentHealth;
+
             _currentHealth += amount;
 
             if (_currentHealth <= 0)
             {
                 Recycler.Recycle(typeof(Bit), this.gameObject);
+            }
+
+            //TODO - temporary demo color change, remove later
+            if (previousHealth > _currentHealth)
+            {
+                SetColor(Color.Lerp(renderer.color, Color.black, 0.2f));
             }
         }
 
