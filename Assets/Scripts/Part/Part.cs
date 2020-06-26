@@ -1,4 +1,5 @@
 ﻿using Recycling;
+using Sirenix.OdinInspector;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
@@ -18,8 +19,10 @@ namespace StarSalvager
         //IHealth Properties
         //============================================================================================================//
 
-        public float StartingHealth { get; }
-        public float CurrentHealth { get; }
+        public float StartingHealth => _startingHealth;
+        private float _startingHealth;
+        public float CurrentHealth => _currentHealth;
+        private float _currentHealth;
 
         //Part Properties
         //============================================================================================================//

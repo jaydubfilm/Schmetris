@@ -1,5 +1,6 @@
 ﻿using System;
 using Recycling;
+using Sirenix.OdinInspector;
 using StarSalvager.Constants;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
@@ -48,6 +49,9 @@ namespace StarSalvager
             Attached = isAttached;
             collider.usedByComposite = isAttached;
         }
+
+        //IHealth Functions
+        //============================================================================================================//
 
         public void SetupHealthValues(float startingHealth, float currentHealth)
         {
