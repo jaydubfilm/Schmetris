@@ -16,7 +16,10 @@ namespace StarSalvager.Utilities
         {
             if (Instance != null)
             {
-                throw new Exception($"An instance of {typeof(T)} already exists.");
+                Destroy(gameObject);
+                //throw new Exception($"An instance of {typeof(T)} already exists.");
+                Debug.Log($"An instance of {typeof(T)} already exists.");
+                return;
             }
 
             _instance = this as T;

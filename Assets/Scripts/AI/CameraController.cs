@@ -28,7 +28,7 @@ public class CameraController : MonoBehaviour
     //Init
     void Start()
     {
-        DontDestroyOnLoad(this);
+        //DontDestroyOnLoad(this);
         startPos = transform.position;
         targetPos = startPos;
         horzExtent = (Camera.main.orthographicSize * Screen.width / Screen.height) / 2;

@@ -81,7 +81,7 @@ namespace StarSalvager.AI
 
             if (bot.Rotating)
             {
-                Recycling.Recycler.Recycle<Bit>(this.gameObject);
+                Recycling.Recycler.Recycle<EnemyAttachable>(this.gameObject);
                 return;
             }
 
@@ -94,6 +94,10 @@ namespace StarSalvager.AI
 
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
             var inDirection = (-(Vector2)m_mostRecentMovementDirection).ToDirection();
+
+            if (inDirection == DIRECTION.NULL)
+                inDirection = DIRECTION.UP;
+            
             bot.TryAddNewAttachable(this, inDirection, hitPoint);
         }
     }

@@ -14,9 +14,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Scenes/AlexB_Prototyping.unity
     guid: 1b0fe85a4155fb34886a20a119847f89
-  - enabled: 1
-    path: Assets/_Scenes/ShapeGen_Prototype.unity
-    guid: cc83d6eda9985f24b88ffba178a08073
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: bf0c805c5e0627a4998d083738cc59b3,
       type: 2}
