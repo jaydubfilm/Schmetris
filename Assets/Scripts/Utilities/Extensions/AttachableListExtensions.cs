@@ -9,7 +9,7 @@ namespace StarSalvager.Utilities.Extensions
     {
         //============================================================================================================//
         
-        public static bool CoordinateOccupied<T>(this List<T> attachedBlocks, DIRECTION direction, ref Vector2Int coordinate) where T: AttachableBase
+        public static bool CoordinateOccupied<T>(this List<T> attachedBlocks, DIRECTION direction, ref Vector2Int coordinate) where T: IAttachable
         {
             var check = coordinate;
             var exists = attachedBlocks
@@ -40,7 +40,7 @@ namespace StarSalvager.Utilities.Extensions
         
         //============================================================================================================//
         
-        public static void SolveCoordinateOverlap(this List<AttachableBase> blocks, DIRECTION fromDirection, ref Vector2Int coordinate)
+        public static void SolveCoordinateOverlap(this List<IAttachable> blocks, DIRECTION fromDirection, ref Vector2Int coordinate)
         {
             switch (fromDirection)
             {
@@ -84,9 +84,12 @@ namespace StarSalvager.Utilities.Extensions
         
         //============================================================================================================//
         
-        public static AttachableBase GetClosestAttachable(this IEnumerable<AttachableBase> blocks, Vector2 checkPosition)
+        public static IAttachable GetClosestAttachable<T>(this List<T> blocks, Vector2 checkPosition) where T: IAttachable
         {
-            AttachableBase selected = null;
+            if (blocks.Count == 1)
+                return blocks[0];
+            
+            IAttachable selected = null;
 
             var smallestDist = 999f;
 
@@ -114,7 +117,7 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="from"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static List<T> GetAttachablesAround<T>(this List<AttachableBase> attachableBases, AttachableBase from) where T: AttachableBase
+        public static List<T> GetAttachablesAround<T>(this List<T> attachableBases, IAttachable from) where T: IAttachable
         {
             return new List<T>
             {
@@ -131,14 +134,14 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="from"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static List<Vector2Int> GetCoordinatesAround(this List<AttachableBase> attachableBases, AttachableBase from)
+        public static List<Vector2Int> GetCoordinatesAround(this List<IAttachable> attachableBases, IAttachable from)
         {
-            var check = new List<AttachableBase>
+            var check = new List<IAttachable>
             {
-                attachableBases.GetAttachableInDirectionOf<AttachableBase>(from, DIRECTION.LEFT),
-                attachableBases.GetAttachableInDirectionOf<AttachableBase>(from, DIRECTION.UP),
-                attachableBases.GetAttachableInDirectionOf<AttachableBase>(from, DIRECTION.RIGHT),
-                attachableBases.GetAttachableInDirectionOf<AttachableBase>(from, DIRECTION.DOWN)
+                attachableBases.GetAttachableInDirectionOf<IAttachable>(from, DIRECTION.LEFT),
+                attachableBases.GetAttachableInDirectionOf<IAttachable>(from, DIRECTION.UP),
+                attachableBases.GetAttachableInDirectionOf<IAttachable>(from, DIRECTION.RIGHT),
+                attachableBases.GetAttachableInDirectionOf<IAttachable>(from, DIRECTION.DOWN)
             };
 
             return check
@@ -155,18 +158,18 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="direction"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T GetAttachableInDirectionOf<T>(this List<AttachableBase> attachableBases, AttachableBase from, DIRECTION direction) where T: AttachableBase
+        public static T GetAttachableInDirectionOf<T>(this IEnumerable<T> attachableBases, IAttachable from, DIRECTION direction) where T: IAttachable
         {
             var coord = from.Coordinate + direction.ToVector2Int();
 
-            return attachableBases.FirstOrDefault(a => a.Coordinate == coord) as T;
+            return attachableBases.FirstOrDefault(a => a.Coordinate == coord);
         }
         
-        public static void GetAllAttachedBits<T>(this List<AttachableBase> attachableBases, AttachableBase current, AttachableBase[] toIgnore, ref List<T> bits) where T: AttachableBase
+        public static void GetAllAttachedBits<T>(this List<IAttachable> attachableBases, IAttachable current, IAttachable[] toIgnore, ref List<T> bits) where T: IAttachable
         {
-            var bitsAround = attachableBases.GetAttachablesAround<T>(current);
+            var bitsAround = attachableBases.GetAttachablesAround(current);
 
-            bits.Add(current as T);
+            bits.Add((T)current);
             
             foreach (var bit in bitsAround)
             {
@@ -176,7 +179,7 @@ namespace StarSalvager.Utilities.Extensions
                 if (toIgnore != null && toIgnore.Contains(bit))
                     continue;
                 
-                if(bits.Contains(bit))
+                if(bits.Contains((T)bit))
                     continue;
 
                 attachableBases.GetAllAttachedBits(bit, toIgnore, ref bits);
@@ -200,8 +203,8 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="direction"></param>
         /// <param name="bitList"></param>
         /// <returns></returns>
-        public static bool ComboCountAlgorithm(this List<AttachableBase> attachableBases, BIT_TYPE type, int level, Vector2Int coordinate, Vector2Int direction,
-            ref List<AttachableBase> bitList)
+        public static bool ComboCountAlgorithm(this List<IAttachable> attachableBases, BIT_TYPE type, int level, Vector2Int coordinate, Vector2Int direction,
+            ref List<IAttachable> bitList)
         {
             var nextCoords = coordinate + direction;
 

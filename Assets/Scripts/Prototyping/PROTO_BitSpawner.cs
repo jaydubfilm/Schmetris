@@ -64,8 +64,8 @@ namespace StarSalvager.Prototype
                         Random.Range(-spawnGridDimensions.y, spawnGridDimensions.y));
                 }
 
-                //var type = (BIT_TYPE) Random.Range(0, 7);
-                var type = BIT_TYPE.GREY;
+                var type = (BIT_TYPE) Random.Range(0, 7);
+                //var type = BIT_TYPE.GREY;
 
                 var temp = bitFactory.CreateGameObject(type).transform;
 

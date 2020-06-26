@@ -76,7 +76,7 @@ namespace StarSalvager
                     continue;
                 }
 
-                if (bit.IsAttached)
+                if (bit.Attached)
                 {
                     continue;
                 }

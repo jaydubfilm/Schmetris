@@ -57,10 +57,16 @@ namespace StarSalvager.Utilities.Inputs
         {
             var move = ctx.ReadValue<float>();
 
+            var noObstacles = _obstacleManager is null;
+            
             foreach (var bot in _bots)
             {
-                bot.Move(move);
+                bot.Move(move, noObstacles);
             }
+
+
+            if (noObstacles)
+                return;
 
             _obstacleManager.Move(move);
             _enemyManager.Move(move);
