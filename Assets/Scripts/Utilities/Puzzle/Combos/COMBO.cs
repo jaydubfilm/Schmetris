@@ -7,7 +7,8 @@
         FOUR,
         FIVE,
         ANGLE,
-        TEE
+        TEE,
+        CROSS
     }
 }
 

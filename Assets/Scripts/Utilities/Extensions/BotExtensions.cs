@@ -150,7 +150,7 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="target"></param>
         /// <param name="direction"></param>
         /// <param name="bitList"></param>
-        public static void ComboCount(this Bot bot, Bit target, DIRECTION direction, ref List<IAttachable> bitList)
+        public static void ComboCount(this Bot bot, Bit target, DIRECTION direction, ref List<Bit> bitList)
         {
             bot.attachedBlocks.ComboCountAlgorithm(target.Type, target.level, target.Coordinate, direction.ToVector2Int(),
                 ref bitList);

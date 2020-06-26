@@ -16,10 +16,11 @@ namespace StarSalvager.Utilities.Puzzle
             new LineCombo(),
             new TCombo(),
             new LCombo(), 
+            new XCombo(), 
         };
 
 
-        public static bool TryGetComboData(Bot bot, Bit origin, out (ComboData comboData, List<IAttachable> toMove) outData)
+        public static bool TryGetComboData(Bot bot, Bit origin, out (ComboData comboData, List<Bit> toMove) outData)
         {
             outData = (ComboData.zero, null);
             
@@ -29,10 +30,10 @@ namespace StarSalvager.Utilities.Puzzle
             //UP      [1]
             //RIGHT   [2]
             //DOWN    [3]
-            var directions = new List<IAttachable>[4];
+            var directions = new List<Bit>[4];
             for (var i = 0; i < 4; i++)
             {
-                directions[i] = new List<IAttachable>();
+                directions[i] = new List<Bit>();
                 bot.ComboCount(origin, (DIRECTION)i, ref directions[i]);
             }
 
@@ -66,7 +67,7 @@ namespace StarSalvager.Utilities.Puzzle
         }
         
         private static (bool hasCombo, int horizontalCount, int verticalCount) GetLineCounts(
-            IReadOnlyList<List<IAttachable>> directions)
+            IReadOnlyList<List<Bit>> directions)
         {
             //Horizontal   [0]
             //Vertical     [1]

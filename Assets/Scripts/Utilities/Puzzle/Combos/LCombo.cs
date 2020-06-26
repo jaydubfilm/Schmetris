@@ -7,9 +7,9 @@ namespace StarSalvager.Utilities.Puzzle.Combos
 {
     public class LCombo : LineCombo
     {
-        public override bool TryGetCombo(IAttachable origin, List<IAttachable>[] directions,
+        public override bool TryGetCombo(Bit origin, List<Bit>[] directions,
             (bool hasCombo, int horizontalCount, int verticalCount) lineData,
-            out (ComboData comboData, List<IAttachable> toMove) outData)
+            out (ComboData comboData, List<Bit> toMove) outData)
         {
             outData = (emptyCombo, null);
 
@@ -25,16 +25,22 @@ namespace StarSalvager.Utilities.Puzzle.Combos
             //    #    ##0
             if (directions[(int) DIRECTION.LEFT].Count == 2 && directions[(int) DIRECTION.RIGHT].Count == 0)
             {
+                Debug.Log("Left");
                 switch (directions[(int) DIRECTION.UP].Count)
                 {
                     case 0 when directions[(int) DIRECTION.DOWN].Count == 2:
-                        outData.toMove = new List<IAttachable> { origin };
+                        Debug.Log("Down");
+                        outData.toMove = new List<Bit> { origin };
                         outData.toMove.AddRange(directions[(int) DIRECTION.LEFT]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.DOWN]);
 
                         break;
                     case 2 when directions[(int) DIRECTION.DOWN].Count == 0:
-                        outData.toMove = new List<IAttachable> { origin };
+                    case 3 when directions[(int) DIRECTION.DOWN].Count == 0:
+                    case 4 when directions[(int) DIRECTION.DOWN].Count == 0:
+                    case 5 when directions[(int) DIRECTION.DOWN].Count == 0:
+                        Debug.Log("Up");
+                        outData.toMove = new List<Bit> { origin };
                         outData.toMove.AddRange(directions[(int) DIRECTION.LEFT]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.UP]);
                         break;
@@ -48,16 +54,22 @@ namespace StarSalvager.Utilities.Puzzle.Combos
             //      0##   #
             else if (directions[(int) DIRECTION.RIGHT].Count == 2 && directions[(int) DIRECTION.LEFT].Count == 0)
             {
+                Debug.Log("Right");
                 switch (directions[(int) DIRECTION.UP].Count)
                 {
                     case 0 when directions[(int) DIRECTION.DOWN].Count == 2:
-                        outData.toMove = new List<IAttachable> { origin };
+                        Debug.Log("Down");
+                        outData.toMove = new List<Bit> { origin };
                         outData.toMove.AddRange(directions[(int) DIRECTION.RIGHT]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.DOWN]);
 
                         break;
                     case 2 when directions[(int) DIRECTION.DOWN].Count == 0:
-                        outData.toMove = new List<IAttachable> { origin };
+                    case 3 when directions[(int) DIRECTION.DOWN].Count == 0:
+                    case 4 when directions[(int) DIRECTION.DOWN].Count == 0:
+                    case 5 when directions[(int) DIRECTION.DOWN].Count == 0:
+                        Debug.Log("Up");
+                        outData.toMove = new List<Bit> { origin };
                         outData.toMove.AddRange(directions[(int) DIRECTION.RIGHT]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.UP]);
                         break;
@@ -65,12 +77,14 @@ namespace StarSalvager.Utilities.Puzzle.Combos
                         return false;
                 }
             }
+            else
+                return false;
 
 
 
             outData.comboData = FactoryManager.Instance.GetFactory<ComboFactory>().GetComboData(COMBO.ANGLE);
             
-            Debug.LogError($"Found L Combo at {origin.gameObject.name}", origin.gameObject);
+            //Debug.LogError($"Found L Combo at {origin.gameObject.name}", origin);
 
             return true;
         }

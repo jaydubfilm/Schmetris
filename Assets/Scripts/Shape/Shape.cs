@@ -91,10 +91,15 @@ public class Shape : CollidableBase
         attachedBits.Remove(bit);
         
         bit.SetAttached(false);
-        Recycling.Recycler.Recycle<Bit>(bit.gameObject);
+        Recycler.Recycle<Bit>(bit.gameObject);
+
+        if (attachedBits.Count > 0)
+        {
+            CompositeCollider.GenerateGeometry();
+            return;
+        }
         
-        
-        CompositeCollider.GenerateGeometry();
+        Destroy();
     }
     
     //================================================================================================================//
@@ -163,7 +168,7 @@ public class Shape : CollidableBase
     
     //================================================================================================================//
 
-    private void Destroy()
+    public void Destroy()
     {
         foreach (var bit in attachedBits)
         {

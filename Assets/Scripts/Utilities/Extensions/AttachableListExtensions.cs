@@ -238,7 +238,7 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="bitList"></param>
         /// <returns></returns>
         public static bool ComboCountAlgorithm(this List<IAttachable> attachableBases, BIT_TYPE type, int level, Vector2Int coordinate, Vector2Int direction,
-            ref List<IAttachable> bitList)
+            ref List<Bit> bitList)
         {
             var nextCoords = coordinate + direction;
 

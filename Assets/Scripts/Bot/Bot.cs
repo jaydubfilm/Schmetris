@@ -815,11 +815,11 @@ namespace StarSalvager
             if (!PuzzleChecker.TryGetComboData(this, bit, out var data))
                 return;
 
-            if (data.comboData.addLevels == 2)
-            {
-                AdvancedComboSolver(data.comboData, data.toMove);
-            }
-            else
+            //if (data.comboData.addLevels == 2)
+            //{
+            //    AdvancedComboSolver(data.comboData, data.toMove);
+            //}
+            //else
                 SimpleComboSolver(data.comboData, data.toMove);
         }
 

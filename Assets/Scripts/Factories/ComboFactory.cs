@@ -41,6 +41,12 @@ namespace StarSalvager.Factories
                     type = COMBO.TEE,
                     addLevels = 2,
                     points = 125
+                },
+                new ComboData
+                {
+                    type = COMBO.CROSS,
+                    addLevels = 2,
+                    points = 175
                 }
             };
         }

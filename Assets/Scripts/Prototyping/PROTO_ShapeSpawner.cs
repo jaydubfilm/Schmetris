@@ -6,24 +6,35 @@ using StarSalvager.Constants;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Input = StarSalvager.Utilities.Inputs.Input;
 
 public class PROTO_ShapeSpawner : MonoBehaviour
 {
     public bool generateRandomSeed;
-    [DisableIf("$generateRandomSeed")]
-    public int seed = 1234567890;
+    [DisableIf("$generateRandomSeed")] public int seed = 1234567890;
 
-    public BIT_TYPE type;
+    //public BIT_TYPE type;
     public int bitCountMin;
     public int bitCountMax;
-    
-    private readonly DIRECTION[] directions = {
-        DIRECTION.LEFT,
-        DIRECTION.RIGHT
+
+    private readonly BIT_TYPE[] legalShapes =
+    {
+        BIT_TYPE.RED,
+        BIT_TYPE.BLUE,
+        BIT_TYPE.GREY,
+        BIT_TYPE.BLACK,
+        BIT_TYPE.GREEN,
+        BIT_TYPE.YELLOW
     };
 
     private new Transform transform;
-    
+
+    private Shape activeShape;
+
+    [SerializeField]
+    private float fallSpeed = 30f;
+
     private void Start()
     {
         if (generateRandomSeed)
@@ -31,21 +42,45 @@ public class PROTO_ShapeSpawner : MonoBehaviour
             seed = Random.Range(int.MinValue, int.MaxValue);
             Debug.Log($"Generated Seed {seed}");
         }
-            
+
         Random.InitState(seed);
         transform = gameObject.transform;
 
         CreateShape();
     }
 
-    private void CreateShape()
+    private void Update()
     {
-        var direction = directions[Random.Range(0, directions.Length)].ToVector2();
+        if (UnityEngine.Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene("AlexB_Prototyping", LoadSceneMode.Single);
+        }
+        
+        
+        if(!activeShape.gameObject.activeInHierarchy)
+            CreateShape();
+
+        activeShape.transform.position += Vector3.down * (fallSpeed * Time.deltaTime);
+
+        if (activeShape.transform.position.y < -50f)
+        {
+            //Debug.Log(activeShape.transform.position.y);
+            activeShape.Destroy();
+        }
+        
+    }
+
+private void CreateShape()
+    {
+        //var direction = directions[Random.Range(0, directions.Length)].ToVector2();
+        var type = legalShapes[Random.Range(0, legalShapes.Length)];
         var count = Random.Range(bitCountMin, bitCountMax);
-        var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateGameObject(type, count);
+        var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(type, count);
 
         shape.name = $"Shape_{type}_{count}";
-        shape.transform.position = direction * 10 * Values.gridCellSize;
+        shape.transform.position = (Vector2.left * Random.Range(-10, 11) * Values.gridCellSize) + (Vector2.up * 20 * Values.gridCellSize);
         shape.transform.SetParent(transform, true);
+
+        activeShape = shape;
     }
 }

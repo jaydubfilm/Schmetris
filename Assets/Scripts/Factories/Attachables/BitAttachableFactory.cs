@@ -42,6 +42,7 @@ namespace StarSalvager.Factories
             {
                 temp = Object.Instantiate(factoryProfile.Prefab).GetComponent<Bit>();
             }
+            temp.SetColliderActive(true);
             temp.SetSprite(sprite);
             temp.LoadBlockData(blockData);
             temp.SetupHealthValues(25, 25);
