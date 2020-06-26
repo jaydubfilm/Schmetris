@@ -107,7 +107,38 @@ namespace StarSalvager.Utilities.Extensions
 
             //selected.SetColor(Color.magenta);
 
-            return selected;
+            return (T)selected;
+        }
+        
+        public static IAttachable GetClosestAttachable<T>(this List<T> blocks, IAttachable attachable) where T: IAttachable
+        {
+            if (blocks.Count == 1)
+                return blocks[0];
+
+            var checkPosition = attachable.Coordinate;
+            
+            IAttachable selected = null;
+
+            var smallestDist = 999f;
+
+            foreach (var attached in blocks)
+            {
+                if (attached.transform == attachable.transform)
+                    continue;
+                
+                //attached.SetColor(Color.white);
+
+                var dist = Vector2.Distance(attached.transform.position, checkPosition);
+                if (dist > smallestDist)
+                    continue;
+
+                smallestDist = dist;
+                selected = attached;
+            }
+
+            //selected.SetColor(Color.magenta);
+
+            return (T)selected;
         }
         
         //============================================================================================================//

@@ -38,12 +38,7 @@ namespace StarSalvager.Factories
             var profile = factoryProfile.GetProfile((BIT_TYPE)blockData.Type);
             var sprite = profile.GetSprite(blockData.Level);
 
-            Bit temp;
-            if (Recycler.TryGrab<Bit>(out Bit newBit))
-            {
-                temp = newBit;
-            }
-            else
+            if (!Recycler.TryGrab(out Bit temp))
             {
                 temp = Object.Instantiate(factoryProfile.Prefab).GetComponent<Bit>();
             }

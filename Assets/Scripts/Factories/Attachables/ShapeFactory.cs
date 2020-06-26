@@ -74,6 +74,9 @@ namespace StarSalvager.Factories
         
         public GameObject CreateGameObject(List<Bit> bits)
         {
+            if (bits is null || bits.Count == 0)
+                return null;
+            
             var shape = CreateObject<Shape>();
             var baseCoordinate = bits[0].Coordinate;
             

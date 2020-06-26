@@ -85,6 +85,7 @@ namespace StarSalvager
                 });
 
             AttachNewBit(Vector2Int.zero, core);
+
         }
 
         // Update is called once per frame

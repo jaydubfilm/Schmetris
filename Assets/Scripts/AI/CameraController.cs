@@ -37,7 +37,7 @@ public class CameraController : MonoBehaviour
     //Smooth camera to center over bot
     void Update()
     {
-        transform.position = Vector3.Lerp(transform.position, targetPos, smoothing * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, smoothing * Time.deltaTime);
     }
 
     public void Move(float direction)
