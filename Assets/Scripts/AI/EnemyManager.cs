@@ -4,6 +4,7 @@ using UnityEngine;
 using StarSalvager.Constants;
 using StarSalvager.Factories;
 using StarSalvager.AI;
+using System.Linq;
 
 namespace StarSalvager
 {
@@ -11,63 +12,44 @@ namespace StarSalvager
     {
         private List<Enemy> m_enemies;
 
+        //Variables to spawn enemies throughout a stage
+        private List<ENEMY_TYPE> m_enemiesToSpawn;
+        private List<float> m_timesToSpawn;
+        private const float m_endOfStageSpawnBuffer = 0.25f;
+        private float m_spawnTimer;
+        private int m_nextStageToSpawn;
+
         //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
         private float m_currentInput;
 
-        public bool Moving => _moving;
-        private bool _moving;
-
         private float m_distanceHorizontal = 0.0f;
+
 
         // Start is called before the first frame update
         void Start()
         {
             m_enemies = new List<Enemy>();
+            m_enemiesToSpawn = new List<ENEMY_TYPE>();
+            m_timesToSpawn = new List<float>();
 
-            for (int i = 0; i < Values.numberEnemiesSpawn; i++)
-            {
-                Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(ENEMY_TYPE.Enemy1);
-                m_enemies.Add(newEnemy);
-                newEnemy.transform.position = LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
-            }
-
-            LevelManager.Instance.DemoText.text =
-                "\nEnemyType: " + m_enemies[0].m_enemyData.EnemyType +
-                "\nMovementType: " + m_enemies[0].m_enemyData.MovementType +
-                "\nAttackType: " + m_enemies[0].m_enemyData.AttackType +
-                "\nMovementSpeed: " + m_enemies[0].m_enemyData.MovementSpeed +
-                "\nAttackSpeed: " + m_enemies[0].m_enemyData.AttackSpeed;
+            //Spawn enemies from wave 0
+            SetupStage(0);
         }
-
-        private int tempDemoingVariable = 0;
 
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetKeyDown("r"))
+            if (LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
             {
-                tempDemoingVariable++;
-                if (tempDemoingVariable == 15)
-                {
-                    tempDemoingVariable = 0;
-                }
-                Destroy(m_enemies[0].gameObject);
-                Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>((ENEMY_TYPE)tempDemoingVariable);
-                m_enemies[0] = newEnemy;
-                m_enemies[0].transform.position = LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
-
-                LevelManager.Instance.DemoText.text = 
-                    "\nEnemyType: " + m_enemies[0].m_enemyData.EnemyType +
-                    "\nMovementType: " + m_enemies[0].m_enemyData.MovementType +
-                    "\nAttackType: " + m_enemies[0].m_enemyData.AttackType +
-                    "\nMovementSpeed: " + m_enemies[0].m_enemyData.MovementSpeed +
-                    "\nAttackSpeed: " + m_enemies[0].m_enemyData.AttackSpeed;
+                SetupStage(m_nextStageToSpawn);
             }
-            else if (Input.GetKeyDown("t"))
-            {
-                m_enemies[0].transform.position = LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(Values.gridSizeX / 2, Values.gridSizeY / 2);
-            }
+            CheckSpawns();
 
+            HandleEnemyMovement();
+        }
+
+        private void HandleEnemyMovement()
+        {
             Vector3 gridMovement = Vector3.zero;
             if (m_distanceHorizontal != 0)
             {
@@ -85,7 +67,6 @@ namespace StarSalvager
                 }
             }
 
-
             //Iterate through all agents, and for each one, add the forces from nearby obstacles to their current direction vector
             //After adding the forces, normalize and multiply by the velocity to ensure consistent speed
             for (int i = 0; i < m_enemies.Count; i++)
@@ -97,7 +78,7 @@ namespace StarSalvager
                         continue;
                     }
                 }
-                
+
                 Vector3 position = m_enemies[i].transform.position;
                 Vector3 destination = m_enemies[i].GetDestination();
 
@@ -121,6 +102,64 @@ namespace StarSalvager
             }
         }
 
+        private void SetupStage(int stageNumber)
+        {
+            StageRemoteData waveRemoteData = LevelManager.Instance.WaveRemoteData.GetRemoteData(stageNumber);
+            m_enemiesToSpawn.Clear();
+            m_timesToSpawn.Clear();
+
+            //Populate enemies to spawn list
+            foreach (StageEnemyData stageEnemyData in waveRemoteData.StageEnemyData)
+            {
+                for (int i = 0; i < stageEnemyData.EnemyCount; i++)
+                {
+                    ENEMY_TYPE enemyType = stageEnemyData.EnemyType;
+                    m_enemiesToSpawn.Add(enemyType);
+                }
+            }
+
+            //Randomize list order
+            for (int i = 0; i < m_enemiesToSpawn.Count; i++)
+            {
+                var temp = m_enemiesToSpawn[i];
+                int randomIndex = Random.Range(i, m_enemiesToSpawn.Count);
+                m_enemiesToSpawn[i] = m_enemiesToSpawn[randomIndex];
+                m_enemiesToSpawn[randomIndex] = temp;
+            }
+
+            //Populate times to spawn list
+            for (int i = 0; i < m_enemiesToSpawn.Count; i++)
+            {
+                float timeToSpawn = Random.Range(0, waveRemoteData.StageDuration * (1.0f - m_endOfStageSpawnBuffer));
+                m_timesToSpawn.Add(timeToSpawn);
+            }
+            m_timesToSpawn.Sort();
+
+            m_spawnTimer = 0;
+            m_nextStageToSpawn = stageNumber + 1;
+        }
+
+        private void CheckSpawns()
+        {
+            if (m_timesToSpawn.Count == 0)
+                return;
+
+            m_spawnTimer += Time.deltaTime;
+            if (m_spawnTimer >= m_timesToSpawn[0])
+            {
+                SpawnEnemy(m_enemiesToSpawn[0]);
+                m_enemiesToSpawn.RemoveAt(0);
+                m_timesToSpawn.RemoveAt(0);
+            }
+        }
+
+        private void SpawnEnemy(ENEMY_TYPE enemyType)
+        {
+            Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(enemyType);
+            m_enemies.Add(newEnemy);
+            newEnemy.transform.position = LevelManager.Instance.WorldGrid.GetSpawnPositionForEnemy(newEnemy.m_enemyData.MovementType);
+        }
+
         public void Move(float direction)
         {
             if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
@@ -132,8 +171,6 @@ namespace StarSalvager
             m_currentInput = direction;
 
             m_distanceHorizontal += direction * Values.gridCellSize;
-
-            _moving = true;
         }
     }
 }

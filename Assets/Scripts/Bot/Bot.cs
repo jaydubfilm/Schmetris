@@ -678,12 +678,6 @@ namespace StarSalvager
 
             var bits = attachables.OfType<Bit>().ToList();
 
-            //TODO: This is quick and dirty change to help shapes fall off ship. Remove later.
-            foreach (var bit in bits)
-            {
-                LevelManager.Instance.ObstacleManager.m_shapePieces.Add(bit);
-            }
-
             FactoryManager.Instance.GetFactory<ShapeFactory>().CreateGameObject(bits);
             
             CompositeCollider2D.GenerateGeometry();

@@ -31,28 +31,62 @@ namespace StarSalvager.Factories
         
         public GameObject CreateGameObject(BIT_TYPE bitType, int totalBits)
         {
+            BIT_TYPE type;
+            if (bitType == BIT_TYPE.RANDOMSINGLE || bitType == BIT_TYPE.RANDOMVARIED)
+            {
+                type = (BIT_TYPE)Random.Range(0, 6);
+            }
+            else
+            {
+                type = bitType;
+            }
+
             var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
             
             var shape = CreateObject<Shape>();
             for (var i = 0; i < totalBits; i++)
             {
-                var bit = bitFactory.CreateObject<Bit>(bitType);
+                var bit = bitFactory.CreateObject<Bit>(type);
                 shape.PushNewBit(bit, (DIRECTION)Random.Range(0, 4));
+
+                if (bitType == BIT_TYPE.RANDOMVARIED && type != BIT_TYPE.BLACK)
+                {
+                    type = (BIT_TYPE)Random.Range(1, 6);
+                }
             }
+
+            LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
 
             return shape.gameObject;
         }
 
         public T CreateObject<T>(BIT_TYPE bitType, int totalBits)
         {
+            BIT_TYPE type;
+            if (bitType == BIT_TYPE.RANDOMSINGLE || bitType == BIT_TYPE.RANDOMVARIED)
+            {
+                type = (BIT_TYPE)Random.Range(0, 6);
+            }
+            else
+            {
+                type = bitType;
+            }
+
             var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
             
             var shape = CreateObject<Shape>();
             for (var i = 0; i < totalBits; i++)
             {
-                var bit = bitFactory.CreateObject<Bit>(bitType);
+                var bit = bitFactory.CreateObject<Bit>(type);
                 shape.PushNewBit(bit, (DIRECTION)Random.Range(0, 4));
+
+                if (bitType == BIT_TYPE.RANDOMVARIED && type != BIT_TYPE.BLACK)
+                {
+                    type = (BIT_TYPE)Random.Range(1, 6);
+                }
             }
+
+            LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
 
             return shape.GetComponent<T>();
         }

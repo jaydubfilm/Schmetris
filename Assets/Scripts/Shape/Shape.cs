@@ -7,7 +7,7 @@ using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
 [RequireComponent(typeof(CompositeCollider2D))]
-public class Shape : CollidableBase
+public class Shape : CollidableBase, IMovable
 {
     //================================================================================================================//
     
@@ -164,6 +164,11 @@ public class Shape : CollidableBase
             default:
                 throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
         }
+    }
+
+    public bool ShouldMoveByObstacleManager()
+    {
+        return true;
     }
     
     //================================================================================================================//

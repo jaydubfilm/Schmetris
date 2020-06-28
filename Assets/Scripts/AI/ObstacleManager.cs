@@ -3,41 +3,50 @@ using UnityEngine;
 using StarSalvager.Constants;
 using StarSalvager.Factories;
 using Recycling;
+using StarSalvager.AI;
+using UnityEngine.UIElements;
 
 namespace StarSalvager
 {
     public class ObstacleManager : MonoBehaviour
     {
-        private List<Bit> m_bits;
+        private List<IMovable> m_bits;
 
         //TODO: This is quick and dirty change to help shapes fall off ship. Remove everything related to shapePieces list later
         public List<Bit> m_shapePieces;
 
-        private int m_numBitsSpawnedPerRow = Values.gridSizeX / 20;
-
         //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
         private float m_currentInput;
 
-        public bool Moving => _moving;
-        private bool _moving;
-
         private float m_distanceHorizontal = 0.0f;
+
+        //Variables to spawn obstacles throughout a stage
+        private StageRemoteData m_currentStageData;
+        private int m_nextStageToSpawn;
+
 
         // Start is called before the first frame update
         void Start()
         {
-            m_bits = new List<Bit>();
+            m_bits = new List<IMovable>();
             m_shapePieces = new List<Bit>();
 
-            for (int i = 0; i < Values.numberBitsSpawn; i++)
-            {
-                SpawnObstacle(true);
-            }
+            SetupStage(0);
         }
 
 
         // Update is called once per frame
         void Update()
+        {
+            if (LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
+            {
+                SetupStage(m_nextStageToSpawn);
+            }
+
+            HandleObstacleMovement();
+        }
+
+        private void HandleObstacleMovement()
         {
             for (int i = m_shapePieces.Count - 1; i >= 0; i--)
             {
@@ -46,7 +55,7 @@ namespace StarSalvager
                     m_shapePieces.RemoveAt(i);
                 }
             }
-            
+
             Vector3 amountShift = Vector3.up * ((Values.gridCellSize * Time.deltaTime) / Values.timeForAsteroidsToFall);
 
             if (m_distanceHorizontal != 0)
@@ -86,12 +95,13 @@ namespace StarSalvager
                     continue;
                 }
 
+                //Check if currently recycled
                 if (!bit.enabled)
                 {
                     m_bits.RemoveAt(i);
                 }
 
-                if (bit.Attached && !m_shapePieces.Contains(bit))
+                if (!bit.ShouldMoveByObstacleManager())
                 {
                     continue;
                 }
@@ -104,7 +114,15 @@ namespace StarSalvager
                 {
                     var temp = m_bits[i];
                     m_bits.RemoveAt(i);
-                    Recycler.Recycle(typeof(Bit), temp.gameObject);
+
+                    if (bit is Bit)
+                    {
+                        Recycler.Recycle(typeof(Bit), temp.gameObject);
+                    }
+                    else if (bit is Shape)
+                    {
+                        Recycler.Recycle(typeof(Shape), temp.gameObject);
+                    }
                     continue;
                 }
 
@@ -122,6 +140,12 @@ namespace StarSalvager
             }
         }
 
+        private void SetupStage(int waveNumber)
+        {
+            m_currentStageData = LevelManager.Instance.WaveRemoteData.GetRemoteData(waveNumber);
+            m_nextStageToSpawn = waveNumber + 1;
+        }
+
         public void Move(float direction)
         {
             if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
@@ -133,37 +157,84 @@ namespace StarSalvager
             m_currentInput = direction;
 
             m_distanceHorizontal += direction * Values.gridCellSize;
-
-            _moving = true;
         }
 
         public void SpawnNewRowOfObstacles()
         {
-            for (int i = 0; i < m_numBitsSpawnedPerRow; i++)
+            foreach (StageObstacleData stageObstacleData in m_currentStageData.StageObstacleData)
             {
-                SpawnObstacle();
+                float spawnVariable = stageObstacleData.AsteroidPerRowAverage;
+
+                while (spawnVariable >= 1)
+                {
+                    SpawnObstacle(stageObstacleData.BitType, stageObstacleData.AsteroidSize);
+                    spawnVariable -= 1;
+                }
+
+                if (spawnVariable == 0)
+                    continue;
+
+                float random = Random.Range(0.0f, 1.0f);
+
+                if (random <= spawnVariable)
+                {
+                    SpawnObstacle(stageObstacleData.BitType, stageObstacleData.AsteroidSize);
+                }
             }
         }
 
-        private void SpawnObstacle(bool inRandomYLevel = false)
+        private void SpawnObstacle(BIT_TYPE bitType, ASTEROID_SIZE asteroidSize, bool inRandomYLevel = false)
         {
-            var type = (BIT_TYPE)Random.Range(0, 7);
-            Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject(type).GetComponent<Bit>();
-            
-            //TODO: Find a more elegant solution for this if statement. This is catching the scenario where a bit is recycled and reused in the same frame, before it can be removed by the update loop, resulting in it being in the list twice.
-            if (!m_bits.Contains(newBit))
-                m_bits.Add(newBit);  
-            newBit.transform.parent = LevelManager.Instance.gameObject.transform;
-            Vector2 position;
-            if (inRandomYLevel)
+            //Temp to translate Asteroid size into # of bits
+            int numBitsInObstacle;
+            switch (asteroidSize)
             {
-                position = LevelManager.Instance.WorldGrid.GetRandomGridSquareWorldPosition();
+                case ASTEROID_SIZE.Bit:
+                default:
+                    numBitsInObstacle = 1;
+                    break;
+                case ASTEROID_SIZE.Small:
+                    numBitsInObstacle = Random.Range(2, 4);
+                    break;
+                case ASTEROID_SIZE.Medium:
+                    numBitsInObstacle = Random.Range(4, 6);
+                    break;
+                case ASTEROID_SIZE.Large:
+                    numBitsInObstacle = Random.Range(6, 9);
+                    break;
+            }
+
+            if (numBitsInObstacle == 1)
+            {
+                //Make bit and push to list
+                Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject(bitType).GetComponent<Bit>();
+                AddMovableToList(newBit);
+                PlaceMovableOnGrid(newBit);
             }
             else
             {
-                position = LevelManager.Instance.WorldGrid.GetRandomTopGridSquareWorldPosition();
+                Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bitType, numBitsInObstacle);
+                AddMovableToList(newShape);
+                foreach (Bit bit in newShape.AttachedBits)
+                {
+                    AddMovableToList(bit);
+                }
+                PlaceMovableOnGrid(newShape);
             }
-            newBit.transform.position = position;
+        }
+
+        public void AddMovableToList(IMovable movable)
+        {
+            //TODO: Find a more elegant solution for this if statement. This is catching the scenario where a bit is recycled and reused in the same frame, before it can be removed by the update loop, resulting in it being in the list twice.
+            if (!m_bits.Contains(movable))
+                m_bits.Add(movable);
+        }
+
+        private void PlaceMovableOnGrid(IMovable movable)
+        {
+            movable.transform.parent = LevelManager.Instance.gameObject.transform;
+            Vector2 position = LevelManager.Instance.WorldGrid.GetAvailableRandomTopGridSquareWorldPosition();
+            movable.transform.position = position;
             LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
         }
     }

@@ -104,7 +104,7 @@ namespace StarSalvager.Utilities.Inputs
         IEnumerator dasTimer(float direction)
         {
             SideMovement(0.0f);
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.15f);
 
             if (_prevMove == direction)
             {

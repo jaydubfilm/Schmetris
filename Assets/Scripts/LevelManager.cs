@@ -5,6 +5,7 @@ using StarSalvager.Utilities;
 using StarSalvager.Constants;
 using StarSalvager.AI;
 using UnityEngine.UI;
+using StarSalvager.ScriptableObjects;
 
 namespace StarSalvager
 {
@@ -21,6 +22,16 @@ namespace StarSalvager
         [SerializeField]
         private Text m_demoText;
         public Text DemoText => m_demoText;
+
+        [SerializeField]
+        private WaveRemoteDataScriptableObject m_waveRemoteData;
+        public WaveRemoteDataScriptableObject WaveRemoteData => m_waveRemoteData;
+
+        private float m_waveTimer;
+        public float WaveTimer => m_waveTimer;
+
+        private int m_currentStage;
+        public int CurrentStage => m_currentStage;
 
         public WorldGrid WorldGrid
         {
@@ -84,6 +95,9 @@ namespace StarSalvager
 
         private void Update()
         {
+            m_waveTimer += Time.deltaTime;
+            m_currentStage = m_waveRemoteData.GetCurrentStage(m_waveTimer);
+            
             ProjectileManager.UpdateForces();
         }
     }

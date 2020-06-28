@@ -73,6 +73,11 @@ namespace StarSalvager.Factories
         /// <returns></returns>
         public GameObject CreateGameObject(BIT_TYPE bitType, int level = 0)
         {
+            if (bitType == BIT_TYPE.RANDOMSINGLE || bitType == BIT_TYPE.RANDOMVARIED)
+            {
+                bitType = (BIT_TYPE) Random.Range(0, 7);
+            }
+            
             var blockData = new BlockData
             {
                 Level = level,
