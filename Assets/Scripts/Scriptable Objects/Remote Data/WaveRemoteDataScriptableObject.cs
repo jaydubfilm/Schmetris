@@ -30,6 +30,12 @@ namespace StarSalvager.ScriptableObjects
 
             while (stageTimer >= StageRemoteData[currentStage].StageDuration)
             {
+                if (StageRemoteData[currentStage].WaitUntilAllEnemiesDefeatedToBegin &&
+                    LevelManager.Instance.EnemyManager.HasEnemiesRemaining())
+                {
+                    return currentStage;
+                }
+
                 stageTimer -= StageRemoteData[currentStage].StageDuration;
                 currentStage++;
             }

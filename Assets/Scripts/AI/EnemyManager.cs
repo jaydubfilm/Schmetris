@@ -160,6 +160,11 @@ namespace StarSalvager
             newEnemy.transform.position = LevelManager.Instance.WorldGrid.GetSpawnPositionForEnemy(newEnemy.m_enemyData.MovementType);
         }
 
+        public bool HasEnemiesRemaining()
+        {
+            return m_enemies.Count != 0;
+        }
+
         public void Move(float direction)
         {
             if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
