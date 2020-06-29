@@ -73,7 +73,8 @@ public class PROTO_ShapeSpawner : MonoBehaviour
 private void CreateShape()
     {
         //var direction = directions[Random.Range(0, directions.Length)].ToVector2();
-        var type = legalShapes[Random.Range(0, legalShapes.Length)];
+        //var type = legalShapes[Random.Range(0, legalShapes.Length)];
+        var type = BIT_TYPE.BLACK;
         var count = Random.Range(bitCountMin, bitCountMax);
         var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(type, count);
 

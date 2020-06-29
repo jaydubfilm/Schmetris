@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Newtonsoft.Json;
 using StarSalvager;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
@@ -11,18 +13,41 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
 {
     //================================================================================================================//
     
+    private readonly BIT_TYPE[] legalBits =
+    {
+        BIT_TYPE.RED,
+        BIT_TYPE.BLUE,
+        BIT_TYPE.GREY,
+        BIT_TYPE.GREEN,
+        BIT_TYPE.YELLOW
+    };
+    
     [SerializeField, TextArea] private string importTest;
 
-    [SerializeField] private Bot bot;
+    private Bot[] bots;
+    private Bot bot => bots[0];
     
     //================================================================================================================//
 
     // Start is called before the first frame update
     private void Start()
     {
+        bots = FindObjectsOfType<Bot>();
+
+        Bot.OnBotDied += bot =>
+        {
+            Debug.LogError("Bot Died. Press 'R' to restart");
+        };
+        
+        
         InitInput();
     }
 
+    private void Update()
+    {
+        if (UnityEngine.Input.GetKeyDown(KeyCode.T))
+            GetTotalResources();
+    }
     
     private void OnDestroy()
     {
@@ -30,8 +55,6 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
     }
 
     //================================================================================================================//
-
-    
     
     private void CreateBit(DIRECTION direction)
     {
@@ -41,10 +64,20 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
         var newBit = FactoryManager.Instance
             .GetFactory<BitAttachableFactory>()
             .CreateObject<IAttachable>(
-                (BIT_TYPE) Random.Range(0, 7),
+                legalBits[Random.Range(0, legalBits.Length)],
                 Random.Range(0, 3));
 
         bot.PushNewBit(newBit, direction);
+    }
+
+    private void GetTotalResources()
+    {
+        var list = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
+            .GetTotalResources(bot.attachedBlocks.OfType<Bit>());
+
+        var _out = list.Aggregate(string.Empty, (current, i) => current + $"[{i.Key}] {i.Value}\n");
+
+        Debug.Log(_out);
     }
     
     //================================================================================================================//

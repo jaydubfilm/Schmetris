@@ -21,6 +21,7 @@ namespace StarSalvager
 
         public float StartingHealth => _startingHealth;
         private float _startingHealth;
+        [ShowInInspector, ReadOnly]
         public float CurrentHealth => _currentHealth;
         private float _currentHealth;
 

@@ -19,6 +19,7 @@ namespace StarSalvager.Factories
 
         public GameObject CreateGameObject(BlockData blockData)
         {
+            var remote = remotePartData.GetRemoteData((PART_TYPE) blockData.Type);
             var profile = factoryProfile.GetProfile((PART_TYPE)blockData.Type);
             var sprite = profile.GetSprite(blockData.Level);
 
@@ -26,7 +27,10 @@ namespace StarSalvager.Factories
             temp.SetSprite(sprite);
             temp.LoadBlockData(blockData);
 
+            var health = remote.health[blockData.Level];
+
             //temp.StartingHealth =
+            temp.SetupHealthValues(health, health);
 
             temp.gameObject.name = $"{temp.Type}_{temp.level}";
             return temp.gameObject;

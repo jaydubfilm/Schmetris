@@ -32,3 +32,67 @@ MonoBehaviour:
       - type: 5
         amount: 200
     data: 0a00000014000000
+  - name: Magnet
+    partType: 1
+    health:
+    - 80
+    - 100
+    costs:
+    - levelCosts:
+      - type: 3
+        amount: 100
+      - type: 5
+        amount: 100
+    - levelCosts:
+      - type: 3
+        amount: 200
+      - type: 5
+        amount: 500
+    data: 050000000a000000
+  - name: Repairer
+    partType: 2
+    health:
+    - 80
+    - 90
+    costs:
+    - levelCosts:
+      - type: 3
+        amount: 100
+      - type: 2
+        amount: 100
+    - levelCosts:
+      - type: 3
+        amount: 200
+      - type: 2
+        amount: 500
+    data: 1400000019000000
+  - name: Armor
+    partType: 3
+    health:
+    - 150
+    - 300
+    costs:
+    - levelCosts:
+      - type: 3
+        amount: 200
+    - levelCosts:
+      - type: 3
+        amount: 500
+    data: 
+  - name: Gun
+    partType: 4
+    health:
+    - 50
+    - 75
+    costs:
+    - levelCosts:
+      - type: 3
+        amount: 100
+      - type: 1
+        amount: 100
+    - levelCosts:
+      - type: 3
+        amount: 200
+      - type: 1
+        amount: 500
+    data: 050000000a000000

@@ -19,7 +19,7 @@ namespace StarSalvager
 {
     public class Bot : MonoBehaviour
     {
-        
+        public static Action<Bot> OnBotDied;
 
         //============================================================================================================//
 
@@ -55,6 +55,9 @@ namespace StarSalvager
         private float _dasTimer;
 
 
+        private bool _isDestroyed = false;
+
+
         public bool Rotating => _rotating;
 
         private bool _rotating;
@@ -72,29 +75,8 @@ namespace StarSalvager
         {
             rigidbody = GetComponent<Rigidbody2D>();
             CompositeCollider2D = GetComponent<CompositeCollider2D>();
-            //useCollision = false;
 
-            //Mark as Core coordinate
-            //Coordinate = Vector2Int.zero;
-            var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(
-                new BlockData
-                {
-                    Type = (int)PART_TYPE.CORE,
-                    Coordinate = Vector2Int.zero,
-                    Level = 0,
-                });
-
-            AttachNewBit(Vector2Int.zero, core);
-
-        }
-
-        // Update is called once per frame
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Equals))
-                TEST_Speed += 100;
-            else if (Input.GetKeyDown(KeyCode.Minus))
-                TEST_Speed -= 100;
+            InitBot();
         }
 
         private void FixedUpdate()
@@ -108,6 +90,36 @@ namespace StarSalvager
 
         #endregion //Unity Functions
 
+        //============================================================================================================//
+
+        public void InitBot()
+        {
+            _isDestroyed = false;
+            CompositeCollider2D.enabled = true;
+            
+            //Add core component
+            var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(
+                new BlockData
+                {
+                    Type = (int)PART_TYPE.CORE,
+                    Coordinate = Vector2Int.zero,
+                    Level = 0,
+                });
+
+            AttachNewBit(Vector2Int.zero, core);
+        }
+        
+        public void InitBot(IEnumerable<IAttachable> botAttachables)
+        {
+            _isDestroyed = false;
+            CompositeCollider2D.enabled = true;
+            
+            foreach (var attachable in botAttachables)
+            {
+                AttachNewBit(attachable.Coordinate, attachable);
+            }
+        }
+        
         //============================================================================================================//
 
         #region Input Solver
@@ -282,86 +294,97 @@ namespace StarSalvager
 
         public bool TryAddNewAttachable(IAttachable attachable, DIRECTION connectionDirection, Vector2 collisionPoint)
         {
+            if (_isDestroyed)
+                return false;
+            
             if (Rotating)
                 return false;
 
-            if (attachable is Bit bit)
+            switch (attachable)
             {
-                bool legalDirection;
-                var direction = DIRECTION.NULL;
-
-
-                //Get the coordinate of the collision
-                var bitCoordinate = GetRelativeCoordinate(bit.transform.position);
-
-                //----------------------------------------------------------------------------------------------------//
-
-                var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
-                legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
-
-                //----------------------------------------------------------------------------------------------------//
-
-                if (!legalDirection)
+                case Bit bit:
                 {
-                    //Make sure that the attachable isn't overlapping the bot before we say its impossible to 
-                    if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
-                        return false;
-                }
+                    bool legalDirection;
+                    var direction = DIRECTION.NULL;
 
-                //Check if its legal to attach (Within threshold of connection)
-                switch (bit.Type)
-                {
-                    case BIT_TYPE.BLACK:
-                        //TODO Destroy both this and collided Bit
-                        Recycler.Recycle<Bit>(attachable.gameObject);
 
-                        break;
-                    case BIT_TYPE.BLUE:
-                    case BIT_TYPE.GREEN:
-                    case BIT_TYPE.GREY:
-                    case BIT_TYPE.RED:
-                    case BIT_TYPE.YELLOW:
+                    //Get the coordinate of the collision
+                    var bitCoordinate = GetRelativeCoordinate(bit.transform.position);
 
-                        //Add these to the block depending on its relative position
-                        AttachNewBitToExisting(bit, closestAttachable, connectionDirection);
+                    //----------------------------------------------------------------------------------------------------//
 
-                        break;
-                    case BIT_TYPE.WHITE:
-                        //Destroy collided Bit
-                        Recycler.Recycle<Bit>(attachable.gameObject);
+                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
+
+                    //----------------------------------------------------------------------------------------------------//
+
+                    if (!legalDirection)
+                    {
+                        //Make sure that the attachable isn't overlapping the bot before we say its impossible to 
+                        if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
+                            return false;
+                    }
+
+                    //Check if its legal to attach (Within threshold of connection)
+                    switch (bit.Type)
+                    {
+                        case BIT_TYPE.BLACK:
+                            //TODO Need to add animation/effects here 
+                            //Destroy both this and collided Bit
+                            Recycler.Recycle<Bit>(attachable.gameObject);
+
+                            AsteroidDamageAt(closestAttachable);
+                            break;
+                        case BIT_TYPE.BLUE:
+                        case BIT_TYPE.GREEN:
+                        case BIT_TYPE.GREY:
+                        case BIT_TYPE.RED:
+                        case BIT_TYPE.YELLOW:
+
+                            //Add these to the block depending on its relative position
+                            AttachNewBitToExisting(bit, closestAttachable, connectionDirection);
+
+                            break;
+                        case BIT_TYPE.WHITE:
+                            //Destroy collided Bit
+                            Recycler.Recycle<Bit>(attachable.gameObject);
                         
-                        //Try and shift collided row (Depending on direction)
-                        TryShift(connectionDirection.Reflected(), closestAttachable);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(bit.Type), bit.Type, null);
+                            //Try and shift collided row (Depending on direction)
+                            TryShift(connectionDirection.Reflected(), closestAttachable);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(bit.Type), bit.Type, null);
+                    }
+
+                    break;
                 }
-            }
-            else if (attachable is EnemyAttachable enemyAttachable)
-            {
-                bool legalDirection;
-                var direction = DIRECTION.NULL;
-
-
-                //Get the coordinate of the collision
-                var bitCoordinate = GetRelativeCoordinate(enemyAttachable.transform.position);
-
-                //----------------------------------------------------------------------------------------------------//
-
-                var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
-                legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
-
-                //----------------------------------------------------------------------------------------------------//
-
-                if (!legalDirection)
+                case EnemyAttachable enemyAttachable:
                 {
-                    //Make sure that the attachable isn't overlapping the bot before we say its impossible to 
-                    if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
-                        return false;
-                }
+                    bool legalDirection;
+                    var direction = DIRECTION.NULL;
 
-                //Add these to the block depending on its relative position
-                AttachNewBitToExisting(enemyAttachable, closestAttachable, connectionDirection);
+
+                    //Get the coordinate of the collision
+                    var bitCoordinate = GetRelativeCoordinate(enemyAttachable.transform.position);
+
+                    //----------------------------------------------------------------------------------------------------//
+
+                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
+
+                    //----------------------------------------------------------------------------------------------------//
+
+                    if (!legalDirection)
+                    {
+                        //Make sure that the attachable isn't overlapping the bot before we say its impossible to 
+                        if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
+                            return false;
+                    }
+
+                    //Add these to the block depending on its relative position
+                    AttachNewBitToExisting(enemyAttachable, closestAttachable, connectionDirection);
+                    break;
+                }
             }
 
 
@@ -490,8 +513,16 @@ namespace StarSalvager
         
         #region Check for Legal Shape Attach
 
+        
+
         public bool TryAddNewShape(Shape shape, IAttachable closestShapeBit, DIRECTION connectionDirection, Vector2 collisionPoint)
         {
+            if (_isDestroyed)
+                return false;
+            
+            if (Rotating)
+                return false;
+            
             var closestOnBot= attachedBlocks.GetClosestAttachable(collisionPoint);
 
             if (closestShapeBit is Bit closeBit)
@@ -501,6 +532,8 @@ namespace StarSalvager
                     case BIT_TYPE.BLACK:
                         //TODO Damage/Destroy Bits as required
                         shape.DestroyBit(closeBit);
+
+                        AsteroidDamageAt(closestOnBot);
                         
                         break;
                     case BIT_TYPE.BLUE:
@@ -1255,6 +1288,38 @@ namespace StarSalvager
 
         //============================================================================================================//
         
+        private void AsteroidDamageAt(IAttachable attachable)
+        {
+            DetachBit(attachable);
+                        
+            Recycler.Recycle<Bit>(attachable.gameObject);
+            
+            CheckForDisconnects();
+                        
+            //TODO Damage Core (OverHeat) & check to see if the core has died
+            if (!(attachedBlocks[0] is IHealth coreHealth)) 
+                return;
+            
+            coreHealth.ChangeHealth(-5);
+            if (coreHealth.CurrentHealth > 0)
+                return;
+
+            Destroy();
+        }
+
+        private void Destroy()
+        {
+            if (_isDestroyed)
+                return;
+            
+            _isDestroyed = true;
+            CompositeCollider2D.enabled = false;
+
+            StartCoroutine(DestroyCoroutine());
+        }
+        
+        //============================================================================================================//
+        
         #region Coroutines
         
                 /// <summary>
@@ -1443,6 +1508,38 @@ namespace StarSalvager
         }
         
         #endregion //Coroutines
+
+        private IEnumerator DestroyCoroutine()
+        {
+            var core = attachedBlocks[0];
+            var index = 1;
+            
+            yield return new WaitForSeconds(0.3f);
+            
+            while (true)
+            {
+                var toDestroy = attachedBlocks
+                    .Where(a => a.gameObject.activeInHierarchy)
+                    .Where(a => Mathf.Abs(a.Coordinate.x) <= index && Mathf.Abs(a.Coordinate.y) <= index)
+                    .ToList();
+                
+                if(toDestroy.Count == 0)
+                    break;
+
+                foreach (var attachable in toDestroy)
+                {
+                    Recycler.Recycle(attachable.GetType(), attachable.gameObject);
+                }
+                
+                yield return new WaitForSeconds(0.35f);
+
+                index++;
+            }
+            
+            OnBotDied?.Invoke(this);
+            
+            Recycler.Recycle<Bot>(gameObject);
+        }
         
         //============================================================================================================//
 

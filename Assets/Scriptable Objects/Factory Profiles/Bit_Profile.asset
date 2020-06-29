@@ -21,33 +21,33 @@ MonoBehaviour:
   - bitType: 1
     _name: Bluesalt
     _sprites:
-    - {fileID: 21300110, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
-    - {fileID: 21300112, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
-    - {fileID: 21300114, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+    - {fileID: -1569304216255935765, guid: 70a07f564da48044f930d298f10c0980, type: 3}
+    - {fileID: 2320722188881442627, guid: 70a07f564da48044f930d298f10c0980, type: 3}
+    - {fileID: -8830083467641132217, guid: 70a07f564da48044f930d298f10c0980, type: 3}
   - bitType: 2
     _name: Greenium
     _sprites:
-    - {fileID: 21300142, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
-    - {fileID: 21300144, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
-    - {fileID: 21300146, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+    - {fileID: 2193297196315482251, guid: 70a07f564da48044f930d298f10c0980, type: 3}
+    - {fileID: -4867847792586970309, guid: 70a07f564da48044f930d298f10c0980, type: 3}
+    - {fileID: 9190389943243537348, guid: 70a07f564da48044f930d298f10c0980, type: 3}
   - bitType: 3
     _name: Greyscale
     _sprites:
-    - {fileID: 21300126, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
-    - {fileID: 21300128, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
-    - {fileID: 21300130, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+    - {fileID: -7535713499702939010, guid: 70a07f564da48044f930d298f10c0980, type: 3}
+    - {fileID: 5126932669702752821, guid: 70a07f564da48044f930d298f10c0980, type: 3}
+    - {fileID: 7874295301577762907, guid: 70a07f564da48044f930d298f10c0980, type: 3}
   - bitType: 4
     _name: Reddite
     _sprites:
-    - {fileID: 21300078, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
-    - {fileID: 21300080, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
-    - {fileID: 21300082, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+    - {fileID: 2143526763190990686, guid: 70a07f564da48044f930d298f10c0980, type: 3}
+    - {fileID: 1808511259559904148, guid: 70a07f564da48044f930d298f10c0980, type: 3}
+    - {fileID: 1615074879219812895, guid: 70a07f564da48044f930d298f10c0980, type: 3}
   - bitType: 5
     _name: Yelletron
     _sprites:
-    - {fileID: 21300062, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
-    - {fileID: 21300064, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
-    - {fileID: 21300066, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+    - {fileID: 3943645718070287857, guid: 70a07f564da48044f930d298f10c0980, type: 3}
+    - {fileID: 6459222363245333112, guid: 70a07f564da48044f930d298f10c0980, type: 3}
+    - {fileID: -5136519658513776975, guid: 70a07f564da48044f930d298f10c0980, type: 3}
   - bitType: 6
     _name: Energy
     _sprites:

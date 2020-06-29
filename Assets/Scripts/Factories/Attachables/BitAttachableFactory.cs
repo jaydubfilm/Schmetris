@@ -1,4 +1,5 @@
-﻿using Recycling;
+﻿using System.Collections.Generic;
+using Recycling;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
@@ -25,6 +26,21 @@ namespace StarSalvager.Factories
             
             bit.SetSprite(sprite);
         }
+
+        public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<Bit> bits)
+        {
+            var resources = new Dictionary<BIT_TYPE, int>();
+
+            foreach (var bit in bits)
+            {
+                if(!resources.ContainsKey(bit.Type))
+                    resources.Add(bit.Type, 0);
+
+                resources[bit.Type] += remoteData.GetRemoteData(bit.Type).resource[bit.level];
+            }
+
+            return resources;
+        }
         
         //============================================================================================================//
         
@@ -35,8 +51,10 @@ namespace StarSalvager.Factories
         /// <returns></returns>
         public GameObject CreateGameObject(BlockData blockData)
         {
+            var remote = remoteData.GetRemoteData((BIT_TYPE) blockData.Type);
             var profile = factoryProfile.GetProfile((BIT_TYPE)blockData.Type);
             var sprite = profile.GetSprite(blockData.Level);
+            
 
             if (!Recycler.TryGrab(out Bit temp))
             {
@@ -45,7 +63,10 @@ namespace StarSalvager.Factories
             temp.SetColliderActive(true);
             temp.SetSprite(sprite);
             temp.LoadBlockData(blockData);
-            temp.SetupHealthValues(25, 25);
+            
+            //Have to check for null, as the Asteroid/Energy does not have health
+            if(remote != null)
+                temp.SetupHealthValues(remote.health[blockData.Level], remote.health[blockData.Level]);
 
             return temp.gameObject;
         }

@@ -234,7 +234,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   importTest: '[{"ClassType":"Bit","Coordinate":{"x":-1,"y":0},"Type":6,"Level":1},{"ClassType":"Bit","Coordinate":{"x":-2,"y":0},"Type":1,"Level":1},{"ClassType":"Bit","Coordinate":{"x":-3,"y":0},"Type":1,"Level":1},{"ClassType":"Bit","Coordinate":{"x":-4,"y":0},"Type":6,"Level":1},{"ClassType":"Bit","Coordinate":{"x":1,"y":0},"Type":0,"Level":1},{"ClassType":"Bit","Coordinate":{"x":2,"y":0},"Type":3,"Level":1},{"ClassType":"Bit","Coordinate":{"x":3,"y":0},"Type":0,"Level":1},{"ClassType":"Bit","Coordinate":{"x":4,"y":0},"Type":0,"Level":1}]'
-  bot: {fileID: 0}
 --- !u!4 &198977634
 Transform:
   m_ObjectHideFlags: 0
@@ -362,6 +361,42 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 1368133930}
+    ActiveGameObject: {fileID: 1368133930}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 198977632}
+    ActiveGameObject: {fileID: 198977632}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1368133930}
+    ActiveGameObject: {fileID: 1368133930}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 1970748057}
     ActiveGameObject: {fileID: 1970748057}
     GUIDsList: []
@@ -604,42 +639,6 @@ MonoBehaviour:
     list:
     - {fileID: 0}
     ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 466677615}
-    ActiveGameObject: {fileID: 466677615}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1970748057}
-    ActiveGameObject: {fileID: 1970748057}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
