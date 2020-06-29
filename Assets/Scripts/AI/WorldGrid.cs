@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using StarSalvager.Constants;
 using StarSalvager.AI;
+using UnityEngine.InputSystem.Interactions;
 
 namespace StarSalvager
 {
@@ -50,6 +51,21 @@ namespace StarSalvager
 #endif
         }
 
+        public void DrawDebugMarkedGridPoints()
+        {
+            for (int x = 0; x < Values.gridSizeX; x++)
+            {
+                for (int y = 0; y < Values.gridSizeY; y++)
+                {
+                    if (GetGridSquareAtPosition(x, y).m_obstacleInSquare == true)
+                    {
+                        Debug.DrawLine(GetCenterOfGridSquareInGridPosition(x, y), GetCenterOfGridSquareInGridPosition(x, y) + new Vector2(0, 0.25f), new Color(255, 0, 0), 300f);
+                    }
+                }
+            }
+            Debug.Break();
+        }
+
         public void MoveObstacleMarkersDownwardOnGrid()
         {
             for (int y = 0; y < Values.gridSizeY; y++)
@@ -58,7 +74,8 @@ namespace StarSalvager
                 {
                     if (y + 1 == Values.gridSizeY)
                     {
-                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x, 0).m_obstacleInSquare);
+                        //SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x, 0).m_obstacleInSquare);
+                        SetObstacleInGridSquare(x, y, false);
                     }
                     else
                     {
@@ -109,6 +126,11 @@ namespace StarSalvager
             GetGridSquareAtWorldPosition(obstaclePosition).SetObstacleInSquare(occupied);
         }
 
+        public void SetObstacleInGridSquare(Vector2Int gridPosition, bool occupied)
+        {
+            GetGridSquareAtPosition(gridPosition.x, gridPosition.y).SetObstacleInSquare(occupied);
+        }
+
         public void SetObstacleInGridSquare(int x, int y, bool occupied)
         {
             GetGridSquareAtPosition(x, y).SetObstacleInSquare(occupied);
@@ -116,11 +138,21 @@ namespace StarSalvager
 
         public GridSquare GetGridSquareAtPosition(Vector2Int gridPosition)
         {
+            if (gridPosition.x >= Values.gridSizeX)
+                gridPosition.x -= Values.gridSizeX;
+            else if (gridPosition.x < 0)
+                gridPosition.x += Values.gridSizeX;
+
             return m_gridArray[gridPosition.x + (gridPosition.y * Values.gridSizeX)];
         }
 
         public GridSquare GetGridSquareAtPosition(int x, int y)
         {
+            if (x >= Values.gridSizeX)
+                x -= Values.gridSizeX;
+            else if (x < 0)
+                x += Values.gridSizeX;
+            
             return m_gridArray[x + (y * Values.gridSizeX)];
         }
 
@@ -132,11 +164,6 @@ namespace StarSalvager
         public Vector2 GetCenterOfGridSquareInGridPosition(int x, int y)
         {
             return m_anchorPoint + ((new Vector2(x, y) + m_adjustToMiddleOfGridSquare) * Values.gridCellSize);
-        }
-
-        private Vector2 GetCenterOfGridSquareInWorldPosition(Vector2Int worldPositionVector)
-        {
-            return m_anchorPoint + ((new Vector2(worldPositionVector.x, worldPositionVector.y) + m_adjustToMiddleOfGridSquare) * Values.gridCellSize);
         }
 
         public GridSquare GetGridSquareAtWorldPosition(Vector2 worldPosition)
