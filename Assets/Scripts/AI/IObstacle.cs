@@ -4,11 +4,10 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public interface IMovable
+    public interface IObstacle
     {
         Transform transform { get; }
         GameObject gameObject { get; }
-        bool enabled { get; }
-        bool ShouldMoveByObstacleManager();
+        bool CanMove { get; }
     }
 }

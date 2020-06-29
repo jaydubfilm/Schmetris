@@ -29,8 +29,10 @@ namespace StarSalvager.AI
             if (m_timer >= Values.timeForAsteroidsToFall)
             {
                 m_timer -= Values.timeForAsteroidsToFall;
+                //TODO: move these lines to a more appropriate location. Also, ensure that this order of operations stays the same, it is important.
                 LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid();
                 LevelManager.Instance.ObstacleManager.SpawnNewRowOfObstacles();
+                LevelManager.Instance.ObstacleManager.TryMarkNewShapesOnGrid();
             }
         }
 

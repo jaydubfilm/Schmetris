@@ -10,7 +10,8 @@ namespace StarSalvager
 {
     public class ObstacleManager : MonoBehaviour
     {
-        private List<IMovable> m_bits;
+        private List<IObstacle> m_obstacles;
+        private List<Shape> m_notFullyInGridShapes;
 
         //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
         private float m_currentInput;
@@ -24,7 +25,8 @@ namespace StarSalvager
         // Start is called before the first frame update
         void Start()
         {
-            m_bits = new List<IMovable>();
+            m_obstacles = new List<IObstacle>();
+            m_notFullyInGridShapes = new List<Shape>();
 
             SetupStage(0);
         }
@@ -73,42 +75,44 @@ namespace StarSalvager
                 }
             }
 
-            for (var i = m_bits.Count - 1; i >= 0; i--)
+            for (int i = m_obstacles.Count - 1; i >= 0; i--)
             {
-                var bit = m_bits[i];
-                if (bit == null)
+                var obstacle = m_obstacles[i];
+                if (obstacle == null)
                 {
-                    m_bits.RemoveAt(i);
+                    m_obstacles.RemoveAt(i);
                     continue;
                 }
 
                 //Check if currently recycled
-                if (!bit.enabled)
+                //TODO: Think of a better way to check if this is in the recycler
+                if (!obstacle.gameObject.activeInHierarchy)
                 {
-                    m_bits.RemoveAt(i);
+                    m_obstacles.RemoveAt(i);
                 }
 
-                if (!bit.ShouldMoveByObstacleManager())
+                if (!obstacle.CanMove)
                 {
                     continue;
                 }
 
-                var pos = bit.transform.position;
-                Vector2 gridPosition = LevelManager.Instance.WorldGrid.GetGridPositionOfVector(bit.transform.position);
+                var pos = obstacle.transform.position;
+                Vector2 gridPosition = LevelManager.Instance.WorldGrid.GetGridPositionOfVector(obstacle.transform.position);
                 pos -= amountShift;
 
                 if (gridPosition.y < 0)
                 {
-                    var temp = m_bits[i];
-                    m_bits.RemoveAt(i);
+                    var temp = m_obstacles[i];
+                    m_obstacles.RemoveAt(i);
 
-                    if (bit is Bit)
+                    switch (obstacle)
                     {
-                        Recycler.Recycle(typeof(Bit), temp.gameObject);
-                    }
-                    else if (bit is Shape)
-                    {
-                        Recycler.Recycle(typeof(Shape), temp.gameObject);
+                        case Bit _:
+                            Recycler.Recycle<Bit>(temp.gameObject);
+                            break;
+                        case Shape _:
+                            Recycler.Recycle<Shape>(temp.gameObject);
+                            break;
                     }
                     continue;
                 }
@@ -118,7 +122,7 @@ namespace StarSalvager
                 else if (gridPosition.x >= Values.gridSizeX)
                     pos += Vector3.left * (Values.gridSizeX * Values.gridCellSize);
 
-                bit.transform.position = pos;
+                obstacle.transform.position = pos;
             }
 
             if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)
@@ -131,6 +135,31 @@ namespace StarSalvager
         {
             m_currentStageData = LevelManager.Instance.WaveRemoteData.GetRemoteData(waveNumber);
             m_nextStageToSpawn = waveNumber + 1;
+        }
+
+        public void TryMarkNewShapesOnGrid()
+        {
+            for (int i = m_notFullyInGridShapes.Count - 1; i >= 0; i--)
+            {
+                bool fullyInGrid = true;
+                foreach (Bit bit in m_notFullyInGridShapes[i].AttachedBits)
+                {
+                    Vector2Int gridPosition = LevelManager.Instance.WorldGrid.GetGridPositionOfVector
+                        (bit.transform.position);
+                    if (gridPosition.y >= Values.gridSizeY)
+                    {
+                        fullyInGrid = false;
+                    }
+                    else
+                    {
+                        LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(bit.transform.position, true);
+                    }
+                }
+                if (fullyInGrid)
+                {
+                    m_notFullyInGridShapes.RemoveAt(i);
+                }
+            }
         }
 
         public void Move(float direction)
@@ -210,19 +239,27 @@ namespace StarSalvager
             }
         }
 
-        public void AddMovableToList(IMovable movable)
+        public void AddMovableToList(IObstacle movable)
         {
             //TODO: Find a more elegant solution for this if statement. This is catching the scenario where a bit is recycled and reused in the same frame, before it can be removed by the update loop, resulting in it being in the list twice.
-            if (!m_bits.Contains(movable))
-                m_bits.Add(movable);
+            if (!m_obstacles.Contains(movable))
+                m_obstacles.Add(movable);
         }
 
-        private void PlaceMovableOnGrid(IMovable movable)
+        private void PlaceMovableOnGrid(IObstacle movable)
         {
             movable.transform.parent = LevelManager.Instance.gameObject.transform;
             Vector2 position = LevelManager.Instance.WorldGrid.GetAvailableRandomTopGridSquareWorldPosition();
             movable.transform.position = position;
-            LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
+            switch(movable)
+            {
+                case Bit _:
+                    LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
+                    break;
+                case Shape shape:
+                    m_notFullyInGridShapes.Add(shape);
+                    break;
+            }
         }
     }
 }

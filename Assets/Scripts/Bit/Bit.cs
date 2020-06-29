@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IMovable
+    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle
     {
         //IAttachable properties
         //============================================================================================================//
@@ -30,6 +30,10 @@ namespace StarSalvager
         private float _startingHealth;
         public float CurrentHealth { get { return _currentHealth; } }
         private float _currentHealth;
+
+        //IObstacle Properties
+        //============================================================================================================//
+        public bool CanMove => !Attached;
 
         //Bit Properties
         //============================================================================================================//
@@ -148,11 +152,6 @@ namespace StarSalvager
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
-        }
-
-        public bool ShouldMoveByObstacleManager()
-        {
-            return !Attached;
         }
 
         //ISaveable Functions

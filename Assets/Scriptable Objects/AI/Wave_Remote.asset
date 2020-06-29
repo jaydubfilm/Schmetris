@@ -25,12 +25,14 @@ MonoBehaviour:
   - m_stageNumber: 1
     m_stageDuration: 10
     m_waitUntilAllEnemiesDefeatedToBegin: 1
-    m_stageEnemyData: []
+    m_stageEnemyData:
+    - m_enemyType: 1
+      m_enemyCount: 1000
     m_stageObstacleData:
     - m_selectionType: 1
       m_bitType: 0
-      m_asteroidSize: 1
-      m_asteroidCountPerMinute: 500
+      m_asteroidSize: 2
+      m_asteroidCountPerMinute: 400
   - m_stageNumber: 2
     m_stageDuration: 10
     m_waitUntilAllEnemiesDefeatedToBegin: 0

@@ -7,7 +7,7 @@ using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
 [RequireComponent(typeof(CompositeCollider2D))]
-public class Shape : CollidableBase, IMovable
+public class Shape : CollidableBase, IObstacle
 {
     //================================================================================================================//
     
@@ -20,8 +20,10 @@ public class Shape : CollidableBase, IMovable
     private List<Bit> attachedBits => _attachedBits ?? (_attachedBits = new List<Bit>());
     private List<Bit> _attachedBits;
 
+    public bool CanMove => true;
+
     //================================================================================================================//
-    
+
     protected new Rigidbody2D rigidbody
     {
         get
@@ -164,11 +166,6 @@ public class Shape : CollidableBase, IMovable
             default:
                 throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
         }
-    }
-
-    public bool ShouldMoveByObstacleManager()
-    {
-        return true;
     }
     
     //================================================================================================================//
