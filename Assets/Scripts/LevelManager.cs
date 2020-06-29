@@ -6,11 +6,15 @@ using StarSalvager.Constants;
 using StarSalvager.AI;
 using UnityEngine.UI;
 using StarSalvager.ScriptableObjects;
+using Sirenix.OdinInspector;
 
 namespace StarSalvager
 {
     public class LevelManager : SceneSingleton<LevelManager>
     {
+        public bool generateRandomSeed;
+        [DisableIf("$generateRandomSeed")] public int seed = 1234567890;
+
         [SerializeField]
         private Bot m_botGameObject;
         public Bot BotGameObject => m_botGameObject;
@@ -92,6 +96,17 @@ namespace StarSalvager
             }
         }
         private ProjectileManager m_projectileManager;
+
+        private void Start()
+        {
+            if (generateRandomSeed)
+            {
+                seed = Random.Range(int.MinValue, int.MaxValue);
+                Debug.Log($"Generated Seed {seed}");
+            }
+
+            Random.InitState(seed);
+        }
 
         private void Update()
         {

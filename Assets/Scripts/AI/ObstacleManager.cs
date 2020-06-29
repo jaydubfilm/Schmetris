@@ -12,24 +12,19 @@ namespace StarSalvager
     {
         private List<IMovable> m_bits;
 
-        //TODO: This is quick and dirty change to help shapes fall off ship. Remove everything related to shapePieces list later
-        public List<Bit> m_shapePieces;
-
         //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
         private float m_currentInput;
-
-        private float m_distanceHorizontal = 0.0f;
 
         //Variables to spawn obstacles throughout a stage
         private StageRemoteData m_currentStageData;
         private int m_nextStageToSpawn;
 
+        private float m_distanceHorizontal = 0.0f;
 
         // Start is called before the first frame update
         void Start()
         {
             m_bits = new List<IMovable>();
-            m_shapePieces = new List<Bit>();
 
             SetupStage(0);
         }
@@ -48,14 +43,6 @@ namespace StarSalvager
 
         private void HandleObstacleMovement()
         {
-            for (int i = m_shapePieces.Count - 1; i >= 0; i--)
-            {
-                if (!m_shapePieces[i].enabled)
-                {
-                    m_shapePieces.RemoveAt(i);
-                }
-            }
-
             Vector3 amountShift = Vector3.up * ((Values.gridCellSize * Time.deltaTime) / Values.timeForAsteroidsToFall);
 
             if (m_distanceHorizontal != 0)
@@ -167,7 +154,7 @@ namespace StarSalvager
 
                 while (spawnVariable >= 1)
                 {
-                    SpawnObstacle(stageObstacleData.BitType, stageObstacleData.AsteroidSize);
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.BitType, stageObstacleData.AsteroidSize);
                     spawnVariable -= 1;
                 }
 
@@ -178,12 +165,12 @@ namespace StarSalvager
 
                 if (random <= spawnVariable)
                 {
-                    SpawnObstacle(stageObstacleData.BitType, stageObstacleData.AsteroidSize);
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.BitType, stageObstacleData.AsteroidSize);
                 }
             }
         }
 
-        private void SpawnObstacle(BIT_TYPE bitType, ASTEROID_SIZE asteroidSize, bool inRandomYLevel = false)
+        private void SpawnObstacle(SELECTION_TYPE selectionType, BIT_TYPE bitType, ASTEROID_SIZE asteroidSize, bool inRandomYLevel = false)
         {
             //Temp to translate Asteroid size into # of bits
             int numBitsInObstacle;
@@ -213,7 +200,7 @@ namespace StarSalvager
             }
             else
             {
-                Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bitType, numBitsInObstacle);
+                Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, bitType, numBitsInObstacle);
                 AddMovableToList(newShape);
                 foreach (Bit bit in newShape.AttachedBits)
                 {

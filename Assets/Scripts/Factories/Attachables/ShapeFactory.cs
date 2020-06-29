@@ -31,39 +31,42 @@ namespace StarSalvager.Factories
         
         public GameObject CreateGameObject(BIT_TYPE bitType, int totalBits)
         {
-            BIT_TYPE type;
-            if (bitType == BIT_TYPE.RANDOMSINGLE || bitType == BIT_TYPE.RANDOMVARIED)
-            {
-                type = (BIT_TYPE)Random.Range(0, 6);
-            }
-            else
-            {
-                type = bitType;
-            }
-
             var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
             
             var shape = CreateObject<Shape>();
             for (var i = 0; i < totalBits; i++)
             {
-                var bit = bitFactory.CreateObject<Bit>(type);
+                var bit = bitFactory.CreateObject<Bit>(bitType);
                 shape.PushNewBit(bit, (DIRECTION)Random.Range(0, 4));
-
-                if (bitType == BIT_TYPE.RANDOMVARIED && type != BIT_TYPE.BLACK)
-                {
-                    type = (BIT_TYPE)Random.Range(1, 6);
-                }
             }
 
-            LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
+            if (LevelManager.Instance != null)
+                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
 
             return shape.gameObject;
         }
 
         public T CreateObject<T>(BIT_TYPE bitType, int totalBits)
         {
+            var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
+            
+            var shape = CreateObject<Shape>();
+            for (var i = 0; i < totalBits; i++)
+            {
+                var bit = bitFactory.CreateObject<Bit>(bitType);
+                shape.PushNewBit(bit, (DIRECTION)Random.Range(0, 4));
+            }
+
+            if (LevelManager.Instance != null)
+                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
+
+            return shape.GetComponent<T>();
+        }
+
+        public T CreateObject<T>(SELECTION_TYPE selectionType, BIT_TYPE bitType, int totalBits)
+        {
             BIT_TYPE type;
-            if (bitType == BIT_TYPE.RANDOMSINGLE || bitType == BIT_TYPE.RANDOMVARIED)
+            if (selectionType == SELECTION_TYPE.RANDOMSINGLE || selectionType == SELECTION_TYPE.RANDOMVARIED)
             {
                 type = (BIT_TYPE)Random.Range(0, 6);
             }
@@ -73,24 +76,25 @@ namespace StarSalvager.Factories
             }
 
             var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
-            
+
             var shape = CreateObject<Shape>();
             for (var i = 0; i < totalBits; i++)
             {
                 var bit = bitFactory.CreateObject<Bit>(type);
                 shape.PushNewBit(bit, (DIRECTION)Random.Range(0, 4));
 
-                if (bitType == BIT_TYPE.RANDOMVARIED && type != BIT_TYPE.BLACK)
+                if (selectionType == SELECTION_TYPE.RANDOMVARIED && type != BIT_TYPE.BLACK)
                 {
                     type = (BIT_TYPE)Random.Range(1, 6);
                 }
             }
 
-            LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
+            if (LevelManager.Instance != null)
+                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
 
             return shape.GetComponent<T>();
         }
-        
+
         public T CreateObject<T>(List<Bit> bits)
         {
             var shape = CreateObject<Shape>();

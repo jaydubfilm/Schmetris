@@ -11,8 +11,6 @@ namespace StarSalvager
         GREY,
         RED,
         YELLOW,
-        WHITE,
-        RANDOMSINGLE,
-        RANDOMVARIED
+        WHITE
     }
 }
