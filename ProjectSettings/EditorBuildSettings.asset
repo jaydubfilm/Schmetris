@@ -14,6 +14,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Scenes/AlexB_Prototyping.unity
     guid: 1b0fe85a4155fb34886a20a119847f89
+  - enabled: 1
+    path: Assets/_Scenes/StarSalvagerMainScene.unity
+    guid: 36d0f9a4a8268de47b4cfd6973d42cce
+  - enabled: 1
+    path: Assets/_Scenes/ScrapyardScene.unity
+    guid: 5f9eb5e23d1bf604190b26d1137e9939
+  - enabled: 1
+    path: Assets/_Scenes/MainMenuScene.unity
+    guid: 4684fd8ddcb614949b17eea53beef826
+  - enabled: 1
+    path: Assets/_Scenes/LevelScene.unity
+    guid: 88b705cd4d8890740ad996f8423dccc5
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: bf0c805c5e0627a4998d083738cc59b3,
       type: 2}
