@@ -17,6 +17,13 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
+        public PartRemoteData GetRemoteData(PART_TYPE partType)
+        {
+            return remotePartData.GetRemoteData(partType);
+        }
+        
+        //============================================================================================================//
+
         public GameObject CreateGameObject(BlockData blockData)
         {
             var remote = remotePartData.GetRemoteData((PART_TYPE) blockData.Type);

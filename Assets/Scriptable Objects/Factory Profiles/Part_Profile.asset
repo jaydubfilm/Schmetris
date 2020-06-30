@@ -17,5 +17,25 @@ MonoBehaviour:
   - partType: 0
     _name: Core
     _sprites:
-    - {fileID: -7538142330943618203, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4, type: 3}
-    - {fileID: 8383980901329534866, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4, type: 3}
+    - {fileID: -7889011118949920912, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
+    - {fileID: -6911850443235827152, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
+  - partType: 1
+    _name: Magnet
+    _sprites:
+    - {fileID: 4792595260713629117, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
+    - {fileID: 6404473874903340935, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
+  - partType: 2
+    _name: Repair
+    _sprites:
+    - {fileID: 3074345288444028399, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
+    - {fileID: 5425795411351377093, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
+  - partType: 3
+    _name: Armor
+    _sprites:
+    - {fileID: 8070892247384656112, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
+    - {fileID: -3523575713966021918, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
+  - partType: 4
+    _name: Gun
+    _sprites:
+    - {fileID: -6911850443235827152, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
+    - {fileID: 4569395326395999164, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}

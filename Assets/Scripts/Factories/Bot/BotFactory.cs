@@ -19,7 +19,9 @@ namespace StarSalvager.Factories
         
         public override GameObject CreateGameObject()
         {
-            return !Recycler.TryGrab<Bot>(out GameObject gameObject) ? Object.Instantiate(prefab) : gameObject;
+            var outData = !Recycler.TryGrab<Bot>(out GameObject gameObject) ? Object.Instantiate(prefab) : gameObject;
+            outData.name = "Bot";
+            return outData;
         }
 
         public override T CreateObject<T>()

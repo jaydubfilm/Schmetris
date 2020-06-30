@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89035c1c4f5c70b48b9949fdf1bc1165, type: 3}
+  m_Name: Bit_Profile_v2
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 4611369530616709383, guid: 81ca8fa4359ebc149be244e25fdbcb99, type: 3}
+  profiles:
+  - bitType: 0
+    _name: Asteroid
+    _sprites:
+    - {fileID: 21300002, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+  - bitType: 1
+    _name: Bluesalt
+    _sprites:
+    - {fileID: 6039155110419200008, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: -1582512864064098049, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: 7263765331352743300, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+  - bitType: 2
+    _name: Greenium
+    _sprites:
+    - {fileID: 2578533267935622569, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: 246965062356006632, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: -9047253294706505314, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+  - bitType: 3
+    _name: Greyscale
+    _sprites:
+    - {fileID: 6414958675908347751, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: -7143617189628123940, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: 18948207100353310, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+  - bitType: 4
+    _name: Reddite
+    _sprites:
+    - {fileID: 2516858116652281422, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: -3372421307423276766, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: -1657255668356042774, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+  - bitType: 5
+    _name: Yelletron
+    _sprites:
+    - {fileID: 8947030836025851479, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: -4944162547608504398, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: 1020530958852034330, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+  - bitType: 6
+    _name: Energy
+    _sprites:
+    - {fileID: 21300000, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
