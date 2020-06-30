@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StageRemoteData:
   - m_stageNumber: 0
-    m_stageDuration: 10
+    m_stageDuration: 100
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
     m_stageObstacleData:
@@ -22,28 +22,3 @@ MonoBehaviour:
       m_bitType: 1
       m_asteroidSize: 2
       m_asteroidCountPerMinute: 400
-  - m_stageNumber: 1
-    m_stageDuration: 10
-    m_waitUntilAllEnemiesDefeatedToBegin: 1
-    m_stageEnemyData:
-    - m_enemyType: 1
-      m_enemyCount: 1000
-    m_stageObstacleData:
-    - m_selectionType: 1
-      m_bitType: 0
-      m_asteroidSize: 2
-      m_asteroidCountPerMinute: 400
-  - m_stageNumber: 2
-    m_stageDuration: 10
-    m_waitUntilAllEnemiesDefeatedToBegin: 0
-    m_stageEnemyData: []
-    m_stageObstacleData:
-    - m_selectionType: 2
-      m_bitType: 0
-      m_asteroidSize: 2
-      m_asteroidCountPerMinute: 500
-  - m_stageNumber: 3
-    m_stageDuration: 1000
-    m_waitUntilAllEnemiesDefeatedToBegin: 0
-    m_stageEnemyData: []
-    m_stageObstacleData: []

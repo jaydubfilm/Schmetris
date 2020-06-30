@@ -13,7 +13,7 @@ namespace StarSalvager.Utilities.Inputs
             get
             {
                 if (_obstacleManager == null)
-                    _obstacleManager = GetComponent<ObstacleManager>();
+                    _obstacleManager = FindObjectOfType<ObstacleManager>();
 
                 return _obstacleManager;
             }
@@ -25,7 +25,7 @@ namespace StarSalvager.Utilities.Inputs
             get
             {
                 if (_enemyManager == null)
-                    _enemyManager = GetComponent<EnemyManager>();
+                    _enemyManager = FindObjectOfType<EnemyManager>();
                 return _enemyManager;
             }
         }
@@ -36,7 +36,7 @@ namespace StarSalvager.Utilities.Inputs
             get
             {
                 if (_cameraController == null)
-                    _cameraController = GetComponent<CameraController>();
+                    _cameraController = FindObjectOfType<CameraController>();
 
                 return _cameraController;
             }
@@ -88,7 +88,7 @@ namespace StarSalvager.Utilities.Inputs
             var move = ctx.ReadValue<float>();
             _prevMove = move;
 
-            var noObstacles = _obstacleManager is null;
+            var noObstacles = obstacleManager is null;
             
             foreach (var bot in _bots)
             {
