@@ -52,3 +52,5 @@ MonoBehaviour:
   enemyProfile: {fileID: 11400000, guid: 4fa2566114602094e90d859fbad3cc48, type: 2}
   enemyRemoteData: {fileID: 11400000, guid: 35f38950b72d35945ab897049c2a18b5, type: 2}
   projectileProfile: {fileID: 11400000, guid: f9b0bb725a6579841b2c3e06b6d54333, type: 2}
+  botPrefab: {fileID: 2681746267895581272, guid: d09cf0a6976caab4ea7cd798304820a8,
+    type: 3}

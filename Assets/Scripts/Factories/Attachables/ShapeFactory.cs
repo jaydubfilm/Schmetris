@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Recycling;
 using UnityEngine;
 
 namespace StarSalvager.Factories
@@ -19,7 +20,7 @@ namespace StarSalvager.Factories
         
         public override GameObject CreateGameObject()
         {
-            return Object.Instantiate(prefab);
+            return !Recycler.TryGrab<Shape>(out GameObject gObject) ? Object.Instantiate(prefab) : gObject;
         }
 
         public override T CreateObject<T>()

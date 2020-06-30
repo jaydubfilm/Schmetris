@@ -34,15 +34,20 @@ namespace StarSalvager.Factories
 
         [SerializeField, Required, BoxGroup("Projectiles")]
         private ProjectileProfileScriptableObject projectileProfile;
+        
+        [SerializeField, Required, BoxGroup("Bot")]
+        private GameObject botPrefab;
 
         //============================================================================================================//
 
+        //FIXME This needs to be converted to an array
         private FactoryBase _bitAttachableFactory;
         private FactoryBase _partAttachableFactory;
         private FactoryBase _shapeFactory;
         private FactoryBase _enemyFactory;
         private FactoryBase _projectileFactory;
         private FactoryBase _comboFactory;
+        private FactoryBase _botFactory;
         
         //============================================================================================================//
     
@@ -75,6 +80,9 @@ namespace StarSalvager.Factories
                 
                 case nameof(ComboFactory):
                     return (_comboFactory ?? (_comboFactory = new ComboFactory())) as T;
+                
+                case nameof(BotFactory):
+                    return (_botFactory ?? (_botFactory = new BotFactory(botPrefab))) as T;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(typeName), typeName, null);

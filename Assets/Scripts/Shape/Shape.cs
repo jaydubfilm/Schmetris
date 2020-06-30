@@ -170,11 +170,14 @@ public class Shape : CollidableBase, IObstacle
     
     //================================================================================================================//
 
-    public void Destroy()
+    public void Destroy(bool recycleBits = true)
     {
-        foreach (var bit in attachedBits)
+        if (recycleBits)
         {
-            Recycler.Recycle<Bit>(bit.gameObject);
+            foreach (var bit in attachedBits)
+            {
+                Recycler.Recycle<Bit>(bit.gameObject);
+            }
         }
         
         attachedBits.Clear();

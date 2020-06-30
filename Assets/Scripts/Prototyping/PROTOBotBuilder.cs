@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using StarSalvager;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Inputs;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
@@ -32,15 +33,25 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
     // Start is called before the first frame update
     private void Start()
     {
-        bots = FindObjectsOfType<Bot>();
+        bots = new[]
+        {
+            FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>()
+        };
+        //bots = FindObjectsOfType<Bot>();
+        
+        bot.transform.position = new Vector2(0, -7f);
+        bot.InitBot();
 
-        Bot.OnBotDied += bot =>
+        Bot.OnBotDied += deadBot =>
         {
             Debug.LogError("Bot Died. Press 'R' to restart");
         };
         
         
         InitInput();
+        InputManager.Instance.InitInput();
+        
+        
     }
 
     private void Update()

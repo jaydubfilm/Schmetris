@@ -45,7 +45,7 @@ namespace StarSalvager
 
         public DIRECTION MoveDirection => _moveDirection;
 
-        private DIRECTION _moveDirection;
+        private DIRECTION _moveDirection = DIRECTION.NULL;
         //public bool HasValidInput => _currentInput != 0f;
 
         private Vector2 targetPosition;
@@ -63,24 +63,39 @@ namespace StarSalvager
         private bool _rotating;
         private float targetRotation;
 
-        private CompositeCollider2D CompositeCollider2D;
-        private new Rigidbody2D rigidbody;
+        private CompositeCollider2D CompositeCollider2D
+        {
+            get
+            {
+                if (!_compositeCollider2D)
+                    _compositeCollider2D = GetComponent<CompositeCollider2D>();
+                
+                return _compositeCollider2D;
+            }
+        }
+        private CompositeCollider2D _compositeCollider2D;
+
+        private new Rigidbody2D rigidbody
+        {
+            get
+            {
+                if (!_rigidbody)
+                    _rigidbody = GetComponent<Rigidbody2D>();
+                
+                return _rigidbody;
+            }
+        }
+        private Rigidbody2D _rigidbody;
 
         //============================================================================================================//
 
         #region Unity Functions
 
-        // Start is called before the first frame update
-        private void Start()
-        {
-            rigidbody = GetComponent<Rigidbody2D>();
-            CompositeCollider2D = GetComponent<CompositeCollider2D>();
-
-            InitBot();
-        }
-
         private void FixedUpdate()
         {
+            if(_isDestroyed)
+                return;
+            
             if (Moving)
                 MoveBot();
 
@@ -513,8 +528,6 @@ namespace StarSalvager
         
         #region Check for Legal Shape Attach
 
-        
-
         public bool TryAddNewShape(Shape shape, IAttachable closestShapeBit, DIRECTION connectionDirection, Vector2 collisionPoint)
         {
             if (_isDestroyed)
@@ -553,7 +566,7 @@ namespace StarSalvager
                             AttachNewBit(newBotCoordinate + differences[i], bitsToAdd[i], false, false);
                         }
                         
-                        Recycler.Recycle<Shape>(shape.gameObject);
+                        shape.Destroy(false);
                         
                         CheckForCombosAround(bitsToAdd);
                         CompositeCollider2D.GenerateGeometry();

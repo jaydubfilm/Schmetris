@@ -7,26 +7,44 @@ namespace StarSalvager.Utilities.Inputs
     public class InputManager : SceneSingleton<InputManager>, IInput
     {
         private Bot[] _bots;
+
+        private ObstacleManager obstacleManager
+        {
+            get
+            {
+                if (_obstacleManager == null)
+                    _obstacleManager = GetComponent<ObstacleManager>();
+
+                return _obstacleManager;
+            }
+        }
         private ObstacleManager _obstacleManager;
+
+        private EnemyManager enemyManager
+        {
+            get
+            {
+                if (_enemyManager == null)
+                    _enemyManager = GetComponent<EnemyManager>();
+                return _enemyManager;
+            }
+        }
         private EnemyManager _enemyManager;
+
+        private CameraController cameraController
+        {
+            get
+            {
+                if (_cameraController == null)
+                    _cameraController = GetComponent<CameraController>();
+
+                return _cameraController;
+            }
+        }
         private CameraController _cameraController;
 
-        private void Start()
-        {
-            if (_bots == null || _bots.Length == 0)
-                _bots = FindObjectsOfType<Bot>();
 
-            if (_obstacleManager == null)
-                _obstacleManager = FindObjectOfType<ObstacleManager>();
-
-            if (_enemyManager == null)
-                _enemyManager = FindObjectOfType<EnemyManager>();
-
-            if (_cameraController == null)
-                _cameraController = FindObjectOfType<CameraController>();
-
-            InitInput();
-        }
+        //============================================================================================================//
 
         protected override void OnDestroy()
         {
@@ -34,9 +52,15 @@ namespace StarSalvager.Utilities.Inputs
 
             DeInitInput();
         }
+        
+        //============================================================================================================//
 
         public void InitInput()
         {
+            if (_bots == null || _bots.Length == 0)
+                _bots = FindObjectsOfType<Bot>();
+            
+            DeInitInput();
 
             Input.Actions.Default.SideMovement.Enable();
             Input.Actions.Default.SideMovement.performed += SideMovement;
@@ -54,6 +78,8 @@ namespace StarSalvager.Utilities.Inputs
             Input.Actions.Default.Rotate.Disable();
             Input.Actions.Default.Rotate.performed -= Rotate;
         }
+        
+        //============================================================================================================//
 
         float _prevMove = 0.0f;
 
@@ -63,19 +89,18 @@ namespace StarSalvager.Utilities.Inputs
             _prevMove = move;
 
             var noObstacles = _obstacleManager is null;
-
+            
             foreach (var bot in _bots)
             {
                 bot.Move(move, noObstacles);
             }
 
-
             if (noObstacles)
                 return;
 
-            _obstacleManager.Move(move);
-            _enemyManager.Move(move);
-            _cameraController.Move(move);
+            obstacleManager.Move(move);
+            enemyManager.Move(move);
+            cameraController.Move(move);
             LevelManager.Instance.ProjectileManager.Move(move);
 
             StartCoroutine(dasTimer(move));
@@ -83,7 +108,7 @@ namespace StarSalvager.Utilities.Inputs
 
         private void SideMovement(float move)
         {
-            var noObstacles = _obstacleManager is null;
+            var noObstacles = obstacleManager is null;
 
             foreach (var bot in _bots)
             {
@@ -94,9 +119,9 @@ namespace StarSalvager.Utilities.Inputs
             if (noObstacles)
                 return;
 
-            _obstacleManager.Move(move);
-            _enemyManager.Move(move);
-            _cameraController.Move(move);
+            obstacleManager.Move(move);
+            enemyManager.Move(move);
+            cameraController.Move(move);
 
             LevelManager.Instance.ProjectileManager.Move(move);
         }
@@ -121,5 +146,7 @@ namespace StarSalvager.Utilities.Inputs
                 bot.Rotate(rot);
             }
         }
+        
+        //============================================================================================================//
     }
 }
