@@ -12,6 +12,17 @@ namespace StarSalvager
 {
     public class LevelManager : SceneSingleton<LevelManager>
     {
+        [SerializeField, FoldoutGroup("Global Values"), Range(5, 50)]
+        private int m_columnsToSideOfBot;
+
+        public int ColumnsOnScreen => 1 + m_columnsToSideOfBot * 2;
+
+        public int GridSizeX => m_gridSizeX;
+        private int m_gridSizeX;
+
+        public int GridSizeY => m_gridSizeY;
+        private int m_gridSizeY;
+
         public bool generateRandomSeed;
         [DisableIf("$generateRandomSeed")] public int seed = 1234567890;
 
@@ -20,9 +31,9 @@ namespace StarSalvager
         public Bot BotGameObject => m_botGameObject;
 
         [SerializeField]
-        private Bit m_bitTestPrefab;
-        public Bit BitTestPrefab => m_bitTestPrefab;
-        
+        private CameraController m_cameraController;
+        public CameraController CameraController => m_cameraController;
+
         [SerializeField]
         private Text m_demoText;
         public Text DemoText => m_demoText;
@@ -106,6 +117,10 @@ namespace StarSalvager
             }
 
             Random.InitState(seed);
+
+            CameraController.SetOrthographicSize(Values.gridCellSize * ColumnsOnScreen);
+            m_gridSizeX = (int)(ColumnsOnScreen * Values.GridWidthRelativeToScreen);
+            m_gridSizeY = (int)((Camera.main.orthographicSize * Values.GridHeightRelativeToScreen * 2) / Values.gridCellSize);
         }
 
         private void Update()

@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using StarSalvager;
+using StarSalvager.Constants;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,6 +40,19 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         transform.position = Vector3.MoveTowards(transform.position, targetPos, smoothing * Time.deltaTime);
+    }
+
+    public void SetOrthographicSize(float screenWidthInWorld)
+    {
+        Camera.main.orthographicSize = (screenWidthInWorld * ((float)Screen.height / (float)Screen.width)) / 2;
+        transform.position = 
+            LevelManager.Instance.BotGameObject.transform.position + 
+            Vector3.back * 10 + 
+            Vector3.up * ((Camera.main.orthographicSize) / 2);
+
+        startPos = transform.position;
+        targetPos = startPos;
+        horzExtent = (Camera.main.orthographicSize * Screen.width / Screen.height) / 2;
     }
 
     public void Move(float direction)
