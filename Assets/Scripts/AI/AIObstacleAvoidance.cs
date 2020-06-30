@@ -46,8 +46,8 @@ namespace StarSalvager.AI
                 Math.Max(0, agentGridPosition.x - Values.enemyGridScanRadius), 
                 Math.Max(0, agentGridPosition.y - Values.enemyGridScanRadius));
             Vector2Int agentGridScanMaximum = new Vector2Int (
-                Math.Min(Values.gridSizeX - 1, agentGridPosition.x + Values.enemyGridScanRadius), 
-                Math.Min(Values.gridSizeY - 1, agentGridPosition.y + Values.enemyGridScanRadius));
+                Math.Min(LevelManager.Instance.GridSizeX - 1, agentGridPosition.x + Values.enemyGridScanRadius), 
+                Math.Min(LevelManager.Instance.GridSizeY - 1, agentGridPosition.y + Values.enemyGridScanRadius));
 
             //Check each position in the box for a marker for containing an obstacle
             for (int i = agentGridScanMinimum.x; i <= agentGridScanMaximum.x; i++)

@@ -16,8 +16,8 @@ namespace StarSalvager.AI
         private Vector3 m_currentHorizontalMovementDirection = Vector3.right;
         private float m_horizontalMovementYLevel;
         private Vector3 m_spiralAttackDirection = Vector3.down;
-        private float horizontalFarLeftX = 0;
-        private float horizontalFarRightX = Values.gridSizeX * Values.gridCellSize;
+        private float horizontalFarLeftX;
+        private float horizontalFarRightX;
         protected Vector3 m_mostRecentMovementDirection = Vector3.zero;
 
 
@@ -25,6 +25,8 @@ namespace StarSalvager.AI
         {
             renderer.sprite = m_enemyData.Sprite;
             m_horizontalMovementYLevel = transform.position.y;
+            horizontalFarLeftX = 0;
+            horizontalFarRightX = LevelManager.Instance.GridSizeX * Values.gridCellSize;
         }
 
         private void Update()
