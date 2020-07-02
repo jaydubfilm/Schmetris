@@ -9,6 +9,7 @@ using StarSalvager.ScriptableObjects;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Inputs;
+using UnityEngine.SceneManagement;
 
 namespace StarSalvager
 {
@@ -127,6 +128,7 @@ namespace StarSalvager
             {
                 Debug.LogError("Bot Died. Press 'R' to restart");
             };
+            SceneManager.MoveGameObjectToScene(BotGameObject.gameObject, gameObject.scene);
             InputManager.Instance.InitInput();
 
             CameraController.SetOrthographicSize(Values.gridCellSize * ColumnsOnScreen);

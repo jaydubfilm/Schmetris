@@ -4,9 +4,10 @@ using UnityEngine.InputSystem;
 
 namespace StarSalvager.Utilities.Inputs
 {
-    public class InputManager : SceneSingleton<InputManager>, IInput
+    public class InputManager : Singleton<InputManager>, IInput
     {
         private Bot[] _bots;
+        private ScrapyardBot[] _scrapyardBots;
 
         private ObstacleManager obstacleManager
         {
@@ -43,23 +44,16 @@ namespace StarSalvager.Utilities.Inputs
         }
         private CameraController _cameraController;
 
-
-        //============================================================================================================//
-
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-
-            DeInitInput();
-        }
-        
         //============================================================================================================//
 
         public void InitInput()
         {
             if (_bots == null || _bots.Length == 0)
                 _bots = FindObjectsOfType<Bot>();
-            
+
+            if (_scrapyardBots == null || _scrapyardBots.Length == 0)
+                _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
+
             DeInitInput();
 
             Input.Actions.Default.SideMovement.Enable();
@@ -144,6 +138,11 @@ namespace StarSalvager.Utilities.Inputs
             foreach (var bot in _bots)
             {
                 bot.Rotate(rot);
+            }
+
+            foreach (var scrapyardBot in _scrapyardBots)
+            {
+                scrapyardBot.Rotate(rot);
             }
         }
         

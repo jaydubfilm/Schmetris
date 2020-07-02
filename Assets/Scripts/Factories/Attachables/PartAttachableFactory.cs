@@ -72,6 +72,49 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
+        public GameObject CreateScrapyardGameObject(BlockData blockData)
+        {
+            var remote = remotePartData.GetRemoteData((PART_TYPE)blockData.Type);
+            var profile = factoryProfile.GetProfile((PART_TYPE)blockData.Type);
+            var sprite = profile.GetSprite(blockData.Level);
+
+            var temp = Object.Instantiate(factoryProfile.ScrapyardPrefab).GetComponent<ScrapyardPart>();
+            temp.SetSprite(sprite);
+            temp.LoadBlockData(blockData);
+
+            temp.gameObject.name = $"{temp.Type}_{temp.level}";
+            return temp.gameObject;
+        }
+        public T CreateScrapyardObject<T>(BlockData blockData)
+        {
+            var temp = CreateScrapyardGameObject(blockData);
+
+            return temp.GetComponent<T>();
+
+        }
+
+        //============================================================================================================//
+
+        public GameObject CreateScrapyardGameObject(PART_TYPE partType, int level = 0)
+        {
+            var blockData = new BlockData
+            {
+                Level = level,
+                Type = (int)partType
+            };
+
+            return CreateScrapyardGameObject(blockData);
+        }
+
+        public T CreateScrapyardObject<T>(PART_TYPE partType, int level = 0)
+        {
+            var temp = CreateScrapyardGameObject(partType, level);
+
+            return temp.GetComponent<T>();
+        }
+
+        //============================================================================================================//
+
         public override GameObject CreateGameObject()
         {
             return Object.Instantiate(factoryProfile.Prefab);

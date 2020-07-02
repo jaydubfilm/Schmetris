@@ -60,8 +60,10 @@ namespace StarSalvager.SceneLoader
             }
 
             ActivateScene("StarSalvagerMainScene");
-            ActivateScene("AlexShulmanTestScene");
-            SetActiveScene("AlexShulmanTestScene");
+            /*ActivateScene("AlexShulmanTestScene");
+            SetActiveScene("AlexShulmanTestScene");*/
+            ActivateScene("ScrapyardScene");
+            SetActiveScene("ScrapyardScene");
         }
 
         private static IEnumerator LoadSceneAsync(string sceneName)

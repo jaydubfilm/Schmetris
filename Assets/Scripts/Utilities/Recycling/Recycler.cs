@@ -7,7 +7,7 @@ using StarSalvager.Utilities;
 
 namespace Recycling
 {
-	public class Recycler : SceneSingleton<Recycler>
+	public class Recycler : Singleton<Recycler>
 	{
 		private static Dictionary<Enum, RecycleBin> _enumDict = new Dictionary<Enum, RecycleBin>();
 		private static Dictionary<Type, RecycleBin> _typeDict = new Dictionary<Type, RecycleBin>();
@@ -25,16 +25,6 @@ namespace Recycling
 			}
 		}
 		private static Transform _transform;
-
-		//============================================================================================================//
-
-		protected override void OnDestroy()
-		{
-			base.OnDestroy();
-			
-			_typeDict.Clear();
-			_transform = null;
-		}
 
 		//============================================================================================================//
 
