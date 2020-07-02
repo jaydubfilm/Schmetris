@@ -198,6 +198,14 @@ namespace StarSalvager
             }
         }
 
+        public void RemoveAllBits()
+        {
+            foreach(IAttachable attachable in attachedBlocks)
+            {
+
+            }
+        }
+
         private void DetachBit(IAttachable attachable)
         {
             attachable.transform.parent = null;

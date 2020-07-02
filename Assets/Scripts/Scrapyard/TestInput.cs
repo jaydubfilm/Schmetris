@@ -2,12 +2,14 @@
 using StarSalvager.Factories;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace StarSalvager
 {
     public class TestInput : MonoBehaviour
     {
+        public Material material;
         private ScrapyardBot[] _scrapyardBots;
 
         // Start is called before the first frame update
@@ -15,6 +17,41 @@ namespace StarSalvager
         {
             if (_scrapyardBots == null || _scrapyardBots.Length == 0)
                 _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
+
+            Camera.onPostRender += DrawGL;
+        }
+
+        public void DrawGL(Camera camera)
+        {
+            Vector2 m_anchorPoint = new Vector2(-Values.gridCellSize * 25.5f, -Values.gridCellSize * 25.5f);
+            //Draw debug lines to show the area of the grid
+            for (int x = 0; x < 50; x++)
+            {
+                for (int y = 0; y < 50; y++)
+                {
+                    Vector2 tempVector = new Vector2(x, y);
+
+                    DrawWithGL(material, m_anchorPoint + tempVector * Values.gridCellSize, m_anchorPoint + new Vector2(x, y + 1) * Values.gridCellSize);
+                    DrawWithGL(material, m_anchorPoint + tempVector * Values.gridCellSize, m_anchorPoint + new Vector2(x + 1, y) * Values.gridCellSize);
+                }
+            }
+            DrawWithGL(material, m_anchorPoint + new Vector2(0, 50) * Values.gridCellSize, m_anchorPoint + new Vector2(50, 50) * Values.gridCellSize);
+            DrawWithGL(material, m_anchorPoint + new Vector2(50, 0) * Values.gridCellSize, m_anchorPoint + new Vector2(50, 50) * Values.gridCellSize);
+        }
+
+        public void DrawWithGL(Material material, Vector2 startPoint, Vector2 endPoint)
+        {
+            GL.PushMatrix();
+            material.SetPass(0);
+            GL.Begin(GL.LINES);
+            {
+                GL.Color(Color.red);
+
+                GL.Vertex(startPoint);
+                GL.Vertex(endPoint);
+            }
+            GL.End();
+            GL.PopMatrix(); // Pop changes.
         }
 
         // Update is called once per frame
@@ -97,6 +134,11 @@ namespace StarSalvager
                     scrapBot.RemoveAttachableAt(mouseCoordinate);
                 }
             }
+        }
+
+        private void OnDestroy()
+        {
+            Camera.onPostRender -= DrawGL;
         }
     }
 }
