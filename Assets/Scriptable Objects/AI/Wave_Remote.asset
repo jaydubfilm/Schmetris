@@ -14,11 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StageRemoteData:
   - m_stageNumber: 0
-    m_stageDuration: 100
+    m_stageDuration: 10
+    m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
     m_stageObstacleData:
     - m_selectionType: 0
-      m_bitType: 1
-      m_asteroidSize: 2
-      m_asteroidCountPerMinute: 400
+      m_bitType: 4
+      m_asteroidSize: 0
+      m_asteroidCountPerMinute: 1000
+  - m_stageNumber: 1
+    m_stageDuration: 1000
+    m_stageBlendPeriod: 10
+    m_waitUntilAllEnemiesDefeatedToBegin: 0
+    m_stageEnemyData: []
+    m_stageObstacleData:
+    - m_selectionType: 0
+      m_bitType: 2
+      m_asteroidSize: 0
+      m_asteroidCountPerMinute: 1000

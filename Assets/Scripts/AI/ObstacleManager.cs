@@ -17,7 +17,9 @@ namespace StarSalvager
         private float m_currentInput;
 
         //Variables to spawn obstacles throughout a stage
-        private StageRemoteData m_currentStageData;
+        private StageRemoteData m_currentStageData = null;
+        private StageRemoteData m_previousStageData = null;
+        private float m_blendTimer = 0.0f;
         private int m_nextStageToSpawn;
 
         private float m_distanceHorizontal = 0.0f;
@@ -35,6 +37,10 @@ namespace StarSalvager
         // Update is called once per frame
         void Update()
         {
+            if (m_blendTimer < m_currentStageData.StageBlendPeriod)
+            {
+                m_blendTimer += Time.deltaTime;
+            }
             if (LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
             {
                 SetupStage(m_nextStageToSpawn);
@@ -133,8 +139,10 @@ namespace StarSalvager
 
         private void SetupStage(int waveNumber)
         {
+            m_previousStageData = m_currentStageData;
             m_currentStageData = LevelManager.Instance.WaveRemoteData.GetRemoteData(waveNumber);
             m_nextStageToSpawn = waveNumber + 1;
+            m_blendTimer = 0;
         }
 
         public void TryMarkNewShapesOnGrid()
@@ -190,7 +198,39 @@ namespace StarSalvager
                 if (spawnVariable == 0)
                     continue;
 
-                float random = Random.Range(0.0f, 1.0f);
+                float random;
+                if (m_previousStageData != null && m_blendTimer < m_currentStageData.StageBlendPeriod)
+                {
+                    random = Random.Range(0.0f, 1.0f) * Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                } else
+                {
+                    random = Random.Range(0.0f, 1.0f);
+                }
+
+                if (random <= spawnVariable)
+                {
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.BitType, stageObstacleData.AsteroidSize);
+                }
+            }
+
+            if (m_previousStageData == null || m_blendTimer > m_currentStageData.StageBlendPeriod)
+                return;
+
+            foreach (StageObstacleData stageObstacleData in m_previousStageData.StageObstacleData)
+            {
+                float spawnVariable = stageObstacleData.AsteroidPerRowAverage;
+
+                while (spawnVariable >= 1)
+                {
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.BitType, stageObstacleData.AsteroidSize);
+                    spawnVariable -= 1;
+                }
+
+                if (spawnVariable == 0)
+                    continue;
+
+                float random;
+                random = Random.Range(0.0f, 1.0f) * Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
 
                 if (random <= spawnVariable)
                 {

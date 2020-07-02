@@ -33,7 +33,6 @@ namespace StarSalvager.SceneLoader
 
             if (_scenes[sceneName] == null)
             {
-                Debug.Log("SUBSCRIBE " + sceneName);
                 _scenes[sceneName] = sceneRoot;
                 return;
             }
@@ -57,7 +56,6 @@ namespace StarSalvager.SceneLoader
             
             foreach (string entry in enumerationKeys)
             {
-                Debug.Log("Try Load " + entry);
                 yield return _coroutineRunner.StartCoroutine(LoadSceneAsync(entry));
             }
 
@@ -68,16 +66,12 @@ namespace StarSalvager.SceneLoader
 
         private static IEnumerator LoadSceneAsync(string sceneName)
         {
-            Debug.Log("Start point " + sceneName);
-
             if (SceneManager.GetSceneByName(sceneName).IsValid())
             {
                 Debug.Log(SceneManager.GetSceneByName(sceneName));
                 yield break;
             }
 
-            Debug.Log("Past The Point for " + sceneName);
-            
             AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
             while (!asyncLoadLevel.isDone)
             {
