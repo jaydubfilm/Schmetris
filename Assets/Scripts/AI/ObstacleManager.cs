@@ -188,6 +188,10 @@ namespace StarSalvager
             foreach (StageObstacleData stageObstacleData in m_currentStageData.StageObstacleData)
             {
                 float spawnVariable = stageObstacleData.AsteroidPerRowAverage;
+                if (m_previousStageData != null && m_blendTimer < m_currentStageData.StageBlendPeriod)
+                {
+                    spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                }
 
                 while (spawnVariable >= 1)
                 {
@@ -198,14 +202,7 @@ namespace StarSalvager
                 if (spawnVariable == 0)
                     continue;
 
-                float random;
-                if (m_previousStageData != null && m_blendTimer < m_currentStageData.StageBlendPeriod)
-                {
-                    random = Random.Range(0.0f, 1.0f) * Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
-                } else
-                {
-                    random = Random.Range(0.0f, 1.0f);
-                }
+                float random = Random.Range(0.0f, 1.0f);
 
                 if (random <= spawnVariable)
                 {
@@ -218,7 +215,7 @@ namespace StarSalvager
 
             foreach (StageObstacleData stageObstacleData in m_previousStageData.StageObstacleData)
             {
-                float spawnVariable = stageObstacleData.AsteroidPerRowAverage;
+                float spawnVariable = stageObstacleData.AsteroidPerRowAverage * Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
 
                 while (spawnVariable >= 1)
                 {
@@ -229,8 +226,7 @@ namespace StarSalvager
                 if (spawnVariable == 0)
                     continue;
 
-                float random;
-                random = Random.Range(0.0f, 1.0f) * Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                float random = Random.Range(0.0f, 1.0f);
 
                 if (random <= spawnVariable)
                 {
