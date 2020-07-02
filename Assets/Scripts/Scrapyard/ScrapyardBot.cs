@@ -190,9 +190,13 @@ namespace StarSalvager
 
         #region Detach Bits
 
-        public void RemoveAttachableAt(Vector2Int coordinates)
+        public void RemoveAttachableAt(Vector2Int coordinate)
         {
-
+            if (attachedBlocks.Any(a => a.Coordinate == coordinate))
+            {
+                print("B");
+                DestroyAttachable(attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate));
+            }
         }
 
         private void DetachBit(IAttachable attachable)
