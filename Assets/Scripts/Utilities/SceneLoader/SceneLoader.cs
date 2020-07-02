@@ -15,8 +15,7 @@ namespace StarSalvager.SceneLoader
             { "StarSalvagerMainScene", null },
             { "MainMenuScene", null },
             { "LevelScene", null },
-            { "ScrapyardScene", null },
-            { "AlexShulmanTestScene", null }
+            { "ScrapyardScene", null }
         };
 
         private static MonoBehaviour _coroutineRunner = null;
@@ -60,8 +59,6 @@ namespace StarSalvager.SceneLoader
             }
 
             ActivateScene("StarSalvagerMainScene");
-            /*ActivateScene("AlexShulmanTestScene");
-            SetActiveScene("AlexShulmanTestScene");*/
             ActivateScene("ScrapyardScene");
             SetActiveScene("ScrapyardScene");
         }

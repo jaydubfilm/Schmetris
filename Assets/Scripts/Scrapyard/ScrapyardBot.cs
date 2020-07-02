@@ -194,7 +194,6 @@ namespace StarSalvager
         {
             if (attachedBlocks.Any(a => a.Coordinate == coordinate))
             {
-                print("B");
                 DestroyAttachable(attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate));
             }
         }

@@ -94,7 +94,6 @@ namespace StarSalvager
                 Vector2Int mouseCoordinate = new Vector2Int((int)(worldMousePosition.x / Values.gridCellSize), (int)(worldMousePosition.y / Values.gridCellSize));
                 foreach (ScrapyardBot scrapBot in _scrapyardBots)
                 {
-                    print("A");
                     scrapBot.RemoveAttachableAt(mouseCoordinate);
                 }
             }
