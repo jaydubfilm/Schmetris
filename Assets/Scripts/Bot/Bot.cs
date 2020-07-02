@@ -513,18 +513,106 @@ namespace StarSalvager
                     case BIT_TYPE.GREY:
                     case BIT_TYPE.RED:
                     case BIT_TYPE.YELLOW:
-                        var newBotCoordinate = closestOnBot.Coordinate + connectionDirection.ToVector2Int();
+                        //--------------------------------------------------------------------------------------------//
+
+                        var vectorDirection = connectionDirection.ToVector2Int();
+                        var newBotCoordinate = closestOnBot.Coordinate + vectorDirection;
                         
                         var closestCoordinate = closestShapeBit.Coordinate;
-                        var bitsToAdd = shape.AttachedBits.ToArray();
+                        
+                        //Order the bits to add based on distance to the connection point
+                        //--------------------------------------------------------------------------------------------//
+
+                        var bitsToAdd = shape.AttachedBits
+                            .OrderBy(x => Vector2Int.Distance(closestCoordinate, x.Coordinate))
+                            .ToArray();
                         var differences = bitsToAdd.Select(x => x.Coordinate - closestCoordinate).ToArray();
+                        
+                        //--------------------------------------------------------------------------------------------//
+
+
+                        
+                        //TODO Need to check all parts of the shape to confirm placement
+                        /*for (var i = 0; i < bitsToAdd.Length; i++)
+                        {
+                            var check = attachedBlocks.FirstOrDefault(x =>
+                                x.Coordinate == newBotCoordinate + differences[i]);
+                            
+                            if (check == null) 
+                                continue;
+                            
+                            var foundAlt = true;
+
+                            for (var j = 0; j < bitsToAdd.Length; j++)
+                            {
+                                var altCheck = attachedBlocks.FirstOrDefault(x =>
+                                    x.Coordinate == newBotCoordinate + differences[i] + DIRECTION.UP.ToVector2Int());
+
+                                if (altCheck == null)
+                                    continue;
+
+                                foundAlt = false;
+                                break;
+                            }
+
+                            if (foundAlt)
+                            {
+                                Debug.Log(
+                                    $"Solved for shape overlap at {check.gameObject.name}[{newBotCoordinate + differences[i]}], shifting by {DIRECTION.UP}",
+                                    check.gameObject);
+                                newBotCoordinate += DIRECTION.UP.ToVector2Int();
+                                
+                                Debug.Break();
+                                break;
+                            }
+
+
+                            
+                            Debug.Log(
+                                $"Solving for shape overlap at {check.gameObject.name}[{newBotCoordinate + differences[i]}], shifting {bitsToAdd[i].gameObject.name} by {vectorDirection}",
+                                check.gameObject);
+                            Debug.Break();
+                            
+                            newBotCoordinate += vectorDirection;
+                            i = 0;
+
+                        }*/
+
+                        //Get the coordinate that the shape will be able to fit in
+                        ShapeOverlapCoordinateSolver(bitsToAdd, differences, vectorDirection, ref newBotCoordinate);
+
+                        
+                        //Order the bits to add based on distance to the connection point
+                        //--------------------------------------------------------------------------------------------//
+                        
+                        //bitsToAdd = bitsToAdd
+                        //    .OrderBy(x => Vector2Int.Distance(closestCoordinate, x.Coordinate))
+                        //    .ToArray();
+                        //
+                        //differences = bitsToAdd.Select(x => x.Coordinate - closestCoordinate).ToArray();
+                        
+                        //--------------------------------------------------------------------------------------------//
+
+                        //for (var i = 0; i < bitsToAdd.Length; i++)
+                        //{
+                        //    Debug.Log($"{bitsToAdd[i].gameObject.name} Distance: {Vector2Int.Distance(closestCoordinate, bitsToAdd[i].Coordinate)}", bitsToAdd[i].gameObject);
+                        //}
 
                         //Add the entire shape to the Bot
                         for (var i = 0; i < bitsToAdd.Length; i++)
                         {
+                            //FIXME This will need to be removed once i've confirmed the solver works correctly
+                            if (attachedBlocks.Any(x => x.Coordinate == newBotCoordinate + differences[i]))
+                            {
+                                Debug.LogError($"Conflict found at {newBotCoordinate + differences[i]}");
+                                Debug.Break();
+                                return false;
+                            }
+                            
                             AttachNewBit(newBotCoordinate + differences[i], bitsToAdd[i], false, false);
                         }
                         
+                        //Recycle the Shape, without also recycling the Bits since they were just attached to the bot
                         shape.Destroy(false);
                         
                         CheckForCombosAround(bitsToAdd);
@@ -540,6 +628,63 @@ namespace StarSalvager
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Tries to place the shape at the desired location. If there are overlap issues it will check the up direction.
+        /// If that also fails it will move 1 in the specified direction, and continue that loop until a legal spot for the shape is found.
+        /// </summary>
+        /// <param name="bitsToAdd"></param>
+        /// <param name="differences"></param>
+        /// <param name="vectorDirection"></param>
+        /// <param name="attachCoordinate"></param>
+        private void ShapeOverlapCoordinateSolver(IReadOnlyCollection<Bit> bitsToAdd, IReadOnlyList<Vector2Int> differences,
+            Vector2Int vectorDirection, ref Vector2Int attachCoordinate)
+        {
+
+            var upDir = DIRECTION.UP.ToVector2Int();
+            while (true)
+            {
+                if (!HasOverlap(bitsToAdd, attachCoordinate, differences))
+                    break;
+
+                if (!HasOverlap(bitsToAdd, attachCoordinate + upDir, differences))
+                {
+                    attachCoordinate += upDir;
+                    break;
+                }
+                    
+                attachCoordinate += vectorDirection;
+            }
+        }
+
+        /// <summary>
+        /// Checks to see if the shape data has an overlap at the specified location
+        /// </summary>
+        /// <param name="bitsToAdd"></param>
+        /// <param name="attachCoordinate"></param>
+        /// <param name="differences"></param>
+        /// <returns></returns>
+        private bool HasOverlap(IReadOnlyCollection<Bit> bitsToAdd, Vector2Int attachCoordinate, IReadOnlyList<Vector2Int> differences)
+        {
+            for (var i = 0; i < bitsToAdd.Count; i++)
+            {
+                var check = attachedBlocks.FirstOrDefault(x =>
+                    x.Coordinate == attachCoordinate + differences[i]);
+
+                if (check == null) 
+                    continue;
+                
+                //Debug.Log($"Found overlap at {attachCoordinate + differences[i]} on {check.gameObject.name}", check.gameObject);
+                return true;
+            }
+
+            return false;
+        }
+        
+        private bool HasOverlap()
+        {
+            throw new NotImplementedException();
         }
         
         #endregion //Check for Legal Shape Attach
@@ -586,6 +731,11 @@ namespace StarSalvager
         #endregion //TryHitAt
 
         //============================================================================================================//
+
+        public IAttachable GetAttachableAtCoordinates(Vector2Int coordinate)
+        {
+            return attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
+        }
 
         #region Attach Bits
 
@@ -691,18 +841,33 @@ namespace StarSalvager
 
         #region Detach Bits
         
-        private void DetachBits(IReadOnlyCollection<IAttachable> attachables)
+        private void DetachBits(IReadOnlyCollection<IAttachable> attachables, bool delayedCollider = false)
         {
+            //if (attachables.Count == 1)
+            //{
+            //    DetachBit(attachables.FirstOrDefault(), delayedCollider);
+            //    return;
+            //}
+            
             foreach (var attachable in attachables)
             {
                 attachedBlocks.Remove(attachable);
-                
-                //Debug.Log($"Detached group member {bit.gameObject.name}", bit);
             }
 
             var bits = attachables.OfType<Bit>().ToList();
 
-            FactoryManager.Instance.GetFactory<ShapeFactory>().CreateGameObject(bits);
+            var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bits);
+
+            if (delayedCollider)
+            {
+                shape.SetColliderActive(false);
+
+                this.DelayedCall(1f, () =>
+                {
+                    shape.SetColor(Color.white);
+                    shape.SetColliderActive(true);
+                });
+            }
             
             CompositeCollider2D.GenerateGeometry();
 
@@ -828,6 +993,8 @@ namespace StarSalvager
                         if (coreHeat <= 0)
                             return;
 
+                        part.SetColor(Color.Lerp(Color.white, Color.red, coreHeat / 100f));
+                        
                         if (coolTimer > 0f)
                         {
                             coolTimer -= Time.deltaTime;
@@ -837,8 +1004,12 @@ namespace StarSalvager
                             coolTimer = 0;
 
                         coreHeat -= coolSpeed * Time.deltaTime;
+                        
                         if (coreHeat < 0)
+                        {
                             coreHeat = 0;
+                            part.SetColor(Color.white);
+                        }
                         
                         break;
                     case PART_TYPE.REPAIR:
@@ -857,7 +1028,7 @@ namespace StarSalvager
         
         //============================================================================================================//
         
-        #region Check for Orphans
+        #region Check for New Disconnects
         
         /// <summary>
         /// Function will review and detach any blocks that no longer have a connection to the core.
@@ -890,7 +1061,7 @@ namespace StarSalvager
             }
         }
         
-        #endregion //Check for Orphans
+        #endregion //Check for New Disconnects
 
         //============================================================================================================//
 
@@ -970,10 +1141,27 @@ namespace StarSalvager
 
         private void CheckForCombosAround(IEnumerable<Bit> bits)
         {
+            (ComboData comboData, List<Bit> toMove) data = (ComboData.zero, null);
             foreach (var bit in bits)
             {
-                CheckForCombosAround(bit);
+                if (bit == null)
+                    continue;
+            
+                if (bit.level >= 2)
+                    continue;
+
+                if (!PuzzleChecker.TryGetComboData(this, bit, out var temp))
+                    continue;
+
+                if (temp.comboData.points > data.comboData.points)
+                    data = temp;
+
             }
+
+            if (data.comboData.points == 0)
+                return;
+
+            SimpleComboSolver(data.comboData, data.toMove);
         }
         private void CheckForCombosAround(Bit bit)
         {
@@ -1178,6 +1366,10 @@ namespace StarSalvager
                 var travelDistance = dif.magnitude;
 
                 //Debug.Log($"Travel Direction: {travelDirection} distance {travelDistance}");
+                
+                if(travelDirection == DIRECTION.NULL)
+                    continue;
+                
 
 
                 //Check around moving bits (Making sure to exclude the one that doesn't move)
@@ -1430,6 +1622,8 @@ namespace StarSalvager
 
             coreHeat += 20;
             coolTimer = coolDelay;
+            
+            
 
             if (coreHeat >= 100 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0)
             {
@@ -1452,19 +1646,45 @@ namespace StarSalvager
             if (attachedBlocks.Count - 1 <= magnetCount)
                 return;
             
-            Debug.Log($"magnetCount: {magnetCount} attachedBlocks: {attachedBlocks.Count - 1}");
+            //Debug.Log($"magnetCount: {magnetCount} attachedBlocks: {attachedBlocks.Count - 1}");
 
             var blocks = attachedBlocks.GetRange(magnetCount + 1, attachedBlocks.Count - (magnetCount + 1));
-            
-            Debug.Log($"Need to remove {blocks.Count} blocks");
 
-            foreach (var block in blocks)
+            var leavingCoordinates = blocks.Select(a => a.Coordinate).ToList();
+
+            for (var i = attachedBlocks.Count - 1; i >= 0; i--)
             {
-                Debug.Log($"Removing {block.gameObject.name}", block.gameObject);
+                if (blocks.Contains(attachedBlocks[i]))
+                    continue;
+
+                if (this.HasPathToCore(attachedBlocks[i], leavingCoordinates))
+                    continue;
+
+                Debug.LogError(
+                    $"Found a potential floater {attachedBlocks[i].gameObject.name} at {attachedBlocks[i].Coordinate}",
+                    attachedBlocks[i].gameObject);
+                //Debug.Break();
+//
+                //Debug.Log($"Need to remove {blocks.Count} blocks");
+            }
+
+            //foreach (var block in blocks)
+            //{
+            //    Debug.Log($"Removing {block.gameObject.name}", block.gameObject);
+            //}
+            foreach (var collidable in blocks.OfType<CollidableBase>())
+            {
+                collidable.SetColor(Color.gray);
             }
             
             //Debug.Break();
-            DetachBits(blocks);
+            
+            this.DelayedCall(1f, () =>
+            {
+                DetachBits(blocks, true);
+            });
+            
+            
         }
 
         private void Destroy()

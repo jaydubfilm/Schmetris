@@ -50,6 +50,8 @@ namespace Recycling
 
 			_bin.Store(gameObject);
 			gameObject.transform.parent = transform;
+			gameObject.transform.rotation = Quaternion.identity;
+			
 			
 			gameObject.GetComponent<IRecycle>()?.OnRecycle();
 		}
@@ -96,6 +98,7 @@ namespace Recycling
 
 			_bin.Store(gameObject);
 			gameObject.transform.parent = transform;
+			gameObject.transform.rotation = Quaternion.identity;
 			
 			gameObject.GetComponent<IRecycle>()?.OnRecycle();
 		}

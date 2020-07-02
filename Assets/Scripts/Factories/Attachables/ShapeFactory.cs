@@ -100,6 +100,7 @@ namespace StarSalvager.Factories
         {
             var shape = CreateObject<Shape>();
             var baseCoordinate = bits[0].Coordinate;
+            shape.transform.position = bits[0].transform.position;
             
             foreach (var bit in bits)
             {
@@ -118,6 +119,7 @@ namespace StarSalvager.Factories
             
             var shape = CreateObject<Shape>();
             var baseCoordinate = bits[0].Coordinate;
+            shape.transform.position = bits[0].transform.position;
             
             foreach (var bit in bits)
             {

@@ -59,6 +59,7 @@ namespace StarSalvager.Utilities.Extensions
         
         //============================================================================================================//
         
+        
         #region Path to Core Checks
         
         /// <summary>
@@ -93,7 +94,7 @@ namespace StarSalvager.Utilities.Extensions
                 // If ignore list contains this Coordinate, keep going
                 if (toIgnore != null && toIgnore.Contains(attachablesAround[i].Coordinate))
                 {
-                    //Debug.LogError($"toIgnore contains {around[i].Coordinate}");
+                    //Debug.LogError($"toIgnore contains {attachablesAround[i].Coordinate}");
                     attachablesAround[i] = null;
                     continue;
                 }

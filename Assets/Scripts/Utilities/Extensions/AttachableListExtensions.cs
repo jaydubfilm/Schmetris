@@ -152,10 +152,10 @@ namespace StarSalvager.Utilities.Extensions
         {
             return new List<IAttachable>
             {
-                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.LEFT),
-                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.UP),
-                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.RIGHT),
-                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.DOWN)
+                attachableBases.GetAttachableNextTo(from, DIRECTION.LEFT),
+                attachableBases.GetAttachableNextTo(from, DIRECTION.UP),
+                attachableBases.GetAttachableNextTo(from, DIRECTION.RIGHT),
+                attachableBases.GetAttachableNextTo(from, DIRECTION.DOWN)
             };
         }
         
@@ -169,10 +169,10 @@ namespace StarSalvager.Utilities.Extensions
         {
             var check = new List<IAttachable>
             {
-                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.LEFT),
-                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.UP),
-                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.RIGHT),
-                attachableBases.GetAttachableInDirectionOf(from, DIRECTION.DOWN)
+                attachableBases.GetAttachableNextTo(from, DIRECTION.LEFT),
+                attachableBases.GetAttachableNextTo(from, DIRECTION.UP),
+                attachableBases.GetAttachableNextTo(from, DIRECTION.RIGHT),
+                attachableBases.GetAttachableNextTo(from, DIRECTION.DOWN)
             };
 
             return check
@@ -180,6 +180,40 @@ namespace StarSalvager.Utilities.Extensions
                 .Select(ab => ab.Coordinate)
                 .ToList();
 
+        }
+
+        public static IAttachable GetAttachableInDirection(this IEnumerable<IAttachable> attachableBases,
+            IAttachable from, DIRECTION direction)
+        {
+            return attachableBases.GetAttachableInDirection(from, direction.ToVector2Int());
+        }
+        public static IAttachable GetAttachableInDirection(this IEnumerable<IAttachable> attachableBases,
+            IAttachable from, Vector2 direction)
+        {
+            return attachableBases.GetAttachableInDirection(from, direction.ToDirection());
+        }
+        public static IAttachable GetAttachableInDirection(this IEnumerable<IAttachable> attachableBases, IAttachable from, Vector2Int direction)
+        {
+            var coordinate = from.Coordinate;
+            var attachable = from;
+
+            var attachables = attachableBases.ToArray();
+            
+            while (true)
+            {
+                coordinate += direction;
+                
+                var temp = attachables.FirstOrDefault(a => a.Coordinate == coordinate);
+
+                if (temp == null)
+                    break;
+
+                attachable = temp;
+            }
+
+            //return attachableBases.FirstOrDefault(a => a.Coordinate == coord);
+
+            return attachable;
         }
         
         /// <summary>
@@ -189,7 +223,7 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="direction"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static IAttachable GetAttachableInDirectionOf(this IEnumerable<IAttachable> attachableBases, IAttachable from, DIRECTION direction)
+        public static IAttachable GetAttachableNextTo(this IEnumerable<IAttachable> attachableBases, IAttachable from, DIRECTION direction)
         {
             var coord = from.Coordinate + direction.ToVector2Int();
 

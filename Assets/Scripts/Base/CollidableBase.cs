@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using Sirenix.OdinInspector;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace StarSalvager
@@ -66,14 +66,12 @@ namespace StarSalvager
             if (!other.gameObject.CompareTag(CollisionTag))
                 return;
 
-            //other.contacts.Select(p => p.point).Sum(x => x);
+            var point = CalculateContactPoint(other.contacts);
 
-            var averageContactPoint = other.contacts.Aggregate(Vector2.zero, (current, contact) => current + contact.point) / other.contactCount;
-            
-            //Debug.DrawRay(averageContactPoint, Vector3.right, Color.red, 1f);
+            Debug.DrawRay(point, Vector3.right, Color.red, 1f);
 
             //FIXME I should be able to store the bot, so i can reduce my calls to GetComponent
-            OnCollide(other.gameObject, averageContactPoint);
+            OnCollide(other.gameObject, point);
         }
         
         //TODO Consider how best to avoid using the Collision Stay
@@ -85,11 +83,11 @@ namespace StarSalvager
             if (!other.gameObject.CompareTag(CollisionTag))
                 return;
 
-            var averageContactPoint = other.contacts.Aggregate(Vector2.zero, (current, contact) => current + contact.point) / other.contactCount;
+            var point = CalculateContactPoint(other.contacts);
             
-            //Debug.DrawRay(averageContactPoint, Vector3.right, Color.cyan, 0.5f);
+            Debug.DrawRay(point, Vector3.right, Color.cyan, 0.5f);
             
-            OnCollide(other.gameObject, averageContactPoint);
+            OnCollide(other.gameObject, point);
         }
         
         //============================================================================================================//
@@ -99,15 +97,17 @@ namespace StarSalvager
             renderer.sprite = sprite;
         }
 
-        public void SetColor(Color color)
+        public virtual void SetColor(Color color)
         {
             renderer.color = color;
         }
 
-        public void SetColliderActive(bool state)
+        public virtual void SetColliderActive(bool state)
         {
             collider.enabled = state;
         }
+        
+        
         
         //============================================================================================================//
 
@@ -115,7 +115,33 @@ namespace StarSalvager
         /// Called when the object contacts a bot
         /// </summary>
         protected abstract void OnCollide(GameObject gameObject, Vector2 hitPoint);
+
+        private static Vector2 CalculateContactPoint(IEnumerable<ContactPoint2D> points)
+        {
+            var contactPoint2Ds = points.ToArray();
+            var point = contactPoint2Ds.Aggregate(Vector2.zero, (current, contact) => current + contact.point) / contactPoint2Ds.Length;
+            
+            
+            //var shortest = 999f;
+            //var point = Vector2.zero;
+ //
+            //foreach (var contact in points)
+            //{
+            //    Debug.DrawRay(contact.point, Vector3.up, Color.blue, 1f);
+            //    
+            //    if (contact.separation > shortest)
+            //        continue;
+            //    
+            //    
+            //    shortest = contact.separation;
+            //    point = contact.point;
+            //}
+
+            return point;
+        }
         
         //============================================================================================================//
+
+        
     }
 }

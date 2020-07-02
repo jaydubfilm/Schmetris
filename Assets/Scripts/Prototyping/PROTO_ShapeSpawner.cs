@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager;
 using StarSalvager.Constants;
@@ -30,7 +31,7 @@ public class PROTO_ShapeSpawner : MonoBehaviour
 
     private new Transform transform;
 
-    private Shape activeShape;
+    private List<Shape> activeShapes;
 
     [SerializeField]
     private float fallSpeed = 30f;
@@ -46,7 +47,8 @@ public class PROTO_ShapeSpawner : MonoBehaviour
         Random.InitState(seed);
         transform = gameObject.transform;
 
-        CreateShape();
+        activeShapes = new List<Shape>();
+        //CreateShape();
     }
 
     private void Update()
@@ -55,19 +57,28 @@ public class PROTO_ShapeSpawner : MonoBehaviour
         {
             SceneManager.LoadScene("AlexB_Prototyping", LoadSceneMode.Single);
         }
+
+        activeShapes = FindObjectsOfType<Shape>().ToList();
         
-        
-        if(!activeShape.gameObject.activeInHierarchy)
+        if(activeShapes.Count == 0)
             CreateShape();
 
-        activeShape.transform.position += Vector3.down * (fallSpeed * Time.deltaTime);
-
-        if (activeShape.transform.position.y < -50f)
+        for (var i = activeShapes.Count - 1; i >= 0; i--)
         {
-            //Debug.Log(activeShape.transform.position.y);
-            activeShape.Destroy();
+            var activeShape = activeShapes[i];
+            
+            if(!activeShape.gameObject.activeInHierarchy)
+                CreateShape();
+
+            activeShape.transform.position += Vector3.down * (fallSpeed * Time.deltaTime);
+
+            if (activeShape.transform.position.y < -50f)
+            {
+                activeShapes.Remove(activeShape);
+                //Debug.Log(activeShape.transform.position.y);
+                activeShape.Destroy();
+            }
         }
-        
     }
 
 private void CreateShape()
@@ -81,7 +92,5 @@ private void CreateShape()
         shape.name = $"Shape_{type}_{count}";
         shape.transform.position = (Vector2.left * Random.Range(-10, 11) * Values.gridCellSize) + (Vector2.up * 20 * Values.gridCellSize);
         shape.transform.SetParent(transform, true);
-
-        activeShape = shape;
     }
 }

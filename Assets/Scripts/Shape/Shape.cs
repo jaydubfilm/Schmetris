@@ -103,7 +103,27 @@ public class Shape : CollidableBase, IObstacle
         
         Destroy();
     }
-    
+
+    public override void SetColor(Color color)
+    {
+        foreach (var bit in attachedBits)
+        {
+            bit.SetColor(color);
+        }
+    }
+
+    public override void SetColliderActive(bool state)
+    {
+        //Its important that I set the children colliders instead of the Composite Collider as it wont reEnable correctly
+        //Setting the Bits colliders is the correct way of doing this
+        foreach (var bit in attachedBits)
+        {
+            bit.SetColliderActive(state);
+        }
+        
+        CompositeCollider.GenerateGeometry();
+    }
+
     //================================================================================================================//
 
     protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
@@ -117,6 +137,9 @@ public class Shape : CollidableBase, IObstacle
             return;
         }
         
+        //Debug.Break();
+        
+        
         if (!TryGetRayDirectionFromBot(bot.MoveDirection, out var rayDirection))
             return;
         
@@ -124,6 +147,8 @@ public class Shape : CollidableBase, IObstacle
         //Long ray compensates for the players high speed
         var rayLength = Values.gridCellSize * 3f;
         var closestAttachable = attachedBits.GetClosestAttachable(hitPoint);
+
+        closestAttachable = attachedBits.GetAttachableInDirection(closestAttachable, rayDirection);
         
         
         var rayStartPosition = (Vector2) closestAttachable.transform.position + -rayDirection * (rayLength / 2f);
