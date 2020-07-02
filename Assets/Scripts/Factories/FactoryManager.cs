@@ -50,6 +50,27 @@ namespace StarSalvager.Factories
         private FactoryBase _botFactory;
         
         //============================================================================================================//
+        
+        #if UNITY_EDITOR
+        
+        [SerializeField, Required, BoxGroup("Attachables/Bits"), Space(10f)]
+        private AttachableProfileScriptableObject bitProfileAlt;
+        
+        private bool bitToggle;
+        [BoxGroup("Attachables/Bits"), Button("Toggle Bit Profile"), DisableInEditorMode]
+        private void ToggleBitProfile()
+        {
+            bitToggle = !bitToggle;
+
+            _bitAttachableFactory = bitToggle
+                ? new BitAttachableFactory(bitProfileAlt, bitRemoteData)
+                : new BitAttachableFactory(bitProfile, bitRemoteData);
+        }
+        
+        #endif
+        
+        //============================================================================================================//
+
     
         /// <summary>
         /// Obtains a FactoryBase of Type T

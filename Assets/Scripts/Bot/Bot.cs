@@ -36,10 +36,17 @@ namespace StarSalvager
 
         public List<IAttachable> attachedBlocks => _attachedBlocks ?? (_attachedBlocks = new List<IAttachable>());
 
-        [SerializeField, ReadOnly, Space(10f)] private List<IAttachable> _attachedBlocks;
-
+        [SerializeField, ReadOnly, Space(10f), ShowInInspector] 
+        private List<IAttachable> _attachedBlocks;
+        
+        private List<Part> _parts;
+        
+        
         //============================================================================================================//
 
+        public bool Destroyed => _isDestroyed;
+        private bool _isDestroyed;
+        
         public bool Moving => _moving;
         private bool _moving;
 
@@ -54,14 +61,12 @@ namespace StarSalvager
         public float DelayedAutoStartTime = 0.2f;
         private float _dasTimer;
 
-
-        private bool _isDestroyed = false;
-
-
         public bool Rotating => _rotating;
 
         private bool _rotating;
         private float targetRotation;
+        
+        //============================================================================================================//
 
         private CompositeCollider2D CompositeCollider2D
         {
@@ -91,9 +96,17 @@ namespace StarSalvager
 
         #region Unity Functions
 
+        private void Update()
+        {
+            if (Destroyed)
+                return;
+            
+            PartsUpdateLoop();
+        }
+
         private void FixedUpdate()
         {
-            if(_isDestroyed)
+            if(Destroyed)
                 return;
             
             if (Moving)
@@ -107,6 +120,8 @@ namespace StarSalvager
 
         //============================================================================================================//
 
+        #region Init Bot 
+        
         public void InitBot()
         {
             _isDestroyed = false;
@@ -134,6 +149,8 @@ namespace StarSalvager
                 AttachNewBit(attachable.Coordinate, attachable);
             }
         }
+        
+        #endregion // Init Bot 
         
         //============================================================================================================//
 
@@ -430,64 +447,6 @@ namespace StarSalvager
             return selected;
         }
 
-        /*public AttachableBase GetClosestAttachable(Vector2 checkPosition)
-        {
-            AttachableBase selected = null;
-
-            var smallestDist = 999f;
-
-            foreach (var attached in attachedBlocks)
-            {
-                //attached.SetColor(Color.white);
-
-                var dist = Vector2.Distance(attached.transform.position, checkPosition);
-                if (dist > smallestDist)
-                    continue;
-
-                smallestDist = dist;
-                selected = attached;
-            }
-
-            //selected.SetColor(Color.magenta);
-
-            return selected;
-        }*/
-
-        /// <summary>
-        /// Returns the 2 closest objects
-        /// </summary>
-        /// <param name="checkCoordinate"></param>
-        /// <returns></returns>
-        public IAttachable[] GetClosestAttachables(Vector2Int checkCoordinate)
-        {
-            IAttachable[] selected = new IAttachable[2];
-
-            var smallestDist = 999f;
-
-            foreach (var attached in attachedBlocks)
-            {
-                //attached.SetColor(Color.white);
-
-                var dist = Vector2Int.Distance(attached.Coordinate, checkCoordinate);
-
-                if (dist > smallestDist)
-                    continue;
-
-
-
-                smallestDist = dist;
-                selected[1] = selected[0];
-                selected[0] = attached;
-            }
-
-            //selected[0].SetColor(Color.magenta);
-            //selected[1]?.SetColor(Color.cyan);
-
-
-
-            return selected;
-        }
-
         private Vector2Int GetRelativeCoordinate(Vector2 worldPosition)
         {
             var botPosition = (Vector2) transform.position;
@@ -569,6 +528,9 @@ namespace StarSalvager
                         shape.Destroy(false);
                         
                         CheckForCombosAround(bitsToAdd);
+
+                        CheckForMagnetOverage();
+                        
                         CompositeCollider2D.GenerateGeometry();
 
                         break;
@@ -583,6 +545,8 @@ namespace StarSalvager
         #endregion //Check for Legal Shape Attach
         
         //============================================================================================================//
+        
+        #region TryHitAt
 
         public void TryHitAt(Vector2 hitPosition, float damage)
         {
@@ -618,7 +582,8 @@ namespace StarSalvager
                 CheckForDisconnects();
             }
         }
-
+        
+        #endregion //TryHitAt
 
         //============================================================================================================//
 
@@ -631,7 +596,11 @@ namespace StarSalvager
             newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Values.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
+            newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
             attachedBlocks.Add(newAttachable);
+
+            if (newAttachable is Part)
+                UpdatePartsList();
             
             if(checkForCombo)
                 CheckForCombosAround(coordinate);
@@ -662,8 +631,11 @@ namespace StarSalvager
 
             attachedBlocks.Add(newAttachable);
 
-            if(checkForCombo)
+            if (checkForCombo)
+            {
                 CheckForCombosAround(coordinate);
+                CheckForMagnetOverage();
+            }
 
             if(updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
@@ -681,9 +653,12 @@ namespace StarSalvager
             newAttachable.transform.SetParent(transform);
 
             attachedBlocks.Add(newAttachable);
-            
-            if(checkForCombo)
+
+            if (checkForCombo)
+            {
                 CheckForCombosAround(newCoord);
+                CheckForMagnetOverage();
+            }
 
             if(updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
@@ -701,10 +676,13 @@ namespace StarSalvager
             newAttachable.transform.SetParent(transform);
 
             attachedBlocks.Add(newAttachable);
-            
-            if(checkForCombo)
-                CheckForCombosAround(newCoord);
 
+            if (checkForCombo)
+            {
+                CheckForCombosAround(newCoord);
+                CheckForMagnetOverage();
+            }
+            
             if(updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
         }
@@ -738,15 +716,144 @@ namespace StarSalvager
             //Debug.Log($"Detached {bit.gameObject.name}", bit);
         }
         
-        private void RemoveAttachable(IAttachable attachableBase)
+        private void RemoveAttachable(IAttachable attachable)
         {
-            attachedBlocks.Remove(attachableBase);
-            attachableBase.SetAttached(false);
+            attachedBlocks.Remove(attachable);
+            attachable.SetAttached(false);
+            
+            CompositeCollider2D.GenerateGeometry();
+        }
+        
+        private void DestroyAttachable(IAttachable attachable)
+        {
+            attachedBlocks.Remove(attachable);
+            attachable.SetAttached(false);
+
+            switch (attachable)
+            {
+                case Bit _:
+                    Recycler.Recycle<Bit>(attachable.gameObject);
+                    break;
+                case Part _:
+                    Recycler.Recycle<Part>(attachable.gameObject);
+                    break;
+                case EnemyAttachable _:
+                    Recycler.Recycle<EnemyAttachable>(attachable.gameObject);
+                    break;
+            }
+                        
+            CheckForDisconnects();
+            
+            CompositeCollider2D.GenerateGeometry();
+        }
+        
+        /// <summary>
+        /// Removes the attachable, and will recycle it under the T bin.
+        /// </summary>
+        /// <param name="attachable"></param>
+        /// <typeparam name="T"></typeparam>
+        private void DestroyAttachable<T>(IAttachable attachable) where T: IAttachable
+        {
+            attachedBlocks.Remove(attachable);
+            attachable.SetAttached(false);
+
+            Recycler.Recycle<T>(attachable.gameObject);
+            
+            CheckForDisconnects();
             
             CompositeCollider2D.GenerateGeometry();
         }
         
         #endregion //Detach Bits
+        
+        //============================================================================================================//
+
+        #region Parts
+        
+        [SerializeField, BoxGroup("Bot Part Data"), ReadOnly]
+        private float coreHeat;
+        [SerializeField, BoxGroup("Bot Part Data"), DisableInPlayMode,SuffixLabel("/s", Overlay = true)]
+        private float coolSpeed;
+        [SerializeField, BoxGroup("Bot Part Data"), DisableInPlayMode, SuffixLabel("s", Overlay = true)]
+        private float coolDelay;
+        [SerializeField, BoxGroup("Bot Part Data"), ReadOnly]
+        private float coolTimer;
+        
+        [SerializeField, BoxGroup("Bot Part Data"), ReadOnly, Space(10f)]
+        private int magnetCount;  
+        
+        /// <summary>
+        /// Called when new Parts are added to the attachable List. Allows for a short list of parts to exist to ease call
+        /// cost for updating the Part behaviour
+        /// </summary>
+        private void UpdatePartsList()
+        {
+            _parts = attachedBlocks.OfType<Part>().ToList();
+
+            UpdatePartData();
+        }
+
+        /// <summary>
+        /// Called to update the bot about relevant data to function.
+        /// </summary>
+        private void UpdatePartData()
+        {
+            magnetCount = 0;
+            
+            foreach (var part in _parts)
+            {
+                var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.MAGNET);
+                
+                switch (part.Type)
+                {
+                    case PART_TYPE.MAGNET:
+                    case PART_TYPE.CORE:
+                        magnetCount += partData.data[part.level];
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Parts specific update Loop. Updates all part information based on currently attached parts.
+        /// </summary>
+        private void PartsUpdateLoop()
+        {
+            foreach (var part in _parts)
+            {
+                switch (part.Type)
+                {
+                    case PART_TYPE.CORE:
+                        //TODO Need to check on Heating values for the core
+                        if (coreHeat <= 0)
+                            return;
+
+                        if (coolTimer > 0f)
+                        {
+                            coolTimer -= Time.deltaTime;
+                            return;
+                        }
+                        else
+                            coolTimer = 0;
+
+                        coreHeat -= coolSpeed * Time.deltaTime;
+                        if (coreHeat < 0)
+                            coreHeat = 0;
+                        
+                        break;
+                    case PART_TYPE.REPAIR:
+                        //TODO Determine if this heals Bits & parts or just parts
+                        //TODO This needs to fire every x Seconds
+                        break;
+                    case PART_TYPE.GUN:
+                        //TODO This needs to find closest enemy targets to this
+                        //TODO This needs to fire every x Seconds
+                        break;
+                }
+            }
+        }
+        
+        #endregion //Parts
         
         //============================================================================================================//
         
@@ -1303,21 +1410,61 @@ namespace StarSalvager
         
         private void AsteroidDamageAt(IAttachable attachable)
         {
-            DetachBit(attachable);
-                        
-            Recycler.Recycle<Bit>(attachable.gameObject);
+            switch (attachable)
+            {
+                case Bit _:
+                    DestroyAttachable<Bit>(attachable);
+                    
+                    break;
+                case Part part:
+                {
+                    var partHealth = (IHealth) part;
             
-            CheckForDisconnects();
-                        
-            //TODO Damage Core (OverHeat) & check to see if the core has died
-            if (!(attachedBlocks[0] is IHealth coreHealth)) 
-                return;
-            
-            coreHealth.ChangeHealth(-5);
-            if (coreHealth.CurrentHealth > 0)
-                return;
+                    partHealth.ChangeHealth(-5);
+                
+                    if(partHealth.CurrentHealth < 0)
+                        DestroyAttachable<Part>(attachable);
+                    break;
+                }
+            }
 
-            Destroy();
+            coreHeat += 20;
+            coolTimer = coolDelay;
+
+            if (coreHeat >= 100 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0)
+            {
+                Destroy();
+            }
+
+            ////TODO Damage Core (OverHeat) & check to see if the core has died
+            //if (!(attachedBlocks[0] is IHealth coreHealth)) 
+            //    return;
+            //
+            //coreHealth.ChangeHealth(-5);
+            //if (coreHealth.CurrentHealth > 0)
+            //    return;
+//
+            //Destroy();
+        }
+
+        private void CheckForMagnetOverage()
+        {
+            if (attachedBlocks.Count - 1 <= magnetCount)
+                return;
+            
+            Debug.Log($"magnetCount: {magnetCount} attachedBlocks: {attachedBlocks.Count - 1}");
+
+            var blocks = attachedBlocks.GetRange(magnetCount + 1, attachedBlocks.Count - (magnetCount + 1));
+            
+            Debug.Log($"Need to remove {blocks.Count} blocks");
+
+            foreach (var block in blocks)
+            {
+                Debug.Log($"Removing {block.gameObject.name}", block.gameObject);
+            }
+            
+            //Debug.Break();
+            DetachBits(blocks);
         }
 
         private void Destroy()
@@ -1335,7 +1482,7 @@ namespace StarSalvager
         
         #region Coroutines
         
-                /// <summary>
+        /// <summary>
         /// Coroutine used to move all of the relevant Bits (Bits to be upgraded, orphans) to their appropriate locations
         /// at the specified speed, and when finished trigger the Callback.
         /// </summary>
