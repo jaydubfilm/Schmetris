@@ -4,16 +4,17 @@ using UnityEngine.InputSystem;
 
 namespace StarSalvager.Utilities.Inputs
 {
-    public class InputManager : SceneSingleton<InputManager>, IInput
+    public class InputManager : Singleton<InputManager>, IInput
     {
         private Bot[] _bots;
+        private ScrapyardBot[] _scrapyardBots;
 
         private ObstacleManager obstacleManager
         {
             get
             {
                 if (_obstacleManager == null)
-                    _obstacleManager = GetComponent<ObstacleManager>();
+                    _obstacleManager = FindObjectOfType<ObstacleManager>();
 
                 return _obstacleManager;
             }
@@ -25,7 +26,7 @@ namespace StarSalvager.Utilities.Inputs
             get
             {
                 if (_enemyManager == null)
-                    _enemyManager = GetComponent<EnemyManager>();
+                    _enemyManager = FindObjectOfType<EnemyManager>();
                 return _enemyManager;
             }
         }
@@ -36,30 +37,23 @@ namespace StarSalvager.Utilities.Inputs
             get
             {
                 if (_cameraController == null)
-                    _cameraController = GetComponent<CameraController>();
+                    _cameraController = FindObjectOfType<CameraController>();
 
                 return _cameraController;
             }
         }
         private CameraController _cameraController;
 
-
-        //============================================================================================================//
-
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-
-            DeInitInput();
-        }
-        
         //============================================================================================================//
 
         public void InitInput()
         {
             if (_bots == null || _bots.Length == 0)
                 _bots = FindObjectsOfType<Bot>();
-            
+
+            if (_scrapyardBots == null || _scrapyardBots.Length == 0)
+                _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
+
             DeInitInput();
 
             Input.Actions.Default.SideMovement.Enable();
@@ -88,7 +82,7 @@ namespace StarSalvager.Utilities.Inputs
             var move = ctx.ReadValue<float>();
             _prevMove = move;
 
-            var noObstacles = _obstacleManager is null;
+            var noObstacles = obstacleManager is null;
             
             foreach (var bot in _bots)
             {
@@ -144,6 +138,11 @@ namespace StarSalvager.Utilities.Inputs
             foreach (var bot in _bots)
             {
                 bot.Rotate(rot);
+            }
+
+            foreach (var scrapyardBot in _scrapyardBots)
+            {
+                scrapyardBot.Rotate(rot);
             }
         }
         

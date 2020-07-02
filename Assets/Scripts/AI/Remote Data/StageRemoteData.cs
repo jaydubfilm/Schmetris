@@ -13,6 +13,8 @@ namespace StarSalvager.AI
         [SerializeField, FoldoutGroup("$m_stageNumber")]
         private float m_stageDuration;
         [SerializeField, FoldoutGroup("$m_stageNumber")]
+        private float m_stageBlendPeriod;
+        [SerializeField, FoldoutGroup("$m_stageNumber")]
         private bool m_waitUntilAllEnemiesDefeatedToBegin;
         [SerializeField, FoldoutGroup("$m_stageNumber")]
         private List<StageEnemyData> m_stageEnemyData;
@@ -21,6 +23,7 @@ namespace StarSalvager.AI
 
         public int StageNumber => m_stageNumber;
         public float StageDuration => m_stageDuration;
+        public float StageBlendPeriod => m_stageBlendPeriod;
         public bool WaitUntilAllEnemiesDefeatedToBegin => m_waitUntilAllEnemiesDefeatedToBegin;
         public List<StageEnemyData> StageEnemyData => m_stageEnemyData;
         public List<StageObstacleData> StageObstacleData => m_stageObstacleData;

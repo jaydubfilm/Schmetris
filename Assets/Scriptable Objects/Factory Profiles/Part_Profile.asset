@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Part_Profile
   m_EditorClassIdentifier: 
   Prefab: {fileID: 8065688321784250118, guid: 27c66f460c929c14193efec09b80f5b6, type: 3}
+  ScrapyardPrefab: {fileID: 8065688321784250118, guid: a3c1fd961df5acc448ae3ac4504be34f,
+    type: 3}
   profiles:
   - partType: 0
     _name: Core

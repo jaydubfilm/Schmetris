@@ -7,6 +7,9 @@ using StarSalvager.AI;
 using UnityEngine.UI;
 using StarSalvager.ScriptableObjects;
 using Sirenix.OdinInspector;
+using StarSalvager.Factories;
+using StarSalvager.Utilities.Inputs;
+using UnityEngine.SceneManagement;
 
 namespace StarSalvager
 {
@@ -26,9 +29,8 @@ namespace StarSalvager
         public bool generateRandomSeed;
         [DisableIf("$generateRandomSeed")] public int seed = 1234567890;
 
-        [SerializeField]
-        private Bot m_botGameObject;
-        public Bot BotGameObject => m_botGameObject;
+        private List<Bot> m_bots;
+        public Bot BotGameObject => m_bots[0];
 
         [SerializeField]
         private CameraController m_cameraController;
@@ -117,6 +119,17 @@ namespace StarSalvager
             }
 
             Random.InitState(seed);
+
+            m_bots = new List<Bot>();
+            m_bots.Add (FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
+            BotGameObject.transform.position = new Vector2(0, 0);
+            BotGameObject.InitBot();
+            Bot.OnBotDied += deadBot =>
+            {
+                Debug.LogError("Bot Died. Press 'R' to restart");
+            };
+            SceneManager.MoveGameObjectToScene(BotGameObject.gameObject, gameObject.scene);
+            InputManager.Instance.InitInput();
 
             CameraController.SetOrthographicSize(Values.gridCellSize * ColumnsOnScreen);
             m_gridSizeX = (int)(ColumnsOnScreen * Values.GridWidthRelativeToScreen);

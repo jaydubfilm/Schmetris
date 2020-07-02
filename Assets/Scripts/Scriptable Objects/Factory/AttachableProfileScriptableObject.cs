@@ -9,6 +9,9 @@ namespace StarSalvager.ScriptableObjects
     {
         [Required]
         public GameObject Prefab;
+
+        [Required]
+        public GameObject ScrapyardPrefab;
     }
     
     /// <summary>
