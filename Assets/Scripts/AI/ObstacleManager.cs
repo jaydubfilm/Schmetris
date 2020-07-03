@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using StarSalvager.Constants;
+using StarSalvager.Values;
 using StarSalvager.Factories;
 using Recycling;
 using StarSalvager.AI;
@@ -51,26 +51,26 @@ namespace StarSalvager
 
         private void HandleObstacleMovement()
         {
-            Vector3 amountShift = Vector3.up * ((Values.gridCellSize * Time.deltaTime) / Values.timeForAsteroidsToFall);
+            Vector3 amountShift = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Constants.timeForAsteroidsToFall);
 
             if (m_distanceHorizontal != 0)
             {
-                int gridPositionXPrevious = (int)Mathf.Ceil(m_distanceHorizontal + (Values.gridCellSize / 2) / Values.gridCellSize);
+                int gridPositionXPrevious = (int)Mathf.Ceil(m_distanceHorizontal + (Constants.gridCellSize / 2) / Constants.gridCellSize);
 
                 if (m_distanceHorizontal > 0)
                 {
-                    float toMove = Mathf.Min(m_distanceHorizontal, Values.botHorizontalSpeed * Time.deltaTime);
+                    float toMove = Mathf.Min(m_distanceHorizontal, Constants.botHorizontalSpeed * Time.deltaTime);
                     amountShift += Vector3.right * toMove;
                     m_distanceHorizontal -= toMove;
                 }
                 else if (m_distanceHorizontal < 0)
                 {
-                    float toMove = Mathf.Min(Mathf.Abs(m_distanceHorizontal), Values.botHorizontalSpeed * Time.deltaTime);
+                    float toMove = Mathf.Min(Mathf.Abs(m_distanceHorizontal), Constants.botHorizontalSpeed * Time.deltaTime);
                     amountShift += Vector3.left * toMove;
                     m_distanceHorizontal += toMove;
                 }
 
-                int gridPositionXCurrent = (int)Mathf.Ceil(m_distanceHorizontal + (Values.gridCellSize / 2) / Values.gridCellSize);
+                int gridPositionXCurrent = (int)Mathf.Ceil(m_distanceHorizontal + (Constants.gridCellSize / 2) / Constants.gridCellSize);
                 if (gridPositionXPrevious > gridPositionXCurrent)
                 {
                     LevelManager.Instance.WorldGrid.MoveObstacleMarkersLeftOnGrid(gridPositionXPrevious - gridPositionXCurrent);
@@ -124,9 +124,9 @@ namespace StarSalvager
                 }
 
                 if (gridPosition.x < 0)
-                    pos += Vector3.right * (LevelManager.Instance.GridSizeX * Values.gridCellSize);
+                    pos += Vector3.right * (LevelManager.Instance.GridSizeX * Constants.gridCellSize);
                 else if (gridPosition.x >= LevelManager.Instance.GridSizeX)
-                    pos += Vector3.left * (LevelManager.Instance.GridSizeX * Values.gridCellSize);
+                    pos += Vector3.left * (LevelManager.Instance.GridSizeX * Constants.gridCellSize);
 
                 obstacle.transform.position = pos;
             }
@@ -180,7 +180,7 @@ namespace StarSalvager
 
             m_currentInput = direction;
 
-            m_distanceHorizontal += direction * Values.gridCellSize;
+            m_distanceHorizontal += direction * Constants.gridCellSize;
         }
 
         public void SpawnNewRowOfObstacles()

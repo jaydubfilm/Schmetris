@@ -138,6 +138,7 @@ GameObject:
   - component: {fileID: 50976768}
   - component: {fileID: 50976767}
   - component: {fileID: 50976766}
+  - component: {fileID: 50976769}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -210,6 +211,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &50976769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 50976765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d4cd5b7fb25aa84bbbfb96592ccb94b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  smoothing: 4
 --- !u!1 &198977632
 GameObject:
   m_ObjectHideFlags: 0
@@ -361,6 +375,18 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 50976765}
+    ActiveGameObject: {fileID: 50976765}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 40460779}
     ActiveGameObject: {fileID: 40460779}
     GUIDsList: []
@@ -615,18 +641,6 @@ MonoBehaviour:
     list:
     - {fileID: 198977632}
     ActiveGameObject: {fileID: 198977632}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1970748057}
-    ActiveGameObject: {fileID: 1970748057}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []

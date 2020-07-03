@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StarSalvager.Constants
+namespace StarSalvager.Values
 {
-    public static class Values
+    public static class Constants
     {
         public const float gridCellSize = 1.28f;
         private const float gridWidthRelativeToScreen = 3.0f;

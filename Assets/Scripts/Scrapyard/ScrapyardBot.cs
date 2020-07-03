@@ -1,7 +1,7 @@
 ﻿using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
-using StarSalvager.Constants;
+using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -174,7 +174,7 @@ namespace StarSalvager
         {
             newAttachable.Coordinate = coordinate;
             newAttachable.SetAttached(true);
-            newAttachable.transform.position = transform.position + (Vector3)(Vector2.one * coordinate * Values.gridCellSize);
+            newAttachable.transform.position = transform.position + (Vector3)(Vector2.one * coordinate * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
             newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";

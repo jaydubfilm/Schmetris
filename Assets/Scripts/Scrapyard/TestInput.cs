@@ -1,4 +1,4 @@
-﻿using StarSalvager.Constants;
+﻿using StarSalvager.Values;
 using StarSalvager.Factories;
 using System.Collections;
 using System.Collections.Generic;
@@ -86,22 +86,22 @@ namespace StarSalvager
                 Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 if (worldMousePosition.x > 0)
                 {
-                    worldMousePosition.x += Values.gridCellSize / 2;
+                    worldMousePosition.x += Constants.gridCellSize / 2;
                 }
                 else if (worldMousePosition.x < 0)
                 {
-                    worldMousePosition.x -= Values.gridCellSize / 2;
+                    worldMousePosition.x -= Constants.gridCellSize / 2;
                 }
                 if (worldMousePosition.y > 0)
                 {
-                    worldMousePosition.y += Values.gridCellSize / 2;
+                    worldMousePosition.y += Constants.gridCellSize / 2;
                 }
                 else if (worldMousePosition.y < 0)
                 {
-                    worldMousePosition.y -= Values.gridCellSize / 2;
+                    worldMousePosition.y -= Constants.gridCellSize / 2;
                 }
 
-                Vector2Int botCoordinate = new Vector2Int((int)(worldMousePosition.x / Values.gridCellSize), (int)(worldMousePosition.y / Values.gridCellSize));
+                Vector2Int botCoordinate = new Vector2Int((int)(worldMousePosition.x / Constants.gridCellSize), (int)(worldMousePosition.y / Constants.gridCellSize));
                 foreach (ScrapyardBot scrapBot in _scrapyardBots)
                 {
                     switch(Random.Range(0, 2))
@@ -121,22 +121,22 @@ namespace StarSalvager
                 Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 if (worldMousePosition.x > 0)
                 {
-                    worldMousePosition.x += Values.gridCellSize / 2;
+                    worldMousePosition.x += Constants.gridCellSize / 2;
                 }
                 else if (worldMousePosition.x < 0)
                 {
-                    worldMousePosition.x -= Values.gridCellSize / 2;
+                    worldMousePosition.x -= Constants.gridCellSize / 2;
                 }
                 if (worldMousePosition.y > 0)
                 {
-                    worldMousePosition.y += Values.gridCellSize / 2;
+                    worldMousePosition.y += Constants.gridCellSize / 2;
                 }
                 else if (worldMousePosition.y < 0)
                 {
-                    worldMousePosition.y -= Values.gridCellSize / 2;
+                    worldMousePosition.y -= Constants.gridCellSize / 2;
                 }
 
-                Vector2Int mouseCoordinate = new Vector2Int((int)(worldMousePosition.x / Values.gridCellSize), (int)(worldMousePosition.y / Values.gridCellSize));
+                Vector2Int mouseCoordinate = new Vector2Int((int)(worldMousePosition.x / Constants.gridCellSize), (int)(worldMousePosition.y / Constants.gridCellSize));
                 foreach (ScrapyardBot scrapBot in _scrapyardBots)
                 {
                     scrapBot.RemoveAttachableAt(mouseCoordinate);

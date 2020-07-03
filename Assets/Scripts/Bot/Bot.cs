@@ -6,7 +6,7 @@ using Recycling;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using StarSalvager.AI;
-using StarSalvager.Constants;
+using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
@@ -239,11 +239,11 @@ namespace StarSalvager
 
             if (Moving)
             {
-                targetPosition += toMove * Values.gridCellSize;
+                targetPosition += toMove * Constants.gridCellSize;
             }
             else
             {
-                targetPosition = (Vector2) transform.position + toMove * Values.gridCellSize;
+                targetPosition = (Vector2) transform.position + toMove * Constants.gridCellSize;
                 _dasTimer = 0f;
             }
 
@@ -451,7 +451,7 @@ namespace StarSalvager
         {
             var botPosition = (Vector2) transform.position;
 
-            var calculated = (worldPosition - botPosition) / Values.gridCellSize;
+            var calculated = (worldPosition - botPosition) / Constants.gridCellSize;
             return new Vector2Int(
                 Mathf.RoundToInt(calculated.x),
                 Mathf.RoundToInt(calculated.y));
@@ -674,7 +674,7 @@ namespace StarSalvager
         {
             newAttachable.Coordinate = coordinate;
             newAttachable.SetAttached(true);
-            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Values.gridCellSize);
+            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
             newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
@@ -707,7 +707,7 @@ namespace StarSalvager
             newAttachable.Coordinate = coordinate;
 
             newAttachable.SetAttached(true);
-            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Values.gridCellSize);
+            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
             attachedBlocks.Add(newAttachable);
@@ -730,7 +730,7 @@ namespace StarSalvager
 
             newAttachable.Coordinate = newCoord;
             newAttachable.SetAttached(true);
-            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * newCoord * Values.gridCellSize);
+            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * newCoord * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
             attachedBlocks.Add(newAttachable);
@@ -753,7 +753,7 @@ namespace StarSalvager
 
             newAttachable.Coordinate = newCoord;
             newAttachable.SetAttached(true);
-            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * newCoord * Values.gridCellSize);
+            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * newCoord * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
             attachedBlocks.Add(newAttachable);
@@ -1696,7 +1696,7 @@ namespace StarSalvager
             var orphanTransformPositions = orphanTransforms.Select(bt => bt.localPosition).ToArray();
             var orphanTargetPositions = orphans.Select(o =>
                 transform.InverseTransformPoint((Vector2) transform.position +
-                                                (Vector2) o.intendedCoordinates * Values.gridCellSize)).ToArray();
+                                                (Vector2) o.intendedCoordinates * Constants.gridCellSize)).ToArray();
             //--------------------------------------------------------------------------------------------------------//
 
 
@@ -1790,7 +1790,7 @@ namespace StarSalvager
             var startPositions = transforms.Select(x => x.localPosition).ToArray();
             var targetPositions = toMove.Select(o =>
                 transform.InverseTransformPoint((Vector2) transform.position +
-                                                ((Vector2) o.Coordinate + dir)  * Values.gridCellSize)).ToArray();
+                                                ((Vector2) o.Coordinate + dir)  * Constants.gridCellSize)).ToArray();
 
             foreach (var attachableBase in toMove)
             {

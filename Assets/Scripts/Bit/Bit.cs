@@ -1,7 +1,7 @@
 ﻿using System;
 using Recycling;
 using Sirenix.OdinInspector;
-using StarSalvager.Constants;
+using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
@@ -111,7 +111,7 @@ namespace StarSalvager
                 return;
 
             //Long ray compensates for the players high speed
-            var rayLength = Values.gridCellSize * 3f;
+            var rayLength = Constants.gridCellSize * 3f;
             var rayStartPosition = (Vector2) transform.position + -rayDirection * (rayLength / 2f);
 
 

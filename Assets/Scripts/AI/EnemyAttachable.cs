@@ -1,4 +1,4 @@
-﻿using StarSalvager.Constants;
+﻿using StarSalvager.Values;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
+using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -69,7 +70,7 @@ namespace StarSalvager.Prototype
 
                 var temp = bitFactory.CreateGameObject(type).transform;
 
-                var position = (Vector2)coordinate * Constants.Values.gridCellSize;
+                var position = (Vector2)coordinate * Constants.gridCellSize;
 
                 temp.gameObject.name = $"BitPrefab_{coordinate}";
                 temp.position = position;

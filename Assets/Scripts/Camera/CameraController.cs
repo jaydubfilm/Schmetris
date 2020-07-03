@@ -1,6 +1,6 @@
 ﻿using System;
 using StarSalvager;
-using StarSalvager.Constants;
+using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
 using StarSalvager.Cameras.Data;

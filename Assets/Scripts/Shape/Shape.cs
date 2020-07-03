@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Recycling;
 using StarSalvager;
-using StarSalvager.Constants;
+using StarSalvager.Values;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
@@ -83,7 +83,7 @@ public class Shape : CollidableBase, IObstacle
 
         bit.Coordinate = newCoord;
         bit.SetAttached(true);
-        bit.transform.position = transform.position + (Vector3)(Vector2.one * newCoord * Values.gridCellSize);
+        bit.transform.position = transform.position + (Vector3)(Vector2.one * newCoord * Constants.gridCellSize);
         bit.transform.SetParent(transform);
             
         attachedBits.Add(bit);
@@ -151,7 +151,7 @@ public class Shape : CollidableBase, IObstacle
         
         
         //Long ray compensates for the players high speed
-        var rayLength = Values.gridCellSize * 3f;
+        var rayLength = Constants.gridCellSize * 3f;
         var closestAttachable = attachedBits.GetClosestAttachable(hitPoint);
 
         closestAttachable = attachedBits.GetAttachableInDirection(closestAttachable, rayDirection);
