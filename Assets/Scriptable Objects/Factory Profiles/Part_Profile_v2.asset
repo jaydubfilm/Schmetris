@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19186528b266754b8291fc441243972, type: 3}
+  m_Name: Part_Profile_v2
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 8065688321784250118, guid: 27c66f460c929c14193efec09b80f5b6, type: 3}
+  ScrapyardPrefab: {fileID: 8065688321784250118, guid: a3c1fd961df5acc448ae3ac4504be34f,
+    type: 3}
+  profiles:
+  - partType: 0
+    _name: Core
+    _sprites:
+    - {fileID: 6070201078244642328, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+    - {fileID: 4565593397535849320, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+  - partType: 1
+    _name: Magnet
+    _sprites:
+    - {fileID: -722243328840746462, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+    - {fileID: -2853014223648572609, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+  - partType: 2
+    _name: Repair
+    _sprites:
+    - {fileID: -300592225256860258, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+    - {fileID: -7002509201591867061, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+  - partType: 3
+    _name: Armor
+    _sprites:
+    - {fileID: 655678302706559697, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+    - {fileID: -1670221941872761086, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+  - partType: 4
+    _name: Gun
+    _sprites:
+    - {fileID: -8584124092000404580, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+    - {fileID: -6262562140061562835, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
