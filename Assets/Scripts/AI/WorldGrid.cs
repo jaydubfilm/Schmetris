@@ -147,6 +147,11 @@ namespace StarSalvager
             else if (gridPosition.x < 0)
                 gridPosition.x += Values.Globals.GridSizeX;
 
+            if (gridPosition.y < 0)
+            {
+                gridPosition.y = 0;
+            }
+
             return m_gridArray[gridPosition.x + (gridPosition.y * Values.Globals.GridSizeX)];
         }
 
@@ -219,7 +224,7 @@ namespace StarSalvager
 
         private Vector2Int GetRandomTopGridSquareGridPosition()
         {
-            return new Vector2Int(UnityEngine.Random.Range(4, Values.Globals.GridSizeX - 4), Values.Globals.GridSizeY - 1);
+            return new Vector2Int(UnityEngine.Random.Range(0, Values.Globals.GridSizeX), Values.Globals.GridSizeY - 1);
         }
 
         public Vector2 GetAvailableRandomTopGridSquareWorldPosition()
