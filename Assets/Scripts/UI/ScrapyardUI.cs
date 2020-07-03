@@ -35,9 +35,12 @@ namespace StarSalvager.UI
         private Button LoadButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button ReadyButton;
-        
-        
+
+
         //============================================================================================================//
+
+        [SerializeField]
+        private Scrapyard m_scrapyard;
 
         
         private void Start()
@@ -53,10 +56,19 @@ namespace StarSalvager.UI
 
         private void InitButtons()
         {
-            //Example:
-            SaveButton.onClick.AddListener(() =>
+            leftTurnButton.onClick.AddListener(() =>
             {
-                Debug.Log("Save Pressed");
+                m_scrapyard.RotateBots(-1.0f);
+            });
+
+            rightTurnButton.onClick.AddListener(() =>
+            {
+                m_scrapyard.RotateBots(1.0f);
+            });
+
+            ReadyButton.onClick.AddListener(() =>
+            {
+                StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
             });
         }
 
