@@ -37,6 +37,8 @@ namespace StarSalvager.Factories
         
         [SerializeField, Required, BoxGroup("Bot")]
         private GameObject botPrefab;
+        [SerializeField, Required, BoxGroup("Puzzle Combos")]
+        private ComboRemoteDataScriptableObject comboRemoteData;
 
         //============================================================================================================//
 
@@ -100,7 +102,7 @@ namespace StarSalvager.Factories
                     return (_projectileFactory ?? (_projectileFactory = new ProjectileFactory(projectileProfile))) as T;
                 
                 case nameof(ComboFactory):
-                    return (_comboFactory ?? (_comboFactory = new ComboFactory())) as T;
+                    return (_comboFactory ?? (_comboFactory = new ComboFactory(comboRemoteData))) as T;
                 
                 case nameof(BotFactory):
                     return (_botFactory ?? (_botFactory = new BotFactory(botPrefab))) as T;

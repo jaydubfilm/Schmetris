@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using StarSalvager.Factories;
+using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Puzzle.Data;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
     {
         public override bool TryGetCombo(Bit origin, List<Bit>[] directions,
             (bool hasCombo, int horizontalCount, int verticalCount) lineData,
-            out (ComboData comboData, List<Bit> toMove) outData)
+            out (ComboRemoteData comboData, List<Bit> toMove) outData)
         {
             outData = (emptyCombo, null);
 
@@ -29,6 +30,9 @@ namespace StarSalvager.Utilities.Puzzle.Combos
                 switch (directions[(int) DIRECTION.UP].Count)
                 {
                     case 0 when directions[(int) DIRECTION.DOWN].Count == 2:
+                    case 0 when directions[(int) DIRECTION.DOWN].Count == 3:
+                    case 0 when directions[(int) DIRECTION.DOWN].Count == 4:
+                    case 0 when directions[(int) DIRECTION.DOWN].Count == 5:
                         //Debug.Log("Down");
                         outData.toMove = new List<Bit> { origin };
                         outData.toMove.AddRange(directions[(int) DIRECTION.LEFT]);
@@ -58,6 +62,9 @@ namespace StarSalvager.Utilities.Puzzle.Combos
                 switch (directions[(int) DIRECTION.UP].Count)
                 {
                     case 0 when directions[(int) DIRECTION.DOWN].Count == 2:
+                    case 0 when directions[(int) DIRECTION.DOWN].Count == 3:
+                    case 0 when directions[(int) DIRECTION.DOWN].Count == 4:
+                    case 0 when directions[(int) DIRECTION.DOWN].Count == 5:
                         //Debug.Log("Down");
                         outData.toMove = new List<Bit> { origin };
                         outData.toMove.AddRange(directions[(int) DIRECTION.RIGHT]);

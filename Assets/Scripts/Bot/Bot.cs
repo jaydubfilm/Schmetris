@@ -8,6 +8,7 @@ using Sirenix.Utilities;
 using StarSalvager.AI;
 using StarSalvager.Values;
 using StarSalvager.Factories;
+using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -1072,7 +1073,7 @@ namespace StarSalvager
 
         private void CheckForCombosAround(IEnumerable<Bit> bits)
         {
-            (ComboData comboData, List<Bit> toMove) data = (ComboData.zero, null);
+            (ComboRemoteData comboData, List<Bit> toMove) data = (ComboRemoteData.zero, null);
             foreach (var bit in bits)
             {
                 if (bit == null)
@@ -1122,7 +1123,7 @@ namespace StarSalvager
         /// </summary>
         /// <param name="comboBits"></param>
         /// <exception cref="Exception"></exception>
-        private void SimpleComboSolver(ComboData comboData, IReadOnlyCollection<IAttachable> comboBits)
+        private void SimpleComboSolver(ComboRemoteData comboData, IReadOnlyCollection<IAttachable> comboBits)
         {
             IAttachable closestToCore = null;
             var shortest = 999f;
@@ -1198,7 +1199,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
         }
 
-        private void AdvancedComboSolver(ComboData comboData, IReadOnlyList<IAttachable> comboBits)
+        private void AdvancedComboSolver(ComboRemoteData comboData, IReadOnlyList<IAttachable> comboBits)
         {
             IAttachable bestAttachableOption = null;
 

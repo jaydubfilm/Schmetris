@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Puzzle.Combos;
 using StarSalvager.Utilities.Puzzle.Data;
@@ -20,9 +21,9 @@ namespace StarSalvager.Utilities.Puzzle
         };
 
 
-        public static bool TryGetComboData(Bot bot, Bit origin, out (ComboData comboData, List<Bit> toMove) outData)
+        public static bool TryGetComboData(Bot bot, Bit origin, out (ComboRemoteData comboData, List<Bit> toMove) outData)
         {
-            outData = (ComboData.zero, null);
+            outData = (ComboRemoteData.zero, null);
             
             //--------------------------------------------------------------------------------------------------------//
             
