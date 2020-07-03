@@ -59,8 +59,11 @@ namespace StarSalvager.SceneLoader
                 yield return _coroutineRunner.StartCoroutine(LoadSceneAsync(entry));
             }
 
-            ActivateScene("MainMenuScene");
-            SetActiveScene("MainMenuScene");
+            if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("StarSalvagerMainScene"))
+            {
+                ActivateScene("MainMenuScene");
+                SetActiveScene("MainMenuScene");
+            }
         }
 
         private static IEnumerator LoadSceneAsync(string sceneName)

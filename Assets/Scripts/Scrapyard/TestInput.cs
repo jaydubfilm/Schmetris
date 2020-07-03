@@ -17,8 +17,16 @@ namespace StarSalvager
         {
             if (_scrapyardBots == null || _scrapyardBots.Length == 0)
                 _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
+        }
 
+        private void OnEnable()
+        {
             Camera.onPostRender += DrawGL;
+        }
+
+        private void OnDisable()
+        {
+            Camera.onPostRender -= DrawGL;
         }
 
         public void DrawGL(Camera camera)

@@ -131,10 +131,6 @@ namespace StarSalvager
             };
             SceneManager.MoveGameObjectToScene(BotGameObject.gameObject, gameObject.scene);
             InputManager.Instance.InitInput();
-
-            CameraController.SetOrthographicSize(Values.gridCellSize * ColumnsOnScreen);
-            m_gridSizeX = (int)(ColumnsOnScreen * Values.GridWidthRelativeToScreen);
-            m_gridSizeY = (int)((Camera.main.orthographicSize * Values.GridHeightRelativeToScreen * 2) / Values.gridCellSize);
         }
 
         private void Update()
