@@ -11,6 +11,7 @@ using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Inputs;
 using UnityEngine.SceneManagement;
+using StarSalvager.Cameras.Data;
 
 namespace StarSalvager
 {
@@ -128,8 +129,16 @@ namespace StarSalvager
 
             InputManager.Instance.InitInput();
             CameraController.SetOrthographicSize(Constants.gridCellSize * Values.Globals.ColumnsOnScreen, BotGameObject.transform.position);
-            Values.Globals.GridSizeX = (int)(Values.Globals.ColumnsOnScreen * Constants.GridWidthRelativeToScreen);
-            Values.Globals.GridSizeY = (int)((Camera.main.orthographicSize * Constants.GridHeightRelativeToScreen * 2) / Constants.gridCellSize);
+            if (Globals.Orientation == ORIENTATION.VERTICAL)
+            {
+                Values.Globals.GridSizeX = (int)(Values.Globals.ColumnsOnScreen * Values.Constants.GridWidthRelativeToScreen);
+                Values.Globals.GridSizeY = (int)((Camera.main.orthographicSize * Values.Constants.GridHeightRelativeToScreen * 2) / Values.Constants.gridCellSize);
+            }
+            else
+            {
+                Values.Globals.GridSizeX = (int)(Values.Globals.ColumnsOnScreen * Values.Constants.GridWidthRelativeToScreen * (Screen.height / (float)Screen.width));
+                Values.Globals.GridSizeY = (int)((Camera.main.orthographicSize * Values.Constants.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Values.Constants.gridCellSize);
+            }
             WorldGrid.SetupGrid();
             m_started = true;
         }
@@ -141,8 +150,16 @@ namespace StarSalvager
             {
                 InputManager.Instance.InitInput();
                 CameraController.SetOrthographicSize(Constants.gridCellSize * Values.Globals.ColumnsOnScreen, BotGameObject.transform.position);
-                Values.Globals.GridSizeX = (int)(Values.Globals.ColumnsOnScreen * Constants.GridWidthRelativeToScreen);
-                Values.Globals.GridSizeY = (int)((Camera.main.orthographicSize * Constants.GridHeightRelativeToScreen * 2) / Constants.gridCellSize);
+                if (Globals.Orientation == ORIENTATION.VERTICAL)
+                {
+                    Values.Globals.GridSizeX = (int)(Values.Globals.ColumnsOnScreen * Values.Constants.GridWidthRelativeToScreen);
+                    Values.Globals.GridSizeY = (int)((Camera.main.orthographicSize * Values.Constants.GridHeightRelativeToScreen * 2) / Values.Constants.gridCellSize);
+                }
+                else
+                {
+                    Values.Globals.GridSizeX = (int)(Values.Globals.ColumnsOnScreen * Values.Constants.GridWidthRelativeToScreen * (Screen.height / (float)Screen.width));
+                    Values.Globals.GridSizeY = (int)((Camera.main.orthographicSize * Values.Constants.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Values.Constants.gridCellSize);
+                }
                 WorldGrid.SetupGrid();
             }
         }

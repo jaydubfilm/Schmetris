@@ -41,7 +41,7 @@ namespace StarSalvager
 
 #if UNITY_EDITOR
             //Draw debug lines to show the area of the grid
-            /*for (int x = 0; x < Values.Globals.GridSizeX; x++)
+            for (int x = 0; x < Values.Globals.GridSizeX; x++)
             {
                 for (int y = 0; y < Values.Globals.GridSizeY; y++)
                 {
@@ -52,7 +52,7 @@ namespace StarSalvager
                 }
             }
             Debug.DrawLine(m_anchorPoint + new Vector2(0, Values.Globals.GridSizeY) * Constants.gridCellSize, m_anchorPoint + new Vector2(Values.Globals.GridSizeX, Values.Globals.GridSizeY) * Constants.gridCellSize, new Color(255, 0, 0), 300f);
-            Debug.DrawLine(m_anchorPoint + new Vector2(Values.Globals.GridSizeX, 0) * Constants.gridCellSize, m_anchorPoint + new Vector2(Values.Globals.GridSizeX, Values.Globals.GridSizeY) * Constants.gridCellSize, new Color(255, 0, 0), 300f);*/
+            Debug.DrawLine(m_anchorPoint + new Vector2(Values.Globals.GridSizeX, 0) * Constants.gridCellSize, m_anchorPoint + new Vector2(Values.Globals.GridSizeX, Values.Globals.GridSizeY) * Constants.gridCellSize, new Color(255, 0, 0), 300f);
 #endif
         }
 
@@ -219,12 +219,12 @@ namespace StarSalvager
 
         private Vector2Int GetRandomTopGridSquareGridPosition()
         {
-            return new Vector2Int(UnityEngine.Random.Range(0, Values.Globals.GridSizeX), Values.Globals.GridSizeY - 1);
+            return new Vector2Int(UnityEngine.Random.Range(4, Values.Globals.GridSizeX - 4), Values.Globals.GridSizeY - 1);
         }
 
         public Vector2 GetAvailableRandomTopGridSquareWorldPosition()
         {
-            int numTries = 20;
+            int numTries = 100;
             for (int i = 0; i < numTries; i++)
             {
                 Vector2Int randomTop = GetRandomTopGridSquareGridPosition();
@@ -256,6 +256,7 @@ namespace StarSalvager
                 }
             }
 
+            Debug.Log("FAIL TO SPACE");
             return GetRandomTopGridSquareWorldPosition();
         }
 

@@ -113,6 +113,9 @@ namespace StarSalvager.Factories
             
             shape.Setup(bits);
 
+            if (LevelManager.Instance != null)
+                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
+
             return shape.GetComponent<T>();
         }
         
@@ -131,6 +134,9 @@ namespace StarSalvager.Factories
             }
             
             shape.Setup(bits);
+
+            if (LevelManager.Instance != null)
+                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
 
             return shape.gameObject;
         }

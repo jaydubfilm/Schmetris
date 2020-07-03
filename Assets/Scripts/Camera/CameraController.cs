@@ -59,6 +59,7 @@ namespace StarSalvager.Cameras
         private void OnEnable()
         {
             SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen, Vector3.zero, gameObject.scene == SceneManager.GetSceneByName("ScrapyardScene"));
+            SetOrientation(Values.Globals.Orientation);
         }
 
         //Smooth camera to center over bot

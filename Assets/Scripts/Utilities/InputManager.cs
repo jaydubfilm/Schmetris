@@ -55,6 +55,12 @@ namespace StarSalvager.Utilities.Inputs
             Globals.OrientationChange += SetOrientation;
         }
 
+        private void OnEnable()
+        {
+            _bots = FindObjectsOfType<Bot>();
+            _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
+        } 
+
         private void OnDestroy()
         {
             Globals.OrientationChange -= SetOrientation;
