@@ -28,7 +28,7 @@ namespace StarSalvager.UI
             
             this.data = data;
 
-            resourceImage.sprite = _bitAttachableFactory.GetBitProfile(data.type).Sprites[0];
+            resourceImage.sprite = _bitAttachableFactory.GetBitProfile(data.type).Sprites[1];
 
             costText.text = $"{data.amount}";
         }

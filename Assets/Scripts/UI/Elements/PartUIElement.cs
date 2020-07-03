@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
@@ -37,8 +36,6 @@ namespace StarSalvager.UI
             if (_bitAttachableFactory == null)
                 _bitAttachableFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
             
-            
-            
             this.data = data;
 
             logoImage.sprite = _partAttachableFactory.GetProfileData(data.partType).Sprites[0];
@@ -48,11 +45,11 @@ namespace StarSalvager.UI
             foreach (var cost in data.costs[0].levelCosts)
             {
                 var costElement = Instantiate(costPrefab).GetComponent<CostUIElement>();
+                costElement.gameObject.name = $"{cost.type}_UIElement";
                 costElement.transform.SetParent(transform, false);
                 costElement.transform.localScale = Vector3.one;
                 
                 costElement.Init(cost);
-                
             }
         }
         

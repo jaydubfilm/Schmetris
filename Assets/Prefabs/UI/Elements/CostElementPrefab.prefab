@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6188871224474909603}
+  - component: {fileID: 3791714597710783396}
   - component: {fileID: 974369478389121115}
   - component: {fileID: 53356961123309512}
   - component: {fileID: 4185702014189623759}
@@ -40,6 +41,23 @@ RectTransform:
   m_AnchoredPosition: {x: 133.21593, y: -25}
   m_SizeDelta: {x: 266.43185, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3791714597710783396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3554026706651960551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 092f078927995b943bd223227e7f2d4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data:
+    type: 0
+    amount: 0
+  resourceImage: {fileID: 3005163973611495100}
+  costText: {fileID: 3385392706662920798}
 --- !u!114 &974369478389121115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,7 +127,7 @@ GameObject:
   - component: {fileID: 8692147471735476779}
   - component: {fileID: 3385392706662920798}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: CostText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
