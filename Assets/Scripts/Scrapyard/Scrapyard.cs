@@ -37,11 +37,11 @@ namespace StarSalvager
 
         public void DrawGL(Camera camera)
         {
-            Vector2 m_anchorPoint = new Vector2(-Values.Constants.gridCellSize * 25.5f, -Values.Constants.gridCellSize * 25.5f);
+            Vector2 m_anchorPoint = new Vector2(-Values.Constants.gridCellSize * 5.5f, -Values.Constants.gridCellSize * 5.5f);
             //Draw debug lines to show the area of the grid
-            for (int x = 0; x < 50; x++)
+            for (int x = 0; x < 11; x++)
             {
-                for (int y = 0; y < 50; y++)
+                for (int y = 0; y < 11; y++)
                 {
                     Vector2 tempVector = new Vector2(x, y);
 
@@ -49,8 +49,8 @@ namespace StarSalvager
                     DrawWithGL(material, m_anchorPoint + tempVector * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(x + 1, y) * Values.Constants.gridCellSize);
                 }
             }
-            DrawWithGL(material, m_anchorPoint + new Vector2(0, 50) * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(50, 50) * Values.Constants.gridCellSize);
-            DrawWithGL(material, m_anchorPoint + new Vector2(50, 0) * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(50, 50) * Values.Constants.gridCellSize);
+            DrawWithGL(material, m_anchorPoint + new Vector2(0, 11) * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(11, 11) * Values.Constants.gridCellSize);
+            DrawWithGL(material, m_anchorPoint + new Vector2(11, 0) * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(11, 11) * Values.Constants.gridCellSize);
         }
 
         public void DrawWithGL(Material material, Vector2 startPoint, Vector2 endPoint)
@@ -92,6 +92,10 @@ namespace StarSalvager
                 }
 
                 Vector2Int botCoordinate = new Vector2Int((int)(worldMousePosition.x / Constants.gridCellSize), (int)(worldMousePosition.y / Constants.gridCellSize));
+
+                if (Mathf.Abs(botCoordinate.x) > 5 || Mathf.Abs(botCoordinate.y) > 5)
+                    return;
+
                 foreach (ScrapyardBot scrapBot in _scrapyardBots)
                 {
                     if (scrapBot.attachedBlocks.GetAttachableAtCoordinates(botCoordinate) != null)
@@ -162,6 +166,11 @@ namespace StarSalvager
         private void ScaleCamera()
         {
             CameraController.SetOrthographicSize(Values.Constants.gridCellSize * (Values.Globals.ColumnsOnScreen + scrapyardCameraZoomModifier), Vector3.zero, true);
+        }
+
+        private void ToGameplayButtonPressed()
+        {
+            StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
         }
     }
 }

@@ -75,7 +75,7 @@ namespace StarSalvager.Cameras
 
         //============================================================================================================//
 
-        public void SetOrthographicSize(float screenWidthInWorld, Vector3 botPosition, bool isCentered = false)
+        public void SetOrthographicSize(float screenWidthInWorld, Vector3 botPosition, bool isScrapyard = false)
         {
             var orthographicSize = screenWidthInWorld * (Screen.height / (float) Screen.width) / 2;
             camera.orthographicSize = orthographicSize;
@@ -83,9 +83,14 @@ namespace StarSalvager.Cameras
                 botPosition +
                 Vector3.back * 10;
 
-            if (!isCentered)
+            if (!isScrapyard)
             {
                 transform.position += Vector3.up * (orthographicSize / 2);
+            }
+            else
+            {
+                transform.position += Vector3.down * (orthographicSize / 2) / 4;
+                transform.position += Vector3.right * (orthographicSize * Screen.width / Screen.height) / 4;
             }
 
             startPos = transform.position;
