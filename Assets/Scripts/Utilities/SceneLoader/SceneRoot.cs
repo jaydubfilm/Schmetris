@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace StarSalvager.SceneLoader
 {
     public class SceneRoot : MonoBehaviour
     {
+        [NonSerialized]
         public Scene Scene;
         public bool IsStarted { get; private set; } = false;
         public bool IsReady { get; private set; } = false;

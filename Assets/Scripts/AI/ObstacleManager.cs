@@ -106,7 +106,7 @@ namespace StarSalvager
                 Vector2 gridPosition = LevelManager.Instance.WorldGrid.GetGridPositionOfVector(obstacle.transform.position);
                 pos -= amountShift;
 
-                if (gridPosition.y < 0)
+                if (gridPosition.y < -10)
                 {
                     var temp = m_obstacles[i];
                     m_obstacles.RemoveAt(i);
@@ -124,9 +124,9 @@ namespace StarSalvager
                 }
 
                 if (gridPosition.x < 0)
-                    pos += Vector3.right * (LevelManager.Instance.GridSizeX * Constants.gridCellSize);
-                else if (gridPosition.x >= LevelManager.Instance.GridSizeX)
-                    pos += Vector3.left * (LevelManager.Instance.GridSizeX * Constants.gridCellSize);
+                    pos += Vector3.right * (Values.Globals.GridSizeX * Constants.gridCellSize);
+                else if (gridPosition.x >= Values.Globals.GridSizeX)
+                    pos += Vector3.left * (Values.Globals.GridSizeX * Constants.gridCellSize);
 
                 obstacle.transform.position = pos;
             }
@@ -154,7 +154,7 @@ namespace StarSalvager
                 {
                     Vector2Int gridPosition = LevelManager.Instance.WorldGrid.GetGridPositionOfVector
                         (bit.transform.position);
-                    if (gridPosition.y >= LevelManager.Instance.GridSizeY)
+                    if (gridPosition.y >= Values.Globals.GridSizeY)
                     {
                         fullyInGrid = false;
                     }

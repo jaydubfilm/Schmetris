@@ -198,6 +198,14 @@ namespace StarSalvager
             }
         }
 
+        public void RemoveAllBits()
+        {
+            foreach(IAttachable attachable in attachedBlocks)
+            {
+
+            }
+        }
+
         private void DetachBit(IAttachable attachable)
         {
             attachable.transform.parent = null;
@@ -218,14 +226,11 @@ namespace StarSalvager
 
             switch (attachable)
             {
-                case Bit _:
-                    Recycler.Recycle<Bit>(attachable.gameObject);
+                case ScrapyardBit _:
+                    Recycler.Recycle<ScrapyardBit>(attachable.gameObject);
                     break;
-                case Part _:
-                    Recycler.Recycle<Part>(attachable.gameObject);
-                    break;
-                case EnemyAttachable _:
-                    Recycler.Recycle<EnemyAttachable>(attachable.gameObject);
+                case ScrapyardPart _:
+                    Recycler.Recycle<ScrapyardPart>(attachable.gameObject);
                     break;
             }
         }

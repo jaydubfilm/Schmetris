@@ -3,6 +3,7 @@ using StarSalvager.Values;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras.Data;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace StarSalvager.Cameras
 {
@@ -39,7 +40,7 @@ namespace StarSalvager.Cameras
             get
             {
                 if (_camera == null)
-                    _camera = Camera.main;
+                    _camera = GetComponent<Camera>();
 
                 return _camera;
             }
@@ -52,12 +53,13 @@ namespace StarSalvager.Cameras
         //Init
         private void Start()
         {
-            //DontDestroyOnLoad(this);
-            startPos = transform.position;
-            targetPos = startPos;
-            horzExtent = camera.orthographicSize * Screen.width / Screen.height / 2;
-
             Globals.OrientationChange += SetOrientation;
+        }
+
+        private void OnEnable()
+        {
+            SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen, Vector3.zero, gameObject.scene == SceneManager.GetSceneByName("ScrapyardScene"));
+            SetOrientation(Values.Globals.Orientation);
         }
 
         //Smooth camera to center over bot
@@ -73,16 +75,23 @@ namespace StarSalvager.Cameras
 
         //============================================================================================================//
 
-        public void SetOrthographicSize(float screenWidthInWorld)
+        public void SetOrthographicSize(float screenWidthInWorld, Vector3 botPosition, bool isScrapyard = false)
         {
-            var orthographicSize = camera.orthographicSize;
-            
-            orthographicSize = screenWidthInWorld * (Screen.height / (float) Screen.width) / 2;
+            var orthographicSize = screenWidthInWorld * (Screen.height / (float) Screen.width) / 2;
             camera.orthographicSize = orthographicSize;
             transform.position =
-                LevelManager.Instance.BotGameObject.transform.position +
-                Vector3.back * 10 +
-                Vector3.up * (orthographicSize / 2);
+                botPosition +
+                Vector3.back * 10;
+
+            if (!isScrapyard)
+            {
+                transform.position += Vector3.up * (orthographicSize / 2);
+            }
+            else
+            {
+                transform.position += Vector3.down * (orthographicSize / 2) / 4;
+                transform.position += Vector3.right * (orthographicSize * Screen.width / Screen.height) / 4;
+            }
 
             startPos = transform.position;
             targetPos = startPos;

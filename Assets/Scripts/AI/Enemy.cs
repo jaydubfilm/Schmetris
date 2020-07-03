@@ -26,7 +26,7 @@ namespace StarSalvager.AI
             renderer.sprite = m_enemyData.Sprite;
             m_horizontalMovementYLevel = transform.position.y;
             horizontalFarLeftX = 0;
-            horizontalFarRightX = LevelManager.Instance.GridSizeX * Constants.gridCellSize;
+            horizontalFarRightX = Values.Globals.GridSizeX * Constants.gridCellSize;
         }
 
         private void Update()

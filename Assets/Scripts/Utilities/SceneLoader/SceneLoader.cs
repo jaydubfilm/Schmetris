@@ -15,7 +15,8 @@ namespace StarSalvager.SceneLoader
             { "StarSalvagerMainScene", null },
             { "MainMenuScene", null },
             { "LevelScene", null },
-            { "ScrapyardScene", null }
+            { "ScrapyardScene", null },
+            { "AlexShulmanTestScene", null }
         };
 
         private static MonoBehaviour _coroutineRunner = null;
@@ -58,16 +59,17 @@ namespace StarSalvager.SceneLoader
                 yield return _coroutineRunner.StartCoroutine(LoadSceneAsync(entry));
             }
 
-            ActivateScene("StarSalvagerMainScene");
-            ActivateScene("ScrapyardScene");
-            SetActiveScene("ScrapyardScene");
+            if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("StarSalvagerMainScene"))
+            {
+                ActivateScene("MainMenuScene");
+                SetActiveScene("MainMenuScene");
+            }
         }
 
         private static IEnumerator LoadSceneAsync(string sceneName)
         {
             if (SceneManager.GetSceneByName(sceneName).IsValid())
             {
-                Debug.Log(SceneManager.GetSceneByName(sceneName));
                 yield break;
             }
 
@@ -104,6 +106,12 @@ namespace StarSalvager.SceneLoader
         public static bool DeactivateScene(string sceneName)
         {
             return SetSceneObjectsActive(sceneName, false);
+        }
+
+        public static bool ActivateScene(string sceneName, string sceneNameToDeload)
+        {
+            SetSceneObjectsActive(sceneNameToDeload, false);
+            return SetSceneObjectsActive(sceneName, true);
         }
 
         private static bool SetSceneObjectsActive(string sceneName, bool active)

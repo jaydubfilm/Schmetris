@@ -2,13 +2,21 @@
 using StarSalvager.Factories;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using StarSalvager.Utilities.Extensions;
+using StarSalvager.Cameras;
 
 namespace StarSalvager
 {
-    public class TestInput : MonoBehaviour
+    public class Scrapyard : MonoBehaviour
     {
+        public Material material;
         private ScrapyardBot[] _scrapyardBots;
+
+        [SerializeField]
+        private CameraController m_cameraController;
+        public CameraController CameraController => m_cameraController;
 
         // Start is called before the first frame update
         void Start()
@@ -17,25 +25,52 @@ namespace StarSalvager
                 _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
         }
 
+        private void OnEnable()
+        {
+            Camera.onPostRender += DrawGL;
+        }
+
+        private void OnDisable()
+        {
+            Camera.onPostRender -= DrawGL;
+        }
+
+        public void DrawGL(Camera camera)
+        {
+            Vector2 m_anchorPoint = new Vector2(-Values.Constants.gridCellSize * 5.5f, -Values.Constants.gridCellSize * 5.5f);
+            //Draw debug lines to show the area of the grid
+            for (int x = 0; x < 11; x++)
+            {
+                for (int y = 0; y < 11; y++)
+                {
+                    Vector2 tempVector = new Vector2(x, y);
+
+                    DrawWithGL(material, m_anchorPoint + tempVector * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(x, y + 1) * Values.Constants.gridCellSize);
+                    DrawWithGL(material, m_anchorPoint + tempVector * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(x + 1, y) * Values.Constants.gridCellSize);
+                }
+            }
+            DrawWithGL(material, m_anchorPoint + new Vector2(0, 11) * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(11, 11) * Values.Constants.gridCellSize);
+            DrawWithGL(material, m_anchorPoint + new Vector2(11, 0) * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(11, 11) * Values.Constants.gridCellSize);
+        }
+
+        public void DrawWithGL(Material material, Vector2 startPoint, Vector2 endPoint)
+        {
+            GL.PushMatrix();
+            material.SetPass(0);
+            GL.Begin(GL.LINES);
+            {
+                GL.Color(Color.red);
+
+                GL.Vertex(startPoint);
+                GL.Vertex(endPoint);
+            }
+            GL.End();
+            GL.PopMatrix(); // Pop changes.
+        }
+
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                foreach (ScrapyardBot scrapBot in _scrapyardBots)
-                {
-                    scrapBot.AttachNewBit(Vector2Int.down, FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<IAttachable>(BIT_TYPE.BLUE));
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                foreach (ScrapyardBot scrapBot in _scrapyardBots)
-                {
-                    scrapBot.AttachNewBit(Vector2Int.down, FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(PART_TYPE.ARMOR, 1));
-                }
-            }
-
             if (Input.GetMouseButtonDown(0))
             {
                 Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -57,8 +92,15 @@ namespace StarSalvager
                 }
 
                 Vector2Int botCoordinate = new Vector2Int((int)(worldMousePosition.x / Constants.gridCellSize), (int)(worldMousePosition.y / Constants.gridCellSize));
+
+                if (Mathf.Abs(botCoordinate.x) > 5 || Mathf.Abs(botCoordinate.y) > 5)
+                    return;
+
                 foreach (ScrapyardBot scrapBot in _scrapyardBots)
                 {
+                    if (scrapBot.attachedBlocks.GetAttachableAtCoordinates(botCoordinate) != null)
+                        continue;
+                    
                     switch(Random.Range(0, 2))
                     {
                         case 0:
@@ -97,6 +139,38 @@ namespace StarSalvager
                     scrapBot.RemoveAttachableAt(mouseCoordinate);
                 }
             }
+
+            if (Input.GetAxis("Mouse ScrollWheel") < 0)
+            {
+                scrapyardCameraZoomModifier += 2;
+                ScaleCamera();
+            }
+
+            if (Input.GetAxis("Mouse ScrollWheel") > 0)
+            {
+                if (Values.Globals.ColumnsOnScreen + scrapyardCameraZoomModifier >= 3)
+                {
+                    scrapyardCameraZoomModifier -= 2;
+                    ScaleCamera();
+                }
+            }
+        }
+
+        private void OnDestroy()
+        {
+            Camera.onPostRender -= DrawGL;
+        }
+
+        private int scrapyardCameraZoomModifier = 0;
+
+        private void ScaleCamera()
+        {
+            CameraController.SetOrthographicSize(Values.Constants.gridCellSize * (Values.Globals.ColumnsOnScreen + scrapyardCameraZoomModifier), Vector3.zero, true);
+        }
+
+        private void ToGameplayButtonPressed()
+        {
+            StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
         }
     }
 }
