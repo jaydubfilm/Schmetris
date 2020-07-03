@@ -550,8 +550,12 @@ namespace StarSalvager
                             //FIXME This will need to be removed once i've confirmed the solver works correctly
                             if (attachedBlocks.Any(x => x.Coordinate == newBotCoordinate + differences[i]))
                             {
+                                
                                 Debug.LogError($"Conflict found at {newBotCoordinate + differences[i]}");
-                                Debug.Break();
+                                //Debug.Break();
+                                
+                                shape.Destroy();
+
                                 return false;
                             }
                             

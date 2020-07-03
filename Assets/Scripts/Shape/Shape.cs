@@ -52,7 +52,7 @@ public class Shape : CollidableBase, IObstacle
         foreach (var bit in bits)
         {
             bit.transform.parent = transform;
-            bit.transform.localPosition = (Vector2)bit.Coordinate;
+            bit.transform.localPosition = (Vector2)bit.Coordinate * Constants.gridCellSize;
             attachedBits.Add(bit);
         }
         
