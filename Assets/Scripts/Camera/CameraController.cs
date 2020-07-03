@@ -1,8 +1,6 @@
 ﻿using System;
-using StarSalvager;
 using StarSalvager.Values;
-using System.Collections;
-using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using StarSalvager.Cameras.Data;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,8 +11,6 @@ namespace StarSalvager.Cameras
     {
         //============================================================================================================//
 
-        private ORIENTATION currentOrientation = ORIENTATION.VERTICAL;
-        
         private Vector3 startPos;
         private Vector3 edgePos;
         private Vector3 targetPos;
@@ -57,19 +53,23 @@ namespace StarSalvager.Cameras
         //Init
         private void Start()
         {
-
+            Globals.OrientationChange += SetOrientation;
         }
 
         private void OnEnable()
         {
             SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen, Vector3.zero, gameObject.scene == SceneManager.GetSceneByName("ScrapyardScene"));
-            SetOrientation(currentOrientation);
         }
 
         //Smooth camera to center over bot
         private void Update()
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPos, smoothing * Time.deltaTime);
+        }
+
+        private void OnDestroy()
+        {
+            Globals.OrientationChange -= SetOrientation;
         }
 
         //============================================================================================================//
@@ -92,22 +92,41 @@ namespace StarSalvager.Cameras
             horzExtent = orthographicSize * Screen.width / Screen.height / 2;
         }
 
-        public void SetOrientation(ORIENTATION orientation)
+        private void SetOrientation(ORIENTATION orientation)
         {
-            currentOrientation = orientation;
-            
-            switch (currentOrientation)
+            switch (Globals.Orientation)
             {
                 case ORIENTATION.VERTICAL:
                     transform.rotation = Quaternion.identity;
                     break;
                 case ORIENTATION.HORIZONTAL:
-                    transform.rotation = Quaternion.Euler(0,0,270);
+                    transform.rotation = Quaternion.Euler(0,0,90);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);
             }
         }
+        
+        #if UNITY_EDITOR
+
+        [Button("Toggle Orientation"), DisableInEditorMode]
+        private void ToggleOrientation()
+        {
+            switch (Globals.Orientation)
+            {
+                case ORIENTATION.VERTICAL:
+                    Globals.Orientation = ORIENTATION.HORIZONTAL;
+                    break;
+                case ORIENTATION.HORIZONTAL:
+                    Globals.Orientation = ORIENTATION.VERTICAL;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(Globals.Orientation), Globals.Orientation, null);
+            }
+        }
+        
+        #endif
+        
 
         //============================================================================================================//
 

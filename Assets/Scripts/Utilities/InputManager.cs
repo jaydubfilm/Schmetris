@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using StarSalvager.Cameras;
+using StarSalvager.Cameras.Data;
+using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -47,6 +50,19 @@ namespace StarSalvager.Utilities.Inputs
 
         //============================================================================================================//
 
+        private void Start()
+        {
+            Globals.OrientationChange += SetOrientation;
+        }
+
+        private void OnDestroy()
+        {
+            Globals.OrientationChange -= SetOrientation;
+        }
+
+
+        //============================================================================================================//
+
         public void InitInput()
         {
             if (_bots == null || _bots.Length == 0)
@@ -56,12 +72,26 @@ namespace StarSalvager.Utilities.Inputs
                 _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
 
             DeInitInput();
+            
+            switch (Globals.Orientation)
+            {
+                case ORIENTATION.VERTICAL:
+                    Input.Actions.Default.SideMovement.Enable();
+                    Input.Actions.Default.SideMovement.performed += SideMovement;
 
-            Input.Actions.Default.SideMovement.Enable();
-            Input.Actions.Default.SideMovement.performed += SideMovement;
+                    Input.Actions.Default.Rotate.Enable();
+                    Input.Actions.Default.Rotate.performed += Rotate;
+                    break;
+                case ORIENTATION.HORIZONTAL:
+                    Input.Actions.Vertical.SideMovement.Enable();
+                    Input.Actions.Vertical.SideMovement.performed += SideMovement;
 
-            Input.Actions.Default.Rotate.Enable();
-            Input.Actions.Default.Rotate.performed += Rotate;
+                    Input.Actions.Vertical.Rotate.Enable();
+                    Input.Actions.Vertical.Rotate.performed += Rotate;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
         }
 
@@ -72,9 +102,24 @@ namespace StarSalvager.Utilities.Inputs
 
             Input.Actions.Default.Rotate.Disable();
             Input.Actions.Default.Rotate.performed -= Rotate;
+            
+            
+            Input.Actions.Vertical.SideMovement.Disable();
+            Input.Actions.Vertical.SideMovement.performed -= SideMovement;
+
+            Input.Actions.Vertical.Rotate.Disable();
+            Input.Actions.Vertical.Rotate.performed -= Rotate;
         }
         
         //============================================================================================================//
+
+        private void SetOrientation(ORIENTATION orientation)
+        {
+            InitInput();
+        }
+        
+        //============================================================================================================//
+
 
         float _prevMove = 0.0f;
 

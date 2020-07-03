@@ -173,6 +173,162 @@ namespace StarSalvager.Utilities.Inputs
             ]
         },
         {
+            ""name"": ""Vertical"",
+            ""id"": ""f342ac19-3f25-4955-a23e-02c5bf0dba50"",
+            ""actions"": [
+                {
+                    ""name"": ""Side Movement"",
+                    ""type"": ""Value"",
+                    ""id"": ""60c346d3-2c88-4a84-a63f-5c480748ee96"",
+                    ""expectedControlType"": ""Digital"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""Rotate"",
+                    ""type"": ""Button"",
+                    ""id"": ""58c12c71-9109-41c4-a079-4fb561b969f7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""AD"",
+                    ""id"": ""0d2c1af1-a44d-4e4d-98b8-a13f368646d9"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""13841640-5496-4c87-9f92-291bad8f6701"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""6c1d74e5-404f-4674-8dec-8a327cb730e3"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Arrows"",
+                    ""id"": ""0b096ea3-daec-4ef9-8509-4c8cfc254f9d"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""73aaf782-c3cb-4d6c-8714-75d37400a276"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""84680666-0d07-44a7-b53c-1085b93b481d"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""WS"",
+                    ""id"": ""821b71a1-dee2-43f2-bbfb-1b5c777005a4"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""b6f28271-a78a-4d4a-8efb-79ba89af8ec6"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""68b00b5a-f59a-483f-b46c-45de2bab5336"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Arrows"",
+                    ""id"": ""7b7de9c6-bd20-4b61-8823-c23575cb3481"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""dd44964c-7cad-45be-8623-cd991cc5d4cc"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""c83bb1e2-0f94-42a4-a0ad-c988dbce3c8f"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
+        },
+        {
             ""name"": ""Prototyping"",
             ""id"": ""3d672be6-1e0f-4c73-94c3-1a6d0e584ea5"",
             ""actions"": [
@@ -433,6 +589,10 @@ namespace StarSalvager.Utilities.Inputs
             m_Default = asset.FindActionMap("Default", throwIfNotFound: true);
             m_Default_SideMovement = m_Default.FindAction("Side Movement", throwIfNotFound: true);
             m_Default_Rotate = m_Default.FindAction("Rotate", throwIfNotFound: true);
+            // Vertical
+            m_Vertical = asset.FindActionMap("Vertical", throwIfNotFound: true);
+            m_Vertical_SideMovement = m_Vertical.FindAction("Side Movement", throwIfNotFound: true);
+            m_Vertical_Rotate = m_Vertical.FindAction("Rotate", throwIfNotFound: true);
             // Prototyping
             m_Prototyping = asset.FindActionMap("Prototyping", throwIfNotFound: true);
             m_Prototyping_Left = m_Prototyping.FindAction("Left", throwIfNotFound: true);
@@ -528,6 +688,47 @@ namespace StarSalvager.Utilities.Inputs
         }
         public DefaultActions @Default => new DefaultActions(this);
 
+        // Vertical
+        private readonly InputActionMap m_Vertical;
+        private IVerticalActions m_VerticalActionsCallbackInterface;
+        private readonly InputAction m_Vertical_SideMovement;
+        private readonly InputAction m_Vertical_Rotate;
+        public struct VerticalActions
+        {
+            private @SalvagerInput m_Wrapper;
+            public VerticalActions(@SalvagerInput wrapper) { m_Wrapper = wrapper; }
+            public InputAction @SideMovement => m_Wrapper.m_Vertical_SideMovement;
+            public InputAction @Rotate => m_Wrapper.m_Vertical_Rotate;
+            public InputActionMap Get() { return m_Wrapper.m_Vertical; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(VerticalActions set) { return set.Get(); }
+            public void SetCallbacks(IVerticalActions instance)
+            {
+                if (m_Wrapper.m_VerticalActionsCallbackInterface != null)
+                {
+                    @SideMovement.started -= m_Wrapper.m_VerticalActionsCallbackInterface.OnSideMovement;
+                    @SideMovement.performed -= m_Wrapper.m_VerticalActionsCallbackInterface.OnSideMovement;
+                    @SideMovement.canceled -= m_Wrapper.m_VerticalActionsCallbackInterface.OnSideMovement;
+                    @Rotate.started -= m_Wrapper.m_VerticalActionsCallbackInterface.OnRotate;
+                    @Rotate.performed -= m_Wrapper.m_VerticalActionsCallbackInterface.OnRotate;
+                    @Rotate.canceled -= m_Wrapper.m_VerticalActionsCallbackInterface.OnRotate;
+                }
+                m_Wrapper.m_VerticalActionsCallbackInterface = instance;
+                if (instance != null)
+                {
+                    @SideMovement.started += instance.OnSideMovement;
+                    @SideMovement.performed += instance.OnSideMovement;
+                    @SideMovement.canceled += instance.OnSideMovement;
+                    @Rotate.started += instance.OnRotate;
+                    @Rotate.performed += instance.OnRotate;
+                    @Rotate.canceled += instance.OnRotate;
+                }
+            }
+        }
+        public VerticalActions @Vertical => new VerticalActions(this);
+
         // Prototyping
         private readonly InputActionMap m_Prototyping;
         private IPrototypingActions m_PrototypingActionsCallbackInterface;
@@ -601,6 +802,11 @@ namespace StarSalvager.Utilities.Inputs
         }
         public PrototypingActions @Prototyping => new PrototypingActions(this);
         public interface IDefaultActions
+        {
+            void OnSideMovement(InputAction.CallbackContext context);
+            void OnRotate(InputAction.CallbackContext context);
+        }
+        public interface IVerticalActions
         {
             void OnSideMovement(InputAction.CallbackContext context);
             void OnRotate(InputAction.CallbackContext context);
