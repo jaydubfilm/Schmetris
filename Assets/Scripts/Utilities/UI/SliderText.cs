@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Cameras;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +21,10 @@ namespace StarSalvager.Utilities.UI
         [SerializeField]
         private string format;
 
+        [SerializeField]
+        private CameraController m_cameraController;
+        public CameraController CameraController => m_cameraController;
+
         public void Init()
         {
             _slider.onValueChanged.AddListener(ValueChanged);
@@ -28,6 +33,8 @@ namespace StarSalvager.Utilities.UI
         private void ValueChanged(float data)
         {
             sliderText.text = string.Format(format, data);
+
+            CameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * data, Vector3.zero, true);
         }
     }
 }

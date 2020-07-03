@@ -662,10 +662,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 981852983597172445}
   m_HandleRect: {fileID: 981852983737933190}
   m_Direction: 0
-  m_MinValue: 0
+  m_MinValue: 0.5
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2203,11 +2203,13 @@ MonoBehaviour:
     sliderText: {fileID: 981852983010998083}
     _slider: {fileID: 981852983008734087}
     format: x{0}
+    m_cameraController: {fileID: 0}
   leftTurnButton: {fileID: 981852984400295717}
   rightTurnButton: {fileID: 981852984244748447}
   SaveButton: {fileID: 8695568891028956176}
   LoadButton: {fileID: 2500317284757938963}
   ReadyButton: {fileID: 7407947622089417350}
+  m_scrapyard: {fileID: 0}
 --- !u!223 &981852984589887438
 Canvas:
   m_ObjectHideFlags: 0

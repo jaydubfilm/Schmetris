@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Cameras;
+using StarSalvager.Factories.Data;
 
 namespace StarSalvager
 {
@@ -17,6 +18,8 @@ namespace StarSalvager
         [SerializeField]
         private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
+
+        public PartRemoteData selectedData = null;
 
         // Start is called before the first frame update
         void Start()
@@ -37,11 +40,11 @@ namespace StarSalvager
 
         public void DrawGL(Camera camera)
         {
-            Vector2 m_anchorPoint = new Vector2(-Values.Constants.gridCellSize * 5.5f, -Values.Constants.gridCellSize * 5.5f);
+            Vector2 m_anchorPoint = new Vector2(-Values.Constants.gridCellSize * 3.5f, -Values.Constants.gridCellSize * 3.5f);
             //Draw debug lines to show the area of the grid
-            for (int x = 0; x < 11; x++)
+            for (int x = 0; x < 7; x++)
             {
-                for (int y = 0; y < 11; y++)
+                for (int y = 0; y < 7; y++)
                 {
                     Vector2 tempVector = new Vector2(x, y);
 
@@ -49,8 +52,8 @@ namespace StarSalvager
                     DrawWithGL(material, m_anchorPoint + tempVector * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(x + 1, y) * Values.Constants.gridCellSize);
                 }
             }
-            DrawWithGL(material, m_anchorPoint + new Vector2(0, 11) * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(11, 11) * Values.Constants.gridCellSize);
-            DrawWithGL(material, m_anchorPoint + new Vector2(11, 0) * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(11, 11) * Values.Constants.gridCellSize);
+            DrawWithGL(material, m_anchorPoint + new Vector2(0, 7) * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(7, 7) * Values.Constants.gridCellSize);
+            DrawWithGL(material, m_anchorPoint + new Vector2(7, 0) * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(7, 7) * Values.Constants.gridCellSize);
         }
 
         public void DrawWithGL(Material material, Vector2 startPoint, Vector2 endPoint)
@@ -91,23 +94,29 @@ namespace StarSalvager
                     worldMousePosition.y -= Constants.gridCellSize / 2;
                 }
 
-                Vector2Int botCoordinate = new Vector2Int((int)(worldMousePosition.x / Constants.gridCellSize), (int)(worldMousePosition.y / Constants.gridCellSize));
+                Vector2Int mouseCoordinate = new Vector2Int((int)(worldMousePosition.x / Constants.gridCellSize), (int)(worldMousePosition.y / Constants.gridCellSize));
 
-                if (Mathf.Abs(botCoordinate.x) > 5 || Mathf.Abs(botCoordinate.y) > 5)
+                if (Mathf.Abs(mouseCoordinate.x) > 5 || Mathf.Abs(mouseCoordinate.y) > 5)
                     return;
 
                 foreach (ScrapyardBot scrapBot in _scrapyardBots)
                 {
-                    if (scrapBot.attachedBlocks.GetAttachableAtCoordinates(botCoordinate) != null)
+                    if (scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate) != null)
                         continue;
+
+                    if (selectedData != null)
+                    {
+                        scrapBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(selectedData.partType, 1));
+                        continue;
+                    }
                     
                     switch(Random.Range(0, 2))
                     {
                         case 0:
-                            scrapBot.AttachNewBit(botCoordinate, FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<IAttachable>((BIT_TYPE)Random.Range(1, 6)));
+                            scrapBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<IAttachable>((BIT_TYPE)Random.Range(1, 6)));
                             break;
                         case 1:
-                            scrapBot.AttachNewBit(botCoordinate, FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)Random.Range(0, 5), 1));
+                            scrapBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)Random.Range(0, 5), 1));
                             break;
                     }
                 }
@@ -134,13 +143,17 @@ namespace StarSalvager
                 }
 
                 Vector2Int mouseCoordinate = new Vector2Int((int)(worldMousePosition.x / Constants.gridCellSize), (int)(worldMousePosition.y / Constants.gridCellSize));
+
+                if (Mathf.Abs(mouseCoordinate.x) > 5 || Mathf.Abs(mouseCoordinate.y) > 5)
+                    return;
+
                 foreach (ScrapyardBot scrapBot in _scrapyardBots)
                 {
                     scrapBot.RemoveAttachableAt(mouseCoordinate);
                 }
             }
 
-            if (Input.GetAxis("Mouse ScrollWheel") < 0)
+            /*if (Input.GetAxis("Mouse ScrollWheel") < 0)
             {
                 scrapyardCameraZoomModifier += 2;
                 ScaleCamera();
@@ -153,7 +166,7 @@ namespace StarSalvager
                     scrapyardCameraZoomModifier -= 2;
                     ScaleCamera();
                 }
-            }
+            }*/
         }
 
         private void OnDestroy()
@@ -162,6 +175,14 @@ namespace StarSalvager
         }
 
         private int scrapyardCameraZoomModifier = 0;
+
+        public void RotateBots(float direction)
+        {
+            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            {
+                scrapBot.Rotate(direction);
+            }
+        }
 
         private void ScaleCamera()
         {
