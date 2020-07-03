@@ -51,14 +51,14 @@ namespace StarSalvager.Factories
         
         //============================================================================================================//
         
-        #if UNITY_EDITOR
+        #if UNITY_EDITOR || DEVELOPMENT_BUILD
         
         [SerializeField, Required, BoxGroup("Attachables/Bits"), Space(10f)]
         private AttachableProfileScriptableObject bitProfileAlt;
         
         private bool bitToggle;
         [BoxGroup("Attachables/Bits"), Button("Toggle Bit Profile"), DisableInEditorMode]
-        private void ToggleBitProfile()
+        public void ToggleBitProfile()
         {
             bitToggle = !bitToggle;
 

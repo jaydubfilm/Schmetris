@@ -7,6 +7,7 @@ using StarSalvager.AI;
 using UnityEngine.UI;
 using StarSalvager.ScriptableObjects;
 using Sirenix.OdinInspector;
+using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Inputs;
 using UnityEngine.SceneManagement;

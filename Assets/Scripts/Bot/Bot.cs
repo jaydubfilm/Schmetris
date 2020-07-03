@@ -530,73 +530,9 @@ namespace StarSalvager
                         
                         //--------------------------------------------------------------------------------------------//
 
-
-                        
-                        //TODO Need to check all parts of the shape to confirm placement
-                        /*for (var i = 0; i < bitsToAdd.Length; i++)
-                        {
-                            var check = attachedBlocks.FirstOrDefault(x =>
-                                x.Coordinate == newBotCoordinate + differences[i]);
-                            
-                            if (check == null) 
-                                continue;
-                            
-                            var foundAlt = true;
-
-                            for (var j = 0; j < bitsToAdd.Length; j++)
-                            {
-                                var altCheck = attachedBlocks.FirstOrDefault(x =>
-                                    x.Coordinate == newBotCoordinate + differences[i] + DIRECTION.UP.ToVector2Int());
-
-                                if (altCheck == null)
-                                    continue;
-
-                                foundAlt = false;
-                                break;
-                            }
-
-                            if (foundAlt)
-                            {
-                                Debug.Log(
-                                    $"Solved for shape overlap at {check.gameObject.name}[{newBotCoordinate + differences[i]}], shifting by {DIRECTION.UP}",
-                                    check.gameObject);
-                                newBotCoordinate += DIRECTION.UP.ToVector2Int();
-                                
-                                Debug.Break();
-                                break;
-                            }
-
-
-                            
-                            Debug.Log(
-                                $"Solving for shape overlap at {check.gameObject.name}[{newBotCoordinate + differences[i]}], shifting {bitsToAdd[i].gameObject.name} by {vectorDirection}",
-                                check.gameObject);
-                            Debug.Break();
-                            
-                            newBotCoordinate += vectorDirection;
-                            i = 0;
-
-                        }*/
-
                         //Get the coordinate that the shape will be able to fit in
                         ShapeOverlapCoordinateSolver(bitsToAdd, differences, vectorDirection, ref newBotCoordinate);
 
-                        
-                        //Order the bits to add based on distance to the connection point
-                        //--------------------------------------------------------------------------------------------//
-                        
-                        //bitsToAdd = bitsToAdd
-                        //    .OrderBy(x => Vector2Int.Distance(closestCoordinate, x.Coordinate))
-                        //    .ToArray();
-                        //
-                        //differences = bitsToAdd.Select(x => x.Coordinate - closestCoordinate).ToArray();
-                        
-                        //--------------------------------------------------------------------------------------------//
-
-                        //for (var i = 0; i < bitsToAdd.Length; i++)
-                        //{
-                        //    Debug.Log($"{bitsToAdd[i].gameObject.name} Distance: {Vector2Int.Distance(closestCoordinate, bitsToAdd[i].Coordinate)}", bitsToAdd[i].gameObject);
-                        //}
 
                         //Add the entire shape to the Bot
                         for (var i = 0; i < bitsToAdd.Length; i++)
@@ -732,11 +668,6 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        public IAttachable GetAttachableAtCoordinates(Vector2Int coordinate)
-        {
-            return attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
-        }
-
         #region Attach Bits
 
         public void AttachNewBit(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true, bool updateColliderGeometry = true)
@@ -795,7 +726,7 @@ namespace StarSalvager
         {
             var newCoord = direction.ToVector2Int();
 
-            attachedBlocks.CoordinateOccupied(direction, ref newCoord);
+            attachedBlocks.FindUnoccupiedCoordinate(direction, ref newCoord);
 
             newAttachable.Coordinate = newCoord;
             newAttachable.SetAttached(true);
@@ -818,7 +749,7 @@ namespace StarSalvager
         {
             var newCoord = startCoord + direction.ToVector2Int();
 
-            attachedBlocks.CoordinateOccupied(direction, ref newCoord);
+            attachedBlocks.FindUnoccupiedCoordinate(direction, ref newCoord);
 
             newAttachable.Coordinate = newCoord;
             newAttachable.SetAttached(true);
@@ -1042,7 +973,7 @@ namespace StarSalvager
                 if (!attachedBlocks.Contains(attachableBase))
                     continue;
                 
-                var hasPathToCore = this.HasPathToCore(attachableBase);
+                var hasPathToCore = attachedBlocks.HasPathToCore(attachableBase);
                 
                 if(hasPathToCore)
                     continue;
@@ -1202,7 +1133,7 @@ namespace StarSalvager
             foreach (var bit in comboBits)
             {
                 //Need to make sure that if we choose this block, that it is connected to the core one way or another
-                var hasPath = this.HasPathToCore(bit as Bit,
+                var hasPath = attachedBlocks.HasPathToCore(bit as Bit,
                     comboBits.Where(ab => ab != bit)
                         .Select(b => b.Coordinate)
                         .ToList());
@@ -1277,7 +1208,7 @@ namespace StarSalvager
             foreach (var bit in comboBits)
             {
                 //Need to make sure that if we choose this block, that it is connected to the core one way or another
-                var hasPath = this.HasPathToCore(bit as Bit,
+                var hasPath = attachedBlocks.HasPathToCore(bit as Bit,
                     comboBits.Where(ab => ab != bit)
                         .Select(b => b.Coordinate)
                         .ToList());
@@ -1405,7 +1336,7 @@ namespace StarSalvager
                     //Check that we're connected to the core
                     //------------------------------------------------------------------------------------------------//
 
-                    var hasPathToCore = this.HasPathToCore(bit,
+                    var hasPathToCore = attachedBlocks.HasPathToCore(bit,
                         movingBits
                             .Select(b => b.Coordinate)
                             .ToList());
@@ -1600,18 +1531,24 @@ namespace StarSalvager
 
         //============================================================================================================//
         
+        #region Asteroid Collision
+        
+        /// <summary>
+        /// Applies pre-determine asteroid damage to the specified IAttachable
+        /// </summary>
+        /// <param name="attachable"></param>
         private void AsteroidDamageAt(IAttachable attachable)
         {
             switch (attachable)
             {
                 case Bit _:
                     DestroyAttachable<Bit>(attachable);
-                    
                     break;
                 case Part part:
                 {
                     var partHealth = (IHealth) part;
             
+                    //FIXME I should determine the health remove for collisions with Asteroids.
                     partHealth.ChangeHealth(-5);
                 
                     if(partHealth.CurrentHealth < 0)
@@ -1620,72 +1557,74 @@ namespace StarSalvager
                 }
             }
 
+            //FIXME This value should not be hardcoded
             coreHeat += 20;
             coolTimer = coolDelay;
-            
             
 
             if (coreHeat >= 100 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0)
             {
                 Destroy();
             }
-
-            ////TODO Damage Core (OverHeat) & check to see if the core has died
-            //if (!(attachedBlocks[0] is IHealth coreHealth)) 
-            //    return;
-            //
-            //coreHealth.ChangeHealth(-5);
-            //if (coreHealth.CurrentHealth > 0)
-            //    return;
-//
-            //Destroy();
         }
 
+        #endregion //Asteroid Collision
+        
+        //============================================================================================================//
+
+        #region Magnet Checks
+
+        /// <summary>
+        /// Determines based on the total of magnet slots which pieces must be removed to fit within the expected capacity
+        /// </summary>
         private void CheckForMagnetOverage()
         {
-            if (attachedBlocks.Count - 1 <= magnetCount)
+            var bits = attachedBlocks.OfType<Bit>().ToList();
+            
+            //Checks here if the total of attached blocks (Minus the Core) change
+            if (bits.Count <= magnetCount)
                 return;
             
-            //Debug.Log($"magnetCount: {magnetCount} attachedBlocks: {attachedBlocks.Count - 1}");
+            //Gets the last added overage to remove
+            var bitsToRemove = bits.GetRange(magnetCount, bits.Count - (magnetCount));
+            
+            //Get the coordinates of the blocks leaving. This is used to determine if anyone will be left floating
+            var leavingCoordinates = bitsToRemove.Select(a => a.Coordinate).ToList();
 
-            var blocks = attachedBlocks.GetRange(magnetCount + 1, attachedBlocks.Count - (magnetCount + 1));
-
-            var leavingCoordinates = blocks.Select(a => a.Coordinate).ToList();
-
+            //Go through the bots Blocks to make sure no one will be floating when we detach the parts.
             for (var i = attachedBlocks.Count - 1; i >= 0; i--)
             {
-                if (blocks.Contains(attachedBlocks[i]))
+                if (bitsToRemove.Contains(attachedBlocks[i]))
                     continue;
 
-                if (this.HasPathToCore(attachedBlocks[i], leavingCoordinates))
+                if (attachedBlocks.HasPathToCore(attachedBlocks[i], leavingCoordinates))
                     continue;
 
                 Debug.LogError(
                     $"Found a potential floater {attachedBlocks[i].gameObject.name} at {attachedBlocks[i].Coordinate}",
                     attachedBlocks[i].gameObject);
-                //Debug.Break();
-//
-                //Debug.Log($"Need to remove {blocks.Count} blocks");
             }
 
-            //foreach (var block in blocks)
-            //{
-            //    Debug.Log($"Removing {block.gameObject.name}", block.gameObject);
-            //}
-            foreach (var collidable in blocks.OfType<CollidableBase>())
+            //Visually show that the bits will fall off by changing their color
+            foreach (var bit in bitsToRemove)
             {
-                collidable.SetColor(Color.gray);
+                bit.SetColor(Color.gray);
             }
             
-            //Debug.Break();
-            
+            //Detach the specified bits after 1sec
             this.DelayedCall(1f, () =>
             {
-                DetachBits(blocks, true);
+                DetachBits(bitsToRemove, true);
             });
             
             
         }
+        
+        #endregion //Magnet Checks
+        
+        //============================================================================================================//
+
+        #region Destroy Bot
 
         private void Destroy()
         {
@@ -1697,6 +1636,8 @@ namespace StarSalvager
 
             StartCoroutine(DestroyCoroutine());
         }
+        
+        #endregion //Destroy Bot
         
         //============================================================================================================//
         
@@ -1887,8 +1828,6 @@ namespace StarSalvager
             CompositeCollider2D.GenerateGeometry();
         }
         
-        #endregion //Coroutines
-
         private IEnumerator DestroyCoroutine()
         {
             var core = attachedBlocks[0];
@@ -1920,6 +1859,8 @@ namespace StarSalvager
             
             Recycler.Recycle<Bot>(gameObject);
         }
+        
+        #endregion //Coroutines
         
         //============================================================================================================//
 

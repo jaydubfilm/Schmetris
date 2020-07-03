@@ -6,6 +6,8 @@ using StarSalvager.Constants;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
 [RequireComponent(typeof(CompositeCollider2D))]
 public class Shape : CollidableBase, IObstacle
 {
@@ -41,11 +43,16 @@ public class Shape : CollidableBase, IObstacle
 
     //================================================================================================================//
     
+    /// <summary>
+    /// Creates the shape from a list of bits that will make up the body of the shape
+    /// </summary>
+    /// <param name="bits"></param>
     public void Setup(IEnumerable<Bit> bits)
     {
         foreach (var bit in bits)
         {
             bit.transform.parent = transform;
+            bit.transform.localPosition = (Vector2)bit.Coordinate;
             attachedBits.Add(bit);
         }
         
@@ -55,7 +62,7 @@ public class Shape : CollidableBase, IObstacle
     //================================================================================================================//
 
     //This is used for generating a shape, instead of using pre existing Bits
-    public void PushNewBit(Bit bit, DIRECTION direction)
+    public void PushNewBit(Bit bit, DIRECTION direction, bool fromRandomExisting)
     {
         
         var newCoord = direction.ToVector2Int();
@@ -66,7 +73,10 @@ public class Shape : CollidableBase, IObstacle
         }
         else
         {
-            attachedBits.CoordinateOccupied(direction, ref newCoord);
+            if(fromRandomExisting)
+                newCoord = attachedBits[Random.Range(0, attachedBits.Count)].Coordinate + direction.ToVector2Int();
+            
+            attachedBits.FindUnoccupiedCoordinate(direction, ref newCoord);
 
         }
         
@@ -79,10 +89,6 @@ public class Shape : CollidableBase, IObstacle
         attachedBits.Add(bit);
         
         CompositeCollider.GenerateGeometry();
-    }
-    public void PushNewBit(Bit bit, DIRECTION direction, int fromIndex)
-    {
-        
     }
 
     //================================================================================================================//

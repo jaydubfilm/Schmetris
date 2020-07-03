@@ -38,7 +38,7 @@ namespace StarSalvager.Factories
             for (var i = 0; i < totalBits; i++)
             {
                 var bit = bitFactory.CreateObject<Bit>(bitType);
-                shape.PushNewBit(bit, (DIRECTION)Random.Range(0, 4));
+                shape.PushNewBit(bit, (DIRECTION)Random.Range(0, 4), true);
             }
 
             if (LevelManager.Instance != null)
@@ -55,7 +55,9 @@ namespace StarSalvager.Factories
             for (var i = 0; i < totalBits; i++)
             {
                 var bit = bitFactory.CreateObject<Bit>(bitType);
-                shape.PushNewBit(bit, (DIRECTION)Random.Range(0, 4));
+                //shape.PushNewBit(bit, (DIRECTION)Random.Range(0, 4));
+                
+                shape.PushNewBit(bit, (DIRECTION)Random.Range(0, 4), true);
             }
 
             if (LevelManager.Instance != null)
@@ -82,7 +84,7 @@ namespace StarSalvager.Factories
             for (var i = 0; i < totalBits; i++)
             {
                 var bit = bitFactory.CreateObject<Bit>(type);
-                shape.PushNewBit(bit, (DIRECTION)Random.Range(0, 4));
+                shape.PushNewBit(bit, (DIRECTION)Random.Range(0, 4), true);
 
                 if (selectionType == SELECTION_TYPE.RANDOMVARIED && type != BIT_TYPE.BLACK)
                 {
@@ -104,6 +106,8 @@ namespace StarSalvager.Factories
             
             foreach (var bit in bits)
             {
+                bit.transform.rotation = Quaternion.identity;
+                
                 bit.Coordinate -= baseCoordinate;
             }
             
