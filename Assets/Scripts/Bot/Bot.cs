@@ -66,6 +66,10 @@ namespace StarSalvager
 
         private bool _rotating;
         private float targetRotation;
+
+
+        [SerializeField]
+        private bool useMagnet = true;
         
         //============================================================================================================//
 
@@ -1580,6 +1584,9 @@ namespace StarSalvager
         /// </summary>
         private void CheckForMagnetOverage()
         {
+            if (!useMagnet)
+                return;
+            
             var bits = attachedBlocks.OfType<Bit>().ToList();
             
             //Checks here if the total of attached blocks (Minus the Core) change

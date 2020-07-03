@@ -22,6 +22,11 @@ namespace StarSalvager.Factories
             return remotePartData.GetRemoteData(partType);
         }
         
+        public PartProfile GetProfileData(PART_TYPE partType)
+        {
+            return factoryProfile.GetProfile(partType);
+        }
+        
         //============================================================================================================//
 
         public GameObject CreateGameObject(BlockData blockData)
