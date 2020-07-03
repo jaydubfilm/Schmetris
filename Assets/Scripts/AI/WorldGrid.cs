@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using StarSalvager.Constants;
+using StarSalvager.Values;
 using StarSalvager.AI;
 using UnityEngine.InputSystem.Interactions;
 
@@ -19,7 +19,7 @@ namespace StarSalvager
         public WorldGrid()
         {
             m_anchorPoint = Vector2.left * 
-                ((LevelManager.Instance.GridSizeX / 1.5f) * Values.gridCellSize - 
+                ((LevelManager.Instance.GridSizeX / 1.5f) * Constants.gridCellSize - 
                 ((Camera.main.orthographicSize * Screen.width / Screen.height)));
 
             m_gridArray = new GridSquare[LevelManager.Instance.GridSizeX * LevelManager.Instance.GridSizeY];
@@ -31,7 +31,7 @@ namespace StarSalvager
 
             float height = Camera.main.orthographicSize * 2.0f;
             float width = height * Screen.width / Screen.height;
-            m_screenGridCellRange = new Vector2Int((int)(width / Values.gridCellSize), (int)(height / Values.gridCellSize));
+            m_screenGridCellRange = new Vector2Int((int)(width / Constants.gridCellSize), (int)(height / Constants.gridCellSize));
             m_botGridPosition = GetGridPositionOfVector(LevelManager.Instance.BotGameObject.transform.position);
 
 #if UNITY_EDITOR
@@ -42,12 +42,12 @@ namespace StarSalvager
                 {
                     Vector2 tempVector = new Vector2(x, y);
                     
-                    Debug.DrawLine(m_anchorPoint + tempVector * Values.gridCellSize, m_anchorPoint + new Vector2(x, y + 1) * Values.gridCellSize, new Color(255, 0, 0), 300f);
-                    Debug.DrawLine(m_anchorPoint + tempVector * Values.gridCellSize, m_anchorPoint + new Vector2(x + 1, y) * Values.gridCellSize, new Color(255, 0, 0), 300f);
+                    Debug.DrawLine(m_anchorPoint + tempVector * Constants.gridCellSize, m_anchorPoint + new Vector2(x, y + 1) * Constants.gridCellSize, new Color(255, 0, 0), 300f);
+                    Debug.DrawLine(m_anchorPoint + tempVector * Constants.gridCellSize, m_anchorPoint + new Vector2(x + 1, y) * Constants.gridCellSize, new Color(255, 0, 0), 300f);
                 }
             }
-            Debug.DrawLine(m_anchorPoint + new Vector2(0, LevelManager.Instance.GridSizeY) * Values.gridCellSize, m_anchorPoint + new Vector2(LevelManager.Instance.GridSizeX, LevelManager.Instance.GridSizeY) * Values.gridCellSize, new Color(255, 0, 0), 300f);
-            Debug.DrawLine(m_anchorPoint + new Vector2(LevelManager.Instance.GridSizeX, 0) * Values.gridCellSize, m_anchorPoint + new Vector2(LevelManager.Instance.GridSizeX, LevelManager.Instance.GridSizeY) * Values.gridCellSize, new Color(255, 0, 0), 300f);
+            Debug.DrawLine(m_anchorPoint + new Vector2(0, LevelManager.Instance.GridSizeY) * Constants.gridCellSize, m_anchorPoint + new Vector2(LevelManager.Instance.GridSizeX, LevelManager.Instance.GridSizeY) * Constants.gridCellSize, new Color(255, 0, 0), 300f);
+            Debug.DrawLine(m_anchorPoint + new Vector2(LevelManager.Instance.GridSizeX, 0) * Constants.gridCellSize, m_anchorPoint + new Vector2(LevelManager.Instance.GridSizeX, LevelManager.Instance.GridSizeY) * Constants.gridCellSize, new Color(255, 0, 0), 300f);
 #endif
         }
 
@@ -157,12 +157,12 @@ namespace StarSalvager
 
         public Vector2 GetCenterOfGridSquareInGridPosition(Vector2Int gridPosition)
         {
-            return m_anchorPoint + ((new Vector2(gridPosition.x, gridPosition.y) + m_adjustToMiddleOfGridSquare) * Values.gridCellSize);
+            return m_anchorPoint + ((new Vector2(gridPosition.x, gridPosition.y) + m_adjustToMiddleOfGridSquare) * Constants.gridCellSize);
         }
 
         public Vector2 GetCenterOfGridSquareInGridPosition(int x, int y)
         {
-            return m_anchorPoint + ((new Vector2(x, y) + m_adjustToMiddleOfGridSquare) * Values.gridCellSize);
+            return m_anchorPoint + ((new Vector2(x, y) + m_adjustToMiddleOfGridSquare) * Constants.gridCellSize);
         }
 
         public GridSquare GetGridSquareAtWorldPosition(Vector2 worldPosition)
@@ -225,11 +225,11 @@ namespace StarSalvager
                 Vector2Int randomTop = GetRandomTopGridSquareGridPosition();
                 bool isFreeSpace = true;
                 Vector2Int obstacleGridScanMinimum = new Vector2Int(
-                    Math.Max(0, randomTop.x - Values.enemyGridScanRadius),
-                    Math.Max(0, randomTop.y - Values.enemyGridScanRadius));
+                    Math.Max(0, randomTop.x - Constants.enemyGridScanRadius),
+                    Math.Max(0, randomTop.y - Constants.enemyGridScanRadius));
                 Vector2Int obstacleGridScanMaximum = new Vector2Int(
-                    Math.Min(LevelManager.Instance.GridSizeX - 1, randomTop.x + Values.enemyGridScanRadius),
-                    Math.Min(LevelManager.Instance.GridSizeY - 1, randomTop.y + Values.enemyGridScanRadius));
+                    Math.Min(LevelManager.Instance.GridSizeX - 1, randomTop.x + Constants.enemyGridScanRadius),
+                    Math.Min(LevelManager.Instance.GridSizeY - 1, randomTop.y + Constants.enemyGridScanRadius));
                 //Check each position in the box for whether an obstacle is there
                 for (int j = obstacleGridScanMinimum.x; j <= obstacleGridScanMaximum.x; j++)
                 {
@@ -256,7 +256,7 @@ namespace StarSalvager
 
         public Vector2Int GetGridPositionOfVector(Vector2 worldLocation)
         {
-            return new Vector2Int((int)Mathf.Floor((worldLocation.x - m_anchorPoint.x) / Values.gridCellSize), (int)Mathf.Floor((worldLocation.y - m_anchorPoint.y) / Values.gridCellSize));
+            return new Vector2Int((int)Mathf.Floor((worldLocation.x - m_anchorPoint.x) / Constants.gridCellSize), (int)Mathf.Floor((worldLocation.y - m_anchorPoint.y) / Constants.gridCellSize));
         }
     }
 }

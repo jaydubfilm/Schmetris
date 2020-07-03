@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using StarSalvager.Utilities;
-using StarSalvager.Constants;
+using StarSalvager.Values;
 using StarSalvager.AI;
 using UnityEngine.UI;
 using StarSalvager.ScriptableObjects;
@@ -132,9 +132,9 @@ namespace StarSalvager
             SceneManager.MoveGameObjectToScene(BotGameObject.gameObject, gameObject.scene);
             InputManager.Instance.InitInput();
 
-            CameraController.SetOrthographicSize(Values.gridCellSize * ColumnsOnScreen);
-            m_gridSizeX = (int)(ColumnsOnScreen * Values.GridWidthRelativeToScreen);
-            m_gridSizeY = (int)((Camera.main.orthographicSize * Values.GridHeightRelativeToScreen * 2) / Values.gridCellSize);
+            CameraController.SetOrthographicSize(Constants.gridCellSize * ColumnsOnScreen);
+            m_gridSizeX = (int)(ColumnsOnScreen * Constants.GridWidthRelativeToScreen);
+            m_gridSizeY = (int)((Camera.main.orthographicSize * Constants.GridHeightRelativeToScreen * 2) / Constants.gridCellSize);
         }
 
         private void Update()

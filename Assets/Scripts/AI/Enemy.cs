@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Factories;
-using StarSalvager.Constants;
+using StarSalvager.Values;
 
 namespace StarSalvager.AI
 {
@@ -26,7 +26,7 @@ namespace StarSalvager.AI
             renderer.sprite = m_enemyData.Sprite;
             m_horizontalMovementYLevel = transform.position.y;
             horizontalFarLeftX = 0;
-            horizontalFarRightX = LevelManager.Instance.GridSizeX * Values.gridCellSize;
+            horizontalFarRightX = LevelManager.Instance.GridSizeX * Constants.gridCellSize;
         }
 
         private void Update()
@@ -46,7 +46,7 @@ namespace StarSalvager.AI
         public void ProcessMovement(Vector3 direction)
         {
             m_mostRecentMovementDirection = direction;
-            transform.position = transform.position + (direction * m_enemyData.MovementSpeed * Time.deltaTime);
+            transform.position = transform.position + (direction * (m_enemyData.MovementSpeed * Time.deltaTime));
         }
 
         //Get the location that enemy is firing at, then create the firing projectile from the factory
@@ -161,7 +161,7 @@ namespace StarSalvager.AI
                 m_currentHorizontalMovementDirection = Vector3.right;
                 if (isDescending)
                 {
-                    m_horizontalMovementYLevel -= Values.gridCellSize * m_enemyData.NumberCellsDescend;
+                    m_horizontalMovementYLevel -= Constants.gridCellSize * m_enemyData.NumberCellsDescend;
                 }
             }
             else if (transform.position.x >= horizontalFarRightX && m_currentHorizontalMovementDirection != Vector3.left)
@@ -169,7 +169,7 @@ namespace StarSalvager.AI
                 m_currentHorizontalMovementDirection = Vector3.left;
                 if (isDescending)
                 {
-                    m_horizontalMovementYLevel -= Values.gridCellSize * m_enemyData.NumberCellsDescend;
+                    m_horizontalMovementYLevel -= Constants.gridCellSize * m_enemyData.NumberCellsDescend;
                 }
             }
 

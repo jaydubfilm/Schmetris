@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StarSalvager.Constants;
+using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.AI;
 using System.Linq;
@@ -55,13 +55,13 @@ namespace StarSalvager
             {
                 if (m_distanceHorizontal > 0)
                 {
-                    float toMove = Mathf.Min(m_distanceHorizontal, Values.botHorizontalSpeed * Time.deltaTime);
+                    float toMove = Mathf.Min(m_distanceHorizontal, Constants.botHorizontalSpeed * Time.deltaTime);
                     gridMovement = Vector3.right * toMove;
                     m_distanceHorizontal -= toMove;
                 }
                 else if (m_distanceHorizontal < 0)
                 {
-                    float toMove = Mathf.Min(Mathf.Abs(m_distanceHorizontal), Values.botHorizontalSpeed * Time.deltaTime);
+                    float toMove = Mathf.Min(Mathf.Abs(m_distanceHorizontal), Constants.botHorizontalSpeed * Time.deltaTime);
                     gridMovement = Vector3.left * toMove;
                     m_distanceHorizontal += toMove;
                 }
@@ -175,7 +175,7 @@ namespace StarSalvager
 
             m_currentInput = direction;
 
-            m_distanceHorizontal += direction * Values.gridCellSize;
+            m_distanceHorizontal += direction * Constants.gridCellSize;
         }
     }
 }

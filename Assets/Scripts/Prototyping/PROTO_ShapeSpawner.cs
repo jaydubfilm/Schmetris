@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager;
-using StarSalvager.Constants;
+using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
@@ -90,7 +90,7 @@ private void CreateShape()
         var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(SELECTION_TYPE.RANDOMVARIED, type, count);
 
         shape.name = $"Shape_{type}_{count}";
-        shape.transform.position = (Vector2.left * Random.Range(-10, 11) * Values.gridCellSize) + (Vector2.up * 20 * Values.gridCellSize);
+        shape.transform.position = (Vector2.left * (Random.Range(-10, 11) * Constants.gridCellSize)) + (Vector2.up * (20 * Constants.gridCellSize));
         shape.transform.SetParent(transform, true);
     }
 }

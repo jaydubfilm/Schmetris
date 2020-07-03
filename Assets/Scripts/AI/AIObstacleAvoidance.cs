@@ -6,7 +6,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine.Jobs;
 using StarSalvager.Factories;
-using StarSalvager.Constants;
+using StarSalvager.Values;
 using UnityEngine.UI;
 
 namespace StarSalvager.AI
@@ -14,8 +14,8 @@ namespace StarSalvager.AI
     public class AIObstacleAvoidance : MonoBehaviour
     {
         //Temporary variables, simulating the movement speed of falling obstacles
-        private float m_timer = Values.timeForAsteroidsToFall / 2;
-        private Vector2 m_obstaclePositionAdjuster = new Vector2(0.0f, Values.gridCellSize);
+        private float m_timer = Constants.timeForAsteroidsToFall / 2;
+        private Vector2 m_obstaclePositionAdjuster = new Vector2(0.0f, Constants.gridCellSize);
 
         void Start()
         {
@@ -26,9 +26,9 @@ namespace StarSalvager.AI
         {
             //Temporary code to simulate the speed of downward movement for obstacles and move the prefabs on screen downward
             m_timer += Time.deltaTime;
-            if (m_timer >= Values.timeForAsteroidsToFall)
+            if (m_timer >= Constants.timeForAsteroidsToFall)
             {
-                m_timer -= Values.timeForAsteroidsToFall;
+                m_timer -= Constants.timeForAsteroidsToFall;
                 //TODO: move these lines to a more appropriate location. Also, ensure that this order of operations stays the same, it is important.
                 LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid();
                 LevelManager.Instance.ObstacleManager.SpawnNewRowOfObstacles();
@@ -43,11 +43,11 @@ namespace StarSalvager.AI
             Vector2 force = new Vector2(0, 0);
             Vector2Int agentGridPosition = LevelManager.Instance.WorldGrid.GetGridPositionOfVector(agentPosition);
             Vector2Int agentGridScanMinimum = new Vector2Int (
-                Math.Max(0, agentGridPosition.x - Values.enemyGridScanRadius), 
-                Math.Max(0, agentGridPosition.y - Values.enemyGridScanRadius));
+                Math.Max(0, agentGridPosition.x - Constants.enemyGridScanRadius), 
+                Math.Max(0, agentGridPosition.y - Constants.enemyGridScanRadius));
             Vector2Int agentGridScanMaximum = new Vector2Int (
-                Math.Min(LevelManager.Instance.GridSizeX - 1, agentGridPosition.x + Values.enemyGridScanRadius), 
-                Math.Min(LevelManager.Instance.GridSizeY - 1, agentGridPosition.y + Values.enemyGridScanRadius));
+                Math.Min(LevelManager.Instance.GridSizeX - 1, agentGridPosition.x + Constants.enemyGridScanRadius), 
+                Math.Min(LevelManager.Instance.GridSizeY - 1, agentGridPosition.y + Constants.enemyGridScanRadius));
 
             //Check each position in the box for a marker for containing an obstacle
             for (int i = agentGridScanMinimum.x; i <= agentGridScanMaximum.x; i++)
@@ -69,7 +69,7 @@ namespace StarSalvager.AI
         //Create a "reverse gravity" force for the agent from the obstacle, using a mass value and the distance between them
         private Vector2 GetForce(Vector2 agentPosition, Vector2 obstaclePosition)
         {
-            float magnitude = Values.obstacleMass / Vector2.SqrMagnitude(obstaclePosition - agentPosition);
+            float magnitude = Constants.obstacleMass / Vector2.SqrMagnitude(obstaclePosition - agentPosition);
             Vector2 direction = new Vector2(agentPosition.x - obstaclePosition.x, agentPosition.y - obstaclePosition.y);
             direction.Normalize();
             direction *= magnitude;
@@ -80,7 +80,7 @@ namespace StarSalvager.AI
         //infering where it is in relation to that based on the timer and the obstacles movement speed
         private Vector2 CalculateObstaclePositionChange(int x, int y)
         {
-            return LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * ((m_timer / Values.timeForAsteroidsToFall) - 0.5f);
+            return LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * ((m_timer / Constants.timeForAsteroidsToFall) - 0.5f);
         }
     }
 }

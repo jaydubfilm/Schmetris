@@ -1,7 +1,7 @@
 ﻿using System;
 using Boo.Lang;
 using Sirenix.OdinInspector;
-using StarSalvager.Constants;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.AI
@@ -30,6 +30,6 @@ namespace StarSalvager.AI
         public ASTEROID_SIZE AsteroidSize => m_asteroidSize;
         public int AsteroidCountPerMinute => m_asteroidCountPerMinute;
 
-        public float AsteroidPerRowAverage => (m_asteroidCountPerMinute / 60.0f) * Values.timeForAsteroidsToFall;
+        public float AsteroidPerRowAverage => (m_asteroidCountPerMinute / 60.0f) * Constants.timeForAsteroidsToFall;
     }
 }
