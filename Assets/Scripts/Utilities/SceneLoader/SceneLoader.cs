@@ -70,7 +70,6 @@ namespace StarSalvager.SceneLoader
         {
             if (SceneManager.GetSceneByName(sceneName).IsValid())
             {
-                Debug.Log(SceneManager.GetSceneByName(sceneName));
                 yield break;
             }
 

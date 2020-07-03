@@ -116,12 +116,17 @@ namespace StarSalvager
                 RotateBot();
         }
 
+        private void OnEnable()
+        {
+            CompositeCollider2D.GenerateGeometry();
+        }
+
         #endregion //Unity Functions
 
         //============================================================================================================//
 
         #region Init Bot 
-        
+
         public void InitBot()
         {
             _isDestroyed = false;

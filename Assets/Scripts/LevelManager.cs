@@ -16,17 +16,6 @@ namespace StarSalvager
 {
     public class LevelManager : SceneSingleton<LevelManager>
     {
-        [SerializeField, FoldoutGroup("Global Values"), Range(5, 50)]
-        private int m_columnsToSideOfBot;
-
-        public int ColumnsOnScreen => 1 + m_columnsToSideOfBot * 2;
-
-        public int GridSizeX => m_gridSizeX;
-        private int m_gridSizeX;
-
-        public int GridSizeY => m_gridSizeY;
-        private int m_gridSizeY;
-
         public bool generateRandomSeed;
         [DisableIf("$generateRandomSeed")] public int seed = 1234567890;
 
@@ -38,18 +27,21 @@ namespace StarSalvager
         public CameraController CameraController => m_cameraController;
 
         [SerializeField]
-        private Text m_demoText;
-        public Text DemoText => m_demoText;
-
-        [SerializeField]
         private WaveRemoteDataScriptableObject m_waveRemoteData;
         public WaveRemoteDataScriptableObject WaveRemoteData => m_waveRemoteData;
+
+        [SerializeField]
+        private Button m_scrapyardButton;
+        [SerializeField]
+        private Button m_menuButton;
 
         private float m_waveTimer;
         public float WaveTimer => m_waveTimer;
 
         private int m_currentStage;
         public int CurrentStage => m_currentStage;
+
+        private bool m_started = false;
 
         public WorldGrid WorldGrid
         {
@@ -119,6 +111,9 @@ namespace StarSalvager
                 Debug.Log($"Generated Seed {seed}");
             }
 
+            m_scrapyardButton.onClick.AddListener(ScrapyardButtonPressed);
+            m_menuButton.onClick.AddListener(MenuButtonPressed);
+
             Random.InitState(seed);
 
             m_bots = new List<Bot>();
@@ -130,11 +125,26 @@ namespace StarSalvager
                 Debug.LogError("Bot Died. Press 'R' to restart");
             };
             SceneManager.MoveGameObjectToScene(BotGameObject.gameObject, gameObject.scene);
-            InputManager.Instance.InitInput();
 
-            CameraController.SetOrthographicSize(Constants.gridCellSize * ColumnsOnScreen);
-            m_gridSizeX = (int)(ColumnsOnScreen * Constants.GridWidthRelativeToScreen);
-            m_gridSizeY = (int)((Camera.main.orthographicSize * Constants.GridHeightRelativeToScreen * 2) / Constants.gridCellSize);
+            InputManager.Instance.InitInput();
+            CameraController.SetOrthographicSize(Constants.gridCellSize * Values.Globals.ColumnsOnScreen, BotGameObject.transform.position);
+            Values.Globals.GridSizeX = (int)(Values.Globals.ColumnsOnScreen * Constants.GridWidthRelativeToScreen);
+            Values.Globals.GridSizeY = (int)((Camera.main.orthographicSize * Constants.GridHeightRelativeToScreen * 2) / Constants.gridCellSize);
+            WorldGrid.SetupGrid();
+            m_started = true;
+        }
+        
+        //TODO: Review whether this is the proper way to handle things that should happen on scene activation
+        private void OnEnable()
+        {
+            if (m_started)
+            {
+                InputManager.Instance.InitInput();
+                CameraController.SetOrthographicSize(Constants.gridCellSize * Values.Globals.ColumnsOnScreen, BotGameObject.transform.position);
+                Values.Globals.GridSizeX = (int)(Values.Globals.ColumnsOnScreen * Constants.GridWidthRelativeToScreen);
+                Values.Globals.GridSizeY = (int)((Camera.main.orthographicSize * Constants.GridHeightRelativeToScreen * 2) / Constants.gridCellSize);
+                WorldGrid.SetupGrid();
+            }
         }
 
         private void Update()
@@ -143,6 +153,21 @@ namespace StarSalvager
             m_currentStage = m_waveRemoteData.GetCurrentStage(m_waveTimer);
             
             ProjectileManager.UpdateForces();
+        }
+
+        private void OnDisable()
+        {
+            //m_worldGrid = null;
+        }
+
+        private void ScrapyardButtonPressed()
+        {
+            StarSalvager.SceneLoader.SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
+        }
+
+        private void MenuButtonPressed()
+        {
+            StarSalvager.SceneLoader.SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
         }
     }
 }

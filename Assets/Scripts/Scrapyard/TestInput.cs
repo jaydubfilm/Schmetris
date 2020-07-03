@@ -31,7 +31,7 @@ namespace StarSalvager
 
         public void DrawGL(Camera camera)
         {
-            Vector2 m_anchorPoint = new Vector2(-Values.gridCellSize * 25.5f, -Values.gridCellSize * 25.5f);
+            Vector2 m_anchorPoint = new Vector2(-Values.Constants.gridCellSize * 25.5f, -Values.Constants.gridCellSize * 25.5f);
             //Draw debug lines to show the area of the grid
             for (int x = 0; x < 50; x++)
             {
@@ -39,12 +39,12 @@ namespace StarSalvager
                 {
                     Vector2 tempVector = new Vector2(x, y);
 
-                    DrawWithGL(material, m_anchorPoint + tempVector * Values.gridCellSize, m_anchorPoint + new Vector2(x, y + 1) * Values.gridCellSize);
-                    DrawWithGL(material, m_anchorPoint + tempVector * Values.gridCellSize, m_anchorPoint + new Vector2(x + 1, y) * Values.gridCellSize);
+                    DrawWithGL(material, m_anchorPoint + tempVector * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(x, y + 1) * Values.Constants.gridCellSize);
+                    DrawWithGL(material, m_anchorPoint + tempVector * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(x + 1, y) * Values.Constants.gridCellSize);
                 }
             }
-            DrawWithGL(material, m_anchorPoint + new Vector2(0, 50) * Values.gridCellSize, m_anchorPoint + new Vector2(50, 50) * Values.gridCellSize);
-            DrawWithGL(material, m_anchorPoint + new Vector2(50, 0) * Values.gridCellSize, m_anchorPoint + new Vector2(50, 50) * Values.gridCellSize);
+            DrawWithGL(material, m_anchorPoint + new Vector2(0, 50) * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(50, 50) * Values.Constants.gridCellSize);
+            DrawWithGL(material, m_anchorPoint + new Vector2(50, 0) * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(50, 50) * Values.Constants.gridCellSize);
         }
 
         public void DrawWithGL(Material material, Vector2 startPoint, Vector2 endPoint)
@@ -137,6 +137,7 @@ namespace StarSalvager
                 }
 
                 Vector2Int mouseCoordinate = new Vector2Int((int)(worldMousePosition.x / Constants.gridCellSize), (int)(worldMousePosition.y / Constants.gridCellSize));
+                print(mouseCoordinate);
                 foreach (ScrapyardBot scrapBot in _scrapyardBots)
                 {
                     scrapBot.RemoveAttachableAt(mouseCoordinate);
