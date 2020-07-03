@@ -39,5 +39,5 @@ MonoBehaviour:
   - partType: 4
     _name: Gun
     _sprites:
-    - {fileID: -6911850443235827152, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
+    - {fileID: 3641400224367007280, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
     - {fileID: 4569395326395999164, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}

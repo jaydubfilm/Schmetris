@@ -85,6 +85,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5392352888635155822}
   - component: {fileID: 2377954363170591622}
+  - component: {fileID: 5136297123396983923}
   - component: {fileID: 1515688912044447186}
   - component: {fileID: 6399576775768417815}
   - component: {fileID: 8081797134372716513}
@@ -124,6 +125,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7323802190393759215}
   m_CullTransparentMesh: 0
+--- !u!114 &5136297123396983923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7323802190393759215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 397afc419051ade45acfafa295415d61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data:
+    name: 
+    partType: 0
+    health: []
+    costs: []
+    data: 
+  logoImage: {fileID: 8079331265871157504}
+  partNameText: {fileID: 1637890676086599216}
+  costPrefab: {fileID: 3554026706651960551, guid: 7b0561873e5f03848a56cb5262d09cc3,
+    type: 3}
 --- !u!114 &1515688912044447186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -223,7 +246,7 @@ GameObject:
   - component: {fileID: 6500263179890469391}
   - component: {fileID: 6305554527478266327}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: PartHeader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -282,7 +305,7 @@ GameObject:
   - component: {fileID: 4292459644256772868}
   - component: {fileID: 1637890676086599216}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: PartNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
