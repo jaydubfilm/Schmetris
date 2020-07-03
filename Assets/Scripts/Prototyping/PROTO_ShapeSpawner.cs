@@ -87,7 +87,7 @@ private void CreateShape()
         var type = legalShapes[Random.Range(0, legalShapes.Length)];
         //var type = BIT_TYPE.BLACK;
         var count = Random.Range(bitCountMin, bitCountMax);
-        var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(type, count);
+        var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(SELECTION_TYPE.RANDOMVARIED, type, count);
 
         shape.name = $"Shape_{type}_{count}";
         shape.transform.position = (Vector2.left * Random.Range(-10, 11) * Values.gridCellSize) + (Vector2.up * 20 * Values.gridCellSize);
