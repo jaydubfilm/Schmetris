@@ -43,6 +43,19 @@ namespace StarSalvager.Factories
         }
         
         //============================================================================================================//
+
+        public BitProfile GetBitProfile(BIT_TYPE type)
+        {
+            return factoryProfile.GetProfile(type);
+        }
+        
+        public BitRemoteData GetBitRemoteData(BIT_TYPE type)
+        {
+            return remoteData.GetRemoteData(type);
+        }
+        
+        //============================================================================================================//
+
         
         /// <summary>
         /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the GameObject

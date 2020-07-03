@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using StarSalvager.Factories;
+using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Puzzle.Data;
 using StarSalvager.Utilities.Puzzle.Interfaces;
 using UnityEngine;
@@ -8,17 +9,17 @@ namespace StarSalvager.Utilities.Puzzle.Combos
 {
     public class LineCombo : IComboCheck
     {
-        protected readonly ComboData emptyCombo;
+        protected readonly ComboRemoteData emptyCombo;
 
         public LineCombo()
         {
-            emptyCombo = ComboData.zero;
+            emptyCombo = ComboRemoteData.zero;
 
         }
 
         public virtual bool TryGetCombo(Bit origin, List<Bit>[] directions, 
             (bool hasCombo, int horizontalCount, int verticalCount) lineData,
-            out (ComboData comboData, List<Bit> toMove) outData)
+            out (ComboRemoteData comboData, List<Bit> toMove) outData)
         {
             outData = (emptyCombo, null);
 

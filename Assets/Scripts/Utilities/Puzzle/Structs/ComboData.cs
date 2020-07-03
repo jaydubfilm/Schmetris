@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
 
 namespace StarSalvager.Utilities.Puzzle.Data
 {
+    [Obsolete("Use ComboRemoteData")]
     public struct ComboData
     {
         public COMBO type;

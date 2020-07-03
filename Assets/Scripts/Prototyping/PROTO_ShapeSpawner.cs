@@ -5,92 +5,115 @@ using Sirenix.OdinInspector;
 using StarSalvager;
 using StarSalvager.Values;
 using StarSalvager.Factories;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Input = StarSalvager.Utilities.Inputs.Input;
 
-public class PROTO_ShapeSpawner : MonoBehaviour
+namespace StarSalvager.Prototype
 {
-    public bool generateRandomSeed;
-    [DisableIf("$generateRandomSeed")] public int seed = 1234567890;
 
-    //public BIT_TYPE type;
-    public int bitCountMin;
-    public int bitCountMax;
 
-    private readonly BIT_TYPE[] legalShapes =
+
+    public class PROTO_ShapeSpawner : MonoBehaviour
     {
-        BIT_TYPE.RED,
-        BIT_TYPE.BLUE,
-        BIT_TYPE.GREY,
-        BIT_TYPE.BLACK,
-        BIT_TYPE.GREEN,
-        BIT_TYPE.YELLOW
-    };
+        //================================================================================================================//
 
-    private new Transform transform;
+        public bool generateRandomSeed;
+        [DisableIf("$generateRandomSeed")] public int seed = 1234567890;
 
-    private List<Shape> activeShapes;
+        //public BIT_TYPE type;
+        public int bitCountMin;
+        public int bitCountMax;
 
-    [SerializeField]
-    private float fallSpeed = 30f;
-
-    private void Start()
-    {
-        if (generateRandomSeed)
+        private readonly BIT_TYPE[] legalShapes =
         {
-            seed = Random.Range(int.MinValue, int.MaxValue);
-            Debug.Log($"Generated Seed {seed}");
-        }
+            BIT_TYPE.RED,
+            BIT_TYPE.BLUE,
+            BIT_TYPE.GREY,
+            BIT_TYPE.BLACK,
+            BIT_TYPE.GREEN,
+            BIT_TYPE.YELLOW
+        };
 
-        Random.InitState(seed);
-        transform = gameObject.transform;
+        private new Transform transform;
 
-        activeShapes = new List<Shape>();
-        //CreateShape();
-    }
+        private List<Shape> activeShapes;
 
-    private void Update()
-    {
-        if (UnityEngine.Input.GetKeyDown(KeyCode.R))
-        {
-            SceneManager.LoadScene("AlexB_Prototyping", LoadSceneMode.Single);
-        }
+        [SerializeField] private float fallSpeed = 30f;
 
-        activeShapes = FindObjectsOfType<Shape>().ToList();
+
         
-        if(activeShapes.Count == 0)
-            CreateShape();
+        private BackgroundMover _backgroundMover;
 
-        for (var i = activeShapes.Count - 1; i >= 0; i--)
+        //================================================================================================================//
+
+        private void Start()
         {
-            var activeShape = activeShapes[i];
-            
-            if(!activeShape.gameObject.activeInHierarchy)
+            if (generateRandomSeed)
+            {
+                seed = Random.Range(int.MinValue, int.MaxValue);
+                Debug.Log($"Generated Seed {seed}");
+            }
+
+            Random.InitState(seed);
+            transform = gameObject.transform;
+
+            activeShapes = new List<Shape>();
+            //CreateShape();
+
+            _backgroundMover = FindObjectOfType<BackgroundMover>();
+        }
+
+        private void Update()
+        {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.R))
+            {
+                SceneManager.LoadScene("AlexB_Prototyping", LoadSceneMode.Single);
+            }
+
+            activeShapes = FindObjectsOfType<Shape>().ToList();
+
+            if (activeShapes.Count == 0)
                 CreateShape();
 
-            activeShape.transform.position += Vector3.down * (fallSpeed * Time.deltaTime);
-
-            if (activeShape.transform.position.y < -50f)
+            for (var i = activeShapes.Count - 1; i >= 0; i--)
             {
-                activeShapes.Remove(activeShape);
-                //Debug.Log(activeShape.transform.position.y);
-                activeShape.Destroy();
+                var activeShape = activeShapes[i];
+
+                if (!activeShape.gameObject.activeInHierarchy)
+                    CreateShape();
+
+                activeShape.transform.position += Vector3.down * (fallSpeed * Time.deltaTime);
+
+                if (activeShape.transform.position.y < -50f)
+                {
+                    activeShapes.Remove(activeShape);
+                    //Debug.Log(activeShape.transform.position.y);
+                    activeShape.Destroy();
+                }
             }
+            
         }
-    }
 
-private void CreateShape()
-    {
-        //var direction = directions[Random.Range(0, directions.Length)].ToVector2();
-        var type = legalShapes[Random.Range(0, legalShapes.Length)];
-        //var type = BIT_TYPE.BLACK;
-        var count = Random.Range(bitCountMin, bitCountMax);
-        var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(SELECTION_TYPE.RANDOMVARIED, type, count);
+        //================================================================================================================//
 
-        shape.name = $"Shape_{type}_{count}";
-        shape.transform.position = (Vector2.left * (Random.Range(-10, 11) * Constants.gridCellSize)) + (Vector2.up * (20 * Constants.gridCellSize));
-        shape.transform.SetParent(transform, true);
+        private void CreateShape()
+        {
+            //var direction = directions[Random.Range(0, directions.Length)].ToVector2();
+            var type = legalShapes[Random.Range(0, legalShapes.Length)];
+            //var type = BIT_TYPE.BLACK;
+            var count = Random.Range(bitCountMin, bitCountMax);
+            var shape = FactoryManager.Instance.GetFactory<ShapeFactory>()
+                .CreateObject<Shape>(SELECTION_TYPE.RANDOMVARIED, type, count);
+
+            shape.name = $"Shape_{type}_{count}";
+            shape.transform.position = (Vector2.left * (Random.Range(-10, 11) * Constants.gridCellSize)) +
+                                       (Vector2.up * (20 * Constants.gridCellSize));
+            shape.transform.SetParent(transform, true);
+        }
+
+        //================================================================================================================//
     }
 }
