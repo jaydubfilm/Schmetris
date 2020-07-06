@@ -12,9 +12,6 @@ EditorBuildSettings:
     path: Assets/_Scenes/Prototyping/AlexB_Prototyping.unity
     guid: 1b0fe85a4155fb34886a20a119847f89
   - enabled: 1
-    path: Assets/_Scenes/StarSalvagerMainScene.unity
-    guid: 36d0f9a4a8268de47b4cfd6973d42cce
-  - enabled: 1
     path: Assets/_Scenes/Prototyping/AlexShulmanTestScene.unity
     guid: 4baf6b71120cf864f8e74b5883671283
   - enabled: 1
