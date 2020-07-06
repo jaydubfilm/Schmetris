@@ -81,11 +81,16 @@ namespace StarSalvager.UI
                 partTemp.transform.SetParent(partListContentTransform, false);
                 partTemp.transform.localScale = Vector3.one;
                 
-                partTemp.Init(partRemoteData);
+                partTemp.Init(partRemoteData, PartPressed);
             }
         }
         
         //============================================================================================================//
+
+        private void PartPressed(PART_TYPE partType)
+        {
+            Debug.Log($"Selected {partType}");
+        }
 
     }
 }

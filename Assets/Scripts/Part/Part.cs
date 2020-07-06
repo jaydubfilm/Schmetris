@@ -53,7 +53,7 @@ namespace StarSalvager
 
             if (_currentHealth <= 0)
             {
-                Recycler.Recycle(typeof(Part), this.gameObject);
+                Recycler.Recycle<Part>(this);
             }
         }
 

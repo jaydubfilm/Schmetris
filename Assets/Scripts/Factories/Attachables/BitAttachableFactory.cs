@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Recycling;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace StarSalvager.Factories
 {
@@ -73,10 +75,11 @@ namespace StarSalvager.Factories
             {
                 temp = Object.Instantiate(factoryProfile.Prefab).GetComponent<Bit>();
             }
+
             temp.SetColliderActive(true);
             temp.SetSprite(sprite);
             temp.LoadBlockData(blockData);
-            
+
             //Have to check for null, as the Asteroid/Energy does not have health
             if(remote != null)
                 temp.SetupHealthValues(remote.health[blockData.Level], remote.health[blockData.Level]);

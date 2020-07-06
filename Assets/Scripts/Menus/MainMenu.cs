@@ -23,6 +23,9 @@ namespace StarSalvager
         private Slider m_cameraZoomScaler;
 
         [SerializeField]
+        private Button quitButton;
+
+        [SerializeField]
         private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
@@ -36,6 +39,8 @@ namespace StarSalvager
 
             if (gameObject.scene == SceneManager.GetActiveScene())
                 ScaleCamera(m_cameraZoomScaler.value);
+            
+            quitButton.onClick.AddListener(Application.Quit);
         }
 
         void OnDestroy()

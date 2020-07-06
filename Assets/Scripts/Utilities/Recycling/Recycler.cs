@@ -3,6 +3,8 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using StarSalvager;
 using StarSalvager.Utilities;
 
 namespace Recycling
@@ -11,10 +13,9 @@ namespace Recycling
 	{
 		private static Dictionary<Enum, RecycleBin> _enumDict = new Dictionary<Enum, RecycleBin>();
 		private static Dictionary<Type, RecycleBin> _typeDict = new Dictionary<Type, RecycleBin>();
-		private static RecycleBin _bin;
 
 
-		private new static Transform transform
+		private new static Transform Transform
 		{
 			get
 			{
@@ -28,30 +29,32 @@ namespace Recycling
 
 		//============================================================================================================//
 
-		public static void Recycle(Enum @enum, GameObject gameObject)
+		private static void Recycle(Enum @enum, GameObject gameObject, params object[] args)
 		{
 
-			if (!_enumDict.TryGetValue(@enum, out _bin))
+			if (!_enumDict.TryGetValue(@enum, out var bin))
 			{
-				_bin = new RecycleBin();
-				_enumDict.Add(@enum, _bin);
+				bin = new RecycleBin();
+				_enumDict.Add(@enum, bin);
 
 			}
+			
+			gameObject.GetComponent<ICustomRecycle>()?.CustomRecycle(args);
 
-			_bin.Store(gameObject);
-			gameObject.transform.parent = transform;
+			bin.Store(gameObject);
+			gameObject.transform.parent = Transform;
 			gameObject.transform.rotation = Quaternion.identity;
 			
 			
-			gameObject.GetComponent<IRecycle>()?.OnRecycle();
+			gameObject.GetComponent<IRecycled>()?.OnRecycled();
 		}
 		public static bool TryGrab(Enum @enum, out GameObject gameObject, bool returnActive = true)
 		{
 			gameObject = null;
 
-			if (!_enumDict.TryGetValue(@enum, out _bin)) 
+			if (!_enumDict.TryGetValue(@enum, out var bin)) 
 				return false;
-			if (!_bin.Grab(out gameObject)) 
+			if (!bin.Grab(out gameObject)) 
 				return false;
 			if (returnActive) gameObject.SetActive(true);
 				return true;
@@ -61,9 +64,9 @@ namespace Recycling
 		{
 			monoBehaviour = null;
 
-			if (!_enumDict.TryGetValue(@enum, out _bin)) 
+			if (!_enumDict.TryGetValue(@enum, out var bin)) 
 				return false;
-			if (!_bin.Grab(out var gameObject)) 
+			if (!bin.Grab(out var gameObject)) 
 				return false;
 			
 			if (returnActive) 
@@ -75,39 +78,43 @@ namespace Recycling
 		}
 		
 		//============================================================================================================//
-
-		public static void Recycle(Type type, GameObject gameObject)
+		public static void Recycle(Type type, GameObject gameObject, params object[] args)
 		{
-
-			if (!_typeDict.TryGetValue(type, out _bin))
+			if (!_typeDict.TryGetValue(type, out var bin))
 			{
-				_bin = new RecycleBin();
-				_typeDict.Add(type, _bin);
+				bin = new RecycleBin();
+				_typeDict.Add(type, bin);
 
 			}
 
-			_bin.Store(gameObject);
-			gameObject.transform.parent = transform;
+			gameObject.GetComponent<ICustomRecycle>()?.CustomRecycle(args);
+
+			bin.Store(gameObject);
+			gameObject.transform.parent = Transform;
 			gameObject.transform.rotation = Quaternion.identity;
 			
-			gameObject.GetComponent<IRecycle>()?.OnRecycle();
+			
+			gameObject.GetComponent<IRecycled>()?.OnRecycled();
+			
 		}
 		
-		public static void Recycle<T>(GameObject gameObject)
+		public static void Recycle<T>(GameObject gameObject, params object[] args)
 		{
-			Recycle(typeof(T), gameObject);
+			Recycle(typeof(T), gameObject,args);
+		}
+		public static void Recycle<T>(MonoBehaviour mono, params object[] args)
+		{
+			Recycle(typeof(T), mono.gameObject,args);
 		}
 
-		
-		
 		public static bool TryGrab(Type type, out GameObject gameObject, bool returnActive = true)
 		{
 			gameObject = null;
 
-			if (!_typeDict.TryGetValue(type, out _bin)) 
+			if (!_typeDict.TryGetValue(type, out var bin)) 
 				return false;
 			
-			if (!_bin.Grab(out gameObject)) 
+			if (!bin.Grab(out gameObject)) 
 				return false;
 			
 			if (returnActive) gameObject.SetActive(true);
@@ -121,18 +128,19 @@ namespace Recycling
 		
 		public static bool TryGrab<T>(out T monoBehaviour, bool returnActive = true) where T: MonoBehaviour
 		{
+			
 			monoBehaviour = null;
 
-			if (!_typeDict.TryGetValue(typeof(T), out _bin)) 
+			if (!_typeDict.TryGetValue(typeof(T), out var bin)) 
 				return false;
 			
-			if (!_bin.Grab(out var gameObject)) 
+			if (!bin.Grab(out var gameObject)) 
 				return false;
 			
 			if (returnActive) gameObject.SetActive(true);
 
 			monoBehaviour = gameObject.GetComponent<T>();
-			
+
 			return true;
 		}
 	}

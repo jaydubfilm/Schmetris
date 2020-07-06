@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
@@ -8,7 +9,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class PartUIElement : UIElement<PartRemoteData>
+    public class PartUIElement : ButtonUIElement<PartRemoteData, PART_TYPE>
     {
         private static PartAttachableFactory _partAttachableFactory;
         private static BitAttachableFactory _bitAttachableFactory;
@@ -25,10 +26,10 @@ namespace StarSalvager.UI
         private GameObject costPrefab;
 
         private List<CostUIElement> costElements;
-        
+
         //============================================================================================================//
         
-        public override void Init(PartRemoteData data)
+        public override void Init(PartRemoteData data, Action<PART_TYPE> OnPressed)
         {
             if (_partAttachableFactory == null)
                 _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
@@ -51,6 +52,11 @@ namespace StarSalvager.UI
                 
                 costElement.Init(cost);
             }
+            
+            button.onClick.AddListener(() =>
+            {
+                OnPressed?.Invoke(data.partType);
+            });
         }
         
         //============================================================================================================//

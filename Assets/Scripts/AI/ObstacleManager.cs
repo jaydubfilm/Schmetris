@@ -130,7 +130,7 @@ namespace StarSalvager
                 }
 
                 var pos = obstacle.transform.position;
-                Vector2 gridPosition = LevelManager.Instance.WorldGrid.GetGridPositionOfVector(obstacle.transform.position);
+                Vector2 gridPosition = LevelManager.Instance.WorldGrid.GetGridPositionOfVector(pos);
                 pos -= amountShift;
 
                 if (gridPosition.y < -10)
@@ -143,9 +143,9 @@ namespace StarSalvager
                         case Bit _:
                             Recycler.Recycle<Bit>(temp.gameObject);
                             break;
-                        case Shape shape:
-                            //Recycler.Recycle<Shape>(temp.gameObject);
-                            shape.Destroy();
+                        case Shape _:
+                            Recycler.Recycle<Shape>(temp.gameObject);
+                            //shape.Destroy();
                             break;
                     }
                     continue;

@@ -71,7 +71,7 @@ namespace StarSalvager
 
             if (_currentHealth <= 0)
             {
-                Recycler.Recycle(typeof(Bit), this.gameObject);
+                Recycler.Recycle<Bit>(this);
             }
 
             //TODO - temporary demo color change, remove later
@@ -97,17 +97,27 @@ namespace StarSalvager
 
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
+            //Debug.Break();
+            
+            
             var bot = gameObject.GetComponent<Bot>();
 
             if (bot.Rotating)
             {
-                Recycling.Recycler.Recycle<Bit>(this.gameObject);
+                Recycler.Recycle<Bit>(this);
                 return;
             }
+
+            var dir = (hitPoint - (Vector2)transform.position).ToVector2Int();
 
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
             //return the direction to shoot the ray
             if (!TryGetRayDirectionFromBot(bot.MoveDirection, out var rayDirection))
+                return;
+            
+            //Debug.Log($"Direction: {dir}, Ray Direction: {rayDirection}");
+
+            if (dir != rayDirection && dir != Vector2Int.zero)
                 return;
 
             //Long ray compensates for the players high speed
