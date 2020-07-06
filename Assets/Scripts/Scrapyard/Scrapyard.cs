@@ -74,6 +74,7 @@ namespace StarSalvager
         // Update is called once per frame
         void Update()
         {
+            //Place new attachable on bot
             if (Input.GetMouseButtonDown(0))
             {
                 Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -96,7 +97,7 @@ namespace StarSalvager
 
                 Vector2Int mouseCoordinate = new Vector2Int((int)(worldMousePosition.x / Constants.gridCellSize), (int)(worldMousePosition.y / Constants.gridCellSize));
 
-                if (Mathf.Abs(mouseCoordinate.x) > 5 || Mathf.Abs(mouseCoordinate.y) > 5)
+                if (Mathf.Abs(mouseCoordinate.x) > 3 || Mathf.Abs(mouseCoordinate.y) > 3)
                     return;
 
                 foreach (ScrapyardBot scrapBot in _scrapyardBots)
@@ -122,6 +123,7 @@ namespace StarSalvager
                 }
             }
 
+            //Remove attachable from bot
             if (Input.GetMouseButtonDown(1))
             {
                 Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -144,7 +146,7 @@ namespace StarSalvager
 
                 Vector2Int mouseCoordinate = new Vector2Int((int)(worldMousePosition.x / Constants.gridCellSize), (int)(worldMousePosition.y / Constants.gridCellSize));
 
-                if (Mathf.Abs(mouseCoordinate.x) > 5 || Mathf.Abs(mouseCoordinate.y) > 5)
+                if (Mathf.Abs(mouseCoordinate.x) > 3 || Mathf.Abs(mouseCoordinate.y) > 3)
                     return;
 
                 foreach (ScrapyardBot scrapBot in _scrapyardBots)
@@ -152,21 +154,6 @@ namespace StarSalvager
                     scrapBot.RemoveAttachableAt(mouseCoordinate);
                 }
             }
-
-            /*if (Input.GetAxis("Mouse ScrollWheel") < 0)
-            {
-                scrapyardCameraZoomModifier += 2;
-                ScaleCamera();
-            }
-
-            if (Input.GetAxis("Mouse ScrollWheel") > 0)
-            {
-                if (Values.Globals.ColumnsOnScreen + scrapyardCameraZoomModifier >= 3)
-                {
-                    scrapyardCameraZoomModifier -= 2;
-                    ScaleCamera();
-                }
-            }*/
         }
 
         private void OnDestroy()
@@ -174,19 +161,12 @@ namespace StarSalvager
             Camera.onPostRender -= DrawGL;
         }
 
-        private int scrapyardCameraZoomModifier = 0;
-
         public void RotateBots(float direction)
         {
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
                 scrapBot.Rotate(direction);
             }
-        }
-
-        private void ScaleCamera()
-        {
-            CameraController.SetOrthographicSize(Values.Constants.gridCellSize * (Values.Globals.ColumnsOnScreen + scrapyardCameraZoomModifier), Vector3.zero, true);
         }
 
         private void ToGameplayButtonPressed()

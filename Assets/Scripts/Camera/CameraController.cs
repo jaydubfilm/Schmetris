@@ -75,7 +75,7 @@ namespace StarSalvager.Cameras
 
         //============================================================================================================//
 
-        public void SetOrthographicSize(float screenWidthInWorld, Vector3 botPosition, bool isScrapyard = false)
+        public void SetOrthographicSize(float screenWidthInWorld, Vector3 botPosition, bool inScrapyard = false)
         {
             var orthographicSize = screenWidthInWorld * (Screen.height / (float) Screen.width) / 2;
             camera.orthographicSize = orthographicSize;
@@ -83,7 +83,8 @@ namespace StarSalvager.Cameras
                 botPosition +
                 Vector3.back * 10;
 
-            if (!isScrapyard)
+            //Scrapyard wants the camera anchored differently, so it uses a different formula
+            if (!inScrapyard)
             {
                 transform.position += Vector3.up * (orthographicSize / 2);
             }
