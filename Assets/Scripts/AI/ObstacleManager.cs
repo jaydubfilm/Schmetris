@@ -5,10 +5,11 @@ using StarSalvager.Factories;
 using Recycling;
 using StarSalvager.AI;
 using UnityEngine.UIElements;
+using StarSalvager.Utilities;
 
 namespace StarSalvager
 {
-    public class ObstacleManager : MonoBehaviour
+    public class ObstacleManager : MonoBehaviour, IReset
     {
         private List<IObstacle> m_obstacles;
         private List<Shape> m_notFullyInGridShapes;
@@ -47,6 +48,26 @@ namespace StarSalvager
             }
 
             HandleObstacleMovement();
+        }
+
+        public void Activate()
+        {
+            //Spawn enemies from wave 0
+            SetupStage(0);
+        }
+
+        public void Reset()
+        {
+            for (int i = m_obstacles.Count - 1; i >= 0; i--)
+            {
+                Recycling.Recycler.Recycle<Enemy>(m_obstacles[i].gameObject);
+                m_obstacles.RemoveAt(i);
+            }
+            for (int i = m_notFullyInGridShapes.Count - 1; i >= 0; i--)
+            {
+                Recycling.Recycler.Recycle<Enemy>(m_notFullyInGridShapes[i].gameObject);
+                m_notFullyInGridShapes.RemoveAt(i);
+            }
         }
 
         private void HandleObstacleMovement()
@@ -141,7 +162,7 @@ namespace StarSalvager
         private void SetupStage(int waveNumber)
         {
             m_previousStageData = m_currentStageData;
-            m_currentStageData = LevelManager.Instance.WaveRemoteData.GetRemoteData(waveNumber);
+            m_currentStageData = LevelManager.Instance.CurrentWaveData.GetRemoteData(waveNumber);
             m_nextStageToSpawn = waveNumber + 1;
             m_blendTimer = 0;
         }

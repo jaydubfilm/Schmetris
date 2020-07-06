@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using StarSalvager.Values;
+using StarSalvager.Utilities;
 
-public class ProjectileManager
+public class ProjectileManager : IReset
 {
     private List<Projectile> m_projectiles;
 
@@ -19,6 +20,20 @@ public class ProjectileManager
     public ProjectileManager()
     {
         m_projectiles = new List<Projectile>();
+    }
+
+    public void Activate()
+    {
+
+    }
+
+    public void Reset()
+    {
+        for (int i = m_projectiles.Count - 1; i >= 0; i--)
+        {
+            Recycling.Recycler.Recycle<Enemy>(m_projectiles[i].gameObject);
+            m_projectiles.RemoveAt(i);
+        }
     }
 
     public void UpdateForces()

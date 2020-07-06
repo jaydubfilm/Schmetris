@@ -15,7 +15,7 @@ using StarSalvager.Cameras.Data;
 
 namespace StarSalvager
 {
-    public class LevelManager : SceneSingleton<LevelManager>
+    public class LevelManager : SceneSingleton<LevelManager>, IReset
     {
         public bool generateRandomSeed;
         [DisableIf("$generateRandomSeed")] public int seed = 1234567890;
@@ -28,8 +28,8 @@ namespace StarSalvager
         public CameraController CameraController => m_cameraController;
 
         [SerializeField]
-        private WaveRemoteDataScriptableObject m_waveRemoteData;
-        public WaveRemoteDataScriptableObject WaveRemoteData => m_waveRemoteData;
+        private List<WaveRemoteDataScriptableObject> m_waveRemoteData;
+        public WaveRemoteDataScriptableObject CurrentWaveData => m_waveRemoteData[CurrentWave];
 
         [SerializeField]
         private Button m_scrapyardButton;
@@ -41,6 +41,9 @@ namespace StarSalvager
 
         private int m_currentStage;
         public int CurrentStage => m_currentStage;
+
+        private int m_currentWave = 0;
+        public int CurrentWave => m_currentWave;
 
         private bool m_started = false;
 
@@ -106,6 +109,8 @@ namespace StarSalvager
 
         private void Start()
         {
+            m_bots = new List<Bot>();
+
             if (generateRandomSeed)
             {
                 seed = Random.Range(int.MinValue, int.MaxValue);
@@ -116,15 +121,26 @@ namespace StarSalvager
             m_menuButton.onClick.AddListener(MenuButtonPressed);
 
             Random.InitState(seed);
+        }
 
-            m_bots = new List<Bot>();
-            m_bots.Add (FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
+        private void Update()
+        {
+            m_waveTimer += Time.deltaTime;
+            m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+            
+            ProjectileManager.UpdateForces();
+        }
+
+        public void Activate()
+        {
+            m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             BotGameObject.transform.position = new Vector2(0, 0);
             BotGameObject.InitBot();
             Bot.OnBotDied += deadBot =>
             {
                 Debug.LogError("Bot Died. Press 'R' to restart");
             };
+            BotGameObject.transform.parent = null;
             SceneManager.MoveGameObjectToScene(BotGameObject.gameObject, gameObject.scene);
 
             InputManager.Instance.InitInput();
@@ -140,41 +156,20 @@ namespace StarSalvager
                 Values.Globals.GridSizeY = (int)((Camera.main.orthographicSize * Values.Constants.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Values.Constants.gridCellSize);
             }
             WorldGrid.SetupGrid();
-            m_started = true;
+            ProjectileManager.Activate();
         }
-        
-        //TODO: Review whether this is the proper way to handle things that should happen on scene activation
-        private void OnEnable()
+
+        public void Reset()
         {
-            if (m_started)
+            m_worldGrid = null;
+            for (int i = m_bots.Count - 1; i >= 0; i--)
             {
-                InputManager.Instance.InitInput();
-                CameraController.SetOrthographicSize(Constants.gridCellSize * Values.Globals.ColumnsOnScreen, BotGameObject.transform.position);
-                if (Globals.Orientation == ORIENTATION.VERTICAL)
-                {
-                    Values.Globals.GridSizeX = (int)(Values.Globals.ColumnsOnScreen * Values.Constants.GridWidthRelativeToScreen);
-                    Values.Globals.GridSizeY = (int)((Camera.main.orthographicSize * Values.Constants.GridHeightRelativeToScreen * 2) / Values.Constants.gridCellSize);
-                }
-                else
-                {
-                    Values.Globals.GridSizeX = (int)(Values.Globals.ColumnsOnScreen * Values.Constants.GridWidthRelativeToScreen * (Screen.height / (float)Screen.width));
-                    Values.Globals.GridSizeY = (int)((Camera.main.orthographicSize * Values.Constants.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Values.Constants.gridCellSize);
-                }
-                WorldGrid.SetupGrid();
+                Recycling.Recycler.Recycle<Bot>(m_bots[i].gameObject);
+                m_bots.RemoveAt(i);
             }
-        }
-
-        private void Update()
-        {
-            m_waveTimer += Time.deltaTime;
+            m_waveTimer = 0;
             m_currentStage = m_waveRemoteData.GetCurrentStage(m_waveTimer);
-            
-            ProjectileManager.UpdateForces();
-        }
-
-        private void OnDisable()
-        {
-            //m_worldGrid = null;
+            ProjectileManager.Reset();
         }
 
         private void ScrapyardButtonPressed()
