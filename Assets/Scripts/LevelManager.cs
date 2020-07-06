@@ -47,6 +47,9 @@ namespace StarSalvager
 
         private bool m_started = false;
 
+        [SerializeField]
+        private Canvas m_pauseCanvas;
+
         public WorldGrid WorldGrid
         {
             get
@@ -127,6 +130,8 @@ namespace StarSalvager
         {
             m_waveTimer += Time.deltaTime;
             m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+            if (m_currentStage == -1)
+                TransitionToNewWave();
             
             ProjectileManager.UpdateForces();
         }
@@ -168,8 +173,31 @@ namespace StarSalvager
                 m_bots.RemoveAt(i);
             }
             m_waveTimer = 0;
-            m_currentStage = m_waveRemoteData.GetCurrentStage(m_waveTimer);
+            m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
             ProjectileManager.Reset();
+        }
+
+        private void TransitionToNewWave()
+        {
+            print("NEWWAVE");
+            if (m_currentWave < m_waveRemoteData.Count - 1)
+            {
+                //offer trip to scrapyard
+                print("TRANSITION TO NEXT WAVE");
+
+                Time.timeScale = 0;
+
+                m_currentWave++;
+                m_waveTimer = 0;
+                m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+            }
+            else
+            {
+                Time.timeScale = 0;
+                
+                print("GO TO SCRAPYARD");
+                //Go to scrapyard
+            }
         }
 
         private void ScrapyardButtonPressed()
