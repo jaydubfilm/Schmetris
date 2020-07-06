@@ -8,10 +8,12 @@ using UnityEngine.InputSystem;
 
 namespace StarSalvager.Utilities.Inputs
 {
-    public class InputManager : Singleton<InputManager>, IInput
+    public class InputManager : Singleton<InputManager>, IInput, IPausable
     {
         private Bot[] _bots;
         private ScrapyardBot[] _scrapyardBots;
+
+        public bool isPaused => GameTimer.IsPaused;
 
         private ObstacleManager obstacleManager
         {
@@ -53,6 +55,7 @@ namespace StarSalvager.Utilities.Inputs
         private void Start()
         {
             Globals.OrientationChange += SetOrientation;
+            GameTimer.AddPausable(this);
         }
 
         private void OnEnable()
@@ -131,6 +134,9 @@ namespace StarSalvager.Utilities.Inputs
 
         private void SideMovement(InputAction.CallbackContext ctx)
         {
+            if (isPaused)
+                return;
+            
             var move = ctx.ReadValue<float>();
             _prevMove = move;
 
@@ -154,6 +160,9 @@ namespace StarSalvager.Utilities.Inputs
 
         private void SideMovement(float move)
         {
+            if (isPaused)
+                return;
+
             var noObstacles = obstacleManager is null;
 
             foreach (var bot in _bots)
@@ -185,6 +194,9 @@ namespace StarSalvager.Utilities.Inputs
 
         private void Rotate(InputAction.CallbackContext ctx)
         {
+            if (isPaused)
+                return;
+
             var rot = ctx.ReadValue<float>();
 
             foreach (var bot in _bots)
@@ -197,7 +209,19 @@ namespace StarSalvager.Utilities.Inputs
                 scrapyardBot.Rotate(rot);
             }
         }
-        
+
+        //============================================================================================================//
+
+        public void OnResume()
+        {
+
+        }
+
+        public void OnPause()
+        {
+
+        }
+
         //============================================================================================================//
     }
 }
