@@ -38,6 +38,11 @@ namespace StarSalvager.ScriptableObjects
 
                 stageTimer -= StageRemoteData[currentStage].StageDuration;
                 currentStage++;
+
+                if (currentStage >= StageRemoteData.Count)
+                {
+                    return -1;
+                }
             }
 
             return currentStage;
