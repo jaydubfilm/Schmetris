@@ -40,7 +40,7 @@ namespace StarSalvager.AI
                 bot.TryHitAt(transform.position, DamageAmount);
             }
 
-            Recycler.Recycle(typeof(Projectile), this.gameObject);
+            Recycler.Recycle<Projectile>(this);
         }
     }
 }

@@ -21,5 +21,12 @@ namespace StarSalvager.Utilities.Extensions
         {
             return direction.ToVector2Int();
         }
+        
+        public static Vector2Int ToVector2Int(this Vector2 vector2)
+        {
+            return new Vector2Int(
+                Mathf.RoundToInt(vector2.x),
+                Mathf.RoundToInt(vector2.y));
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager;
 using StarSalvager.Values;
@@ -91,7 +92,7 @@ namespace StarSalvager.Prototype
                 {
                     activeShapes.Remove(activeShape);
                     //Debug.Log(activeShape.transform.position.y);
-                    activeShape.Destroy();
+                    Recycler.Recycle<Shape>(activeShape);
                 }
             }
             

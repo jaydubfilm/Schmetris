@@ -552,10 +552,9 @@ namespace StarSalvager
                             {
                                 
                                 Debug.LogError($"Conflict found at {newBotCoordinate + differences[i]}");
-                                //Debug.Break();
+                                Debug.Break();
+                                //Recycler.Recycle<Shape>(shape);
                                 
-                                shape.Destroy();
-
                                 return false;
                             }
                             
@@ -563,7 +562,10 @@ namespace StarSalvager
                         }
                         
                         //Recycle the Shape, without also recycling the Bits since they were just attached to the bot
-                        shape.Destroy(false);
+                        Recycler.Recycle<Shape>(shape, new
+                        {
+                            recycleBits = false
+                        });
                         
                         CheckForCombosAround(bitsToAdd);
 

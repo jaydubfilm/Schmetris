@@ -124,7 +124,6 @@ namespace StarSalvager
             
             //var shortest = 999f;
             //var point = Vector2.zero;
- //
             //foreach (var contact in points)
             //{
             //    Debug.DrawRay(contact.point, Vector3.up, Color.blue, 1f);
