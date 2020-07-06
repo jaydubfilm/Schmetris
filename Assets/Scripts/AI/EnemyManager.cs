@@ -5,10 +5,11 @@ using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.AI;
 using System.Linq;
+using StarSalvager.Utilities;
 
 namespace StarSalvager
 {
-    public class EnemyManager : MonoBehaviour
+    public class EnemyManager : MonoBehaviour, IReset
     {
         private List<Enemy> m_enemies;
 
@@ -32,8 +33,6 @@ namespace StarSalvager
             m_enemiesToSpawn = new List<ENEMY_TYPE>();
             m_timesToSpawn = new List<float>();
 
-            //Spawn enemies from wave 0
-            SetupStage(0);
         }
 
         // Update is called once per frame
@@ -46,6 +45,21 @@ namespace StarSalvager
             CheckSpawns();
 
             HandleEnemyMovement();
+        }
+
+        public void Activate()
+        {
+            //Spawn enemies from wave 0
+            SetupStage(0);
+        }
+
+        public void Reset()
+        {
+            for (int i = m_enemies.Count - 1; i >= 0; i--)
+            {
+                Recycling.Recycler.Recycle<Enemy>(m_enemies[i].gameObject);
+                m_enemies.RemoveAt(i);
+            }
         }
 
         private void HandleEnemyMovement()
@@ -104,7 +118,7 @@ namespace StarSalvager
 
         private void SetupStage(int stageNumber)
         {
-            StageRemoteData waveRemoteData = LevelManager.Instance.WaveRemoteData.GetRemoteData(stageNumber);
+            StageRemoteData waveRemoteData = LevelManager.Instance.CurrentWaveData.GetRemoteData(stageNumber);
             m_enemiesToSpawn.Clear();
             m_timesToSpawn.Clear();
 

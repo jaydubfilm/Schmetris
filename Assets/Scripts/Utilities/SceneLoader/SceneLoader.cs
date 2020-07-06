@@ -12,7 +12,6 @@ namespace StarSalvager.SceneLoader
     {
         private static Dictionary<string, SceneRoot> _scenes = new Dictionary<string, SceneRoot>()
         {
-            { "StarSalvagerMainScene", null },
             { "MainMenuScene", null },
             { "LevelScene", null },
             { "ScrapyardScene", null },
