@@ -9,7 +9,7 @@ using StarSalvager.Utilities;
 
 namespace StarSalvager
 {
-    public class EnemyManager : MonoBehaviour, IReset
+    public class EnemyManager : MonoBehaviour, IReset, IPausable
     {
         private List<Enemy> m_enemies;
 
@@ -25,6 +25,7 @@ namespace StarSalvager
 
         private float m_distanceHorizontal = 0.0f;
 
+        public bool isPaused => GameTimer.IsPaused;
 
         // Start is called before the first frame update
         void Start()
@@ -32,12 +33,15 @@ namespace StarSalvager
             m_enemies = new List<Enemy>();
             m_enemiesToSpawn = new List<ENEMY_TYPE>();
             m_timesToSpawn = new List<float>();
-
+            GameTimer.AddPausable(this);
         }
 
         // Update is called once per frame
         void Update()
         {
+            if (isPaused)
+                return;
+
             if (LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
             {
                 SetupStage(m_nextStageToSpawn);
@@ -191,5 +195,19 @@ namespace StarSalvager
 
             m_distanceHorizontal += direction * Constants.gridCellSize;
         }
+
+        //============================================================================================================//
+
+        public void OnResume()
+        {
+
+        }
+
+        public void OnPause()
+        {
+
+        }
+
+        //============================================================================================================//
     }
 }

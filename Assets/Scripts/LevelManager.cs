@@ -15,7 +15,7 @@ using StarSalvager.Cameras.Data;
 
 namespace StarSalvager
 {
-    public class LevelManager : SceneSingleton<LevelManager>, IReset
+    public class LevelManager : SceneSingleton<LevelManager>, IReset, IPausable
     {
         public bool generateRandomSeed;
         [DisableIf("$generateRandomSeed")] public int seed = 1234567890;
@@ -49,6 +49,8 @@ namespace StarSalvager
 
         [SerializeField]
         private Canvas m_pauseCanvas;
+
+        public bool isPaused => GameTimer.IsPaused;
 
         public WorldGrid WorldGrid
         {
@@ -122,12 +124,16 @@ namespace StarSalvager
 
             m_scrapyardButton.onClick.AddListener(ScrapyardButtonPressed);
             m_menuButton.onClick.AddListener(MenuButtonPressed);
+            GameTimer.AddPausable(this);
 
             Random.InitState(seed);
         }
 
         private void Update()
         {
+            if (isPaused)
+                return;
+
             m_waveTimer += Time.deltaTime;
             m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
             if (m_currentStage == -1)
@@ -179,13 +185,10 @@ namespace StarSalvager
 
         private void TransitionToNewWave()
         {
-            print("NEWWAVE");
             if (m_currentWave < m_waveRemoteData.Count - 1)
             {
-                //offer trip to scrapyard
-                print("TRANSITION TO NEXT WAVE");
-
-                Time.timeScale = 0;
+                GameTimer.SetPaused(true);
+                m_pauseCanvas.gameObject.SetActive(true);
 
                 m_currentWave++;
                 m_waveTimer = 0;
@@ -193,9 +196,9 @@ namespace StarSalvager
             }
             else
             {
-                Time.timeScale = 0;
+                GameTimer.SetPaused(true);
+                m_pauseCanvas.gameObject.SetActive(true);
                 
-                print("GO TO SCRAPYARD");
                 //Go to scrapyard
             }
         }
@@ -209,5 +212,19 @@ namespace StarSalvager
         {
             StarSalvager.SceneLoader.SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
         }
+
+        //============================================================================================================//
+
+        public void OnResume()
+        {
+
+        }
+
+        public void OnPause()
+        {
+
+        }
+
+        //============================================================================================================//
     }
 }

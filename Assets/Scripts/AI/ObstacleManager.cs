@@ -9,7 +9,7 @@ using StarSalvager.Utilities;
 
 namespace StarSalvager
 {
-    public class ObstacleManager : MonoBehaviour, IReset
+    public class ObstacleManager : MonoBehaviour, IReset, IPausable
     {
         private List<IObstacle> m_obstacles;
         private List<Shape> m_notFullyInGridShapes;
@@ -25,11 +25,14 @@ namespace StarSalvager
 
         private float m_distanceHorizontal = 0.0f;
 
+        public bool isPaused => GameTimer.IsPaused;
+
         // Start is called before the first frame update
         void Start()
         {
             m_obstacles = new List<IObstacle>();
             m_notFullyInGridShapes = new List<Shape>();
+            GameTimer.AddPausable(this);
 
             SetupStage(0);
         }
@@ -38,6 +41,9 @@ namespace StarSalvager
         // Update is called once per frame
         void Update()
         {
+            if (isPaused)
+                return;
+
             if (m_blendTimer < m_currentStageData.StageBlendPeriod)
             {
                 m_blendTimer += Time.deltaTime;
@@ -319,5 +325,19 @@ namespace StarSalvager
                     break;
             }
         }
+
+        //============================================================================================================//
+
+        public void OnResume()
+        {
+
+        }
+
+        public void OnPause()
+        {
+
+        }
+
+        //============================================================================================================//
     }
 }

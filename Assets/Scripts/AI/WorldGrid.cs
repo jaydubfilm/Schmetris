@@ -261,7 +261,6 @@ namespace StarSalvager
                 }
             }
 
-            Debug.Log("FAIL TO SPACE");
             return GetRandomTopGridSquareWorldPosition();
         }
 
