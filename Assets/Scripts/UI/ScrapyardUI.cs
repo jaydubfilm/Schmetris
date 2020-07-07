@@ -90,6 +90,7 @@ namespace StarSalvager.UI
         private void PartPressed(PART_TYPE partType)
         {
             Debug.Log($"Selected {partType}");
+            m_scrapyard.selectedPartType = partType;
         }
 
     }

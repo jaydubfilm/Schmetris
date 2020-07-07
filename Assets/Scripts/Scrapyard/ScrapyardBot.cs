@@ -200,9 +200,12 @@ namespace StarSalvager
 
         public void RemoveAllBits()
         {
-            foreach(IAttachable attachable in attachedBlocks)
+            for (int i = attachedBlocks.Count - 1; i >= 0; i--)
             {
-
+                if (attachedBlocks[i] is ScrapyardBit)
+                {
+                    DetachBit(attachedBlocks[i]);
+                }
             }
         }
 
@@ -210,7 +213,7 @@ namespace StarSalvager
         {
             attachable.transform.parent = null;
 
-            RemoveAttachable(attachable);
+            DestroyAttachable(attachable);
         }
 
         private void RemoveAttachable(IAttachable attachable)

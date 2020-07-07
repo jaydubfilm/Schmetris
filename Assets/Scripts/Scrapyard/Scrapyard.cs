@@ -1,8 +1,5 @@
 ﻿using StarSalvager.Values;
 using StarSalvager.Factories;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Cameras;
@@ -20,7 +17,7 @@ namespace StarSalvager
         private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
-        public PartRemoteData selectedData = null;
+        public PART_TYPE? selectedPartType = null;
 
         // Start is called before the first frame update
         void Start()
@@ -32,6 +29,14 @@ namespace StarSalvager
         // Update is called once per frame
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                {
+                    scrapBot.RemoveAllBits();
+                }
+            }
+            
             //Place new attachable on bot
             if (Input.GetMouseButtonDown(0))
             {
@@ -63,9 +68,9 @@ namespace StarSalvager
                     if (scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate) != null)
                         continue;
 
-                    if (selectedData != null)
+                    if (selectedPartType != null)
                     {
-                        scrapBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(selectedData.partType, 1));
+                        scrapBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)selectedPartType, 1));
                         continue;
                     }
 
