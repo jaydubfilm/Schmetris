@@ -28,11 +28,11 @@ namespace StarSalvager.Factories.Data
     [Serializable]
     public class LevelCost
     {
-        public List<Cost> levelCosts;
+        public List<ResourceAmount> levelCosts;
     }
 
     [Serializable]
-    public struct Cost
+    public struct ResourceAmount
     {
         public BIT_TYPE type;
         public int amount;

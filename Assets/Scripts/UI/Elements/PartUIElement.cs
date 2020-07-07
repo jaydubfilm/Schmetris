@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class PartUIElement : ButtonUIElement<PartRemoteData, PART_TYPE>
+    public class PartUIElement : ButtonReturnUIElement<PartRemoteData, PART_TYPE>
     {
         private static PartAttachableFactory _partAttachableFactory;
         private static BitAttachableFactory _bitAttachableFactory;

@@ -7,17 +7,19 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class CostUIElement : UIElement<ResourceAmount>
+    public class ResourceUIElement : UIElement<ResourceAmount>
     {
         private static BitAttachableFactory _bitAttachableFactory;
         
-        //============================================================================================================//
-
+        [SerializeField, Required]
+        private TMP_Text resourceAmountText;
         [SerializeField, Required]
         private Image resourceImage;
-
-        [SerializeField, Required]
-        private TMP_Text costText;
+        
+        public int Amount
+        {
+            set => resourceAmountText.text = $"{value}";
+        }
         
         //============================================================================================================//
         
@@ -28,13 +30,13 @@ namespace StarSalvager.UI
             
             this.data = data;
 
+            Amount = data.amount;
+            
             resourceImage.sprite = _bitAttachableFactory.GetBitProfile(data.type).Sprites[1];
-
-            costText.text = $"{data.amount}";
         }
+
+
         
         //============================================================================================================//
-    } 
+    }
 }
-
-

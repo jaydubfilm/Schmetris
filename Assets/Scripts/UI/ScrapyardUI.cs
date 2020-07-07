@@ -74,6 +74,7 @@ namespace StarSalvager.UI
 
         private void InitPartUI()
         {
+            //FIXME This needs to move to the Factory
             foreach (var partRemoteData in _remotePartProfileScriptable.partRemoteData)
             {
                 var partTemp = Instantiate(partElementPrefab).GetComponent<PartUIElement>();

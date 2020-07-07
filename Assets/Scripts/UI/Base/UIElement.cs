@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace StarSalvager.UI
 {
     public abstract class UIElement<T> : MonoBehaviour
     {
-        [SerializeField, ShowInInspector, Sirenix.OdinInspector.ReadOnly]
+        [SerializeField, ShowInInspector, ReadOnly]
         protected T data;
 
         //============================================================================================================//
