@@ -49,10 +49,13 @@ MonoBehaviour:
   TEST_RotSpeed: 500
   TEST_MergeSpeed: 5
   DelayedAutoStartTime: 0.05
+  useMagnet: 1
+  currentMagnet: 2
   coreHeat: 0
   coolSpeed: 20
   coolDelay: 1
   coolTimer: 0
+  magnetCount: 0
 --- !u!66 &2681746267895581254
 CompositeCollider2D:
   m_ObjectHideFlags: 0

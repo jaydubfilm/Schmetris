@@ -22,13 +22,24 @@ namespace StarSalvager.Factories.Data
         [FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true)]
         public int[] data;
 
+        //This only compares Type and not all individual properties
         #region IEquatable
         
+        /// <summary>
+        /// This only compares Type and not all individual properties
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool Equals(PartRemoteData other)
         {
             return other != null && partType == other.partType;
         }
 
+        /// <summary>
+        /// This only compares Type and not all individual properties
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -57,34 +68,7 @@ namespace StarSalvager.Factories.Data
         public List<ResourceAmount> levelCosts;
     }
 
-    [Serializable]
-    public struct ResourceAmount: IEquatable<ResourceAmount>
-    {
-        public BIT_TYPE type;
-        public int amount;
-        
-        #region IEquatable
-        
-        public bool Equals(ResourceAmount other)
-        {
-            return type == other.type;
-        }
 
-        public override bool Equals(object obj)
-        {
-            return obj is ResourceAmount other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return ((int) type * 397) ^ amount;
-            }
-        }
-        
-        #endregion //IEquatable
-    }
 }
 
 

@@ -9,6 +9,7 @@ using StarSalvager.AI;
 using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
+using StarSalvager.Prototype;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -18,7 +19,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Bot : MonoBehaviour
+    public class Bot : MonoBehaviour, ICustomRecycle
     {
         public static Action<Bot> OnBotDied;
 
@@ -68,8 +69,11 @@ namespace StarSalvager
         private float targetRotation;
 
 
-        [SerializeField]
+        [SerializeField, BoxGroup("Magnets")]
         private bool useMagnet = true;
+        [SerializeField, BoxGroup("Magnets")]
+        private MAGNET currentMagnet = MAGNET.DEFAULT;
+        
         
         //============================================================================================================//
 
@@ -268,9 +272,6 @@ namespace StarSalvager
 
         private void MoveBot()
         {
-            
-            
-
             var position = rigidbody.position;
 
             //TODO See if this will be enough for the current setup, or if we will need something more robust.
@@ -788,7 +789,7 @@ namespace StarSalvager
 
         #region Detach Bits
         
-        private void DetachBits(IReadOnlyCollection<IAttachable> attachables, bool delayedCollider = false)
+        private void DetachBits(IReadOnlyCollection<IAttachable> detachingBits, bool delayedCollider = false)
         {
             //if (attachables.Count == 1)
             //{
@@ -796,12 +797,12 @@ namespace StarSalvager
             //    return;
             //}
             
-            foreach (var attachable in attachables)
+            foreach (var attachable in detachingBits)
             {
                 attachedBlocks.Remove(attachable);
             }
 
-            var bits = attachables.OfType<Bit>().ToList();
+            var bits = detachingBits.OfType<Bit>().ToList();
 
             var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bits);
 
@@ -815,6 +816,47 @@ namespace StarSalvager
                     shape.SetColliderActive(true);
                 });
             }
+
+            
+            
+            CompositeCollider2D.GenerateGeometry();
+
+        }
+        private void DetachBitsCheck(IReadOnlyCollection<IAttachable> detachingBits, bool delayedCollider = false)
+        {
+            foreach (var attachable in detachingBits)
+            {
+                attachedBlocks.Remove(attachable);
+            }
+
+            var removes = new List<IAttachable>(detachingBits);
+            
+
+            while (removes.Count > 0)
+            {
+                var toShape = new List<IAttachable>();
+                removes.GetAllAttachedBits(removes[0], null , ref toShape);
+
+                foreach (var bit in toShape)
+                {
+                    removes.Remove(bit);
+                }
+
+                var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(toShape.OfType<Bit>().ToList());
+
+                if (delayedCollider)
+                {
+                    shape.SetColliderActive(false);
+
+                    this.DelayedCall(1f, () =>
+                    {
+                        shape.SetColor(Color.white);
+                        shape.SetColliderActive(true);
+                    });
+                }
+            }
+
+            
             
             CompositeCollider2D.GenerateGeometry();
 
@@ -1006,6 +1048,36 @@ namespace StarSalvager
                 
                 DetachBits(attachedBits);
             }
+        }
+        
+        /// <summary>
+        /// Checks to see if removing the list wantToRemove causes disconnects on the bot. Returns true on any disconnect.
+        /// Returns false if all is okay.
+        /// </summary>
+        /// <param name="wantToRemove"></param>
+        /// <returns></returns>
+        private bool RemovalCausesDisconnects(ICollection<IAttachable> wantToRemove)
+        {
+            var toSolve = new List<IAttachable>(attachedBlocks);
+            var ignoreCoordinates = wantToRemove?.Select(x => x.Coordinate).ToList();
+            
+            foreach (var attachable in toSolve)
+            {
+                if (!attachedBlocks.Contains(attachable))
+                    continue;
+
+                if (wantToRemove != null && wantToRemove.Contains(attachable))
+                    continue;
+                
+                var hasPathToCore = attachedBlocks.HasPathToCore(attachable, ignoreCoordinates);
+                
+                if(hasPathToCore)
+                    continue;
+
+                return true;
+            }
+
+            return false;
         }
         
         #endregion //Check for New Disconnects
@@ -1603,7 +1675,27 @@ namespace StarSalvager
             //Checks here if the total of attached blocks (Minus the Core) change
             if (bits.Count <= magnetCount)
                 return;
+
+            switch (currentMagnet)
+            {
+                case MAGNET.DEFAULT:
+                    DefaultMagnetCheck(bits);
+                    break;
+                case MAGNET.BUMP:
+                    BumpMagnetCheck(bits);
+                    break;
+                case MAGNET.LOWEST:
+                    LowestMagnetCheck(bits);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             
+            
+        }
+
+        private void DefaultMagnetCheck(List<Bit> bits)
+        {
             //Gets the last added overage to remove
             var bitsToRemove = bits.GetRange(magnetCount, bits.Count - (magnetCount));
             
@@ -1635,8 +1727,120 @@ namespace StarSalvager
             {
                 DetachBits(bitsToRemove, true);
             });
+        }
+
+        private void BumpMagnetCheck(List<Bit> bits)
+        {
+            //Gets the last added overage to remove
+            var bitsToRemove = bits.GetRange(magnetCount, bits.Count - (magnetCount));
+            
+            //Get the coordinates of the blocks leaving. This is used to determine if anyone will be left floating
+            var leavingCoordinates = bitsToRemove.Select(a => a.Coordinate).ToList();
+
+            //Go through the bots Blocks to make sure no one will be floating when we detach the parts.
+            for (var i = attachedBlocks.Count - 1; i >= 0; i--)
+            {
+                if (bitsToRemove.Contains(attachedBlocks[i]))
+                    continue;
+
+                if (attachedBlocks.HasPathToCore(attachedBlocks[i], leavingCoordinates))
+                    continue;
+
+                Debug.LogError(
+                    $"Found a potential floater {attachedBlocks[i].gameObject.name} at {attachedBlocks[i].Coordinate}",
+                    attachedBlocks[i].gameObject);
+            }
+
+            foreach (var bit in bitsToRemove)
+            {
+                bit.SetColor(Color.gray);
+            }
+            
+            //TODO Push away from Bot
+            DetachBits(bitsToRemove, true);
+        }
+
+        private void LowestMagnetCheck(List<Bit> bits)
+        {
+            var toRemoveCount = bits.Count - magnetCount;
+
+            var checkedBits = new List<Bit>();
+            var bitsToRemove = new List<Bit>();
+            
+            while (toRemoveCount > 0)
+            {
+                var toRemove = FindLowestBit(bits, checkedBits);
+
+                checkedBits.Add(toRemove);
+
+                if (bits.Count == checkedBits.Count)
+                {
+                    Debug.LogError($"Left with {toRemoveCount} bits unsolved");
+                    break;
+                }
+
+                
+                
+                if (RemovalCausesDisconnects(checkedBits.OfType<IAttachable>().ToList()))
+                    continue;
+
+                //Debug.Log($"Found Lowest {toRemove.gameObject.name}", toRemove);
+                
+                bitsToRemove.Add(toRemove);
+
+                toRemoveCount--;
+            }
+            
+            foreach (var bit in bitsToRemove)
+            {
+                bit.SetColor(Color.gray);
+            }
+
+            //TODO I should consider whether or not to include a delay here
+            this.DelayedCall(1f, () =>
+            {
+                //Detach the specified bits after 1sec
+                DetachBitsCheck(bitsToRemove, true);
+            });
+
+            //if (toRemoveCount > 0)
+            //    LowestMagnetCheck(attachedBlocks.OfType<Bit>().ToList());
+        }
+
+        //TODO This will likely need to move to the attachable List extensions
+        private Bit FindLowestBit(List<Bit> bits, ICollection<Bit> toIgnore)
+        {
+            Bit selectedBit = bits[0];
+            
+            var lowestLevel = selectedBit.level;
+            //The lowest Y coordinate
+            var lowestCoordinate = selectedBit.Coordinate.y;
             
             
+
+            foreach (var bit in bits)
+            {
+                if (toIgnore.Contains(bit))
+                    continue;
+                
+                if(bit.level > lowestLevel)
+                    continue;
+
+                //Checks if the piece is higher, and if it is, that the level is not higher than the currently selected Bit
+                //This ensures that even if the lowest Bit is of high level, the lowest will always be selected
+                if (bit.Coordinate.y > lowestCoordinate && !(bit.level < lowestLevel))
+                        continue;
+
+                if (RemovalCausesDisconnects(new List<IAttachable> {bit}))
+                    continue;
+
+                selectedBit = bit;
+                lowestLevel = bit.level;
+                lowestCoordinate = bit.Coordinate.y;
+
+            }
+
+            return selectedBit;
         }
         
         #endregion //Magnet Checks
@@ -1883,5 +2087,29 @@ namespace StarSalvager
         
         //============================================================================================================//
 
+        #region Custom Recycle
+        
+        public void CustomRecycle(params object[] args)
+        {
+            foreach (var attachable in attachedBlocks)
+            {
+                switch (attachable)
+                {
+                    case Bit _:
+                        Recycler.Recycle<Bit>(attachable.gameObject);
+                        break;
+                    case Shape _:
+                        Recycler.Recycle<Shape>(attachable.gameObject);
+                        break;
+                    default:
+                        Destroy(attachable.gameObject);
+                        break;
+                }
+            }
+            
+            attachedBlocks.Clear();
+        }
+        
+        #endregion //Custom Recycle
     }
 }
