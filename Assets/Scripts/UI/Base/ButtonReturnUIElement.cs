@@ -10,7 +10,7 @@ namespace StarSalvager.UI
     /// <typeparam name="T">The Data type that will be stored on this UI Element</typeparam>
     /// <typeparam name="U">The Callback return Type</typeparam>
     [RequireComponent(typeof(Button))]
-    public abstract class ButtonReturnUIElement<T, U> : ButtonUIElement<T>
+    public abstract class ButtonReturnUIElement<T, U> : ButtonUIElement<T> where T : IEquatable<T>
     {
         public abstract void Init(T data, Action<U> OnPressed);
 

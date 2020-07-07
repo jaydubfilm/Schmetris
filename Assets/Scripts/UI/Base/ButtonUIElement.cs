@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace StarSalvager.UI
 {
     [RequireComponent(typeof(Button))]
-    public abstract class ButtonUIElement<T> : UIElement<T>
+    public abstract class ButtonUIElement<T> : UIElement<T> where T : IEquatable<T>
     {
         protected Button button
         {

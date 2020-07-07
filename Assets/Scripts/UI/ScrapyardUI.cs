@@ -1,5 +1,8 @@
-﻿using Sirenix.OdinInspector;
+﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.UI;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,13 +12,24 @@ namespace StarSalvager.UI
     public class ScrapyardUI : MonoBehaviour
     {
         [SerializeField, Required, BoxGroup("Part UI")]
-        private GameObject partElementPrefab;
-
-        [SerializeField, Required, BoxGroup("Part UI")]
-        private RectTransform partListContentTransform;
-        
-        [SerializeField, Required, BoxGroup("Part UI")]
         private RemotePartProfileScriptableObject _remotePartProfileScriptable;
+
+        [SerializeField, BoxGroup("Part UI")]
+        private PartUIElementScrollView partsScrollView;
+        
+        //============================================================================================================//
+        
+        [SerializeField, BoxGroup("Resource UI")]
+        private ResourceUIElementScrollView resourceScrollView;
+
+        private Dictionary<BIT_TYPE, int> resourcesTest = new Dictionary<BIT_TYPE, int>
+        {
+            {BIT_TYPE.RED, 0},
+            {BIT_TYPE.BLUE, 0},
+            {BIT_TYPE.YELLOW, 0},
+            {BIT_TYPE.GREEN, 0},
+            {BIT_TYPE.GREY, 0},
+        };
         
         //============================================================================================================//
         
@@ -47,7 +61,7 @@ namespace StarSalvager.UI
         {
             zoomSliderText.Init();
 
-            InitPartUI();
+            InitUiScrollViews();
 
             InitButtons();
         }
@@ -56,6 +70,8 @@ namespace StarSalvager.UI
 
         private void InitButtons()
         {
+            //--------------------------------------------------------------------------------------------------------//
+            
             leftTurnButton.onClick.AddListener(() =>
             {
                 m_scrapyard.RotateBots(-1.0f);
@@ -65,26 +81,98 @@ namespace StarSalvager.UI
             {
                 m_scrapyard.RotateBots(1.0f);
             });
+            
+            //--------------------------------------------------------------------------------------------------------//
+            
+            SaveButton.onClick.AddListener(() =>
+            {
+                Debug.Log("Save Button Pressed");
+            });
+            
+            LoadButton.onClick.AddListener(() =>
+            {
+                Debug.Log("Load Button Pressed");
+            });
+            
+            //--------------------------------------------------------------------------------------------------------//
 
             ReadyButton.onClick.AddListener(() =>
             {
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
             });
+            
+            //--------------------------------------------------------------------------------------------------------//
         }
 
-        private void InitPartUI()
+        private void InitUiScrollViews()
         {
             //FIXME This needs to move to the Factory
             foreach (var partRemoteData in _remotePartProfileScriptable.partRemoteData)
             {
-                var partTemp = Instantiate(partElementPrefab).GetComponent<PartUIElement>();
-                partTemp.gameObject.name = $"{partRemoteData.partType}_UIElement";
-                partTemp.transform.SetParent(partListContentTransform, false);
-                partTemp.transform.localScale = Vector3.one;
+
+                var element = partsScrollView.AddElement<PartUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement");
+                element.Init(partRemoteData, PartPressed);
+            }
+
+            foreach (var resource in resourcesTest)
+            {
+                var data = new ResourceAmount
+                {
+                    type = resource.Key,
+                    amount = resource.Value
+                };
                 
-                partTemp.Init(partRemoteData, PartPressed);
+                var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
+                element.Init(data);
             }
         }
+        
+        //============================================================================================================//
+
+        #if UNITY_EDITOR
+        
+        [Button("Test Resource Update"), DisableInEditorMode, BoxGroup("Resource UI")]
+        private void TestUpdateResources()
+        {
+            var _resourcesTest = new Dictionary<BIT_TYPE, int>();
+            for (var i = 0; i < 3; i++)
+            {
+                var type = (BIT_TYPE) Random.Range(1, 6);
+                var amount = Random.Range(0, 1000);
+
+                if (_resourcesTest.ContainsKey(type))
+                {
+                    _resourcesTest[type] += amount;
+                    continue;
+                }
+
+                _resourcesTest.Add(type, amount);
+
+            }
+
+            UpdateResources(_resourcesTest);
+        }
+
+        #endif
+        
+        public void UpdateResources(Dictionary<BIT_TYPE, int> resources)
+        {
+            UpdateResources(resources.ToResourceList());
+        }
+        
+        public void UpdateResources(List<ResourceAmount> resources)
+        {
+            foreach (var resourceAmount in resources)
+            {
+                var element = resourceScrollView.FindElement<ResourceUIElement>(resourceAmount);
+
+                if (element == null)
+                    continue;
+                
+                element.Init(resourceAmount);
+            }
+        }
+        
         
         //============================================================================================================//
 

@@ -28,11 +28,12 @@ namespace StarSalvager.Utilities.UI
         public void Init()
         {
             _slider.onValueChanged.AddListener(ValueChanged);
+            sliderText.text = string.Format(format, 1f / _slider.value);
         }
 
         private void ValueChanged(float data)
         {
-            sliderText.text = string.Format(format, data);
+            sliderText.text = string.Format(format, 1f / data);
 
             CameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * data, Vector3.zero, true);
         }
