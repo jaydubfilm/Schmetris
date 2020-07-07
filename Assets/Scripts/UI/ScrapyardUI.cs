@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Cameras;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.UI;
+using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,15 +23,6 @@ namespace StarSalvager.UI
         
         [SerializeField, BoxGroup("Resource UI")]
         private ResourceUIElementScrollView resourceScrollView;
-
-        private Dictionary<BIT_TYPE, int> resourcesTest = new Dictionary<BIT_TYPE, int>
-        {
-            {BIT_TYPE.RED, 0},
-            {BIT_TYPE.BLUE, 0},
-            {BIT_TYPE.YELLOW, 0},
-            {BIT_TYPE.GREEN, 0},
-            {BIT_TYPE.GREY, 0},
-        };
         
         //============================================================================================================//
         
@@ -49,9 +42,14 @@ namespace StarSalvager.UI
         private Button LoadButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button ReadyButton;
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button SellBitsButton;
 
 
         //============================================================================================================//
+
+        [SerializeField]
+        private CameraController m_cameraController;
 
         [SerializeField]
         private Scrapyard m_scrapyard;
@@ -59,7 +57,7 @@ namespace StarSalvager.UI
         
         private void Start()
         {
-            zoomSliderText.Init();
+            zoomSliderText.Init(m_cameraController);
 
             InitUiScrollViews();
 
@@ -98,9 +96,16 @@ namespace StarSalvager.UI
 
             ReadyButton.onClick.AddListener(() =>
             {
+                m_scrapyard.SaveBlockData();
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
             });
-            
+
+            SellBitsButton.onClick.AddListener(() =>
+            {
+                m_scrapyard.SellBits();
+                UpdateResources(PlayerPersistentData.GetPlayerData().GetResources());
+            });
+
             //--------------------------------------------------------------------------------------------------------//
         }
 
@@ -114,7 +119,9 @@ namespace StarSalvager.UI
                 element.Init(partRemoteData, PartPressed);
             }
 
-            foreach (var resource in resourcesTest)
+            var resources = PlayerPersistentData.GetPlayerData().GetResources();
+
+            foreach (var resource in resources)
             {
                 var data = new ResourceAmount
                 {

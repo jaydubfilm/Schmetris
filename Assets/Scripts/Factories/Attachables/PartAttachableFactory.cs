@@ -95,7 +95,6 @@ namespace StarSalvager.Factories
             var temp = CreateScrapyardGameObject(blockData);
 
             return temp.GetComponent<T>();
-
         }
 
         //============================================================================================================//

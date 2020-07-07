@@ -6,12 +6,14 @@ namespace StarSalvager.Factories
     public class BotFactory : FactoryBase
     {
         private readonly GameObject prefab;
+        private readonly GameObject scrapyardPrefab;
         
         //============================================================================================================//
 
-        public BotFactory(GameObject prefab)
+        public BotFactory(GameObject prefab, GameObject scrapyardPrefab)
         {
             this.prefab = prefab;
+            this.scrapyardPrefab = scrapyardPrefab;
         }
         
         //============================================================================================================//
@@ -28,7 +30,22 @@ namespace StarSalvager.Factories
         {
             return CreateGameObject().GetComponent<T>();
         }
-        
+
+        //============================================================================================================//
+
+
+        public GameObject CreateScrapyardGameObject()
+        {
+            var outData = !Recycler.TryGrab<ScrapyardBot>(out GameObject gameObject) ? Object.Instantiate(scrapyardPrefab) : gameObject;
+            outData.name = "ScrapyardBot";
+            return outData;
+        }
+
+        public T CreateScrapyardObject<T>()
+        {
+            return CreateScrapyardGameObject().GetComponent<T>();
+        }
+
         //============================================================================================================//
 
     }

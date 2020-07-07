@@ -54,5 +54,7 @@ MonoBehaviour:
   projectileProfile: {fileID: 11400000, guid: f9b0bb725a6579841b2c3e06b6d54333, type: 2}
   botPrefab: {fileID: 2681746267895581272, guid: d09cf0a6976caab4ea7cd798304820a8,
     type: 3}
+  scrapyardBotPrefab: {fileID: 394989056214196771, guid: 635c72e78b83d2344a6460ef7d8059d5,
+    type: 3}
   comboRemoteData: {fileID: 11400000, guid: e98ad69cab8c1364baddf1bc6ae8b077, type: 2}
   bitProfileAlt: {fileID: 11400000, guid: 628da6f5ae4f6764da2834ca7950430f, type: 2}

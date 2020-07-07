@@ -29,7 +29,7 @@ namespace StarSalvager.Factories
             bit.SetSprite(sprite);
         }
 
-        public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<Bit> bits)
+        public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<IBit> bits)
         {
             var resources = new Dictionary<BIT_TYPE, int>();
 
@@ -43,7 +43,19 @@ namespace StarSalvager.Factories
 
             return resources;
         }
-        
+
+        public Dictionary<BIT_TYPE, int> GetResources(IBit bit)
+        {
+            var resources = new Dictionary<BIT_TYPE, int>();
+
+            if (!resources.ContainsKey(bit.Type))
+                resources.Add(bit.Type, 0);
+
+            resources[bit.Type] += remoteData.GetRemoteData(bit.Type).resource[bit.level];
+
+            return resources;
+        }
+
         //============================================================================================================//
 
         public BitProfile GetBitProfile(BIT_TYPE type)

@@ -12,6 +12,7 @@ namespace StarSalvager.Utilities.Inputs
     {
         private Bot[] _bots;
         private ScrapyardBot[] _scrapyardBots;
+        private Scrapyard _scrapyard;
 
         public bool isPaused => GameTimer.IsPaused;
 
@@ -62,6 +63,7 @@ namespace StarSalvager.Utilities.Inputs
         {
             _bots = FindObjectsOfType<Bot>();
             _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
+            _scrapyard = FindObjectOfType<Scrapyard>();
         } 
 
         private void OnDestroy()
@@ -90,6 +92,12 @@ namespace StarSalvager.Utilities.Inputs
 
                     Input.Actions.Default.Rotate.Enable();
                     Input.Actions.Default.Rotate.performed += Rotate;
+
+                    Input.Actions.Default.LeftClick.Enable();
+                    Input.Actions.Default.LeftClick.performed += LeftClick;
+
+                    Input.Actions.Default.RightClick.Enable();
+                    Input.Actions.Default.RightClick.performed += RightClick;
                     break;
                 case ORIENTATION.HORIZONTAL:
                     Input.Actions.Vertical.SideMovement.Enable();
@@ -97,6 +105,12 @@ namespace StarSalvager.Utilities.Inputs
 
                     Input.Actions.Vertical.Rotate.Enable();
                     Input.Actions.Vertical.Rotate.performed += Rotate;
+
+                    Input.Actions.Default.LeftClick.Enable();
+                    Input.Actions.Default.LeftClick.performed += LeftClick;
+
+                    Input.Actions.Default.RightClick.Enable();
+                    Input.Actions.Default.RightClick.performed += RightClick;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -118,6 +132,12 @@ namespace StarSalvager.Utilities.Inputs
 
             Input.Actions.Vertical.Rotate.Disable();
             Input.Actions.Vertical.Rotate.performed -= Rotate;
+
+            Input.Actions.Default.LeftClick.Disable();
+            Input.Actions.Default.LeftClick.performed -= LeftClick;
+
+            Input.Actions.Default.RightClick.Disable();
+            Input.Actions.Default.RightClick.performed -= RightClick;
         }
         
         //============================================================================================================//
@@ -207,6 +227,25 @@ namespace StarSalvager.Utilities.Inputs
             foreach (var scrapyardBot in _scrapyardBots)
             {
                 scrapyardBot.Rotate(rot);
+            }
+        }
+
+        private void LeftClick(InputAction.CallbackContext ctx)
+        {
+            var clicked = ctx.ReadValue<float>();
+            if (_scrapyard != null)
+            {
+                _scrapyard.LeftClick(clicked);
+            }
+        }
+
+        private void RightClick(InputAction.CallbackContext ctx)
+        {
+
+            var clicked = ctx.ReadValue<float>();
+            if (_scrapyard != null)
+            {
+                _scrapyard.RightClick(clicked);
             }
         }
 

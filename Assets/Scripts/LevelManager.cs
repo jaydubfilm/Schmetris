@@ -12,6 +12,8 @@ using StarSalvager.Factories;
 using StarSalvager.Utilities.Inputs;
 using UnityEngine.SceneManagement;
 using StarSalvager.Cameras.Data;
+using System.Linq;
+using StarSalvager.Utilities.Extensions;
 
 namespace StarSalvager
 {
@@ -146,7 +148,14 @@ namespace StarSalvager
         {
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             BotGameObject.transform.position = new Vector2(0, 0);
-            BotGameObject.InitBot();
+            if (PlayerPersistentData.GetPlayerData().GetCurrentBlockData().Count == 0)
+            {
+                BotGameObject.InitBot();
+            }
+            else
+            {
+                BotGameObject.InitBot(PlayerPersistentData.GetPlayerData().GetCurrentBlockData().ImportBlockDatas(false));
+            }
             Bot.OnBotDied += deadBot =>
             {
                 Debug.LogError("Bot Died. Press 'R' to restart");
@@ -185,11 +194,15 @@ namespace StarSalvager
 
         private void TransitionToNewWave()
         {
+            foreach (Bot bot in m_bots)
+            {
+                PlayerPersistentData.GetPlayerData().SetCurrentBlockData(bot.attachedBlocks.GetBlockDatas());
+            }
+
             if (m_currentWave < m_waveRemoteData.Count - 1)
             {
                 GameTimer.SetPaused(true);
                 m_pauseCanvas.gameObject.SetActive(true);
-
                 m_currentWave++;
                 m_waveTimer = 0;
                 m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);

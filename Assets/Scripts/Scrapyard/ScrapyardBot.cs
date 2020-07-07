@@ -190,10 +190,17 @@ namespace StarSalvager
 
         #region Detach Bits
 
-        public void RemoveAttachableAt(Vector2Int coordinate)
+        public void RemoveAttachableAt(Vector2Int coordinate, bool refund)
         {
             if (attachedBlocks.Any(a => a.Coordinate == coordinate))
             {
+                var attachable = attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
+                switch(attachable)
+                {
+                    case ScrapyardPart scrapyardPart:
+                        PlayerPersistentData.GetPlayerData().AddResources(scrapyardPart.Type, scrapyardPart.level);
+                        break;
+                }
                 DestroyAttachable(attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate));
             }
         }
@@ -222,7 +229,7 @@ namespace StarSalvager
             attachable.SetAttached(false);
         }
 
-        private void DestroyAttachable(IAttachable attachable)
+        private void DestroyAttachable(IAttachable attachable, bool refundCost = true)
         {
             attachedBlocks.Remove(attachable);
             attachable.SetAttached(false);

@@ -37,6 +37,8 @@ namespace StarSalvager.Factories
         
         [SerializeField, Required, BoxGroup("Bot")]
         private GameObject botPrefab;
+        [SerializeField, Required, BoxGroup("Bot")]
+        private GameObject scrapyardBotPrefab;
         [SerializeField, Required, BoxGroup("Puzzle Combos")]
         private ComboRemoteDataScriptableObject comboRemoteData;
 
@@ -105,7 +107,7 @@ namespace StarSalvager.Factories
                     return (_comboFactory ?? (_comboFactory = new ComboFactory(comboRemoteData))) as T;
                 
                 case nameof(BotFactory):
-                    return (_botFactory ?? (_botFactory = new BotFactory(botPrefab))) as T;
+                    return (_botFactory ?? (_botFactory = new BotFactory(botPrefab, scrapyardBotPrefab))) as T;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(typeName), typeName, null);

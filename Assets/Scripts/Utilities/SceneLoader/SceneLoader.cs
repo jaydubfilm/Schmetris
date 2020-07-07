@@ -63,6 +63,10 @@ namespace StarSalvager.SceneLoader
                 ActivateScene("MainMenuScene");
                 SetActiveScene("MainMenuScene");
             }
+            else
+            {
+                ActivateScene(SceneManager.GetActiveScene().name);
+            }
         }
 
         private static IEnumerator LoadSceneAsync(string sceneName)

@@ -5,118 +5,34 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Cameras;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities;
+using System.Collections.Generic;
+using System.Linq;
+using StarSalvager.UI;
+using StarSalvager.Utilities.Inputs;
+using JetBrains.Annotations;
 
 namespace StarSalvager
 {
     public class Scrapyard : MonoBehaviour, IReset
     {
         public Material material;
-        private ScrapyardBot[] _scrapyardBots;
+        private List<ScrapyardBot> _scrapyardBots;
 
         [SerializeField]
         private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
         public PART_TYPE? selectedPartType = null;
+        public int selectedpartLevel = 0;
+
+        [SerializeField]
+        private ScrapyardUI m_scrapyardUI;
 
         // Start is called before the first frame update
         void Start()
         {
-            if (_scrapyardBots == null || _scrapyardBots.Length == 0)
-                _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                foreach (ScrapyardBot scrapBot in _scrapyardBots)
-                {
-                    scrapBot.RemoveAllBits();
-                }
-            }
-            
-            //Place new attachable on bot
-            if (Input.GetMouseButtonDown(0))
-            {
-                Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                if (worldMousePosition.x > 0)
-                {
-                    worldMousePosition.x += Constants.gridCellSize / 2;
-                }
-                else if (worldMousePosition.x < 0)
-                {
-                    worldMousePosition.x -= Constants.gridCellSize / 2;
-                }
-                if (worldMousePosition.y > 0)
-                {
-                    worldMousePosition.y += Constants.gridCellSize / 2;
-                }
-                else if (worldMousePosition.y < 0)
-                {
-                    worldMousePosition.y -= Constants.gridCellSize / 2;
-                }
-
-                Vector2Int mouseCoordinate = new Vector2Int((int)(worldMousePosition.x / Constants.gridCellSize), (int)(worldMousePosition.y / Constants.gridCellSize));
-
-                if (Mathf.Abs(mouseCoordinate.x) > 3 || Mathf.Abs(mouseCoordinate.y) > 3)
-                    return;
-
-                foreach (ScrapyardBot scrapBot in _scrapyardBots)
-                {
-                    if (scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate) != null)
-                        continue;
-
-                    if (selectedPartType != null)
-                    {
-                        scrapBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)selectedPartType, 1));
-                        continue;
-                    }
-
-                    switch (Random.Range(0, 2))
-                    {
-                        case 0:
-                            scrapBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<IAttachable>((BIT_TYPE)Random.Range(1, 6)));
-                            break;
-                        case 1:
-                            scrapBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)Random.Range(0, 5), 1));
-                            break;
-                    }
-                }
-            }
-
-            //Remove attachable from bot
-            if (Input.GetMouseButtonDown(1))
-            {
-                Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                if (worldMousePosition.x > 0)
-                {
-                    worldMousePosition.x += Constants.gridCellSize / 2;
-                }
-                else if (worldMousePosition.x < 0)
-                {
-                    worldMousePosition.x -= Constants.gridCellSize / 2;
-                }
-                if (worldMousePosition.y > 0)
-                {
-                    worldMousePosition.y += Constants.gridCellSize / 2;
-                }
-                else if (worldMousePosition.y < 0)
-                {
-                    worldMousePosition.y -= Constants.gridCellSize / 2;
-                }
-
-                Vector2Int mouseCoordinate = new Vector2Int((int)(worldMousePosition.x / Constants.gridCellSize), (int)(worldMousePosition.y / Constants.gridCellSize));
-
-                if (Mathf.Abs(mouseCoordinate.x) > 3 || Mathf.Abs(mouseCoordinate.y) > 3)
-                    return;
-
-                foreach (ScrapyardBot scrapBot in _scrapyardBots)
-                {
-                    scrapBot.RemoveAttachableAt(mouseCoordinate);
-                }
-            }
+            _scrapyardBots = new List<ScrapyardBot>();
+            InputManager.Instance.InitInput();
         }
 
         private void OnDestroy()
@@ -127,11 +43,27 @@ namespace StarSalvager
         public void Activate()
         {
             Camera.onPostRender += DrawGL;
+
+            _scrapyardBots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>());
+            if (PlayerPersistentData.GetPlayerData().GetCurrentBlockData().Count == 0)
+            {
+                _scrapyardBots[0].InitBot();
+            }
+            else
+            {
+                _scrapyardBots[0].InitBot(PlayerPersistentData.GetPlayerData().GetCurrentBlockData().ImportBlockDatas(false));
+            }
         }
 
         public void Reset()
         {
             Camera.onPostRender -= DrawGL;
+
+            for (int i = _scrapyardBots.Count() - 1; i >= 0; i--)
+            {
+                Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBots[i].gameObject);
+                _scrapyardBots.RemoveAt(i);
+            }
         }
 
         public void DrawGL(Camera camera)
@@ -167,11 +99,119 @@ namespace StarSalvager
             GL.PopMatrix(); // Pop changes.
         }
 
+        public void SellBits()
+        {
+            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            {
+                print("SELLBITS");
+                Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(scrapBot.attachedBlocks.OfType<ScrapyardBit>());
+                PlayerPersistentData.GetPlayerData().AddResources(bits);
+                scrapBot.RemoveAllBits();
+            }
+        }
+
         public void RotateBots(float direction)
         {
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
                 scrapBot.Rotate(direction);
+            }
+        }
+
+        public void LeftClick(float clicked)
+        {
+            if (clicked == 0)
+            {
+                return;
+            }
+            
+            if (selectedPartType == null)
+            {
+                return;
+            }
+
+            if (!PlayerPersistentData.GetPlayerData().CanAffordPart((PART_TYPE)selectedPartType, selectedpartLevel))
+            {
+                return;
+            }
+
+            Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+            if (worldMousePosition.x > 0)
+            {
+                worldMousePosition.x += Constants.gridCellSize / 2;
+            }
+            else if (worldMousePosition.x < 0)
+            {
+                worldMousePosition.x -= Constants.gridCellSize / 2;
+            }
+            if (worldMousePosition.y > 0)
+            {
+                worldMousePosition.y += Constants.gridCellSize / 2;
+            }
+            else if (worldMousePosition.y < 0)
+            {
+                worldMousePosition.y -= Constants.gridCellSize / 2;
+            }
+
+            Vector2Int mouseCoordinate = new Vector2Int((int)(worldMousePosition.x / Constants.gridCellSize), (int)(worldMousePosition.y / Constants.gridCellSize));
+
+            if (Mathf.Abs(mouseCoordinate.x) > 3 || Mathf.Abs(mouseCoordinate.y) > 3)
+                return;
+
+            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            {
+                if (scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate) != null)
+                    continue;
+
+                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)selectedPartType, 0);
+                PlayerPersistentData.GetPlayerData().SubtractResources((PART_TYPE)selectedPartType, 0);
+                scrapBot.AttachNewBit(mouseCoordinate, attachable);
+                m_scrapyardUI.UpdateResources(PlayerPersistentData.GetPlayerData().GetResources());
+            }
+        }
+
+        public void RightClick(float clicked)
+        {
+            if (clicked == 0)
+            {
+                return;
+            }
+            
+            Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+            if (worldMousePosition.x > 0)
+            {
+                worldMousePosition.x += Constants.gridCellSize / 2;
+            }
+            else if (worldMousePosition.x < 0)
+            {
+                worldMousePosition.x -= Constants.gridCellSize / 2;
+            }
+            if (worldMousePosition.y > 0)
+            {
+                worldMousePosition.y += Constants.gridCellSize / 2;
+            }
+            else if (worldMousePosition.y < 0)
+            {
+                worldMousePosition.y -= Constants.gridCellSize / 2;
+            }
+
+            Vector2Int mouseCoordinate = new Vector2Int((int)(worldMousePosition.x / Constants.gridCellSize), (int)(worldMousePosition.y / Constants.gridCellSize));
+
+            if (Mathf.Abs(mouseCoordinate.x) > 3 || Mathf.Abs(mouseCoordinate.y) > 3)
+                return;
+
+            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            {
+                scrapBot.RemoveAttachableAt(mouseCoordinate, true);
+                m_scrapyardUI.UpdateResources(PlayerPersistentData.GetPlayerData().GetResources());
+            }
+        }
+
+        public void SaveBlockData()
+        {
+            foreach (ScrapyardBot scrapyardbot in _scrapyardBots)
+            {
+                PlayerPersistentData.GetPlayerData().SetCurrentBlockData(scrapyardbot.attachedBlocks.GetBlockDatas());
             }
         }
 

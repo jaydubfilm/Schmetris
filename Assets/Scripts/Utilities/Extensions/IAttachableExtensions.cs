@@ -1,4 +1,6 @@
-﻿using System;
+﻿using StarSalvager.Utilities.JsonDataTypes;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Extensions
@@ -31,6 +33,21 @@ namespace StarSalvager.Utilities.Extensions
             //attachable.Rotated(rotation);
 
             attachable.Coordinate = temp;
+        }
+
+        public static List<BlockData> GetBlockDatas(this List<IAttachable> attachables)
+        {
+            List<BlockData> blockDatas = new List<BlockData>();
+
+            foreach (IAttachable attachable in attachables)
+            {
+                if (attachable is ISaveable)
+                {
+                    blockDatas.Add(((ISaveable)attachable).ToBlockData());
+                }
+            }
+
+            return blockDatas;
         }
     }
 }

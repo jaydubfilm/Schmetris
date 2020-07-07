@@ -35,6 +35,22 @@ namespace StarSalvager.Utilities.Inputs
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""Left Click"",
+                    ""type"": ""Button"",
+                    ""id"": ""482d4967-c4f1-4578-a107-58883fd0b134"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""Right Click"",
+                    ""type"": ""Button"",
+                    ""id"": ""e6882470-0e5e-4b15-81e6-e0268e091b1c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
                 }
             ],
             ""bindings"": [
@@ -169,6 +185,28 @@ namespace StarSalvager.Utilities.Inputs
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""119459ad-6f1f-40d8-b072-93af4aee8a25"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Left Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1ac23440-ae8b-41b1-9be0-b12f08afb6bf"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Right Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -589,6 +627,8 @@ namespace StarSalvager.Utilities.Inputs
             m_Default = asset.FindActionMap("Default", throwIfNotFound: true);
             m_Default_SideMovement = m_Default.FindAction("Side Movement", throwIfNotFound: true);
             m_Default_Rotate = m_Default.FindAction("Rotate", throwIfNotFound: true);
+            m_Default_LeftClick = m_Default.FindAction("Left Click", throwIfNotFound: true);
+            m_Default_RightClick = m_Default.FindAction("Right Click", throwIfNotFound: true);
             // Vertical
             m_Vertical = asset.FindActionMap("Vertical", throwIfNotFound: true);
             m_Vertical_SideMovement = m_Vertical.FindAction("Side Movement", throwIfNotFound: true);
@@ -652,12 +692,16 @@ namespace StarSalvager.Utilities.Inputs
         private IDefaultActions m_DefaultActionsCallbackInterface;
         private readonly InputAction m_Default_SideMovement;
         private readonly InputAction m_Default_Rotate;
+        private readonly InputAction m_Default_LeftClick;
+        private readonly InputAction m_Default_RightClick;
         public struct DefaultActions
         {
             private @SalvagerInput m_Wrapper;
             public DefaultActions(@SalvagerInput wrapper) { m_Wrapper = wrapper; }
             public InputAction @SideMovement => m_Wrapper.m_Default_SideMovement;
             public InputAction @Rotate => m_Wrapper.m_Default_Rotate;
+            public InputAction @LeftClick => m_Wrapper.m_Default_LeftClick;
+            public InputAction @RightClick => m_Wrapper.m_Default_RightClick;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -673,6 +717,12 @@ namespace StarSalvager.Utilities.Inputs
                     @Rotate.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRotate;
                     @Rotate.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRotate;
                     @Rotate.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRotate;
+                    @LeftClick.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnLeftClick;
+                    @LeftClick.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnLeftClick;
+                    @LeftClick.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnLeftClick;
+                    @RightClick.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRightClick;
+                    @RightClick.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRightClick;
+                    @RightClick.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRightClick;
                 }
                 m_Wrapper.m_DefaultActionsCallbackInterface = instance;
                 if (instance != null)
@@ -683,6 +733,12 @@ namespace StarSalvager.Utilities.Inputs
                     @Rotate.started += instance.OnRotate;
                     @Rotate.performed += instance.OnRotate;
                     @Rotate.canceled += instance.OnRotate;
+                    @LeftClick.started += instance.OnLeftClick;
+                    @LeftClick.performed += instance.OnLeftClick;
+                    @LeftClick.canceled += instance.OnLeftClick;
+                    @RightClick.started += instance.OnRightClick;
+                    @RightClick.performed += instance.OnRightClick;
+                    @RightClick.canceled += instance.OnRightClick;
                 }
             }
         }
@@ -805,6 +861,8 @@ namespace StarSalvager.Utilities.Inputs
         {
             void OnSideMovement(InputAction.CallbackContext context);
             void OnRotate(InputAction.CallbackContext context);
+            void OnLeftClick(InputAction.CallbackContext context);
+            void OnRightClick(InputAction.CallbackContext context);
         }
         public interface IVerticalActions
         {
