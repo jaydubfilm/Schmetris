@@ -145,7 +145,6 @@ namespace StarSalvager
                             break;
                         case Shape _:
                             Recycler.Recycle<Shape>(temp.gameObject);
-                            //shape.Destroy();
                             break;
                     }
                     continue;

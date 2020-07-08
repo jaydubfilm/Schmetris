@@ -81,11 +81,18 @@ namespace StarSalvager.Factories
             var remote = remoteData.GetRemoteData((BIT_TYPE) blockData.Type);
             var profile = factoryProfile.GetProfile((BIT_TYPE)blockData.Type);
             var sprite = profile.GetSprite(blockData.Level);
-            
 
-            if (!Recycler.TryGrab(out Bit temp))
+            Bit temp;
+
+            if (!Recycler.TryGrab<Bit>(out GameObject gameObject))
             {
-                temp = Object.Instantiate(factoryProfile.Prefab).GetComponent<Bit>();
+                gameObject = Object.Instantiate(factoryProfile.Prefab);
+            }
+
+            temp = gameObject.GetComponent<Bit>();
+            if (temp == null)
+            {
+                Debug.Log("BREAK");
             }
 
             temp.SetColliderActive(true);

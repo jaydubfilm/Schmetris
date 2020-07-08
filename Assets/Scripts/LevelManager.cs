@@ -30,8 +30,10 @@ namespace StarSalvager
         public CameraController CameraController => m_cameraController;
 
         [SerializeField]
-        private List<WaveRemoteDataScriptableObject> m_waveRemoteData;
-        public WaveRemoteDataScriptableObject CurrentWaveData => m_waveRemoteData[CurrentWave];
+        private List<SectorRemoteDataScriptableObject> m_sectorRemoteData;
+        public SectorRemoteDataScriptableObject CurrentSector => m_sectorRemoteData[Values.Globals.CurrentSector];
+
+        public WaveRemoteDataScriptableObject CurrentWaveData => CurrentSector.GetRemoteData(CurrentWave);
 
         private float m_waveTimer;
         public float WaveTimer => m_waveTimer;
@@ -41,8 +43,6 @@ namespace StarSalvager
 
         private int m_currentWave = 0;
         public int CurrentWave => m_currentWave;
-
-        private bool m_started = false;
 
         [SerializeField]
         private Canvas m_pauseCanvas;
@@ -192,7 +192,7 @@ namespace StarSalvager
                 PlayerPersistentData.GetPlayerData().SetCurrentBlockData(bot.attachedBlocks.GetBlockDatas());
             }
 
-            if (m_currentWave < m_waveRemoteData.Count - 1)
+            if (m_currentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
                 GameTimer.SetPaused(true);
                 m_pauseCanvas.gameObject.SetActive(true);

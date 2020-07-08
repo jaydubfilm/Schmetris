@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle
+    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle, ICustomRecycle
     {
         //IAttachable properties
         //============================================================================================================//
@@ -187,8 +187,9 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-
-
-
+        public void CustomRecycle(params object[] args)
+        {
+            SetAttached(false);
+        }
     }
 }
