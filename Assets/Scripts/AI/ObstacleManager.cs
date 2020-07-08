@@ -6,6 +6,7 @@ using Recycling;
 using StarSalvager.AI;
 using UnityEngine.UIElements;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Extensions;
 
 namespace StarSalvager
 {
@@ -54,6 +55,9 @@ namespace StarSalvager
             }
 
             HandleObstacleMovement();
+            
+            //Set the movement direction 
+            Globals.MovingDirection = Mathf.Abs(m_distanceHorizontal) <= 0.2f ? DIRECTION.NULL: m_distanceHorizontal.GetHorizontalDirection();
         }
 
         public void Activate()
@@ -166,7 +170,10 @@ namespace StarSalvager
                 obstacle.transform.position = pos;
             }
 
-            if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)
+            if (Mathf.Abs(m_distanceHorizontal) > 0.2f)
+                return;
+            
+            if (m_currentInput != 0f)
             {
                 Move(m_currentInput);
             }

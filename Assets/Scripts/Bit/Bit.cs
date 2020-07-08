@@ -61,6 +61,8 @@ namespace StarSalvager
         {
             _startingHealth = startingHealth;
             _currentHealth = currentHealth;
+            
+            SetColor(Color.white);
         }
 
         public void ChangeHealth(float amount)
@@ -112,7 +114,7 @@ namespace StarSalvager
 
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
             //return the direction to shoot the ray
-            if (!TryGetRayDirectionFromBot(bot.MoveDirection, out var rayDirection))
+            if (!TryGetRayDirectionFromBot(Globals.MovingDirection, out var rayDirection))
                 return;
             
             //Debug.Log($"Direction: {dir}, Ray Direction: {rayDirection}");

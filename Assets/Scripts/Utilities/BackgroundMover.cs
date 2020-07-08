@@ -1,9 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using StarSalvager.Cameras.Data;
+using StarSalvager.Values;
+using UnityEngine;
 
 namespace StarSalvager.Utilities
 {
     public class BackgroundMover : MonoBehaviour
     {
+        private ORIENTATION _orientation;
         [SerializeField]
         private float backgroundSpeed;
         
@@ -15,17 +19,37 @@ namespace StarSalvager.Utilities
         private void Start()
         {
             _material = GetComponent<Renderer>().material;
+
+            Globals.OrientationChange += SetOrientation;
+            SetOrientation(Globals.Orientation);
         }
 
         // Update is called once per frame
-        void Update()
+        private void Update()
         {
             SetOffset(Vector2.down * (backgroundSpeed * Time.deltaTime));
         }
         
         //============================================================================================================//
 
-        public void SetOffset(Vector2 offsetDelta)
+        private void SetOrientation(ORIENTATION newOrientation)
+        {
+            switch (Globals.Orientation)
+            {
+                case ORIENTATION.VERTICAL:
+                    transform.localRotation = Quaternion.identity;
+                    break;
+                case ORIENTATION.HORIZONTAL:
+                    transform.localRotation = Quaternion.Euler(0,0,270);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(newOrientation), newOrientation, null);
+            }
+        }
+        
+        //============================================================================================================//
+
+        private void SetOffset(Vector2 offsetDelta)
         {
             var offset = _material.mainTextureOffset;
 
