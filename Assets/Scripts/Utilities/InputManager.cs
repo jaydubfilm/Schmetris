@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Values;
@@ -49,6 +50,18 @@ namespace StarSalvager.Utilities.Inputs
             }
         }
         private CameraController _cameraController;
+        
+        
+        [SerializeField, BoxGroup("DAS")]
+        private float DASTime = 0.15f;
+        [SerializeField, BoxGroup("DAS"), ReadOnly]
+        private float dasTimer;
+        [SerializeField, BoxGroup("DAS"), ReadOnly]
+        private bool dasTriggered;
+        [SerializeField, BoxGroup("DAS"), ReadOnly]
+        private float previousInput;
+        [SerializeField, BoxGroup("DAS"), ReadOnly]
+        private float currentInput;
 
         //============================================================================================================//
 
@@ -56,6 +69,11 @@ namespace StarSalvager.Utilities.Inputs
         {
             Globals.OrientationChange += SetOrientation;
             GameTimer.AddPausable(this);
+        }
+
+        private void Update()
+        {
+            DasChecks();
         }
 
         private void OnEnable()
@@ -129,36 +147,99 @@ namespace StarSalvager.Utilities.Inputs
         
         //============================================================================================================//
 
+        
 
-        float _prevMove = 0.0f;
+        //float _prevMove = 0.0f;
+
+        private void DasChecks()
+        {
+            //If the user is no longer pressing a direction, these checks do not matter
+            if (currentInput == 0f)
+                return;
+            
+            //If we've already triggered the DAS, don't bother with following checks
+            if (dasTriggered)
+                return;
+
+            //If timer hasn't reached zero, continue counting down
+            if (dasTimer > 0f)
+            {
+                dasTimer -= Time.deltaTime;
+                return;
+            }
+
+            dasTriggered = true;
+            dasTimer = 0f;
+            
+            //If the User is still pressing the same input, go ahead and try and reapply it
+            if(currentInput == previousInput)
+                TryApplyMove(currentInput);
+        }
 
         private void SideMovement(InputAction.CallbackContext ctx)
         {
             if (isPaused)
                 return;
             
-            var move = ctx.ReadValue<float>();
-            _prevMove = move;
+            var moveDirection = ctx.ReadValue<float>();
 
-            var noObstacles = obstacleManager is null;
+            TryApplyMove(moveDirection);
+
             
-            foreach (var bot in _bots)
-            {
-                bot.Move(move, noObstacles);
-            }
-
-            if (noObstacles)
+            //This check needs to happen after TryApplyMove as it could cause the Move to never trigger
+            if (moveDirection != 0f) 
                 return;
+            
+            //If the user has released the key, we can reset the DAS system
+            dasTriggered = false;
+            dasTimer = 0f;
 
-            obstacleManager.Move(move);
-            enemyManager.Move(move);
-            cameraController.Move(move);
-            LevelManager.Instance.ProjectileManager.Move(move);
-
-            StartCoroutine(dasTimer(move));
         }
 
-        private void SideMovement(float move)
+        /// <summary>
+        /// Considers DAS values when passing the input information to Move
+        /// </summary>
+        /// <param name="moveDirection"></param>
+        private void TryApplyMove(float moveDirection)
+        {
+            currentInput = moveDirection;
+            
+            //If we're trying to move, set things up for the DAS movement
+            if (!dasTriggered)
+            {
+                //If the timer is still counting down
+                if (dasTimer > 0f)
+                    return;
+            
+                //If this is the first time its pressed, set the press directions
+                previousInput = currentInput;
+
+                //Set the countdown timer to the intended value
+                dasTimer = DASTime;
+                
+                //Quickly move the relevant managers, then reset their input, so that they will pause until DAS is ready
+                Move(currentInput);
+                Move(0);
+                return;
+            }
+            
+            //If the DAS has triggered already, go ahead and update the relevant managers
+            Move(currentInput);
+        }
+
+        /// <summary>
+        /// Applies the move value to relevant Managers
+        /// </summary>
+        /// <param name="value"></param>
+        private void Move(float value)
+        {
+            obstacleManager.Move(value);
+            enemyManager.Move(value);
+            cameraController.Move(value);
+            LevelManager.Instance.ProjectileManager.Move(value);
+        }
+
+        /*private void SideMovement(float move)
         {
             if (isPaused)
                 return;
@@ -172,7 +253,21 @@ namespace StarSalvager.Utilities.Inputs
 
 
             if (noObstacles)
+            {
+                foreach (var bot in _bots)
+                {
+                    bot.Move(move, noObstacles);
+                }
                 return;
+            }
+            
+            if(!obstacleManager.isMoving)
+            {
+                foreach (var bot in _bots)
+                {
+                    bot.Move(move, noObstacles);
+                }
+            }
 
             obstacleManager.Move(move);
             enemyManager.Move(move);
@@ -190,7 +285,7 @@ namespace StarSalvager.Utilities.Inputs
             {
                 SideMovement(direction);
             }
-        }
+        }*/
 
         private void Rotate(InputAction.CallbackContext ctx)
         {

@@ -149,7 +149,7 @@ namespace StarSalvager
             //Debug.Break();
 
 
-            if (!TryGetRayDirectionFromBot(bot.MoveDirection, out var rayDirection))
+            if (!TryGetRayDirectionFromBot(Globals.MovingDirection, out var rayDirection))
                 return;
 
 
