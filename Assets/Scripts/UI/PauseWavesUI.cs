@@ -33,6 +33,7 @@ namespace StarSalvager.UI
             scrapyardButton.onClick.AddListener(() =>
             {
                 GameTimer.SetPaused(false);
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageBegin);
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             });
         }

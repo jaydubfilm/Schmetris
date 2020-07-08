@@ -29,7 +29,7 @@ namespace StarSalvager.Factories
             bit.SetSprite(sprite);
         }
 
-        public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<IBit> bits)
+        public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<Bit> bits)
         {
             var resources = new Dictionary<BIT_TYPE, int>();
 
@@ -44,14 +44,17 @@ namespace StarSalvager.Factories
             return resources;
         }
 
-        public Dictionary<BIT_TYPE, int> GetResources(IBit bit)
+        public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<ScrapyardBit> bits)
         {
             var resources = new Dictionary<BIT_TYPE, int>();
 
-            if (!resources.ContainsKey(bit.Type))
-                resources.Add(bit.Type, 0);
+            foreach (var bit in bits)
+            {
+                if (!resources.ContainsKey(bit.Type))
+                    resources.Add(bit.Type, 0);
 
-            resources[bit.Type] += remoteData.GetRemoteData(bit.Type).resource[bit.level];
+                resources[bit.Type] += remoteData.GetRemoteData(bit.Type).resource[bit.level];
+            }
 
             return resources;
         }
@@ -80,19 +83,11 @@ namespace StarSalvager.Factories
         {
             var remote = remoteData.GetRemoteData((BIT_TYPE) blockData.Type);
             var profile = factoryProfile.GetProfile((BIT_TYPE)blockData.Type);
-            var sprite = profile.GetSprite(blockData.Level);
+            var sprite = profile.GetSprite(blockData.Level);            
 
-            Bit temp;
-
-            if (!Recycler.TryGrab<Bit>(out GameObject gameObject))
+            if (!Recycler.TryGrab(out Bit temp))
             {
-                gameObject = Object.Instantiate(factoryProfile.Prefab);
-            }
-
-            temp = gameObject.GetComponent<Bit>();
-            if (temp == null)
-            {
-                Debug.Log("BREAK");
+                temp = Object.Instantiate(factoryProfile.Prefab).GetComponent<Bit>();
             }
 
             temp.SetColliderActive(true);

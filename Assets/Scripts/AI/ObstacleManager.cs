@@ -66,12 +66,20 @@ namespace StarSalvager
         {
             for (int i = m_obstacles.Count - 1; i >= 0; i--)
             {
-                Recycling.Recycler.Recycle<Enemy>(m_obstacles[i].gameObject);
+                switch (m_obstacles[i])
+                {
+                    case Bit bit:
+                        Recycler.Recycle<Bit>(bit.gameObject);
+                        break;
+                    case Shape shape:
+                        Recycler.Recycle<Shape>(shape.gameObject);
+                        break;
+                }
                 m_obstacles.RemoveAt(i);
             }
             for (int i = m_notFullyInGridShapes.Count - 1; i >= 0; i--)
             {
-                Recycling.Recycler.Recycle<Enemy>(m_notFullyInGridShapes[i].gameObject);
+                Recycling.Recycler.Recycle<Shape>(m_notFullyInGridShapes[i].gameObject);
                 m_notFullyInGridShapes.RemoveAt(i);
             }
         }
@@ -138,7 +146,7 @@ namespace StarSalvager
                     var temp = m_obstacles[i];
                     m_obstacles.RemoveAt(i);
 
-                    switch (obstacle)
+                    switch (temp)
                     {
                         case Bit _:
                             Recycler.Recycle<Bit>(temp.gameObject);
@@ -162,6 +170,11 @@ namespace StarSalvager
             {
                 Move(m_currentInput);
             }
+        }
+
+        public void MoveToNewWave()
+        {
+            SetupStage(0);
         }
 
         private void SetupStage(int waveNumber)
@@ -212,6 +225,9 @@ namespace StarSalvager
 
         public void SpawnNewRowOfObstacles()
         {
+            if (isPaused)
+                return;
+            
             foreach (StageObstacleData stageObstacleData in m_currentStageData.StageObstacleData)
             {
                 float spawnVariable = stageObstacleData.AsteroidPerRowAverage;

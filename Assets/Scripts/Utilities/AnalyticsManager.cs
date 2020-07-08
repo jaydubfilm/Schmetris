@@ -21,7 +21,11 @@ namespace StarSalvager.Utilities
             TutorialComplete,
             TutorialSkip,
             MissionUnlock,
-            MissionComplete
+            MissionComplete,
+
+            BotDied,
+            ScrapyardUsageBegin,
+            ScrapyardUsageEnd
         }
 
         private static int m_recentAnalyticEvents = 0;
@@ -40,14 +44,8 @@ namespace StarSalvager.Utilities
             AnalyticsResult result;
             switch(eventType)
             {
-                case AnalyticsEventType.GameStart:
-                    result = ReportGameStart(eventDataDictionary);
-                    break;
                 case AnalyticsEventType.GameOver:
                     result = ReportGameOver(eventDataParameter.ToString(), eventDataDictionary);
-                    break;
-                case AnalyticsEventType.LevelStart:
-                    result = ReportLevelStart(eventDataParameter.ToString(), eventDataDictionary);
                     break;
                 case AnalyticsEventType.LevelComplete:
                     result = ReportLevelComplete(eventDataParameter.ToString(), eventDataDictionary);
@@ -72,6 +70,23 @@ namespace StarSalvager.Utilities
                     break;
                 case AnalyticsEventType.MissionComplete:
                     result = ReportMissionComplete(eventDataDictionary);
+                    break;
+
+
+                case AnalyticsEventType.GameStart:
+                    result = ReportGameStart(eventDataDictionary);
+                    break;
+                case AnalyticsEventType.BotDied:
+                    result = ReportBotDied(eventDataDictionary);
+                    break;
+                case AnalyticsEventType.LevelStart:
+                    result = ReportLevelStart(eventDataParameter.ToString(), eventDataDictionary);
+                    break;
+                case AnalyticsEventType.ScrapyardUsageBegin:
+                    result = ReportScraypardUsageBegin(eventDataDictionary);
+                    break;
+                case AnalyticsEventType.ScrapyardUsageEnd:
+                    result = ReportScraypardUsageEnd(eventDataDictionary);
                     break;
                 default:
                     Debug.Log("AnalyticsEventType not implemented in switch case");
@@ -125,19 +140,9 @@ namespace StarSalvager.Utilities
             return false;
         }
 
-        private static AnalyticsResult ReportGameStart(Dictionary<string, object> eventData = null)
-        {
-            return AnalyticsEvent.GameStart(eventData);
-        }
-
         private static AnalyticsResult ReportGameOver(string levelName, Dictionary<string, object> eventData = null)
         {
             return AnalyticsEvent.GameOver(levelName, eventData);
-        }
-
-        private static AnalyticsResult ReportLevelStart(string levelName, Dictionary<string, object> eventData = null)
-        {
-            return AnalyticsEvent.LevelStart(levelName, eventData);
         }
 
         private static AnalyticsResult ReportLevelComplete(string levelName, Dictionary<string, object> eventData = null)
@@ -178,6 +183,33 @@ namespace StarSalvager.Utilities
         private static AnalyticsResult ReportMissionComplete(Dictionary<string, object> eventData = null)
         {
             return AnalyticsEvent.Custom("mission_complete", eventData);
+        }
+
+        //============================================================================================================//
+
+        private static AnalyticsResult ReportGameStart(Dictionary<string, object> eventData = null)
+        {
+            return AnalyticsEvent.GameStart(eventData);
+        }
+
+        private static AnalyticsResult ReportLevelStart(string levelName, Dictionary<string, object> eventData = null)
+        {
+            return AnalyticsEvent.LevelStart(levelName, eventData);
+        }
+
+        private static AnalyticsResult ReportBotDied(Dictionary<string, object> eventData = null)
+        {
+            return AnalyticsEvent.Custom("bot_died", eventData);
+        }
+
+        private static AnalyticsResult ReportScraypardUsageBegin(Dictionary<string, object> eventData = null)
+        {
+            return AnalyticsEvent.Custom("scrapyard_usage_begin", eventData);
+        }
+
+        private static AnalyticsResult ReportScraypardUsageEnd(Dictionary<string, object> eventData = null)
+        {
+            return AnalyticsEvent.Custom("scrapyard_usage_end", eventData);
         }
     }
 }

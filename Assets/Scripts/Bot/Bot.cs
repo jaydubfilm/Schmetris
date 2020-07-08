@@ -553,7 +553,7 @@ namespace StarSalvager
                             {
                                 
                                 Debug.LogError($"Conflict found at {newBotCoordinate + differences[i]}");
-                                Debug.Break();
+                                //Debug.Break();
                                 //Recycler.Recycle<Shape>(shape);
                                 
                                 return false;

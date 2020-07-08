@@ -49,7 +49,7 @@ MonoBehaviour:
   TEST_RotSpeed: 500
   TEST_MergeSpeed: 5
   DelayedAutoStartTime: 0.05
-  useMagnet: 1
+  useMagnet: 0
   currentMagnet: 2
   coreHeat: 0
   coolSpeed: 20

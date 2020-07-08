@@ -151,6 +151,7 @@ namespace StarSalvager
             }
             Bot.OnBotDied += deadBot =>
             {
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.GameOver);
                 Debug.LogError("Bot Died. Press 'R' to restart");
             };
             BotGameObject.transform.parent = null;
@@ -198,7 +199,13 @@ namespace StarSalvager
                 m_pauseCanvas.gameObject.SetActive(true);
                 m_currentWave++;
                 m_waveTimer = 0;
+                ObstacleManager.MoveToNewWave();
+                EnemyManager.MoveToNewWave();
                 m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+                if (m_currentWave >= 2 && Values.Globals.CurrentSector == Values.Globals.MaxSector)
+                {
+                    Values.Globals.MaxSector++;
+                }
             }
             else
             {

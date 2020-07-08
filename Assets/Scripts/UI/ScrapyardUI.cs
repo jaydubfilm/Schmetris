@@ -3,6 +3,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
@@ -97,6 +98,7 @@ namespace StarSalvager.UI
             ReadyButton.onClick.AddListener(() =>
             {
                 m_scrapyard.SaveBlockData();
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageEnd);
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
             });
 

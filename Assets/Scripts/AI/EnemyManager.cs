@@ -120,6 +120,11 @@ namespace StarSalvager
             }
         }
 
+        public void MoveToNewWave()
+        {
+            SetupStage(0);
+        }
+
         private void SetupStage(int stageNumber)
         {
             StageRemoteData waveRemoteData = LevelManager.Instance.CurrentWaveData.GetRemoteData(stageNumber);

@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using StarSalvager.Factories;
 using StarSalvager.Values;
 using StarSalvager.Cameras.Data;
+using StarSalvager.Utilities;
 
 namespace StarSalvager
 {
@@ -21,6 +22,10 @@ namespace StarSalvager
         private Button m_toggleOrientationButton;
         [SerializeField]
         private Slider m_cameraZoomScaler;
+        [SerializeField]
+        private Button m_sectorZeroButton;
+        [SerializeField]
+        private Button m_sectorOneButton;
 
         [SerializeField]
         private Button quitButton;
@@ -32,15 +37,23 @@ namespace StarSalvager
         // Start is called before the first frame update
         void Start()
         {
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.GameStart);
             m_toGameplayButton.onClick.AddListener(ToGameplayButtonPressed);
             m_toggleBitButton.onClick.AddListener(ToggleBitButtonPressed);
             m_toggleOrientationButton.onClick.AddListener(RotateOrientation);
             m_cameraZoomScaler.onValueChanged.AddListener(ScaleCamera);
+            m_sectorZeroButton.onClick.AddListener(SectorZeroButtonPressed);
+            m_sectorOneButton.onClick.AddListener(SectorOneButtonPressed);
 
             if (gameObject.scene == SceneManager.GetActiveScene())
                 ScaleCamera(m_cameraZoomScaler.value);
             
             quitButton.onClick.AddListener(Application.Quit);
+        }
+
+        private void Update()
+        {
+            m_sectorOneButton.gameObject.SetActive(Values.Globals.MaxSector >= 1);
         }
 
         void OnDestroy()
@@ -69,8 +82,18 @@ namespace StarSalvager
             }
         }
 
+        private void SectorZeroButtonPressed()
+        {
+            Values.Globals.CurrentSector = 0;
+        }
+        private void SectorOneButtonPressed()
+        {
+            Values.Globals.CurrentSector = 1;
+        }
+
         private void ToGameplayButtonPressed()
         {
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
             StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "MainMenuScene");
         }
 
