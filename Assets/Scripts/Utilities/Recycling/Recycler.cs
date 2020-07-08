@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using StarSalvager;
 using StarSalvager.Utilities;
+using UnityEngine.Assertions;
 
 namespace Recycling
 {
@@ -163,6 +164,9 @@ namespace Recycling
 		public void Store(GameObject gameObject)
 		{
 			if (_recycled == null) _recycled = new Stack<GameObject>();
+			
+			if(_recycled.Contains(gameObject))
+				throw new Exception($"{gameObject.name} has already been recycled");
 
 			gameObject.SetActive(false);
 			_recycled.Push(gameObject);
