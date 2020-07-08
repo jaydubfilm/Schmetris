@@ -98,7 +98,7 @@ namespace StarSalvager.UI
             ReadyButton.onClick.AddListener(() =>
             {
                 m_scrapyard.SaveBlockData();
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageEnd);
+                m_scrapyard.ProcessScrapyardUsageEndAnalytics();
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
             });
 

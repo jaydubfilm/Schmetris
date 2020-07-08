@@ -14,6 +14,7 @@ using UnityEngine.SceneManagement;
 using StarSalvager.Cameras.Data;
 using System.Linq;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.UI;
 
 namespace StarSalvager
 {
@@ -44,8 +45,7 @@ namespace StarSalvager
         private int m_currentWave = 0;
         public int CurrentWave => m_currentWave;
 
-        [SerializeField]
-        private Canvas m_pauseCanvas;
+        private LevelManagerUI m_levelManagerUI;
 
         public bool isPaused => GameTimer.IsPaused;
 
@@ -120,6 +120,7 @@ namespace StarSalvager
             }
 
             GameTimer.AddPausable(this);
+            m_levelManagerUI = FindObjectOfType<LevelManagerUI>();
 
             Random.InitState(seed);
         }
@@ -151,7 +152,9 @@ namespace StarSalvager
             }
             Bot.OnBotDied += deadBot =>
             {
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.GameOver);
+                GameTimer.SetPaused(true);
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied);
+                m_levelManagerUI.ToggleDeathUIActive(true);
                 Debug.LogError("Bot Died. Press 'R' to restart");
             };
             BotGameObject.transform.parent = null;
@@ -171,6 +174,9 @@ namespace StarSalvager
             }
             WorldGrid.SetupGrid();
             ProjectileManager.Activate();
+
+            GameTimer.SetPaused(false);
+            m_levelManagerUI.ToggleDeathUIActive(false);
         }
 
         public void Reset()
@@ -188,32 +194,45 @@ namespace StarSalvager
 
         private void TransitionToNewWave()
         {
-            foreach (Bot bot in m_bots)
+            SavePlayerData();
+
+            if (m_currentWave >= 2 && Values.Globals.CurrentSector == Values.Globals.MaxSector)
             {
-                PlayerPersistentData.GetPlayerData().SetCurrentBlockData(bot.attachedBlocks.GetBlockDatas());
+                Values.Globals.MaxSector++;
             }
+
+            GameTimer.SetPaused(true);
+            m_levelManagerUI.ToggleBetweenWavesUIActive(true);
 
             if (m_currentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
-                GameTimer.SetPaused(true);
-                m_pauseCanvas.gameObject.SetActive(true);
                 m_currentWave++;
                 m_waveTimer = 0;
                 ObstacleManager.MoveToNewWave();
                 EnemyManager.MoveToNewWave();
                 m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
-                if (m_currentWave >= 2 && Values.Globals.CurrentSector == Values.Globals.MaxSector)
-                {
-                    Values.Globals.MaxSector++;
-                }
             }
             else
             {
-                GameTimer.SetPaused(true);
-                m_pauseCanvas.gameObject.SetActive(true);
-                
-                //Go to scrapyard
+                ProcessLevelCompleteAnalytics();
             }
+        }
+
+        public void SavePlayerData()
+        {
+            foreach (Bot bot in m_bots)
+            {
+                PlayerPersistentData.GetPlayerData().SetCurrentBlockData(bot.attachedBlocks.GetBlockDatas());
+            }
+        }
+
+        public void RestartLevel()
+        {
+            SceneLoader.SceneLoader.DeactivateScene("AlexShulmanTestScene");
+            SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene");
+            //Reset();
+            //Activate();
+            //m_currentWave = 0;
         }
 
         //============================================================================================================//
@@ -229,5 +248,19 @@ namespace StarSalvager
         }
 
         //============================================================================================================//
+
+        public void ProcessScrapyardUsageBeginAnalytics()
+        {
+            Dictionary<string, object> scrapyardUsageBeginAnalyticsDictionary = new Dictionary<string, object>();
+            scrapyardUsageBeginAnalyticsDictionary.Add("Sector Number", Values.Globals.CurrentSector);
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageBegin, scrapyardUsageBeginAnalyticsDictionary);
+        }
+
+        private void ProcessLevelCompleteAnalytics()
+        {
+            Dictionary<string, object> levelCompleteAnalyticsDictionary = new Dictionary<string, object>();
+            levelCompleteAnalyticsDictionary.Add("Sector Number", Values.Globals.CurrentSector);
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete, levelCompleteAnalyticsDictionary);
+        }
     }
 }

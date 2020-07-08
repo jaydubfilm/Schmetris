@@ -200,5 +200,11 @@ namespace StarSalvager
         {
             StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
         }
+
+        public void ProcessScrapyardUsageEndAnalytics()
+        {
+            Dictionary<string, object> scrapyardUsageEndAnalyticsDictionary = new Dictionary<string, object>();
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageEnd, scrapyardUsageEndAnalyticsDictionary);
+        }
     }
 }

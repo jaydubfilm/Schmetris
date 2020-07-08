@@ -11,10 +11,7 @@ namespace StarSalvager.Utilities
     {
         public enum AnalyticsEventType
         {
-            GameStart,
             GameOver,
-            LevelStart,
-            LevelComplete,
             FirstInteraction,
             TutorialStart,
             TutorialStep,
@@ -23,7 +20,10 @@ namespace StarSalvager.Utilities
             MissionUnlock,
             MissionComplete,
 
+            GameStart,
             BotDied,
+            LevelStart,
+            LevelComplete,
             ScrapyardUsageBegin,
             ScrapyardUsageEnd
         }
@@ -46,9 +46,6 @@ namespace StarSalvager.Utilities
             {
                 case AnalyticsEventType.GameOver:
                     result = ReportGameOver(eventDataParameter.ToString(), eventDataDictionary);
-                    break;
-                case AnalyticsEventType.LevelComplete:
-                    result = ReportLevelComplete(eventDataParameter.ToString(), eventDataDictionary);
                     break;
                 case AnalyticsEventType.FirstInteraction:
                     result = ReportFirstInteraction(eventDataDictionary);
@@ -81,6 +78,9 @@ namespace StarSalvager.Utilities
                     break;
                 case AnalyticsEventType.LevelStart:
                     result = ReportLevelStart(eventDataParameter.ToString(), eventDataDictionary);
+                    break;
+                case AnalyticsEventType.LevelComplete:
+                    result = ReportLevelComplete(eventDataParameter.ToString(), eventDataDictionary);
                     break;
                 case AnalyticsEventType.ScrapyardUsageBegin:
                     result = ReportScraypardUsageBegin(eventDataDictionary);
