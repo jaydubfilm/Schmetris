@@ -73,17 +73,23 @@ namespace StarSalvager
                 switch (m_obstacles[i])
                 {
                     case Bit bit:
-                        Recycler.Recycle<Bit>(bit.gameObject);
+                        Recycler.Recycle<Bit>(bit);
                         break;
                     case Shape shape:
-                        Recycler.Recycle<Shape>(shape.gameObject);
+                        Recycler.Recycle<Shape>(shape, new
+                        {
+                            recycleBits = false
+                        });
                         break;
                 }
                 m_obstacles.RemoveAt(i);
             }
             for (int i = m_notFullyInGridShapes.Count - 1; i >= 0; i--)
             {
-                Recycling.Recycler.Recycle<Shape>(m_notFullyInGridShapes[i].gameObject);
+                Recycler.Recycle<Shape>(m_notFullyInGridShapes[i].gameObject, new
+                {
+                    recycleBits = false
+                });
                 m_notFullyInGridShapes.RemoveAt(i);
             }
         }
@@ -152,11 +158,14 @@ namespace StarSalvager
 
                     switch (temp)
                     {
-                        case Bit _:
-                            Recycler.Recycle<Bit>(temp.gameObject);
+                        case Bit bit:
+                            Recycler.Recycle<Bit>(bit);
                             break;
-                        case Shape _:
-                            Recycler.Recycle<Shape>(temp.gameObject);
+                        case Shape shape:
+                            Recycler.Recycle<Shape>(shape, new
+                            {
+                                recycleBits = false
+                            });
                             break;
                     }
                     continue;
