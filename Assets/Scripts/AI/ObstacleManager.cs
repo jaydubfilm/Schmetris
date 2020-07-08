@@ -159,13 +159,22 @@ namespace StarSalvager
                     switch (temp)
                     {
                         case Bit bit:
-                            Recycler.Recycle<Bit>(bit);
+                            if (!bit.Attached)
+                            {
+                                Recycler.Recycle<Bit>(bit);
+                                m_obstacles[i] = null;
+                            }
                             break;
                         case Shape shape:
-                            Recycler.Recycle<Shape>(shape, new
+                            foreach (var attachedBit in shape.AttachedBits)
                             {
-                                recycleBits = false
-                            });
+                                if(m_obstacles.Contains(attachedBit))
+                                {
+                                    m_obstacles[m_obstacles.IndexOf(attachedBit)] = null;
+                                }
+                            }
+                            Recycler.Recycle<Shape>(shape);
+                            m_obstacles[i] = null;
                             break;
                     }
                     continue;
