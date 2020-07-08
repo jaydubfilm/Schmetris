@@ -52,8 +52,9 @@ namespace StarSalvager
         public bool Moving => _moving;
         private bool _moving;
 
-        public DIRECTION MoveDirection => _moveDirection;
+        //public DIRECTION MoveDirection => Globals.MovingDirection;
 
+        [SerializeField, ReadOnly]
         private DIRECTION _moveDirection = DIRECTION.NULL;
         //public bool HasValidInput => _currentInput != 0f;
 
@@ -107,8 +108,16 @@ namespace StarSalvager
 
         private void Update()
         {
+            //TODO Once all done testing, remove this
+            _moveDirection = Globals.MovingDirection;
+            
             if (Destroyed)
                 return;
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Time.timeScale = Time.timeScale == 0.001f ? 1f : 0.001f;
+            }
             
             PartsUpdateLoop();
         }
@@ -118,8 +127,8 @@ namespace StarSalvager
             if(Destroyed)
                 return;
             
-            if (Moving)
-                MoveBot();
+            /*if (Moving)
+                MoveBot();*/
 
             if (Rotating)
                 RotateBot();
@@ -210,7 +219,7 @@ namespace StarSalvager
 
         }
 
-        public void Move(float direction, bool move = false)
+        /*public void Move(float direction)
         {
             if (Input.GetKey(KeyCode.LeftAlt))
             {
@@ -218,25 +227,24 @@ namespace StarSalvager
                 return;
             }
             
+            Debug.Log($"Set my direction to {_currentInput}", this);
+            
             _currentInput = direction;
+            DIRECTION moveDirection;
 
             if (direction < 0)
-                _moveDirection = DIRECTION.LEFT;
+                moveDirection = DIRECTION.LEFT;
             else if (direction > 0)
-                _moveDirection = DIRECTION.RIGHT;
+                moveDirection = DIRECTION.RIGHT;
             else
             {
-                _moveDirection = DIRECTION.NULL;
                 return;
             }
 
-            if (!move)
-                return;
-
-            Move(_moveDirection);
+            Move(moveDirection);
         }
 
-        public void Move(DIRECTION direction)
+        private void Move(DIRECTION direction)
         {
             Vector2 toMove;
             switch (direction)
@@ -249,8 +257,6 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
 
-            _moveDirection = direction;
-
             if (Moving)
             {
                 targetPosition += toMove * Constants.gridCellSize;
@@ -262,7 +268,7 @@ namespace StarSalvager
             }
 
             _moving = true;
-        }
+        }*/
 
         #endregion //Input Solver
 
@@ -270,12 +276,14 @@ namespace StarSalvager
 
         #region Movement
 
-        private void MoveBot()
+        /*private void MoveBot()
         {
             var position = rigidbody.position;
 
             //TODO See if this will be enough for the current setup, or if we will need something more robust.
             position = Vector2.MoveTowards(position, targetPosition, TEST_Speed * Time.fixedDeltaTime);
+
+            _movingDirection = (targetPosition - position).normalized.ToDirection();
 
             //Using MovePosition() for the kinematic object since I still want it to interpolate nicely there (In the physics) 
             rigidbody.MovePosition(position);
@@ -295,16 +303,16 @@ namespace StarSalvager
                     return;
                 }
 
-                Move(_currentInput, true);
+                Move(_currentInput);
                 return;
             }
 
             _moving = false;
             rigidbody.position = targetPosition;
             targetPosition = Vector2.zero;
-            _moveDirection = DIRECTION.NULL;
+            _movingDirection = DIRECTION.NULL;
             _dasTimer = 0f;
-        }
+        }*/
 
         private void RotateBot()
         {
@@ -480,9 +488,9 @@ namespace StarSalvager
                     return false;
                 case DIRECTION.LEFT:
                 case DIRECTION.RIGHT:
-                    return _moveDirection == direction;
+                    return Globals.MovingDirection == direction;
                 case DIRECTION.UP:
-                    return _moveDirection == DIRECTION.NULL;
+                    return Globals.MovingDirection == DIRECTION.NULL;
                 case DIRECTION.DOWN:
                     return false;
                 default:
@@ -1049,12 +1057,13 @@ namespace StarSalvager
                 DetachBits(attachedBits);
             }
         }
-        
+
         /// <summary>
         /// Checks to see if removing the list wantToRemove causes disconnects on the bot. Returns true on any disconnect.
         /// Returns false if all is okay.
         /// </summary>
         /// <param name="wantToRemove"></param>
+        /// <param name="toIgnore"></param>
         /// <returns></returns>
         private bool RemovalCausesDisconnects(ICollection<IAttachable> wantToRemove)
         {
@@ -1063,8 +1072,8 @@ namespace StarSalvager
             
             foreach (var attachable in toSolve)
             {
-                if (!attachedBlocks.Contains(attachable))
-                    continue;
+                //if (!attachedBlocks.Contains(attachable))
+                //    continue;
 
                 if (wantToRemove != null && wantToRemove.Contains(attachable))
                     continue;
@@ -1665,7 +1674,7 @@ namespace StarSalvager
         /// <summary>
         /// Determines based on the total of magnet slots which pieces must be removed to fit within the expected capacity
         /// </summary>
-        private void CheckForMagnetOverage()
+        public void CheckForMagnetOverage()
         {
             if (!useMagnet)
                 return;
@@ -1675,64 +1684,83 @@ namespace StarSalvager
             //Checks here if the total of attached blocks (Minus the Core) change
             if (bits.Count <= magnetCount)
                 return;
+            
+            //--------------------------------------------------------------------------------------------------------//
 
+            var toRemoveCount = bits.Count - magnetCount;
+            var bitsToRemove = new List<Bit>();
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             switch (currentMagnet)
             {
+                //----------------------------------------------------------------------------------------------------//
                 case MAGNET.DEFAULT:
-                    DefaultMagnetCheck(bits);
+                    DefaultMagnetCheck(bits, out bitsToRemove, in toRemoveCount);
                     break;
+                //----------------------------------------------------------------------------------------------------//
                 case MAGNET.BUMP:
-                    BumpMagnetCheck(bits);
+                    BumpMagnetCheck(bits, out bitsToRemove, in toRemoveCount);
                     break;
+                //----------------------------------------------------------------------------------------------------//
                 case MAGNET.LOWEST:
-                    LowestMagnetCheck(bits);
+                    LowestMagnetCheckSimple(bits, ref bitsToRemove, ref toRemoveCount);
                     break;
+                //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException();
+                //----------------------------------------------------------------------------------------------------//
             }
             
-            
-        }
-
-        private void DefaultMagnetCheck(List<Bit> bits)
-        {
-            //Gets the last added overage to remove
-            var bitsToRemove = bits.GetRange(magnetCount, bits.Count - (magnetCount));
-            
-            //Get the coordinates of the blocks leaving. This is used to determine if anyone will be left floating
-            var leavingCoordinates = bitsToRemove.Select(a => a.Coordinate).ToList();
-
-            //Go through the bots Blocks to make sure no one will be floating when we detach the parts.
-            for (var i = attachedBlocks.Count - 1; i >= 0; i--)
-            {
-                if (bitsToRemove.Contains(attachedBlocks[i]))
-                    continue;
-
-                if (attachedBlocks.HasPathToCore(attachedBlocks[i], leavingCoordinates))
-                    continue;
-
-                Debug.LogError(
-                    $"Found a potential floater {attachedBlocks[i].gameObject.name} at {attachedBlocks[i].Coordinate}",
-                    attachedBlocks[i].gameObject);
-            }
-
             //Visually show that the bits will fall off by changing their color
             foreach (var bit in bitsToRemove)
             {
                 bit.SetColor(Color.gray);
             }
             
-            //Detach the specified bits after 1sec
-            this.DelayedCall(1f, () =>
+            this.DelayedCall(0.25f, () =>
             {
-                DetachBits(bitsToRemove, true);
+                foreach (var bit in bitsToRemove)
+                {
+                    DestroyAttachable(bit);
+
+                }
+                //Detach the specified bits after 1sec
+                //DetachBitsCheck(bitsToRemove, true);
+                //Debug.Break();
             });
+            //--------------------------------------------------------------------------------------------------------//
+            
+            
         }
 
-        private void BumpMagnetCheck(List<Bit> bits)
+        private void DefaultMagnetCheck(List<Bit> bits, out List<Bit> bitsToRemove, in int toRemoveCount)
         {
             //Gets the last added overage to remove
-            var bitsToRemove = bits.GetRange(magnetCount, bits.Count - (magnetCount));
+            bitsToRemove = bits.GetRange(magnetCount, toRemoveCount);
+            
+            //Get the coordinates of the blocks leaving. This is used to determine if anyone will be left floating
+            var leavingCoordinates = bitsToRemove.Select(a => a.Coordinate).ToList();
+
+            //Go through the bots Blocks to make sure no one will be floating when we detach the parts.
+            for (var i = attachedBlocks.Count - 1; i >= 0; i--)
+            {
+                if (bitsToRemove.Contains(attachedBlocks[i]))
+                    continue;
+
+                if (attachedBlocks.HasPathToCore(attachedBlocks[i], leavingCoordinates))
+                    continue;
+
+                Debug.LogError(
+                    $"Found a potential floater {attachedBlocks[i].gameObject.name} at {attachedBlocks[i].Coordinate}",
+                    attachedBlocks[i].gameObject);
+            }
+        }
+
+        private void BumpMagnetCheck(List<Bit> bits, out List<Bit> bitsToRemove, in int toRemoveCount)
+        {
+            //Gets the last added overage to remove
+            bitsToRemove = bits.GetRange(magnetCount, toRemoveCount);
             
             //Get the coordinates of the blocks leaving. This is used to determine if anyone will be left floating
             var leavingCoordinates = bitsToRemove.Select(a => a.Coordinate).ToList();
@@ -1751,37 +1779,32 @@ namespace StarSalvager
                     attachedBlocks[i].gameObject);
             }
 
-            foreach (var bit in bitsToRemove)
-            {
-                bit.SetColor(Color.gray);
-            }
             
-            //TODO Push away from Bot
-            DetachBits(bitsToRemove, true);
         }
 
-        private void LowestMagnetCheck(List<Bit> bits)
+        private void LowestMagnetCheckSimple(List<Bit> bits, ref List<Bit> bitsToRemove, ref int toRemoveCount)
         {
-            var toRemoveCount = bits.Count - magnetCount;
-
             var checkedBits = new List<Bit>();
-            var bitsToRemove = new List<Bit>();
             
             while (toRemoveCount > 0)
             {
                 var toRemove = FindLowestBit(bits, checkedBits);
 
+                if (toRemove == null)
+                {
+                    //Debug.LogError($"toRemove is NULL, {toRemoveCount} remaining bits unsolved");
+                    break;
+                }
+
                 checkedBits.Add(toRemove);
 
                 if (bits.Count == checkedBits.Count)
                 {
-                    Debug.LogError($"Left with {toRemoveCount} bits unsolved");
+                    //Debug.LogError($"Left with {toRemoveCount} bits unsolved");
                     break;
                 }
-
                 
-                
-                if (RemovalCausesDisconnects(checkedBits.OfType<IAttachable>().ToList()))
+                if (RemovalCausesDisconnects(new List<IAttachable>(bitsToRemove){toRemove}))
                     continue;
 
                 //Debug.Log($"Found Lowest {toRemove.gameObject.name}", toRemove);
@@ -1790,33 +1813,75 @@ namespace StarSalvager
 
                 toRemoveCount--;
             }
+
+            if (toRemoveCount <= 0) 
+                return;
             
+            //Find alternative pieces if we weren't able to find all lowest
             foreach (var bit in bitsToRemove)
             {
-                bit.SetColor(Color.gray);
+                bits.Remove(bit);
+            }
+                
+            while (toRemoveCount > 0)
+            {
+                var toRemove = FindFurthestRemovableBit(bits, bitsToRemove);
+                    
+                if(toRemove == null)
+                    throw new Exception("Unable to find alternative pieces");
+                    
+                bitsToRemove.Add(toRemove);
+                bits.Remove(toRemove);
+                toRemoveCount--;
             }
 
-            //TODO I should consider whether or not to include a delay here
-            this.DelayedCall(1f, () =>
-            {
-                //Detach the specified bits after 1sec
-                DetachBitsCheck(bitsToRemove, true);
-            });
-
-            //if (toRemoveCount > 0)
-            //    LowestMagnetCheck(attachedBlocks.OfType<Bit>().ToList());
         }
+        
+        /*private void LowestMagnetCheck2(List<Bit> bits, ref List<Bit> bitsToRemove, ref int toRemoveCount)
+        {
+            var checkedBits = new List<Bit>();
+            
+            while (toRemoveCount > 0)
+            {
+                var toRemove = FindLowestBit(bits, checkedBits);
+
+                if (toRemove == null)
+                {
+                    Debug.LogError($"toRemove is NULL, {toRemoveCount} remaining bits unsolved");
+                    break;
+                }
+
+                checkedBits.Add(toRemove);
+
+                if (bits.Count == checkedBits.Count)
+                {
+                    Debug.LogError($"Left with {toRemoveCount} bits unsolved");
+                    break;
+                }
+                
+                if (RemovalCausesDisconnects(checkedBits.OfType<IAttachable>().ToList()))
+                    continue;
+                
+                bitsToRemove.Add(toRemove);
+
+                toRemoveCount--;
+            }
+            
+            if (toRemoveCount > 0)
+            {
+                Debug.Break();
+            }
+
+        }*/
 
         //TODO This will likely need to move to the attachable List extensions
         private Bit FindLowestBit(List<Bit> bits, ICollection<Bit> toIgnore)
         {
-            Bit selectedBit = bits[0];
-            
-            var lowestLevel = selectedBit.level;
+            //I Want the last Bit to be the fallback/default, if I can't find anything
+            Bit selectedBit = null;
+            var lowestLevel = 999;
             //The lowest Y coordinate
-            var lowestCoordinate = selectedBit.Coordinate.y;
-            
-            
+            var lowestCoordinate = 999;
 
             foreach (var bit in bits)
             {
@@ -1831,12 +1896,39 @@ namespace StarSalvager
                 if (bit.Coordinate.y > lowestCoordinate && !(bit.level < lowestLevel))
                         continue;
 
-                if (RemovalCausesDisconnects(new List<IAttachable> {bit}))
+                if (RemovalCausesDisconnects(new List<IAttachable>(/*toIgnore*/) {bit}))
                     continue;
 
                 selectedBit = bit;
                 lowestLevel = bit.level;
                 lowestCoordinate = bit.Coordinate.y;
+
+            }
+
+            return selectedBit;
+        }
+
+        private Bit FindFurthestRemovableBit(List<Bit> bits, ICollection<Bit> toIgnore)
+        {
+            //I Want the last Bit to be the fallback/default, if I can't find anything
+            Bit selectedBit = null;
+            var furthestDistance = -999f;
+
+            foreach (var bit in bits)
+            {
+                if (toIgnore.Contains(bit))
+                    continue;
+
+                var _dist = Vector2Int.Distance(bit.Coordinate, Vector2Int.zero);
+                
+                if(_dist < furthestDistance)
+                    continue;
+
+                if (RemovalCausesDisconnects(new List<IAttachable>(toIgnore) { bit }))
+                    continue;
+
+                selectedBit = bit;
+                furthestDistance = _dist;
 
             }
 
