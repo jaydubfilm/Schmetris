@@ -233,9 +233,13 @@ namespace StarSalvager.Utilities.Inputs
         private void LeftClick(InputAction.CallbackContext ctx)
         {
             var clicked = ctx.ReadValue<float>();
-            if (_scrapyard != null)
+
+            if (clicked == 1)
             {
-                _scrapyard.LeftClick(clicked);
+                if (_scrapyard != null)
+                {
+                    _scrapyard.OnLeftMouseButtonDown();
+                }
             }
         }
 
@@ -243,9 +247,13 @@ namespace StarSalvager.Utilities.Inputs
         {
 
             var clicked = ctx.ReadValue<float>();
-            if (_scrapyard != null)
+
+            if (clicked == 1)
             {
-                _scrapyard.RightClick(clicked);
+                if (_scrapyard != null)
+                {
+                    _scrapyard.OnRightMouseButtonDown();
+                }
             }
         }
 

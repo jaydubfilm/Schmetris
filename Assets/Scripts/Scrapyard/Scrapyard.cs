@@ -117,15 +117,9 @@ namespace StarSalvager
             }
         }
 
-        //TODO: Simplify redundancies between left and right click
-
-        public void LeftClick(float clicked)
+        //On left mouse button click, check if there is a bit/part at the mouse location. If there is not, purchase the selected part type and place it at this location.
+        public void OnLeftMouseButtonDown()
         {
-            if (clicked == 0)
-            {
-                return;
-            }
-            
             if (selectedPartType == null)
             {
                 return;
@@ -153,13 +147,9 @@ namespace StarSalvager
             }
         }
 
-        public void RightClick(float clicked)
+        //On right mouse button click, check for a bit/part at the clicked location. If one is there, sell it.
+        public void OnRightMouseButtonDown()
         {
-            if (clicked == 0)
-            {
-                return;
-            }
-
             Vector2Int mouseCoordinate = getMouseCoordinate();
 
             if (Mathf.Abs(mouseCoordinate.x) > 3 || Mathf.Abs(mouseCoordinate.y) > 3)
@@ -172,6 +162,7 @@ namespace StarSalvager
             }
         }
 
+        //Get current mouse coordinate on the scrapyard grid.
         private Vector2Int getMouseCoordinate()
         {
             Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
@@ -196,6 +187,7 @@ namespace StarSalvager
             return mouseCoordinate;
         }
 
+        //Save the current bot's data in blockdata to be loaded in the level manager.
         public void SaveBlockData()
         {
             foreach (ScrapyardBot scrapyardbot in _scrapyardBots)
