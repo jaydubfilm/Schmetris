@@ -80,6 +80,9 @@ namespace Recycling
 		//============================================================================================================//
 		public static void Recycle(Type type, GameObject gameObject, params object[] args)
 		{
+			if(gameObject.GetComponent(type) is null)
+				throw new NullReferenceException($"Unable to find {type.Name} on {gameObject.name}");
+			
 			if (!_typeDict.TryGetValue(type, out var bin))
 			{
 				bin = new RecycleBin();
@@ -117,6 +120,9 @@ namespace Recycling
 			if (!bin.Grab(out gameObject)) 
 				return false;
 			
+			if(gameObject.GetComponent(type) is null)
+				throw new NullReferenceException($"Unable to find {type.Name} on {gameObject.name}");
+			
 			if (returnActive) gameObject.SetActive(true);
 				return true;
 		}
@@ -140,6 +146,9 @@ namespace Recycling
 			if (returnActive) gameObject.SetActive(true);
 
 			monoBehaviour = gameObject.GetComponent<T>();
+			
+			if(monoBehaviour is null)
+				throw new NullReferenceException($"Unable to find {typeof(T).Name} on {gameObject.name}");
 
 			return true;
 		}
