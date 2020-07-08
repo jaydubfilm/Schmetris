@@ -11,6 +11,8 @@ namespace StarSalvager.Values
 {
     public class PlayerData
     {
+        //TODO: Add an add/subtract function for ResourceAmount
+        
         private Dictionary<BIT_TYPE, int> resources = new Dictionary<BIT_TYPE, int>
         {
             {BIT_TYPE.RED, 250},

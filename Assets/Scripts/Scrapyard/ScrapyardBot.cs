@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class ScrapyardBot : MonoBehaviour
+    public class ScrapyardBot : MonoBehaviour, ICustomRecycle
     {
         [SerializeField, BoxGroup("PROTOTYPE")]
         public float TEST_RotSpeed;
@@ -190,18 +190,23 @@ namespace StarSalvager
 
         #region Detach Bits
 
-        public void RemoveAttachableAt(Vector2Int coordinate, bool refund)
+        public void TryRemoveAttachableAt(Vector2Int coordinate, bool refund)
         {
-            if (attachedBlocks.Any(a => a.Coordinate == coordinate))
+            var attachable = attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
+            //TODO - think of a better place to handle this selling event
+            switch(attachable)
             {
-                var attachable = attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
-                switch(attachable)
-                {
-                    case ScrapyardPart scrapyardPart:
-                        PlayerPersistentData.GetPlayerData().AddResources(scrapyardPart.Type, scrapyardPart.level);
-                        break;
-                }
-                DestroyAttachable(attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate));
+                case ScrapyardBit scrapyardBit:
+                    //TODO: Add click to sell bit functionality
+                    break;
+                case ScrapyardPart scrapyardPart:
+                    PlayerPersistentData.GetPlayerData().AddResources(scrapyardPart.Type, scrapyardPart.level);
+                    break;
+            }
+
+            if (attachable != null)
+            {
+                DestroyAttachable(attachable);
             }
         }
 
@@ -309,5 +314,32 @@ namespace StarSalvager
         }
 
         #endregion //Parts
+
+        //============================================================================================================//
+
+        #region Custom Recycle
+
+        public void CustomRecycle(params object[] args)
+        {
+            foreach (var attachable in attachedBlocks)
+            {
+                switch (attachable)
+                {
+                    case ScrapyardBit _:
+                        Recycler.Recycle<ScrapyardBit>(attachable.gameObject);
+                        break;
+                    case ScrapyardPart _:
+                        Recycler.Recycle<ScrapyardPart>(attachable.gameObject);
+                        break;
+                    default:
+                        Destroy(attachable.gameObject);
+                        break;
+                }
+            }
+
+            attachedBlocks.Clear();
+        }
+
+        #endregion //Custom Recycle
     }
 }

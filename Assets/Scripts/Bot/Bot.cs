@@ -2098,8 +2098,8 @@ namespace StarSalvager
                     case Bit _:
                         Recycler.Recycle<Bit>(attachable.gameObject);
                         break;
-                    case Shape _:
-                        Recycler.Recycle<Shape>(attachable.gameObject);
+                    case Part _:
+                        Recycler.Recycle<Part>(attachable.gameObject);
                         break;
                     default:
                         Destroy(attachable.gameObject);

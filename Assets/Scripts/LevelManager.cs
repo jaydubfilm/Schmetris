@@ -33,11 +33,6 @@ namespace StarSalvager
         private List<WaveRemoteDataScriptableObject> m_waveRemoteData;
         public WaveRemoteDataScriptableObject CurrentWaveData => m_waveRemoteData[CurrentWave];
 
-        [SerializeField]
-        private Button m_scrapyardButton;
-        [SerializeField]
-        private Button m_menuButton;
-
         private float m_waveTimer;
         public float WaveTimer => m_waveTimer;
 
@@ -124,8 +119,6 @@ namespace StarSalvager
                 Debug.Log($"Generated Seed {seed}");
             }
 
-            m_scrapyardButton.onClick.AddListener(ScrapyardButtonPressed);
-            m_menuButton.onClick.AddListener(MenuButtonPressed);
             GameTimer.AddPausable(this);
 
             Random.InitState(seed);
@@ -214,16 +207,6 @@ namespace StarSalvager
                 
                 //Go to scrapyard
             }
-        }
-
-        private void ScrapyardButtonPressed()
-        {
-            StarSalvager.SceneLoader.SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
-        }
-
-        private void MenuButtonPressed()
-        {
-            StarSalvager.SceneLoader.SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
         }
 
         //============================================================================================================//
