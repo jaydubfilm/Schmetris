@@ -41,7 +41,7 @@ namespace StarSalvager.UI
             continueButton.onClick.AddListener(() =>
             {
                 GameTimer.SetPaused(false);
-                gameObject.SetActive(false);
+                m_betweenWavesUI.gameObject.SetActive(false);
             });
 
             scrapyardButton.onClick.AddListener(() =>
