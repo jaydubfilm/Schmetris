@@ -2167,9 +2167,9 @@ namespace StarSalvager
 
                 foreach (var attachable in toDestroy)
                 {
-                    Recycler.Recycle(attachable.GetType(), attachable.gameObject);
+                    attachable.gameObject.SetActive(false);
                 }
-                
+
                 yield return new WaitForSeconds(0.35f);
 
                 index++;

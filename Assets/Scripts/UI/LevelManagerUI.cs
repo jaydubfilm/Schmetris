@@ -2,6 +2,7 @@
 using StarSalvager.Utilities;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,12 +11,12 @@ namespace StarSalvager.UI
     public class LevelManagerUI : MonoBehaviour
     {
         //============================================================================================================//
-        
+
         [SerializeField, Required, FoldoutGroup("UISections")]
         private GameObject m_betweenWavesUI;
         [SerializeField, Required, FoldoutGroup("UISections")]
         private GameObject m_deathUI;
-        
+
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("View")]
@@ -33,7 +34,7 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("View")]
         private TextMesh m_currentWaveText;
-        
+
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("Game UI"), BoxGroup("Game UI/Heat Slider")]
@@ -53,8 +54,8 @@ namespace StarSalvager.UI
         private Color vignetteMinColor;
         [SerializeField, Required, ToggleGroup("Game UI/Heat Slider/useVignette")]
         private Color vignetteMaxColor;
-        
-        
+
+
         //============================================================================================================//
 
         private LevelManager m_levelManager;
@@ -64,10 +65,10 @@ namespace StarSalvager.UI
         {
             m_levelManager = FindObjectOfType<LevelManager>();
             InitButtons();
-            
+
             vignetteImage.gameObject.SetActive(useVignette);
         }
-        
+
         //============================================================================================================//
 
         private void InitButtons()
@@ -109,12 +110,16 @@ namespace StarSalvager.UI
                 GameTimer.SetPaused(false);
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
             });
-
             ToggleBetweenWavesUIActive(false);
             ToggleDeathUIActive(false);
         }
-        
+
         //============================================================================================================//
+
+        public void SetCurrentWaveText(int currentWave)
+        {
+            m_currentWaveText.text = "Current Wave " + currentWave;
+        }
 
         public void ToggleBetweenWavesUIActive(bool active)
         {
@@ -126,7 +131,7 @@ namespace StarSalvager.UI
             m_deathUI.SetActive(active);
         }
 
-        
+
         /// <summary>
         /// Value sent should be normalized
         /// </summary>
@@ -135,11 +140,11 @@ namespace StarSalvager.UI
         {
             HeatSlider.value = value;
             heatSliderImage.color = Color.Lerp(minColor, maxColor, value);
-            
+
             if(useVignette)
                 vignetteImage.color = Color.Lerp(vignetteMinColor, vignetteMaxColor, value);
         }
-        
+
         //============================================================================================================//
     }
 }

@@ -121,6 +121,7 @@ namespace StarSalvager
 
             GameTimer.AddPausable(this);
             m_levelManagerUI = FindObjectOfType<LevelManagerUI>();
+            m_levelManagerUI.SetCurrentWaveText(m_currentWave + 1);
 
             Random.InitState(seed);
         }
@@ -140,6 +141,7 @@ namespace StarSalvager
 
         public void Activate()
         {
+            m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             BotGameObject.transform.position = new Vector2(0, 0);
             if (PlayerPersistentData.GetPlayerData().GetCurrentBlockData().Count == 0)
@@ -181,9 +183,11 @@ namespace StarSalvager
 
         public void Reset()
         {
-            m_worldGrid = null;
             for (int i = m_bots.Count - 1; i >= 0; i--)
             {
+                if (m_bots == null)
+                    continue;
+
                 Recycling.Recycler.Recycle<Bot>(m_bots[i].gameObject);
                 m_bots.RemoveAt(i);
             }
@@ -207,6 +211,7 @@ namespace StarSalvager
             if (m_currentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
                 m_currentWave++;
+                m_levelManagerUI.SetCurrentWaveText(m_currentWave + 1);
                 m_waveTimer = 0;
                 ObstacleManager.MoveToNewWave();
                 EnemyManager.MoveToNewWave();
@@ -228,11 +233,14 @@ namespace StarSalvager
 
         public void RestartLevel()
         {
-            SceneLoader.SceneLoader.DeactivateScene("AlexShulmanTestScene");
-            SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene");
-            //Reset();
-            //Activate();
-            //m_currentWave = 0;
+            //SceneLoader.SceneLoader.DeactivateScene("AlexShulmanTestScene");
+            //SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene");
+            Reset();
+            Activate();
+            m_currentWave = 0;
+            m_levelManagerUI.ToggleDeathUIActive(false);
+            m_levelManagerUI.SetCurrentWaveText(m_currentWave + 1);
+            GameTimer.SetPaused(false);
         }
 
         //============================================================================================================//
@@ -259,8 +267,7 @@ namespace StarSalvager
         private void ProcessLevelCompleteAnalytics()
         {
             Dictionary<string, object> levelCompleteAnalyticsDictionary = new Dictionary<string, object>();
-            levelCompleteAnalyticsDictionary.Add("Sector Number", Values.Globals.CurrentSector);
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete, levelCompleteAnalyticsDictionary);
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete, levelCompleteAnalyticsDictionary, Values.Globals.CurrentSector);
         }
     }
 }
