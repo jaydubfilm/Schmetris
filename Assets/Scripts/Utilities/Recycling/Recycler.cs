@@ -1,12 +1,8 @@
 ﻿// Written by Alex Bedard-Reid <alexbedardreid@gmail.com>, 2017
-
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using StarSalvager;
 using StarSalvager.Utilities;
-using UnityEngine.Assertions;
 
 namespace Recycling
 {
@@ -45,9 +41,9 @@ namespace Recycling
 			bin.Store(gameObject);
 			gameObject.transform.parent = Transform;
 			gameObject.transform.rotation = Quaternion.identity;
-			
-			
-			gameObject.GetComponent<IRecycled>()?.OnRecycled();
+
+			if (gameObject.GetComponent<IRecycled>() is IRecycled recycled)
+				recycled.IsRecycled = true;
 		}
 		public static bool TryGrab(Enum @enum, out GameObject gameObject, bool returnActive = true)
 		{
@@ -98,7 +94,8 @@ namespace Recycling
 			gameObject.transform.rotation = Quaternion.identity;
 			
 			
-			gameObject.GetComponent<IRecycled>()?.OnRecycled();
+			if (gameObject.GetComponent<IRecycled>() is IRecycled recycled)
+				recycled.IsRecycled = true;
 			
 		}
 		
@@ -124,8 +121,13 @@ namespace Recycling
 			if(gameObject.GetComponent(type) is null)
 				throw new NullReferenceException($"Unable to find {type.Name} on {gameObject.name}");
 			
-			if (returnActive) gameObject.SetActive(true);
-				return true;
+			if (returnActive)
+				gameObject.SetActive(true);
+			
+			if (gameObject.GetComponent<IRecycled>() is IRecycled recycled)
+				recycled.IsRecycled = false;
+			
+			return true;
 		}
 		
 		public static bool TryGrab<T>(out GameObject gameObject, bool returnActive = true)
@@ -150,6 +152,9 @@ namespace Recycling
 			
 			if(monoBehaviour is null)
 				throw new NullReferenceException($"Unable to find {typeof(T).Name} on {gameObject.name}");
+			
+			if (gameObject.GetComponent<IRecycled>() is IRecycled recycled)
+				recycled.IsRecycled = false;
 
 			return true;
 		}
