@@ -68,6 +68,8 @@ namespace StarSalvager.UI
 
             SetHeatSliderValue(0.0f);
             vignetteImage.gameObject.SetActive(useVignette);
+
+            SetHeatSliderValue(0f);
         }
 
         //============================================================================================================//
