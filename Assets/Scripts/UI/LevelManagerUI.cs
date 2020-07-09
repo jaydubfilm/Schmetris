@@ -2,6 +2,7 @@
 using StarSalvager.Utilities;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,7 +29,7 @@ namespace StarSalvager.UI
         private Button mainMenuButton;
 
         [SerializeField, Required, BoxGroup("View")]
-        private TextMesh m_currentWaveText;
+        private TMP_Text m_currentWaveText;
 
         private LevelManager m_levelManager;
 
@@ -78,9 +79,13 @@ namespace StarSalvager.UI
                 GameTimer.SetPaused(false);
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
             });
-
             ToggleBetweenWavesUIActive(false);
             ToggleDeathUIActive(false);
+        }
+
+        public void SetCurrentWaveText(int currentWave)
+        {
+            m_currentWaveText.text = "Current Wave " + currentWave;
         }
 
         public void ToggleBetweenWavesUIActive(bool active)
