@@ -9,6 +9,7 @@ using StarSalvager.Factories;
 using StarSalvager.Values;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.UI;
 
 namespace StarSalvager
 {
@@ -22,6 +23,8 @@ namespace StarSalvager
         private Button m_toggleOrientationButton;
         [SerializeField]
         private Slider m_cameraZoomScaler;
+        [SerializeField]
+        private SliderText _zoomSliderText;
         [SerializeField]
         private Button m_sectorZeroButton;
         [SerializeField]
@@ -49,6 +52,8 @@ namespace StarSalvager
                 ScaleCamera(m_cameraZoomScaler.value);
             
             quitButton.onClick.AddListener(Application.Quit);
+            
+            _zoomSliderText.Init();
         }
 
         private void Update()

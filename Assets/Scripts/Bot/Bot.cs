@@ -1913,6 +1913,7 @@ namespace StarSalvager
             //I Want the last Bit to be the fallback/default, if I can't find anything
             Bit selectedBit = null;
             var furthestDistance = -999f;
+            var lowestLevel = 999f;
 
             foreach (var bit in bits)
             {
@@ -1924,11 +1925,15 @@ namespace StarSalvager
                 if(_dist < furthestDistance)
                     continue;
 
+                if (lowestLevel < bit.level)
+                    continue;
+
                 if (RemovalCausesDisconnects(new List<IAttachable>(toIgnore) { bit }))
                     continue;
 
                 selectedBit = bit;
                 furthestDistance = _dist;
+                lowestLevel = bit.level;
 
             }
 

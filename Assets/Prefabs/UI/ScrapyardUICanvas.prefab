@@ -1652,6 +1652,7 @@ MonoBehaviour:
     sliderText: {fileID: 981852983010998083}
     _slider: {fileID: 981852983008734087}
     format: x{0:#.00}
+  zoomSlider: {fileID: 981852983008734087}
   leftTurnButton: {fileID: 981852984400295717}
   rightTurnButton: {fileID: 981852984244748447}
   SaveButton: {fileID: 8695568891028956176}

@@ -50,7 +50,7 @@ MonoBehaviour:
   TEST_MergeSpeed: 5
   _moveDirection: -1
   DelayedAutoStartTime: 0.05
-  useMagnet: 0
+  useMagnet: 1
   currentMagnet: 2
   coreHeat: 0
   coolSpeed: 20

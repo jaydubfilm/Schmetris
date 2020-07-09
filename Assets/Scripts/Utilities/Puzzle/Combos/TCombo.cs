@@ -23,7 +23,8 @@ namespace StarSalvager.Utilities.Puzzle.Combos
             //    #0#     #
             //     #      #
             //     #     #0#
-            if (directions[(int) DIRECTION.LEFT].Count == 1 && directions[(int) DIRECTION.RIGHT].Count == 1)
+            if (directions[(int) DIRECTION.LEFT].Count >= 1 && directions[(int) DIRECTION.RIGHT].Count >= 1 &&
+                directions[(int) DIRECTION.LEFT].Count == directions[(int) DIRECTION.RIGHT].Count)
             {
                 switch (directions[(int) DIRECTION.UP].Count)
                 {
@@ -50,7 +51,8 @@ namespace StarSalvager.Utilities.Puzzle.Combos
             //      #    #
             //    ##0    0##
             //      #    #
-            else if (directions[(int) DIRECTION.UP].Count == 1 && directions[(int) DIRECTION.DOWN].Count == 1)
+            else if (directions[(int) DIRECTION.UP].Count >= 1 && directions[(int) DIRECTION.DOWN].Count >= 1 &&
+                     directions[(int) DIRECTION.UP].Count == directions[(int) DIRECTION.DOWN].Count)
             {
                 switch (directions[(int) DIRECTION.LEFT].Count)
                 {
@@ -77,7 +79,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
                 return false;
 
             outData.comboData = FactoryManager.Instance.GetFactory<ComboFactory>().GetComboData(COMBO.TEE);
-            
+
             //Debug.LogError($"Found T Combo at {origin.gameObject.name}", origin.gameObject);
 
             return true;

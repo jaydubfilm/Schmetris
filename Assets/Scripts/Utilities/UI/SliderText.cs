@@ -21,20 +21,26 @@ namespace StarSalvager.Utilities.UI
         [SerializeField]
         private string format;
 
-        private CameraController m_cameraController;
+        //private CameraController m_cameraController;
 
-        public void Init(CameraController cameraController)
+        public void Init(/*CameraController cameraController*/)
         {
-            m_cameraController = cameraController;
+            //m_cameraController = cameraController;
             _slider.onValueChanged.AddListener(ValueChanged);
-            sliderText.text = string.Format(format, 1f / _slider.value);
+            sliderText.text = string.Format(format, _slider.value);
         }
 
         private void ValueChanged(float data)
         {
-            sliderText.text = string.Format(format, 1f / data);
+            sliderText.text = string.Format(format, data);
 
-            m_cameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * data, Vector3.zero, true);
+            //m_cameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * data, Vector3.zero, true);
+        }
+        private void ValueChanged(int data)
+        {
+            sliderText.text = string.Format(format, data);
+
+            //m_cameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * data, Vector3.zero, true);
         }
     }
 }
