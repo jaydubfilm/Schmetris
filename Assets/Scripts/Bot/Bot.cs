@@ -149,6 +149,8 @@ namespace StarSalvager
         {
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
+
+            coreHeat = 0f;
             
             //Add core component
             var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(
@@ -166,6 +168,8 @@ namespace StarSalvager
         {
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
+            
+            coreHeat = 0f;
             
             foreach (var attachable in botAttachables)
             {
@@ -1636,23 +1640,24 @@ namespace StarSalvager
         /// <param name="attachable"></param>
         private void AsteroidDamageAt(IAttachable attachable)
         {
-            switch (attachable)
-            {
-                case Bit _:
-                    DestroyAttachable<Bit>(attachable);
-                    break;
-                case Part part:
-                {
-                    var partHealth = (IHealth) part;
-            
-                    //FIXME I should determine the health remove for collisions with Asteroids.
-                    partHealth.ChangeHealth(-5);
-                
-                    if(partHealth.CurrentHealth < 0)
-                        DestroyAttachable<Part>(attachable);
-                    break;
-                }
-            }
+            TryHitAt(attachable, -5f);
+            //switch (attachable)
+            //{
+            //    case Bit _:
+            //        DestroyAttachable<Bit>(attachable);
+            //        break;
+            //    case Part part:
+            //    {
+            //        var partHealth = (IHealth) part;
+            //
+            //        //FIXME I should determine the health remove for collisions with Asteroids.
+            //        partHealth.ChangeHealth(-5);
+            //    
+            //        //if(partHealth.CurrentHealth < 0)
+            //        //    DestroyAttachable<Part>(attachable);
+            //        break;
+            //    }
+            //}
 
             //FIXME This value should not be hardcoded
             coreHeat += 20;
@@ -2176,8 +2181,6 @@ namespace StarSalvager
             }
             
             OnBotDied?.Invoke(this);
-            
-            Recycler.Recycle<Bot>(gameObject);
         }
         
         #endregion //Coroutines
