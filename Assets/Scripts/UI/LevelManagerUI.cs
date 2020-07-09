@@ -27,6 +27,9 @@ namespace StarSalvager.UI
         [SerializeField, Required, BoxGroup("View")]
         private Button mainMenuButton;
 
+        [SerializeField, Required, BoxGroup("View")]
+        private TextMesh m_currentWaveText;
+
         private LevelManager m_levelManager;
 
         // Start is called before the first frame update
@@ -41,7 +44,7 @@ namespace StarSalvager.UI
             continueButton.onClick.AddListener(() =>
             {
                 GameTimer.SetPaused(false);
-                gameObject.SetActive(false);
+                ToggleBetweenWavesUIActive(false);
             });
 
             scrapyardButton.onClick.AddListener(() =>
