@@ -233,14 +233,14 @@ namespace StarSalvager
 
         public void RestartLevel()
         {
-            //SceneLoader.SceneLoader.DeactivateScene("AlexShulmanTestScene");
-            //SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene");
-            Reset();
-            Activate();
             m_currentWave = 0;
             m_levelManagerUI.ToggleDeathUIActive(false);
             m_levelManagerUI.SetCurrentWaveText(m_currentWave + 1);
             GameTimer.SetPaused(false);
+            SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "AlexShulmanTestScene");
+            //SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene");
+            //Reset();
+            //Activate();
         }
 
         //============================================================================================================//

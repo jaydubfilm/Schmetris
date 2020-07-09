@@ -70,7 +70,20 @@ namespace StarSalvager
         {
             for (int i = m_obstacles.Count - 1; i >= 0; i--)
             {
-                switch (m_obstacles[i])
+                var obstacle = m_obstacles[i];
+                if (obstacle == null)
+                {
+                    m_obstacles.RemoveAt(i);
+                    continue;
+                }
+
+                if (obstacle.gameObject.activeSelf == false)
+                {
+                    m_obstacles.RemoveAt(i);
+                    continue;
+                }
+
+                switch (obstacle)
                 {
                     case Bit bit:
                         Recycler.Recycle<Bit>(bit);
@@ -130,6 +143,12 @@ namespace StarSalvager
             {
                 var obstacle = m_obstacles[i];
                 if (obstacle == null)
+                {
+                    m_obstacles.RemoveAt(i);
+                    continue;
+                }
+
+                if (obstacle.gameObject.activeSelf == false)
                 {
                     m_obstacles.RemoveAt(i);
                     continue;
