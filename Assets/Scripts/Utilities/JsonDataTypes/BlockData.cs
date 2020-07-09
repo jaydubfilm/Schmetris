@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace StarSalvager.Utilities.JsonDataTypes
 {
-
+    [System.Serializable]
     public struct BlockData
     {
         public string ClassType { get; set; }

@@ -50,11 +50,6 @@ namespace StarSalvager
 
         #region Unity Functions
 
-        private void Start()
-        {
-            InitBot();
-        }
-
         private void FixedUpdate()
         {
             if (Rotating)

@@ -13,5 +13,4 @@ namespace StarSalvager.ScriptableObjects
                 .FirstOrDefault(p => p.bitType == Type);
         }
     }
-
 }
