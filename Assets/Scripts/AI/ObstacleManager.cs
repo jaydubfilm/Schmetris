@@ -77,7 +77,7 @@ namespace StarSalvager
                     continue;
                 }
 
-                if (obstacle.gameObject.activeSelf == false)
+                if (obstacle is IRecycled recycled && recycled.IsRecycled)
                 {
                     m_obstacles.RemoveAt(i);
                     continue;
@@ -148,18 +148,12 @@ namespace StarSalvager
                     continue;
                 }
 
-                if (obstacle.gameObject.activeSelf == false)
+                //TODO: These lines may be necessary, may not be. 
+                /*if (obstacle is IRecycled recycled && recycled.IsRecycled)
                 {
                     m_obstacles.RemoveAt(i);
                     continue;
-                }
-
-                //Check if currently recycled
-                //TODO: Think of a better way to check if this is in the recycler
-                if (!obstacle.gameObject.activeInHierarchy)
-                {
-                    m_obstacles.RemoveAt(i);
-                }
+                }*/
 
                 if (!obstacle.CanMove)
                 {
