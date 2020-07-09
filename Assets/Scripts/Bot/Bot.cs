@@ -16,6 +16,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Puzzle;
 using StarSalvager.Utilities.Puzzle.Data;
 using UnityEngine;
+using GameUI = StarSalvager.UI.GameUI;
 
 namespace StarSalvager
 {
@@ -103,6 +104,18 @@ namespace StarSalvager
             }
         }
         private Rigidbody2D _rigidbody;
+        
+        private GameUI GameUi
+        {
+            get
+            {
+                if (!_gameUi)
+                    _gameUi = FindObjectOfType<GameUI>();
+                
+                return _gameUi;
+            }
+        }
+        private GameUI _gameUi;
 
         //============================================================================================================//
 
@@ -994,8 +1007,14 @@ namespace StarSalvager
                     case PART_TYPE.CORE:
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
+                        {
+                            GameUi.SetHeatSliderValue(0f);
                             return;
+                        }
 
+                        GameUi.SetHeatSliderValue(coreHeat / 100f);
+
+                        
                         part.SetColor(Color.Lerp(Color.white, Color.red, coreHeat / 100f));
                         
                         if (coolTimer > 0f)
@@ -1642,24 +1661,18 @@ namespace StarSalvager
         /// <param name="attachable"></param>
         private void AsteroidDamageAt(IAttachable attachable)
         {
-            TryHitAt(attachable, -5f);
-            //switch (attachable)
-            //{
-            //    case Bit _:
-            //        DestroyAttachable<Bit>(attachable);
-            //        break;
-            //    case Part part:
-            //    {
-            //        var partHealth = (IHealth) part;
-            //
-            //        //FIXME I should determine the health remove for collisions with Asteroids.
-            //        partHealth.ChangeHealth(-5);
-            //    
-            //        //if(partHealth.CurrentHealth < 0)
-            //        //    DestroyAttachable<Part>(attachable);
-            //        break;
-            //    }
-            //}
+            
+            switch (attachable)
+            {
+                case Bit bit:
+                    TryHitAt(attachable, -bit.CurrentHealth);
+                    break;
+                case Part _:
+                {
+                    TryHitAt(attachable, -5f);
+                    break;
+                }
+            }
 
             //FIXME This value should not be hardcoded
             coreHeat += 20;
