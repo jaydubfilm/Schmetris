@@ -10,7 +10,7 @@ using UnityEngine.UI;
 namespace StarSalvager.Utilities.UI
 {
     [Serializable]
-    public class SliderText
+    public sealed class SliderText
     {
         [SerializeField, Required]
         private TMP_Text sliderText;
@@ -21,11 +21,8 @@ namespace StarSalvager.Utilities.UI
         [SerializeField]
         private string format;
 
-        //private CameraController m_cameraController;
-
-        public void Init(/*CameraController cameraController*/)
+        public void Init()
         {
-            //m_cameraController = cameraController;
             _slider.onValueChanged.AddListener(ValueChanged);
             sliderText.text = string.Format(format, _slider.value);
         }
@@ -33,14 +30,10 @@ namespace StarSalvager.Utilities.UI
         private void ValueChanged(float data)
         {
             sliderText.text = string.Format(format, data);
-
-            //m_cameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * data, Vector3.zero, true);
         }
         private void ValueChanged(int data)
         {
             sliderText.text = string.Format(format, data);
-
-            //m_cameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * data, Vector3.zero, true);
         }
     }
 }

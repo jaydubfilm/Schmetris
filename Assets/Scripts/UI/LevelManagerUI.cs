@@ -9,35 +9,66 @@ namespace StarSalvager.UI
 {
     public class LevelManagerUI : MonoBehaviour
     {
-        [SerializeField, Required, BoxGroup("UISections")]
+        //============================================================================================================//
+        
+        [SerializeField, Required, FoldoutGroup("UISections")]
         private GameObject m_betweenWavesUI;
-        [SerializeField, Required, BoxGroup("UISections")]
+        [SerializeField, Required, FoldoutGroup("UISections")]
         private GameObject m_deathUI;
+        
+        //============================================================================================================//
 
-        [SerializeField, Required, BoxGroup("View")]
+        [SerializeField, Required, FoldoutGroup("View")]
         private Button continueButton;
-        [SerializeField, Required, BoxGroup("View")]
+        [SerializeField, Required, FoldoutGroup("View")]
         private Button scrapyardButton;
-        [SerializeField, Required, BoxGroup("View")]
+        [SerializeField, Required, FoldoutGroup("View")]
         private Button toScrapyardButton;
-        [SerializeField, Required, BoxGroup("View")]
+        [SerializeField, Required, FoldoutGroup("View")]
         private Button toMainMenuButton;
-        [SerializeField, Required, BoxGroup("View")]
+        [SerializeField, Required, FoldoutGroup("View")]
         private Button retryButton;
-        [SerializeField, Required, BoxGroup("View")]
+        [SerializeField, Required, FoldoutGroup("View")]
         private Button mainMenuButton;
 
-        [SerializeField, Required, BoxGroup("View")]
+        [SerializeField, Required, FoldoutGroup("View")]
         private TextMesh m_currentWaveText;
+        
+        //============================================================================================================//
+
+        [SerializeField, Required, FoldoutGroup("Game UI"), BoxGroup("Game UI/Heat Slider")]
+        private Slider HeatSlider;
+        [SerializeField, Required, BoxGroup("Game UI/Heat Slider")]
+        private Image heatSliderImage;
+        [SerializeField, Required, BoxGroup("Game UI/Heat Slider")]
+        private Color minColor;
+        [SerializeField, Required, BoxGroup("Game UI/Heat Slider")]
+        private Color maxColor;
+
+        [SerializeField, Required, ToggleGroup("Game UI/Heat Slider/useVignette")]
+        private bool useVignette;
+        [SerializeField, Required, ToggleGroup("Game UI/Heat Slider/useVignette")]
+        private Image vignetteImage;
+        [SerializeField, Required, ToggleGroup("Game UI/Heat Slider/useVignette")]
+        private Color vignetteMinColor;
+        [SerializeField, Required, ToggleGroup("Game UI/Heat Slider/useVignette")]
+        private Color vignetteMaxColor;
+        
+        
+        //============================================================================================================//
 
         private LevelManager m_levelManager;
 
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             m_levelManager = FindObjectOfType<LevelManager>();
             InitButtons();
+            
+            vignetteImage.gameObject.SetActive(useVignette);
         }
+        
+        //============================================================================================================//
 
         private void InitButtons()
         {
@@ -82,6 +113,8 @@ namespace StarSalvager.UI
             ToggleBetweenWavesUIActive(false);
             ToggleDeathUIActive(false);
         }
+        
+        //============================================================================================================//
 
         public void ToggleBetweenWavesUIActive(bool active)
         {
@@ -92,5 +125,21 @@ namespace StarSalvager.UI
         {
             m_deathUI.SetActive(active);
         }
+
+        
+        /// <summary>
+        /// Value sent should be normalized
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetHeatSliderValue(float value)
+        {
+            HeatSlider.value = value;
+            heatSliderImage.color = Color.Lerp(minColor, maxColor, value);
+            
+            if(useVignette)
+                vignetteImage.color = Color.Lerp(vignetteMinColor, vignetteMaxColor, value);
+        }
+        
+        //============================================================================================================//
     }
 }
