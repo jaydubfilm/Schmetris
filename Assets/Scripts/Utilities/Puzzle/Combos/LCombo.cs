@@ -24,7 +24,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
             //  ##0      #
             //    #      #
             //    #    ##0
-            if (directions[(int) DIRECTION.LEFT].Count == 2 && directions[(int) DIRECTION.RIGHT].Count == 0)
+            if (directions[(int) DIRECTION.LEFT].Count >= 2 && directions[(int) DIRECTION.RIGHT].Count == 0)
             {
                 //Debug.Log("Left");
                 switch (directions[(int) DIRECTION.UP].Count)
@@ -56,7 +56,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
             //      #     0##
             //      #     #
             //      0##   #
-            else if (directions[(int) DIRECTION.RIGHT].Count == 2 && directions[(int) DIRECTION.LEFT].Count == 0)
+            else if (directions[(int) DIRECTION.RIGHT].Count >= 2 && directions[(int) DIRECTION.LEFT].Count == 0)
             {
                 //Debug.Log("Right");
                 switch (directions[(int) DIRECTION.UP].Count)

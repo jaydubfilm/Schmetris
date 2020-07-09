@@ -29,6 +29,8 @@ namespace StarSalvager.UI
         
         [SerializeField, BoxGroup("View")]
         private SliderText zoomSliderText;
+        [SerializeField, BoxGroup("View"), Required]
+        private Slider zoomSlider;
 
         [SerializeField, Required, BoxGroup("View")]
         private Button leftTurnButton;
@@ -58,8 +60,11 @@ namespace StarSalvager.UI
         
         private void Start()
         {
-            zoomSliderText.Init(m_cameraController);
+            zoomSliderText.Init();
 
+            zoomSlider.onValueChanged.AddListener(SetCameraZoom);
+            SetCameraZoom(zoomSlider.value);
+            
             InitUiScrollViews();
 
             InitButtons();
@@ -134,6 +139,11 @@ namespace StarSalvager.UI
                 var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
                 element.Init(data);
             }
+        }
+
+        private void SetCameraZoom(float value)
+        {
+            m_cameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * value, Vector3.zero, true);
         }
         
         //============================================================================================================//

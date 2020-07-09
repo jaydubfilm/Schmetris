@@ -18,11 +18,14 @@ namespace StarSalvager.Utilities.Puzzle.Combos
             if (lineData.horizontalCount != lineData.verticalCount)
                 return false;
 
+            var check = directions[(int) DIRECTION.LEFT].Count;
 
-            if (directions[(int) DIRECTION.LEFT].Count == 1 
-                && directions[(int) DIRECTION.RIGHT].Count == 1
-                && directions[(int) DIRECTION.UP].Count == 1
-                && directions[(int) DIRECTION.DOWN].Count == 1)
+
+            //Want to check that all sides are of equal distance
+            if (directions[(int) DIRECTION.LEFT].Count == check
+                && directions[(int) DIRECTION.RIGHT].Count == check
+                && directions[(int) DIRECTION.UP].Count == check
+                && directions[(int) DIRECTION.DOWN].Count == check)
             {
                 outData.toMove = new List<Bit>{ origin };
                 outData.toMove.AddRange(directions[(int) DIRECTION.LEFT]);
@@ -35,7 +38,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
 
 
 
-            outData.comboData = FactoryManager.Instance.GetFactory<ComboFactory>().GetComboData(COMBO.ANGLE);
+            outData.comboData = FactoryManager.Instance.GetFactory<ComboFactory>().GetComboData(COMBO.CROSS);
             
             //Debug.LogError($"Found X Combo at {origin.gameObject.name}", origin);
 
