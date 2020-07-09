@@ -35,26 +35,6 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("View")]
         private TMP_Text m_currentWaveText;
 
-        //============================================================================================================//
-
-        [SerializeField, Required, FoldoutGroup("Game UI"), BoxGroup("Game UI/Heat Slider")]
-        private Slider HeatSlider;
-        [SerializeField, Required, BoxGroup("Game UI/Heat Slider")]
-        private Image heatSliderImage;
-        [SerializeField, Required, BoxGroup("Game UI/Heat Slider")]
-        private Color minColor;
-        [SerializeField, Required, BoxGroup("Game UI/Heat Slider")]
-        private Color maxColor;
-
-        [SerializeField, Required, ToggleGroup("Game UI/Heat Slider/useVignette")]
-        private bool useVignette;
-        [SerializeField, Required, ToggleGroup("Game UI/Heat Slider/useVignette")]
-        private Image vignetteImage;
-        [SerializeField, Required, ToggleGroup("Game UI/Heat Slider/useVignette")]
-        private Color vignetteMinColor;
-        [SerializeField, Required, ToggleGroup("Game UI/Heat Slider/useVignette")]
-        private Color vignetteMaxColor;
-
 
         //============================================================================================================//
 
@@ -65,11 +45,6 @@ namespace StarSalvager.UI
         {
             m_levelManager = FindObjectOfType<LevelManager>();
             InitButtons();
-
-            SetHeatSliderValue(0.0f);
-            vignetteImage.gameObject.SetActive(useVignette);
-
-            SetHeatSliderValue(0f);
         }
 
         //============================================================================================================//
@@ -132,20 +107,6 @@ namespace StarSalvager.UI
         public void ToggleDeathUIActive(bool active)
         {
             m_deathUI.SetActive(active);
-        }
-
-
-        /// <summary>
-        /// Value sent should be normalized
-        /// </summary>
-        /// <param name="value"></param>
-        public void SetHeatSliderValue(float value)
-        {
-            HeatSlider.value = value;
-            heatSliderImage.color = Color.Lerp(minColor, maxColor, value);
-
-            if(useVignette)
-                vignetteImage.color = Color.Lerp(vignetteMinColor, vignetteMaxColor, value);
         }
 
         //============================================================================================================//
