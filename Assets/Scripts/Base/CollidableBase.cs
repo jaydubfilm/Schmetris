@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Recycling;
 using UnityEngine;
 
 namespace StarSalvager
@@ -8,8 +9,10 @@ namespace StarSalvager
     /// Any object that can touch a bot should use this base class
     /// </summary>
     [RequireComponent(typeof(Collider2D))]
-    public abstract class CollidableBase : MonoBehaviour
+    public abstract class CollidableBase : MonoBehaviour, IRecycled
     {
+        public bool IsRecycled { get; set; }
+        
         //private const int CHECK_FREQUENCY = 1;
 //
         //private int checks;
@@ -140,6 +143,7 @@ namespace StarSalvager
         }
         
         //============================================================================================================//
+
 
         
     }

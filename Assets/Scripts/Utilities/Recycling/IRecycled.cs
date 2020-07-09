@@ -2,7 +2,7 @@
 {
     public interface IRecycled
     {
-        void OnRecycled();
+        bool IsRecycled { get; set; }
     }
 }
 

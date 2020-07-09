@@ -19,11 +19,13 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Bot : MonoBehaviour, ICustomRecycle
+    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled
     {
         public static Action<Bot> OnBotDied;
 
         //============================================================================================================//
+        
+        public bool IsRecycled { get; set; }
 
         [SerializeField, BoxGroup("PROTOTYPE")]
         public float TEST_Speed;
