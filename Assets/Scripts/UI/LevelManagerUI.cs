@@ -66,6 +66,7 @@ namespace StarSalvager.UI
             m_levelManager = FindObjectOfType<LevelManager>();
             InitButtons();
 
+            SetHeatSliderValue(0.0f);
             vignetteImage.gameObject.SetActive(useVignette);
 
             SetHeatSliderValue(0f);
