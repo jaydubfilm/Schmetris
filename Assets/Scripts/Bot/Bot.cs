@@ -45,8 +45,10 @@ namespace StarSalvager
         private List<IAttachable> _attachedBlocks;
         
         private List<Part> _parts;
-        
-        
+
+        public List<IAttachable> BitsPendingDetach { get; private set; }
+
+
         //============================================================================================================//
 
         public bool Destroyed => _isDestroyed;
@@ -709,6 +711,40 @@ namespace StarSalvager
         }
         
         #endregion //TryHitAt
+        
+        #region Asteroid Collision
+        
+        /// <summary>
+        /// Applies pre-determine asteroid damage to the specified IAttachable
+        /// </summary>
+        /// <param name="attachable"></param>
+        private void AsteroidDamageAt(IAttachable attachable)
+        {
+            
+            switch (attachable)
+            {
+                case Bit bit:
+                    TryHitAt(attachable, -bit.CurrentHealth);
+                    break;
+                case Part _:
+                {
+                    TryHitAt(attachable, -5f);
+                    break;
+                }
+            }
+
+            //FIXME This value should not be hardcoded
+            coreHeat += 20;
+            coolTimer = coolDelay;
+            
+
+            if (coreHeat >= 100 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0)
+            {
+                Destroy();
+            }
+        }
+
+        #endregion //Asteroid Collision
 
         //============================================================================================================//
 
@@ -844,7 +880,7 @@ namespace StarSalvager
                 });
             }
 
-            
+            CheckForDisconnects();
             
             CompositeCollider2D.GenerateGeometry();
 
@@ -854,6 +890,7 @@ namespace StarSalvager
             foreach (var attachable in detachingBits)
             {
                 attachedBlocks.Remove(attachable);
+                BitsPendingDetach.Remove(attachable);
             }
 
             var removes = new List<IAttachable>(detachingBits);
@@ -875,7 +912,7 @@ namespace StarSalvager
                 {
                     shape.SetColliderActive(false);
 
-                    this.DelayedCall(1f, () =>
+                    this.DelayedCall(3f, () =>
                     {
                         shape.SetColor(Color.white);
                         shape.SetColliderActive(true);
@@ -883,7 +920,7 @@ namespace StarSalvager
                 }
             }
 
-            
+            CheckForDisconnects();            
             
             CompositeCollider2D.GenerateGeometry();
 
@@ -1652,42 +1689,6 @@ namespace StarSalvager
         #endregion //Puzzle Checks
 
         //============================================================================================================//
-        
-        #region Asteroid Collision
-        
-        /// <summary>
-        /// Applies pre-determine asteroid damage to the specified IAttachable
-        /// </summary>
-        /// <param name="attachable"></param>
-        private void AsteroidDamageAt(IAttachable attachable)
-        {
-            
-            switch (attachable)
-            {
-                case Bit bit:
-                    TryHitAt(attachable, -bit.CurrentHealth);
-                    break;
-                case Part _:
-                {
-                    TryHitAt(attachable, -5f);
-                    break;
-                }
-            }
-
-            //FIXME This value should not be hardcoded
-            coreHeat += 20;
-            coolTimer = coolDelay;
-            
-
-            if (coreHeat >= 100 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0)
-            {
-                Destroy();
-            }
-        }
-
-        #endregion //Asteroid Collision
-        
-        //============================================================================================================//
 
         #region Magnet Checks
 
@@ -1711,26 +1712,49 @@ namespace StarSalvager
             var bitsToRemove = new List<Bit>();
 
             //--------------------------------------------------------------------------------------------------------//
+
+            float time;
+            Action onDetach;
             
             switch (currentMagnet)
             {
                 //----------------------------------------------------------------------------------------------------//
                 case MAGNET.DEFAULT:
                     DefaultMagnetCheck(bits, out bitsToRemove, in toRemoveCount);
+                    time = 1f;
+                    onDetach = () =>
+                    {
+                        DetachBitsCheck(bitsToRemove, true);
+                    };
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case MAGNET.BUMP:
                     BumpMagnetCheck(bits, out bitsToRemove, in toRemoveCount);
+                    time = 0f;
+                    onDetach = () =>
+                    {
+                        DetachBitsCheck(bitsToRemove, true);
+                    };
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case MAGNET.LOWEST:
                     LowestMagnetCheckSimple(bits, ref bitsToRemove, ref toRemoveCount);
+                    time = 1f;
+                    onDetach = () =>
+                    {
+                        DetachBitsCheck(bitsToRemove, true);
+                    };
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException();
                 //----------------------------------------------------------------------------------------------------//
             }
+
+            if (BitsPendingDetach == null)
+                BitsPendingDetach = new List<IAttachable>();
+            
+            BitsPendingDetach.AddRange(bitsToRemove);
             
             //Visually show that the bits will fall off by changing their color
             foreach (var bit in bitsToRemove)
@@ -1738,17 +1762,7 @@ namespace StarSalvager
                 bit.SetColor(Color.gray);
             }
             
-            this.DelayedCall(0.25f, () =>
-            {
-                foreach (var bit in bitsToRemove)
-                {
-                    DestroyAttachable(bit);
-
-                }
-                //Detach the specified bits after 1sec
-                //DetachBitsCheck(bitsToRemove, true);
-                //Debug.Break();
-            });
+            this.DelayedCall(time, onDetach);
             //--------------------------------------------------------------------------------------------------------//
             
             
@@ -2223,6 +2237,8 @@ namespace StarSalvager
             }
             
             attachedBlocks.Clear();
+            BitsPendingDetach.Clear();
+            _parts.Clear();
         }
         
         #endregion //Custom Recycle

@@ -26,9 +26,9 @@ namespace StarSalvager
         //IHealth Properties
         //============================================================================================================//
 
-        public float StartingHealth { get { return _startingHealth; } }
+        public float StartingHealth => _startingHealth;
         private float _startingHealth;
-        public float CurrentHealth { get { return _currentHealth; } }
+        public float CurrentHealth => _currentHealth;
         private float _currentHealth;
 
         //IObstacle Properties
