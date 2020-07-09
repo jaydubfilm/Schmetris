@@ -11,7 +11,8 @@ namespace StarSalvager.Utilities.Extensions
         {
             foreach(GameObject gameObject in sceneRoot.Scene.GetRootGameObjects())
             {
-                gameObject.SetActive(state);
+                if (state)
+                    gameObject.SetActive(true);
 
                 if (!shouldTriggerReset)
                     continue;
@@ -24,6 +25,9 @@ namespace StarSalvager.Utilities.Extensions
                     else
                         reset.Reset();
                 }
+
+                if (!state)
+                    gameObject.SetActive(false);
             }
         }
     }
