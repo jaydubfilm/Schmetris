@@ -33,7 +33,7 @@ namespace StarSalvager.UI
         private Button mainMenuButton;
 
         [SerializeField, Required, FoldoutGroup("View")]
-        private TextMesh m_currentWaveText;
+        private TMP_Text m_currentWaveText;
 
         //============================================================================================================//
 
@@ -66,6 +66,7 @@ namespace StarSalvager.UI
             m_levelManager = FindObjectOfType<LevelManager>();
             InitButtons();
 
+            SetHeatSliderValue(0.0f);
             vignetteImage.gameObject.SetActive(useVignette);
         }
 

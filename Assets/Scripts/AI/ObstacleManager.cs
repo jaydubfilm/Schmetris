@@ -154,7 +154,6 @@ namespace StarSalvager
                 if (gridPosition.y < -10)
                 {
                     var temp = m_obstacles[i];
-                    m_obstacles.RemoveAt(i);
 
                     switch (temp)
                     {
@@ -177,6 +176,8 @@ namespace StarSalvager
                             m_obstacles[i] = null;
                             break;
                     }
+
+                    m_obstacles.RemoveAt(i);
                     continue;
                 }
 
