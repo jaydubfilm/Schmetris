@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: Damage Profile
   m_EditorClassIdentifier: 
   damageDetailSprites:
+  - {fileID: 0}
   - {fileID: -1492478318266384380, guid: 5fb07af1ed54800458d8105e711dd542, type: 3}
   - {fileID: -2480744992007937950, guid: 5fb07af1ed54800458d8105e711dd542, type: 3}
   - {fileID: 4618547577103723206, guid: 5fb07af1ed54800458d8105e711dd542, type: 3}
   damageMaskSprites:
+  - {fileID: 0}
   - {fileID: 9164772026471994329, guid: bba3ebacc7956224c83adb891d1e7356, type: 3}
   - {fileID: -6886732214769487672, guid: bba3ebacc7956224c83adb891d1e7356, type: 3}
   - {fileID: 2383399766435924876, guid: bba3ebacc7956224c83adb891d1e7356, type: 3}

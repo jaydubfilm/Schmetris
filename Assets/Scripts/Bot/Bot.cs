@@ -36,6 +36,11 @@ namespace StarSalvager
         
         [SerializeField, Range(0.5f, 10f), BoxGroup("PROTOTYPE")]
         public float TEST_MergeSpeed = 2f;
+        
+        [SerializeField, BoxGroup("PROTOTYPE/Magnet")]
+        public float TEST_DetachTime = 1f;
+        [SerializeField, BoxGroup("PROTOTYPE/Magnet")]
+        public bool TEST_SetDetachColor = true;
 
         //============================================================================================================//
 
@@ -738,9 +743,11 @@ namespace StarSalvager
             coolTimer = coolDelay;
 
 
-            if (attachedBlocks.Count == 0) return;
-            
-            if (coreHeat >= 100 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0)
+            if (attachedBlocks.Count == 0)
+            {
+                Destroy();
+            }
+            else if (coreHeat >= 100 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0)
             {
                 Destroy();
             }
@@ -1715,7 +1722,7 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            float time;
+            //float time;
             Action onDetach;
             
             switch (currentMagnet)
@@ -1723,7 +1730,7 @@ namespace StarSalvager
                 //----------------------------------------------------------------------------------------------------//
                 case MAGNET.DEFAULT:
                     DefaultMagnetCheck(bits, out bitsToRemove, in toRemoveCount);
-                    time = 1f;
+                    //time = 1f;
                     onDetach = () =>
                     {
                         DetachBitsCheck(bitsToRemove, true);
@@ -1732,7 +1739,7 @@ namespace StarSalvager
                 //----------------------------------------------------------------------------------------------------//
                 case MAGNET.BUMP:
                     BumpMagnetCheck(bits, out bitsToRemove, in toRemoveCount);
-                    time = 0f;
+                    //time = 0f;
                     onDetach = () =>
                     {
                         DetachBitsCheck(bitsToRemove, true);
@@ -1741,7 +1748,7 @@ namespace StarSalvager
                 //----------------------------------------------------------------------------------------------------//
                 case MAGNET.LOWEST:
                     LowestMagnetCheckSimple(bits, ref bitsToRemove, ref toRemoveCount);
-                    time = 1f;
+                    //time = 1f;
                     onDetach = () =>
                     {
                         DetachBitsCheck(bitsToRemove, true);
@@ -1759,12 +1766,18 @@ namespace StarSalvager
             BitsPendingDetach.AddRange(bitsToRemove);
             
             //Visually show that the bits will fall off by changing their color
-            foreach (var bit in bitsToRemove)
+            if (TEST_SetDetachColor)
             {
-                bit.SetColor(Color.gray);
+                foreach (var bit in bitsToRemove)
+                {
+                    bit.SetColor(Color.gray);
+                } 
             }
             
-            this.DelayedCall(time, onDetach);
+            if(TEST_DetachTime == 0f)
+                onDetach.Invoke();
+            else
+                this.DelayedCall(TEST_DetachTime, onDetach);
             //--------------------------------------------------------------------------------------------------------//
             
             
@@ -2186,7 +2199,6 @@ namespace StarSalvager
         
         private IEnumerator DestroyCoroutine()
         {
-            var core = attachedBlocks[0];
             var index = 1;
             
             yield return new WaitForSeconds(0.3f);

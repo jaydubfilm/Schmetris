@@ -1,6 +1,7 @@
 ﻿using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects;
+using StarSalvager.Utilities.Animations;
 using UnityEngine;
 
 namespace StarSalvager
@@ -51,19 +52,29 @@ namespace StarSalvager
         [SerializeField, Required]
         private DamageProfileScriptableObject _damageProfileScriptableObject;
 
+        [SerializeField] 
+        private SimpleAnimator flashAnimator;
+
         //============================================================================================================//
 
         public void SetHealth(float value)
         {
+            
             if (value == 1f)
             {
+                flashAnimator.Stop();
                 renderer.sprite = null;
                 mask.sprite = null;
                 return;
             }
             
+            flashAnimator.Play();
+            
             renderer.sprite = _damageProfileScriptableObject.GetDetailSprite(value);
             mask.sprite = _damageProfileScriptableObject.GetMaskSprite(value);
+
+            flashAnimator.speed = Mathf.Lerp(1.5f, 5f, 1f - value);
+            flashAnimator.Alpha = Mathf.Lerp(0.25f, 1f, 1f - value);
         }
         
         //============================================================================================================//

@@ -48,6 +48,8 @@ MonoBehaviour:
   TEST_Speed: 50
   TEST_RotSpeed: 500
   TEST_MergeSpeed: 5
+  TEST_DetachTime: 0.15
+  TEST_SetDetachColor: 0
   _moveDirection: -1
   DelayedAutoStartTime: 0.05
   useMagnet: 1
