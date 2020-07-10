@@ -27,7 +27,7 @@ MonoBehaviour:
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
     m_stageObstacleData:
-    - m_selectionType: 1
+    - m_selectionType: 2
       m_bitType: 0
       m_asteroidSize: 3
       m_asteroidCountPerMinute: 100
