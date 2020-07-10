@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Wave_Remote_1_3
   m_EditorClassIdentifier: 
   StageRemoteData:
-  - m_stageDuration: 10
+  - m_stageDuration: 15
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
@@ -22,23 +22,21 @@ MonoBehaviour:
       m_bitType: 5
       m_asteroidSize: 0
       m_asteroidCountPerMinute: 350
-  - m_stageDuration: 10
-    m_stageBlendPeriod: 3
+  - m_stageDuration: 15
+    m_stageBlendPeriod: 5
     m_waitUntilAllEnemiesDefeatedToBegin: 0
-    m_stageEnemyData:
-    - m_enemyType: 0
-      m_enemyCount: 10
+    m_stageEnemyData: []
     m_stageObstacleData:
     - m_selectionType: 0
       m_bitType: 0
       m_asteroidSize: 0
-      m_asteroidCountPerMinute: 200
-  - m_stageDuration: 10
-    m_stageBlendPeriod: 3
+      m_asteroidCountPerMinute: 500
+  - m_stageDuration: 20
+    m_stageBlendPeriod: 5
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
     m_stageObstacleData:
     - m_selectionType: 2
       m_bitType: 0
       m_asteroidSize: 2
-      m_asteroidCountPerMinute: 100
+      m_asteroidCountPerMinute: 150
