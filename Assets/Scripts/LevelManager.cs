@@ -121,7 +121,7 @@ namespace StarSalvager
 
             GameTimer.AddPausable(this);
             m_levelManagerUI = FindObjectOfType<LevelManagerUI>();
-            m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString());
+            m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
 
             Random.InitState(seed);
         }
@@ -235,19 +235,16 @@ namespace StarSalvager
         {
             m_currentWave = 0;
             m_levelManagerUI.ToggleDeathUIActive(false);
-            m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString());
+            m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
             GameTimer.SetPaused(false);
             SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "AlexShulmanTestScene");
-            //SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene");
-            //Reset();
-            //Activate();
         }
 
         //============================================================================================================//
 
         public void OnResume()
         {
-            m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString());
+            m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
         }
 
         public void OnPause()

@@ -21,11 +21,11 @@ namespace StarSalvager.Utilities
             {
                 if (m_paused)
                 {
-                    pausable.OnResume();
+                    pausable.OnPause();
                 }
                 else
                 {
-                    pausable.OnPause();
+                    pausable.OnResume();
                 }
             }
         }
