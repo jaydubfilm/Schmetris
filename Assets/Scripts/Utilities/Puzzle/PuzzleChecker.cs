@@ -18,6 +18,7 @@ namespace StarSalvager.Utilities.Puzzle
             new TCombo(),
             new LCombo(), 
             new XCombo(), 
+            new LineAltCombo()
         };
 
 

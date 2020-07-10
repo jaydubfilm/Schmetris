@@ -65,7 +65,7 @@ MonoBehaviour:
         amount: 200
       - type: 2
         amount: 500
-    data: 1400000019000000
+    data: 050000000a000000
   - name: Armor
     partType: 3
     health:

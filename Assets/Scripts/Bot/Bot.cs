@@ -1083,6 +1083,15 @@ namespace StarSalvager
                     case PART_TYPE.REPAIR:
                         //TODO Determine if this heals Bits & parts or just parts
                         //TODO This needs to fire every x Seconds
+                        var toRepair = attachedBlocks.GetAttachablesAround(part)
+                            .OfType<Part>().FirstOrDefault(p => p.CurrentHealth < p.StartingHealth);
+
+                        if (toRepair is null) break;
+                        var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.REPAIR);
+
+                        //Increase the health of this part depending on the current level of the repairer
+                        toRepair.ChangeHealth(partData.data[part.level] * Time.deltaTime);
+                        
                         break;
                     case PART_TYPE.GUN:
                         //TODO This needs to find closest enemy targets to this
@@ -1361,8 +1370,10 @@ namespace StarSalvager
 
                     CheckForCombosAround(bit);
                     CheckForCombosAround(orphans.Select(x => x.attachableBase as Bit));
+                    
                 }));
-
+            
+            CheckForDisconnects();
             //--------------------------------------------------------------------------------------------------------//
         }
 
@@ -1954,28 +1965,21 @@ namespace StarSalvager
 
             }
 
-            return selectedBit;
-        }
-
-        private Bit FindFurthestRemovableBit(List<Bit> bits, ICollection<Bit> toIgnore)
-        {
-            //I Want the last Bit to be the fallback/default, if I can't find anything
-            Bit selectedBit = null;
-            var lowestLevel = 999;
-            //The lowest Y coordinate
-            var lowestCoordinate = 999;
-
+            if (selectedBit != null) 
+                return selectedBit;
+            
+            
             foreach (var bit in bits)
             {
                 if (toIgnore.Contains(bit))
                     continue;
-                
+            
                 if(bit.level > lowestLevel)
                     continue;
 
                 //Checks if the piece is higher, and if it is, that the level is not higher than the currently selected Bit
                 //This ensures that even if the lowest Bit is of high level, the lowest will always be selected
-                if (bit.Coordinate.y > lowestCoordinate/* && !(bit.level < lowestLevel)*/)
+                if (bit.Coordinate.y > lowestCoordinate)
                     continue;
 
                 if (RemovalCausesDisconnects(new List<IAttachable>(/*toIgnore*/) {bit}))
@@ -1988,7 +1992,11 @@ namespace StarSalvager
             }
 
             return selectedBit;
-            /*//I Want the last Bit to be the fallback/default, if I can't find anything
+        }
+
+        private Bit FindFurthestRemovableBit(List<Bit> bits, ICollection<Bit> toIgnore)
+        {
+            //I Want the last Bit to be the fallback/default, if I can't find anything
             Bit selectedBit = null;
             var furthestDistance = -999f;
             var lowestLevel = 999f;
@@ -2015,7 +2023,7 @@ namespace StarSalvager
 
             }
 
-            return selectedBit;*/
+            return selectedBit;
         }
         
         #endregion //Magnet Checks

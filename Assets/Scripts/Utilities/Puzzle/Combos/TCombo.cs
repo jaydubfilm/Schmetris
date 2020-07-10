@@ -38,6 +38,9 @@ namespace StarSalvager.Utilities.Puzzle.Combos
                     case 3 when directions[(int) DIRECTION.DOWN].Count == 0:
                     case 4 when directions[(int) DIRECTION.DOWN].Count == 0:
                     case 5 when directions[(int) DIRECTION.DOWN].Count == 0:
+                    case 6 when directions[(int) DIRECTION.DOWN].Count == 0:
+                    case 7 when directions[(int) DIRECTION.DOWN].Count == 0:
+                    case 8 when directions[(int) DIRECTION.DOWN].Count == 0:
                         outData.toMove = new List<Bit> {origin};
                         outData.toMove.AddRange(directions[(int) DIRECTION.UP]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.LEFT]);
@@ -66,6 +69,9 @@ namespace StarSalvager.Utilities.Puzzle.Combos
                     case 3 when directions[(int) DIRECTION.RIGHT].Count == 0:
                     case 4 when directions[(int) DIRECTION.RIGHT].Count == 0:
                     case 5 when directions[(int) DIRECTION.RIGHT].Count == 0:
+                    case 6 when directions[(int) DIRECTION.RIGHT].Count == 0:
+                    case 7 when directions[(int) DIRECTION.RIGHT].Count == 0:
+                    case 8 when directions[(int) DIRECTION.RIGHT].Count == 0:
                         outData.toMove = new List<Bit> {origin};
                         outData.toMove.AddRange(directions[(int) DIRECTION.UP]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.DOWN]);
