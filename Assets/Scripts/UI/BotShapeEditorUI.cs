@@ -109,7 +109,7 @@ namespace StarSalvager.UI
 
             NewShapeButton.onClick.AddListener(() =>
             {
-                m_botShapeEditor.CreateShape();
+                m_botShapeEditor.CreateShape(null);
                 partsScrollView.SetElementsActive(false);
             });
 

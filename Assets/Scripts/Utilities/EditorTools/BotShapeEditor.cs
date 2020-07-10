@@ -184,12 +184,19 @@ namespace StarSalvager
             _scrapyardBots[0].InitBot();
         }
 
-        public void CreateShape()
+        public void CreateShape(List<Bit> bits)
         {
             DeloadAllBots();
             DeloadAllShapes();
-            _shapes.Add(FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>());
-            _shapes[0].PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(), Vector2Int.zero);
+            if (bits == null || bits.Count == 0)
+            {
+                _shapes.Add(FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>());
+                _shapes[0].PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(), Vector2Int.zero);
+            }
+            else
+            {
+                _shapes.Add(FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bits));
+            }
         }
 
         public void LoadBlockData()
@@ -207,8 +214,9 @@ namespace StarSalvager
             blockData = m_editorBotShapeGeneratorScripableObject.GetEditorShapeData(m_botShapeEditorUI.GetNameInputFieldValue()).BlockData;
             if (blockData != null)
             {
-                CreateShape();
-                _shapes[0].Setup(blockData.ImportBlockDatas(true).Cast<Bit>().ToList());
+                List<Bit> bits = blockData.ImportBlockDatas(false).FindAll(o => o is Bit).OfType<Bit>().ToList();
+                print(bits.Count);
+                CreateShape(bits);
                 return;
             }
         }
@@ -242,8 +250,8 @@ namespace StarSalvager
 
             foreach (Shape shape in _shapes)
             {
-                //EditorShapeGeneratorData newData = new EditorShapeGeneratorData(m_botShapeEditorUI.GetNameInputFieldValue(), shape.GetBloc);
-                //m_editorBotShapeGeneratorScripableObject.AddEditorShapeData(newData);
+                EditorShapeGeneratorData newData = new EditorShapeGeneratorData(m_botShapeEditorUI.GetNameInputFieldValue(), shape.AttachedBits.GetBlockDatas());
+                m_editorBotShapeGeneratorScripableObject.AddEditorShapeData(newData);
             }
         }
     }
