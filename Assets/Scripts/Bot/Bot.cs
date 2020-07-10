@@ -724,11 +724,11 @@ namespace StarSalvager
             switch (attachable)
             {
                 case Bit bit:
-                    TryHitAt(attachable, -bit.CurrentHealth);
+                    TryHitAt(attachable, bit.CurrentHealth);
                     break;
                 case Part _:
                 {
-                    TryHitAt(attachable, -5f);
+                    TryHitAt(attachable, 5f);
                     break;
                 }
             }
@@ -736,8 +736,10 @@ namespace StarSalvager
             //FIXME This value should not be hardcoded
             coreHeat += 20;
             coolTimer = coolDelay;
-            
 
+
+            if (attachedBlocks.Count == 0) return;
+            
             if (coreHeat >= 100 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0)
             {
                 Destroy();
@@ -2237,7 +2239,7 @@ namespace StarSalvager
             }
             
             attachedBlocks.Clear();
-            BitsPendingDetach.Clear();
+            BitsPendingDetach?.Clear();
             _parts.Clear();
         }
         

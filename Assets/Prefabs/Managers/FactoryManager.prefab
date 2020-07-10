@@ -57,4 +57,6 @@ MonoBehaviour:
   scrapyardBotPrefab: {fileID: 394989056214196771, guid: 635c72e78b83d2344a6460ef7d8059d5,
     type: 3}
   comboRemoteData: {fileID: 11400000, guid: e98ad69cab8c1364baddf1bc6ae8b077, type: 2}
+  damageFactory: {fileID: 7563446395452513033, guid: a3c8a083717316a47973770fe6593e47,
+    type: 3}
   bitProfileAlt: {fileID: 11400000, guid: 628da6f5ae4f6764da2834ca7950430f, type: 2}
