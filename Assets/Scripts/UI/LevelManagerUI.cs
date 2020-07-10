@@ -61,6 +61,7 @@ namespace StarSalvager.UI
             {
                 GameTimer.SetPaused(false);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
+                ToggleBetweenWavesUIActive(false);
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             });
 
@@ -68,6 +69,7 @@ namespace StarSalvager.UI
             {
                 m_levelManager.SavePlayerData();
                 GameTimer.SetPaused(false);
+                ToggleBetweenWavesUIActive(false);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             });
