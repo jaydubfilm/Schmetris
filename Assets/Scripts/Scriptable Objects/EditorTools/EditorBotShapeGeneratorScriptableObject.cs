@@ -17,7 +17,7 @@ namespace StarSalvager.ScriptableObjects
                 .FirstOrDefault(p => p.Name == name);
         }
 
-        public EditorShapeGeneratorData? GetEditorShapeData(string name)
+        public EditorShapeGeneratorData GetEditorShapeData(string name)
         {
             return m_editorShapeGeneratorData
                 .FirstOrDefault(p => p.Name == name);

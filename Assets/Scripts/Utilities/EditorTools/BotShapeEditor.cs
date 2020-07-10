@@ -22,6 +22,7 @@ namespace StarSalvager
 
         public Material material;
         private List<ScrapyardBot> _scrapyardBots;
+        private List<Shape> _shapes;
 
         [SerializeField]
         private CameraController m_cameraController;
@@ -37,6 +38,7 @@ namespace StarSalvager
         void Start()
         {
             _scrapyardBots = new List<ScrapyardBot>();
+            _shapes = new List<Shape>();
             InputManager.Instance.InitInput();
             Activate();
         }
@@ -50,8 +52,6 @@ namespace StarSalvager
         {
             Camera.onPostRender += DrawGL;
             GameTimer.SetPaused(true);
-
-            CreateBot();
         }
 
         public void Reset()
@@ -105,17 +105,20 @@ namespace StarSalvager
         //On left mouse button click, check if there is a bit/part at the mouse location. If there is not, purchase the selected part type and place it at this location.
         public void OnLeftMouseButtonDown()
         {
-            print("TESTLEFT");
-            
-            if (selectedPartType == null)
-            {
-                return;
-            }
-
             Vector2Int mouseCoordinate = getMouseCoordinate();
 
             if (Mathf.Abs(mouseCoordinate.x) > 3 || Mathf.Abs(mouseCoordinate.y) > 3)
                 return;
+
+            foreach (Shape shape in _shapes)
+            {
+                shape.PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(), mouseCoordinate);
+            }
+
+            if (selectedPartType == null)
+            {
+                return;
+            }
 
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
@@ -135,9 +138,16 @@ namespace StarSalvager
             if (Mathf.Abs(mouseCoordinate.x) > 3 || Mathf.Abs(mouseCoordinate.y) > 3)
                 return;
 
+            if (mouseCoordinate.x == 0 && mouseCoordinate.y == 0)
+
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
                 scrapBot.TryRemoveAttachableAt(mouseCoordinate, false);
+            }
+
+            foreach (Shape shape in _shapes)
+            {
+                shape.DestroyBit(mouseCoordinate);
             }
         }
 
@@ -169,17 +179,46 @@ namespace StarSalvager
         public void CreateBot()
         {
             DeloadAllBots();
+            DeloadAllShapes();
             _scrapyardBots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>());
             _scrapyardBots[0].InitBot();
+        }
+
+        public void CreateShape(List<Bit> bits)
+        {
+            DeloadAllBots();
+            DeloadAllShapes();
+            if (bits == null || bits.Count == 0)
+            {
+                _shapes.Add(FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>());
+                _shapes[0].PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(), Vector2Int.zero);
+            }
+            else
+            {
+                _shapes.Add(FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bits));
+            }
         }
 
         public void LoadBlockData()
         {
             DeloadAllBots();
-            CreateBot();
+            DeloadAllShapes();
             var blockData = m_editorBotShapeGeneratorScripableObject.GetEditorBotData(m_botShapeEditorUI.GetNameInputFieldValue()).BlockData;
             if (blockData != null)
+            {
+                CreateBot();
                 _scrapyardBots[0].InitBot(blockData.ImportBlockDatas(true));
+                return;
+            }
+
+            blockData = m_editorBotShapeGeneratorScripableObject.GetEditorShapeData(m_botShapeEditorUI.GetNameInputFieldValue()).BlockData;
+            if (blockData != null)
+            {
+                List<Bit> bits = blockData.ImportBlockDatas(false).FindAll(o => o is Bit).OfType<Bit>().ToList();
+                print(bits.Count);
+                CreateShape(bits);
+                return;
+            }
         }
 
         private void DeloadAllBots()
@@ -191,6 +230,15 @@ namespace StarSalvager
             }
         }
 
+        private void DeloadAllShapes()
+        {
+            for (int i = _shapes.Count() - 1; i >= 0; i--)
+            {
+                Recycling.Recycler.Recycle<Shape>(_shapes[i].gameObject);
+                _shapes.RemoveAt(i);
+            }
+        }
+
         //Save the current bot's data in blockdata to be loaded in the level manager.
         public void SaveBlockData()
         {
@@ -199,17 +247,12 @@ namespace StarSalvager
                 EditorBotGeneratorData newData = new EditorBotGeneratorData(m_botShapeEditorUI.GetNameInputFieldValue(), scrapyardbot.attachedBlocks.GetBlockDatas());
                 m_editorBotShapeGeneratorScripableObject.AddEditorBotData(newData);
             }
-        }
 
-        private void ToGameplayButtonPressed()
-        {
-            StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
-        }
-
-        public void ProcessScrapyardUsageEndAnalytics()
-        {
-            Dictionary<string, object> scrapyardUsageEndAnalyticsDictionary = new Dictionary<string, object>();
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageEnd, scrapyardUsageEndAnalyticsDictionary);
+            foreach (Shape shape in _shapes)
+            {
+                EditorShapeGeneratorData newData = new EditorShapeGeneratorData(m_botShapeEditorUI.GetNameInputFieldValue(), shape.AttachedBits.GetBlockDatas());
+                m_editorBotShapeGeneratorScripableObject.AddEditorShapeData(newData);
+            }
         }
     }
 }

@@ -24,11 +24,6 @@ namespace StarSalvager.UI
         
         //============================================================================================================//
         
-        [SerializeField, BoxGroup("Resource UI")]
-        private ResourceUIElementScrollView resourceScrollView;
-        
-        //============================================================================================================//
-        
         [SerializeField, BoxGroup("View")]
         private SliderText zoomSliderText;
         [SerializeField, BoxGroup("View"), Required]
@@ -45,8 +40,6 @@ namespace StarSalvager.UI
         private Button SaveButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button LoadButton;
-        [SerializeField, Required, BoxGroup("Menu Buttons")]
-        private Button ReadyButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button NewBotButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
@@ -70,7 +63,7 @@ namespace StarSalvager.UI
 
             zoomSlider.onValueChanged.AddListener(SetCameraZoom);
             SetCameraZoom(zoomSlider.value);
-            
+
             InitUiScrollViews();
 
             InitButtons();
@@ -108,22 +101,26 @@ namespace StarSalvager.UI
             
             //--------------------------------------------------------------------------------------------------------//
 
-            ReadyButton.onClick.AddListener(() =>
-            {
-                m_botShapeEditor.SaveBlockData();
-                m_botShapeEditor.ProcessScrapyardUsageEndAnalytics();
-                StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
-            });
-
             NewBotButton.onClick.AddListener(() =>
             {
                 m_botShapeEditor.CreateBot();
+                partsScrollView.SetElementsActive(true);
             });
 
             NewShapeButton.onClick.AddListener(() =>
             {
-                FactoryManager.Instance.GetFactory<ShapeFactory>().CreateGameObject();
+                m_botShapeEditor.CreateShape(null);
+                partsScrollView.SetElementsActive(false);
             });
+
+            m_botNameInputField.onValueChanged.AddListener((content) =>
+            {
+                var isEmpty = string.IsNullOrEmpty(content);
+                SaveButton.interactable = !isEmpty;
+                LoadButton.interactable = !isEmpty;
+            });
+
+            m_botNameInputField.text = null;
 
             //--------------------------------------------------------------------------------------------------------//
         }
@@ -137,20 +134,7 @@ namespace StarSalvager.UI
                 var element = partsScrollView.AddElement<PartUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement");
                 element.Init(partRemoteData, PartPressed);
             }
-
-            var resources = PlayerPersistentData.GetPlayerData().GetResources();
-
-            foreach (var resource in resources)
-            {
-                var data = new ResourceAmount
-                {
-                    type = resource.Key,
-                    amount = resource.Value
-                };
-                
-                var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
-                element.Init(data);
-            }
+            partsScrollView.SetElementsActive(false);
         }
 
         private void SetCameraZoom(float value)
@@ -159,54 +143,10 @@ namespace StarSalvager.UI
         }
         
         //============================================================================================================//
-
-        #if UNITY_EDITOR
-        
-        [Button("Test Resource Update"), DisableInEditorMode, BoxGroup("Resource UI")]
-        private void TestUpdateResources()
-        {
-            var _resourcesTest = new Dictionary<BIT_TYPE, int>();
-            for (var i = 0; i < 3; i++)
-            {
-                var type = (BIT_TYPE) Random.Range(1, 6);
-                var amount = Random.Range(0, 1000);
-
-                if (_resourcesTest.ContainsKey(type))
-                {
-                    _resourcesTest[type] += amount;
-                    continue;
-                }
-
-                _resourcesTest.Add(type, amount);
-
-            }
-
-            UpdateResources(_resourcesTest);
-        }
-
-        #endif
         
         public string GetNameInputFieldValue()
         {
             return m_botNameInputField.text;
-        }
-
-        public void UpdateResources(Dictionary<BIT_TYPE, int> resources)
-        {
-            UpdateResources(resources.ToResourceList());
-        }
-        
-        public void UpdateResources(List<ResourceAmount> resources)
-        {
-            foreach (var resourceAmount in resources)
-            {
-                var element = resourceScrollView.FindElement<ResourceUIElement>(resourceAmount);
-
-                if (element == null)
-                    continue;
-                
-                element.Init(resourceAmount);
-            }
         }
         
         

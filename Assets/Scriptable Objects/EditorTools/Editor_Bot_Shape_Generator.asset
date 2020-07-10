@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8951d43b5171c2640bb748d14dc8cda2, type: 3}
   m_Name: Editor_Bot_Shape_Generator
   m_EditorClassIdentifier: 
-  m_editorBotGeneratorData: []
+  m_editorBotGeneratorData:
+  - m_name: t1
+    m_blockData: []
   m_editorShapeGeneratorData: []

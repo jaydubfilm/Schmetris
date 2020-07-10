@@ -121,7 +121,7 @@ namespace StarSalvager
 
             GameTimer.AddPausable(this);
             m_levelManagerUI = FindObjectOfType<LevelManagerUI>();
-            m_levelManagerUI.SetCurrentWaveText(m_currentWave + 1);
+            m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
 
             Random.InitState(seed);
         }
@@ -205,13 +205,12 @@ namespace StarSalvager
                 Values.Globals.MaxSector++;
             }
 
-            GameTimer.SetPaused(true);
-            m_levelManagerUI.ToggleBetweenWavesUIActive(true);
-
             if (m_currentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
+                GameTimer.SetPaused(true);
+                m_levelManagerUI.ToggleBetweenWavesUIActive(true);
                 m_currentWave++;
-                m_levelManagerUI.SetCurrentWaveText(m_currentWave + 1);
+                m_levelManagerUI.SetCurrentWaveText(m_currentWave.ToString() + " Complete");
                 m_waveTimer = 0;
                 ObstacleManager.MoveToNewWave();
                 EnemyManager.MoveToNewWave();
@@ -220,6 +219,9 @@ namespace StarSalvager
             else
             {
                 ProcessLevelCompleteAnalytics();
+                ProcessScrapyardUsageBeginAnalytics();
+                m_currentWave = 0;
+                StarSalvager.SceneLoader.SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             }
         }
 
@@ -235,19 +237,16 @@ namespace StarSalvager
         {
             m_currentWave = 0;
             m_levelManagerUI.ToggleDeathUIActive(false);
-            m_levelManagerUI.SetCurrentWaveText(m_currentWave + 1);
+            m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
             GameTimer.SetPaused(false);
             SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "AlexShulmanTestScene");
-            //SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene");
-            //Reset();
-            //Activate();
         }
 
         //============================================================================================================//
 
         public void OnResume()
         {
-
+            m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
         }
 
         public void OnPause()

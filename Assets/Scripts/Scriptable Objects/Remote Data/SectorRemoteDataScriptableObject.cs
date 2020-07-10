@@ -13,5 +13,10 @@ namespace StarSalvager.ScriptableObjects
         {
             return WaveRemoteData[waveNumber];
         }
+
+        public int GetNumberOfWaves()
+        {
+            return WaveRemoteData.Count;
+        }
     }
 }

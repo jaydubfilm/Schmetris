@@ -94,11 +94,46 @@ namespace StarSalvager
             CompositeCollider.GenerateGeometry();
         }
 
+        public void PushNewBit(Bit bit, Vector2Int coordinate)
+        {
+            if (attachedBits.Any(b => b.Coordinate == coordinate))
+                return;
+
+            bit.Coordinate = coordinate;
+            bit.SetAttached(true);
+            bit.transform.position = transform.position + (Vector3)(Vector2.one * coordinate * Constants.gridCellSize);
+            bit.transform.SetParent(transform);
+
+            attachedBits.Add(bit);
+
+            CompositeCollider.GenerateGeometry();
+        }
+
         //================================================================================================================//
 
         //TODO Determine if we need to ensure the validity of the shape after removing a piece
         public void DestroyBit(Bit bit)
         {
+            attachedBits.Remove(bit);
+
+            bit.SetAttached(false);
+            Recycler.Recycle<Bit>(bit.gameObject);
+
+            if (attachedBits.Count > 0)
+            {
+                CompositeCollider.GenerateGeometry();
+                return;
+            }
+
+            Recycler.Recycle<Shape>(this);
+        }
+        public void DestroyBit(Vector2Int coordinate)
+        {
+            if (!attachedBits.Any(b => b.Coordinate == coordinate))
+                return;
+
+            Bit bit = attachedBits.FirstOrDefault(b => b.Coordinate == coordinate);
+            
             attachedBits.Remove(bit);
 
             bit.SetAttached(false);

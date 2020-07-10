@@ -94,9 +94,9 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        public void SetCurrentWaveText(int currentWave)
+        public void SetCurrentWaveText(string endString)
         {
-            m_currentWaveText.text = "Current Wave " + currentWave;
+            m_currentWaveText.text = "Sector " + (Values.Globals.CurrentSector + 1) + " Wave " + endString;
         }
 
         public void ToggleBetweenWavesUIActive(bool active)

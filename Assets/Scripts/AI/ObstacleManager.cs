@@ -77,11 +77,11 @@ namespace StarSalvager
                     continue;
                 }
 
-                if (obstacle is IRecycled recycled && recycled.IsRecycled)
+                /*if (obstacle is IRecycled recycled && recycled.IsRecycled)
                 {
                     m_obstacles.RemoveAt(i);
                     continue;
-                }
+                }*/
 
                 switch (obstacle)
                 {
