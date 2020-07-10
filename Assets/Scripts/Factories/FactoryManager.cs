@@ -17,6 +17,9 @@ namespace StarSalvager.Factories
         [SerializeField, Required, BoxGroup("Attachables/Bits")]
         private BitRemoteDataScriptableObject bitRemoteData;
 
+        [SerializeField, Required, BoxGroup("Attachables/Bits")]
+        private EditorBotShapeGeneratorScriptableObject editorBotShapeData;
+
         [SerializeField, Required, BoxGroup("Attachables/Parts")] 
         private AttachableProfileScriptableObject partProfile;
         
@@ -99,7 +102,7 @@ namespace StarSalvager.Factories
                     return (_partAttachableFactory ?? (_partAttachableFactory = new PartAttachableFactory(partProfile, partRemoteData))) as T;
                 
                 case nameof(ShapeFactory):
-                    return (_shapeFactory ?? (_shapeFactory = new ShapeFactory(shapePrefab))) as T;
+                    return (_shapeFactory ?? (_shapeFactory = new ShapeFactory(shapePrefab, editorBotShapeData.GetEditorShapeData()))) as T;
 
                 case nameof(EnemyFactory):
                     return (_enemyFactory ?? (_enemyFactory = new EnemyFactory(enemyProfile, enemyRemoteData))) as T;

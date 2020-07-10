@@ -1,9 +1,10 @@
 ﻿using Sirenix.OdinInspector;
+using StarSalvager.AI;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StarSalvager.Factories.Data
+namespace StarSalvager.ScriptableObjects
 {
     [System.Serializable]
     public struct EditorShapeGeneratorData
@@ -23,5 +24,26 @@ namespace StarSalvager.Factories.Data
         public string Name => m_name;
 
         public List<BlockData> BlockData => m_blockData;
+
+        public ASTEROID_SIZE AsteroidSize()
+        {
+            switch(BlockData.Count)
+            {
+                case 1:
+                    return ASTEROID_SIZE.Bit;
+                case 2:
+                case 3:
+                    return ASTEROID_SIZE.Small;
+                case 4:
+                case 5:
+                    return ASTEROID_SIZE.Medium;
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                default:
+                    return ASTEROID_SIZE.Large;
+            }
+        }
     }
 }

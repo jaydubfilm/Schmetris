@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Recycling;
+using StarSalvager.Factories.Data;
+using StarSalvager.ScriptableObjects;
 using UnityEngine;
 
 namespace StarSalvager.Factories
@@ -8,12 +10,15 @@ namespace StarSalvager.Factories
     public class ShapeFactory : FactoryBase
     {
         private readonly GameObject prefab;
+
+        private List<EditorShapeGeneratorData> customShapeData;
         
         //============================================================================================================//
 
-        public ShapeFactory(GameObject prefab)
+        public ShapeFactory(GameObject prefab, List<EditorShapeGeneratorData> customShapeData)
         {
             this.prefab = prefab;
+            this.customShapeData = customShapeData;
         }
         
         //============================================================================================================//

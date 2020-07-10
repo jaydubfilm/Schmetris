@@ -17,10 +17,20 @@ namespace StarSalvager.ScriptableObjects
                 .FirstOrDefault(p => p.Name == name);
         }
 
+        public List<EditorBotGeneratorData> GetEditorBotData()
+        {
+            return m_editorBotGeneratorData;
+        }
+
         public EditorShapeGeneratorData GetEditorShapeData(string name)
         {
             return m_editorShapeGeneratorData
                 .FirstOrDefault(p => p.Name == name);
+        }
+
+        public List<EditorShapeGeneratorData> GetEditorShapeData()
+        {
+            return m_editorShapeGeneratorData;
         }
 
         public void AddEditorBotData(EditorBotGeneratorData data)
