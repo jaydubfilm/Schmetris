@@ -36,6 +36,11 @@ namespace StarSalvager
         
         [SerializeField, Range(0.5f, 10f), BoxGroup("PROTOTYPE")]
         public float TEST_MergeSpeed = 2f;
+        
+        [SerializeField, BoxGroup("PROTOTYPE/Magnet")]
+        public float TEST_DetachTime = 1f;
+        [SerializeField, BoxGroup("PROTOTYPE/Magnet")]
+        public bool TEST_SetDetachColor = true;
 
         //============================================================================================================//
 
@@ -738,9 +743,11 @@ namespace StarSalvager
             coolTimer = coolDelay;
 
 
-            if (attachedBlocks.Count == 0) return;
-            
-            if (coreHeat >= 100 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0)
+            if (attachedBlocks.Count == 0)
+            {
+                Destroy();
+            }
+            else if (coreHeat >= 100 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0)
             {
                 Destroy();
             }
@@ -1715,7 +1722,7 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            float time;
+            //float time;
             Action onDetach;
             
             switch (currentMagnet)
@@ -1723,7 +1730,7 @@ namespace StarSalvager
                 //----------------------------------------------------------------------------------------------------//
                 case MAGNET.DEFAULT:
                     DefaultMagnetCheck(bits, out bitsToRemove, in toRemoveCount);
-                    time = 1f;
+                    //time = 1f;
                     onDetach = () =>
                     {
                         DetachBitsCheck(bitsToRemove, true);
@@ -1732,7 +1739,7 @@ namespace StarSalvager
                 //----------------------------------------------------------------------------------------------------//
                 case MAGNET.BUMP:
                     BumpMagnetCheck(bits, out bitsToRemove, in toRemoveCount);
-                    time = 0f;
+                    //time = 0f;
                     onDetach = () =>
                     {
                         DetachBitsCheck(bitsToRemove, true);
@@ -1741,7 +1748,7 @@ namespace StarSalvager
                 //----------------------------------------------------------------------------------------------------//
                 case MAGNET.LOWEST:
                     LowestMagnetCheckSimple(bits, ref bitsToRemove, ref toRemoveCount);
-                    time = 1f;
+                    //time = 1f;
                     onDetach = () =>
                     {
                         DetachBitsCheck(bitsToRemove, true);
@@ -1759,12 +1766,18 @@ namespace StarSalvager
             BitsPendingDetach.AddRange(bitsToRemove);
             
             //Visually show that the bits will fall off by changing their color
-            foreach (var bit in bitsToRemove)
+            if (TEST_SetDetachColor)
             {
-                bit.SetColor(Color.gray);
+                foreach (var bit in bitsToRemove)
+                {
+                    bit.SetColor(Color.gray);
+                } 
             }
             
-            this.DelayedCall(time, onDetach);
+            if(TEST_DetachTime == 0f)
+                onDetach.Invoke();
+            else
+                this.DelayedCall(TEST_DetachTime, onDetach);
             //--------------------------------------------------------------------------------------------------------//
             
             
@@ -1948,6 +1961,35 @@ namespace StarSalvager
         {
             //I Want the last Bit to be the fallback/default, if I can't find anything
             Bit selectedBit = null;
+            var lowestLevel = 999;
+            //The lowest Y coordinate
+            var lowestCoordinate = 999;
+
+            foreach (var bit in bits)
+            {
+                if (toIgnore.Contains(bit))
+                    continue;
+                
+                if(bit.level > lowestLevel)
+                    continue;
+
+                //Checks if the piece is higher, and if it is, that the level is not higher than the currently selected Bit
+                //This ensures that even if the lowest Bit is of high level, the lowest will always be selected
+                if (bit.Coordinate.y > lowestCoordinate/* && !(bit.level < lowestLevel)*/)
+                    continue;
+
+                if (RemovalCausesDisconnects(new List<IAttachable>(/*toIgnore*/) {bit}))
+                    continue;
+
+                selectedBit = bit;
+                lowestLevel = bit.level;
+                lowestCoordinate = bit.Coordinate.y;
+
+            }
+
+            return selectedBit;
+            /*//I Want the last Bit to be the fallback/default, if I can't find anything
+            Bit selectedBit = null;
             var furthestDistance = -999f;
             var lowestLevel = 999f;
 
@@ -1973,7 +2015,7 @@ namespace StarSalvager
 
             }
 
-            return selectedBit;
+            return selectedBit;*/
         }
         
         #endregion //Magnet Checks
@@ -2186,7 +2228,6 @@ namespace StarSalvager
         
         private IEnumerator DestroyCoroutine()
         {
-            var core = attachedBlocks[0];
             var index = 1;
             
             yield return new WaitForSeconds(0.3f);
