@@ -1083,6 +1083,15 @@ namespace StarSalvager
                     case PART_TYPE.REPAIR:
                         //TODO Determine if this heals Bits & parts or just parts
                         //TODO This needs to fire every x Seconds
+                        var toRepair = attachedBlocks.GetAttachablesAround(part)
+                            .OfType<Part>().FirstOrDefault(p => p.CurrentHealth < p.StartingHealth);
+
+                        if (toRepair is null) break;
+                        var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.REPAIR);
+
+                        //Increase the health of this part depending on the current level of the repairer
+                        toRepair.ChangeHealth(partData.data[part.level] * Time.deltaTime);
+                        
                         break;
                     case PART_TYPE.GUN:
                         //TODO This needs to find closest enemy targets to this
