@@ -1961,6 +1961,35 @@ namespace StarSalvager
         {
             //I Want the last Bit to be the fallback/default, if I can't find anything
             Bit selectedBit = null;
+            var lowestLevel = 999;
+            //The lowest Y coordinate
+            var lowestCoordinate = 999;
+
+            foreach (var bit in bits)
+            {
+                if (toIgnore.Contains(bit))
+                    continue;
+                
+                if(bit.level > lowestLevel)
+                    continue;
+
+                //Checks if the piece is higher, and if it is, that the level is not higher than the currently selected Bit
+                //This ensures that even if the lowest Bit is of high level, the lowest will always be selected
+                if (bit.Coordinate.y > lowestCoordinate/* && !(bit.level < lowestLevel)*/)
+                    continue;
+
+                if (RemovalCausesDisconnects(new List<IAttachable>(/*toIgnore*/) {bit}))
+                    continue;
+
+                selectedBit = bit;
+                lowestLevel = bit.level;
+                lowestCoordinate = bit.Coordinate.y;
+
+            }
+
+            return selectedBit;
+            /*//I Want the last Bit to be the fallback/default, if I can't find anything
+            Bit selectedBit = null;
             var furthestDistance = -999f;
             var lowestLevel = 999f;
 
@@ -1986,7 +2015,7 @@ namespace StarSalvager
 
             }
 
-            return selectedBit;
+            return selectedBit;*/
         }
         
         #endregion //Magnet Checks
