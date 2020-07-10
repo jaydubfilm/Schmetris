@@ -59,7 +59,6 @@ namespace StarSalvager.UI
 
             scrapyardButton.onClick.AddListener(() =>
             {
-                GameTimer.SetPaused(false);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             });
@@ -67,14 +66,12 @@ namespace StarSalvager.UI
             toScrapyardButton.onClick.AddListener(() =>
             {
                 m_levelManager.SavePlayerData();
-                GameTimer.SetPaused(false);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             });
 
             toMainMenuButton.onClick.AddListener(() =>
             {
-                GameTimer.SetPaused(false);
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
             });
 
