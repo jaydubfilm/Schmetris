@@ -205,11 +205,10 @@ namespace StarSalvager
                 Values.Globals.MaxSector++;
             }
 
-            GameTimer.SetPaused(true);
-            m_levelManagerUI.ToggleBetweenWavesUIActive(true);
-
             if (m_currentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
+                GameTimer.SetPaused(true);
+                m_levelManagerUI.ToggleBetweenWavesUIActive(true);
                 m_currentWave++;
                 m_levelManagerUI.SetCurrentWaveText(m_currentWave.ToString() + " Complete");
                 m_waveTimer = 0;
@@ -220,6 +219,9 @@ namespace StarSalvager
             else
             {
                 ProcessLevelCompleteAnalytics();
+                ProcessScrapyardUsageBeginAnalytics();
+                m_currentWave = 0;
+                StarSalvager.SceneLoader.SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             }
         }
 
