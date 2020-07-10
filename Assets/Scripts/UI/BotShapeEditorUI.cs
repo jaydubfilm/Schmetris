@@ -111,6 +111,15 @@ namespace StarSalvager.UI
                 m_botShapeEditor.CreateShape();
             });
 
+            m_botNameInputField.onValueChanged.AddListener((content) =>
+            {
+                var isEmpty = string.IsNullOrEmpty(content);
+                SaveButton.interactable = !isEmpty;
+                LoadButton.interactable = !isEmpty;
+            });
+
+            m_botNameInputField.text = null;
+
             //--------------------------------------------------------------------------------------------------------//
         }
 

@@ -255,10 +255,14 @@ namespace StarSalvager.Utilities.Inputs
         /// <param name="value"></param>
         private void Move(float value)
         {
-            obstacleManager.Move(value);
-            enemyManager.Move(value);
-            cameraController.Move(value);
-            LevelManager.Instance.ProjectileManager.Move(value);
+            if (obstacleManager != null)
+                obstacleManager.Move(value);
+            if (enemyManager != null)
+                enemyManager.Move(value);
+            if (cameraController != null)
+                cameraController.Move(value);
+            if (LevelManager.Instance != null)
+                LevelManager.Instance.ProjectileManager.Move(value);
         }
 
         /*private void SideMovement(float move)
@@ -373,7 +377,7 @@ namespace StarSalvager.Utilities.Inputs
 
         public void OnPause()
         {
-
+            Move(0);
         }
 
         //============================================================================================================//

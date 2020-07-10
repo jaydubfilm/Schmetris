@@ -140,10 +140,10 @@ namespace StarSalvager
                 scrapBot.TryRemoveAttachableAt(mouseCoordinate, false);
             }
 
-            foreach (Shape shape in _shapes)
+            /*foreach (Shape shape in _shapes)
             {
                 //shape.TryRemoveAttachableAt(mouseCoordinate, false);
-            }
+            }*/
         }
 
         //Get current mouse coordinate on the scrapyard grid.
