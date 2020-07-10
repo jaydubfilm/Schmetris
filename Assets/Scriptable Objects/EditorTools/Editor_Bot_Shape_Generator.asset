@@ -13,6 +13,14 @@ MonoBehaviour:
   m_Name: Editor_Bot_Shape_Generator
   m_EditorClassIdentifier: 
   m_editorBotGeneratorData:
-  - m_name: t1
+  - m_name: rep
     m_blockData: []
-  m_editorShapeGeneratorData: []
+  m_editorShapeGeneratorData:
+  - m_name: tsha
+    m_blockData: []
+  - m_name: testsha
+    m_blockData: []
+  - m_name: shap
+    m_blockData: []
+  - m_name: newshape
+    m_blockData: []
