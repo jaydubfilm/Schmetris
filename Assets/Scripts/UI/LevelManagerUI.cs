@@ -59,7 +59,6 @@ namespace StarSalvager.UI
 
             scrapyardButton.onClick.AddListener(() =>
             {
-                GameTimer.SetPaused(false);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
@@ -68,7 +67,6 @@ namespace StarSalvager.UI
             toScrapyardButton.onClick.AddListener(() =>
             {
                 m_levelManager.SavePlayerData();
-                GameTimer.SetPaused(false);
                 ToggleBetweenWavesUIActive(false);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
@@ -76,7 +74,6 @@ namespace StarSalvager.UI
 
             toMainMenuButton.onClick.AddListener(() =>
             {
-                GameTimer.SetPaused(false);
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
             });
 
