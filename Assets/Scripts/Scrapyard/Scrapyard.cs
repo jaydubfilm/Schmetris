@@ -42,6 +42,7 @@ namespace StarSalvager
 
         public void Activate()
         {
+            GameTimer.SetPaused(true);
             Camera.onPostRender += DrawGL;
 
             _scrapyardBots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>());
