@@ -35,20 +35,7 @@ namespace StarSalvager.Utilities.Extensions
             attachable.Coordinate = temp;
         }
 
-        public static List<BlockData> GetBlockDatas(this List<IAttachable> attachables)
-        {
-            List<BlockData> blockDatas = new List<BlockData>();
-
-            foreach (IAttachable attachable in attachables)
-            {
-                if (attachable is ISaveable)
-                {
-                    blockDatas.Add(((ISaveable)attachable).ToBlockData());
-                }
-            }
-
-            return blockDatas;
-        }
+        
     }
 }
 
