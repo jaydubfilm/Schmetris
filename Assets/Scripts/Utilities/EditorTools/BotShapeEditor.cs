@@ -9,12 +9,17 @@ using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.UI;
 using StarSalvager.Utilities.Inputs;
-using JetBrains.Annotations;
+using StarSalvager.ScriptableObjects;
+using Sirenix.OdinInspector;
+using StarSalvager.Utilities.JsonDataTypes;
 
 namespace StarSalvager
 {
-    public class Scrapyard : MonoBehaviour, IReset
+    public class BotShapeEditor : MonoBehaviour, IReset
     {
+        [SerializeField, Required]
+        public EditorBotShapeGeneratorScriptableObject m_editorBotShapeGeneratorScripableObject;
+
         public Material material;
         private List<ScrapyardBot> _scrapyardBots;
 
@@ -26,13 +31,14 @@ namespace StarSalvager
         public int selectedpartLevel = 0;
 
         [SerializeField]
-        private BotShapeEditorUI m_scrapyardUI;
+        private BotShapeEditorUI m_botShapeEditorUI;
 
         // Start is called before the first frame update
         void Start()
         {
             _scrapyardBots = new List<ScrapyardBot>();
             InputManager.Instance.InitInput();
+            Activate();
         }
 
         private void OnDestroy()
@@ -43,27 +49,16 @@ namespace StarSalvager
         public void Activate()
         {
             Camera.onPostRender += DrawGL;
+            GameTimer.SetPaused(true);
 
-            _scrapyardBots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>());
-            if (PlayerPersistentData.GetPlayerData().GetCurrentBlockData().Count == 0)
-            {
-                _scrapyardBots[0].InitBot();
-            }
-            else
-            {
-                _scrapyardBots[0].InitBot(PlayerPersistentData.GetPlayerData().GetCurrentBlockData().ImportBlockDatas(true));
-            }
+            CreateBot();
         }
 
         public void Reset()
         {
             Camera.onPostRender -= DrawGL;
 
-            for (int i = _scrapyardBots.Count() - 1; i >= 0; i--)
-            {
-                Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBots[i].gameObject);
-                _scrapyardBots.RemoveAt(i);
-            }
+            DeloadAllBots();
         }
 
         public void DrawGL(Camera camera)
@@ -99,16 +94,6 @@ namespace StarSalvager
             GL.PopMatrix(); // Pop changes.
         }
 
-        public void SellBits()
-        {
-            foreach (ScrapyardBot scrapBot in _scrapyardBots)
-            {
-                Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(scrapBot.attachedBlocks.OfType<ScrapyardBit>());
-                PlayerPersistentData.GetPlayerData().AddResources(bits);
-                scrapBot.RemoveAllBits();
-            }
-        }
-
         public void RotateBots(float direction)
         {
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
@@ -120,12 +105,9 @@ namespace StarSalvager
         //On left mouse button click, check if there is a bit/part at the mouse location. If there is not, purchase the selected part type and place it at this location.
         public void OnLeftMouseButtonDown()
         {
+            print("TESTLEFT");
+            
             if (selectedPartType == null)
-            {
-                return;
-            }
-
-            if (!PlayerPersistentData.GetPlayerData().CanAffordPart((PART_TYPE)selectedPartType, selectedpartLevel))
             {
                 return;
             }
@@ -141,9 +123,7 @@ namespace StarSalvager
                     continue;
 
                 var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)selectedPartType, 0);
-                PlayerPersistentData.GetPlayerData().SubtractResources((PART_TYPE)selectedPartType, 0);
                 scrapBot.AttachNewBit(mouseCoordinate, attachable);
-                m_scrapyardUI.UpdateResources(PlayerPersistentData.GetPlayerData().GetResources());
             }
         }
 
@@ -157,8 +137,7 @@ namespace StarSalvager
 
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
-                scrapBot.TryRemoveAttachableAt(mouseCoordinate, true);
-                m_scrapyardUI.UpdateResources(PlayerPersistentData.GetPlayerData().GetResources());
+                scrapBot.TryRemoveAttachableAt(mouseCoordinate, false);
             }
         }
 
@@ -187,12 +166,38 @@ namespace StarSalvager
             return mouseCoordinate;
         }
 
+        public void CreateBot()
+        {
+            DeloadAllBots();
+            _scrapyardBots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>());
+            _scrapyardBots[0].InitBot();
+        }
+
+        public void LoadBlockData()
+        {
+            DeloadAllBots();
+            CreateBot();
+            var blockData = m_editorBotShapeGeneratorScripableObject.GetEditorBotData(m_botShapeEditorUI.GetNameInputFieldValue()).BlockData;
+            if (blockData != null)
+                _scrapyardBots[0].InitBot(blockData.ImportBlockDatas(true));
+        }
+
+        private void DeloadAllBots()
+        {
+            for (int i = _scrapyardBots.Count() - 1; i >= 0; i--)
+            {
+                Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBots[i].gameObject);
+                _scrapyardBots.RemoveAt(i);
+            }
+        }
+
         //Save the current bot's data in blockdata to be loaded in the level manager.
         public void SaveBlockData()
         {
             foreach (ScrapyardBot scrapyardbot in _scrapyardBots)
             {
-                PlayerPersistentData.GetPlayerData().SetCurrentBlockData(scrapyardbot.attachedBlocks.GetBlockDatas());
+                EditorBotGeneratorData newData = new EditorBotGeneratorData(m_botShapeEditorUI.GetNameInputFieldValue(), scrapyardbot.attachedBlocks.GetBlockDatas());
+                m_editorBotShapeGeneratorScripableObject.AddEditorBotData(newData);
             }
         }
 

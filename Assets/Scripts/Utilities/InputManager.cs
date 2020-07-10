@@ -14,6 +14,7 @@ namespace StarSalvager.Utilities.Inputs
         private Bot[] _bots;
         private ScrapyardBot[] _scrapyardBots;
         private Scrapyard _scrapyard;
+        private BotShapeEditor _botShapeEditor;
 
         public bool isPaused => GameTimer.IsPaused;
 
@@ -82,6 +83,7 @@ namespace StarSalvager.Utilities.Inputs
             _bots = FindObjectsOfType<Bot>();
             _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
             _scrapyard = FindObjectOfType<Scrapyard>();
+            _botShapeEditor = FindObjectOfType<BotShapeEditor>();
         } 
 
         private void OnDestroy()
@@ -335,6 +337,11 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     _scrapyard.OnLeftMouseButtonDown();
                 }
+
+                if (_botShapeEditor != null)
+                {
+                    _botShapeEditor.OnLeftMouseButtonDown();
+                }
             }
         }
 
@@ -348,6 +355,11 @@ namespace StarSalvager.Utilities.Inputs
                 if (_scrapyard != null)
                 {
                     _scrapyard.OnRightMouseButtonDown();
+                }
+
+                if (_botShapeEditor != null)
+                {
+                    _botShapeEditor.OnRightMouseButtonDown();
                 }
             }
         }

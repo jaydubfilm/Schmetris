@@ -70,7 +70,20 @@ namespace StarSalvager
         {
             for (int i = m_obstacles.Count - 1; i >= 0; i--)
             {
-                switch (m_obstacles[i])
+                var obstacle = m_obstacles[i];
+                if (obstacle == null)
+                {
+                    m_obstacles.RemoveAt(i);
+                    continue;
+                }
+
+                if (obstacle is IRecycled recycled && recycled.IsRecycled)
+                {
+                    m_obstacles.RemoveAt(i);
+                    continue;
+                }
+
+                switch (obstacle)
                 {
                     case Bit bit:
                         Recycler.Recycle<Bit>(bit);
@@ -135,12 +148,12 @@ namespace StarSalvager
                     continue;
                 }
 
-                //Check if currently recycled
-                //TODO: Think of a better way to check if this is in the recycler
-                if (!obstacle.gameObject.activeInHierarchy)
+                //TODO: These lines may be necessary, may not be. 
+                /*if (obstacle is IRecycled recycled && recycled.IsRecycled)
                 {
                     m_obstacles.RemoveAt(i);
-                }
+                    continue;
+                }*/
 
                 if (!obstacle.CanMove)
                 {
