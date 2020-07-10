@@ -71,6 +71,17 @@ namespace StarSalvager.UI
 
         }
 
+        /// <summary>
+        /// Sets the UIElements gameObject.SetActive to the state provided
+        /// </summary>
+        /// <param name="state"></param>
+        public void SetElementsActive(bool state)
+        {
+            foreach (var uiElement in Elements)
+            {
+                uiElement.gameObject.SetActive(state);
+            }
+        }
 
     }
 }
