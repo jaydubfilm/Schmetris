@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Extensions
@@ -103,7 +104,21 @@ namespace StarSalvager.Utilities.Extensions
         
         //============================================================================================================//
 
-        
+        public static List<BlockData> GetBlockDatas(this IEnumerable<IAttachable> attachables)
+        {
+            List<BlockData> blockDatas = new List<BlockData>();
+
+            foreach (IAttachable attachable in attachables)
+            {
+                if (attachable is ISaveable)
+                {
+                    blockDatas.Add(((ISaveable)attachable).ToBlockData());
+                }
+            }
+
+            return blockDatas;
+        }
+
         public static bool FindUnoccupiedCoordinate<T>(this List<T> attachedBlocks, DIRECTION direction, ref Vector2Int coordinate) where T: IAttachable
         {
             var check = coordinate;
