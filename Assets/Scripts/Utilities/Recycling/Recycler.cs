@@ -12,7 +12,7 @@ namespace Recycling
 		private static Dictionary<Type, RecycleBin> _typeDict = new Dictionary<Type, RecycleBin>();
 
 
-		private new static Transform Transform
+		private new static Transform transform
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Recycling
 			gameObject.GetComponent<ICustomRecycle>()?.CustomRecycle(args);
 
 			bin.Store(gameObject);
-			gameObject.transform.parent = Transform;
+			gameObject.transform.parent = transform;
 			gameObject.transform.rotation = Quaternion.identity;
 
 			if (gameObject.GetComponent<IRecycled>() is IRecycled recycled)
@@ -75,10 +75,28 @@ namespace Recycling
 		}
 		
 		//============================================================================================================//
+		//FIXME I want to reduce the amount of GetComponent calls I'm doing here, as it feels like its getting a little crazy
 		public static void Recycle(Type type, GameObject gameObject, params object[] args)
 		{
+			//See if object is Recyclable & is Already recycled
+			//--------------------------------------------------------------------------------------------------------//
+			
+			var recycled = gameObject.GetComponent<IRecycled>();
+
+			if (!(recycled is null) && recycled.IsRecycled)
+			{
+				Debug.Log($"{gameObject.name} is already recycled");
+				return;
+			}
+			
+			//Make sure that the gameObject actually contains the component we're trying to Recycle
+			//--------------------------------------------------------------------------------------------------------//
+			
 			if(gameObject.GetComponent(type) is null)
 				throw new NullReferenceException($"Unable to find {type.Name} on {gameObject.name}");
+			
+			//Get a Bin for the object
+			//--------------------------------------------------------------------------------------------------------//
 			
 			if (!_typeDict.TryGetValue(type, out var bin))
 			{
@@ -87,16 +105,25 @@ namespace Recycling
 
 			}
 
+			//If the object wants to do anything special before being placed in the bin, Now is when we call that
+			//--------------------------------------------------------------------------------------------------------//
+			
 			gameObject.GetComponent<ICustomRecycle>()?.CustomRecycle(args);
 
+			//Officially recycle the object
+			//--------------------------------------------------------------------------------------------------------//
+			
 			bin.Store(gameObject);
-			gameObject.transform.parent = Transform;
+			gameObject.transform.parent = transform;
 			gameObject.transform.rotation = Quaternion.identity;
 			
+			//If its a recyclable object, mark it as recycled
+			//--------------------------------------------------------------------------------------------------------//
 			
-			if (gameObject.GetComponent<IRecycled>() is IRecycled recycled)
+			if (recycled != null)
 				recycled.IsRecycled = true;
 			
+			//--------------------------------------------------------------------------------------------------------//
 		}
 		
 		public static void Recycle<T>(GameObject gameObject, params object[] args)
@@ -171,7 +198,7 @@ namespace Recycling
 			if (_recycled == null) _recycled = new Stack<GameObject>();
 			
 			if(_recycled.Contains(gameObject))
-				throw new Exception($"{gameObject.name} has already been recycled");
+				throw new Exception($"{gameObject.name} has already been recycled. Ensure you add IRecycled to prevent this error");
 
 			gameObject.SetActive(false);
 			_recycled.Push(gameObject);

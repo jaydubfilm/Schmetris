@@ -1,11 +1,12 @@
 ﻿using Recycling;
 using Sirenix.OdinInspector;
+using StarSalvager.Factories;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Part : CollidableBase, IAttachable, ISaveable, IPart, IHealth
+    public class Part : CollidableBase, IAttachable, ISaveable, IPart, IHealth, ICustomRecycle
     {
         //IAttachable Properties
         //============================================================================================================//
@@ -31,6 +32,8 @@ namespace StarSalvager
         public PART_TYPE Type { get; set; }
         [ShowInInspector, ReadOnly]
         public int level { get; private set; }
+        
+        private Damage _damage;
 
         //IAttachable Functions
         //============================================================================================================//
@@ -54,7 +57,16 @@ namespace StarSalvager
             if (_currentHealth <= 0)
             {
                 Recycler.Recycle<Part>(this);
+                return;
             }
+
+            if (_damage == null)
+            {
+                _damage = FactoryManager.Instance.GetFactory<DamageFactory>().CreateObject<Damage>();
+                _damage.transform.SetParent(transform, false);
+            }
+                
+            _damage.SetHealth(_currentHealth/_startingHealth);
         }
 
         //Part Functions
@@ -89,6 +101,10 @@ namespace StarSalvager
         //============================================================================================================//
 
 
-
+        public void CustomRecycle(params object[] args)
+        {
+            if(_damage)
+                Recycler.Recycle<Damage>(_damage);
+        }
     }
 }
