@@ -22,6 +22,7 @@ namespace StarSalvager
 
         public Material material;
         private List<ScrapyardBot> _scrapyardBots;
+        private List<Shape> _shapes;
 
         [SerializeField]
         private CameraController m_cameraController;
@@ -37,6 +38,7 @@ namespace StarSalvager
         void Start()
         {
             _scrapyardBots = new List<ScrapyardBot>();
+            _shapes = new List<Shape>();
             InputManager.Instance.InitInput();
             Activate();
         }
@@ -50,8 +52,6 @@ namespace StarSalvager
         {
             Camera.onPostRender += DrawGL;
             GameTimer.SetPaused(true);
-
-            CreateBot();
         }
 
         public void Reset()
@@ -139,6 +139,11 @@ namespace StarSalvager
             {
                 scrapBot.TryRemoveAttachableAt(mouseCoordinate, false);
             }
+
+            foreach (Shape shape in _shapes)
+            {
+                //shape.TryRemoveAttachableAt(mouseCoordinate, false);
+            }
         }
 
         //Get current mouse coordinate on the scrapyard grid.
@@ -169,8 +174,17 @@ namespace StarSalvager
         public void CreateBot()
         {
             DeloadAllBots();
+            DeloadAllShapes();
             _scrapyardBots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>());
             _scrapyardBots[0].InitBot();
+        }
+
+        public void CreateShape()
+        {
+            DeloadAllBots();
+            DeloadAllShapes();
+            _shapes.Add(FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>());
+            _shapes[0].PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(), Vector2Int.zero);
         }
 
         public void LoadBlockData()
@@ -191,6 +205,15 @@ namespace StarSalvager
             }
         }
 
+        private void DeloadAllShapes()
+        {
+            for (int i = _shapes.Count() - 1; i >= 0; i--)
+            {
+                Recycling.Recycler.Recycle<Shape>(_shapes[i].gameObject);
+                _shapes.RemoveAt(i);
+            }
+        }
+
         //Save the current bot's data in blockdata to be loaded in the level manager.
         public void SaveBlockData()
         {
@@ -199,17 +222,6 @@ namespace StarSalvager
                 EditorBotGeneratorData newData = new EditorBotGeneratorData(m_botShapeEditorUI.GetNameInputFieldValue(), scrapyardbot.attachedBlocks.GetBlockDatas());
                 m_editorBotShapeGeneratorScripableObject.AddEditorBotData(newData);
             }
-        }
-
-        private void ToGameplayButtonPressed()
-        {
-            StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
-        }
-
-        public void ProcessScrapyardUsageEndAnalytics()
-        {
-            Dictionary<string, object> scrapyardUsageEndAnalyticsDictionary = new Dictionary<string, object>();
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageEnd, scrapyardUsageEndAnalyticsDictionary);
         }
     }
 }

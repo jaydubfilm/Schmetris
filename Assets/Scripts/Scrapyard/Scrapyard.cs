@@ -26,7 +26,7 @@ namespace StarSalvager
         public int selectedpartLevel = 0;
 
         [SerializeField]
-        private BotShapeEditorUI m_scrapyardUI;
+        private ScrapyardUI m_scrapyardUI;
 
         // Start is called before the first frame update
         void Start()
