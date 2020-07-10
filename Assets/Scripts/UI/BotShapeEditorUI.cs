@@ -63,7 +63,7 @@ namespace StarSalvager.UI
 
             zoomSlider.onValueChanged.AddListener(SetCameraZoom);
             SetCameraZoom(zoomSlider.value);
-            
+
             InitUiScrollViews();
 
             InitButtons();
@@ -104,11 +104,13 @@ namespace StarSalvager.UI
             NewBotButton.onClick.AddListener(() =>
             {
                 m_botShapeEditor.CreateBot();
+                partsScrollView.SetElementsActive(true);
             });
 
             NewShapeButton.onClick.AddListener(() =>
             {
                 m_botShapeEditor.CreateShape();
+                partsScrollView.SetElementsActive(false);
             });
 
             m_botNameInputField.onValueChanged.AddListener((content) =>
@@ -132,6 +134,7 @@ namespace StarSalvager.UI
                 var element = partsScrollView.AddElement<PartUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement");
                 element.Init(partRemoteData, PartPressed);
             }
+            partsScrollView.SetElementsActive(false);
         }
 
         private void SetCameraZoom(float value)

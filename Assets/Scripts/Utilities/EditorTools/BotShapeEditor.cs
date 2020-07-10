@@ -105,17 +105,20 @@ namespace StarSalvager
         //On left mouse button click, check if there is a bit/part at the mouse location. If there is not, purchase the selected part type and place it at this location.
         public void OnLeftMouseButtonDown()
         {
-            print("TESTLEFT");
-            
-            if (selectedPartType == null)
-            {
-                return;
-            }
-
             Vector2Int mouseCoordinate = getMouseCoordinate();
 
             if (Mathf.Abs(mouseCoordinate.x) > 3 || Mathf.Abs(mouseCoordinate.y) > 3)
                 return;
+
+            foreach (Shape shape in _shapes)
+            {
+                shape.PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(), mouseCoordinate);
+            }
+
+            if (selectedPartType == null)
+            {
+                return;
+            }
 
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
@@ -135,15 +138,17 @@ namespace StarSalvager
             if (Mathf.Abs(mouseCoordinate.x) > 3 || Mathf.Abs(mouseCoordinate.y) > 3)
                 return;
 
+            if (mouseCoordinate.x == 0 && mouseCoordinate.y == 0)
+
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
                 scrapBot.TryRemoveAttachableAt(mouseCoordinate, false);
             }
 
-            /*foreach (Shape shape in _shapes)
+            foreach (Shape shape in _shapes)
             {
-                //shape.TryRemoveAttachableAt(mouseCoordinate, false);
-            }*/
+                shape.DestroyBit(mouseCoordinate);
+            }
         }
 
         //Get current mouse coordinate on the scrapyard grid.
@@ -190,10 +195,22 @@ namespace StarSalvager
         public void LoadBlockData()
         {
             DeloadAllBots();
-            CreateBot();
+            DeloadAllShapes();
             var blockData = m_editorBotShapeGeneratorScripableObject.GetEditorBotData(m_botShapeEditorUI.GetNameInputFieldValue()).BlockData;
             if (blockData != null)
+            {
+                CreateBot();
                 _scrapyardBots[0].InitBot(blockData.ImportBlockDatas(true));
+                return;
+            }
+
+            blockData = m_editorBotShapeGeneratorScripableObject.GetEditorShapeData(m_botShapeEditorUI.GetNameInputFieldValue()).BlockData;
+            if (blockData != null)
+            {
+                CreateShape();
+                _shapes[0].Setup(blockData.ImportBlockDatas(true).Cast<Bit>().ToList());
+                return;
+            }
         }
 
         private void DeloadAllBots()
@@ -221,6 +238,12 @@ namespace StarSalvager
             {
                 EditorBotGeneratorData newData = new EditorBotGeneratorData(m_botShapeEditorUI.GetNameInputFieldValue(), scrapyardbot.attachedBlocks.GetBlockDatas());
                 m_editorBotShapeGeneratorScripableObject.AddEditorBotData(newData);
+            }
+
+            foreach (Shape shape in _shapes)
+            {
+                //EditorShapeGeneratorData newData = new EditorShapeGeneratorData(m_botShapeEditorUI.GetNameInputFieldValue(), shape.GetBloc);
+                //m_editorBotShapeGeneratorScripableObject.AddEditorShapeData(newData);
             }
         }
     }

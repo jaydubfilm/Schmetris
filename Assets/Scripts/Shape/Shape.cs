@@ -127,6 +127,26 @@ namespace StarSalvager
 
             Recycler.Recycle<Shape>(this);
         }
+        public void DestroyBit(Vector2Int coordinate)
+        {
+            if (!attachedBits.Any(b => b.Coordinate == coordinate))
+                return;
+
+            Bit bit = attachedBits.FirstOrDefault(b => b.Coordinate == coordinate);
+            
+            attachedBits.Remove(bit);
+
+            bit.SetAttached(false);
+            Recycler.Recycle<Bit>(bit.gameObject);
+
+            if (attachedBits.Count > 0)
+            {
+                CompositeCollider.GenerateGeometry();
+                return;
+            }
+
+            Recycler.Recycle<Shape>(this);
+        }
 
         public override void SetColor(Color color)
         {
