@@ -121,7 +121,7 @@ namespace StarSalvager
 
             GameTimer.AddPausable(this);
             m_levelManagerUI = FindObjectOfType<LevelManagerUI>();
-            m_levelManagerUI.SetCurrentWaveText(m_currentWave + 1);
+            m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString());
 
             Random.InitState(seed);
         }
@@ -211,7 +211,7 @@ namespace StarSalvager
             if (m_currentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
                 m_currentWave++;
-                m_levelManagerUI.SetCurrentWaveText(m_currentWave + 1);
+                m_levelManagerUI.SetCurrentWaveText(m_currentWave.ToString() + " Complete");
                 m_waveTimer = 0;
                 ObstacleManager.MoveToNewWave();
                 EnemyManager.MoveToNewWave();
@@ -235,7 +235,7 @@ namespace StarSalvager
         {
             m_currentWave = 0;
             m_levelManagerUI.ToggleDeathUIActive(false);
-            m_levelManagerUI.SetCurrentWaveText(m_currentWave + 1);
+            m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString());
             GameTimer.SetPaused(false);
             SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "AlexShulmanTestScene");
             //SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene");
@@ -247,7 +247,7 @@ namespace StarSalvager
 
         public void OnResume()
         {
-
+            m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString());
         }
 
         public void OnPause()
