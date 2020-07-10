@@ -59,7 +59,25 @@ namespace StarSalvager.Utilities.Extensions
         
         //============================================================================================================//
         
-        
+        public static List<BlockData> GetBlockDatas(this Bot bot)
+        {
+            var blockDatas = new List<BlockData>();
+            
+            var attachables = new List<IAttachable>(bot.attachedBlocks);
+            var ignoreAttachables = bot.BitsPendingDetach == null
+                ? new List<IAttachable>()
+                : new List<IAttachable>(bot.BitsPendingDetach);
+
+            foreach (var attachable in attachables.Where(attachable => !ignoreAttachables.Contains(attachable)))
+            {
+                if (attachable is ISaveable saveable)
+                {
+                    blockDatas.Add(saveable.ToBlockData());
+                }
+            }
+
+            return blockDatas;
+        }
 
         
         //============================================================================================================//

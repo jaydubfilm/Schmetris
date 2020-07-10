@@ -227,7 +227,7 @@ namespace StarSalvager
         {
             foreach (Bot bot in m_bots)
             {
-                PlayerPersistentData.GetPlayerData().SetCurrentBlockData(bot.attachedBlocks.GetBlockDatas());
+                PlayerPersistentData.GetPlayerData().SetCurrentBlockData(bot.GetBlockDatas());
             }
         }
 

@@ -26,9 +26,9 @@ namespace StarSalvager
         //IHealth Properties
         //============================================================================================================//
 
-        public float StartingHealth { get { return _startingHealth; } }
+        public float StartingHealth => _startingHealth;
         private float _startingHealth;
-        public float CurrentHealth { get { return _currentHealth; } }
+        public float CurrentHealth => _currentHealth;
         private float _currentHealth;
 
         //IObstacle Properties
@@ -44,6 +44,8 @@ namespace StarSalvager
 
         [SerializeField]
         private LayerMask collisionMask;
+
+        private Damage _damage;
 
         //IAttachable Functions
         //============================================================================================================//
@@ -74,13 +76,22 @@ namespace StarSalvager
             if (_currentHealth <= 0)
             {
                 Recycler.Recycle<Bit>(this);
+                return;
             }
 
-            //TODO - temporary demo color change, remove later
-            if (previousHealth > _currentHealth)
+            ////TODO - temporary demo color change, remove later
+            //if (previousHealth > _currentHealth)
+            //{
+            //    SetColor(Color.Lerp(renderer.color, Color.black, 0.2f));
+            //}
+            
+            if (_damage == null)
             {
-                SetColor(Color.Lerp(renderer.color, Color.black, 0.2f));
+                _damage = FactoryManager.Instance.GetFactory<DamageFactory>().CreateObject<Damage>();
+                _damage.transform.SetParent(transform, false);
             }
+                
+            _damage.SetHealth(_currentHealth/_startingHealth);
         }
 
 
@@ -192,6 +203,9 @@ namespace StarSalvager
         public void CustomRecycle(params object[] args)
         {
             SetAttached(false);
+            
+            if(_damage)
+                Recycler.Recycle<Damage>(_damage);
         }
     }
 }
