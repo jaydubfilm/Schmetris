@@ -21,9 +21,14 @@ namespace StarSalvager.UI
 
         [SerializeField, BoxGroup("Part UI")]
         private PartUIElementScrollView partsScrollView;
-        
+
         //============================================================================================================//
-        
+
+        [SerializeField, BoxGroup("Resource UI")]
+        private ResourceUIElementScrollView resourceScrollView;
+
+        //============================================================================================================//
+
         [SerializeField, BoxGroup("View")]
         private SliderText zoomSliderText;
         [SerializeField, BoxGroup("View"), Required]
@@ -45,13 +50,37 @@ namespace StarSalvager.UI
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button NewShapeButton;
 
-        [SerializeField, Required, BoxGroup("Input")]
-        private TMP_InputField m_botNameInputField;
+        [SerializeField, Required, BoxGroup("Load Menu")]
+        private GameObject LoadMenu;
+        [SerializeField, Required, BoxGroup("Load Menu")]
+        private TMP_InputField LoadNameInputField;
+        [SerializeField, Required, BoxGroup("Load Menu")]
+        private Button LoadConfirm;
+        [SerializeField, Required, BoxGroup("Load Menu")]
+        private Button LoadReturn;
+
+        [SerializeField, Required, BoxGroup("Save Menu")]
+        private GameObject SaveMenu;
+        [SerializeField, Required, BoxGroup("Save Menu")]
+        private TMP_InputField SaveNameInputField;
+        [SerializeField, Required, BoxGroup("Save Menu")]
+        private Button SaveConfirm;
+        [SerializeField, Required, BoxGroup("Save Menu")]
+        private Button SaveReturn;
+
+        [SerializeField, Required, BoxGroup("Can't Save Menu")]
+        private GameObject CantSaveMenu;
+        [SerializeField, Required, BoxGroup("Can't Save Menu")]
+        private Button CantSaveRemove;
+        [SerializeField, Required, BoxGroup("Can't Save Menu")]
+        private Button CantSaveReturn;
 
         //============================================================================================================//
 
         private CameraController m_cameraController;
         private BotShapeEditor m_botShapeEditor;
+
+        public bool IsPopupActive => LoadMenu.activeSelf || SaveMenu.activeSelf;
 
         
         private void Start()
@@ -73,6 +102,9 @@ namespace StarSalvager.UI
 
         private void InitButtons()
         {
+            LoadMenu.SetActive(false);
+            SaveMenu.SetActive(false);
+            
             //--------------------------------------------------------------------------------------------------------//
             
             leftTurnButton.onClick.AddListener(() =>
@@ -89,38 +121,96 @@ namespace StarSalvager.UI
             
             SaveButton.onClick.AddListener(() =>
             {
-                Debug.Log("Save Button Pressed");
-                m_botShapeEditor.SaveBlockData();
+                if (CantSaveMenu.activeSelf || SaveMenu.activeSelf || LoadMenu.activeSelf)
+                    return; 
+
+                if (m_botShapeEditor.CheckLegal())
+                {
+                    Debug.Log("Save Button Pressed");
+                    SaveMenu.SetActive(true);
+                }
+                else
+                {
+                    CantSaveMenu.SetActive(true);
+                }
             });
             
             LoadButton.onClick.AddListener(() =>
             {
+                if (CantSaveMenu.activeSelf || SaveMenu.activeSelf || LoadMenu.activeSelf)
+                    return;
+
                 Debug.Log("Load Button Pressed");
-                m_botShapeEditor.LoadBlockData();
+                LoadMenu.SetActive(true);
             });
-            
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            CantSaveRemove.onClick.AddListener(() =>
+            {
+                m_botShapeEditor.RemoveFloating();
+                CantSaveMenu.SetActive(false);
+                SaveMenu.SetActive(true);
+            });
+
+            CantSaveReturn.onClick.AddListener(() =>
+            {
+                CantSaveMenu.SetActive(false);
+            });
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            SaveConfirm.onClick.AddListener(() =>
+            {
+                Debug.Log("Save Button Pressed");
+                m_botShapeEditor.SaveBlockData(SaveNameInputField.text);
+                SetPartsScrollActive(false);
+                SaveMenu.SetActive(false);
+            });
+
+            LoadConfirm.onClick.AddListener(() =>
+            {
+                Debug.Log("Load Button Pressed");
+                m_botShapeEditor.LoadBlockData(LoadNameInputField.text);
+                LoadMenu.SetActive(false);
+            });
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            SaveReturn.onClick.AddListener(() =>
+            {
+                SaveMenu.SetActive(false);
+            });
+
+            LoadReturn.onClick.AddListener(() =>
+            {
+                LoadMenu.SetActive(false);
+            });
+
             //--------------------------------------------------------------------------------------------------------//
 
             NewBotButton.onClick.AddListener(() =>
             {
-                m_botShapeEditor.CreateBot();
-                partsScrollView.SetElementsActive(true);
+                m_botShapeEditor.CreateBot(true);
+                SetPartsScrollActive(true);
             });
 
             NewShapeButton.onClick.AddListener(() =>
             {
                 m_botShapeEditor.CreateShape(null);
-                partsScrollView.SetElementsActive(false);
+                SetPartsScrollActive(false);
             });
 
-            m_botNameInputField.onValueChanged.AddListener((content) =>
+
+
+            /*m_loadNameInputField.onValueChanged.AddListener((content) =>
             {
                 var isEmpty = string.IsNullOrEmpty(content);
                 SaveButton.interactable = !isEmpty;
                 LoadButton.interactable = !isEmpty;
             });
 
-            m_botNameInputField.text = null;
+            m_loadNameInputField.text = null;*/
 
             //--------------------------------------------------------------------------------------------------------//
         }
@@ -134,7 +224,7 @@ namespace StarSalvager.UI
                 var element = partsScrollView.AddElement<PartUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement");
                 element.Init(partRemoteData, PartPressed);
             }
-            partsScrollView.SetElementsActive(false);
+            SetPartsScrollActive(false);
         }
 
         private void SetCameraZoom(float value)
@@ -144,9 +234,9 @@ namespace StarSalvager.UI
         
         //============================================================================================================//
         
-        public string GetNameInputFieldValue()
+        public void SetPartsScrollActive(bool active)
         {
-            return m_botNameInputField.text;
+            partsScrollView.SetElementsActive(active);
         }
         
         
