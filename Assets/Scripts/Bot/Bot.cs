@@ -14,14 +14,14 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Puzzle;
 using UnityEngine;
-
+using Enemy = StarSalvager.AI.Enemy;
 using GameUI = StarSalvager.UI.GameUI;
 
 namespace StarSalvager
 {
     public class Bot : MonoBehaviour, ICustomRecycle, IRecycled
     {
-        public static Action<Bot> OnBotDied;
+        public static Action<Bot, string> OnBotDied;
 
         //============================================================================================================//
         
@@ -742,13 +742,13 @@ namespace StarSalvager
             coolTimer = coolDelay;
 
 
-            if (attachedBlocks.Count == 0)
+            if (attachedBlocks.Count == 0 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0)
             {
-                Destroy();
+                Destroy("Core Destroyed");
             }
-            else if (coreHeat >= 100 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0)
+            else if (coreHeat >= 100)
             {
-                Destroy();
+                Destroy("Core Overheated");
             }
         }
 
@@ -1006,7 +1006,10 @@ namespace StarSalvager
         private float coolTimer;
         
         [SerializeField, BoxGroup("Bot Part Data"), ReadOnly, Space(10f)]
-        private int magnetCount;  
+        private int magnetCount;
+
+        private Dictionary<Part, float> projectileTimers;
+        
         
         /// <summary>
         /// Called when new Parts are added to the attachable List. Allows for a short list of parts to exist to ease call
@@ -1015,7 +1018,7 @@ namespace StarSalvager
         private void UpdatePartsList()
         {
             _parts = attachedBlocks.OfType<Part>().ToList();
-
+            
             UpdatePartData();
         }
 
@@ -1040,13 +1043,21 @@ namespace StarSalvager
             }
         }
 
+        //FIXME This needs to something more manageable
+        private EnemyManager _enemyManager => FindObjectOfType<EnemyManager>();
+
         /// <summary>
         /// Parts specific update Loop. Updates all part information based on currently attached parts.
         /// </summary>
         private void PartsUpdateLoop()
         {
+            const float damageGuess = 5f;
+            
+            List<Enemy> enemies = null;
+            //Be careful to not use return here
             foreach (var part in _parts)
             {
+                PartRemoteData partRemoteData;
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
@@ -1054,7 +1065,7 @@ namespace StarSalvager
                         if (coreHeat <= 0)
                         {
                             GameUi.SetHeatSliderValue(0f);
-                            return;
+                            break;
                         }
 
                         GameUi.SetHeatSliderValue(coreHeat / 100f);
@@ -1065,7 +1076,7 @@ namespace StarSalvager
                         if (coolTimer > 0f)
                         {
                             coolTimer -= Time.deltaTime;
-                            return;
+                            break;
                         }
                         else
                             coolTimer = 0;
@@ -1082,19 +1093,60 @@ namespace StarSalvager
                     case PART_TYPE.REPAIR:
                         //TODO Determine if this heals Bits & parts or just parts
                         //TODO This needs to fire every x Seconds
-                        var toRepair = attachedBlocks.GetAttachablesAround(part)
-                            .OfType<Part>().FirstOrDefault(p => p.CurrentHealth < p.StartingHealth);
+                        var toRepair = attachedBlocks.GetAttachablesAroundInRadius<Part>(part, 1)
+                            .FirstOrDefault(p => p.CurrentHealth < p.StartingHealth);
 
                         if (toRepair is null) break;
-                        var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.REPAIR);
+                        partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.REPAIR);
 
                         //Increase the health of this part depending on the current level of the repairer
-                        toRepair.ChangeHealth(partData.data[part.level] * Time.deltaTime);
+                        toRepair.ChangeHealth(partRemoteData.data[part.level] * Time.deltaTime);
                         
                         break;
                     case PART_TYPE.GUN:
-                        //TODO This needs to find closest enemy targets to this
+                        //TODO Need to determine if the shoot type is looking for enemies or not
+                        //--------------------------------------------------------------------------------------------//
+                        partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.GUN);
+                        
+                        if (projectileTimers == null)
+                            projectileTimers = new Dictionary<Part, float>();
+                        
+                        if(!projectileTimers.ContainsKey(part))
+                            projectileTimers.Add(part, 0f);
                         //TODO This needs to fire every x Seconds
+                        
+                        //--------------------------------------------------------------------------------------------//
+                        
+                        if (projectileTimers[part] < partRemoteData.data[part.level] / damageGuess)
+                        {
+                            projectileTimers[part] += Time.deltaTime;
+                            break;
+                        }
+                        
+                        //--------------------------------------------------------------------------------------------//
+                        
+                        var shootDirection = Vector2.up;
+                        var enemy = _enemyManager.GetClosestEnemy(transform.position, 5 * Constants.gridCellSize);
+                        //TODO Determine if this fires at all times or just when there are active enemies in range
+                        if (enemy != null)
+                        {
+                            shootDirection = enemy.transform.position - transform.position;
+                        }
+                        
+                        //Create projectile
+                        //--------------------------------------------------------------------------------------------//
+                        
+                        projectileTimers[part] = 0f;
+                        var projectile = FactoryManager.Instance.GetFactory<ProjectileFactory>().CreateObject<Projectile>(
+                            PROJECTILE_TYPE.Projectile1,
+                            shootDirection,
+                            "Enemy");
+                        projectile.transform.position = part.transform.position;
+                        
+                        LevelManager.Instance?.ProjectileManager.AddProjectile(projectile);
+                        
+                        //--------------------------------------------------------------------------------------------//
+                        
                         break;
                 }
             }
@@ -2031,7 +2083,7 @@ namespace StarSalvager
 
         #region Destroy Bot
 
-        private void Destroy()
+        private void Destroy(string deathMethod)
         {
             if (_isDestroyed)
                 return;
@@ -2039,7 +2091,7 @@ namespace StarSalvager
             _isDestroyed = true;
             CompositeCollider2D.enabled = false;
 
-            StartCoroutine(DestroyCoroutine());
+            StartCoroutine(DestroyCoroutine(deathMethod));
         }
         
         #endregion //Destroy Bot
@@ -2233,12 +2285,13 @@ namespace StarSalvager
             CompositeCollider2D.GenerateGeometry();
         }
         
-        private IEnumerator DestroyCoroutine()
+        private IEnumerator DestroyCoroutine(string deathMethod)
         {
             var index = 1;
             
             yield return new WaitForSeconds(0.3f);
             
+            //TODO I think I can utilize this function in the extensions, just need to offset for coordinate location
             while (true)
             {
                 var toDestroy = attachedBlocks
@@ -2259,7 +2312,7 @@ namespace StarSalvager
                 index++;
             }
             
-            OnBotDied?.Invoke(this);
+            OnBotDied?.Invoke(this, deathMethod);
         }
         
         #endregion //Coroutines

@@ -152,7 +152,7 @@ namespace StarSalvager
             {
                 BotGameObject.InitBot(PlayerPersistentData.GetPlayerData().GetCurrentBlockData().ImportBlockDatas(false));
             }
-            Bot.OnBotDied += deadBot =>
+            Bot.OnBotDied += (deadBot, deathMethod) =>
             {
                 GameTimer.SetPaused(true);
                 AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied);
