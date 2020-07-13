@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
-using Sirenix.Utilities;
 using StarSalvager.AI;
 using StarSalvager.Values;
 using StarSalvager.Factories;
@@ -14,8 +13,8 @@ using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Puzzle;
-using StarSalvager.Utilities.Puzzle.Data;
 using UnityEngine;
+
 using GameUI = StarSalvager.UI.GameUI;
 
 namespace StarSalvager
