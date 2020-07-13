@@ -18,9 +18,16 @@ namespace StarSalvager
         //private int checks;
         protected bool useCollision = true;
 
-        protected virtual string CollisionTag => "Player";
+
+        protected string CollisionTag
+        {
+            get { return _collisionBase; }
+            set { _collisionBase = value; }
+        }
+        private string _collisionBase = "Player";
+
         //============================================================================================================//
-        
+
         protected new Collider2D collider
         {
             get
