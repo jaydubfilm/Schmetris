@@ -19,8 +19,6 @@ namespace StarSalvager.AI
 
         public float DamageAmount = 0.0f;
 
-        protected override string CollisionTag => "Player";
-
         private void Start()
         {
             SetSprite(m_projectileData.Sprite);
@@ -30,6 +28,11 @@ namespace StarSalvager.AI
         private void Update()
         {
             transform.position += (m_enemyVelocityModifier + (m_travelDirectionNormalized * m_projectileData.ProjectileSpeed)) * Time.deltaTime;
+        }
+
+        public void SetCollisionTag(string collisionTag)
+        {
+            CollisionTag = collisionTag;
         }
 
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)

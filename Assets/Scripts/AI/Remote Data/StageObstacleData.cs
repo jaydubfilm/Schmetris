@@ -15,6 +15,8 @@ namespace StarSalvager.AI
         [SerializeField, FoldoutGroup("$m_selectionType")]
         private ASTEROID_SIZE m_asteroidSize;
         [SerializeField, FoldoutGroup("$m_selectionType")]
+        private bool m_customAsteroidShape;
+        [SerializeField, FoldoutGroup("$m_selectionType")]
         private int m_asteroidCountPerMinute;
 
         public SELECTION_TYPE SelectionType => m_selectionType;
@@ -27,6 +29,7 @@ namespace StarSalvager.AI
                 return (BIT_TYPE)UnityEngine.Random.Range(0, 7);
         }
         public ASTEROID_SIZE AsteroidSize => m_asteroidSize;
+        public bool CustomAsteroidShape => m_customAsteroidShape;
         public int AsteroidCountPerMinute => m_asteroidCountPerMinute;
 
         public float AsteroidPerRowAverage => (m_asteroidCountPerMinute / 60.0f) * Constants.timeForAsteroidsToFall;
