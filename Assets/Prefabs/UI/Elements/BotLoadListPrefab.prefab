@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8258242793877687325}
   - component: {fileID: 5983468868690763532}
   m_Layer: 5
-  m_Name: AmountText
+  m_Name: NameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -64,7 +64,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 9999
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -133,13 +133,13 @@ MonoBehaviour:
   m_margin: {x: 10, y: 0, z: 10, w: 0}
   m_textInfo:
     textComponent: {fileID: 5983468868690763532}
-    characterCount: 4
+    characterCount: 0
     spriteCount: 0
     spaceCount: 0
-    wordCount: 1
+    wordCount: 0
     linkCount: 0
-    lineCount: 1
-    pageCount: 1
+    lineCount: 0
+    pageCount: 0
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 2584673733841966398}
   - component: {fileID: 9121675495920685103}
   m_Layer: 5
-  m_Name: LoadListPrefab
+  m_Name: BotLoadListPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -206,7 +206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26cd68ed0c50b9644897f93810e2a5b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resourceAmountText: {fileID: 5983468868690763532}
+  loadListNameText: {fileID: 5983468868690763532}
 --- !u!114 &9121675495920685103
 MonoBehaviour:
   m_ObjectHideFlags: 0

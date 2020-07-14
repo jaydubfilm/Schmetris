@@ -24,8 +24,11 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        [SerializeField, BoxGroup("Resource UI")]
-        private ResourceUIElementScrollView resourceScrollView;
+        [SerializeField, Required, BoxGroup("Load List UI")]
+        private EditorBotShapeGeneratorScriptableObject _editorBotShapeGeneratorScriptable;
+
+        [SerializeField, BoxGroup("Load List UI")]
+        private BotDataElementScrollView loadListScrollView;
 
         //============================================================================================================//
 
@@ -75,6 +78,13 @@ namespace StarSalvager.UI
         [SerializeField, Required, BoxGroup("Can't Save Menu")]
         private Button CantSaveReturn;
 
+        [SerializeField, Required, BoxGroup("Overwrite Menu")]
+        private GameObject OverwriteMenu;
+        [SerializeField, Required, BoxGroup("Overwrite Menu")]
+        private Button OverwriteConfirm;
+        [SerializeField, Required, BoxGroup("Overwrite Menu")]
+        private Button OverwriteReturn;
+
         //============================================================================================================//
 
         private CameraController m_cameraController;
@@ -121,7 +131,7 @@ namespace StarSalvager.UI
             
             SaveButton.onClick.AddListener(() =>
             {
-                if (CantSaveMenu.activeSelf || SaveMenu.activeSelf || LoadMenu.activeSelf)
+                if (CantSaveMenu.activeSelf || SaveMenu.activeSelf || LoadMenu.activeSelf || OverwriteMenu.activeSelf)
                     return; 
 
                 if (m_botShapeEditor.CheckLegal())
@@ -137,11 +147,12 @@ namespace StarSalvager.UI
             
             LoadButton.onClick.AddListener(() =>
             {
-                if (CantSaveMenu.activeSelf || SaveMenu.activeSelf || LoadMenu.activeSelf)
+                if (CantSaveMenu.activeSelf || SaveMenu.activeSelf || LoadMenu.activeSelf || OverwriteMenu.activeSelf)
                     return;
 
                 Debug.Log("Load Button Pressed");
                 LoadMenu.SetActive(true);
+                UpdateLoadListUiScrollViews();
             });
 
             //--------------------------------------------------------------------------------------------------------//
@@ -224,7 +235,23 @@ namespace StarSalvager.UI
                 var element = partsScrollView.AddElement<PartUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement");
                 element.Init(partRemoteData, PartPressed);
             }
+
+            UpdateLoadListUiScrollViews();
+
             SetPartsScrollActive(false);
+        }
+
+        private void UpdateLoadListUiScrollViews()
+        {
+            foreach (var botGeneratorData in _editorBotShapeGeneratorScriptable.m_editorBotGeneratorData)
+            {
+                if (loadListScrollView.FindElement<BotLoadListUIElement>(botGeneratorData))
+                    continue;
+                
+                print("addBot");
+                var element = loadListScrollView.AddElement<BotLoadListUIElement>(botGeneratorData, $"{botGeneratorData.Name}_UIElement");
+                element.Init(botGeneratorData, BotDataPressed);
+            }
         }
 
         private void SetCameraZoom(float value)
@@ -248,6 +275,10 @@ namespace StarSalvager.UI
             m_botShapeEditor.selectedPartType = partType;
         }
 
+        private void BotDataPressed(EditorBotGeneratorData botData)
+        {
+
+        }
     }
 }
 

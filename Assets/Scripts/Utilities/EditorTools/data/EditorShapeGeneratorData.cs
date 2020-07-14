@@ -1,13 +1,14 @@
 ﻿using Sirenix.OdinInspector;
 using StarSalvager.AI;
 using StarSalvager.Utilities.JsonDataTypes;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StarSalvager.ScriptableObjects
+namespace StarSalvager.Factories.Data
 {
     [System.Serializable]
-    public struct EditorShapeGeneratorData
+    public struct EditorShapeGeneratorData : IEquatable<EditorShapeGeneratorData>
     {
         [SerializeField, BoxGroup("Name")]
         private string m_name;
@@ -45,5 +46,34 @@ namespace StarSalvager.ScriptableObjects
                     return ASTEROID_SIZE.Large;
             }
         }
+
+        #region IEquatable
+
+        /// <summary>
+        /// This only compares Type and not all individual properties
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool Equals(EditorShapeGeneratorData other)
+        {
+            return Name == other.Name;
+        }
+
+        /// <summary>
+        /// This only compares Type and not all individual properties
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            return obj is EditorShapeGeneratorData other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        #endregion //IEquatable
     }
 }
