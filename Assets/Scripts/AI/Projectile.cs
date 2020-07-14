@@ -1,14 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using StarSalvager.Factories.Data;
 using System;
 using Recycling;
-using System.Runtime.CompilerServices;
 
 namespace StarSalvager.AI
 {
-    //TODO: Handle proper setting of the collisiontag
+    //TODO: Handle proper setting of the collision tag
     public class Projectile : CollidableBase
     {
         [NonSerialized]
@@ -17,7 +14,7 @@ namespace StarSalvager.AI
         [NonSerialized]
         public ProjectileProfileData m_projectileData;
 
-        public float DamageAmount = 0.0f;
+        public float DamageAmount;
 
         private void Start()
         {
@@ -27,7 +24,7 @@ namespace StarSalvager.AI
         // Update is called once per frame
         private void Update()
         {
-            transform.position += (m_enemyVelocityModifier + (m_travelDirectionNormalized * m_projectileData.ProjectileSpeed)) * Time.deltaTime;
+            transform.position += (m_enemyVelocityModifier + m_travelDirectionNormalized * m_projectileData.ProjectileSpeed) * Time.deltaTime;
         }
 
         public void SetCollisionTag(string collisionTag)
@@ -37,10 +34,9 @@ namespace StarSalvager.AI
 
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
-            Bot bot = gameObject.GetComponent<Bot>();
-            if (bot != null)
+            if (gameObject.GetComponent<ICanBeHit>() is ICanBeHit iCanBeHit)
             {
-                bot.TryHitAt(transform.position, DamageAmount);
+                iCanBeHit.TryHitAt(transform.position, DamageAmount);
             }
 
             Recycler.Recycle<Projectile>(this);

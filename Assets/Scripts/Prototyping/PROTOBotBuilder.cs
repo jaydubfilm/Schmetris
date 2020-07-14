@@ -42,7 +42,7 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
         bot.transform.position = new Vector2(0, -7f);
         bot.InitBot();
 
-        Bot.OnBotDied += deadBot =>
+        Bot.OnBotDied += (deadBot, deathMethod) =>
         {
             Debug.LogError("Bot Died. Press 'R' to restart");
         };

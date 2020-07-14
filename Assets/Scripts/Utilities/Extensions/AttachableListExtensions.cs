@@ -259,17 +259,53 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="from"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static List<IAttachable> GetAttachablesAround(this IEnumerable<IAttachable> attachables, IAttachable from)
+        public static List<IAttachable> GetAttachablesAround(this IEnumerable<IAttachable> attachables,
+            IAttachable from, bool includeCorners = false)
         {
             var enumerable = attachables as IAttachable[] ?? attachables.ToArray();
-            
-            return new List<IAttachable>
+
+            var outList = new List<IAttachable>
             {
                 enumerable.GetAttachableNextTo(from, DIRECTION.LEFT),
                 enumerable.GetAttachableNextTo(from, DIRECTION.UP),
                 enumerable.GetAttachableNextTo(from, DIRECTION.RIGHT),
                 enumerable.GetAttachableNextTo(from, DIRECTION.DOWN)
             };
+            
+            if (includeCorners)
+            {
+                outList.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(-1,1)));
+                outList.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(1,1)));
+                outList.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(1,-1)));
+                outList.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(-1,-1)));
+            }
+            
+            return outList;
+        }
+        
+        //FIXME I should be able check this without the expensive use of the distance function
+        public static List<T> GetAttachablesAroundInRadius<T>(this IEnumerable<IAttachable> attachables, IAttachable from, int radius) where T: IAttachable
+        {
+            return attachables.GetAttachablesAroundInRadius<T>(from.Coordinate, radius);
+        }
+        public static List<T> GetAttachablesAroundInRadius<T>(this IEnumerable<IAttachable> attachables, Vector2Int center, int radius) where T: IAttachable
+        {
+            bool InRadius(Vector2Int origin, Vector2Int compare, int rad)
+            {
+                var offset = compare - origin;
+                offset.x = Mathf.Abs(offset.x);
+                offset.y = Mathf.Abs(offset.y);
+
+                return offset.x <= rad && offset.y <= rad;
+            }
+
+            var enumerable = attachables as IAttachable[] ?? attachables.ToArray();
+
+            return enumerable
+                .Where(a => a.gameObject.activeInHierarchy)
+                .OfType<T>()
+                .Where(a => InRadius(center, a.Coordinate, radius))
+                .ToList();
         }
         
         /// <summary>
@@ -278,7 +314,7 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="from"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static List<Vector2Int> GetCoordinatesAround(this IEnumerable<IAttachable> attachables, IAttachable from)
+        public static List<Vector2Int> GetCoordinatesAround(this IEnumerable<IAttachable> attachables, IAttachable from, bool includeCorners = false)
         {
             var enumerable = attachables as IAttachable[] ?? attachables.ToArray();
             
@@ -289,6 +325,14 @@ namespace StarSalvager.Utilities.Extensions
                 enumerable.GetAttachableNextTo(from, DIRECTION.RIGHT),
                 enumerable.GetAttachableNextTo(from, DIRECTION.DOWN)
             };
+
+            if (includeCorners)
+            {
+                check.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(-1,1)));
+                check.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(1,1)));
+                check.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(1,-1)));
+                check.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(-1,-1)));
+            }
 
             return check
                 .Where(ab => ab != null)
@@ -345,7 +389,11 @@ namespace StarSalvager.Utilities.Extensions
         /// <returns></returns>
         public static IAttachable GetAttachableNextTo(this IEnumerable<IAttachable> attachables, IAttachable from, DIRECTION direction)
         {
-            var coord = from.Coordinate + direction.ToVector2Int();
+            return attachables.GetAttachableNextTo(from, direction.ToVector2Int());
+        }
+        public static IAttachable GetAttachableNextTo(this IEnumerable<IAttachable> attachables, IAttachable from, Vector2Int direction)
+        {
+            var coord = from.Coordinate + direction;
 
             return attachables.FirstOrDefault(a => a.Coordinate == coord);
         }

@@ -1,6 +1,6 @@
 ﻿using StarSalvager.AI;
-using System.Collections;
 using System.Collections.Generic;
+using Recycling;
 using UnityEngine;
 using StarSalvager.Values;
 using StarSalvager.Utilities;
@@ -12,15 +12,20 @@ public class ProjectileManager : IReset
     //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
     private float m_currentInput;
 
-    public bool Moving => _moving;
+   // public bool Moving => _moving;
     private bool _moving;
 
-    private float m_distanceHorizontal = 0.0f;
+    private float m_distanceHorizontal;
+    
+    //================================================================================================================//
 
     public ProjectileManager()
     {
         m_projectiles = new List<Projectile>();
     }
+    
+    //IReset Functions
+    //================================================================================================================//
 
     public void Activate()
     {
@@ -31,10 +36,12 @@ public class ProjectileManager : IReset
     {
         for (int i = m_projectiles.Count - 1; i >= 0; i--)
         {
-            Recycling.Recycler.Recycle<Enemy>(m_projectiles[i].gameObject);
+            Recycler.Recycle<Projectile>(m_projectiles[i].gameObject);
             m_projectiles.RemoveAt(i);
         }
     }
+    
+    //================================================================================================================//
 
     public void UpdateForces()
     {
@@ -55,22 +62,14 @@ public class ProjectileManager : IReset
             }
         }
 
-        for (int i = m_projectiles.Count - 1; i >= 0; i--)
-        {
-            if (m_projectiles[i] == null)
-            {
-                m_projectiles.RemoveAt(i);
-                continue;
-            }
-
-            if (!m_projectiles[i].gameObject.activeSelf)
-            {
-                m_projectiles.RemoveAt(i);
-                continue;
-            }
+        CleanProjectiles(32f);
             
-            m_projectiles[i].transform.position -= gridMovement;
+        foreach (var projectile in m_projectiles)
+        {
+            projectile.transform.position -= gridMovement;
         }
+        
+        
 
         if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)
         {
@@ -85,7 +84,7 @@ public class ProjectileManager : IReset
 
     public void Move(float direction)
     {
-        if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+        if (Input.GetKey(KeyCode.LeftAlt))
         {
             m_currentInput = 0f;
             return;
@@ -97,4 +96,35 @@ public class ProjectileManager : IReset
 
         _moving = true;
     }
+
+    private void CleanProjectiles(float maxY)
+    {
+        for (int i = m_projectiles.Count - 1; i >= 0; i--)
+        {
+            var projectile = m_projectiles[i];
+            if (projectile == null)
+            {
+                m_projectiles.RemoveAt(i);
+                continue;
+            }
+
+            if (!projectile.gameObject.activeSelf)
+            {
+                m_projectiles.RemoveAt(i);
+                continue;
+            }
+
+            if (Mathf.Abs(projectile.transform.position.y) >= maxY)
+            {
+                Recycler.Recycle<Projectile>(projectile);
+                
+                m_projectiles.RemoveAt(i);
+                continue;
+            }
+            
+            
+        }
+    }
+    
+    //================================================================================================================//
 }

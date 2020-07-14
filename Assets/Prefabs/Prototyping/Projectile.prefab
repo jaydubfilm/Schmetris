@@ -45,7 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1860abdd12e66344493c59943f261611, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_collisionTag: 
+  m_enemyVelocityModifier: {x: 0, y: 0, z: 0}
+  DamageAmount: 0
 --- !u!212 &7094775417863101147
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -84,7 +85,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

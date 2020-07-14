@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6644681719502384361}
   m_Layer: 11
   m_Name: EnemyAttachableTest
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -45,10 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f417ec1c5caf1d744a152f1fc331d9be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Coordinate: {x: 0, y: 0}
-  Attached: 0
-  _type: 0
-  _level: 0
   collisionMask:
     serializedVersion: 2
     m_Bits: 0

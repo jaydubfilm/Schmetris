@@ -200,6 +200,45 @@ namespace StarSalvager
 
             m_distanceHorizontal += direction * Constants.gridCellSize;
         }
+        
+        //============================================================================================================//
+
+        public Enemy GetClosestEnemy(Vector2 position)
+        {
+            var shortestDist = 999f;
+            Enemy closestEnemy = null;
+            foreach (var enemy in m_enemies)
+            {
+                var dist = Vector2.Distance(position, enemy.transform.position);
+                if(dist > shortestDist)
+                    continue;
+
+                shortestDist = dist;
+                closestEnemy = enemy;
+            }
+
+            return closestEnemy;
+        }
+
+        public Enemy GetClosestEnemy(Vector2 position, float range)
+        {
+            var shortestDist = 999f;
+            Enemy closestEnemy = null;
+            foreach (var enemy in m_enemies)
+            {
+                var dist = Vector2.Distance(position, enemy.transform.position);
+                
+                if(dist > range)
+                    continue;
+                if(dist > shortestDist)
+                    continue;
+
+                shortestDist = dist;
+                closestEnemy = enemy;
+            }
+
+            return closestEnemy;
+        }
 
         //============================================================================================================//
 

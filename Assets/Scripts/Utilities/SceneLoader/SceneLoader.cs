@@ -1,5 +1,4 @@
-﻿using Sirenix.Utilities;
-using StarSalvager.Utilities.Extensions;
+﻿using StarSalvager.Utilities.Extensions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;

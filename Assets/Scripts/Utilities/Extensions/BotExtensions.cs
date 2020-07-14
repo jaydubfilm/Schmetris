@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using Sirenix.Utilities;
+
 using StarSalvager.Factories;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
@@ -19,9 +19,7 @@ namespace StarSalvager.Utilities.Extensions
         {
             //TODO Need to consider that there will be parts & bits attached to the bot
 
-            var data = bot.attachedBlocks
-                .Where(b => b is ISaveable )
-                .ForEach(b => (b as ISaveable)?.ToBlockData())
+            var data = bot.attachedBlocks.OfType<ISaveable>().Select(x => x.ToBlockData())
                 .ToArray();
 
             var blah = JsonConvert.SerializeObject(data, Formatting.None);

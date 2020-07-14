@@ -1,10 +1,4 @@
-﻿using StarSalvager.Values;
-using StarSalvager.Utilities.Debugging;
-using StarSalvager.Utilities.Extensions;
-using StarSalvager.Utilities.JsonDataTypes;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using StarSalvager.Utilities.Extensions;
 using UnityEngine;
 
 namespace StarSalvager.AI
@@ -13,67 +7,37 @@ namespace StarSalvager.AI
     {
         public Vector2Int Coordinate { get; set; }
         public bool Attached { get; set; }
-
+        
         public bool CanShift => true;
 
         //============================================================================================================//
 
-        protected new Transform transform
+        protected override void Start()
         {
-            get
-            {
-                if (m_transform == null)
-                    m_transform = gameObject.GetComponent<Transform>();
-
-                return m_transform;
-            }
+            renderer.sprite = m_enemyData.Sprite;
         }
-        private Transform m_transform;
 
-        protected new SpriteRenderer renderer
+        protected override void Update()
         {
-            get
-            {
-                if (m_spriteRenderer == null)
-                    m_spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-
-                return m_spriteRenderer;
-            }
+            if (!Attached) 
+                return;
+            
+            m_fireTimer += Time.deltaTime;
+                
+            if (m_fireTimer < 1 / m_enemyData.AttackSpeed)
+                return;
+                
+            m_fireTimer -= 1 / m_enemyData.AttackSpeed;
+            LevelManager.Instance.BotGameObject.TryHitAt(LevelManager.Instance.BotGameObject.GetClosestAttachable(Coordinate), m_enemyData.AttackDamage);
         }
-        private SpriteRenderer m_spriteRenderer;
 
+        //============================================================================================================//
         
-
         public void SetAttached(bool isAttached)
         {
             Attached = isAttached;
             collider.usedByComposite = isAttached;
         }
-
-        [SerializeField]
-        private LayerMask collisionMask;
-
-        //============================================================================================================//
-
-        private void Start()
-        {
-            renderer.sprite = m_enemyData.Sprite;
-        }
-
-        private void Update()
-        {
-            if (Attached)
-            {
-                m_fireTimer += Time.deltaTime;
-                if (m_fireTimer >= 1 / m_enemyData.AttackSpeed)
-                {
-                    m_fireTimer -= 1 / m_enemyData.AttackSpeed;
-                    LevelManager.Instance.BotGameObject.TryHitAt(LevelManager.Instance.BotGameObject.GetClosestAttachable(Coordinate), m_enemyData.AttackDamage);
-                }
-            }
-        }
-
-        //============================================================================================================//
 
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
