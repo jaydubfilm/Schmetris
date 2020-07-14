@@ -276,11 +276,5 @@ namespace StarSalvager
             levelCompleteAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete, levelCompleteAnalyticsDictionary, Values.Globals.CurrentSector);
         }
-
-        private void OnApplicationQuit()
-        {
-            print("TEST");
-            GameTimer.OnApplicationQuit();
-        }
     }
 }

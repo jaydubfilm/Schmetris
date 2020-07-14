@@ -47,6 +47,7 @@ namespace StarSalvager
             m_cameraZoomScaler.onValueChanged.AddListener(ScaleCamera);
             m_sectorZeroButton.onClick.AddListener(SectorZeroButtonPressed);
             m_sectorOneButton.onClick.AddListener(SectorOneButtonPressed);
+            
 
             if (gameObject.scene == SceneManager.GetActiveScene())
                 ScaleCamera(m_cameraZoomScaler.value);

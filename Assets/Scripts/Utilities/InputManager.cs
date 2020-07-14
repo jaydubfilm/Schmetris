@@ -381,5 +381,11 @@ namespace StarSalvager.Utilities.Inputs
         }
 
         //============================================================================================================//
+
+        private void OnApplicationQuit()
+        {
+            print("TEST");
+            GameTimer.OnApplicationQuit();
+        }
     }
 }

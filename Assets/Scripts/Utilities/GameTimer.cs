@@ -51,8 +51,6 @@ namespace StarSalvager.Utilities
             Dictionary<string, object> applicationQuitAnalyticsDictionary = new Dictionary<string, object>();
             applicationQuitAnalyticsDictionary.Add("Total Playtime", timePlayed.TotalSeconds);
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ApplicationQuit, eventDataDictionary: applicationQuitAnalyticsDictionary);
-
-            Debug.Log("GAME TIMER QUIT");
         }
     }
 }
