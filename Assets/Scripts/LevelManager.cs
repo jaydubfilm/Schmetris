@@ -1,20 +1,17 @@
-﻿using System.Collections;
+﻿using Sirenix.OdinInspector;
+using StarSalvager.AI;
+using StarSalvager.Cameras;
+using StarSalvager.Cameras.Data;
+using StarSalvager.Factories;
+using StarSalvager.ScriptableObjects;
+using StarSalvager.UI;
+using StarSalvager.Utilities;
+using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Inputs;
+using StarSalvager.Values;
 using System.Collections.Generic;
 using UnityEngine;
-using StarSalvager.Utilities;
-using StarSalvager.Values;
-using StarSalvager.AI;
-using UnityEngine.UI;
-using StarSalvager.ScriptableObjects;
-using Sirenix.OdinInspector;
-using StarSalvager.Cameras;
-using StarSalvager.Factories;
-using StarSalvager.Utilities.Inputs;
 using UnityEngine.SceneManagement;
-using StarSalvager.Cameras.Data;
-using System.Linq;
-using StarSalvager.Utilities.Extensions;
-using StarSalvager.UI;
 
 namespace StarSalvager
 {
@@ -38,6 +35,8 @@ namespace StarSalvager
 
         private float m_waveTimer;
         public float WaveTimer => m_waveTimer;
+
+        private float m_levelTimer = 0;
 
         private int m_currentStage;
         public int CurrentStage => m_currentStage;
@@ -156,6 +155,12 @@ namespace StarSalvager
             {
                 GameTimer.SetPaused(true);
                 AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied);
+                Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>();
+                levelLostAnalyticsDictionary.Add("CurrentSector", Values.Globals.CurrentSector);
+                levelLostAnalyticsDictionary.Add("CurrentWave", m_currentWave);
+                levelLostAnalyticsDictionary.Add("CurrentStage", m_currentStage);
+                levelLostAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelLost, eventDataDictionary: levelLostAnalyticsDictionary);
                 m_levelManagerUI.ToggleDeathUIActive(true);
                 Debug.LogError("Bot Died. Press 'R' to restart");
             };
@@ -211,6 +216,7 @@ namespace StarSalvager
                 m_levelManagerUI.ToggleBetweenWavesUIActive(true);
                 m_currentWave++;
                 m_levelManagerUI.SetCurrentWaveText(m_currentWave.ToString() + " Complete");
+                m_levelTimer += m_waveTimer;
                 m_waveTimer = 0;
                 ObstacleManager.MoveToNewWave();
                 EnemyManager.MoveToNewWave();
@@ -239,6 +245,7 @@ namespace StarSalvager
             m_levelManagerUI.ToggleDeathUIActive(false);
             m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
             GameTimer.SetPaused(false);
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
             SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "AlexShulmanTestScene");
         }
 
@@ -266,7 +273,14 @@ namespace StarSalvager
         private void ProcessLevelCompleteAnalytics()
         {
             Dictionary<string, object> levelCompleteAnalyticsDictionary = new Dictionary<string, object>();
+            levelCompleteAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete, levelCompleteAnalyticsDictionary, Values.Globals.CurrentSector);
+        }
+
+        private void OnApplicationQuit()
+        {
+            print("TEST");
+            GameTimer.OnApplicationQuit();
         }
     }
 }

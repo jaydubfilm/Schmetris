@@ -14,7 +14,7 @@ namespace StarSalvager.UI
     {}
 
     [System.Serializable]
-    public class BotDataElementScrollView : UIElementContentScrollView<EditorBotGeneratorData>
+    public class BotShapeDataElementScrollView : UIElementContentScrollView<EditorGeneratorDataBase>
     { }
 }
 

@@ -21,9 +21,11 @@ namespace StarSalvager.Utilities
             MissionComplete,
 
             GameStart,
+            ApplicationQuit,
             BotDied,
             LevelStart,
             LevelComplete,
+            LevelLost,
             ScrapyardUsageBegin,
             ScrapyardUsageEnd
         }
@@ -73,6 +75,9 @@ namespace StarSalvager.Utilities
                 case AnalyticsEventType.GameStart:
                     result = ReportGameStart(eventDataDictionary);
                     break;
+                case AnalyticsEventType.ApplicationQuit:
+                    result = ReportGameStart(eventDataDictionary);
+                    break;
                 case AnalyticsEventType.BotDied:
                     result = ReportBotDied(eventDataDictionary);
                     break;
@@ -81,6 +86,9 @@ namespace StarSalvager.Utilities
                     break;
                 case AnalyticsEventType.LevelComplete:
                     result = ReportLevelComplete(eventDataParameter.ToString(), eventDataDictionary);
+                    break;
+                case AnalyticsEventType.LevelLost:
+                    result = ReportLevelLost(eventDataDictionary);
                     break;
                 case AnalyticsEventType.ScrapyardUsageBegin:
                     result = ReportScraypardUsageBegin(eventDataDictionary);
@@ -91,7 +99,6 @@ namespace StarSalvager.Utilities
                 default:
                     Debug.Log("AnalyticsEventType not implemented in switch case");
                     return false;
-                    break;
             }
 
             //Temporary testing line to print the result of the analyticevent
@@ -192,9 +199,19 @@ namespace StarSalvager.Utilities
             return AnalyticsEvent.GameStart(eventData);
         }
 
+        private static AnalyticsResult ReportApplicationQuit(Dictionary<string, object> eventData = null)
+        {
+            return AnalyticsEvent.Custom("application_quit", eventData);
+        }
+
         private static AnalyticsResult ReportLevelStart(string levelName, Dictionary<string, object> eventData = null)
         {
             return AnalyticsEvent.LevelStart(levelName, eventData);
+        }
+
+        private static AnalyticsResult ReportLevelLost(Dictionary<string, object> eventData = null)
+        {
+            return AnalyticsEvent.Custom("level_lost", eventData);
         }
 
         private static AnalyticsResult ReportBotDied(Dictionary<string, object> eventData = null)

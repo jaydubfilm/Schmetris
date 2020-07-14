@@ -37,7 +37,7 @@ namespace StarSalvager.ScriptableObjects
         {
             EditorBotGeneratorData oldData = m_editorBotGeneratorData.FirstOrDefault(d => d.Name == data.Name);
 
-            if (oldData.Name != null)
+            if (oldData != null && oldData.Name != null)
                 m_editorBotGeneratorData.Remove(oldData);
 
             m_editorBotGeneratorData.Add(data);
@@ -47,7 +47,7 @@ namespace StarSalvager.ScriptableObjects
         {
             EditorShapeGeneratorData oldData = m_editorShapeGeneratorData.FirstOrDefault(d => d.Name == data.Name);
 
-            if (oldData.Name != null)
+            if (oldData != null && oldData.Name != null)
                 m_editorShapeGeneratorData.Remove(oldData);
 
             m_editorShapeGeneratorData.Add(data);

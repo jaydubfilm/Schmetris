@@ -138,26 +138,27 @@ namespace StarSalvager
             {
                 _shapes.Add(FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bits));
             }
+
+            _shapes[0].transform.position = Vector3.zero;
         }
 
         public void LoadBlockData(string inputName)
         {
             DeloadAllBots();
             DeloadAllShapes();
-            var blockData = m_editorBotShapeGeneratorScripableObject.GetEditorBotData(inputName).BlockData;
-            if (blockData != null)
+            var botData = m_editorBotShapeGeneratorScripableObject.GetEditorBotData(inputName);
+            if (botData != null && botData.BlockData != null)
             {
                 CreateBot(false);
-                _scrapyardBots[0].InitBot(blockData.ImportBlockDatas(true));
+                _scrapyardBots[0].InitBot(botData.BlockData.ImportBlockDatas(true));
                 m_botShapeEditorUI.SetPartsScrollActive(true);
                 return;
             }
 
-            blockData = m_editorBotShapeGeneratorScripableObject.GetEditorShapeData(inputName).BlockData;
-            if (blockData != null)
+            var shapeData = m_editorBotShapeGeneratorScripableObject.GetEditorShapeData(inputName);
+            if (shapeData != null && shapeData.BlockData != null)
             {
-                List<Bit> bits = blockData.ImportBlockDatas(false).FindAll(o => o is Bit).OfType<Bit>().ToList();
-                print(bits.Count);
+                List<Bit> bits = shapeData.BlockData.ImportBlockDatas(false).FindAll(o => o is Bit).OfType<Bit>().ToList();
                 CreateShape(bits);
                 m_botShapeEditorUI.SetPartsScrollActive(false);
                 return;

@@ -8,14 +8,14 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class BotLoadListUIElement : ButtonReturnUIElement<EditorBotGeneratorData, EditorBotGeneratorData>
+    public class BotLoadListUIElement : ButtonReturnUIElement<EditorGeneratorDataBase, EditorGeneratorDataBase>
     {
         [SerializeField, Required]
         private TMP_Text loadListNameText;
         
         //============================================================================================================//
         
-        public override void Init(EditorBotGeneratorData data, Action<EditorBotGeneratorData> OnPressed)
+        public override void Init(EditorGeneratorDataBase data, Action<EditorGeneratorDataBase> OnPressed)
         {
             this.data = data;
 
