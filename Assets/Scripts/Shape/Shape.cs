@@ -12,7 +12,7 @@ using Random = UnityEngine.Random;
 namespace StarSalvager
 {
     [RequireComponent(typeof(CompositeCollider2D))]
-    public class Shape : CollidableBase, IObstacle, ICustomRecycle
+    public class Shape : CollidableBase, IObstacle, ICustomRecycle, ICanBeHit
     {
         //================================================================================================================//
 
@@ -167,6 +167,25 @@ namespace StarSalvager
 
             CompositeCollider.GenerateGeometry();
         }
+        
+        //================================================================================================================//
+
+        
+        public void TryHitAt(Vector2 position, float damage)
+        {
+            var closestAttachable = attachedBits.GetClosestAttachable(position) as Bit;
+
+            //FIXME Need to see how to fix this
+            if (closestAttachable is IHealth closestHealth)
+            {
+                closestHealth.ChangeHealth(-damage);
+
+                if (closestHealth.CurrentHealth > 0) 
+                    return;
+            }
+            
+            DestroyBit(closestAttachable);
+        }
 
         //================================================================================================================//
 
@@ -268,5 +287,7 @@ namespace StarSalvager
 
             attachedBits.Clear();
         }
+
+        
     }
 }

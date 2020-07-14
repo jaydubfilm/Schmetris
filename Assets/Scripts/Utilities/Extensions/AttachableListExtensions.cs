@@ -286,12 +286,25 @@ namespace StarSalvager.Utilities.Extensions
         //FIXME I should be able check this without the expensive use of the distance function
         public static List<T> GetAttachablesAroundInRadius<T>(this IEnumerable<IAttachable> attachables, IAttachable from, int radius) where T: IAttachable
         {
+            return attachables.GetAttachablesAroundInRadius<T>(from.Coordinate, radius);
+        }
+        public static List<T> GetAttachablesAroundInRadius<T>(this IEnumerable<IAttachable> attachables, Vector2Int center, int radius) where T: IAttachable
+        {
+            bool InRadius(Vector2Int origin, Vector2Int compare, int rad)
+            {
+                var offset = compare - origin;
+                offset.x = Mathf.Abs(offset.x);
+                offset.y = Mathf.Abs(offset.y);
+
+                return offset.x <= rad && offset.y <= rad;
+            }
+
             var enumerable = attachables as IAttachable[] ?? attachables.ToArray();
 
             return enumerable
                 .Where(a => a.gameObject.activeInHierarchy)
                 .OfType<T>()
-                .Where(a => Vector2Int.Distance(from.Coordinate, a.Coordinate) < (radius + 1))
+                .Where(a => InRadius(center, a.Coordinate, radius))
                 .ToList();
         }
         

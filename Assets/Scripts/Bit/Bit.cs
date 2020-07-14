@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle, ICustomRecycle
+    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle, ICustomRecycle, ICanBeHit
     {
         //IAttachable properties
         //============================================================================================================//
@@ -94,6 +94,13 @@ namespace StarSalvager
             _damage.SetHealth(_currentHealth/_startingHealth);
         }
 
+        //ICanBeHit Functions
+        //============================================================================================================//
+        
+        public void TryHitAt(Vector2 position, float damage)
+        {
+            ChangeHealth(-damage);
+        }
 
         //Bit Functions
         //============================================================================================================//
@@ -207,5 +214,7 @@ namespace StarSalvager
             if(_damage)
                 Recycler.Recycle<Damage>(_damage);
         }
+
+        
     }
 }

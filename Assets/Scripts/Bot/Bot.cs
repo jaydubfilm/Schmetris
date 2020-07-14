@@ -19,7 +19,7 @@ using GameUI = StarSalvager.UI.GameUI;
 
 namespace StarSalvager
 {
-    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled
+    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit
     {
         public static Action<Bot, string> OnBotDied;
 
@@ -1093,10 +1093,11 @@ namespace StarSalvager
                     case PART_TYPE.REPAIR:
                         //TODO Determine if this heals Bits & parts or just parts
                         //TODO This needs to fire every x Seconds
-                        var toRepair = attachedBlocks.GetAttachablesAroundInRadius<Part>(part, 1)
+                        var toRepair = attachedBlocks.GetAttachablesAroundInRadius<Part>(part, part.level + 1)
                             .FirstOrDefault(p => p.CurrentHealth < p.StartingHealth);
 
                         if (toRepair is null) break;
+                        
                         partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.REPAIR);
 
                         //Increase the health of this part depending on the current level of the repairer
@@ -2294,10 +2295,7 @@ namespace StarSalvager
             //TODO I think I can utilize this function in the extensions, just need to offset for coordinate location
             while (true)
             {
-                var toDestroy = attachedBlocks
-                    .Where(a => a.gameObject.activeInHierarchy)
-                    .Where(a => Mathf.Abs(a.Coordinate.x) <= index && Mathf.Abs(a.Coordinate.y) <= index)
-                    .ToList();
+                var toDestroy = attachedBlocks.GetAttachablesAroundInRadius<IAttachable>(Vector2Int.zero, index);
                 
                 if(toDestroy.Count == 0)
                     break;
