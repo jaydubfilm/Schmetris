@@ -16,10 +16,12 @@ MonoBehaviour:
   m_editorShapeGeneratorData:
   - m_name: zigzag
     m_blockData: []
-    m_category: category1
+    m_categories:
+    - category1
   - m_name: block
     m_blockData: []
-    m_category: category2
+    m_categories:
+    - category2
   m_categories:
   - category1
   - category2

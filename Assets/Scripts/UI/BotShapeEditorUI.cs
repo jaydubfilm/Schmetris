@@ -56,6 +56,8 @@ namespace StarSalvager.UI
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button LoadButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button NewCategoryButton;
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button NewBotButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button NewShapeButton;
@@ -99,6 +101,17 @@ namespace StarSalvager.UI
         [SerializeField, Required, BoxGroup("Can't Save Menu")]
         private Button CantSaveReturn2;
 
+        [SerializeField, Required, BoxGroup("New Category Menu")]
+        private GameObject NewCategoryMenu;
+        [SerializeField, Required, BoxGroup("New Category Menu")]
+        private TMP_InputField NewCategoryNameInputField;
+        [SerializeField, Required, BoxGroup("New Category Menu")]
+        private Button NewCategoryConfirm;
+        [SerializeField, Required, BoxGroup("New Category Menu")]
+        private Button NewCategoryReturn;
+        [SerializeField, Required, BoxGroup("New Category Menu")]
+        private Button NewCategoryReturn2;
+
         [SerializeField, Required, BoxGroup("Overwrite Menu")]
         private GameObject OverwriteMenu;
         [SerializeField, Required, BoxGroup("Overwrite Menu")]
@@ -115,7 +128,7 @@ namespace StarSalvager.UI
         private BotShapeEditor m_botShapeEditor;
 
         private EditorGeneratorDataBase m_currentSelected;
-        public bool IsPopupActive => LoadMenu.activeSelf || SaveMenu.activeSelf || CantSaveMenu.activeSelf || OverwriteMenu.activeSelf;
+        public bool IsPopupActive => LoadMenu.activeSelf || SaveMenu.activeSelf || CantSaveMenu.activeSelf || OverwriteMenu.activeSelf || NewCategoryMenu.activeSelf;
         private bool m_currentlyOverwriting = false;
 
         
@@ -183,12 +196,8 @@ namespace StarSalvager.UI
 
             SaveButton.onClick.AddListener(() =>
             {
-                if (CantSaveMenu.activeSelf || SaveMenu.activeSelf || LoadMenu.activeSelf || OverwriteMenu.activeSelf)
-                    return; 
-
                 if (m_botShapeEditor.CheckLegal())
                 {
-                    Debug.Log("Save Button Pressed");
                     SaveMenu.SetActive(true);
                     bool isOverwrite = m_currentlyOverwriting;
                     SaveOverwritePortion.SetActive(isOverwrite);
@@ -203,14 +212,16 @@ namespace StarSalvager.UI
             
             LoadButton.onClick.AddListener(() =>
             {
-                if (CantSaveMenu.activeSelf || SaveMenu.activeSelf || LoadMenu.activeSelf || OverwriteMenu.activeSelf)
-                    return;
-
-                Debug.Log("Load Button Pressed");
                 LoadMenu.SetActive(true);
                 PartsWindow.SetActive(false);
                 m_currentSelected = null;
                 UpdateLoadListUiScrollViews();
+                ScreenBlackImage.gameObject.SetActive(true);
+            });
+
+            NewCategoryButton.onClick.AddListener(() =>
+            {
+                NewCategoryMenu.SetActive(true);
                 ScreenBlackImage.gameObject.SetActive(true);
             });
 
@@ -305,6 +316,26 @@ namespace StarSalvager.UI
 
             //--------------------------------------------------------------------------------------------------------//
 
+            NewCategoryConfirm.onClick.AddListener(() =>
+            {
+                m_botShapeEditor.AddCategory(NewCategoryNameInputField.text);
+                NewCategoryMenu.SetActive(false);
+                ScreenBlackImage.gameObject.SetActive(false);
+            });
+
+            NewCategoryReturn.onClick.AddListener(() =>
+            {
+                NewCategoryMenu.SetActive(false);
+                ScreenBlackImage.gameObject.SetActive(false);
+            });
+
+            NewCategoryReturn2.onClick.AddListener(() =>
+            {
+                NewCategoryMenu.SetActive(false);
+                ScreenBlackImage.gameObject.SetActive(false);
+            });
+
+            //--------------------------------------------------------------------------------------------------------//
 
 
             /*m_loadNameInputField.onValueChanged.AddListener((content) =>

@@ -265,5 +265,11 @@ namespace StarSalvager
             DeloadAllBots();
             DeloadAllShapes();
         }
+
+        public void AddCategory(string categoryName)
+        {
+            if (!m_editorBotShapeGeneratorScripableObject.m_categories.Contains(categoryName))
+                m_editorBotShapeGeneratorScripableObject.m_categories.Add(categoryName);
+        }
     }
 }
