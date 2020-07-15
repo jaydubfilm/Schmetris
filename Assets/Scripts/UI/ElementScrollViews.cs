@@ -8,7 +8,11 @@ namespace StarSalvager.UI
     [System.Serializable]
     public class PartUIElementScrollView: UIElementContentScrollView<PartRemoteData>
     {}
-    
+
+    [System.Serializable]
+    public class CategoryElementScrollView : UIElementContentScrollView<string>
+    { }
+
     [System.Serializable]
     public class ResourceUIElementScrollView: UIElementContentScrollView<ResourceAmount>
     {}

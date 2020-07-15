@@ -3,9 +3,9 @@ using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
 
-namespace StarSalvager.Prototype
+namespace StarSalvager.UI
 {
-    public class ToggleUIElementExample : ToggleUIElement<string>
+    public class CategoryToggleUIElement : ToggleUIElement<string>
     {
         [SerializeField]
         private TMP_Text toggleTitle;
@@ -21,6 +21,16 @@ namespace StarSalvager.Prototype
                 OnToggleChanged?.Invoke(data, value);
             });
             
+        }
+
+        public void SetToggle(bool state)
+        {
+            Toggle.isOn = state;
+        }
+
+        public bool GetToggleValue()
+        {
+            return Toggle.isOn;
         }
     }
 }

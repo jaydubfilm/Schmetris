@@ -42,7 +42,7 @@ namespace StarSalvager
         public void Activate()
         {
             Camera.onPostRender += DrawGL;
-            GameTimer.SetPaused(true);
+            //GameTimer.SetPaused(true);
         }
 
         public void Reset()
@@ -152,6 +152,7 @@ namespace StarSalvager
                 CreateBot(false);
                 _scrapyardBots[0].InitBot(botData.BlockData.ImportBlockDatas(true));
                 m_botShapeEditorUI.SetPartsScrollActive(true);
+                m_botShapeEditorUI.SetCategoriesScrollActive(false);
                 return;
             }
 
@@ -161,6 +162,8 @@ namespace StarSalvager
                 List<Bit> bits = shapeData.BlockData.ImportBlockDatas(false).FindAll(o => o is Bit).OfType<Bit>().ToList();
                 CreateShape(bits);
                 m_botShapeEditorUI.SetPartsScrollActive(false);
+                m_botShapeEditorUI.SetCategoriesScrollActive(true);
+                m_botShapeEditorUI.UpdateCategories(shapeData);
                 return;
             }
         }
@@ -258,7 +261,7 @@ namespace StarSalvager
 
             foreach (Shape shape in _shapes)
             {
-                EditorShapeGeneratorData newData = new EditorShapeGeneratorData(inputName, shape.AttachedBits.GetBlockDatas(), new List<string>());
+                EditorShapeGeneratorData newData = new EditorShapeGeneratorData(inputName, shape.AttachedBits.GetBlockDatas(), m_botShapeEditorUI.GetCategories());
                 m_editorBotShapeGeneratorScripableObject.AddEditorShapeData(newData);
             }
 

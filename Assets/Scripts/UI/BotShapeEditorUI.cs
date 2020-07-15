@@ -25,6 +25,13 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
+        [SerializeField, Required, BoxGroup("Category UI")]
+        private GameObject CategoryWindow;
+        [SerializeField, BoxGroup("Category UI")]
+        private CategoryElementScrollView categoriesScrollView;
+
+        //============================================================================================================//
+
         [SerializeField, Required, BoxGroup("Load List UI")]
         private EditorBotShapeGeneratorScriptableObject _editorBotShapeGeneratorScriptable;
 
@@ -184,6 +191,7 @@ namespace StarSalvager.UI
             {
                 m_botShapeEditor.CreateBot(true);
                 SetPartsScrollActive(true);
+                SetCategoriesScrollActive(false);
                 m_currentlyOverwriting = false;
             });
 
@@ -191,6 +199,7 @@ namespace StarSalvager.UI
             {
                 m_botShapeEditor.CreateShape(null);
                 SetPartsScrollActive(false);
+                SetCategoriesScrollActive(true);
                 m_currentlyOverwriting = false;
             });
 
@@ -259,6 +268,7 @@ namespace StarSalvager.UI
             {
                 m_botShapeEditor.SaveBlockData(SaveNameInputField.text);
                 SetPartsScrollActive(false);
+                SetCategoriesScrollActive(false);
                 SaveMenu.SetActive(false);
                 m_currentlyOverwriting = false;
                 ScreenBlackImage.gameObject.SetActive(false);
@@ -280,6 +290,7 @@ namespace StarSalvager.UI
             {
                 m_botShapeEditor.SaveBlockData(m_currentSelected.Name);
                 SetPartsScrollActive(false);
+                SetCategoriesScrollActive(false);
                 SaveMenu.SetActive(false);
                 m_currentlyOverwriting = false;
                 ScreenBlackImage.gameObject.SetActive(false);
@@ -360,9 +371,18 @@ namespace StarSalvager.UI
                 element.Init(partRemoteData, PartPressed);
             }
 
+            //FIXME This needs to move to the Factory
+            foreach (var category in m_botShapeEditor.m_editorBotShapeGeneratorScripableObject.m_categories)
+            {
+
+                var element = categoriesScrollView.AddElement<CategoryToggleUIElement>(category, category);
+                element.Init(category, CategoryPressed);
+            }
+
             UpdateLoadListUiScrollViews();
 
             SetPartsScrollActive(false);
+            SetCategoriesScrollActive(false);
         }
 
         private void UpdateLoadListUiScrollViews()
@@ -400,6 +420,11 @@ namespace StarSalvager.UI
             partsScrollView.SetElementsActive(active);
         }
 
+        public void SetCategoriesScrollActive(bool active)
+        {
+            categoriesScrollView.SetElementsActive(active);
+        }
+
         public void SetBotsScrollActive(bool active)
         {
             botLoadListScrollView.SetElementsActive(active);
@@ -411,11 +436,34 @@ namespace StarSalvager.UI
             botLoadListScrollView.SetElementsActive(!active);
         }
 
+        public void UpdateCategories(EditorShapeGeneratorData shapeData)
+        {
+            foreach (var element in categoriesScrollView.Elements)
+            {
+                if (element is CategoryToggleUIElement toggle)
+                {
+                    toggle.SetToggle(shapeData.Categories.Contains(element.data));
+                }
+            }
+        }
+
+        public List<string> GetCategories()
+        {
+            List<string> categories = new List<string>();
+            foreach (var element in categoriesScrollView.Elements)
+            {
+                if (element is CategoryToggleUIElement toggle && toggle.GetToggleValue())
+                {
+                    categories.Add(toggle.data);
+                }
+            }
+            return categories;
+        }
+
         //============================================================================================================//
 
         private void PartPressed(PART_TYPE partType)
         {
-            Debug.Log($"Selected {partType}");
             m_botShapeEditor.selectedPartType = partType;
         }
 
@@ -424,6 +472,11 @@ namespace StarSalvager.UI
             m_currentSelected = botData;
             m_botShapeEditor.LoadBlockData(m_currentSelected.Name);
             LoadName.text = "Load " + botData.Name;
+        }
+
+        private void CategoryPressed(string categoryName, bool active)
+        {
+            
         }
     }
 }

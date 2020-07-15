@@ -13,15 +13,7 @@ MonoBehaviour:
   m_Name: Editor_Bot_Shape_Generator
   m_EditorClassIdentifier: 
   m_editorBotGeneratorData: []
-  m_editorShapeGeneratorData:
-  - m_name: zigzag
-    m_blockData: []
-    m_categories:
-    - category1
-  - m_name: block
-    m_blockData: []
-    m_categories:
-    - category2
+  m_editorShapeGeneratorData: []
   m_categories:
   - category1
   - category2
