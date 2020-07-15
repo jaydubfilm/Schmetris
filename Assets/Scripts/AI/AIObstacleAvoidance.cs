@@ -14,7 +14,6 @@ namespace StarSalvager.AI
     public class AIObstacleAvoidance : MonoBehaviour
     {
         //Temporary variables, simulating the movement speed of falling obstacles
-        private float m_timer = Constants.timeForAsteroidsToFall / 2;
         private Vector2 m_obstaclePositionAdjuster = new Vector2(0.0f, Constants.gridCellSize);
 
         void Start()
@@ -24,16 +23,7 @@ namespace StarSalvager.AI
 
         void Update()
         {
-            //Temporary code to simulate the speed of downward movement for obstacles and move the prefabs on screen downward
-            m_timer += Time.deltaTime;
-            if (m_timer >= Constants.timeForAsteroidsToFall)
-            {
-                m_timer -= Constants.timeForAsteroidsToFall;
-                //TODO: move these lines to a more appropriate location. Also, ensure that this order of operations stays the same, it is important.
-                LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid();
-                LevelManager.Instance.ObstacleManager.SpawnNewRowOfObstacles();
-                LevelManager.Instance.ObstacleManager.TryMarkNewShapesOnGrid();
-            }
+
         }
 
         //Check all nearby squares to the agent to see if any contain an obstacle. For any obstacles in those squares, add the force they apply on the agent.
@@ -80,7 +70,7 @@ namespace StarSalvager.AI
         //infering where it is in relation to that based on the timer and the obstacles movement speed
         private Vector2 CalculateObstaclePositionChange(int x, int y)
         {
-            return LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * ((m_timer / Constants.timeForAsteroidsToFall) - 0.5f);
+            return LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * ((Globals.AsteroidFallTimer / Constants.timeForAsteroidsToFall) - 0.5f);
         }
     }
 }

@@ -48,6 +48,16 @@ namespace StarSalvager
             if (isPaused)
                 return;
 
+            //Simulate the speed of downward movement for obstacles and move the prefabs on screen downward
+            Globals.AsteroidFallTimer += Time.deltaTime;
+            if (Globals.AsteroidFallTimer >= Constants.timeForAsteroidsToFall)
+            {
+                Globals.AsteroidFallTimer -= Constants.timeForAsteroidsToFall;
+                LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid();
+                SpawnNewRowOfObstacles();
+                TryMarkNewShapesOnGrid();
+            }
+
             if (m_blendTimer < m_currentStageData.StageBlendPeriod)
             {
                 m_blendTimer += Time.deltaTime;
@@ -150,13 +160,6 @@ namespace StarSalvager
                     m_obstacles.RemoveAt(i);
                     continue;
                 }
-
-                //TODO: These lines may be necessary, may not be. 
-                /*if (obstacle is IRecycled recycled && recycled.IsRecycled)
-                {
-                    m_obstacles.RemoveAt(i);
-                    continue;
-                }*/
 
                 if (!obstacle.CanMove)
                 {

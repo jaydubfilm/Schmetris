@@ -106,6 +106,33 @@ namespace StarSalvager
                     }
                 }
 
+                /*m_enemies[i].transform.position -= gridMovement;
+
+                Vector3 destination = m_enemies[i].GetDestination();
+                Vector2 sumDirection = Vector2.zero;
+                Vector2 sumForces = Vector2.zero;
+                foreach (Vector3 position in m_enemies[i].GetPositions())
+                {
+                    Vector2 direction = new Vector2(destination.x - position.x, destination.y - position.y);
+                    direction.Normalize();
+                    sumDirection += direction;
+                    Vector2 force = LevelManager.Instance.AIObstacleAvoidance.CalculateForceAtPoint(position);
+                    force.Normalize();
+                    sumForces += force;
+
+                    Vector2 direction = new Vector2(destination.x - position.x, destination.y - position.y);
+                    direction.Normalize();
+                    direction += LevelManager.Instance.AIObstacleAvoidance.CalculateForceAtPoint(position);
+                    direction.Normalize();
+                    sumDirection += direction;
+                }
+                sumDirection.Normalize();
+                sumForces.Normalize();
+                Vector2 sumDirectionForces = sumDirection + sumForces;
+                sumDirectionForces.Normalize();
+
+                m_enemies[i].ProcessMovement(sumDirectionForces);*/
+
                 Vector3 position = m_enemies[i].transform.position;
                 Vector3 destination = m_enemies[i].GetDestination();
 

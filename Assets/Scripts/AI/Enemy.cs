@@ -50,12 +50,6 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
-        public void ProcessMovement(Vector3 direction)
-        {
-            m_mostRecentMovementDirection = direction;
-            transform.position += direction * (m_enemyData.MovementSpeed * Time.deltaTime);
-        }
-
         //============================================================================================================//
         
         #region Firing
@@ -260,11 +254,24 @@ namespace StarSalvager.AI
             direction = Quaternion.Euler(angles) * direction;
             return (direction + pivot);
         }
-        
+
+        public void ProcessMovement(Vector3 direction)
+        {
+            m_mostRecentMovementDirection = direction;
+            transform.position += direction * (m_enemyData.MovementSpeed * Time.deltaTime);
+        }
+
+        public List<Vector3> GetPositions()
+        {
+            List<Vector3> positions = new List<Vector3>();
+            positions.Add(transform.position);
+            return positions;
+        }
+
         #endregion
 
         //============================================================================================================//
-        
+
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
 
