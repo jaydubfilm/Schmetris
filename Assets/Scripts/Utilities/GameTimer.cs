@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEditor;
@@ -12,6 +13,8 @@ namespace StarSalvager.Utilities
         private static bool m_paused = false;
 
         private static List<IPausable> m_IPausables = new List<IPausable>();
+
+        private static DateTime startingTime = System.DateTime.Now;
 
         public static void SetPaused(bool value)
         {
@@ -38,6 +41,16 @@ namespace StarSalvager.Utilities
         public static void RemovePausable(IPausable pausable)
         {
             m_IPausables.Remove(pausable);
+        }
+
+        public static void OnApplicationQuit()
+        {
+            DateTime currentTime = System.DateTime.Now;
+            TimeSpan timePlayed = currentTime - startingTime;
+
+            Dictionary<string, object> applicationQuitAnalyticsDictionary = new Dictionary<string, object>();
+            applicationQuitAnalyticsDictionary.Add("Total Playtime", timePlayed.TotalSeconds);
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ApplicationQuit, eventDataDictionary: applicationQuitAnalyticsDictionary);
         }
     }
 }

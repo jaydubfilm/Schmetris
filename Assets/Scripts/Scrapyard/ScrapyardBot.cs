@@ -262,6 +262,66 @@ namespace StarSalvager
 
         //============================================================================================================//
 
+        #region Check for New Disconnects
+
+        /// <summary>
+        /// Function will review and detach any blocks that no longer have a connection to the core.
+        /// </summary>
+        /*public bool CheckHasDisconnects()
+        {
+            var toSolve = new List<IAttachable>(attachedBlocks);
+
+            foreach (var attachableBase in toSolve)
+            {
+                if (!attachedBlocks.Contains(attachableBase))
+                    continue;
+
+                var hasPathToCore = attachedBlocks.HasPathToCore(attachableBase);
+
+                if (hasPathToCore)
+                    continue;
+
+                return true;
+            }
+
+            return false;
+        }*/
+
+        /// <summary>
+        /// Function will review and detach any blocks that no longer have a connection to the core.
+        /// </summary>
+        /*public void CheckForDisconnects()
+        {
+            var toSolve = new List<IAttachable>(attachedBlocks);
+
+            foreach (var attachableBase in toSolve)
+            {
+                if (!attachedBlocks.Contains(attachableBase))
+                    continue;
+
+                var hasPathToCore = attachedBlocks.HasPathToCore(attachableBase);
+
+                if (hasPathToCore)
+                    continue;
+
+                var attachedBits = new List<IAttachable>();
+                attachedBlocks.GetAllAttachedBits(attachableBase, null, ref attachedBits);
+
+                if (attachedBits.Count == 1)
+                {
+                    DetachBit(attachedBits[0]);
+                    continue;
+                }
+
+
+                DetachBits(attachedBits);
+            }
+        }*/
+
+        #endregion //Check for New Disconnects
+
+        //============================================================================================================//
+
         #region Parts
 
         [SerializeField, BoxGroup("Bot Part Data"), ReadOnly]

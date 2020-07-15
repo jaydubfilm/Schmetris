@@ -2,6 +2,9 @@
 
 namespace StarSalvager.AI
 {
+    /// <summary>
+    /// If the asteroid sizes are edited, don't forget to update ObstacleManager, StageObstacleData, and EditorShapeGeneratorData
+    /// </summary>
     [Serializable]
     public enum ASTEROID_SIZE : int
     {
