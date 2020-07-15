@@ -65,7 +65,7 @@ namespace StarSalvager.Utilities.Backgrounds
                 return;
             }
             
-            planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+            planes = GeometryUtility.CalculateFrustumPlanes(cameraTransform.GetComponent<Camera>());
 
         }
 
