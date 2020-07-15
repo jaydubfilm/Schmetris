@@ -15,6 +15,8 @@ namespace StarSalvager.Values
         public const float botHorizontalSpeed = 30.0f;
         public const int initialColumnsOnScreen = 31;
 
+        
+
         public static float GridWidthRelativeToScreen => gridWidthRelativeToScreen;
         public static float GridHeightRelativeToScreen => gridHeightRelativeToScreen;
     }

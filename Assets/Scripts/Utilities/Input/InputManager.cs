@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
@@ -54,7 +55,7 @@ namespace StarSalvager.Utilities.Inputs
         private CameraController _cameraController;
         
         
-        [SerializeField, BoxGroup("DAS")]
+        [SerializeField, BoxGroup("DAS"), DisableInPlayMode]
         private float DASTime = 0.15f;
         [SerializeField, BoxGroup("DAS"), ReadOnly]
         private float dasTimer;
@@ -69,6 +70,8 @@ namespace StarSalvager.Utilities.Inputs
 
         private void Start()
         {
+            Globals.DASTime = DASTime;
+
             Globals.OrientationChange += SetOrientation;
             GameTimer.AddPausable(this);
         }
@@ -93,6 +96,20 @@ namespace StarSalvager.Utilities.Inputs
 
 
         //============================================================================================================//
+
+        private static List<IMoveOnInput> moveOnInput;
+        
+        public static void RegisterMoveOnInput(IMoveOnInput toAdd)
+        {
+            if(moveOnInput == null)
+                moveOnInput = new List<IMoveOnInput>();
+            
+            moveOnInput.Add(toAdd);
+        }
+            
+        
+        //============================================================================================================//
+
 
         public void InitInput()
         {
@@ -255,14 +272,26 @@ namespace StarSalvager.Utilities.Inputs
         /// <param name="value"></param>
         private void Move(float value)
         {
-            if (obstacleManager != null)
-                obstacleManager.Move(value);
-            if (enemyManager != null)
-                enemyManager.Move(value);
-            if (cameraController != null)
-                cameraController.Move(value);
-            if (LevelManager.Instance != null)
-                LevelManager.Instance.ProjectileManager.Move(value);
+            for (var i = moveOnInput.Count - 1; i >= 0; i--)
+            {
+                var move = moveOnInput[i];
+                //Automatically unregister things that may have been deleted
+                if (move == null)
+                {
+                    moveOnInput.RemoveAt(i);
+                    continue;
+                }
+                
+                move.Move(value);
+            }
+            //if (obstacleManager != null)
+            //    obstacleManager.Move(value);
+            //if (enemyManager != null)
+            //    enemyManager.Move(value);
+            //if (cameraController != null)
+            //    cameraController.Move(value);
+            //if (LevelManager.Instance != null)
+            //    LevelManager.Instance.ProjectileManager.Move(value);
         }
 
         /*private void SideMovement(float move)

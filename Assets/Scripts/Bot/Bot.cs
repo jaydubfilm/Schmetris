@@ -58,8 +58,8 @@ namespace StarSalvager
         public bool Destroyed => _isDestroyed;
         private bool _isDestroyed;
         
-        public bool Moving => _moving;
-        private bool _moving;
+       //public bool Moving => _moving;
+        //private bool _moving;
 
         //public DIRECTION MoveDirection => Globals.MovingDirection;
 
@@ -137,7 +137,7 @@ namespace StarSalvager
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Time.timeScale = Time.timeScale == 0.001f ? 1f : 0.001f;
+                Time.timeScale = Time.timeScale == 0.01f ? 1f : 0.01f;
             }
             
             PartsUpdateLoop();

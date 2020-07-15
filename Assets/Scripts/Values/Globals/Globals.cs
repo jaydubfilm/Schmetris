@@ -14,6 +14,8 @@ namespace StarSalvager.Values
         public static int CurrentSector = 0;
         public static int MaxSector = 0;
         public static Action<ORIENTATION> OrientationChange;
+        
+        public static float DASTime = 0.15f;
 
         private static string[] myValues = { "one", "two", "three" };
 

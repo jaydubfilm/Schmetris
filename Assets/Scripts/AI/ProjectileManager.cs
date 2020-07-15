@@ -4,8 +4,10 @@ using Recycling;
 using UnityEngine;
 using StarSalvager.Values;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Inputs;
+using Input = UnityEngine.Input;
 
-public class ProjectileManager : IReset
+public class ProjectileManager : IReset, IMoveOnInput
 {
     private List<Projectile> m_projectiles;
 
@@ -22,6 +24,7 @@ public class ProjectileManager : IReset
     public ProjectileManager()
     {
         m_projectiles = new List<Projectile>();
+        RegisterMoveOnInput();
     }
     
     //IReset Functions
@@ -82,6 +85,14 @@ public class ProjectileManager : IReset
         m_projectiles.Add(newProjectile);
     }
 
+    //IMoveOnInput functions
+    //================================================================================================================//
+    
+    public void RegisterMoveOnInput()
+    {
+        InputManager.RegisterMoveOnInput(this);
+    }
+
     public void Move(float direction)
     {
         if (Input.GetKey(KeyCode.LeftAlt))
@@ -96,6 +107,8 @@ public class ProjectileManager : IReset
 
         _moving = true;
     }
+    
+    //================================================================================================================//
 
     private void CleanProjectiles(float maxY)
     {

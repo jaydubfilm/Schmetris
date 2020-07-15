@@ -7,10 +7,11 @@ using StarSalvager.AI;
 using UnityEngine.UIElements;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Inputs;
 
 namespace StarSalvager
 {
-    public class ObstacleManager : MonoBehaviour, IReset, IPausable
+    public class ObstacleManager : MonoBehaviour, IReset, IPausable, IMoveOnInput
     {
         private List<IObstacle> m_obstacles;
         private List<Shape> m_notFullyInGridShapes;
@@ -29,18 +30,20 @@ namespace StarSalvager
         public bool isPaused => GameTimer.IsPaused;
 
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             m_obstacles = new List<IObstacle>();
             m_notFullyInGridShapes = new List<Shape>();
             GameTimer.AddPausable(this);
 
             SetupStage(0);
+
+            RegisterMoveOnInput();
         }
 
 
         // Update is called once per frame
-        void Update()
+        private void Update()
         {
             if (isPaused)
                 return;
@@ -249,6 +252,14 @@ namespace StarSalvager
             }
         }
 
+        //IMoveOnInput functions
+        //================================================================================================================//
+        
+        public void RegisterMoveOnInput()
+        {
+            InputManager.RegisterMoveOnInput(this);
+        }
+
         public void Move(float direction)
         {
             if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
@@ -261,6 +272,8 @@ namespace StarSalvager
 
             m_distanceHorizontal += direction * Constants.gridCellSize;
         }
+        
+        //================================================================================================================//
 
         public void SpawnNewRowOfObstacles()
         {

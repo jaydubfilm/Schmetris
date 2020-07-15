@@ -46,8 +46,6 @@ namespace StarSalvager.Prototype
 
 
         
-        private BackgroundMover _backgroundMover;
-
         //================================================================================================================//
 
         private void Start()
@@ -63,8 +61,6 @@ namespace StarSalvager.Prototype
 
             activeShapes = new List<Shape>();
             //CreateShape();
-
-            _backgroundMover = FindObjectOfType<BackgroundMover>();
         }
 
         private void Update()
