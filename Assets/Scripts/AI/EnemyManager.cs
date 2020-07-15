@@ -6,10 +6,11 @@ using StarSalvager.Factories;
 using StarSalvager.AI;
 using System.Linq;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Inputs;
 
 namespace StarSalvager
 {
-    public class EnemyManager : MonoBehaviour, IReset, IPausable
+    public class EnemyManager : MonoBehaviour, IReset, IPausable, IMoveOnInput
     {
         private List<Enemy> m_enemies;
 
@@ -27,17 +28,21 @@ namespace StarSalvager
 
         public bool isPaused => GameTimer.IsPaused;
 
+        //============================================================================================================//
+        
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             m_enemies = new List<Enemy>();
             m_enemiesToSpawn = new List<ENEMY_TYPE>();
             m_timesToSpawn = new List<float>();
             GameTimer.AddPausable(this);
+
+            RegisterMoveOnInput();
         }
 
         // Update is called once per frame
-        void Update()
+        private void Update()
         {
             if (isPaused)
                 return;
@@ -50,6 +55,8 @@ namespace StarSalvager
 
             HandleEnemyMovement();
         }
+        
+        //============================================================================================================//
 
         public void Activate()
         {
@@ -65,6 +72,8 @@ namespace StarSalvager
                 m_enemies.RemoveAt(i);
             }
         }
+        
+        //============================================================================================================//
 
         private void HandleEnemyMovement()
         {
@@ -186,6 +195,14 @@ namespace StarSalvager
         public bool HasEnemiesRemaining()
         {
             return m_enemies.Count != 0;
+        }
+
+        //IMoveOnInput
+        //============================================================================================================//
+        
+        public void RegisterMoveOnInput()
+        {
+            InputManager.RegisterMoveOnInput(this);
         }
 
         public void Move(float direction)

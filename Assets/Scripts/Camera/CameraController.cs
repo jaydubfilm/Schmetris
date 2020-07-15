@@ -2,12 +2,13 @@
 using StarSalvager.Values;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras.Data;
+using StarSalvager.Utilities.Inputs;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace StarSalvager.Cameras
 {
-    public class CameraController : MonoBehaviour
+    public class CameraController : MonoBehaviour, IMoveOnInput
     {
         //============================================================================================================//
 
@@ -54,6 +55,7 @@ namespace StarSalvager.Cameras
         private void Start()
         {
             Globals.OrientationChange += SetOrientation;
+            RegisterMoveOnInput();
         }
 
         private void OnEnable()
@@ -135,7 +137,13 @@ namespace StarSalvager.Cameras
         #endif
         
 
-        //============================================================================================================//
+        //IMoveOnInput functions
+        //================================================================================================================//
+
+        public void RegisterMoveOnInput()
+        {
+            InputManager.RegisterMoveOnInput(this);
+        }
 
         public void Move(float direction)
         {

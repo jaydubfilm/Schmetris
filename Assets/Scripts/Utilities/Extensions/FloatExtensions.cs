@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,6 +25,32 @@ namespace StarSalvager.Utilities.Extensions
                 return DIRECTION.UP;
 
             return DIRECTION.NULL;
+        }
+        
+        public static float GetHorizontalDirectionFloat(this DIRECTION value)
+        {
+            switch (value)
+            {
+                case DIRECTION.LEFT:
+                    return -1f;
+                case DIRECTION.RIGHT:
+                    return 1f;
+                default:
+                    return 0f;
+            }
+        }
+        
+        public static float GetVerticalDirectionFloat(this DIRECTION value)
+        {
+            switch (value)
+            {
+                case DIRECTION.UP:
+                    return 1f;
+                case DIRECTION.DOWN:
+                    return -1f;
+                default:
+                    return 0f;
+            }
         }
     }
 }
