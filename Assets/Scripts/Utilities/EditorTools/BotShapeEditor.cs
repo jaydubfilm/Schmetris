@@ -258,7 +258,7 @@ namespace StarSalvager
 
             foreach (Shape shape in _shapes)
             {
-                EditorShapeGeneratorData newData = new EditorShapeGeneratorData(inputName, shape.AttachedBits.GetBlockDatas());
+                EditorShapeGeneratorData newData = new EditorShapeGeneratorData(inputName, shape.AttachedBits.GetBlockDatas(), new List<string>());
                 m_editorBotShapeGeneratorScripableObject.AddEditorShapeData(newData);
             }
 

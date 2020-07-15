@@ -10,6 +10,7 @@ namespace StarSalvager.ScriptableObjects
     {
         public List<EditorBotGeneratorData> m_editorBotGeneratorData = new List<EditorBotGeneratorData>();
         public List<EditorShapeGeneratorData> m_editorShapeGeneratorData = new List<EditorShapeGeneratorData>();
+        public List<string> m_categories = new List<string>();
 
         public EditorBotGeneratorData GetEditorBotData(string name)
         {

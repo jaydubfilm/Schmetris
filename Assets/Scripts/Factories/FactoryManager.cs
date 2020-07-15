@@ -19,6 +19,7 @@ namespace StarSalvager.Factories
 
         [SerializeField, Required, BoxGroup("Attachables/Bits")]
         private EditorBotShapeGeneratorScriptableObject editorBotShapeData;
+        public EditorBotShapeGeneratorScriptableObject EditorBotShapeData => editorBotShapeData;
 
         [SerializeField, Required, BoxGroup("Attachables/Parts")] 
         private AttachableProfileScriptableObject partProfile;

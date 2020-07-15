@@ -1,16 +1,23 @@
-﻿using StarSalvager.AI;
+﻿using Sirenix.OdinInspector;
+using StarSalvager.AI;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace StarSalvager.Factories.Data
 {
     [System.Serializable]
     public class EditorShapeGeneratorData : EditorGeneratorDataBase
     {
-        public EditorShapeGeneratorData(string name, List<BlockData> blockData) : base(name, blockData)
+        [SerializeField, BoxGroup("Name")]
+        private List<string> m_categories;
+        public List<string> Categories => m_categories;
+        
+        public EditorShapeGeneratorData(string name, List<BlockData> blockData, List<string> categories) : base(name, blockData)
         {
-
+            m_categories = categories;
         }
+
 
         public ASTEROID_SIZE AsteroidSize()
         {

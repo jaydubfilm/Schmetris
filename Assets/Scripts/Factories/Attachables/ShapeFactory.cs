@@ -12,6 +12,7 @@ namespace StarSalvager.Factories
         private readonly GameObject prefab;
 
         private List<EditorShapeGeneratorData> customShapeData;
+        private Dictionary<string, List<EditorShapeGeneratorData>> customShapeCategoryData;
         
         //============================================================================================================//
 
@@ -19,6 +20,7 @@ namespace StarSalvager.Factories
         {
             this.prefab = prefab;
             this.customShapeData = customShapeData;
+            customShapeCategoryData = new Dictionary<string, List<EditorShapeGeneratorData>>();
         }
         
         //============================================================================================================//
@@ -103,6 +105,41 @@ namespace StarSalvager.Factories
             return shape.GetComponent<T>();
         }
 
+        public T CreateObject<T>(SELECTION_TYPE selectionType, BIT_TYPE bitType, string category)
+        {
+            EditorShapeGeneratorData shapeData = GetRandomInCategory(category);
+            int totalBits = shapeData.BlockData.Count;
+
+            BIT_TYPE type;
+            if (selectionType == SELECTION_TYPE.RANDOMSINGLE || selectionType == SELECTION_TYPE.RANDOMVARIED)
+            {
+                type = (BIT_TYPE)Random.Range(0, 6);
+            }
+            else
+            {
+                type = bitType;
+            }
+
+            var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
+
+            var shape = CreateObject<Shape>();
+            for (var i = 0; i < totalBits; i++)
+            {
+                var bit = bitFactory.CreateObject<Bit>(type);
+                shape.PushNewBit(bit, shapeData.BlockData[i].Coordinate);
+
+                if (selectionType == SELECTION_TYPE.RANDOMVARIED && type != BIT_TYPE.BLACK)
+                {
+                    type = (BIT_TYPE)Random.Range(1, 6);
+                }
+            }
+
+            if (LevelManager.Instance != null)
+                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
+
+            return shape.GetComponent<T>();
+        }
+
         public T CreateObject<T>(List<Bit> bits)
         {
             var shape = CreateObject<Shape>();
@@ -145,8 +182,27 @@ namespace StarSalvager.Factories
 
             return shape.gameObject;
         }
-        
+
         //============================================================================================================//
+
+        private List<EditorShapeGeneratorData> GetCategoryData(string category)
+        {
+            if (!customShapeCategoryData.ContainsKey(category))
+                UpdateCatgeoryData(category);
+
+            return customShapeCategoryData[category];
+        }
+
+        private EditorShapeGeneratorData GetRandomInCategory(string category)
+        {
+            List<EditorShapeGeneratorData> categoryData = GetCategoryData(category);
+            return categoryData[Random.Range(0, categoryData.Count)];
+        }
+
+        private void UpdateCatgeoryData(string category)
+        {
+            customShapeCategoryData.Add(category, customShapeData.FindAll(s => s.Categories.Contains(category)));
+        }
     }
 }
 
