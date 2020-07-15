@@ -32,6 +32,11 @@ MonoBehaviour:
       - type: 5
         amount: 200
     data: 0a00000014000000
+    burnRates:
+    - type: 4
+      amount: 5
+    - type: 4
+      amount: 10
   - name: Magnet
     partType: 1
     health:
@@ -49,6 +54,7 @@ MonoBehaviour:
       - type: 5
         amount: 500
     data: 050000000a000000
+    burnRates: []
   - name: Repairer
     partType: 2
     health:
@@ -66,6 +72,11 @@ MonoBehaviour:
       - type: 2
         amount: 500
     data: 050000000a000000
+    burnRates:
+    - type: 2
+      amount: 10
+    - type: 2
+      amount: 10
   - name: Armor
     partType: 3
     health:
@@ -79,6 +90,7 @@ MonoBehaviour:
       - type: 3
         amount: 500
     data: 
+    burnRates: []
   - name: Gun
     partType: 4
     health:
@@ -96,3 +108,8 @@ MonoBehaviour:
       - type: 1
         amount: 500
     data: 050000000a000000
+    burnRates:
+    - type: 3
+      amount: 10
+    - type: 3
+      amount: 10

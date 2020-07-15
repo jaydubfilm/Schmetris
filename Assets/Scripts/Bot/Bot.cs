@@ -84,6 +84,8 @@ namespace StarSalvager
         [SerializeField, BoxGroup("Magnets")]
         private MAGNET currentMagnet = MAGNET.DEFAULT;
         
+        [SerializeField, BoxGroup("BurnRates")]
+        private bool useBurnRate = true;
         
         //============================================================================================================//
 
@@ -1057,10 +1059,24 @@ namespace StarSalvager
             //Be careful to not use return here
             foreach (var part in _parts)
             {
-                PartRemoteData partRemoteData;
+                PartRemoteData partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
+                Bit targetBit = null;
+
+                if(partRemoteData.burnRates.Length > 0)
+                    targetBit = attachedBlocks.OfType<Bit>()
+                        .FirstOrDefault(b => b.Type == partRemoteData.burnRates[part.level].type);
+                
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
+
+                        //TODO This needs to lock the core from being able to move if none is found
+                        if (targetBit)
+                        {
+                            //Reduce the health of the bit while we're using it up for fuel
+                            targetBit.ChangeHealth(-partRemoteData.burnRates[part.level].amount * Time.deltaTime);
+                        }
+                        
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
                         {
@@ -1091,6 +1107,9 @@ namespace StarSalvager
                         
                         break;
                     case PART_TYPE.REPAIR:
+
+                        if (!targetBit)
+                            break;
                         //TODO Determine if this heals Bits & parts or just parts
                         //TODO This needs to fire every x Seconds
                         var toRepair = attachedBlocks.GetAttachablesAroundInRadius<Part>(part, part.level + 1)
@@ -1098,8 +1117,9 @@ namespace StarSalvager
 
                         if (toRepair is null) break;
                         
-                        partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.REPAIR);
-
+                        //Reduce the health of the bit while we're using it up for fuel
+                        targetBit.ChangeHealth(-partRemoteData.burnRates[part.level].amount * Time.deltaTime);
+                        
                         //Increase the health of this part depending on the current level of the repairer
                         toRepair.ChangeHealth(partRemoteData.data[part.level] * Time.deltaTime);
                         
@@ -1107,8 +1127,6 @@ namespace StarSalvager
                     case PART_TYPE.GUN:
                         //TODO Need to determine if the shoot type is looking for enemies or not
                         //--------------------------------------------------------------------------------------------//
-                        partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.GUN);
-                        
                         if (projectileTimers == null)
                             projectileTimers = new Dictionary<Part, float>();
                         
@@ -1123,6 +1141,16 @@ namespace StarSalvager
                             projectileTimers[part] += Time.deltaTime;
                             break;
                         }
+                        projectileTimers[part] = 0f;
+
+                        //If we have the resources to shoot do so, otherwise break out 
+                        if (targetBit)
+                        {
+                            //Reduce the health of the bit while we're using it up for resources
+                            targetBit.ChangeHealth(-partRemoteData.burnRates[part.level].amount);
+                        }
+                        else 
+                            break;
                         
                         //--------------------------------------------------------------------------------------------//
                         
@@ -1137,7 +1165,7 @@ namespace StarSalvager
                         //Create projectile
                         //--------------------------------------------------------------------------------------------//
                         
-                        projectileTimers[part] = 0f;
+                        
                         var projectile = FactoryManager.Instance.GetFactory<ProjectileFactory>().CreateObject<Projectile>(
                             PROJECTILE_TYPE.Projectile1,
                             shootDirection,
