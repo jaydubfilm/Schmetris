@@ -69,11 +69,12 @@ GameObject:
   m_Component:
   - component: {fileID: 2452739958298954362}
   - component: {fileID: 5322319599657106578}
+  - component: {fileID: 6558702966922168862}
   - component: {fileID: 6301237469480714127}
   - component: {fileID: 9066962754306243270}
   - component: {fileID: 3464183685500274947}
   m_Layer: 5
-  m_Name: ToggleElementExamplePrefab
+  m_Name: ToggleElementPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -107,6 +108,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 972710273508145915}
   m_CullTransparentMesh: 0
+--- !u!114 &6558702966922168862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 972710273508145915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea3626fb01d751341b562a9bd15c00da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toggleTitle: {fileID: 582220198011416548}
 --- !u!114 &6301237469480714127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,7 +167,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!114 &9066962754306243270
 MonoBehaviour:
   m_ObjectHideFlags: 0
