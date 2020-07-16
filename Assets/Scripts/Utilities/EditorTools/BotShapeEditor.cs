@@ -12,10 +12,12 @@ using StarSalvager.Utilities.Inputs;
 using StarSalvager.ScriptableObjects;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.JsonDataTypes;
+using UnityEngine.InputSystem;
+using Input = StarSalvager.Utilities.Inputs.Input;
 
 namespace StarSalvager
 {
-    public class BotShapeEditor : AttachableEditorToolBase, IReset
+    public class BotShapeEditor : AttachableEditorToolBase, IReset, IInput
     {
         [SerializeField, Required]
         public EditorBotShapeGeneratorScriptableObject m_editorBotShapeGeneratorScripableObject;
@@ -25,19 +27,46 @@ namespace StarSalvager
         [SerializeField]
         private BotShapeEditorUI m_botShapeEditorUI;
 
+        //============================================================================================================//
+        
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             _scrapyardBots = new List<ScrapyardBot>();
             _shapes = new List<Shape>();
-            InputManager.Instance.InitInput();
             Activate();
+
+            InitInput();
         }
 
         private void OnDestroy()
         {
             Camera.onPostRender -= DrawGL;
+
+            DeInitInput();
         }
+        
+        //============================================================================================================//
+        
+        public void InitInput()
+        {
+            Input.Actions.Default.LeftClick.Enable();
+            Input.Actions.Default.LeftClick.performed += OnLeftMouseButtonDown;
+            
+            Input.Actions.Default.RightClick.Enable();
+            Input.Actions.Default.RightClick.performed += OnRightMouseButtonDown;
+        }
+
+        public void DeInitInput()
+        {
+            Input.Actions.Default.LeftClick.Disable();
+            Input.Actions.Default.LeftClick.performed -= OnLeftMouseButtonDown;
+            
+            Input.Actions.Default.RightClick.Disable();
+            Input.Actions.Default.RightClick.performed -= OnRightMouseButtonDown;
+        }
+        
+        //============================================================================================================//
 
         public void Activate()
         {
@@ -58,22 +87,27 @@ namespace StarSalvager
                 scrapBot.Rotate(direction);
             }
         }
+        
+        //============================================================================================================//
 
         //On left mouse button click, check if there is a bit/part at the mouse location. If there is not, purchase the selected part type and place it at this location.
-        public void OnLeftMouseButtonDown()
+        private void OnLeftMouseButtonDown(InputAction.CallbackContext ctx)
         {
             if (m_botShapeEditorUI.IsPopupActive)
                 return;
+            
+            if (ctx.ReadValue<float>() == 1f)
+                return;
 
-            Vector2Int mouseCoordinate = getMouseCoordinate();
-
-            if (Mathf.Abs(mouseCoordinate.x) > 3 || Mathf.Abs(mouseCoordinate.y) > 3)
+            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
 
             foreach (Shape shape in _shapes)
             {
-                if (!shape.AttachedBits.Any(b => b.Coordinate == mouseCoordinate))
-                    shape.PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(), mouseCoordinate);
+                if (shape.AttachedBits.Any(b => b.Coordinate == mouseCoordinate))
+                    continue;
+                
+                shape.PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(), mouseCoordinate);
             }
 
             if (selectedPartType == null)
@@ -92,22 +126,25 @@ namespace StarSalvager
         }
 
         //On right mouse button click, check for a bit/part at the clicked location. If one is there, sell it.
-        public void OnRightMouseButtonDown()
+        private void OnRightMouseButtonDown(InputAction.CallbackContext ctx)
         {
             if (m_botShapeEditorUI.IsPopupActive)
                 return;
             
-            Vector2Int mouseCoordinate = getMouseCoordinate();
-
-            if (Mathf.Abs(mouseCoordinate.x) > 3 || Mathf.Abs(mouseCoordinate.y) > 3)
+            if (ctx.ReadValue<float>() == 0f)
+                return;
+            
+            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
 
             if (mouseCoordinate.x == 0 && mouseCoordinate.y == 0)
-
-            foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
-                scrapBot.TryRemoveAttachableAt(mouseCoordinate, false);
+                foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                {
+                    scrapBot.TryRemoveAttachableAt(mouseCoordinate, false);
+                } 
             }
+                
 
             foreach (Shape shape in _shapes)
             {
@@ -115,6 +152,9 @@ namespace StarSalvager
             }
         }
 
+        //============================================================================================================//
+
+        
         public void CreateBot(bool initBot)
         {
             DeloadAllBots();

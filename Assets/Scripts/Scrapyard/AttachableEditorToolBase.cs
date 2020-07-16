@@ -8,6 +8,8 @@ namespace StarSalvager
 {
     public class AttachableEditorToolBase : MonoBehaviour
     {
+        private const int MAX_DISTANCE = 3;
+        
         public Material material;
         protected List<ScrapyardBot> _scrapyardBots;
 
@@ -52,28 +54,37 @@ namespace StarSalvager
         }
 
         //Get current mouse coordinate on the scrapyard grid.
-        protected Vector2Int getMouseCoordinate()
+        protected static bool TryGetMouseCoordinate(out Vector2Int mouseCoordinate)
         {
-            Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
-            if (worldMousePosition.x > 0)
-            {
-                worldMousePosition.x += Constants.gridCellSize / 2;
-            }
-            else if (worldMousePosition.x < 0)
-            {
-                worldMousePosition.x -= Constants.gridCellSize / 2;
-            }
-            if (worldMousePosition.y > 0)
-            {
-                worldMousePosition.y += Constants.gridCellSize / 2;
-            }
-            else if (worldMousePosition.y < 0)
-            {
-                worldMousePosition.y -= Constants.gridCellSize / 2;
-            }
+            mouseCoordinate = Vector2Int.zero;
+            Vector2 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            //if (worldMousePosition.x > 0)
+            //{
+            //    worldMousePosition.x += Constants.gridCellSize / 2;
+            //}
+            //else if (worldMousePosition.x < 0)
+            //{
+            //    worldMousePosition.x -= Constants.gridCellSize / 2;
+            //}
+            //if (worldMousePosition.y > 0)
+            //{
+            //    worldMousePosition.y += Constants.gridCellSize / 2;
+            //}
+            //else if (worldMousePosition.y < 0)
+            //{
+            //    worldMousePosition.y -= Constants.gridCellSize / 2;
+            //}
 
-            Vector2Int mouseCoordinate = new Vector2Int((int)(worldMousePosition.x / Constants.gridCellSize), (int)(worldMousePosition.y / Constants.gridCellSize));
-            return mouseCoordinate;
+            var tempMouseCoord = new Vector2Int(
+                Mathf.RoundToInt(worldMousePosition.x / Constants.gridCellSize),
+                Mathf.RoundToInt(worldMousePosition.y / Constants.gridCellSize));
+            
+            if (Mathf.Abs(tempMouseCoord.x) > MAX_DISTANCE || Mathf.Abs(tempMouseCoord.y) > MAX_DISTANCE)
+                return false;
+
+            mouseCoordinate = tempMouseCoord;
+            
+            return true;
         }
     }
 }

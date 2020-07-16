@@ -143,13 +143,13 @@ namespace StarSalvager
             m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             BotGameObject.transform.position = new Vector2(0, 0);
-            if (PlayerPersistentData.GetPlayerData().GetCurrentBlockData().Count == 0)
+            if (PlayerPersistentData.PlayerData.GetCurrentBlockData().Count == 0)
             {
                 BotGameObject.InitBot();
             }
             else
             {
-                BotGameObject.InitBot(PlayerPersistentData.GetPlayerData().GetCurrentBlockData().ImportBlockDatas(false));
+                BotGameObject.InitBot(PlayerPersistentData.PlayerData.GetCurrentBlockData().ImportBlockDatas(false));
             }
             Bot.OnBotDied += (deadBot, deathMethod) =>
             {
@@ -235,7 +235,7 @@ namespace StarSalvager
         {
             foreach (Bot bot in m_bots)
             {
-                PlayerPersistentData.GetPlayerData().SetCurrentBlockData(bot.GetBlockDatas());
+                PlayerPersistentData.PlayerData.SetCurrentBlockData(bot.GetBlockDatas());
             }
         }
 

@@ -1061,13 +1061,8 @@ namespace StarSalvager
             foreach (var part in _parts)
             {
                 PartRemoteData partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
-                Bit targetBit = null;
+                Bit targetBit = GetFurthestBitToBurn(partRemoteData, part.level);
 
-                if(useBurnRate && partRemoteData.burnRates.Length > 0)
-                    targetBit = attachedBlocks.OfType<Bit>()
-                        .Where(b => b.Type == partRemoteData.burnRates[part.level].type)
-                        .GetFurthestAttachable(Vector2Int.zero);
-                
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
@@ -1146,6 +1141,8 @@ namespace StarSalvager
                         }
                         projectileTimers[part] = 0f;
                         
+                        Debug.Log("Fire");
+                        
                         //--------------------------------------------------------------------------------------------//
 
                         if (useBurnRate)
@@ -1188,6 +1185,19 @@ namespace StarSalvager
                         break;
                 }
             }
+        }
+
+        private Bit GetFurthestBitToBurn(PartRemoteData remoteData, int level)
+        {
+            if (!useBurnRate)
+                return null;
+
+            if (remoteData.burnRates.Length == 0)
+                return null;
+            
+            return attachedBlocks.OfType<Bit>()
+                    .Where(b => b.Type == remoteData.burnRates[level].type)
+                    .GetFurthestAttachable(Vector2Int.zero);
         }
         
         #endregion //Parts

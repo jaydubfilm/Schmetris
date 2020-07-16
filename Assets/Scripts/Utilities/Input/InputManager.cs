@@ -364,7 +364,7 @@ namespace StarSalvager.Utilities.Inputs
         {
             var clicked = ctx.ReadValue<float>();
 
-            if (clicked == 1)
+            /*if (clicked == 1)
             {
                 if (_scrapyard != null)
                 {
@@ -375,15 +375,14 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     _botShapeEditor.OnLeftMouseButtonDown();
                 }
-            }
+            }*/
         }
 
         private void RightClick(InputAction.CallbackContext ctx)
         {
-
             var clicked = ctx.ReadValue<float>();
 
-            if (clicked == 1)
+            /*if (clicked == 1)
             {
                 if (_scrapyard != null)
                 {
@@ -394,7 +393,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     _botShapeEditor.OnRightMouseButtonDown();
                 }
-            }
+            }*/
         }
 
         //============================================================================================================//

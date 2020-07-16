@@ -50,6 +50,30 @@ namespace StarSalvager.Utilities.Backgrounds
 
         //================================================================================================================//
 
+        public void SetActive(bool state)
+        {
+            foreach (var background in backgrounds)
+            {
+                background.gameObject.SetActive(state);
+            }   
+        }
+        
+        #if UNITY_EDITOR
+
+        [Button("Disable Backgrounds"), HorizontalGroup("BackgroundEditor")]
+        private void DisableBackgrounds()
+        {
+            SetActive(false);
+        }
+        
+        [Button("Enable Backgrounds"), HorizontalGroup("BackgroundEditor")]
+        private void EnableBackgrounds()
+        {
+            SetActive(true);
+        }
+        
+        #endif
+
     }
 
 }

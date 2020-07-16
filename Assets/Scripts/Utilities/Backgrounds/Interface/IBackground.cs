@@ -11,6 +11,8 @@ namespace StarSalvager.Utilities.Backgrounds
         bool parentIsCamera { get;}
         bool ignoreOrientationChanges { get;}
 
+        GameObject gameObject { get; }
+
         void Init(Transform cameraTransform);
         void UpdatePosition();
 

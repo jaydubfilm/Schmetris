@@ -6,7 +6,7 @@ namespace StarSalvager.UI
 {
     public abstract class UIElement<T> : MonoBehaviour where T: IEquatable<T>
     {
-        [SerializeField, ShowInInspector, ReadOnly]
+        [ShowInInspector, ReadOnly]
         public T data { get; protected set; }
 
         //============================================================================================================//

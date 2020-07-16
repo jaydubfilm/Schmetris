@@ -8,11 +8,12 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class ScrapyardUI : MonoBehaviour
+    public class ScrapyardUI : MonoBehaviour, IDragHandler
     {
         [SerializeField, Required, BoxGroup("Part UI")]
         private RemotePartProfileScriptableObject _remotePartProfileScriptable;
@@ -110,7 +111,7 @@ namespace StarSalvager.UI
             SellBitsButton.onClick.AddListener(() =>
             {
                 m_scrapyard.SellBits();
-                UpdateResources(PlayerPersistentData.GetPlayerData().GetResources());
+                UpdateResources(PlayerPersistentData.PlayerData.GetResources());
             });
 
             //--------------------------------------------------------------------------------------------------------//
@@ -126,7 +127,7 @@ namespace StarSalvager.UI
                 element.Init(partRemoteData, PartPressed);
             }
 
-            var resources = PlayerPersistentData.GetPlayerData().GetResources();
+            var resources = PlayerPersistentData.PlayerData.GetResources();
 
             foreach (var resource in resources)
             {
@@ -148,6 +149,8 @@ namespace StarSalvager.UI
         
         //============================================================================================================//
 
+        #region Unity Editor
+        
         #if UNITY_EDITOR
         
         [Button("Test Resource Update"), DisableInEditorMode, BoxGroup("Resource UI")]
@@ -173,6 +176,8 @@ namespace StarSalvager.UI
         }
 
         #endif
+        
+        #endregion //Unity Editor
         
         public void UpdateResources(Dictionary<BIT_TYPE, int> resources)
         {
@@ -201,6 +206,10 @@ namespace StarSalvager.UI
             m_scrapyard.selectedPartType = partType;
         }
 
+        public void OnDrag(PointerEventData eventData)
+        {
+            Debug.Log("Dragging");
+        }
     }
 }
 
