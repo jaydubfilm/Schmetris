@@ -268,5 +268,27 @@ namespace StarSalvager
         {
             return new Vector2Int((int)Mathf.Floor((worldLocation.x - m_anchorPoint.x) / Constants.gridCellSize), (int)Mathf.Floor((worldLocation.y - m_anchorPoint.y) / Constants.gridCellSize));
         }
+
+        public List<Vector2Int> SelectBitExplosionPositions(Vector2 startingLocation, int numBits, int verticalExplosionRange, int horizontalExplosionRange)
+        {
+            List<Vector2Int> bitExplosionPositions = new List<Vector2Int>();
+
+            Vector2Int startingPoint = GetGridPositionOfVector(startingLocation);
+
+            for (int i = 0; i < numBits; i++)
+            {
+                Vector2Int bitPosition = startingPoint +
+                    (Vector2Int.up * UnityEngine.Random.Range(verticalExplosionRange / 2, verticalExplosionRange + 1)) +
+                    (Vector2Int.left * UnityEngine.Random.Range(0, horizontalExplosionRange + 1) * (UnityEngine.Random.Range(0, 2) * 2 - 1));
+
+                if (GetGridSquareAtPosition(bitPosition).m_obstacleInSquare)
+                {
+                    continue;
+                }
+                bitExplosionPositions.Add(bitPosition);
+            }
+
+            return bitExplosionPositions;
+        }
     }
 }

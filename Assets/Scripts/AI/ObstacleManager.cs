@@ -15,6 +15,7 @@ namespace StarSalvager
     {
         private List<IObstacle> m_obstacles;
         private List<Shape> m_notFullyInGridShapes;
+        private List<OffGridMovementInfo> m_offGridMovingObstacles;
 
         //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
         private float m_currentInput;
@@ -34,6 +35,7 @@ namespace StarSalvager
         {
             m_obstacles = new List<IObstacle>();
             m_notFullyInGridShapes = new List<Shape>();
+            m_offGridMovingObstacles = new List<OffGridMovementInfo>();
             GameTimer.AddPausable(this);
 
             SetupStage(0);
@@ -47,6 +49,11 @@ namespace StarSalvager
         {
             if (isPaused)
                 return;
+
+            if (UnityEngine.Input.GetKeyDown(KeyCode.U))
+            {
+                SpawnBitExplosion(Vector2.up * 5);
+            }
 
             //Simulate the speed of downward movement for obstacles and move the prefabs on screen downward
             Globals.AsteroidFallTimer += Time.deltaTime;
@@ -122,6 +129,23 @@ namespace StarSalvager
 
         private void HandleObstacleMovement()
         {
+            if (m_offGridMovingObstacles.Count > 0)
+            {
+                for (int i = m_offGridMovingObstacles.Count - 1; i >= 0; i--)
+                {
+                    m_offGridMovingObstacles[i].LerpTimer += Time.deltaTime / m_offGridMovingObstacles[i].LerpSpeed;
+                    if (m_offGridMovingObstacles[i].LerpTimer >= 1)
+                    {
+                        PlaceMovableOnGrid(m_offGridMovingObstacles[i].Bit, m_offGridMovingObstacles[i].EndPosition);
+                        m_offGridMovingObstacles[i].Bit.SetColliderActive(true);
+                        m_offGridMovingObstacles.RemoveAt(i);
+                        continue;
+                    }
+
+                    m_offGridMovingObstacles[i].Bit.transform.position = Vector2.Lerp(m_offGridMovingObstacles[i].StartingPosition, m_offGridMovingObstacles[i].EndPosition, m_offGridMovingObstacles[i].LerpTimer);
+                }
+            }
+            
             Vector3 amountShift = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Constants.timeForAsteroidsToFall);
 
             if (m_distanceHorizontal != 0)
@@ -333,6 +357,18 @@ namespace StarSalvager
             }
         }
 
+        private void SpawnBitExplosion(Vector2 startingLocation)
+        {
+            List<Vector2Int> bitExplosionPositions = LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, 5, 5, 5);
+
+            foreach (var bitPosition in bitExplosionPositions)
+            {
+                Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject((BIT_TYPE)Random.Range(1, 6)).GetComponent<Bit>();
+                AddMovableToList(newBit);
+                PlaceMovableOffGrid(newBit, startingLocation, bitPosition);
+            }
+        }
+
         private void SpawnObstacle(SELECTION_TYPE selectionType, BIT_TYPE bitType, bool customMade, string category, ASTEROID_SIZE asteroidSize, bool inRandomYLevel = false)
         {
             if (customMade)
@@ -394,10 +430,10 @@ namespace StarSalvager
 
         private void PlaceMovableOnGrid(IObstacle movable)
         {
-            movable.transform.parent = LevelManager.Instance.gameObject.transform;
             Vector2 position = LevelManager.Instance.WorldGrid.GetAvailableRandomTopGridSquareWorldPosition();
+            movable.transform.parent = LevelManager.Instance.gameObject.transform;
             movable.transform.position = position;
-            switch(movable)
+            switch (movable)
             {
                 case Bit _:
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
@@ -406,6 +442,31 @@ namespace StarSalvager
                     m_notFullyInGridShapes.Add(shape);
                     break;
             }
+        }
+
+        private void PlaceMovableOnGrid(IObstacle movable, Vector2 position)
+        {
+            movable.transform.parent = LevelManager.Instance.gameObject.transform;
+            movable.transform.position = position;
+            switch (movable)
+            {
+                case Bit _:
+                    LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
+                    break;
+                case Shape shape:
+                    m_notFullyInGridShapes.Add(shape);
+                    break;
+            }
+        }
+
+        private void PlaceMovableOffGrid(Bit bit, Vector2 startingPosition, Vector2Int gridEndPosition)
+        {
+            bit.SetColliderActive(false);
+            Vector2 endPosition = LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(gridEndPosition);
+            bit.transform.parent = LevelManager.Instance.gameObject.transform;
+            bit.transform.position = startingPosition;
+
+            m_offGridMovingObstacles.Add(new OffGridMovementInfo(bit, startingPosition, endPosition));
         }
 
         //============================================================================================================//

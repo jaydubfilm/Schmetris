@@ -3,15 +3,19 @@ using Recycling;
 using UnityEngine;
 using StarSalvager.Factories;
 using StarSalvager.Values;
+using System;
 
 namespace StarSalvager.AI
 {
     public class Enemy : CollidableBase, ICanBeHit
     {
+        public static Action<Bot, string> OnEnemyDied;
+
         public EnemyData m_enemyData;
 
         protected float m_fireTimer;
         private Vector3 m_spiralAttackDirection = Vector3.down;
+        private List<Vector3> m_positions = new List<Vector3>();
         
         
         private Vector3 m_currentHorizontalMovementDirection = Vector3.right;
@@ -27,6 +31,8 @@ namespace StarSalvager.AI
 
         protected virtual void Start()
         {
+            m_positions.Add(Vector3.zero);
+
             renderer.sprite = m_enemyData.Sprite;
             m_horizontalMovementYLevel = transform.position.y;
             horizontalFarLeftX = 0;
@@ -264,7 +270,10 @@ namespace StarSalvager.AI
         public List<Vector3> GetPositions()
         {
             List<Vector3> positions = new List<Vector3>();
-            positions.Add(transform.position);
+            foreach (var position in m_positions)
+            {
+                positions.Add(transform.position + position);
+            }
             return positions;
         }
 

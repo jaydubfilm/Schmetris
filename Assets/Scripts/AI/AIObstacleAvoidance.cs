@@ -68,9 +68,11 @@ namespace StarSalvager.AI
 
         //Returns the position of the obstacle at this location in the grid, by getting the grid center position and
         //infering where it is in relation to that based on the timer and the obstacles movement speed
+        //TODO: I don't remember why the -0.5f previously happened in this calculation (at the end, in the bracket with the global/constants). 
+        //It doesn't look like it was correct. Do a deep dive on the math to make sure it should be there
         private Vector2 CalculateObstaclePositionChange(int x, int y)
         {
-            return LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * ((Globals.AsteroidFallTimer / Constants.timeForAsteroidsToFall) - 0.5f);
+            return LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * (Globals.AsteroidFallTimer / Constants.timeForAsteroidsToFall);
         }
     }
 }

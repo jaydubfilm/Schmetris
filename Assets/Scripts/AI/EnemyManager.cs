@@ -106,48 +106,23 @@ namespace StarSalvager
                     }
                 }
 
-                /*m_enemies[i].transform.position -= gridMovement;
+                //TODO: This process shouldn't be straight summing and averaging the different forces on different parts. 
+                //We should be selecting for the strongest forces and using those in any given direction, otherwise, the strong forces on one position can be dampened by the weaker on others.
+                m_enemies[i].transform.position -= gridMovement;
 
                 Vector3 destination = m_enemies[i].GetDestination();
                 Vector2 sumDirection = Vector2.zero;
-                Vector2 sumForces = Vector2.zero;
                 foreach (Vector3 position in m_enemies[i].GetPositions())
                 {
                     Vector2 direction = new Vector2(destination.x - position.x, destination.y - position.y);
                     direction.Normalize();
-                    sumDirection += direction;
                     Vector2 force = LevelManager.Instance.AIObstacleAvoidance.CalculateForceAtPoint(position);
-                    force.Normalize();
-                    sumForces += force;
-
-                    Vector2 direction = new Vector2(destination.x - position.x, destination.y - position.y);
-                    direction.Normalize();
-                    direction += LevelManager.Instance.AIObstacleAvoidance.CalculateForceAtPoint(position);
-                    direction.Normalize();
+                    direction += force;
                     sumDirection += direction;
                 }
                 sumDirection.Normalize();
-                sumForces.Normalize();
-                Vector2 sumDirectionForces = sumDirection + sumForces;
-                sumDirectionForces.Normalize();
 
-                m_enemies[i].ProcessMovement(sumDirectionForces);*/
-
-                Vector3 position = m_enemies[i].transform.position;
-                Vector3 destination = m_enemies[i].GetDestination();
-
-                Vector2 direction = new Vector2(destination.x - position.x, destination.y - position.y);
-                direction.Normalize();
-
-                if (!position.Equals(destination))
-                {
-                    direction += LevelManager.Instance.AIObstacleAvoidance.CalculateForceAtPoint(position);
-                    direction.Normalize();
-                }
-
-                m_enemies[i].transform.position -= gridMovement;
-
-                m_enemies[i].ProcessMovement(direction);
+                m_enemies[i].ProcessMovement(sumDirection);
             }
 
             if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)

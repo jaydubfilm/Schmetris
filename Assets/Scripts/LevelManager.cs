@@ -127,6 +127,12 @@ namespace StarSalvager
 
         private void Update()
         {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
+            {
+                WorldGrid.DrawDebugMarkedGridPoints();
+                Debug.Break();
+            }
+            
             if (isPaused)
                 return;
 
@@ -142,7 +148,7 @@ namespace StarSalvager
         {
             m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
-            BotGameObject.transform.position = new Vector2(0, 0);
+            BotGameObject.transform.position = new Vector2(0, Values.Constants.gridCellSize * 5.0f);
             if (PlayerPersistentData.GetPlayerData().GetCurrentBlockData().Count == 0)
             {
                 BotGameObject.InitBot();
