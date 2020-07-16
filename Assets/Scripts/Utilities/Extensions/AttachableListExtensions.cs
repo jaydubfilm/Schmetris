@@ -194,7 +194,7 @@ namespace StarSalvager.Utilities.Extensions
         
         //============================================================================================================//
         
-        public static IAttachable GetClosestAttachable<T>(this List<T> blocks, Vector2 checkPosition) where T: IAttachable
+        public static T GetClosestAttachable<T>(this List<T> blocks, Vector2 checkPosition) where T: IAttachable
         {
             if (blocks.Count == 1)
                 return blocks[0];
@@ -220,7 +220,7 @@ namespace StarSalvager.Utilities.Extensions
             return (T)selected;
         }
         
-        public static IAttachable GetClosestAttachable<T>(this List<T> blocks, IAttachable attachable) where T: IAttachable
+        public static T GetClosestAttachable<T>(this List<T> blocks, IAttachable attachable) where T: IAttachable
         {
             if (blocks.Count == 1)
                 return blocks[0];
@@ -243,6 +243,32 @@ namespace StarSalvager.Utilities.Extensions
                     continue;
 
                 smallestDist = dist;
+                selected = attached;
+            }
+
+            //selected.SetColor(Color.magenta);
+
+            return (T)selected;
+        }
+        
+        public static T GetFurthestAttachable<T>(this IEnumerable<T> blocks, Vector2Int coordinate) where T: IAttachable
+        {
+            IAttachable selected = null;
+
+            var largestDist = -999f;
+
+            foreach (var attached in blocks)
+            {
+                if (attached.Coordinate == coordinate)
+                    continue;
+                
+                //attached.SetColor(Color.white);
+
+                var dist = Vector2.Distance(attached.transform.position, coordinate);
+                if (dist < largestDist)
+                    continue;
+
+                largestDist = dist;
                 selected = attached;
             }
 

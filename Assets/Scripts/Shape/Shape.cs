@@ -209,7 +209,7 @@ namespace StarSalvager
 
             //Long ray compensates for the players high speed
             var rayLength = Constants.gridCellSize * 3f;
-            var closestAttachable = attachedBits.GetClosestAttachable(hitPoint);
+            var closestAttachable = attachedBits.GetClosestAttachable(hitPoint) as IAttachable;
 
             closestAttachable = attachedBits.GetAttachableInDirection(closestAttachable, rayDirection);
 
