@@ -9,8 +9,6 @@ namespace StarSalvager.AI
 {
     public class Enemy : CollidableBase, ICanBeHit
     {
-        public static Action<Bot, string> OnEnemyDied;
-
         public EnemyData m_enemyData;
 
         protected float m_fireTimer;
@@ -100,7 +98,7 @@ namespace StarSalvager.AI
                 case ENEMY_ATTACKTYPE.AtPlayerCone:
                     //Rotate player position around enemy position slightly by a random angle to shoot somewhere in a cone around the player
                     fireDirections.Add(GetDestinationForRotatePositionAroundPivot(playerLocation, transform.position,
-                        Vector3.forward * Random.Range(-m_enemyData.SpreadAngle,
+                        Vector3.forward * UnityEngine.Random.Range(-m_enemyData.SpreadAngle,
                             m_enemyData.SpreadAngle)) - transform.position);
                     break;
                 case ENEMY_ATTACKTYPE.Down:
@@ -112,7 +110,7 @@ namespace StarSalvager.AI
                     {
                         fireDirections.Add(GetDestinationForRotatePositionAroundPivot(playerLocation,
                             transform.position,
-                            Vector3.forward * Random.Range(-m_enemyData.SpreadAngle,
+                            Vector3.forward * UnityEngine.Random.Range(-m_enemyData.SpreadAngle,
                                 m_enemyData.SpreadAngle)) - transform.position);
                     }
 
@@ -291,6 +289,7 @@ namespace StarSalvager.AI
         public void TryHitAt(Vector2 position, float damage)
         {
             //FIXME This should use IHealth
+            LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.position);
             Recycler.Recycle<Enemy>(this);
         }
         

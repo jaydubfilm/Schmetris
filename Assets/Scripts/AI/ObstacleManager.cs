@@ -357,7 +357,7 @@ namespace StarSalvager
             }
         }
 
-        private void SpawnBitExplosion(Vector2 startingLocation)
+        public void SpawnBitExplosion(Vector2 startingLocation)
         {
             List<Vector2Int> bitExplosionPositions = LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, 5, 5, 5);
 
