@@ -84,6 +84,8 @@ namespace StarSalvager
         [SerializeField, BoxGroup("Magnets")]
         private MAGNET currentMagnet = MAGNET.DEFAULT;
         
+        [SerializeField, BoxGroup("BurnRates")]
+        private bool useBurnRate = true;
         
         //============================================================================================================//
 
@@ -688,7 +690,7 @@ namespace StarSalvager
             //FIXME Need to see how to fix this
             if (closestAttachable is IHealth closestHealth)
             {
-                closestHealth.ChangeHealth(-damage);
+                closestHealth.ChangeHealth(-Mathf.Abs(damage));
 
                 if (closestHealth.CurrentHealth > 0) 
                     return;
@@ -704,7 +706,7 @@ namespace StarSalvager
             //FIXME Need to see how to fix this
             if (closestAttachable is IHealth closestHealth)
             {
-                closestHealth.ChangeHealth(-damage);
+                closestHealth.ChangeHealth(-Mathf.Abs(damage));
 
                 if (closestHealth.CurrentHealth > 0)
                     return;
@@ -994,6 +996,7 @@ namespace StarSalvager
         
         //============================================================================================================//
 
+        //TODO It may be beneficial to move this to move this to a separate script
         #region Parts
         
         [SerializeField, BoxGroup("Bot Part Data"), ReadOnly]
@@ -1057,10 +1060,20 @@ namespace StarSalvager
             //Be careful to not use return here
             foreach (var part in _parts)
             {
-                PartRemoteData partRemoteData;
+                PartRemoteData partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
+                Bit targetBit = GetFurthestBitToBurn(partRemoteData, part.level);
+
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
+
+                        //TODO This needs to lock the core from being able to move if none is found
+                        if (targetBit && useBurnRate)
+                        {
+                            //Reduce the health of the bit while we're using it up for fuel
+                            TryHitAt(targetBit, partRemoteData.burnRates[part.level].amount * Time.deltaTime);
+                        }
+                        
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
                         {
@@ -1091,6 +1104,9 @@ namespace StarSalvager
                         
                         break;
                     case PART_TYPE.REPAIR:
+
+                        if (!targetBit && useBurnRate)
+                            break;
                         //TODO Determine if this heals Bits & parts or just parts
                         //TODO This needs to fire every x Seconds
                         var toRepair = attachedBlocks.GetAttachablesAroundInRadius<Part>(part, part.level + 1)
@@ -1098,8 +1114,10 @@ namespace StarSalvager
 
                         if (toRepair is null) break;
                         
-                        partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.REPAIR);
-
+                        if(useBurnRate)
+                            //Reduce the health of the bit while we're using it up for fuel
+                            TryHitAt(targetBit, partRemoteData.burnRates[part.level].amount * Time.deltaTime);
+                        
                         //Increase the health of this part depending on the current level of the repairer
                         toRepair.ChangeHealth(partRemoteData.data[part.level] * Time.deltaTime);
                         
@@ -1107,8 +1125,6 @@ namespace StarSalvager
                     case PART_TYPE.GUN:
                         //TODO Need to determine if the shoot type is looking for enemies or not
                         //--------------------------------------------------------------------------------------------//
-                        partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.GUN);
-                        
                         if (projectileTimers == null)
                             projectileTimers = new Dictionary<Part, float>();
                         
@@ -1123,6 +1139,24 @@ namespace StarSalvager
                             projectileTimers[part] += Time.deltaTime;
                             break;
                         }
+                        projectileTimers[part] = 0f;
+                        
+                        Debug.Log("Fire");
+                        
+                        //--------------------------------------------------------------------------------------------//
+
+                        if (useBurnRate)
+                        {
+                            //If we have the resources to shoot do so, otherwise break out 
+                            if (targetBit)
+                            {
+                                //Reduce the health of the bit while we're using it up for resources
+                                TryHitAt(targetBit, partRemoteData.burnRates[part.level].amount);
+                            }
+                            else 
+                                break;
+                        }
+                        
                         
                         //--------------------------------------------------------------------------------------------//
                         
@@ -1137,7 +1171,7 @@ namespace StarSalvager
                         //Create projectile
                         //--------------------------------------------------------------------------------------------//
                         
-                        projectileTimers[part] = 0f;
+                        
                         var projectile = FactoryManager.Instance.GetFactory<ProjectileFactory>().CreateObject<Projectile>(
                             PROJECTILE_TYPE.Projectile1,
                             shootDirection,
@@ -1151,6 +1185,19 @@ namespace StarSalvager
                         break;
                 }
             }
+        }
+
+        private Bit GetFurthestBitToBurn(PartRemoteData remoteData, int level)
+        {
+            if (!useBurnRate)
+                return null;
+
+            if (remoteData.burnRates.Length == 0)
+                return null;
+            
+            return attachedBlocks.OfType<Bit>()
+                    .Where(b => b.Type == remoteData.burnRates[level].type)
+                    .GetFurthestAttachable(Vector2Int.zero);
         }
         
         #endregion //Parts

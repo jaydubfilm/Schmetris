@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class PartUIElement : ButtonReturnUIElement<PartRemoteData, PART_TYPE>
+    public class PartUIElement : ButtonReturnUIElement<PartRemoteData, PART_TYPE>, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         private static PartAttachableFactory _partAttachableFactory;
         private static BitAttachableFactory _bitAttachableFactory;
@@ -27,10 +29,15 @@ namespace StarSalvager.UI
 
         private List<CostUIElement> costElements;
 
+        private RectTransform _canvasTr;
+        private RectTransform partDragImageTransform;
+
         //============================================================================================================//
         
         public override void Init(PartRemoteData data, Action<PART_TYPE> OnPressed)
         {
+            _canvasTr = FindObjectOfType<Canvas>()?.transform as RectTransform;
+            
             if (_partAttachableFactory == null)
                 _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
             
@@ -60,6 +67,42 @@ namespace StarSalvager.UI
         }
         
         //============================================================================================================//
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            if (partDragImageTransform == null)
+            {
+                partDragImageTransform = Instantiate(logoImage).transform as RectTransform;
+                partDragImageTransform.anchorMin = partDragImageTransform.anchorMax = Vector2.one * 0.5f;
+
+                partDragImageTransform.SetParent(_canvasTr.transform);
+                partDragImageTransform.anchoredPosition = Vector2.zero;
+            }
+
+
+            partDragImageTransform.anchoredPosition = eventData.position - (Vector2)_canvasTr.position;
+            partDragImageTransform.gameObject.SetActive(true);
+            
+            button.onClick.Invoke();
+        }
+        
+        public void OnDrag(PointerEventData eventData)
+        {
+            if (partDragImageTransform == null)
+                return;
+            
+            partDragImageTransform.anchoredPosition = eventData.position - (Vector2)_canvasTr.position;
+            
+            
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            if (partDragImageTransform == null)
+                return;
+            
+            partDragImageTransform.gameObject.SetActive(false);
+        }
     }
 }
 

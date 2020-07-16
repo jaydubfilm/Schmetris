@@ -22,6 +22,9 @@ namespace StarSalvager.Factories.Data
         [FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true)]
         public int[] data;
 
+        [FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true)]
+        public ResourceAmount[] burnRates;
+
         //This only compares Type and not all individual properties
         #region IEquatable
         

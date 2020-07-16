@@ -57,8 +57,10 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        public void SetHealth(float value)
+        
+        public void SetHealth(float value, bool useFlashing = true)
         {
+            transform.localPosition = Vector3.zero;
             
             if (value == 1f)
             {
@@ -68,10 +70,17 @@ namespace StarSalvager
                 return;
             }
             
-            flashAnimator.Play();
-            
             renderer.sprite = _damageProfileScriptableObject.GetDetailSprite(value);
             mask.sprite = _damageProfileScriptableObject.GetMaskSprite(value);
+
+            if (!useFlashing)
+            {
+                flashAnimator.Stop();
+                return;
+            }
+
+            
+            flashAnimator.Play();
 
             flashAnimator.speed = Mathf.Lerp(1.5f, 5f, 1f - value);
             flashAnimator.Alpha = Mathf.Lerp(0.25f, 1f, 1f - value);
