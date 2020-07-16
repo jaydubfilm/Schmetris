@@ -690,7 +690,7 @@ namespace StarSalvager
             //FIXME Need to see how to fix this
             if (closestAttachable is IHealth closestHealth)
             {
-                closestHealth.ChangeHealth(-damage);
+                closestHealth.ChangeHealth(-Mathf.Abs(damage));
 
                 if (closestHealth.CurrentHealth > 0) 
                     return;
@@ -706,7 +706,7 @@ namespace StarSalvager
             //FIXME Need to see how to fix this
             if (closestAttachable is IHealth closestHealth)
             {
-                closestHealth.ChangeHealth(-damage);
+                closestHealth.ChangeHealth(-Mathf.Abs(damage));
 
                 if (closestHealth.CurrentHealth > 0)
                     return;
@@ -996,6 +996,7 @@ namespace StarSalvager
         
         //============================================================================================================//
 
+        //TODO It may be beneficial to move this to move this to a separate script
         #region Parts
         
         [SerializeField, BoxGroup("Bot Part Data"), ReadOnly]
@@ -1062,19 +1063,20 @@ namespace StarSalvager
                 PartRemoteData partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
                 Bit targetBit = null;
 
-                if(partRemoteData.burnRates.Length > 0)
+                if(useBurnRate && partRemoteData.burnRates.Length > 0)
                     targetBit = attachedBlocks.OfType<Bit>()
-                        .FirstOrDefault(b => b.Type == partRemoteData.burnRates[part.level].type);
+                        .Where(b => b.Type == partRemoteData.burnRates[part.level].type)
+                        .GetFurthestAttachable(Vector2Int.zero);
                 
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
 
                         //TODO This needs to lock the core from being able to move if none is found
-                        if (targetBit)
+                        if (targetBit && useBurnRate)
                         {
                             //Reduce the health of the bit while we're using it up for fuel
-                            targetBit.ChangeHealth(-partRemoteData.burnRates[part.level].amount * Time.deltaTime);
+                            TryHitAt(targetBit, partRemoteData.burnRates[part.level].amount * Time.deltaTime);
                         }
                         
                         //TODO Need to check on Heating values for the core
@@ -1108,7 +1110,7 @@ namespace StarSalvager
                         break;
                     case PART_TYPE.REPAIR:
 
-                        if (!targetBit)
+                        if (!targetBit && useBurnRate)
                             break;
                         //TODO Determine if this heals Bits & parts or just parts
                         //TODO This needs to fire every x Seconds
@@ -1117,8 +1119,9 @@ namespace StarSalvager
 
                         if (toRepair is null) break;
                         
-                        //Reduce the health of the bit while we're using it up for fuel
-                        targetBit.ChangeHealth(-partRemoteData.burnRates[part.level].amount * Time.deltaTime);
+                        if(useBurnRate)
+                            //Reduce the health of the bit while we're using it up for fuel
+                            TryHitAt(targetBit, partRemoteData.burnRates[part.level].amount * Time.deltaTime);
                         
                         //Increase the health of this part depending on the current level of the repairer
                         toRepair.ChangeHealth(partRemoteData.data[part.level] * Time.deltaTime);
@@ -1142,15 +1145,21 @@ namespace StarSalvager
                             break;
                         }
                         projectileTimers[part] = 0f;
+                        
+                        //--------------------------------------------------------------------------------------------//
 
-                        //If we have the resources to shoot do so, otherwise break out 
-                        if (targetBit)
+                        if (useBurnRate)
                         {
-                            //Reduce the health of the bit while we're using it up for resources
-                            targetBit.ChangeHealth(-partRemoteData.burnRates[part.level].amount);
+                            //If we have the resources to shoot do so, otherwise break out 
+                            if (targetBit)
+                            {
+                                //Reduce the health of the bit while we're using it up for resources
+                                TryHitAt(targetBit, partRemoteData.burnRates[part.level].amount);
+                            }
+                            else 
+                                break;
                         }
-                        else 
-                            break;
+                        
                         
                         //--------------------------------------------------------------------------------------------//
                         

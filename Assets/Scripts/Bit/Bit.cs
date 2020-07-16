@@ -28,6 +28,7 @@ namespace StarSalvager
 
         public float StartingHealth => _startingHealth;
         private float _startingHealth;
+        [ShowInInspector, ReadOnly]
         public float CurrentHealth => _currentHealth;
         private float _currentHealth;
 
@@ -69,7 +70,7 @@ namespace StarSalvager
 
         public void ChangeHealth(float amount)
         {
-            float previousHealth = _currentHealth;
+            //float previousHealth = _currentHealth;
 
             _currentHealth += amount;
 
@@ -210,9 +211,13 @@ namespace StarSalvager
         public void CustomRecycle(params object[] args)
         {
             SetAttached(false);
-            
-            if(_damage)
+
+            if (_damage)
+            {
                 Recycler.Recycle<Damage>(_damage);
+                _damage = null;
+            }
+            
         }
 
         

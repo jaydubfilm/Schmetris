@@ -413,7 +413,7 @@ namespace StarSalvager.Utilities.Inputs
 
         private void OnApplicationQuit()
         {
-            print("TEST");
+            Debug.Log($"{nameof(InputManager)} called {nameof(OnApplicationQuit)}");
             GameTimer.OnApplicationQuit();
         }
     }
