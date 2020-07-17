@@ -15,6 +15,9 @@ namespace StarSalvager.UI
 {
     public class ScrapyardUI : MonoBehaviour, IDragHandler
     {
+        [SerializeField]
+        private Button MenuButton;
+        
         [SerializeField, Required, BoxGroup("Part UI")]
         private RemotePartProfileScriptableObject _remotePartProfileScriptable;
 
@@ -76,6 +79,11 @@ namespace StarSalvager.UI
         private void InitButtons()
         {
             //--------------------------------------------------------------------------------------------------------//
+            
+            MenuButton.onClick.AddListener(() =>
+            {
+                SceneLoader.SceneLoader.ActivateScene("MainMenuScene", "ScrapyardScene");
+            });
             
             leftTurnButton.onClick.AddListener(() =>
             {
