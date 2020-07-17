@@ -14,6 +14,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
+using UnityEditor;
 
 namespace StarSalvager
 {
@@ -313,6 +314,11 @@ namespace StarSalvager
         {
             if (!m_editorBotShapeGeneratorScripableObject.m_categories.Contains(categoryName))
                 m_editorBotShapeGeneratorScripableObject.m_categories.Add(categoryName);
+        }
+
+        public void OnApplicationQuit()
+        {
+            AssetDatabase.Refresh();
         }
     }
 }
