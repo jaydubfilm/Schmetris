@@ -1,5 +1,4 @@
-﻿using StarSalvager.Values;
-using StarSalvager.Factories;
+﻿using StarSalvager.Factories;
 using UnityEngine;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Cameras;
@@ -8,13 +7,8 @@ using StarSalvager.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.UI;
-using StarSalvager.Utilities.Inputs;
-using StarSalvager.ScriptableObjects;
-using Sirenix.OdinInspector;
-using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
-
 using Newtonsoft.Json;
 using System.IO;
 

@@ -14,7 +14,7 @@ namespace StarSalvager.AI
 
         protected override void Start()
         {
-            renderer.sprite = m_enemyData.Sprite;
+            base.Start();
         }
 
         protected override void Update()

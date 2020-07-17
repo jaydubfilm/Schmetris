@@ -105,7 +105,6 @@ namespace StarSalvager
                         continue;
                     }
                 }
-
                 //TODO: This process shouldn't be straight summing and averaging the different forces on different parts. 
                 //We should be selecting for the strongest forces and using those in any given direction, otherwise, the strong forces on one position can be dampened by the weaker on others.
                 m_enemies[i].transform.position -= gridMovement;

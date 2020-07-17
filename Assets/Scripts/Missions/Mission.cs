@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mission : MonoBehaviour
+namespace StarSalvager
 {
-    // Start is called before the first frame update
-    void Start()
+    public abstract class Mission
     {
-        
-    }
+        public string MissionName;
+        public MISSION_EVENT_TYPE missionType;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public Mission()
+        {
+
+        }
+
+        public abstract void ProcessMissionData(MISSION_EVENT_TYPE type, Dictionary<string, object> data);
     }
 }

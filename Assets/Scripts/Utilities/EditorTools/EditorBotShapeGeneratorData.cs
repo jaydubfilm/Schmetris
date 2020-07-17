@@ -3,7 +3,7 @@ using System.Linq;
 using StarSalvager.Factories.Data;
 using UnityEngine;
 
-namespace StarSalvager.ScriptableObjects
+namespace StarSalvager.Utilities
 {
     public class EditorBotShapeGeneratorData
     {
