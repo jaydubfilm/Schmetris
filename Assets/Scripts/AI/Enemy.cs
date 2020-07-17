@@ -289,7 +289,7 @@ namespace StarSalvager.AI
         public void TryHitAt(Vector2 position, float damage)
         {
             //FIXME This should use IHealth
-            LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.position);
+            LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.position, m_enemyData.MinBitExplosionCount, m_enemyData.MaxBitExplosionCount);
             Recycler.Recycle<Enemy>(this);
         }
         

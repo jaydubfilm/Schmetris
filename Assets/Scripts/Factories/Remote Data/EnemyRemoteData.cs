@@ -30,6 +30,12 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$EnemyType")]
         private float m_attackSpeed;
 
+        [SerializeField, FoldoutGroup("$EnemyType")]
+        private int m_minBitExplosionCount;
+
+        [SerializeField, FoldoutGroup("$EnemyType")]
+        private int m_maxBitExplosionCount;
+
         public ENEMY_TYPE EnemyType
         {
             get => m_enemyType;
@@ -63,6 +69,15 @@ namespace StarSalvager.Factories.Data
         public float AttackSpeed
         {
             get => m_attackSpeed;
+        }
+
+        public int MinBitExplosionCount
+        {
+            get => m_minBitExplosionCount;
+        }
+        public int MaxBitExplosionCount
+        {
+            get => m_maxBitExplosionCount;
         }
     }
 }

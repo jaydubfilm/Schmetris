@@ -26,8 +26,10 @@ namespace StarSalvager
         private bool m_addVelocityToProjectiles;
         private float m_spreadAngle;
         private int m_sprayCount;
+        private int m_minBitExplosionCount;
+        private int m_maxBitExplosionCount;
 
-        public EnemyData(ENEMY_TYPE enemyType, int enemyID, string name, int health, float movementSpeed, bool isAttachable, float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType, PROJECTILE_TYPE projectileType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange, float orbitRadius, float numberCellsDescend, bool addVelocityToProjectiles, float spreadAngle, int sprayCount)
+        public EnemyData(ENEMY_TYPE enemyType, int enemyID, string name, int health, float movementSpeed, bool isAttachable, float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType, PROJECTILE_TYPE projectileType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange, float orbitRadius, float numberCellsDescend, bool addVelocityToProjectiles, float spreadAngle, int sprayCount, int minBitExplosionCount, int maxBitExplosionCount)
         {
             m_enemyType = enemyType;
             m_enemyID = enemyID;
@@ -48,6 +50,8 @@ namespace StarSalvager
             m_addVelocityToProjectiles = addVelocityToProjectiles;
             m_spreadAngle = spreadAngle;
             m_sprayCount = sprayCount;
+            m_minBitExplosionCount = minBitExplosionCount;
+            m_maxBitExplosionCount = maxBitExplosionCount;
         }
 
         public ENEMY_TYPE EnemyType
@@ -148,6 +152,16 @@ namespace StarSalvager
         public float SprayCount
         {
             get => m_sprayCount;
+        }
+
+        public int MinBitExplosionCount
+        {
+            get => m_minBitExplosionCount;
+        }
+
+        public int MaxBitExplosionCount
+        {
+            get => m_maxBitExplosionCount;
         }
     }
 }

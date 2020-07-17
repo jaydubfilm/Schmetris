@@ -50,11 +50,6 @@ namespace StarSalvager
             if (isPaused)
                 return;
 
-            if (UnityEngine.Input.GetKeyDown(KeyCode.U))
-            {
-                SpawnBitExplosion(Vector2.up * 5);
-            }
-
             //Simulate the speed of downward movement for obstacles and move the prefabs on screen downward
             Globals.AsteroidFallTimer += Time.deltaTime;
             if (Globals.AsteroidFallTimer >= Constants.timeForAsteroidsToFall)
@@ -357,9 +352,9 @@ namespace StarSalvager
             }
         }
 
-        public void SpawnBitExplosion(Vector2 startingLocation)
+        public void SpawnBitExplosion(Vector2 startingLocation, int minBits, int maxBits)
         {
-            List<Vector2Int> bitExplosionPositions = LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, 5, 5, 5);
+            List<Vector2Int> bitExplosionPositions = LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, UnityEngine.Random.Range(minBits, maxBits + 1), 5, 5);
 
             foreach (var bitPosition in bitExplosionPositions)
             {
