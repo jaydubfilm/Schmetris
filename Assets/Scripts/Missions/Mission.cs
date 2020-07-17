@@ -2,16 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mission : MonoBehaviour
+public abstract class Mission
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public string MissionName;
 
-    // Update is called once per frame
-    void Update()
+    public Mission()
     {
         
     }
