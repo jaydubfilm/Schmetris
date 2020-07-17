@@ -15,6 +15,8 @@ namespace StarSalvager.Factories.Data
         [SerializeField, BoxGroup("Name")]
         private List<BlockData> m_blockData;
 
+        public string m_classType;
+
         public EditorGeneratorDataBase(string name, List<BlockData> blockData)
         {
             m_name = name;
