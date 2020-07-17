@@ -82,6 +82,7 @@ namespace StarSalvager.UI
             
             MenuButton.onClick.AddListener(() =>
             {
+                m_scrapyard.SaveBlockData();
                 SceneLoader.SceneLoader.ActivateScene("MainMenuScene", "ScrapyardScene");
             });
             
