@@ -588,6 +588,30 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 535791630}
+    ActiveGameObject: {fileID: 535791630}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1350056042}
+    ActiveGameObject: {fileID: 1350056042}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
@@ -849,30 +873,6 @@ MonoBehaviour:
     InstanceID: 0
     wasInit: 0
     CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 536537407}
-    ActiveGameObject: {fileID: 536537407}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 485700241}
-    ActiveGameObject: {fileID: 485700241}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
   Hash4: []
   Hash5: []
   Hash5_Fix2_0: []
@@ -991,12 +991,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3244948815100470642, guid: d9a1403422b9a644aa0329280a9dadf9,
     type: 3}
   m_PrefabInstance: {fileID: 439474853}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &485700241 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6770187115870773350, guid: 648b56bc406ac8641bc6e42ebc0fcc48,
-    type: 3}
-  m_PrefabInstance: {fileID: 1179821266}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &506982868
 GameObject:
@@ -1120,12 +1114,6 @@ CanvasRenderer:
 --- !u!1 &535791630 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7924511267928285753, guid: 648b56bc406ac8641bc6e42ebc0fcc48,
-    type: 3}
-  m_PrefabInstance: {fileID: 1179821266}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &536537407 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6770187115396173113, guid: 648b56bc406ac8641bc6e42ebc0fcc48,
     type: 3}
   m_PrefabInstance: {fileID: 1179821266}
   m_PrefabAsset: {fileID: 0}
