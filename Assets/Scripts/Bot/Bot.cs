@@ -2399,8 +2399,11 @@ namespace StarSalvager
                     case Part _:
                         Recycler.Recycle<Part>(attachable.gameObject);
                         break;
+                    case EnemyAttachable _:
+                        Recycler.Recycle<EnemyAttachable>(attachable.gameObject);
+                        break;
                     default:
-                        Destroy(attachable.gameObject);
+                        throw new Exception($"No solver to recycle object {attachable.gameObject.name}");
                         break;
                 }
             }
