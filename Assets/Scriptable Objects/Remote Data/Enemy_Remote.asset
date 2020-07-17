@@ -27,8 +27,8 @@ MonoBehaviour:
     m_name: 
     m_health: 10
     m_movementSpeed: 7
-    m_attackDamage: 0
-    m_attackSpeed: 0
+    m_attackDamage: 2
+    m_attackSpeed: 1
     m_minBitExplosionCount: 2
     m_maxBitExplosionCount: 4
   - m_enemyType: 2
