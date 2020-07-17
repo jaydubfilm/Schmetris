@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
@@ -17,9 +19,17 @@ namespace StarSalvager.Factories
         [SerializeField, Required, BoxGroup("Attachables/Bits")]
         private BitRemoteDataScriptableObject bitRemoteData;
 
-        [SerializeField, Required, BoxGroup("Attachables/Bits")]
-        private EditorBotShapeGeneratorScriptableObject editorBotShapeData;
-        public EditorBotShapeGeneratorScriptableObject EditorBotShapeData => editorBotShapeData;
+        public EditorBotShapeGeneratorData EditorBotShapeData
+        {
+            get
+            {
+                if (editorBotShapeData == null)
+                    editorBotShapeData = ImportBotShapeRemoteData();
+
+                return editorBotShapeData;
+            }
+        }
+        private EditorBotShapeGeneratorData editorBotShapeData;
 
         [SerializeField, Required, BoxGroup("Attachables/Parts")] 
         private AttachableProfileScriptableObject partProfile;
@@ -103,7 +113,7 @@ namespace StarSalvager.Factories
                     return (_partAttachableFactory ?? (_partAttachableFactory = new PartAttachableFactory(partProfile, partRemoteData))) as T;
                 
                 case nameof(ShapeFactory):
-                    return (_shapeFactory ?? (_shapeFactory = new ShapeFactory(shapePrefab, editorBotShapeData.GetEditorShapeData()))) as T;
+                    return (_shapeFactory ?? (_shapeFactory = new ShapeFactory(shapePrefab, EditorBotShapeData.GetEditorShapeData()))) as T;
 
                 case nameof(EnemyFactory):
                     return (_enemyFactory ?? (_enemyFactory = new EnemyFactory(enemyProfile, enemyRemoteData))) as T;
@@ -124,8 +134,18 @@ namespace StarSalvager.Factories
                     throw new ArgumentOutOfRangeException(nameof(typeName), typeName, null);
             }
         }
-        
+
         //============================================================================================================//
+
+        public EditorBotShapeGeneratorData ImportBotShapeRemoteData()
+        {
+            if (!File.Exists(Application.dataPath + "/RemoteData/BotShapeEditorData.txt"))
+                return new EditorBotShapeGeneratorData();
+
+            var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText(Application.dataPath + "/RemoteData/BotShapeEditorData.txt"));
+
+            return loaded;
+        }
     }
 }
 
