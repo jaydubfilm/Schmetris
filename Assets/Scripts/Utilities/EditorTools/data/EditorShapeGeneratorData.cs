@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace StarSalvager.Factories.Data
 {
-    [System.Serializable]
     public class EditorShapeGeneratorData : EditorGeneratorDataBase
     {
         [SerializeField, BoxGroup("Name")]
@@ -16,6 +15,7 @@ namespace StarSalvager.Factories.Data
         public EditorShapeGeneratorData(string name, List<BlockData> blockData, List<string> categories) : base(name, blockData)
         {
             m_categories = categories;
+            m_classType = nameof(EditorShapeGeneratorData);
         }
 
 

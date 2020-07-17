@@ -15,21 +15,32 @@ using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
 using UnityEditor;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace StarSalvager
 {
     public class BotShapeEditor : AttachableEditorToolBase, IReset, IInput
     {
-        [SerializeField, Required]
-        public EditorBotShapeGeneratorScriptableObject m_editorBotShapeGeneratorScripableObject;
-
         private List<Shape> _shapes;
 
         [SerializeField]
         private BotShapeEditorUI m_botShapeEditorUI;
 
+        public EditorBotShapeGeneratorData EditorBotShapeData
+        {
+            get
+            {
+                if (m_editorBotShapeData == null)
+                    m_editorBotShapeData = ImportRemoteData();
+
+                return m_editorBotShapeData;
+            }
+        }
+        private EditorBotShapeGeneratorData m_editorBotShapeData = null;
+
         //============================================================================================================//
-        
+
         // Start is called before the first frame update
         private void Start()
         {
@@ -187,7 +198,7 @@ namespace StarSalvager
         {
             DeloadAllBots();
             DeloadAllShapes();
-            var botData = m_editorBotShapeGeneratorScripableObject.GetEditorBotData(inputName);
+            var botData = EditorBotShapeData.GetEditorBotData(inputName);
             if (botData != null && botData.BlockData != null)
             {
                 CreateBot(false);
@@ -197,7 +208,7 @@ namespace StarSalvager
                 return;
             }
 
-            var shapeData = m_editorBotShapeGeneratorScripableObject.GetEditorShapeData(inputName);
+            var shapeData = EditorBotShapeData.GetEditorShapeData(inputName);
             if (shapeData != null && shapeData.BlockData != null)
             {
                 List<Bit> bits = shapeData.BlockData.ImportBlockDatas(false).FindAll(o => o is Bit).OfType<Bit>().ToList();
@@ -297,13 +308,13 @@ namespace StarSalvager
             foreach (ScrapyardBot scrapyardbot in _scrapyardBots)
             {
                 EditorBotGeneratorData newData = new EditorBotGeneratorData(inputName, scrapyardbot.attachedBlocks.GetBlockDatas());
-                m_editorBotShapeGeneratorScripableObject.AddEditorBotData(newData);
+                EditorBotShapeData.AddEditorBotData(newData);
             }
 
             foreach (Shape shape in _shapes)
             {
                 EditorShapeGeneratorData newData = new EditorShapeGeneratorData(inputName, shape.AttachedBits.GetBlockDatas(), m_botShapeEditorUI.GetCategories());
-                m_editorBotShapeGeneratorScripableObject.AddEditorShapeData(newData);
+                EditorBotShapeData.AddEditorShapeData(newData);
             }
 
             DeloadAllBots();
@@ -312,12 +323,31 @@ namespace StarSalvager
 
         public void AddCategory(string categoryName)
         {
-            if (!m_editorBotShapeGeneratorScripableObject.m_categories.Contains(categoryName))
-                m_editorBotShapeGeneratorScripableObject.m_categories.Add(categoryName);
+            if (!EditorBotShapeData.m_categories.Contains(categoryName))
+                EditorBotShapeData.m_categories.Add(categoryName);
+        }
+
+        public string ExportRemoteData(EditorBotShapeGeneratorData editorData)
+        {
+            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
+            System.IO.File.WriteAllText(Application.dataPath + "/RemoteData/BotShapeEditorData.txt", export);
+
+            return export;
+        }
+
+        public EditorBotShapeGeneratorData ImportRemoteData()
+        {
+            if (!File.Exists(Application.dataPath + "/RemoteData/BotShapeEditorData.txt"))
+                return new EditorBotShapeGeneratorData();
+            
+            var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText(Application.dataPath + "/RemoteData/BotShapeEditorData.txt"));
+
+            return loaded;
         }
 
         public void OnApplicationQuit()
         {
+            ExportRemoteData(m_editorBotShapeData);
             AssetDatabase.Refresh();
         }
     }

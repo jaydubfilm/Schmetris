@@ -32,9 +32,6 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        [SerializeField, Required, BoxGroup("Load List UI")]
-        private EditorBotShapeGeneratorScriptableObject _editorBotShapeGeneratorScriptable;
-
         [SerializeField, BoxGroup("Load List UI")]
         private BotShapeDataElementScrollView botLoadListScrollView;
         [SerializeField, BoxGroup("Load List UI")]
@@ -372,7 +369,7 @@ namespace StarSalvager.UI
             }
 
             //FIXME This needs to move to the Factory
-            foreach (var category in m_botShapeEditor.m_editorBotShapeGeneratorScripableObject.m_categories)
+            foreach (var category in m_botShapeEditor.EditorBotShapeData.m_categories)
             {
 
                 var element = categoriesScrollView.AddElement<CategoryToggleUIElement>(category, category);
@@ -387,7 +384,7 @@ namespace StarSalvager.UI
 
         private void UpdateLoadListUiScrollViews()
         {
-            foreach (var botGeneratorData in _editorBotShapeGeneratorScriptable.m_editorBotGeneratorData)
+            foreach (var botGeneratorData in m_botShapeEditor.EditorBotShapeData.m_editorBotGeneratorData)
             {
                 if (botLoadListScrollView.FindElement<BotLoadListUIElement>(botGeneratorData))
                     continue;
@@ -396,7 +393,7 @@ namespace StarSalvager.UI
                 element.Init(botGeneratorData, BotShapePressed);
             }
 
-            foreach (var shapeGeneratorData in _editorBotShapeGeneratorScriptable.m_editorShapeGeneratorData)
+            foreach (var shapeGeneratorData in m_botShapeEditor.EditorBotShapeData.m_editorShapeGeneratorData)
             {
                 if (shapeLoadListScrollView.FindElement<BotLoadListUIElement>(shapeGeneratorData))
                     continue;
