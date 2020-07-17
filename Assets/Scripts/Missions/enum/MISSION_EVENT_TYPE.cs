@@ -1,6 +1,6 @@
-﻿namespace MISSION_EVENT_TYPE
+﻿namespace StarSalvager
 {
-    public enum PART_TYPE
+    public enum MISSION_EVENT_TYPE
     {
         CORE,
         MAGNET,
