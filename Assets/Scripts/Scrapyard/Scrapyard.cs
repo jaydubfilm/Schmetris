@@ -103,6 +103,8 @@ namespace StarSalvager
             }
         }
         
+        
+        
         //============================================================================================================//
 
         //On left mouse button click, check if there is a bit/part at the mouse location. If there is not, purchase the selected part type and place it at this location.

@@ -39,13 +39,18 @@ namespace StarSalvager.Utilities.Backgrounds
         private new Transform transform;
         private new SpriteRenderer renderer;
         private IBackground _backgroundImplementation;
+        private Camera _camera;
         
-        private Plane[] planes;
+        //private static Plane[] _planes;
+        private static float lowestPoint;
+        private static float highestPoint;
+        private int lastColumns;
 
         //============================================================================================================//
 
         public void Init(Transform cameraTransform)
         {
+            _camera = cameraTransform.GetComponent<Camera>();
             transform = gameObject.transform;
             renderer = GetComponent<SpriteRenderer>();
 
@@ -65,7 +70,8 @@ namespace StarSalvager.Utilities.Backgrounds
                 return;
             }
             
-            planes = GeometryUtility.CalculateFrustumPlanes(cameraTransform.GetComponent<Camera>());
+            //_planes = GeometryUtility.CalculateFrustumPlanes(_camera);
+            lastColumns = Globals.ColumnsOnScreen;
 
         }
 
@@ -78,6 +84,9 @@ namespace StarSalvager.Utilities.Backgrounds
         
         public void UpdatePosition()
         {
+            if (Globals.ColumnsOnScreen != lastColumns)
+                SetOrientation(ORIENTATION.VERTICAL);
+            
             direction = Globals.MovingDirection;
             
             movingDirection = Globals.MovingDirection.GetHorizontalDirectionFloat();
@@ -86,15 +95,15 @@ namespace StarSalvager.Utilities.Backgrounds
                                  (horizontalMoveSpeed * Globals.MovingDirection.GetHorizontalDirectionFloat());
             
             var pos = transform.position;
-            pos += ((Vector3)moveSpeed +horizontalMove) * Time.deltaTime;
+            pos += ((Vector3)moveSpeed + horizontalMove) * Time.deltaTime;
 
             transform.position = pos;
 
 
-            if (!GeometryUtility.TestPlanesAABB(planes, renderer.bounds) && transform.position.y < 0f)
+            if (/*!GeometryUtility.TestPlanesAABB(_planes, renderer.bounds) && */transform.position.y < lowestPoint - renderer.bounds.extents.y)
             {
                 pos = transform.localPosition;
-                pos.y = Mathf.Abs(pos.y * 1.2f);
+                pos.y = Mathf.Abs(highestPoint + renderer.bounds.extents.y * 1.2f);
                 
                 transform.localPosition = pos;
             }
@@ -106,6 +115,10 @@ namespace StarSalvager.Utilities.Backgrounds
 
         public void SetOrientation(ORIENTATION newOrientation)
         {
+            //_planes = GeometryUtility.CalculateFrustumPlanes(_camera);
+            lowestPoint = _camera.ViewportToWorldPoint(Vector3.zero).y;
+            highestPoint = _camera.ViewportToWorldPoint(Vector3.one).y;
+            
             if (ignoreOrientationChanges)
                 return;
             
