@@ -163,11 +163,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2048199258, guid: 34276a37a5695e34cbbf45dc1b1292a2, type: 3}
       propertyPath: _parentIsCamera
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2048199258, guid: 34276a37a5695e34cbbf45dc1b1292a2, type: 3}
       propertyPath: _ignoreOrientationChanges
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 330109208640821229, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}
@@ -187,12 +187,12 @@ PrefabInstance:
     - target: {fileID: 481353161730212705, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}
       propertyPath: _parentIsCamera
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 481353161730212705, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}
       propertyPath: _ignoreOrientationChanges
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1331257530279299198, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}
@@ -257,12 +257,12 @@ PrefabInstance:
     - target: {fileID: 2651158051656687539, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}
       propertyPath: _parentIsCamera
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2651158051656687539, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}
       propertyPath: _ignoreOrientationChanges
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2759267379150393536, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}
@@ -412,7 +412,7 @@ PrefabInstance:
     - target: {fileID: 7706641209323560698, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}
       propertyPath: color.a
-      value: 0.7529412
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 7706641209323560698, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}
@@ -422,12 +422,12 @@ PrefabInstance:
     - target: {fileID: 7706641209323560698, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}
       propertyPath: _parentIsCamera
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7706641209323560698, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}
       propertyPath: _ignoreOrientationChanges
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7706641209323560698, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}
@@ -472,12 +472,12 @@ PrefabInstance:
     - target: {fileID: 7706641209797964719, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}
       propertyPath: _parentIsCamera
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7706641209797964719, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}
       propertyPath: _ignoreOrientationChanges
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7706641210140338931, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}
