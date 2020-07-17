@@ -4,6 +4,7 @@ using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
+using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -76,8 +77,13 @@ namespace StarSalvager.UI
                 partDragImageTransform.anchorMin = partDragImageTransform.anchorMax = Vector2.one * 0.5f;
 
                 partDragImageTransform.SetParent(_canvasTr.transform);
-                partDragImageTransform.anchoredPosition = Vector2.zero;
+                //partDragImageTransform.anchoredPosition = Vector2.zero;
             }
+
+            var cam = Camera.main;
+
+            var screenSize = (cam.WorldToScreenPoint(Vector3.right * Constants.gridCellSize) - cam.WorldToScreenPoint(Vector3.zero)).x;
+            partDragImageTransform.sizeDelta = Vector2.one * screenSize;
 
 
             partDragImageTransform.anchoredPosition = eventData.position - (Vector2)_canvasTr.position;
