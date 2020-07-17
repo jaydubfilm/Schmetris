@@ -6,6 +6,8 @@ namespace StarSalvager
 {
     public class MultiEventMission : Mission
     {
+        public override bool MissionComplete() => false;
+
         private int m_numEventsNeeded;
         private int m_numEventsCurrent = 0;
 
