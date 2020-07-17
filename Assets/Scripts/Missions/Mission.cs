@@ -9,6 +9,8 @@ namespace StarSalvager
         public string MissionName;
         public MISSION_EVENT_TYPE missionType;
 
+        public abstract bool MissionComplete();
+
         public Mission()
         {
 

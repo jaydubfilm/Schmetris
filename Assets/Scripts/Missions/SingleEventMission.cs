@@ -6,6 +6,8 @@ namespace StarSalvager
 {
     public class SingleEventMission : Mission
     {
+        public override bool MissionComplete() => false;
+
         public SingleEventMission() : base()
         {
 
