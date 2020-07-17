@@ -14,7 +14,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
-using UnityEditor;
+
 using Newtonsoft.Json;
 using System.IO;
 
@@ -348,7 +348,6 @@ namespace StarSalvager
         public void OnApplicationQuit()
         {
             ExportRemoteData(m_editorBotShapeData);
-            AssetDatabase.Refresh();
         }
     }
 }

@@ -56,6 +56,9 @@ TextureImporter:
   - first:
       213: 1271605298367649869
     second: UI_Sprites_ver1_17
+  - first:
+      213: 1409828168726802091
+    second: UI_Sprites_ver1_18
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -85,7 +88,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
+    filterMode: 1
     aniso: -1
     mipBias: -100
     wrapU: 1
@@ -387,9 +390,9 @@ TextureImporter:
       name: UI_Sprites_ver1_11
       rect:
         serializedVersion: 2
-        x: 320
+        x: 321
         y: 267
-        width: 64
+        width: 63
         height: 43
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -526,6 +529,27 @@ TextureImporter:
       bones: []
       spriteID: d4855b71846a5a110800000000000000
       internalID: 1271605298367649869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Sprites_ver1_18
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 345
+        width: 63
+        height: 17
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 7, y: 0, z: 8, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: baeec47ff37b09310800000000000000
+      internalID: 1409828168726802091
       vertices: []
       indices: 
       edges: []

@@ -167,7 +167,7 @@ namespace StarSalvager
                 levelLostAnalyticsDictionary.Add("CurrentStage", m_currentStage);
                 levelLostAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
                 AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelLost, eventDataDictionary: levelLostAnalyticsDictionary);
-                m_levelManagerUI.ToggleDeathUIActive(true);
+                m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
                 Debug.LogError("Bot Died. Press 'R' to restart");
             };
             BotGameObject.transform.parent = null;
@@ -189,7 +189,7 @@ namespace StarSalvager
             ProjectileManager.Activate();
 
             GameTimer.SetPaused(false);
-            m_levelManagerUI.ToggleDeathUIActive(false);
+            m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
         }
 
         public void Reset()
@@ -248,7 +248,7 @@ namespace StarSalvager
         public void RestartLevel()
         {
             m_currentWave = 0;
-            m_levelManagerUI.ToggleDeathUIActive(false);
+            m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
             m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
             GameTimer.SetPaused(false);
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);

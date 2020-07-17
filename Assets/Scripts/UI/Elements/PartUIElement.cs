@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Recycling;
 using Sirenix.OdinInspector;
+using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Values;
@@ -37,7 +38,7 @@ namespace StarSalvager.UI
         
         public override void Init(PartRemoteData data, Action<PART_TYPE> OnPressed)
         {
-            _canvasTr = FindObjectOfType<Canvas>()?.transform as RectTransform;
+            _canvasTr = GetComponentInParent<Canvas>()?.transform as RectTransform;
             
             if (_partAttachableFactory == null)
                 _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
@@ -73,14 +74,16 @@ namespace StarSalvager.UI
         {
             if (partDragImageTransform == null)
             {
-                partDragImageTransform = Instantiate(logoImage).transform as RectTransform;
+                var image = new GameObject("Test").AddComponent<Image>();
+                image.sprite = logoImage.sprite;
+                
+                partDragImageTransform = image.transform as RectTransform;
                 partDragImageTransform.anchorMin = partDragImageTransform.anchorMax = Vector2.one * 0.5f;
 
                 partDragImageTransform.SetParent(_canvasTr.transform);
-                //partDragImageTransform.anchoredPosition = Vector2.zero;
             }
 
-            var cam = Camera.main;
+            var cam = FindObjectOfType<CameraController>().GetComponent<Camera>();
 
             var screenSize = (cam.WorldToScreenPoint(Vector3.right * Constants.gridCellSize) - cam.WorldToScreenPoint(Vector3.zero)).x;
             partDragImageTransform.sizeDelta = Vector2.one * screenSize;
@@ -98,8 +101,6 @@ namespace StarSalvager.UI
                 return;
             
             partDragImageTransform.anchoredPosition = eventData.position - (Vector2)_canvasTr.position;
-            
-            
         }
 
         public void OnEndDrag(PointerEventData eventData)

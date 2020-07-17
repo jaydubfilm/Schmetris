@@ -17,6 +17,9 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("UISections")]
         private GameObject m_deathUI;
 
+        [SerializeField, Required]
+        private TMP_Text deathText;
+
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("View")]
@@ -88,7 +91,8 @@ namespace StarSalvager.UI
                 StarSalvager.SceneLoader.SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
             });
             ToggleBetweenWavesUIActive(false);
-            ToggleDeathUIActive(false);
+            
+            ToggleDeathUIActive(false, string.Empty);
         }
 
         //============================================================================================================//
@@ -103,9 +107,11 @@ namespace StarSalvager.UI
             m_betweenWavesUI.SetActive(active);
         }
 
-        public void ToggleDeathUIActive(bool active)
+        public void ToggleDeathUIActive(bool active, string description)
         {
             m_deathUI.SetActive(active);
+
+            deathText.text = description;
         }
 
         //============================================================================================================//
