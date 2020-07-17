@@ -16,10 +16,11 @@ using StarSalvager.Utilities.Puzzle;
 using UnityEngine;
 using Enemy = StarSalvager.AI.Enemy;
 using GameUI = StarSalvager.UI.GameUI;
+using StarSalvager.Utilities;
 
 namespace StarSalvager
 {
-    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit
+    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable
     {
         public static Action<Bot, string> OnBotDied;
 
@@ -86,7 +87,9 @@ namespace StarSalvager
         
         [SerializeField, BoxGroup("BurnRates")]
         private bool useBurnRate = true;
-        
+
+        public bool isPaused => GameTimer.IsPaused;
+
         //============================================================================================================//
 
         private CompositeCollider2D CompositeCollider2D
@@ -131,6 +134,9 @@ namespace StarSalvager
 
         private void Update()
         {
+            if (isPaused)
+                return;
+            
             //TODO Once all done testing, remove this
             _moveDirection = Globals.MovingDirection;
             
@@ -2359,13 +2365,25 @@ namespace StarSalvager
             
             OnBotDied?.Invoke(this, deathMethod);
         }
-        
+
         #endregion //Coroutines
-        
+
+        //============================================================================================================//
+
+        public void OnResume()
+        {
+
+        }
+
+        public void OnPause()
+        {
+
+        }
+
         //============================================================================================================//
 
         #region Custom Recycle
-        
+
         public void CustomRecycle(params object[] args)
         {
             foreach (var attachable in attachedBlocks)
