@@ -16,7 +16,9 @@ MonoBehaviour:
   - m_stageDuration: 15
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
-    m_stageEnemyData: []
+    m_stageEnemyData:
+    - m_enemyType: 1
+      m_enemyCount: 1
     m_stageObstacleData:
     - m_selectionType: 2
       m_bitType: 1

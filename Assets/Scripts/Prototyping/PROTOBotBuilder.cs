@@ -44,7 +44,7 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
 
         Bot.OnBotDied += (deadBot, deathMethod) =>
         {
-            Debug.LogError("Bot Died. Press 'R' to restart");
+            //Debug.LogError("Bot Died. Press 'R' to restart");
         };
         
         

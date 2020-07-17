@@ -15,7 +15,7 @@ namespace StarSalvager.Utilities.Backgrounds
         
         //================================================================================================================//
 
-        private void Start()
+        private void OnEnable()
         {
             backgrounds = GetComponentsInChildren<IBackground>();
             

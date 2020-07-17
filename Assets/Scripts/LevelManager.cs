@@ -168,7 +168,7 @@ namespace StarSalvager
                 levelLostAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
                 AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelLost, eventDataDictionary: levelLostAnalyticsDictionary);
                 m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
-                Debug.LogError("Bot Died. Press 'R' to restart");
+                //Debug.LogError("Bot Died. Press 'R' to restart");
             };
             BotGameObject.transform.parent = null;
             SceneManager.MoveGameObjectToScene(BotGameObject.gameObject, gameObject.scene);

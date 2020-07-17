@@ -691,7 +691,7 @@ namespace StarSalvager
         {
             var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
 
-            print("DAMAGE");
+            //print("DAMAGE");
 
             //FIXME Need to see how to fix this
             if (closestAttachable is IHealth closestHealth)
@@ -700,6 +700,9 @@ namespace StarSalvager
 
                 if (closestHealth.CurrentHealth > 0) 
                     return;
+                
+                if(closestAttachable.Coordinate == Vector2Int.zero)
+                    Destroy("Core Destroyed");
             }
             
             
@@ -752,7 +755,7 @@ namespace StarSalvager
 
             if (attachedBlocks.Count == 0 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0)
             {
-                Destroy("Core Destroyed");
+                Destroy("Core Destroyed by Asteroid");
             }
             else if (coreHeat >= 100)
             {

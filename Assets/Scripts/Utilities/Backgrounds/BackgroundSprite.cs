@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
@@ -42,8 +40,8 @@ namespace StarSalvager.Utilities.Backgrounds
         private Camera _camera;
         
         //private static Plane[] _planes;
-        private static float lowestPoint;
-        private static float highestPoint;
+        private float lowestPoint;
+        private float highestPoint;
         private int lastColumns;
 
         //============================================================================================================//
@@ -84,6 +82,9 @@ namespace StarSalvager.Utilities.Backgrounds
         
         public void UpdatePosition()
         {
+            lowestPoint = _camera.ViewportToWorldPoint(Vector3.zero).y;
+            highestPoint = _camera.ViewportToWorldPoint(Vector3.one).y;
+            
             if (Globals.ColumnsOnScreen != lastColumns)
                 SetOrientation(ORIENTATION.VERTICAL);
             
