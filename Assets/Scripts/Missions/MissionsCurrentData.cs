@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MissionsCurrentData
+namespace StarSalvager
 {
-    private List<Mission> m_missionsCurrentList;
-    
-    public MissionsCurrentData()
+    public class MissionsCurrentData
     {
-        m_missionsCurrentList = new List<Mission>();
-    }
+        private List<Mission> m_missionsCurrentList;
 
-    public void AddMission()
-    {
+        public MissionsCurrentData()
+        {
+            m_missionsCurrentList = new List<Mission>();
+        }
 
+        public void AddMission()
+        {
+
+        }
     }
 }

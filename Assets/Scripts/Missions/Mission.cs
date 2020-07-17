@@ -2,12 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Mission
+namespace StarSalvager
 {
-    public string MissionName;
-
-    public Mission()
+    public abstract class Mission
     {
-        
+        public string MissionName;
+        public MISSION_EVENT_TYPE missionType;
+
+        public Mission()
+        {
+
+        }
+
+        public abstract void ProcessMissionData(MISSION_EVENT_TYPE type, Dictionary<string, object> data);
     }
 }

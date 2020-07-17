@@ -2,12 +2,8 @@
 {
     public enum MISSION_EVENT_TYPE
     {
-        CORE,
-        MAGNET,
-        REPAIR,
-        ARMOR,
-        GUN
+        USER_INPUT,
+        ENEMY_KILLED,
+        RESOURCE_COLLECTED
     }
 }
-
-

@@ -4,11 +4,14 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class SingleEventMission : Mission
+    public class MultiEventMission : Mission
     {
-        public SingleEventMission() : base()
-        {
+        private int m_numEventsNeeded;
+        private int m_numEventsCurrent = 0;
 
+        public MultiEventMission(int numEventsNeeded) : base()
+        {
+            m_numEventsNeeded = numEventsNeeded;
         }
 
         public override void ProcessMissionData(MISSION_EVENT_TYPE type, Dictionary<string, object> data)
