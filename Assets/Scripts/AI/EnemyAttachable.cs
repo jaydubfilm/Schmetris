@@ -1,9 +1,10 @@
-﻿using StarSalvager.Utilities.Extensions;
+﻿using Recycling;
+using StarSalvager.Utilities.Extensions;
 using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class EnemyAttachable : Enemy, IAttachable
+    public class EnemyAttachable : Enemy, IAttachable, ICustomRecycle
     {
         public Vector2Int Coordinate { get; set; }
         public bool Attached { get; set; }
@@ -63,6 +64,11 @@ namespace StarSalvager.AI
                 inDirection = DIRECTION.UP;
             
             bot.TryAddNewAttachable(this, inDirection, hitPoint);
+        }
+
+        public void CustomRecycle(params object[] args)
+        {
+            SetAttached(false);
         }
     }
 }

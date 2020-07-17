@@ -719,6 +719,9 @@ namespace StarSalvager
 
                 if (closestHealth.CurrentHealth > 0)
                     return;
+                
+                if(closestAttachable.Coordinate == Vector2Int.zero)
+                    Destroy("Core Destroyed");
 
                 RemoveAttachable(closestAttachable);
                 CheckForDisconnects();
@@ -746,6 +749,9 @@ namespace StarSalvager
                     TryHitAt(attachable, 5f);
                     break;
                 }
+                default:
+                    TryHitAt(attachable, 10000);
+                    break;
             }
 
             //FIXME This value should not be hardcoded
@@ -885,8 +891,14 @@ namespace StarSalvager
             }
 
             var bits = detachingBits.OfType<Bit>().ToList();
+            var others = detachingBits.Where(x => !(x is Bit)).ToList();
 
             var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bits);
+
+            foreach (var iAttachable in others)
+            {
+                iAttachable.SetAttached(false);
+            }
 
             if (delayedCollider)
             {

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 15956391696060476}
   - component: {fileID: 5668200487094951123}
   - component: {fileID: 6644681719502384361}
+  - component: {fileID: -3440577092187009698}
   m_Layer: 11
   m_Name: EnemyAttachableTest
   m_TagString: Enemy
@@ -45,9 +46,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f417ec1c5caf1d744a152f1fc331d9be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!212 &5668200487094951123
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -124,3 +122,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!50 &-3440577092187009698
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6795578211728555506}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 1
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

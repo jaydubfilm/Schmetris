@@ -1,9 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Recycling;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager.Factories
 {
@@ -107,37 +110,46 @@ namespace StarSalvager.Factories
 
         public T CreateObject<T>(SELECTION_TYPE selectionType, BIT_TYPE bitType, string category)
         {
-            EditorShapeGeneratorData shapeData = GetRandomInCategory(category);
-            int totalBits = shapeData.BlockData.Count;
-
-            BIT_TYPE type;
-            if (selectionType == SELECTION_TYPE.RANDOMSINGLE || selectionType == SELECTION_TYPE.RANDOMVARIED)
+            //FIXME
+            try
             {
-                type = (BIT_TYPE)Random.Range(0, 6);
-            }
-            else
-            {
-                type = bitType;
-            }
+                EditorShapeGeneratorData shapeData = GetRandomInCategory(category);
+                
+                int totalBits = shapeData.BlockData.Count;
 
-            var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
-
-            var shape = CreateObject<Shape>();
-            for (var i = 0; i < totalBits; i++)
-            {
-                var bit = bitFactory.CreateObject<Bit>(type);
-                shape.PushNewBit(bit, shapeData.BlockData[i].Coordinate);
-
-                if (selectionType == SELECTION_TYPE.RANDOMVARIED && type != BIT_TYPE.BLACK)
+                BIT_TYPE type;
+                if (selectionType == SELECTION_TYPE.RANDOMSINGLE || selectionType == SELECTION_TYPE.RANDOMVARIED)
                 {
-                    type = (BIT_TYPE)Random.Range(1, 6);
+                    type = (BIT_TYPE)Random.Range(0, 6);
                 }
+                else
+                {
+                    type = bitType;
+                }
+
+                var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
+
+                var shape = CreateObject<Shape>();
+                for (var i = 0; i < totalBits; i++)
+                {
+                    var bit = bitFactory.CreateObject<Bit>(type);
+                    shape.PushNewBit(bit, shapeData.BlockData[i].Coordinate);
+
+                    if (selectionType == SELECTION_TYPE.RANDOMVARIED && type != BIT_TYPE.BLACK)
+                    {
+                        type = (BIT_TYPE)Random.Range(1, 6);
+                    }
+                }
+
+                if (LevelManager.Instance != null)
+                    LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
+
+                return shape.GetComponent<T>();
             }
-
-            if (LevelManager.Instance != null)
-                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
-
-            return shape.GetComponent<T>();
+            catch (Exception _)
+            {
+                return CreateObject<T>(selectionType, bitType, Random.Range(1, 5));
+            }
         }
 
         public T CreateObject<T>(List<Bit> bits)
