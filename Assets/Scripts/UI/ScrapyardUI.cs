@@ -53,6 +53,11 @@ namespace StarSalvager.UI
         private Button SellBitsButton;
 
 
+        [SerializeField, Required, BoxGroup("Animators")]
+        private Animator InsufficientResourcesAnimator;
+        [SerializeField, Required, BoxGroup("Animators")]
+        private Animator NotConnectedAnimator;
+
         //============================================================================================================//
 
         [SerializeField]
@@ -112,9 +117,17 @@ namespace StarSalvager.UI
 
             ReadyButton.onClick.AddListener(() =>
             {
-                m_scrapyard.SaveBlockData();
-                m_scrapyard.ProcessScrapyardUsageEndAnalytics();
-                StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
+                if (m_scrapyard.IsFullyConnected())
+                {
+                    m_scrapyard.SaveBlockData();
+                    m_scrapyard.ProcessScrapyardUsageEndAnalytics();
+                    StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
+                }
+                else
+                {
+                    NotConnectedAnimator.gameObject.SetActive(true);
+                    NotConnectedAnimator.Play("FadeText", -1, 0.0f);
+                }
             });
 
             SellBitsButton.onClick.AddListener(() =>
@@ -206,6 +219,11 @@ namespace StarSalvager.UI
             }
         }
         
+        public void DisplayInsufficientResources()
+        {
+            InsufficientResourcesAnimator.gameObject.SetActive(true);
+            InsufficientResourcesAnimator.Play("FadeText", -1, 0.0f);
+        }
         
         //============================================================================================================//
 
