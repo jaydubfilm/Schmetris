@@ -7,15 +7,13 @@ namespace StarSalvager
     public abstract class Mission
     {
         public string MissionName;
-        public MISSION_EVENT_TYPE missionType;
-
-        public abstract bool MissionComplete();
+        public MISSION_EVENT_TYPE MissionEventType { get; protected set; }
 
         public Mission()
         {
 
         }
 
-        public abstract void ProcessMissionData(MISSION_EVENT_TYPE type, Dictionary<string, object> data);
+        public abstract bool MissionComplete();
     }
 }
