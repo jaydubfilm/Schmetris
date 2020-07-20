@@ -27,7 +27,7 @@ namespace StarSalvager
         {
             foreach (var mission in m_missionsCurrentList)
             {
-                mission.ProcessMissionData(type, data);
+                //mission.ProcessMissionData(type, data);
             }
         }
     }

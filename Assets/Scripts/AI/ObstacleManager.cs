@@ -30,6 +30,8 @@ namespace StarSalvager
 
         public bool isPaused => GameTimer.IsPaused;
 
+        public bool HasNoActiveObstacles => m_obstacles.FindAll(o => o.CanMove == true).Count == 0 && m_offGridMovingObstacles.Count == 0;
+
         // Start is called before the first frame update
         private void Start()
         {
@@ -50,21 +52,28 @@ namespace StarSalvager
             if (isPaused)
                 return;
 
+            print(m_obstacles.Count);
+            print(m_offGridMovingObstacles.Count);
+
             //Simulate the speed of downward movement for obstacles and move the prefabs on screen downward
             Globals.AsteroidFallTimer += Time.deltaTime;
             if (Globals.AsteroidFallTimer >= Constants.timeForAsteroidsToFall)
             {
                 Globals.AsteroidFallTimer -= Constants.timeForAsteroidsToFall;
                 LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid();
-                SpawnNewRowOfObstacles();
-                TryMarkNewShapesOnGrid();
+                if (!LevelManager.Instance.EndWaveState)
+                {
+                    SpawnNewRowOfObstacles();
+                    TryMarkNewShapesOnGrid();
+                }
             }
 
             if (m_blendTimer < m_currentStageData.StageBlendPeriod)
             {
                 m_blendTimer += Time.deltaTime;
             }
-            if (LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
+
+            if (!LevelManager.Instance.EndWaveState && LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
             {
                 SetupStage(m_nextStageToSpawn);
             }

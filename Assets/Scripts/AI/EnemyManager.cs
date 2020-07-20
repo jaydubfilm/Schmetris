@@ -47,11 +47,14 @@ namespace StarSalvager
             if (isPaused)
                 return;
 
-            if (LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
+            if (!LevelManager.Instance.EndWaveState)
             {
-                SetupStage(m_nextStageToSpawn);
+                if (LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
+                {
+                    SetupStage(m_nextStageToSpawn);
+                }
+                CheckSpawns();
             }
-            CheckSpawns();
 
             HandleEnemyMovement();
         }
