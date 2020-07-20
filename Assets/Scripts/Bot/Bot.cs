@@ -145,7 +145,7 @@ namespace StarSalvager
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Time.timeScale = Time.timeScale == 0.01f ? 1f : 0.01f;
+                Time.timeScale = Time.timeScale == 0.1f ? 1f : 0.1f;
             }
             
             PartsUpdateLoop();
@@ -398,6 +398,7 @@ namespace StarSalvager
                     //----------------------------------------------------------------------------------------------------//
 
                     var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+
                     legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
 
                     //----------------------------------------------------------------------------------------------------//
@@ -424,6 +425,13 @@ namespace StarSalvager
                         case BIT_TYPE.GREY:
                         case BIT_TYPE.RED:
                         case BIT_TYPE.YELLOW:
+                            
+                            //TODO This needs to bounce off instead of being destroyed
+                            if (closestAttachable is EnemyAttachable)
+                            {
+                                Recycler.Recycle<Bit>(bit);
+                                return false;
+                            }
 
                             //Add these to the block depending on its relative position
                             AttachNewBitToExisting(bit, closestAttachable, connectionDirection);
@@ -442,6 +450,7 @@ namespace StarSalvager
 
                     break;
                 }
+                //FIXME This seems to be wanting to attach to the wrong direction
                 case EnemyAttachable enemyAttachable:
                 {
                     bool legalDirection;
@@ -454,6 +463,10 @@ namespace StarSalvager
                     //----------------------------------------------------------------------------------------------------//
 
                     var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    
+                    if (closestAttachable is EnemyAttachable)
+                        return false;
+                    
                     legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
 
                     //----------------------------------------------------------------------------------------------------//
@@ -549,13 +562,15 @@ namespace StarSalvager
             
             var closestOnBot= attachedBlocks.GetClosestAttachable(collisionPoint);
 
-            if (closestShapeBit is Bit closeBit)
+            
+
+            if (closestShapeBit is Bit closeBitOnShape)
             {
-                switch (closeBit.Type)
+                switch (closeBitOnShape.Type)
                 {
                     case BIT_TYPE.BLACK:
                         //TODO Damage/Destroy Bits as required
-                        shape.DestroyBit(closeBit);
+                        shape.DestroyBit(closeBitOnShape);
 
                         AsteroidDamageAt(closestOnBot);
                         
@@ -565,6 +580,14 @@ namespace StarSalvager
                     case BIT_TYPE.GREY:
                     case BIT_TYPE.RED:
                     case BIT_TYPE.YELLOW:
+                        
+                        //TODO This needs to bounce off instead of being destroyed
+                        if (closestOnBot is EnemyAttachable)
+                        {
+                            Recycler.Recycle<Shape>(shape);
+                            return false;
+                        }
+                        
                         //--------------------------------------------------------------------------------------------//
 
                         var vectorDirection = connectionDirection.ToVector2Int();
@@ -617,7 +640,7 @@ namespace StarSalvager
 
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(closeBit.Type), closeBit.Type, null);
+                        throw new ArgumentOutOfRangeException(nameof(closeBitOnShape.Type), closeBitOnShape.Type, null);
                 }
             }
 
@@ -687,8 +710,14 @@ namespace StarSalvager
         
         #region TryHitAt
 
+        [SerializeField, BoxGroup("PROTOTYPE")]
+        public bool PROTO_GodMode;
+
         public void TryHitAt(Vector2 hitPosition, float damage)
         {
+            if (PROTO_GodMode)
+                return;
+            
             var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
 
             //print("DAMAGE");
@@ -712,6 +741,9 @@ namespace StarSalvager
 
         public void TryHitAt(IAttachable closestAttachable, float damage)
         {
+            if (PROTO_GodMode)
+                return;
+            
             //FIXME Need to see how to fix this
             if (closestAttachable is IHealth closestHealth)
             {
@@ -750,6 +782,7 @@ namespace StarSalvager
                     break;
                 }
                 default:
+                    
                     TryHitAt(attachable, 10000);
                     break;
             }
@@ -759,11 +792,11 @@ namespace StarSalvager
             coolTimer = coolDelay;
 
 
-            if (attachedBlocks.Count == 0 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0)
+            if ((attachedBlocks.Count == 0 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0) && !PROTO_GodMode)
             {
                 Destroy("Core Destroyed by Asteroid");
             }
-            else if (coreHeat >= 100)
+            else if (coreHeat >= 100 && !PROTO_GodMode)
             {
                 Destroy("Core Overheated");
             }
@@ -803,7 +836,8 @@ namespace StarSalvager
             //Checks for attempts to add attachable to occupied location
             if (attachedBlocks.Any(a => a.Coordinate == coordinate))
             {
-                Debug.LogError($"Prevented attaching {newAttachable.gameObject.name} to occupied location {coordinate}",
+                var on = attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
+                Debug.LogError($"Prevented attaching {newAttachable.gameObject.name} to occupied location {coordinate}\n Occupied by {on.gameObject.name}",
                     newAttachable.gameObject);
                 PushNewBit(newAttachable, direction, existingAttachable.Coordinate);
                 return;

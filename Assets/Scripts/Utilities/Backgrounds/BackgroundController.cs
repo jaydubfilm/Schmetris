@@ -12,16 +12,19 @@ namespace StarSalvager.Utilities.Backgrounds
         
         [SerializeField, ReadOnly]
         private IBackground[] backgrounds;
-        
+
         //================================================================================================================//
 
         private void OnEnable()
         {
-            backgrounds = GetComponentsInChildren<IBackground>();
             
-            foreach (var background in backgrounds)
+            backgrounds = GetComponentsInChildren<IBackground>();
+
+            var count = backgrounds.Length;
+            
+            for (var i = 0; i < count; i++)
             {
-                background.Init(cameraTransform);
+                backgrounds[i].Init(cameraTransform, count - i);
             }
 
             Globals.OrientationChange += SetOrientation;

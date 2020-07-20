@@ -38,7 +38,7 @@ namespace StarSalvager.UI
         
         public override void Init(PartRemoteData data, Action<PART_TYPE> OnPressed)
         {
-            _canvasTr = GetComponentInParent<Canvas>()?.transform as RectTransform;
+            
             
             if (_partAttachableFactory == null)
                 _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
@@ -72,6 +72,10 @@ namespace StarSalvager.UI
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            _canvasTr = GetComponentInParent<Canvas>()?.transform as RectTransform;
+            
+            Debug.Log($"Canvas: {_canvasTr.gameObject.name}", _canvasTr.gameObject);
+            
             if (partDragImageTransform == null)
             {
                 var image = new GameObject("Test").AddComponent<Image>();
@@ -99,8 +103,8 @@ namespace StarSalvager.UI
         {
             if (partDragImageTransform == null)
                 return;
-            
-            partDragImageTransform.anchoredPosition = eventData.position - (Vector2)_canvasTr.position;
+
+            partDragImageTransform.anchoredPosition = _canvasTr.InverseTransformPoint(eventData.position);
         }
 
         public void OnEndDrag(PointerEventData eventData)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Recycling;
 using UnityEngine;
@@ -112,10 +113,30 @@ namespace StarSalvager
             collider.enabled = state;
         }
         
-        
-        
         //============================================================================================================//
+        
+        protected virtual bool TryGetRayDirectionFromBot(DIRECTION direction, out Vector2 rayDirection)
+        {
+            rayDirection = Vector2.zero;
+            //Returns the opposite direction based on the current players move direction.
+            switch (direction)
+            {
+                case DIRECTION.NULL:
+                    rayDirection = Vector2.down;
+                    return true;
+                case DIRECTION.LEFT:
+                    rayDirection = Vector2.right;
+                    return true;
+                case DIRECTION.RIGHT:
+                    rayDirection = Vector2.left;
+                    return true;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+        }
 
+        //============================================================================================================//
+        
         /// <summary>
         /// Called when the object contacts a bot
         /// </summary>

@@ -165,26 +165,6 @@ namespace StarSalvager
             bot.TryAddNewAttachable(this, inDirection, hit.point);
         }
 
-        private bool TryGetRayDirectionFromBot(DIRECTION direction, out Vector2 rayDirection)
-        {
-            rayDirection = Vector2.zero;
-            //Returns the opposite direction based on the current players move direction.
-            switch (direction)
-            {
-                case DIRECTION.NULL:
-                    rayDirection = Vector2.down;
-                    return true;
-                case DIRECTION.LEFT:
-                    rayDirection = Vector2.right;
-                    return true;
-                case DIRECTION.RIGHT:
-                    rayDirection = Vector2.left;
-                    return true;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-            }
-        }
-
         //ISaveable Functions
         //============================================================================================================//
 

@@ -57,16 +57,23 @@ namespace StarSalvager.Factories
 
         public override T CreateObject<T>()
         {
-            if (Recycler.TryGrab<T>(out T newObject))
+            if (Recycler.TryGrab(out T newObject))
             {
                 return newObject;
             }
 
             Type type = typeof(T);
-            if (type == typeof(EnemyAttachable))
-                return CreateAttachableGameObject().GetComponent<T>();
-            else
-                return CreateGameObject().GetComponent<T>();
+
+            
+            var enemyComponent = type == typeof(EnemyAttachable)
+                ? CreateAttachableGameObject().GetComponent<T>()
+                : CreateGameObject().GetComponent<T>(); 
+            
+            //TODO Need to setup these enemy health values
+            if(enemyComponent is Enemy enemy)
+                enemy.SetupHealthValues(20,20);
+
+            return enemyComponent;
         }
 
         //============================================================================================================//

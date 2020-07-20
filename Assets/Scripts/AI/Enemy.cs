@@ -4,10 +4,11 @@ using UnityEngine;
 using StarSalvager.Factories;
 using StarSalvager.Values;
 using System;
+using Sirenix.OdinInspector;
 
 namespace StarSalvager.AI
 {
-    public class Enemy : CollidableBase, ICanBeHit
+    public class Enemy : CollidableBase, ICanBeHit, IHealth
     {
         public EnemyData m_enemyData;
 
@@ -24,6 +25,14 @@ namespace StarSalvager.AI
         private float horizontalFarRightX;
         
         protected Vector3 m_mostRecentMovementDirection = Vector3.zero;
+        
+        //============================================================================================================//
+
+        public float StartingHealth => _startingHealth;
+        protected float _startingHealth;
+        [ShowInInspector, ReadOnly]
+        public float CurrentHealth => _currentHealth;
+        protected float _currentHealth;
 
         //============================================================================================================//
 
@@ -284,6 +293,7 @@ namespace StarSalvager.AI
 
         }
 
+        //ICanBeHit functions
         //============================================================================================================//
 
         public void TryHitAt(Vector2 position, float damage)
@@ -294,7 +304,21 @@ namespace StarSalvager.AI
         }
         
         //============================================================================================================//
-        
+
+
+        public void SetupHealthValues(float startingHealth, float currentHealth)
+        {
+            _startingHealth = startingHealth;
+            _currentHealth = currentHealth;
+        }
+
+        public virtual void ChangeHealth(float amount)
+        {
+            _currentHealth += amount;
+            
+            if(_currentHealth <= 0)
+                Recycler.Recycle<Enemy>(this);
+        }
     }
 }
  
