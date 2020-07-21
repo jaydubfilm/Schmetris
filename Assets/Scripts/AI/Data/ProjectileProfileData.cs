@@ -7,10 +7,8 @@ namespace StarSalvager.Factories.Data
     [System.Serializable]
     public struct ProjectileProfileData
     {
-        public int Type => (int)m_projectileType;
-
         [SerializeField, FoldoutGroup("$ProjectileType")]
-        private PROJECTILE_TYPE m_projectileType;
+        private string m_projectileType;
 
         [SerializeField, FoldoutGroup("$ProjectileType")]
         private Sprite m_sprite;
@@ -18,7 +16,7 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$ProjectileType")]
         private float m_projectileSpeed;
 
-        public PROJECTILE_TYPE ProjectileType
+        public string ProjectileType
         {
             get => m_projectileType;
         }

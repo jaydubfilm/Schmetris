@@ -1217,7 +1217,7 @@ namespace StarSalvager
                         
                         
                         var projectile = FactoryManager.Instance.GetFactory<ProjectileFactory>().CreateObject<Projectile>(
-                            PROJECTILE_TYPE.Projectile1,
+                            "Basic Projectile",
                             shootDirection,
                             "Enemy");
                         projectile.transform.position = part.transform.position;

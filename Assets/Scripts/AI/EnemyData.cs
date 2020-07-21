@@ -17,7 +17,7 @@ namespace StarSalvager
         private float m_attackSpeed;
         private ENEMY_MOVETYPE m_movementType;
         private ENEMY_ATTACKTYPE m_attackType;
-        private PROJECTILE_TYPE m_projectileType;
+        private string m_projectileType;
         private Sprite m_sprite;
         private float m_oscillationsPerSecond;
         private float m_oscillationAngleRange;
@@ -104,7 +104,7 @@ namespace StarSalvager
             get => m_attackType;
         }
 
-        public PROJECTILE_TYPE ProjectileType
+        public string ProjectileType
         {
             get => m_projectileType;
         }
