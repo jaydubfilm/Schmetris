@@ -1876,6 +1876,8 @@ namespace StarSalvager
             
             var bits = attachedBlocks.OfType<Bit>().ToList();
             
+            GameUi.SetCarryCapacity(bits.Count / (float)magnetCount);
+            
             //Checks here if the total of attached blocks (Minus the Core) change
             if (bits.Count <= magnetCount)
                 return;

@@ -36,8 +36,8 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("View")]
         private Button mainMenuButton;
 
-        [SerializeField, Required, FoldoutGroup("View")]
-        private TMP_Text m_currentWaveText;
+        //[SerializeField, Required, FoldoutGroup("View")]
+        //private TMP_Text m_currentWaveText;
 
 
         //============================================================================================================//
@@ -98,10 +98,7 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        public void SetCurrentWaveText(string endString)
-        {
-            m_currentWaveText.text = "Sector " + (Values.Globals.CurrentSector + 1) + " Wave " + endString;
-        }
+        
 
         public void ToggleBetweenWavesUIActive(bool active)
         {
