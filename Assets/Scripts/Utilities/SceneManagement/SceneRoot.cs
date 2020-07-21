@@ -1,24 +1,27 @@
-        #if UNITY_EDITOR
+using System;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
-        [SerializeField, Required, BoxGroup("Editor Only")]
-        private SceneLoaderScriptableObject sceneLoadObjects;
+namespace StarSalvager.Utilities.SceneManagement
+{
+    public class SceneRoot : MonoBehaviour
+    {
+        [NonSerialized]
+        public Scene Scene;
+        public bool IsStarted { get; private set; } = false;
+        public bool IsReady { get; private set; } = false;
 
-        private static bool _sceneEditorObjectsLoaded;
-        
-        private void Awake()
+        protected virtual void Start()
         {
-            if (gameObject.scene.buildIndex == 0 || _sceneEditorObjectsLoaded)
-            {
-                _sceneEditorObjectsLoaded = true;
-                return;
-            }
+            Scene = gameObject.scene;
+            SceneLoader.SubscribeSceneRoot(this, Scene.name);
 
-            foreach (var requiredPrefab in sceneLoadObjects.sceneRequiredPrefabs)
-            {
-                Instantiate(requiredPrefab);
-            }
-
-            _sceneEditorObjectsLoaded = true;
+            IsStarted = true;
         }
-        
-        #endif
+
+        public virtual void SetupScene()
+        {
+            IsReady = true;
+        }
+    }
+}
