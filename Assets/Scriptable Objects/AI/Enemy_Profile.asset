@@ -17,21 +17,21 @@ MonoBehaviour:
   m_attachablePrefab: {fileID: 6795578211728555506, guid: 588e5471e6e066946969c2230afd537a,
     type: 3}
   m_enemyProfileData:
-  - m_enemyType: 0
-    m_sprite: {fileID: 21300000, guid: ebb0f2d985f2d2746b4770b11d4a7f6e, type: 3}
-    m_movementType: 0
+  - m_enemyType: Shooter Enemy
+    m_sprite: {fileID: 21300000, guid: d2ad652576a89eb4fbce4c6b7d60aad2, type: 3}
+    m_movementType: 3
     m_isAttachable: 0
-    m_attackType: 6
+    m_attackType: 2
     m_projectileType: 0
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
-    m_orbitRadius: 0
+    m_orbitRadius: 10
     m_numberCellsDescend: 0
     m_addVelocityToProjectiles: 0
-    m_spreadAngle: 0
+    m_spreadAngle: 15
     m_sprayCount: 0
-  - m_enemyType: 1
-    m_sprite: {fileID: 21300000, guid: d2ad652576a89eb4fbce4c6b7d60aad2, type: 3}
+  - m_enemyType: Parasite Enemy
+    m_sprite: {fileID: 21300000, guid: ebb0f2d985f2d2746b4770b11d4a7f6e, type: 3}
     m_movementType: 0
     m_isAttachable: 1
     m_attackType: 6
@@ -43,185 +43,3 @@ MonoBehaviour:
     m_addVelocityToProjectiles: 0
     m_spreadAngle: 15
     m_sprayCount: 12
-  - m_enemyType: 2
-    m_sprite: {fileID: -7768236642965716457, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
-      type: 3}
-    m_movementType: 5
-    m_isAttachable: 0
-    m_attackType: 3
-    m_projectileType: 0
-    m_oscillationsPerSeconds: 2.7
-    m_oscillationAngleRange: 90
-    m_orbitRadius: 10
-    m_numberCellsDescend: 1
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 25
-    m_sprayCount: 0
-  - m_enemyType: 3
-    m_sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
-      type: 3}
-    m_movementType: 3
-    m_isAttachable: 0
-    m_attackType: 4
-    m_projectileType: 0
-    m_oscillationsPerSeconds: 0
-    m_oscillationAngleRange: 0
-    m_orbitRadius: 12
-    m_numberCellsDescend: 0
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 25
-    m_sprayCount: 8
-  - m_enemyType: 4
-    m_sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
-      type: 3}
-    m_movementType: 4
-    m_isAttachable: 0
-    m_attackType: 1
-    m_projectileType: 0
-    m_oscillationsPerSeconds: 0
-    m_oscillationAngleRange: 0
-    m_orbitRadius: 0
-    m_numberCellsDescend: 0
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 0
-    m_sprayCount: 0
-  - m_enemyType: 5
-    m_sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
-      type: 3}
-    m_movementType: 2
-    m_isAttachable: 0
-    m_attackType: 5
-    m_projectileType: 0
-    m_oscillationsPerSeconds: 1
-    m_oscillationAngleRange: 90
-    m_orbitRadius: 0
-    m_numberCellsDescend: 0
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 0
-    m_sprayCount: 0
-  - m_enemyType: 6
-    m_sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
-      type: 3}
-    m_movementType: 6
-    m_isAttachable: 0
-    m_attackType: 2
-    m_projectileType: 0
-    m_oscillationsPerSeconds: 0
-    m_oscillationAngleRange: 0
-    m_orbitRadius: 0
-    m_numberCellsDescend: 0
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 20
-    m_sprayCount: 0
-  - m_enemyType: 7
-    m_sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
-      type: 3}
-    m_movementType: 6
-    m_isAttachable: 0
-    m_attackType: 2
-    m_projectileType: 0
-    m_oscillationsPerSeconds: 0
-    m_oscillationAngleRange: 0
-    m_orbitRadius: 0
-    m_numberCellsDescend: 0
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 180
-    m_sprayCount: 30
-  - m_enemyType: 8
-    m_sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
-      type: 3}
-    m_movementType: 0
-    m_isAttachable: 0
-    m_attackType: 4
-    m_projectileType: 0
-    m_oscillationsPerSeconds: 0
-    m_oscillationAngleRange: 0
-    m_orbitRadius: 0
-    m_numberCellsDescend: 0
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 20
-    m_sprayCount: 12
-  - m_enemyType: 9
-    m_sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
-      type: 3}
-    m_movementType: 0
-    m_isAttachable: 0
-    m_attackType: 4
-    m_projectileType: 1
-    m_oscillationsPerSeconds: 0
-    m_oscillationAngleRange: 0
-    m_orbitRadius: 0
-    m_numberCellsDescend: 0
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 20
-    m_sprayCount: 12
-  - m_enemyType: 10
-    m_sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
-      type: 3}
-    m_movementType: 2
-    m_isAttachable: 0
-    m_attackType: 6
-    m_projectileType: 0
-    m_oscillationsPerSeconds: 0.25
-    m_oscillationAngleRange: 180
-    m_orbitRadius: 0
-    m_numberCellsDescend: 0
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 0
-    m_sprayCount: 0
-  - m_enemyType: 11
-    m_sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
-      type: 3}
-    m_movementType: 4
-    m_isAttachable: 0
-    m_attackType: 5
-    m_projectileType: 0
-    m_oscillationsPerSeconds: 0
-    m_oscillationAngleRange: 0
-    m_orbitRadius: 0
-    m_numberCellsDescend: 0
-    m_addVelocityToProjectiles: 1
-    m_spreadAngle: 0
-    m_sprayCount: 0
-  - m_enemyType: 12
-    m_sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
-      type: 3}
-    m_movementType: 1
-    m_isAttachable: 0
-    m_attackType: 2
-    m_projectileType: 0
-    m_oscillationsPerSeconds: 2
-    m_oscillationAngleRange: 90
-    m_orbitRadius: 0
-    m_numberCellsDescend: 0
-    m_addVelocityToProjectiles: 1
-    m_spreadAngle: 180
-    m_sprayCount: 0
-  - m_enemyType: 13
-    m_sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
-      type: 3}
-    m_movementType: 4
-    m_isAttachable: 0
-    m_attackType: 3
-    m_projectileType: 0
-    m_oscillationsPerSeconds: 0
-    m_oscillationAngleRange: 0
-    m_orbitRadius: 0
-    m_numberCellsDescend: 0
-    m_addVelocityToProjectiles: 1
-    m_spreadAngle: 0
-    m_sprayCount: 0
-  - m_enemyType: 14
-    m_sprite: {fileID: -6008815609169469037, guid: 3e2b9611e1e0d8d42b7f1b9bf16456c4,
-      type: 3}
-    m_movementType: 3
-    m_isAttachable: 0
-    m_attackType: 5
-    m_projectileType: 0
-    m_oscillationsPerSeconds: 0
-    m_oscillationAngleRange: 0
-    m_orbitRadius: 12
-    m_numberCellsDescend: 0
-    m_addVelocityToProjectiles: 1
-    m_spreadAngle: 0
-    m_sprayCount: 0

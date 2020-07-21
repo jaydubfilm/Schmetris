@@ -33,7 +33,7 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        private EnemyData SetupEnemyData(ENEMY_TYPE enemyType)
+        private EnemyData SetupEnemyData(string enemyType)
         {
             EnemyProfileData profile = m_enemyProfile.GetEnemyProfileData(enemyType);
             EnemyRemoteData remoteData = m_enemyRemoteData.GetRemoteData(enemyType);
@@ -78,7 +78,7 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        public T CreateObject<T>(ENEMY_TYPE enemyType)
+        public T CreateObject<T>(string enemyType)
         {
             EnemyData enemyData = enemyDatas.FirstOrDefault(p => p.EnemyType == enemyType);
 

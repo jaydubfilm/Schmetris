@@ -300,6 +300,7 @@ namespace StarSalvager.AI
         {
             //FIXME This should use IHealth
             LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.position, m_enemyData.MinBitExplosionCount, m_enemyData.MaxBitExplosionCount);
+            MissionManager.ProcessEnemyKilledMissionData(m_enemyData.EnemyType, 1);
             Recycler.Recycle<Enemy>(this);
         }
         

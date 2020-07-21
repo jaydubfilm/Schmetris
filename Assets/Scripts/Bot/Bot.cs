@@ -190,7 +190,7 @@ namespace StarSalvager
                     Level = 0,
                 });
 
-            AttachNewBit(Vector2Int.zero, core);
+            AttachNewBit(Vector2Int.zero, core, updateMissions: false);
         }
         
         public void InitBot(IEnumerable<IAttachable> botAttachables)
@@ -202,7 +202,7 @@ namespace StarSalvager
             
             foreach (var attachable in botAttachables)
             {
-                AttachNewBit(attachable.Coordinate, attachable);
+                AttachNewBit(attachable.Coordinate, attachable, updateMissions: false);
             }
         }
         
@@ -808,7 +808,8 @@ namespace StarSalvager
 
         #region Attach Bits
 
-        public void AttachNewBit(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true, bool updateColliderGeometry = true)
+        public void AttachNewBit(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true, 
+            bool updateColliderGeometry = true, bool updateMissions = true)
         {
             newAttachable.Coordinate = coordinate;
             newAttachable.SetAttached(true);
@@ -817,6 +818,23 @@ namespace StarSalvager
 
             newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
             attachedBlocks.Add(newAttachable);
+
+            if (updateMissions)
+            {
+                if (newAttachable is Bit bit)
+                {
+                    MissionManager.ProcessResourceCollectedMissionData(bit.Type, 
+                        FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type).resource[bit.level]);
+                }
+                else if (newAttachable is Shape shape)
+                {
+                    foreach (var attachedBit in shape.AttachedBits)
+                    {
+                        MissionManager.ProcessResourceCollectedMissionData(attachedBit.Type,
+                            FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(attachedBit.Type).resource[attachedBit.level]);
+                    }
+                }
+            }
 
             if (newAttachable is Part)
                 UpdatePartsList();
@@ -829,7 +847,7 @@ namespace StarSalvager
         }
 
         public void AttachNewBitToExisting(IAttachable newAttachable, IAttachable existingAttachable,
-            DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true)
+            DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true, bool updateMissions = true)
         {
             var coordinate = existingAttachable.Coordinate + direction.ToVector2Int();
 
@@ -850,6 +868,23 @@ namespace StarSalvager
             newAttachable.transform.SetParent(transform);
 
             attachedBlocks.Add(newAttachable);
+
+            if (updateMissions)
+            {
+                if (newAttachable is Bit bit)
+                {
+                    MissionManager.ProcessResourceCollectedMissionData(bit.Type,
+                        FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type).resource[bit.level]);
+                }
+                else if (newAttachable is Shape shape)
+                {
+                    foreach (var attachedBit in shape.AttachedBits)
+                    {
+                        MissionManager.ProcessResourceCollectedMissionData(attachedBit.Type,
+                            FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(attachedBit.Type).resource[attachedBit.level]);
+                    }
+                }
+            }
 
             if (checkForCombo)
             {
@@ -1423,6 +1458,7 @@ namespace StarSalvager
             if (data.comboData.points == 0)
                 return;
 
+            MissionManager.ProcessComboBlocksMissionData(data.toMove[0].Type, 1);
             SimpleComboSolver(data.comboData, data.toMove);
         }
         private void CheckForCombosAround(Bit bit)
@@ -1441,7 +1477,8 @@ namespace StarSalvager
             //    AdvancedComboSolver(data.comboData, data.toMove);
             //}
             //else
-                SimpleComboSolver(data.comboData, data.toMove);
+            MissionManager.ProcessComboBlocksMissionData(bit.Type, 1);
+            SimpleComboSolver(data.comboData, data.toMove);
         }
 
         //============================================================================================================//

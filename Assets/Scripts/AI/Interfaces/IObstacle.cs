@@ -9,5 +9,7 @@ namespace StarSalvager
         Transform transform { get; }
         GameObject gameObject { get; }
         bool CanMove { get; }
+
+        void SetColliderActive(bool active);
     }
 }

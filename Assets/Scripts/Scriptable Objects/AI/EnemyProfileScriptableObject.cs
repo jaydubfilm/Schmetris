@@ -18,7 +18,7 @@ namespace StarSalvager.ScriptableObjects
 
         public List<EnemyProfileData> m_enemyProfileData = new List<EnemyProfileData>();
 
-        public EnemyProfileData GetEnemyProfileData(ENEMY_TYPE Type)
+        public EnemyProfileData GetEnemyProfileData(string Type)
         {
             return m_enemyProfileData
                 .FirstOrDefault(p => p.EnemyType == Type);

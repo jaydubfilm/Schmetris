@@ -4,18 +4,30 @@ using UnityEngine;
 
 namespace StarSalvager
 {
+    [System.Serializable]
     public abstract class Mission
     {
-        public string MissionName;
-        public MISSION_EVENT_TYPE missionType;
+        public string m_missionName;
+        public int m_amountNeeded;
+        public int m_currentAmount;
+        public MISSION_EVENT_TYPE MissionEventType { get; protected set; }
+        public MISSION_STATUS MissionStatus;
 
-        public abstract bool MissionComplete();
+        public MISSION_UNLOCK_PARAMETERS MissionUnlockType { get; protected set; }
 
-        public Mission()
+        public Mission(string missionName, int amountNeeded, MISSION_UNLOCK_PARAMETERS missionUnlockType)
         {
-
+            m_currentAmount = 0;
+            m_missionName = missionName;
+            m_amountNeeded = amountNeeded;
+            MissionUnlockType = missionUnlockType;
         }
 
-        public abstract void ProcessMissionData(MISSION_EVENT_TYPE type, Dictionary<string, object> data);
+        public float GetMissionProgress()
+        {
+            return (float)m_currentAmount / (float)m_amountNeeded;
+        }
+
+        public abstract bool MissionComplete();
     }
 }

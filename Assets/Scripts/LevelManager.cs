@@ -45,6 +45,9 @@ namespace StarSalvager
         private int m_currentWave = 0;
         public int CurrentWave => m_currentWave;
 
+        private bool m_endWaveState = false;
+        public bool EndWaveState => m_endWaveState;
+
         private LevelManagerUI m_levelManagerUI;
 
         public bool isPaused => GameTimer.IsPaused;
@@ -108,14 +111,14 @@ namespace StarSalvager
             }
         }
         private ProjectileManager m_projectileManager;
-        
+
         private GameUI GameUi
         {
             get
             {
                 if (!_gameUi)
                     _gameUi = FindObjectOfType<GameUI>();
-                
+
                 return _gameUi;
             }
         }
@@ -147,15 +150,27 @@ namespace StarSalvager
                 WorldGrid.DrawDebugMarkedGridPoints();
                 Debug.Break();
             }
-            
+
             if (isPaused)
                 return;
 
-            m_waveTimer += Time.deltaTime;
-            m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
-            if (m_currentStage == -1)
-                TransitionToNewWave();
-            
+            if (!EndWaveState)
+            {
+                m_waveTimer += Time.deltaTime;
+                m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+                if (m_currentStage == -1)
+                    TransitionToNewWave();
+            }
+            else if (ObstacleManager.HasNoActiveObstacles)
+            {
+                GameTimer.SetPaused(true);
+                m_endWaveState = false;
+                m_levelManagerUI.ToggleBetweenWavesUIActive(true);
+                ObstacleManager.MoveToNewWave();
+                EnemyManager.MoveToNewWave();
+                m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+            }
+
             ProjectileManager.UpdateForces();
         }
 
@@ -233,16 +248,14 @@ namespace StarSalvager
 
             if (m_currentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
-                GameTimer.SetPaused(true);
-                m_levelManagerUI.ToggleBetweenWavesUIActive(true);
+                m_endWaveState = true;
                 m_currentWave++;
                 //m_levelManagerUI.SetCurrentWaveText(m_currentWave.ToString() + " Complete");
                 GameUi.SetCurrentWaveText("Complete");
                 m_levelTimer += m_waveTimer;
                 m_waveTimer = 0;
-                ObstacleManager.MoveToNewWave();
-                EnemyManager.MoveToNewWave();
-                m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+                m_levelManagerUI.SetCurrentWaveText(m_currentWave.ToString() + " Complete");
+                MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector, m_currentWave);
             }
             else
             {

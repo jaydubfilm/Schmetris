@@ -7,10 +7,8 @@ namespace StarSalvager.Factories.Data
     [System.Serializable]
     public struct EnemyProfileData
     {
-        public int Type => (int)m_enemyType;
-
         [SerializeField, FoldoutGroup("$EnemyType")]
-        private ENEMY_TYPE m_enemyType;
+        private string m_enemyType;
 
         [SerializeField, FoldoutGroup("$EnemyType")]
         private Sprite m_sprite;
@@ -53,7 +51,7 @@ namespace StarSalvager.Factories.Data
         private int m_sprayCount;
 
 
-        public ENEMY_TYPE EnemyType
+        public string EnemyType
         {
             get => m_enemyType;
         }

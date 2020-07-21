@@ -2,10 +2,10 @@
 {
     public enum MISSION_EVENT_TYPE
     {
-        
-        
-        USER_INPUT,
         ENEMY_KILLED,
-        RESOURCE_COLLECTED
+        RESOURCE_COLLECTED,
+        COMBO_BLOCKS,
+        LEVEL_PROGRESS,
+        END_WAVE
     }
 }

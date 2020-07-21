@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Enemy_Remote
   m_EditorClassIdentifier: 
   m_enemyRemoteData:
-  - m_enemyType: 0
+  - m_enemyType: Shooting Enemy
     m_enemyID: 0
     m_name: 
     m_health: 10
@@ -22,7 +22,7 @@ MonoBehaviour:
     m_attackSpeed: 1
     m_minBitExplosionCount: 2
     m_maxBitExplosionCount: 4
-  - m_enemyType: 1
+  - m_enemyType: Parasite Enemy
     m_enemyID: 0
     m_name: 
     m_health: 10
@@ -31,120 +31,3 @@ MonoBehaviour:
     m_attackSpeed: 1
     m_minBitExplosionCount: 2
     m_maxBitExplosionCount: 4
-  - m_enemyType: 2
-    m_enemyID: 0
-    m_name: 
-    m_health: 0
-    m_movementSpeed: 8
-    m_attackDamage: 0
-    m_attackSpeed: 2
-    m_minBitExplosionCount: 0
-    m_maxBitExplosionCount: 0
-  - m_enemyType: 3
-    m_enemyID: 0
-    m_name: 
-    m_health: 0
-    m_movementSpeed: 6
-    m_attackDamage: 0
-    m_attackSpeed: 0.75
-    m_minBitExplosionCount: 0
-    m_maxBitExplosionCount: 0
-  - m_enemyType: 4
-    m_enemyID: 0
-    m_name: 
-    m_health: 0
-    m_movementSpeed: 3
-    m_attackDamage: 0
-    m_attackSpeed: 1.5
-    m_minBitExplosionCount: 0
-    m_maxBitExplosionCount: 0
-  - m_enemyType: 5
-    m_enemyID: 0
-    m_name: 
-    m_health: 0
-    m_movementSpeed: 5
-    m_attackDamage: 0
-    m_attackSpeed: 4
-    m_minBitExplosionCount: 0
-    m_maxBitExplosionCount: 0
-  - m_enemyType: 6
-    m_enemyID: 0
-    m_name: 
-    m_health: 0
-    m_movementSpeed: 2
-    m_attackDamage: 0
-    m_attackSpeed: 1
-    m_minBitExplosionCount: 0
-    m_maxBitExplosionCount: 0
-  - m_enemyType: 7
-    m_enemyID: 0
-    m_name: 
-    m_health: 0
-    m_movementSpeed: 4
-    m_attackDamage: 0
-    m_attackSpeed: 10
-    m_minBitExplosionCount: 0
-    m_maxBitExplosionCount: 0
-  - m_enemyType: 8
-    m_enemyID: 0
-    m_name: 
-    m_health: 0
-    m_movementSpeed: 4
-    m_attackDamage: 0
-    m_attackSpeed: 4
-    m_minBitExplosionCount: 0
-    m_maxBitExplosionCount: 0
-  - m_enemyType: 9
-    m_enemyID: 0
-    m_name: 
-    m_health: 0
-    m_movementSpeed: 4
-    m_attackDamage: 0
-    m_attackSpeed: 4
-    m_minBitExplosionCount: 0
-    m_maxBitExplosionCount: 0
-  - m_enemyType: 10
-    m_enemyID: 0
-    m_name: 
-    m_health: 0
-    m_movementSpeed: 7
-    m_attackDamage: 0
-    m_attackSpeed: 0
-    m_minBitExplosionCount: 0
-    m_maxBitExplosionCount: 0
-  - m_enemyType: 11
-    m_enemyID: 0
-    m_name: 
-    m_health: 0
-    m_movementSpeed: 5
-    m_attackDamage: 0
-    m_attackSpeed: 4
-    m_minBitExplosionCount: 0
-    m_maxBitExplosionCount: 0
-  - m_enemyType: 12
-    m_enemyID: 0
-    m_name: 
-    m_health: 0
-    m_movementSpeed: 4
-    m_attackDamage: 0
-    m_attackSpeed: 10
-    m_minBitExplosionCount: 0
-    m_maxBitExplosionCount: 0
-  - m_enemyType: 13
-    m_enemyID: 0
-    m_name: 
-    m_health: 0
-    m_movementSpeed: 5
-    m_attackDamage: 0
-    m_attackSpeed: 1
-    m_minBitExplosionCount: 0
-    m_maxBitExplosionCount: 0
-  - m_enemyType: 14
-    m_enemyID: 0
-    m_name: 
-    m_health: 0
-    m_movementSpeed: 4
-    m_attackDamage: 0
-    m_attackSpeed: 4
-    m_minBitExplosionCount: 0
-    m_maxBitExplosionCount: 0

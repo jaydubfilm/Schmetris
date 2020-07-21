@@ -125,7 +125,14 @@ namespace StarSalvager
 
             if (bot.Rotating)
             {
-                Recycler.Recycle<Bit>(this);
+                if (Type == BIT_TYPE.BLACK)
+                {
+                    Recycler.Recycle<Bit>(this);
+                    return;
+                }
+                Vector2 direction = transform.position - bot.transform.position;
+                direction.Normalize();
+                LevelManager.Instance.ObstacleManager.BounceObstacle(this, direction, true);
                 return;
             }
 
