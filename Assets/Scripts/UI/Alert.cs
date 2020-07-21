@@ -9,6 +9,8 @@ namespace StarSalvager.UI
 {
     public class Alert : Singleton<Alert>
     {
+        public static bool Displayed => Instance.windowObject.activeInHierarchy;
+        
         [SerializeField, Required]
         private GameObject windowObject;
         

@@ -116,15 +116,15 @@ namespace StarSalvager
 
             if (ctx.ReadValue<float>() == 1f)
                 return;
+            
+            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
+                return;
 
             if (!PlayerPersistentData.PlayerData.CanAffordPart((PART_TYPE)selectedPartType, selectedpartLevel))
             {
                 m_scrapyardUI.DisplayInsufficientResources();
                 return;
             }
-
-            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
-                return;
             
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {

@@ -99,7 +99,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 264
+  m_textAlignment: 257
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -322,6 +322,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5569929846152231077}
   - component: {fileID: 1725383720261894876}
+  - component: {fileID: 9053911265662716850}
   - component: {fileID: 5569929846152231074}
   - component: {fileID: 5569929846152231075}
   - component: {fileID: 5569929846152231072}
@@ -371,6 +372,18 @@ MonoBehaviour:
   positiveButton: {fileID: 5569929847353871087}
   negativeButton: {fileID: 5569929847367231091}
   neutralButton: {fileID: 5569929846153243693}
+--- !u!114 &9053911265662716850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5569929846152231073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 867923add01aaf84da430db9bd11489b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!223 &5569929846152231074
 Canvas:
   m_ObjectHideFlags: 0
@@ -390,7 +403,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10000
   m_TargetDisplay: 0
 --- !u!114 &5569929846152231075
 MonoBehaviour:
@@ -566,7 +579,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5569929846237194607
 Transform:
   m_ObjectHideFlags: 0
@@ -769,7 +782,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5569929846452692473
 RectTransform:
   m_ObjectHideFlags: 0

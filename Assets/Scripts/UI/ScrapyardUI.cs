@@ -3,7 +3,6 @@ using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
-using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Utilities.UI;
@@ -52,12 +51,6 @@ namespace StarSalvager.UI
         private Button ReadyButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button SellBitsButton;
-
-
-        [SerializeField, Required, BoxGroup("Animators")]
-        private Animator InsufficientResourcesAnimator;
-        [SerializeField, Required, BoxGroup("Animators")]
-        private Animator NotConnectedAnimator;
 
         //============================================================================================================//
 
@@ -122,12 +115,12 @@ namespace StarSalvager.UI
                 {
                     m_scrapyard.SaveBlockData();
                     m_scrapyard.ProcessScrapyardUsageEndAnalytics();
-                    StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
+                    SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
                 }
                 else
                 {
-                    NotConnectedAnimator.gameObject.SetActive(true);
-                    NotConnectedAnimator.Play("FadeText", -1, 0.0f);
+                    Alert.ShowAlert("Alert!",
+                        "A disconnected piece is active on your Bot! Please repair before continuing", "Okay", null);
                 }
             });
 
@@ -222,8 +215,8 @@ namespace StarSalvager.UI
 
         public void DisplayInsufficientResources()
         {
-            InsufficientResourcesAnimator.gameObject.SetActive(true);
-            InsufficientResourcesAnimator.Play("FadeText", -1, 0.0f);
+            Alert.ShowAlert("Alert!",
+                "You do not have enough resources to purchase this part!", "Okay", null);
         }
 
         //============================================================================================================//
