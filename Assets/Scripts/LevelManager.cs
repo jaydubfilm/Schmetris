@@ -250,11 +250,9 @@ namespace StarSalvager
             {
                 m_endWaveState = true;
                 m_currentWave++;
-                //m_levelManagerUI.SetCurrentWaveText(m_currentWave.ToString() + " Complete");
-                GameUi.SetCurrentWaveText("Complete");
                 m_levelTimer += m_waveTimer;
                 m_waveTimer = 0;
-                m_levelManagerUI.SetCurrentWaveText(m_currentWave.ToString() + " Complete");
+                GameUi.SetCurrentWaveText("Complete");
                 MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector, m_currentWave);
             }
             else
