@@ -5,6 +5,7 @@ using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using UnityEngine;
@@ -83,7 +84,7 @@ namespace StarSalvager.UI
             MenuButton.onClick.AddListener(() =>
             {
                 m_scrapyard.SaveBlockData();
-                SceneLoader.SceneLoader.ActivateScene("MainMenuScene", "ScrapyardScene");
+                SceneLoader.ActivateScene("MainMenuScene", "ScrapyardScene");
             });
             
             leftTurnButton.onClick.AddListener(() =>
@@ -114,7 +115,7 @@ namespace StarSalvager.UI
             {
                 m_scrapyard.SaveBlockData();
                 m_scrapyard.ProcessScrapyardUsageEndAnalytics();
-                StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
+                SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
             });
 
             SellBitsButton.onClick.AddListener(() =>

@@ -4,10 +4,12 @@ using Object = UnityEngine.Object;
 
 namespace StarSalvager.Utilities
 {
+    
     /// <summary>
     /// Used for session dependent singletons (Dont' destroy object on Load)
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [DefaultExecutionOrder(-10000)]
     public class Singleton<T> : MonoBehaviour where T: Object
     {
         public static T Instance => _instance;

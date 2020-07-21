@@ -10,6 +10,7 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Values;
 using System.Collections.Generic;
+using StarSalvager.Utilities.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -233,7 +234,7 @@ namespace StarSalvager
                 ProcessLevelCompleteAnalytics();
                 ProcessScrapyardUsageBeginAnalytics();
                 m_currentWave = 0;
-                StarSalvager.SceneLoader.SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
+                SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             }
         }
 
@@ -252,7 +253,7 @@ namespace StarSalvager
             m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
             GameTimer.SetPaused(false);
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
-            SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "AlexShulmanTestScene");
+            SceneLoader.ActivateScene("AlexShulmanTestScene", "AlexShulmanTestScene");
         }
 
         //============================================================================================================//

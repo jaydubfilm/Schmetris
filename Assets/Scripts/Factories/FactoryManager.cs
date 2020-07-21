@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace StarSalvager.Factories
 {
+    
     //Based on: https://www.dofactory.com/net/factory-method-design-pattern
     public class FactoryManager : Singleton<FactoryManager>
     {

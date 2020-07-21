@@ -6,6 +6,7 @@ using StarSalvager.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.UI;
+using StarSalvager.Utilities.SceneManagement;
 using UnityEngine.InputSystem;
 
 using Input = StarSalvager.Utilities.Inputs.Input;
@@ -169,7 +170,7 @@ namespace StarSalvager
 
         private void ToGameplayButtonPressed()
         {
-            StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
+           SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
         }
 
         public void ProcessScrapyardUsageEndAnalytics()

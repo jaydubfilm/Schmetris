@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using StarSalvager.SceneLoader;
+using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Cameras;
 using UnityEngine.SceneManagement;
 using StarSalvager.Factories;
@@ -100,7 +100,7 @@ namespace StarSalvager
         private void ToGameplayButtonPressed()
         {
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
-            StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "MainMenuScene");
+            SceneLoader.ActivateScene("AlexShulmanTestScene", "MainMenuScene");
         }
 
         private void ToggleBitButtonPressed()

@@ -38,8 +38,6 @@ namespace StarSalvager.UI
         
         public override void Init(PartRemoteData data, Action<PART_TYPE> OnPressed)
         {
-            
-            
             if (_partAttachableFactory == null)
                 _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
             
