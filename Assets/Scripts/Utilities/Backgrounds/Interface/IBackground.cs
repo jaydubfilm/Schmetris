@@ -9,11 +9,10 @@ namespace StarSalvager.Utilities.Backgrounds
     {
         float zDepth { get;}
         bool parentIsCamera { get;}
-        bool ignoreOrientationChanges { get;}
 
         GameObject gameObject { get; }
 
-        void Init(Transform cameraTransform);
+        void Init(Transform cameraTransform, float zDepth);
         void UpdatePosition();
 
         void SetOrientation(ORIENTATION newOrientation);

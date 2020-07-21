@@ -2,24 +2,29 @@
 using StarSalvager.Values;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras.Data;
+using StarSalvager.Utilities.Inputs;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace StarSalvager.Cameras
 {
     [DefaultExecutionOrder(-1000)]
-    public class CameraController : MonoBehaviour
+    public class CameraController : MonoBehaviour, IMoveOnInput
     {
         //============================================================================================================//
 
-        //private Vector3 startPos;
-        //private Vector3 edgePos;
-        //private Vector3 targetPos;
-        //public float smoothing = 4.0f;
-        //private float horzExtent;
+        [SerializeField, ToggleGroup("useInputMotion")]
+        private bool useInputMotion;
+        [SerializeField, ToggleGroup("useInputMotion")]
+        private float smoothing = 4.0f;
+        
+        private Vector3 startPos;
+        private Vector3 edgePos;
+        private Vector3 targetPos;
+        private float horzExtent;
 
         //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
-       //private float m_currentInput;
+        private float m_currentInput;
 
         //============================================================================================================//
 
@@ -55,7 +60,9 @@ namespace StarSalvager.Cameras
         private void Start()
         {
             Globals.OrientationChange += SetOrientation;
-            //RegisterMoveOnInput();
+            
+            if(useInputMotion)
+                RegisterMoveOnInput();
         }
 
         private void OnEnable()
@@ -65,10 +72,13 @@ namespace StarSalvager.Cameras
         }
 
         //Smooth camera to center over bot
-        //private void Update()
-        //{
-        //    transform.position = Vector3.MoveTowards(transform.position, targetPos, smoothing * Time.deltaTime);
-        //}
+        private void Update()
+        {
+            if (!useInputMotion)
+                return;
+            
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, smoothing * Time.deltaTime);
+        }
 
         private void OnDestroy()
         {
@@ -96,9 +106,9 @@ namespace StarSalvager.Cameras
                 transform.position += Vector3.right * (orthographicSize * Screen.width / Screen.height) / 4;
             }
 
-            //startPos = transform.position;
-            //targetPos = startPos;
-            //horzExtent = orthographicSize * Screen.width / Screen.height / 2;
+            startPos = transform.position;
+            targetPos = startPos;
+            horzExtent = orthographicSize * Screen.width / Screen.height / 2;
         }
 
         private void SetOrientation(ORIENTATION orientation)
@@ -140,27 +150,30 @@ namespace StarSalvager.Cameras
         //IMoveOnInput functions
         //================================================================================================================//
 
-        //public void RegisterMoveOnInput()
-        //{
-        //    InputManager.RegisterMoveOnInput(this);
-        //}
-//
-        //public void Move(float direction)
-        //{
-        //    m_currentInput = direction;
-//
-        //    if (m_currentInput == 0)
-        //    {
-        //        targetPos = startPos;
-        //        return;
-        //    }
-//
-        //    Vector3 cameraOff = startPos;
-        //    cameraOff.x += -direction * horzExtent;
-//
-        //    edgePos = cameraOff;
-        //    targetPos = edgePos;
-        //}
+        public void RegisterMoveOnInput()
+        {
+            InputManager.RegisterMoveOnInput(this);
+        }
+            
+        public void Move(float direction)
+        {
+            if (!useInputMotion)
+                return;
+            
+            m_currentInput = direction;
+            
+            if (m_currentInput == 0)
+            {
+                targetPos = startPos;
+                return;
+            }
+            
+            Vector3 cameraOff = startPos;
+            cameraOff.x += -direction * horzExtent;
+            
+            edgePos = cameraOff;
+            targetPos = edgePos;
+        }
 
         //============================================================================================================//
     }

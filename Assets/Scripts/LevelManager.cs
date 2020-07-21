@@ -10,6 +10,7 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Values;
 using System.Collections.Generic;
+using StarSalvager.Utilities.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -111,6 +112,18 @@ namespace StarSalvager
         }
         private ProjectileManager m_projectileManager;
 
+        private GameUI GameUi
+        {
+            get
+            {
+                if (!_gameUi)
+                    _gameUi = FindObjectOfType<GameUI>();
+
+                return _gameUi;
+            }
+        }
+        private GameUI _gameUi;
+
         private void Start()
         {
             m_bots = new List<Bot>();
@@ -123,7 +136,9 @@ namespace StarSalvager
 
             GameTimer.AddPausable(this);
             m_levelManagerUI = FindObjectOfType<LevelManagerUI>();
-            m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
+            //m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
+
+            GameUi.SetCurrentWaveText(m_currentStage + 1, m_currentWave + 1);
 
             Random.InitState(seed);
         }
@@ -135,7 +150,7 @@ namespace StarSalvager
                 WorldGrid.DrawDebugMarkedGridPoints();
                 Debug.Break();
             }
-            
+
             if (isPaused)
                 return;
 
@@ -155,7 +170,7 @@ namespace StarSalvager
                 EnemyManager.MoveToNewWave();
                 m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
             }
-            
+
             ProjectileManager.UpdateForces();
         }
 
@@ -237,7 +252,7 @@ namespace StarSalvager
                 m_currentWave++;
                 m_levelTimer += m_waveTimer;
                 m_waveTimer = 0;
-                m_levelManagerUI.SetCurrentWaveText(m_currentWave.ToString() + " Complete");
+                GameUi.SetCurrentWaveText("Complete");
                 MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector, m_currentWave);
             }
             else
@@ -245,7 +260,7 @@ namespace StarSalvager
                 ProcessLevelCompleteAnalytics();
                 ProcessScrapyardUsageBeginAnalytics();
                 m_currentWave = 0;
-                StarSalvager.SceneLoader.SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
+                SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             }
         }
 
@@ -261,17 +276,19 @@ namespace StarSalvager
         {
             m_currentWave = 0;
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
-            m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
+            //m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
+            GameUi.SetCurrentWaveText(m_currentStage + 1, m_currentWave + 1);
             GameTimer.SetPaused(false);
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
-            SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "AlexShulmanTestScene");
+            SceneLoader.ActivateScene("AlexShulmanTestScene", "AlexShulmanTestScene");
         }
 
         //============================================================================================================//
 
         public void OnResume()
         {
-            m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
+            //m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
+            GameUi.SetCurrentWaveText(m_currentStage + 1, m_currentWave + 1);
         }
 
         public void OnPause()

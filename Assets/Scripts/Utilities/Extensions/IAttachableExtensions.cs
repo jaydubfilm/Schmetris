@@ -34,8 +34,6 @@ namespace StarSalvager.Utilities.Extensions
 
             attachable.Coordinate = temp;
         }
-
-        
     }
 }
 

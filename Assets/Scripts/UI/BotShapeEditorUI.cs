@@ -96,14 +96,14 @@ namespace StarSalvager.UI
         [SerializeField, Required, BoxGroup("Save Menu")]
         private Button SaveAsNew;
 
-        [SerializeField, Required, BoxGroup("Can't Save Menu")]
-        private GameObject CantSaveMenu;
-        [SerializeField, Required, BoxGroup("Can't Save Menu")]
-        private Button CantSaveRemove;
-        [SerializeField, Required, BoxGroup("Can't Save Menu")]
-        private Button CantSaveReturn;
-        [SerializeField, Required, BoxGroup("Can't Save Menu")]
-        private Button CantSaveReturn2;
+        //[SerializeField, Required, BoxGroup("Can't Save Menu")]
+        //private GameObject CantSaveMenu;
+        //[SerializeField, Required, BoxGroup("Can't Save Menu")]
+        //private Button CantSaveRemove;
+        //[SerializeField, Required, BoxGroup("Can't Save Menu")]
+        //private Button CantSaveReturn;
+        //[SerializeField, Required, BoxGroup("Can't Save Menu")]
+        //private Button CantSaveReturn2;
 
         [SerializeField, Required, BoxGroup("New Category Menu")]
         private GameObject NewCategoryMenu;
@@ -116,12 +116,12 @@ namespace StarSalvager.UI
         [SerializeField, Required, BoxGroup("New Category Menu")]
         private Button NewCategoryReturn2;
 
-        [SerializeField, Required, BoxGroup("Overwrite Menu")]
-        private GameObject OverwriteMenu;
-        [SerializeField, Required, BoxGroup("Overwrite Menu")]
-        private Button OverwriteConfirm;
-        [SerializeField, Required, BoxGroup("Overwrite Menu")]
-        private Button OverwriteReturn;
+        //[SerializeField, Required, BoxGroup("Overwrite Menu")]
+        //private GameObject OverwriteMenu;
+        //[SerializeField, Required, BoxGroup("Overwrite Menu")]
+        //private Button OverwriteConfirm;
+        //[SerializeField, Required, BoxGroup("Overwrite Menu")]
+        //private Button OverwriteReturn;
 
         [SerializeField, Required, BoxGroup("UI Visuals")]
         private Image ScreenBlackImage;
@@ -132,7 +132,7 @@ namespace StarSalvager.UI
         private BotShapeEditor m_botShapeEditor;
 
         private EditorGeneratorDataBase m_currentSelected;
-        public bool IsPopupActive => LoadMenu.activeSelf || SaveMenu.activeSelf || CantSaveMenu.activeSelf || OverwriteMenu.activeSelf || NewCategoryMenu.activeSelf;
+        public bool IsPopupActive => LoadMenu.activeSelf || SaveMenu.activeSelf || Alert.Displayed || NewCategoryMenu.activeSelf;
         private bool m_currentlyOverwriting = false;
 
         
@@ -211,7 +211,16 @@ namespace StarSalvager.UI
                 }
                 else
                 {
-                    CantSaveMenu.SetActive(true);
+                    Alert.ShowAlert("Alert!",
+                        "There are blocks currently floating or disconnected. Would you like to remove them?",
+                        "Confirm", "Cancel", b =>
+                        {
+                            if (b)
+                                m_botShapeEditor.RemoveFloating();
+
+                            ScreenBlackImage.gameObject.SetActive(false);
+                        });
+                    //CantSaveMenu.SetActive(true);
                 }
                 ScreenBlackImage.gameObject.SetActive(true);
             });
@@ -303,7 +312,7 @@ namespace StarSalvager.UI
 
             //--------------------------------------------------------------------------------------------------------//
 
-            CantSaveRemove.onClick.AddListener(() =>
+            /*CantSaveRemove.onClick.AddListener(() =>
             {
                 m_botShapeEditor.RemoveFloating();
                 CantSaveMenu.SetActive(false);
@@ -320,7 +329,7 @@ namespace StarSalvager.UI
             {
                 CantSaveMenu.SetActive(false);
                 ScreenBlackImage.gameObject.SetActive(false);
-            });
+            });*/
 
             //--------------------------------------------------------------------------------------------------------//
 

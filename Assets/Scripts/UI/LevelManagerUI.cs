@@ -2,6 +2,7 @@
 using StarSalvager.Utilities;
 using System.Collections;
 using System.Collections.Generic;
+using StarSalvager.Utilities.SceneManagement;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,8 +36,8 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("View")]
         private Button mainMenuButton;
 
-        [SerializeField, Required, FoldoutGroup("View")]
-        private TMP_Text m_currentWaveText;
+        //[SerializeField, Required, FoldoutGroup("View")]
+        //private TMP_Text m_currentWaveText;
 
 
         //============================================================================================================//
@@ -64,7 +65,7 @@ namespace StarSalvager.UI
             {
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
-                StarSalvager.SceneLoader.SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
+                SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             });
 
             toScrapyardButton.onClick.AddListener(() =>
@@ -72,12 +73,12 @@ namespace StarSalvager.UI
                 m_levelManager.SavePlayerData();
                 ToggleBetweenWavesUIActive(false);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
-                StarSalvager.SceneLoader.SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
+                SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             });
 
             toMainMenuButton.onClick.AddListener(() =>
             {
-                StarSalvager.SceneLoader.SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
+                SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
             });
 
             retryButton.onClick.AddListener(() =>
@@ -88,7 +89,7 @@ namespace StarSalvager.UI
             mainMenuButton.onClick.AddListener(() =>
             {
                 GameTimer.SetPaused(false);
-                StarSalvager.SceneLoader.SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
+                SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
             });
             ToggleBetweenWavesUIActive(false);
             
@@ -97,10 +98,7 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        public void SetCurrentWaveText(string endString)
-        {
-            m_currentWaveText.text = "Sector " + (Values.Globals.CurrentSector + 1) + " Wave " + endString;
-        }
+        
 
         public void ToggleBetweenWavesUIActive(bool active)
         {

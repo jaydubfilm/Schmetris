@@ -24,11 +24,6 @@ namespace StarSalvager.Utilities.Backgrounds
         private bool _parentIsCamera;
 
 
-        public bool ignoreOrientationChanges => _ignoreOrientationChanges;
-        [SerializeField, DisableInPlayMode, BoxGroup("Starting Values")]
-        private bool _ignoreOrientationChanges;
-
-
         public float zDepth => _zDepth;
         [SerializeField, DisableInPlayMode, BoxGroup("Starting Values")]
         private float _zDepth;
@@ -54,7 +49,7 @@ namespace StarSalvager.Utilities.Backgrounds
         
         //============================================================================================================//
 
-        public void Init(Transform cameraTransform)
+        public void Init(Transform cameraTransform, float zDepth)
         {
             renderer = GetComponent<Renderer>();
             
@@ -65,6 +60,8 @@ namespace StarSalvager.Utilities.Backgrounds
             m_material.mainTextureOffset = startOffset;
 
             renderer.material = m_material;
+            
+            _zDepth = zDepth;
             
             var pos = transform.position;
             pos.z = zDepth;
@@ -97,7 +94,7 @@ namespace StarSalvager.Utilities.Backgrounds
             //    _horizontalDirecion = _pendingHorizontalDirecion;
             //}
 
-            var horizontalMove = Vector2.right * (horizontalMoveSpeed * Globals.MovingDirection.GetHorizontalDirectionFloat());
+            var horizontalMove = GameTimer.IsPaused ? Vector2.zero : Vector2.right * (horizontalMoveSpeed * Globals.MovingDirection.GetHorizontalDirectionFloat());
             
             
             SetOffset((moveSpeed + horizontalMove) * Time.deltaTime);
@@ -115,14 +112,24 @@ namespace StarSalvager.Utilities.Backgrounds
 
             if (Mathf.Abs(_moveAmount.x) >= 1f)
             {
-                _moveAmount.x = 0f;
+                if (_moveAmount.x < 0)
+                    _moveAmount.x += 1;
+                else 
+                    _moveAmount.x -= 1;
+                
+                //_moveAmount.x = 0f;
                 offset.x = startOffset.x;
             }
 
             if (Mathf.Abs(_moveAmount.y) >= 1f)
             {
-                _moveAmount.y = 0f;
-                offset.y =startOffset.y;
+                if (_moveAmount.y < 0)
+                    _moveAmount.y += 1;
+                else 
+                    _moveAmount.y -= 1;
+                
+                //_moveAmount.y = 0f;
+                offset.y = startOffset.y;
             }
 
             m_material.mainTextureOffset = offset;
@@ -130,7 +137,7 @@ namespace StarSalvager.Utilities.Backgrounds
         
         public void SetOrientation(ORIENTATION newOrientation)
         {
-            if (ignoreOrientationChanges)
+            if (!parentIsCamera)
                 return;
             
             switch (newOrientation)

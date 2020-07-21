@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace StarSalvager.SceneLoader
+namespace StarSalvager.Utilities.SceneManagement
 {
     public static class SceneLoader
     {

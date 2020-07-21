@@ -44,9 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ad2dbcff45bf2845a04653f701a068c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _zDepth: 8.5
   _parentIsCamera: 1
-  _ignoreOrientationChanges: 1
   moveSpeed: {x: 0, y: -0.045}
   horizontalMoveSpeed: -0.75
   spriteOptions:
@@ -135,7 +133,7 @@ Transform:
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_Children: []
   m_Father: {fileID: 6556802445567177184}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 27.391}
 --- !u!114 &481353161730212705
 MonoBehaviour:
@@ -149,9 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ad2dbcff45bf2845a04653f701a068c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _zDepth: 8.5
   _parentIsCamera: 1
-  _ignoreOrientationChanges: 1
   moveSpeed: {x: 0, y: -0.035}
   horizontalMoveSpeed: -0.75
   spriteOptions:
@@ -240,7 +236,7 @@ Transform:
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_Children: []
   m_Father: {fileID: 6556802445567177184}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 14.468}
 --- !u!114 &2651158051656687539
 MonoBehaviour:
@@ -254,9 +250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ad2dbcff45bf2845a04653f701a068c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _zDepth: 8.5
   _parentIsCamera: 1
-  _ignoreOrientationChanges: 1
   moveSpeed: {x: 0, y: -0.01}
   horizontalMoveSpeed: -0.75
   spriteOptions:
@@ -363,7 +357,6 @@ MonoBehaviour:
   moveSpeed: {x: 0, y: 0}
   horizontalMoveSpeed: 0
   _parentIsCamera: 1
-  _ignoreOrientationChanges: 0
   _zDepth: 10
   startTiling: {x: 1, y: 1}
   startOffset: {x: 0, y: 0}
@@ -446,9 +439,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5369234438930346747}
+  - {fileID: 7706641209323560697}
   - {fileID: 7406199740667766218}
   - {fileID: 1331257530279299198}
-  - {fileID: 7706641209323560697}
   - {fileID: 7706641208869972936}
   - {fileID: 7706641209797964718}
   - {fileID: 7706641209168324343}
@@ -517,7 +510,6 @@ MonoBehaviour:
   moveSpeed: {x: 0.0002, y: 0.0005}
   horizontalMoveSpeed: 0.001
   _parentIsCamera: 1
-  _ignoreOrientationChanges: 0
   _zDepth: 7
   startTiling: {x: 0.25, y: 0.25}
   startOffset: {x: 0.2, y: 0.5}
@@ -619,7 +611,6 @@ MonoBehaviour:
   moveSpeed: {x: 0, y: 0.07}
   horizontalMoveSpeed: 0.3
   _parentIsCamera: 0
-  _ignoreOrientationChanges: 1
   _zDepth: 5
   startTiling: {x: 1, y: 1}
   startOffset: {x: 0, y: 0}
@@ -704,7 +695,7 @@ Transform:
   m_LocalScale: {x: 75, y: 75, z: 1}
   m_Children: []
   m_Father: {fileID: 6556802445567177184}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7706641209323560698
 MonoBehaviour:
@@ -721,7 +712,6 @@ MonoBehaviour:
   moveSpeed: {x: 0, y: 0.001}
   horizontalMoveSpeed: 0
   _parentIsCamera: 1
-  _ignoreOrientationChanges: 0
   _zDepth: 8
   startTiling: {x: 1, y: 1}
   startOffset: {x: 0, y: 0}
@@ -823,7 +813,6 @@ MonoBehaviour:
   moveSpeed: {x: -0.0001, y: 0.0015}
   horizontalMoveSpeed: 0.01
   _parentIsCamera: 1
-  _ignoreOrientationChanges: 0
   _zDepth: 6
   startTiling: {x: 0.8, y: 0.8}
   startOffset: {x: 0.5, y: 0.5}

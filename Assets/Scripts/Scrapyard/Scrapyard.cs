@@ -6,6 +6,7 @@ using StarSalvager.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.UI;
+using StarSalvager.Utilities.SceneManagement;
 using UnityEngine.InputSystem;
 
 using Input = StarSalvager.Utilities.Inputs.Input;
@@ -115,15 +116,15 @@ namespace StarSalvager
 
             if (ctx.ReadValue<float>() == 1f)
                 return;
+            
+            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
+                return;
 
             if (!PlayerPersistentData.PlayerData.CanAffordPart((PART_TYPE)selectedPartType, selectedpartLevel))
             {
                 m_scrapyardUI.DisplayInsufficientResources();
                 return;
             }
-
-            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
-                return;
             
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
@@ -185,7 +186,7 @@ namespace StarSalvager
 
         private void ToGameplayButtonPressed()
         {
-            StarSalvager.SceneLoader.SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
+           SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
         }
 
         public void ProcessScrapyardUsageEndAnalytics()

@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace StarSalvager.SceneLoader
+namespace StarSalvager.Utilities.SceneManagement
 {
     public class SceneRoot : MonoBehaviour
     {

@@ -230,6 +230,9 @@ namespace StarSalvager
             Enemy closestEnemy = null;
             foreach (var enemy in m_enemies)
             {
+                if (enemy.IsRecycled)
+                    continue;
+                
                 var dist = Vector2.Distance(position, enemy.transform.position);
                 if(dist > shortestDist)
                     continue;
@@ -247,6 +250,9 @@ namespace StarSalvager
             Enemy closestEnemy = null;
             foreach (var enemy in m_enemies)
             {
+                if (enemy.IsRecycled)
+                    continue;
+                
                 var dist = Vector2.Distance(position, enemy.transform.position);
                 
                 if(dist > range)

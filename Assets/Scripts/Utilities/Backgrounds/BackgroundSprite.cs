@@ -10,7 +10,7 @@ namespace StarSalvager.Utilities.Backgrounds
     public class BackgroundSprite : MonoBehaviour, IBackground
     {
         public float zDepth => _zDepth;
-        [SerializeField]
+        //[SerializeField]
         private float _zDepth;
 
         //[SerializeField]
@@ -20,9 +20,9 @@ namespace StarSalvager.Utilities.Backgrounds
         [SerializeField]
         private bool _parentIsCamera;
 
-        public bool ignoreOrientationChanges => _ignoreOrientationChanges;
-        [SerializeField]
-        private bool _ignoreOrientationChanges;
+        //public bool ignoreOrientationChanges => _ignoreOrientationChanges;
+        //[SerializeField]
+        //private bool _ignoreOrientationChanges;
 
         [SerializeField]
         private Vector2 moveSpeed;
@@ -46,12 +46,14 @@ namespace StarSalvager.Utilities.Backgrounds
 
         //============================================================================================================//
 
-        public void Init(Transform cameraTransform)
+        public void Init(Transform cameraTransform, float zDepth)
         {
             _camera = cameraTransform.GetComponent<Camera>();
             transform = gameObject.transform;
             renderer = GetComponent<SpriteRenderer>();
 
+            _zDepth = zDepth;
+            
             var pos = transform.position;
             pos.z = zDepth;
             transform.position = pos;
@@ -92,8 +94,8 @@ namespace StarSalvager.Utilities.Backgrounds
             
             movingDirection = Globals.MovingDirection.GetHorizontalDirectionFloat();
             
-            horizontalMove = Vector3.right *
-                                 (horizontalMoveSpeed * Globals.MovingDirection.GetHorizontalDirectionFloat());
+            horizontalMove = GameTimer.IsPaused ? Vector3.zero : Vector3.right *
+                                                                 (horizontalMoveSpeed * Globals.MovingDirection.GetHorizontalDirectionFloat());
             
             var pos = transform.position;
             pos += ((Vector3)moveSpeed + horizontalMove) * Time.deltaTime;
@@ -120,7 +122,7 @@ namespace StarSalvager.Utilities.Backgrounds
             lowestPoint = _camera.ViewportToWorldPoint(Vector3.zero).y;
             highestPoint = _camera.ViewportToWorldPoint(Vector3.one).y;
             
-            if (ignoreOrientationChanges)
+            if (!parentIsCamera)
                 return;
             
         }

@@ -21,19 +21,31 @@ namespace StarSalvager.Utilities.UI
         [SerializeField]
         private string format;
 
+        public float value
+        {
+            get => _slider.value;
+
+            set => _slider.value = value;
+        }
+
         public void Init()
         {
             _slider.onValueChanged.AddListener(ValueChanged);
-            sliderText.text = string.Format(format, _slider.value);
+            sliderText.text = FormattedSliderText(format, _slider.value);
         }
 
         private void ValueChanged(float data)
         {
-            sliderText.text = string.Format(format, data);
+            sliderText.text = FormattedSliderText(format, data);
         }
         private void ValueChanged(int data)
         {
-            sliderText.text = string.Format(format, data);
+            sliderText.text = FormattedSliderText(format, data);
+        }
+
+        private static string FormattedSliderText(string format, float data)
+        {
+            return string.IsNullOrEmpty(format) ? $"{data}" : string.Format(format, data);
         }
     }
 }
