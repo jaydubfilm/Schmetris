@@ -267,7 +267,7 @@ namespace StarSalvager
         /// <summary>
         /// Function will review and detach any blocks that no longer have a connection to the core.
         /// </summary>
-        /*public bool CheckHasDisconnects()
+        public bool CheckHasDisconnects()
         {
             var toSolve = new List<IAttachable>(attachedBlocks);
 
@@ -285,7 +285,7 @@ namespace StarSalvager
             }
 
             return false;
-        }*/
+        }
 
         /// <summary>
         /// Function will review and detach any blocks that no longer have a connection to the core.

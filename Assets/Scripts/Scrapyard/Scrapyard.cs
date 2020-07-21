@@ -103,9 +103,9 @@ namespace StarSalvager
                 scrapBot.Rotate(direction);
             }
         }
-        
-        
-        
+
+
+
         //============================================================================================================//
 
         //On left mouse button click, check if there is a bit/part at the mouse location. If there is not, purchase the selected part type and place it at this location.
@@ -113,12 +113,15 @@ namespace StarSalvager
         {
             if (selectedPartType == null)
                 return;
-            
+
             if (ctx.ReadValue<float>() == 1f)
                 return;
 
             if (!PlayerPersistentData.PlayerData.CanAffordPart((PART_TYPE)selectedPartType, selectedpartLevel))
+            {
+                m_scrapyardUI.DisplayInsufficientResources();
                 return;
+            }
 
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
@@ -155,6 +158,19 @@ namespace StarSalvager
         }
         
         //============================================================================================================//
+
+        public bool IsFullyConnected()
+        {
+            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            {
+                if (scrapBot.CheckHasDisconnects())
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         //Save the current bot's data in blockdata to be loaded in the level manager.
         public void SaveBlockData()
