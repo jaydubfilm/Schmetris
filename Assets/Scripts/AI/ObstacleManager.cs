@@ -52,9 +52,6 @@ namespace StarSalvager
             if (isPaused)
                 return;
 
-            print(m_obstacles.Count);
-            print(m_offGridMovingObstacles.Count);
-
             //Simulate the speed of downward movement for obstacles and move the prefabs on screen downward
             Globals.AsteroidFallTimer += Time.deltaTime;
             if (Globals.AsteroidFallTimer >= Constants.timeForAsteroidsToFall)

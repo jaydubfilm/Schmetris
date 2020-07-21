@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Sirenix.OdinInspector;
@@ -11,8 +12,12 @@ namespace StarSalvager.Factories
     //Based on: https://www.dofactory.com/net/factory-method-design-pattern
     public class FactoryManager : Singleton<FactoryManager>
     {
+        [SerializeField, Required, BoxGroup("Temporary")]
+        private MissionRemoteDataScriptableObject missionRemoteData;
+        public MissionRemoteDataScriptableObject MissionRemoteData => missionRemoteData;
+
         //============================================================================================================//
-        
+
         [SerializeField, Required, BoxGroup("Attachables/Bits")]
         private AttachableProfileScriptableObject bitProfile;
         

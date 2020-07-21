@@ -6,28 +6,41 @@ namespace StarSalvager
 {
     public class MissionsCurrentData
     {
-        private List<Mission> m_missionsCurrentList;
+        public List<ResourceCollectedMission> m_resourceCollectedMissions;
+        public List<EnemyKilledMission> m_enemyKilledMissions;
+
+        public List<Mission> m_completedMissions;
 
         public MissionsCurrentData()
         {
-            m_missionsCurrentList = new List<Mission>();
+            m_resourceCollectedMissions = new List<ResourceCollectedMission>();
+            m_enemyKilledMissions = new List<EnemyKilledMission>();
+            m_completedMissions = new List<Mission>();
         }
 
         public void AddMission(Mission mission)
         {
-            m_missionsCurrentList.Add(mission);
+            switch(mission)
+            {
+                case ResourceCollectedMission resourceCollectedMission:
+                    m_resourceCollectedMissions.Add(resourceCollectedMission);
+                    break;
+                case EnemyKilledMission enemyKilledMission:
+                    m_enemyKilledMissions.Add(enemyKilledMission);
+                    break;
+            }
         }
 
         public void AddMission(Mission mission, int atIndex)
         {
-            m_missionsCurrentList.Insert(atIndex, mission);
-        }
-
-        public void ProcessMissionData(MISSION_EVENT_TYPE type, Dictionary<string, object> data)
-        {
-            foreach (var mission in m_missionsCurrentList)
+            switch (mission)
             {
-                //mission.ProcessMissionData(type, data);
+                case ResourceCollectedMission resourceCollectedMission:
+                    m_resourceCollectedMissions.Insert(atIndex, resourceCollectedMission);
+                    break;
+                case EnemyKilledMission enemyKilledMission:
+                    m_enemyKilledMissions.Insert(atIndex, enemyKilledMission);
+                    break;
             }
         }
     }

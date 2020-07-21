@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace StarSalvager
 {
+    [System.Serializable]
     public class EnemyKilledMission : Mission
     {
-        private ENEMY_TYPE m_enemyType;
-        private int m_amountNeeded;
-        private int m_currentAmount;
+        public ENEMY_TYPE m_enemyType;
 
-        public EnemyKilledMission()
+        public EnemyKilledMission(ENEMY_TYPE enemyType, string missionName, int amountNeeded) : base(missionName, amountNeeded)
         {
             MissionEventType = MISSION_EVENT_TYPE.ENEMY_KILLED;
+            m_enemyType = enemyType;
         }
 
         public override bool MissionComplete()

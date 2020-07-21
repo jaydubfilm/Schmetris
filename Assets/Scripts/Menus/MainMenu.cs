@@ -55,6 +55,7 @@ namespace StarSalvager
             quitButton.onClick.AddListener(Application.Quit);
             
             _zoomSliderText.Init();
+            MissionManager.Init();
         }
 
         private void Update()

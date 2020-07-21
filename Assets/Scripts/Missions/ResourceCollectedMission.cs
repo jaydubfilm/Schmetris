@@ -2,15 +2,15 @@
 
 namespace StarSalvager
 {
+    [System.Serializable]
     public class ResourceCollectedMission : Mission
     {
-        private BIT_TYPE m_resourceType;
-        private int m_amountNeeded;
-        private int m_currentAmount;
+        public BIT_TYPE m_resourceType;
 
-        public ResourceCollectedMission()
+        public ResourceCollectedMission(BIT_TYPE resourceType, string missionName, int amountNeeded) : base(missionName, amountNeeded)
         {
             MissionEventType = MISSION_EVENT_TYPE.RESOURCE_COLLECTED;
+            m_resourceType = resourceType;
         }
 
         public override bool MissionComplete()
