@@ -1,16 +1,15 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using StarSalvager.AI;
+using System.Collections.Generic;
 
 namespace StarSalvager.Factories.Data
 {
     [System.Serializable]
     public struct EnemyRemoteData
     {
-        public int Type => (int)m_enemyType;
-
-        [SerializeField, FoldoutGroup("$EnemyType")]
-        private ENEMY_TYPE m_enemyType;
+        [SerializeField, FoldoutGroup("$EnemyType"), ValueDropdown("GetEnemyTypes")]
+        private string m_enemyType;
 
         [SerializeField, FoldoutGroup("$EnemyType")]
         private int m_enemyID;
@@ -36,7 +35,7 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$EnemyType")]
         private int m_maxBitExplosionCount;
 
-        public ENEMY_TYPE EnemyType
+        public string EnemyType
         {
             get => m_enemyType;
         }
@@ -78,6 +77,16 @@ namespace StarSalvager.Factories.Data
         public int MaxBitExplosionCount
         {
             get => m_maxBitExplosionCount;
+        }
+
+        private IEnumerable<string> GetEnemyTypes()
+        {
+            List<string> enemyTypes = new List<string>();
+            foreach (EnemyProfileData data in GameObject.FindObjectOfType<FactoryManager>().EnemyProfile.m_enemyProfileData)
+            {
+                enemyTypes.Add(data.EnemyType);
+            }
+            return enemyTypes;
         }
     }
 }

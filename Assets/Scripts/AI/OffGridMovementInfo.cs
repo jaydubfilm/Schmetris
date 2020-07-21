@@ -6,14 +6,14 @@ namespace StarSalvager
 {
     public class OffGridMovementInfo
     {
-        public Bit Bit;
+        public IObstacle Bit;
         public Vector2 StartingPosition;
         public Vector2 EndPosition;
         public bool DespawnOnEnd;
         public float LerpSpeed;
         public float LerpTimer;
 
-        public OffGridMovementInfo(Bit bit, Vector2 startingPosition, Vector2 endPosition, float lerpSpeed, bool despawnOnEnd)
+        public OffGridMovementInfo(IObstacle bit, Vector2 startingPosition, Vector2 endPosition, float lerpSpeed, bool despawnOnEnd)
         {
             Bit = bit;
             StartingPosition = startingPosition;

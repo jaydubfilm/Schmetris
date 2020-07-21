@@ -29,7 +29,7 @@ namespace StarSalvager.Factories.Data
         public BIT_TYPE ResourceType;
 
         [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.ENEMY_KILLED)]
-        public ENEMY_TYPE EnemyType;
+        public string EnemyType;
 
         [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.LEVEL_PROGRESS)]
         public int SectorNumber;

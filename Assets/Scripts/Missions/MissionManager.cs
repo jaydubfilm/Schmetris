@@ -105,7 +105,7 @@ namespace StarSalvager
             }
         }
 
-        public static void ProcessEnemyKilledMissionData(ENEMY_TYPE enemyType, int amount)
+        public static void ProcessEnemyKilledMissionData(string enemyType, int amount)
         {
             Debug.Log("Enemy killed mission event");
             for (int i = MissionsCurrentData.m_enemyKilledMissions.Count - 1; i >= 0; i--)

@@ -11,7 +11,7 @@ namespace StarSalvager.ScriptableObjects
     {
         public List<EnemyRemoteData> m_enemyRemoteData = new List<EnemyRemoteData>();
 
-        public EnemyRemoteData GetRemoteData(ENEMY_TYPE Type)
+        public EnemyRemoteData GetRemoteData(string Type)
         {
             return m_enemyRemoteData
                 .FirstOrDefault(p => p.EnemyType == Type);

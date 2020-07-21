@@ -132,9 +132,8 @@ namespace StarSalvager
         {
             if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
             {
-                MissionManager.ProcessEnemyKilledMissionData(ENEMY_TYPE.Enemy1, 1);
-                //WorldGrid.DrawDebugMarkedGridPoints();
-                //Debug.Break();
+                WorldGrid.DrawDebugMarkedGridPoints();
+                Debug.Break();
             }
             
             if (isPaused)

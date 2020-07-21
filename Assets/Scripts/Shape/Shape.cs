@@ -196,7 +196,10 @@ namespace StarSalvager
 
             if (bot.Rotating && attachedBits[0].Type != BIT_TYPE.BLACK)
             {
-                foreach (Bit bit in attachedBits)
+                Vector2 direction = transform.position - bot.transform.position;
+                direction.Normalize();
+                LevelManager.Instance.ObstacleManager.BounceObstacle(this, direction, true);
+                /*foreach (Bit bit in attachedBits)
                 {
                     Vector2 direction = bit.transform.position - bot.transform.position;
                     direction.Normalize();
@@ -205,7 +208,7 @@ namespace StarSalvager
                 Recycler.Recycle<Shape>(this, new
                 {
                     recycleBits = false
-                });
+                });*/
                 return;
             }
 

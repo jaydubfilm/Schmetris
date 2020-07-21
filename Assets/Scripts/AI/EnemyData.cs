@@ -7,7 +7,7 @@ namespace StarSalvager
 {
     public class EnemyData
     {
-        private ENEMY_TYPE m_enemyType;
+        private string m_enemyType;
         private int m_enemyID;
         private string m_name;
         private int m_health;
@@ -29,7 +29,7 @@ namespace StarSalvager
         private int m_minBitExplosionCount;
         private int m_maxBitExplosionCount;
 
-        public EnemyData(ENEMY_TYPE enemyType, int enemyID, string name, int health, float movementSpeed, bool isAttachable, float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType, PROJECTILE_TYPE projectileType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange, float orbitRadius, float numberCellsDescend, bool addVelocityToProjectiles, float spreadAngle, int sprayCount, int minBitExplosionCount, int maxBitExplosionCount)
+        public EnemyData(string enemyType, int enemyID, string name, int health, float movementSpeed, bool isAttachable, float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType, PROJECTILE_TYPE projectileType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange, float orbitRadius, float numberCellsDescend, bool addVelocityToProjectiles, float spreadAngle, int sprayCount, int minBitExplosionCount, int maxBitExplosionCount)
         {
             m_enemyType = enemyType;
             m_enemyID = enemyID;
@@ -54,7 +54,7 @@ namespace StarSalvager
             m_maxBitExplosionCount = maxBitExplosionCount;
         }
 
-        public ENEMY_TYPE EnemyType
+        public string EnemyType
         {
             get => m_enemyType;
         }

@@ -15,7 +15,7 @@ namespace StarSalvager
         private List<Enemy> m_enemies;
 
         //Variables to spawn enemies throughout a stage
-        private List<ENEMY_TYPE> m_enemiesToSpawn;
+        private List<string> m_enemiesToSpawn;
         private List<float> m_timesToSpawn;
         private const float m_endOfStageSpawnBuffer = 0.25f;
         private float m_spawnTimer;
@@ -34,7 +34,7 @@ namespace StarSalvager
         private void Start()
         {
             m_enemies = new List<Enemy>();
-            m_enemiesToSpawn = new List<ENEMY_TYPE>();
+            m_enemiesToSpawn = new List<string>();
             m_timesToSpawn = new List<float>();
             GameTimer.AddPausable(this);
 
@@ -149,7 +149,7 @@ namespace StarSalvager
             {
                 for (int i = 0; i < stageEnemyData.EnemyCount; i++)
                 {
-                    ENEMY_TYPE enemyType = stageEnemyData.EnemyType;
+                    string enemyType = stageEnemyData.EnemyType;
                     m_enemiesToSpawn.Add(enemyType);
                 }
             }
@@ -189,7 +189,7 @@ namespace StarSalvager
             }
         }
 
-        private void SpawnEnemy(ENEMY_TYPE enemyType)
+        private void SpawnEnemy(string enemyType)
         {
             Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(enemyType);
             m_enemies.Add(newEnemy);
