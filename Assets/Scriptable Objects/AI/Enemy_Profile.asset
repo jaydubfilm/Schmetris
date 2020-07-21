@@ -18,7 +18,7 @@ MonoBehaviour:
     type: 3}
   m_enemyProfileData:
   - m_enemyType: Shooter Enemy
-    m_sprite: {fileID: 21300000, guid: ebb0f2d985f2d2746b4770b11d4a7f6e, type: 3}
+    m_sprite: {fileID: 21300000, guid: d2ad652576a89eb4fbce4c6b7d60aad2, type: 3}
     m_movementType: 3
     m_isAttachable: 0
     m_attackType: 2
@@ -31,7 +31,7 @@ MonoBehaviour:
     m_spreadAngle: 15
     m_sprayCount: 0
   - m_enemyType: Parasite Enemy
-    m_sprite: {fileID: 21300000, guid: d2ad652576a89eb4fbce4c6b7d60aad2, type: 3}
+    m_sprite: {fileID: 21300000, guid: ebb0f2d985f2d2746b4770b11d4a7f6e, type: 3}
     m_movementType: 0
     m_isAttachable: 1
     m_attackType: 6

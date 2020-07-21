@@ -194,8 +194,13 @@ namespace StarSalvager
             if (!(gameObject.GetComponent<Bot>() is Bot bot))
                 return;
 
-            if (bot.Rotating && attachedBits[0].Type != BIT_TYPE.BLACK)
+            if (bot.Rotating)
             {
+                if (attachedBits[0].Type == BIT_TYPE.BLACK)
+                {
+                    Recycler.Recycle<Shape>(this);
+                    return;
+                }
                 Vector2 direction = transform.position - bot.transform.position;
                 direction.Normalize();
                 LevelManager.Instance.ObstacleManager.BounceObstacle(this, direction, true);
