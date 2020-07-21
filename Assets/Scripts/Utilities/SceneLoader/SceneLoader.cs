@@ -110,8 +110,11 @@ namespace StarSalvager.SceneLoader
             return SetSceneObjectsActive(sceneName, false);
         }
 
-        public static bool ActivateScene(string sceneName, string sceneNameToDeload)
+        public static bool ActivateScene(string sceneName, string sceneNameToDeload, bool updateJsonData = false)
         {
+            MissionManager.ExportMissionsCurrentRemoteData(MissionManager.MissionsCurrentData);
+            MissionManager.ExportMissionsMasterRemoteData(MissionManager.MissionsMasterData);
+            
             SetSceneObjectsActive(sceneNameToDeload, false);
             return SetSceneObjectsActive(sceneName, true);
         }

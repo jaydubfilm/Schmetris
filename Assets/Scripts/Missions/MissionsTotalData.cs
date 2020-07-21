@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class MissionsTotalData
+    public class MissionsMasterData
     {
         public List<Mission> m_missionsTotalList;
 
-        public MissionsTotalData()
+        public MissionsMasterData()
         {
             m_missionsTotalList = new List<Mission>();
         }

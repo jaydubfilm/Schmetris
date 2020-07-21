@@ -19,12 +19,22 @@ namespace StarSalvager.ScriptableObjects
             {
                 if (data.MissionType == MISSION_EVENT_TYPE.RESOURCE_COLLECTED)
                 {
-                    ResourceCollectedMission mission = new ResourceCollectedMission(data.ResourceType, data.MissionName, data.AmountNeeded);
+                    ResourceCollectedMission mission = new ResourceCollectedMission(data.ResourceType, data.MissionName, data.MissionUnlockType, data.AmountNeeded);
                     missions.Add(mission);
                 }
                 else if (data.MissionType == MISSION_EVENT_TYPE.ENEMY_KILLED)
                 {
-                    EnemyKilledMission mission = new EnemyKilledMission(data.EnemyType, data.MissionName, data.AmountNeeded);
+                    EnemyKilledMission mission = new EnemyKilledMission(data.EnemyType, data.MissionName, data.MissionUnlockType, data.AmountNeeded);
+                    missions.Add(mission);
+                }
+                else if (data.MissionType == MISSION_EVENT_TYPE.COMBO_BLOCKS)
+                {
+                    ComboBlocksMission mission = new ComboBlocksMission(data.ResourceType, data.MissionName, data.MissionUnlockType, data.AmountNeeded);
+                    missions.Add(mission);
+                }
+                else if (data.MissionType == MISSION_EVENT_TYPE.LEVEL_PROGRESS)
+                {
+                    LevelProgressMission mission = new LevelProgressMission(data.SectorNumber, data.WaveNumber, data.MissionName, data.MissionUnlockType);
                     missions.Add(mission);
                 }
             }

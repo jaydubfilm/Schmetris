@@ -194,9 +194,18 @@ namespace StarSalvager
             if (!(gameObject.GetComponent<Bot>() is Bot bot))
                 return;
 
-            if (bot.Rotating)
+            if (bot.Rotating && attachedBits[0].Type != BIT_TYPE.BLACK)
             {
-                Recycler.Recycle<Shape>(this);
+                foreach (Bit bit in attachedBits)
+                {
+                    Vector2 direction = bit.transform.position - bot.transform.position;
+                    direction.Normalize();
+                    LevelManager.Instance.ObstacleManager.BounceObstacle(bit, direction, true);
+                }
+                Recycler.Recycle<Shape>(this, new
+                {
+                    recycleBits = false
+                });
                 return;
             }
 

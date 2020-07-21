@@ -1412,6 +1412,7 @@ namespace StarSalvager
             if (data.comboData.points == 0)
                 return;
 
+            MissionManager.ProcessComboBlocksMissionData(data.toMove[0].Type, 1);
             SimpleComboSolver(data.comboData, data.toMove);
         }
         private void CheckForCombosAround(Bit bit)
@@ -1430,7 +1431,8 @@ namespace StarSalvager
             //    AdvancedComboSolver(data.comboData, data.toMove);
             //}
             //else
-                SimpleComboSolver(data.comboData, data.toMove);
+            MissionManager.ProcessComboBlocksMissionData(bit.Type, 1);
+            SimpleComboSolver(data.comboData, data.toMove);
         }
 
         //============================================================================================================//

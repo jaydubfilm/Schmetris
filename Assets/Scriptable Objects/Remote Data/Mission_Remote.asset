@@ -15,21 +15,55 @@ MonoBehaviour:
   m_missionRemoteData:
   - MissionType: 1
     MissionName: Resource Mission 1
-    AmountNeeded: 1000
+    MissionUnlockType: 0
+    MissionUnlockName: 
+    AmountNeeded: 200
     ResourceType: 3
     EnemyType: 0
+    SectorNumber: 0
+    WaveNumber: 0
   - MissionType: 1
     MissionName: Resource Mission 2
+    MissionUnlockType: 0
+    MissionUnlockName: Resource Mission 1
     AmountNeeded: 1000
     ResourceType: 1
     EnemyType: 0
+    SectorNumber: 0
+    WaveNumber: 0
   - MissionType: 0
     MissionName: Enemy Mission 1
+    MissionUnlockType: 0
+    MissionUnlockName: 
     AmountNeeded: 2
     ResourceType: 0
     EnemyType: 0
+    SectorNumber: 0
+    WaveNumber: 0
   - MissionType: 0
     MissionName: Enemy Mission 2
+    MissionUnlockType: 0
+    MissionUnlockName: 
     AmountNeeded: 2
     ResourceType: 0
     EnemyType: 1
+    SectorNumber: 0
+    WaveNumber: 0
+  - MissionType: 3
+    MissionName: Level Mission 1
+    MissionUnlockType: 0
+    MissionUnlockName: 
+    AmountNeeded: 0
+    ResourceType: 0
+    EnemyType: 0
+    SectorNumber: 1
+    WaveNumber: 1
+  - MissionType: 2
+    MissionName: Combo Mission 1
+    MissionUnlockType: 0
+    MissionUnlockName: 
+    AmountNeeded: 3
+    ResourceType: 3
+    EnemyType: 0
+    SectorNumber: 0
+    WaveNumber: 0
