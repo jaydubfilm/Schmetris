@@ -4,12 +4,24 @@ using StarSalvager.AI;
 using System.Collections.Generic;
 using System;
 using System.Collections;
+using StarSalvager.Utilities.Animations;
 
 namespace StarSalvager.Factories.Data
 {
     [System.Serializable]
     public class EnemyProfileData
     {
+        [SerializeField, HorizontalGroup("$EnemyType/row1"), DisplayAsString]
+        private string m_enemyTypeID = System.Guid.NewGuid().ToString();
+
+        #if UNITY_EDITOR
+        [Button("Copy"),HorizontalGroup("$EnemyType/row1", 45)]
+        private void CopyID()
+        {
+            GUIUtility.systemCopyBuffer = m_enemyTypeID;
+        }
+        #endif
+        
         [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$EnemyType/row2", 65), VerticalGroup("$EnemyType/row2/left"), HideLabel]
         private Sprite m_sprite;
 
@@ -21,6 +33,9 @@ namespace StarSalvager.Factories.Data
 
         [SerializeField, VerticalGroup("$EnemyType/row2/right")]
         private bool m_isAttachable;
+        
+        [SerializeField, FoldoutGroup("$EnemyType")]
+        private AnimationScriptableObject m_enemyAnimation;
 
         [SerializeField, FoldoutGroup("$EnemyType")]
         private ENEMY_ATTACKTYPE m_attackType;
@@ -53,78 +68,37 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$EnemyType"), ShowIf("m_attackType", ENEMY_ATTACKTYPE.Spray)]
         private int m_sprayCount;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
-        private string m_enemyTypeID = System.Guid.NewGuid().ToString();
-
-        public string EnemyType
-        {
-            get => m_enemyType;
-        }
-
-        public string EnemyTypeID
-        {
-            get => m_enemyTypeID;
-        }
-
-        public Sprite Sprite
-        {
-            get => m_sprite;
-        }
-
-        public ENEMY_MOVETYPE MovementType
-        {
-            get => m_movementType;
-        }
-
-        public bool IsAttachable
-        {
-            get => m_isAttachable;
-        }
-
-        public ENEMY_ATTACKTYPE AttackType
-        {
-            get => m_attackType;
-        }
-
-        public string ProjectileType
-        {
-            get => m_projectileType;
-        }
-
-        public float OscillationsPerSeconds
-        {
-            get => m_oscillationsPerSeconds;
-        }
-
-        public float OscillationAngleRange
-        {
-            get => m_oscillationAngleRange;
-        }
-
-        public float OrbitRadius
-        {
-            get => m_orbitRadius;
-        }
         
-        public float NumberCellsDescend
-        {
-            get => m_numberCellsDescend;
-        }
 
-        public bool AddVelocityToProjectiles
-        {
-            get => m_addVelocityToProjectiles;
-        }
+        public string EnemyType => m_enemyType;
 
-        public float SpreadAngle
-        {
-            get => m_spreadAngle;
-        }
+        public string EnemyTypeID => m_enemyTypeID;
 
-        public int SprayCount
-        {
-            get => m_sprayCount;
-        }
+        public Sprite Sprite => m_sprite;
+        
+        public AnimationScriptableObject Animation => m_enemyAnimation;
+
+        public ENEMY_MOVETYPE MovementType => m_movementType;
+
+        public bool IsAttachable => m_isAttachable;
+
+        public ENEMY_ATTACKTYPE AttackType => m_attackType;
+
+        public string ProjectileType => m_projectileType;
+
+        public float OscillationsPerSeconds => m_oscillationsPerSeconds;
+
+        public float OscillationAngleRange => m_oscillationAngleRange;
+
+        public float OrbitRadius => m_orbitRadius;
+
+        public float NumberCellsDescend => m_numberCellsDescend;
+
+        public bool AddVelocityToProjectiles => m_addVelocityToProjectiles;
+
+        public float SpreadAngle => m_spreadAngle;
+
+        public int SprayCount => m_sprayCount;
 
         private IEnumerable GetProjectileTypes()
         {

@@ -1,0 +1,97 @@
+
+Parasite_FreeAnim_ver8.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Enemy1_ver3-animation2_00
+  rotate: false
+  xy: 177, 290
+  size: 168, 185
+  orig: 175, 193
+  offset: 4, 4
+  index: -1
+Enemy1_ver3-animation2_12
+  rotate: false
+  xy: 177, 290
+  size: 168, 185
+  orig: 175, 193
+  offset: 4, 4
+  index: -1
+Enemy1_ver3-animation2_01
+  rotate: false
+  xy: 177, 477
+  size: 170, 188
+  orig: 175, 193
+  offset: 3, 3
+  index: -1
+Enemy1_ver3-animation2_02
+  rotate: false
+  xy: 2, 474
+  size: 173, 191
+  orig: 175, 193
+  offset: 1, 1
+  index: -1
+Enemy1_ver3-animation2_03
+  rotate: false
+  xy: 154, 125
+  size: 147, 163
+  orig: 175, 193
+  offset: 15, 16
+  index: -1
+Enemy1_ver3-animation2_04
+  rotate: false
+  xy: 502, 132
+  size: 147, 163
+  orig: 175, 193
+  offset: 15, 16
+  index: -1
+Enemy1_ver3-animation2_05
+  rotate: false
+  xy: 511, 328
+  size: 147, 163
+  orig: 175, 193
+  offset: 15, 16
+  index: -1
+Enemy1_ver3-animation2_06
+  rotate: false
+  xy: 2, 122
+  size: 150, 166
+  orig: 175, 193
+  offset: 13, 14
+  index: -1
+Enemy1_ver3-animation2_07
+  rotate: false
+  xy: 347, 126
+  size: 153, 169
+  orig: 175, 193
+  offset: 12, 13
+  index: -1
+Enemy1_ver3-animation2_08
+  rotate: false
+  xy: 509, 493
+  size: 156, 172
+  orig: 175, 193
+  offset: 10, 11
+  index: -1
+Enemy1_ver3-animation2_09
+  rotate: false
+  xy: 349, 489
+  size: 158, 176
+  orig: 175, 193
+  offset: 9, 9
+  index: -1
+Enemy1_ver3-animation2_10
+  rotate: false
+  xy: 347, 297
+  size: 162, 178
+  orig: 175, 193
+  offset: 7, 8
+  index: -1
+Enemy1_ver3-animation2_11
+  rotate: false
+  xy: 2, 290
+  size: 164, 182
+  orig: 175, 193
+  offset: 6, 6
+  index: -1

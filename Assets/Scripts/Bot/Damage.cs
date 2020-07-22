@@ -6,12 +6,25 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    [RequireComponent(typeof(SpriteRenderer), typeof(SpriteMask))]
-    public class Damage : MonoBehaviour, IRecycled, ICustomRecycle
+    [RequireComponent(typeof(SpriteRenderer), typeof(SpriteMask), typeof(SimpleAnimator))]
+    public class Damage : MonoBehaviour, IRecycled, ICustomRecycle, ISimpleAnimation
     {
         //============================================================================================================//
         
         public bool IsRecycled { get; set; }
+
+        public SimpleAnimator SimpleAnimator
+        {
+            get
+            {
+                if (_simpleAnimator == null)
+                    _simpleAnimator = GetComponent<SimpleAnimator>();
+
+                return _simpleAnimator;
+            }
+        }
+
+        private SimpleAnimator _simpleAnimator;
         
         private new SpriteRenderer renderer
         {
@@ -93,6 +106,8 @@ namespace StarSalvager
             renderer.sprite = null;
             mask.sprite = null;
         }
+
+        
     }
 }
 

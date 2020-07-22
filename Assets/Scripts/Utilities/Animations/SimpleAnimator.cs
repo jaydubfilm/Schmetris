@@ -9,27 +9,16 @@ namespace StarSalvager.Utilities.Animations
     {
         [SerializeField, Required]
         private SpriteRenderer targetRenderer;
-        
-        [SerializeField]
-        private List<Sprite> sprites;
 
-        [SerializeField, Range(1f, 10f)]
+        [SerializeField, Range(0.1f, 2f)]
         public float speed;
-
         [SerializeField]
         private bool playOnAwake = true;
 
         [SerializeField]
-        private bool PingPong = true;
+        private AnimationScriptableObject animation;
 
-        [SerializeField, ToggleGroup("useAnimationCurve")]
-        private bool useAnimationCurve;
-        
-        [SerializeField, ToggleGroup("useAnimationCurve")]
-        private AnimationCurve curve = new AnimationCurve();
-
-        [SerializeField, ReadOnly]
-        private float t;
+        private float _t;
 
         public float Alpha
         {
@@ -41,16 +30,12 @@ namespace StarSalvager.Utilities.Animations
             }
         }
 
-        private float _max;
-
         private bool _playing;
-
-        private int _spriteCount;
         
         //============================================================================================================//
         
         // Start is called before the first frame update
-        private void Start()
+        protected virtual void Start()
         {
             if(targetRenderer is null)
                 throw new Exception($"No {nameof(targetRenderer)} set on {gameObject.name}");
@@ -58,7 +43,9 @@ namespace StarSalvager.Utilities.Animations
             if (playOnAwake)
                 _playing = true;
 
-            _spriteCount = sprites.Count - 1;
+            
+            if (animation == null)
+                _playing = false;
         }
 
         // Update is called once per frame
@@ -67,43 +54,32 @@ namespace StarSalvager.Utilities.Animations
             if (!_playing)
                 return;
 
-
-            if (PingPong)
-            {
-                var value = 1f / speed;
-
-                t = Mathf.PingPong(Time.time, value) / value;
-            }
-            else
-            {
-                if (t >= 1f)
-                    t = 0f;
-
-                t += Time.deltaTime * speed;
-            }
-
-            
-            //Set the sprite based on the Time T
-            var index = Mathf.RoundToInt(useAnimationCurve
-                ? Mathf.Lerp(0, _spriteCount, curve.Evaluate(t))
-                : Mathf.Lerp(0, _spriteCount, t));
-            
-
-            targetRenderer.sprite = sprites[index];
+            targetRenderer.sprite = animation.PlayFrame(speed, ref _t);
         }
         
         //============================================================================================================//
 
         public void Play()
         {
+            if (animation == null)
+                return;
+            
             _playing = true;
         }
 
         public void Stop()
         {
             _playing = false;
-            t = 0f;
+            _t = 0f;
             targetRenderer.sprite = null;
+        }
+
+        public void SetAnimation(AnimationScriptableObject animation)
+        {
+            this.animation = animation;
+            
+            if(playOnAwake)
+                _playing = true;
         }
 
         //============================================================================================================//

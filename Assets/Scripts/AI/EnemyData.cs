@@ -2,159 +2,105 @@
 using System.Collections.Generic;
 using UnityEngine;
 using StarSalvager.AI;
+using StarSalvager.Factories.Data;
+using StarSalvager.Utilities.Animations;
 
 namespace StarSalvager
 {
     public class EnemyData
     {
-        private string m_enemyType;
-        private string m_name;
-        private int m_health;
-        private float m_movementSpeed;
-        private bool m_isAttachable;
-        private float m_attackDamage;
-        private float m_attackSpeed;
-        private ENEMY_MOVETYPE m_movementType;
-        private ENEMY_ATTACKTYPE m_attackType;
-        private string m_projectileType;
-        private Sprite m_sprite;
-        private float m_oscillationsPerSecond;
-        private float m_oscillationAngleRange;
-        private float m_orbitRadius;
-        private float m_numberCellsDescend;
-        private bool m_addVelocityToProjectiles;
-        private float m_spreadAngle;
-        private int m_sprayCount;
-        private int m_minBitExplosionCount;
-        private int m_maxBitExplosionCount;
+        public string EnemyType { get; }
 
+        public string Name { get; }
+
+        public int Health { get; }
+
+        public float MovementSpeed { get; }
+
+        public bool IsAttachable { get; }
+
+        public float AttackDamage { get; }
+
+        public float AttackSpeed { get; }
+
+        public ENEMY_MOVETYPE MovementType { get; }
+
+        public ENEMY_ATTACKTYPE AttackType { get; }
+
+        public string ProjectileType { get; }
+
+        public Sprite Sprite { get; }
+        public AnimationScriptableObject Animation { get; }
+
+        public float OscillationsPerSecond { get; }
+
+        public float OscillationAngleRange { get; }
+
+        public float OrbitRadius { get; }
+
+        public float OrbitRadiusSqr => OrbitRadius * OrbitRadius;
+
+        public float NumberCellsDescend { get; }
+
+        public bool AddVelocityToProjectiles { get; }
+
+        public float SpreadAngle { get; }
+
+        public float SprayCount => m_sprayCount;
+
+        public int MinBitExplosionCount { get; }
+
+        public int MaxBitExplosionCount { get; }
+        private readonly int m_sprayCount;
+
+        public EnemyData(EnemyRemoteData enemyRemoteData, EnemyProfileData enemyProfileData)
+        {
+            EnemyType = enemyRemoteData.EnemyType;
+            Name = enemyRemoteData.Name;
+            Health = enemyRemoteData.Health;
+            MovementSpeed = enemyRemoteData.MovementSpeed;
+            IsAttachable = enemyProfileData.IsAttachable;
+            AttackDamage = enemyRemoteData.AttackDamage;
+            AttackSpeed = enemyRemoteData.AttackSpeed;
+            MovementType = enemyProfileData.MovementType;
+            AttackType = enemyProfileData.AttackType;
+            ProjectileType = enemyProfileData.ProjectileType;
+            Sprite = enemyProfileData.Sprite;
+            Animation = enemyProfileData.Animation;
+            OscillationsPerSecond = enemyProfileData.OscillationsPerSeconds;
+            OscillationAngleRange = enemyProfileData.OscillationAngleRange;
+            OrbitRadius = enemyProfileData.OrbitRadius;
+            NumberCellsDescend = enemyProfileData.NumberCellsDescend;
+            AddVelocityToProjectiles = enemyProfileData.AddVelocityToProjectiles;
+            SpreadAngle = enemyProfileData.SpreadAngle; 
+            m_sprayCount = enemyProfileData.SprayCount;
+            MinBitExplosionCount = enemyRemoteData.MinBitExplosionCount; 
+            MaxBitExplosionCount = enemyRemoteData.MaxBitExplosionCount;
+
+        }
+        
         public EnemyData(string enemyType, string name, int health, float movementSpeed, bool isAttachable, float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType, string projectileType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange, float orbitRadius, float numberCellsDescend, bool addVelocityToProjectiles, float spreadAngle, int sprayCount, int minBitExplosionCount, int maxBitExplosionCount)
         {
-            m_enemyType = enemyType;
-            m_name = name;
-            m_health = health;
-            m_movementSpeed = movementSpeed;
-            m_isAttachable = isAttachable;
-            m_attackDamage = attackDamage;
-            m_attackSpeed = attackSpeed;
-            m_movementType = movementType;
-            m_attackType = attackType;
-            m_projectileType = projectileType;
-            m_sprite = sprite;
-            m_oscillationsPerSecond = oscillationsPerSecond;
-            m_oscillationAngleRange = oscillationAngleRange;
-            m_orbitRadius = orbitRadius;
-            m_numberCellsDescend = numberCellsDescend;
-            m_addVelocityToProjectiles = addVelocityToProjectiles;
-            m_spreadAngle = spreadAngle;
+            EnemyType = enemyType;
+            Name = name;
+            Health = health;
+            MovementSpeed = movementSpeed;
+            IsAttachable = isAttachable;
+            AttackDamage = attackDamage;
+            AttackSpeed = attackSpeed;
+            MovementType = movementType;
+            AttackType = attackType;
+            ProjectileType = projectileType;
+            Sprite = sprite;
+            OscillationsPerSecond = oscillationsPerSecond;
+            OscillationAngleRange = oscillationAngleRange;
+            OrbitRadius = orbitRadius;
+            NumberCellsDescend = numberCellsDescend;
+            AddVelocityToProjectiles = addVelocityToProjectiles;
+            SpreadAngle = spreadAngle;
             m_sprayCount = sprayCount;
-            m_minBitExplosionCount = minBitExplosionCount;
-            m_maxBitExplosionCount = maxBitExplosionCount;
-        }
-
-        public string EnemyType
-        {
-            get => m_enemyType;
-        }
-
-        public string Name
-        {
-            get => m_name;
-        }
-
-        public int Health
-        {
-            get => m_health;
-        }
-
-        public float MovementSpeed
-        {
-            get => m_movementSpeed;
-        }
-
-        public bool IsAttachable
-        {
-            get => m_isAttachable;
-        }
-
-        public float AttackDamage
-        {
-            get => m_attackDamage;
-        }
-
-        public float AttackSpeed
-        {
-            get => m_attackSpeed;
-        }
-
-        public ENEMY_MOVETYPE MovementType
-        {
-            get => m_movementType;
-        }
-
-        public ENEMY_ATTACKTYPE AttackType
-        {
-            get => m_attackType;
-        }
-
-        public string ProjectileType
-        {
-            get => m_projectileType;
-        }
-
-        public Sprite Sprite
-        {
-            get => m_sprite;
-        }
-
-        public float OscillationsPerSecond
-        {
-            get => m_oscillationsPerSecond;
-        }
-
-        public float OscillationAngleRange
-        {
-            get => m_oscillationAngleRange;
-        }
-
-        public float OrbitRadius
-        {
-            get => m_orbitRadius;
-        }
-
-        public float OrbitRadiusSqr
-        {
-            get => m_orbitRadius * m_orbitRadius;
-        }
-
-        public float NumberCellsDescend
-        {
-            get => m_numberCellsDescend;
-        }
-
-        public bool AddVelocityToProjectiles
-        {
-            get => m_addVelocityToProjectiles;
-        }
-
-        public float SpreadAngle
-        {
-            get => m_spreadAngle;
-        }
-
-        public float SprayCount
-        {
-            get => m_sprayCount;
-        }
-
-        public int MinBitExplosionCount
-        {
-            get => m_minBitExplosionCount;
-        }
-
-        public int MaxBitExplosionCount
-        {
-            get => m_maxBitExplosionCount;
+            MinBitExplosionCount = minBitExplosionCount;
+            MaxBitExplosionCount = maxBitExplosionCount;
         }
     }
 }

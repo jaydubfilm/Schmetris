@@ -9,11 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6795578211728555505}
-  - component: {fileID: 15956391696060476}
+  - component: {fileID: 931694994}
+  - component: {fileID: 6339990766766771335}
   - component: {fileID: 5668200487094951123}
-  - component: {fileID: 6644681719502384361}
+  - component: {fileID: 6978687799117266419}
   m_Layer: 11
-  m_Name: EnemyAttachableTest
+  m_Name: EnemyTest
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33,7 +34,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &15956391696060476
+--- !u!114 &931694994
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,12 +43,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 6795578211728555506}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f417ec1c5caf1d744a152f1fc331d9be, type: 3}
+  m_Script: {fileID: 11500000, guid: e32b50cd4991a5747aef65edd87f60b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask:
-    serializedVersion: 2
-    m_Bits: 256
+--- !u!114 &6339990766766771335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6795578211728555506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d11ab68ae14d4c469af361068a5e9e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetRenderer: {fileID: 5668200487094951123}
+  speed: 1
+  playOnAwake: 1
+  animation: {fileID: 0}
 --- !u!212 &5668200487094951123
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -92,13 +106,13 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.2801137, y: 1.2800001}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &6644681719502384361
+--- !u!61 &6978687799117266419
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -114,13 +128,13 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.2801137, y: 1.2800001}
-    newSize: {x: 1.2801137, y: 1.2800001}
-    adaptiveTilingThreshold: 0.5
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.28, y: 1.28}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0

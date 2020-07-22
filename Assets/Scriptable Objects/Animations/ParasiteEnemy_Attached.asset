@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae94ebc07ea1de141874967c13a86044, type: 3}
+  m_Name: ParasiteEnemy_Attached
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 7961918400432291557, guid: efdacbe4a3525a248af66c854fedada3, type: 3}
+  - {fileID: 651909439334125916, guid: efdacbe4a3525a248af66c854fedada3, type: 3}
+  - {fileID: -6369816499802840551, guid: efdacbe4a3525a248af66c854fedada3, type: 3}
+  - {fileID: 8174002444549051055, guid: efdacbe4a3525a248af66c854fedada3, type: 3}
+  - {fileID: -860881687905175982, guid: efdacbe4a3525a248af66c854fedada3, type: 3}
+  - {fileID: -5757121818904993408, guid: efdacbe4a3525a248af66c854fedada3, type: 3}
+  - {fileID: -3777444371976466644, guid: efdacbe4a3525a248af66c854fedada3, type: 3}
+  - {fileID: -2941967327136666974, guid: efdacbe4a3525a248af66c854fedada3, type: 3}
+  - {fileID: -7342026084943066624, guid: efdacbe4a3525a248af66c854fedada3, type: 3}
+  - {fileID: -2630267052803436675, guid: efdacbe4a3525a248af66c854fedada3, type: 3}
+  - {fileID: 3570562394963402434, guid: efdacbe4a3525a248af66c854fedada3, type: 3}
+  - {fileID: -5981339787371102721, guid: efdacbe4a3525a248af66c854fedada3, type: 3}
+  - {fileID: -1003371509079046497, guid: efdacbe4a3525a248af66c854fedada3, type: 3}
+  speed: 2
+  PingPong: 0
+  useAnimationCurve: 0
+  curve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

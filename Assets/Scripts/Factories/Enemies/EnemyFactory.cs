@@ -38,7 +38,29 @@ namespace StarSalvager.Factories
             EnemyProfileData profile = m_enemyProfile.GetEnemyProfileData(enemyTypeID);
             EnemyRemoteData remoteData = m_enemyRemoteData.GetRemoteData(enemyTypeID);
 
-            EnemyData enemyData = new EnemyData(remoteData.EnemyType, remoteData.Name, remoteData.Health, remoteData.MovementSpeed, profile.IsAttachable, remoteData.AttackDamage, remoteData.AttackSpeed, profile.MovementType, profile.AttackType, profile.ProjectileType, profile.Sprite, profile.OscillationsPerSeconds, profile.OscillationAngleRange, profile.OrbitRadius, profile.NumberCellsDescend, profile.AddVelocityToProjectiles, profile.SpreadAngle, profile.SprayCount, remoteData.MinBitExplosionCount, remoteData.MaxBitExplosionCount);
+            EnemyData enemyData = new EnemyData(remoteData, profile);
+
+            /*EnemyData enemyData = new EnemyData(
+                remoteData.EnemyType,
+                remoteData.Name,
+                remoteData.Health,
+                remoteData.MovementSpeed,
+                profile.IsAttachable,
+                remoteData.AttackDamage,
+                remoteData.AttackSpeed,
+                profile.MovementType,
+                profile.AttackType,
+                profile.ProjectileType,
+                profile.Sprite,
+                profile.OscillationsPerSeconds,
+                profile.OscillationAngleRange,
+                profile.OrbitRadius,
+                profile.NumberCellsDescend,
+                profile.AddVelocityToProjectiles,
+                profile.SpreadAngle, 
+                profile.SprayCount,
+                remoteData.MinBitExplosionCount, 
+                remoteData.MaxBitExplosionCount);*/
 
             enemyDatas.Add(enemyData);
 
@@ -64,14 +86,14 @@ namespace StarSalvager.Factories
 
             Type type = typeof(T);
 
-            
+
             var enemyComponent = type == typeof(EnemyAttachable)
                 ? CreateAttachableGameObject().GetComponent<T>()
-                : CreateGameObject().GetComponent<T>(); 
-            
+                : CreateGameObject().GetComponent<T>();
+
             //TODO Need to setup these enemy health values
-            if(enemyComponent is Enemy enemy)
-                enemy.SetupHealthValues(20,20);
+            if (enemyComponent is Enemy enemy)
+                enemy.SetupHealthValues(20, 20);
 
             return enemyComponent;
         }

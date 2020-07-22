@@ -3,12 +3,13 @@ using Recycling;
 using UnityEngine;
 using StarSalvager.Factories;
 using StarSalvager.Values;
-using System;
 using Sirenix.OdinInspector;
+using StarSalvager.Utilities.Animations;
 
 namespace StarSalvager.AI
 {
-    public class Enemy : CollidableBase, ICanBeHit, IHealth
+    [RequireComponent(typeof(SimpleAnimator))]
+    public class Enemy : CollidableBase, ICanBeHit, IHealth, ISimpleAnimation
     {
         public EnemyData m_enemyData;
 
@@ -25,6 +26,18 @@ namespace StarSalvager.AI
         private float horizontalFarRightX;
         
         protected Vector3 m_mostRecentMovementDirection = Vector3.zero;
+
+        public SimpleAnimator SimpleAnimator
+        {
+            get
+            {
+                if (_simpleAnimator == null)
+                    _simpleAnimator = GetComponent<SimpleAnimator>();
+
+                return _simpleAnimator;
+            }
+        }
+        private SimpleAnimator _simpleAnimator;
         
         //============================================================================================================//
 
@@ -40,7 +53,10 @@ namespace StarSalvager.AI
         {
             m_positions.Add(Vector3.zero);
 
-            renderer.sprite = m_enemyData.Sprite;
+            renderer.sprite = m_enemyData?.Sprite;
+            
+            SimpleAnimator.SetAnimation(m_enemyData?.Animation);
+            
             m_horizontalMovementYLevel = transform.position.y;
             horizontalFarLeftX = 0;
             horizontalFarRightX = Values.Globals.GridSizeX * Constants.gridCellSize;
@@ -320,6 +336,8 @@ namespace StarSalvager.AI
             if(_currentHealth <= 0)
                 Recycler.Recycle<Enemy>(this);
         }
+
+        
     }
 }
  
