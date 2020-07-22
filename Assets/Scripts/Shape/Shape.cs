@@ -201,9 +201,17 @@ namespace StarSalvager
                     Recycler.Recycle<Shape>(this);
                     return;
                 }
-                Vector2 direction = transform.position - bot.transform.position;
+
+                float rotation = 180.0f;
+                if (bot.MostRecentRotate == ROTATION.CW)
+                {
+                    rotation *= -1;
+                    print("CCW");
+                }
+
+                Vector2 direction = (Vector2)transform.position - hitPoint;
                 direction.Normalize();
-                LevelManager.Instance.ObstacleManager.BounceObstacle(this, direction, true);
+                LevelManager.Instance.ObstacleManager.BounceObstacle(this, direction, rotation, true, true);
                 /*foreach (Bit bit in attachedBits)
                 {
                     Vector2 direction = bit.transform.position - bot.transform.position;
