@@ -19,6 +19,9 @@ namespace StarSalvager.Utilities.Animations
         [SerializeField]
         private bool playOnAwake = true;
 
+        [SerializeField]
+        private bool PingPong = true;
+
         [SerializeField, ToggleGroup("useAnimationCurve")]
         private bool useAnimationCurve;
         
@@ -64,16 +67,26 @@ namespace StarSalvager.Utilities.Animations
             if (!_playing)
                 return;
 
-            var value = 1f / speed;
 
-            t = Mathf.PingPong(Time.time, value) / value;
+            if (PingPong)
+            {
+                var value = 1f / speed;
+
+                t = Mathf.PingPong(Time.time, value) / value;
+            }
+            else
+            {
+                if (t >= 1f)
+                    t = 0f;
+
+                t += Time.deltaTime * speed;
+            }
+
             
-            //TODO Set the sprite based on the Time T
-
+            //Set the sprite based on the Time T
             var index = Mathf.RoundToInt(useAnimationCurve
                 ? Mathf.Lerp(0, _spriteCount, curve.Evaluate(t))
                 : Mathf.Lerp(0, _spriteCount, t));
-            
             
 
             targetRenderer.sprite = sprites[index];
