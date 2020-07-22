@@ -18,10 +18,10 @@ namespace StarSalvager.ScriptableObjects
 
         public List<EnemyProfileData> m_enemyProfileData = new List<EnemyProfileData>();
 
-        public EnemyProfileData GetEnemyProfileData(string Type)
+        public EnemyProfileData GetEnemyProfileData(string TypeID)
         {
             return m_enemyProfileData
-                .FirstOrDefault(p => p.EnemyType == Type);
+                .FirstOrDefault(p => p.EnemyTypeID == TypeID);
         }
     }
 

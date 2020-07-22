@@ -8,7 +8,6 @@ namespace StarSalvager
     public class EnemyData
     {
         private string m_enemyType;
-        private int m_enemyID;
         private string m_name;
         private int m_health;
         private float m_movementSpeed;
@@ -29,10 +28,9 @@ namespace StarSalvager
         private int m_minBitExplosionCount;
         private int m_maxBitExplosionCount;
 
-        public EnemyData(string enemyType, int enemyID, string name, int health, float movementSpeed, bool isAttachable, float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType, string projectileType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange, float orbitRadius, float numberCellsDescend, bool addVelocityToProjectiles, float spreadAngle, int sprayCount, int minBitExplosionCount, int maxBitExplosionCount)
+        public EnemyData(string enemyType, string name, int health, float movementSpeed, bool isAttachable, float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType, string projectileType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange, float orbitRadius, float numberCellsDescend, bool addVelocityToProjectiles, float spreadAngle, int sprayCount, int minBitExplosionCount, int maxBitExplosionCount)
         {
             m_enemyType = enemyType;
-            m_enemyID = enemyID;
             m_name = name;
             m_health = health;
             m_movementSpeed = movementSpeed;
@@ -57,11 +55,6 @@ namespace StarSalvager
         public string EnemyType
         {
             get => m_enemyType;
-        }
-
-        public int EnemyID
-        {
-            get => m_enemyID;
         }
 
         public string Name

@@ -5,10 +5,13 @@ using StarSalvager.AI;
 namespace StarSalvager.Factories.Data
 {
     [System.Serializable]
-    public struct ProjectileProfileData
+    public class ProjectileProfileData
     {
         [SerializeField, FoldoutGroup("$ProjectileType")]
         private string m_projectileType;
+
+        [SerializeField]
+        private string m_projectileTypeID = System.Guid.NewGuid().ToString();
 
         [SerializeField, FoldoutGroup("$ProjectileType")]
         private Sprite m_sprite;
@@ -19,6 +22,11 @@ namespace StarSalvager.Factories.Data
         public string ProjectileType
         {
             get => m_projectileType;
+        }
+
+        public string ProjectileTypeID
+        {
+            get => m_projectileTypeID;
         }
 
         public Sprite Sprite

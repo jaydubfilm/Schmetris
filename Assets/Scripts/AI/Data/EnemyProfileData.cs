@@ -2,11 +2,13 @@
 using UnityEngine;
 using StarSalvager.AI;
 using System.Collections.Generic;
+using System;
+using System.Collections;
 
 namespace StarSalvager.Factories.Data
 {
     [System.Serializable]
-    public struct EnemyProfileData
+    public class EnemyProfileData
     {
         [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$EnemyType/row2", 65), VerticalGroup("$EnemyType/row2/left"), HideLabel]
         private Sprite m_sprite;
@@ -15,7 +17,8 @@ namespace StarSalvager.Factories.Data
         [SerializeField, VerticalGroup("$EnemyType/row2/right")]
         private string m_enemyType;
 
-        
+        [SerializeField]
+        private string m_enemyTypeID = System.Guid.NewGuid().ToString();
 
         [SerializeField, VerticalGroup("$EnemyType/row2/right")]
         private ENEMY_MOVETYPE m_movementType;
@@ -58,6 +61,11 @@ namespace StarSalvager.Factories.Data
         public string EnemyType
         {
             get => m_enemyType;
+        }
+
+        public string EnemyTypeID
+        {
+            get => m_enemyTypeID;
         }
 
         public Sprite Sprite
@@ -120,12 +128,12 @@ namespace StarSalvager.Factories.Data
             get => m_sprayCount;
         }
 
-        private IEnumerable<string> GetProjectileTypes()
+        private IEnumerable GetProjectileTypes()
         {
-            List<string> projectileTypes = new List<string>();
+            ValueDropdownList<string> projectileTypes = new ValueDropdownList<string>();
             foreach (ProjectileProfileData data in GameObject.FindObjectOfType<FactoryManager>().ProjectileProfile.m_projectileProfileData)
             {
-                projectileTypes.Add(data.ProjectileType);
+                projectileTypes.Add(data.ProjectileType, data.ProjectileTypeID);
             }
             return projectileTypes;
         }

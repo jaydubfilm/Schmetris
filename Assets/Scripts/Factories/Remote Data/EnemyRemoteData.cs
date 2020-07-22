@@ -2,47 +2,40 @@
 using UnityEngine;
 using StarSalvager.AI;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace StarSalvager.Factories.Data
 {
     [System.Serializable]
     public struct EnemyRemoteData
     {
-        [SerializeField, FoldoutGroup("$EnemyType"), ValueDropdown("GetEnemyTypes")]
+        [SerializeField, FoldoutGroup("$GetEnemyType"), ValueDropdown("GetEnemyTypes")]
         private string m_enemyType;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
-        private int m_enemyID;
-
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$GetEnemyType")]
         private string m_name;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$GetEnemyType")]
         private int m_health;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$GetEnemyType")]
         private float m_movementSpeed;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$GetEnemyType")]
         private float m_attackDamage;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$GetEnemyType")]
         private float m_attackSpeed;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$GetEnemyType")]
         private int m_minBitExplosionCount;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$GetEnemyType")]
         private int m_maxBitExplosionCount;
 
         public string EnemyType
         {
             get => m_enemyType;
-        }
-
-        public int EnemyID
-        {
-            get => m_enemyID;
         }
 
         public string Name
@@ -79,12 +72,23 @@ namespace StarSalvager.Factories.Data
             get => m_maxBitExplosionCount;
         }
 
-        private IEnumerable<string> GetEnemyTypes()
+        private string GetEnemyType()
         {
-            List<string> enemyTypes = new List<string>();
+            string value = m_enemyType;
+            ValueDropdownList<string> enemyTypes = new ValueDropdownList<string>();
             foreach (EnemyProfileData data in GameObject.FindObjectOfType<FactoryManager>().EnemyProfile.m_enemyProfileData)
             {
-                enemyTypes.Add(data.EnemyType);
+                enemyTypes.Add(data.EnemyType, data.EnemyTypeID);
+            }
+            return enemyTypes.Find(s => s.Value == value).Text;
+        }
+
+        private IEnumerable GetEnemyTypes()
+        {
+            ValueDropdownList<string> enemyTypes = new ValueDropdownList<string>();
+            foreach (EnemyProfileData data in GameObject.FindObjectOfType<FactoryManager>().EnemyProfile.m_enemyProfileData)
+            {
+                enemyTypes.Add(data.EnemyType, data.EnemyTypeID);
             }
             return enemyTypes;
         }
