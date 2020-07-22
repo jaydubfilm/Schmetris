@@ -139,10 +139,13 @@ namespace StarSalvager
 
                 Vector2 direction = (Vector2)transform.position - hitPoint;
                 direction.Normalize();
-                Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                downVelocity.Normalize();
-                direction += downVelocity;
-                direction.Normalize();
+                if (direction != Vector2.up)
+                {
+                    Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
+                    downVelocity.Normalize();
+                    direction += downVelocity;
+                    direction.Normalize();
+                }
                 LevelManager.Instance.ObstacleManager.BounceObstacle(this, direction, rotation, true, true);
                 return;
             }

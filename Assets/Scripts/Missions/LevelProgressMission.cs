@@ -9,7 +9,7 @@ namespace StarSalvager
         public int m_sectorNumber;
         public int m_waveNumber;
 
-        public LevelProgressMission(int sectorNumber, int waveNumber, string missionName, MISSION_UNLOCK_PARAMETERS missionUnlockType, int amountNeeded = 1) : base(missionName, amountNeeded, missionUnlockType)
+        public LevelProgressMission(int sectorNumber, int waveNumber, string missionName, Dictionary<string, object> missionUnlockData, int amountNeeded = 1) : base(missionName, amountNeeded, missionUnlockData)
         {
             MissionEventType = MISSION_EVENT_TYPE.ENEMY_KILLED;
             m_sectorNumber = sectorNumber;

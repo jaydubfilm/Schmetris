@@ -15,6 +15,9 @@ namespace StarSalvager
         private static readonly string currentDataPath = Application.dataPath + "/RemoteData/MissionsCurrentData.mission";
         private static readonly string masterDataPath = Application.dataPath + "/RemoteData/MissionsMasterData.mission";
 
+        public static string recentCompletedMissionName = "";
+        public static int recentCompletedSectorName;
+        public static int recentCompletedWaveName;
 
         public static MissionsMasterData MissionsMasterData
         {
@@ -70,10 +73,6 @@ namespace StarSalvager
         public static void Init()
         {
             AddMissionCurrent("Resource Mission 1");
-            AddMissionCurrent("Enemy Mission 1");
-            AddMissionCurrent("Enemy Mission 2");
-            AddMissionCurrent("Level Mission 1");
-            AddMissionCurrent("Combo Mission 1");
         }
 
         public static void AddMissionCurrent(string missionName)
@@ -100,7 +99,7 @@ namespace StarSalvager
                     MissionsCurrentData.m_resourceCollectedMissions.Remove(mission);
                     mission.MissionStatus = MISSION_STATUS.COMPLETED;
                     MissionsCurrentData.m_completedMissions.Add(mission);
-                    ProcessMissionCompleteUnlocks(mission.m_missionName);
+                    ProcessMissionComplete(mission.m_missionName);
                 }
             }
         }
@@ -118,7 +117,7 @@ namespace StarSalvager
                     mission.MissionStatus = MISSION_STATUS.COMPLETED;
                     MissionsCurrentData.m_completedMissions.Add(mission);
                     MissionsCurrentData.m_enemyKilledMissions.RemoveAt(i);
-                    ProcessMissionCompleteUnlocks(mission.m_missionName);
+                    ProcessMissionComplete(mission.m_missionName);
                 }
             }
         }
@@ -136,7 +135,7 @@ namespace StarSalvager
                     mission.MissionStatus = MISSION_STATUS.COMPLETED;
                     MissionsCurrentData.m_completedMissions.Add(mission);
                     MissionsCurrentData.m_comboBlocksMissions.RemoveAt(i);
-                    ProcessMissionCompleteUnlocks(mission.m_missionName);
+                    ProcessMissionComplete(mission.m_missionName);
                 }
             }
         }
@@ -154,19 +153,33 @@ namespace StarSalvager
                     mission.MissionStatus = MISSION_STATUS.COMPLETED;
                     MissionsCurrentData.m_completedMissions.Add(mission);
                     MissionsCurrentData.m_levelProgressMissions.RemoveAt(i);
-                    ProcessMissionCompleteUnlocks(mission.m_missionName);
+                    ProcessMissionComplete(mission.m_missionName);
                 }
             }
+            ProcessWaveComplete(sectorNumber, waveNumber);
         }
 
-        public static void ProcessMissionCompleteUnlocks(string missionName)
+        public static void ProcessMissionComplete(string missionName)
         {
-            Toast.AddToast(missionName + " Successful!!!!");
+            Toast.AddToast(missionName + " Successful!!!!", time: 3.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.End);
+            recentCompletedMissionName = missionName;
+            CheckUnlocks();
+        }
+
+        private static void ProcessWaveComplete(int sectorNumber, int waveNumber)
+        {
+            recentCompletedSectorName = sectorNumber;
+            recentCompletedWaveName = waveNumber;
+            CheckUnlocks();
+        }
+
+        private static void CheckUnlocks()
+        {
             for (int i = MissionsCurrentData.m_notStartedMissions.Count - 1; i >= 0; i--)
             {
                 Mission mission = MissionsCurrentData.m_notStartedMissions[i];
 
-                if (mission.MissionUnlockType == MISSION_UNLOCK_PARAMETERS.MISSION_COMPLETE)
+                if (mission.missionUnlockCheck.CheckUnlockParameters())
                 {
                     MissionsCurrentData.AddMission(mission);
                 }

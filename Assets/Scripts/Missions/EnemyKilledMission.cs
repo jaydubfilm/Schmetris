@@ -8,7 +8,7 @@ namespace StarSalvager
     {
         public string m_enemyType;
 
-        public EnemyKilledMission(string enemyType, string missionName, MISSION_UNLOCK_PARAMETERS missionUnlockType, int amountNeeded) : base(missionName, amountNeeded, missionUnlockType)
+        public EnemyKilledMission(string enemyType, string missionName, Dictionary<string, object> missionUnlockData, int amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
         {
             MissionEventType = MISSION_EVENT_TYPE.ENEMY_KILLED;
             m_enemyType = enemyType;
