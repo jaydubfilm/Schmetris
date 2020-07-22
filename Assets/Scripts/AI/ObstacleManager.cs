@@ -197,6 +197,9 @@ namespace StarSalvager
 
                 m_offGridMovingObstacles[i].ShiftOnGrid(-amountShift);
                 m_offGridMovingObstacles[i].Bit.transform.position = Vector2.Lerp(m_offGridMovingObstacles[i].StartingPosition, m_offGridMovingObstacles[i].EndPosition, m_offGridMovingObstacles[i].LerpTimer);
+                
+                if (m_offGridMovingObstacles[i].Spinning)
+                    m_offGridMovingObstacles[i].Bit.transform.Rotate(new Vector3(0, m_offGridMovingObstacles[i].SpinSpeed * Time.deltaTime));
             }
 
             for (int i = m_obstacles.Count - 1; i >= 0; i--)

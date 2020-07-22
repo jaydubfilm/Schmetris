@@ -1,6 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using StarSalvager.AI;
+using System.Collections.Generic;
 
 namespace StarSalvager.Factories.Data
 {
@@ -22,8 +23,8 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$EnemyType")]
         private ENEMY_ATTACKTYPE m_attackType;
         
-        [SerializeField, FoldoutGroup("$EnemyType")]
-        private PROJECTILE_TYPE m_projectileType;
+        [SerializeField, FoldoutGroup("$EnemyType"), ValueDropdown("GetProjectileTypes")]
+        private string m_projectileType;
 
         //Variables that are only shown based on the EnemyType
         private bool showOscillationsPerSecond => m_movementType == ENEMY_MOVETYPE.Oscillate || m_movementType == ENEMY_MOVETYPE.OscillateHorizontal;
@@ -76,7 +77,7 @@ namespace StarSalvager.Factories.Data
             get => m_attackType;
         }
 
-        public PROJECTILE_TYPE ProjectileType
+        public string ProjectileType
         {
             get => m_projectileType;
         }
@@ -114,6 +115,16 @@ namespace StarSalvager.Factories.Data
         public int SprayCount
         {
             get => m_sprayCount;
+        }
+
+        private IEnumerable<string> GetProjectileTypes()
+        {
+            List<string> projectileTypes = new List<string>();
+            foreach (ProjectileProfileData data in GameObject.FindObjectOfType<FactoryManager>().ProjectileProfile.m_projectileProfileData)
+            {
+                projectileTypes.Add(data.ProjectileType);
+            }
+            return projectileTypes;
         }
     }
 }

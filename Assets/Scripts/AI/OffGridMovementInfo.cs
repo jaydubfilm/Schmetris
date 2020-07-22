@@ -9,6 +9,8 @@ namespace StarSalvager
         public IObstacle Bit;
         public Vector2 StartingPosition;
         public Vector2 EndPosition;
+        public float SpinSpeed = 15.0f;
+        public bool Spinning = true;
         public bool DespawnOnEnd;
         public float LerpSpeed;
         public float LerpTimer;
