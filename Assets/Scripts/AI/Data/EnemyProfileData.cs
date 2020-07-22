@@ -1,11 +1,14 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using StarSalvager.AI;
+using System.Collections.Generic;
+using System;
+using System.Collections;
 
 namespace StarSalvager.Factories.Data
 {
     [System.Serializable]
-    public struct EnemyProfileData
+    public class EnemyProfileData
     {
         [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$EnemyType/row2", 65), VerticalGroup("$EnemyType/row2/left"), HideLabel]
         private Sprite m_sprite;
@@ -14,7 +17,8 @@ namespace StarSalvager.Factories.Data
         [SerializeField, VerticalGroup("$EnemyType/row2/right")]
         private string m_enemyType;
 
-        
+        [SerializeField]
+        private string m_enemyTypeID = System.Guid.NewGuid().ToString();
 
         [SerializeField, VerticalGroup("$EnemyType/row2/right")]
         private ENEMY_MOVETYPE m_movementType;
@@ -25,8 +29,8 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$EnemyType")]
         private ENEMY_ATTACKTYPE m_attackType;
         
-        [SerializeField, FoldoutGroup("$EnemyType")]
-        private PROJECTILE_TYPE m_projectileType;
+        [SerializeField, FoldoutGroup("$EnemyType"), ValueDropdown("GetProjectileTypes")]
+        private string m_projectileType;
 
         //Variables that are only shown based on the EnemyType
         private bool showOscillationsPerSecond => m_movementType == ENEMY_MOVETYPE.Oscillate || m_movementType == ENEMY_MOVETYPE.OscillateHorizontal;
@@ -59,6 +63,11 @@ namespace StarSalvager.Factories.Data
             get => m_enemyType;
         }
 
+        public string EnemyTypeID
+        {
+            get => m_enemyTypeID;
+        }
+
         public Sprite Sprite
         {
             get => m_sprite;
@@ -79,7 +88,7 @@ namespace StarSalvager.Factories.Data
             get => m_attackType;
         }
 
-        public PROJECTILE_TYPE ProjectileType
+        public string ProjectileType
         {
             get => m_projectileType;
         }
@@ -117,6 +126,16 @@ namespace StarSalvager.Factories.Data
         public int SprayCount
         {
             get => m_sprayCount;
+        }
+
+        private IEnumerable GetProjectileTypes()
+        {
+            ValueDropdownList<string> projectileTypes = new ValueDropdownList<string>();
+            foreach (ProjectileProfileData data in GameObject.FindObjectOfType<FactoryManager>().ProjectileProfile.m_projectileProfileData)
+            {
+                projectileTypes.Add(data.ProjectileType, data.ProjectileTypeID);
+            }
+            return projectileTypes;
         }
     }
 }

@@ -75,6 +75,7 @@ namespace StarSalvager
         private float _dasTimer;
 
         public bool Rotating => _rotating;
+        public ROTATION MostRecentRotate;
 
         private bool _rotating;
         private float targetRotation;
@@ -232,6 +233,7 @@ namespace StarSalvager
         public void Rotate(ROTATION rotation)
         {
             float toRotate = rotation.ToAngle();
+            MostRecentRotate = rotation;
 
             //If we're already rotating, we need to add the direction to the target
             if (Rotating)
@@ -1263,7 +1265,7 @@ namespace StarSalvager
                         
                         
                         var projectile = FactoryManager.Instance.GetFactory<ProjectileFactory>().CreateObject<Projectile>(
-                            PROJECTILE_TYPE.Projectile1,
+                            "Basic Projectile",
                             shootDirection,
                             "Enemy");
                         projectile.transform.position = part.transform.position;

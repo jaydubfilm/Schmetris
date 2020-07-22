@@ -197,6 +197,9 @@ namespace StarSalvager
 
                 m_offGridMovingObstacles[i].ShiftOnGrid(-amountShift);
                 m_offGridMovingObstacles[i].Bit.transform.position = Vector2.Lerp(m_offGridMovingObstacles[i].StartingPosition, m_offGridMovingObstacles[i].EndPosition, m_offGridMovingObstacles[i].LerpTimer);
+                
+                if (m_offGridMovingObstacles[i].Spinning)
+                    m_offGridMovingObstacles[i].Bit.transform.Rotate(new Vector3(0, 0, m_offGridMovingObstacles[i].SpinSpeed * Time.deltaTime));
             }
 
             for (int i = m_obstacles.Count - 1; i >= 0; i--)
@@ -484,26 +487,26 @@ namespace StarSalvager
 
         private float m_bounceTravelDistance = 40.0f;
         private float m_bounceSpeedAdjustment = 0.5f;
-        public void BounceObstacle(IObstacle bit, Vector2 direction, bool despawnOnEnd)
+        public void BounceObstacle(IObstacle bit, Vector2 direction, float spinSpeed, bool despawnOnEnd, bool spinning)
         {
             m_obstacles.Remove(bit);
             Vector2 destination = (Vector2)bit.transform.position + direction * m_bounceTravelDistance;
-            PlaceMovableOffGrid(bit, bit.transform.position, destination, Vector2.Distance(bit.transform.position, destination) / (m_bounceTravelDistance * m_bounceSpeedAdjustment), despawnOnEnd);
+            PlaceMovableOffGrid(bit, bit.transform.position, destination, Vector2.Distance(bit.transform.position, destination) / (m_bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning);
         }
 
-        private void PlaceMovableOffGrid(IObstacle bit, Vector2 startingPosition, Vector2Int gridEndPosition, float lerpSpeed, bool despawnOnEnd = false)
+        private void PlaceMovableOffGrid(IObstacle bit, Vector2 startingPosition, Vector2Int gridEndPosition, float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false)
         {
             Vector2 endPosition = LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(gridEndPosition);
-            PlaceMovableOffGrid(bit, startingPosition, endPosition, lerpSpeed, despawnOnEnd);
+            PlaceMovableOffGrid(bit, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning);
         }
 
-        private void PlaceMovableOffGrid(IObstacle bit, Vector2 startingPosition, Vector2 endPosition, float lerpSpeed, bool despawnOnEnd)
+        private void PlaceMovableOffGrid(IObstacle bit, Vector2 startingPosition, Vector2 endPosition, float lerpSpeed, float spinSpeed, bool despawnOnEnd, bool spinning)
         {
             bit.SetColliderActive(false);
             bit.transform.parent = LevelManager.Instance.gameObject.transform;
             bit.transform.position = startingPosition;
 
-            m_offGridMovingObstacles.Add(new OffGridMovementInfo(bit, startingPosition, endPosition, lerpSpeed, despawnOnEnd));
+            m_offGridMovingObstacles.Add(new OffGridMovementInfo(bit, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning));
         }
 
         //============================================================================================================//

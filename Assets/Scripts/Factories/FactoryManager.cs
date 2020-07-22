@@ -55,6 +55,7 @@ namespace StarSalvager.Factories
 
         [SerializeField, Required, BoxGroup("Projectiles")]
         private ProjectileProfileScriptableObject projectileProfile;
+        public ProjectileProfileScriptableObject ProjectileProfile => projectileProfile;
         
         [SerializeField, Required, BoxGroup("Bot")]
         private GameObject botPrefab;

@@ -40,7 +40,7 @@ namespace StarSalvager.Factories
         //============================================================================================================//
 
         //TODO: Add setting the collisionTag for the projectile
-        public T CreateObject<T>(PROJECTILE_TYPE projectileType, Vector3 travelDirection, string collisionTag)
+        public T CreateObject<T>(string projectileType, Vector3 travelDirection, string collisionTag)
         {
             var projectile = CreateObject<Projectile>();
 

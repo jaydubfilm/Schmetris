@@ -161,7 +161,7 @@ namespace StarSalvager
 
         public static void ProcessMissionCompleteUnlocks(string missionName)
         {
-            Debug.Log("Mission Complete");
+            Toast.AddToast(missionName + " Successful!!!!");
             for (int i = MissionsCurrentData.m_notStartedMissions.Count - 1; i >= 0; i--)
             {
                 Mission mission = MissionsCurrentData.m_notStartedMissions[i];

@@ -17,12 +17,13 @@ MonoBehaviour:
   m_attachablePrefab: {fileID: 6795578211728555506, guid: 588e5471e6e066946969c2230afd537a,
     type: 3}
   m_enemyProfileData:
-  - m_enemyType: Shooter Enemy
-    m_sprite: {fileID: 21300000, guid: d2ad652576a89eb4fbce4c6b7d60aad2, type: 3}
+  - m_sprite: {fileID: 21300000, guid: d2ad652576a89eb4fbce4c6b7d60aad2, type: 3}
+    m_enemyType: Shooter Enemy
+    m_enemyTypeID: 5b71d3f4-5b5e-49a9-a40f-c66cecd3be53
     m_movementType: 3
     m_isAttachable: 0
     m_attackType: 2
-    m_projectileType: 0
+    m_projectileType: Basic Projectile
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
     m_orbitRadius: 10
@@ -30,12 +31,13 @@ MonoBehaviour:
     m_addVelocityToProjectiles: 0
     m_spreadAngle: 15
     m_sprayCount: 0
-  - m_enemyType: Parasite Enemy
-    m_sprite: {fileID: 21300000, guid: ebb0f2d985f2d2746b4770b11d4a7f6e, type: 3}
+  - m_sprite: {fileID: 21300000, guid: ebb0f2d985f2d2746b4770b11d4a7f6e, type: 3}
+    m_enemyType: Parasite Enemy
+    m_enemyTypeID: 4eeac5cf-1c0c-492d-82a1-86108b574464
     m_movementType: 0
     m_isAttachable: 1
     m_attackType: 6
-    m_projectileType: 0
+    m_projectileType: 
     m_oscillationsPerSeconds: 1
     m_oscillationAngleRange: 60
     m_orbitRadius: 15
