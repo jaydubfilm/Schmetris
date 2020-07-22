@@ -135,10 +135,13 @@ namespace StarSalvager
                 if (bot.MostRecentRotate == ROTATION.CW)
                 {
                     rotation *= -1;
-                    print("CCW");
                 }
 
                 Vector2 direction = (Vector2)transform.position - hitPoint;
+                direction.Normalize();
+                Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
+                downVelocity.Normalize();
+                direction += downVelocity;
                 direction.Normalize();
                 LevelManager.Instance.ObstacleManager.BounceObstacle(this, direction, rotation, true, true);
                 return;

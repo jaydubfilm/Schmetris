@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Enemy_Remote
   m_EditorClassIdentifier: 
   m_enemyRemoteData:
-  - m_enemyTypeID: 5b71d3f4-5b5e-49a9-a40f-c66cecd3be53
+  - m_enemyType: 5b71d3f4-5b5e-49a9-a40f-c66cecd3be53
     m_name: 
     m_health: 10
     m_movementSpeed: 7
@@ -21,7 +21,7 @@ MonoBehaviour:
     m_attackSpeed: 1
     m_minBitExplosionCount: 2
     m_maxBitExplosionCount: 4
-  - m_enemyTypeID: 4eeac5cf-1c0c-492d-82a1-86108b574464
+  - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
     m_name: 
     m_health: 10
     m_movementSpeed: 7

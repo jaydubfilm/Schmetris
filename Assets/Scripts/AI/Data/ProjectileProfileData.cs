@@ -10,14 +10,14 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$ProjectileType")]
         private string m_projectileType;
 
-        [SerializeField]
-        private string m_projectileTypeID = System.Guid.NewGuid().ToString();
-
         [SerializeField, FoldoutGroup("$ProjectileType")]
         private Sprite m_sprite;
 
         [SerializeField, FoldoutGroup("$ProjectileType")]
         private float m_projectileSpeed;
+
+        [SerializeField, FoldoutGroup("$ProjectileType")]
+        private string m_projectileTypeID = System.Guid.NewGuid().ToString();
 
         public string ProjectileType
         {
