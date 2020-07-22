@@ -7,16 +7,19 @@ namespace StarSalvager.Factories.Data
     [System.Serializable]
     public struct EnemyProfileData
     {
-        [SerializeField, FoldoutGroup("$EnemyType")]
-        private string m_enemyType;
-
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$EnemyType/row2", 65), VerticalGroup("$EnemyType/row2/left"), HideLabel]
         private Sprite m_sprite;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        
+        [SerializeField, VerticalGroup("$EnemyType/row2/right")]
+        private string m_enemyType;
+
+        
+
+        [SerializeField, VerticalGroup("$EnemyType/row2/right")]
         private ENEMY_MOVETYPE m_movementType;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, VerticalGroup("$EnemyType/row2/right")]
         private bool m_isAttachable;
 
         [SerializeField, FoldoutGroup("$EnemyType")]

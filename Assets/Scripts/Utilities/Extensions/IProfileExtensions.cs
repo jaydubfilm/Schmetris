@@ -11,6 +11,11 @@ namespace StarSalvager.Utilities.Extensions
         {
             return level >= profile.Sprites.Length ? profile.Sprites[0] : profile.Sprites[level];
         }
+        
+        public static Sprite GetRandomSprite(this IProfile profile)
+        {
+            return profile.Sprites[Random.Range(0, profile.Sprites.Length)];
+        }
     }
 }
 

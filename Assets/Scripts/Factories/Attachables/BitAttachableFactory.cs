@@ -81,9 +81,12 @@ namespace StarSalvager.Factories
         /// <returns></returns>
         public GameObject CreateGameObject(BlockData blockData)
         {
-            var remote = remoteData.GetRemoteData((BIT_TYPE) blockData.Type);
-            var profile = factoryProfile.GetProfile((BIT_TYPE)blockData.Type);
-            var sprite = profile.GetSprite(blockData.Level);            
+            var type = (BIT_TYPE) blockData.Type;
+            
+            var remote = remoteData.GetRemoteData(type);
+            var profile = factoryProfile.GetProfile(type);
+            //FIXME I may want to put this somewhere else, and leave the level dependent sprite obtaining here
+            var sprite = type == BIT_TYPE.BLACK ? profile.GetRandomSprite() : profile.GetSprite(blockData.Level);            
 
             if (!Recycler.TryGrab(out Bit temp))
             {
