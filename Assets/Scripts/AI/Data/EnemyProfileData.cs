@@ -13,12 +13,8 @@ namespace StarSalvager.Factories.Data
         [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$EnemyType/row2", 65), VerticalGroup("$EnemyType/row2/left"), HideLabel]
         private Sprite m_sprite;
 
-        
         [SerializeField, VerticalGroup("$EnemyType/row2/right")]
         private string m_enemyType;
-
-        [SerializeField]
-        private string m_enemyTypeID = System.Guid.NewGuid().ToString();
 
         [SerializeField, VerticalGroup("$EnemyType/row2/right")]
         private ENEMY_MOVETYPE m_movementType;
@@ -57,6 +53,8 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$EnemyType"), ShowIf("m_attackType", ENEMY_ATTACKTYPE.Spray)]
         private int m_sprayCount;
 
+        [SerializeField, FoldoutGroup("$EnemyType")]
+        private string m_enemyTypeID = System.Guid.NewGuid().ToString();
 
         public string EnemyType
         {

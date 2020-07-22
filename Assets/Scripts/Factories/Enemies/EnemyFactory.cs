@@ -35,7 +35,6 @@ namespace StarSalvager.Factories
 
         private EnemyData SetupEnemyData(string enemyTypeID)
         {
-            Debug.Log(enemyTypeID);
             EnemyProfileData profile = m_enemyProfile.GetEnemyProfileData(enemyTypeID);
             EnemyRemoteData remoteData = m_enemyRemoteData.GetRemoteData(enemyTypeID);
 

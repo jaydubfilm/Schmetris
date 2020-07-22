@@ -431,7 +431,20 @@ namespace StarSalvager
                             //TODO This needs to bounce off instead of being destroyed
                             if (closestAttachable is EnemyAttachable)
                             {
-                                Recycler.Recycle<Bit>(bit);
+                                Vector2 directionBounce = (Vector2)bit.transform.position - collisionPoint;
+                                directionBounce.Normalize();
+                                Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
+                                downVelocity.Normalize();
+                                directionBounce += downVelocity;
+                                directionBounce.Normalize();
+
+                                float rotation = 180.0f;
+                                if (directionBounce.x >= 0)
+                                {
+                                    rotation *= -1;
+                                }
+
+                                LevelManager.Instance.ObstacleManager.BounceObstacle(bit, directionBounce, rotation, true, true);
                                 return false;
                             }
 
@@ -586,7 +599,20 @@ namespace StarSalvager
                         //TODO This needs to bounce off instead of being destroyed
                         if (closestOnBot is EnemyAttachable)
                         {
-                            Recycler.Recycle<Shape>(shape);
+                            Vector2 directionBounce = (Vector2)shape.transform.position - collisionPoint;
+                            directionBounce.Normalize();
+                            Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
+                            downVelocity.Normalize();
+                            directionBounce += downVelocity;
+                            directionBounce.Normalize();
+
+                            float rotation = 180.0f;
+                            if (directionBounce.x >= 0)
+                            {
+                                rotation *= -1;
+                            }
+
+                            LevelManager.Instance.ObstacleManager.BounceObstacle(shape, directionBounce, rotation, true, true);
                             return false;
                         }
                         
