@@ -9,6 +9,7 @@ namespace StarSalvager
         GameObject gameObject { get; }
 
         bool Attached { get; set; }
+        bool CountAsConnected { get; }
 
         bool CanShift { get; }
 

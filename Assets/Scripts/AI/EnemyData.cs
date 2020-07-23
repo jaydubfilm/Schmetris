@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using StarSalvager.AI;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Animations;
@@ -30,7 +28,7 @@ namespace StarSalvager
         public string ProjectileType { get; }
 
         public Sprite Sprite { get; }
-        public AnimationScriptableObject Animation { get; }
+        public AnimationControllerScriptableObject AnimationController { get; }
 
         public float OscillationsPerSecond { get; }
 
@@ -66,20 +64,24 @@ namespace StarSalvager
             AttackType = enemyProfileData.AttackType;
             ProjectileType = enemyProfileData.ProjectileType;
             Sprite = enemyProfileData.Sprite;
-            Animation = enemyProfileData.Animation;
+            AnimationController = enemyProfileData.AnimationController;
             OscillationsPerSecond = enemyProfileData.OscillationsPerSeconds;
             OscillationAngleRange = enemyProfileData.OscillationAngleRange;
             OrbitRadius = enemyProfileData.OrbitRadius;
             NumberCellsDescend = enemyProfileData.NumberCellsDescend;
             AddVelocityToProjectiles = enemyProfileData.AddVelocityToProjectiles;
-            SpreadAngle = enemyProfileData.SpreadAngle; 
+            SpreadAngle = enemyProfileData.SpreadAngle;
             m_sprayCount = enemyProfileData.SprayCount;
-            MinBitExplosionCount = enemyRemoteData.MinBitExplosionCount; 
+            MinBitExplosionCount = enemyRemoteData.MinBitExplosionCount;
             MaxBitExplosionCount = enemyRemoteData.MaxBitExplosionCount;
 
         }
-        
-        public EnemyData(string enemyType, string name, int health, float movementSpeed, bool isAttachable, float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType, string projectileType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange, float orbitRadius, float numberCellsDescend, bool addVelocityToProjectiles, float spreadAngle, int sprayCount, int minBitExplosionCount, int maxBitExplosionCount)
+
+        public EnemyData(string enemyType, string name, int health, float movementSpeed, bool isAttachable,
+            float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType,
+            string projectileType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange,
+            float orbitRadius, float numberCellsDescend, bool addVelocityToProjectiles, float spreadAngle,
+            int sprayCount, int minBitExplosionCount, int maxBitExplosionCount)
         {
             EnemyType = enemyType;
             Name = name;

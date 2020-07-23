@@ -8,8 +8,8 @@ using StarSalvager.Utilities.Animations;
 
 namespace StarSalvager.AI
 {
-    [RequireComponent(typeof(SimpleAnimator))]
-    public class Enemy : CollidableBase, ICanBeHit, IHealth, ISimpleAnimation
+    [RequireComponent(typeof(StateAnimator))]
+    public class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation
     {
         public EnemyData m_enemyData;
 
@@ -27,17 +27,20 @@ namespace StarSalvager.AI
         
         protected Vector3 m_mostRecentMovementDirection = Vector3.zero;
 
-        public SimpleAnimator SimpleAnimator
+        //IStateAnimation Properties 
+        //============================================================================================================//
+
+        public StateAnimator StateAnimator
         {
             get
             {
                 if (_simpleAnimator == null)
-                    _simpleAnimator = GetComponent<SimpleAnimator>();
+                    _simpleAnimator = GetComponent<StateAnimator>();
 
                 return _simpleAnimator;
             }
         }
-        private SimpleAnimator _simpleAnimator;
+        private StateAnimator _simpleAnimator;
         
         //============================================================================================================//
 
@@ -55,7 +58,7 @@ namespace StarSalvager.AI
 
             renderer.sprite = m_enemyData?.Sprite;
             
-            SimpleAnimator.SetAnimation(m_enemyData?.Animation);
+            StateAnimator.SetController(m_enemyData?.AnimationController);
             
             m_horizontalMovementYLevel = transform.position.y;
             horizontalFarLeftX = 0;
@@ -319,9 +322,9 @@ namespace StarSalvager.AI
             MissionManager.ProcessEnemyKilledMissionData(m_enemyData.EnemyType, 1);
             Recycler.Recycle<Enemy>(this);
         }
-        
-        //============================================================================================================//
 
+        //IHealth Functions
+        //============================================================================================================//
 
         public void SetupHealthValues(float startingHealth, float currentHealth)
         {
@@ -337,7 +340,8 @@ namespace StarSalvager.AI
                 Recycler.Recycle<Enemy>(this);
         }
 
-        
+        //============================================================================================================//
+
     }
 }
  

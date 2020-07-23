@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Sirenix.OdinInspector;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Animations
@@ -15,6 +11,9 @@ namespace StarSalvager.Utilities.Animations
 
         public AnimationScriptableObject GetDefaultAnimation()
         {
+            if (States == null || States.Length < 1)
+                return null;
+            
             return States[0].Animation;
         }
 
@@ -31,29 +30,6 @@ namespace StarSalvager.Utilities.Animations
         }
     }
 
-    [Serializable]
-    public struct AnimationState
-    {
-        public int HashedID
-        {
-            get
-            {
-                if (_HashedID == 0)
-                    _HashedID = Animator.StringToHash(StateName);
-                
-                return _HashedID;
-            }
-        }
-        [NonSerialized, ReadOnly, ShowInInspector]
-        public int _HashedID;
-        
-        [HorizontalGroup("State"), LabelWidth(75)]
-        public string StateName;
 
-        
-        
-        [HorizontalGroup("State"), LabelWidth(75)]
-        public AnimationScriptableObject Animation;
-    }
 }
 

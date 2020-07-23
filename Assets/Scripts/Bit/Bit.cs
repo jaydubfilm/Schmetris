@@ -19,6 +19,9 @@ namespace StarSalvager
         public Vector2Int Coordinate { get; set; }
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
+
+        public bool CountAsConnected => true;
+
         [ShowInInspector, ReadOnly]
         public bool CanShift => true;
 

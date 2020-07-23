@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using StarSalvager.Values;
 using StarSalvager.Factories;
@@ -30,7 +31,19 @@ namespace StarSalvager
 
         public bool isPaused => GameTimer.IsPaused;
 
-        public bool HasNoActiveObstacles => m_obstacles.FindAll(o => o.CanMove == true).Count == 0 && m_offGridMovingObstacles.Count == 0;
+        public bool HasNoActiveObstacles
+        {
+            get
+            {
+                if (m_obstacles == null || m_offGridMovingObstacles == null)
+                    return false;
+
+                return !m_obstacles.Any(o => o != null && o.CanMove) && m_offGridMovingObstacles.Count == 0;
+
+                //m_obstacles.Any(o => o.CanMove) && 
+                //m_obstacles.FindAll(o => o.CanMove == true).Count == 0 && m_offGridMovingObstacles.Count == 0;
+            }
+        }
 
         // Start is called before the first frame update
         private void Start()

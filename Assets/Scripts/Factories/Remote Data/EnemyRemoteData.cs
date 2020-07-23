@@ -33,44 +33,21 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$GetEnemyType")]
         private int m_maxBitExplosionCount;
 
-        public string EnemyType
-        {
-            get => m_enemyType;
-        }
+        public string EnemyType => m_enemyType;
 
-        public string Name
-        {
-            get => m_name;
-        }
+        public string Name => m_name;
 
-        public int Health
-        {
-            get => m_health;
-        }
+        public int Health => m_health;
 
-        public float MovementSpeed
-        {
-            get => m_movementSpeed;
-        }
+        public float MovementSpeed => m_movementSpeed;
 
-        public float AttackDamage
-        {
-            get => m_attackDamage;
-        }
+        public float AttackDamage => m_attackDamage;
 
-        public float AttackSpeed
-        {
-            get => m_attackSpeed;
-        }
+        public float AttackSpeed => m_attackSpeed;
 
-        public int MinBitExplosionCount
-        {
-            get => m_minBitExplosionCount;
-        }
-        public int MaxBitExplosionCount
-        {
-            get => m_maxBitExplosionCount;
-        }
+        public int MinBitExplosionCount => m_minBitExplosionCount;
+
+        public int MaxBitExplosionCount => m_maxBitExplosionCount;
 
         private string GetEnemyType()
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.AI;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
@@ -59,6 +60,12 @@ namespace StarSalvager.Utilities.Extensions
                     continue;
                 }
 
+                if (attachablesAround[i].CountAsConnected == false)
+                {
+                    attachablesAround[i] = null;
+                    continue;
+                }
+
                 // If we've not already been at this Coordinate, keep going
                 if (!travelled.Contains(attachablesAround[i].Coordinate))
                     continue;
@@ -99,6 +106,89 @@ namespace StarSalvager.Utilities.Extensions
             return result;
         }
         
+        
+                /// <summary>
+        /// Returns whether or not this AttachableBase has a clear path to the core.
+        /// </summary>
+        /// <param name="bot"></param>
+        /// <param name="checking"></param>
+        /// <param name="toIgnore"></param>
+        /// <returns></returns>
+        public static bool HasPathToCore(this IEnumerable<IAttachable> attachedBlocks, Vector2Int checking, List<Vector2Int> toIgnore = null)
+        {
+            var travelled = new List<Vector2Int>();
+            //Debug.LogError("STARTED TO CHECK HERE");
+            return PathAlgorithm(attachedBlocks, checking, toIgnore, ref travelled);
+        }
+        
+        private static bool PathAlgorithm(IEnumerable<IAttachable> attachedBlocks, Vector2Int current, ICollection<Vector2Int> toIgnore, ref List<Vector2Int> travelled)
+        {
+            //If we're on (0, 0) we've reached the core, so go back up through 
+            if (current == Vector2Int.zero)
+                return true;
+
+            //Get list of attachables around the current attachable
+            var attachablesAround = attachedBlocks.GetAttachablesAround(current);
+            
+            for (var i = 0; i < attachablesAround.Count; i++)
+            {
+                //If there's no attachable, keep going
+                if (attachablesAround[i] == null)
+                    continue;
+
+                // If ignore list contains this Coordinate, keep going
+                if (toIgnore != null && toIgnore.Contains(attachablesAround[i].Coordinate))
+                {
+                    //Debug.LogError($"toIgnore contains {attachablesAround[i].Coordinate}");
+                    attachablesAround[i] = null;
+                    continue;
+                }
+                
+                if (attachablesAround[i].CountAsConnected == false)
+                {
+                    attachablesAround[i] = null;
+                    continue;
+                }
+
+                // If we've not already been at this Coordinate, keep going
+                if (!travelled.Contains(attachablesAround[i].Coordinate))
+                    continue;
+
+                //Debug.LogError($"travelled already contains {around[i].Coordinate}");
+                attachablesAround[i] = null;
+            }
+
+            //Check to see if the list is completely null
+            if (attachablesAround.All(ab => ab == null))
+            {
+                //Debug.LogError($"FAILED. Nothing around {current}", current);
+                return false;
+            }
+
+            //If everything checks out, lets say we've been here
+            travelled.Add(current);
+
+            //Get a list of all non-null Attachables ordered by the shortest distance to the core
+            var closestAttachables = attachablesAround.Where(ab => ab != null)
+                .OrderBy(ab => Vector2Int.Distance(Vector2Int.zero, ab.Coordinate));
+            
+            
+            var result = false;
+            //Go through all of the attachables (Closest to Furthest) until we run out
+            foreach (var attachableBase in closestAttachables)
+            {
+                result = PathAlgorithm(attachedBlocks, attachableBase, toIgnore, ref travelled);
+
+                //Debug.LogError($"{result} when checking {current.gameObject.name} to {attachableBase.gameObject.name}");
+
+                //If something reached the core, just stop looping and let the system know
+                if (result)
+                    break;
+            }
+
+            //Debug.LogError($"Failed Totally at {current.Coordinate}", current);
+            return result;
+        }
         
         #endregion //Path to Core Checks
         
@@ -308,6 +398,36 @@ namespace StarSalvager.Utilities.Extensions
             
             return outList;
         }
+        /// <summary>
+        /// Returns a list of all AttachableBase types around the from block
+        /// </summary>
+        /// <param name="attachables"></param>
+        /// <param name="from"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static List<IAttachable> GetAttachablesAround(this IEnumerable<IAttachable> attachables,
+            Vector2Int from, bool includeCorners = false)
+        {
+            var enumerable = attachables as IAttachable[] ?? attachables.ToArray();
+
+            var outList = new List<IAttachable>
+            {
+                enumerable.GetAttachableNextTo(from, DIRECTION.LEFT),
+                enumerable.GetAttachableNextTo(from, DIRECTION.UP),
+                enumerable.GetAttachableNextTo(from, DIRECTION.RIGHT),
+                enumerable.GetAttachableNextTo(from, DIRECTION.DOWN)
+            };
+            
+            if (includeCorners)
+            {
+                outList.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(-1,1)));
+                outList.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(1,1)));
+                outList.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(1,-1)));
+                outList.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(-1,-1)));
+            }
+            
+            return outList;
+        }
         
         //FIXME I should be able check this without the expensive use of the distance function
         public static List<T> GetAttachablesAroundInRadius<T>(this IEnumerable<IAttachable> attachables, IAttachable from, int radius) where T: IAttachable
@@ -424,6 +544,23 @@ namespace StarSalvager.Utilities.Extensions
             return attachables.FirstOrDefault(a => a.Coordinate == coord);
         }
         
+        /// <summary>
+        /// Returns an AttachableBase in the specified direction from the target Attachable
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="direction"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static IAttachable GetAttachableNextTo(this IEnumerable<IAttachable> attachables, Vector2Int from, DIRECTION direction)
+        {
+            return attachables.GetAttachableNextTo(from, direction.ToVector2Int());
+        }
+        public static IAttachable GetAttachableNextTo(this IEnumerable<IAttachable> attachables, Vector2Int from, Vector2Int direction)
+        {
+            var coord = from + direction;
+
+            return attachables.FirstOrDefault(a => a.Coordinate == coord);
+        }
         //============================================================================================================//
 
         public static void GetAllAttachedBits(this List<IAttachable> attachables, IAttachable current, IAttachable[] toIgnore, ref List<IAttachable> bits)

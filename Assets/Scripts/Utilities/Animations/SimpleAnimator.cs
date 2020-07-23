@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -11,7 +10,7 @@ namespace StarSalvager.Utilities.Animations
         private SpriteRenderer targetRenderer;
 
         [SerializeField, Range(0.1f, 2f)]
-        public float speed;
+        public float speed = 1f;
         [SerializeField]
         private bool playOnAwake = true;
 
@@ -78,7 +77,7 @@ namespace StarSalvager.Utilities.Animations
         {
             this.animation = animation;
             
-            if(playOnAwake)
+            if(playOnAwake && this.animation != null)
                 _playing = true;
         }
 

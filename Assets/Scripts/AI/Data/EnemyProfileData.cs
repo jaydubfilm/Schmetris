@@ -35,7 +35,7 @@ namespace StarSalvager.Factories.Data
         private bool m_isAttachable;
         
         [SerializeField, FoldoutGroup("$EnemyType")]
-        private AnimationScriptableObject m_enemyAnimation;
+        private AnimationControllerScriptableObject m_enemyAnimationController;
 
         [SerializeField, FoldoutGroup("$EnemyType")]
         private ENEMY_ATTACKTYPE m_attackType;
@@ -76,7 +76,7 @@ namespace StarSalvager.Factories.Data
 
         public Sprite Sprite => m_sprite;
         
-        public AnimationScriptableObject Animation => m_enemyAnimation;
+        public AnimationControllerScriptableObject AnimationController => m_enemyAnimationController;
 
         public ENEMY_MOVETYPE MovementType => m_movementType;
 

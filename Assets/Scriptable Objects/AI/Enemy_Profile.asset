@@ -22,7 +22,7 @@ MonoBehaviour:
     m_enemyType: Shooter Enemy
     m_movementType: 3
     m_isAttachable: 0
-    m_enemyAnimation: {fileID: 0}
+    m_enemyAnimationController: {fileID: 0}
     m_attackType: 2
     m_projectileType: Basic Projectile
     m_oscillationsPerSeconds: 0
@@ -38,7 +38,8 @@ MonoBehaviour:
     m_enemyType: Parasite Enemy
     m_movementType: 0
     m_isAttachable: 1
-    m_enemyAnimation: {fileID: 11400000, guid: 6531560ae884d9149a8c72e4c8886cc1, type: 2}
+    m_enemyAnimationController: {fileID: 11400000, guid: ae007e5b94b7cd047bd759c04c2ec622,
+      type: 2}
     m_attackType: 6
     m_projectileType: 
     m_oscillationsPerSeconds: 1

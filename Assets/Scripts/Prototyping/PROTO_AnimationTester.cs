@@ -13,11 +13,12 @@ public class PROTO_AnimationTester : MonoBehaviour
     private string EnemyTypeID;
     
     private EnemyFactory _enemyFactory;
+
     [SerializeField]
-    private AnimationScriptableObject _animationScriptableObject;
+    private int spawnCount = 1;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         _enemyFactory = FactoryManager.Instance.GetFactory<EnemyFactory>();
     }
@@ -26,7 +27,7 @@ public class PROTO_AnimationTester : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
-            CreateAnimation(100);
+            CreateAnimation(spawnCount);
     }
 
     private void CreateAnimation(int amount)

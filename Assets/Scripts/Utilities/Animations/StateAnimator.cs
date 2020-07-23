@@ -7,18 +7,24 @@ namespace StarSalvager.Utilities.Animations
         [SerializeField]
         private AnimationControllerScriptableObject animationController;
 
-        private new AnimationScriptableObject animation;
-
-        protected override void Start()
-        {
-            base.Start();
-
-            SetAnimation(animationController.GetDefaultAnimation());
-        }
-
         public void ChangeState(string newStateName)
         {
-            SetAnimation(animationController.GetAnimation(newStateName));
+            var animation = animationController.GetAnimation(newStateName);
+
+            SetAnimation(animation);
+        }
+        
+        public void ChangeState(int animationId)
+        {
+            var animation = animationController.GetAnimation(animationId);
+            
+            SetAnimation(animation);
+        }
+        
+        public void SetController(AnimationControllerScriptableObject animationController)
+        {
+            this.animationController = animationController;
+            SetAnimation(animationController.GetDefaultAnimation());
         }
     }
 }

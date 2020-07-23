@@ -455,7 +455,11 @@ namespace StarSalvager
                         case BIT_TYPE.WHITE:
                             //Destroy collided Bit
                             Recycler.Recycle<Bit>(attachable.gameObject);
-                        
+
+                            //We don't want to move a row if it hit an enemy instead of a bit
+                            if (closestAttachable is EnemyAttachable)
+                                break;
+                            
                             //Try and shift collided row (Depending on direction)
                             TryShift(connectionDirection.Reflected(), closestAttachable);
                             break;
@@ -503,7 +507,7 @@ namespace StarSalvager
             return true;
         }
 
-        public IAttachable GetClosestAttachable(Vector2Int checkCoordinate)
+        public IAttachable GetClosestAttachable(Vector2Int checkCoordinate, float maxDistance = 999f)
         {
             IAttachable selected = null;
 
@@ -512,8 +516,13 @@ namespace StarSalvager
             foreach (var attached in attachedBlocks)
             {
                 //attached.SetColor(Color.white);
+                if (attached.CountAsConnected == false)
+                    continue;
 
                 var dist = Vector2Int.Distance(attached.Coordinate, checkCoordinate);
+
+                if (dist > maxDistance)
+                    continue;
                 //TODO: Make a new function for "closest to an attachable" and then remove the second part of this if statement
                 if (dist > smallestDist || dist == 0)
                     continue;
@@ -559,6 +568,11 @@ namespace StarSalvager
             }
 
             //return direction != DIRECTION.NULL;
+        }
+
+        public bool CoordinateHasPathToCore(Vector2Int coordinate)
+        {
+            return _attachedBlocks.HasPathToCore(coordinate);
         }
 
         #endregion //Check For Legal Bit Attach
@@ -835,17 +849,68 @@ namespace StarSalvager
         //============================================================================================================//
 
         #region Attach Bits
-
-        public void AttachNewBit(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true, 
+        
+        public bool TryAttachNewBit(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true, 
             bool updateColliderGeometry = true, bool updateMissions = true)
         {
+            if (attachedBlocks.Any(x => x.Coordinate == coordinate))
+                return false;
+            
             newAttachable.Coordinate = coordinate;
             newAttachable.SetAttached(true);
             newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
             newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
-            attachedBlocks.Add(newAttachable);
+            
+            //We want to avoid having the same element multiple times in the list
+            if(!attachedBlocks.Contains(newAttachable)) 
+                attachedBlocks.Add(newAttachable);
+
+            if (updateMissions)
+            {
+                if (newAttachable is Bit bit)
+                {
+                    MissionManager.ProcessResourceCollectedMissionData(bit.Type, 
+                        FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type).resource[bit.level]);
+                }
+                else if (newAttachable is Shape shape)
+                {
+                    foreach (var attachedBit in shape.AttachedBits)
+                    {
+                        MissionManager.ProcessResourceCollectedMissionData(attachedBit.Type,
+                            FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(attachedBit.Type).resource[attachedBit.level]);
+                    }
+                }
+            }
+
+            if (newAttachable is Part)
+                UpdatePartsList();
+            
+            if(checkForCombo)
+                CheckForCombosAround(coordinate);
+
+            if(updateColliderGeometry)
+                CompositeCollider2D.GenerateGeometry();
+
+            return true;
+        }
+
+        public void AttachNewBit(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true, 
+            bool updateColliderGeometry = true, bool updateMissions = true)
+        {
+            
+            
+            newAttachable.Coordinate = coordinate;
+            newAttachable.SetAttached(true);
+            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
+            newAttachable.transform.SetParent(transform);
+
+            newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
+            
+            //We want to avoid having the same element multiple times in the list
+            if(!attachedBlocks.Contains(newAttachable)) 
+                attachedBlocks.Add(newAttachable);
 
             if (updateMissions)
             {
@@ -875,7 +940,8 @@ namespace StarSalvager
         }
 
         public void AttachNewBitToExisting(IAttachable newAttachable, IAttachable existingAttachable,
-            DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true, bool updateMissions = true)
+            DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true,
+            bool updateMissions = true)
         {
             var coordinate = existingAttachable.Coordinate + direction.ToVector2Int();
 
@@ -883,16 +949,25 @@ namespace StarSalvager
             if (attachedBlocks.Any(a => a.Coordinate == coordinate))
             {
                 var on = attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
-                Debug.LogError($"Prevented attaching {newAttachable.gameObject.name} to occupied location {coordinate}\n Occupied by {on.gameObject.name}",
+                Debug.LogError(
+                    $"Prevented attaching {newAttachable.gameObject.name} to occupied location {coordinate}\n Occupied by {on.gameObject.name}",
                     newAttachable.gameObject);
-                PushNewBit(newAttachable, direction, existingAttachable.Coordinate);
+
+                //I don't want the enemies to push to the end of the arm, I want it just attach to the closest available space
+                if (newAttachable is EnemyAttachable)
+                    AttachToClosestAvailableCoordinate(existingAttachable.Coordinate, newAttachable, direction,
+                        checkForCombo, updateColliderGeometry, updateMissions);
+                else
+                    PushNewBit(newAttachable, direction, existingAttachable.Coordinate);
+
                 return;
             }
 
             newAttachable.Coordinate = coordinate;
 
             newAttachable.SetAttached(true);
-            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
+            newAttachable.transform.position =
+                transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
             attachedBlocks.Add(newAttachable);
@@ -902,14 +977,16 @@ namespace StarSalvager
                 if (newAttachable is Bit bit)
                 {
                     MissionManager.ProcessResourceCollectedMissionData(bit.Type,
-                        FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type).resource[bit.level]);
+                        FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type)
+                            .resource[bit.level]);
                 }
                 else if (newAttachable is Shape shape)
                 {
                     foreach (var attachedBit in shape.AttachedBits)
                     {
                         MissionManager.ProcessResourceCollectedMissionData(attachedBit.Type,
-                            FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(attachedBit.Type).resource[attachedBit.level]);
+                            FactoryManager.Instance.GetFactory<BitAttachableFactory>()
+                                .GetBitRemoteData(attachedBit.Type).resource[attachedBit.level]);
                     }
                 }
             }
@@ -920,8 +997,57 @@ namespace StarSalvager
                 CheckForMagnetOverage();
             }
 
-            if(updateColliderGeometry)
+            if (updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
+        }
+
+        //FIXME Ensure that I have a version of this function without the desiredDirection, and one that accounts for corners
+        /// <summary>
+        /// Attaches the newAttachable to the closest available location LEFT, UP, RIGHT, DOWN in an incrementing radius
+        /// </summary>
+        /// <param name="coordinate"></param>
+        /// <param name="newAttachable"></param>
+        /// <param name="desiredDirection"></param>
+        /// <param name="checkForCombo"></param>
+        /// <param name="updateColliderGeometry"></param>
+        /// <param name="updateMissions"></param>
+        public void AttachToClosestAvailableCoordinate(Vector2Int coordinate, IAttachable newAttachable, DIRECTION desiredDirection, bool checkForCombo, 
+            bool updateColliderGeometry, bool updateMissions)
+        {
+            var directions = new[]
+            {
+                Vector2Int.left,
+                Vector2Int.up,
+                Vector2Int.right,
+                Vector2Int.down,
+            };
+
+            var avoid = desiredDirection.Reflected().ToVector2Int();
+            
+            var dist = 1;
+            while (true)
+            {
+                for (var i = 0; i < directions.Length; i++)
+                {
+                    if (avoid == directions[i])
+                        continue;
+                    
+                    var check = coordinate + (directions[i] * dist);
+                    if (attachedBlocks.Any(x => x.Coordinate == check))
+                        continue;
+
+                    //We need to make sure that the piece wont be floating
+                    if (!attachedBlocks.HasPathToCore(check))
+                        continue;
+                    
+                    AttachNewBit(check, newAttachable, checkForCombo, updateColliderGeometry, updateMissions);
+                    return;
+                }
+
+                if (dist++ > 10)
+                    break;
+
+            }
         }
 
         public void PushNewBit(IAttachable newAttachable, DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true)
@@ -992,6 +1118,7 @@ namespace StarSalvager
 
             var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bits);
 
+            
             foreach (var iAttachable in others)
             {
                 iAttachable.SetAttached(false);
@@ -1331,18 +1458,21 @@ namespace StarSalvager
         {
             var toSolve = new List<IAttachable>(attachedBlocks);
             
-            foreach (var attachableBase in toSolve)
+            foreach (var attachable in toSolve)
             {
-                if (!attachedBlocks.Contains(attachableBase))
+                if (!attachedBlocks.Contains(attachable))
                     continue;
-                
-                var hasPathToCore = attachedBlocks.HasPathToCore(attachableBase);
+
+                if (attachable.CountAsConnected == false)
+                    continue;
+
+                var hasPathToCore = attachedBlocks.HasPathToCore(attachable);
                 
                 if(hasPathToCore)
                     continue;
 
                 var attachedBits = new List<IAttachable>();
-                attachedBlocks.GetAllAttachedBits(attachableBase, null, ref attachedBits);
+                attachedBlocks.GetAllAttachedBits(attachable, null, ref attachedBits);
 
                 if (attachedBits.Count == 1)
                 {
@@ -1369,6 +1499,9 @@ namespace StarSalvager
             
             foreach (var attachable in toSolve)
             {
+                if (!attachable.CountAsConnected)
+                    continue;
+                
                 //if (!attachedBlocks.Contains(attachable))
                 //    continue;
 

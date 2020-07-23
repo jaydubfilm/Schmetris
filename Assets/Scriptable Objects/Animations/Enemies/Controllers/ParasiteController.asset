@@ -10,6 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f116f2073723fd444adc764dc540ec2a, type: 3}
-  m_Name: Animation Controller
+  m_Name: ParasiteController
   m_EditorClassIdentifier: 
-  States: []
+  States:
+  - StateName: Default
+    Animation: {fileID: 11400000, guid: 6531560ae884d9149a8c72e4c8886cc1, type: 2}
+  - StateName: Attack
+    Animation: {fileID: 11400000, guid: 9cb5efedc8035fd4cacc42460bffb659, type: 2}

@@ -7,11 +7,16 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class EnemyAttachable : Enemy, IAttachable, ICustomRecycle
+    public class EnemyAttachable : Enemy, IAttachable, ICustomRecycle, ICustomRotate
     {
+        private static readonly int DEFAULT = Animator.StringToHash("Default");
+        private static readonly int ATTACK  = Animator.StringToHash("Attack");
+        
+        //============================================================================================================//
         public Vector2Int Coordinate { get; set; }
         public bool Attached { get; set; }
-        
+
+        public bool CountAsConnected => false;
         public bool CanShift => true;
         
         [SerializeField]
@@ -19,26 +24,48 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
+        private Bot attachedBot;
+        private IAttachable target;
+        private Vector2Int attackFromCoordinate;
+        private Vector2Int targetCoordinate;
+        
+        //FIXME This needs to be removed
+        public GameObject TEST_TARGET;
+
         protected override void Update()
         {
             if (!Attached) 
                 return;
             
+            EnsureTargetValidity();
+
             m_fireTimer += Time.deltaTime;
-                
+
             if (m_fireTimer < 1 / m_enemyData.AttackSpeed)
                 return;
                 
             m_fireTimer -= 1 / m_enemyData.AttackSpeed;
-            LevelManager.Instance.BotGameObject.TryHitAt(LevelManager.Instance.BotGameObject.GetClosestAttachable(Coordinate), m_enemyData.AttackDamage);
+            
+            attachedBot.TryHitAt(target, m_enemyData.AttackDamage);
         }
 
         //============================================================================================================//
         
         public void SetAttached(bool isAttached)
         {
+            //If the bot is telling us to detach, first we need to make sure we can't take the position of our old target
+            //This is determined by whether or not it has a path to the core.
+            if (!isAttached)
+            {
+                if(TryMoveToTargetPosition())
+                    return;
+            }
+            
+            StateAnimator.ChangeState(isAttached ? ATTACK : DEFAULT);
+            
             Attached = isAttached;
             collider.usedByComposite = isAttached;
+            transform.parent = null;
         }
 
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
@@ -46,37 +73,11 @@ namespace StarSalvager.AI
             if(Attached)
                 return;
             
-            /*var bot = gameObject.GetComponent<Bot>();
-
-            if (bot.Rotating)
-            {
-                Recycling.Recycler.Recycle<EnemyAttachable>(this.gameObject);
-                return;
-            }
-
-            //If nothing was hit, ray failed, thus no reason to continue
-            /*if (hit.collider == null)
-            {
-                SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);
-                return;
-            }#1#
-
-            //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
-            var inDirection = (-(Vector2)m_mostRecentMovementDirection).ToDirection();
-            
-
-            if (inDirection == DIRECTION.NULL)
-                inDirection = DIRECTION.UP;
-            
-            bot.TryAddNewAttachable(this, inDirection, hitPoint);*/
-            //Debug.Break();
-            
-            
             var bot = gameObject.GetComponent<Bot>();
 
             if (bot.Rotating)
             {
-                Recycler.Recycle<Bit>(this);
+                //Recycler.Recycle<Bit>(this);
                 return;
             }
 
@@ -113,9 +114,15 @@ namespace StarSalvager.AI
 
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
             var inDirection = (-rayDirection).ToDirection();
-            bot.TryAddNewAttachable(this, inDirection, hit.point);
+            var attached = bot.TryAddNewAttachable(this, inDirection, hit.point);
+
+            if (!attached)
+                return;
+
+            attachedBot = bot;
+            UpdateTarget();
         }
-        
+
         //============================================================================================================//
         
         protected override bool TryGetRayDirectionFromBot(DIRECTION direction, out Vector2 rayDirection)
@@ -146,6 +153,89 @@ namespace StarSalvager.AI
             }
         }
         
+        //Attachable Enemy Movement when Attacking
+        //============================================================================================================//
+
+        private void EnsureTargetValidity()
+        {
+            //If our target has been destroyed (Killed/Recycled) we want to move to its position
+            //This would occur if this wasn't attempted to be detached,
+            //meaning it was sitting in a legal position that didn't require it to be detached
+            //FIXME This may be an issue with those attached to shapes that get detached?
+            if (target is IRecycled recyclable && recyclable.IsRecycled)
+            {
+                if (TryMoveToTargetPosition())
+                    return;
+                
+                target = null;
+                SetAttached(false);
+                return;
+            }
+            
+            //Here we're making sure that the target is still part of what we're attacking
+            if (target.transform.parent != transform.parent)
+            {
+                target = null;
+                SetAttached(false);
+                return;
+            }
+
+            if (targetCoordinate != target.Coordinate)
+            {
+                UpdateTarget();
+                return;
+            }
+
+            if (attackFromCoordinate != this.Coordinate)
+            {
+                UpdateTarget();
+                return;
+            }
+            
+            //We also want to make sure that we aren't currently targeting something that we shouldn't be
+            if (target is EnemyAttachable || target.Attached == false)
+            {
+                UpdateTarget();
+                return;
+            }
+        }
+
+        private bool TryMoveToTargetPosition() 
+        {
+            if (target == null)
+                return false;
+
+            if (!attachedBot.CoordinateHasPathToCore(target.Coordinate))
+                return false;
+
+            if (!attachedBot.TryAttachNewBit(target.Coordinate, this, false, true, false))
+                return false;
+
+            UpdateTarget();
+            return true;
+        }
+
+        private void UpdateTarget()
+        {
+            //We set the max distance here because we want to ensure we're attacking something right next to us
+            target = attachedBot.GetClosestAttachable(Coordinate, 1f);
+            
+            if (target == null)
+            {
+                targetCoordinate = Vector2Int.zero;
+                SetAttached(false);
+                return;
+            }
+
+            TEST_TARGET = target.gameObject;
+            
+            Debug.Log($"{gameObject.name} has new target. TARGET : {TEST_TARGET.gameObject.name}", TEST_TARGET);
+
+            attackFromCoordinate = this.Coordinate;
+            targetCoordinate = target.Coordinate;
+            RotateTowardsTarget(target);
+        }
+        
         //IHealth functions
         //============================================================================================================//
         
@@ -156,13 +246,56 @@ namespace StarSalvager.AI
             if(_currentHealth <= 0)
                 Recycler.Recycle<EnemyAttachable>(this);
         }
+
+        //ICustomRotate functions
+        //============================================================================================================//
+
+        public void CustomRotate()
+        {
+            //We don't want to rotate the Attachable enemy because they need to face specific directions to
+            //indicate their attack direction
+        }
+
+        private void RotateTowardsTarget(IAttachable Target)
+        {
+            var dir = (Target.Coordinate - Coordinate).ToDirection();
+            var AddRotation = Vector3.zero;
+            
+            switch (dir)
+            {
+                case DIRECTION.LEFT:
+                    AddRotation = Vector3.forward * 270f;
+                    break;
+                case DIRECTION.UP:
+                    AddRotation = Vector3.forward * 180f;
+                    break;
+                case DIRECTION.RIGHT:
+                    AddRotation = Vector3.forward * 90f;
+                    break;
+                case DIRECTION.DOWN:
+                    AddRotation = Vector3.zero;
+                    break;
+                default:
+                    dir = (-Coordinate).ToDirection();
+                    break;
+            }
+            
+            Debug.Log($"Rotate to Direction: {dir}");
+            
+            transform.rotation = Quaternion.Euler(AddRotation);
+        }
         
         //ICustomRecycle functions
         //============================================================================================================//
 
         public void CustomRecycle(params object[] args)
         {
+            attachedBot = null;
+            target = null;
             SetAttached(false);
         }
+        
+        //============================================================================================================//
+
     }
 }

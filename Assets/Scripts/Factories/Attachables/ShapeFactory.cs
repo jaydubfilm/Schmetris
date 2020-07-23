@@ -154,6 +154,10 @@ namespace StarSalvager.Factories
 
         public T CreateObject<T>(List<Bit> bits)
         {
+            if (bits == null || bits.Count == 0)
+                return default;
+            
+            
             var shape = CreateObject<Shape>();
             var baseCoordinate = bits[0].Coordinate;
             shape.transform.position = bits[0].transform.position;
@@ -176,7 +180,7 @@ namespace StarSalvager.Factories
         public GameObject CreateGameObject(List<Bit> bits)
         {
             if (bits is null || bits.Count == 0)
-                return null;
+                return default;
             
             var shape = CreateObject<Shape>();
             var baseCoordinate = bits[0].Coordinate;

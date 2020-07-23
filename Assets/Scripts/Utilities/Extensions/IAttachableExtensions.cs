@@ -1,6 +1,4 @@
-﻿using StarSalvager.Utilities.JsonDataTypes;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Extensions
@@ -28,11 +26,19 @@ namespace StarSalvager.Utilities.Extensions
                     throw new ArgumentOutOfRangeException(nameof(rotation), rotation, null);
             }
             
-            ////Rotate opposite of the Core rotation 
-            attachable.transform.localRotation *= rotation.ToInverseQuaternion();
-            //attachable.Rotated(rotation);
-
             attachable.Coordinate = temp;
+
+            
+            //Custom rotate
+            if (attachable is ICustomRotate customRotate)
+            {
+                customRotate.CustomRotate();
+                return;
+            }
+            
+            //Rotate opposite of the Core rotation 
+            attachable.transform.localRotation *= rotation.ToInverseQuaternion();
+            
         }
     }
 }

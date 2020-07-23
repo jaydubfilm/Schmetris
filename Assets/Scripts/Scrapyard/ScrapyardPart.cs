@@ -33,13 +33,15 @@ namespace StarSalvager
         }
         private Transform _transform;
 
-
         //IAttachable Properties
         //============================================================================================================//
         [ShowInInspector, ReadOnly]
         public Vector2Int Coordinate { get; set; }
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
+
+        public bool CountAsConnected => true;
+
         [ShowInInspector, ReadOnly]
         public bool CanShift => false;
 
