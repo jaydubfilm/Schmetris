@@ -14,7 +14,8 @@ namespace StarSalvager.Utilities.SceneManagement
             { "MainMenuScene", null },
             { "LevelScene", null },
             { "ScrapyardScene", null },
-            { "AlexShulmanTestScene", null }
+            { "AlexShulmanTestScene", null },
+            { "UniverseMapScene", null }
         };
 
         private static MonoBehaviour _coroutineRunner = null;
