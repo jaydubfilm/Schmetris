@@ -447,7 +447,7 @@ namespace StarSalvager
                                     rotation *= -1;
                                 }
 
-                                LevelManager.Instance.ObstacleManager.BounceObstacle(bit, directionBounce, rotation, true, true);
+                                LevelManager.Instance.ObstacleManager.BounceObstacle(bit, directionBounce, rotation, true, true, true);
                                 return false;
                             }
 
@@ -619,7 +619,7 @@ namespace StarSalvager
                                 rotation *= -1;
                             }
 
-                            LevelManager.Instance.ObstacleManager.BounceObstacle(shape, directionBounce, rotation, true, true);
+                            LevelManager.Instance.ObstacleManager.BounceObstacle(shape, directionBounce, rotation, true, true, true);
                             return false;
                         }
                         

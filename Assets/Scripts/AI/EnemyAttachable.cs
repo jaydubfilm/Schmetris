@@ -76,7 +76,7 @@ namespace StarSalvager.AI
 
             if (bot.Rotating)
             {
-                Recycler.Recycle<Bit>(this);
+                Recycler.Recycle<EnemyAttachable>(this);
                 return;
             }
 

@@ -15,7 +15,7 @@ namespace StarSalvager
     {
         private List<IObstacle> m_obstacles;
         private List<Shape> m_notFullyInGridShapes;
-        private List<OffGridMovementInfo> m_offGridMovingObstacles;
+        private List<OffGridMovement> m_offGridMovingObstacles;
 
         //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
         private float m_currentInput;
@@ -37,7 +37,7 @@ namespace StarSalvager
         {
             m_obstacles = new List<IObstacle>();
             m_notFullyInGridShapes = new List<Shape>();
-            m_offGridMovingObstacles = new List<OffGridMovementInfo>();
+            m_offGridMovingObstacles = new List<OffGridMovement>();
             GameTimer.AddPausable(this);
 
             SetupStage(0);
@@ -195,11 +195,8 @@ namespace StarSalvager
                     continue;
                 }
 
-                m_offGridMovingObstacles[i].ShiftOnGrid(-amountShift);
-                m_offGridMovingObstacles[i].Bit.transform.position = Vector2.Lerp(m_offGridMovingObstacles[i].StartingPosition, m_offGridMovingObstacles[i].EndPosition, m_offGridMovingObstacles[i].LerpTimer);
-                
-                if (m_offGridMovingObstacles[i].Spinning)
-                    m_offGridMovingObstacles[i].Bit.transform.Rotate(new Vector3(0, 0, m_offGridMovingObstacles[i].SpinSpeed * Time.deltaTime));
+                m_offGridMovingObstacles[i].Move(-amountShift);
+                m_offGridMovingObstacles[i].Spin();
             }
 
             for (int i = m_obstacles.Count - 1; i >= 0; i--)
@@ -487,26 +484,29 @@ namespace StarSalvager
 
         private float m_bounceTravelDistance = 40.0f;
         private float m_bounceSpeedAdjustment = 0.5f;
-        public void BounceObstacle(IObstacle bit, Vector2 direction, float spinSpeed, bool despawnOnEnd, bool spinning)
+        public void BounceObstacle(IObstacle bit, Vector2 direction, float spinSpeed, bool despawnOnEnd, bool spinning, bool arc)
         {
             m_obstacles.Remove(bit);
             Vector2 destination = (Vector2)bit.transform.position + direction * m_bounceTravelDistance;
-            PlaceMovableOffGrid(bit, bit.transform.position, destination, Vector2.Distance(bit.transform.position, destination) / (m_bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning);
+            PlaceMovableOffGrid(bit, bit.transform.position, destination, Vector2.Distance(bit.transform.position, destination) / (m_bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
         }
 
-        private void PlaceMovableOffGrid(IObstacle bit, Vector2 startingPosition, Vector2Int gridEndPosition, float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false)
+        private void PlaceMovableOffGrid(IObstacle bit, Vector2 startingPosition, Vector2Int gridEndPosition, float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false)
         {
             Vector2 endPosition = LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(gridEndPosition);
-            PlaceMovableOffGrid(bit, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning);
+            PlaceMovableOffGrid(bit, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning, arc);
         }
 
-        private void PlaceMovableOffGrid(IObstacle bit, Vector2 startingPosition, Vector2 endPosition, float lerpSpeed, float spinSpeed, bool despawnOnEnd, bool spinning)
+        private void PlaceMovableOffGrid(IObstacle bit, Vector2 startingPosition, Vector2 endPosition, float lerpSpeed, float spinSpeed, bool despawnOnEnd, bool spinning, bool arc)
         {
             bit.SetColliderActive(false);
             bit.transform.parent = LevelManager.Instance.gameObject.transform;
             bit.transform.position = startingPosition;
 
-            m_offGridMovingObstacles.Add(new OffGridMovementInfo(bit, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning));
+            if (!arc)
+                m_offGridMovingObstacles.Add(new OffGridMovementLerp(bit, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning));
+            else
+                m_offGridMovingObstacles.Add(new OffGridMovementArc(bit, startingPosition, Vector2.down * 25, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning));
         }
 
         //============================================================================================================//
