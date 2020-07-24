@@ -128,27 +128,24 @@ namespace StarSalvager
                     IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
                     var playerData = PlayerPersistentData.PlayerData;
 
-                    print("0");
                     if (attachableAtCoordinates != null)
                     {
-                        print("1");
                         if (attachableAtCoordinates is ScrapyardPart partAtCoordinates)
                         {
-                            print("2");
-                            LevelCost costToUpdate = playerData.GetCostDifference(partAtCoordinates.Type, partAtCoordinates.level, partAtCoordinates.level + 1);
-                            if (playerData.CanAfford(costToUpdate))
+                            if (!FactoryManager.Instance.GetFactory<PartAttachableFactory>().CheckLevelExists(partAtCoordinates.Type, partAtCoordinates.level + 1))
+                                return;
+
+                            if (!PlayerPersistentData.PlayerData.CanAffordPart(partAtCoordinates.Type, partAtCoordinates.level + 1))
                             {
-                                print("3");
-                                playerData.SubtractResources(costToUpdate);
-                                FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level + 1, ref partAtCoordinates);
-                            }
-                            else
-                            {
-                                print("4");
                                 m_scrapyardUI.DisplayInsufficientResources();
+                                return;
                             }
+
+                            playerData.SubtractResources(partAtCoordinates.Type, partAtCoordinates.level + 1);
+                            m_scrapyardUI.UpdateResources(playerData.GetResources());
+                            FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level + 1, ref partAtCoordinates);
                         }
-                        continue;
+                        return;
                     }
                 }
                 return;

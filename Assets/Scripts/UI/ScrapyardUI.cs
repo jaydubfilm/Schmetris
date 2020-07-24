@@ -135,7 +135,6 @@ namespace StarSalvager.UI
             IsUpgradingButton.onClick.AddListener(() =>
             {
                 m_scrapyard.IsUpgrading = !m_scrapyard.IsUpgrading;
-                print(m_scrapyard.IsUpgrading);
             });
 
             //--------------------------------------------------------------------------------------------------------//

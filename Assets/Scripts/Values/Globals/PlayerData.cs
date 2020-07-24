@@ -52,6 +52,9 @@ namespace StarSalvager.Values
             {
                 resources[resource.type] += resource.amount;
             }
+
+            if (level > 0)
+                AddResources(partType, level - 1);
         }
 
         public void SubtractResources(Dictionary<BIT_TYPE, int> toSubtract)
