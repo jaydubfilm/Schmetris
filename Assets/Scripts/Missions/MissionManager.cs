@@ -204,6 +204,9 @@ namespace StarSalvager
 
         public static MissionsCurrentData ImportMissionsCurrentRemoteData()
         {
+            if (!Directory.Exists(currentDataPath))
+                System.IO.Directory.CreateDirectory(currentDataPath);
+
             if (!File.Exists(currentDataPath))
                 return new MissionsCurrentData();
 
@@ -214,6 +217,9 @@ namespace StarSalvager
 
         public static MissionsMasterData ImportMissionsMasterRemoteData()
         {
+            if (!Directory.Exists(masterDataPath))
+                System.IO.Directory.CreateDirectory(masterDataPath);
+
             if (!File.Exists(masterDataPath))
                 return new MissionsMasterData();
 
