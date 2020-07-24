@@ -1,12 +1,20 @@
-﻿using System.Collections;
+﻿using Newtonsoft.Json;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace StarSalvager.Values
 {
     public static class PlayerPersistentData
     {
+        private static readonly string persistentDataPath = Application.dataPath + "/RemoteData/PlayerPersistentData.player";
         private static List<PlayerData> m_playerData = new List<PlayerData>();
+
+        public static void Init()
+        {
+            m_playerData.Add(ImportPlayerPersistentData());
+        }
 
         public static PlayerData PlayerData => GetPlayerData(0);
         
@@ -15,9 +23,38 @@ namespace StarSalvager.Values
             if (m_playerData.Count > index)
                 return m_playerData[index];
 
-            PlayerData playerData = new PlayerData();
-            m_playerData.Add(playerData);
+            Init();
             return m_playerData[index];
+        }
+
+        private static string ExportPlayerPersistentData(PlayerData editorData)
+        {
+            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
+            System.IO.File.WriteAllText(persistentDataPath, export);
+
+            return export;
+        }
+
+        private static PlayerData ImportPlayerPersistentData()
+        {
+            if (!Directory.Exists(persistentDataPath))
+                System.IO.Directory.CreateDirectory(Application.dataPath + "/RemoteData/");
+
+            if (!File.Exists(persistentDataPath))
+            {
+                PlayerData data = new PlayerData();
+                data.AddSectorProgression(0, 0);
+                return data;
+            }
+
+            var loaded = JsonConvert.DeserializeObject<PlayerData>(File.ReadAllText(persistentDataPath));
+
+            return loaded;
+        }
+
+        public static void OnApplicationQuit()
+        {
+            ExportPlayerPersistentData(PlayerData);
         }
     }
 }

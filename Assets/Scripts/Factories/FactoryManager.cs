@@ -17,6 +17,11 @@ namespace StarSalvager.Factories
         private MissionRemoteDataScriptableObject missionRemoteData;
         public MissionRemoteDataScriptableObject MissionRemoteData => missionRemoteData;
 
+        [SerializeField, Required, BoxGroup("Temporary")]
+        private List<SectorRemoteDataScriptableObject> m_sectorRemoteData;
+
+        public List<SectorRemoteDataScriptableObject> SectorRemoteData => m_sectorRemoteData;
+
         //============================================================================================================//
 
         [SerializeField, Required, BoxGroup("Attachables/Bits")]

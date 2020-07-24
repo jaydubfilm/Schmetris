@@ -24,6 +24,8 @@ namespace StarSalvager.Values
 
         List<BlockData> currentBlockData = new List<BlockData>();
 
+        public Dictionary<int, int> maxSectorProgression = new Dictionary<int, int>();
+
         //============================================================================================================//
 
         public Dictionary<BIT_TYPE, int> GetResources()
@@ -82,6 +84,24 @@ namespace StarSalvager.Values
                     return false;
             }
             return true;
+        }
+
+        //============================================================================================================//
+
+        public void AddSectorProgression(int sector, int waveAt)
+        {
+            if (maxSectorProgression.ContainsKey(sector))
+                maxSectorProgression[sector] = Mathf.Max(maxSectorProgression[sector], waveAt);
+            else
+                maxSectorProgression.Add(sector, waveAt);
+        }
+
+        public bool CheckIfQualifies(int sector, int waveAt)
+        {
+            if (maxSectorProgression.ContainsKey(sector) && maxSectorProgression[sector] >= waveAt)
+                return true;
+
+            return false;
         }
 
         //============================================================================================================//
