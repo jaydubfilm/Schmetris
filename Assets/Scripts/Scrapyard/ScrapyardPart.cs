@@ -88,5 +88,10 @@ namespace StarSalvager
         {
             renderer.sprite = sprite;
         }
+
+        public void SetLevel(int newLevel)
+        {
+            level = newLevel;
+        }
     }
 }

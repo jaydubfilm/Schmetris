@@ -51,6 +51,8 @@ namespace StarSalvager.UI
         private Button ReadyButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button SellBitsButton;
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button IsUpgradingButton;
 
         //============================================================================================================//
 
@@ -128,6 +130,11 @@ namespace StarSalvager.UI
             {
                 m_scrapyard.SellBits();
                 UpdateResources(PlayerPersistentData.PlayerData.GetResources());
+            });
+
+            IsUpgradingButton.onClick.AddListener(() =>
+            {
+                m_scrapyard.IsUpgrading = !m_scrapyard.IsUpgrading;
             });
 
             //--------------------------------------------------------------------------------------------------------//
