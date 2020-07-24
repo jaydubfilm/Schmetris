@@ -47,29 +47,36 @@ namespace StarSalvager.Utilities.Animations
 
         public Sprite PlayFrame(float speedMult, ref float t)
         {
-            
-            if (PingPong)
+            try
             {
-                var value = 1f / (speed * speedMult);
+                if (PingPong)
+                {
+                    var value = 1f / (speed * speedMult);
 
-                t = Mathf.PingPong(Time.time, value) / value;
+                    t = Mathf.PingPong(Time.time, value) / value;
+                }
+                else
+                {
+                    if (t >= 1f)
+                        t = 0f;
+
+                    t += Time.deltaTime * speed * speedMult;
+                }
+
+            
+                //Set the sprite based on the Time T
+                var index = useAnimationCurve
+                    ? GetIndex(curve.Evaluate(t), spriteCount) /* _spriteCount)Mathf.Lerp(0, _spriteCount, )*/
+                    : GetIndex(t, spriteCount);
+            
+
+                return sprites[index];
             }
-            else
+            catch (IndexOutOfRangeException e)
             {
-                if (t >= 1f)
-                    t = 0f;
-
-                t += Time.deltaTime * speed * speedMult;
+                Debug.LogError(e);
+                return sprites[0];
             }
-
-            
-            //Set the sprite based on the Time T
-            var index = useAnimationCurve
-                ? GetIndex(curve.Evaluate(t), spriteCount) /* _spriteCount)Mathf.Lerp(0, _spriteCount, )*/
-                : GetIndex(t, spriteCount);
-            
-
-            return sprites[index];
         }
 
         private static int GetIndex(float t, int count)

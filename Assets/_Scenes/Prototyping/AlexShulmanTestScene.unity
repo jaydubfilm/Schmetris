@@ -288,12 +288,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9a1403422b9a644aa0329280a9dadf9, type: 3}
---- !u!1 &717629718 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3244948815100470642, guid: d9a1403422b9a644aa0329280a9dadf9,
-    type: 3}
-  m_PrefabInstance: {fileID: 403236725}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &850507003 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7867727895391897348, guid: de2e1a50fa4983e4898877b8f3ac6e72,
@@ -493,6 +487,66 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 8672333739092931101}
+    ActiveGameObject: {fileID: 8672333739092931101}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 8672333739092931101}
+    ActiveGameObject: {fileID: 8672333739092931101}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 8672333739092931101}
+    ActiveGameObject: {fileID: 8672333739092931101}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 8672333739092931101}
+    ActiveGameObject: {fileID: 8672333739092931101}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 3152543544831635707}
+    ActiveGameObject: {fileID: 3152543544831635707}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 378131852}
     ActiveGameObject: {fileID: 378131852}
     GUIDsList: []
@@ -711,66 +765,6 @@ MonoBehaviour:
     list:
     - {fileID: 0}
     ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 850507003}
-    ActiveGameObject: {fileID: 850507003}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 717629718}
-    ActiveGameObject: {fileID: 717629718}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -1044,6 +1038,12 @@ PrefabInstance:
       objectReference: {fileID: 1784563040}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0fe23b0698003a34295497882a41b94d, type: 3}
+--- !u!1 &3152543544831635707 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3152543544327253056, guid: 0fe23b0698003a34295497882a41b94d,
+    type: 3}
+  m_PrefabInstance: {fileID: 3152543544831635706}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7867727894043253979
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1360,5 +1360,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelUICanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 8672333738348226054, guid: a98b23f35ed528a49b814796b4b98139,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a98b23f35ed528a49b814796b4b98139, type: 3}
+--- !u!1 &8672333739092931101 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8672333738348226054, guid: a98b23f35ed528a49b814796b4b98139,
+    type: 3}
+  m_PrefabInstance: {fileID: 8672333739092931100}
+  m_PrefabAsset: {fileID: 0}

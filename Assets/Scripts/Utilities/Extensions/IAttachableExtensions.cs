@@ -32,6 +32,7 @@ namespace StarSalvager.Utilities.Extensions
             //Custom rotate
             if (attachable is ICustomRotate customRotate)
             {
+                Debug.Log("Rotate");
                 customRotate.CustomRotate();
                 return;
             }

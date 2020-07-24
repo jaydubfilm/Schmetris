@@ -10,7 +10,7 @@ namespace StarSalvager
 
         bool Attached { get; set; }
         bool CountAsConnected { get; }
-
+        bool CanDisconnect { get; }
         bool CanShift { get; }
 
         void SetAttached(bool isAttached);

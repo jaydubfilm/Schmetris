@@ -563,27 +563,51 @@ namespace StarSalvager.Utilities.Extensions
         }
         //============================================================================================================//
 
-        public static void GetAllAttachedBits(this List<IAttachable> attachables, IAttachable current, IAttachable[] toIgnore, ref List<IAttachable> bits)
+        public static void GetAllAttachedBits(this List<IAttachable> attachables, IAttachable current, IAttachable[] toIgnore, ref List<IAttachable> outAttachables)
         {
-            var bitsAround = attachables.GetAttachablesAround(current);
+            var attachablesAround = attachables.GetAttachablesAround(current);
 
-            bits.Add(current);
+            outAttachables.Add(current);
             
-            foreach (var bit in bitsAround)
+            foreach (var attachable in attachablesAround)
             {
-                if (bit == null)
+                if (attachable == null)
                     continue;
 
-                if (!bit.CanShift)
-                    continue;
+                //if (!attachable.CanShift)
+                //    continue;
 
-                if (toIgnore != null && toIgnore.Contains(bit))
+                if (toIgnore != null && toIgnore.Contains(attachable))
                     continue;
                 
-                if(bits.Contains(bit))
+                if(outAttachables.Contains(attachable))
                     continue;
 
-                attachables.GetAllAttachedBits(bit, toIgnore, ref bits);
+                attachables.GetAllAttachedBits(attachable, toIgnore, ref outAttachables);
+            }
+
+        }
+        public static void GetAllAttachedDetachables(this List<IAttachable> attachables, IAttachable current, IAttachable[] toIgnore, ref List<IAttachable> outAttachables)
+        {
+            var attachablesAround = attachables.GetAttachablesAround(current);
+
+            outAttachables.Add(current);
+            
+            foreach (var attachable in attachablesAround)
+            {
+                if (attachable == null)
+                    continue;
+
+                if (!attachable.CanDisconnect)
+                    continue;
+
+                if (toIgnore != null && toIgnore.Contains(attachable))
+                    continue;
+                
+                if(outAttachables.Contains(attachable))
+                    continue;
+
+                attachables.GetAllAttachedDetachables(attachable, toIgnore, ref outAttachables);
             }
 
         }

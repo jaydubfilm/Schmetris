@@ -17,6 +17,7 @@ namespace StarSalvager.AI
         public bool Attached { get; set; }
 
         public bool CountAsConnected => false;
+        public bool CanDisconnect => true;
         public bool CanShift => true;
 
         [SerializeField]
@@ -26,16 +27,22 @@ namespace StarSalvager.AI
 
         private Bot attachedBot;
         private IAttachable target;
-        private Vector2Int attackFromCoordinate;
         private Vector2Int targetCoordinate;
+        //private Vector2Int targetDirection;
 
         //FIXME This needs to be removed
         public GameObject TEST_TARGET;
 
         protected override void Update()
         {
+
             if (!Attached)
+            {
+                if(attachedBot != null )
+                    Debug.Break();
+                
                 return;
+            }
 
             EnsureTargetValidity();
 
@@ -53,18 +60,29 @@ namespace StarSalvager.AI
 
         public void SetAttached(bool isAttached)
         {
+            //I can't assume that it will always be attached/Detached,as we need to ensure that the move is legal before setting all the values   
+            
             //If the bot is telling us to detach, first we need to make sure we can't take the position of our old target
             //This is determined by whether or not it has a path to the core.
-            if (!isAttached)
+            if (isAttached)
             {
-                if(TryMoveToTargetPosition())
-                    return;
+                Attached = true;
+                collider.usedByComposite = true;
+                StateAnimator.ChangeState(ATTACK);
+
+                return;
             }
+            
+            if(TryMoveToTargetPosition())
+                return;
+            
+            Attached = false;
+            collider.usedByComposite = false;
+            StateAnimator.ChangeState(DEFAULT);
 
-            StateAnimator.ChangeState(isAttached ? ATTACK : DEFAULT);
-
-            Attached = isAttached;
-            collider.usedByComposite = isAttached;
+            target = null;
+            attachedBot = null;
+            transform.rotation = Quaternion.identity;
             transform.parent = null;
         }
 
@@ -120,7 +138,7 @@ namespace StarSalvager.AI
                 return;
 
             attachedBot = bot;
-            UpdateTarget();
+            TryUpdateTarget();
         }
 
         //============================================================================================================//
@@ -164,11 +182,24 @@ namespace StarSalvager.AI
             //FIXME This may be an issue with those attached to shapes that get detached?
             if (target is IRecycled recyclable && recyclable.IsRecycled)
             {
-                if (TryMoveToTargetPosition())
-                    return;
+                var health = target as IHealth;
+                
+                //Here I can assume that a Bit with no health was destroyed, and thus I can move into its position
+                if (health?.CurrentHealth <= 0)
+                {
+                    if (TryMoveToTargetPosition())
+                        return;
+                }
+                //If the Bit was recycled with a health above 0, I can assume that it was done because of a combo, 
+                //and the enemy should try and find a new target relative to its current position
+                else if (health?.CurrentHealth > 0)
+                {
+                    if(TryUpdateTarget())
+                        return;
+                }
 
                 target = null;
-                SetAttached(false);
+                attachedBot.ForceDetach(this);
                 return;
             }
 
@@ -176,26 +207,28 @@ namespace StarSalvager.AI
             if (target.transform.parent != transform.parent)
             {
                 target = null;
-                SetAttached(false);
+                attachedBot.ForceDetach(this);
                 return;
             }
+            //TODO Need to account for bits that move due to combo solve
+            
 
-            if (targetCoordinate != target.Coordinate)
+            //if (targetDirection != (this.Coordinate - target.Coordinate))
+            //{
+            //    RotateTowardsTarget(target);
+            //    return;
+            //}
+
+            /*if (attackFromCoordinate != this.Coordinate)
             {
                 UpdateTarget();
                 return;
-            }
-
-            if (attackFromCoordinate != this.Coordinate)
-            {
-                UpdateTarget();
-                return;
-            }
+            }*/
 
             //We also want to make sure that we aren't currently targeting something that we shouldn't be
             if (target is EnemyAttachable || target.Attached == false)
             {
-                UpdateTarget();
+                TryUpdateTarget();
                 return;
             }
         }
@@ -208,32 +241,36 @@ namespace StarSalvager.AI
             if (!attachedBot.CoordinateHasPathToCore(target.Coordinate))
                 return false;
 
+            if (attachedBot.CoordinateOccupied(target.Coordinate))
+                return false;
+
             if (!attachedBot.TryAttachNewBit(target.Coordinate, this, false, true, false))
                 return false;
 
-            UpdateTarget();
+            if (!TryUpdateTarget())
+                return false;
+            
             return true;
         }
 
-        private void UpdateTarget()
+        private bool TryUpdateTarget()
         {
             //We set the max distance here because we want to ensure we're attacking something right next to us
             target = attachedBot.GetClosestAttachable(Coordinate, 1f);
 
             if (target == null)
             {
-                targetCoordinate = Vector2Int.zero;
                 SetAttached(false);
-                return;
+                return false;
             }
 
             TEST_TARGET = target.gameObject;
 
             Debug.Log($"{gameObject.name} has new target. TARGET : {TEST_TARGET.gameObject.name}", TEST_TARGET);
 
-            attackFromCoordinate = this.Coordinate;
-            targetCoordinate = target.Coordinate;
             RotateTowardsTarget(target);
+
+            return true;
         }
 
         //IHealth functions
@@ -258,6 +295,9 @@ namespace StarSalvager.AI
 
         private void RotateTowardsTarget(IAttachable Target)
         {
+            if (target == null)
+                return;
+            
             var dir = (Target.Coordinate - Coordinate).ToDirection();
             var AddRotation = Vector3.zero;
 
@@ -280,7 +320,7 @@ namespace StarSalvager.AI
                     break;
             }
 
-            Debug.Log($"Rotate to Direction: {dir}");
+            Debug.Log($"{gameObject.name} Rotate to Direction: {dir}", gameObject);
 
             transform.rotation = Quaternion.Euler(AddRotation);
         }

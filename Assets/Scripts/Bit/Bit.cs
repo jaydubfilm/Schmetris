@@ -21,6 +21,7 @@ namespace StarSalvager
         public bool Attached { get; set; }
 
         public bool CountAsConnected => true;
+        public bool CanDisconnect => true;
 
         [ShowInInspector, ReadOnly]
         public bool CanShift => true;

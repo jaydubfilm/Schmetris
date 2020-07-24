@@ -12,8 +12,9 @@ namespace StarSalvager
     {
         private static bool fromScriptable = true;
 
-        private static readonly string currentDataPath = Application.dataPath + "/RemoteData/MissionsCurrentData.mission";
-        private static readonly string masterDataPath = Application.dataPath + "/RemoteData/MissionsMasterData.mission";
+        private static readonly string REMOTEDATA_PATH = Application.dataPath + "/RemoteData/";
+        private static readonly string currentDataPath = REMOTEDATA_PATH + "MissionsCurrentData.mission";
+        private static readonly string masterDataPath = REMOTEDATA_PATH + "MissionsMasterData.mission";
 
         public static string recentCompletedMissionName = "";
         public static int recentCompletedSectorName;
@@ -88,7 +89,7 @@ namespace StarSalvager
         //Next 4 functions receive information from outside the missionmanager when an event relevant to missions has occurred.
         public static void ProcessResourceCollectedMissionData(BIT_TYPE resourceType, int amount)
         {
-            Debug.Log("Resource mission event");
+            //Debug.Log("Resource mission event");
             for (int i = MissionsCurrentData.m_resourceCollectedMissions.Count - 1; i >= 0; i--)
             {
                 ResourceCollectedMission mission = MissionsCurrentData.m_resourceCollectedMissions[i];
@@ -106,7 +107,7 @@ namespace StarSalvager
 
         public static void ProcessEnemyKilledMissionData(string enemyType, int amount)
         {
-            Debug.Log("Enemy killed mission event");
+            //Debug.Log("Enemy killed mission event");
             for (int i = MissionsCurrentData.m_enemyKilledMissions.Count - 1; i >= 0; i--)
             {
                 EnemyKilledMission mission = MissionsCurrentData.m_enemyKilledMissions[i];
@@ -124,7 +125,7 @@ namespace StarSalvager
 
         public static void ProcessComboBlocksMissionData(BIT_TYPE comboType, int amount)
         {
-            Debug.Log("Combo Blocks mission event");
+            //Debug.Log("Combo Blocks mission event");
             for (int i = MissionsCurrentData.m_comboBlocksMissions.Count - 1; i >= 0; i--)
             {
                 ComboBlocksMission mission = MissionsCurrentData.m_comboBlocksMissions[i];
@@ -142,7 +143,7 @@ namespace StarSalvager
 
         public static void ProcessLevelProgressMissionData(int sectorNumber, int waveNumber)
         {
-            Debug.Log("Level Progress mission event");
+            //Debug.Log("Level Progress mission event");
             for (int i = MissionsCurrentData.m_levelProgressMissions.Count - 1; i >= 0; i--)
             {
                 LevelProgressMission mission = MissionsCurrentData.m_levelProgressMissions[i];
@@ -188,6 +189,9 @@ namespace StarSalvager
 
         public static string ExportMissionsCurrentRemoteData(MissionsCurrentData editorData)
         {
+            if (!Directory.Exists(REMOTEDATA_PATH))
+                System.IO.Directory.CreateDirectory(REMOTEDATA_PATH);
+            
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
             System.IO.File.WriteAllText(currentDataPath, export);
 
@@ -196,6 +200,10 @@ namespace StarSalvager
 
         public static string ExportMissionsMasterRemoteData(MissionsMasterData editorData)
         {
+            if (!Directory.Exists(REMOTEDATA_PATH))
+                System.IO.Directory.CreateDirectory(REMOTEDATA_PATH);
+
+            
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
             System.IO.File.WriteAllText(masterDataPath, export);
 
@@ -204,8 +212,8 @@ namespace StarSalvager
 
         public static MissionsCurrentData ImportMissionsCurrentRemoteData()
         {
-            if (!Directory.Exists(currentDataPath))
-                System.IO.Directory.CreateDirectory(currentDataPath);
+            if (!Directory.Exists(REMOTEDATA_PATH))
+                System.IO.Directory.CreateDirectory(REMOTEDATA_PATH);
 
             if (!File.Exists(currentDataPath))
                 return new MissionsCurrentData();
@@ -217,8 +225,8 @@ namespace StarSalvager
 
         public static MissionsMasterData ImportMissionsMasterRemoteData()
         {
-            if (!Directory.Exists(masterDataPath))
-                System.IO.Directory.CreateDirectory(masterDataPath);
+            if (!Directory.Exists(REMOTEDATA_PATH))
+                System.IO.Directory.CreateDirectory(REMOTEDATA_PATH);
 
             if (!File.Exists(masterDataPath))
                 return new MissionsMasterData();

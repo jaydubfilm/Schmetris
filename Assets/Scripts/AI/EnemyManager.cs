@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using StarSalvager.Values;
@@ -7,6 +8,7 @@ using StarSalvager.AI;
 using System.Linq;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Inputs;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
@@ -71,7 +73,20 @@ namespace StarSalvager
         {
             for (int i = m_enemies.Count - 1; i >= 0; i--)
             {
-                Recycling.Recycler.Recycle<Enemy>(m_enemies[i].gameObject);
+                //Need to ensure that the fall through order has the base class at the bottom, and inheritors at the top
+                switch (m_enemies[i])
+                {
+                    case EnemyAttachable _:
+                        Recycling.Recycler.Recycle<EnemyAttachable>(m_enemies[i].gameObject);
+                        break;
+                    
+                    case Enemy _:
+                        Recycling.Recycler.Recycle<Enemy>(m_enemies[i].gameObject);
+                        break;
+                    default:
+                        throw new ArgumentException();
+                }
+                
                 m_enemies.RemoveAt(i);
             }
         }

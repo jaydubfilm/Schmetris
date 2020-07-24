@@ -577,6 +577,11 @@ namespace StarSalvager
         {
             return _attachedBlocks.HasPathToCore(coordinate);
         }
+        
+        public bool CoordinateOccupied(Vector2Int coordinate)
+        {
+            return _attachedBlocks.Any(x => x.Coordinate == coordinate);
+        }
 
         #endregion //Check For Legal Bit Attach
 
@@ -764,10 +769,10 @@ namespace StarSalvager
 
         public void TryHitAt(Vector2 hitPosition, float damage)
         {
-            if (PROTO_GodMode)
-                return;
-            
             var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
+            
+            if (PROTO_GodMode && closestAttachable.Coordinate == Vector2Int.zero)
+                return;
 
             //print("DAMAGE");
 
@@ -790,7 +795,7 @@ namespace StarSalvager
 
         public void TryHitAt(IAttachable closestAttachable, float damage)
         {
-            if (PROTO_GodMode)
+            if (PROTO_GodMode && closestAttachable.Coordinate == Vector2Int.zero)
                 return;
             
             //FIXME Need to see how to fix this
@@ -860,6 +865,9 @@ namespace StarSalvager
         public bool TryAttachNewBit(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true, 
             bool updateColliderGeometry = true, bool updateMissions = true)
         {
+            if (Destroyed) 
+                return false;
+            
             if (attachedBlocks.Any(x => x.Coordinate == coordinate))
                 return false;
             
@@ -906,7 +914,8 @@ namespace StarSalvager
         public void AttachNewBit(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true, 
             bool updateColliderGeometry = true, bool updateMissions = true)
         {
-            
+            if (Destroyed) 
+                return;
             
             newAttachable.Coordinate = coordinate;
             newAttachable.SetAttached(true);
@@ -950,6 +959,9 @@ namespace StarSalvager
             DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true,
             bool updateMissions = true)
         {
+            if (Destroyed) 
+                return;
+            
             var coordinate = existingAttachable.Coordinate + direction.ToVector2Int();
 
             //Checks for attempts to add attachable to occupied location
@@ -962,7 +974,7 @@ namespace StarSalvager
 
                 //I don't want the enemies to push to the end of the arm, I want it just attach to the closest available space
                 if (newAttachable is EnemyAttachable)
-                    AttachToClosestAvailableCoordinate(existingAttachable.Coordinate, newAttachable, direction,
+                    AttachToClosestAvailableCoordinate(coordinate, newAttachable, direction,
                         checkForCombo, updateColliderGeometry, updateMissions);
                 else
                     PushNewBit(newAttachable, direction, existingAttachable.Coordinate);
@@ -977,7 +989,10 @@ namespace StarSalvager
                 transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
-            attachedBlocks.Add(newAttachable);
+            //We want to avoid having the same element multiple times in the list
+            if(!attachedBlocks.Contains(newAttachable)) 
+                attachedBlocks.Add(newAttachable);
+
 
             if (updateMissions)
             {
@@ -1021,12 +1036,22 @@ namespace StarSalvager
         public void AttachToClosestAvailableCoordinate(Vector2Int coordinate, IAttachable newAttachable, DIRECTION desiredDirection, bool checkForCombo, 
             bool updateColliderGeometry, bool updateMissions)
         {
+            if (Destroyed) 
+                return;
+            
             var directions = new[]
             {
+                //Cardinal Directions
                 Vector2Int.left,
                 Vector2Int.up,
                 Vector2Int.right,
                 Vector2Int.down,
+                
+                //Corners
+                new Vector2Int(-1,-1), 
+                new Vector2Int(-1,1), 
+                new Vector2Int(1,-1), 
+                new Vector2Int(1,1), 
             };
 
             var avoid = desiredDirection.Reflected().ToVector2Int();
@@ -1036,8 +1061,8 @@ namespace StarSalvager
             {
                 for (var i = 0; i < directions.Length; i++)
                 {
-                    if (avoid == directions[i])
-                        continue;
+                    //if (avoid == directions[i])
+                    //    continue;
                     
                     var check = coordinate + (directions[i] * dist);
                     if (attachedBlocks.Any(x => x.Coordinate == check))
@@ -1046,7 +1071,7 @@ namespace StarSalvager
                     //We need to make sure that the piece wont be floating
                     if (!attachedBlocks.HasPathToCore(check))
                         continue;
-                    
+                    Debug.Log($"Found available location for {newAttachable.gameObject.name}\n{coordinate} + ({directions[i]} * {dist}) = {check}");
                     AttachNewBit(check, newAttachable, checkForCombo, updateColliderGeometry, updateMissions);
                     return;
                 }
@@ -1059,6 +1084,9 @@ namespace StarSalvager
 
         public void PushNewBit(IAttachable newAttachable, DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true)
         {
+            if (Destroyed) 
+                return;
+            
             var newCoord = direction.ToVector2Int();
 
             attachedBlocks.FindUnoccupiedCoordinate(direction, ref newCoord);
@@ -1082,6 +1110,9 @@ namespace StarSalvager
 
         public void PushNewBit(IAttachable newAttachable, DIRECTION direction, Vector2Int startCoord, bool checkForCombo = true, bool updateColliderGeometry = true)
         {
+            if (Destroyed) 
+                return;
+            
             var newCoord = startCoord + direction.ToVector2Int();
 
             attachedBlocks.FindUnoccupiedCoordinate(direction, ref newCoord);
@@ -1106,6 +1137,11 @@ namespace StarSalvager
         #endregion //Attach Bits
 
         #region Detach Bits
+
+        public void ForceDetach(IAttachable attachable)
+        {
+            DetachBit(attachable);
+        }
         
         private void DetachBits(IReadOnlyCollection<IAttachable> detachingBits, bool delayedCollider = false)
         {
@@ -1117,13 +1153,22 @@ namespace StarSalvager
             
             foreach (var attachable in detachingBits)
             {
+                BitsPendingDetach?.Remove(attachable);
                 attachedBlocks.Remove(attachable);
             }
-
+            
             var bits = detachingBits.OfType<Bit>().ToList();
             var others = detachingBits.Where(x => !(x is Bit)).ToList();
 
-            var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bits);
+            //FIXME THis seems to be troublesome. Bits that are not attached, still are part of the same shape. 
+            //var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bits);
+            foreach (var bit in bits)
+            {
+                bit.SetAttached(false);
+                bit.SetColor(Color.white);
+                bit.SetColliderActive(false);
+                bit.transform.parent = null;
+            }
 
             
             foreach (var iAttachable in others)
@@ -1131,69 +1176,28 @@ namespace StarSalvager
                 iAttachable.SetAttached(false);
             }
 
-            if (delayedCollider)
-            {
-                shape.SetColliderActive(false);
-
-                this.DelayedCall(1f, () =>
-                {
-                    shape.SetColor(Color.white);
-                    shape.SetColliderActive(true);
-                });
-            }
+            //if (delayedCollider)
+            //{
+            //    shape.SetColliderActive(false);
+//
+            //    this.DelayedCall(1f, () =>
+            //    {
+            //        shape.SetColor(Color.white);
+            //        shape.SetColliderActive(true);
+            //    });
+            //}
 
             CheckForDisconnects();
             
             CompositeCollider2D.GenerateGeometry();
 
         }
-        private void DetachBitsCheck(IReadOnlyCollection<IAttachable> detachingBits, bool delayedCollider = false)
-        {
-            foreach (var attachable in detachingBits)
-            {
-                attachedBlocks.Remove(attachable);
-                BitsPendingDetach.Remove(attachable);
-            }
-
-            var removes = new List<IAttachable>(detachingBits);
-            
-
-            while (removes.Count > 0)
-            {
-                var toShape = new List<IAttachable>();
-                removes.GetAllAttachedBits(removes[0], null , ref toShape);
-
-                foreach (var bit in toShape)
-                {
-                    removes.Remove(bit);
-                }
-
-                var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(toShape.OfType<Bit>().ToList());
-
-                if (delayedCollider)
-                {
-                    shape.SetColliderActive(false);
-
-                    this.DelayedCall(3f, () =>
-                    {
-                        shape.SetColor(Color.white);
-                        shape.SetColliderActive(true);
-                    });
-                }
-            }
-
-            CheckForDisconnects();            
-            
-            CompositeCollider2D.GenerateGeometry();
-
-        }
+        
         private void DetachBit(IAttachable attachable)
         {
             attachable.transform.parent = null;
 
             RemoveAttachable(attachable);
-            
-            //Debug.Log($"Detached {bit.gameObject.name}", bit);
         }
         
         private void RemoveAttachable(IAttachable attachable)
@@ -1470,16 +1474,13 @@ namespace StarSalvager
                 if (!attachedBlocks.Contains(attachable))
                     continue;
 
-                if (attachable.CountAsConnected == false)
-                    continue;
-
                 var hasPathToCore = attachedBlocks.HasPathToCore(attachable);
                 
                 if(hasPathToCore)
                     continue;
 
                 var attachedBits = new List<IAttachable>();
-                attachedBlocks.GetAllAttachedBits(attachable, null, ref attachedBits);
+                attachedBlocks.GetAllAttachedDetachables(attachable, null, ref attachedBits);
 
                 if (attachedBits.Count == 1)
                 {
@@ -1499,8 +1500,9 @@ namespace StarSalvager
         /// <param name="wantToRemove"></param>
         /// <param name="toIgnore"></param>
         /// <returns></returns>
-        private bool RemovalCausesDisconnects(ICollection<IAttachable> wantToRemove)
+        private bool RemovalCausesDisconnects(ICollection<IAttachable> wantToRemove, out string disconnectList)
         {
+            disconnectList = string.Empty;
             var toSolve = new List<IAttachable>(attachedBlocks);
             var ignoreCoordinates = wantToRemove?.Select(x => x.Coordinate).ToList();
             
@@ -1519,6 +1521,8 @@ namespace StarSalvager
                 
                 if(hasPathToCore)
                     continue;
+
+                disconnectList += $"{attachable.gameObject.name} will disconnect\n";
 
                 return true;
             }
@@ -1713,6 +1717,7 @@ namespace StarSalvager
             
             (closestToCore as Bit)?.IncreaseLevel(comboData.addLevels);
 
+            //Debug.Break();
             //Move all of the components that need to be moved
             StartCoroutine(MoveComboPiecesCoroutine(
                 movingBits,
@@ -1889,7 +1894,7 @@ namespace StarSalvager
                         bit.Coordinate + travelDirection.ToVector2Int() * (int) travelDistance;
 
                     var attachedToOrphan = new List<IAttachable>();
-                    attachedBlocks.GetAllAttachedBits(bit, movingBits, ref attachedToOrphan);
+                    attachedBlocks.GetAllAttachedDetachables(bit, movingBits, ref attachedToOrphan);
 
                     //Debug.LogError($"Orphan Attached Count: {attachedToOrphan.Count}");
                     //Debug.Break();
@@ -2105,7 +2110,7 @@ namespace StarSalvager
                     //time = 1f;
                     onDetach = () =>
                     {
-                        DetachBitsCheck(bitsToRemove, true);
+                        DetachBits(bitsToRemove, true);
                     };
                     break;
                 //----------------------------------------------------------------------------------------------------//
@@ -2114,7 +2119,7 @@ namespace StarSalvager
                     //time = 0f;
                     onDetach = () =>
                     {
-                        DetachBitsCheck(bitsToRemove, true);
+                        DetachBits(bitsToRemove, true);
                     };
                     break;
                 //----------------------------------------------------------------------------------------------------//
@@ -2123,7 +2128,7 @@ namespace StarSalvager
                     //time = 1f;
                     onDetach = () =>
                     {
-                        DetachBitsCheck(bitsToRemove, true);
+                        DetachBits(bitsToRemove, true);
                     };
                     break;
                 //----------------------------------------------------------------------------------------------------//
@@ -2206,7 +2211,7 @@ namespace StarSalvager
         private void LowestMagnetCheckSimple(List<Bit> bits, ref List<Bit> bitsToRemove, ref int toRemoveCount)
         {
             var checkedBits = new List<Bit>();
-            
+            var debug = string.Empty;
             while (toRemoveCount > 0)
             {
                 var toRemove = FindLowestBit(bits, checkedBits);
@@ -2225,7 +2230,7 @@ namespace StarSalvager
                     break;
                 }
                 
-                if (RemovalCausesDisconnects(new List<IAttachable>(bitsToRemove){toRemove}))
+                if (RemovalCausesDisconnects(new List<IAttachable>(bitsToRemove){toRemove}, out debug))
                     continue;
 
                 //Debug.Log($"Found Lowest {toRemove.gameObject.name}", toRemove);
@@ -2246,16 +2251,15 @@ namespace StarSalvager
                 
             while (toRemoveCount > 0)
             {
-                var toRemove = FindFurthestRemovableBit(bits, bitsToRemove);
+                var toRemove = FindFurthestRemovableBit(bits, bitsToRemove, ref debug);
                     
                 if(toRemove == null)
-                    throw new Exception("Unable to find alternative pieces");
+                    throw new Exception($"Unable to find alternative pieces\n{debug}");
                     
                 bitsToRemove.Add(toRemove);
                 bits.Remove(toRemove);
                 toRemoveCount--;
             }
-
         }
         
         /*private void LowestMagnetCheck2(List<Bit> bits, ref List<Bit> bitsToRemove, ref int toRemoveCount)
@@ -2317,7 +2321,7 @@ namespace StarSalvager
                 if (bit.Coordinate.y > lowestCoordinate && !(bit.level < lowestLevel))
                         continue;
 
-                if (RemovalCausesDisconnects(new List<IAttachable>(/*toIgnore*/) {bit}))
+                if (RemovalCausesDisconnects(new List<IAttachable>(/*toIgnore*/) {bit}, out _))
                     continue;
 
                 selectedBit = bit;
@@ -2343,7 +2347,7 @@ namespace StarSalvager
                 if (bit.Coordinate.y > lowestCoordinate)
                     continue;
 
-                if (RemovalCausesDisconnects(new List<IAttachable>(/*toIgnore*/) {bit}))
+                if (RemovalCausesDisconnects(new List<IAttachable>(/*toIgnore*/) {bit}, out _))
                     continue;
 
                 selectedBit = bit;
@@ -2355,7 +2359,7 @@ namespace StarSalvager
             return selectedBit;
         }
 
-        private Bit FindFurthestRemovableBit(List<Bit> bits, ICollection<Bit> toIgnore)
+        private Bit FindFurthestRemovableBit(List<Bit> bits, ICollection<Bit> toIgnore, ref string debug)
         {
             //I Want the last Bit to be the fallback/default, if I can't find anything
             Bit selectedBit = null;
@@ -2375,7 +2379,7 @@ namespace StarSalvager
                 if (lowestLevel < bit.level)
                     continue;
 
-                if (RemovalCausesDisconnects(new List<IAttachable>(toIgnore) { bit }))
+                if (RemovalCausesDisconnects(new List<IAttachable>(toIgnore) { bit }, out debug))
                     continue;
 
                 selectedBit = bit;

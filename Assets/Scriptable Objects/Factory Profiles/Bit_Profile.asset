@@ -19,10 +19,10 @@ MonoBehaviour:
   - bitType: 0
     _name: Asteroid
     _sprites:
-    - {fileID: -3680335508457511949, guid: f9d1bee348604c049920eaebab6d26f1, type: 3}
-    - {fileID: 2715880458473573666, guid: f9d1bee348604c049920eaebab6d26f1, type: 3}
-    - {fileID: -8844520685145021151, guid: f9d1bee348604c049920eaebab6d26f1, type: 3}
-    - {fileID: 728755404191329135, guid: f9d1bee348604c049920eaebab6d26f1, type: 3}
+    - {fileID: 4540120762466187758, guid: ed22f7e510c7bf442b1000e148d6d1f0, type: 3}
+    - {fileID: -8276576365825984015, guid: ed22f7e510c7bf442b1000e148d6d1f0, type: 3}
+    - {fileID: -3070849091925862651, guid: ed22f7e510c7bf442b1000e148d6d1f0, type: 3}
+    - {fileID: -1417992574967173332, guid: ed22f7e510c7bf442b1000e148d6d1f0, type: 3}
   - bitType: 1
     _name: Bluesalt
     _sprites:
