@@ -25,10 +25,6 @@ namespace StarSalvager
         private Slider m_cameraZoomScaler;
         [SerializeField]
         private SliderText _zoomSliderText;
-        [SerializeField]
-        private Button m_sectorZeroButton;
-        [SerializeField]
-        private Button m_sectorOneButton;
 
         [SerializeField]
         private Button quitButton;
@@ -45,8 +41,6 @@ namespace StarSalvager
             m_toggleBitButton.onClick.AddListener(ToggleBitButtonPressed);
             m_toggleOrientationButton.onClick.AddListener(RotateOrientation);
             m_cameraZoomScaler.onValueChanged.AddListener(ScaleCamera);
-            m_sectorZeroButton.onClick.AddListener(SectorZeroButtonPressed);
-            m_sectorOneButton.onClick.AddListener(SectorOneButtonPressed);
             
 
             if (gameObject.scene == SceneManager.GetActiveScene())
@@ -56,11 +50,7 @@ namespace StarSalvager
             
             _zoomSliderText.Init();
             MissionManager.Init();
-        }
-
-        private void Update()
-        {
-            m_sectorOneButton.gameObject.SetActive(Values.Globals.MaxSector >= 1);
+            PlayerPersistentData.Init();
         }
 
         void OnDestroy()
@@ -87,15 +77,6 @@ namespace StarSalvager
                 Values.Globals.GridSizeX = (int)(Values.Globals.ColumnsOnScreen * Values.Constants.GridWidthRelativeToScreen * (Screen.height / (float)Screen.width));
                 Values.Globals.GridSizeY = (int)((Camera.main.orthographicSize * Values.Constants.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Values.Constants.gridCellSize);
             }
-        }
-
-        private void SectorZeroButtonPressed()
-        {
-            Values.Globals.CurrentSector = 0;
-        }
-        private void SectorOneButtonPressed()
-        {
-            Values.Globals.CurrentSector = 1;
         }
 
         private void ToGameplayButtonPressed()

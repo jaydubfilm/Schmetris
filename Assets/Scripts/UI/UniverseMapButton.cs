@@ -1,6 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
+using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -34,6 +35,7 @@ namespace StarSalvager
                 button.Text.text = "Wave " + (i + 1);
                 button.Button.onClick.AddListener(() =>
                 {
+                    SetActiveWaveButtons(false);
                     Values.Globals.CurrentSector = SectorNumber;
                     Values.Globals.CurrentWave = button.WaveNumber;
                     AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
@@ -52,7 +54,7 @@ namespace StarSalvager
         {
             foreach (var button in m_waveButtons)
             {
-                button.gameObject.SetActive(active);
+                button.gameObject.SetActive(active && PlayerPersistentData.PlayerData.CheckIfQualifies(SectorNumber, button.WaveNumber));
             }
             ButtonsActive = active;
         }

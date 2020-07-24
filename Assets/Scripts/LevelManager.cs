@@ -28,9 +28,7 @@ namespace StarSalvager
         private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
-        [SerializeField]
-        private List<SectorRemoteDataScriptableObject> m_sectorRemoteData;
-        public SectorRemoteDataScriptableObject CurrentSector => m_sectorRemoteData[Values.Globals.CurrentSector];
+        public SectorRemoteDataScriptableObject CurrentSector => FactoryManager.Instance.SectorRemoteData[Values.Globals.CurrentSector];
 
         public WaveRemoteDataScriptableObject CurrentWaveData => CurrentSector.GetRemoteData(Globals.CurrentWave);
 
@@ -238,13 +236,9 @@ namespace StarSalvager
         {
             SavePlayerData();
 
-            if (Globals.CurrentWave >= 2 && Values.Globals.CurrentSector == Values.Globals.MaxSector)
-            {
-                Globals.MaxSector++;
-            }
-
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
+                PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector, Globals.CurrentWave + 1);
                 m_endWaveState = true;
                 Globals.CurrentWave++;
                 m_levelTimer += m_waveTimer;
@@ -254,6 +248,7 @@ namespace StarSalvager
             }
             else
             {
+                PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector + 1, 0);
                 ProcessLevelCompleteAnalytics();
                 ProcessScrapyardUsageBeginAnalytics();
                 Globals.CurrentWave = 0;
