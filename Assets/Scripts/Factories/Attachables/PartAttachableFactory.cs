@@ -17,6 +17,16 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
+        public void UpdatePartData(PART_TYPE partType, int level, ref ScrapyardPart part)
+        {
+            var profile = factoryProfile.GetProfile(partType);
+            var sprite = profile.GetSprite(level);
+
+            part.SetSprite(sprite);
+        }
+
+        //============================================================================================================//
+
         public PartRemoteData GetRemoteData(PART_TYPE partType)
         {
             return remotePartData.GetRemoteData(partType);

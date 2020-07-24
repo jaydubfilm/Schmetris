@@ -30,7 +30,7 @@ namespace StarSalvager
 
         public bool isPaused => GameTimer.IsPaused;
 
-        public bool HasNoActiveObstacles => m_obstacles.FindAll(o => o.CanMove == true).Count == 0 && m_offGridMovingObstacles.Count == 0;
+        public bool HasNoActiveObstacles => m_obstacles.FindAll(o => o != null && o.CanMove == true).Count == 0 && m_offGridMovingObstacles.Count == 0;
 
         // Start is called before the first frame update
         private void Start()

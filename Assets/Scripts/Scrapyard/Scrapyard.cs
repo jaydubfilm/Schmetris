@@ -10,6 +10,7 @@ using StarSalvager.Utilities.SceneManagement;
 using UnityEngine.InputSystem;
 
 using Input = StarSalvager.Utilities.Inputs.Input;
+using StarSalvager.Factories.Data;
 
 namespace StarSalvager
 {
@@ -17,6 +18,8 @@ namespace StarSalvager
     {
         [SerializeField]
         private ScrapyardUI m_scrapyardUI;
+
+        public bool IsUpgrading;
         
         //============================================================================================================//
 
@@ -24,6 +27,7 @@ namespace StarSalvager
         private void Start()
         {
             _scrapyardBots = new List<ScrapyardBot>();
+            IsUpgrading = false;
             //InputManager.Instance.InitInput();
             InitInput();
         }
@@ -111,13 +115,46 @@ namespace StarSalvager
         //On left mouse button click, check if there is a bit/part at the mouse location. If there is not, purchase the selected part type and place it at this location.
         private void OnLeftMouseButtonDown(InputAction.CallbackContext ctx)
         {
-            if (selectedPartType == null)
-                return;
-
             if (ctx.ReadValue<float>() == 1f)
                 return;
-            
+
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
+                return;
+
+            if (IsUpgrading)
+            {
+                foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                {
+                    IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+                    var playerData = PlayerPersistentData.PlayerData;
+
+                    print("0");
+                    if (attachableAtCoordinates != null)
+                    {
+                        print("1");
+                        if (attachableAtCoordinates is ScrapyardPart partAtCoordinates)
+                        {
+                            print("2");
+                            LevelCost costToUpdate = playerData.GetCostDifference(partAtCoordinates.Type, partAtCoordinates.level, partAtCoordinates.level + 1);
+                            if (playerData.CanAfford(costToUpdate))
+                            {
+                                print("3");
+                                playerData.SubtractResources(costToUpdate);
+                                FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level + 1, ref partAtCoordinates);
+                            }
+                            else
+                            {
+                                print("4");
+                                m_scrapyardUI.DisplayInsufficientResources();
+                            }
+                        }
+                        continue;
+                    }
+                }
+                return;
+            }
+            
+            if (selectedPartType == null)
                 return;
 
             if (!PlayerPersistentData.PlayerData.CanAffordPart((PART_TYPE)selectedPartType, selectedpartLevel))
@@ -128,11 +165,14 @@ namespace StarSalvager
             
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
-                if (scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate) != null)
+                IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+
+                if (attachableAtCoordinates != null)
+                {   
                     continue;
+                }
 
                 var playerData = PlayerPersistentData.PlayerData;
-
                 var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)selectedPartType, 0);
                 playerData.SubtractResources((PART_TYPE)selectedPartType, 0);
                 scrapBot.AttachNewBit(mouseCoordinate, attachable);
