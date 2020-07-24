@@ -1168,6 +1168,7 @@ namespace StarSalvager
                 bit.SetColor(Color.white);
                 bit.SetColliderActive(false);
                 bit.transform.parent = null;
+                bit.transform.rotation = Quaternion.identity;
             }
 
             
@@ -1176,6 +1177,7 @@ namespace StarSalvager
                 iAttachable.SetAttached(false);
             }
 
+            //FIXME THis seems to be troublesome. Bits that are not attached, still are part of the same shape. 
             //if (delayedCollider)
             //{
             //    shape.SetColliderActive(false);

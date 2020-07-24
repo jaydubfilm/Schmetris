@@ -225,17 +225,30 @@ namespace StarSalvager.AI
                 return;
             }*/
 
-            //We also want to make sure that we aren't currently targeting something that we shouldn't be
-            if (target is EnemyAttachable || target.Attached == false)
+            /*//We also want to make sure that we aren't currently targeting something that we shouldn't be
+            if (target.Attached == false)
+            {
+                target = null;
+                attachedBot.ForceDetach(this);
+                return;
+            }*/
+            
+            if (target is EnemyAttachable /*|| target.Attached == false*/)
             {
                 TryUpdateTarget();
                 return;
             }
         }
 
+
+
         private bool TryMoveToTargetPosition()
         {
             if (target == null)
+                return false;
+
+            //If the enemy didn't kill the bit, we shouldn't more to its position
+            if (!DidIDestroyBit())
                 return false;
 
             if (!attachedBot.CoordinateHasPathToCore(target.Coordinate))
@@ -271,6 +284,17 @@ namespace StarSalvager.AI
             RotateTowardsTarget(target);
 
             return true;
+        }
+        
+        private bool DidIDestroyBit()
+        {
+            var health = target as IHealth;
+            var recyclable = target as IRecycled; 
+            
+            if (health?.CurrentHealth > 0)
+                return false;
+            
+            return target.Attached  || !recyclable.IsRecycled;
         }
 
         //IHealth functions
