@@ -11,14 +11,14 @@ namespace StarSalvager.AI
     {
         private static readonly int DEFAULT = Animator.StringToHash("Default");
         private static readonly int ATTACK  = Animator.StringToHash("Attack");
-        
+
         //============================================================================================================//
         public Vector2Int Coordinate { get; set; }
         public bool Attached { get; set; }
 
         public bool CountAsConnected => false;
         public bool CanShift => true;
-        
+
         [SerializeField]
         private LayerMask collisionMask;
 
@@ -28,29 +28,29 @@ namespace StarSalvager.AI
         private IAttachable target;
         private Vector2Int attackFromCoordinate;
         private Vector2Int targetCoordinate;
-        
+
         //FIXME This needs to be removed
         public GameObject TEST_TARGET;
 
         protected override void Update()
         {
-            if (!Attached) 
+            if (!Attached)
                 return;
-            
+
             EnsureTargetValidity();
 
             m_fireTimer += Time.deltaTime;
 
             if (m_fireTimer < 1 / m_enemyData.AttackSpeed)
                 return;
-                
+
             m_fireTimer -= 1 / m_enemyData.AttackSpeed;
-            
+
             attachedBot.TryHitAt(target, m_enemyData.AttackDamage);
         }
 
         //============================================================================================================//
-        
+
         public void SetAttached(bool isAttached)
         {
             //If the bot is telling us to detach, first we need to make sure we can't take the position of our old target
@@ -60,9 +60,9 @@ namespace StarSalvager.AI
                 if(TryMoveToTargetPosition())
                     return;
             }
-            
+
             StateAnimator.ChangeState(isAttached ? ATTACK : DEFAULT);
-            
+
             Attached = isAttached;
             collider.usedByComposite = isAttached;
             transform.parent = null;
@@ -72,7 +72,7 @@ namespace StarSalvager.AI
         {
             if(Attached)
                 return;
-            
+
             var bot = gameObject.GetComponent<Bot>();
 
             if (bot.Rotating)
@@ -87,7 +87,7 @@ namespace StarSalvager.AI
             //return the direction to shoot the ray
             if (!TryGetRayDirectionFromBot(Globals.MovingDirection, out var rayDirection))
                 return;
-            
+
             //Debug.Log($"Direction: {dir}, Ray Direction: {rayDirection}");
 
             if (dir != rayDirection && dir != Vector2Int.zero)
@@ -124,7 +124,7 @@ namespace StarSalvager.AI
         }
 
         //============================================================================================================//
-        
+
         protected override bool TryGetRayDirectionFromBot(DIRECTION direction, out Vector2 rayDirection)
         {
             rayDirection = Vector2.zero;
@@ -135,12 +135,12 @@ namespace StarSalvager.AI
                     rayDirection = new Vector2(
                         Mathf.RoundToInt(m_mostRecentMovementDirection.x),
                         Mathf.RoundToInt(m_mostRecentMovementDirection.y));//-(Vector2)m_mostRecentMovementDirection;
-                    
+
                     if(Mathf.Abs(rayDirection.x) > Mathf.Abs(rayDirection.y))
                         rayDirection *= Vector2.right;
                     else
                         rayDirection *= Vector2.up;
-                    
+
                     return true;
                 case DIRECTION.LEFT:
                     rayDirection = Vector2.right;
@@ -152,7 +152,7 @@ namespace StarSalvager.AI
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
         }
-        
+
         //Attachable Enemy Movement when Attacking
         //============================================================================================================//
 
@@ -166,12 +166,12 @@ namespace StarSalvager.AI
             {
                 if (TryMoveToTargetPosition())
                     return;
-                
+
                 target = null;
                 SetAttached(false);
                 return;
             }
-            
+
             //Here we're making sure that the target is still part of what we're attacking
             if (target.transform.parent != transform.parent)
             {
@@ -191,7 +191,7 @@ namespace StarSalvager.AI
                 UpdateTarget();
                 return;
             }
-            
+
             //We also want to make sure that we aren't currently targeting something that we shouldn't be
             if (target is EnemyAttachable || target.Attached == false)
             {
@@ -200,7 +200,7 @@ namespace StarSalvager.AI
             }
         }
 
-        private bool TryMoveToTargetPosition() 
+        private bool TryMoveToTargetPosition()
         {
             if (target == null)
                 return false;
@@ -219,7 +219,7 @@ namespace StarSalvager.AI
         {
             //We set the max distance here because we want to ensure we're attacking something right next to us
             target = attachedBot.GetClosestAttachable(Coordinate, 1f);
-            
+
             if (target == null)
             {
                 targetCoordinate = Vector2Int.zero;
@@ -228,21 +228,21 @@ namespace StarSalvager.AI
             }
 
             TEST_TARGET = target.gameObject;
-            
+
             Debug.Log($"{gameObject.name} has new target. TARGET : {TEST_TARGET.gameObject.name}", TEST_TARGET);
 
             attackFromCoordinate = this.Coordinate;
             targetCoordinate = target.Coordinate;
             RotateTowardsTarget(target);
         }
-        
+
         //IHealth functions
         //============================================================================================================//
-        
+
         public override void ChangeHealth(float amount)
         {
             _currentHealth += amount;
-            
+
             if(_currentHealth <= 0)
                 Recycler.Recycle<EnemyAttachable>(this);
         }
@@ -260,7 +260,7 @@ namespace StarSalvager.AI
         {
             var dir = (Target.Coordinate - Coordinate).ToDirection();
             var AddRotation = Vector3.zero;
-            
+
             switch (dir)
             {
                 case DIRECTION.LEFT:
@@ -279,12 +279,12 @@ namespace StarSalvager.AI
                     dir = (-Coordinate).ToDirection();
                     break;
             }
-            
+
             Debug.Log($"Rotate to Direction: {dir}");
-            
+
             transform.rotation = Quaternion.Euler(AddRotation);
         }
-        
+
         //ICustomRecycle functions
         //============================================================================================================//
 
@@ -294,7 +294,7 @@ namespace StarSalvager.AI
             target = null;
             SetAttached(false);
         }
-        
+
         //============================================================================================================//
 
     }

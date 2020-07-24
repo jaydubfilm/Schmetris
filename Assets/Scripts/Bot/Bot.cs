@@ -433,10 +433,13 @@ namespace StarSalvager
                             {
                                 Vector2 directionBounce = (Vector2)bit.transform.position - collisionPoint;
                                 directionBounce.Normalize();
-                                Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                                downVelocity.Normalize();
-                                directionBounce += downVelocity;
-                                directionBounce.Normalize();
+                                if (directionBounce != Vector2.up)
+                                {
+                                    Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
+                                    downVelocity.Normalize();
+                                    directionBounce += downVelocity;
+                                    directionBounce.Normalize();
+                                }
 
                                 float rotation = 180.0f;
                                 if (directionBounce.x >= 0)
@@ -444,7 +447,7 @@ namespace StarSalvager
                                     rotation *= -1;
                                 }
 
-                                LevelManager.Instance.ObstacleManager.BounceObstacle(bit, directionBounce, rotation, true, true);
+                                LevelManager.Instance.ObstacleManager.BounceObstacle(bit, directionBounce, rotation, true, true, true);
                                 return false;
                             }
 
@@ -615,10 +618,14 @@ namespace StarSalvager
                         {
                             Vector2 directionBounce = (Vector2)shape.transform.position - collisionPoint;
                             directionBounce.Normalize();
-                            Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                            downVelocity.Normalize();
-                            directionBounce += downVelocity;
-                            directionBounce.Normalize();
+
+                            if (directionBounce != Vector2.up)
+                            {
+                                Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
+                                downVelocity.Normalize();
+                                directionBounce += downVelocity;
+                                directionBounce.Normalize();
+                            }
 
                             float rotation = 180.0f;
                             if (directionBounce.x >= 0)
@@ -626,7 +633,7 @@ namespace StarSalvager
                                 rotation *= -1;
                             }
 
-                            LevelManager.Instance.ObstacleManager.BounceObstacle(shape, directionBounce, rotation, true, true);
+                            LevelManager.Instance.ObstacleManager.BounceObstacle(shape, directionBounce, rotation, true, true, true);
                             return false;
                         }
                         

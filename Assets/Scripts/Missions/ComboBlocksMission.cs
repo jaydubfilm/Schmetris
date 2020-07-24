@@ -8,7 +8,7 @@ namespace StarSalvager
     {
         public BIT_TYPE m_comboType;
 
-        public ComboBlocksMission(BIT_TYPE comboType, string missionName, MISSION_UNLOCK_PARAMETERS missionUnlockType, int amountNeeded) : base(missionName, amountNeeded, missionUnlockType)
+        public ComboBlocksMission(BIT_TYPE comboType, string missionName, Dictionary<string, object> missionUnlockData, int amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
         {
             MissionEventType = MISSION_EVENT_TYPE.ENEMY_KILLED;
             m_comboType = comboType;

@@ -13,14 +13,28 @@ namespace StarSalvager
         public MISSION_EVENT_TYPE MissionEventType { get; protected set; }
         public MISSION_STATUS MissionStatus;
 
-        public MISSION_UNLOCK_PARAMETERS MissionUnlockType { get; protected set; }
+        public MissionUnlockCheck missionUnlockCheck;
 
-        public Mission(string missionName, int amountNeeded, MISSION_UNLOCK_PARAMETERS missionUnlockType)
+        public Mission(string missionName, int amountNeeded, Dictionary<string, object> missionUnlockData)
         {
             m_currentAmount = 0;
             m_missionName = missionName;
             m_amountNeeded = amountNeeded;
-            MissionUnlockType = missionUnlockType;
+
+
+            switch (missionUnlockData["MissionUnlockType"])
+            {
+                case "Level Complete":
+                    missionUnlockCheck = new LevelCompleteMissionUnlockCheck((int)missionUnlockData["SectorNumber"], (int)missionUnlockData["WaveNumber"]);
+                    break;
+                case "Mission Complete":
+                    missionUnlockCheck = new MissionCompleteMissionUnlockCheck((string)missionUnlockData["MissionName"]);
+                    break;
+                default:
+                    Debug.Log("Missing mission unlock check!");
+                    missionUnlockCheck = new MissionAutoUnlockCheck();
+                    break;
+            }
         }
 
         public float GetMissionProgress()
