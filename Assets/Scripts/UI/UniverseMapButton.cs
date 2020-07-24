@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,8 +36,12 @@ namespace StarSalvager
                 {
                     Values.Globals.CurrentSector = SectorNumber;
                     Values.Globals.CurrentWave = button.WaveNumber;
+                    AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
                     SceneLoader.ActivateScene("AlexShulmanTestScene", "UniverseMapScene");
                 });
+                button.transform.position = new Vector2
+                    (transform.position.x + 80 * Mathf.Cos((((float)i / (float)numberWaves) * 360 - 90) * -1 * Mathf.Deg2Rad), 
+                    transform.position.y + 80 * Mathf.Sin((((float)i / (float)numberWaves) * 360 - 90) * -1 * Mathf.Deg2Rad));
             }
             SetActiveWaveButtons(false);
 

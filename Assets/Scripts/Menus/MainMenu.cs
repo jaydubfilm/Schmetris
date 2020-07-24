@@ -100,8 +100,7 @@ namespace StarSalvager
 
         private void ToGameplayButtonPressed()
         {
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
-            SceneLoader.ActivateScene("AlexShulmanTestScene", "MainMenuScene");
+            SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
         }
 
         private void ToggleBitButtonPressed()
