@@ -9,6 +9,7 @@ using System.Linq;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Inputs;
 using Random = UnityEngine.Random;
+using Recycling;
 
 namespace StarSalvager
 {
@@ -29,6 +30,8 @@ namespace StarSalvager
         private float m_distanceHorizontal = 0.0f;
 
         public bool isPaused => GameTimer.IsPaused;
+
+        private bool m_enemiesInert = false;
 
         //============================================================================================================//
         
@@ -116,6 +119,8 @@ namespace StarSalvager
             //After adding the forces, normalize and multiply by the velocity to ensure consistent speed
             for (int i = 0; i < m_enemies.Count; i++)
             {
+                if ()
+                
                 if (m_enemies[i] is EnemyAttachable enemyAttachable)
                 {
                     if (enemyAttachable.Attached)
@@ -280,6 +285,24 @@ namespace StarSalvager
             }
 
             return closestEnemy;
+        }
+
+        public void SetEnemiesInert(bool inert)
+        {
+            if (inert)
+                m_enemiesToSpawn.Clear();
+
+            m_enemiesInert = inert;
+        }
+
+        public void RecycleAllEnemies()
+        {
+            foreach (var enemy in m_enemies)
+            {
+                MissionManager.ProcessEnemyKilledMissionData(enemy.m_enemyData.EnemyType, 1);
+                Recycler.Recycle<Enemy>(enemy);
+            }
+            m_enemies.Clear();
         }
 
         //============================================================================================================//

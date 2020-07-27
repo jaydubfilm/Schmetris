@@ -163,6 +163,8 @@ namespace StarSalvager
                 m_levelManagerUI.ToggleBetweenWavesUIActive(true);
                 ObstacleManager.MoveToNewWave();
                 EnemyManager.MoveToNewWave();
+                EnemyManager.SetEnemiesInert(false);
+                EnemyManager.RecycleAllEnemies();
                 m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
             }
 
@@ -244,6 +246,7 @@ namespace StarSalvager
                 m_levelTimer += m_waveTimer;
                 m_waveTimer = 0;
                 GameUi.SetCurrentWaveText("Complete");
+                EnemyManager.SetEnemiesInert(true);
                 MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector, Globals.CurrentWave);
             }
             else
