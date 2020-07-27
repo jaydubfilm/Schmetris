@@ -115,12 +115,15 @@ namespace StarSalvager
                 }
             }
 
+            if (m_enemiesInert)
+            {
+                gridMovement += Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Constants.timeForAsteroidsToFall);
+            }
+
             //Iterate through all agents, and for each one, add the forces from nearby obstacles to their current direction vector
             //After adding the forces, normalize and multiply by the velocity to ensure consistent speed
             for (int i = 0; i < m_enemies.Count; i++)
             {
-                if ()
-                
                 if (m_enemies[i] is EnemyAttachable enemyAttachable)
                 {
                     if (enemyAttachable.Attached)
@@ -128,9 +131,13 @@ namespace StarSalvager
                         continue;
                     }
                 }
+
                 //TODO: This process shouldn't be straight summing and averaging the different forces on different parts. 
                 //We should be selecting for the strongest forces and using those in any given direction, otherwise, the strong forces on one position can be dampened by the weaker on others.
                 m_enemies[i].transform.position -= gridMovement;
+
+                if (m_enemiesInert)
+                    return;
 
                 Vector3 destination = m_enemies[i].GetDestination();
                 Vector2 sumDirection = Vector2.zero;
