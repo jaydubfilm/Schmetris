@@ -44,6 +44,13 @@ namespace StarSalvager.AI
                 return;
             }
 
+            if (LevelManager.Instance.EndWaveState)
+            {
+                target = null;
+                SetAttached(false);
+                return;
+            }
+
             EnsureTargetValidity();
 
             m_fireTimer += Time.deltaTime;
@@ -88,6 +95,9 @@ namespace StarSalvager.AI
 
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
+            if (LevelManager.Instance.EndWaveState)
+                return;
+            
             if(Attached)
                 return;
 

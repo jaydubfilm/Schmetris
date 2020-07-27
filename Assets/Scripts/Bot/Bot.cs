@@ -28,8 +28,8 @@ namespace StarSalvager
         
         public bool IsRecycled { get; set; }
 
-        [SerializeField, BoxGroup("PROTOTYPE")]
-        public float TEST_Speed;
+        //[SerializeField, BoxGroup("PROTOTYPE")]
+        //public float TEST_Speed;
 
         [SerializeField, BoxGroup("PROTOTYPE")]
         public float TEST_RotSpeed;
@@ -64,15 +64,11 @@ namespace StarSalvager
 
         //public DIRECTION MoveDirection => Globals.MovingDirection;
 
-        [SerializeField, ReadOnly]
-        private DIRECTION _moveDirection = DIRECTION.NULL;
-        //public bool HasValidInput => _currentInput != 0f;
-
         private Vector2 targetPosition;
         private float _currentInput;
 
-        public float DelayedAutoStartTime = 0.2f;
-        private float _dasTimer;
+        //public float DelayedAutoStartTime = 0.2f;
+        //private float _dasTimer;
 
         public bool Rotating => _rotating;
         public ROTATION MostRecentRotate;
@@ -138,12 +134,15 @@ namespace StarSalvager
             if (isPaused)
                 return;
             
-            //TODO Once all done testing, remove this
-            _moveDirection = Globals.MovingDirection;
+            //See if the bot has completed the current wave
+            //FIXME I Don't like accessing the external value here. I should consider other ways of checking this value
+            if (LevelManager.Instance.EndWaveState)
+                return;
             
             if (Destroyed)
                 return;
-
+            
+            //TODO Once all done testing, remove this
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 Time.timeScale = Time.timeScale == 0.1f ? 1f : 0.1f;
@@ -1254,7 +1253,7 @@ namespace StarSalvager
         
         //============================================================================================================//
 
-        //TODO It may be beneficial to move this to move this to a separate script
+        //FIXME It may be beneficial to move this to move this to a separate script
         #region Parts
         
         [SerializeField, BoxGroup("Bot Part Data"), ReadOnly]
@@ -1319,6 +1318,7 @@ namespace StarSalvager
             foreach (var part in _parts)
             {
                 PartRemoteData partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
+                //FIXME This needs to be replaced with the Liquid resources
                 Bit targetBit = GetFurthestBitToBurn(partRemoteData, part.level);
 
                 switch (part.Type)
@@ -1370,7 +1370,15 @@ namespace StarSalvager
                         var toRepair = attachedBlocks.GetAttachablesAroundInRadius<Part>(part, part.level + 1)
                             .FirstOrDefault(p => p.CurrentHealth < p.StartingHealth);
 
-                        if (toRepair is null) break;
+                        //If we weren't able to find a part, see if the repairer needs to be fixed
+                        if (toRepair is null)
+                        {
+                            //If the repairer is also fine, then we can break out
+                            if (part.CurrentHealth < part.StartingHealth)
+                                toRepair = part;
+                            else
+                                break;
+                        }
                         
                         if(useBurnRate)
                             //Reduce the health of the bit while we're using it up for fuel
@@ -1401,8 +1409,22 @@ namespace StarSalvager
                         
                         Debug.Log("Fire");
                         
+                        //Check if we have a target before removing resources
                         //--------------------------------------------------------------------------------------------//
 
+                        Vector2 shootDirection;
+                        
+                        var enemy = _enemyManager.GetClosestEnemy(transform.position, 10 * Constants.gridCellSize);
+                        //TODO Determine if this fires at all times or just when there are active enemies in range
+                        if (enemy == null)
+                            break;
+                        
+                        shootDirection = enemy.transform.position - transform.position;
+                        
+                        
+                        //Use resources
+                        //--------------------------------------------------------------------------------------------//
+                        
                         if (useBurnRate)
                         {
                             //If we have the resources to shoot do so, otherwise break out 
@@ -1415,17 +1437,6 @@ namespace StarSalvager
                                 break;
                         }
                         
-                        
-                        //--------------------------------------------------------------------------------------------//
-                        
-                        var shootDirection = Vector2.up;
-                        var enemy = _enemyManager.GetClosestEnemy(transform.position, 5 * Constants.gridCellSize);
-                        //TODO Determine if this fires at all times or just when there are active enemies in range
-                        if (enemy != null)
-                        {
-                            shootDirection = enemy.transform.position - transform.position;
-                        }
-                        
                         //Create projectile
                         //--------------------------------------------------------------------------------------------//
                         
@@ -1434,6 +1445,7 @@ namespace StarSalvager
                             "Basic Projectile",
                             shootDirection,
                             "Enemy");
+                        
                         projectile.transform.position = part.transform.position;
                         
                         LevelManager.Instance?.ProjectileManager.AddProjectile(projectile);
