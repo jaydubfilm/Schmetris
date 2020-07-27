@@ -252,6 +252,7 @@ namespace StarSalvager
                 ProcessLevelCompleteAnalytics();
                 ProcessScrapyardUsageBeginAnalytics();
                 Globals.CurrentWave = 0;
+                Globals.SectorComplete = true;
                 SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             }
         }
