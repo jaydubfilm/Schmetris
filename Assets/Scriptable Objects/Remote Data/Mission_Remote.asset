@@ -15,10 +15,7 @@ MonoBehaviour:
   m_missionRemoteData:
   - MissionType: 1
     MissionName: Resource Mission 1
-    MissionUnlockType: Mission Complete
-    SectorUnlockNumber: 0
-    WaveUnlockNumber: 0
-    MissionUnlockName: 
+    MissionUnlockParameters: []
     AmountNeeded: 200
     ResourceType: 3
     EnemyType: 0
@@ -26,10 +23,15 @@ MonoBehaviour:
     WaveNumber: 0
   - MissionType: 1
     MissionName: Resource Mission 2
-    MissionUnlockType: Mission Complete
-    SectorUnlockNumber: 0
-    WaveUnlockNumber: 0
-    MissionUnlockName: Resource Mission 1
+    MissionUnlockParameters:
+    - MissionUnlockType: Level Complete
+      SectorUnlockNumber: 1
+      WaveUnlockNumber: 1
+      MissionUnlockName: 
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      WaveUnlockNumber: 0
+      MissionUnlockName: Resource Mission 1
     AmountNeeded: 1000
     ResourceType: 1
     EnemyType: 0
@@ -37,10 +39,11 @@ MonoBehaviour:
     WaveNumber: 0
   - MissionType: 0
     MissionName: Enemy Mission 1
-    MissionUnlockType: Mission Complete
-    SectorUnlockNumber: 0
-    WaveUnlockNumber: 0
-    MissionUnlockName: Resource Mission 1
+    MissionUnlockParameters:
+    - MissionUnlockType: Level Complete
+      SectorUnlockNumber: 2
+      WaveUnlockNumber: 1
+      MissionUnlockName: 
     AmountNeeded: 2
     ResourceType: 0
     EnemyType: 0
@@ -48,10 +51,11 @@ MonoBehaviour:
     WaveNumber: 0
   - MissionType: 0
     MissionName: Enemy Mission 2
-    MissionUnlockType: Level Complete
-    SectorUnlockNumber: 1
-    WaveUnlockNumber: 1
-    MissionUnlockName: 
+    MissionUnlockParameters:
+    - MissionUnlockType: Level Complete
+      SectorUnlockNumber: 2
+      WaveUnlockNumber: 1
+      MissionUnlockName: 
     AmountNeeded: 2
     ResourceType: 0
     EnemyType: 1
@@ -59,10 +63,7 @@ MonoBehaviour:
     WaveNumber: 0
   - MissionType: 3
     MissionName: Level Mission 1
-    MissionUnlockType: Level Complete
-    SectorUnlockNumber: 1
-    WaveUnlockNumber: 1
-    MissionUnlockName: 
+    MissionUnlockParameters: []
     AmountNeeded: 0
     ResourceType: 0
     EnemyType: 0
@@ -70,10 +71,11 @@ MonoBehaviour:
     WaveNumber: 1
   - MissionType: 2
     MissionName: Combo Mission 1
-    MissionUnlockType: Level Complete
-    SectorUnlockNumber: 1
-    WaveUnlockNumber: 1
-    MissionUnlockName: 
+    MissionUnlockParameters:
+    - MissionUnlockType: Level Complete
+      SectorUnlockNumber: 2
+      WaveUnlockNumber: 1
+      MissionUnlockName: 
     AmountNeeded: 3
     ResourceType: 3
     EnemyType: 0

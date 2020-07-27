@@ -6,8 +6,8 @@ namespace StarSalvager
 {
     public class LevelCompleteMissionUnlockCheck : MissionUnlockCheck
     {
-        int m_sectorNumber;
-        int m_waveNumber;
+        public int m_sectorNumber;
+        public int m_waveNumber;
 
         public LevelCompleteMissionUnlockCheck(int sectorNumber, int waveNumber) : base()
         {
@@ -17,8 +17,12 @@ namespace StarSalvager
         
         public override bool CheckUnlockParameters()
         {
+            if (IsComplete)
+                return true;
+            
             if (MissionManager.recentCompletedSectorName == m_sectorNumber && MissionManager.recentCompletedWaveName == m_waveNumber)
             {
+                IsComplete = true;
                 return true;
             }
 

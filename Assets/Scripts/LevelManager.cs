@@ -182,6 +182,7 @@ namespace StarSalvager
             }
             else
             {
+                print("Load from data");
                 BotGameObject.InitBot(PlayerPersistentData.PlayerData.GetCurrentBlockData().ImportBlockDatas(false));
             }
             Bot.OnBotDied += (deadBot, deathMethod) =>

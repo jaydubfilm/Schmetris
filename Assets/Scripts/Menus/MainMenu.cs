@@ -10,6 +10,7 @@ using StarSalvager.Values;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.UI;
+using System.IO;
 
 namespace StarSalvager
 {
@@ -32,6 +33,21 @@ namespace StarSalvager
         [SerializeField]
         private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
+
+        [Sirenix.OdinInspector.Button("Clear Remote Data")]
+        private void ClearRemoteData()
+        {
+            string persistentPlayerDataPath = Application.dataPath + "/RemoteData/PlayerPersistentData.player";
+            string currentDataPath = Application.dataPath + "/RemoteData/MissionsCurrentData.mission";
+            if (File.Exists(persistentPlayerDataPath))
+            {
+                File.Delete(persistentPlayerDataPath);
+            }
+            if (File.Exists(currentDataPath))
+            {
+                File.Delete(currentDataPath);
+            }
+        }
 
         // Start is called before the first frame update
         void Start()

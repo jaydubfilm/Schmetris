@@ -13,6 +13,10 @@ namespace StarSalvager
         
         public override bool CheckUnlockParameters()
         {
+            if (IsComplete)
+                return true;
+
+            IsComplete = true;
             return true;
         }
     }

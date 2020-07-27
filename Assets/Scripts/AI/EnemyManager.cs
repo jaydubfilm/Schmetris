@@ -137,7 +137,9 @@ namespace StarSalvager
                 m_enemies[i].transform.position -= gridMovement;
 
                 if (m_enemiesInert)
-                    return;
+                {
+                    continue;
+                }
 
                 Vector3 destination = m_enemies[i].GetDestination();
                 Vector2 sumDirection = Vector2.zero;

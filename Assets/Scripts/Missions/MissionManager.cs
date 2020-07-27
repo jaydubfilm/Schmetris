@@ -10,7 +10,7 @@ namespace StarSalvager
 {
     public static class MissionManager
     {
-        private static bool fromScriptable = true;
+        private static bool fromScriptable = false;
 
         private static readonly string REMOTEDATA_PATH = Application.dataPath + "/RemoteData/";
         private static readonly string currentDataPath = REMOTEDATA_PATH + "MissionsCurrentData.mission";
@@ -73,7 +73,7 @@ namespace StarSalvager
 
         public static void Init()
         {
-            AddMissionCurrent("Resource Mission 1");
+            CheckUnlocks();
         }
 
         public static void AddMissionCurrent(string missionName)
@@ -180,7 +180,7 @@ namespace StarSalvager
             {
                 Mission mission = MissionsCurrentData.m_notStartedMissions[i];
 
-                if (mission.missionUnlockCheck.CheckUnlockParameters())
+                if (mission.CheckUnlockParameters())
                 {
                     MissionsCurrentData.AddMission(mission);
                 }

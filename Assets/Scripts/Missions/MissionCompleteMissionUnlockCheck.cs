@@ -6,7 +6,7 @@ namespace StarSalvager
 {
     public class MissionCompleteMissionUnlockCheck : MissionUnlockCheck
     {
-        string m_missionName;
+        public string m_missionName;
 
         public MissionCompleteMissionUnlockCheck(string missionName) : base()
         {
@@ -15,8 +15,12 @@ namespace StarSalvager
         
         public override bool CheckUnlockParameters()
         {
+            if (IsComplete)
+                return true;
+            
             if (MissionManager.recentCompletedMissionName == m_missionName)
             {
+                IsComplete = true;
                 return true;
             }
 

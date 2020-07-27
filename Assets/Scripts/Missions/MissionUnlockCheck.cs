@@ -6,6 +6,7 @@ namespace StarSalvager
 {
     public abstract class MissionUnlockCheck
     {
+        public bool IsComplete = false;
         public abstract bool CheckUnlockParameters();
     }
 }
