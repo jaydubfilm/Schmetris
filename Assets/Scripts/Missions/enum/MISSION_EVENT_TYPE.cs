@@ -1,4 +1,4 @@
-﻿namespace StarSalvager
+﻿namespace StarSalvager.Missions
 {
     public enum MISSION_EVENT_TYPE
     {

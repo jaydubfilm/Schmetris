@@ -26,7 +26,7 @@ namespace Recycling
 
 		//============================================================================================================//
 
-		private static void Recycle(Enum @enum, GameObject gameObject, params object[] args)
+		public static void Recycle(Enum @enum, GameObject gameObject, params object[] args)
 		{
 
 			if (!_enumDict.TryGetValue(@enum, out var bin))
