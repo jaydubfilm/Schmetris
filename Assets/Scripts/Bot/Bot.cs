@@ -101,6 +101,7 @@ namespace StarSalvager
         }
         private BotPartsLogic _botPartsLogic;
 
+        public Collider2D Collider => CompositeCollider2D;
         private CompositeCollider2D CompositeCollider2D
         {
             get

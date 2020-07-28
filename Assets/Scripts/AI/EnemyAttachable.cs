@@ -1,6 +1,8 @@
 ﻿using System;
 using Recycling;
+using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
+using StarSalvager.Utilities.Enemies;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
 using UnityEngine;
@@ -24,6 +26,8 @@ namespace StarSalvager.AI
         private LayerMask collisionMask;
 
         //============================================================================================================//
+
+        private EnemyDecoy _enemyDecoy;
 
         private Bot attachedBot;
         private IAttachable target;
@@ -77,11 +81,19 @@ namespace StarSalvager.AI
                 collider.usedByComposite = true;
                 StateAnimator.ChangeState(ATTACK);
 
+                if (_enemyDecoy == null)
+                    _enemyDecoy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateEnemyDecoy();
+                
+                _enemyDecoy.Setup(this, attachedBot.Collider);
+
                 return;
             }
             
             if(TryMoveToTargetPosition())
                 return;
+            
+            if (_enemyDecoy != null)
+                _enemyDecoy.Disable();
             
             Attached = false;
             collider.usedByComposite = false;
@@ -140,14 +152,18 @@ namespace StarSalvager.AI
             Debug.DrawRay(hit.point, Vector2.up, Color.red);
             Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.green);
 
+            attachedBot = bot;
+            
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
             var inDirection = (-rayDirection).ToDirection();
             var attached = bot.TryAddNewAttachable(this, inDirection, hit.point);
 
             if (!attached)
+            {
+                attachedBot = null;
                 return;
+            }
 
-            attachedBot = bot;
             TryUpdateTarget();
         }
 
@@ -364,6 +380,7 @@ namespace StarSalvager.AI
 
         public void CustomRecycle(params object[] args)
         {
+            _enemyDecoy = null;
             attachedBot = null;
             target = null;
             SetAttached(false);

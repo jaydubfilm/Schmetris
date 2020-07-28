@@ -24,7 +24,7 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        protected new Collider2D collider
+        public new Collider2D collider
         {
             get
             {
