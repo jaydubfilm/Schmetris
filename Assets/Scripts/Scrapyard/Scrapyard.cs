@@ -11,6 +11,7 @@ using UnityEngine.InputSystem;
 
 using Input = StarSalvager.Utilities.Inputs.Input;
 using StarSalvager.Factories.Data;
+using Recycling;
 
 namespace StarSalvager
 {
@@ -20,6 +21,14 @@ namespace StarSalvager
         private ScrapyardUI m_scrapyardUI;
 
         public bool IsUpgrading;
+
+        [SerializeField]
+        private GameObject floatingPartWarningPrefab;
+        [SerializeField]
+        private GameObject availablePointMarkerPrefab;
+
+        private List<GameObject> _floatingPartWarnings;
+        private List<GameObject> _availablePointMarkers;
         
         //============================================================================================================//
 
@@ -27,6 +36,8 @@ namespace StarSalvager
         private void Start()
         {
             _scrapyardBots = new List<ScrapyardBot>();
+            _floatingPartWarnings = new List<GameObject>();
+            _availablePointMarkers = new List<GameObject>();
             IsUpgrading = false;
             //InputManager.Instance.InitInput();
             InitInput();
@@ -75,6 +86,7 @@ namespace StarSalvager
             {
                 _scrapyardBots[0].InitBot(PlayerPersistentData.PlayerData.GetCurrentBlockData().ImportBlockDatas(true));
             }
+            UpdateFloatingMarkers();
         }
 
         public void Reset()
@@ -198,13 +210,67 @@ namespace StarSalvager
 
         private void UpdateFloatingMarkers()
         {
+            print("Test");
+            foreach (var availablePoint in _availablePointMarkers)
+            {
+                Recycler.Recycle(ICONS.AVAILABLE, availablePoint);
+            }
+            _availablePointMarkers.Clear();
+
+            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            {
+                foreach (var attached in scrapBot.attachedBlocks)
+                {
+                    if (!scrapBot.attachedBlocks.HasPathToCore(attached))
+                        continue;
+
+                    if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.left && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                    {
+                        if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                            availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                        availableMarker.transform.position = (attached.Coordinate + Vector2.left) * Constants.gridCellSize;
+                        _availablePointMarkers.Add(availableMarker);
+                    }
+                    if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.right && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                    {
+                        if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                            availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                        availableMarker.transform.position = (attached.Coordinate + Vector2.right) * Constants.gridCellSize;
+                        _availablePointMarkers.Add(availableMarker);
+                    }
+                    if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.up && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                    {
+                        if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                            availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                        availableMarker.transform.position = (attached.Coordinate + Vector2.up) * Constants.gridCellSize;
+                        _availablePointMarkers.Add(availableMarker);
+                    }
+                    if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.down && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                    {
+                        if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                            availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                        availableMarker.transform.position = (attached.Coordinate + Vector2.down) * Constants.gridCellSize;
+                        _availablePointMarkers.Add(availableMarker);
+                    }
+                }
+            }
+
+            foreach (var partWarning in _floatingPartWarnings)
+            {
+                Recycler.Recycle(ICONS.ALERT, partWarning);
+            }
+            _floatingPartWarnings.Clear();
+            
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
                 foreach (var attached in scrapBot.attachedBlocks)
                 {
                     if (!scrapBot.attachedBlocks.HasPathToCore(attached))
                     {
-                        attached.
+                        if (!Recycler.TryGrab(ICONS.ALERT, out GameObject newWarning))
+                            newWarning = GameObject.Instantiate(floatingPartWarningPrefab);
+                        newWarning.transform.position = (Vector2)attached.Coordinate * Constants.gridCellSize;
+                        _floatingPartWarnings.Add(newWarning);
                     }
                 }
             }
