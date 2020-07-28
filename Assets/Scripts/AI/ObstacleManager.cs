@@ -51,7 +51,7 @@ namespace StarSalvager
             m_obstacles = new List<IObstacle>();
             m_notFullyInGridShapes = new List<Shape>();
             m_offGridMovingObstacles = new List<OffGridMovement>();
-            GameTimer.AddPausable(this);
+            RegisterPausable();
 
             SetupStage(0);
 
@@ -523,6 +523,11 @@ namespace StarSalvager
         }
 
         //============================================================================================================//
+
+        public void RegisterPausable()
+        {
+            GameTimer.AddPausable(this);
+        }
 
         public void OnResume()
         {

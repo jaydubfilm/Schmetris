@@ -9,6 +9,8 @@ using StarSalvager.Factories.Data;
 using StarSalvager.AI;
 using Recycling;
 using System;
+using StarSalvager.Utilities.Enemies;
+using Object = UnityEngine.Object;
 
 namespace StarSalvager.Factories
 {
@@ -70,15 +72,40 @@ namespace StarSalvager.Factories
 
             return enemyData;
         }
+        
+        //============================================================================================================//
 
+        public GameObject CreateEnemyDecoyObject()
+        {
+            if (Recycler.TryGrab<EnemyDecoy>(out GameObject newObject))
+            {
+                return newObject;
+            }
+            
+            return Object.Instantiate(m_enemyProfile.m_enemyDecoy);
+        }
+        
+        public EnemyDecoy CreateEnemyDecoy()
+        {
+            if (Recycler.TryGrab(out EnemyDecoy newObject))
+            {
+                return newObject;
+            }
+            
+            return Object.Instantiate(m_enemyProfile.m_enemyDecoy).GetComponent<EnemyDecoy>();
+        }
+        
+        //============================================================================================================//
+
+        
         public override GameObject CreateGameObject()
         {
-            return GameObject.Instantiate(m_prefab);
+            return Object.Instantiate(m_prefab);
         }
 
         public GameObject CreateAttachableGameObject()
         {
-            return GameObject.Instantiate(m_attachablePrefab);
+            return Object.Instantiate(m_attachablePrefab);
         }
 
         public override T CreateObject<T>()

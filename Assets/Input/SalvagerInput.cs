@@ -51,6 +51,14 @@ namespace StarSalvager.Utilities.Inputs
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""ed19b199-88c4-47ad-99d1-e8570dcd382f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
                 }
             ],
             ""bindings"": [
@@ -205,6 +213,28 @@ namespace StarSalvager.Utilities.Inputs
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Right Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3d5222e8-3a8e-49c3-8927-50b4a363ce77"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""52732cc6-3184-47e8-b094-608c0ef7ae73"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -629,6 +659,7 @@ namespace StarSalvager.Utilities.Inputs
             m_Default_Rotate = m_Default.FindAction("Rotate", throwIfNotFound: true);
             m_Default_LeftClick = m_Default.FindAction("Left Click", throwIfNotFound: true);
             m_Default_RightClick = m_Default.FindAction("Right Click", throwIfNotFound: true);
+            m_Default_Pause = m_Default.FindAction("Pause", throwIfNotFound: true);
             // Vertical
             m_Vertical = asset.FindActionMap("Vertical", throwIfNotFound: true);
             m_Vertical_SideMovement = m_Vertical.FindAction("Side Movement", throwIfNotFound: true);
@@ -694,6 +725,7 @@ namespace StarSalvager.Utilities.Inputs
         private readonly InputAction m_Default_Rotate;
         private readonly InputAction m_Default_LeftClick;
         private readonly InputAction m_Default_RightClick;
+        private readonly InputAction m_Default_Pause;
         public struct DefaultActions
         {
             private @SalvagerInput m_Wrapper;
@@ -702,6 +734,7 @@ namespace StarSalvager.Utilities.Inputs
             public InputAction @Rotate => m_Wrapper.m_Default_Rotate;
             public InputAction @LeftClick => m_Wrapper.m_Default_LeftClick;
             public InputAction @RightClick => m_Wrapper.m_Default_RightClick;
+            public InputAction @Pause => m_Wrapper.m_Default_Pause;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -723,6 +756,9 @@ namespace StarSalvager.Utilities.Inputs
                     @RightClick.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRightClick;
                     @RightClick.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRightClick;
                     @RightClick.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRightClick;
+                    @Pause.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnPause;
+                    @Pause.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnPause;
+                    @Pause.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnPause;
                 }
                 m_Wrapper.m_DefaultActionsCallbackInterface = instance;
                 if (instance != null)
@@ -739,6 +775,9 @@ namespace StarSalvager.Utilities.Inputs
                     @RightClick.started += instance.OnRightClick;
                     @RightClick.performed += instance.OnRightClick;
                     @RightClick.canceled += instance.OnRightClick;
+                    @Pause.started += instance.OnPause;
+                    @Pause.performed += instance.OnPause;
+                    @Pause.canceled += instance.OnPause;
                 }
             }
         }
@@ -863,6 +902,7 @@ namespace StarSalvager.Utilities.Inputs
             void OnRotate(InputAction.CallbackContext context);
             void OnLeftClick(InputAction.CallbackContext context);
             void OnRightClick(InputAction.CallbackContext context);
+            void OnPause(InputAction.CallbackContext context);
         }
         public interface IVerticalActions
         {

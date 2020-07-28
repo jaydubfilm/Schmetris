@@ -398,6 +398,29 @@ namespace StarSalvager.Utilities.Extensions
             
             return outList;
         }
+        public static List<IAttachable> GetAttachablesAround<T>(this IEnumerable<T> attachables,
+            IAttachable from, bool includeCorners = false) where T: IAttachable
+        {
+            var enumerable = attachables as T[] ?? attachables.ToArray();
+
+            var outList = new List<IAttachable>
+            {
+                enumerable.GetAttachableNextTo(from, DIRECTION.LEFT),
+                enumerable.GetAttachableNextTo(from, DIRECTION.UP),
+                enumerable.GetAttachableNextTo(from, DIRECTION.RIGHT),
+                enumerable.GetAttachableNextTo(from, DIRECTION.DOWN)
+            };
+            
+            if (includeCorners)
+            {
+                outList.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(-1,1)));
+                outList.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(1,1)));
+                outList.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(1,-1)));
+                outList.Add(enumerable.GetAttachableNextTo(from, new Vector2Int(-1,-1)));
+            }
+            
+            return outList;
+        }
         /// <summary>
         /// Returns a list of all AttachableBase types around the from block
         /// </summary>
@@ -450,6 +473,7 @@ namespace StarSalvager.Utilities.Extensions
             return enumerable
                 .Where(a => a.gameObject.activeInHierarchy)
                 .OfType<T>()
+                .Where(a => a.CountAsConnected)
                 .Where(a => InRadius(center, a.Coordinate, radius))
                 .ToList();
         }
@@ -533,11 +557,11 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="direction"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static IAttachable GetAttachableNextTo(this IEnumerable<IAttachable> attachables, IAttachable from, DIRECTION direction)
+        public static T GetAttachableNextTo<T>(this IEnumerable<T> attachables, IAttachable from, DIRECTION direction) where T: IAttachable
         {
             return attachables.GetAttachableNextTo(from, direction.ToVector2Int());
         }
-        public static IAttachable GetAttachableNextTo(this IEnumerable<IAttachable> attachables, IAttachable from, Vector2Int direction)
+        public static T GetAttachableNextTo<T>(this IEnumerable<T> attachables, IAttachable from, Vector2Int direction) where T: IAttachable
         {
             var coord = from.Coordinate + direction;
 
@@ -587,14 +611,16 @@ namespace StarSalvager.Utilities.Extensions
             }
 
         }
-        public static void GetAllAttachedDetachables(this List<IAttachable> attachables, IAttachable current, IAttachable[] toIgnore, ref List<IAttachable> outAttachables)
+        public static void GetAllAttachedDetachables<T>(this List<T> attachables, T current, IAttachable[] toIgnore, ref List<T> outAttachables) where T: IAttachable
         {
             var attachablesAround = attachables.GetAttachablesAround(current);
 
             outAttachables.Add(current);
             
-            foreach (var attachable in attachablesAround)
+            foreach (var attachable1 in attachablesAround)
             {
+                var attachable = (T) attachable1;
+                
                 if (attachable == null)
                     continue;
 

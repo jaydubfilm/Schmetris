@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2681746267895581253}
   - component: {fileID: 2681746267895581274}
+  - component: {fileID: 1775463995226503707}
   - component: {fileID: 2681746267895581254}
   - component: {fileID: 2681746267895581252}
   m_Layer: 8
@@ -45,20 +46,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2d6a040667d62f4bae4890680d1696c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TEST_Speed: 50
   TEST_RotSpeed: 500
   TEST_MergeSpeed: 5
   TEST_DetachTime: 0.15
   TEST_SetDetachColor: 0
-  _moveDirection: -1
-  DelayedAutoStartTime: 0.05
+  MostRecentRotate: 0
+  PROTO_GodMode: 0
+--- !u!114 &1775463995226503707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2681746267895581272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ca616203325f1d469be9f79b2f8b3ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bot: {fileID: 2681746267895581274}
   useMagnet: 1
   currentMagnet: 2
+  useBurnRate: 1
   coreHeat: 0
   coolSpeed: 20
   coolDelay: 1
   coolTimer: 0
-  magnetCount: 0
 --- !u!66 &2681746267895581254
 CompositeCollider2D:
   m_ObjectHideFlags: 0

@@ -1,0 +1,97 @@
+
+Parasite_ConnectedAnim_ver9l.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Enemy1_ver4-animation2_00
+  rotate: false
+  xy: 254, 0
+  size: 125, 128
+  orig: 128, 128
+  offset: 2, 0
+  index: -1
+Enemy1_ver4-animation2_12
+  rotate: false
+  xy: 254, 0
+  size: 125, 128
+  orig: 128, 128
+  offset: 2, 0
+  index: -1
+Enemy1_ver4-animation2_01
+  rotate: false
+  xy: 0, 160
+  size: 128, 99
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+Enemy1_ver4-animation2_02
+  rotate: false
+  xy: 130, 336
+  size: 128, 69
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+Enemy1_ver4-animation2_03
+  rotate: false
+  xy: 0, 341
+  size: 128, 64
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+Enemy1_ver4-animation2_04
+  rotate: false
+  xy: 260, 334
+  size: 128, 71
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+Enemy1_ver4-animation2_05
+  rotate: false
+  xy: 0, 261
+  size: 128, 78
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+Enemy1_ver4-animation2_06
+  rotate: false
+  xy: 130, 248
+  size: 128, 86
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+Enemy1_ver4-animation2_07
+  rotate: false
+  xy: 260, 239
+  size: 128, 93
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+Enemy1_ver4-animation2_08
+  rotate: false
+  xy: 130, 146
+  size: 128, 100
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+Enemy1_ver4-animation2_09
+  rotate: false
+  xy: 260, 130
+  size: 127, 107
+  orig: 128, 128
+  offset: 1, 0
+  index: -1
+Enemy1_ver4-animation2_10
+  rotate: false
+  xy: 0, 44
+  size: 125, 114
+  orig: 128, 128
+  offset: 2, 0
+  index: -1
+Enemy1_ver4-animation2_11
+  rotate: false
+  xy: 127, 22
+  size: 125, 122
+  orig: 128, 128
+  offset: 2, 0
+  index: -1

@@ -130,7 +130,7 @@ namespace StarSalvager
                 Debug.Log($"Generated Seed {seed}");
             }
 
-            GameTimer.AddPausable(this);
+            RegisterPausable();
             m_levelManagerUI = FindObjectOfType<LevelManagerUI>();
             //m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
 
@@ -282,6 +282,11 @@ namespace StarSalvager
         }
 
         //============================================================================================================//
+
+        public void RegisterPausable()
+        {
+            GameTimer.AddPausable(this);
+        }
 
         public void OnResume()
         {
