@@ -5,16 +5,18 @@ using UnityEngine;
 
 namespace StarSalvager.Missions
 {
-    public class MissionCompleteMissionUnlockCheck : MissionUnlockCheck
+    public struct MissionCompleteUnlockCheck : IMissionUnlockCheck
     {
+        public bool IsComplete { get; private set; }
         public string m_missionName;
 
-        public MissionCompleteMissionUnlockCheck(string missionName) : base()
+        public MissionCompleteUnlockCheck(string missionName)
         {
+            IsComplete = false;
             m_missionName = missionName;
         }
         
-        public override bool CheckUnlockParameters()
+        public bool CheckUnlockParameters()
         {
             if (IsComplete)
                 return true;
@@ -28,7 +30,7 @@ namespace StarSalvager.Missions
             return false;
         }
 
-        public override MissionUnlockCheckData ToMissionUnlockParameterData()
+        public MissionUnlockCheckData ToMissionUnlockParameterData()
         {
             return new MissionUnlockCheckData
             {

@@ -89,17 +89,18 @@ namespace StarSalvager.Missions
         public static void ProcessResourceCollectedMissionData(BIT_TYPE resourceType, int amount)
         {
             //Debug.Log("Resource mission event");
-            for (int i = MissionsCurrentData.GetCurrentMissions().Count - 1; i >= 0; i--)
+            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
             {
-                if (MissionsCurrentData.GetCurrentMissions()[i] is ResourceCollectedMission resourceCollectedMission)
+                if (MissionsCurrentData.CurrentMissions[i] is ResourceCollectedMission resourceCollectedMission)
                 {
                     resourceCollectedMission.ProcessMissionData(resourceType, amount);
                     if (resourceCollectedMission.MissionComplete())
                     {
                         Debug.Log("Mission " + resourceCollectedMission.m_missionName + " Complete!");
-                        MissionsCurrentData.GetCurrentMissions().Remove(resourceCollectedMission);
+                        MissionsCurrentData.CurrentMissions.Remove(resourceCollectedMission);
                         resourceCollectedMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(resourceCollectedMission);
+                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(resourceCollectedMission.m_missionName);
                     }
                 }
@@ -109,9 +110,9 @@ namespace StarSalvager.Missions
         public static void ProcessEnemyKilledMissionData(string enemyType, int amount)
         {
             //Debug.Log("Enemy killed mission event");
-            for (int i = MissionsCurrentData.GetCurrentMissions().Count - 1; i >= 0; i--)
+            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
             {
-                if (MissionsCurrentData.GetCurrentMissions()[i] is EnemyKilledMission enemyKilledMission)
+                if (MissionsCurrentData.CurrentMissions[i] is EnemyKilledMission enemyKilledMission)
                 {
                     enemyKilledMission.ProcessMissionData(enemyType, amount);
                     if (enemyKilledMission.MissionComplete())
@@ -119,7 +120,7 @@ namespace StarSalvager.Missions
                         Debug.Log("Mission " + enemyKilledMission.m_missionName + " Complete!");
                         enemyKilledMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(enemyKilledMission);
-                        MissionsCurrentData.GetCurrentMissions().RemoveAt(i);
+                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(enemyKilledMission.m_missionName);
                     }
                 }
@@ -129,9 +130,9 @@ namespace StarSalvager.Missions
         public static void ProcessComboBlocksMissionData(BIT_TYPE comboType, int amount)
         {
             //Debug.Log("Combo Blocks mission event");
-            for (int i = MissionsCurrentData.GetCurrentMissions().Count - 1; i >= 0; i--)
+            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
             {
-                if (MissionsCurrentData.GetCurrentMissions()[i] is ComboBlocksMission comboBlocksMission)
+                if (MissionsCurrentData.CurrentMissions[i] is ComboBlocksMission comboBlocksMission)
                 {
                     comboBlocksMission.ProcessMissionData(comboType, amount);
                     if (comboBlocksMission.MissionComplete())
@@ -139,7 +140,7 @@ namespace StarSalvager.Missions
                         Debug.Log("Mission " + comboBlocksMission.m_missionName + " Complete!");
                         comboBlocksMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(comboBlocksMission);
-                        MissionsCurrentData.GetCurrentMissions().RemoveAt(i);
+                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(comboBlocksMission.m_missionName);
                     }
                 }
@@ -149,9 +150,9 @@ namespace StarSalvager.Missions
         public static void ProcessLevelProgressMissionData(int sectorNumber, int waveNumber)
         {
             //Debug.Log("Level Progress mission event");
-            for (int i = MissionsCurrentData.GetCurrentMissions().Count - 1; i >= 0; i--)
+            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
             {
-                if (MissionsCurrentData.GetCurrentMissions()[i] is LevelProgressMission levelProgressMission)
+                if (MissionsCurrentData.CurrentMissions[i] is LevelProgressMission levelProgressMission)
                 {
                     levelProgressMission.ProcessMissionData(sectorNumber, waveNumber);
                     if (levelProgressMission.MissionComplete())
@@ -159,7 +160,7 @@ namespace StarSalvager.Missions
                         Debug.Log("Mission " + levelProgressMission.m_missionName + " Complete!");
                         levelProgressMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(levelProgressMission);
-                        MissionsCurrentData.GetCurrentMissions().RemoveAt(i);
+                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(levelProgressMission.m_missionName);
                     }
                 }
@@ -183,9 +184,9 @@ namespace StarSalvager.Missions
 
         private static void CheckUnlocks()
         {
-            for (int i = MissionsCurrentData.GetNotStartedMissions().Count - 1; i >= 0; i--)
+            for (int i = MissionsCurrentData.NotStartedMissions.Count - 1; i >= 0; i--)
             {
-                Mission mission = MissionsCurrentData.GetNotStartedMissions()[i];
+                Mission mission = MissionsCurrentData.NotStartedMissions[i];
 
                 if (mission.CheckUnlockParameters())
                 {

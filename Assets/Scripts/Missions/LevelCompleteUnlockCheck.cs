@@ -5,18 +5,20 @@ using UnityEngine;
 
 namespace StarSalvager.Missions
 {
-    public class LevelCompleteMissionUnlockCheck : MissionUnlockCheck
+    public struct LevelCompleteUnlockCheck : IMissionUnlockCheck
     {
+        public bool IsComplete { get; private set; }
         public int m_sectorNumber;
         public int m_waveNumber;
 
-        public LevelCompleteMissionUnlockCheck(int sectorNumber, int waveNumber) : base()
+        public LevelCompleteUnlockCheck(int sectorNumber, int waveNumber)
         {
+            IsComplete = false;
             m_sectorNumber = sectorNumber;
             m_waveNumber = waveNumber;
         }
         
-        public override bool CheckUnlockParameters()
+        public bool CheckUnlockParameters()
         {
             if (IsComplete)
                 return true;
@@ -30,7 +32,7 @@ namespace StarSalvager.Missions
             return false;
         }
 
-        public override MissionUnlockCheckData ToMissionUnlockParameterData()
+        public MissionUnlockCheckData ToMissionUnlockParameterData()
         {
             return new MissionUnlockCheckData
             {

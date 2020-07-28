@@ -9,7 +9,7 @@ namespace StarSalvager.Missions
     {
         public BIT_TYPE m_resourceType;
 
-        public ResourceCollectedMission(BIT_TYPE resourceType, string missionName, List<MissionUnlockCheck> missionUnlockData, int amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
+        public ResourceCollectedMission(BIT_TYPE resourceType, string missionName, List<IMissionUnlockCheck> missionUnlockData, int amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
         {
             MissionEventType = MISSION_EVENT_TYPE.RESOURCE_COLLECTED;
             m_resourceType = resourceType;
@@ -38,7 +38,7 @@ namespace StarSalvager.Missions
                 CurrentAmount = m_currentAmount,
                 MissionEventType = this.MissionEventType,
                 MissionStatus = this.MissionStatus,
-                MissionUnlockChecks = missionUnlockChecks.ImportMissionUnlockParametersDatas(),
+                MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
                 ResourceType = m_resourceType
             };

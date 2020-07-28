@@ -14,9 +14,9 @@ namespace StarSalvager.Missions
         public MISSION_EVENT_TYPE MissionEventType { get; protected set; }
         public MISSION_STATUS MissionStatus;
 
-        public List<MissionUnlockCheck> missionUnlockChecks;
+        public List<IMissionUnlockCheck> missionUnlockChecks;
 
-        public Mission(string missionName, int amountNeeded, List<MissionUnlockCheck> missionUnlockData)
+        public Mission(string missionName, int amountNeeded, List<IMissionUnlockCheck> missionUnlockData)
         {
             m_currentAmount = 0;
             m_missionName = missionName;

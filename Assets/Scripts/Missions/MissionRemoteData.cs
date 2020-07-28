@@ -36,19 +36,19 @@ namespace StarSalvager.Missions
         [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.LEVEL_PROGRESS)]
         public int WaveNumber;
 
-        public List<MissionUnlockCheck> GetMissionUnlockData()
+        public List<IMissionUnlockCheck> GetMissionUnlockData()
         {
-            List<MissionUnlockCheck> missionUnlockData = new List<MissionUnlockCheck>();
+            List<IMissionUnlockCheck> missionUnlockData = new List<IMissionUnlockCheck>();
 
             foreach (var missionUnlockParameters in MissionUnlockParameters)
             {
                 switch (missionUnlockParameters.MissionUnlockType)
                 {
                     case "Level Complete":
-                        missionUnlockData.Add(new LevelCompleteMissionUnlockCheck(missionUnlockParameters.SectorUnlockNumber, missionUnlockParameters.WaveUnlockNumber));
+                        missionUnlockData.Add(new LevelCompleteUnlockCheck(missionUnlockParameters.SectorUnlockNumber, missionUnlockParameters.WaveUnlockNumber));
                         break;
                     case "Mission Complete":
-                        missionUnlockData.Add(new MissionCompleteMissionUnlockCheck(missionUnlockParameters.MissionUnlockName));
+                        missionUnlockData.Add(new MissionCompleteUnlockCheck(missionUnlockParameters.MissionUnlockName));
                         break;
                 }
             }

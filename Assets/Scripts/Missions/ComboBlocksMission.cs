@@ -10,7 +10,7 @@ namespace StarSalvager.Missions
     {
         public BIT_TYPE m_comboType;
 
-        public ComboBlocksMission(BIT_TYPE comboType, string missionName, List<MissionUnlockCheck> missionUnlockData, int amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
+        public ComboBlocksMission(BIT_TYPE comboType, string missionName, List<IMissionUnlockCheck> missionUnlockData, int amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
         {
             MissionEventType = MISSION_EVENT_TYPE.ENEMY_KILLED;
             m_comboType = comboType;
@@ -39,7 +39,7 @@ namespace StarSalvager.Missions
                 CurrentAmount = m_currentAmount,
                 MissionEventType = this.MissionEventType,
                 MissionStatus = this.MissionStatus,
-                MissionUnlockChecks = missionUnlockChecks.ImportMissionUnlockParametersDatas(),
+                MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
                 ResourceType = m_comboType
             };

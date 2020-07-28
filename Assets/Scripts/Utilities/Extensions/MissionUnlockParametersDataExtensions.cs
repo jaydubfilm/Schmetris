@@ -9,19 +9,19 @@ namespace StarSalvager.Utilities.Extensions
 {
     public static class MissionUnlockParametersDataExtensions
     {
-        public static List<MissionUnlockCheck> ImportMissionUnlockParametersDatas(this List<MissionUnlockCheckData> missionUnlockParameterDatas)
+        public static List<IMissionUnlockCheck> ImportMissionUnlockParametersDatas(this List<MissionUnlockCheckData> missionUnlockParameterDatas)
         {
-            List<MissionUnlockCheck> missionUnlockChecks = new List<MissionUnlockCheck>();
+            List<IMissionUnlockCheck> missionUnlockChecks = new List<IMissionUnlockCheck>();
 
             foreach (MissionUnlockCheckData missionUnlockParameterData in missionUnlockParameterDatas)
             {
                 switch (missionUnlockParameterData.ClassType)
                 {
-                    case "MissionCompleteMissionUnlockCheck":
-                        missionUnlockChecks.Add(new MissionCompleteMissionUnlockCheck(missionUnlockParameterData.MissionName));
+                    case nameof(MissionCompleteUnlockCheck):
+                        missionUnlockChecks.Add(new MissionCompleteUnlockCheck(missionUnlockParameterData.MissionName));
                         break;
-                    case "LevelCompleteMissionUnlockCheck":
-                        missionUnlockChecks.Add(new LevelCompleteMissionUnlockCheck(missionUnlockParameterData.SectorNumber, missionUnlockParameterData.WaveNumber));
+                    case nameof(LevelCompleteUnlockCheck):
+                        missionUnlockChecks.Add(new LevelCompleteUnlockCheck(missionUnlockParameterData.SectorNumber, missionUnlockParameterData.WaveNumber));
                         break;
                 }
             }
@@ -29,11 +29,11 @@ namespace StarSalvager.Utilities.Extensions
             return missionUnlockChecks;
         }
 
-        public static List<MissionUnlockCheckData> ImportMissionUnlockParametersDatas(this List<MissionUnlockCheck> missionUnlockChecks)
+        public static List<MissionUnlockCheckData> ExportMissionUnlockParametersDatas(this List<IMissionUnlockCheck> missionUnlockChecks)
         {
             List<MissionUnlockCheckData> missionUnlockParameterDatas = new List<MissionUnlockCheckData>();
 
-            foreach (MissionUnlockCheck missionUnlockCheck in missionUnlockChecks)
+            foreach (IMissionUnlockCheck missionUnlockCheck in missionUnlockChecks)
             {
                 missionUnlockParameterDatas.Add(missionUnlockCheck.ToMissionUnlockParameterData());
             }

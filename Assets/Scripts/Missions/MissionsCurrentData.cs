@@ -10,86 +10,74 @@ namespace StarSalvager.Missions
     {
         //TODO: Switch this set of lists into a dictionary with key = type, value = list<mission>
         public List<MissionData> m_notStartedMissionData;
-        public List<MissionData> m_currentMissionData;
-        public List<MissionData> m_completedMissionData;
+        public List<MissionData> CurrentMissionData;
+        public List<MissionData> CompletedMissionData;
 
-        private List<Mission> m_notStartedMissions;
-        private List<Mission> m_currentMissions;
-        private List<Mission> m_completedMissions;
+        [Newtonsoft.Json.JsonIgnore]
+        public List<Mission> NotStartedMissions;
+        [Newtonsoft.Json.JsonIgnore]
+        public List<Mission> CurrentMissions;
+        [Newtonsoft.Json.JsonIgnore]
+        public List<Mission> CompletedMissions;
 
         public MissionsCurrentData()
         {
             m_notStartedMissionData = new List<MissionData>();
-            m_currentMissionData = new List<MissionData>();
-            m_completedMissionData = new List<MissionData>();
-            m_notStartedMissions = new List<Mission>();
-            m_currentMissions = new List<Mission>();
-            m_completedMissions = new List<Mission>();
-        }
-
-        public List<Mission> GetNotStartedMissions()
-        {
-            return m_notStartedMissions;
-        }
-
-        public List<Mission> GetCurrentMissions()
-        {
-            return m_currentMissions;
-        }
-
-        public List<Mission> GetCompletedMissions()
-        {
-            return m_completedMissions;
+            CurrentMissionData = new List<MissionData>();
+            CompletedMissionData = new List<MissionData>();
+            NotStartedMissions = new List<Mission>();
+            CurrentMissions = new List<Mission>();
+            CompletedMissions = new List<Mission>();
         }
 
         public void AddMission(Mission mission)
         {
-            if (m_notStartedMissions.Find(m => m.m_missionName == mission.m_missionName) != null)
+            if (NotStartedMissions.Find(m => m.m_missionName == mission.m_missionName) != null)
             {
-                m_notStartedMissions.RemoveAll(m => m.m_missionName == mission.m_missionName);
-                m_currentMissions.Add(mission);
+                NotStartedMissions.RemoveAll(m => m.m_missionName == mission.m_missionName);
+                CurrentMissions.Add(mission);
             }
         }
 
         public void AddMission(Mission mission, int atIndex)
         {
-            if (m_notStartedMissions.Find(m => m.m_missionName == mission.m_missionName) != null)
+            if (NotStartedMissions.Find(m => m.m_missionName == mission.m_missionName) != null)
             {
-                m_notStartedMissions.RemoveAll(m => m.m_missionName == mission.m_missionName);
-                m_currentMissions.Insert(atIndex, mission);
+                NotStartedMissions.RemoveAll(m => m.m_missionName == mission.m_missionName);
+                CurrentMissions.Insert(atIndex, mission);
             }
         }
 
         public void CompleteMission(Mission mission)
         {
-            m_completedMissions.Add(mission);
+            CompletedMissions.Add(mission);
         }
 
         public void LoadMissionData()
         {
-            m_notStartedMissions = m_notStartedMissionData.ImportMissionDatas();
-            m_currentMissions = m_currentMissionData.ImportMissionDatas();
-            m_completedMissions = m_completedMissionData.ImportMissionDatas();
+            NotStartedMissions = m_notStartedMissionData.ImportMissionDatas();
+            CurrentMissions = CurrentMissionData.ImportMissionDatas();
+            CompletedMissions = CompletedMissionData.ImportMissionDatas();
         }
 
         public void SaveMissionData()
         {
             m_notStartedMissionData.Clear();
-            foreach(Mission mission in m_notStartedMissions)
+            foreach(Mission mission in NotStartedMissions)
             {
                 m_notStartedMissionData.Add(mission.ToMissionData());
             }
 
-            m_currentMissionData.Clear();
-            foreach (Mission mission in m_currentMissions)
+            CurrentMissionData.Clear();
+            foreach (Mission mission in CurrentMissions)
             {
-                m_currentMissionData.Add(mission.ToMissionData());
+                CurrentMissionData.Add(mission.ToMissionData());
             }
 
-            m_completedMissionData.Clear();
-            foreach (Mission mission in m_completedMissions)
+            CompletedMissionData.Clear();
+            foreach (Mission mission in CompletedMissions)
             {
-                m_completedMissionData.Add(mission.ToMissionData());
+                CompletedMissionData.Add(mission.ToMissionData());
             }
         }
     }

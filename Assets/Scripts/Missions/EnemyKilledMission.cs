@@ -10,7 +10,7 @@ namespace StarSalvager.Missions
     {
         public string m_enemyType;
 
-        public EnemyKilledMission(string enemyType, string missionName, List<MissionUnlockCheck> missionUnlockData, int amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
+        public EnemyKilledMission(string enemyType, string missionName, List<IMissionUnlockCheck> missionUnlockData, int amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
         {
             MissionEventType = MISSION_EVENT_TYPE.ENEMY_KILLED;
             m_enemyType = enemyType;
@@ -39,7 +39,7 @@ namespace StarSalvager.Missions
                 CurrentAmount = m_currentAmount,
                 MissionEventType = this.MissionEventType,
                 MissionStatus = this.MissionStatus,
-                MissionUnlockChecks = missionUnlockChecks.ImportMissionUnlockParametersDatas(),
+                MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
                 EnemyType = m_enemyType
             };
