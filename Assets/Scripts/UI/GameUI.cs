@@ -104,9 +104,13 @@ namespace StarSalvager.UI
             fuelSlider.Init();
             repairSlider.Init();
             ammoSlider.Init();
+
+            //FIXME This should be set using a capacity value instead of hard set here
+            SetResourceSliderBounds(0, 250);
         }
         
         //============================================================================================================//
+        
 
         public void SetWaterValue(float value)
         {
@@ -121,6 +125,15 @@ namespace StarSalvager.UI
         {
             carryCapacitySlider.value = value;
         }
+        
+        //============================================================================================================//
+        
+        public void SetResourceSliderBounds(int min, int max)
+        {
+            fuelSlider.SetBounds(min, max);
+            repairSlider.SetBounds(min, max);
+            ammoSlider.SetBounds(min, max);
+        }
 
         public void SetFuelValue(float value)
         {
@@ -134,6 +147,9 @@ namespace StarSalvager.UI
         {
             ammoSlider.value = value;
         }
+        
+        //============================================================================================================//
+
 
         public void SetClockValue(float value)
         {

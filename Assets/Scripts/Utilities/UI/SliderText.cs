@@ -34,6 +34,12 @@ namespace StarSalvager.Utilities.UI
             sliderText.text = FormattedSliderText(format, _slider.value);
         }
 
+        public void SetBounds(float min, float max)
+        {
+            _slider.minValue = min;
+            _slider.maxValue = max;
+        }
+
         private void ValueChanged(float data)
         {
             sliderText.text = FormattedSliderText(format, data);

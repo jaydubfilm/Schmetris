@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Recycling;
 using StarSalvager.Factories.Data;
-using StarSalvager.ScriptableObjects;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
@@ -51,8 +49,8 @@ namespace StarSalvager.Factories
                 shape.PushNewBit(bit, (DIRECTION)Random.Range(0, 4), true);
             }
 
-            if (LevelManager.Instance != null)
-                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
+            /*if (LevelManager.Instance != null)
+                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);*/
 
             return shape.gameObject;
         }
@@ -70,8 +68,8 @@ namespace StarSalvager.Factories
                 shape.PushNewBit(bit, (DIRECTION)Random.Range(0, 4), true);
             }
 
-            if (LevelManager.Instance != null)
-                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
+            /*if (LevelManager.Instance != null)
+                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);*/
 
             return shape.GetComponent<T>();
         }
@@ -102,8 +100,8 @@ namespace StarSalvager.Factories
                 }
             }
 
-            if (LevelManager.Instance != null)
-                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
+            /*if (LevelManager.Instance != null)
+                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);*/
 
             return shape.GetComponent<T>();
         }
@@ -141,8 +139,8 @@ namespace StarSalvager.Factories
                     }
                 }
 
-                if (LevelManager.Instance != null)
-                    LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
+                /*if (LevelManager.Instance != null)
+                    LevelManager.Instance.ObstacleManager.AddMovableToList(shape);*/
 
                 return shape.GetComponent<T>();
             }
@@ -171,8 +169,8 @@ namespace StarSalvager.Factories
             
             shape.Setup(bits);
 
-            if (LevelManager.Instance != null)
-                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
+            /*if (LevelManager.Instance != null)
+                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);*/
 
             return shape.GetComponent<T>();
         }
@@ -193,8 +191,8 @@ namespace StarSalvager.Factories
             
             shape.Setup(bits);
 
-            if (LevelManager.Instance != null)
-                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
+            /*if (LevelManager.Instance != null)
+                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);*/
 
             return shape.gameObject;
         }

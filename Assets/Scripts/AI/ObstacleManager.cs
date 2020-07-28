@@ -410,6 +410,10 @@ namespace StarSalvager
             if (customMade)
             {
                 Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, bitType, category);
+                
+                if (LevelManager.Instance != null)
+                    LevelManager.Instance.ObstacleManager.AddMovableToList(newShape);
+                
                 AddMovableToList(newShape);
                 foreach (Bit bit in newShape.AttachedBits)
                 {
@@ -448,6 +452,10 @@ namespace StarSalvager
             else
             {
                 Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, bitType, numBitsInObstacle);
+                
+                if (LevelManager.Instance != null)
+                    LevelManager.Instance.ObstacleManager.AddMovableToList(newShape);
+                
                 AddMovableToList(newShape);
                 foreach (Bit bit in newShape.AttachedBits)
                 {

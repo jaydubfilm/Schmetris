@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
@@ -8,7 +9,6 @@ using StarSalvager.Prototype;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
 using UnityEngine;
-using Enemy = StarSalvager.AI.Enemy;
 using GameUI = StarSalvager.UI.GameUI;
 
 namespace StarSalvager
@@ -100,7 +100,7 @@ namespace StarSalvager
             foreach (var part in _parts)
             {
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                    .GetRemoteData(PART_TYPE.MAGNET);
+                    .GetRemoteData(part.Type);
 
                 switch (part.Type)
                 {
@@ -119,25 +119,27 @@ namespace StarSalvager
         {
             const float damageGuess = 5f;
 
-            List<Enemy> enemies = null;
             //Be careful to not use return here
             foreach (var part in _parts)
             {
                 PartRemoteData partRemoteData =
                     FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
-                //FIXME This needs to be replaced with the Liquid resources
-                Bit targetBit = GetFurthestBitToBurn(partRemoteData, part.level);
+
+                var bitType = partRemoteData.burnRates[part.level].type;
+                
+                var resourceValue = GetValueToBurn(partRemoteData, bitType);
+
+                if (resourceValue <= 0f && useBurnRate)
+                {
+                    return;
+                }
 
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
 
-                        //TODO This needs to lock the core from being able to move if none is found
-                        if (targetBit && useBurnRate)
-                        {
-                            //Reduce the health of the bit while we're using it up for fuel
-                            bot.TryHitAt(targetBit, partRemoteData.burnRates[part.level].amount * Time.deltaTime);
-                        }
+                        
+                        resourceValue -= partRemoteData.burnRates[part.level].amount * Time.deltaTime;
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
@@ -170,7 +172,7 @@ namespace StarSalvager
                         break;
                     case PART_TYPE.REPAIR:
 
-                        if (!targetBit && useBurnRate)
+                        if (!useBurnRate)
                             break;
                         
                         //TODO Determine if this heals Bits & parts or just parts
@@ -180,7 +182,6 @@ namespace StarSalvager
                             .Select(x => new KeyValuePair<Part, float>(x, FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(x.Type).priority / (x.CurrentHealth / x.StartingHealth)))
                             .OrderByDescending(x => x.Value)
                             .FirstOrDefault().Key;
-                            //.FirstOrDefault(p => p.CurrentHealth < p.StartingHealth);
 
                         //If we weren't able to find a part, see if the repairer needs to be fixed
                         if (toRepair is null)
@@ -192,9 +193,7 @@ namespace StarSalvager
                                 break;
                         }
 
-                        if (useBurnRate)
-                            //Reduce the health of the bit while we're using it up for fuel
-                            bot.TryHitAt(targetBit, partRemoteData.burnRates[part.level].amount * Time.deltaTime);
+                        resourceValue -= partRemoteData.burnRates[part.level].amount * Time.deltaTime;
 
                         //Increase the health of this part depending on the current level of the repairer
                         toRepair.ChangeHealth(partRemoteData.data[part.level] * Time.deltaTime);
@@ -208,8 +207,8 @@ namespace StarSalvager
 
                         if (!projectileTimers.ContainsKey(part))
                             projectileTimers.Add(part, 0f);
-                        //TODO This needs to fire every x Seconds
 
+                        //TODO This needs to fire every x Seconds
                         //--------------------------------------------------------------------------------------------//
 
                         if (projectileTimers[part] < partRemoteData.data[part.level] / damageGuess)
@@ -219,8 +218,6 @@ namespace StarSalvager
                         }
 
                         projectileTimers[part] = 0f;
-
-                        Debug.Log("Fire");
 
                         //Check if we have a target before removing resources
                         //--------------------------------------------------------------------------------------------//
@@ -240,20 +237,15 @@ namespace StarSalvager
 
                         if (useBurnRate)
                         {
-                            //If we have the resources to shoot do so, otherwise break out 
-                            if (targetBit)
-                            {
-                                //Reduce the health of the bit while we're using it up for resources
-                                bot.TryHitAt(targetBit, partRemoteData.burnRates[part.level].amount);
-                            }
-                            else
-                                break;
+                            resourceValue -= partRemoteData.burnRates[part.level].amount;
                         }
 
+                        Debug.Log("Fire");
+                        
                         //Create projectile
                         //--------------------------------------------------------------------------------------------//
 
-
+                        //TODO Might need to add something to change the projectile used for each gun piece
                         var projectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
                             .CreateObject<Projectile>(
                                 "Basic Projectile",
@@ -262,26 +254,81 @@ namespace StarSalvager
 
                         projectile.transform.position = part.transform.position;
 
-                        LevelManager.Instance?.ProjectileManager.AddProjectile(projectile);
+                        LevelManager.Instance.ProjectileManager.AddProjectile(projectile);
 
                         //--------------------------------------------------------------------------------------------//
 
                         break;
                 }
+
+                UpdateUI(bitType, resourceValue);
+                PlayerPersistentData.PlayerData.liquidResource[bitType] = resourceValue;
             }
         }
+        
+        //============================================================================================================//
 
-        private Bit GetFurthestBitToBurn(PartRemoteData remoteData, int level)
+        private Bit GetFurthestBitToBurn(PartRemoteData remoteData, BIT_TYPE type)
         {
             if (!useBurnRate)
                 return null;
-
+            
             if (remoteData.burnRates.Length == 0)
                 return null;
-
+            
             return bot.attachedBlocks.OfType<Bit>()
-                .Where(b => b.Type == remoteData.burnRates[level].type)
+                .Where(b => b.Type == type)
                 .GetFurthestAttachable(Vector2Int.zero);
+        }
+        
+        private float GetValueToBurn(PartRemoteData remoteData, BIT_TYPE type)
+        {
+            if (!useBurnRate)
+                return default;
+
+            var value = remoteData.burnRates.Length == 0
+                ? default
+                : PlayerPersistentData.PlayerData.liquidResource[type];
+
+            if (value > 0)
+                return value;
+            
+            var targetBit = GetFurthestBitToBurn(remoteData, type);
+                    
+            //If we're unable to find a bit to burn, then we can't use this part
+            if (targetBit == null)
+                return default;
+
+            value = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResource(targetBit);
+            bot.DestroyAttachable(targetBit);
+
+            return value;
+        }
+        
+        //============================================================================================================//
+
+        private void UpdateUI(BIT_TYPE type, float value)
+        {
+            switch (type)
+            {
+                case BIT_TYPE.BLUE:
+                    GameUI.SetWaterValue(value);
+                    break;
+                case BIT_TYPE.GREEN:
+                    GameUI.SetRepairValue(value);
+                    break;
+                case BIT_TYPE.GREY:
+                    GameUI.SetAmmoValue(value);
+                    break;
+                case BIT_TYPE.RED:
+                    GameUI.SetFuelValue(value);
+                    break;
+                case BIT_TYPE.YELLOW:
+                    GameUI.SetPowerValue(value);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
         }
 
         #endregion //Parts
