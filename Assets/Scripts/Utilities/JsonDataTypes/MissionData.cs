@@ -8,12 +8,16 @@ namespace StarSalvager.Utilities.JsonDataTypes
     {
         public string ClassType;
 
-        public string m_missionName;
-        public int m_amountNeeded;
-        public int m_currentAmount;
+        public string MissionName;
+        public int AmountNeeded;
+        public int CurrentAmount;
         public MISSION_EVENT_TYPE MissionEventType;
         public MISSION_STATUS MissionStatus;
+        public List<MissionUnlockCheckData> MissionUnlockChecks;
 
-        public List<MissionUnlockCheck> missionUnlockChecks;
+        public BIT_TYPE ResourceType;
+        public string EnemyType;
+        public int SectorNumber;
+        public int WaveNumber;
     }
 }

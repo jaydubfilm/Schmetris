@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StarSalvager.Factories.Data
+namespace StarSalvager.Missions
 {
     [System.Serializable]
     public struct MissionUnlockParameters

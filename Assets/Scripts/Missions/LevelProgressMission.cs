@@ -1,7 +1,9 @@
 ﻿using StarSalvager.AI;
+using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
 
-namespace StarSalvager
+namespace StarSalvager.Missions
 {
     [System.Serializable]
     public class LevelProgressMission : Mission
@@ -9,7 +11,7 @@ namespace StarSalvager
         public int m_sectorNumber;
         public int m_waveNumber;
 
-        public LevelProgressMission(int sectorNumber, int waveNumber, string missionName, List<Dictionary<string, object>> missionUnlockData, int amountNeeded = 1) : base(missionName, amountNeeded, missionUnlockData)
+        public LevelProgressMission(int sectorNumber, int waveNumber, string missionName, List<MissionUnlockCheck> missionUnlockData, int amountNeeded = 1) : base(missionName, amountNeeded, missionUnlockData)
         {
             MissionEventType = MISSION_EVENT_TYPE.ENEMY_KILLED;
             m_sectorNumber = sectorNumber;
@@ -27,6 +29,23 @@ namespace StarSalvager
             {
                 m_currentAmount += 1;
             }
+        }
+
+        public override MissionData ToMissionData()
+        {
+            return new MissionData
+            {
+                ClassType = GetType().Name,
+                MissionName = m_missionName,
+                AmountNeeded = m_amountNeeded,
+                CurrentAmount = m_currentAmount,
+                MissionEventType = this.MissionEventType,
+                MissionStatus = this.MissionStatus,
+                MissionUnlockChecks = missionUnlockChecks.ImportMissionUnlockParametersDatas(),
+
+                SectorNumber = m_sectorNumber,
+                WaveNumber = m_waveNumber
+            };
         }
     }
 }

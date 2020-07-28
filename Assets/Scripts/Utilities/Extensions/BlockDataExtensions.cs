@@ -14,7 +14,7 @@ namespace StarSalvager.Utilities.Extensions
 
             foreach (BlockData blockData in blockDatas)
             {
-                switch(blockData.ClassType)
+                switch (blockData.ClassType)
                 {
                     case "Bit":
                     case "ScrapyardBit":

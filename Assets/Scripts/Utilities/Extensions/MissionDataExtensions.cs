@@ -1,4 +1,5 @@
 ﻿using StarSalvager.Factories;
+using StarSalvager.Missions;
 using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using System.Collections.Generic;
@@ -8,40 +9,30 @@ namespace StarSalvager.Utilities.Extensions
 {
     public static class MissionDataExtensions
     {
-        public static List<Mission> ImportBlockDatas(this List<BlockData> blockDatas, bool inScrapyardForm)
+        public static List<Mission> ImportMissionDatas(this List<MissionData> missionDatas)
         {
-            List<IAttachable> attachables = new List<IAttachable>();
+            List<Mission> missions = new List<Mission>();
 
-            foreach (BlockData blockData in blockDatas)
+            foreach (MissionData missionData in missionDatas)
             {
-                switch (blockData.ClassType)
+                switch (missionData.ClassType)
                 {
-                    case "Bit":
-                    case "ScrapyardBit":
-                        if (inScrapyardForm)
-                        {
-                            attachables.Add(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<ScrapyardBit>(blockData));
-                        }
-                        else
-                        {
-                            attachables.Add(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(blockData));
-                        }
+                    case "ResourceCollectedMission":
+                        missions.Add(new ResourceCollectedMission(missionData.ResourceType, missionData.MissionName, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
                         break;
-                    case "Part":
-                    case "ScrapyardPart":
-                        if (inScrapyardForm)
-                        {
-                            attachables.Add(FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(blockData));
-                        }
-                        else
-                        {
-                            attachables.Add(FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<Part>(blockData));
-                        }
+                    case "EnemyKilledMission":
+                        missions.Add(new EnemyKilledMission(missionData.EnemyType, missionData.MissionName, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        break;
+                    case "LevelProgressMission":
+                        missions.Add(new LevelProgressMission(missionData.SectorNumber, missionData.WaveNumber, missionData.MissionName, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        break;
+                    case "ComboBlocksMission":
+                        missions.Add(new ComboBlocksMission(missionData.ResourceType, missionData.MissionName, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
                         break;
                 }
             }
 
-            return attachables;
+            return missions;
         }
     }
 }

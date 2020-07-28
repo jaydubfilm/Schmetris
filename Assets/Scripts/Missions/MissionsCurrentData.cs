@@ -1,28 +1,45 @@
-﻿using System.Collections;
+﻿using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.JsonDataTypes;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StarSalvager
+namespace StarSalvager.Missions
 {
     public class MissionsCurrentData
     {
         //TODO: Switch this set of lists into a dictionary with key = type, value = list<mission>
-        public List<ResourceCollectedMission> m_resourceCollectedMissions;
-        public List<EnemyKilledMission> m_enemyKilledMissions;
-        public List<ComboBlocksMission> m_comboBlocksMissions;
-        public List<LevelProgressMission> m_levelProgressMissions;
+        public List<MissionData> m_notStartedMissionData;
+        public List<MissionData> m_currentMissionData;
+        public List<MissionData> m_completedMissionData;
 
-        public List<Mission> m_notStartedMissions;
-        public List<Mission> m_completedMissions;
+        private List<Mission> m_notStartedMissions;
+        private List<Mission> m_currentMissions;
+        private List<Mission> m_completedMissions;
 
         public MissionsCurrentData()
         {
-            m_resourceCollectedMissions = new List<ResourceCollectedMission>();
-            m_enemyKilledMissions = new List<EnemyKilledMission>();
-            m_comboBlocksMissions = new List<ComboBlocksMission>();
-            m_levelProgressMissions = new List<LevelProgressMission>();
-            m_completedMissions = new List<Mission>();
+            m_notStartedMissionData = new List<MissionData>();
+            m_currentMissionData = new List<MissionData>();
+            m_completedMissionData = new List<MissionData>();
             m_notStartedMissions = new List<Mission>();
+            m_currentMissions = new List<Mission>();
+            m_completedMissions = new List<Mission>();
+        }
+
+        public List<Mission> GetNotStartedMissions()
+        {
+            return m_notStartedMissions;
+        }
+
+        public List<Mission> GetCurrentMissions()
+        {
+            return m_currentMissions;
+        }
+
+        public List<Mission> GetCompletedMissions()
+        {
+            return m_completedMissions;
         }
 
         public void AddMission(Mission mission)
@@ -30,21 +47,7 @@ namespace StarSalvager
             if (m_notStartedMissions.Find(m => m.m_missionName == mission.m_missionName) != null)
             {
                 m_notStartedMissions.RemoveAll(m => m.m_missionName == mission.m_missionName);
-                switch (mission)
-                {
-                    case ResourceCollectedMission resourceCollectedMission:
-                        m_resourceCollectedMissions.Add(resourceCollectedMission);
-                        break;
-                    case EnemyKilledMission enemyKilledMission:
-                        m_enemyKilledMissions.Add(enemyKilledMission);
-                        break;
-                    case ComboBlocksMission comboBlocksMission:
-                        m_comboBlocksMissions.Add(comboBlocksMission);
-                        break;
-                    case LevelProgressMission levelProgressMission:
-                        m_levelProgressMissions.Add(levelProgressMission);
-                        break;
-                }
+                m_currentMissions.Add(mission);
             }
         }
 
@@ -53,21 +56,40 @@ namespace StarSalvager
             if (m_notStartedMissions.Find(m => m.m_missionName == mission.m_missionName) != null)
             {
                 m_notStartedMissions.RemoveAll(m => m.m_missionName == mission.m_missionName);
-                switch (mission)
-                {
-                    case ResourceCollectedMission resourceCollectedMission:
-                        m_resourceCollectedMissions.Insert(atIndex, resourceCollectedMission);
-                        break;
-                    case EnemyKilledMission enemyKilledMission:
-                        m_enemyKilledMissions.Insert(atIndex, enemyKilledMission);
-                        break;
-                    case ComboBlocksMission comboBlocksMission:
-                        m_comboBlocksMissions.Insert(atIndex, comboBlocksMission);
-                        break;
-                    case LevelProgressMission levelProgressMission:
-                        m_levelProgressMissions.Insert(atIndex, levelProgressMission);
-                        break;
-                }
+                m_currentMissions.Insert(atIndex, mission);
+            }
+        }
+
+        public void CompleteMission(Mission mission)
+        {
+            m_completedMissions.Add(mission);
+        }
+
+        public void LoadMissionData()
+        {
+            m_notStartedMissions = m_notStartedMissionData.ImportMissionDatas();
+            m_currentMissions = m_currentMissionData.ImportMissionDatas();
+            m_completedMissions = m_completedMissionData.ImportMissionDatas();
+        }
+
+        public void SaveMissionData()
+        {
+            m_notStartedMissionData.Clear();
+            foreach(Mission mission in m_notStartedMissions)
+            {
+                m_notStartedMissionData.Add(mission.ToMissionData());
+            }
+
+            m_currentMissionData.Clear();
+            foreach (Mission mission in m_currentMissions)
+            {
+                m_currentMissionData.Add(mission.ToMissionData());
+            }
+
+            m_completedMissionData.Clear();
+            foreach (Mission mission in m_completedMissions)
+            {
+                m_completedMissionData.Add(mission.ToMissionData());
             }
         }
     }

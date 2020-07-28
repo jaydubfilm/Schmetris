@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using StarSalvager.Utilities.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using StarSalvager.Missions;
 
 namespace StarSalvager
 {
@@ -242,13 +243,13 @@ namespace StarSalvager
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
                 PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector, Globals.CurrentWave + 1);
+                MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
                 m_endWaveState = true;
                 Globals.CurrentWave++;
                 m_levelTimer += m_waveTimer;
                 m_waveTimer = 0;
                 GameUi.SetCurrentWaveText("Complete");
                 EnemyManager.SetEnemiesInert(true);
-                MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector, Globals.CurrentWave);
             }
             else
             {

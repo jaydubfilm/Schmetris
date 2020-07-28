@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using StarSalvager.Utilities.JsonDataTypes;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StarSalvager
+namespace StarSalvager.Missions
 {
     public class LevelCompleteMissionUnlockCheck : MissionUnlockCheck
     {
@@ -27,6 +28,17 @@ namespace StarSalvager
             }
 
             return false;
+        }
+
+        public override MissionUnlockCheckData ToMissionUnlockParameterData()
+        {
+            return new MissionUnlockCheckData
+            {
+                ClassType = GetType().Name,
+                IsComplete = this.IsComplete,
+                SectorNumber = m_sectorNumber,
+                WaveNumber = m_waveNumber
+            };
         }
     }
 }

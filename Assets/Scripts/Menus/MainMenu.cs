@@ -11,6 +11,7 @@ using StarSalvager.Cameras.Data;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.UI;
 using System.IO;
+using StarSalvager.Missions;
 
 namespace StarSalvager
 {

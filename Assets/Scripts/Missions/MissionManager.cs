@@ -1,12 +1,9 @@
 ﻿using Newtonsoft.Json;
-using StarSalvager.AI;
 using StarSalvager.Factories;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-namespace StarSalvager
+namespace StarSalvager.Missions
 {
     public static class MissionManager
     {
@@ -31,13 +28,14 @@ namespace StarSalvager
                         m_missionsMasterData = new MissionsMasterData();
                         foreach (var mission in FactoryManager.Instance.MissionRemoteData.GenerateMissionData())
                         {
-                            m_missionsMasterData.AddMission(mission);
+                            m_missionsMasterData.m_missionsMasterData.Add(mission.ToMissionData());
                         }
                     }
                     else
                     {
                         m_missionsMasterData = ImportMissionsMasterRemoteData();
                     }
+                    m_missionsMasterData.LoadMissionData();
                 }
 
                 return m_missionsMasterData;
@@ -55,15 +53,16 @@ namespace StarSalvager
                     if (fromScriptable)
                     {
                         m_missionsCurrentData = new MissionsCurrentData();
-                        foreach (Mission mission in MissionsMasterData.m_missionsTotalList)
+                        foreach (Mission mission in MissionsMasterData.GetMasterMissions())
                         {
-                            m_missionsCurrentData.m_notStartedMissions.Add(mission);
+                            m_missionsCurrentData.m_notStartedMissionData.Add(mission.ToMissionData());
                         }
                     }
                     else
                     {
                         m_missionsCurrentData = ImportMissionsCurrentRemoteData();
                     }
+                    m_missionsCurrentData.LoadMissionData();
                 }
 
                 return m_missionsCurrentData;
@@ -78,7 +77,7 @@ namespace StarSalvager
 
         public static void AddMissionCurrent(string missionName)
         {
-            MissionsCurrentData.AddMission(MissionsMasterData.m_missionsTotalList.Find(m => m.m_missionName == missionName));
+            MissionsCurrentData.AddMission(MissionsMasterData.GetMasterMissions().Find(m => m.m_missionName == missionName));
         }
 
         /*public static void ProcessMissionData<T>() where T : Mission
@@ -90,17 +89,19 @@ namespace StarSalvager
         public static void ProcessResourceCollectedMissionData(BIT_TYPE resourceType, int amount)
         {
             //Debug.Log("Resource mission event");
-            for (int i = MissionsCurrentData.m_resourceCollectedMissions.Count - 1; i >= 0; i--)
+            for (int i = MissionsCurrentData.GetCurrentMissions().Count - 1; i >= 0; i--)
             {
-                ResourceCollectedMission mission = MissionsCurrentData.m_resourceCollectedMissions[i];
-                mission.ProcessMissionData(resourceType, amount);
-                if (mission.MissionComplete())
+                if (MissionsCurrentData.GetCurrentMissions()[i] is ResourceCollectedMission resourceCollectedMission)
                 {
-                    Debug.Log("Mission " + mission.m_missionName + " Complete!");
-                    MissionsCurrentData.m_resourceCollectedMissions.Remove(mission);
-                    mission.MissionStatus = MISSION_STATUS.COMPLETED;
-                    MissionsCurrentData.m_completedMissions.Add(mission);
-                    ProcessMissionComplete(mission.m_missionName);
+                    resourceCollectedMission.ProcessMissionData(resourceType, amount);
+                    if (resourceCollectedMission.MissionComplete())
+                    {
+                        Debug.Log("Mission " + resourceCollectedMission.m_missionName + " Complete!");
+                        MissionsCurrentData.GetCurrentMissions().Remove(resourceCollectedMission);
+                        resourceCollectedMission.MissionStatus = MISSION_STATUS.COMPLETED;
+                        MissionsCurrentData.CompleteMission(resourceCollectedMission);
+                        ProcessMissionComplete(resourceCollectedMission.m_missionName);
+                    }
                 }
             }
         }
@@ -108,17 +109,19 @@ namespace StarSalvager
         public static void ProcessEnemyKilledMissionData(string enemyType, int amount)
         {
             //Debug.Log("Enemy killed mission event");
-            for (int i = MissionsCurrentData.m_enemyKilledMissions.Count - 1; i >= 0; i--)
+            for (int i = MissionsCurrentData.GetCurrentMissions().Count - 1; i >= 0; i--)
             {
-                EnemyKilledMission mission = MissionsCurrentData.m_enemyKilledMissions[i];
-                mission.ProcessMissionData(enemyType, amount);
-                if (mission.MissionComplete())
+                if (MissionsCurrentData.GetCurrentMissions()[i] is EnemyKilledMission enemyKilledMission)
                 {
-                    Debug.Log("Mission " + mission.m_missionName + " Complete!");
-                    mission.MissionStatus = MISSION_STATUS.COMPLETED;
-                    MissionsCurrentData.m_completedMissions.Add(mission);
-                    MissionsCurrentData.m_enemyKilledMissions.RemoveAt(i);
-                    ProcessMissionComplete(mission.m_missionName);
+                    enemyKilledMission.ProcessMissionData(enemyType, amount);
+                    if (enemyKilledMission.MissionComplete())
+                    {
+                        Debug.Log("Mission " + enemyKilledMission.m_missionName + " Complete!");
+                        enemyKilledMission.MissionStatus = MISSION_STATUS.COMPLETED;
+                        MissionsCurrentData.CompleteMission(enemyKilledMission);
+                        MissionsCurrentData.GetCurrentMissions().RemoveAt(i);
+                        ProcessMissionComplete(enemyKilledMission.m_missionName);
+                    }
                 }
             }
         }
@@ -126,17 +129,19 @@ namespace StarSalvager
         public static void ProcessComboBlocksMissionData(BIT_TYPE comboType, int amount)
         {
             //Debug.Log("Combo Blocks mission event");
-            for (int i = MissionsCurrentData.m_comboBlocksMissions.Count - 1; i >= 0; i--)
+            for (int i = MissionsCurrentData.GetCurrentMissions().Count - 1; i >= 0; i--)
             {
-                ComboBlocksMission mission = MissionsCurrentData.m_comboBlocksMissions[i];
-                mission.ProcessMissionData(comboType, amount);
-                if (mission.MissionComplete())
+                if (MissionsCurrentData.GetCurrentMissions()[i] is ComboBlocksMission comboBlocksMission)
                 {
-                    Debug.Log("Mission " + mission.m_missionName + " Complete!");
-                    mission.MissionStatus = MISSION_STATUS.COMPLETED;
-                    MissionsCurrentData.m_completedMissions.Add(mission);
-                    MissionsCurrentData.m_comboBlocksMissions.RemoveAt(i);
-                    ProcessMissionComplete(mission.m_missionName);
+                    comboBlocksMission.ProcessMissionData(comboType, amount);
+                    if (comboBlocksMission.MissionComplete())
+                    {
+                        Debug.Log("Mission " + comboBlocksMission.m_missionName + " Complete!");
+                        comboBlocksMission.MissionStatus = MISSION_STATUS.COMPLETED;
+                        MissionsCurrentData.CompleteMission(comboBlocksMission);
+                        MissionsCurrentData.GetCurrentMissions().RemoveAt(i);
+                        ProcessMissionComplete(comboBlocksMission.m_missionName);
+                    }
                 }
             }
         }
@@ -144,17 +149,19 @@ namespace StarSalvager
         public static void ProcessLevelProgressMissionData(int sectorNumber, int waveNumber)
         {
             //Debug.Log("Level Progress mission event");
-            for (int i = MissionsCurrentData.m_levelProgressMissions.Count - 1; i >= 0; i--)
+            for (int i = MissionsCurrentData.GetCurrentMissions().Count - 1; i >= 0; i--)
             {
-                LevelProgressMission mission = MissionsCurrentData.m_levelProgressMissions[i];
-                mission.ProcessMissionData(sectorNumber, waveNumber);
-                if (mission.MissionComplete())
+                if (MissionsCurrentData.GetCurrentMissions()[i] is LevelProgressMission levelProgressMission)
                 {
-                    Debug.Log("Mission " + mission.m_missionName + " Complete!");
-                    mission.MissionStatus = MISSION_STATUS.COMPLETED;
-                    MissionsCurrentData.m_completedMissions.Add(mission);
-                    MissionsCurrentData.m_levelProgressMissions.RemoveAt(i);
-                    ProcessMissionComplete(mission.m_missionName);
+                    levelProgressMission.ProcessMissionData(sectorNumber, waveNumber);
+                    if (levelProgressMission.MissionComplete())
+                    {
+                        Debug.Log("Mission " + levelProgressMission.m_missionName + " Complete!");
+                        levelProgressMission.MissionStatus = MISSION_STATUS.COMPLETED;
+                        MissionsCurrentData.CompleteMission(levelProgressMission);
+                        MissionsCurrentData.GetCurrentMissions().RemoveAt(i);
+                        ProcessMissionComplete(levelProgressMission.m_missionName);
+                    }
                 }
             }
             ProcessWaveComplete(sectorNumber, waveNumber);
@@ -176,9 +183,9 @@ namespace StarSalvager
 
         private static void CheckUnlocks()
         {
-            for (int i = MissionsCurrentData.m_notStartedMissions.Count - 1; i >= 0; i--)
+            for (int i = MissionsCurrentData.GetNotStartedMissions().Count - 1; i >= 0; i--)
             {
-                Mission mission = MissionsCurrentData.m_notStartedMissions[i];
+                Mission mission = MissionsCurrentData.GetNotStartedMissions()[i];
 
                 if (mission.CheckUnlockParameters())
                 {
@@ -189,6 +196,8 @@ namespace StarSalvager
 
         public static string ExportMissionsCurrentRemoteData(MissionsCurrentData editorData)
         {
+            editorData.SaveMissionData();
+            
             if (!Directory.Exists(REMOTEDATA_PATH))
                 System.IO.Directory.CreateDirectory(REMOTEDATA_PATH);
             
@@ -200,6 +209,8 @@ namespace StarSalvager
 
         public static string ExportMissionsMasterRemoteData(MissionsMasterData editorData)
         {
+            editorData.SaveMissionData();
+
             if (!Directory.Exists(REMOTEDATA_PATH))
                 System.IO.Directory.CreateDirectory(REMOTEDATA_PATH);
 
@@ -216,7 +227,14 @@ namespace StarSalvager
                 System.IO.Directory.CreateDirectory(REMOTEDATA_PATH);
 
             if (!File.Exists(currentDataPath))
-                return new MissionsCurrentData();
+            {
+                MissionsCurrentData currentData = new MissionsCurrentData();
+                foreach (Mission mission in MissionsMasterData.GetMasterMissions())
+                {
+                    currentData.m_notStartedMissionData.Add(mission.ToMissionData());
+                }
+                return currentData;
+            }
 
             var loaded = JsonConvert.DeserializeObject<MissionsCurrentData>(File.ReadAllText(currentDataPath));
 
@@ -229,7 +247,14 @@ namespace StarSalvager
                 System.IO.Directory.CreateDirectory(REMOTEDATA_PATH);
 
             if (!File.Exists(masterDataPath))
-                return new MissionsMasterData();
+            {
+                MissionsMasterData masterData = new MissionsMasterData();
+                foreach (var mission in FactoryManager.Instance.MissionRemoteData.GenerateMissionData())
+                {
+                    masterData.m_missionsMasterData.Add(mission.ToMissionData());
+                }
+                return masterData;
+            }
 
             var loaded = JsonConvert.DeserializeObject<MissionsMasterData>(File.ReadAllText(masterDataPath));
 

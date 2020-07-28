@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using StarSalvager.Utilities.JsonDataTypes;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StarSalvager
+namespace StarSalvager.Missions
 {
     [System.Serializable]
     public abstract class Mission
@@ -15,43 +16,23 @@ namespace StarSalvager
 
         public List<MissionUnlockCheck> missionUnlockChecks;
 
-        public Mission(string missionName, int amountNeeded, List<Dictionary<string, object>> missionUnlockData)
+        public Mission(string missionName, int amountNeeded, List<MissionUnlockCheck> missionUnlockData)
         {
             m_currentAmount = 0;
             m_missionName = missionName;
             m_amountNeeded = amountNeeded;
-            missionUnlockChecks = new List<MissionUnlockCheck>();
-
-            if (missionUnlockData == null)
-            {
-                Debug.Log(m_missionName);
-                return;
-            }
-
-            foreach (var data in missionUnlockData)
-            {
-                MissionUnlockCheck newCheck;
-                switch (data["MissionUnlockType"])
-                {
-                    case "Level Complete":
-                        newCheck = new LevelCompleteMissionUnlockCheck((int)data["SectorNumber"], (int)data["WaveNumber"]);
-                        break;
-                    case "Mission Complete":
-                        newCheck = new MissionCompleteMissionUnlockCheck((string)data["MissionName"]);
-                        break;
-                    default:
-                        Debug.Log("Missing mission unlock check!");
-                        newCheck = new MissionAutoUnlockCheck();
-                        break;
-                }
-                missionUnlockChecks.Add(newCheck);
-
-            }
+            missionUnlockChecks = missionUnlockData;
         }
 
         public bool CheckUnlockParameters()
         {
             bool needAll = true;
+
+            if (missionUnlockChecks == null)
+            {
+                Debug.Log(m_missionName);
+                return true;
+            }
             foreach (var unlockCheck in missionUnlockChecks)
             {
                 if (unlockCheck.CheckUnlockParameters())
@@ -83,5 +64,7 @@ namespace StarSalvager
         }
 
         public abstract bool MissionComplete();
+
+        public abstract MissionData ToMissionData();
     }
 }
