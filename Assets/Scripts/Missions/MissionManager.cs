@@ -97,7 +97,6 @@ namespace StarSalvager.Missions
                     if (resourceCollectedMission.MissionComplete())
                     {
                         Debug.Log("Mission " + resourceCollectedMission.m_missionName + " Complete!");
-                        MissionsCurrentData.CurrentMissions.Remove(resourceCollectedMission);
                         resourceCollectedMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(resourceCollectedMission);
                         MissionsCurrentData.CurrentMissions.RemoveAt(i);
