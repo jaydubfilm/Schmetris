@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using StarSalvager.Utilities.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using StarSalvager.Missions;
 
 namespace StarSalvager
 {
@@ -163,6 +164,8 @@ namespace StarSalvager
                 m_levelManagerUI.ToggleBetweenWavesUIActive(true);
                 ObstacleManager.MoveToNewWave();
                 EnemyManager.MoveToNewWave();
+                EnemyManager.SetEnemiesInert(false);
+                EnemyManager.RecycleAllEnemies();
                 m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
             }
 
@@ -180,6 +183,7 @@ namespace StarSalvager
             }
             else
             {
+                print("Load from data");
                 BotGameObject.InitBot(PlayerPersistentData.PlayerData.GetCurrentBlockData().ImportBlockDatas(false));
             }
             Bot.OnBotDied += (deadBot, deathMethod) =>
@@ -239,12 +243,13 @@ namespace StarSalvager
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
                 PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector, Globals.CurrentWave + 1);
+                MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
                 m_endWaveState = true;
                 Globals.CurrentWave++;
                 m_levelTimer += m_waveTimer;
                 m_waveTimer = 0;
                 GameUi.SetCurrentWaveText("Complete");
-                MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector, Globals.CurrentWave);
+                EnemyManager.SetEnemiesInert(true);
             }
             else
             {
@@ -252,6 +257,7 @@ namespace StarSalvager
                 ProcessLevelCompleteAnalytics();
                 ProcessScrapyardUsageBeginAnalytics();
                 Globals.CurrentWave = 0;
+                Globals.SectorComplete = true;
                 SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             }
         }

@@ -16,6 +16,7 @@ using StarSalvager.Utilities.Puzzle;
 using UnityEngine;
 using GameUI = StarSalvager.UI.GameUI;
 using StarSalvager.Utilities;
+using StarSalvager.Missions;
 
 namespace StarSalvager
 {

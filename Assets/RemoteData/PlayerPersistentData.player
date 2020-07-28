@@ -1,1 +1,1 @@
-{"maxSectorProgression":{"0":2}}
+{"resources":{"RED":1250,"BLUE":1250,"YELLOW":1250,"GREEN":1250,"GREY":1250},"currentBlockData":[{"ClassType":"Part","Coordinate":{"x":0,"y":0},"Type":0,"Level":0},{"ClassType":"Bit","Coordinate":{"x":1,"y":0},"Type":3,"Level":1},{"ClassType":"Bit","Coordinate":{"x":2,"y":-1},"Type":5,"Level":1},{"ClassType":"Bit","Coordinate":{"x":2,"y":0},"Type":3,"Level":1},{"ClassType":"Bit","Coordinate":{"x":3,"y":-1},"Type":3,"Level":1},{"ClassType":"Bit","Coordinate":{"x":3,"y":-2},"Type":3,"Level":0}],"maxSectorProgression":{"0":1}}

@@ -117,7 +117,15 @@ namespace StarSalvager.UI
                 {
                     m_scrapyard.SaveBlockData();
                     m_scrapyard.ProcessScrapyardUsageEndAnalytics();
-                    SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
+                    if (Globals.SectorComplete)
+                    {
+                        Globals.SectorComplete = false;
+                        SceneLoader.ActivateScene("UniverseMapScene", "ScrapyardScene");
+                    }
+                    else
+                    {
+                        SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
+                    }
                 }
                 else
                 {

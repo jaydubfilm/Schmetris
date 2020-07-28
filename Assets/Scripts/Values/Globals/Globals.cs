@@ -13,6 +13,7 @@ namespace StarSalvager.Values
         public static int ColumnsOnScreen = Constants.initialColumnsOnScreen;
         public static int CurrentSector = 0;
         public static int CurrentWave = 0;
+        public static bool SectorComplete = false;
         public static float AsteroidFallTimer = Constants.timeForAsteroidsToFall / 2;
         public static Action<ORIENTATION> OrientationChange;
         

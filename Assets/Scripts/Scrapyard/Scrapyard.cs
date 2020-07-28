@@ -176,6 +176,7 @@ namespace StarSalvager
                 
                 m_scrapyardUI.UpdateResources(playerData.GetResources());
             }
+            UpdateFloatingMarkers();
         }
 
         //On right mouse button click, check for a bit/part at the clicked location. If one is there, sell it.
@@ -191,6 +192,21 @@ namespace StarSalvager
             {
                 scrapBot.TryRemoveAttachableAt(mouseCoordinate, true);
                 m_scrapyardUI.UpdateResources(PlayerPersistentData.PlayerData.GetResources());
+            }
+            UpdateFloatingMarkers();
+        }
+
+        private void UpdateFloatingMarkers()
+        {
+            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            {
+                foreach (var attached in scrapBot.attachedBlocks)
+                {
+                    if (!scrapBot.attachedBlocks.HasPathToCore(attached))
+                    {
+                        attached.
+                    }
+                }
             }
         }
         

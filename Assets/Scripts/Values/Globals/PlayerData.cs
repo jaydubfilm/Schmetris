@@ -13,7 +13,7 @@ namespace StarSalvager.Values
     {
         //TODO: Add an add/subtract function for ResourceAmount
         
-        private Dictionary<BIT_TYPE, int> resources = new Dictionary<BIT_TYPE, int>
+        public Dictionary<BIT_TYPE, int> resources = new Dictionary<BIT_TYPE, int>
         {
             {BIT_TYPE.RED, 1250},
             {BIT_TYPE.BLUE, 1250},
@@ -22,7 +22,7 @@ namespace StarSalvager.Values
             {BIT_TYPE.GREY, 1250},
         };
 
-        List<BlockData> currentBlockData = new List<BlockData>();
+        public List<BlockData> currentBlockData = new List<BlockData>();
 
         public Dictionary<int, int> maxSectorProgression = new Dictionary<int, int>();
 

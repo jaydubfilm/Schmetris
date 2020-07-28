@@ -1,10 +1,12 @@
 ﻿using Sirenix.OdinInspector;
 using StarSalvager.AI;
+using StarSalvager.Factories.Data;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StarSalvager.Factories.Data
+namespace StarSalvager.Missions
 {
     [System.Serializable]
     public struct MissionRemoteData
@@ -15,17 +17,8 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$MissionName")]
         public string MissionName;
 
-        [SerializeField, FoldoutGroup("$MissionName"), ValueDropdown("MissionTypes")]
-        public string MissionUnlockType;
-
-        [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionUnlockType", "Level Complete")]
-        public int SectorUnlockNumber;
-
-        [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionUnlockType", "Level Complete")]
-        public int WaveUnlockNumber;
-
-        [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionUnlockType", "Mission Complete")]
-        public string MissionUnlockName;
+        [SerializeField, FoldoutGroup("$MissionName")]
+        public List<MissionUnlockCheckScriptable> MissionUnlockParameters;
 
         [SerializeField, FoldoutGroup("$MissionName"), HideIf("MissionType", MISSION_EVENT_TYPE.LEVEL_PROGRESS)]
         public int AmountNeeded;
@@ -43,33 +36,24 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.LEVEL_PROGRESS)]
         public int WaveNumber;
 
-        public Dictionary<string, object> GetMissionUnlockData()
+        public List<IMissionUnlockCheck> GetMissionUnlockData()
         {
-            Dictionary<string, object> missionUnlockData = new Dictionary<string, object>();
+            List<IMissionUnlockCheck> missionUnlockData = new List<IMissionUnlockCheck>();
 
-            missionUnlockData.Add("MissionUnlockType", MissionUnlockType);
-
-            switch(MissionUnlockType)
+            foreach (var missionUnlockParameters in MissionUnlockParameters)
             {
-                case "Level Complete":
-                    missionUnlockData.Add("SectorNumber", SectorUnlockNumber);
-                    missionUnlockData.Add("WaveNumber", WaveUnlockNumber);
-                    break;
-                case "Mission Complete":
-                    missionUnlockData.Add("MissionName", MissionUnlockName);
-                    break;
+                switch (missionUnlockParameters.MissionUnlockType)
+                {
+                    case "Level Complete":
+                        missionUnlockData.Add(new LevelCompleteUnlockCheck(missionUnlockParameters.SectorUnlockNumber, missionUnlockParameters.WaveUnlockNumber));
+                        break;
+                    case "Mission Complete":
+                        missionUnlockData.Add(new MissionCompleteUnlockCheck(missionUnlockParameters.MissionUnlockName));
+                        break;
+                }
             }
 
             return missionUnlockData;
-        }
-
-        private static IEnumerable<string> MissionTypes()
-        {
-            List<string> missionTypes = new List<string>();
-            missionTypes.Add("Level Complete");
-            missionTypes.Add("Mission Complete");
-
-            return missionTypes;
         }
     }
 }
