@@ -198,7 +198,16 @@ namespace StarSalvager
 
         private void UpdateFloatingMarkers()
         {
-
+            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            {
+                foreach (var attached in scrapBot.attachedBlocks)
+                {
+                    if (!scrapBot.attachedBlocks.HasPathToCore(attached))
+                    {
+                        attached.
+                    }
+                }
+            }
         }
         
         //============================================================================================================//
