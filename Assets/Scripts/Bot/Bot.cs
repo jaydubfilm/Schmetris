@@ -14,12 +14,12 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Puzzle;
 using UnityEngine;
-using Enemy = StarSalvager.AI.Enemy;
 using GameUI = StarSalvager.UI.GameUI;
 using StarSalvager.Utilities;
 
 namespace StarSalvager
 {
+    [RequireComponent(typeof(BotPartsLogic))]
     public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable
     {
         public static Action<Bot, string> OnBotDied;
@@ -49,7 +49,7 @@ namespace StarSalvager
         [SerializeField, ReadOnly, Space(10f), ShowInInspector] 
         private List<IAttachable> _attachedBlocks;
         
-        private List<Part> _parts;
+        /*private List<Part> _parts;*/
 
         public List<IAttachable> BitsPendingDetach { get; private set; }
 
@@ -77,17 +77,29 @@ namespace StarSalvager
         private float targetRotation;
 
 
-        [SerializeField, BoxGroup("Magnets")]
+        /*[SerializeField, BoxGroup("Magnets")]
         private bool useMagnet = true;
         [SerializeField, BoxGroup("Magnets")]
         private MAGNET currentMagnet = MAGNET.DEFAULT;
         
         [SerializeField, BoxGroup("BurnRates")]
-        private bool useBurnRate = true;
+        private bool useBurnRate = true;*/
 
         public bool isPaused => GameTimer.IsPaused;
 
         //============================================================================================================//
+
+        private BotPartsLogic BotPartsLogic
+        {
+            get
+            {
+                if (_botPartsLogic == null)
+                    _botPartsLogic = GetComponent<BotPartsLogic>();
+                
+                return _botPartsLogic;
+            }
+        }
+        private BotPartsLogic _botPartsLogic;
 
         private CompositeCollider2D CompositeCollider2D
         {
@@ -129,6 +141,11 @@ namespace StarSalvager
 
         #region Unity Functions
 
+        private void Start()
+        {
+            RegisterPausable();
+        }
+
         private void Update()
         {
             if (isPaused)
@@ -143,12 +160,12 @@ namespace StarSalvager
                 return;
             
             //TODO Once all done testing, remove this
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.LeftShift))
             {
                 Time.timeScale = Time.timeScale == 0.1f ? 1f : 0.1f;
             }
             
-            PartsUpdateLoop();
+            BotPartsLogic.PartsUpdateLoop();
         }
 
         private void FixedUpdate()
@@ -179,7 +196,7 @@ namespace StarSalvager
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
 
-            coreHeat = 0f;
+            BotPartsLogic.coreHeat = 0f;
             
             //Add core component
             var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(
@@ -198,7 +215,7 @@ namespace StarSalvager
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
             
-            coreHeat = 0f;
+            BotPartsLogic.coreHeat = 0f;
             
             foreach (var attachable in botAttachables)
             {
@@ -841,15 +858,15 @@ namespace StarSalvager
             }
 
             //FIXME This value should not be hardcoded
-            coreHeat += 20;
-            coolTimer = coolDelay;
+            BotPartsLogic.AddCoreHeat(20f);
+            //coolTimer = coolDelay;
 
 
             if ((attachedBlocks.Count == 0 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0) && !PROTO_GodMode)
             {
                 Destroy("Core Destroyed by Asteroid");
             }
-            else if (coreHeat >= 100 && !PROTO_GodMode)
+            else if (BotPartsLogic.coreHeat >= 100 && !PROTO_GodMode)
             {
                 Destroy("Core Overheated");
             }
@@ -899,7 +916,7 @@ namespace StarSalvager
             }
 
             if (newAttachable is Part)
-                UpdatePartsList();
+                BotPartsLogic.UpdatePartsList();
             
             if(checkForCombo)
                 CheckForCombosAround(coordinate);
@@ -945,7 +962,7 @@ namespace StarSalvager
             }
 
             if (newAttachable is Part)
-                UpdatePartsList();
+                BotPartsLogic.UpdatePartsList();
             
             if(checkForCombo)
                 CheckForCombosAround(coordinate);
@@ -1159,16 +1176,52 @@ namespace StarSalvager
             var bits = detachingBits.OfType<Bit>().ToList();
             var others = detachingBits.Where(x => !(x is Bit)).ToList();
 
+            //Function should make a shape out of all attached bits, any floaters would remain individual
+            while (bits.Count > 0)
+            {
+                if (TryGetShapeBits(bits[0], bits, out var shapeBits))
+                {
+                    foreach (var bit in shapeBits)
+                    {
+                        bits.Remove(bit);
+                    }
+                    
+                    var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(shapeBits);
+                    if (delayedCollider)
+                    {
+                        shape.SetColliderActive(false);
+                        this.DelayedCall(1f, () =>
+                        {
+                            shape.SetColor(Color.white);
+                            shape.SetColliderActive(true);
+                        });
+                    }
+                }
+                else
+                {
+                    var bit = bits[0];
+                    
+                    bit.SetAttached(false);
+                    bit.SetColor(Color.white);
+                    bit.SetColliderActive(false);
+                    bit.transform.parent = null;
+                    bit.transform.rotation = Quaternion.identity;
+                    
+                    bits.RemoveAt(0);
+                }
+            }
+            
+
             //FIXME THis seems to be troublesome. Bits that are not attached, still are part of the same shape. 
             //var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bits);
-            foreach (var bit in bits)
-            {
-                bit.SetAttached(false);
-                bit.SetColor(Color.white);
-                bit.SetColliderActive(false);
-                bit.transform.parent = null;
-                bit.transform.rotation = Quaternion.identity;
-            }
+            //foreach (var bit in bits)
+            //{
+            //    bit.SetAttached(false);
+            //    bit.SetColor(Color.white);
+            //    bit.SetColliderActive(false);
+            //    bit.transform.parent = null;
+            //    bit.transform.rotation = Quaternion.identity;
+            //}
 
             
             foreach (var iAttachable in others)
@@ -1192,6 +1245,29 @@ namespace StarSalvager
             
             CompositeCollider2D.GenerateGeometry();
 
+        }
+
+        /// <summary>
+        /// Returns a bool representing whether or not the originBit is attached to a group that can be used to create
+        /// a shape. If false, the out shapeBits will return null.
+        /// </summary>
+        /// <param name="originBit"></param>
+        /// <param name="bits"></param>
+        /// <param name="shapeBits"></param>
+        /// <returns></returns>
+        private bool TryGetShapeBits(Bit originBit, List<Bit> bits, out List<Bit> shapeBits)
+        {
+            shapeBits = new List<Bit>();
+
+            bits.GetAllAttachedDetachables(originBit, null, ref shapeBits);
+
+            if (shapeBits.Count > 1)
+            {
+                return true;
+            }
+
+            shapeBits = null;
+            return false;
         }
         
         private void DetachBit(IAttachable attachable)
@@ -1253,7 +1329,7 @@ namespace StarSalvager
         
         //============================================================================================================//
 
-        //FIXME It may be beneficial to move this to move this to a separate script
+        /*//FIXME It may be beneficial to move this to move this to a separate script
         #region Parts
         
         [SerializeField, BoxGroup("Bot Part Data"), ReadOnly]
@@ -1470,7 +1546,7 @@ namespace StarSalvager
                     .GetFurthestAttachable(Vector2Int.zero);
         }
         
-        #endregion //Parts
+        #endregion //Parts*/
         
         //============================================================================================================//
         
@@ -2095,9 +2171,11 @@ namespace StarSalvager
         /// </summary>
         public void CheckForMagnetOverage()
         {
-            if (!useMagnet)
+            if (!BotPartsLogic.useMagnet)
                 return;
-            
+
+
+            var magnetCount = BotPartsLogic.magnetCount;
             var bits = attachedBlocks.OfType<Bit>().ToList();
             
             GameUi.SetCarryCapacity(bits.Count / (float)magnetCount);
@@ -2116,7 +2194,7 @@ namespace StarSalvager
             //float time;
             Action onDetach;
             
-            switch (currentMagnet)
+            switch (BotPartsLogic.currentMagnet)
             {
                 //----------------------------------------------------------------------------------------------------//
                 case MAGNET.DEFAULT:
@@ -2176,6 +2254,8 @@ namespace StarSalvager
 
         private void DefaultMagnetCheck(List<Bit> bits, out List<Bit> bitsToRemove, in int toRemoveCount)
         {
+            var magnetCount = BotPartsLogic.magnetCount;
+            
             //Gets the last added overage to remove
             bitsToRemove = bits.GetRange(magnetCount, toRemoveCount);
             
@@ -2199,6 +2279,8 @@ namespace StarSalvager
 
         private void BumpMagnetCheck(List<Bit> bits, out List<Bit> bitsToRemove, in int toRemoveCount)
         {
+            var magnetCount = BotPartsLogic.magnetCount;
+            
             //Gets the last added overage to remove
             bitsToRemove = bits.GetRange(magnetCount, toRemoveCount);
             
@@ -2644,6 +2726,11 @@ namespace StarSalvager
 
         //============================================================================================================//
 
+        public void RegisterPausable()
+        {
+            GameTimer.AddPausable(this);
+        }
+
         public void OnResume()
         {
 
@@ -2681,7 +2768,8 @@ namespace StarSalvager
             
             attachedBlocks.Clear();
             BitsPendingDetach?.Clear();
-            _parts.Clear();
+            BotPartsLogic.ClearList();
+            //_parts.Clear();
         }
         
         #endregion //Custom Recycle

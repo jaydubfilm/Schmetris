@@ -6,15 +6,24 @@ using UnityEngine;
 
 namespace StarSalvager.Utilities.Backgrounds
 {
-    public class BackgroundController : MonoBehaviour
+    public class BackgroundController : MonoBehaviour, IPausable
     {
+        public bool isPaused => GameTimer.IsPaused;
+        
         //[SerializeField, Required, DisableInPlayMode]
         private Transform cameraTransform;
         
         [SerializeField, ReadOnly]
         private IBackground[] backgrounds;
+        
+
 
         //================================================================================================================//
+
+        private void Start()
+        {
+            RegisterPausable();
+        }
 
         private void OnEnable()
         {
@@ -36,6 +45,9 @@ namespace StarSalvager.Utilities.Backgrounds
                 FindCamera();
                 InitBackgrounds();
             }
+
+            if (isPaused)
+                return;
             
             foreach (var background in backgrounds)
             {
@@ -99,6 +111,19 @@ namespace StarSalvager.Utilities.Backgrounds
         
         #endif
 
+
+        public void RegisterPausable()
+        {
+            GameTimer.AddPausable(this);
+        }
+
+        public void OnResume()
+        {
+        }
+
+        public void OnPause()
+        {
+        }
     }
 
 }

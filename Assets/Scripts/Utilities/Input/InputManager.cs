@@ -14,12 +14,12 @@ namespace StarSalvager.Utilities.Inputs
     {
         private Bot[] _bots;
         private ScrapyardBot[] _scrapyardBots;
-        private Scrapyard _scrapyard;
-        private BotShapeEditor _botShapeEditor;
+        /*private Scrapyard _scrapyard;
+        private BotShapeEditor _botShapeEditor;*/
 
         public bool isPaused => GameTimer.IsPaused;
 
-        private ObstacleManager obstacleManager
+        /*private ObstacleManager obstacleManager
         {
             get
             {
@@ -52,7 +52,7 @@ namespace StarSalvager.Utilities.Inputs
                 return _cameraController;
             }
         }
-        private CameraController _cameraController;
+        private CameraController _cameraController;*/
         
         
         [SerializeField, BoxGroup("DAS"), DisableInPlayMode]
@@ -73,7 +73,7 @@ namespace StarSalvager.Utilities.Inputs
             Globals.DASTime = DASTime;
 
             Globals.OrientationChange += SetOrientation;
-            GameTimer.AddPausable(this);
+            RegisterPausable();
         }
 
         private void Update()
@@ -85,8 +85,8 @@ namespace StarSalvager.Utilities.Inputs
         {
             _bots = FindObjectsOfType<Bot>();
             _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
-            _scrapyard = FindObjectOfType<Scrapyard>();
-            _botShapeEditor = FindObjectOfType<BotShapeEditor>();
+            /*_scrapyard = FindObjectOfType<Scrapyard>();
+            _botShapeEditor = FindObjectOfType<BotShapeEditor>();*/
         } 
 
         private void OnDestroy()
@@ -113,6 +113,8 @@ namespace StarSalvager.Utilities.Inputs
 
         public void InitInput()
         {
+            //--------------------------------------------------------------------------------------------------------//
+            
             if (_bots == null || _bots.Length == 0)
                 _bots = FindObjectsOfType<Bot>();
 
@@ -120,6 +122,11 @@ namespace StarSalvager.Utilities.Inputs
                 _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
 
             DeInitInput();
+            
+            //--------------------------------------------------------------------------------------------------------//
+            
+            Input.Actions.Default.Pause.Enable();
+            Input.Actions.Default.Pause.performed += Pause;
             
             switch (Globals.Orientation)
             {
@@ -152,11 +159,15 @@ namespace StarSalvager.Utilities.Inputs
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
+            
+            //--------------------------------------------------------------------------------------------------------//
         }
 
         public void DeInitInput()
         {
+            Input.Actions.Default.Pause.Disable();
+            Input.Actions.Default.Pause.performed -= Pause;
+            
             Input.Actions.Default.SideMovement.Disable();
             Input.Actions.Default.SideMovement.performed -= SideMovement;
 
@@ -396,7 +407,18 @@ namespace StarSalvager.Utilities.Inputs
             }*/
         }
 
+        private void Pause(InputAction.CallbackContext ctx)
+        {
+            if(ctx.ReadValue<float>() == 1f)
+                GameTimer.SetPaused(!isPaused);
+        }
+
         //============================================================================================================//
+
+        public void RegisterPausable()
+        {
+            GameTimer.AddPausable(this);
+        }
 
         public void OnResume()
         {

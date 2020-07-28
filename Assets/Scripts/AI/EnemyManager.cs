@@ -38,7 +38,7 @@ namespace StarSalvager
             m_enemies = new List<Enemy>();
             m_enemiesToSpawn = new List<string>();
             m_timesToSpawn = new List<float>();
-            GameTimer.AddPausable(this);
+            RegisterPausable();
 
             RegisterMoveOnInput();
         }
@@ -283,6 +283,11 @@ namespace StarSalvager
         }
 
         //============================================================================================================//
+
+        public void RegisterPausable()
+        {
+            GameTimer.AddPausable(this);
+        }
 
         public void OnResume()
         {

@@ -54,6 +54,7 @@ MonoBehaviour:
   Material: {fileID: 2100000, guid: 2fb5d7c00ab65414ebc761414021c834, type: 2}
   Texture: {fileID: 2800000, guid: cce8f8a07d5e221419ec2c98a2ddd56a, type: 3}
   color: {r: 0.28235295, g: 0.7019608, b: 0.6745098, a: 0.2}
+  PROTO_showDelta: 0
 --- !u!33 &298433183
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -155,6 +156,7 @@ MonoBehaviour:
   Material: {fileID: 2100000, guid: 2fb5d7c00ab65414ebc761414021c834, type: 2}
   Texture: {fileID: 2800000, guid: 02160007060496849b6062576bf6dd7c, type: 3}
   color: {r: 1, g: 1, b: 1, a: 0.29803923}
+  PROTO_showDelta: 0
 --- !u!33 &5305869439551479697
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -547,6 +549,11 @@ PrefabInstance:
         type: 3}
       propertyPath: color.b
       value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 7706641209168324296, guid: 34276a37a5695e34cbbf45dc1b1292a2,
+        type: 3}
+      propertyPath: PROTO_showDelta
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7706641209168324299, guid: 34276a37a5695e34cbbf45dc1b1292a2,
         type: 3}

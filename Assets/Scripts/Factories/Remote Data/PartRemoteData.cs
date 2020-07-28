@@ -12,6 +12,9 @@ namespace StarSalvager.Factories.Data
         
         [FoldoutGroup("$name")]
         public PART_TYPE partType;
+        
+        [FoldoutGroup("$name")]
+        public int priority;
 
         [FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true)]
         public float[] health;

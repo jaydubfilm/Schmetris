@@ -39,7 +39,7 @@ namespace StarSalvager.Utilities.Backgrounds
         private Texture Texture;
         [SerializeField, DisableInPlayMode, BoxGroup("Starting Values/Materials")]
         private Color color = Color.white;
-
+        
         //============================================================================================================//
         
         private Material m_material;
@@ -95,8 +95,7 @@ namespace StarSalvager.Utilities.Backgrounds
             //}
 
             var horizontalMove = GameTimer.IsPaused ? Vector2.zero : Vector2.right * (horizontalMoveSpeed * Globals.MovingDirection.GetHorizontalDirectionFloat());
-            
-            
+
             SetOffset((moveSpeed + horizontalMove) * Time.deltaTime);
         }
         
@@ -109,6 +108,7 @@ namespace StarSalvager.Utilities.Backgrounds
             var offset = m_material.mainTextureOffset;
 
             offset += offsetDelta;
+            
 
             if (Mathf.Abs(_moveAmount.x) >= 1f)
             {
@@ -118,7 +118,7 @@ namespace StarSalvager.Utilities.Backgrounds
                     _moveAmount.x -= 1;
                 
                 //_moveAmount.x = 0f;
-                offset.x = startOffset.x;
+                offset.x = startOffset.x + _moveAmount.x;
             }
 
             if (Mathf.Abs(_moveAmount.y) >= 1f)
@@ -129,7 +129,7 @@ namespace StarSalvager.Utilities.Backgrounds
                     _moveAmount.y -= 1;
                 
                 //_moveAmount.y = 0f;
-                offset.y = startOffset.y;
+                offset.y = startOffset.y + _moveAmount.y;
             }
 
             m_material.mainTextureOffset = offset;
