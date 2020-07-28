@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace StarSalvager.Utilities.Animations
 {
-    [CreateAssetMenu(fileName = "Animation Controller", menuName = "Star Salvager/Scriptable Objects/Animation Controller")]
+    [CreateAssetMenu(fileName = "Animation Controller", menuName = "Star Salvager/Animations/Animation Controller")]
     public class AnimationControllerScriptableObject : ScriptableObject
     {
         [SerializeField]

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace StarSalvager.Utilities.Animations
 {
-    [CreateAssetMenu(fileName = "Animation", menuName = "Star Salvager/Scriptable Objects/Simple Animation")]
+    [CreateAssetMenu(fileName = "Animation", menuName = "Star Salvager/Animations/Simple Animation")]
     public class AnimationScriptableObject : ScriptableObject
     {
         //============================================================================================================//
