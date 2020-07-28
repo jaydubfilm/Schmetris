@@ -29,6 +29,9 @@ namespace StarSalvager
 
         private List<GameObject> _floatingPartWarnings;
         private List<GameObject> _availablePointMarkers;
+
+        private Stack<ScrapyardEditData> _toUndoStack;
+        private Stack<ScrapyardEditData> _toRedoStack;
         
         //============================================================================================================//
 
@@ -38,6 +41,8 @@ namespace StarSalvager
             _scrapyardBots = new List<ScrapyardBot>();
             _floatingPartWarnings = new List<GameObject>();
             _availablePointMarkers = new List<GameObject>();
+            _toUndoStack = new Stack<ScrapyardEditData>();
+            _toRedoStack = new Stack<ScrapyardEditData>();
             IsUpgrading = false;
             //InputManager.Instance.InitInput();
             InitInput();
@@ -155,6 +160,13 @@ namespace StarSalvager
 
                             playerData.SubtractResources(partAtCoordinates.Type, partAtCoordinates.level + 1);
                             m_scrapyardUI.UpdateResources(playerData.GetResources());
+                            _toUndoStack.Push(new ScrapyardEditData
+                            {
+                                EventType = SCRAPYARD_ACTION.UPGRADE,
+                                Coordinate = mouseCoordinate,
+                                PartType = partAtCoordinates.Type
+                            });
+                            _toRedoStack.Clear();
                             FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level + 1, ref partAtCoordinates);
                         }
                         return;
@@ -185,7 +197,15 @@ namespace StarSalvager
                 var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)selectedPartType, 0);
                 playerData.SubtractResources((PART_TYPE)selectedPartType, 0);
                 scrapBot.AttachNewBit(mouseCoordinate, attachable);
-                
+                _toUndoStack.Push(new ScrapyardEditData
+                {
+                    EventType = SCRAPYARD_ACTION.PURCHASE,
+                    Coordinate = mouseCoordinate,
+                    PartType = (PART_TYPE)selectedPartType
+                });
+                _toRedoStack.Clear();
+
+
                 m_scrapyardUI.UpdateResources(playerData.GetResources());
             }
             UpdateFloatingMarkers();
@@ -210,7 +230,6 @@ namespace StarSalvager
 
         private void UpdateFloatingMarkers()
         {
-            print("Test");
             foreach (var availablePoint in _availablePointMarkers)
             {
                 Recycler.Recycle(ICONS.AVAILABLE, availablePoint);
