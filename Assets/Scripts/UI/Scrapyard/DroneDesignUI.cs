@@ -9,11 +9,12 @@ using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class ScrapyardUI : MonoBehaviour, IDragHandler
+    public class DroneDesignUI : MonoBehaviour, IDragHandler
     {
         [SerializeField]
         private Button MenuButton;
@@ -48,8 +49,6 @@ namespace StarSalvager.UI
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button LoadButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
-        private Button ReadyButton;
-        [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button SellBitsButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button IsUpgradingButton;
@@ -72,8 +71,8 @@ namespace StarSalvager.UI
         [SerializeField]
         private CameraController m_cameraController;
 
-        [SerializeField]
-        private Scrapyard m_scrapyard;
+        [FormerlySerializedAs("m_scrapyard")] [SerializeField]
+        private DroneDesigner mDroneDesigner;
 
 
         private void Start()
@@ -96,18 +95,18 @@ namespace StarSalvager.UI
 
             MenuButton.onClick.AddListener(() =>
             {
-                m_scrapyard.SaveBlockData();
+                mDroneDesigner.SaveBlockData();
                 SceneLoader.ActivateScene("MainMenuScene", "ScrapyardScene");
             });
 
             leftTurnButton.onClick.AddListener(() =>
             {
-                m_scrapyard.RotateBots(-1.0f);
+                mDroneDesigner.RotateBots(-1.0f);
             });
 
             rightTurnButton.onClick.AddListener(() =>
             {
-                m_scrapyard.RotateBots(1.0f);
+                mDroneDesigner.RotateBots(1.0f);
             });
 
             //--------------------------------------------------------------------------------------------------------//
@@ -138,48 +137,25 @@ namespace StarSalvager.UI
 
             UndoButton.onClick.AddListener(() =>
             {
-                m_scrapyard.UndoStackPop();
+                mDroneDesigner.UndoStackPop();
             });
 
             RedoButton.onClick.AddListener(() =>
             {
-                m_scrapyard.RedoStackPop();
+                mDroneDesigner.RedoStackPop();
             });
 
             //--------------------------------------------------------------------------------------------------------//
 
-            ReadyButton.onClick.AddListener(() =>
-            {
-                if (m_scrapyard.IsFullyConnected())
-                {
-                    m_scrapyard.SaveBlockData();
-                    m_scrapyard.ProcessScrapyardUsageEndAnalytics();
-                    if (Globals.SectorComplete)
-                    {
-                        Globals.SectorComplete = false;
-                        SceneLoader.ActivateScene("UniverseMapScene", "ScrapyardScene");
-                    }
-                    else
-                    {
-                        SceneLoader.ActivateScene("AlexShulmanTestScene", "ScrapyardScene");
-                    }
-                }
-                else
-                {
-                    Alert.ShowAlert("Alert!",
-                        "A disconnected piece is active on your Bot! Please repair before continuing", "Okay", null);
-                }
-            });
-
             SellBitsButton.onClick.AddListener(() =>
             {
-                m_scrapyard.SellBits();
+                mDroneDesigner.SellBits();
                 UpdateResources(PlayerPersistentData.PlayerData.GetResources());
             });
 
             IsUpgradingButton.onClick.AddListener(() =>
             {
-                m_scrapyard.IsUpgrading = !m_scrapyard.IsUpgrading;
+                mDroneDesigner.IsUpgrading = !mDroneDesigner.IsUpgrading;
             });
 
             //--------------------------------------------------------------------------------------------------------//
@@ -276,7 +252,7 @@ namespace StarSalvager.UI
         private void PartPressed(PART_TYPE partType)
         {
             Debug.Log($"Selected {partType}");
-            m_scrapyard.selectedPartType = partType;
+            mDroneDesigner.selectedPartType = partType;
         }
 
         public void OnDrag(PointerEventData eventData)

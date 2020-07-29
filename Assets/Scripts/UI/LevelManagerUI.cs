@@ -1,7 +1,5 @@
 ﻿using Sirenix.OdinInspector;
 using StarSalvager.Utilities;
-using System.Collections;
-using System.Collections.Generic;
 using StarSalvager.Utilities.SceneManagement;
 using TMPro;
 using UnityEngine;
@@ -38,9 +36,6 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("View")]
         private Button mainMenuButton;
 
-        //[SerializeField, Required, FoldoutGroup("View")]
-        //private TMP_Text m_currentWaveText;
-        
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("Pause Menu")]
