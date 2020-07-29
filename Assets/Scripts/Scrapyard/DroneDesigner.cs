@@ -16,13 +16,14 @@ using System.IO;
 using Newtonsoft.Json;
 using StarSalvager.Utilities.JsonDataTypes;
 using System;
+using UnityEngine.Serialization;
 
 namespace StarSalvager
 {
-    public class Scrapyard : AttachableEditorToolBase, IReset, IInput
+    public class DroneDesigner : AttachableEditorToolBase, IReset, IInput
     {
-        [SerializeField]
-        private ScrapyardUI scrapyardUI;
+        [FormerlySerializedAs("scrapyardUI")] [SerializeField]
+        private DroneDesignUI droneDesignUi;
         [SerializeField]
         private GameObject floatingPartWarningPrefab;
         [SerializeField]
@@ -181,12 +182,12 @@ namespace StarSalvager
 
                             if (!PlayerPersistentData.PlayerData.CanAffordPart(partAtCoordinates.Type, partAtCoordinates.level + 1))
                             {
-                                scrapyardUI.DisplayInsufficientResources();
+                                droneDesignUi.DisplayInsufficientResources();
                                 return;
                             }
 
                             playerData.SubtractResources(partAtCoordinates.Type, partAtCoordinates.level + 1, false);
-                            scrapyardUI.UpdateResources(playerData.GetResources());
+                            droneDesignUi.UpdateResources(playerData.GetResources());
                             _toUndoStack.Push(new ScrapyardEditData
                             {
                                 EventType = SCRAPYARD_ACTION.UPGRADE,
@@ -208,7 +209,7 @@ namespace StarSalvager
 
             if (!PlayerPersistentData.PlayerData.CanAffordPart((PART_TYPE)selectedPartType, selectedpartLevel))
             {
-                scrapyardUI.DisplayInsufficientResources();
+                droneDesignUi.DisplayInsufficientResources();
                 return;
             }
 
@@ -234,7 +235,7 @@ namespace StarSalvager
                 _toRedoStack.Clear();
 
 
-                scrapyardUI.UpdateResources(playerData.GetResources());
+                droneDesignUi.UpdateResources(playerData.GetResources());
             }
             UpdateFloatingMarkers(false);
         }
@@ -281,7 +282,7 @@ namespace StarSalvager
                 }
 
                 scrapBot.TryRemoveAttachableAt(mouseCoordinate, true);
-                scrapyardUI.UpdateResources(PlayerPersistentData.PlayerData.GetResources());
+                droneDesignUi.UpdateResources(PlayerPersistentData.PlayerData.GetResources());
             }
             UpdateFloatingMarkers(false);
         }
@@ -372,7 +373,7 @@ namespace StarSalvager
                     foreach (ScrapyardBot scrapBot in _scrapyardBots)
                     {
                         scrapBot.TryRemoveAttachableAt(toUndo.Coordinate, true);
-                        scrapyardUI.UpdateResources(playerData.GetResources());
+                        droneDesignUi.UpdateResources(playerData.GetResources());
                     }
                     break;
                 case SCRAPYARD_ACTION.UPGRADE:
@@ -388,7 +389,7 @@ namespace StarSalvager
                                 return;
 
                             playerData.AddResources(toUndo.PartType, toUndo.Level, false);
-                            scrapyardUI.UpdateResources(playerData.GetResources());
+                            droneDesignUi.UpdateResources(playerData.GetResources());
                             FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(scrapyardPart.Type, scrapyardPart.level - 1, ref scrapyardPart);
                         }
                     }
@@ -406,7 +407,7 @@ namespace StarSalvager
                         var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(toUndo.PartType, toUndo.Level);
                         playerData.SubtractResources(toUndo.PartType, toUndo.Level, true);
                         scrapBot.AttachNewBit(toUndo.Coordinate, attachable);
-                        scrapyardUI.UpdateResources(playerData.GetResources());
+                        droneDesignUi.UpdateResources(playerData.GetResources());
                     }
                     break;
             }
@@ -438,7 +439,7 @@ namespace StarSalvager
                         var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(toRedo.PartType, 0);
                         playerData.SubtractResources(toRedo.PartType, 0, false);
                         scrapBot.AttachNewBit(toRedo.Coordinate, attachable);
-                        scrapyardUI.UpdateResources(playerData.GetResources());
+                        droneDesignUi.UpdateResources(playerData.GetResources());
                     }
                     break;
                 case SCRAPYARD_ACTION.UPGRADE:
@@ -454,7 +455,7 @@ namespace StarSalvager
                                 return;
 
                             playerData.SubtractResources(toRedo.PartType, scrapyardPart.level + 1, false);
-                            scrapyardUI.UpdateResources(playerData.GetResources());
+                            droneDesignUi.UpdateResources(playerData.GetResources());
                             FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(scrapyardPart.Type, scrapyardPart.level + 1, ref scrapyardPart);
                         }
                     }
@@ -463,7 +464,7 @@ namespace StarSalvager
                     foreach (ScrapyardBot scrapBot in _scrapyardBots)
                     {
                         scrapBot.TryRemoveAttachableAt(toRedo.Coordinate, true);
-                        scrapyardUI.UpdateResources(playerData.GetResources());
+                        droneDesignUi.UpdateResources(playerData.GetResources());
                     }
                     break;
             }
