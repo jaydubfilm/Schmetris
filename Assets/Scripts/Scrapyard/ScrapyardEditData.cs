@@ -11,5 +11,6 @@ namespace StarSalvager
 
         public PART_TYPE PartType;
         public BIT_TYPE BitType;
+        public int Level;
     }
 }

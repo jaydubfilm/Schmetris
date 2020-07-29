@@ -70,14 +70,14 @@ namespace StarSalvager
 
             DeInitInput();
         }
-        
+
         //============================================================================================================//
-        
+
         public void InitInput()
         {
             Input.Actions.Default.LeftClick.Enable();
             Input.Actions.Default.LeftClick.performed += OnLeftMouseButtonDown;
-            
+
             Input.Actions.Default.RightClick.Enable();
             Input.Actions.Default.RightClick.performed += OnRightMouseButtonDown;
         }
@@ -86,11 +86,11 @@ namespace StarSalvager
         {
             Input.Actions.Default.LeftClick.Disable();
             Input.Actions.Default.LeftClick.performed -= OnLeftMouseButtonDown;
-            
+
             Input.Actions.Default.RightClick.Disable();
             Input.Actions.Default.RightClick.performed -= OnRightMouseButtonDown;
         }
-        
+
         //============================================================================================================//
 
         public void Activate()
@@ -120,7 +120,7 @@ namespace StarSalvager
                 _scrapyardBots.RemoveAt(i);
             }
         }
-        
+
         //============================================================================================================//
 
         public void SellBits()
@@ -190,7 +190,7 @@ namespace StarSalvager
                 }
                 return;
             }
-            
+
             if (selectedPartType == null)
                 return;
 
@@ -199,13 +199,13 @@ namespace StarSalvager
                 m_scrapyardUI.DisplayInsufficientResources();
                 return;
             }
-            
+
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
                 IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
 
                 if (attachableAtCoordinates != null)
-                {   
+                {
                     continue;
                 }
 
@@ -232,12 +232,42 @@ namespace StarSalvager
         {
             if (ctx.ReadValue<float>() == 0f)
                 return;
-            
+
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
 
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
+                IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+
+                if (attachableAtCoordinates == null)
+                {
+                    continue;
+                }
+
+                if (attachableAtCoordinates is ScrapyardBit scrapBit)
+                {
+                    _toUndoStack.Push(new ScrapyardEditData
+                    {
+                        EventType = SCRAPYARD_ACTION.SALE,
+                        Coordinate = mouseCoordinate,
+                        BitType = scrapBit.Type,
+                        Level = scrapBit.level
+                    });
+                    _toRedoStack.Clear();
+                }
+                else if (attachableAtCoordinates is ScrapyardPart scrapPart)
+                {
+                    _toUndoStack.Push(new ScrapyardEditData
+                    {
+                        EventType = SCRAPYARD_ACTION.SALE,
+                        Coordinate = mouseCoordinate,
+                        PartType = scrapPart.Type,
+                        Level = scrapPart.level
+                    });
+                    _toRedoStack.Clear();
+                }
+
                 scrapBot.TryRemoveAttachableAt(mouseCoordinate, true);
                 m_scrapyardUI.UpdateResources(PlayerPersistentData.PlayerData.GetResources());
             }
@@ -295,7 +325,7 @@ namespace StarSalvager
                 Recycler.Recycle(ICONS.ALERT, partWarning);
             }
             _floatingPartWarnings.Clear();
-            
+
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
                 foreach (var attached in scrapBot.attachedBlocks)
@@ -310,7 +340,36 @@ namespace StarSalvager
                 }
             }
         }
-        
+
+        //============================================================================================================//
+
+        public void UndoStackPop()
+        {
+            ScrapyardEditData toUndo = _toUndoStack.Pop();
+
+            switch(toUndo.EventType)
+            {
+                case SCRAPYARD_ACTION.PURCHASE:
+
+                    break;
+                case SCRAPYARD_ACTION.UPGRADE:
+
+                    break;
+                case SCRAPYARD_ACTION.SALE:
+
+                    break;
+            }
+
+            _toRedoStack.Push(toUndo);
+        }
+
+        public void RedoStackPop()
+        {
+            ScrapyardEditData toRedo = _toRedoStack.Pop();
+
+
+        }
+
         //============================================================================================================//
 
         public bool IsFullyConnected()
