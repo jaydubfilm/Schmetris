@@ -12,6 +12,7 @@ using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
 using StarSalvager.Factories.Data;
 using Recycling;
+using System.IO;
 
 namespace StarSalvager
 {
@@ -32,7 +33,22 @@ namespace StarSalvager
 
         private Stack<ScrapyardEditData> _toUndoStack;
         private Stack<ScrapyardEditData> _toRedoStack;
-        
+
+        [Sirenix.OdinInspector.Button("Clear Remote Data")]
+        private void ClearRemoteData()
+        {
+            string persistentPlayerDataPath = Application.dataPath + "/RemoteData/PlayerPersistentData.player";
+            string currentDataPath = Application.dataPath + "/RemoteData/MissionsCurrentData.mission";
+            if (File.Exists(persistentPlayerDataPath))
+            {
+                File.Delete(persistentPlayerDataPath);
+            }
+            if (File.Exists(currentDataPath))
+            {
+                File.Delete(currentDataPath);
+            }
+        }
+
         //============================================================================================================//
 
         // Start is called before the first frame update
