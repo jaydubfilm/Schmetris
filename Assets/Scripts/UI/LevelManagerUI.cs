@@ -9,17 +9,19 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class LevelManagerUI : MonoBehaviour
+    public class LevelManagerUI : MonoBehaviour, IPausable
     {
+        public bool isPaused => GameTimer.IsPaused;
+        
+        [SerializeField, Required]
+        private TMP_Text deathText;
+        
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("UISections")]
         private GameObject m_betweenWavesUI;
         [SerializeField, Required, FoldoutGroup("UISections")]
         private GameObject m_deathUI;
-
-        [SerializeField, Required]
-        private TMP_Text deathText;
 
         //============================================================================================================//
 
@@ -38,7 +40,15 @@ namespace StarSalvager.UI
 
         //[SerializeField, Required, FoldoutGroup("View")]
         //private TMP_Text m_currentWaveText;
+        
+        //============================================================================================================//
 
+        [SerializeField, Required, FoldoutGroup("Pause Menu")]
+        private GameObject pauseWindow;
+        [SerializeField, Required, FoldoutGroup("Pause Menu")]
+        private Button resumeButton;
+        [SerializeField, Required, FoldoutGroup("Pause Menu")]
+        private TMP_Text pauseText;
 
         //============================================================================================================//
 
@@ -47,6 +57,7 @@ namespace StarSalvager.UI
         // Start is called before the first frame update
         private void Start()
         {
+            RegisterPausable();
             m_levelManager = FindObjectOfType<LevelManager>();
             InitButtons();
         }
@@ -91,6 +102,12 @@ namespace StarSalvager.UI
                 GameTimer.SetPaused(false);
                 SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
             });
+            
+            resumeButton.onClick.AddListener(() =>
+            {
+                GameTimer.SetPaused(false);
+            });
+            
             ToggleBetweenWavesUIActive(false);
             
             ToggleDeathUIActive(false, string.Empty);
@@ -113,5 +130,22 @@ namespace StarSalvager.UI
         }
 
         //============================================================================================================//
+        
+        public void RegisterPausable()
+        {
+            GameTimer.AddPausable(this);
+        }
+
+        public void OnResume()
+        {
+            pauseWindow.SetActive(false);
+            pauseText.gameObject.SetActive(true);
+        }
+
+        public void OnPause()
+        {
+            pauseWindow.SetActive(true);
+            pauseText.gameObject.SetActive(false);
+        }
     }
 }
