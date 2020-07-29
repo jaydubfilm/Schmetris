@@ -10,7 +10,7 @@ namespace StarSalvager.Utilities.SceneManagement
 {
     public static class SceneLoader
     {
-        private static Dictionary<string, SceneRoot> _scenes = new Dictionary<string, SceneRoot>()
+        private static readonly Dictionary<string, SceneRoot> SCENES = new Dictionary<string, SceneRoot>
         {
             { "MainMenuScene", null },
             { "LevelScene", null },
@@ -19,10 +19,17 @@ namespace StarSalvager.Utilities.SceneManagement
             { "UniverseMapScene", null }
         };
 
-        private static MonoBehaviour _coroutineRunner = null;
-        private static bool _sceneLoaderReady = false;
+        private static MonoBehaviour _coroutineRunner;
+        private static bool _sceneLoaderReady;
+        
+        //============================================================================================================//
 
+        private static string currentScene;
+        private static string lastScene;
+        
 
+        //============================================================================================================//
+        
         public static void SubscribeSceneRoot(SceneRoot sceneRoot, string sceneName)
         {
             if (!_sceneLoaderReady)
@@ -31,11 +38,10 @@ namespace StarSalvager.Utilities.SceneManagement
                 return;
             }
 
-            if (_scenes[sceneName] == null)
-            {
-                _scenes[sceneName] = sceneRoot;
+            if (SCENES[sceneName] != null) 
                 return;
-            }
+            
+            SCENES[sceneName] = sceneRoot;
         }
 
         private static void SetupSceneLoader(SceneRoot sceneRoot, string sceneName)
@@ -47,12 +53,59 @@ namespace StarSalvager.Utilities.SceneManagement
 
             SubscribeSceneRoot(sceneRoot, sceneName);
 
+            currentScene = sceneName;
+            lastScene = string.Empty;
+
             _coroutineRunner.StartCoroutine(Startup());
         }
+        
+        //============================================================================================================//
 
+        public static bool SetActiveScene(string sceneName)
+        {
+            lastScene = currentScene;
+            currentScene = sceneName;
+            
+            return SCENES.ContainsKey(sceneName) && SceneManager.SetActiveScene(SCENES[sceneName].Scene);
+        }
+
+        public static bool ActivateScene(string sceneName)
+        {
+            lastScene = currentScene;
+            currentScene = sceneName;
+            
+            return SetSceneObjectsActive(sceneName, true);
+        }
+
+        public static bool DeactivateScene(string sceneName)
+        {
+            return SetSceneObjectsActive(sceneName, false);
+        }
+
+        public static bool ActivateScene(string sceneName, string sceneNameToDeload, bool updateJsonData = false)
+        {
+            MissionManager.ExportMissionsMasterRemoteData(MissionManager.MissionsMasterData);
+            MissionManager.ExportMissionsCurrentRemoteData(MissionManager.MissionsCurrentData);
+
+            lastScene = sceneNameToDeload;
+            currentScene = sceneName;
+            
+            
+            SetSceneObjectsActive(sceneNameToDeload, false);
+            
+            return SetSceneObjectsActive(sceneName, true);
+        }
+
+        public static bool LoadPreviousScene()
+        {
+            return !string.IsNullOrEmpty(lastScene) && ActivateScene(lastScene, currentScene);
+        }
+        
+        //============================================================================================================//
+        
         private static IEnumerator Startup()
         {
-            List<string> enumerationKeys = _scenes.Keys.ToList();
+            List<string> enumerationKeys = SCENES.Keys.ToList();
             
             foreach (string entry in enumerationKeys)
             {
@@ -83,55 +136,28 @@ namespace StarSalvager.Utilities.SceneManagement
                 yield return null;
             }
 
-            while(_scenes[sceneName] == null || !_scenes[sceneName].IsStarted)
+            while(SCENES[sceneName] == null || !SCENES[sceneName].IsStarted)
             {
                 yield return null;
             }
 
             DeactivateScene(sceneName);
         }
-
-        public static bool SetActiveScene(string sceneName)
-        {
-            if (_scenes.ContainsKey(sceneName))
-            {
-                SceneManager.SetActiveScene(_scenes[sceneName].Scene);
-                return true;
-            }
-
-            return false;
-        }
-
-        public static bool ActivateScene(string sceneName)
-        {
-            return SetSceneObjectsActive(sceneName, true);
-        }
-
-        public static bool DeactivateScene(string sceneName)
-        {
-            return SetSceneObjectsActive(sceneName, false);
-        }
-
-        public static bool ActivateScene(string sceneName, string sceneNameToDeload, bool updateJsonData = false)
-        {
-            MissionManager.ExportMissionsMasterRemoteData(MissionManager.MissionsMasterData);
-            MissionManager.ExportMissionsCurrentRemoteData(MissionManager.MissionsCurrentData);
-            
-            
-            SetSceneObjectsActive(sceneNameToDeload, false);
-            return SetSceneObjectsActive(sceneName, true);
-        }
+        
+        //============================================================================================================//
 
         private static bool SetSceneObjectsActive(string sceneName, bool active)
         {
-            if (_scenes.ContainsKey(sceneName) && _scenes[sceneName] != null)
+            if (SCENES.ContainsKey(sceneName) && SCENES[sceneName] != null)
             {
-                _scenes[sceneName].SetSceneObjectsActive(active);
+                SCENES[sceneName].SetSceneObjectsActive(active);
                 return true;
             }
             
             Debug.Log("Attempted to set scene active that is not loaded");
             return false;
         }
+        
+        //============================================================================================================//
     }
 }

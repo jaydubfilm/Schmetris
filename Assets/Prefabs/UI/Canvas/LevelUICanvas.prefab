@@ -2082,10 +2082,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8672333738348226050}
+  - component: {fileID: 8672333738348226051}
   - component: {fileID: 8672333738348226049}
   - component: {fileID: 8672333738348226048}
   - component: {fileID: 8672333738348226055}
-  - component: {fileID: 8672333738348226051}
   m_Layer: 5
   m_Name: LevelUICanvas
   m_TagString: Untagged
@@ -2117,6 +2117,30 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &8672333738348226051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8672333738348226054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 412d42242792da74bb6cf7bd5d19a6ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathText: {fileID: 4507576225948994028}
+  m_betweenWavesUI: {fileID: 8672333737647323004}
+  m_deathUI: {fileID: 8672333737287589470}
+  continueButton: {fileID: 8672333738695047967}
+  scrapyardButton: {fileID: 8672333737915462134}
+  toScrapyardButton: {fileID: 8672333738182108307}
+  toMainMenuButton: {fileID: 8672333737790453237}
+  retryButton: {fileID: 8672333738047708705}
+  mainMenuButton: {fileID: 8672333738578055755}
+  pauseWindow: {fileID: 837782640108388277}
+  resumeButton: {fileID: 8076737435058539395}
+  pauseText: {fileID: 4578246379563523337}
 --- !u!223 &8672333738348226049
 Canvas:
   m_ObjectHideFlags: 0
@@ -2177,30 +2201,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 3895
---- !u!114 &8672333738348226051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8672333738348226054}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 412d42242792da74bb6cf7bd5d19a6ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  deathText: {fileID: 4507576225948994028}
-  m_betweenWavesUI: {fileID: 8672333737647323004}
-  m_deathUI: {fileID: 8672333737287589470}
-  continueButton: {fileID: 8672333738695047967}
-  scrapyardButton: {fileID: 8672333737915462134}
-  toScrapyardButton: {fileID: 8672333738182108307}
-  toMainMenuButton: {fileID: 8672333737790453237}
-  retryButton: {fileID: 8672333738047708705}
-  mainMenuButton: {fileID: 8672333738578055755}
-  pauseWindow: {fileID: 837782640108388277}
-  resumeButton: {fileID: 8076737435058539395}
-  pauseText: {fileID: 4578246379563523337}
 --- !u!1 &8672333738578055753
 GameObject:
   m_ObjectHideFlags: 0

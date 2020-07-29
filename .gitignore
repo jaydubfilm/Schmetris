@@ -13,6 +13,11 @@
 [Aa]ssets/AssetStoreTools*
 [Aa]ssets/Spine Examples/
 
+[Aa]ssets/RemoteData/*.player
+[Aa]ssets/RemoteData/*.player.meta
+[Aa]ssets/RemoteData/*.mission
+[Aa]ssets/RemoteData/*.mission.meta
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 [Mm]emoryCaptures/
@@ -110,4 +115,4 @@ Desktop.ini
 .idea/.idea.Schmetris/.idea/indexLayout.xml
 .idea/.idea.Schmetris/.idea/misc.xml
 .idea/.idea.Schmetris/.idea/vcs.xml
-Assets/RemoteData/PlayerPersistentData.player
+
