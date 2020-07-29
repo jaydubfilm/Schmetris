@@ -21,6 +21,16 @@ namespace StarSalvager.Values
             {BIT_TYPE.GREEN, 1250},
             {BIT_TYPE.GREY, 1250},
         };
+        
+        //FIXME This needs to use some sort of capacity value
+        public Dictionary<BIT_TYPE, float> liquidResource = new Dictionary<BIT_TYPE, float>
+        {
+            {BIT_TYPE.RED, 250},
+            {BIT_TYPE.BLUE, 0},
+            {BIT_TYPE.YELLOW, 0},
+            {BIT_TYPE.GREEN, 0},
+            {BIT_TYPE.GREY, 0},
+        };
 
         public List<BlockData> currentBlockData = new List<BlockData>();
 

@@ -3,9 +3,10 @@ using UnityEngine;
 
 namespace StarSalvager.Prototype
 {
+    [System.Obsolete]
     public class ShapeGenerator : MonoBehaviour
     {
-        // Start is called before the first frame update
+        /*// Start is called before the first frame update
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Return))
@@ -29,7 +30,7 @@ namespace StarSalvager.Prototype
                     Random.Range(1, 10));
 
             temp = newShape.gameObject;
-        }
+        }*/
 
     }
 }

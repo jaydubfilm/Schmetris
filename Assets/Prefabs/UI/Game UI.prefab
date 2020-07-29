@@ -2151,8 +2151,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 30.404, y: 7.7987}
-  m_SizeDelta: {x: 34.15191, y: -45.451252}
+  m_AnchoredPosition: {x: 32.300003, y: -0.000015258789}
+  m_SizeDelta: {x: 40.494614, y: -39.451515}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6096057570835674744
 CanvasRenderer:
@@ -2662,15 +2662,15 @@ MonoBehaviour:
   fuelSlider:
     sliderText: {fileID: 3023622809918278114}
     _slider: {fileID: 3498181361887163554}
-    format: 
+    format: '{0:0}'
   repairSlider:
     sliderText: {fileID: 421680217665405237}
     _slider: {fileID: 2938645360447920890}
-    format: 
+    format: '{0:0}'
   ammoSlider:
     sliderText: {fileID: 7880169139080231576}
     _slider: {fileID: 2928035726681215253}
-    format: 
+    format: '{0:0}'
   heatSlider: {fileID: 8796952803704978832}
   carryCapacitySlider: {fileID: 3466480386804904203}
   waterSlider: {fileID: 416597857146355507}
@@ -2743,7 +2743,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 99
+  m_text: 999
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 101133d00cd1e5b4ca9a92b7c941684d, type: 2}
   m_sharedMaterial: {fileID: -8304808927669992072, guid: 101133d00cd1e5b4ca9a92b7c941684d,
@@ -2772,12 +2772,12 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 31.45
+  m_fontSize: 22.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 10
-  m_fontSizeMax: 72
+  m_fontSizeMax: 71.4
   m_fontStyle: 0
   m_textAlignment: 514
   m_characterSpacing: 0
@@ -2810,10 +2810,10 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 5, y: 5, z: 5, w: 5}
+  m_margin: {x: 5, y: 10, z: 5, w: 10}
   m_textInfo:
     textComponent: {fileID: 3023622809918278114}
-    characterCount: 2
+    characterCount: 3
     spriteCount: 0
     spaceCount: 0
     wordCount: 1
@@ -3527,8 +3527,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 20.363998, y: 0}
-  m_SizeDelta: {x: -63.218323, y: -50}
+  m_AnchoredPosition: {x: 20.653, y: 0}
+  m_SizeDelta: {x: -63.78955, y: -39.451538}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &680067456212810710
 CanvasRenderer:
@@ -3586,7 +3586,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 22.7
+  m_fontSize: 22.35
   m_fontSizeBase: 31.6
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3624,7 +3624,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0.12647247, y: 0, z: 10.620728, w: 0}
+  m_margin: {x: 6.7495575, y: 0, z: 10.620728, w: 0}
   m_textInfo:
     textComponent: {fileID: 4275896384204888228}
     characterCount: 8
@@ -3953,7 +3953,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 99
+  m_text: 999
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 101133d00cd1e5b4ca9a92b7c941684d, type: 2}
   m_sharedMaterial: {fileID: -8304808927669992072, guid: 101133d00cd1e5b4ca9a92b7c941684d,
@@ -3982,7 +3982,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 31.45
+  m_fontSize: 22.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4020,10 +4020,10 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 5, y: 5, z: 5, w: 5}
+  m_margin: {x: 5, y: 10, z: 5, w: 10}
   m_textInfo:
     textComponent: {fileID: 7880169139080231576}
-    characterCount: 2
+    characterCount: 3
     spriteCount: 0
     spaceCount: 0
     wordCount: 1
@@ -4682,7 +4682,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 99
+  m_text: 999
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 101133d00cd1e5b4ca9a92b7c941684d, type: 2}
   m_sharedMaterial: {fileID: -8304808927669992072, guid: 101133d00cd1e5b4ca9a92b7c941684d,
@@ -4711,7 +4711,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 31.45
+  m_fontSize: 22.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4749,10 +4749,10 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 5, y: 5, z: 5, w: 5}
+  m_margin: {x: 5, y: 10, z: 5, w: 10}
   m_textInfo:
     textComponent: {fileID: 421680217665405237}
-    characterCount: 2
+    characterCount: 3
     spriteCount: 0
     spaceCount: 0
     wordCount: 1

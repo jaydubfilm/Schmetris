@@ -38,10 +38,15 @@ namespace StarSalvager.Factories
                 if(!resources.ContainsKey(bit.Type))
                     resources.Add(bit.Type, 0);
 
-                resources[bit.Type] += remoteData.GetRemoteData(bit.Type).resource[bit.level];
+                resources[bit.Type] += GetTotalResource(bit);
             }
 
             return resources;
+        }
+        
+        public int GetTotalResource(Bit bit)
+        {
+            return remoteData.GetRemoteData(bit.Type).resource[bit.level];
         }
 
         public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<ScrapyardBit> bits)
