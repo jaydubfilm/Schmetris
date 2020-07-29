@@ -55,7 +55,7 @@ namespace StarSalvager.Values
             }
         }
 
-        public void AddResources(PART_TYPE partType, int level)
+        public void AddResources(PART_TYPE partType, int level, bool isRecursive)
         {
             var remoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).costs[level];
             foreach (ResourceAmount resource in remoteData.levelCosts)
@@ -63,8 +63,11 @@ namespace StarSalvager.Values
                 resources[resource.type] += resource.amount;
             }
 
+            if (!isRecursive)
+                return;
+
             if (level > 0)
-                AddResources(partType, level - 1);
+                AddResources(partType, level - 1, isRecursive);
         }
 
         public void SubtractResources(Dictionary<BIT_TYPE, int> toSubtract)
@@ -79,13 +82,19 @@ namespace StarSalvager.Values
             }
         }
 
-        public void SubtractResources(PART_TYPE partType, int level)
+        public void SubtractResources(PART_TYPE partType, int level, bool isRecursive)
         {
             var remoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).costs[level];
             foreach (ResourceAmount resource in remoteData.levelCosts)
             {
                 resources[resource.type] -= resource.amount;
             }
+
+            if (!isRecursive)
+                return;
+
+            if (level > 0)
+                SubtractResources(partType, level - 1, isRecursive);
         }
 
         public void SubtractResources(LevelCost cost)

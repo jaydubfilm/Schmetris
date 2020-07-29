@@ -230,6 +230,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &367988722 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 981852984589887427, guid: c7ec62de764d52744a18dcfe800d84b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1351241348}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &405256046
 GameObject:
   m_ObjectHideFlags: 0
@@ -275,9 +281,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: a92cceae257652c4bbab2b459be79e17, type: 2}
   m_cameraController: {fileID: 1412517824}
-  selectedpartLevel: 0
-  m_scrapyardUI: {fileID: 1351241350}
-  IsUpgrading: 0
+  scrapyardUI: {fileID: 1351241350}
   floatingPartWarningPrefab: {fileID: 1876941290014469045, guid: bb603bbd689a3824c932a4be7ede1b12,
     type: 3}
   availablePointMarkerPrefab: {fileID: 1876941290014469045, guid: 5436d3c64e70b1247896c8746dab9bd7,
@@ -569,7 +573,7 @@ PrefabInstance:
     - target: {fileID: 981852983553023969, guid: c7ec62de764d52744a18dcfe800d84b9,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.00012207031
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 981852983597172445, guid: c7ec62de764d52744a18dcfe800d84b9,
         type: 3}
@@ -796,6 +800,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1799354743225390550, guid: c7ec62de764d52744a18dcfe800d84b9,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1799354743225390550, guid: c7ec62de764d52744a18dcfe800d84b9,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1799354743225390550, guid: c7ec62de764d52744a18dcfe800d84b9,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1799354743225390550, guid: c7ec62de764d52744a18dcfe800d84b9,
+        type: 3}
+      propertyPath: m_textInfo.pageCount
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3406615990169756985, guid: c7ec62de764d52744a18dcfe800d84b9,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -949,6 +973,26 @@ PrefabInstance:
     - target: {fileID: 6370658559630850565, guid: c7ec62de764d52744a18dcfe800d84b9,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6572943951032451704, guid: c7ec62de764d52744a18dcfe800d84b9,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6572943951032451704, guid: c7ec62de764d52744a18dcfe800d84b9,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6572943951032451704, guid: c7ec62de764d52744a18dcfe800d84b9,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6572943951032451704, guid: c7ec62de764d52744a18dcfe800d84b9,
+        type: 3}
+      propertyPath: m_textInfo.pageCount
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7174150460561291283, guid: c7ec62de764d52744a18dcfe800d84b9,
@@ -1144,7 +1188,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1351241348}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 367988722}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56a10aa54ece5344bb969c3e3b95ede7, type: 3}
@@ -1248,6 +1292,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1569136001 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7924511267928285753, guid: 648b56bc406ac8641bc6e42ebc0fcc48,
+    type: 3}
+  m_PrefabInstance: {fileID: 908532079}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1869511139
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1391,56 +1441,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
+    - {fileID: 1569136001}
+    ActiveGameObject: {fileID: 1569136001}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -1463,8 +1465,44 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 291775618}
-    ActiveGameObject: {fileID: 291775618}
+    - {fileID: 405256046}
+    ActiveGameObject: {fileID: 405256046}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 405256046}
+    ActiveGameObject: {fileID: 405256046}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 405256046}
+    ActiveGameObject: {fileID: 405256046}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 367988722}
+    ActiveGameObject: {fileID: 367988722}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -1633,6 +1671,18 @@ MonoBehaviour:
     list:
     - {fileID: 0}
     ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 367988722}
+    ActiveGameObject: {fileID: 367988722}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []

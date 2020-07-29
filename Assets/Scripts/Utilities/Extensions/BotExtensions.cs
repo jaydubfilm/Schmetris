@@ -77,9 +77,26 @@ namespace StarSalvager.Utilities.Extensions
             return blockDatas;
         }
 
-        
+        public static List<BlockData> GetBlockDatas(this ScrapyardBot bot)
+        {
+            var blockDatas = new List<BlockData>();
+
+            var attachables = new List<IAttachable>(bot.attachedBlocks);
+
+            foreach (var attachable in attachables)
+            {
+                if (attachable is ISaveable saveable)
+                {
+                    blockDatas.Add(saveable.ToBlockData());
+                }
+            }
+
+            return blockDatas;
+        }
+
+
         //============================================================================================================//
-        
+
         /// <summary>
         /// Fill ref List with all Bits of similar level & type in specified direction.
         /// </summary>

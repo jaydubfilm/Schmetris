@@ -1,5 +1,6 @@
 ﻿using StarSalvager.Cameras;
 using StarSalvager.Values;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,6 +19,8 @@ namespace StarSalvager
         public CameraController CameraController => m_cameraController;
 
         public PART_TYPE? selectedPartType = null;
+
+        [NonSerialized]
         public int selectedpartLevel = 0;
 
         public void DrawGL(Camera camera)

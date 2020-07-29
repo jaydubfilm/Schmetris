@@ -13,26 +13,32 @@ using Input = StarSalvager.Utilities.Inputs.Input;
 using StarSalvager.Factories.Data;
 using Recycling;
 using System.IO;
+using Newtonsoft.Json;
+using StarSalvager.Utilities.JsonDataTypes;
+using System;
 
 namespace StarSalvager
 {
     public class Scrapyard : AttachableEditorToolBase, IReset, IInput
     {
         [SerializeField]
-        private ScrapyardUI m_scrapyardUI;
-
-        public bool IsUpgrading;
-
+        private ScrapyardUI scrapyardUI;
         [SerializeField]
         private GameObject floatingPartWarningPrefab;
         [SerializeField]
         private GameObject availablePointMarkerPrefab;
+
+        [NonSerialized]
+        public bool IsUpgrading;
 
         private List<GameObject> _floatingPartWarnings;
         private List<GameObject> _availablePointMarkers;
 
         private Stack<ScrapyardEditData> _toUndoStack;
         private Stack<ScrapyardEditData> _toRedoStack;
+
+        private ScrapyardLayout _currentLayout;
+        private List<ScrapyardLayout> _scrapyardLayouts;
 
         [Sirenix.OdinInspector.Button("Clear Remote Data")]
         private void ClearRemoteData()
@@ -59,8 +65,9 @@ namespace StarSalvager
             _availablePointMarkers = new List<GameObject>();
             _toUndoStack = new Stack<ScrapyardEditData>();
             _toRedoStack = new Stack<ScrapyardEditData>();
+            _scrapyardLayouts = ImportRemoteData();
+            _currentLayout = null;
             IsUpgrading = false;
-            //InputManager.Instance.InitInput();
             InitInput();
         }
 
@@ -107,7 +114,7 @@ namespace StarSalvager
             {
                 _scrapyardBots[0].InitBot(PlayerPersistentData.PlayerData.GetCurrentBlockData().ImportBlockDatas(true));
             }
-            UpdateFloatingMarkers();
+            UpdateFloatingMarkers(false);
         }
 
         public void Reset()
@@ -149,7 +156,11 @@ namespace StarSalvager
         private void OnLeftMouseButtonDown(InputAction.CallbackContext ctx)
         {
             if (ctx.ReadValue<float>() == 1f)
+            {
+                UpdateFloatingMarkers(true);
                 return;
+            }
+            UpdateFloatingMarkers(false);
 
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
@@ -170,17 +181,18 @@ namespace StarSalvager
 
                             if (!PlayerPersistentData.PlayerData.CanAffordPart(partAtCoordinates.Type, partAtCoordinates.level + 1))
                             {
-                                m_scrapyardUI.DisplayInsufficientResources();
+                                scrapyardUI.DisplayInsufficientResources();
                                 return;
                             }
 
-                            playerData.SubtractResources(partAtCoordinates.Type, partAtCoordinates.level + 1);
-                            m_scrapyardUI.UpdateResources(playerData.GetResources());
+                            playerData.SubtractResources(partAtCoordinates.Type, partAtCoordinates.level + 1, false);
+                            scrapyardUI.UpdateResources(playerData.GetResources());
                             _toUndoStack.Push(new ScrapyardEditData
                             {
                                 EventType = SCRAPYARD_ACTION.UPGRADE,
                                 Coordinate = mouseCoordinate,
-                                PartType = partAtCoordinates.Type
+                                PartType = partAtCoordinates.Type,
+                                Level = partAtCoordinates.level + 1
                             });
                             _toRedoStack.Clear();
                             FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level + 1, ref partAtCoordinates);
@@ -196,7 +208,7 @@ namespace StarSalvager
 
             if (!PlayerPersistentData.PlayerData.CanAffordPart((PART_TYPE)selectedPartType, selectedpartLevel))
             {
-                m_scrapyardUI.DisplayInsufficientResources();
+                scrapyardUI.DisplayInsufficientResources();
                 return;
             }
 
@@ -211,7 +223,7 @@ namespace StarSalvager
 
                 var playerData = PlayerPersistentData.PlayerData;
                 var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)selectedPartType, 0);
-                playerData.SubtractResources((PART_TYPE)selectedPartType, 0);
+                playerData.SubtractResources((PART_TYPE)selectedPartType, 0, false);
                 scrapBot.AttachNewBit(mouseCoordinate, attachable);
                 _toUndoStack.Push(new ScrapyardEditData
                 {
@@ -222,9 +234,9 @@ namespace StarSalvager
                 _toRedoStack.Clear();
 
 
-                m_scrapyardUI.UpdateResources(playerData.GetResources());
+                scrapyardUI.UpdateResources(playerData.GetResources());
             }
-            UpdateFloatingMarkers();
+            UpdateFloatingMarkers(false);
         }
 
         //On right mouse button click, check for a bit/part at the clicked location. If one is there, sell it.
@@ -269,12 +281,12 @@ namespace StarSalvager
                 }
 
                 scrapBot.TryRemoveAttachableAt(mouseCoordinate, true);
-                m_scrapyardUI.UpdateResources(PlayerPersistentData.PlayerData.GetResources());
+                scrapyardUI.UpdateResources(PlayerPersistentData.PlayerData.GetResources());
             }
-            UpdateFloatingMarkers();
+            UpdateFloatingMarkers(false);
         }
 
-        private void UpdateFloatingMarkers()
+        public void UpdateFloatingMarkers(bool showAvailable)
         {
             foreach (var availablePoint in _availablePointMarkers)
             {
@@ -282,40 +294,43 @@ namespace StarSalvager
             }
             _availablePointMarkers.Clear();
 
-            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            if (showAvailable)
             {
-                foreach (var attached in scrapBot.attachedBlocks)
+                foreach (ScrapyardBot scrapBot in _scrapyardBots)
                 {
-                    if (!scrapBot.attachedBlocks.HasPathToCore(attached))
-                        continue;
+                    foreach (var attached in scrapBot.attachedBlocks)
+                    {
+                        if (!scrapBot.attachedBlocks.HasPathToCore(attached))
+                            continue;
 
-                    if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.left && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
-                    {
-                        if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
-                            availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
-                        availableMarker.transform.position = (attached.Coordinate + Vector2.left) * Constants.gridCellSize;
-                        _availablePointMarkers.Add(availableMarker);
-                    }
-                    if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.right && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
-                    {
-                        if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
-                            availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
-                        availableMarker.transform.position = (attached.Coordinate + Vector2.right) * Constants.gridCellSize;
-                        _availablePointMarkers.Add(availableMarker);
-                    }
-                    if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.up && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
-                    {
-                        if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
-                            availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
-                        availableMarker.transform.position = (attached.Coordinate + Vector2.up) * Constants.gridCellSize;
-                        _availablePointMarkers.Add(availableMarker);
-                    }
-                    if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.down && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
-                    {
-                        if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
-                            availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
-                        availableMarker.transform.position = (attached.Coordinate + Vector2.down) * Constants.gridCellSize;
-                        _availablePointMarkers.Add(availableMarker);
+                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.left && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                        {
+                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.left) * Constants.gridCellSize + Vector3.back;
+                            _availablePointMarkers.Add(availableMarker);
+                        }
+                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.right && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                        {
+                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.right) * Constants.gridCellSize + Vector3.back;
+                            _availablePointMarkers.Add(availableMarker);
+                        }
+                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.up && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                        {
+                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.up) * Constants.gridCellSize + Vector3.back;
+                            _availablePointMarkers.Add(availableMarker);
+                        }
+                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.down && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                        {
+                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.down) * Constants.gridCellSize + Vector3.back;
+                            _availablePointMarkers.Add(availableMarker);
+                        }
                     }
                 }
             }
@@ -334,7 +349,7 @@ namespace StarSalvager
                     {
                         if (!Recycler.TryGrab(ICONS.ALERT, out GameObject newWarning))
                             newWarning = GameObject.Instantiate(floatingPartWarningPrefab);
-                        newWarning.transform.position = (Vector2)attached.Coordinate * Constants.gridCellSize;
+                        newWarning.transform.position = (Vector3)((Vector2)attached.Coordinate * Constants.gridCellSize) + Vector3.back;
                         _floatingPartWarnings.Add(newWarning);
                     }
                 }
@@ -345,29 +360,116 @@ namespace StarSalvager
 
         public void UndoStackPop()
         {
-            ScrapyardEditData toUndo = _toUndoStack.Pop();
+            if (_toUndoStack.Count == 0)
+                return;
 
-            switch(toUndo.EventType)
+            ScrapyardEditData toUndo = _toUndoStack.Pop();
+            var playerData = PlayerPersistentData.PlayerData;
+
+            switch (toUndo.EventType)
             {
                 case SCRAPYARD_ACTION.PURCHASE:
-
+                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    {
+                        scrapBot.TryRemoveAttachableAt(toUndo.Coordinate, true);
+                        scrapyardUI.UpdateResources(playerData.GetResources());
+                    }
                     break;
                 case SCRAPYARD_ACTION.UPGRADE:
+                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    {
+                        IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(toUndo.Coordinate);
+                        if (attachableAtCoordinates == null)
+                            return;
 
+                        if (attachableAtCoordinates is ScrapyardPart scrapyardPart)
+                        {
+                            if (!FactoryManager.Instance.GetFactory<PartAttachableFactory>().CheckLevelExists(toUndo.PartType, toUndo.Level - 1))
+                                return;
+
+                            playerData.AddResources(toUndo.PartType, toUndo.Level, false);
+                            scrapyardUI.UpdateResources(playerData.GetResources());
+                            FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(scrapyardPart.Type, scrapyardPart.level - 1, ref scrapyardPart);
+                        }
+                    }
                     break;
                 case SCRAPYARD_ACTION.SALE:
+                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    {
+                        IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(toUndo.Coordinate);
+                        if (attachableAtCoordinates != null)
+                            return;
 
+                        if (!playerData.CanAffordPart(toUndo.PartType, toUndo.Level))
+                            return;
+
+                        var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(toUndo.PartType, toUndo.Level);
+                        playerData.SubtractResources(toUndo.PartType, toUndo.Level, true);
+                        scrapBot.AttachNewBit(toUndo.Coordinate, attachable);
+                        scrapyardUI.UpdateResources(playerData.GetResources());
+                    }
                     break;
             }
 
+            UpdateFloatingMarkers(false);
             _toRedoStack.Push(toUndo);
         }
 
         public void RedoStackPop()
         {
+            if (_toRedoStack.Count == 0)
+                return;
+            
             ScrapyardEditData toRedo = _toRedoStack.Pop();
+            var playerData = PlayerPersistentData.PlayerData;
 
+            switch (toRedo.EventType)
+            {
+                case SCRAPYARD_ACTION.PURCHASE:
+                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    {
+                        IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(toRedo.Coordinate);
+                        if (attachableAtCoordinates != null)
+                            return;
 
+                        if (!playerData.CanAffordPart(toRedo.PartType, 0))
+                            return;
+
+                        var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(toRedo.PartType, 0);
+                        playerData.SubtractResources(toRedo.PartType, 0, false);
+                        scrapBot.AttachNewBit(toRedo.Coordinate, attachable);
+                        scrapyardUI.UpdateResources(playerData.GetResources());
+                    }
+                    break;
+                case SCRAPYARD_ACTION.UPGRADE:
+                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    {
+                        IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(toRedo.Coordinate);
+                        if (attachableAtCoordinates == null)
+                            return;
+
+                        if (attachableAtCoordinates is ScrapyardPart scrapyardPart)
+                        {
+                            if (!FactoryManager.Instance.GetFactory<PartAttachableFactory>().CheckLevelExists(toRedo.PartType, scrapyardPart.level + 1))
+                                return;
+
+                            playerData.SubtractResources(toRedo.PartType, scrapyardPart.level + 1, false);
+                            scrapyardUI.UpdateResources(playerData.GetResources());
+                            FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(scrapyardPart.Type, scrapyardPart.level + 1, ref scrapyardPart);
+                        }
+                    }
+                    break;
+                case SCRAPYARD_ACTION.SALE:
+                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    {
+                        scrapBot.TryRemoveAttachableAt(toRedo.Coordinate, true);
+                        scrapyardUI.UpdateResources(playerData.GetResources());
+                    }
+                    break;
+            }
+
+            UpdateFloatingMarkers(false);
+            _toUndoStack.Push(toRedo);
         }
 
         //============================================================================================================//
@@ -410,5 +512,41 @@ namespace StarSalvager
 
         //============================================================================================================//
 
+        public void SaveLayout(string layoutName)
+        {
+            ScrapyardLayout currentLayout = _scrapyardLayouts.First(l => l.Name == layoutName);
+            if (currentLayout != null)
+            {
+                currentLayout = new ScrapyardLayout(layoutName, _scrapyardBots[0].GetBlockDatas());
+            }
+        }
+
+        public void LoadLayout(int index)
+        {
+            if (_scrapyardLayouts.Count <= index)
+                return;
+            
+            _currentLayout = _scrapyardLayouts[index];
+        }
+
+        public string ExportRemoteData(List<ScrapyardLayout> editorData)
+        {
+            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
+            System.IO.File.WriteAllText(Application.dataPath + "/RemoteData/BotShapeEditorData.txt", export);
+
+            return export;
+        }
+
+        public List<ScrapyardLayout> ImportRemoteData()
+        {
+            if (!File.Exists(Application.dataPath + "/RemoteData/ScrapyardLayoutData.txt"))
+                return new List<ScrapyardLayout>();
+
+            var loaded = JsonConvert.DeserializeObject<List<ScrapyardLayout>>(File.ReadAllText(Application.dataPath + "/RemoteData/ScrapyardLayoutData.txt"));
+
+            return loaded;
+        }
+
+        //============================================================================================================//
     }
 }

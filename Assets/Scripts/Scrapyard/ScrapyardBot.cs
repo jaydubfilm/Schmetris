@@ -195,7 +195,7 @@ namespace StarSalvager
                     //TODO: Add click to sell bit functionality
                     break;
                 case ScrapyardPart scrapyardPart:
-                    PlayerPersistentData.PlayerData.AddResources(scrapyardPart.Type, scrapyardPart.level);
+                    PlayerPersistentData.PlayerData.AddResources(scrapyardPart.Type, scrapyardPart.level, true);
                     break;
             }
 
