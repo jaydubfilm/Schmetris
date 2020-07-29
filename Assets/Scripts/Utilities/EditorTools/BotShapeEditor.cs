@@ -143,7 +143,7 @@ namespace StarSalvager
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
 
-            if (mouseCoordinate.x == 0 && mouseCoordinate.y == 0)
+            if (mouseCoordinate.x != 0 || mouseCoordinate.y != 0)
             {
                 foreach (ScrapyardBot scrapBot in _scrapyardBots)
                 {
@@ -311,8 +311,8 @@ namespace StarSalvager
                 EditorBotShapeData.AddEditorShapeData(newData);
             }
 
-            DeloadAllBots();
-            DeloadAllShapes();
+            //DeloadAllBots();
+            //DeloadAllShapes();
         }
 
         public void AddCategory(string categoryName)

@@ -53,6 +53,19 @@ namespace StarSalvager.UI
         private Button SellBitsButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button IsUpgradingButton;
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button UndoButton;
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button RedoButton;
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button SaveLayoutButton;
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button LoadLayoutButton;
+
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private GameObject saveMenuPortion;
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private GameObject loadMenuPortion;
 
         //============================================================================================================//
 
@@ -101,12 +114,36 @@ namespace StarSalvager.UI
 
             SaveButton.onClick.AddListener(() =>
             {
+                saveMenuPortion.SetActive(true);
+            });
+
+            LoadButton.onClick.AddListener(() =>
+            {
+                loadMenuPortion.SetActive(true);
+            });
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            SaveButton.onClick.AddListener(() =>
+            {
                 Debug.Log("Save Button Pressed");
             });
 
             LoadButton.onClick.AddListener(() =>
             {
                 Debug.Log("Load Button Pressed");
+            });
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            UndoButton.onClick.AddListener(() =>
+            {
+                m_scrapyard.UndoStackPop();
+            });
+
+            RedoButton.onClick.AddListener(() =>
+            {
+                m_scrapyard.RedoStackPop();
             });
 
             //--------------------------------------------------------------------------------------------------------//
