@@ -211,7 +211,7 @@ namespace StarSalvager
             if (selectedPartType == null)
                 return;
 
-            if (!PlayerPersistentData.PlayerData.CanAffordPart((PART_TYPE)selectedPartType, selectedpartLevel, true))
+            if (!PlayerPersistentData.PlayerData.CanAffordPart((PART_TYPE)selectedPartType, SelectedPartLevel, true))
             {
                 droneDesignUi.DisplayInsufficientResources();
                 return;

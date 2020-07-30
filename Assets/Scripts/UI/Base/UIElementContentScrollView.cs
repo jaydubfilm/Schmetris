@@ -19,12 +19,16 @@ namespace StarSalvager.UI
 
         public List<UIElement<T>> Elements { get; private set; }
 
-        public U AddElement<U>(T data, string gameObjectName = "") where U: UIElement<T>
+        public U AddElement<U>(T data, string gameObjectName = "", bool compareNames = false) where U: UIElement<T>
         {
             if (Elements == null)
                 Elements = new List<UIElement<T>>();
 
-            var exists = FindElement<U>(data);
+            U exists;
+            if (compareNames)
+                exists = FindElement<U>(data, name);
+            else
+                exists = FindElement<U>(data);
 
             if (exists != null)
                 return exists;
@@ -33,10 +37,10 @@ namespace StarSalvager.UI
 
             if (!string.IsNullOrEmpty(gameObjectName))
                 element.gameObject.name = gameObjectName;
-            
+
             element.transform.SetParent(contentTransform, false);
             element.transform.localScale = Vector3.one;
-            
+
             Elements.Add(element);
 
             return element;
@@ -46,7 +50,12 @@ namespace StarSalvager.UI
         {
             return (U) Elements?.FirstOrDefault(x => x.data.Equals(data));
         }
-        
+
+        public U FindElement<U>(T data, string name) where U : UIElement<T>
+        {
+            return (U)Elements?.FirstOrDefault(x => x.data.Equals(data) && x.name == name);
+        }
+
         public void RemoveElement(T data)
         {
             if (Elements == null)
@@ -61,12 +70,12 @@ namespace StarSalvager.UI
 
                 index = i;
                 break;
-                
+
             }
 
             if (index < 0)
                 return;
-            
+
             Elements.RemoveAt(index);
 
         }
@@ -88,5 +97,3 @@ namespace StarSalvager.UI
 
     }
 }
-
-
