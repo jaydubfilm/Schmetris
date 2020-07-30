@@ -52,7 +52,7 @@ namespace StarSalvager.Values
             return loaded;
         }
 
-        public static void OnApplicationQuit()
+        public static void CustomOnApplication()
         {
             ExportPlayerPersistentData(PlayerData);
         }

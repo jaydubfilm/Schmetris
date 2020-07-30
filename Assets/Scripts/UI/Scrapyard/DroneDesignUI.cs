@@ -138,7 +138,6 @@ namespace StarSalvager.UI
 
             MenuButton.onClick.AddListener(() =>
             {
-                mDroneDesigner.SaveBlockData();
                 SceneLoader.ActivateScene("MainMenuScene", "ScrapyardScene");
             });
 
@@ -252,7 +251,6 @@ namespace StarSalvager.UI
             saveConfirm.onClick.AddListener(() =>
             {
                 mDroneDesigner.SaveLayout(saveNameInputField.text);
-                SetPartsScrollActive(false);
                 saveMenu.SetActive(false);
                 _currentlyOverwriting = true;
                 screenBlackImage.gameObject.SetActive(false);
@@ -273,7 +271,6 @@ namespace StarSalvager.UI
             saveOverwrite.onClick.AddListener(() =>
             {
                 mDroneDesigner.SaveLayout(currentSelected.Name);
-                SetPartsScrollActive(false);
                 saveMenu.SetActive(false);
                 _currentlyOverwriting = true;
                 screenBlackImage.gameObject.SetActive(false);
@@ -318,13 +315,11 @@ namespace StarSalvager.UI
 
         private void UpdateLoadListUiScrollViews()
         {
-            print("UPDATE");
             foreach (var layoutData in mDroneDesigner.ScrapyardLayouts)
             {
                 if (layoutScrollView.FindElement<LayoutUIElement>(layoutData))
                     continue;
 
-                print("Setup");
                 var element = layoutScrollView.AddElement<LayoutUIElement>(layoutData, $"{layoutData.Name}_UIElement");
                 element.Init(layoutData, LayoutPressed);
             }
@@ -408,7 +403,6 @@ namespace StarSalvager.UI
         private void LayoutPressed(ScrapyardLayout botData)
         {
             currentSelected = botData;
-            mDroneDesigner.LoadLayout(currentSelected.Name);
             loadName.text = "Load " + botData.Name;
         }
 
