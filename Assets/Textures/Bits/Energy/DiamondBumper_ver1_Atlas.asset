@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
-  m_Name: BallHead_enemy_ver1_Atlas
+  m_Name: DiamondBumper_ver1_Atlas
   m_EditorClassIdentifier: 
-  atlasFile: {fileID: 4900000, guid: af8b7c7222bbad4478e40ccefdb4069b, type: 3}
+  atlasFile: {fileID: 4900000, guid: dcbfb60c3dd91e346998bf43bfd5c512, type: 3}
   materials:
-  - {fileID: 2100000, guid: 937e2291d9af27a4297b8eca30940161, type: 2}
+  - {fileID: 2100000, guid: fbdbff7ca91d9964cad8b6d03d0d8fd4, type: 2}

@@ -1,0 +1,752 @@
+fileFormatVersion: 2
+guid: 398740a6d187aae47a7688a3d75435cb
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2080951019445790691
+    second: Dimond2-animation_00
+  - first:
+      213: 1114651412689869342
+    second: Dimond2-animation_01
+  - first:
+      213: -3284566602318423663
+    second: Dimond2-animation_02
+  - first:
+      213: 6043223430522857704
+    second: Dimond2-animation_03
+  - first:
+      213: 5991782758686229198
+    second: Dimond2-animation_04
+  - first:
+      213: 7711013741405923111
+    second: Dimond2-animation_05
+  - first:
+      213: 3881694409595361176
+    second: Dimond2-animation_06
+  - first:
+      213: -9180650562381548484
+    second: Dimond2-animation_07
+  - first:
+      213: 3187012003345727014
+    second: Dimond2-animation_08
+  - first:
+      213: 8731255878010736912
+    second: Dimond2-animation_09
+  - first:
+      213: 5781771318575714668
+    second: Dimond2-animation_10
+  - first:
+      213: -6308307889672430132
+    second: Dimond2-animation_11
+  - first:
+      213: -6871139774314945602
+    second: Dimond2-animation_12
+  - first:
+      213: -1764463885582269776
+    second: Dimond2-animation_13
+  - first:
+      213: 114744866663300598
+    second: Dimond2-animation_14
+  - first:
+      213: 4464208162583244011
+    second: Dimond2-animation_15
+  - first:
+      213: -1817239968389057986
+    second: Dimond2-animation_16
+  - first:
+      213: 6233755029774544350
+    second: Dimond2-animation_17
+  - first:
+      213: 6169809497654526993
+    second: Dimond2-animation_18
+  - first:
+      213: -4500507844839962970
+    second: Dimond2-animation_19
+  - first:
+      213: 1307935265268281564
+    second: Dimond2-animation_20
+  - first:
+      213: -5307755841750835960
+    second: Dimond2-animation_21
+  - first:
+      213: 4720878057143199733
+    second: Dimond2-animation_22
+  - first:
+      213: -1005246409912343904
+    second: Dimond2-animation_23
+  - first:
+      213: -7329482659093728740
+    second: Dimond2-animation_24
+  - first:
+      213: 8101997650228264873
+    second: Dimond2-animation_25
+  - first:
+      213: -2201456209400624103
+    second: Dimond2-animation_26
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: -1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 0
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Dimond2-animation_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 116
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e7ad054de501ec10800000000000000
+      internalID: 2080951019445790691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_01
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 116
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1a54cddd89087f00800000000000000
+      internalID: 1114651412689869342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_02
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 116
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 199d2bbd310ea62d0800000000000000
+      internalID: -3284566602318423663
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_03
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 116
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e8e1a211b7ddd350800000000000000
+      internalID: 6043223430522857704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_04
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 116
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec28dc65ca6172350800000000000000
+      internalID: 5991782758686229198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_05
+      rect:
+        serializedVersion: 2
+        x: 650
+        y: 116
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 727e7a2a426030b60800000000000000
+      internalID: 7711013741405923111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_06
+      rect:
+        serializedVersion: 2
+        x: 780
+        y: 116
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8971d8adf7c8ed530800000000000000
+      internalID: 3881694409595361176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_07
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 245
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c34f14664f6c79080800000000000000
+      internalID: -9180650562381548484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_08
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 245
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62ef352188a8a3c20800000000000000
+      internalID: 3187012003345727014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_09
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 245
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0111fdbf5f6ab2970800000000000000
+      internalID: 8731255878010736912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_10
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 245
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c615f30916afc3050800000000000000
+      internalID: 5781771318575714668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_11
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 245
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccdd74ea5636478a0800000000000000
+      internalID: -6308307889672430132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_12
+      rect:
+        serializedVersion: 2
+        x: 650
+        y: 245
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb366e5b7cec4a0a0800000000000000
+      internalID: -6871139774314945602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_13
+      rect:
+        serializedVersion: 2
+        x: 780
+        y: 245
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b20dd0d17d5387e0800000000000000
+      internalID: -1764463885582269776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_14
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 374
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6fdf34929d7a79100800000000000000
+      internalID: 114744866663300598
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_15
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 374
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bec6c26ebad04fd30800000000000000
+      internalID: 4464208162583244011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_16
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 374
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e32378c70edd7c6e0800000000000000
+      internalID: -1817239968389057986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_17
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 374
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: edd2486fb2fb28650800000000000000
+      internalID: 6233755029774544350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_18
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 374
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 114878f8c019f9550800000000000000
+      internalID: 6169809497654526993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_19
+      rect:
+        serializedVersion: 2
+        x: 650
+        y: 374
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a68477b5fbfa81c0800000000000000
+      internalID: -4500507844839962970
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_20
+      rect:
+        serializedVersion: 2
+        x: 780
+        y: 374
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd0b58ba138b62210800000000000000
+      internalID: 1307935265268281564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_21
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 503
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80ddfe10f201756b0800000000000000
+      internalID: -5307755841750835960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_22
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 503
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f7e4f7a49de38140800000000000000
+      internalID: 4720878057143199733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_23
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 503
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a2207957b5ac02f0800000000000000
+      internalID: -1005246409912343904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_24
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 503
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c123555da52784a90800000000000000
+      internalID: -7329482659093728740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_25
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 503
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9afb7e8cfe3107070800000000000000
+      internalID: 8101997650228264873
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dimond2-animation_26
+      rect:
+        serializedVersion: 2
+        x: 650
+        y: 503
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91c091acd3bd271e0800000000000000
+      internalID: -2201456209400624103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -13,19 +13,19 @@ MonoBehaviour:
   m_Name: BallHead_Default
   m_EditorClassIdentifier: 
   sprites:
-  - {fileID: 2357439660054832943, guid: 5d29c2d5150464b4e95ceddda044a657, type: 3}
-  - {fileID: -7196277583270249734, guid: 5d29c2d5150464b4e95ceddda044a657, type: 3}
-  - {fileID: 962509961299145510, guid: 5d29c2d5150464b4e95ceddda044a657, type: 3}
-  - {fileID: 1173497254590542945, guid: 5d29c2d5150464b4e95ceddda044a657, type: 3}
-  - {fileID: 5302662780755779538, guid: 5d29c2d5150464b4e95ceddda044a657, type: 3}
-  - {fileID: 6089427668078774575, guid: 5d29c2d5150464b4e95ceddda044a657, type: 3}
-  - {fileID: 7238307507730690899, guid: 5d29c2d5150464b4e95ceddda044a657, type: 3}
-  - {fileID: 2232186508233565116, guid: 5d29c2d5150464b4e95ceddda044a657, type: 3}
-  - {fileID: 1652705381411858658, guid: 5d29c2d5150464b4e95ceddda044a657, type: 3}
-  - {fileID: -3312750005598948846, guid: 5d29c2d5150464b4e95ceddda044a657, type: 3}
-  - {fileID: 3489291087901742313, guid: 5d29c2d5150464b4e95ceddda044a657, type: 3}
-  - {fileID: 296661238107261286, guid: 5d29c2d5150464b4e95ceddda044a657, type: 3}
-  - {fileID: 8618161290902320108, guid: 5d29c2d5150464b4e95ceddda044a657, type: 3}
+  - {fileID: 2357439660054832943, guid: ca216a3cd365bfe4e924677094170fdb, type: 3}
+  - {fileID: -7196277583270249734, guid: ca216a3cd365bfe4e924677094170fdb, type: 3}
+  - {fileID: 962509961299145510, guid: ca216a3cd365bfe4e924677094170fdb, type: 3}
+  - {fileID: 1173497254590542945, guid: ca216a3cd365bfe4e924677094170fdb, type: 3}
+  - {fileID: 5302662780755779538, guid: ca216a3cd365bfe4e924677094170fdb, type: 3}
+  - {fileID: 6089427668078774575, guid: ca216a3cd365bfe4e924677094170fdb, type: 3}
+  - {fileID: 7238307507730690899, guid: ca216a3cd365bfe4e924677094170fdb, type: 3}
+  - {fileID: 2232186508233565116, guid: ca216a3cd365bfe4e924677094170fdb, type: 3}
+  - {fileID: 1652705381411858658, guid: ca216a3cd365bfe4e924677094170fdb, type: 3}
+  - {fileID: -3312750005598948846, guid: ca216a3cd365bfe4e924677094170fdb, type: 3}
+  - {fileID: 3489291087901742313, guid: ca216a3cd365bfe4e924677094170fdb, type: 3}
+  - {fileID: 296661238107261286, guid: ca216a3cd365bfe4e924677094170fdb, type: 3}
+  - {fileID: 8618161290902320108, guid: ca216a3cd365bfe4e924677094170fdb, type: 3}
   speed: 1
   PingPong: 0
   useAnimationCurve: 0

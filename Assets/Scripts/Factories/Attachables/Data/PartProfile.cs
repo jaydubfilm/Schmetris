@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using StarSalvager.Utilities.Animations;
 using UnityEngine;
 
 namespace StarSalvager.Factories.Data
@@ -29,5 +30,13 @@ namespace StarSalvager.Factories.Data
 
         [SerializeField, FoldoutGroup("$Name")]
         private Sprite[] _sprites;
+        
+        public AnimationScriptableObject animation
+        {
+            get => _animation;
+            set => _animation = value;
+        }
+        [SerializeField, FoldoutGroup("$Name")]
+        private AnimationScriptableObject _animation;
     }
 }

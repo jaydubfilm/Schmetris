@@ -1,0 +1,195 @@
+
+DiamondBumper_ver1.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Dimond2-animation_00
+  rotate: false
+  xy: 0, 781
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_01
+  rotate: false
+  xy: 130, 781
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_02
+  rotate: false
+  xy: 260, 781
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_03
+  rotate: false
+  xy: 390, 781
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_04
+  rotate: false
+  xy: 520, 781
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_05
+  rotate: false
+  xy: 650, 781
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_06
+  rotate: false
+  xy: 780, 781
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_07
+  rotate: false
+  xy: 0, 652
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_08
+  rotate: false
+  xy: 130, 652
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_09
+  rotate: false
+  xy: 260, 652
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_10
+  rotate: false
+  xy: 390, 652
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_11
+  rotate: false
+  xy: 520, 652
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_12
+  rotate: false
+  xy: 650, 652
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_13
+  rotate: false
+  xy: 780, 652
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_14
+  rotate: false
+  xy: 0, 523
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_15
+  rotate: false
+  xy: 130, 523
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_16
+  rotate: false
+  xy: 260, 523
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_17
+  rotate: false
+  xy: 390, 523
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_18
+  rotate: false
+  xy: 520, 523
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_19
+  rotate: false
+  xy: 650, 523
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_20
+  rotate: false
+  xy: 780, 523
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_21
+  rotate: false
+  xy: 0, 394
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_22
+  rotate: false
+  xy: 130, 394
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_23
+  rotate: false
+  xy: 260, 394
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_24
+  rotate: false
+  xy: 390, 394
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_25
+  rotate: false
+  xy: 520, 394
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Dimond2-animation_26
+  rotate: false
+  xy: 650, 394
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1

@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae94ebc07ea1de141874967c13a86044, type: 3}
+  m_Name: Diamond_Energy
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 2080951019445790691, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: 1114651412689869342, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: -3284566602318423663, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: 6043223430522857704, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: 5991782758686229198, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: 7711013741405923111, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: 3881694409595361176, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: -9180650562381548484, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: 3187012003345727014, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: 8731255878010736912, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: 5781771318575714668, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: -6308307889672430132, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: -6871139774314945602, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: -1764463885582269776, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: 114744866663300598, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: 4464208162583244011, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: -1817239968389057986, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: 6233755029774544350, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: 6169809497654526993, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: -4500507844839962970, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: 1307935265268281564, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: -5307755841750835960, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: 4720878057143199733, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: -1005246409912343904, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: -7329482659093728740, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: 8101997650228264873, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  - {fileID: -2201456209400624103, guid: 398740a6d187aae47a7688a3d75435cb, type: 3}
+  speed: 1
+  PingPong: 0
+  useAnimationCurve: 0
+  curve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

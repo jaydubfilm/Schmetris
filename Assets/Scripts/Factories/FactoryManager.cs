@@ -86,23 +86,23 @@ namespace StarSalvager.Factories
         
         //============================================================================================================//
         
-        #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        
-        [SerializeField, Required, BoxGroup("Attachables/Bits"), Space(10f)]
-        private AttachableProfileScriptableObject bitProfileAlt;
-        
-        private bool bitToggle;
-        [BoxGroup("Attachables/Bits"), Button("Toggle Bit Profile"), DisableInEditorMode]
-        public void ToggleBitProfile()
-        {
-            bitToggle = !bitToggle;
-
-            _bitAttachableFactory = bitToggle
-                ? new BitAttachableFactory(bitProfileAlt, bitRemoteData)
-                : new BitAttachableFactory(bitProfile, bitRemoteData);
-        }
-        
-        #endif
+        //#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        //
+        //[SerializeField, Required, BoxGroup("Attachables/Bits"), Space(10f)]
+        //private AttachableProfileScriptableObject bitProfileAlt;
+        //
+        //private bool bitToggle;
+        //[BoxGroup("Attachables/Bits"), Button("Toggle Bit Profile"), DisableInEditorMode]
+        //public void ToggleBitProfile()
+        //{
+        //    bitToggle = !bitToggle;
+//
+        //    _bitAttachableFactory = bitToggle
+        //        ? new BitAttachableFactory(bitProfileAlt, bitRemoteData)
+        //        : new BitAttachableFactory(bitProfile, bitRemoteData);
+        //}
+        //
+        //#endif
         
         //============================================================================================================//
 

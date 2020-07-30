@@ -1,0 +1,216 @@
+
+SquareBumper_ver1.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Squar-ExportAnimation_00
+  rotate: false
+  xy: 836, 837
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_01
+  rotate: false
+  xy: 0, 720
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_02
+  rotate: false
+  xy: 130, 719
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_03
+  rotate: false
+  xy: 260, 719
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_04
+  rotate: false
+  xy: 390, 712
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_05
+  rotate: false
+  xy: 520, 712
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_06
+  rotate: false
+  xy: 650, 712
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_07
+  rotate: false
+  xy: 780, 708
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_08
+  rotate: false
+  xy: 0, 591
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_09
+  rotate: false
+  xy: 130, 590
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_10
+  rotate: false
+  xy: 260, 590
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_11
+  rotate: false
+  xy: 390, 583
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_12
+  rotate: false
+  xy: 229, 848
+  size: 114, 116
+  orig: 128, 128
+  offset: 7, 7
+  index: -1
+Squar-ExportAnimation_13
+  rotate: false
+  xy: 345, 848
+  size: 114, 116
+  orig: 128, 128
+  offset: 7, 7
+  index: -1
+Squar-ExportAnimation_14
+  rotate: false
+  xy: 0, 850
+  size: 110, 114
+  orig: 128, 128
+  offset: 9, 8
+  index: -1
+Squar-ExportAnimation_15
+  rotate: false
+  xy: 112, 849
+  size: 115, 115
+  orig: 128, 128
+  offset: 7, 8
+  index: -1
+Squar-ExportAnimation_16
+  rotate: false
+  xy: 461, 841
+  size: 123, 123
+  orig: 128, 128
+  offset: 3, 4
+  index: -1
+Squar-ExportAnimation_17
+  rotate: false
+  xy: 520, 583
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_18
+  rotate: false
+  xy: 650, 583
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_19
+  rotate: false
+  xy: 780, 579
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_20
+  rotate: false
+  xy: 0, 462
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_21
+  rotate: false
+  xy: 130, 461
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_22
+  rotate: false
+  xy: 586, 841
+  size: 123, 123
+  orig: 128, 128
+  offset: 3, 4
+  index: -1
+Squar-ExportAnimation_23
+  rotate: false
+  xy: 260, 461
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_24
+  rotate: false
+  xy: 390, 454
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_25
+  rotate: false
+  xy: 520, 454
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_26
+  rotate: false
+  xy: 650, 454
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_27
+  rotate: false
+  xy: 780, 450
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+Squar-ExportAnimation_28
+  rotate: false
+  xy: 711, 841
+  size: 123, 123
+  orig: 128, 128
+  offset: 3, 4
+  index: -1
+Squar-ExportAnimation_29
+  rotate: false
+  xy: 0, 333
+  size: 128, 127
+  orig: 128, 128
+  offset: 0, 1
+  index: -1

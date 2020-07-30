@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Recycling;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
@@ -10,6 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace StarSalvager.Factories
 {
+    //FIXME This needs to be cleaned up, feels messy
     public class BitAttachableFactory : AttachableFactoryBase<BitProfile, BIT_TYPE>
     {
         private BitRemoteDataScriptableObject remoteData;
@@ -91,12 +91,31 @@ namespace StarSalvager.Factories
             var remote = remoteData.GetRemoteData(type);
             var profile = factoryProfile.GetProfile(type);
             //FIXME I may want to put this somewhere else, and leave the level dependent sprite obtaining here
-            var sprite = type == BIT_TYPE.BLACK ? profile.GetRandomSprite() : profile.GetSprite(blockData.Level);            
+            var sprite = type == BIT_TYPE.BLACK ? profile.GetRandomSprite() : profile.GetSprite(blockData.Level);
 
-            if (!Recycler.TryGrab(out Bit temp))
+            //--------------------------------------------------------------------------------------------------------//
+            
+            Bit temp;
+            //If there is an animation associated with this profile entry, create the animated version of the prefab
+            if (profile.animation != null)
             {
-                temp = Object.Instantiate(factoryProfile.Prefab).GetComponent<Bit>();
+                if (!Recycler.TryGrab(out AnimatedBit anim))
+                {
+                    anim = CreateAnimatedObject<AnimatedBit>();
+                }
+                
+                anim.SimpleAnimator.SetAnimation(profile.animation);
+                temp = anim;
             }
+            else
+            {
+                if (!Recycler.TryGrab(out temp))
+                {
+                    temp = CreateObject<Bit>();
+                }
+            }
+            
+            //--------------------------------------------------------------------------------------------------------//
 
             temp.SetColliderActive(true);
             temp.SetSprite(sprite);
@@ -222,6 +241,18 @@ namespace StarSalvager.Factories
         }
 
         //============================================================================================================//
+        
+        public GameObject CreateAnimatedGameObject()
+        {
+            return Object.Instantiate(factoryProfile.AnimatedPrefab);
+        }
+        
+        public T CreateAnimatedObject<T>()
+        {
+            var temp = CreateAnimatedGameObject();
+
+            return temp.GetComponent<T>();
+        }
 
         public override GameObject CreateGameObject()
         {

@@ -1,5 +1,4 @@
-﻿using System;
-using Recycling;
+﻿using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Values;
 using StarSalvager.Factories;
@@ -213,7 +212,7 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        public void CustomRecycle(params object[] args)
+        public virtual void CustomRecycle(params object[] args)
         {
             SetAttached(false);
 

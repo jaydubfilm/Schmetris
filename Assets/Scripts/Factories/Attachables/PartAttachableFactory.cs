@@ -1,4 +1,5 @@
-﻿using StarSalvager.Factories.Data;
+﻿using Recycling;
+using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -6,6 +7,7 @@ using UnityEngine;
 
 namespace StarSalvager.Factories
 {
+    //FIXME This needs to be cleaned up, feels messy
     public class PartAttachableFactory : AttachableFactoryBase<PartProfile, PART_TYPE>
     {
         private RemotePartProfileScriptableObject remotePartData;
@@ -50,8 +52,32 @@ namespace StarSalvager.Factories
             var remote = remotePartData.GetRemoteData((PART_TYPE) blockData.Type);
             var profile = factoryProfile.GetProfile((PART_TYPE)blockData.Type);
             var sprite = profile.GetSprite(blockData.Level);
+            
+            //--------------------------------------------------------------------------------------------------------//
 
-            var temp = Object.Instantiate(factoryProfile.Prefab).GetComponent<Part>();
+            Part temp;
+            //If there is an animation associated with this profile entry, create the animated version of the prefab
+            if (profile.animation != null)
+            {
+                if (!Recycler.TryGrab(out AnimatedPart anim))
+                {
+                    anim = CreateAnimatedObject<AnimatedPart>();
+                }
+                
+                anim.SimpleAnimator.SetAnimation(profile.animation);
+                temp = anim;
+            }
+            else
+            {
+                if (!Recycler.TryGrab(out temp))
+                {
+                    temp = CreateObject<Part>();
+                }
+            }
+            
+            //--------------------------------------------------------------------------------------------------------//
+
+            //var temp = Object.Instantiate(factoryProfile.Prefab).GetComponent<Part>();
             temp.SetSprite(sprite);
             temp.LoadBlockData(blockData);
 
@@ -99,18 +125,20 @@ namespace StarSalvager.Factories
             var profile = factoryProfile.GetProfile((PART_TYPE)blockData.Type);
             var sprite = profile.GetSprite(blockData.Level);
 
-            var temp = Object.Instantiate(factoryProfile.ScrapyardPrefab).GetComponent<ScrapyardPart>();
+            //var temp = Object.Instantiate(factoryProfile.ScrapyardPrefab).GetComponent<ScrapyardPart>();
+
+            if (!Recycler.TryGrab(out ScrapyardPart temp))
+            {
+                temp = CreateScrapyardObject<ScrapyardPart>();
+            }
+            
             temp.SetSprite(sprite);
             temp.LoadBlockData(blockData);
 
-            temp.gameObject.name = $"{temp.Type}_{temp.level}";
-            return temp.gameObject;
-        }
-        public T CreateScrapyardObject<T>(BlockData blockData)
-        {
-            var temp = CreateScrapyardGameObject(blockData);
-
-            return temp.GetComponent<T>();
+            var gameObject = temp.gameObject;
+            gameObject.name = $"{temp.Type}_{temp.level}";
+            
+            return gameObject;
         }
 
         //============================================================================================================//
@@ -132,9 +160,42 @@ namespace StarSalvager.Factories
 
             return temp.GetComponent<T>();
         }
+        
+        public T CreateScrapyardObject<T>(BlockData blockData)
+        {
+            var temp = CreateScrapyardGameObject(blockData);
+
+            return temp.GetComponent<T>();
+        }
+        
+        //============================================================================================================//
+        
+        public GameObject CreateScrapyardGameObject()
+        {
+            return Object.Instantiate(factoryProfile.ScrapyardPrefab);
+        }
+        
+        public T CreateScrapyardObject<T>()
+        {
+            var temp = CreateScrapyardGameObject();
+
+            return temp.GetComponent<T>();
+        }
 
         //============================================================================================================//
 
+        public GameObject CreateAnimatedGameObject()
+        {
+            return Object.Instantiate(factoryProfile.AnimatedPrefab);
+        }
+        
+        public T CreateAnimatedObject<T>()
+        {
+            var temp = CreateAnimatedGameObject();
+
+            return temp.GetComponent<T>();
+        }
+        
         public override GameObject CreateGameObject()
         {
             return Object.Instantiate(factoryProfile.Prefab);

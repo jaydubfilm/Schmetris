@@ -91,6 +91,10 @@ namespace Recycling
 			
 			//Make sure that the gameObject actually contains the component we're trying to Recycle
 			//--------------------------------------------------------------------------------------------------------//
+
+			//See if there's a recycler override that needs to set a different recycle type
+			if (gameObject.GetComponent<IOverrideRecycleType>() is IOverrideRecycleType overrideRecycleType)
+				type = overrideRecycleType.GetOverrideType();
 			
 			if(gameObject.GetComponent(type) is null)
 				throw new NullReferenceException($"Unable to find {type.Name} on {gameObject.name}");

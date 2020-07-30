@@ -1,0 +1,824 @@
+fileFormatVersion: 2
+guid: f883348d37edf1a4ebb1be8c2425bbe3
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3031940875956788181
+    second: Squar-ExportAnimation_00
+  - first:
+      213: -6844684878937305326
+    second: Squar-ExportAnimation_01
+  - first:
+      213: 1115109827275708813
+    second: Squar-ExportAnimation_02
+  - first:
+      213: -2372911713592117334
+    second: Squar-ExportAnimation_03
+  - first:
+      213: 1466297539792315149
+    second: Squar-ExportAnimation_04
+  - first:
+      213: 6716158266448792307
+    second: Squar-ExportAnimation_05
+  - first:
+      213: -5420829984526948920
+    second: Squar-ExportAnimation_06
+  - first:
+      213: 4562153900063308220
+    second: Squar-ExportAnimation_07
+  - first:
+      213: -2407734440318604645
+    second: Squar-ExportAnimation_08
+  - first:
+      213: -5013642077866109346
+    second: Squar-ExportAnimation_09
+  - first:
+      213: -3529480245800007057
+    second: Squar-ExportAnimation_10
+  - first:
+      213: 1547191385300489690
+    second: Squar-ExportAnimation_11
+  - first:
+      213: -4721862841052917831
+    second: Squar-ExportAnimation_12
+  - first:
+      213: -5479063510001709614
+    second: Squar-ExportAnimation_13
+  - first:
+      213: 4901437338491534568
+    second: Squar-ExportAnimation_14
+  - first:
+      213: 2182382274705530425
+    second: Squar-ExportAnimation_15
+  - first:
+      213: -1886076774810275910
+    second: Squar-ExportAnimation_16
+  - first:
+      213: -7958803125223073704
+    second: Squar-ExportAnimation_17
+  - first:
+      213: 6175414638548715847
+    second: Squar-ExportAnimation_18
+  - first:
+      213: -271747716465775506
+    second: Squar-ExportAnimation_19
+  - first:
+      213: 871907981624546109
+    second: Squar-ExportAnimation_20
+  - first:
+      213: 713016242899944628
+    second: Squar-ExportAnimation_21
+  - first:
+      213: 8746171382791382214
+    second: Squar-ExportAnimation_22
+  - first:
+      213: 7116402976237677332
+    second: Squar-ExportAnimation_23
+  - first:
+      213: 6021364167476958753
+    second: Squar-ExportAnimation_24
+  - first:
+      213: -872920944934320463
+    second: Squar-ExportAnimation_25
+  - first:
+      213: -4866924332314059553
+    second: Squar-ExportAnimation_26
+  - first:
+      213: -6938238259175643262
+    second: Squar-ExportAnimation_27
+  - first:
+      213: -8739862786323634622
+    second: Squar-ExportAnimation_28
+  - first:
+      213: 425503972059301646
+    second: Squar-ExportAnimation_29
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: -1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 0
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_00
+      rect:
+        serializedVersion: 2
+        x: 836
+        y: 60
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b24eb9456d16ce5d0800000000000000
+      internalID: -3031940875956788181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_01
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 177
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21f44770e5bc201a0800000000000000
+      internalID: -6844684878937305326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_02
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 178
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d89d054da7aa97f00800000000000000
+      internalID: 1115109827275708813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_03
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 178
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa77af36e59b11fd0800000000000000
+      internalID: -2372911713592117334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_04
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 185
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d03a95af7d5595410800000000000000
+      internalID: 1466297539792315149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_05
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 185
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3facbfe0c56943d50800000000000000
+      internalID: 6716158266448792307
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_06
+      rect:
+        serializedVersion: 2
+        x: 650
+        y: 185
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c52c7099d755c4b0800000000000000
+      internalID: -5420829984526948920
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_07
+      rect:
+        serializedVersion: 2
+        x: 780
+        y: 189
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb9bfeffcc6005f30800000000000000
+      internalID: 4562153900063308220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_08
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 306
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9ae5538842069ed0800000000000000
+      internalID: -2407734440318604645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_09
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 307
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e56d6d5f717fb6ab0800000000000000
+      internalID: -5013642077866109346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_10
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 307
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6a055b9a64c40fc0800000000000000
+      internalID: -3529480245800007057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_11
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 314
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad551681e5ab87510800000000000000
+      internalID: 1547191385300489690
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_12
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 60
+        width: 114
+        height: 116
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9bf8ce873c2987eb0800000000000000
+      internalID: -4721862841052917831
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_13
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 60
+        width: 114
+        height: 116
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2dd0b8854c476f3b0800000000000000
+      internalID: -5479063510001709614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_14
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 60
+        width: 110
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ecbf995a47650440800000000000000
+      internalID: 4901437338491534568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_15
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 60
+        width: 115
+        height: 115
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93e9ee7bd11694e10800000000000000
+      internalID: 2182382274705530425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_16
+      rect:
+        serializedVersion: 2
+        x: 461
+        y: 60
+        width: 123
+        height: 123
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abfa15a8a2f43d5e0800000000000000
+      internalID: -1886076774810275910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_17
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 314
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8585fc3a9b6ac8190800000000000000
+      internalID: -7958803125223073704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_18
+      rect:
+        serializedVersion: 2
+        x: 650
+        y: 314
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 749817f15ea73b550800000000000000
+      internalID: 6175414638548715847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_19
+      rect:
+        serializedVersion: 2
+        x: 780
+        y: 318
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6ca88344ee8a3cf0800000000000000
+      internalID: -271747716465775506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 435
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d331f8190b3a91c00800000000000000
+      internalID: 871907981624546109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_21
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 436
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b48225ce7425e900800000000000000
+      internalID: 713016242899944628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_22
+      rect:
+        serializedVersion: 2
+        x: 586
+        y: 60
+        width: 123
+        height: 123
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c4a7ff8884a06970800000000000000
+      internalID: 8746171382791382214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_23
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 436
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41bed257dca82c260800000000000000
+      internalID: 7116402976237677332
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_24
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 443
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 126dab9cece209350800000000000000
+      internalID: 6021364167476958753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_25
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 443
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b601388603c2e3f0800000000000000
+      internalID: -872920944934320463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_26
+      rect:
+        serializedVersion: 2
+        x: 650
+        y: 443
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdc17b71b16357cb0800000000000000
+      internalID: -4866924332314059553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_27
+      rect:
+        serializedVersion: 2
+        x: 780
+        y: 447
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 287afca401d66bf90800000000000000
+      internalID: -6938238259175643262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_28
+      rect:
+        serializedVersion: 2
+        x: 711
+        y: 60
+        width: 123
+        height: 123
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24626830a15c5b680800000000000000
+      internalID: -8739862786323634622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squar-ExportAnimation_29
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 564
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e07cc11bb91b7e500800000000000000
+      internalID: 425503972059301646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
