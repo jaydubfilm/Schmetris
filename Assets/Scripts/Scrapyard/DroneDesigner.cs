@@ -39,6 +39,8 @@ namespace StarSalvager
         private Stack<ScrapyardEditData> _toRedoStack;
 
         private ScrapyardLayout _currentLayout;
+
+        public List<ScrapyardLayout> ScrapyardLayouts => _scrapyardLayouts;
         private List<ScrapyardLayout> _scrapyardLayouts;
 
         [Sirenix.OdinInspector.Button("Clear Remote Data")]

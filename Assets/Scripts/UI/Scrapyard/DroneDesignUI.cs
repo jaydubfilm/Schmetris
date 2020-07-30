@@ -4,6 +4,7 @@ using StarSalvager.Cameras;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
@@ -31,6 +32,11 @@ namespace StarSalvager.UI
 
         [SerializeField, BoxGroup("Resource UI")]
         private ResourceUIElementScrollView resourceScrollView;
+
+        //============================================================================================================//
+
+        [SerializeField, BoxGroup("Load List UI")]
+        private LayoutElementScrollView layoutScrollView;
 
         //============================================================================================================//
 
@@ -104,7 +110,7 @@ namespace StarSalvager.UI
         [FormerlySerializedAs("m_scrapyard")] [SerializeField]
         private DroneDesigner mDroneDesigner;
 
-        private EditorGeneratorDataBase currentSelected;
+        private ScrapyardLayout currentSelected;
 
         public bool IsPopupActive => loadMenu.activeSelf || saveMenu.activeSelf || Alert.Displayed;
         private bool _currentlyOverwriting = false;
@@ -312,25 +318,17 @@ namespace StarSalvager.UI
 
         private void UpdateLoadListUiScrollViews()
         {
-            /*foreach (var botGeneratorData in m_botShapeEditor.EditorBotShapeData.m_editorBotGeneratorData)
+            print("UPDATE");
+            foreach (var layoutData in mDroneDesigner.ScrapyardLayouts)
             {
-                if (botLoadListScrollView.FindElement<BotLoadListUIElement>(botGeneratorData))
+                if (layoutScrollView.FindElement<LayoutUIElement>(layoutData))
                     continue;
 
-                var element = botLoadListScrollView.AddElement<BotLoadListUIElement>(botGeneratorData, $"{botGeneratorData.Name}_UIElement");
-                element.Init(botGeneratorData, BotShapePressed);
+                print("Setup");
+                var element = layoutScrollView.AddElement<LayoutUIElement>(layoutData, $"{layoutData.Name}_UIElement");
+                element.Init(layoutData, LayoutPressed);
             }
-
-            foreach (var shapeGeneratorData in m_botShapeEditor.EditorBotShapeData.m_editorShapeGeneratorData)
-            {
-                if (shapeLoadListScrollView.FindElement<BotLoadListUIElement>(shapeGeneratorData))
-                    continue;
-
-                var element = shapeLoadListScrollView.AddElement<BotLoadListUIElement>(shapeGeneratorData, $"{shapeGeneratorData.Name}_UIElement");
-                element.Init(shapeGeneratorData, BotShapePressed);
-            }
-
-            SetBotsScrollActive(true);*/
+            layoutScrollView.SetElementsActive(true);
         }
 
         private void SetCameraZoom(float value)
@@ -405,6 +403,13 @@ namespace StarSalvager.UI
         {
             Debug.Log($"Selected {partType}");
             mDroneDesigner.selectedPartType = partType;
+        }
+
+        private void LayoutPressed(ScrapyardLayout botData)
+        {
+            currentSelected = botData;
+            mDroneDesigner.LoadLayout(currentSelected.Name);
+            loadName.text = "Load " + botData.Name;
         }
 
         public void OnDrag(PointerEventData eventData)
