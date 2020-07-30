@@ -5,10 +5,11 @@ using Sirenix.OdinInspector;
 namespace StarSalvager.Factories.Data
 {
     [Serializable]
-    public class PartRemoteData: IEquatable<PartRemoteData>
+    public class PartRemoteData: RemoteDataBase
     {
         [FoldoutGroup("$name")]
         public string name;
+        public string Name => name;
         
         [FoldoutGroup("$name")]
         public PART_TYPE partType;
@@ -18,6 +19,7 @@ namespace StarSalvager.Factories.Data
 
         [FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true)]
         public float[] health;
+        public float[] Health => health;
 
         [FoldoutGroup("$name")]
         public List<LevelCost> costs;
@@ -36,9 +38,12 @@ namespace StarSalvager.Factories.Data
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals(PartRemoteData other)
+        public override bool Equals(RemoteDataBase other)
         {
-            return other != null && partType == other.partType;
+            if (other is PartRemoteData partRemote)
+                return other != null && partType == partRemote.partType;
+            else
+                return false;
         }
 
         /// <summary>

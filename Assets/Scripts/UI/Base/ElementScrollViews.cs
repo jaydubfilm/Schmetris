@@ -7,7 +7,7 @@ using UnityEngine;
 namespace StarSalvager.UI
 {
     [System.Serializable]
-    public class PartUIElementScrollView: UIElementContentScrollView<PartRemoteData>
+    public class PartUIElementScrollView: UIElementContentScrollView<RemoteDataBase>
     {}
 
     [System.Serializable]

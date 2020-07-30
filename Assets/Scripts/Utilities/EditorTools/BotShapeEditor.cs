@@ -33,6 +33,8 @@ namespace StarSalvager
         }
         private EditorBotShapeGeneratorData m_editorBotShapeData = null;
 
+        public BIT_TYPE? SelectedBitType = null;
+
         //============================================================================================================//
 
         // Start is called before the first frame update
@@ -116,7 +118,7 @@ namespace StarSalvager
                 shape.PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>((BIT_TYPE)Random.Range(0, 6), 0), mouseCoordinate);
             }
 
-            if (selectedPartType == null)
+            if (selectedPartType == null && SelectedBitType == null)
             {
                 return;
             }
@@ -126,8 +128,15 @@ namespace StarSalvager
                 if (scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate) != null)
                     continue;
 
-                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)selectedPartType, 0);
-                scrapBot.AttachNewBit(mouseCoordinate, attachable);
+                if (selectedPartType != null)
+                {
+                    var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)selectedPartType, SelectedPartLevel);
+                    scrapBot.AttachNewBit(mouseCoordinate, attachable);
+                }
+                else if (SelectedBitType is BIT_TYPE bitType)
+                {
+                    scrapBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(bitType, SelectedPartLevel));
+                }
             }
         }
 
