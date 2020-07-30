@@ -138,8 +138,13 @@ namespace StarSalvager
         {
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
+                List<ScrapyardBit> listBits = scrapBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
+                if (listBits.Count == 0)
+                    continue;
+                
                 Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(scrapBot.attachedBlocks.OfType<ScrapyardBit>());
                 PlayerPersistentData.PlayerData.AddResources(bits);
+                Toast.AddToast("Resources gained: " + bits.ToString(), time: 6);
                 scrapBot.RemoveAllBits();
             }
         }
