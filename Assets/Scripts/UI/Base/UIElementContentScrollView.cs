@@ -19,7 +19,7 @@ namespace StarSalvager.UI
 
         public List<UIElement<T>> Elements { get; private set; }
 
-        public U AddElement<U>(T data, string name = "", bool compareNames = false) where U: UIElement<T>
+        public U AddElement<U>(T data, string gameObjectName = "", bool compareNames = false) where U: UIElement<T>
         {
             if (Elements == null)
                 Elements = new List<UIElement<T>>();
@@ -35,12 +35,12 @@ namespace StarSalvager.UI
 
             var element = Object.Instantiate(contentPrefab).GetComponent<U>();
 
-            if (!string.IsNullOrEmpty(name))
-                element.gameObject.name = name;
-            
+            if (!string.IsNullOrEmpty(gameObjectName))
+                element.gameObject.name = gameObjectName;
+
             element.transform.SetParent(contentTransform, false);
             element.transform.localScale = Vector3.one;
-            
+
             Elements.Add(element);
 
             return element;
@@ -70,12 +70,12 @@ namespace StarSalvager.UI
 
                 index = i;
                 break;
-                
+
             }
 
             if (index < 0)
                 return;
-            
+
             Elements.RemoveAt(index);
 
         }
@@ -97,5 +97,3 @@ namespace StarSalvager.UI
 
     }
 }
-
-
