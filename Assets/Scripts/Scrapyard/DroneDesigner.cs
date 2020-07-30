@@ -10,12 +10,12 @@ using StarSalvager.Utilities.SceneManagement;
 using UnityEngine.InputSystem;
 
 using Input = StarSalvager.Utilities.Inputs.Input;
-using StarSalvager.Factories.Data;
 using Recycling;
 using System.IO;
 using Newtonsoft.Json;
 using StarSalvager.Utilities.JsonDataTypes;
 using System;
+using StarSalvager.UI.Scrapyard;
 using UnityEngine.Serialization;
 
 namespace StarSalvager

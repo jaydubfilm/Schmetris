@@ -14,13 +14,10 @@ using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace StarSalvager.UI
+namespace StarSalvager.UI.Scrapyard
 {
     public class DroneDesignUI : MonoBehaviour, IDragHandler
     {
-        [SerializeField]
-        private Button MenuButton;
-
         [SerializeField, Required, BoxGroup("Part UI")]
         private GameObject partsWindow;
         [SerializeField, Required, BoxGroup("Part UI")]
@@ -135,11 +132,6 @@ namespace StarSalvager.UI
         private void InitButtons()
         {
             //--------------------------------------------------------------------------------------------------------//
-
-            MenuButton.onClick.AddListener(() =>
-            {
-                SceneLoader.ActivateScene("MainMenuScene", "ScrapyardScene");
-            });
 
             leftTurnButton.onClick.AddListener(() =>
             {

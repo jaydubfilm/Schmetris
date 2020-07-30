@@ -5,7 +5,7 @@ using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace StarSalvager.UI
+namespace StarSalvager.UI.Scrapyard
 {
     public class ScrapyardUI : MonoBehaviour
     {
@@ -49,6 +49,8 @@ namespace StarSalvager.UI
         private Button storageButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button missionsButton;
+        [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
+        private Button menuButton;
         
         //============================================================================================================//
         
@@ -84,14 +86,17 @@ namespace StarSalvager.UI
             craftingButton.onClick.AddListener(() => ShowMenu(MENU.CRAFT));
             storageButton.onClick.AddListener(() => ShowMenu(MENU.STORAGE));
             missionsButton.onClick.AddListener(() => ShowMenu(MENU.MISSION));
+            menuButton.onClick.AddListener(() =>
+            {
+                SceneLoader.ActivateScene("MainMenuScene", "ScrapyardScene");
+            });
             
-            launchNavButton.interactable = true;
-            droneDesignButton.interactable = true;
-            craftingButton.interactable = false;
-            storageButton.interactable = false;
-            missionsButton.interactable = false;
-            
-            //--------------------------------------------------------------------------------------------------------//
+            //launchNavButton.interactable = true;
+            //droneDesignButton.interactable = true;
+            //craftingButton.interactable = false;
+            //storageButton.interactable = false;
+            //missionsButton.interactable = false;
+            //menuButton.interactable = true;
 
             //--------------------------------------------------------------------------------------------------------//
 
