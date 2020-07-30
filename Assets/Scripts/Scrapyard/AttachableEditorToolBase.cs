@@ -21,7 +21,7 @@ namespace StarSalvager
         public PART_TYPE? selectedPartType = null;
 
         [NonSerialized]
-        public int selectedpartLevel = 0;
+        public int SelectedPartLevel = 0;
 
         public void DrawGL(Camera camera)
         {

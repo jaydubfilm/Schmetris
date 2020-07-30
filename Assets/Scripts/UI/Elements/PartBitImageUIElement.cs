@@ -13,79 +13,76 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class PartUIElement : ButtonReturnUIElement<RemoteDataBase, PART_TYPE>, IDragHandler, IBeginDragHandler, IEndDragHandler
+    public class PartBitImageUIElement : ButtonReturnUIElement<RemoteDataBase, (Enum, int)>, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         private static PartAttachableFactory _partAttachableFactory;
         private static BitAttachableFactory _bitAttachableFactory;
-        
+
+        private int level = 0;
+
         //============================================================================================================//
-        
+
         [SerializeField, Required]
         private Image logoImage;
-
-        [SerializeField, Required]
-        private TMP_Text partNameText;
-
-        [SerializeField]
-        private GameObject costPrefab;
-
-        private List<CostUIElement> costElements;
 
         private RectTransform _canvasTr;
         private RectTransform partDragImageTransform;
 
         //============================================================================================================//
-        
-        public override void Init(RemoteDataBase data, Action<PART_TYPE> OnPressed)
+
+        public void Init(RemoteDataBase data, Action<(Enum, int)> OnPressed, int level)
         {
-            if (data is PartRemoteData partRemote)
+            this.level = level;
+            Init(data, OnPressed);
+        }
+
+        public override void Init(RemoteDataBase data, Action<(Enum, int)> OnPressed)
+        {
+            if (_partAttachableFactory == null)
+                _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
+
+            if (_bitAttachableFactory == null)
+                _bitAttachableFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
+
+            this.data = data;
+
+            if (this.data is PartRemoteData partRemote)
             {
-                if (_partAttachableFactory == null)
-                    _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
-
-                if (_bitAttachableFactory == null)
-                    _bitAttachableFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
-
-                this.data = data;
-
-                logoImage.sprite = _partAttachableFactory.GetProfileData(partRemote.partType).Sprites[0];
-                partNameText.text = partRemote.name;
-
-                costElements = new List<CostUIElement>();
-                foreach (var cost in partRemote.costs[0].levelCosts)
-                {
-                    var costElement = Instantiate(costPrefab).GetComponent<CostUIElement>();
-                    costElement.gameObject.name = $"{cost.type}_UIElement";
-                    costElement.transform.SetParent(transform, false);
-                    costElement.transform.localScale = Vector3.one;
-
-                    costElement.Init(cost);
-                }
+                logoImage.sprite = _partAttachableFactory.GetProfileData(partRemote.partType).Sprites[level];
 
                 button.onClick.AddListener(() =>
                 {
-                    OnPressed?.Invoke(partRemote.partType);
+                    OnPressed?.Invoke((partRemote.partType, level));
+                });
+            }
+            else if (this.data is BitRemoteData bitRemote)
+            {
+                logoImage.sprite = _bitAttachableFactory.GetBitProfile(bitRemote.bitType).Sprites[level];
+
+                button.onClick.AddListener(() =>
+                {
+                    OnPressed?.Invoke((bitRemote.bitType, level));
                 });
             }
             else
             {
-                Debug.LogError("PartUIElement Passed in value that is not PartRemoteData");
+                Debug.LogError("PartBitImageUIElement Passed in value that is not PartRemoteData");
             }
         }
-        
+
         //============================================================================================================//
 
         public void OnBeginDrag(PointerEventData eventData)
         {
             _canvasTr = GetComponentInParent<Canvas>()?.transform as RectTransform;
-            
+
             Debug.Log($"Canvas: {_canvasTr.gameObject.name}", _canvasTr.gameObject);
-            
+
             if (partDragImageTransform == null)
             {
                 var image = new GameObject("Test").AddComponent<Image>();
                 image.sprite = logoImage.sprite;
-                
+
                 partDragImageTransform = image.transform as RectTransform;
                 partDragImageTransform.anchorMin = partDragImageTransform.anchorMax = Vector2.one * 0.5f;
 
@@ -100,10 +97,10 @@ namespace StarSalvager.UI
 
             partDragImageTransform.anchoredPosition = eventData.position - (Vector2)_canvasTr.position;
             partDragImageTransform.gameObject.SetActive(true);
-            
+
             button.onClick.Invoke();
         }
-        
+
         public void OnDrag(PointerEventData eventData)
         {
             if (partDragImageTransform == null)
@@ -116,7 +113,7 @@ namespace StarSalvager.UI
         {
             if (partDragImageTransform == null)
                 return;
-            
+
             partDragImageTransform.gameObject.SetActive(false);
         }
     }
