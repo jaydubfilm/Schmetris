@@ -25,6 +25,14 @@ namespace StarSalvager.UI
         private RemotePartProfileScriptableObject _remotePartProfileScriptable;
         [SerializeField, BoxGroup("Part UI")]
         private PartUIElementScrollView partsScrollView;
+        [SerializeField, BoxGroup("Part UI")]
+        private PartUIElementScrollView bitsScrollView;
+        [SerializeField, Required, BoxGroup("Part UI")]
+        private Button showBitsButton;
+        [SerializeField, Required, BoxGroup("Part UI")]
+        private Button showCategoriesButton;
+        [SerializeField, Required, BoxGroup("Part UI")]
+        private TMP_Text partsLabel;
 
         //============================================================================================================//
 
@@ -160,9 +168,23 @@ namespace StarSalvager.UI
         {
             LoadMenu.SetActive(false);
             SaveMenu.SetActive(false);
-            
+            showBitsButton.gameObject.SetActive(false);
+            showCategoriesButton.gameObject.SetActive(false);
+
             //--------------------------------------------------------------------------------------------------------//
-            
+
+            showBitsButton.onClick.AddListener(() =>
+            {
+                SetBitsScrollActive(true);
+            });
+
+            showCategoriesButton.onClick.AddListener(() =>
+            {
+                SetCategoriesScrollActive(true);
+            });
+
+            //--------------------------------------------------------------------------------------------------------//
+
             leftTurnButton.onClick.AddListener(() =>
             {
                 m_botShapeEditor.RotateBots(-1.0f);
@@ -198,8 +220,8 @@ namespace StarSalvager.UI
             NewShapeButton.onClick.AddListener(() =>
             {
                 m_botShapeEditor.CreateShape(null);
-                SetPartsScrollActive(false);
-                SetCategoriesScrollActive(true);
+                SetBitsScrollActive(true);
+                SetCategoriesScrollActive(false);
                 m_currentlyOverwriting = false;
             });
 
@@ -339,6 +361,7 @@ namespace StarSalvager.UI
                 m_botShapeEditor.AddCategory(NewCategoryNameInputField.text);
                 NewCategoryMenu.SetActive(false);
                 ScreenBlackImage.gameObject.SetActive(false);
+                UpdateCategoriesScrollViews();
             });
 
             NewCategoryReturn.onClick.AddListener(() =>
@@ -387,20 +410,27 @@ namespace StarSalvager.UI
                 {
                     var element = partsScrollView.AddElement<PartBitImageUIElement>(bitRemoteData, $"{bitRemoteData.bitType}_{i}_UIElement", true);
                     element.Init(bitRemoteData, PartBitPressed, i);
+                    var element2 = bitsScrollView.AddElement<PartBitImageUIElement>(bitRemoteData, $"{bitRemoteData.bitType}_{i}_UIElement", true);
+                    element2.Init(bitRemoteData, PartBitPressed, i);
                 }
             }
 
+            UpdateCategoriesScrollViews();
+            UpdateLoadListUiScrollViews();
+
+            SetPartsScrollActive(false);
+            SetBitsScrollActive(false);
+            SetCategoriesScrollActive(false);
+        }
+
+        private void UpdateCategoriesScrollViews()
+        {
             //FIXME This needs to move to the Factory
             foreach (var category in m_botShapeEditor.EditorBotShapeData.m_categories)
             {
                 var element = categoriesScrollView.AddElement<CategoryToggleUIElement>(category, category);
                 element.Init(category, CategoryPressed);
             }
-
-            UpdateLoadListUiScrollViews();
-
-            SetPartsScrollActive(false);
-            SetCategoriesScrollActive(false);
         }
 
         private void UpdateLoadListUiScrollViews()
@@ -436,11 +466,36 @@ namespace StarSalvager.UI
         public void SetPartsScrollActive(bool active)
         {
             partsScrollView.SetElementsActive(active);
+            partsLabel.gameObject.SetActive(active);
+            showBitsButton.gameObject.SetActive(!active);
+            showCategoriesButton.gameObject.SetActive(!active);
+            if (active)
+                bitsScrollView.SetElementsActive(false);
+        }
+
+        public void SetBitsScrollActive(bool active)
+        {
+            bitsScrollView.SetElementsActive(active);
+            if (active)
+            {
+                showBitsButton.gameObject.SetActive(true);
+                showCategoriesButton.gameObject.SetActive(true);
+                partsLabel.gameObject.SetActive(false);
+                partsScrollView.SetElementsActive(false);
+                categoriesScrollView.SetElementsActive(false);
+            }
         }
 
         public void SetCategoriesScrollActive(bool active)
         {
             categoriesScrollView.SetElementsActive(active);
+            if (active)
+            {
+                showBitsButton.gameObject.SetActive(true);
+                showCategoriesButton.gameObject.SetActive(true);
+                partsLabel.gameObject.SetActive(false);
+                bitsScrollView.SetElementsActive(false);
+            }
         }
 
         public void SetBotsScrollActive(bool active)

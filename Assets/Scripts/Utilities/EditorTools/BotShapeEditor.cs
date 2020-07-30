@@ -114,8 +114,11 @@ namespace StarSalvager
             {
                 if (shape.AttachedBits.Any(b => b.Coordinate == mouseCoordinate))
                     continue;
-                
-                shape.PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>((BIT_TYPE)Random.Range(0, 6), 0), mouseCoordinate);
+
+                if (SelectedBitType is BIT_TYPE bitType)
+                {
+                    shape.PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(bitType, SelectedPartLevel), mouseCoordinate);
+                }
             }
 
             if (selectedPartType == null && SelectedBitType == null)
@@ -216,8 +219,8 @@ namespace StarSalvager
             {
                 List<Bit> bits = shapeData.BlockData.ImportBlockDatas(false).FindAll(o => o is Bit).OfType<Bit>().ToList();
                 CreateShape(bits);
-                m_botShapeEditorUI.SetPartsScrollActive(false);
-                m_botShapeEditorUI.SetCategoriesScrollActive(true);
+                m_botShapeEditorUI.SetBitsScrollActive(true);
+                m_botShapeEditorUI.SetCategoriesScrollActive(false);
                 m_botShapeEditorUI.UpdateCategories(shapeData);
                 return;
             }
@@ -332,6 +335,9 @@ namespace StarSalvager
 
         public string ExportRemoteData(EditorBotShapeGeneratorData editorData)
         {
+            if (editorData == null)
+                return string.Empty;
+            
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
             System.IO.File.WriteAllText(Application.dataPath + "/RemoteData/BotShapeEditorData.txt", export);
 
