@@ -1,1 +1,1 @@
-{"resources":{"RED":1250,"BLUE":1250,"YELLOW":1250,"GREEN":1550,"GREY":1550},"liquidResource":{"RED":210.616821,"BLUE":0.0,"YELLOW":0.0,"GREEN":0.0,"GREY":0.0},"currentBlockData":[{"ClassType":"ScrapyardPart","Coordinate":{"x":0,"y":0},"Type":0,"Level":0}],"maxSectorProgression":{"0":0}}
+{"resources":{"RED":1250,"BLUE":1250,"YELLOW":1150,"GREEN":1250,"GREY":1150},"liquidResource":{"RED":210.616821,"BLUE":0.0,"YELLOW":0.0,"GREEN":0.0,"GREY":0.0},"currentBlockData":[{"ClassType":"ScrapyardPart","Coordinate":{"x":0,"y":0},"Type":0,"Level":0}],"maxSectorProgression":{"0":0}}

@@ -515,25 +515,36 @@ namespace StarSalvager
 
         public void SaveLayout(string layoutName)
         {
-            ScrapyardLayout currentLayout = _scrapyardLayouts.First(l => l.Name == layoutName);
-            if (currentLayout != null)
+            ScrapyardLayout saveLayout = _scrapyardLayouts.FirstOrDefault(l => l.Name == layoutName);
+            if (saveLayout != null)
             {
-                currentLayout = new ScrapyardLayout(layoutName, _scrapyardBots[0].GetBlockDatas());
+                saveLayout = new ScrapyardLayout(layoutName, _scrapyardBots[0].GetBlockDatas());
             }
+            else
+            {
+                _scrapyardLayouts.Add(new ScrapyardLayout(layoutName, _scrapyardBots[0].GetBlockDatas()));
+            }
+            ExportRemoteData(_scrapyardLayouts);
         }
 
-        public void LoadLayout(int index)
+        public void LoadLayout(string name)
         {
-            if (_scrapyardLayouts.Count <= index)
-                return;
-            
-            _currentLayout = _scrapyardLayouts[index];
+            var tempLayout = _scrapyardLayouts.First(l => l.Name == name);
+
+            if (tempLayout == null)
+                return; 
+
+            //Check if layout can be afforded
+
+            _currentLayout = tempLayout;
+
+            //Load layout onto bot
         }
 
         public string ExportRemoteData(List<ScrapyardLayout> editorData)
         {
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
-            System.IO.File.WriteAllText(Application.dataPath + "/RemoteData/BotShapeEditorData.txt", export);
+            System.IO.File.WriteAllText(Application.dataPath + "/RemoteData/ScrapyardLayoutData.txt", export);
 
             return export;
         }
