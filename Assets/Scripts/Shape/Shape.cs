@@ -127,7 +127,7 @@ namespace StarSalvager
 
             Recycler.Recycle<Shape>(this);
         }
-        public void DestroyBit(Vector2Int coordinate)
+        public void DestroyBit(Vector2Int coordinate, bool shouldRecycleIfEmpty = true)
         {
             if (!attachedBits.Any(b => b.Coordinate == coordinate))
                 return;
@@ -144,6 +144,9 @@ namespace StarSalvager
                 CompositeCollider.GenerateGeometry();
                 return;
             }
+
+            if (!shouldRecycleIfEmpty)
+                return;
 
             Recycler.Recycle<Shape>(this);
         }

@@ -4,9 +4,11 @@ using StarSalvager.Cameras;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
@@ -20,8 +22,9 @@ namespace StarSalvager.UI
         private Button MenuButton;
 
         [SerializeField, Required, BoxGroup("Part UI")]
-        private RemotePartProfileScriptableObject _remotePartProfileScriptable;
-
+        private GameObject partsWindow;
+        [SerializeField, Required, BoxGroup("Part UI")]
+        private RemotePartProfileScriptableObject remotePartProfileScriptable;
         [SerializeField, BoxGroup("Part UI")]
         private PartUIElementScrollView partsScrollView;
 
@@ -29,6 +32,11 @@ namespace StarSalvager.UI
 
         [SerializeField, BoxGroup("Resource UI")]
         private ResourceUIElementScrollView resourceScrollView;
+
+        //============================================================================================================//
+
+        [SerializeField, BoxGroup("Load List UI")]
+        private LayoutElementScrollView layoutScrollView;
 
         //============================================================================================================//
 
@@ -45,26 +53,54 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         [SerializeField, Required, BoxGroup("Menu Buttons")]
-        private Button SaveButton;
+        private Button saveButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
-        private Button LoadButton;
+        private Button loadButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
-        private Button SellBitsButton;
+        private Button sellBitsButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
-        private Button IsUpgradingButton;
+        private Button isUpgradingButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
-        private Button UndoButton;
+        private Button undoButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
-        private Button RedoButton;
+        private Button redoButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
-        private Button SaveLayoutButton;
+        private Button saveLayoutButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
-        private Button LoadLayoutButton;
+        private Button loadLayoutButton;
 
-        [SerializeField, Required, BoxGroup("Menu Buttons")]
-        private GameObject saveMenuPortion;
-        [SerializeField, Required, BoxGroup("Menu Buttons")]
-        private GameObject loadMenuPortion;
+        [SerializeField, Required, BoxGroup("Load Menu")]
+        private GameObject loadMenu;
+        [SerializeField, Required, BoxGroup("Load Menu")]
+        private Button loadConfirm;
+        [SerializeField, Required, BoxGroup("Load Menu")]
+        private Button loadReturn;
+        [SerializeField, Required, BoxGroup("Load Menu")]
+        private Button loadReturn2;
+        [SerializeField, Required, BoxGroup("Load Menu")]
+        private TMP_Text loadName;
+
+        [SerializeField, Required, BoxGroup("Save Menu")]
+        private GameObject saveMenu;
+        [SerializeField, Required, BoxGroup("Save Menu")]
+        private GameObject saveOverwritePortion;
+        [SerializeField, Required, BoxGroup("Save Menu")]
+        private GameObject saveBasePortion;
+        [SerializeField, Required, BoxGroup("Save Menu")]
+        private TMP_InputField saveNameInputField;
+        [SerializeField, Required, BoxGroup("Save Menu")]
+        private Button saveConfirm;
+        [SerializeField, Required, BoxGroup("Save Menu")]
+        private Button saveReturn;
+        [SerializeField, Required, BoxGroup("Save Menu")]
+        private Button saveReturn2;
+        [SerializeField, Required, BoxGroup("Save Menu")]
+        private Button saveOverwrite;
+        [SerializeField, Required, BoxGroup("Save Menu")]
+        private Button saveAsNew;
+
+        [SerializeField, Required, BoxGroup("UI Visuals")]
+        private Image screenBlackImage;
 
         //============================================================================================================//
 
@@ -73,6 +109,11 @@ namespace StarSalvager.UI
 
         [FormerlySerializedAs("m_scrapyard")] [SerializeField]
         private DroneDesigner mDroneDesigner;
+
+        private ScrapyardLayout currentSelected;
+
+        public bool IsPopupActive => loadMenu.activeSelf || saveMenu.activeSelf || Alert.Displayed;
+        private bool _currentlyOverwriting = false;
 
 
         private void Start()
@@ -85,6 +126,8 @@ namespace StarSalvager.UI
             InitUiScrollViews();
 
             InitButtons();
+
+            _currentlyOverwriting = false;
         }
 
         //============================================================================================================//
@@ -95,7 +138,6 @@ namespace StarSalvager.UI
 
             MenuButton.onClick.AddListener(() =>
             {
-                mDroneDesigner.SaveBlockData();
                 SceneLoader.ActivateScene("MainMenuScene", "ScrapyardScene");
             });
 
@@ -111,60 +153,145 @@ namespace StarSalvager.UI
 
             //--------------------------------------------------------------------------------------------------------//
 
-            SaveButton.onClick.AddListener(() =>
-            {
-                saveMenuPortion.SetActive(true);
-            });
-
-            LoadButton.onClick.AddListener(() =>
-            {
-                loadMenuPortion.SetActive(true);
-            });
-
-            //--------------------------------------------------------------------------------------------------------//
-
-            SaveButton.onClick.AddListener(() =>
+            saveButton.onClick.AddListener(() =>
             {
                 Debug.Log("Save Button Pressed");
             });
 
-            LoadButton.onClick.AddListener(() =>
+            loadButton.onClick.AddListener(() =>
             {
                 Debug.Log("Load Button Pressed");
             });
 
             //--------------------------------------------------------------------------------------------------------//
 
-            UndoButton.onClick.AddListener(() =>
+            undoButton.onClick.AddListener(() =>
             {
                 mDroneDesigner.UndoStackPop();
             });
 
-            RedoButton.onClick.AddListener(() =>
+            redoButton.onClick.AddListener(() =>
             {
                 mDroneDesigner.RedoStackPop();
             });
 
             //--------------------------------------------------------------------------------------------------------//
 
-            SellBitsButton.onClick.AddListener(() =>
+            sellBitsButton.onClick.AddListener(() =>
             {
                 mDroneDesigner.SellBits();
                 UpdateResources(PlayerPersistentData.PlayerData.GetResources());
             });
 
-            IsUpgradingButton.onClick.AddListener(() =>
+            isUpgradingButton.onClick.AddListener(() =>
             {
                 mDroneDesigner.IsUpgrading = !mDroneDesigner.IsUpgrading;
             });
 
             //--------------------------------------------------------------------------------------------------------//
+
+            saveLayoutButton.onClick.AddListener(() =>
+            {
+                if (mDroneDesigner.IsFullyConnected())
+                {
+                    saveMenu.SetActive(true);
+                    bool isOverwrite = _currentlyOverwriting;
+                    saveOverwritePortion.SetActive(isOverwrite);
+                    saveBasePortion.SetActive(!isOverwrite);
+                }
+                else
+                {
+                    Alert.ShowAlert("Alert!", "There are blocks currently floating or disconnected.", "Okay", () =>
+                    {
+                        screenBlackImage.gameObject.SetActive(false);
+                    });
+                }
+                screenBlackImage.gameObject.SetActive(true);
+            });
+
+            loadLayoutButton.onClick.AddListener(() =>
+            {
+                loadMenu.SetActive(true);
+                partsWindow.SetActive(false);
+                currentSelected = null;
+                UpdateLoadListUiScrollViews();
+                screenBlackImage.gameObject.SetActive(true);
+            });
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            loadConfirm.onClick.AddListener(() =>
+            {
+                if (currentSelected == null)
+                    return;
+
+                mDroneDesigner.LoadLayout(currentSelected.Name);
+                loadMenu.SetActive(false);
+                partsWindow.SetActive(true);
+                _currentlyOverwriting = true;
+                screenBlackImage.gameObject.SetActive(false);
+            });
+
+            loadReturn.onClick.AddListener(() =>
+            {
+                loadMenu.SetActive(false);
+                partsWindow.SetActive(true);
+                screenBlackImage.gameObject.SetActive(false);
+            });
+
+            loadReturn2.onClick.AddListener(() =>
+            {
+                loadMenu.SetActive(false);
+                partsWindow.SetActive(true);
+                screenBlackImage.gameObject.SetActive(false);
+            });
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            saveConfirm.onClick.AddListener(() =>
+            {
+                mDroneDesigner.SaveLayout(saveNameInputField.text);
+                saveMenu.SetActive(false);
+                _currentlyOverwriting = true;
+                screenBlackImage.gameObject.SetActive(false);
+            });
+
+            saveReturn.onClick.AddListener(() =>
+            {
+                saveMenu.SetActive(false);
+                screenBlackImage.gameObject.SetActive(false);
+            });
+
+            saveReturn2.onClick.AddListener(() =>
+            {
+                saveMenu.SetActive(false);
+                screenBlackImage.gameObject.SetActive(false);
+            });
+
+            saveOverwrite.onClick.AddListener(() =>
+            {
+                mDroneDesigner.SaveLayout(currentSelected.Name);
+                saveMenu.SetActive(false);
+                _currentlyOverwriting = true;
+                screenBlackImage.gameObject.SetActive(false);
+            });
+
+            saveAsNew.onClick.AddListener(() =>
+            {
+                saveOverwritePortion.SetActive(false);
+                saveBasePortion.SetActive(true);
+                saveMenu.SetActive(false);
+                _currentlyOverwriting = false;
+            });
+
+            //--------------------------------------------------------------------------------------------------------//
+
         }
 
         private void InitUiScrollViews()
         {
             //FIXME This needs to move to the Factory
-            foreach (var partRemoteData in _remotePartProfileScriptable.partRemoteData)
+            foreach (var partRemoteData in remotePartProfileScriptable.partRemoteData)
             {
 
                 var element = partsScrollView.AddElement<PartUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement");
@@ -184,6 +311,19 @@ namespace StarSalvager.UI
                 var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
                 element.Init(data);
             }
+        }
+
+        private void UpdateLoadListUiScrollViews()
+        {
+            foreach (var layoutData in mDroneDesigner.ScrapyardLayouts)
+            {
+                if (layoutScrollView.FindElement<LayoutUIElement>(layoutData))
+                    continue;
+
+                var element = layoutScrollView.AddElement<LayoutUIElement>(layoutData, $"{layoutData.Name}_UIElement");
+                element.Init(layoutData, LayoutPressed);
+            }
+            layoutScrollView.SetElementsActive(true);
         }
 
         private void SetCameraZoom(float value)
@@ -219,9 +359,14 @@ namespace StarSalvager.UI
             UpdateResources(_resourcesTest);
         }
 
-        #endif
+#endif
 
         #endregion //Unity Editor
+
+        public void SetPartsScrollActive(bool active)
+        {
+            partsScrollView.SetElementsActive(active);
+        }
 
         public void UpdateResources(Dictionary<BIT_TYPE, int> resources)
         {
@@ -253,6 +398,12 @@ namespace StarSalvager.UI
         {
             Debug.Log($"Selected {partType}");
             mDroneDesigner.selectedPartType = partType;
+        }
+
+        private void LayoutPressed(ScrapyardLayout botData)
+        {
+            currentSelected = botData;
+            loadName.text = "Load " + botData.Name;
         }
 
         public void OnDrag(PointerEventData eventData)

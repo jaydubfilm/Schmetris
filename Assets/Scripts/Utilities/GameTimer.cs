@@ -43,7 +43,7 @@ namespace StarSalvager.Utilities
             m_IPausables.Remove(pausable);
         }
 
-        public static void OnApplicationQuit()
+        public static void CustomOnApplicationQuit()
         {
             DateTime currentTime = System.DateTime.Now;
             TimeSpan timePlayed = currentTime - startingTime;

@@ -436,9 +436,9 @@ namespace StarSalvager.Utilities.Inputs
         private void OnApplicationQuit()
         {
             Debug.Log($"{nameof(InputManager)} called {nameof(OnApplicationQuit)}");
-            GameTimer.OnApplicationQuit();
-            MissionManager.OnApplicationQuit();
-            PlayerPersistentData.OnApplicationQuit();
+            GameTimer.CustomOnApplicationQuit();
+            MissionManager.CustomOnApplicationQuit();
+            PlayerPersistentData.CustomOnApplication();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections;
 using System.Collections.Generic;
@@ -45,101 +46,37 @@ namespace StarSalvager.Values
 
         public void AddResources(Dictionary<BIT_TYPE, int> toAdd)
         {
-            List<BIT_TYPE> keys = resources.Keys.ToList();
-            foreach (BIT_TYPE key in keys)
-            {
-                if (toAdd.ContainsKey(key))
-                {
-                    resources[key] += toAdd[key];
-                }
-            }
+            ResourceCalculations.AddResources(ref resources, toAdd);
         }
 
         public void AddResources(PART_TYPE partType, int level, bool isRecursive)
         {
-            var remoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).costs[level];
-            foreach (ResourceAmount resource in remoteData.levelCosts)
-            {
-                resources[resource.type] += resource.amount;
-            }
-
-            if (!isRecursive)
-                return;
-
-            if (level > 0)
-                AddResources(partType, level - 1, isRecursive);
+            ResourceCalculations.AddResources(ref resources, partType, level, isRecursive);
         }
 
         public void SubtractResources(Dictionary<BIT_TYPE, int> toSubtract)
         {
-            List<BIT_TYPE> keys = resources.Keys.ToList();
-            foreach (BIT_TYPE key in keys)
-            {
-                if (toSubtract.ContainsKey(key))
-                {
-                    resources[key] -= toSubtract[key];
-                }
-            }
+            ResourceCalculations.SubtractResources(ref resources, toSubtract);
         }
 
         public void SubtractResources(PART_TYPE partType, int level, bool isRecursive)
         {
-            var remoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).costs[level];
-            foreach (ResourceAmount resource in remoteData.levelCosts)
-            {
-                resources[resource.type] -= resource.amount;
-            }
-
-            if (!isRecursive)
-                return;
-
-            if (level > 0)
-                SubtractResources(partType, level - 1, isRecursive);
+            ResourceCalculations.SubtractResources(ref resources, partType, level, isRecursive);
         }
 
         public void SubtractResources(LevelCost cost)
         {
-            foreach (ResourceAmount resource in cost.levelCosts)
-            {
-                resources[resource.type] -= resource.amount;
-            }
+            ResourceCalculations.SubtractResources(ref resources, cost);
         }
 
         public bool CanAfford(LevelCost levelCost)
         {
-            foreach (ResourceAmount resource in levelCost.levelCosts)
-            {
-                if (resources[resource.type] < resource.amount)
-                    return false;
-            }
-            return true;
+            return ResourceCalculations.CanAfford(resources, levelCost);
         }
 
-        public bool CanAffordPart(PART_TYPE partType, int level)
+        public bool CanAffordPart(PART_TYPE partType, int level, bool isRecursive)
         {
-            var remoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).costs[level];
-            return CanAfford(remoteData);
-        }
-
-        public bool CanAffordUpgrade(PART_TYPE partType, int currentLevel, int levelTo)
-        {
-            return CanAfford(GetCostDifference(partType, currentLevel, levelTo));
-        }
-
-        public LevelCost GetCostDifference(PART_TYPE partType, int currentLevel, int levelTo)
-        {
-            var currentCost = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).costs[currentLevel];
-            var levelToCost = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).costs[levelTo];
-
-            foreach (ResourceAmount resource in levelToCost.levelCosts)
-            {
-                if (currentCost.levelCosts.Count(r => r.type == resource.type) != 0)
-                {
-                    resources[resource.type] -= currentCost.levelCosts.FirstOrDefault(r => r.type == resource.type).amount;
-                }
-            }
-
-            return levelToCost;
+            return ResourceCalculations.CanAffordPart(resources, partType, level, isRecursive);
         }
 
         //============================================================================================================//

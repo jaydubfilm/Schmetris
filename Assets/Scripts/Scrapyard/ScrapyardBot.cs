@@ -189,14 +189,17 @@ namespace StarSalvager
         {
             var attachable = attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
             //TODO - think of a better place to handle this selling event
-            switch(attachable)
+            if (refund)
             {
-                case ScrapyardBit scrapyardBit:
-                    //TODO: Add click to sell bit functionality
-                    break;
-                case ScrapyardPart scrapyardPart:
-                    PlayerPersistentData.PlayerData.AddResources(scrapyardPart.Type, scrapyardPart.level, true);
-                    break;
+                switch (attachable)
+                {
+                    case ScrapyardBit scrapyardBit:
+                        //TODO: Add click to sell bit functionality
+                        break;
+                    case ScrapyardPart scrapyardPart:
+                        PlayerPersistentData.PlayerData.AddResources(scrapyardPart.Type, scrapyardPart.level, true);
+                        break;
+                }
             }
 
             if (attachable != null)

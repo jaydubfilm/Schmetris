@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using StarSalvager.Factories.Data;
+using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
 namespace StarSalvager.UI
@@ -19,6 +20,10 @@ namespace StarSalvager.UI
 
     [System.Serializable]
     public class BotShapeDataElementScrollView : UIElementContentScrollView<EditorGeneratorDataBase>
+    { }
+
+    [System.Serializable]
+    public class LayoutElementScrollView : UIElementContentScrollView<ScrapyardLayout>
     { }
 }
 

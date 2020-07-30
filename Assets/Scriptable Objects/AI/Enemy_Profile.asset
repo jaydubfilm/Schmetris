@@ -51,3 +51,19 @@ MonoBehaviour:
     m_addVelocityToProjectiles: 0
     m_spreadAngle: 15
     m_sprayCount: 12
+  - m_enemyTypeID: f3c96622-609f-498c-be89-8cc575e46fe0
+    m_sprite: {fileID: 0}
+    m_enemyType: Ball Head
+    m_movementType: 0
+    m_isAttachable: 0
+    m_enemyAnimationController: {fileID: 11400000, guid: 9a67d56bcff91044590444220f102079,
+      type: 2}
+    m_attackType: 0
+    m_projectileType: 
+    m_oscillationsPerSeconds: 0
+    m_oscillationAngleRange: 0
+    m_orbitRadius: 0
+    m_numberCellsDescend: 0
+    m_addVelocityToProjectiles: 0
+    m_spreadAngle: 0
+    m_sprayCount: 0

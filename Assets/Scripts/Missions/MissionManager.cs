@@ -261,7 +261,7 @@ namespace StarSalvager.Missions
             return loaded;
         }
 
-        public static void OnApplicationQuit()
+        public static void CustomOnApplicationQuit()
         {
             ExportMissionsCurrentRemoteData(MissionsCurrentData);
             ExportMissionsMasterRemoteData(MissionsMasterData);

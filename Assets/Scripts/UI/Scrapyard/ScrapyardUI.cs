@@ -111,7 +111,6 @@ namespace StarSalvager.UI
                 return;
             }
             
-            _droneDesigner.SaveBlockData();
             _droneDesigner.ProcessScrapyardUsageEndAnalytics();
             
             if (Globals.SectorComplete)
