@@ -152,10 +152,10 @@ namespace StarSalvager.Factories
 
         public EditorBotShapeGeneratorData ImportBotShapeRemoteData()
         {
-            if (!File.Exists(Application.dataPath + "/RemoteData/BotShapeEditorData.txt"))
+            if (!File.Exists(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"))
                 return new EditorBotShapeGeneratorData();
 
-            var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText(Application.dataPath + "/RemoteData/BotShapeEditorData.txt"));
+            var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"));
 
             return loaded;
         }
