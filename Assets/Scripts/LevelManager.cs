@@ -159,6 +159,7 @@ namespace StarSalvager
             }
             else if (ObstacleManager.HasNoActiveObstacles)
             {
+                SavePlayerData();
                 GameTimer.SetPaused(true);
                 m_endWaveState = false;
                 m_levelManagerUI.ToggleBetweenWavesUIActive(true);

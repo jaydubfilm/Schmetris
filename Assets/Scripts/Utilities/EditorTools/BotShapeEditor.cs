@@ -339,17 +339,17 @@ namespace StarSalvager
                 return string.Empty;
             
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
-            System.IO.File.WriteAllText(Application.dataPath + "/RemoteData/BotShapeEditorData.txt", export);
+            System.IO.File.WriteAllText(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt", export);
 
             return export;
         }
 
         public EditorBotShapeGeneratorData ImportRemoteData()
         {
-            if (!File.Exists(Application.dataPath + "/RemoteData/BotShapeEditorData.txt"))
+            if (!File.Exists(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"))
                 return new EditorBotShapeGeneratorData();
             
-            var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText(Application.dataPath + "/RemoteData/BotShapeEditorData.txt"));
+            var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"));
 
             return loaded;
         }
