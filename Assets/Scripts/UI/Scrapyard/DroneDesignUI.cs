@@ -272,7 +272,6 @@ namespace StarSalvager.UI.Scrapyard
             {
                 saveOverwritePortion.SetActive(false);
                 saveBasePortion.SetActive(true);
-                saveMenu.SetActive(false);
                 _currentlyOverwriting = false;
             });
 

@@ -329,7 +329,6 @@ namespace StarSalvager.UI
             {
                 SaveOverwritePortion.SetActive(false);
                 SaveBasePortion.SetActive(true);
-                SaveMenu.SetActive(false);
                 m_currentlyOverwriting = false;
             });
 
