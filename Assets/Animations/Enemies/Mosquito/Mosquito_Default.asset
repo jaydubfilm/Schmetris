@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae94ebc07ea1de141874967c13a86044, type: 3}
+  m_Name: Mosquito_Default
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: -8242381499147173548, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: -4098268654080842164, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: -3397143160300107991, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: 8842409155607602371, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: 6460923249404420225, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: 5234195443159470539, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: -2340637857922169619, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: 3718684629625302136, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: 569890398637795649, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: -5345445646528771017, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: 2500486299956301539, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: 1835354649429177873, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: 6581482644100984028, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: 2374178988040729157, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: -2832871381488009258, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: -6547772702902051423, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  - {fileID: 1127994506959413371, guid: d97ff67049d79e0468a1fa4286b69a4d, type: 3}
+  speed: 1
+  PingPong: 0
+  useAnimationCurve: 0
+  curve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

@@ -1,0 +1,160 @@
+
+BiggerExplosion_ver1.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+skeleton-animation_00
+  rotate: false
+  xy: 0, 1548
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_01
+  rotate: false
+  xy: 258, 1548
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_02
+  rotate: false
+  xy: 516, 1548
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_03
+  rotate: false
+  xy: 774, 1548
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_04
+  rotate: false
+  xy: 1032, 1548
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_05
+  rotate: false
+  xy: 1290, 1548
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_06
+  rotate: false
+  xy: 1548, 1548
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_07
+  rotate: false
+  xy: 0, 1290
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_08
+  rotate: false
+  xy: 258, 1290
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_09
+  rotate: false
+  xy: 516, 1290
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_10
+  rotate: false
+  xy: 774, 1290
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_11
+  rotate: false
+  xy: 1032, 1290
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_12
+  rotate: false
+  xy: 1290, 1290
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_13
+  rotate: false
+  xy: 1548, 1290
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_14
+  rotate: false
+  xy: 0, 1032
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_15
+  rotate: false
+  xy: 258, 1032
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_16
+  rotate: false
+  xy: 516, 1032
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_17
+  rotate: false
+  xy: 774, 1032
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_18
+  rotate: false
+  xy: 1032, 1032
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_19
+  rotate: false
+  xy: 1290, 1032
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_20
+  rotate: false
+  xy: 1548, 1032
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+skeleton-animation_21
+  rotate: false
+  xy: 0, 774
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,132 @@
+
+SmallExplosion_ver1.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+skeleton-animation_00
+  rotate: false
+  xy: 0, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_01
+  rotate: false
+  xy: 0, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_02
+  rotate: false
+  xy: 0, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_03
+  rotate: false
+  xy: 0, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_04
+  rotate: false
+  xy: 130, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_05
+  rotate: false
+  xy: 260, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_06
+  rotate: false
+  xy: 390, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_07
+  rotate: false
+  xy: 520, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_08
+  rotate: false
+  xy: 650, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_09
+  rotate: false
+  xy: 780, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_10
+  rotate: false
+  xy: 0, 650
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_11
+  rotate: false
+  xy: 130, 650
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_12
+  rotate: false
+  xy: 260, 650
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_13
+  rotate: false
+  xy: 390, 650
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_14
+  rotate: false
+  xy: 520, 650
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_15
+  rotate: false
+  xy: 650, 650
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_16
+  rotate: false
+  xy: 780, 650
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton-animation_17
+  rotate: false
+  xy: 0, 520
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1

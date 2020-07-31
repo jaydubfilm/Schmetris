@@ -7,7 +7,14 @@ namespace StarSalvager.Utilities.Animations
     public class AnimationControllerScriptableObject : ScriptableObject
     {
         [SerializeField]
-        private AnimationState[] States;
+        private AnimationState[] States = 
+        {
+            new AnimationState
+            {
+                StateName = "Default",
+                Animation = null
+            }
+        };
 
         public AnimationScriptableObject GetDefaultAnimation()
         {

@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae94ebc07ea1de141874967c13a86044, type: 3}
+  m_Name: Fly_Default
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 1155024208887532473, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: 2261212252417303950, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: 4888613065096846430, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: 4199018072062094859, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: -7592897941955477156, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: -6299618354579657569, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: 496911069043952579, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: -7424268734820904624, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: 1657938452859691121, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: 24645497106984494, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: -7533198243844244244, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: -6559927571945234873, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: 8361938522156797163, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: 7365540100200106725, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: -3724198806733998648, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: 6848037348468552427, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: -5932261329994473042, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: -1243513532812374466, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: 6082607272544886988, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: -6752454892846670371, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: 2034506205047371650, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: 2017628804608367083, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: 4449073918364157332, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: 5881979569428094487, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: -4407662704968082906, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: -6951395325158379678, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: -8492297867063943258, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: -2139729102586666995, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  - {fileID: 5688155232374634492, guid: db9adc14e8a7d054da2c1eed6b01af10, type: 3}
+  speed: 1
+  PingPong: 0
+  useAnimationCurve: 0
+  curve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
