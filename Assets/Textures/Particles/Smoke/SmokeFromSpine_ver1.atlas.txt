@@ -1,0 +1,328 @@
+
+SmokeFromSpine_ver1.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+skeleton2-animation2_00
+  rotate: false
+  xy: 0, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_01
+  rotate: false
+  xy: 0, 650
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_02
+  rotate: false
+  xy: 130, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_03
+  rotate: false
+  xy: 0, 520
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_04
+  rotate: false
+  xy: 130, 650
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_05
+  rotate: false
+  xy: 260, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_06
+  rotate: false
+  xy: 0, 390
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_07
+  rotate: false
+  xy: 130, 520
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_08
+  rotate: false
+  xy: 260, 650
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_09
+  rotate: false
+  xy: 390, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_10
+  rotate: false
+  xy: 0, 260
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_11
+  rotate: false
+  xy: 130, 390
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_12
+  rotate: false
+  xy: 260, 520
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_13
+  rotate: false
+  xy: 390, 650
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_14
+  rotate: false
+  xy: 520, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_15
+  rotate: false
+  xy: 0, 130
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_16
+  rotate: false
+  xy: 130, 260
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_17
+  rotate: false
+  xy: 260, 390
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_18
+  rotate: false
+  xy: 390, 520
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_19
+  rotate: false
+  xy: 520, 650
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_20
+  rotate: false
+  xy: 650, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_21
+  rotate: false
+  xy: 0, 0
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_22
+  rotate: false
+  xy: 130, 130
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_23
+  rotate: false
+  xy: 260, 260
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_24
+  rotate: false
+  xy: 390, 390
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_25
+  rotate: false
+  xy: 520, 520
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_26
+  rotate: false
+  xy: 650, 650
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_27
+  rotate: false
+  xy: 780, 780
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_28
+  rotate: false
+  xy: 130, 0
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_29
+  rotate: false
+  xy: 260, 130
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_30
+  rotate: false
+  xy: 390, 260
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_31
+  rotate: false
+  xy: 520, 390
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_32
+  rotate: false
+  xy: 650, 520
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_33
+  rotate: false
+  xy: 780, 650
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_34
+  rotate: false
+  xy: 260, 0
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_35
+  rotate: false
+  xy: 390, 130
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_36
+  rotate: false
+  xy: 520, 260
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_37
+  rotate: false
+  xy: 650, 390
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_38
+  rotate: false
+  xy: 780, 520
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_39
+  rotate: false
+  xy: 390, 0
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_40
+  rotate: false
+  xy: 520, 130
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_41
+  rotate: false
+  xy: 650, 260
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_42
+  rotate: false
+  xy: 780, 390
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_43
+  rotate: false
+  xy: 520, 0
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_44
+  rotate: false
+  xy: 650, 130
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+skeleton2-animation2_45
+  rotate: false
+  xy: 780, 260
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1

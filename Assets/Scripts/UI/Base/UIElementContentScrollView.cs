@@ -26,7 +26,7 @@ namespace StarSalvager.UI
 
             U exists;
             if (compareNames)
-                exists = FindElement<U>(data, name);
+                exists = FindElement<U>(data, gameObjectName);
             else
                 exists = FindElement<U>(data);
 

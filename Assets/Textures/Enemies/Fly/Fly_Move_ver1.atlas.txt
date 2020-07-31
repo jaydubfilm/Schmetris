@@ -1,0 +1,209 @@
+
+Fly_Move_ver1.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Fly_Parts_ver2-animation_00
+  rotate: false
+  xy: 0, 779
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_28
+  rotate: false
+  xy: 0, 779
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_01
+  rotate: false
+  xy: 132, 779
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_02
+  rotate: false
+  xy: 264, 779
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_03
+  rotate: false
+  xy: 396, 779
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_04
+  rotate: false
+  xy: 528, 779
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_05
+  rotate: false
+  xy: 660, 779
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_06
+  rotate: false
+  xy: 792, 779
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_07
+  rotate: false
+  xy: 0, 634
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_08
+  rotate: false
+  xy: 132, 634
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_09
+  rotate: false
+  xy: 264, 634
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_10
+  rotate: false
+  xy: 396, 634
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_11
+  rotate: false
+  xy: 528, 634
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_12
+  rotate: false
+  xy: 660, 634
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_13
+  rotate: false
+  xy: 792, 634
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_14
+  rotate: false
+  xy: 0, 489
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_15
+  rotate: false
+  xy: 132, 489
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_16
+  rotate: false
+  xy: 264, 489
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_17
+  rotate: false
+  xy: 396, 489
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_18
+  rotate: false
+  xy: 528, 489
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_19
+  rotate: false
+  xy: 660, 489
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_20
+  rotate: false
+  xy: 792, 489
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_21
+  rotate: false
+  xy: 0, 344
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_22
+  rotate: false
+  xy: 132, 344
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_23
+  rotate: false
+  xy: 264, 344
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_24
+  rotate: false
+  xy: 396, 344
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_25
+  rotate: false
+  xy: 528, 344
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_26
+  rotate: false
+  xy: 660, 344
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
+Fly_Parts_ver2-animation_27
+  rotate: false
+  xy: 792, 344
+  size: 130, 143
+  orig: 130, 143
+  offset: 0, 0
+  index: -1
