@@ -116,3 +116,6 @@ Desktop.ini
 .idea/.idea.Schmetris/.idea/misc.xml
 .idea/.idea.Schmetris/.idea/vcs.xml
 
+Assets/RemoteData/PlayerPersistentData.player.meta
+Assets/RemoteData/MissionsMasterData.mission.meta
+Assets/RemoteData/MissionsCurrentData.mission.meta
