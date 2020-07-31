@@ -47,26 +47,19 @@ namespace StarSalvager.UI
 
         public static void ShowAlert(string Title, string Body, string neutralText, Action OnPressedCallback)
         {
-            #if !UNITY_EDITOR
             Instance.Show(Title, Body, neutralText, OnPressedCallback);
-            #endif
         }
 
         public static void ShowAlert(string Title, string Body, string confirmText, string cancelText,
             Action<bool> OnConfirmedCallback)
         {
-            
-#if !UNITY_EDITOR
             Instance.Show(Title, Body, confirmText, cancelText, OnConfirmedCallback);
-#endif
         }
 
         public static void ShowAlert(string Title, string Body, string confirmText, string cancelText,
             string neutralText, Action<bool> OnConfirmedCallback, Action OnNeutralCallback)
         {
-#if !UNITY_EDITOR
             Instance.Show(Title, Body, confirmText, cancelText,neutralText, OnConfirmedCallback, OnNeutralCallback);
-#endif
         }
         //============================================================================================================//
 

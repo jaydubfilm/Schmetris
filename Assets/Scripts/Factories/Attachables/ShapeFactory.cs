@@ -115,28 +115,13 @@ namespace StarSalvager.Factories
                 
                 int totalBits = shapeData.BlockData.Count;
 
-                BIT_TYPE type;
-                if (selectionType == SELECTION_TYPE.RANDOMSINGLE || selectionType == SELECTION_TYPE.RANDOMVARIED)
-                {
-                    type = (BIT_TYPE)Random.Range(0, 6);
-                }
-                else
-                {
-                    type = bitType;
-                }
-
                 var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
 
                 var shape = CreateObject<Shape>();
                 for (var i = 0; i < totalBits; i++)
                 {
-                    var bit = bitFactory.CreateObject<Bit>(type);
+                    var bit = bitFactory.CreateObject<Bit>((BIT_TYPE)shapeData.BlockData[i].Type, shapeData.BlockData[i].Level);
                     shape.PushNewBit(bit, shapeData.BlockData[i].Coordinate);
-
-                    if (selectionType == SELECTION_TYPE.RANDOMVARIED && type != BIT_TYPE.BLACK)
-                    {
-                        type = (BIT_TYPE)Random.Range(1, 6);
-                    }
                 }
 
                 /*if (LevelManager.Instance != null)

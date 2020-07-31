@@ -25,7 +25,7 @@ namespace StarSalvager.AI
 
         private float horizontalFarLeftX;
         private float horizontalFarRightX;
-        
+
         protected Vector3 m_mostRecentMovementDirection = Vector3.zero;
 
         //IStateAnimation Properties 
@@ -55,7 +55,7 @@ namespace StarSalvager.AI
 
         protected virtual void Start()
         {
-            m_positions.Add(Vector3.zero);
+            SetupPositions();
 
             renderer.sprite = m_enemyData?.Sprite;
             
@@ -82,6 +82,17 @@ namespace StarSalvager.AI
         }
 
         //============================================================================================================//
+
+        private void SetupPositions()
+        {
+            for (float i = 0; i < m_enemyData.Dimensions.x; i++)
+            {
+                for (float k = 0; k < m_enemyData.Dimensions.y; k++)
+                {
+                    m_positions.Add(new Vector3(i - (((float)m_enemyData.Dimensions.x - 1) / 2), k - (((float)m_enemyData.Dimensions.y - 1) / 2), 0));
+                }
+            }
+        }
 
         //============================================================================================================//
         

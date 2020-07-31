@@ -21,7 +21,7 @@ namespace StarSalvager
         //Variables to spawn enemies throughout a stage
         private List<string> m_enemiesToSpawn;
         private List<float> m_timesToSpawn;
-        private const float m_endOfStageSpawnBuffer = 0.25f;
+        private const float m_endOfStageSpawnBuffer = 0.5f;
         private float m_spawnTimer;
         private int m_nextStageToSpawn;
 

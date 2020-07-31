@@ -51,6 +51,8 @@ namespace StarSalvager
         public int MaxBitExplosionCount { get; }
         private readonly int m_sprayCount;
 
+        public Vector2Int Dimensions { get; }
+
         public EnemyData(EnemyRemoteData enemyRemoteData, EnemyProfileData enemyProfileData)
         {
             EnemyType = enemyRemoteData.EnemyType;
@@ -74,7 +76,7 @@ namespace StarSalvager
             m_sprayCount = enemyProfileData.SprayCount;
             MinBitExplosionCount = enemyRemoteData.MinBitExplosionCount;
             MaxBitExplosionCount = enemyRemoteData.MaxBitExplosionCount;
-
+            Dimensions = enemyRemoteData.Dimensions;
         }
 
         public EnemyData(string enemyType, string name, int health, float movementSpeed, bool isAttachable,

@@ -18,7 +18,7 @@ namespace StarSalvager.ScriptableObjects
         public ProjectileProfileData GetProjectileProfileData(string Type)
         {
             return m_projectileProfileData
-                .FirstOrDefault(p => p.ProjectileType == Type);
+                .FirstOrDefault(p => p.ProjectileTypeID == Type);
         }
     }
 
