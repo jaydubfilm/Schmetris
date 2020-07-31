@@ -751,6 +751,16 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2992684602527880234, guid: c7ec62de764d52744a18dcfe800d84b9,
+        type: 3}
+      propertyPath: m_cameraController
+      value: 
+      objectReference: {fileID: 1412517824}
+    - target: {fileID: 2992684602527880234, guid: c7ec62de764d52744a18dcfe800d84b9,
+        type: 3}
+      propertyPath: mDroneDesigner
+      value: 
+      objectReference: {fileID: 405256048}
     - target: {fileID: 3834051890847133536, guid: c7ec62de764d52744a18dcfe800d84b9,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -1166,6 +1176,18 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 1349385749}
+    ActiveGameObject: {fileID: 1349385749}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 367988722}
     ActiveGameObject: {fileID: 367988722}
     GUIDsList: []
@@ -1401,18 +1423,6 @@ MonoBehaviour:
     list:
     - {fileID: 367988722}
     ActiveGameObject: {fileID: 367988722}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
