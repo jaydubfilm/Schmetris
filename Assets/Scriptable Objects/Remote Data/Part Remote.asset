@@ -15,6 +15,7 @@ MonoBehaviour:
   partRemoteData:
   - name: Core
     partType: 0
+    canSell: 0
     priority: 200
     health:
     - 20
@@ -40,6 +41,7 @@ MonoBehaviour:
       amount: 10
   - name: Magnet
     partType: 1
+    canSell: 1
     priority: 75
     health:
     - 80
@@ -59,6 +61,7 @@ MonoBehaviour:
     burnRates: []
   - name: Repairer
     partType: 2
+    canSell: 1
     priority: 50
     health:
     - 80
@@ -82,6 +85,7 @@ MonoBehaviour:
       amount: 10
   - name: Armor
     partType: 3
+    canSell: 1
     priority: 25
     health:
     - 150
@@ -97,6 +101,7 @@ MonoBehaviour:
     burnRates: []
   - name: Gun
     partType: 4
+    canSell: 1
     priority: 75
     health:
     - 50

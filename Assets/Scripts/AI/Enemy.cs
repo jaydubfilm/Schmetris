@@ -6,6 +6,7 @@ using StarSalvager.Values;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Animations;
 using StarSalvager.Missions;
+using StarSalvager.Utilities;
 
 namespace StarSalvager.AI
 {
@@ -71,6 +72,10 @@ namespace StarSalvager.AI
             //Count down fire timer. If ready to fire, call fireAttack()
             if (m_enemyData.AttackType == ENEMY_ATTACKTYPE.None)
                 return;
+            
+            if(GameTimer.IsPaused || LevelManager.Instance.EndWaveState)
+                return;
+            
 
             m_fireTimer += Time.deltaTime;
 

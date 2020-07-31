@@ -1,5 +1,6 @@
 ﻿using System;
 using Sirenix.OdinInspector;
+using StarSalvager.Cameras;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using UnityEngine;
@@ -53,6 +54,8 @@ namespace StarSalvager.UI.Scrapyard
         private Button menuButton;
         
         //============================================================================================================//
+        [SerializeField]
+        private CameraController CameraController;
         
         private DroneDesigner _droneDesigner;
         
@@ -133,11 +136,16 @@ namespace StarSalvager.UI.Scrapyard
 
         private void ShowMenu(MENU menu)
         {
+            
             viewDroneWindow.SetActive(false);
             droneDesignWindow.SetActive(false);
             craftingWindow.SetActive(false);
             storageWindow.SetActive(false);
             missionsWindow.SetActive(false);
+            
+            CameraController.CameraOffset(Vector3.zero, menu == MENU.DESIGN);
+            //FIXME This should be happening within the DroneDesigner
+            _droneDesigner.selectedPartType = null;
             
             switch (menu)
             {

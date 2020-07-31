@@ -125,6 +125,11 @@ namespace StarSalvager
                 PartRemoteData partRemoteData =
                     FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
 
+                //If there's nothing using these resources ignore
+                if(part.level >= partRemoteData.burnRates.Length)
+                    continue;
+                
+                
                 var bitType = partRemoteData.burnRates[part.level].type;
                 
                 var resourceValue = GetValueToBurn(partRemoteData, bitType);

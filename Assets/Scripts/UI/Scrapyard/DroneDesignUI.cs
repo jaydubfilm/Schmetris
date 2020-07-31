@@ -53,8 +53,8 @@ namespace StarSalvager.UI.Scrapyard
         private Button saveButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button loadButton;
-        [SerializeField, Required, BoxGroup("Menu Buttons")]
-        private Button sellBitsButton;
+        //[SerializeField, Required, BoxGroup("Menu Buttons")]
+        //private Button sellBitsButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button isUpgradingButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
@@ -169,11 +169,11 @@ namespace StarSalvager.UI.Scrapyard
 
             //--------------------------------------------------------------------------------------------------------//
 
-            sellBitsButton.onClick.AddListener(() =>
-            {
-                mDroneDesigner.SellBits();
-                UpdateResources(PlayerPersistentData.PlayerData.GetResources());
-            });
+            //sellBitsButton.onClick.AddListener(() =>
+            //{
+            //    mDroneDesigner.SellBits();
+            //    UpdateResources(PlayerPersistentData.PlayerData.GetResources());
+            //});
 
             isUpgradingButton.onClick.AddListener(() =>
             {
@@ -285,7 +285,9 @@ namespace StarSalvager.UI.Scrapyard
             //FIXME This needs to move to the Factory
             foreach (var partRemoteData in remotePartProfileScriptable.partRemoteData)
             {
-
+                if (!partRemoteData.canSell)
+                    continue;
+                
                 var element = partsScrollView.AddElement<PartUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement");
                 element.Init(partRemoteData, PartPressed);
             }
@@ -320,7 +322,8 @@ namespace StarSalvager.UI.Scrapyard
 
         private void SetCameraZoom(float value)
         {
-            m_cameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * value, Vector3.zero, true);
+            m_cameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * value, Vector3.zero);
+            m_cameraController.CameraOffset(Vector3.zero, true);
         }
 
         //============================================================================================================//

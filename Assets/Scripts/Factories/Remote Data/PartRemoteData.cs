@@ -11,8 +11,12 @@ namespace StarSalvager.Factories.Data
         public string name;
         public string Name => name;
         
+        
         [FoldoutGroup("$name")]
         public PART_TYPE partType;
+
+        [FoldoutGroup("$name")]
+        public bool canSell = true;
         
         [FoldoutGroup("$name")]
         public int priority;
@@ -29,6 +33,8 @@ namespace StarSalvager.Factories.Data
 
         [FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true)]
         public ResourceAmount[] burnRates;
+        
+        
 
         //This only compares Type and not all individual properties
         #region IEquatable

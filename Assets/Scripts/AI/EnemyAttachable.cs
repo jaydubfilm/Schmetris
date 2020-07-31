@@ -51,7 +51,7 @@ namespace StarSalvager.AI
             if (LevelManager.Instance.EndWaveState)
             {
                 target = null;
-                SetAttached(false);
+                attachedBot.ForceDetach(this);
                 return;
             }
 

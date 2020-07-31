@@ -152,6 +152,8 @@ namespace StarSalvager
                 Alert.ShowAlert("Bits Sold", resourcesGained, "Okay", null);
                 scrapBot.RemoveAllBits();
                 SaveBlockData();
+                
+                droneDesignUi.UpdateResources(PlayerPersistentData.PlayerData.GetResources());
             }
         }
 
