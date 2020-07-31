@@ -144,8 +144,14 @@ namespace StarSalvager
                 
                 Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(scrapBot.attachedBlocks.OfType<ScrapyardBit>());
                 PlayerPersistentData.PlayerData.AddResources(bits);
-                Toast.AddToast("Resources gained: " + bits.ToString(), time: 6);
+                string resourcesGained = "";
+                foreach (var resource in bits)
+                {
+                    resourcesGained += resource.Key + ": " + resource.Value + "\n";
+                }
+                Alert.ShowAlert("Bits Sold", resourcesGained, "Okay", null);
                 scrapBot.RemoveAllBits();
+                SaveBlockData();
             }
         }
 
