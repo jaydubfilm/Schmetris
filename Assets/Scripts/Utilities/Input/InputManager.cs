@@ -410,6 +410,9 @@ namespace StarSalvager.Utilities.Inputs
 
         private void Pause(InputAction.CallbackContext ctx)
         {
+            if (LevelManager.Instance.EndWaveState)
+                return;
+            
             if(ctx.ReadValue<float>() == 1f)
                 GameTimer.SetPaused(!isPaused);
         }

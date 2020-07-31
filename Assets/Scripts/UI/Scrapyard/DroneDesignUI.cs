@@ -320,7 +320,8 @@ namespace StarSalvager.UI.Scrapyard
 
         private void SetCameraZoom(float value)
         {
-            m_cameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * value, Vector3.zero, true);
+            m_cameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * value, Vector3.zero);
+            m_cameraController.CameraOffset(Vector3.zero, true);
         }
 
         //============================================================================================================//

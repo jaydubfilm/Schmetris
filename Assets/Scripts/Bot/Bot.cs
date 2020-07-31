@@ -25,6 +25,11 @@ namespace StarSalvager
     {
         public static Action<Bot, string> OnBotDied;
 
+        [BoxGroup("Smoke Particles")]
+        public ParticleSystem TEST_ParticleSystem;
+        [BoxGroup("Smoke Particles")]
+        public ParticleSystemForceField TEST_ParticleSystemForceField;
+
         //============================================================================================================//
         
         public bool IsRecycled { get; set; }
@@ -153,6 +158,8 @@ namespace StarSalvager
             if (isPaused)
                 return;
             
+            SetParticles();
+            
             //See if the bot has completed the current wave
             //FIXME I Don't like accessing the external value here. I should consider other ways of checking this value
             if (LevelManager.Instance.EndWaveState)
@@ -188,6 +195,48 @@ namespace StarSalvager
         }
 
         #endregion //Unity Functions
+        
+        private void SetParticles()
+        {
+            if (Destroyed)
+            {
+                TEST_ParticleSystem.Stop();
+                return;
+            }
+            
+            //This should be the core
+            if (!(attachedBlocks[0] is IHealth iHealth))
+                return;
+
+            var health = iHealth.CurrentHealth / iHealth.StartingHealth;
+            
+            if(health < 1f && !TEST_ParticleSystem.isPlaying)
+                TEST_ParticleSystem.Play();
+            else if (health >= 1f)
+            {
+                TEST_ParticleSystem.Stop();
+                return;
+            }
+
+
+            //FIXME This is only here as a proof of concept
+            switch (Globals.MovingDirection)
+            {
+                case DIRECTION.NULL:
+                    TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(0f);
+                    break;
+                case DIRECTION.LEFT:
+                    TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(10f);
+                    break;
+                case DIRECTION.RIGHT:
+                    TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(-10f);
+                    break;
+            }
+            
+            
+            //var emission = TEST_ParticleSystem.sizeOverLifetime;
+            //emission.sizeMultiplier = 1f - healthValue;
+        }
 
         //============================================================================================================//
 
@@ -791,6 +840,7 @@ namespace StarSalvager
             
             if (PROTO_GodMode && closestAttachable.Coordinate == Vector2Int.zero)
                 return;
+            
 
             //print("DAMAGE");
 
@@ -798,6 +848,7 @@ namespace StarSalvager
             if (closestAttachable is IHealth closestHealth)
             {
                 closestHealth.ChangeHealth(-Mathf.Abs(damage));
+
 
                 if (closestHealth.CurrentHealth > 0) 
                     return;
@@ -820,7 +871,7 @@ namespace StarSalvager
             if (closestAttachable is IHealth closestHealth)
             {
                 closestHealth.ChangeHealth(-Mathf.Abs(damage));
-
+                
                 if (closestHealth.CurrentHealth > 0)
                     return;
                 
@@ -831,6 +882,8 @@ namespace StarSalvager
                 CheckForDisconnects();
             }
         }
+
+        
         
         #endregion //TryHitAt
         

@@ -91,24 +91,39 @@ namespace StarSalvager.Cameras
         {
             var orthographicSize = screenWidthInWorld * (Screen.height / (float) Screen.width) / 2;
             camera.orthographicSize = orthographicSize;
-            transform.position =
-                botPosition +
-                Vector3.back * 10;
 
             //Scrapyard wants the camera anchored differently, so it uses a different formula
-            if (!inScrapyard)
-            {
-                transform.position += Vector3.up * (orthographicSize / 2);
-            }
-            else
-            {
-                transform.position += Vector3.down * (orthographicSize / 2) / 4;
-                transform.position += Vector3.right * (orthographicSize * Screen.width / Screen.height) / 4;
-            }
+            //if (!inScrapyard)
+            //{
+            //    transform.position += Vector3.up * (orthographicSize / 2);
+            //}
+            //else
+            //{
+            //    transform.position += Vector3.down * (orthographicSize / 2) / 4;
+            //    transform.position += Vector3.right * (orthographicSize * Screen.width / Screen.height) / 4;
+            //}
+
+            CameraOffset(botPosition, false);
 
             startPos = transform.position;
             targetPos = startPos;
             horzExtent = orthographicSize * Screen.width / Screen.height / 2;
+        }
+
+        public void CameraOffset(Vector3 pos, bool state)
+        {
+            transform.position = pos + Vector3.back * 10;
+            
+            //Scrapyard wants the camera anchored differently, so it uses a different formula
+            if (!state)
+            {
+                transform.position += Vector3.up * (camera.orthographicSize / 2);
+            }
+            else
+            {
+                transform.position += Vector3.down * (camera.orthographicSize / 2) / 4;
+                transform.position += Vector3.right * (camera.orthographicSize * Screen.width / Screen.height) / 4;
+            } 
         }
 
         private void SetOrientation(ORIENTATION orientation)

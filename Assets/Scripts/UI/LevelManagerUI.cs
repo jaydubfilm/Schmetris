@@ -1,6 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
+using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -139,6 +140,9 @@ namespace StarSalvager.UI
 
         public void OnPause()
         {
+            if (LevelManager.Instance.EndWaveState)
+                return;
+            
             pauseWindow.SetActive(true);
             pauseText.gameObject.SetActive(false);
         }
