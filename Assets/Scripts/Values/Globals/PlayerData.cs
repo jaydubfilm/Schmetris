@@ -61,6 +61,7 @@ namespace StarSalvager.Values
 
         public void SubtractResources(PART_TYPE partType, int level, bool isRecursive)
         {
+            Debug.Log("SUBTRACTION");
             ResourceCalculations.SubtractResources(ref resources, partType, level, isRecursive);
         }
 
@@ -71,12 +72,14 @@ namespace StarSalvager.Values
 
         public bool CanAfford(LevelCost levelCost)
         {
-            return ResourceCalculations.CanAfford(resources, levelCost);
+            Dictionary<BIT_TYPE, int> tempDictionary = new Dictionary<BIT_TYPE, int>(resources);
+            return ResourceCalculations.CanAfford(tempDictionary, levelCost);
         }
 
         public bool CanAffordPart(PART_TYPE partType, int level, bool isRecursive)
         {
-            return ResourceCalculations.CanAffordPart(resources, partType, level, isRecursive);
+            Dictionary<BIT_TYPE, int> tempDictionary = new Dictionary<BIT_TYPE, int>(resources);
+            return ResourceCalculations.CanAffordPart(tempDictionary, partType, level, isRecursive);
         }
 
         //============================================================================================================//
