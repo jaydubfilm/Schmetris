@@ -70,6 +70,7 @@ namespace StarSalvager.UI
 
             scrapyardButton.onClick.AddListener(() =>
             {
+                m_levelManager.SavePlayerData();
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
                 SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
