@@ -419,9 +419,6 @@ namespace StarSalvager
                         if (attachableAtCoordinates != null)
                             return;
 
-                        if (!playerData.CanAffordPart(toUndo.PartType, toUndo.Level, true))
-                            return;
-
                         var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(toUndo.PartType, toUndo.Level);
                         playerData.SubtractResources(toUndo.PartType, toUndo.Level, true);
                         scrapBot.AttachNewBit(toUndo.Coordinate, attachable);

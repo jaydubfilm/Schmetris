@@ -57,4 +57,4 @@ MonoBehaviour:
     m_attackSpeed: 1
     m_minBitExplosionCount: 2
     m_maxBitExplosionCount: 4
-    m_dimensions: {x: 1, y: 1}
+    m_dimensions: {x: 2, y: 2}
