@@ -65,7 +65,7 @@ namespace StarSalvager
         public void InitBot()
         {
             //Add core component
-            var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(
+            var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(
                 new BlockData
                 {
                     Type = (int)PART_TYPE.CORE,
