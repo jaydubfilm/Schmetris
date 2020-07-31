@@ -250,10 +250,11 @@ namespace StarSalvager
                         //Create projectile
                         //--------------------------------------------------------------------------------------------//
 
+                        
                         //TODO Might need to add something to change the projectile used for each gun piece
                         var projectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
                             .CreateObject<Projectile>(
-                                "Basic Projectile",
+                                "083be790-7a08-4f27-b506-e8e09a116bc8",
                                 shootDirection,
                                 "Enemy");
 
