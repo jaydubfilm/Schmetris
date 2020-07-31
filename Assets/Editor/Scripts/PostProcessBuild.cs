@@ -10,7 +10,7 @@ namespace StarSalvager.Editor
     public class PostProcessBuild
     {
         private static string EDITOR_PATH = Application.dataPath + "/RemoteData/AddToBuild/";
-        private static string BUILD_PATH = "/RemoteData/AddToBuild/";
+        private static string BUILD_PATH = $"/{Application.productName}_Data/RemoteData/AddToBuild/";
         
         [PostProcessBuild(1)]
         public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
