@@ -67,7 +67,7 @@ namespace StarSalvager.Cameras
 
         private void OnEnable()
         {
-            SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen, Vector3.zero, gameObject.scene == SceneManager.GetSceneByName("ScrapyardScene"));
+            SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen, Vector3.zero);
             SetOrientation(Values.Globals.Orientation);
         }
 
@@ -87,7 +87,7 @@ namespace StarSalvager.Cameras
 
         //============================================================================================================//
 
-        public void SetOrthographicSize(float screenWidthInWorld, Vector3 botPosition, bool inScrapyard = false)
+        public void SetOrthographicSize(float screenWidthInWorld, Vector3 botPosition)
         {
             var orthographicSize = screenWidthInWorld * (Screen.height / (float) Screen.width) / 2;
             camera.orthographicSize = orthographicSize;
