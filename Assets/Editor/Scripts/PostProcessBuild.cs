@@ -29,7 +29,7 @@ namespace StarSalvager.Editor
             foreach (var file in files)
             {
                 var path = Path.Combine(buildDirectory.FullName, file.Name);
-                file.CopyTo(path);
+                file.CopyTo(path, true);
                 
                 Debug.Log($"Copied {file.Name} to {path}");
             }
