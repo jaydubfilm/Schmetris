@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard
 {
-    public class MissionUIElement : UIElement<TEST_Mission>
+    public class MissionUIElement : ButtonReturnUIElement<TEST_Mission, TEST_Mission>
     {
         [SerializeField]
         private TMP_Text title;
@@ -13,21 +13,16 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField]
         private Button favouriteButton;
 
-        public void Init(TEST_Mission data, Action<TEST_Mission> OnFavPressed)
-        {
-            Init(data);
-            
-            favouriteButton.onClick.AddListener(() =>
-            {
-                OnFavPressed?.Invoke(data);
-            });
-        }
-        
-        public override void Init(TEST_Mission data)
+        public override void Init(TEST_Mission data, Action<TEST_Mission> OnPressed)
         {
             this.data = data;
 
             title.text = data.name;
+            
+            button.onClick.AddListener(() =>
+            {
+                OnPressed?.Invoke(data);
+            });
         }
     }
 

@@ -8,7 +8,10 @@ namespace StarSalvager.Utilities.Backgrounds
 {
     public class BackgroundController : MonoBehaviour, IPausable
     {
-        public bool isPaused => GameTimer.IsPaused;
+        public bool isPaused => GameTimer.IsPaused && !ignorePaused;
+
+        [SerializeField]
+        private bool ignorePaused;
         
         //[SerializeField, Required, DisableInPlayMode]
         private Transform cameraTransform;

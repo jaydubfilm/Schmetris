@@ -424,6 +424,10 @@ namespace StarSalvager
             //rotation = Quaternion.RotateTowards(rotation, targetRotation, TEST_RotSpeed * Time.deltaTime);
             rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, TEST_RotSpeed * Time.fixedDeltaTime);
             rigidbody.rotation = rotation;
+            
+            //FIXME Remove this when ready
+            TEST_ParticleSystem.transform.rotation = Quaternion.identity;
+            
 
             //Here we check how close to the final rotation we are.
             var remainingDegrees = Mathf.Abs(Mathf.DeltaAngle(rotation, targetRotation));
@@ -836,6 +840,9 @@ namespace StarSalvager
 
         public void TryHitAt(Vector2 hitPosition, float damage)
         {
+            if(LevelManager.Instance.EndWaveState)
+                return;
+            
             var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
             
             if (PROTO_GodMode && closestAttachable.Coordinate == Vector2Int.zero)

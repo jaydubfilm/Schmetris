@@ -144,6 +144,8 @@ namespace StarSalvager.UI.Scrapyard
             missionsWindow.SetActive(false);
             
             CameraController.CameraOffset(Vector3.zero, menu == MENU.DESIGN);
+            //FIXME This should be happening within the DroneDesigner
+            _droneDesigner.selectedPartType = null;
             
             switch (menu)
             {

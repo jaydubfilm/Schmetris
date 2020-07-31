@@ -2,6 +2,7 @@
 using StarSalvager.Factories.Data;
 using System;
 using Recycling;
+using StarSalvager.Utilities;
 
 namespace StarSalvager.AI
 {
@@ -24,6 +25,9 @@ namespace StarSalvager.AI
         // Update is called once per frame
         private void Update()
         {
+            if(GameTimer.IsPaused)
+                return;
+            
             transform.position += (m_enemyVelocityModifier + m_travelDirectionNormalized * m_projectileData.ProjectileSpeed) * Time.deltaTime;
         }
 
