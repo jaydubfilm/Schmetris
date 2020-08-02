@@ -152,12 +152,24 @@ namespace StarSalvager.Factories
 
         public EditorBotShapeGeneratorData ImportBotShapeRemoteData()
         {
+#if UNITY_STANDALONE && !UNITY_EDITOR
+            if (!File.Exists($"Application.dataPath/{Application.productName}_Data/BuildData/BotShapeEditorData.txt"))
+            {
+                Debug.LogError("BROKEN");  
+                return new EditorBotShapeGeneratorData();
+            }
+
+            var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText($"/{Application.productName}_Data/BuildData/BotShapeEditorData.txt"));
+
+            return loaded;
+#else
             if (!File.Exists(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"))
                 return new EditorBotShapeGeneratorData();
 
             var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"));
 
             return loaded;
+#endif
         }
     }
 }

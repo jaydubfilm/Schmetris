@@ -11,6 +11,7 @@ using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
 using Newtonsoft.Json;
 using System.IO;
+using StarSalvager.Values;
 
 namespace StarSalvager
 {
@@ -121,15 +122,22 @@ namespace StarSalvager
                 }
             }
 
-            if (selectedPartType == null && SelectedBitType == null)
-            {
-                return;
-            }
-
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
                 if (scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate) != null)
+                {
+                    IAttachable attachable = scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+                    if (attachable != null && attachable is ScrapyardPart partAtCoordinates && partAtCoordinates.Type == PART_TYPE.CORE)
+                    {
+                        FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level + 1, ref partAtCoordinates);
+                    }
                     continue;
+                }
+
+                if (selectedPartType == null && SelectedBitType == null)
+                {
+                    return;
+                }
 
                 if (selectedPartType != null)
                 {
@@ -138,7 +146,7 @@ namespace StarSalvager
                 }
                 else if (SelectedBitType is BIT_TYPE bitType)
                 {
-                    scrapBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(bitType, SelectedPartLevel));
+                    scrapBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<ScrapyardBit>(bitType, SelectedPartLevel));
                 }
             }
         }
@@ -159,6 +167,13 @@ namespace StarSalvager
             {
                 foreach (ScrapyardBot scrapBot in _scrapyardBots)
                 {
+                    IAttachable attachable = scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+                    if (attachable != null && attachable is ScrapyardPart partAtCoordinates && partAtCoordinates.Type == PART_TYPE.CORE && partAtCoordinates.level > 0)
+                    {
+                        FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level - 1, ref partAtCoordinates);
+                        continue;
+                    }
+                    
                     scrapBot.TryRemoveAttachableAt(mouseCoordinate, false);
                 } 
             }
@@ -327,6 +342,14 @@ namespace StarSalvager
             //DeloadAllShapes();
         }
 
+        public void PushBot()
+        {
+            foreach (ScrapyardBot scrapyardbot in _scrapyardBots)
+            {
+                PlayerPersistentData.PlayerData.SetCurrentBlockData(scrapyardbot.attachedBlocks.GetBlockDatas());
+            }
+        }
+
         public void AddCategory(string categoryName)
         {
             if (!EditorBotShapeData.m_categories.Contains(categoryName))
@@ -339,17 +362,28 @@ namespace StarSalvager
                 return string.Empty;
             
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
+#if UNITY_STANDALONE && !UNITY_EDITOR
+            System.IO.File.WriteAllText($"/{Application.productName}_Data/BuildData/BotShapeEditorData.txt", export);
+#else
             System.IO.File.WriteAllText(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt", export);
+#endif
 
             return export;
         }
 
         public EditorBotShapeGeneratorData ImportRemoteData()
         {
-            if (!File.Exists(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"))
+#if UNITY_STANDALONE && !UNITY_EDITOR
+            if (!File.Exists($"Application.dataPath/{Application.productName}_Data/BuildData/BotShapeEditorData.txt"))
                 return new EditorBotShapeGeneratorData();
             
+            var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText($"/{Application.productName}_Data/BuildData/BotShapeEditorData.txt"));
+#else
+            if (!File.Exists(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"))
+                return new EditorBotShapeGeneratorData();
+
             var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"));
+#endif
 
             return loaded;
         }

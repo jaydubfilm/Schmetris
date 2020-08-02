@@ -73,6 +73,8 @@ namespace StarSalvager.UI
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button NewCategoryButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button PushBotButton;
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button NewBotButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button NewShapeButton;
@@ -265,6 +267,11 @@ namespace StarSalvager.UI
                 ScreenBlackImage.gameObject.SetActive(true);
             });
 
+            PushBotButton.onClick.AddListener(() =>
+            {
+                m_botShapeEditor.PushBot();
+            });
+
             //--------------------------------------------------------------------------------------------------------//
 
             LoadConfirm.onClick.AddListener(() =>
@@ -397,6 +404,9 @@ namespace StarSalvager.UI
             {
                 for (int i = 0; i < partRemoteData.costs.Count; i++)
                 {
+                    if (partRemoteData.partType == PART_TYPE.CORE)
+                        continue;
+
                     var element = partsScrollView.AddElement<PartBitImageUIElement>(partRemoteData, $"{partRemoteData.partType}_{i}_UIElement", true);
                     element.Init(partRemoteData, PartBitPressed, i);
                 }
