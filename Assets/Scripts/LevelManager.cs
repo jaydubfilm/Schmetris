@@ -243,6 +243,7 @@ namespace StarSalvager
 
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
+                Toast.AddToast("Wave Complete!", time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
                 PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector, Globals.CurrentWave + 1);
                 MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
                 m_endWaveState = true;
