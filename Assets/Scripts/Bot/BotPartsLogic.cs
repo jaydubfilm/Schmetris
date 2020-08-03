@@ -129,22 +129,16 @@ namespace StarSalvager
                 if(part.level >= partRemoteData.burnRates.Length)
                     continue;
                 
-                
                 var bitType = partRemoteData.burnRates[part.level].type;
                 
                 var resourceValue = GetValueToBurn(partRemoteData, bitType);
-
-                if (resourceValue <= 0f && useBurnRate)
-                {
-                    return;
-                }
 
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
 
-                        
-                        resourceValue -= partRemoteData.burnRates[part.level].amount * Time.deltaTime;
+                        if (resourceValue > 0f && useBurnRate)
+                            resourceValue -= partRemoteData.burnRates[part.level].amount * Time.deltaTime;
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
@@ -180,6 +174,11 @@ namespace StarSalvager
                         if (!useBurnRate)
                             break;
                         
+                        if (resourceValue <= 0f && useBurnRate)
+                        {
+                            continue;
+                        }
+                        
                         //TODO Determine if this heals Bits & parts or just parts
                         //TODO This needs to fire every x Seconds
                         var toRepair = bot.attachedBlocks.GetAttachablesAroundInRadius<Part>(part, part.level + 1)
@@ -205,6 +204,12 @@ namespace StarSalvager
 
                         break;
                     case PART_TYPE.GUN:
+                        
+                        if (resourceValue <= 0f && useBurnRate)
+                        {
+                            continue;
+                        }
+                        
                         //TODO Need to determine if the shoot type is looking for enemies or not
                         //--------------------------------------------------------------------------------------------//
                         if (projectileTimers == null)

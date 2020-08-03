@@ -909,12 +909,11 @@ namespace StarSalvager
                     TryHitAt(attachable, bit.CurrentHealth);
                     break;
                 case Part _:
-                {
                     TryHitAt(attachable, 5f);
                     break;
-                }
+                case EnemyAttachable _:
+                    return;
                 default:
-                    
                     TryHitAt(attachable, 10000);
                     break;
             }
