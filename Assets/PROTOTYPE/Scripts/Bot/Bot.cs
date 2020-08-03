@@ -1782,7 +1782,7 @@ namespace StarSalvager.Prototype
         {
             isRotating = true;
             float t = 0f;
-            Component[] brickScripts = GetComponentsInChildren<Brick>();
+            Object[] brickScripts = GetComponentsInChildren<Brick>();
 
             while (t < duration)
             {
