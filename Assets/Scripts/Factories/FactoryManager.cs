@@ -150,14 +150,41 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
+        public string ExportBotShapeRemoteData(EditorBotShapeGeneratorData editorData)
+        {
+            if (editorData == null)
+                return string.Empty;
+
+            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
+#if !UNITY_EDITOR
+            System.IO.File.WriteAllText(Application.dataPath + "/BuildData/BotShapeEditorData.txt", export);
+#else
+            System.IO.File.WriteAllText(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt", export);
+#endif
+
+            return export;
+        }
+
         public EditorBotShapeGeneratorData ImportBotShapeRemoteData()
         {
+#if !UNITY_EDITOR
+            if (!File.Exists(Application.dataPath + "/BuildData/BotShapeEditorData.txt"))
+            {
+                Debug.LogError("BROKEN");
+                return new EditorBotShapeGeneratorData();
+            }
+
+            var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText(Application.dataPath + "/BuildData/BotShapeEditorData.txt"));
+
+            return loaded;
+#else
             if (!File.Exists(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"))
                 return new EditorBotShapeGeneratorData();
 
             var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"));
 
             return loaded;
+#endif
         }
     }
 }

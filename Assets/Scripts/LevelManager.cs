@@ -41,8 +41,7 @@ namespace StarSalvager
         private int m_currentStage;
         public int CurrentStage => m_currentStage;
 
-        private bool m_endWaveState = false;
-        public bool EndWaveState => m_endWaveState;
+        public bool EndWaveState = false;
 
         private LevelManagerUI m_levelManagerUI;
 
@@ -161,7 +160,6 @@ namespace StarSalvager
             {
                 SavePlayerData();
                 GameTimer.SetPaused(true);
-                m_endWaveState = false;
                 m_levelManagerUI.ToggleBetweenWavesUIActive(true);
                 ObstacleManager.MoveToNewWave();
                 EnemyManager.MoveToNewWave();
@@ -243,9 +241,10 @@ namespace StarSalvager
 
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
+                Toast.AddToast("Wave Complete!", time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
                 PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector, Globals.CurrentWave + 1);
                 MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
-                m_endWaveState = true;
+                EndWaveState = true;
                 Globals.CurrentWave++;
                 m_levelTimer += m_waveTimer;
                 m_waveTimer = 0;

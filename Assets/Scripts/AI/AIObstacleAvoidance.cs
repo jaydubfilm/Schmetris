@@ -16,18 +16,8 @@ namespace StarSalvager.AI
         //Temporary variables, simulating the movement speed of falling obstacles
         private Vector2 m_obstaclePositionAdjuster = new Vector2(0.0f, Constants.gridCellSize);
 
-        void Start()
-        {
-
-        }
-
-        void Update()
-        {
-
-        }
-
         //Check all nearby squares to the agent to see if any contain an obstacle. For any obstacles in those squares, add the force they apply on the agent.
-        public Vector2 CalculateForceAtPoint(Vector2 agentPosition)
+        public Vector2 CalculateForceAtPoint(Vector2 agentPosition, bool isAttachable)
         {
             //Calculate the min and max grid positions of a Values.enemyGridScanRadius large box around the agent
             Vector2 force = new Vector2(0, 0);
@@ -44,12 +34,22 @@ namespace StarSalvager.AI
             {
                 for (int k = agentGridScanMinimum.y; k <= agentGridScanMaximum.y; k++)
                 {
-                    if (LevelManager.Instance.WorldGrid.GetGridSquareAtPosition(i, k).m_obstacleInSquare)
+                    if (LevelManager.Instance.WorldGrid.GetGridSquareAtPosition(i, k).ObstacleInSquare)
                     {
                         Vector2 obstacleForce = GetForce(agentPosition, CalculateObstaclePositionChange(i, k));
                         force.x += obstacleForce.x;
                         force.y += obstacleForce.y;
                     }
+                }
+            }
+
+            if (isAttachable)
+            {
+                foreach (var attached in LevelManager.Instance.BotGameObject.attachedBlocks)
+                {
+                    Vector2 obstacleForce = GetForce(agentPosition, attached.transform.position);
+                    force.x += obstacleForce.x;
+                    force.y += obstacleForce.y;
                 }
             }
 
