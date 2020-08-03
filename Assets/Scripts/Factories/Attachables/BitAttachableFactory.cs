@@ -46,7 +46,7 @@ namespace StarSalvager.Factories
         
         public int GetTotalResource(Bit bit)
         {
-            return remoteData.GetRemoteData(bit.Type).resource[bit.level];
+            return remoteData.GetRemoteData(bit.Type).levels[bit.level].resources;
         }
 
         public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<ScrapyardBit> bits)
@@ -58,7 +58,7 @@ namespace StarSalvager.Factories
                 if (!resources.ContainsKey(bit.Type))
                     resources.Add(bit.Type, 0);
 
-                resources[bit.Type] += remoteData.GetRemoteData(bit.Type).resource[bit.level];
+                resources[bit.Type] += remoteData.GetRemoteData(bit.Type).levels[bit.level].resources;
             }
 
             return resources;
@@ -122,8 +122,11 @@ namespace StarSalvager.Factories
             temp.LoadBlockData(blockData);
 
             //Have to check for null, as the Asteroid/Energy does not have health
-            if(remote != null)
-                temp.SetupHealthValues(remote.health[blockData.Level], remote.health[blockData.Level]);
+            if (remote != null)
+            {
+                var health = remote.levels[blockData.Level].health;
+                temp.SetupHealthValues(health,health);
+            }
 
             return temp.gameObject;
         }

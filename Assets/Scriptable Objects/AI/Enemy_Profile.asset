@@ -37,7 +37,8 @@ MonoBehaviour:
     m_spreadAngle: 15
     m_sprayCount: 12
   - m_enemyTypeID: f3c96622-609f-498c-be89-8cc575e46fe0
-    m_sprite: {fileID: 0}
+    m_sprite: {fileID: 2357439660054832943, guid: ca216a3cd365bfe4e924677094170fdb,
+      type: 3}
     m_enemyType: Ball Head
     m_movementType: 0
     m_isAttachable: 0
@@ -53,7 +54,8 @@ MonoBehaviour:
     m_spreadAngle: 0
     m_sprayCount: 0
   - m_enemyTypeID: 3363c379-70c7-47d1-8cc6-1ca650259a31
-    m_sprite: {fileID: 0}
+    m_sprite: {fileID: 1155024208887532473, guid: db9adc14e8a7d054da2c1eed6b01af10,
+      type: 3}
     m_enemyType: Fly
     m_movementType: 1
     m_isAttachable: 0
@@ -69,7 +71,8 @@ MonoBehaviour:
     m_spreadAngle: 0
     m_sprayCount: 0
   - m_enemyTypeID: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
-    m_sprite: {fileID: 0}
+    m_sprite: {fileID: -8242381499147173548, guid: d97ff67049d79e0468a1fa4286b69a4d,
+      type: 3}
     m_enemyType: Mosquito
     m_movementType: 3
     m_isAttachable: 0
@@ -85,7 +88,8 @@ MonoBehaviour:
     m_spreadAngle: 0
     m_sprayCount: 0
   - m_enemyTypeID: 71b8347a-1d17-4ade-81d4-85930af8210e
-    m_sprite: {fileID: 0}
+    m_sprite: {fileID: -4368447452934732472, guid: 8103108770a92fe4793bab8f1881bb8a,
+      type: 3}
     m_enemyType: Squid
     m_movementType: 0
     m_isAttachable: 0

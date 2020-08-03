@@ -65,12 +65,12 @@ namespace StarSalvager.Values
             ResourceCalculations.SubtractResources(ref resources, partType, level, isRecursive);
         }
 
-        public void SubtractResources(LevelCost cost)
+        public void SubtractResources(IEnumerable<CraftCost> cost)
         {
             ResourceCalculations.SubtractResources(ref resources, cost);
         }
 
-        public bool CanAfford(LevelCost levelCost)
+        public bool CanAfford(IEnumerable<CraftCost> levelCost)
         {
             Dictionary<BIT_TYPE, int> tempDictionary = new Dictionary<BIT_TYPE, int>(resources);
             return ResourceCalculations.CanAfford(tempDictionary, levelCost);

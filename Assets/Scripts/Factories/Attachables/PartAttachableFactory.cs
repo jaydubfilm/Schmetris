@@ -81,7 +81,7 @@ namespace StarSalvager.Factories
             temp.SetSprite(sprite);
             temp.LoadBlockData(blockData);
 
-            var health = remote.health[blockData.Level];
+            var health = remote.levels[blockData.Level].health;//.health[blockData.Level];
 
             //temp.StartingHealth =
             temp.SetupHealthValues(health, health);

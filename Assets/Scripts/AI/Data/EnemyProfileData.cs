@@ -20,6 +20,7 @@ namespace StarSalvager.Factories.Data
         {
             GUIUtility.systemCopyBuffer = m_enemyTypeID;
         }
+        
         #endif
         
         [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$EnemyType/row2", 65), VerticalGroup("$EnemyType/row2/left"), HideLabel]
@@ -34,7 +35,7 @@ namespace StarSalvager.Factories.Data
         [SerializeField, VerticalGroup("$EnemyType/row2/right")]
         private bool m_isAttachable;
         
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$EnemyType"), OnValueChanged("OnAnimationValueChanged")]
         private AnimationControllerScriptableObject m_enemyAnimationController;
 
         [SerializeField, FoldoutGroup("$EnemyType")]
@@ -100,6 +101,18 @@ namespace StarSalvager.Factories.Data
 
         public int SprayCount => m_sprayCount;
 
+        #if UNITY_EDITOR
+
+        private void OnAnimationValueChanged()
+        {
+            if (AnimationController == null)
+            {
+                m_sprite = null;
+                return;
+            }
+            m_sprite = AnimationController.GetAnimation("Default").GetFrame(0);
+        }
+        
         private IEnumerable GetProjectileTypes()
         {
             ValueDropdownList<string> projectileTypes = new ValueDropdownList<string>();
@@ -109,5 +122,8 @@ namespace StarSalvager.Factories.Data
             }
             return projectileTypes;
         }
+        
+        #endif
+        
     }
 }

@@ -408,7 +408,7 @@ namespace StarSalvager.UI
             //FIXME This needs to move to the Factory
             foreach (var partRemoteData in _remotePartProfileScriptable.partRemoteData)
             {
-                for (int i = 0; i < partRemoteData.costs.Count; i++)
+                for (int i = 0; i < partRemoteData.levels.Count; i++)
                 {
                     if (partRemoteData.partType == PART_TYPE.CORE)
                         continue;
@@ -421,7 +421,7 @@ namespace StarSalvager.UI
             //FIXME This needs to move to the Factory
             foreach (var bitRemoteData in _remoteBitProfileScriptable.BitRemoteData)
             {
-                for (int i = 0; i < bitRemoteData.health.Length; i++)
+                for (int i = 0; i < bitRemoteData.levels.Length; i++)
                 {
                     var element = partsScrollView.AddElement<PartBitImageUIElement>(bitRemoteData, $"{bitRemoteData.bitType}_{i}_UIElement", true);
                     element.Init(bitRemoteData, PartBitPressed, i);

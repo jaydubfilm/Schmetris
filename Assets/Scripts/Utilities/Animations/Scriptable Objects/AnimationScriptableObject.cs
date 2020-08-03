@@ -79,6 +79,11 @@ namespace StarSalvager.Utilities.Animations
             }
         }
 
+        public Sprite GetFrame(int frame)
+        {
+            return sprites[frame];
+        }
+
         private static int GetIndex(float t, int count)
         {
             return (int) (count * t);

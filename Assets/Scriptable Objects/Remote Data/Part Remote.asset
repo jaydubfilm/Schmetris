@@ -17,109 +17,201 @@ MonoBehaviour:
     partType: 0
     canSell: 0
     priority: 200
-    health:
-    - 20
-    - 50
-    costs:
-    - levelCosts: []
-    - levelCosts:
-      - type: 4
-        amount: 200
-      - type: 2
-        amount: 200
-      - type: 1
-        amount: 200
-      - type: 3
-        amount: 200
-      - type: 5
-        amount: 200
-    data: 0a00000014000000
-    burnRates:
-    - type: 4
-      amount: 5
-    - type: 4
-      amount: 10
+    levels:
+    - health: 20
+      data: 9
+      burnRate:
+        type: 4
+        amount: 1
+      cost: []
+    - health: 50
+      data: 16
+      burnRate:
+        type: 4
+        amount: 3
+      cost:
+      - resourceType: 0
+        type: 1
+        amount: 500
+      - resourceType: 0
+        type: 2
+        amount: 500
+      - resourceType: 0
+        type: 3
+        amount: 500
+      - resourceType: 0
+        type: 4
+        amount: 500
+      - resourceType: 0
+        type: 5
+        amount: 500
+    - health: 100
+      data: 25
+      burnRate:
+        type: 4
+        amount: 6
+      cost:
+      - resourceType: 0
+        type: 1
+        amount: 10000
+      - resourceType: 0
+        type: 2
+        amount: 10000
+      - resourceType: 0
+        type: 3
+        amount: 10000
+      - resourceType: 0
+        type: 4
+        amount: 10000
+      - resourceType: 0
+        type: 5
+        amount: 10000
   - name: Magnet
     partType: 1
     canSell: 1
     priority: 75
-    health:
-    - 80
-    - 100
-    costs:
-    - levelCosts:
-      - type: 3
-        amount: 100
-      - type: 5
-        amount: 100
-    - levelCosts:
-      - type: 3
-        amount: 200
-      - type: 5
-        amount: 500
-    data: 050000000a000000
-    burnRates: []
+    levels:
+    - health: 80
+      data: 5
+      burnRate:
+        type: 0
+        amount: 0
+      cost: []
+    - health: 100
+      data: 10
+      burnRate:
+        type: 0
+        amount: 0
+      cost:
+      - resourceType: 0
+        type: 3
+        amount: 300
+      - resourceType: 0
+        type: 5
+        amount: 300
+    - health: 120
+      data: 20
+      burnRate:
+        type: 0
+        amount: 0
+      cost:
+      - resourceType: 0
+        type: 3
+        amount: 2500
+      - resourceType: 0
+        type: 5
+        amount: 2500
   - name: Repairer
     partType: 2
     canSell: 1
     priority: 50
-    health:
-    - 80
-    - 90
-    costs:
-    - levelCosts:
-      - type: 3
+    levels:
+    - health: 80
+      data: 20
+      burnRate:
+        type: 2
+        amount: 1
+      cost:
+      - resourceType: 0
+        type: 3
         amount: 100
-      - type: 2
+      - resourceType: 0
+        type: 2
         amount: 100
-    - levelCosts:
-      - type: 3
-        amount: 200
-      - type: 2
-        amount: 500
-    data: 050000000a000000
-    burnRates:
-    - type: 2
-      amount: 10
-    - type: 2
-      amount: 10
+    - health: 90
+      data: 25
+      burnRate:
+        type: 2
+        amount: 2
+      cost:
+      - resourceType: 0
+        type: 3
+        amount: 400
+      - resourceType: 0
+        type: 2
+        amount: 800
+    - health: 100
+      data: 50
+      burnRate:
+        type: 2
+        amount: 3
+      cost:
+      - resourceType: 0
+        type: 2
+        amount: 4500
+      - resourceType: 0
+        type: 3
+        amount: 6000
   - name: Armor
     partType: 3
     canSell: 1
     priority: 25
-    health:
-    - 150
-    - 300
-    costs:
-    - levelCosts:
-      - type: 3
+    levels:
+    - health: 150
+      data: 0
+      burnRate:
+        type: 0
+        amount: 0
+      cost:
+      - resourceType: 0
+        type: 3
         amount: 200
-    - levelCosts:
-      - type: 3
-        amount: 500
-    data: 
-    burnRates: []
+    - health: 300
+      data: 0
+      burnRate:
+        type: 0
+        amount: 0
+      cost:
+      - resourceType: 0
+        type: 3
+        amount: 2500
+    - health: 500
+      data: 0
+      burnRate:
+        type: 0
+        amount: 0
+      cost:
+      - resourceType: 0
+        type: 3
+        amount: 20000
   - name: Gun
     partType: 4
     canSell: 1
     priority: 75
-    health:
-    - 50
-    - 75
-    costs:
-    - levelCosts:
-      - type: 3
+    levels:
+    - health: 60
+      data: 10
+      burnRate:
+        type: 3
+        amount: 1
+      cost:
+      - resourceType: 0
+        type: 2
+        amount: 50
+      - resourceType: 0
+        type: 3
+        amount: 150
+    - health: 80
+      data: 20
+      burnRate:
+        type: 3
+        amount: 1
+      cost:
+      - resourceType: 0
+        type: 2
         amount: 100
-      - type: 1
-        amount: 100
-    - levelCosts:
-      - type: 3
+      - resourceType: 0
+        type: 3
         amount: 200
-      - type: 1
-        amount: 500
-    data: 050000000a000000
-    burnRates:
-    - type: 3
-      amount: 2
-    - type: 3
-      amount: 2
+    - health: 100
+      data: 30
+      burnRate:
+        type: 3
+        amount: 1
+      cost:
+      - resourceType: 0
+        type: 2
+        amount: 1000
+      - resourceType: 0
+        type: 3
+        amount: 1500

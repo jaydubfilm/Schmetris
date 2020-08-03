@@ -15,36 +15,66 @@ MonoBehaviour:
   BitRemoteData:
   - name: Bluesalt
     bitType: 1
-    health:
-    - 20
-    - 50
-    - 90
-    resource: 3200000064000000c8000000
+    levels:
+    - health: 10
+      resources: 50
+    - health: 20
+      resources: 150
+    - health: 30
+      resources: 300
+    - health: 40
+      resources: 600
+    - health: 50
+      resources: 1200
   - name: Greenium
     bitType: 2
-    health:
-    - 20
-    - 50
-    - 90
-    resource: 3200000064000000c8000000
+    levels:
+    - health: 10
+      resources: 50
+    - health: 20
+      resources: 150
+    - health: 30
+      resources: 300
+    - health: 40
+      resources: 600
+    - health: 50
+      resources: 1200
   - name: Greyscale
     bitType: 3
-    health:
-    - 20
-    - 50
-    - 90
-    resource: 3200000064000000c8000000
+    levels:
+    - health: 10
+      resources: 50
+    - health: 20
+      resources: 150
+    - health: 30
+      resources: 300
+    - health: 40
+      resources: 600
+    - health: 50
+      resources: 1200
   - name: Reddite
     bitType: 4
-    health:
-    - 20
-    - 50
-    - 90
-    resource: 3200000064000000c8000000
+    levels:
+    - health: 10
+      resources: 50
+    - health: 20
+      resources: 150
+    - health: 30
+      resources: 300
+    - health: 40
+      resources: 600
+    - health: 50
+      resources: 1200
   - name: Yellectron
     bitType: 5
-    health:
-    - 20
-    - 50
-    - 90
-    resource: 3200000064000000c8000000
+    levels:
+    - health: 10
+      resources: 50
+    - health: 20
+      resources: 150
+    - health: 30
+      resources: 300
+    - health: 40
+      resources: 600
+    - health: 50
+      resources: 1200

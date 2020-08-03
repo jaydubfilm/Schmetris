@@ -23,10 +23,14 @@ namespace StarSalvager.Utilities
 
         public static void AddResources(ref Dictionary<BIT_TYPE, int> resources, PART_TYPE partType, int level, bool isRecursive)
         {
-            var remoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).costs[level];
-            foreach (ResourceAmount resource in remoteData.levelCosts)
+            //var remoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).costs[level];
+            var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
+            foreach (CraftCost resource in costs)
             {
-                resources[resource.type] += resource.amount;
+                if (resource.resourceType != CraftCost.TYPE.Bit)
+                    continue;
+                
+                resources[(BIT_TYPE)resource.type] += resource.amount;
             }
 
             if (!isRecursive)
@@ -50,10 +54,14 @@ namespace StarSalvager.Utilities
 
         public static void SubtractResources(ref Dictionary<BIT_TYPE, int> resources, PART_TYPE partType, int level, bool isRecursive)
         {
-            var remoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).costs[level];
-            foreach (ResourceAmount resource in remoteData.levelCosts)
+            //var remoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).costs[level];
+            var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
+            foreach (CraftCost resource in costs)
             {
-                resources[resource.type] -= resource.amount;
+                if (resource.resourceType != CraftCost.TYPE.Bit)
+                    continue;
+                
+                resources[(BIT_TYPE)resource.type] -= resource.amount;
             }
 
             if (!isRecursive)
@@ -63,21 +71,27 @@ namespace StarSalvager.Utilities
                 SubtractResources(ref resources, partType, level - 1, isRecursive);
         }
 
-        public static void SubtractResources(ref Dictionary<BIT_TYPE, int> resources, LevelCost cost)
+        public static void SubtractResources(ref Dictionary<BIT_TYPE, int> resources, IEnumerable<CraftCost> levelCosts)
         {
-            foreach (ResourceAmount resource in cost.levelCosts)
+            foreach (CraftCost resource in levelCosts)
             {
-                resources[resource.type] -= resource.amount;
+                if (resource.resourceType != CraftCost.TYPE.Bit)
+                    continue;
+                
+                resources[(BIT_TYPE)resource.type] -= resource.amount;
             }
         }
 
         //============================================================================================================//
 
-        public static bool CanAfford(Dictionary<BIT_TYPE, int> resources, LevelCost levelCost)
+        public static bool CanAfford(Dictionary<BIT_TYPE, int> resources, IEnumerable<CraftCost> levelCosts)
         {
-            foreach (ResourceAmount resource in levelCost.levelCosts)
+            foreach (CraftCost resource in levelCosts)
             {
-                if (resources[resource.type] < resource.amount)
+                if (resource.resourceType != CraftCost.TYPE.Bit)
+                    continue;
+                
+                if (resources[(BIT_TYPE)resource.type] < resource.amount)
                     return false;
             }
             return true;
@@ -85,14 +99,15 @@ namespace StarSalvager.Utilities
 
         public static bool CanAffordPart(Dictionary<BIT_TYPE, int> resources, PART_TYPE partType, int level, bool isRecursive)
         {
-            var remoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).costs[level];
-            bool canAfford = CanAfford(resources, remoteData);
+            //var remoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).costs[level];
+            var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
+            bool canAfford = CanAfford(resources, costs);
 
             if (!isRecursive || !canAfford || level == 0)
                 return canAfford;
             else
             {
-                SubtractResources(ref resources, remoteData);
+                SubtractResources(ref resources, costs);
                 return CanAffordPart(resources, partType, level - 1, isRecursive);
             }
         }
