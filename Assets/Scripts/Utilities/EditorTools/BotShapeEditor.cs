@@ -22,12 +22,15 @@ namespace StarSalvager
         [SerializeField]
         private BotShapeEditorUI m_botShapeEditorUI;
 
+        public bool EditingBot => _scrapyardBots.Count > 0;
+        public bool EditingShape => _shapes.Count > 0;
+
         public EditorBotShapeGeneratorData EditorBotShapeData
         {
             get
             {
                 if (m_editorBotShapeData == null)
-                    m_editorBotShapeData = ImportRemoteData();
+                    m_editorBotShapeData = FactoryManager.Instance.ImportBotShapeRemoteData();
 
                 return m_editorBotShapeData;
             }
@@ -94,6 +97,11 @@ namespace StarSalvager
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
                 scrapBot.Rotate(direction);
+            }
+
+            foreach (Shape shape in _shapes)
+            {
+                //TODO: Rotate shape
             }
         }
         
@@ -356,41 +364,9 @@ namespace StarSalvager
                 EditorBotShapeData.m_categories.Add(categoryName);
         }
 
-        public string ExportRemoteData(EditorBotShapeGeneratorData editorData)
-        {
-            if (editorData == null)
-                return string.Empty;
-            
-            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
-#if UNITY_STANDALONE && !UNITY_EDITOR
-            System.IO.File.WriteAllText($"/{Application.productName}_Data/BuildData/BotShapeEditorData.txt", export);
-#else
-            System.IO.File.WriteAllText(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt", export);
-#endif
-
-            return export;
-        }
-
-        public EditorBotShapeGeneratorData ImportRemoteData()
-        {
-#if UNITY_STANDALONE && !UNITY_EDITOR
-            if (!File.Exists($"Application.dataPath/{Application.productName}_Data/BuildData/BotShapeEditorData.txt"))
-                return new EditorBotShapeGeneratorData();
-            
-            var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText($"/{Application.productName}_Data/BuildData/BotShapeEditorData.txt"));
-#else
-            if (!File.Exists(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"))
-                return new EditorBotShapeGeneratorData();
-
-            var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"));
-#endif
-
-            return loaded;
-        }
-
         public void OnApplicationQuit()
         {
-            ExportRemoteData(m_editorBotShapeData);
+            FactoryManager.Instance.ExportBotShapeRemoteData(m_editorBotShapeData);
         }
     }
 }

@@ -163,7 +163,13 @@ namespace StarSalvager.UI
 
             InitButtons();
         }
-        
+
+        private void Update()
+        {
+            leftTurnButton.interactable = m_botShapeEditor.EditingBot;
+            rightTurnButton.interactable = m_botShapeEditor.EditingBot;
+        }
+
         //============================================================================================================//
 
         private void InitButtons()

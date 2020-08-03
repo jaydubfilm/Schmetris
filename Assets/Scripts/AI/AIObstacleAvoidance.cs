@@ -16,16 +16,6 @@ namespace StarSalvager.AI
         //Temporary variables, simulating the movement speed of falling obstacles
         private Vector2 m_obstaclePositionAdjuster = new Vector2(0.0f, Constants.gridCellSize);
 
-        void Start()
-        {
-
-        }
-
-        void Update()
-        {
-
-        }
-
         //Check all nearby squares to the agent to see if any contain an obstacle. For any obstacles in those squares, add the force they apply on the agent.
         public Vector2 CalculateForceAtPoint(Vector2 agentPosition)
         {
