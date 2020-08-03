@@ -62,7 +62,7 @@ namespace StarSalvager
             {
                 for (int y = 0; y < Values.Globals.GridSizeY; y++)
                 {
-                    if (GetGridSquareAtPosition(x, y).m_obstacleInSquare == true)
+                    if (GetGridSquareAtPosition(x, y).ObstacleInSquare == true)
                     {
                         Debug.DrawLine(GetCenterOfGridSquareInGridPosition(x, y), GetCenterOfGridSquareInGridPosition(x, y) + new Vector2(0, 0.25f), new Color(255, 0, 0), 300f);
                     }
@@ -83,7 +83,7 @@ namespace StarSalvager
                     }
                     else
                     {
-                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x, y + 1).m_obstacleInSquare);
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x, y + 1).ObstacleInSquare);
                     }
                 }
             }
@@ -97,11 +97,11 @@ namespace StarSalvager
                 {
                     if (x + amount >= Values.Globals.GridSizeX)
                     {
-                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x + amount - Values.Globals.GridSizeX, y).m_obstacleInSquare);
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x + amount - Values.Globals.GridSizeX, y).ObstacleInSquare);
                     }
                     else
                     {
-                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x + amount, y).m_obstacleInSquare);
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x + amount, y).ObstacleInSquare);
                     }
                 }
             }
@@ -115,11 +115,11 @@ namespace StarSalvager
                 {
                     if (x - amount < 0)
                     {
-                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x - amount + Values.Globals.GridSizeX, y).m_obstacleInSquare);
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x - amount + Values.Globals.GridSizeX, y).ObstacleInSquare);
                     }
                     else
                     {
-                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x - amount, y).m_obstacleInSquare);
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x - amount, y).ObstacleInSquare);
                     }
                 }
             }
@@ -245,7 +245,7 @@ namespace StarSalvager
                 {
                     for (int k = obstacleGridScanMinimum.y; k <= obstacleGridScanMaximum.y; k++)
                     {
-                        if (LevelManager.Instance.WorldGrid.GetGridSquareAtPosition(j, k).m_obstacleInSquare)
+                        if (LevelManager.Instance.WorldGrid.GetGridSquareAtPosition(j, k).ObstacleInSquare)
                         {
                             isFreeSpace = false;
                             break;
@@ -281,7 +281,7 @@ namespace StarSalvager
                     (Vector2Int.up * UnityEngine.Random.Range(verticalExplosionRange / 2, verticalExplosionRange + 1)) +
                     (Vector2Int.left * UnityEngine.Random.Range(0, horizontalExplosionRange + 1) * (UnityEngine.Random.Range(0, 2) * 2 - 1));
 
-                if (GetGridSquareAtPosition(bitPosition).m_obstacleInSquare)
+                if (GetGridSquareAtPosition(bitPosition).ObstacleInSquare)
                 {
                     continue;
                 }

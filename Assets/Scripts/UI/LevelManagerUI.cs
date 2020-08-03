@@ -66,6 +66,7 @@ namespace StarSalvager.UI
             {
                 GameTimer.SetPaused(false);
                 ToggleBetweenWavesUIActive(false);
+                LevelManager.Instance.EndWaveState = false;
             });
 
             scrapyardButton.onClick.AddListener(() =>
