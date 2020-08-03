@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +10,7 @@ namespace StarSalvager.UI.Scrapyard
 {
     public class StorageUI : MonoBehaviour
     {
-        private TEST_Storage[] _storage =
+        /*private TEST_Storage[] _storage =
         {
             new TEST_Storage { name = "Item 1" },
             new TEST_Storage { name = "Item 2" }, 
@@ -24,7 +26,7 @@ namespace StarSalvager.UI.Scrapyard
             new TEST_Storage { name = "Inv 3" }, 
             new TEST_Storage { name = "Inv 4" }, 
             new TEST_Storage { name = "Inv 5" }, 
-        };
+        };*/
         
         //============================================================================================================//
         
@@ -36,9 +38,14 @@ namespace StarSalvager.UI.Scrapyard
         
         [SerializeField]
         private StorageUIElementScrollView storageUiElementScrollView;
-        
+
         //============================================================================================================//
-        
+
+        [SerializeField, Required]
+        private Storage mStorage;
+
+        //============================================================================================================//
+
         // Start is called before the first frame update
         private void Start()
         {
@@ -64,12 +71,16 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitContent()
         {
-            foreach (var testStorage in _storage)
+            foreach (var storageBlockData in PlayerPersistentData.PlayerData.GetCurrentPartsInStorage())
             {
-                var temp = storageUiElementScrollView.AddElement<StorageUIElement>(testStorage, $"{testStorage.name}_UIElement");
-                
-                temp.Init(testStorage);
+                TEST_Storage testStorage = new TEST_Storage
+                {
+                    name = storageBlockData.ClassType.ToString(),
+                    blockData = storageBlockData
+                };
 
+                var temp = storageUiElementScrollView.AddElement<StorageUIElement>(testStorage, $"{testStorage.name}_UIElement");
+                temp.Init(testStorage);
             }
         }
         

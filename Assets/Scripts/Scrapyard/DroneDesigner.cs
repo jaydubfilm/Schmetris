@@ -17,6 +17,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using StarSalvager.UI.Scrapyard;
 using UnityEngine.Serialization;
+using StarSalvager.Factories.Data;
 
 namespace StarSalvager
 {
@@ -147,7 +148,20 @@ namespace StarSalvager
                 string resourcesGained = "";
                 foreach (var resource in bits)
                 {
-                    resourcesGained += resource.Key + ": " + resource.Value + "\n";
+                    resourcesGained += resource.Key + ":\n";
+
+                    int numTotal = scrapBot.attachedBlocks.OfType<ScrapyardBit>().Where(b => b.Type == resource.Key).Count();
+                    for (int i = 0; numTotal > 0; i++)
+                    {
+                        int numAtLevel = scrapBot.attachedBlocks.OfType<ScrapyardBit>().Where(b => b.Type == resource.Key && b.level == i).Count();
+                        if (numAtLevel == 0)
+                            continue;
+
+                        BitRemoteData remoteData = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(resource.Key);
+                        int resourceAmount = numAtLevel * remoteData.resource[i];
+                        resourcesGained += numAtLevel + " x (Level " + i + ") = " + resourceAmount + ",\n";
+                        numTotal -= numAtLevel;
+                    }
                 }
                 Alert.ShowAlert("Bits Sold", resourcesGained, "Okay", null);
                 scrapBot.RemoveAllBits();

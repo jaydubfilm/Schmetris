@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarSalvager.Utilities.JsonDataTypes;
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -22,12 +23,13 @@ namespace StarSalvager.UI.Scrapyard
     public class TEST_Storage : IEquatable<TEST_Storage>
     {
         public string name;
+        public BlockData blockData;
 
         public bool Equals(TEST_Storage other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return name == other.name;
+            return name == other.name && blockData.Equals(other.blockData);
         }
 
         public override bool Equals(object obj)
