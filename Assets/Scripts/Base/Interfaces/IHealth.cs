@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace StarSalvager
+﻿namespace StarSalvager
 {
     public interface IHealth
     {

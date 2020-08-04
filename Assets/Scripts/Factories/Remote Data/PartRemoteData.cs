@@ -9,7 +9,6 @@ namespace StarSalvager.Factories.Data
     {
         [FoldoutGroup("$name")]
         public string name;
-        public string Name => name;
         
         
         [FoldoutGroup("$name")]
@@ -20,25 +19,14 @@ namespace StarSalvager.Factories.Data
         
         [FoldoutGroup("$name")]
         public int priority;
+
+        [FoldoutGroup("$name")]
+        public BIT_TYPE burnType;
         
         [FoldoutGroup("$name")]
         [ListDrawerSettings(ShowIndexLabels = true, DraggableItems = false, ListElementLabelName = "Name")]
         public List<PartLevelData> levels;
 
-        //[FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true)]
-        //public float[] health;
-        //public float[] Health => health;
-//
-        //[FoldoutGroup("$name")]
-        //[ListDrawerSettings(ShowIndexLabels = true)]
-//
-        //public List<LevelCost> costs;
-//
-        //[FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true)]
-        //public int[] data;
-//
-        //[FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true)]
-        //public ResourceAmount[] burnRates;
 
         //This only compares Type and not all individual properties
         #region IEquatable

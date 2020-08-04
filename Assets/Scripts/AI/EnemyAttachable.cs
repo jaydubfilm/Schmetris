@@ -1,5 +1,6 @@
 ﻿using System;
 using Recycling;
+using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Enemies;
@@ -15,7 +16,9 @@ namespace StarSalvager.AI
         private static readonly int ATTACK  = Animator.StringToHash("Attack");
 
         //============================================================================================================//
+        [ShowInInspector, ReadOnly]
         public Vector2Int Coordinate { get; set; }
+        [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
 
         public bool CountAsConnected => false;
@@ -328,9 +331,9 @@ namespace StarSalvager.AI
 
         public override void ChangeHealth(float amount)
         {
-            _currentHealth += amount;
+            CurrentHealth += amount;
 
-            if(_currentHealth <= 0)
+            if(CurrentHealth <= 0)
                 Recycler.Recycle<EnemyAttachable>(this);
         }
 

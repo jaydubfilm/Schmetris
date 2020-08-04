@@ -447,7 +447,7 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        #region Check For Legal Bit Attach
+        #region Check For Legal Attach
 
         public bool TryAddNewAttachable(IAttachable attachable, DIRECTION connectionDirection, Vector2 collisionPoint)
         {
@@ -540,6 +540,59 @@ namespace StarSalvager
                         default:
                             throw new ArgumentOutOfRangeException(nameof(bit.Type), bit.Type, null);
                     }
+
+                    break;
+                }
+                case Component component:
+                {
+                    bool legalDirection;
+                    var direction = DIRECTION.NULL;
+
+
+                    //Get the coordinate of the collision
+                    var bitCoordinate = GetRelativeCoordinate(component.transform.position);
+
+                    //----------------------------------------------------------------------------------------------------//
+
+                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+
+                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
+
+                    //----------------------------------------------------------------------------------------------------//
+
+                    if (!legalDirection)
+                    {
+                        //Make sure that the attachable isn't overlapping the bot before we say its impossible to 
+                        if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
+                            return false;
+                    }
+
+                    //Check if its legal to attach (Within threshold of connection)
+                    //TODO This needs to bounce off instead of being destroyed
+                    if (closestAttachable is EnemyAttachable)
+                    {
+                        Vector2 directionBounce = (Vector2)component.transform.position - collisionPoint;
+                        directionBounce.Normalize();
+                        if (directionBounce != Vector2.up)
+                        {
+                            Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
+                            downVelocity.Normalize();
+                            directionBounce += downVelocity;
+                            directionBounce.Normalize();
+                        }
+
+                        float rotation = 180.0f;
+                        if (directionBounce.x >= 0)
+                        {
+                            rotation *= -1;
+                        }
+
+                        LevelManager.Instance.ObstacleManager.BounceObstacle(component, directionBounce, rotation, true, true, true);
+                        return false;
+                    }
+
+                    //Add these to the block depending on its relative position
+                    AttachNewBitToExisting(component, closestAttachable, connectionDirection);
 
                     break;
                 }
@@ -654,7 +707,7 @@ namespace StarSalvager
             return _attachedBlocks.Any(x => x.Coordinate == coordinate);
         }
 
-        #endregion //Check For Legal Bit Attach
+        #endregion //Check For Legal Attach
 
         //============================================================================================================//
         
@@ -907,6 +960,9 @@ namespace StarSalvager
             {
                 case Bit bit:
                     TryHitAt(attachable, bit.CurrentHealth);
+                    break;
+                case Component component:
+                    TryHitAt(attachable, component.CurrentHealth);
                     break;
                 case Part _:
                     TryHitAt(attachable, 5f);

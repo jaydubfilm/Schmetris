@@ -29,6 +29,12 @@ namespace StarSalvager.Factories
         
         [SerializeField, Required, BoxGroup("Attachables/Bits")]
         private BitRemoteDataScriptableObject bitRemoteData;
+        
+        [SerializeField, Required, BoxGroup("Attachables/Components")]
+        private AttachableProfileScriptableObject componentProfile;
+        
+        [SerializeField, Required, BoxGroup("Attachables/Components")]
+        private ComponentRemoteDataScriptableObject componentRemoteData;
 
         public EditorBotShapeGeneratorData EditorBotShapeData
         {
@@ -75,16 +81,36 @@ namespace StarSalvager.Factories
         //============================================================================================================//
 
         //FIXME This needs to be converted to an array
-        private FactoryBase _bitAttachableFactory;
-        private FactoryBase _partAttachableFactory;
-        private FactoryBase _shapeFactory;
-        private FactoryBase _enemyFactory;
-        private FactoryBase _projectileFactory;
-        private FactoryBase _comboFactory;
-        private FactoryBase _botFactory;
-        private FactoryBase _damageFactory;
+        //private FactoryBase _bitAttachableFactory;
+        //private FactoryBase _partAttachableFactory;
+        //private FactoryBase _shapeFactory;
+        //private FactoryBase _enemyFactory;
+        //private FactoryBase _projectileFactory;
+        //private FactoryBase _comboFactory;
+        //private FactoryBase _botFactory;
+        //private FactoryBase _damageFactory;
+
+        private Dictionary<Type, FactoryBase> _factoryBases;
         
         //============================================================================================================//
+
+        public T GetFactory<T>() where T : FactoryBase
+        {
+            var type = typeof(T);
+            
+            if (_factoryBases == null)
+            {
+                _factoryBases = new Dictionary<Type, FactoryBase>();
+            }
+
+            if (!_factoryBases.ContainsKey(type))
+            {
+                _factoryBases.Add(type, CreateFactory<T>());
+            }
+            
+            
+            return _factoryBases[type] as T;
+        }
         
         //#if UNITY_EDITOR || DEVELOPMENT_BUILD
         //
@@ -114,7 +140,7 @@ namespace StarSalvager.Factories
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         //TODO Investigate whether or not I can combine both BitAttachableFactory & PartAttachableFactory into a single 
-        public T GetFactory<T>() where T: FactoryBase
+        /*public T GetFactory<T>() where T: FactoryBase
         {
             var typeName = typeof(T).Name;
             switch (typeName)
@@ -145,6 +171,34 @@ namespace StarSalvager.Factories
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(typeName), typeName, null);
+            }
+        }*/
+
+        private T CreateFactory<T>() where T : FactoryBase
+        {
+            var type = typeof(T);
+            switch (true)
+            {
+                case bool _ when type == typeof(BitAttachableFactory):
+                    return new BitAttachableFactory(bitProfile, bitRemoteData) as T;
+                case bool _ when type == typeof(PartAttachableFactory):
+                    return new PartAttachableFactory(partProfile, partRemoteData) as T;
+                case bool _ when type == typeof(ComponentAttachableFactory):
+                    return new ComponentAttachableFactory(componentProfile, componentRemoteData) as T;
+                case bool _ when type == typeof(ShapeFactory):
+                    return new ShapeFactory(shapePrefab, EditorBotShapeData.GetEditorShapeData()) as T;
+                case bool _ when type == typeof(EnemyFactory):
+                    return new EnemyFactory(enemyProfile, enemyRemoteData) as T;
+                case bool _ when type == typeof(ProjectileFactory):
+                    return new ProjectileFactory(projectileProfile) as T;
+                case bool _ when type == typeof(ComboFactory):
+                    return new ComboFactory(comboRemoteData) as T;
+                case bool _ when type == typeof(BotFactory):
+                    return new BotFactory(botPrefab, scrapyardBotPrefab) as T;
+                case bool _ when type == typeof(DamageFactory):
+                    return new DamageFactory(damageFactory) as T;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type.Name, null);
             }
         }
 
@@ -186,6 +240,9 @@ namespace StarSalvager.Factories
             return loaded;
 #endif
         }
+        
+        //============================================================================================================//
+
     }
 }
 

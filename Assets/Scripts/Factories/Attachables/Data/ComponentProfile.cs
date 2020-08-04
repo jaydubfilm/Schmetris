@@ -5,7 +5,7 @@ using UnityEngine;
 namespace StarSalvager.Factories.Data
 {
     [System.Serializable]
-    public struct BitProfile : IProfile
+    public struct ComponentProfile : IProfile
     {
         public string Name
         {
@@ -16,9 +16,9 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right")]
         private string _name;
 
-        public int Type => (int) bitType;
+        public int Type => (int) componentType;
         [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right")]
-        public BIT_TYPE bitType;
+        public COMPONENT_TYPE componentType;
 
         public AnimationScriptableObject animation
         {
@@ -42,14 +42,22 @@ namespace StarSalvager.Factories.Data
         #region UNITY_EDITOR
 
 #if UNITY_EDITOR
-        
-        [ShowInInspector, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$Name/row2", 65), VerticalGroup("$Name/row2/left"), HideLabel, PropertyOrder(-100), ReadOnly]
-        private Sprite spritePreview => animation == null ? _sprites[0] : animation.GetFrame(0);
+
+        [ShowInInspector, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right),
+         HorizontalGroup("$Name/row2", 65), VerticalGroup("$Name/row2/left"), HideLabel, PropertyOrder(-100), ReadOnly]
+        private Sprite spritePreview
+        {
+            get
+            {
+                if (_sprites == null || _sprites.Length == 0)
+                    return null;
+                
+                return _animation == null ? _sprites[0] : _animation.GetFrame(0);
+            }
+        }
         
 #endif
 
         #endregion
-
     }
-
 }

@@ -29,11 +29,9 @@ namespace StarSalvager
         //IHealth Properties
         //============================================================================================================//
 
-        public float StartingHealth => _startingHealth;
-        private float _startingHealth;
-        [ShowInInspector, ReadOnly]
-        public float CurrentHealth => _currentHealth;
-        private float _currentHealth;
+        public float StartingHealth { get; private set; }
+        [ShowInInspector, ReadOnly, ProgressBar(0,"StartingHealth")]
+        public float CurrentHealth { get; private set; }
 
         //IObstacle Properties
         //============================================================================================================//
@@ -65,8 +63,8 @@ namespace StarSalvager
 
         public void SetupHealthValues(float startingHealth, float currentHealth)
         {
-            _startingHealth = startingHealth;
-            _currentHealth = currentHealth;
+            StartingHealth = startingHealth;
+            CurrentHealth = currentHealth;
             
             SetColor(Color.white);
         }
@@ -75,9 +73,9 @@ namespace StarSalvager
         {
             //float previousHealth = _currentHealth;
 
-            _currentHealth += amount;
+            CurrentHealth += amount;
 
-            if (_currentHealth <= 0)
+            if (CurrentHealth <= 0)
             {
                 Recycler.Recycle<Bit>(this);
                 return;
@@ -95,7 +93,7 @@ namespace StarSalvager
                 _damage.transform.SetParent(transform, false);
             }
                 
-            _damage.SetHealth(_currentHealth/_startingHealth);
+            _damage.SetHealth(CurrentHealth/StartingHealth);
         }
 
         //ICanBeHit Functions

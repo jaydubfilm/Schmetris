@@ -128,21 +128,21 @@ namespace StarSalvager
                 var levelData = partRemoteData.levels[part.level];
 
                 //If there's nothing using these resources ignore
-                if(levelData.burnRate.amount == 0f)
+                if(levelData.burnRate == 0f)
                     continue;
 
                 //var data = partRemoteData.levels[part.level].data;
                 //var burnAmount = partRemoteData.levels[part.level].burnRate.amount;
                 //var bitType = partRemoteData.levels[part.level].burnRate.type;
                 
-                var resourceValue = GetValueToBurn(levelData, levelData.burnRate.type);
+                var resourceValue = GetValueToBurn(levelData, partRemoteData.burnType);
 
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
 
                         if (resourceValue > 0f && useBurnRate)
-                            resourceValue -= levelData.burnRate.amount * Time.deltaTime;
+                            resourceValue -= levelData.burnRate * Time.deltaTime;
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
@@ -201,7 +201,7 @@ namespace StarSalvager
                                 break;
                         }
 
-                        resourceValue -= levelData.burnRate.amount * Time.deltaTime;
+                        resourceValue -= levelData.burnRate * Time.deltaTime;
 
                         //Increase the health of this part depending on the current level of the repairer
                         toRepair.ChangeHealth(levelData.data * Time.deltaTime);
@@ -236,14 +236,14 @@ namespace StarSalvager
                         //Check if we have a target before removing resources
                         //--------------------------------------------------------------------------------------------//
 
-                        Vector2 shootDirection;
+                        /*Vector2 shootDirection;*/
 
                         var enemy = EnemyManager.GetClosestEnemy(transform.position, 10 * Constants.gridCellSize);
                         //TODO Determine if this fires at all times or just when there are active enemies in range
                         if (enemy == null)
                             break;
 
-                        shootDirection = enemy.transform.position - transform.position;
+                        /*shootDirection = enemy.transform.position - transform.position;*/
 
 
                         //Use resources
@@ -251,7 +251,7 @@ namespace StarSalvager
 
                         if (useBurnRate)
                         {
-                            resourceValue -= levelData.burnRate.amount;
+                            resourceValue -= levelData.burnRate;
                         }
 
                         Debug.Log("Fire");
@@ -264,7 +264,7 @@ namespace StarSalvager
                         var projectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
                             .CreateObject<Projectile>(
                                 "083be790-7a08-4f27-b506-e8e09a116bc8",
-                                shootDirection,
+                                /*shootDirection*/Vector2.up,
                                 "Enemy");
 
                         projectile.transform.position = part.transform.position;
@@ -276,8 +276,8 @@ namespace StarSalvager
                         break;
                 }
 
-                UpdateUI(levelData.burnRate.type, resourceValue);
-                PlayerPersistentData.PlayerData.liquidResource[levelData.burnRate.type] = resourceValue;
+                UpdateUI(partRemoteData.burnType, resourceValue);
+                PlayerPersistentData.PlayerData.liquidResource[partRemoteData.burnType] = resourceValue;
             }
         }
         
@@ -288,7 +288,7 @@ namespace StarSalvager
             if (!useBurnRate)
                 return null;
             
-            if (partLevelData.burnRate.amount == 0f)
+            if (partLevelData.burnRate == 0f)
                 return null;
             
             return bot.attachedBlocks.OfType<Bit>()
@@ -301,7 +301,7 @@ namespace StarSalvager
             if (!useBurnRate)
                 return default;
 
-            var value = partLevelData.burnRate.amount == 0
+            var value = partLevelData.burnRate == 0
                 ? default
                 : PlayerPersistentData.PlayerData.liquidResource[type];
 

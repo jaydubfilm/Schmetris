@@ -4,16 +4,13 @@ using Sirenix.OdinInspector;
 namespace StarSalvager.Factories.Data
 {
     [Serializable]
-    public class BitRemoteData : RemoteDataBase
+    public class ComponentRemoteData : RemoteDataBase
     {
-        [FoldoutGroup("$name")]
-        public string name;
+        [FoldoutGroup("$name")] public string name;
 
-        [FoldoutGroup("$name")]
-        public BIT_TYPE bitType;
-
-       [FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "Name")]
-       public BitLevelData[] levels;
+        [FoldoutGroup("$name")] public COMPONENT_TYPE componentType;
+        
+        [FoldoutGroup("$name")] public float health;
 
         #region IEquatable
 
@@ -24,10 +21,11 @@ namespace StarSalvager.Factories.Data
         /// <returns></returns>
         public override bool Equals(RemoteDataBase other)
         {
-            if (other is BitRemoteData bitRemote)
-                return other != null && bitType == bitRemote.bitType;
-            else
-                return false;
+            if (other is ComponentRemoteData componentRemote)
+                return componentType == componentRemote.componentType;
+
+
+            return false;
         }
 
         /// <summary>
@@ -39,7 +37,7 @@ namespace StarSalvager.Factories.Data
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((PartRemoteData)obj);
+            return obj.GetType() == GetType() && Equals((PartRemoteData) obj);
         }
 
         public override int GetHashCode()
@@ -54,12 +52,10 @@ namespace StarSalvager.Factories.Data
                 return hashCode;
             }*/
         }
-        #endregion //IEquatable
 
-        public static ComponentRemoteData FirstOrDefault(Func<object, bool> func)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion //IEquatable
     }
 }
+
+
 

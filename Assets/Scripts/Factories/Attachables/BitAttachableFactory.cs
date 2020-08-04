@@ -12,13 +12,13 @@ namespace StarSalvager.Factories
     //FIXME This needs to be cleaned up, feels messy
     public class BitAttachableFactory : AttachableFactoryBase<BitProfile, BIT_TYPE>
     {
-        private BitRemoteDataScriptableObject remoteData;
+        private readonly BitRemoteDataScriptableObject _remoteData;
         
         //============================================================================================================//
         
         public BitAttachableFactory(AttachableProfileScriptableObject factoryProfile, BitRemoteDataScriptableObject remoteData) : base(factoryProfile)
         {
-            this.remoteData = remoteData;
+            _remoteData = remoteData;
         }
 
         public void UpdateBitData(BIT_TYPE bitType, int level, ref Bit bit)
@@ -46,7 +46,7 @@ namespace StarSalvager.Factories
         
         public int GetTotalResource(Bit bit)
         {
-            return remoteData.GetRemoteData(bit.Type).levels[bit.level].resources;
+            return _remoteData.GetRemoteData(bit.Type).levels[bit.level].resources;
         }
 
         public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<ScrapyardBit> bits)
@@ -58,7 +58,7 @@ namespace StarSalvager.Factories
                 if (!resources.ContainsKey(bit.Type))
                     resources.Add(bit.Type, 0);
 
-                resources[bit.Type] += remoteData.GetRemoteData(bit.Type).levels[bit.level].resources;
+                resources[bit.Type] += _remoteData.GetRemoteData(bit.Type).levels[bit.level].resources;
             }
 
             return resources;
@@ -73,7 +73,7 @@ namespace StarSalvager.Factories
         
         public BitRemoteData GetBitRemoteData(BIT_TYPE type)
         {
-            return remoteData.GetRemoteData(type);
+            return _remoteData.GetRemoteData(type);
         }
         
         //============================================================================================================//
@@ -88,7 +88,7 @@ namespace StarSalvager.Factories
         {
             var type = (BIT_TYPE) blockData.Type;
             
-            var remote = remoteData.GetRemoteData(type);
+            var remote = _remoteData.GetRemoteData(type);
             var profile = factoryProfile.GetProfile(type);
             //FIXME I may want to put this somewhere else, and leave the level dependent sprite obtaining here
             var sprite = type == BIT_TYPE.BLACK ? profile.GetRandomSprite() : profile.GetSprite(blockData.Level);
@@ -183,7 +183,7 @@ namespace StarSalvager.Factories
         /// <returns></returns>
         public GameObject CreateScrapyardGameObject(BlockData blockData)
         {
-            var remote = remoteData.GetRemoteData((BIT_TYPE)blockData.Type);
+            var remote = _remoteData.GetRemoteData((BIT_TYPE)blockData.Type);
             var profile = factoryProfile.GetProfile((BIT_TYPE)blockData.Type);
             var sprite = profile.GetSprite(blockData.Level);
 

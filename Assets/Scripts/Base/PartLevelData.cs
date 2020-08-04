@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using StarSalvager.Factories.Data;
+using Sirenix.OdinInspector;
 
 //FIXME This should be under a more specific namespace
 namespace StarSalvager
@@ -10,13 +10,15 @@ namespace StarSalvager
     {
         #if UNITY_EDITOR
         public string Name =>
-            $"Health: {health} - Data: {data} - Burn Type: {(burnRate.type == BIT_TYPE.BLACK ? "None" : burnRate.type.ToString())}";
+            $"Health: {health} - Data: {data} - Burn Rate: {(burnRate == 0f ? "None" : $"{burnRate}/s")}";
         #endif
         
         public float health;
 
         public int data;
-        public ResourceAmount burnRate;
+
+        [SuffixLabel("/sec", true)]
+        public float burnRate;
         
         public List<CraftCost> cost;
     }

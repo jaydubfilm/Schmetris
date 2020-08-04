@@ -17,18 +17,15 @@ namespace StarSalvager
 
         public bool CountAsConnected => true;
         public bool CanDisconnect => false;
-
-        [ShowInInspector, ReadOnly]
         public bool CanShift => false;
 
         //IHealth Properties
         //============================================================================================================//
 
-        public float StartingHealth => _startingHealth;
-        private float _startingHealth;
-        [ShowInInspector, ReadOnly]
-        public float CurrentHealth => _currentHealth;
-        private float _currentHealth;
+        public float StartingHealth { get; private set; }
+
+        [ShowInInspector, ReadOnly, ProgressBar(0,"StartingHealth")]
+        public float CurrentHealth { get; private set; }
 
         //Part Properties
         //============================================================================================================//
@@ -50,15 +47,15 @@ namespace StarSalvager
 
         public void SetupHealthValues(float startingHealth, float currentHealth)
         {
-            _startingHealth = startingHealth;
-            _currentHealth = currentHealth;
+            StartingHealth = startingHealth;
+            CurrentHealth = currentHealth;
         }
 
         public void ChangeHealth(float amount)
         {
-            _currentHealth += amount;
+            CurrentHealth += amount;
 
-            if (_currentHealth <= 0)
+            if (CurrentHealth <= 0)
             {
                 Recycler.Recycle<Part>(this);
                 return;
@@ -70,7 +67,7 @@ namespace StarSalvager
                 _damage.transform.SetParent(transform, false);
             }
                 
-            _damage.SetHealth(_currentHealth/_startingHealth);
+            _damage.SetHealth(CurrentHealth/StartingHealth);
         }
 
         //Part Functions

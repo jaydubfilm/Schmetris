@@ -17,18 +17,15 @@ MonoBehaviour:
     partType: 0
     canSell: 0
     priority: 200
+    burnType: 4
     levels:
     - health: 20
       data: 9
-      burnRate:
-        type: 4
-        amount: 1
+      burnRate: 0.17
       cost: []
     - health: 50
       data: 16
-      burnRate:
-        type: 4
-        amount: 3
+      burnRate: 0.5
       cost:
       - resourceType: 0
         type: 1
@@ -47,9 +44,7 @@ MonoBehaviour:
         amount: 500
     - health: 100
       data: 25
-      burnRate:
-        type: 4
-        amount: 6
+      burnRate: 1
       cost:
       - resourceType: 0
         type: 1
@@ -70,18 +65,15 @@ MonoBehaviour:
     partType: 1
     canSell: 1
     priority: 75
+    burnType: 5
     levels:
     - health: 80
       data: 5
-      burnRate:
-        type: 0
-        amount: 0
+      burnRate: 0
       cost: []
     - health: 100
       data: 10
-      burnRate:
-        type: 0
-        amount: 0
+      burnRate: 0.1
       cost:
       - resourceType: 0
         type: 3
@@ -91,9 +83,7 @@ MonoBehaviour:
         amount: 300
     - health: 120
       data: 20
-      burnRate:
-        type: 0
-        amount: 0
+      burnRate: 0.17
       cost:
       - resourceType: 0
         type: 3
@@ -105,12 +95,11 @@ MonoBehaviour:
     partType: 2
     canSell: 1
     priority: 50
+    burnType: 2
     levels:
     - health: 80
       data: 20
-      burnRate:
-        type: 2
-        amount: 1
+      burnRate: 1
       cost:
       - resourceType: 0
         type: 3
@@ -120,9 +109,7 @@ MonoBehaviour:
         amount: 100
     - health: 90
       data: 25
-      burnRate:
-        type: 2
-        amount: 2
+      burnRate: 2
       cost:
       - resourceType: 0
         type: 3
@@ -132,9 +119,7 @@ MonoBehaviour:
         amount: 800
     - health: 100
       data: 50
-      burnRate:
-        type: 2
-        amount: 3
+      burnRate: 3
       cost:
       - resourceType: 0
         type: 2
@@ -146,30 +131,25 @@ MonoBehaviour:
     partType: 3
     canSell: 1
     priority: 25
+    burnType: 0
     levels:
     - health: 150
       data: 0
-      burnRate:
-        type: 0
-        amount: 0
+      burnRate: 0
       cost:
       - resourceType: 0
         type: 3
         amount: 200
     - health: 300
       data: 0
-      burnRate:
-        type: 0
-        amount: 0
+      burnRate: 0
       cost:
       - resourceType: 0
         type: 3
         amount: 2500
     - health: 500
       data: 0
-      burnRate:
-        type: 0
-        amount: 0
+      burnRate: 0
       cost:
       - resourceType: 0
         type: 3
@@ -178,12 +158,11 @@ MonoBehaviour:
     partType: 4
     canSell: 1
     priority: 75
+    burnType: 3
     levels:
     - health: 60
       data: 10
-      burnRate:
-        type: 3
-        amount: 1
+      burnRate: 0.1
       cost:
       - resourceType: 0
         type: 2
@@ -193,9 +172,7 @@ MonoBehaviour:
         amount: 150
     - health: 80
       data: 20
-      burnRate:
-        type: 3
-        amount: 1
+      burnRate: 0.2
       cost:
       - resourceType: 0
         type: 2
@@ -205,9 +182,7 @@ MonoBehaviour:
         amount: 200
     - health: 100
       data: 30
-      burnRate:
-        type: 3
-        amount: 1
+      burnRate: 0.3
       cost:
       - resourceType: 0
         type: 2

@@ -46,11 +46,10 @@ namespace StarSalvager.AI
         
         //============================================================================================================//
 
-        public float StartingHealth => _startingHealth;
-        protected float _startingHealth;
-        [ShowInInspector, ReadOnly]
-        public float CurrentHealth => _currentHealth;
-        protected float _currentHealth;
+        public float StartingHealth { get; private set; }
+
+        [ShowInInspector, ReadOnly, ProgressBar(0,"StartingHealth")]
+        public float CurrentHealth { get; protected set; }
 
         //============================================================================================================//
 
@@ -345,15 +344,15 @@ namespace StarSalvager.AI
 
         public void SetupHealthValues(float startingHealth, float currentHealth)
         {
-            _startingHealth = startingHealth;
-            _currentHealth = currentHealth;
+            StartingHealth = startingHealth;
+            CurrentHealth = currentHealth;
         }
 
         public virtual void ChangeHealth(float amount)
         {
-            _currentHealth += amount;
+            CurrentHealth += amount;
             
-            if(_currentHealth <= 0)
+            if(CurrentHealth <= 0)
                 Recycler.Recycle<Enemy>(this);
         }
 

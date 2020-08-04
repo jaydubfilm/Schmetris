@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using StarSalvager.Factories.Data;
+﻿using StarSalvager.Factories.Data;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Extensions
