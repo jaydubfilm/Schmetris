@@ -48,6 +48,7 @@ namespace StarSalvager.UI
 
             if (this.data is PartRemoteData partRemote)
             {
+                Debug.Log(partRemote.partType + " --- " + level);
                 logoImage.sprite = _partAttachableFactory.GetProfileData(partRemote.partType).Sprites[level];
 
                 button.onClick.AddListener(() =>

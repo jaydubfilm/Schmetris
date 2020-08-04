@@ -158,7 +158,7 @@ namespace StarSalvager
                             continue;
 
                         BitRemoteData remoteData = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(resource.Key);
-                        int resourceAmount = numAtLevel * remoteData.resource[i];
+                        int resourceAmount = numAtLevel * remoteData.levels[i].resources;
                         resourcesGained += numAtLevel + " x (Level " + i + ") = " + resourceAmount + ",\n";
                         numTotal -= numAtLevel;
                     }
@@ -254,8 +254,10 @@ namespace StarSalvager
                 }
 
                 var playerData = PlayerPersistentData.PlayerData;
-                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)selectedPartType, 0);
-                playerData.SubtractResources((PART_TYPE)selectedPartType, 0, false);
+                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>((PART_TYPE)selectedPartType, SelectedPartLevel);
+                PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
+                droneDesignUi.InitUiScrollViews();
+                //playerData.SubtractResources((PART_TYPE)selectedPartType, 0, false);
                 scrapBot.AttachNewBit(mouseCoordinate, attachable);
                 _toUndoStack.Push(new ScrapyardEditData
                 {

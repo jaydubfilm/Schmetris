@@ -123,5 +123,17 @@ namespace StarSalvager.Values
             partsInStorageBlockData.Clear();
             partsInStorageBlockData.AddRange(blockData);
         }
+
+        public void AddPartToStorage(BlockData blockData)
+        {
+            partsInStorageBlockData.Add(blockData);
+        }
+
+        public void RemovePartFromStorage(BlockData blockData)
+        {
+            /*Debug.Log(partsInStorageBlockData.Count);
+            partsInStorageBlockData.Remove(partsInStorageBlockData.FirstOrDefault(b => b.Level == blockData.Level && b.Type == blockData.Type && b.ClassType == blockData.ClassType));
+            Debug.Log(partsInStorageBlockData.Count);*/
+        }
     }
 }

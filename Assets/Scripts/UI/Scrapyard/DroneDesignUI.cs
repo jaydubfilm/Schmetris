@@ -280,7 +280,7 @@ namespace StarSalvager.UI.Scrapyard
 
         }
 
-        private void InitUiScrollViews()
+        public void InitUiScrollViews()
         {
             /*List<BlockData> blockDatas = new List<BlockData>();
             blockDatas.Add(new BlockData
