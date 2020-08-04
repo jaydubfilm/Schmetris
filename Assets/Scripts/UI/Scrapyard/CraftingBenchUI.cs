@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using Sirenix.OdinInspector;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -31,9 +32,14 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField]
         private ResourceUIElementScrollView costContentView;
-        
+
         //============================================================================================================//
-        
+
+        [SerializeField, Required]
+        private CraftingBench mCraftingBench;
+
+        //============================================================================================================//
+
         // Start is called before the first frame update
         private void Start()
         {
@@ -52,8 +58,6 @@ namespace StarSalvager.UI.Scrapyard
                     itemNameText.text = itemName;
                 });
             }
-            
-            
         }
         
         //============================================================================================================//

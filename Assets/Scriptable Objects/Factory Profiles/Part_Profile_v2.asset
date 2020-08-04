@@ -31,6 +31,7 @@ MonoBehaviour:
     _sprites:
     - {fileID: -722243328840746462, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
     - {fileID: -2853014223648572609, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+    - {fileID: -2853014223648572609, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
   - _name: Repair
     partType: 2
     _animation: {fileID: 0}

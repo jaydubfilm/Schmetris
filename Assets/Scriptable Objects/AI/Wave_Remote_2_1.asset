@@ -21,14 +21,10 @@ MonoBehaviour:
       m_enemyCount: 1
     m_stageObstacleData:
     - m_selectionType: 0
-      m_bitType: 0
-      m_customMade: 1
+      m_shapeName: Small1
       m_category: Small
-      m_asteroidSize: 0
       m_asteroidCountPerMinute: 250
     - m_selectionType: 0
-      m_bitType: 0
-      m_customMade: 1
+      m_shapeName: Smal2
       m_category: Medium
-      m_asteroidSize: 0
       m_asteroidCountPerMinute: 150

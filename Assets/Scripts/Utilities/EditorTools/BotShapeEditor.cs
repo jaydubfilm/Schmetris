@@ -189,7 +189,7 @@ namespace StarSalvager
 
             foreach (Shape shape in _shapes)
             {
-                shape.DestroyBit(mouseCoordinate);
+                shape.DestroyBit(mouseCoordinate, false);
             }
         }
 
@@ -213,7 +213,7 @@ namespace StarSalvager
             if (bits == null || bits.Count == 0)
             {
                 _shapes.Add(FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>());
-                _shapes[0].PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>((BIT_TYPE)Random.Range(0, 6), 0), Vector2Int.zero);
+                //_shapes[0].PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>((BIT_TYPE)Random.Range(0, 6), 0), Vector2Int.zero);
             }
             else
             {

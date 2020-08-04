@@ -74,7 +74,7 @@ namespace StarSalvager.Factories
             return shape.GetComponent<T>();
         }
 
-        public T CreateObject<T>(SELECTION_TYPE selectionType, BIT_TYPE bitType, int totalBits)
+        /*public T CreateObject<T>(SELECTION_TYPE selectionType, BIT_TYPE bitType, int totalBits)
         {
             BIT_TYPE type;
             if (selectionType == SELECTION_TYPE.RANDOMSINGLE || selectionType == SELECTION_TYPE.RANDOMVARIED)
@@ -100,19 +100,16 @@ namespace StarSalvager.Factories
                 }
             }
 
-            /*if (LevelManager.Instance != null)
-                LevelManager.Instance.ObstacleManager.AddMovableToList(shape);*/
-
             return shape.GetComponent<T>();
-        }
-
-        public T CreateObject<T>(SELECTION_TYPE selectionType, BIT_TYPE bitType, string category)
+        }*/
+    
+        public T CreateObject<T>(SELECTION_TYPE selectionType, string identifier)
         {
             //FIXME
-            try
+            if (selectionType == SELECTION_TYPE.CATEGORY)
             {
-                EditorShapeGeneratorData shapeData = GetRandomInCategory(category);
-                
+                EditorShapeGeneratorData shapeData = GetRandomInCategory(identifier);
+
                 int totalBits = shapeData.BlockData.Count;
 
                 var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
@@ -124,14 +121,28 @@ namespace StarSalvager.Factories
                     shape.PushNewBit(bit, shapeData.BlockData[i].Coordinate);
                 }
 
-                /*if (LevelManager.Instance != null)
-                    LevelManager.Instance.ObstacleManager.AddMovableToList(shape);*/
+                return shape.GetComponent<T>();
+            }
+            else if (selectionType == SELECTION_TYPE.SHAPE)
+            {
+                EditorShapeGeneratorData shapeData = GetByName(identifier);
+
+                int totalBits = shapeData.BlockData.Count;
+
+                var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
+
+                var shape = CreateObject<Shape>();
+                for (var i = 0; i < totalBits; i++)
+                {
+                    var bit = bitFactory.CreateObject<Bit>((BIT_TYPE)shapeData.BlockData[i].Type, shapeData.BlockData[i].Level);
+                    shape.PushNewBit(bit, shapeData.BlockData[i].Coordinate);
+                }
 
                 return shape.GetComponent<T>();
             }
-            catch (Exception _)
+            else
             {
-                return CreateObject<T>(selectionType, bitType, Random.Range(1, 5));
+                return CreateObject<T>((BIT_TYPE)Random.Range(0, 6), 1);
             }
         }
 
@@ -201,6 +212,11 @@ namespace StarSalvager.Factories
         private void UpdateCatgeoryData(string category)
         {
             customShapeCategoryData.Add(category, customShapeData.FindAll(s => s.Categories.Contains(category)));
+        }
+
+        private EditorShapeGeneratorData GetByName(string name)
+        {
+            return customShapeData.Find(s => s.Name == name);
         }
     }
 }

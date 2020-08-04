@@ -34,6 +34,7 @@ namespace StarSalvager.Values
         };
 
         public List<BlockData> currentBlockData = new List<BlockData>();
+        public List<BlockData> partsInStorageBlockData = new List<BlockData>();
 
         public Dictionary<int, int> maxSectorProgression = new Dictionary<int, int>();
 
@@ -61,7 +62,6 @@ namespace StarSalvager.Values
 
         public void SubtractResources(PART_TYPE partType, int level, bool isRecursive)
         {
-            Debug.Log("SUBTRACTION");
             ResourceCalculations.SubtractResources(ref resources, partType, level, isRecursive);
         }
 
@@ -111,6 +111,27 @@ namespace StarSalvager.Values
         {
             currentBlockData.Clear();
             currentBlockData.AddRange(blockData);
+        }
+
+        public List<BlockData> GetCurrentPartsInStorage()
+        {
+            return partsInStorageBlockData;
+        }
+
+        public void SetCurrentPartsInStorage(List<BlockData> blockData)
+        {
+            partsInStorageBlockData.Clear();
+            partsInStorageBlockData.AddRange(blockData);
+        }
+
+        public void AddPartToStorage(BlockData blockData)
+        {
+            partsInStorageBlockData.Add(blockData);
+        }
+
+        public void RemovePartFromStorage(BlockData blockData)
+        {
+            partsInStorageBlockData.Remove(partsInStorageBlockData.FirstOrDefault(b => b.Level == blockData.Level && b.Type == blockData.Type));
         }
     }
 }

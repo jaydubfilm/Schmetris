@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Factories.Data;
@@ -169,12 +170,6 @@ namespace StarSalvager.UI.Scrapyard
 
             //--------------------------------------------------------------------------------------------------------//
 
-            //sellBitsButton.onClick.AddListener(() =>
-            //{
-            //    mDroneDesigner.SellBits();
-            //    UpdateResources(PlayerPersistentData.PlayerData.GetResources());
-            //});
-
             isUpgradingButton.onClick.AddListener(() =>
             {
                 mDroneDesigner.IsUpgrading = !mDroneDesigner.IsUpgrading;
@@ -279,16 +274,35 @@ namespace StarSalvager.UI.Scrapyard
 
         }
 
-        private void InitUiScrollViews()
+        public void InitUiScrollViews()
         {
-            //FIXME This needs to move to the Factory
-            foreach (var partRemoteData in remotePartProfileScriptable.partRemoteData)
+            /*List<BlockData> blockDatas = new List<BlockData>();
+            blockDatas.Add(new BlockData
             {
-                if (!partRemoteData.canSell)
-                    continue;
-                
-                var element = partsScrollView.AddElement<PartUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement");
-                element.Init(partRemoteData, PartPressed);
+                ClassType = "Part",
+                Type = (int)PART_TYPE.ARMOR,
+                Level = 0
+            });
+            blockDatas.Add(new BlockData
+            {
+                ClassType = "Part",
+                Type = (int)PART_TYPE.MAGNET,
+                Level = 1
+            });
+            blockDatas.Add(new BlockData
+            {
+                ClassType = "Part",
+                Type = (int)PART_TYPE.GUN,
+                Level = 1
+            });
+            PlayerPersistentData.PlayerData.SetCurrentPartsInStorage(blockDatas);*/
+
+            foreach (var blockData in PlayerPersistentData.PlayerData.GetCurrentPartsInStorage())
+            {
+                var partRemoteData = remotePartProfileScriptable.GetRemoteData((PART_TYPE)blockData.Type);
+
+                var element = partsScrollView.AddElement<PartBitImageUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
+                element.Init(partRemoteData, PartPressed, blockData.Level);
             }
 
             var resources = PlayerPersistentData.PlayerData.GetResources();
@@ -304,6 +318,20 @@ namespace StarSalvager.UI.Scrapyard
                 var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
                 element.Init(data);
             }
+        }
+
+        public void AddToPartScrollView(BlockData blockData)
+        {
+            var partRemoteData = remotePartProfileScriptable.GetRemoteData((PART_TYPE)blockData.Type);
+
+            var element = partsScrollView.AddElement<PartBitImageUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
+            element.Init(partRemoteData, PartPressed, blockData.Level);
+        }
+
+        public void RefreshScrollView()
+        {
+            partsScrollView.ClearElements();
+            InitUiScrollViews();
         }
 
         private void UpdateLoadListUiScrollViews()
@@ -326,36 +354,6 @@ namespace StarSalvager.UI.Scrapyard
         }
 
         //============================================================================================================//
-
-        #region Unity Editor
-
-        #if UNITY_EDITOR
-
-        [Button("Test Resource Update"), DisableInEditorMode, BoxGroup("Resource UI")]
-        private void TestUpdateResources()
-        {
-            var _resourcesTest = new Dictionary<BIT_TYPE, int>();
-            for (var i = 0; i < 3; i++)
-            {
-                var type = (BIT_TYPE) Random.Range(1, 6);
-                var amount = Random.Range(0, 1000);
-
-                if (_resourcesTest.ContainsKey(type))
-                {
-                    _resourcesTest[type] += amount;
-                    continue;
-                }
-
-                _resourcesTest.Add(type, amount);
-
-            }
-
-            UpdateResources(_resourcesTest);
-        }
-
-#endif
-
-        #endregion //Unity Editor
 
         public void SetPartsScrollActive(bool active)
         {
@@ -388,10 +386,18 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
-        private void PartPressed(PART_TYPE partType)
+        private void PartPressed((Enum remoteDataType, int level) tuple)
         {
-            Debug.Log($"Selected {partType}");
-            mDroneDesigner.selectedPartType = partType;
+            if (tuple.remoteDataType is PART_TYPE partType)
+            {
+                PartPressed((partType, tuple.level));
+            }
+        }
+
+        private void PartPressed((PART_TYPE partType, int level) tuple)
+        {
+            mDroneDesigner.selectedPartType = tuple.partType;
+            mDroneDesigner.SelectedPartLevel = tuple.level;
         }
 
         private void LayoutPressed(ScrapyardLayout botData)

@@ -12,32 +12,32 @@ namespace StarSalvager.AI
     {
         [SerializeField, FoldoutGroup("$m_selectionType")]
         private SELECTION_TYPE m_selectionType;
-        [SerializeField, FoldoutGroup("$m_selectionType"), ShowIf("m_selectionType", SELECTION_TYPE.BITTYPE)]
-        private BIT_TYPE m_bitType;
-        [SerializeField, FoldoutGroup("$m_selectionType")]
-        private bool m_customMade;
-        [SerializeField, FoldoutGroup("$m_selectionType"), ShowIf("m_customMade"), ValueDropdown("GetCatgories")]
+        [SerializeField, FoldoutGroup("$m_selectionType"), ShowIf("m_selectionType", SELECTION_TYPE.SHAPE), ValueDropdown("GetShapes")]
+        private string m_shapeName;
+        [SerializeField, FoldoutGroup("$m_selectionType"), ShowIf("m_selectionType", SELECTION_TYPE.CATEGORY), ValueDropdown("GetCatgories")]
         private string m_category;
-        [SerializeField, FoldoutGroup("$m_selectionType"), HideIf("m_customMade")]
-        private ASTEROID_SIZE m_asteroidSize;
         [SerializeField, FoldoutGroup("$m_selectionType")]
         private int m_asteroidCountPerMinute;
 
         public SELECTION_TYPE SelectionType => m_selectionType;
-        public BIT_TYPE BitType => GetBitType();
-        private BIT_TYPE GetBitType()
-        {
-            if (m_selectionType == SELECTION_TYPE.BITTYPE)
-                return m_bitType;
-            else
-                return (BIT_TYPE)UnityEngine.Random.Range(0, 7);
-        }
-        public ASTEROID_SIZE AsteroidSize => m_asteroidSize;
-        public bool CustomMade => m_customMade;
+        public string ShapeName => m_shapeName;
         public string Category => m_category;
         public int AsteroidCountPerMinute => m_asteroidCountPerMinute;
 
         public float AsteroidPerRowAverage => (m_asteroidCountPerMinute / 60.0f) * Constants.timeForAsteroidsToFall;
+
+        private IEnumerable<string> GetShapes()
+        {
+            var shapeDatas = GameObject.FindObjectOfType<FactoryManager>().EditorBotShapeData.GetEditorShapeData();
+            List<string> shapeNames = new List<string>();
+
+            foreach (var shapeData in shapeDatas)
+            {
+                shapeNames.Add(shapeData.Name);
+            }
+
+            return shapeNames;
+        }
 
         private IEnumerable<string> GetCatgories()
         {
