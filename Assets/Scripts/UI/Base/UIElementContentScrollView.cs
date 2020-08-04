@@ -92,6 +92,9 @@ namespace StarSalvager.UI
 
         public void ClearElements()
         {
+            if (Elements == null)
+                return;
+
             for (int i = Elements.Count - 1; i >= 0; i--)
             {
                 Recycler.Recycle<UIElement<T>>(Elements[i]);

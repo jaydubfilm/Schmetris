@@ -1,5 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using StarSalvager.UI.Scrapyard;
+using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,16 +13,21 @@ namespace StarSalvager
         [SerializeField, Required]
         private CraftingBenchUI storageUI;
 
-        // Start is called before the first frame update
-        void Start()
+
+        public void CraftBlueprint(TEST_Blueprint blueprint)
         {
+            if (!PlayerPersistentData.PlayerData.CanAffordPart(blueprint.remoteData.partType, blueprint.level, false))
+                return;
 
-        }
+            BlockData blockData = new BlockData
+            {
+                ClassType = "Part",
+                Type = (int)blueprint.remoteData.partType,
+                Level = blueprint.level
+            };
 
-        // Update is called once per frame
-        void Update()
-        {
-
+            PlayerPersistentData.PlayerData.SubtractResources(blueprint.remoteData.partType, blueprint.level, false);
+            PlayerPersistentData.PlayerData.AddPartToStorage(blockData);
         }
     }
 }

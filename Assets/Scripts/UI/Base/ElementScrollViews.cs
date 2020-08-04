@@ -15,7 +15,7 @@ namespace StarSalvager.UI
     { }
 
     [System.Serializable]
-    public class ResourceUIElementScrollView: UIElementContentScrollView<ResourceAmount>
+    public class ResourceUIElementScrollView: UIElementContentScrollView<CraftCost>
     {}
 
     [System.Serializable]
