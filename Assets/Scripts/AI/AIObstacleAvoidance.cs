@@ -43,7 +43,7 @@ namespace StarSalvager.AI
                 }
             }
 
-            if (isAttachable)
+            if (!isAttachable)
             {
                 foreach (var attached in LevelManager.Instance.BotGameObject.attachedBlocks)
                 {

@@ -106,7 +106,7 @@ namespace StarSalvager
                 {
                     case PART_TYPE.MAGNET:
                     case PART_TYPE.CORE:
-                        magnetCount += partData.data[part.level];
+                        magnetCount += partData.levels[part.level].data;//.data[part.level];
                         break;
                 }
             }
@@ -125,26 +125,24 @@ namespace StarSalvager
                 PartRemoteData partRemoteData =
                     FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
 
-                //If there's nothing using these resources ignore
-                if(part.level >= partRemoteData.burnRates.Length)
-                    continue;
-                
-                
-                var bitType = partRemoteData.burnRates[part.level].type;
-                
-                var resourceValue = GetValueToBurn(partRemoteData, bitType);
+                var levelData = partRemoteData.levels[part.level];
 
-                if (resourceValue <= 0f && useBurnRate)
-                {
-                    return;
-                }
+                //If there's nothing using these resources ignore
+                if(levelData.burnRate.amount == 0f)
+                    continue;
+
+                //var data = partRemoteData.levels[part.level].data;
+                //var burnAmount = partRemoteData.levels[part.level].burnRate.amount;
+                //var bitType = partRemoteData.levels[part.level].burnRate.type;
+                
+                var resourceValue = GetValueToBurn(levelData, levelData.burnRate.type);
 
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
 
-                        
-                        resourceValue -= partRemoteData.burnRates[part.level].amount * Time.deltaTime;
+                        if (resourceValue > 0f && useBurnRate)
+                            resourceValue -= levelData.burnRate.amount * Time.deltaTime;
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
@@ -180,6 +178,11 @@ namespace StarSalvager
                         if (!useBurnRate)
                             break;
                         
+                        if (resourceValue <= 0f && useBurnRate)
+                        {
+                            continue;
+                        }
+                        
                         //TODO Determine if this heals Bits & parts or just parts
                         //TODO This needs to fire every x Seconds
                         var toRepair = bot.attachedBlocks.GetAttachablesAroundInRadius<Part>(part, part.level + 1)
@@ -198,13 +201,19 @@ namespace StarSalvager
                                 break;
                         }
 
-                        resourceValue -= partRemoteData.burnRates[part.level].amount * Time.deltaTime;
+                        resourceValue -= levelData.burnRate.amount * Time.deltaTime;
 
                         //Increase the health of this part depending on the current level of the repairer
-                        toRepair.ChangeHealth(partRemoteData.data[part.level] * Time.deltaTime);
+                        toRepair.ChangeHealth(levelData.data * Time.deltaTime);
 
                         break;
                     case PART_TYPE.GUN:
+                        
+                        if (resourceValue <= 0f && useBurnRate)
+                        {
+                            continue;
+                        }
+                        
                         //TODO Need to determine if the shoot type is looking for enemies or not
                         //--------------------------------------------------------------------------------------------//
                         if (projectileTimers == null)
@@ -216,7 +225,7 @@ namespace StarSalvager
                         //TODO This needs to fire every x Seconds
                         //--------------------------------------------------------------------------------------------//
 
-                        if (projectileTimers[part] < partRemoteData.data[part.level] / damageGuess)
+                        if (projectileTimers[part] < levelData.data / damageGuess)
                         {
                             projectileTimers[part] += Time.deltaTime;
                             break;
@@ -242,7 +251,7 @@ namespace StarSalvager
 
                         if (useBurnRate)
                         {
-                            resourceValue -= partRemoteData.burnRates[part.level].amount;
+                            resourceValue -= levelData.burnRate.amount;
                         }
 
                         Debug.Log("Fire");
@@ -267,19 +276,19 @@ namespace StarSalvager
                         break;
                 }
 
-                UpdateUI(bitType, resourceValue);
-                PlayerPersistentData.PlayerData.liquidResource[bitType] = resourceValue;
+                UpdateUI(levelData.burnRate.type, resourceValue);
+                PlayerPersistentData.PlayerData.liquidResource[levelData.burnRate.type] = resourceValue;
             }
         }
         
         //============================================================================================================//
 
-        private Bit GetFurthestBitToBurn(PartRemoteData remoteData, BIT_TYPE type)
+        private Bit GetFurthestBitToBurn(PartLevelData partLevelData, BIT_TYPE type)
         {
             if (!useBurnRate)
                 return null;
             
-            if (remoteData.burnRates.Length == 0)
+            if (partLevelData.burnRate.amount == 0f)
                 return null;
             
             return bot.attachedBlocks.OfType<Bit>()
@@ -287,19 +296,19 @@ namespace StarSalvager
                 .GetFurthestAttachable(Vector2Int.zero);
         }
         
-        private float GetValueToBurn(PartRemoteData remoteData, BIT_TYPE type)
+        private float GetValueToBurn(PartLevelData partLevelData, BIT_TYPE type)
         {
             if (!useBurnRate)
                 return default;
 
-            var value = remoteData.burnRates.Length == 0
+            var value = partLevelData.burnRate.amount == 0
                 ? default
                 : PlayerPersistentData.PlayerData.liquidResource[type];
 
             if (value > 0)
                 return value;
             
-            var targetBit = GetFurthestBitToBurn(remoteData, type);
+            var targetBit = GetFurthestBitToBurn(partLevelData, type);
                     
             //If we're unable to find a bit to burn, then we can't use this part
             if (targetBit == null)

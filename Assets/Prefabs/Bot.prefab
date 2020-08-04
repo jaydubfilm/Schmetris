@@ -49,8 +49,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TEST_ParticleSystem: {fileID: 3099671416270462534}
   TEST_ParticleSystemForceField: {fileID: 1806099405544202029}
-  defaultEmissionRateRange: {x: 0, y: 0}
-  movingEmissionRateRange: {x: 0, y: 0}
   TEST_RotSpeed: 500
   TEST_MergeSpeed: 5
   TEST_DetachTime: 0.15
@@ -136,6 +134,21 @@ PrefabInstance:
         type: 3}
       propertyPath: playOnAwake
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 503925548730587461, guid: b9e4eef93f6516f4cb81745e5004cd71,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.atime0
+      value: 3855
+      objectReference: {fileID: 0}
+    - target: {fileID: 503925548730587461, guid: b9e4eef93f6516f4cb81745e5004cd71,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key0.a
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 503925548730587461, guid: b9e4eef93f6516f4cb81745e5004cd71,
+        type: 3}
+      propertyPath: ColorModule.gradient.minGradient.key0.a
+      value: 0.39215687
       objectReference: {fileID: 0}
     - target: {fileID: 5679985391638957034, guid: b9e4eef93f6516f4cb81745e5004cd71,
         type: 3}

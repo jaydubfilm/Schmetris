@@ -8,14 +8,17 @@ namespace StarSalvager.Factories.Data
     {
         [FoldoutGroup("$name")]
         public string name;
-        public string Name => name;
+        //public string Name => name;
         [FoldoutGroup("$name")]
         public BIT_TYPE bitType;
-        [FoldoutGroup("$name")]
-        public float[] health;
-        public float[] Health => health;
-        [FoldoutGroup("$name")]
-        public int[] resource;
+       //[FoldoutGroup("$name")]
+       //public float[] health;
+       //public float[] Health => health;
+       //[FoldoutGroup("$name")]
+       //public int[] resource;
+
+       [FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "Name")]
+       public BitLevelData[] levels;
 
         #region IEquatable
 
@@ -46,14 +49,15 @@ namespace StarSalvager.Factories.Data
 
         public override int GetHashCode()
         {
-            unchecked
+            return base.GetHashCode();
+            /*unchecked
             {
                 var hashCode = (name != null ? name.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (int)bitType;
                 hashCode = (hashCode * 397) ^ (health != null ? health.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (resource != null ? resource.GetHashCode() : 0);
                 return hashCode;
-            }
+            }*/
         }
         #endregion //IEquatable
     }

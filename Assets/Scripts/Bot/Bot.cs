@@ -210,7 +210,7 @@ namespace StarSalvager
 
             var health = iHealth.CurrentHealth / iHealth.StartingHealth;
             
-            if(health < 1f && !TEST_ParticleSystem.isPlaying)
+            if(health < 0.25f && !TEST_ParticleSystem.isPlaying)
                 TEST_ParticleSystem.Play();
             else if (health >= 1f)
             {
@@ -909,12 +909,11 @@ namespace StarSalvager
                     TryHitAt(attachable, bit.CurrentHealth);
                     break;
                 case Part _:
-                {
                     TryHitAt(attachable, 5f);
                     break;
-                }
+                case EnemyAttachable _:
+                    return;
                 default:
-                    
                     TryHitAt(attachable, 10000);
                     break;
             }
@@ -965,14 +964,14 @@ namespace StarSalvager
                 if (newAttachable is Bit bit)
                 {
                     MissionManager.ProcessResourceCollectedMissionData(bit.Type, 
-                        FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type).resource[bit.level]);
+                        FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type).levels[bit.level].resources);
                 }
                 else if (newAttachable is Shape shape)
                 {
                     foreach (var attachedBit in shape.AttachedBits)
                     {
                         MissionManager.ProcessResourceCollectedMissionData(attachedBit.Type,
-                            FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(attachedBit.Type).resource[attachedBit.level]);
+                            FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(attachedBit.Type).levels[attachedBit.level].resources);
                     }
                 }
             }
@@ -1011,14 +1010,14 @@ namespace StarSalvager
                 if (newAttachable is Bit bit)
                 {
                     MissionManager.ProcessResourceCollectedMissionData(bit.Type, 
-                        FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type).resource[bit.level]);
+                        FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type).levels[bit.level].resources);
                 }
                 else if (newAttachable is Shape shape)
                 {
                     foreach (var attachedBit in shape.AttachedBits)
                     {
                         MissionManager.ProcessResourceCollectedMissionData(attachedBit.Type,
-                            FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(attachedBit.Type).resource[attachedBit.level]);
+                            FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(attachedBit.Type).levels[attachedBit.level].resources);
                     }
                 }
             }
@@ -1078,7 +1077,7 @@ namespace StarSalvager
                 {
                     MissionManager.ProcessResourceCollectedMissionData(bit.Type,
                         FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type)
-                            .resource[bit.level]);
+                            .levels[bit.level].resources);
                 }
                 else if (newAttachable is Shape shape)
                 {
@@ -1086,7 +1085,7 @@ namespace StarSalvager
                     {
                         MissionManager.ProcessResourceCollectedMissionData(attachedBit.Type,
                             FactoryManager.Instance.GetFactory<BitAttachableFactory>()
-                                .GetBitRemoteData(attachedBit.Type).resource[attachedBit.level]);
+                                .GetBitRemoteData(attachedBit.Type).levels[attachedBit.level].resources);
                     }
                 }
             }

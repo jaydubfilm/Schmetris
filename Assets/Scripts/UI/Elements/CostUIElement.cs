@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class CostUIElement : UIElement<ResourceAmount>
+    public class CostUIElement : UIElement<CraftCost>
     {
         private static BitAttachableFactory _bitAttachableFactory;
         
@@ -21,14 +21,14 @@ namespace StarSalvager.UI
         
         //============================================================================================================//
         
-        public override void Init(ResourceAmount data)
+        public override void Init(CraftCost data)
         {
             if (_bitAttachableFactory == null)
                 _bitAttachableFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
             
             this.data = data;
 
-            resourceImage.sprite = _bitAttachableFactory.GetBitProfile(data.type).Sprites[1];
+            resourceImage.sprite = _bitAttachableFactory.GetBitProfile((BIT_TYPE)data.type).Sprites[1];
 
             costText.text = $"{data.amount}";
         }

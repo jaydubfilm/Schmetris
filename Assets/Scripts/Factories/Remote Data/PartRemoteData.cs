@@ -20,21 +20,25 @@ namespace StarSalvager.Factories.Data
         
         [FoldoutGroup("$name")]
         public int priority;
-
-        [FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true)]
-        public float[] health;
-        public float[] Health => health;
-
+        
         [FoldoutGroup("$name")]
-        public List<LevelCost> costs;
+        [ListDrawerSettings(ShowIndexLabels = true, DraggableItems = false, ListElementLabelName = "Name")]
+        public List<PartLevelData> levels;
 
-        [FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true)]
-        public int[] data;
-
-        [FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true)]
-        public ResourceAmount[] burnRates;
-        
-        
+        //[FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true)]
+        //public float[] health;
+        //public float[] Health => health;
+//
+        //[FoldoutGroup("$name")]
+        //[ListDrawerSettings(ShowIndexLabels = true)]
+//
+        //public List<LevelCost> costs;
+//
+        //[FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true)]
+        //public int[] data;
+//
+        //[FoldoutGroup("$name"), ListDrawerSettings(ShowIndexLabels = true)]
+        //public ResourceAmount[] burnRates;
 
         //This only compares Type and not all individual properties
         #region IEquatable
@@ -66,15 +70,16 @@ namespace StarSalvager.Factories.Data
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hashCode = (name != null ? name.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (int) partType;
-                hashCode = (hashCode * 397) ^ (health != null ? health.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (costs != null ? costs.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (data != null ? data.GetHashCode() : 0);
-                return hashCode;
-            }
+            //unchecked
+            //{
+            //    var hashCode = (name != null ? name.GetHashCode() : 0);
+            //    hashCode = (hashCode * 397) ^ (int) partType;
+            //    hashCode = (hashCode * 397) ^ (health != null ? health.GetHashCode() : 0);
+            //    hashCode = (hashCode * 397) ^ (costs != null ? costs.GetHashCode() : 0);
+            //    hashCode = (hashCode * 397) ^ (data != null ? data.GetHashCode() : 0);
+            //    return hashCode;
+            //}
+            return base.GetHashCode();
         }
         #endregion //IEquatable
     }

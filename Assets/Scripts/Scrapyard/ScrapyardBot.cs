@@ -359,13 +359,13 @@ namespace StarSalvager
 
             foreach (var part in _parts)
             {
-                var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.MAGNET);
+                var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type).levels[part.level];
 
                 switch (part.Type)
                 {
                     case PART_TYPE.MAGNET:
                     case PART_TYPE.CORE:
-                        magnetCount += partData.data[part.level];
+                        magnetCount += partData.data;
                         break;
                 }
             }
