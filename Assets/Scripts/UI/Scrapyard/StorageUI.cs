@@ -49,11 +49,36 @@ namespace StarSalvager.UI.Scrapyard
         // Start is called before the first frame update
         private void Start()
         {
-            InitButtons();
+            /*List<BlockData> blockData = new List<BlockData>();
+            blockData.Add(new BlockData
+            {
+                Level = 0,
+                Type = (int)PART_TYPE.GUN,
+                ClassType = "Part"
+            });
+            blockData.Add(new BlockData
+            {
+                Level = 1,
+                Type = (int)PART_TYPE.MAGNET,
+                ClassType = "Part"
+            });
+            blockData.Add(new BlockData
+            {
+                Level = 1,
+                Type = (int)PART_TYPE.REPAIR,
+                ClassType = "Part"
+            });
+            PlayerPersistentData.PlayerData.SetCurrentPartsInStorage(blockData);*/
 
+            InitButtons();
+        }
+
+        void OnEnable()
+        {
+            storageUiElementScrollView.ClearElements();
             InitContent();
         }
-        
+
         //============================================================================================================//
 
         private void InitButtons()
@@ -75,15 +100,15 @@ namespace StarSalvager.UI.Scrapyard
             {
                 TEST_Storage testStorage = new TEST_Storage
                 {
-                    name = storageBlockData.ClassType.ToString(),
+                    name = (PART_TYPE)storageBlockData.Type + " " + storageBlockData.Level,
                     blockData = storageBlockData
                 };
 
-                var temp = storageUiElementScrollView.AddElement<StorageUIElement>(testStorage, $"{testStorage.name}_UIElement");
+                var temp = storageUiElementScrollView.AddElement<StorageUIElement>(testStorage, $"{testStorage.name}_UIElement", allowDuplicate: true);
                 temp.Init(testStorage);
             }
         }
-        
+
         //============================================================================================================//
 
     }

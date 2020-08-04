@@ -121,11 +121,14 @@ namespace StarSalvager.UI.Scrapyard
             zoomSlider.onValueChanged.AddListener(SetCameraZoom);
             SetCameraZoom(zoomSlider.value);
 
-            InitUiScrollViews();
-
             InitButtons();
 
             _currentlyOverwriting = false;
+        }
+
+        void OnEnable()
+        {
+            RefreshScrollView();
         }
 
         //============================================================================================================//
@@ -309,9 +312,10 @@ namespace StarSalvager.UI.Scrapyard
 
             foreach (var resource in resources)
             {
-                var data = new ResourceAmount
+                var data = new CraftCost
                 {
-                    type = resource.Key,
+                    resourceType = CraftCost.TYPE.Bit,
+                    type = (int)resource.Key,
                     amount = resource.Value
                 };
 
@@ -369,12 +373,19 @@ namespace StarSalvager.UI.Scrapyard
         {
             foreach (var resourceAmount in resources)
             {
-                var element = resourceScrollView.FindElement<ResourceUIElement>(resourceAmount);
+                var data = new CraftCost
+                {
+                    resourceType = CraftCost.TYPE.Bit,
+                    type = (int)resourceAmount.type,
+                    amount = resourceAmount.amount
+                };
+
+                var element = resourceScrollView.FindElement<ResourceUIElement>(data);
 
                 if (element == null)
                     continue;
 
-                element.Init(resourceAmount);
+                element.Init(data);
             }
         }
 

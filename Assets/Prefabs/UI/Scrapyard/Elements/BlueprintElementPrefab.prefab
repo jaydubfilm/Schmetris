@@ -63,6 +63,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   titleText: {fileID: 8219934000127951511}
+  image: {fileID: 1492497367586157991}
 --- !u!114 &3469243721261047492
 MonoBehaviour:
   m_ObjectHideFlags: 0
