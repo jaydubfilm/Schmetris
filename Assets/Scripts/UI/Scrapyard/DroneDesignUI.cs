@@ -170,12 +170,6 @@ namespace StarSalvager.UI.Scrapyard
 
             //--------------------------------------------------------------------------------------------------------//
 
-            //sellBitsButton.onClick.AddListener(() =>
-            //{
-            //    mDroneDesigner.SellBits();
-            //    UpdateResources(PlayerPersistentData.PlayerData.GetResources());
-            //});
-
             isUpgradingButton.onClick.AddListener(() =>
             {
                 mDroneDesigner.IsUpgrading = !mDroneDesigner.IsUpgrading;

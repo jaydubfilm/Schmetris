@@ -616,6 +616,7 @@ namespace StarSalvager
                 _scrapyardBots[0].AttachNewBit(attachable.Coordinate, attachable);
             }
             droneDesignUi.UpdateResources(PlayerPersistentData.PlayerData.resources);
+            SaveBlockData();
         }
 
         public bool CheckAffordLayout(ScrapyardLayout layout)
