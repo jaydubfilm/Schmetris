@@ -73,6 +73,7 @@ namespace StarSalvager.UI
             {
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
+                LevelManager.Instance.EndWaveState = false;
                 SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             });
 
