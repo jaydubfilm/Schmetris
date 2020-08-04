@@ -70,7 +70,13 @@ MonoBehaviour:
     - health: 80
       data: 5
       burnRate: 0
-      cost: []
+      cost:
+      - resourceType: 0
+        type: 3
+        amount: 50
+      - resourceType: 0
+        type: 5
+        amount: 50
     - health: 100
       data: 10
       burnRate: 0.1
