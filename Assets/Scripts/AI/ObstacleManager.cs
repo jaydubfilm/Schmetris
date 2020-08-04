@@ -353,7 +353,7 @@ namespace StarSalvager
 
                 while (spawnVariable >= 1)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.BitType, stageObstacleData.CustomMade, stageObstacleData.Category, stageObstacleData.AsteroidSize);
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category);
                     spawnVariable -= 1;
                 }
 
@@ -364,7 +364,7 @@ namespace StarSalvager
 
                 if (random <= spawnVariable)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.BitType, stageObstacleData.CustomMade, stageObstacleData.Category, stageObstacleData.AsteroidSize);
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category);
                 }
             }
 
@@ -377,7 +377,7 @@ namespace StarSalvager
 
                 while (spawnVariable >= 1)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.BitType, stageObstacleData.CustomMade, stageObstacleData.Category, stageObstacleData.AsteroidSize);
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category);
                     spawnVariable -= 1;
                 }
 
@@ -388,7 +388,7 @@ namespace StarSalvager
 
                 if (random <= spawnVariable)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.BitType, stageObstacleData.CustomMade, stageObstacleData.Category, stageObstacleData.AsteroidSize);
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category);
                 }
             }
         }
@@ -405,11 +405,11 @@ namespace StarSalvager
             }
         }
 
-        private void SpawnObstacle(SELECTION_TYPE selectionType, BIT_TYPE bitType, bool customMade, string category, ASTEROID_SIZE asteroidSize, bool inRandomYLevel = false)
+        private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category, bool inRandomYLevel = false)
         {
-            if (customMade)
+            if (selectionType == SELECTION_TYPE.CATEGORY)
             {
-                Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, bitType, category);
+                Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, category);
                 
                 if (LevelManager.Instance != null)
                     LevelManager.Instance.ObstacleManager.AddMovableToList(newShape);
@@ -422,46 +422,20 @@ namespace StarSalvager
                 PlaceMovableOnGrid(newShape);
                 return;
             }
-            
-            //Temp to translate Asteroid size into # of bits
-            int numBitsInObstacle;
-            switch (asteroidSize)
+            else if (selectionType == SELECTION_TYPE.SHAPE)
             {
-                case ASTEROID_SIZE.Bit:
-                default:
-                    numBitsInObstacle = 1;
-                    break;
-                case ASTEROID_SIZE.Small:
-                    numBitsInObstacle = Random.Range(2, 4);
-                    break;
-                case ASTEROID_SIZE.Medium:
-                    numBitsInObstacle = Random.Range(4, 6);
-                    break;
-                case ASTEROID_SIZE.Large:
-                    numBitsInObstacle = Random.Range(6, 9);
-                    break;
-            }
+                Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, shapeName);
 
-            if (numBitsInObstacle == 1)
-            {
-                //Make bit and push to list
-                Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject(bitType).GetComponent<Bit>();
-                AddMovableToList(newBit);
-                PlaceMovableOnGrid(newBit);
-            }
-            else
-            {
-                Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, bitType, numBitsInObstacle);
-                
                 if (LevelManager.Instance != null)
                     LevelManager.Instance.ObstacleManager.AddMovableToList(newShape);
-                
+
                 AddMovableToList(newShape);
                 foreach (Bit bit in newShape.AttachedBits)
                 {
                     AddMovableToList(bit);
                 }
                 PlaceMovableOnGrid(newShape);
+                return;
             }
         }
 

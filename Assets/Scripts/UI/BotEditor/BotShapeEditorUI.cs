@@ -253,7 +253,6 @@ namespace StarSalvager.UI
 
                             ScreenBlackImage.gameObject.SetActive(false);
                         });
-                    //CantSaveMenu.SetActive(true);
                 }
                 ScreenBlackImage.gameObject.SetActive(true);
             });
@@ -344,27 +343,6 @@ namespace StarSalvager.UI
                 SaveBasePortion.SetActive(true);
                 m_currentlyOverwriting = false;
             });
-
-            //--------------------------------------------------------------------------------------------------------//
-
-            /*CantSaveRemove.onClick.AddListener(() =>
-            {
-                m_botShapeEditor.RemoveFloating();
-                CantSaveMenu.SetActive(false);
-                SaveMenu.SetActive(true);
-            });
-
-            CantSaveReturn.onClick.AddListener(() =>
-            {
-                CantSaveMenu.SetActive(false);
-                ScreenBlackImage.gameObject.SetActive(false);
-            });
-
-            CantSaveReturn2.onClick.AddListener(() =>
-            {
-                CantSaveMenu.SetActive(false);
-                ScreenBlackImage.gameObject.SetActive(false);
-            });*/
 
             //--------------------------------------------------------------------------------------------------------//
 
