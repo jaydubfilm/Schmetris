@@ -71,8 +71,6 @@ namespace StarSalvager.UI.Scrapyard
             PlayerPersistentData.PlayerData.SetCurrentPartsInStorage(blockData);*/
 
             InitButtons();
-
-            InitContent();
         }
 
         void OnEnable()
@@ -106,7 +104,7 @@ namespace StarSalvager.UI.Scrapyard
                     blockData = storageBlockData
                 };
 
-                var temp = storageUiElementScrollView.AddElement<StorageUIElement>(testStorage, $"{testStorage.name}_UIElement");
+                var temp = storageUiElementScrollView.AddElement<StorageUIElement>(testStorage, $"{testStorage.name}_UIElement", allowDuplicate: true);
                 temp.Init(testStorage);
             }
         }

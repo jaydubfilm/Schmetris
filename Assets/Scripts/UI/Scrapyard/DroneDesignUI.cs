@@ -121,8 +121,6 @@ namespace StarSalvager.UI.Scrapyard
             zoomSlider.onValueChanged.AddListener(SetCameraZoom);
             SetCameraZoom(zoomSlider.value);
 
-            InitUiScrollViews();
-
             InitButtons();
 
             _currentlyOverwriting = false;
