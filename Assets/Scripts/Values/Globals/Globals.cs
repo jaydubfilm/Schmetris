@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace StarSalvager.Values
 {
@@ -31,6 +34,29 @@ namespace StarSalvager.Values
             }
         }
         private static ORIENTATION _orientation;
+        
+        public static void ScaleCamera(float cameraZoomScalerValue)
+        {
+            ColumnsOnScreen = (int)cameraZoomScalerValue;
+            if (ColumnsOnScreen % 2 == 0)
+                ColumnsOnScreen += 1;
+
+            var cameraController = Object.FindObjectOfType<CameraController>();
+            
+            if(cameraController)
+                cameraController.SetOrthographicSize(Constants.gridCellSize * ColumnsOnScreen, Vector3.zero);
+
+            if (Orientation == ORIENTATION.VERTICAL)
+            {
+                GridSizeX = (int)(ColumnsOnScreen * Constants.GridWidthRelativeToScreen);
+                GridSizeY = (int)((Camera.main.orthographicSize * Constants.GridHeightRelativeToScreen * 2) / Constants.gridCellSize);
+            }
+            else
+            {
+                GridSizeX = (int)(ColumnsOnScreen * Constants.GridWidthRelativeToScreen * (Screen.height / (float)Screen.width));
+                GridSizeY = (int)((Camera.main.orthographicSize * Constants.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Constants.gridCellSize);
+            }
+        }
     }
 }
 

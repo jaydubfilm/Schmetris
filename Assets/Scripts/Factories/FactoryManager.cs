@@ -241,6 +241,26 @@ namespace StarSalvager.Factories
 #endif
         }
         
+        #if UNITY_EDITOR
+        public static void ClearRemoteData()
+        {
+            //FIXME This should be using persistent file names
+            var files = new[]
+            {
+                Application.dataPath + "/RemoteData/PlayerPersistentData.player",
+                Application.dataPath + "/RemoteData/MissionsCurrentData.mission"
+            };
+
+            foreach (var file in files)
+            {
+                if (File.Exists(file))
+                {
+                    File.Delete(file);
+                }
+            }
+        }
+        #endif
+        
         //============================================================================================================//
 
     }

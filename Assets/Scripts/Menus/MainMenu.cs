@@ -9,6 +9,7 @@ using StarSalvager.Utilities;
 using StarSalvager.Utilities.UI;
 using System.IO;
 using Sirenix.OdinInspector;
+using StarSalvager.Factories;
 using StarSalvager.Missions;
 
 using CameraController = StarSalvager.Cameras.CameraController;
@@ -104,7 +105,7 @@ namespace StarSalvager.UI
             OpenMenu(MENU.MAIN);
             
             if (gameObject.scene == SceneManager.GetActiveScene())
-                ScaleCamera(m_cameraZoomScaler.value);
+                Globals.ScaleCamera(m_cameraZoomScaler.value);
             
             
             MissionManager.Init();
@@ -122,7 +123,7 @@ namespace StarSalvager.UI
                     : ORIENTATION.HORIZONTAL;
             });
             
-            m_cameraZoomScaler.onValueChanged.AddListener(ScaleCamera);
+            m_cameraZoomScaler.onValueChanged.AddListener(Globals.ScaleCamera);
             _zoomSliderText.Init();
 
             
@@ -218,11 +219,12 @@ namespace StarSalvager.UI
         
         //============================================================================================================//
 
-        private void ScaleCamera(float cameraZoomScalerValue)
+        /*private void ScaleCamera(float cameraZoomScalerValue)
         {
             Globals.ColumnsOnScreen = (int)cameraZoomScalerValue;
             if (Globals.ColumnsOnScreen % 2 == 0)
                 Globals.ColumnsOnScreen += 1;
+            
             CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, Vector3.zero);
 
             if (Globals.Orientation == ORIENTATION.VERTICAL)
@@ -235,29 +237,16 @@ namespace StarSalvager.UI
                 Globals.GridSizeX = (int)(Globals.ColumnsOnScreen * Constants.GridWidthRelativeToScreen * (Screen.height / (float)Screen.width));
                 Globals.GridSizeY = (int)((Camera.main.orthographicSize * Constants.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Constants.gridCellSize);
             }
-        }
+        }*/
         
         //============================================================================================================//
         
         #if UNITY_EDITOR
         
-        [Button("Clear Remote Data")]
+        [Button("Clear Remote Data"), DisableInPlayMode]
         private void ClearRemoteData()
         {
-            //FIXME This should be using persistent file names
-            var files = new[]
-            {
-                Application.dataPath + "/RemoteData/PlayerPersistentData.player",
-                Application.dataPath + "/RemoteData/MissionsCurrentData.mission"
-            };
-
-            foreach (var file in files)
-            {
-                if (File.Exists(file))
-                {
-                    File.Delete(file);
-                }
-            }
+            FactoryManager.ClearRemoteData();
         }
         
         #endif

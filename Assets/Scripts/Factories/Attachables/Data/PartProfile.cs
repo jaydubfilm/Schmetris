@@ -45,7 +45,16 @@ namespace StarSalvager.Factories.Data
         #if UNITY_EDITOR
         
         [ShowInInspector, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$Name/row2", 65), VerticalGroup("$Name/row2/left"), HideLabel, PropertyOrder(-100), ReadOnly]
-        private Sprite spritePreview => _sprites[0];
+        private Sprite spritePreview
+        {
+            get
+            {
+                if (_sprites == null || _sprites.Length == 0)
+                    return null;
+                
+                return _animation == null ? _sprites[0] : _animation.GetFrame(0);
+            }
+        }
         
         #endif
 
