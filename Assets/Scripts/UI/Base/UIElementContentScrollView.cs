@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Recycling;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -20,19 +21,22 @@ namespace StarSalvager.UI
         public List<UIElement<T>> Elements { get; private set; }
 
         //TODO: find a better method then the compareNames for the current cases using this comparison (botshapeeditorui)
-        public U AddElement<U>(T data, string gameObjectName = "", bool compareNames = false) where U: UIElement<T>
+        public U AddElement<U>(T data, string gameObjectName = "", bool compareNames = false, bool allowDuplicate = false) where U: UIElement<T>
         {
             if (Elements == null)
                 Elements = new List<UIElement<T>>();
 
-            U exists;
-            if (compareNames)
-                exists = FindElement<U>(data, gameObjectName);
-            else
-                exists = FindElement<U>(data);
+            if (!allowDuplicate)
+            {
+                U exists;
+                if (compareNames)
+                    exists = FindElement<U>(data, gameObjectName);
+                else
+                    exists = FindElement<U>(data);
 
-            if (exists != null)
-                return exists;
+                if (exists != null)
+                    return exists;
+            }
 
             var element = Object.Instantiate(contentPrefab).GetComponent<U>();
 
@@ -77,8 +81,22 @@ namespace StarSalvager.UI
             if (index < 0)
                 return;
 
-            Elements.RemoveAt(index);
+            RemoveElementAtIndex(index);
+        }
 
+        public void RemoveElementAtIndex(int index)
+        {
+            Recycler.Recycle<UIElement<T>>(Elements[index]);
+            Elements.RemoveAt(index);
+        }
+
+        public void ClearElements()
+        {
+            for (int i = Elements.Count - 1; i >= 0; i--)
+            {
+                Recycler.Recycle<UIElement<T>>(Elements[i]);
+                Elements.RemoveAt(i);
+            }
         }
 
         /// <summary>

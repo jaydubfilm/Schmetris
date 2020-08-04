@@ -307,7 +307,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 var partRemoteData = remotePartProfileScriptable.GetRemoteData((PART_TYPE)blockData.Type);
 
-                var element = partsScrollView.AddElement<PartBitImageUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement");
+                var element = partsScrollView.AddElement<PartBitImageUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
                 element.Init(partRemoteData, PartPressed, blockData.Level);
             }
 
@@ -324,6 +324,20 @@ namespace StarSalvager.UI.Scrapyard
                 var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
                 element.Init(data);
             }
+        }
+
+        public void AddToPartScrollView(BlockData blockData)
+        {
+            var partRemoteData = remotePartProfileScriptable.GetRemoteData((PART_TYPE)blockData.Type);
+
+            var element = partsScrollView.AddElement<PartBitImageUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
+            element.Init(partRemoteData, PartPressed, blockData.Level);
+        }
+
+        public void RefreshScrollView()
+        {
+            partsScrollView.ClearElements();
+            InitUiScrollViews();
         }
 
         private void UpdateLoadListUiScrollViews()

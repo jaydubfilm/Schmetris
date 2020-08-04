@@ -131,9 +131,7 @@ namespace StarSalvager.Values
 
         public void RemovePartFromStorage(BlockData blockData)
         {
-            /*Debug.Log(partsInStorageBlockData.Count);
-            partsInStorageBlockData.Remove(partsInStorageBlockData.FirstOrDefault(b => b.Level == blockData.Level && b.Type == blockData.Type && b.ClassType == blockData.ClassType));
-            Debug.Log(partsInStorageBlockData.Count);*/
+            partsInStorageBlockData.Remove(partsInStorageBlockData.FirstOrDefault(b => b.Level == blockData.Level && b.Type == blockData.Type));
         }
     }
 }

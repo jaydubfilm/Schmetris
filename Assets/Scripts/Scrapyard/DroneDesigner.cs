@@ -196,7 +196,7 @@ namespace StarSalvager
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
 
-            if (IsUpgrading)
+            /*if (IsUpgrading)
             {
                 foreach (ScrapyardBot scrapBot in _scrapyardBots)
                 {
@@ -233,7 +233,7 @@ namespace StarSalvager
                     }
                 }
                 return;
-            }
+            }*/
 
             if (selectedPartType == null)
                 return;
@@ -253,10 +253,9 @@ namespace StarSalvager
                     continue;
                 }
 
-                var playerData = PlayerPersistentData.PlayerData;
                 var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>((PART_TYPE)selectedPartType, SelectedPartLevel);
                 PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
-                droneDesignUi.InitUiScrollViews();
+                droneDesignUi.RefreshScrollView();
                 //playerData.SubtractResources((PART_TYPE)selectedPartType, 0, false);
                 scrapBot.AttachNewBit(mouseCoordinate, attachable);
                 _toUndoStack.Push(new ScrapyardEditData
@@ -267,7 +266,9 @@ namespace StarSalvager
                 });
                 _toRedoStack.Clear();
 
-                droneDesignUi.UpdateResources(playerData.GetResources());
+                selectedPartType = null;
+                SelectedPartLevel = 0;
+                //droneDesignUi.UpdateResources(playerData.GetResources());
                 SaveBlockData();
             }
             UpdateFloatingMarkers(false);
@@ -304,6 +305,8 @@ namespace StarSalvager
                 }
                 else if (attachableAtCoordinates is ScrapyardPart scrapPart)
                 {
+                    PlayerPersistentData.PlayerData.AddPartToStorage(scrapPart.ToBlockData());
+                    droneDesignUi.AddToPartScrollView(scrapPart.ToBlockData());
                     _toUndoStack.Push(new ScrapyardEditData
                     {
                         EventType = SCRAPYARD_ACTION.SALE,
@@ -313,9 +316,8 @@ namespace StarSalvager
                     });
                     _toRedoStack.Clear();
                 }
-
-                scrapBot.TryRemoveAttachableAt(mouseCoordinate, true);
-                droneDesignUi.UpdateResources(PlayerPersistentData.PlayerData.GetResources());
+                scrapBot.TryRemoveAttachableAt(mouseCoordinate, false);
+                //droneDesignUi.UpdateResources(PlayerPersistentData.PlayerData.GetResources());
                 SaveBlockData();
             }
             UpdateFloatingMarkers(false);
