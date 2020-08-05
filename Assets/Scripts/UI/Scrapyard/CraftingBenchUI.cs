@@ -42,10 +42,16 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
+        private bool scrollViewsSetup = false;
+
         // Start is called before the first frame update
         private void Start()
         {
             InitButtons();
+
+            InitUIScrollView();
+            InitResourceScrollViews();
+            scrollViewsSetup = true;
         }
 
         private void InitButtons()
@@ -56,42 +62,56 @@ namespace StarSalvager.UI.Scrapyard
                     return;
 
                 mCraftingBench.CraftBlueprint(selectedBlueprint);
-                UpdateResources(PlayerPersistentData.PlayerData.GetResources());
+                UpdateResources();
             });
 
         }
 
         void OnEnable()
         {
+            if (scrollViewsSetup)
+                RefreshScrollViews();
+
             blueprintsContentScrollView.ClearElements<BlueprintUIElement>();
-            InitUIScrollViews();
+            InitUIScrollView();
         }
 
         //============================================================================================================//
 
-        private void InitUIScrollViews()
+        private void InitUIScrollView()
         {
             //FIXME This needs to move to the Factory
-            foreach (var partRemoteData in _remotePartProfileScriptable.partRemoteData)
+            if (PlayerPersistentData.PlayerData.unlockedBlueprints.Count == 0)
             {
-                for (int i = 0; i < partRemoteData.levels.Count; i++)
+                foreach (var partRemoteData in _remotePartProfileScriptable.partRemoteData)
                 {
-                    if (partRemoteData.partType == PART_TYPE.CORE && i == 0)
-                        continue;
-
-                    TEST_Blueprint blueprint = new TEST_Blueprint
+                    for (int i = 0; i < partRemoteData.levels.Count - 1; i++)
                     {
-                        name = partRemoteData.partType + " " + i,
-                        remoteData = partRemoteData,
-                        level = i
-                    };
+                        if (partRemoteData.partType == PART_TYPE.CORE && i == 0)
+                            continue;
 
-                    var temp = blueprintsContentScrollView.AddElement<BlueprintUIElement>(blueprint, $"{blueprint.name}_UIElement");
-                    temp.Init(blueprint, BlueprintPressed);
+                        TEST_Blueprint blueprint = new TEST_Blueprint
+                        {
+                            name = partRemoteData.partType + " " + i,
+                            remoteData = partRemoteData,
+                            level = i
+                        };
+                        PlayerPersistentData.PlayerData.unlockedBlueprints.Add(blueprint);
+                    }
                 }
             }
 
+            foreach (var blueprint in PlayerPersistentData.PlayerData.unlockedBlueprints)
+            {
+                var temp = blueprintsContentScrollView.AddElement<BlueprintUIElement>(blueprint, $"{blueprint.name}_UIElement");
+                temp.Init(blueprint, BlueprintPressed);
+            }
+        }
+
+        public void InitResourceScrollViews()
+        {
             var resources = PlayerPersistentData.PlayerData.GetResources();
+
             foreach (var resource in resources)
             {
                 var data = new CraftCost
@@ -104,7 +124,69 @@ namespace StarSalvager.UI.Scrapyard
                 var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
                 element.Init(data);
             }
-            UpdateResources(resources);
+
+            var components = PlayerPersistentData.PlayerData.GetComponents();
+
+            foreach (var component in components)
+            {
+                var data = new CraftCost
+                {
+                    resourceType = CraftCost.TYPE.Component,
+                    type = (int)component.Key,
+                    amount = component.Value
+                };
+
+                var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{component.Key}_UIElement");
+                element.Init(data);
+            }
+        }
+
+        public void RefreshScrollViews()
+        {
+            blueprintsContentScrollView.ClearElements<BlueprintUIElement>();
+            InitUIScrollView();
+            UpdateResources();
+        }
+
+        public void UpdateResources()
+        {
+            var resources = PlayerPersistentData.PlayerData.GetResources();
+
+            foreach (var resource in resources)
+            {
+                var data = new CraftCost
+                {
+                    resourceType = CraftCost.TYPE.Bit,
+                    type = (int)resource.Key,
+                    amount = resource.Value
+                };
+
+                var element = resourceScrollView.FindElement<ResourceUIElement>(data);
+
+                if (element == null)
+                    continue;
+
+                element.Init(data);
+            }
+
+            var components = PlayerPersistentData.PlayerData.GetComponents();
+
+            foreach (var component in components)
+            {
+                var data = new CraftCost
+                {
+                    resourceType = CraftCost.TYPE.Component,
+                    type = (int)component.Key,
+                    amount = component.Value
+                };
+
+                var element = resourceScrollView.FindElement<ResourceUIElement>(data);
+
+                if (element == null)
+                    continue;
+
+                element.Init(data);
+            }
         }
 
         private void SetupBlueprintCosts(TEST_Blueprint blueprint)
@@ -116,31 +198,6 @@ namespace StarSalvager.UI.Scrapyard
             {
                 var element = costContentView.AddElement<ResourceUIElement>(resource, $"{resource.type}_UIElement");
                 element.Init(resource);
-            }
-        }
-
-        public void UpdateResources(Dictionary<BIT_TYPE, int> resources)
-        {
-            UpdateResources(resources.ToResourceList());
-        }
-
-        public void UpdateResources(List<ResourceAmount> resources)
-        {
-            foreach (var resourceAmount in resources)
-            {
-                var data = new CraftCost
-                {
-                    resourceType = CraftCost.TYPE.Bit,
-                    type = (int)resourceAmount.type,
-                    amount = resourceAmount.amount
-                };
-
-                var element = resourceScrollView.FindElement<ResourceUIElement>(data);
-
-                if (element == null)
-                    continue;
-
-                element.Init(data);
             }
         }
 

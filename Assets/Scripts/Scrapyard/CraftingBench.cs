@@ -26,7 +26,7 @@ namespace StarSalvager
                 Level = blueprint.level
             };
 
-            PlayerPersistentData.PlayerData.SubtractResources(blueprint.remoteData.partType, blueprint.level, false);
+            PlayerPersistentData.PlayerData.SubtractPartCosts(blueprint.remoteData.partType, blueprint.level, false);
             PlayerPersistentData.PlayerData.AddPartToStorage(blockData);
         }
     }

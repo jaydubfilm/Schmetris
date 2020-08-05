@@ -29,18 +29,23 @@ MonoBehaviour:
       cost:
       - resourceType: 0
         type: 1
+        partPrerequisiteLevel: 0
         amount: 500
       - resourceType: 0
         type: 2
+        partPrerequisiteLevel: 0
         amount: 500
       - resourceType: 0
         type: 3
+        partPrerequisiteLevel: 0
         amount: 500
       - resourceType: 0
         type: 4
+        partPrerequisiteLevel: 0
         amount: 500
       - resourceType: 0
         type: 5
+        partPrerequisiteLevel: 0
         amount: 500
     - health: 100
       data: 25
@@ -48,18 +53,23 @@ MonoBehaviour:
       cost:
       - resourceType: 0
         type: 1
+        partPrerequisiteLevel: 0
         amount: 10000
       - resourceType: 0
         type: 2
+        partPrerequisiteLevel: 0
         amount: 10000
       - resourceType: 0
         type: 3
+        partPrerequisiteLevel: 0
         amount: 10000
       - resourceType: 0
         type: 4
+        partPrerequisiteLevel: 0
         amount: 10000
       - resourceType: 0
         type: 5
+        partPrerequisiteLevel: 0
         amount: 10000
   - name: Magnet
     partType: 1
@@ -73,30 +83,56 @@ MonoBehaviour:
       cost:
       - resourceType: 0
         type: 3
+        partPrerequisiteLevel: 0
         amount: 50
       - resourceType: 0
         type: 5
+        partPrerequisiteLevel: 0
         amount: 50
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 1
     - health: 100
       data: 10
       burnRate: 0.1
       cost:
       - resourceType: 0
         type: 3
+        partPrerequisiteLevel: 0
         amount: 300
       - resourceType: 0
         type: 5
+        partPrerequisiteLevel: 0
         amount: 300
+      - resourceType: 2
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 1
     - health: 120
       data: 20
       burnRate: 0.17
       cost:
       - resourceType: 0
         type: 3
+        partPrerequisiteLevel: 0
         amount: 2500
       - resourceType: 0
         type: 5
+        partPrerequisiteLevel: 0
         amount: 2500
+      - resourceType: 2
+        type: 1
+        partPrerequisiteLevel: 1
+        amount: 1
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 1
   - name: Repairer
     partType: 2
     canSell: 1
@@ -109,9 +145,11 @@ MonoBehaviour:
       cost:
       - resourceType: 0
         type: 3
+        partPrerequisiteLevel: 0
         amount: 100
       - resourceType: 0
         type: 2
+        partPrerequisiteLevel: 0
         amount: 100
     - health: 90
       data: 25
@@ -119,9 +157,11 @@ MonoBehaviour:
       cost:
       - resourceType: 0
         type: 3
+        partPrerequisiteLevel: 0
         amount: 400
       - resourceType: 0
         type: 2
+        partPrerequisiteLevel: 0
         amount: 800
     - health: 100
       data: 50
@@ -129,9 +169,11 @@ MonoBehaviour:
       cost:
       - resourceType: 0
         type: 2
+        partPrerequisiteLevel: 0
         amount: 4500
       - resourceType: 0
         type: 3
+        partPrerequisiteLevel: 0
         amount: 6000
   - name: Armor
     partType: 3
@@ -145,6 +187,7 @@ MonoBehaviour:
       cost:
       - resourceType: 0
         type: 3
+        partPrerequisiteLevel: 0
         amount: 200
     - health: 300
       data: 0
@@ -152,6 +195,7 @@ MonoBehaviour:
       cost:
       - resourceType: 0
         type: 3
+        partPrerequisiteLevel: 0
         amount: 2500
     - health: 500
       data: 0
@@ -159,6 +203,7 @@ MonoBehaviour:
       cost:
       - resourceType: 0
         type: 3
+        partPrerequisiteLevel: 0
         amount: 20000
   - name: Gun
     partType: 4
@@ -172,9 +217,11 @@ MonoBehaviour:
       cost:
       - resourceType: 0
         type: 2
+        partPrerequisiteLevel: 0
         amount: 50
       - resourceType: 0
         type: 3
+        partPrerequisiteLevel: 0
         amount: 150
     - health: 80
       data: 20
@@ -182,9 +229,11 @@ MonoBehaviour:
       cost:
       - resourceType: 0
         type: 2
+        partPrerequisiteLevel: 0
         amount: 100
       - resourceType: 0
         type: 3
+        partPrerequisiteLevel: 0
         amount: 200
     - health: 100
       data: 30
@@ -192,7 +241,9 @@ MonoBehaviour:
       cost:
       - resourceType: 0
         type: 2
+        partPrerequisiteLevel: 0
         amount: 1000
       - resourceType: 0
         type: 3
+        partPrerequisiteLevel: 0
         amount: 1500

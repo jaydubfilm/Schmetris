@@ -22,6 +22,9 @@ namespace StarSalvager
         [FoldoutGroup("$Name"), ValueDropdown("GetTypes")]
         public int type;
 
+        [FoldoutGroup("$Name"), ShowIf("resourceType", TYPE.Part)]
+        public int partPrerequisiteLevel;
+
         [FoldoutGroup("$Name")] public int amount;
 
         //This only compares Type and not all individual properties

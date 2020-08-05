@@ -113,6 +113,7 @@ namespace StarSalvager.UI.Scrapyard
         public bool IsPopupActive => loadMenu.activeSelf || saveMenu.activeSelf || Alert.Displayed;
         private bool _currentlyOverwriting = false;
 
+        private bool scrollViewsSetup = false;
 
         private void Start()
         {
@@ -123,12 +124,17 @@ namespace StarSalvager.UI.Scrapyard
 
             InitButtons();
 
+            InitUiScrollView();
+            InitResourceScrollViews();
+            scrollViewsSetup = true;
+
             _currentlyOverwriting = false;
         }
 
         void OnEnable()
         {
-            RefreshScrollView();
+            if (scrollViewsSetup)
+                RefreshScrollViews();
         }
 
         void OnDisable()
@@ -282,7 +288,7 @@ namespace StarSalvager.UI.Scrapyard
 
         }
 
-        public void InitUiScrollViews()
+        public void InitUiScrollView()
         {
             foreach (var blockData in PlayerPersistentData.PlayerData.GetCurrentPartsInStorage())
             {
@@ -291,7 +297,10 @@ namespace StarSalvager.UI.Scrapyard
                 var element = partsScrollView.AddElement<BrickImageUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
                 element.Init(partRemoteData, PartPressed, blockData.Level);
             }
+        }
 
+        public void InitResourceScrollViews()
+        {
             var resources = PlayerPersistentData.PlayerData.GetResources();
 
             foreach (var resource in resources)
@@ -306,6 +315,21 @@ namespace StarSalvager.UI.Scrapyard
                 var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
                 element.Init(data);
             }
+
+            var components = PlayerPersistentData.PlayerData.GetComponents();
+
+            foreach (var component in components)
+            {
+                var data = new CraftCost
+                {
+                    resourceType = CraftCost.TYPE.Component,
+                    type = (int)component.Key,
+                    amount = component.Value
+                };
+
+                var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{component.Key}_UIElement");
+                element.Init(data);
+            }
         }
 
         public void AddToPartScrollView(BlockData blockData)
@@ -316,10 +340,52 @@ namespace StarSalvager.UI.Scrapyard
             element.Init(partRemoteData, PartPressed, blockData.Level);
         }
 
-        public void RefreshScrollView()
+        public void RefreshScrollViews()
         {
             partsScrollView.ClearElements<BrickImageUIElement>();
-            InitUiScrollViews();
+            InitUiScrollView();
+            UpdateResources();
+        }
+
+        public void UpdateResources()
+        {
+            var resources = PlayerPersistentData.PlayerData.GetResources();
+
+            foreach (var resource in resources)
+            {
+                var data = new CraftCost
+                {
+                    resourceType = CraftCost.TYPE.Bit,
+                    type = (int)resource.Key,
+                    amount = resource.Value
+                };
+
+                var element = resourceScrollView.FindElement<ResourceUIElement>(data);
+
+                if (element == null)
+                    continue;
+
+                element.Init(data);
+            }
+
+            var components = PlayerPersistentData.PlayerData.GetComponents();
+
+            foreach (var component in components)
+            {
+                var data = new CraftCost
+                {
+                    resourceType = CraftCost.TYPE.Component,
+                    type = (int)component.Key,
+                    amount = component.Value
+                };
+
+                var element = resourceScrollView.FindElement<ResourceUIElement>(data);
+
+                if (element == null)
+                    continue;
+
+                element.Init(data);
+            }
         }
 
         private void UpdateLoadListUiScrollViews()
@@ -346,31 +412,6 @@ namespace StarSalvager.UI.Scrapyard
         public void SetPartsScrollActive(bool active)
         {
             partsScrollView.SetElementsActive(active);
-        }
-
-        public void UpdateResources(Dictionary<BIT_TYPE, int> resources)
-        {
-            UpdateResources(resources.ToResourceList());
-        }
-
-        public void UpdateResources(List<ResourceAmount> resources)
-        {
-            foreach (var resourceAmount in resources)
-            {
-                var data = new CraftCost
-                {
-                    resourceType = CraftCost.TYPE.Bit,
-                    type = (int)resourceAmount.type,
-                    amount = resourceAmount.amount
-                };
-
-                var element = resourceScrollView.FindElement<ResourceUIElement>(data);
-
-                if (element == null)
-                    continue;
-
-                element.Init(data);
-            }
         }
 
         public void DisplayInsufficientResources()

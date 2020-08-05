@@ -1,5 +1,6 @@
 ﻿using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
+using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections;
@@ -22,6 +23,15 @@ namespace StarSalvager.Values
             {BIT_TYPE.GREEN, 1250},
             {BIT_TYPE.GREY, 1250},
         };
+
+        public Dictionary<COMPONENT_TYPE, int> components = new Dictionary<COMPONENT_TYPE, int>
+        {
+            {COMPONENT_TYPE.CALLIT, 3},
+            {COMPONENT_TYPE.DOHICKEY, 3},
+            {COMPONENT_TYPE.GADGET, 3},
+            {COMPONENT_TYPE.GIZMO, 3},
+            {COMPONENT_TYPE.THINGY, 3}
+        };
         
         //FIXME This needs to use some sort of capacity value
         public Dictionary<BIT_TYPE, float> liquidResource = new Dictionary<BIT_TYPE, float>
@@ -36,6 +46,8 @@ namespace StarSalvager.Values
         public List<BlockData> currentBlockData = new List<BlockData>();
         public List<BlockData> partsInStorageBlockData = new List<BlockData>();
 
+        public List<TEST_Blueprint> unlockedBlueprints = new List<TEST_Blueprint>();
+
         public Dictionary<int, int> maxSectorProgression = new Dictionary<int, int>();
 
         //============================================================================================================//
@@ -45,41 +57,53 @@ namespace StarSalvager.Values
             return resources;
         }
 
+        public Dictionary<COMPONENT_TYPE, int> GetComponents()
+        {
+            return components;
+        }
+
         public void AddResources(Dictionary<BIT_TYPE, int> toAdd)
         {
-            ResourceCalculations.AddResources(ref resources, toAdd);
+            CostCalculations.AddResources(ref resources, toAdd);
         }
 
         public void AddResources(PART_TYPE partType, int level, bool isRecursive)
         {
-            ResourceCalculations.AddResources(ref resources, partType, level, isRecursive);
+            CostCalculations.AddResources(ref resources, partType, level, isRecursive);
         }
 
         public void SubtractResources(Dictionary<BIT_TYPE, int> toSubtract)
         {
-            ResourceCalculations.SubtractResources(ref resources, toSubtract);
+            CostCalculations.SubtractResources(ref resources, toSubtract);
         }
 
         public void SubtractResources(PART_TYPE partType, int level, bool isRecursive)
         {
-            ResourceCalculations.SubtractResources(ref resources, partType, level, isRecursive);
+            CostCalculations.SubtractResources(ref resources, partType, level, isRecursive);
         }
 
         public void SubtractResources(IEnumerable<CraftCost> cost)
         {
-            ResourceCalculations.SubtractResources(ref resources, cost);
+            CostCalculations.SubtractResources(ref resources, cost);
         }
 
-        public bool CanAfford(IEnumerable<CraftCost> levelCost)
+        public void SubtractPartCosts(PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
+        {
+            CostCalculations.SubtractPartCosts(ref resources, ref components, partsInStorageBlockData, partType, level, isRecursive, costModifier);
+        }
+
+        public bool CanAffordCost(IEnumerable<CraftCost> levelCost)
         {
             Dictionary<BIT_TYPE, int> tempDictionary = new Dictionary<BIT_TYPE, int>(resources);
-            return ResourceCalculations.CanAfford(tempDictionary, levelCost);
+            return CostCalculations.CanAffordResources(tempDictionary, levelCost);
         }
 
         public bool CanAffordPart(PART_TYPE partType, int level, bool isRecursive)
         {
-            Dictionary<BIT_TYPE, int> tempDictionary = new Dictionary<BIT_TYPE, int>(resources);
-            return ResourceCalculations.CanAffordPart(tempDictionary, partType, level, isRecursive);
+            Dictionary<BIT_TYPE, int> tempResourceDictionary = new Dictionary<BIT_TYPE, int>(resources);
+            Dictionary<COMPONENT_TYPE, int> tempComponentDictionary = new Dictionary<COMPONENT_TYPE, int>(components);
+            List<BlockData> tempPartsInStorage = new List<BlockData>(partsInStorageBlockData);
+            return CostCalculations.CanAffordPart(tempResourceDictionary, tempComponentDictionary, tempPartsInStorage, partType, level, isRecursive);
         }
 
         //============================================================================================================//
