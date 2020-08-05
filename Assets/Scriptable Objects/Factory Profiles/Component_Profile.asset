@@ -22,24 +22,24 @@ MonoBehaviour:
     componentType: 0
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: -7889011118949920912, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
+    - {fileID: -3337822502532092992, guid: 1d9aa154633dc9e4c8148f6d62bf6f40, type: 3}
   - _name: Gizmo
     componentType: 1
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: 4792595260713629117, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
+    - {fileID: 8505205876951811785, guid: 1d9aa154633dc9e4c8148f6d62bf6f40, type: 3}
   - _name: Thingy
     componentType: 2
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: 3074345288444028399, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
+    - {fileID: 6189307497382625920, guid: 1d9aa154633dc9e4c8148f6d62bf6f40, type: 3}
   - _name: Dohickey
     componentType: 3
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: 3641400224367007280, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
+    - {fileID: 5634522248223423908, guid: 1d9aa154633dc9e4c8148f6d62bf6f40, type: 3}
   - _name: Whatchamecallit
     componentType: 4
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: -6911850443235827152, guid: 640b61efd2f340a4b85300f997a2557a, type: 3}
+    - {fileID: -471295693773897826, guid: 1d9aa154633dc9e4c8148f6d62bf6f40, type: 3}

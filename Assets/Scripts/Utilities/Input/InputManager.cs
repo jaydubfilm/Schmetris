@@ -229,6 +229,9 @@ namespace StarSalvager.Utilities.Inputs
 
         private void SideMovement(InputAction.CallbackContext ctx)
         {
+            if (Console.Open)
+                return;
+            
             if (isPaused)
                 return;
             
@@ -253,6 +256,7 @@ namespace StarSalvager.Utilities.Inputs
         /// <param name="moveDirection"></param>
         private void TryApplyMove(float moveDirection)
         {
+            
             currentInput = moveDirection;
             
             //If we're trying to move, set things up for the DAS movement
@@ -356,6 +360,9 @@ namespace StarSalvager.Utilities.Inputs
 
         private void Rotate(InputAction.CallbackContext ctx)
         {
+            if (Console.Open)
+                return;
+            
             if (isPaused)
                 return;
 
@@ -374,6 +381,9 @@ namespace StarSalvager.Utilities.Inputs
 
         private void LeftClick(InputAction.CallbackContext ctx)
         {
+            if (Console.Open)
+                return;
+            
             var clicked = ctx.ReadValue<float>();
 
             /*if (clicked == 1)
@@ -392,6 +402,9 @@ namespace StarSalvager.Utilities.Inputs
 
         private void RightClick(InputAction.CallbackContext ctx)
         {
+            if (Console.Open)
+                return;
+            
             var clicked = ctx.ReadValue<float>();
 
             /*if (clicked == 1)
@@ -410,6 +423,9 @@ namespace StarSalvager.Utilities.Inputs
 
         private void Pause(InputAction.CallbackContext ctx)
         {
+            if (Console.Open)
+                return;
+            
             if (LevelManager.Instance.EndWaveState)
                 return;
             

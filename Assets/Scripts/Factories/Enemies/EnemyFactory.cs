@@ -131,13 +131,13 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        public T CreateObject<T>(string enemyType)
+        public T CreateObject<T>(string guid)
         {
-            EnemyData enemyData = enemyDatas.FirstOrDefault(p => p.EnemyType == enemyType);
+            EnemyData enemyData = enemyDatas.FirstOrDefault(p => p.EnemyType == guid);
 
             if (enemyData == null)
             {
-                enemyData = SetupEnemyData(enemyType);
+                enemyData = SetupEnemyData(guid);
             }
 
             if (enemyData.IsAttachable)
@@ -153,6 +153,14 @@ namespace StarSalvager.Factories
                 return enemy.GetComponent<T>();
             }
         }
+        
+        public T CreateObjectName<T>(string enemyName)
+        {
+            var enemyData = m_enemyProfile.m_enemyProfileData.FirstOrDefault(x => x.EnemyType == enemyName);
+
+            return enemyData == null ? default : CreateObject<T>(enemyData.EnemyTypeID);
+        }
+
 
         //============================================================================================================//
     }

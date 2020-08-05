@@ -67,7 +67,28 @@ namespace StarSalvager.Utilities.Extensions
             //throw new ArgumentException($"Cannot convert {vector2Int} into a legal direction");
             return DIRECTION.NULL;
         }
-        
 
+        public static bool TryParseVector2Int(string s, out Vector2Int value)
+        {
+            value = Vector2Int.zero;
+
+            try
+            {
+                //Trim all the unnecessary fat
+                s = s.Replace("(", "").Replace(")", "").Replace(" ", "");
+
+                var split = s.Split(',');
+
+                value.x = int.Parse(split[0]);
+                value.y = int.Parse(split[1]);
+
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

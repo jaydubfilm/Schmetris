@@ -96,6 +96,11 @@ namespace StarSalvager.Utilities.SceneManagement
             return SetSceneObjectsActive(sceneName, true);
         }
 
+        public static bool ResetCurrentScene()
+        {
+            return SetSceneObjectsActive(currentScene, true);
+        }
+
         public static bool LoadPreviousScene()
         {
             return !string.IsNullOrEmpty(lastScene) && ActivateScene(lastScene, currentScene);
