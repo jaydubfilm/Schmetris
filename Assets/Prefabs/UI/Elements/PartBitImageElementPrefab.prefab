@@ -85,14 +85,14 @@ GameObject:
   m_Component:
   - component: {fileID: 5392352888635155822}
   - component: {fileID: 2377954363170591622}
-  - component: {fileID: 6420446080656887814}
+  - component: {fileID: 8049373581990699723}
   - component: {fileID: 6092486566832009827}
   - component: {fileID: 1515688912044447186}
   - component: {fileID: 6399576775768417815}
   - component: {fileID: 8081797134372716513}
   - component: {fileID: 5598517032332212916}
   m_Layer: 5
-  m_Name: PartSimpleElementPrefab
+  m_Name: PartBitImageElementPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -126,7 +126,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7323802190393759215}
   m_CullTransparentMesh: 0
---- !u!114 &6420446080656887814
+--- !u!114 &8049373581990699723
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -135,7 +135,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7323802190393759215}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc3d4c85cb013854abbdbbb581561cc2, type: 3}
+  m_Script: {fileID: 11500000, guid: 20c8d32b6362a894a938b22e181cc770, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   logoImage: {fileID: 8079331265871157504}

@@ -131,6 +131,11 @@ namespace StarSalvager.UI.Scrapyard
             RefreshScrollView();
         }
 
+        void OnDisable()
+        {
+            mDroneDesigner.ClearUndoRedoStacks();
+        }
+
         //============================================================================================================//
 
         private void InitButtons()
@@ -279,32 +284,11 @@ namespace StarSalvager.UI.Scrapyard
 
         public void InitUiScrollViews()
         {
-            /*List<BlockData> blockDatas = new List<BlockData>();
-            blockDatas.Add(new BlockData
-            {
-                ClassType = "Part",
-                Type = (int)PART_TYPE.ARMOR,
-                Level = 0
-            });
-            blockDatas.Add(new BlockData
-            {
-                ClassType = "Part",
-                Type = (int)PART_TYPE.MAGNET,
-                Level = 1
-            });
-            blockDatas.Add(new BlockData
-            {
-                ClassType = "Part",
-                Type = (int)PART_TYPE.GUN,
-                Level = 1
-            });
-            PlayerPersistentData.PlayerData.SetCurrentPartsInStorage(blockDatas);*/
-
             foreach (var blockData in PlayerPersistentData.PlayerData.GetCurrentPartsInStorage())
             {
                 var partRemoteData = remotePartProfileScriptable.GetRemoteData((PART_TYPE)blockData.Type);
 
-                var element = partsScrollView.AddElement<PartBitImageUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
+                var element = partsScrollView.AddElement<BrickImageUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
                 element.Init(partRemoteData, PartPressed, blockData.Level);
             }
 
@@ -328,13 +312,13 @@ namespace StarSalvager.UI.Scrapyard
         {
             var partRemoteData = remotePartProfileScriptable.GetRemoteData((PART_TYPE)blockData.Type);
 
-            var element = partsScrollView.AddElement<PartBitImageUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
+            var element = partsScrollView.AddElement<BrickImageUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
             element.Init(partRemoteData, PartPressed, blockData.Level);
         }
 
         public void RefreshScrollView()
         {
-            partsScrollView.ClearElements();
+            partsScrollView.ClearElements<BrickImageUIElement>();
             InitUiScrollViews();
         }
 

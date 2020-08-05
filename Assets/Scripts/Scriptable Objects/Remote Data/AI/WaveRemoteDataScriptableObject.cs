@@ -38,6 +38,18 @@ namespace StarSalvager.ScriptableObjects
 
             return currentStage;
         }
+
+        public float GetWaveDuration()
+        {
+            float waveDuration = 0;
+
+            for (int i = 0; i < StageRemoteData.Count; i++)
+            {
+                waveDuration += StageRemoteData[i].StageDuration;   
+            }
+
+            return waveDuration;
+        }
     }
 }
 

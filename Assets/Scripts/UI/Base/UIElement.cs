@@ -1,10 +1,11 @@
 ﻿using System;
+using Recycling;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace StarSalvager.UI
 {
-    public abstract class UIElement<T> : MonoBehaviour where T: IEquatable<T>
+    public abstract class UIElement<T> : MonoBehaviour, IRecycled, ICustomRecycle where T: IEquatable<T>
     {
         [ShowInInspector, ReadOnly]
         public T data { get; protected set; }
@@ -29,6 +30,14 @@ namespace StarSalvager.UI
         public abstract void Init(T data);
 
         //============================================================================================================//
+
+
+        public bool IsRecycled { get; set; }
+
+        public virtual void CustomRecycle(params object[] args)
+        {
+            
+        }
     }
 }
 

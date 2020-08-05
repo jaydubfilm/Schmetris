@@ -40,19 +40,19 @@ namespace StarSalvager.Utilities
                 AddResources(ref resources, partType, level - 1, isRecursive);
         }
 
-        public static void SubtractResources(ref Dictionary<BIT_TYPE, int> resources, Dictionary<BIT_TYPE, int> toSubtract)
+        public static void SubtractResources(ref Dictionary<BIT_TYPE, int> resources, Dictionary<BIT_TYPE, int> toSubtract, float costModifier = 1.0f)
         {
             List<BIT_TYPE> keys = resources.Keys.ToList();
             foreach (BIT_TYPE key in keys)
             {
                 if (toSubtract.ContainsKey(key))
                 {
-                    resources[key] -= toSubtract[key];
+                    resources[key] -= (int)(toSubtract[key] * costModifier);
                 }
             }
         }
 
-        public static void SubtractResources(ref Dictionary<BIT_TYPE, int> resources, PART_TYPE partType, int level, bool isRecursive)
+        public static void SubtractResources(ref Dictionary<BIT_TYPE, int> resources, PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
         {
             //var remoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).costs[level];
             var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
@@ -61,24 +61,24 @@ namespace StarSalvager.Utilities
                 if (resource.resourceType != CraftCost.TYPE.Bit)
                     continue;
                 
-                resources[(BIT_TYPE)resource.type] -= resource.amount;
+                resources[(BIT_TYPE)resource.type] -= (int)(resource.amount * costModifier);
             }
 
             if (!isRecursive)
                 return;
 
             if (level > 0)
-                SubtractResources(ref resources, partType, level - 1, isRecursive);
+                SubtractResources(ref resources, partType, level - 1, isRecursive, costModifier);
         }
 
-        public static void SubtractResources(ref Dictionary<BIT_TYPE, int> resources, IEnumerable<CraftCost> levelCosts)
+        public static void SubtractResources(ref Dictionary<BIT_TYPE, int> resources, IEnumerable<CraftCost> levelCosts, float costModifier = 1.0f)
         {
             foreach (CraftCost resource in levelCosts)
             {
                 if (resource.resourceType != CraftCost.TYPE.Bit)
                     continue;
                 
-                resources[(BIT_TYPE)resource.type] -= resource.amount;
+                resources[(BIT_TYPE)resource.type] -= (int)(resource.amount * costModifier);
             }
         }
 
@@ -97,7 +97,7 @@ namespace StarSalvager.Utilities
             return true;
         }
 
-        public static bool CanAffordPart(Dictionary<BIT_TYPE, int> resources, PART_TYPE partType, int level, bool isRecursive)
+        public static bool CanAffordPart(Dictionary<BIT_TYPE, int> resources, PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
         {
             //var remoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).costs[level];
             var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
@@ -107,8 +107,8 @@ namespace StarSalvager.Utilities
                 return canAfford;
             else
             {
-                SubtractResources(ref resources, costs);
-                return CanAffordPart(resources, partType, level - 1, isRecursive);
+                SubtractResources(ref resources, costs, costModifier);
+                return CanAffordPart(resources, partType, level - 1, isRecursive, costModifier);
             }
         }
     }

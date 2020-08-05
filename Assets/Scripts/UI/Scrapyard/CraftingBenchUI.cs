@@ -63,7 +63,7 @@ namespace StarSalvager.UI.Scrapyard
 
         void OnEnable()
         {
-            blueprintsContentScrollView.ClearElements();
+            blueprintsContentScrollView.ClearElements<BlueprintUIElement>();
             InitUIScrollViews();
         }
 
@@ -111,7 +111,7 @@ namespace StarSalvager.UI.Scrapyard
         {
             var resources = blueprint.remoteData.levels[blueprint.level].cost;
 
-            costContentView.ClearElements();
+            costContentView.ClearElements<ResourceUIElement>();
             foreach (var resource in resources)
             {
                 var element = costContentView.AddElement<ResourceUIElement>(resource, $"{resource.type}_UIElement");

@@ -44,6 +44,8 @@ namespace StarSalvager
         public List<ScrapyardLayout> ScrapyardLayouts => _scrapyardLayouts;
         private List<ScrapyardLayout> _scrapyardLayouts;
 
+        private bool isStarted = false;
+
         [Sirenix.OdinInspector.Button("Clear Remote Data")]
         private void ClearRemoteData()
         {
@@ -73,6 +75,7 @@ namespace StarSalvager
             _currentLayout = null;
             IsUpgrading = false;
             InitInput();
+            isStarted = true;
         }
 
         private void OnDestroy()
@@ -256,11 +259,10 @@ namespace StarSalvager
                 var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>((PART_TYPE)selectedPartType, SelectedPartLevel);
                 PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
                 droneDesignUi.RefreshScrollView();
-                //playerData.SubtractResources((PART_TYPE)selectedPartType, 0, false);
                 scrapBot.AttachNewBit(mouseCoordinate, attachable);
                 _toUndoStack.Push(new ScrapyardEditData
                 {
-                    EventType = SCRAPYARD_ACTION.PURCHASE,
+                    EventType = SCRAPYARD_ACTION.EQUIP,
                     Coordinate = mouseCoordinate,
                     PartType = (PART_TYPE)selectedPartType
                 });
@@ -268,7 +270,6 @@ namespace StarSalvager
 
                 selectedPartType = null;
                 SelectedPartLevel = 0;
-                //droneDesignUi.UpdateResources(playerData.GetResources());
                 SaveBlockData();
             }
             UpdateFloatingMarkers(false);
@@ -292,24 +293,25 @@ namespace StarSalvager
                     continue;
                 }
 
-                if (attachableAtCoordinates is ScrapyardBit scrapBit)
+                /*if (attachableAtCoordinates is ScrapyardBit scrapBit)
                 {
                     _toUndoStack.Push(new ScrapyardEditData
                     {
-                        EventType = SCRAPYARD_ACTION.SALE,
+                        EventType = SCRAPYARD_ACTION.UNEQUIP,
                         Coordinate = mouseCoordinate,
                         BitType = scrapBit.Type,
                         Level = scrapBit.level
                     });
                     _toRedoStack.Clear();
                 }
-                else if (attachableAtCoordinates is ScrapyardPart scrapPart)
+                else */
+                if (attachableAtCoordinates is ScrapyardPart scrapPart)
                 {
                     PlayerPersistentData.PlayerData.AddPartToStorage(scrapPart.ToBlockData());
                     droneDesignUi.AddToPartScrollView(scrapPart.ToBlockData());
                     _toUndoStack.Push(new ScrapyardEditData
                     {
-                        EventType = SCRAPYARD_ACTION.SALE,
+                        EventType = SCRAPYARD_ACTION.UNEQUIP,
                         Coordinate = mouseCoordinate,
                         PartType = scrapPart.Type,
                         Level = scrapPart.level
@@ -405,6 +407,28 @@ namespace StarSalvager
 
             switch (toUndo.EventType)
             {
+                case SCRAPYARD_ACTION.EQUIP:
+                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    {
+                        PlayerPersistentData.PlayerData.AddPartToStorage
+                            (((ScrapyardPart)scrapBot.attachedBlocks.FirstOrDefault(a => a.Coordinate == toUndo.Coordinate)).ToBlockData());
+                        
+                        scrapBot.TryRemoveAttachableAt(toUndo.Coordinate, false);
+                        droneDesignUi.RefreshScrollView();
+                        SaveBlockData();
+                    }
+                    break;
+                case SCRAPYARD_ACTION.UNEQUIP:
+                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    {
+                        var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(toUndo.PartType, toUndo.Level);
+                        PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
+                        scrapBot.AttachNewBit(toUndo.Coordinate, attachable);
+                        droneDesignUi.RefreshScrollView();
+                        SaveBlockData();
+                    }
+                    break;
+
                 case SCRAPYARD_ACTION.PURCHASE:
                     foreach (ScrapyardBot scrapBot in _scrapyardBots)
                     {
@@ -462,6 +486,29 @@ namespace StarSalvager
 
             switch (toRedo.EventType)
             {
+                case SCRAPYARD_ACTION.EQUIP:
+                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    {
+                        var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(toRedo.PartType, toRedo.Level);
+                        PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
+                        scrapBot.AttachNewBit(toRedo.Coordinate, attachable);
+                        droneDesignUi.RefreshScrollView();
+                        SaveBlockData();
+                    }
+                    break;
+                case SCRAPYARD_ACTION.UNEQUIP:
+                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    {
+                        PlayerPersistentData.PlayerData.AddPartToStorage
+                            (((ScrapyardPart)scrapBot.attachedBlocks.FirstOrDefault(a => a.Coordinate == toRedo.Coordinate)).ToBlockData());
+
+                        scrapBot.TryRemoveAttachableAt(toRedo.Coordinate, false);
+                        droneDesignUi.RefreshScrollView();
+                        SaveBlockData();
+                    }
+                    break;
+
+
                 case SCRAPYARD_ACTION.PURCHASE:
                     foreach (ScrapyardBot scrapBot in _scrapyardBots)
                     {
@@ -551,6 +598,16 @@ namespace StarSalvager
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageEnd, scrapyardUsageEndAnalyticsDictionary);
         }
 
+        public void ClearUndoRedoStacks()
+        {
+            if (!isStarted)
+                return;
+            
+            _toUndoStack.Clear();
+            _toRedoStack.Clear();
+        }
+
+
         //============================================================================================================//
 
         public void SaveLayout(string layoutName)
@@ -574,35 +631,62 @@ namespace StarSalvager
             if (tempLayout == null)
                 return;
 
-            Dictionary<BIT_TYPE, int> resourceComparer = PlayerPersistentData.PlayerData.GetResources();
+            //Setup your list of available parts by adding storage and parts on bot together into a temp list
+            List<BlockData> partComparer = new List<BlockData>();
+            partComparer.AddRange(PlayerPersistentData.PlayerData.GetCurrentPartsInStorage());
             foreach (var attachable in _scrapyardBots[0].attachedBlocks)
             {
-                if (attachable is ScrapyardPart part && part.Coordinate != Vector2Int.zero)
+                if (attachable is ScrapyardPart part && part.Type != (int)PART_TYPE.CORE)
                 {
-                    ResourceCalculations.AddResources(ref resourceComparer, part.Type, part.level, true);
+                    partComparer.Add(part.ToBlockData());
                 }
             }
 
-            List<IAttachable> newLayoutAttachables = tempLayout.BlockData.ImportBlockDatas(true);
-
-            foreach (var attachable in newLayoutAttachables)
+            //Setup your list of available resources by putting player resources into a temp list
+            Dictionary<BIT_TYPE, int> resourceComparer = new Dictionary<BIT_TYPE, int>();
+            foreach (var resource in PlayerPersistentData.PlayerData.GetResources())
             {
-                if (attachable is ScrapyardPart part && part.Coordinate != Vector2Int.zero)
+                resourceComparer.Add(resource.Key, resource.Value);
+            }
+
+            //Setupt your list of parts needing to be purchasing by comparing the list of parts in the layout to the list of available parts.
+            List<BlockData> newLayoutComparer = new List<BlockData>();
+            newLayoutComparer.AddRange(tempLayout.BlockData);
+
+            for (int i = newLayoutComparer.Count - 1; i >= 0; i--)
+            {
+                if (partComparer.Any(b => b.Equals(newLayoutComparer[i])))
                 {
-                    if (ResourceCalculations.CanAffordPart(resourceComparer, part.Type, part.level, true))
-                    {
-                        ResourceCalculations.SubtractResources(ref resourceComparer, part.Type, part.level, true);
-                    }
-                    else
-                    {
-                        //CANT AFFORD LAYOUT
-                    }
+                    //BlockData dataToRemove = newLayoutComparer[i];
+                    partComparer.Remove(partComparer.FirstOrDefault(b => b.Equals(newLayoutComparer[i])));
+                    newLayoutComparer.Remove(newLayoutComparer[i]);
                 }
             }
 
-            _currentLayout = tempLayout;
 
+            //Check if you have the resources available to afford the parts you need to purchase.
+            foreach (var partData in newLayoutComparer)
+            {
+                if (partData.Type == (int)PART_TYPE.CORE)
+                    continue;
+                
+                if (ResourceCalculations.CanAffordPart(resourceComparer, (PART_TYPE)partData.Type, partData.Level, true))
+                {
+                    ResourceCalculations.SubtractResources(ref resourceComparer, (PART_TYPE)partData.Type, partData.Level, true);
+                }
+                else
+                {
+                    //CANT AFFORD LAYOUT
+                    Debug.Log("CANT AFFORD LAYOUT");
+                    return;
+                }
+            }
+
+            //Swap to new layout
+            _currentLayout = tempLayout;
             PlayerPersistentData.PlayerData.resources = resourceComparer;
+            PlayerPersistentData.PlayerData.SetCurrentPartsInStorage(partComparer);
+
             for (int i = _scrapyardBots[0].attachedBlocks.Count - 1; i >= 0; i--)
             {
                 if (_scrapyardBots[0].attachedBlocks[i].Coordinate != Vector2Int.zero)
@@ -611,11 +695,12 @@ namespace StarSalvager
                 }
             }
 
-            foreach (var attachable in newLayoutAttachables)
+            foreach (var attachable in tempLayout.BlockData.ImportBlockDatas(true))
             {
                 _scrapyardBots[0].AttachNewBit(attachable.Coordinate, attachable);
             }
             droneDesignUi.UpdateResources(PlayerPersistentData.PlayerData.resources);
+            droneDesignUi.RefreshScrollView();
             SaveBlockData();
         }
 

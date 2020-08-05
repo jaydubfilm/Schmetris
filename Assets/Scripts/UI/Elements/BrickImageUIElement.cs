@@ -13,7 +13,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class PartBitImageUIElement : ButtonReturnUIElement<RemoteDataBase, (Enum, int)>, IDragHandler, IBeginDragHandler, IEndDragHandler
+    public class BrickImageUIElement : ButtonReturnUIElement<RemoteDataBase, (Enum, int)>, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         private static PartAttachableFactory _partAttachableFactory;
         private static BitAttachableFactory _bitAttachableFactory;
@@ -115,6 +115,12 @@ namespace StarSalvager.UI
                 return;
 
             partDragImageTransform.gameObject.SetActive(false);
+        }
+
+        public override void CustomRecycle(params object[] args)
+        {
+            if (partDragImageTransform != null && partDragImageTransform.gameObject != null)
+                GameObject.Destroy(partDragImageTransform.gameObject);
         }
     }
 }

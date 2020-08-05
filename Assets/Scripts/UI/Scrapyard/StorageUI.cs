@@ -75,7 +75,7 @@ namespace StarSalvager.UI.Scrapyard
 
         void OnEnable()
         {
-            storageUiElementScrollView.ClearElements();
+            storageUiElementScrollView.ClearElements<StorageUIElement>();
             InitContent();
         }
 

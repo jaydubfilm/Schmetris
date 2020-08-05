@@ -35,7 +35,7 @@ namespace StarSalvager.UI
         private RectTransform partDragImageTransform;
 
         //============================================================================================================//
-        
+
         public override void Init(RemoteDataBase data, Action<PART_TYPE> OnPressed)
         {
             if (data is PartRemoteData partRemote)
@@ -119,6 +119,14 @@ namespace StarSalvager.UI
                 return;
             
             partDragImageTransform.gameObject.SetActive(false);
+        }
+
+        //============================================================================================================//
+
+        public override void CustomRecycle(params object[] args)
+        {
+            if (partDragImageTransform != null && partDragImageTransform.gameObject != null)
+                GameObject.Destroy(partDragImageTransform.gameObject);
         }
     }
 }

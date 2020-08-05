@@ -61,7 +61,7 @@ namespace StarSalvager.UI
             return (U)Elements?.FirstOrDefault(x => x.data.Equals(data) && x.name == name);
         }
 
-        public void RemoveElement(T data)
+        public void RemoveElement<U>(T data) where U : UIElement<T>
         {
             if (Elements == null)
                 return;
@@ -81,23 +81,23 @@ namespace StarSalvager.UI
             if (index < 0)
                 return;
 
-            RemoveElementAtIndex(index);
+            RemoveElementAtIndex<U>(index);
         }
 
-        public void RemoveElementAtIndex(int index)
+        public void RemoveElementAtIndex<U>(int index) where U : UIElement<T>
         {
-            Recycler.Recycle<UIElement<T>>(Elements[index]);
+            Recycler.Recycle<U>(Elements[index]);
             Elements.RemoveAt(index);
         }
 
-        public void ClearElements()
+        public void ClearElements<U>() where U : UIElement<T> 
         {
             if (Elements == null)
                 return;
 
             for (int i = Elements.Count - 1; i >= 0; i--)
             {
-                Recycler.Recycle<UIElement<T>>(Elements[i]);
+                Recycler.Recycle<U>(Elements[i]);
                 Elements.RemoveAt(i);
             }
         }
