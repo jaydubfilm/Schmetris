@@ -13,7 +13,6 @@ namespace StarSalvager
         [SerializeField, Required]
         private CraftingBenchUI storageUI;
 
-
         public void CraftBlueprint(TEST_Blueprint blueprint)
         {
             if (!PlayerPersistentData.PlayerData.CanAffordPart(blueprint.remoteData.partType, blueprint.level, false))

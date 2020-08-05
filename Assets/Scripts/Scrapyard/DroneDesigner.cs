@@ -63,6 +63,8 @@ namespace StarSalvager
 
         //============================================================================================================//
 
+        #region Unity Functions
+
         // Start is called before the first frame update
         private void Start()
         {
@@ -85,7 +87,11 @@ namespace StarSalvager
             DeInitInput();
         }
 
+        #endregion //Unity Functions
+
         //============================================================================================================//
+
+        #region Init
 
         public void InitInput()
         {
@@ -105,7 +111,11 @@ namespace StarSalvager
             Input.Actions.Default.RightClick.performed -= OnRightMouseButtonDown;
         }
 
+        #endregion
+
         //============================================================================================================//
+
+        #region IReset Functions
 
         public void Activate()
         {
@@ -136,55 +146,11 @@ namespace StarSalvager
             }
         }
 
-        //============================================================================================================//
-
-        public void SellBits()
-        {
-            foreach (ScrapyardBot scrapBot in _scrapyardBots)
-            {
-                List<ScrapyardBit> listBits = scrapBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
-                if (listBits.Count == 0)
-                    continue;
-                
-                Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(scrapBot.attachedBlocks.OfType<ScrapyardBit>());
-                PlayerPersistentData.PlayerData.AddResources(bits);
-                string resourcesGained = "";
-                foreach (var resource in bits)
-                {
-                    resourcesGained += resource.Key + ":\n";
-
-                    int numTotal = scrapBot.attachedBlocks.OfType<ScrapyardBit>().Where(b => b.Type == resource.Key).Count();
-                    for (int i = 0; numTotal > 0; i++)
-                    {
-                        int numAtLevel = scrapBot.attachedBlocks.OfType<ScrapyardBit>().Where(b => b.Type == resource.Key && b.level == i).Count();
-                        if (numAtLevel == 0)
-                            continue;
-
-                        BitRemoteData remoteData = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(resource.Key);
-                        int resourceAmount = numAtLevel * remoteData.levels[i].resources;
-                        resourcesGained += numAtLevel + " x (Level " + i + ") = " + resourceAmount + ",\n";
-                        numTotal -= numAtLevel;
-                    }
-                }
-                Alert.ShowAlert("Bits Sold", resourcesGained, "Okay", null);
-                scrapBot.RemoveAllBits();
-                SaveBlockData();
-                
-                droneDesignUi.UpdateResources();
-            }
-        }
-
-        public void RotateBots(float direction)
-        {
-            foreach (ScrapyardBot scrapBot in _scrapyardBots)
-            {
-                scrapBot.Rotate(direction);
-            }
-        }
-
-
+        #endregion //IReset Functions
 
         //============================================================================================================//
+
+        #region User Input
 
         //On left mouse button click, check if there is a bit/part at the mouse location. If there is not, purchase the selected part type and place it at this location.
         private void OnLeftMouseButtonDown(InputAction.CallbackContext ctx)
@@ -313,77 +279,11 @@ namespace StarSalvager
             UpdateFloatingMarkers(false);
         }
 
-        public void UpdateFloatingMarkers(bool showAvailable)
-        {
-            foreach (var availablePoint in _availablePointMarkers)
-            {
-                Recycler.Recycle(ICONS.AVAILABLE, availablePoint);
-            }
-            _availablePointMarkers.Clear();
-
-            if (showAvailable)
-            {
-                foreach (ScrapyardBot scrapBot in _scrapyardBots)
-                {
-                    foreach (var attached in scrapBot.attachedBlocks)
-                    {
-                        if (!scrapBot.attachedBlocks.HasPathToCore(attached))
-                            continue;
-
-                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.left && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
-                        {
-                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
-                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
-                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.left) * Constants.gridCellSize + Vector3.back;
-                            _availablePointMarkers.Add(availableMarker);
-                        }
-                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.right && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
-                        {
-                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
-                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
-                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.right) * Constants.gridCellSize + Vector3.back;
-                            _availablePointMarkers.Add(availableMarker);
-                        }
-                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.up && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
-                        {
-                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
-                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
-                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.up) * Constants.gridCellSize + Vector3.back;
-                            _availablePointMarkers.Add(availableMarker);
-                        }
-                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.down && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
-                        {
-                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
-                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
-                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.down) * Constants.gridCellSize + Vector3.back;
-                            _availablePointMarkers.Add(availableMarker);
-                        }
-                    }
-                }
-            }
-
-            foreach (var partWarning in _floatingPartWarnings)
-            {
-                Recycler.Recycle(ICONS.ALERT, partWarning);
-            }
-            _floatingPartWarnings.Clear();
-
-            foreach (ScrapyardBot scrapBot in _scrapyardBots)
-            {
-                foreach (var attached in scrapBot.attachedBlocks)
-                {
-                    if (!scrapBot.attachedBlocks.HasPathToCore(attached))
-                    {
-                        if (!Recycler.TryGrab(ICONS.ALERT, out GameObject newWarning))
-                            newWarning = GameObject.Instantiate(floatingPartWarningPrefab);
-                        newWarning.transform.position = (Vector3)((Vector2)attached.Coordinate * Constants.gridCellSize) + Vector3.back;
-                        _floatingPartWarnings.Add(newWarning);
-                    }
-                }
-            }
-        }
+        #endregion //User Input
 
         //============================================================================================================//
+
+        #region Stack
 
         public void UndoStackPop()
         {
@@ -547,50 +447,20 @@ namespace StarSalvager
             _toUndoStack.Push(toRedo);
         }
 
-        //============================================================================================================//
-
-        public bool IsFullyConnected()
-        {
-            foreach (ScrapyardBot scrapBot in _scrapyardBots)
-            {
-                if (scrapBot.CheckHasDisconnects())
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        //Save the current bot's data in blockdata to be loaded in the level manager.
-        //Keep an eye on this - currently it will update the player block data each time there is a change
-        public void SaveBlockData()
-        {
-            foreach (ScrapyardBot scrapyardbot in _scrapyardBots)
-            {
-                PlayerPersistentData.PlayerData.SetCurrentBlockData(scrapyardbot.attachedBlocks.GetBlockDatas());
-            }
-        }
-        
-        //============================================================================================================//
-
-        public void ProcessScrapyardUsageEndAnalytics()
-        {
-            Dictionary<string, object> scrapyardUsageEndAnalyticsDictionary = new Dictionary<string, object>();
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageEnd, scrapyardUsageEndAnalyticsDictionary);
-        }
-
         public void ClearUndoRedoStacks()
         {
             if (!isStarted)
                 return;
-            
+
             _toUndoStack.Clear();
             _toRedoStack.Clear();
         }
 
+        #endregion //Stack
 
         //============================================================================================================//
+
+        #region Layouts
 
         public void SaveLayout(string layoutName)
         {
@@ -684,6 +554,22 @@ namespace StarSalvager
             SaveBlockData();
         }
 
+        #endregion //Layouts
+
+        //============================================================================================================//
+
+        #region Save Data
+
+        //Save the current bot's data in blockdata to be loaded in the level manager.
+        //Keep an eye on this - currently it will update the player block data each time there is a change
+        public void SaveBlockData()
+        {
+            foreach (ScrapyardBot scrapyardbot in _scrapyardBots)
+            {
+                PlayerPersistentData.PlayerData.SetCurrentBlockData(scrapyardbot.attachedBlocks.GetBlockDatas());
+            }
+        }
+
         public string ExportRemoteData(List<ScrapyardLayout> editorData)
         {
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
@@ -701,5 +587,148 @@ namespace StarSalvager
 
             return loaded;
         }
+
+        #endregion
+
+        //============================================================================================================//
+
+        #region Other
+
+        private void SellBits()
+        {
+            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            {
+                List<ScrapyardBit> listBits = scrapBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
+                if (listBits.Count == 0)
+                    continue;
+
+                Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(scrapBot.attachedBlocks.OfType<ScrapyardBit>());
+                PlayerPersistentData.PlayerData.AddResources(bits);
+                string resourcesGained = "";
+                foreach (var resource in bits)
+                {
+                    resourcesGained += resource.Key + ":\n";
+
+                    int numTotal = scrapBot.attachedBlocks.OfType<ScrapyardBit>().Where(b => b.Type == resource.Key).Count();
+                    for (int i = 0; numTotal > 0; i++)
+                    {
+                        int numAtLevel = scrapBot.attachedBlocks.OfType<ScrapyardBit>().Where(b => b.Type == resource.Key && b.level == i).Count();
+                        if (numAtLevel == 0)
+                            continue;
+
+                        BitRemoteData remoteData = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(resource.Key);
+                        int resourceAmount = numAtLevel * remoteData.levels[i].resources;
+                        resourcesGained += numAtLevel + " x (Level " + i + ") = " + resourceAmount + ",\n";
+                        numTotal -= numAtLevel;
+                    }
+                }
+                Alert.ShowAlert("Bits Sold", resourcesGained, "Okay", null);
+                scrapBot.RemoveAllBits();
+                SaveBlockData();
+
+                droneDesignUi.UpdateResources();
+            }
+        }
+
+        public void RotateBots(float direction)
+        {
+            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            {
+                scrapBot.Rotate(direction);
+            }
+        }
+
+        public void UpdateFloatingMarkers(bool showAvailable)
+        {
+            foreach (var availablePoint in _availablePointMarkers)
+            {
+                Recycler.Recycle(ICONS.AVAILABLE, availablePoint);
+            }
+            _availablePointMarkers.Clear();
+
+            if (showAvailable)
+            {
+                foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                {
+                    foreach (var attached in scrapBot.attachedBlocks)
+                    {
+                        if (!scrapBot.attachedBlocks.HasPathToCore(attached))
+                            continue;
+
+                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.left && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                        {
+                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.left) * Constants.gridCellSize + Vector3.back;
+                            _availablePointMarkers.Add(availableMarker);
+                        }
+                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.right && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                        {
+                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.right) * Constants.gridCellSize + Vector3.back;
+                            _availablePointMarkers.Add(availableMarker);
+                        }
+                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.up && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                        {
+                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.up) * Constants.gridCellSize + Vector3.back;
+                            _availablePointMarkers.Add(availableMarker);
+                        }
+                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.down && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                        {
+                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.down) * Constants.gridCellSize + Vector3.back;
+                            _availablePointMarkers.Add(availableMarker);
+                        }
+                    }
+                }
+            }
+
+            foreach (var partWarning in _floatingPartWarnings)
+            {
+                Recycler.Recycle(ICONS.ALERT, partWarning);
+            }
+            _floatingPartWarnings.Clear();
+
+            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            {
+                foreach (var attached in scrapBot.attachedBlocks)
+                {
+                    if (!scrapBot.attachedBlocks.HasPathToCore(attached))
+                    {
+                        if (!Recycler.TryGrab(ICONS.ALERT, out GameObject newWarning))
+                            newWarning = GameObject.Instantiate(floatingPartWarningPrefab);
+                        newWarning.transform.position = (Vector3)((Vector2)attached.Coordinate * Constants.gridCellSize) + Vector3.back;
+                        _floatingPartWarnings.Add(newWarning);
+                    }
+                }
+            }
+        }
+
+        public bool IsFullyConnected()
+        {
+            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            {
+                if (scrapBot.CheckHasDisconnects())
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public void ProcessScrapyardUsageEndAnalytics()
+        {
+            Dictionary<string, object> scrapyardUsageEndAnalyticsDictionary = new Dictionary<string, object>();
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageEnd, scrapyardUsageEndAnalyticsDictionary);
+        }
+
+        #endregion //Other
+
+        //============================================================================================================//
     }
 }

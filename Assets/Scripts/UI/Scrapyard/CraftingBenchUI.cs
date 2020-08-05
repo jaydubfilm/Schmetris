@@ -25,9 +25,6 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField]
         private Image resultImage;
 
-        private TEST_Blueprint selectedBlueprint;
-
-
         [FormerlySerializedAs("blueprints")] [SerializeField]
         private BlueprintUIElementScrollView blueprintsContentScrollView;
         [SerializeField]
@@ -35,16 +32,17 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField]
         private ResourceUIElementScrollView resourceScrollView;
 
-        //============================================================================================================//
-
         [SerializeField, Required]
         private CraftingBench mCraftingBench;
 
-        //============================================================================================================//
+        private TEST_Blueprint currentSelected;
 
         private bool scrollViewsSetup = false;
 
-        // Start is called before the first frame update
+        //============================================================================================================//
+
+        #region Unity Functions
+
         private void Start()
         {
             InitButtons();
@@ -52,19 +50,6 @@ namespace StarSalvager.UI.Scrapyard
             InitUIScrollView();
             InitResourceScrollViews();
             scrollViewsSetup = true;
-        }
-
-        private void InitButtons()
-        {
-            craftButton.onClick.AddListener(() =>
-            {
-                if (selectedBlueprint == null)
-                    return;
-
-                mCraftingBench.CraftBlueprint(selectedBlueprint);
-                UpdateResources();
-            });
-
         }
 
         void OnEnable()
@@ -76,7 +61,29 @@ namespace StarSalvager.UI.Scrapyard
             InitUIScrollView();
         }
 
+        #endregion //Unity Functions
+
         //============================================================================================================//
+
+        #region Init
+
+        private void InitButtons()
+        {
+            craftButton.onClick.AddListener(() =>
+            {
+                if (currentSelected == null)
+                    return;
+
+                mCraftingBench.CraftBlueprint(currentSelected);
+                UpdateResources();
+            });
+        }
+
+        #endregion //Init
+
+        //============================================================================================================//
+
+        #region Scroll Views
 
         private void InitUIScrollView()
         {
@@ -87,7 +94,7 @@ namespace StarSalvager.UI.Scrapyard
                 {
                     for (int i = 0; i < partRemoteData.levels.Count - 1; i++)
                     {
-                        if (partRemoteData.partType == PART_TYPE.CORE && i == 0)
+                        if (partRemoteData.partType == PART_TYPE.CORE)
                             continue;
 
                         TEST_Blueprint blueprint = new TEST_Blueprint
@@ -189,6 +196,12 @@ namespace StarSalvager.UI.Scrapyard
             }
         }
 
+        #endregion //Scroll Views
+
+        //============================================================================================================//
+
+        #region Other
+
         private void SetupBlueprintCosts(TEST_Blueprint blueprint)
         {
             var resources = blueprint.remoteData.levels[blueprint.level].cost;
@@ -207,12 +220,14 @@ namespace StarSalvager.UI.Scrapyard
             PartProfile partProfile = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(blueprint.remoteData.partType);
             resultImage.sprite = partProfile.Sprites[blueprint.level];
             SetupBlueprintCosts(blueprint);
-            selectedBlueprint = blueprint;
+            currentSelected = blueprint;
         }
 
+        #endregion //Other
+
         //============================================================================================================//
-        }
-    
+    }
+
     [System.Serializable]
     public class BlueprintUIElementScrollView: UIElementContentScrollView<TEST_Blueprint>
     {}

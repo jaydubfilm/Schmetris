@@ -30,9 +30,6 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField, BoxGroup("Resource UI")]
         private ResourceUIElementScrollView resourceScrollView;
-
-        //============================================================================================================//
-
         [SerializeField, BoxGroup("Load List UI")]
         private LayoutElementScrollView layoutScrollView;
 
@@ -54,8 +51,6 @@ namespace StarSalvager.UI.Scrapyard
         private Button saveButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button loadButton;
-        //[SerializeField, Required, BoxGroup("Menu Buttons")]
-        //private Button sellBitsButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button isUpgradingButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
@@ -115,6 +110,10 @@ namespace StarSalvager.UI.Scrapyard
 
         private bool scrollViewsSetup = false;
 
+        //============================================================================================================//
+
+        #region Unity Functions
+
         private void Start()
         {
             zoomSliderText.Init();
@@ -142,7 +141,11 @@ namespace StarSalvager.UI.Scrapyard
             mDroneDesigner.ClearUndoRedoStacks();
         }
 
+        #endregion //Unity Functions
+
         //============================================================================================================//
+
+        #region Init
 
         private void InitButtons()
         {
@@ -288,6 +291,12 @@ namespace StarSalvager.UI.Scrapyard
 
         }
 
+        #endregion //Init
+
+        //============================================================================================================//
+
+        #region Scroll Views
+
         public void InitUiScrollView()
         {
             foreach (var blockData in PlayerPersistentData.PlayerData.GetCurrentPartsInStorage())
@@ -401,17 +410,16 @@ namespace StarSalvager.UI.Scrapyard
             layoutScrollView.SetElementsActive(true);
         }
 
+        #endregion //Scroll Views
+
+        //============================================================================================================//
+
+        #region Other
+
         private void SetCameraZoom(float value)
         {
             m_cameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * value, Vector3.zero);
             m_cameraController.CameraOffset(Vector3.zero, true);
-        }
-
-        //============================================================================================================//
-
-        public void SetPartsScrollActive(bool active)
-        {
-            partsScrollView.SetElementsActive(active);
         }
 
         public void DisplayInsufficientResources()
@@ -419,8 +427,6 @@ namespace StarSalvager.UI.Scrapyard
             Alert.ShowAlert("Alert!",
                 "You do not have enough resources to purchase this part!", "Okay", null);
         }
-
-        //============================================================================================================//
 
         private void PartPressed((Enum remoteDataType, int level) tuple)
         {
@@ -446,5 +452,9 @@ namespace StarSalvager.UI.Scrapyard
         {
             Debug.Log("Dragging");
         }
+
+        #endregion //Other
+
+        //============================================================================================================//
     }
 }
