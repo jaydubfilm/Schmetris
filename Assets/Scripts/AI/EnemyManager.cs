@@ -225,6 +225,15 @@ namespace StarSalvager
             m_enemies.Add(newEnemy);
             newEnemy.transform.position = LevelManager.Instance.WorldGrid.GetSpawnPositionForEnemy(newEnemy.m_enemyData.MovementType);
         }
+        
+        public void AddEnemy(Enemy newEnemy)
+        {
+            if (newEnemy == null)
+                return;
+            
+            m_enemies.Add(newEnemy);
+            newEnemy.transform.position = LevelManager.Instance.WorldGrid.GetSpawnPositionForEnemy(newEnemy.m_enemyData.MovementType);
+        }
 
         public bool HasEnemiesRemaining()
         {

@@ -69,9 +69,20 @@ namespace StarSalvager
         [ShowInInspector, BoxGroup("Bot Part Data"), ReadOnly]
         public int magnetCount { get; private set; }
 
+        private int magnetOverride;
+
         private Dictionary<Part, float> projectileTimers;
 
         //================================================================================================================//
+
+        public void SetMagentOverride(int magnet)
+        {
+            magnetOverride = magnet;
+            magnetCount = magnetOverride;
+        }
+        
+        //================================================================================================================//
+
 
         public void AddCoreHeat(float amount)
         {
@@ -95,6 +106,12 @@ namespace StarSalvager
         /// </summary>
         private void UpdatePartData()
         {
+            if (magnetOverride > 0)
+            {
+                magnetCount = magnetOverride;
+                return;
+            }
+            
             magnetCount = 0;
 
             foreach (var part in _parts)

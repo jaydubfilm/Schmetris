@@ -142,6 +142,10 @@ namespace StarSalvager.UI
 
         public void OnPause()
         {
+            if (Console.Open)
+                return;
+            
+            
             if (LevelManager.Instance.EndWaveState)
                 return;
             
