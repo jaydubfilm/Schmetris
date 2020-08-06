@@ -13,12 +13,10 @@ MonoBehaviour:
   m_Name: Wave_Remote_1_1
   m_EditorClassIdentifier: 
   StageRemoteData:
-  - m_stageDuration: 15
+  - m_stageDuration: 30
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
-    m_stageEnemyData:
-    - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
-      m_enemyCount: 1
+    m_stageEnemyData: []
     m_stageObstacleData:
     - m_selectionType: 0
       m_shapeName: Small1
@@ -28,3 +26,10 @@ MonoBehaviour:
       m_shapeName: weird1
       m_category: Medium
       m_asteroidCountPerMinute: 100
+  - m_stageDuration: 30
+    m_stageBlendPeriod: 0
+    m_waitUntilAllEnemiesDefeatedToBegin: 0
+    m_stageEnemyData:
+    - m_enemyType: 3363c379-70c7-47d1-8cc6-1ca650259a31
+      m_enemyCount: 1
+    m_stageObstacleData: []
