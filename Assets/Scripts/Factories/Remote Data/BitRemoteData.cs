@@ -8,6 +8,9 @@ namespace StarSalvager.Factories.Data
     {
         [FoldoutGroup("$name")]
         public string name;
+        
+        [FoldoutGroup("$name")]
+        public string refinedName;
 
         [FoldoutGroup("$name")]
         public BIT_TYPE bitType;

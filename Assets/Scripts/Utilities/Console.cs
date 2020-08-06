@@ -8,6 +8,7 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace StarSalvager.Utilities
 {
@@ -33,6 +34,8 @@ namespace StarSalvager.Utilities
         {
             string.Concat("add ", "currency ", "[BIT_TYPE] ", "[uint]").ToUpper(),
             string.Concat("add ", "liquid ", "[BIT_TYPE] ", "[float]").ToUpper(),
+            string.Concat("add ", "currency ", "all ", "[uint]").ToUpper(),
+            string.Concat("add ", "liquid ", "all ", "[float]").ToUpper(),
             "\n",
             string.Concat("clear ", "console").ToUpper(),
             string.Concat("clear ", "remotedata").ToUpper(),
@@ -48,14 +51,19 @@ namespace StarSalvager.Utilities
             "\n",
             string.Concat("print ", "liquid").ToUpper(),
             string.Concat("print ", "currency").ToUpper(),
+            string.Concat("print ", "bits").ToUpper(),
+            string.Concat("print ", "parts").ToUpper(),
+            string.Concat("print ", "components").ToUpper(),
             "\n",
             string.Concat("set ", "bot ", "magnet ", "[uint]").ToUpper(),
             string.Concat("set ", "bot ", "heat ", "[0.0 - 100.0]").ToUpper(),
             string.Concat("set ", "bot ", "health ", "[0.0 - 1.0]").ToUpper(),
             string.Concat("set ", "columns ", "[uint]").ToUpper(),
             string.Concat("set ", "currency ", "[BIT_TYPE] ", "[uint]").ToUpper(),
+            string.Concat("set ", "currency ", "all ", "[uint]").ToUpper(),
             string.Concat("set ", "godmode ", "[bool]").ToUpper(),
             string.Concat("set ", "liquid ", "[BIT_TYPE] ", "[float]").ToUpper(),
+            string.Concat("set ", "liquid ", "all ", "[float]").ToUpper(),
             string.Concat("set ", "orientation ", "[Horizontal | Vertical]").ToUpper(),
             string.Concat("set ", "paused ", "[bool]").ToUpper(),
             string.Concat("set ", "timescale ", "[0.0 - 2.0]").ToUpper(),
@@ -232,12 +240,12 @@ namespace StarSalvager.Utilities
 
         private void ParseAddCommand(string[] split)
         {
-            BIT_TYPE bit;
+            BIT_TYPE bitType;
             
             switch (split[1].ToLower())
             {
                 case "currency":
-                    if (!Enum.TryParse(split[2], true, out bit))
+                    /*if (!Enum.TryParse(split[2], true, out bit))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                     }
@@ -247,21 +255,63 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += UnrecognizeCommand(split[3]);
                     }
 
-                    PlayerPersistentData.PlayerData.resources[bit] += intAmount;
+                    PlayerPersistentData.PlayerData.resources[bit] += intAmount;*/
                     
-                    break;
-                case "liquid":
-                    if (!Enum.TryParse(split[2], true, out bit))
+                    if (!int.TryParse(split[3], out var intAmount))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[3]);
+                        break;
+                    }
+                    
+                    if (split[2].ToLower().Equals("all"))
+                    {
+                        foreach (BIT_TYPE value in Enum.GetValues(typeof(BIT_TYPE)))
+                        {
+                            if (!PlayerPersistentData.PlayerData.resources.ContainsKey(value))
+                                continue;
+                                
+                            PlayerPersistentData.PlayerData.resources[value] += intAmount;
+                        }
+                        
+                    }
+                    else if (Enum.TryParse(split[2], true, out bitType))
+                    {
+                        
+                        PlayerPersistentData.PlayerData.resources[bitType] += intAmount;
+                    }
+                    else
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                     }
-
-                    if (float.TryParse(split[3], out var amount))
+                    
+                    break;
+                case "liquid":
+                    if (!float.TryParse(split[3], out var floatAmount))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[3]);
+                        break;
                     }
-
-                    PlayerPersistentData.PlayerData.liquidResource[bit] += amount;
+                    
+                    if (split[2].ToLower().Equals("all"))
+                    {
+                        foreach (BIT_TYPE value in Enum.GetValues(typeof(BIT_TYPE)))
+                        {
+                            if (!PlayerPersistentData.PlayerData.resources.ContainsKey(value))
+                                continue;
+                                
+                            PlayerPersistentData.PlayerData.liquidResource[value] += floatAmount;
+                        }
+                        
+                    }
+                    else if (Enum.TryParse(split[2], true, out bitType))
+                    {
+                        
+                        PlayerPersistentData.PlayerData.liquidResource[bitType] += floatAmount;
+                    }
+                    else
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                    }
                     
                     break;
                 default:
@@ -279,7 +329,7 @@ namespace StarSalvager.Utilities
                     _cmds.Clear();
                     break;
                 case "remotedata":
-                    FactoryManager.ClearRemoteData();
+                    FindObjectOfType<FactoryManager>().ClearRemoteData();
                     break;
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);
@@ -294,11 +344,13 @@ namespace StarSalvager.Utilities
                 case "bot":
                     if (!Vector2IntExtensions.TryParseVector2Int(split[2], out var coord))
                     {
-                        UnrecognizeCommand(split[2]);
+                        _consoleDisplay +=UnrecognizeCommand(split[2]);
+                        break;
                     }
                     if (!float.TryParse(split[3], out var damage))
                     {
-                        UnrecognizeCommand(split[3]);
+                        _consoleDisplay +=UnrecognizeCommand(split[3]);
+                        break;
                     }
                     
                     var bot = FindObjectOfType<Bot>();
@@ -393,7 +445,7 @@ namespace StarSalvager.Utilities
                 case "ui":
                     if (!TryParseBool(split[2], out state))
                     {
-                        UnrecognizeCommand(split[2]);
+                        _consoleDisplay +=UnrecognizeCommand(split[2]);
                         break;
                     }
                     
@@ -408,7 +460,7 @@ namespace StarSalvager.Utilities
                 case "bot":
                     if (!TryParseBool(split[2], out state))
                     {
-                        UnrecognizeCommand(split[2]);
+                        _consoleDisplay +=UnrecognizeCommand(split[2]);
                         break;
                     }
 
@@ -432,6 +484,15 @@ namespace StarSalvager.Utilities
                 case "currency":
                     _consoleDisplay += $"\n{GetDictionaryAsString(PlayerPersistentData.PlayerData.resources)}";
                     break;
+                case "bits":
+                    _consoleDisplay += $"\n{GetEnumsAsString<BIT_TYPE>()}";
+                    break;
+                case "parts":
+                    _consoleDisplay += $"\n{GetEnumsAsString<PART_TYPE>()}";
+                    break;
+                case "components":
+                    _consoleDisplay += $"\n{GetEnumsAsString<COMPONENT_TYPE>()}";
+                    break;
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);
                     break;
@@ -441,7 +502,7 @@ namespace StarSalvager.Utilities
         private void ParseSetCommand(string[] split)
         {
             bool state;
-            BIT_TYPE bit;
+            BIT_TYPE bitType;
             BotPartsLogic botPartsLogic;
             Bot bot;
 
@@ -452,9 +513,10 @@ namespace StarSalvager.Utilities
                     switch (split[2].ToLower())
                     {
                         case "magnet":
-                            if (int.TryParse(split[3], out var magnet))
+                            if (!int.TryParse(split[3], out var magnet))
                             {
                                 _consoleDisplay += UnrecognizeCommand(split[3]);
+                                break;
                             }
 
                             botPartsLogic = FindObjectOfType<BotPartsLogic>();
@@ -471,9 +533,10 @@ namespace StarSalvager.Utilities
                     
                             break;
                         case "heat":
-                            if (float.TryParse(split[3], out var heat))
+                            if (!float.TryParse(split[3], out var heat))
                             {
                                 _consoleDisplay += UnrecognizeCommand(split[3]);
+                                break;
                             }
 
                             botPartsLogic = FindObjectOfType<BotPartsLogic>();
@@ -487,9 +550,10 @@ namespace StarSalvager.Utilities
                             botPartsLogic.coreHeat = heat;
                             break;
                         case "health":
-                            if (float.TryParse(split[3], out var health))
+                            if (!float.TryParse(split[3], out var health))
                             {
                                 _consoleDisplay += UnrecognizeCommand(split[3]);
+                                break;
                             }
 
                             bot = FindObjectOfType<Bot>();
@@ -524,25 +588,43 @@ namespace StarSalvager.Utilities
                     Globals.ScaleCamera(columns);
                     break;
                 case "currency":
-                    if (!Enum.TryParse(split[2], true, out bit))
+
+
+                    if (!int.TryParse(split[3], out var intAmount))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[3]);
+                        break;
+                    }
+                    
+                    if (split[2].ToLower().Equals("all"))
+                    {
+                        foreach (BIT_TYPE value in Enum.GetValues(typeof(BIT_TYPE)))
+                        {
+                            if (!PlayerPersistentData.PlayerData.resources.ContainsKey(value))
+                                continue;
+                                
+                            PlayerPersistentData.PlayerData.resources[value] = intAmount;
+                        }
+                        
+                    }
+                    else if (Enum.TryParse(split[2], true, out bitType))
+                    {
+                        
+                        PlayerPersistentData.PlayerData.resources[bitType] = intAmount;
+                    }
+                    else
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                     }
 
-                    int intAmount;
-                    if (int.TryParse(split[3], out intAmount))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[3]);
-                    }
-
-                    PlayerPersistentData.PlayerData.resources[bit] = intAmount;
+                    
                     
                     break;
                 case "godmode":
 
                     if (!TryParseBool(split[2], out state))
                     {
-                        UnrecognizeCommand(split[2]);
+                        _consoleDisplay +=UnrecognizeCommand(split[2]);
                         break;
                     }
 
@@ -557,30 +639,49 @@ namespace StarSalvager.Utilities
 
                     break;
                 case "liquid":
-                    if (!Enum.TryParse(split[2], true, out bit))
+                    if (!float.TryParse(split[3], out var floatAmount))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[3]);
+                        break;
+                    }
+                    
+                    if (split[2].ToLower().Equals("all"))
+                    {
+                        foreach (BIT_TYPE value in Enum.GetValues(typeof(BIT_TYPE)))
+                        {
+                            if (!PlayerPersistentData.PlayerData.liquidResource.ContainsKey(value))
+                                continue;
+                                
+                            PlayerPersistentData.PlayerData.liquidResource[value] = floatAmount;
+                        }
+                        
+                    }
+                    else if (Enum.TryParse(split[2], true, out bitType))
+                    {
+                        if (!PlayerPersistentData.PlayerData.liquidResource.ContainsKey(bitType))
+                            break;
+                        
+                        PlayerPersistentData.PlayerData.liquidResource[bitType] = floatAmount;
+                    }
+                    else
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                     }
-
-                    float amount;
-                    if (float.TryParse(split[3], out amount))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[3]);
-                    }
-
-                    PlayerPersistentData.PlayerData.liquidResource[bit] = amount;
                     
                     break;
                 case "orientation":
-                    switch (split[2])
+                    switch (split[2].ToLower())
                     {
-                        case "V":
-                        case "Vertical":
+                        case "v":
+                        case "vertical":
                             Globals.Orientation = ORIENTATION.VERTICAL;
                             break;
-                        case "H":
-                        case "Horizontal":
+                        case "h":
+                        case "horizontal":
                             Globals.Orientation = ORIENTATION.HORIZONTAL;
+                            break;
+                        default:
+                            _consoleDisplay +=UnrecognizeCommand(split[2]);
                             break;
                     }
 
@@ -588,7 +689,7 @@ namespace StarSalvager.Utilities
                 case "paused":
                     if (!TryParseBool(split[2], out state))
                     {
-                        UnrecognizeCommand(split[2]);
+                        _consoleDisplay +=UnrecognizeCommand(split[2]);
                         break;
                     }
 
@@ -597,7 +698,7 @@ namespace StarSalvager.Utilities
                 case "timescale":
                     if (!float.TryParse(split[2], out var scale))
                     {
-                        UnrecognizeCommand(split[2]);
+                        _consoleDisplay +=UnrecognizeCommand(split[2]);
                         break;
                     }
 
@@ -623,14 +724,17 @@ namespace StarSalvager.Utilities
                     if (!Enum.TryParse(split[2], true, out BIT_TYPE bit))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
                     }
                     if (!Vector2IntExtensions.TryParseVector2Int(split[3], out coord))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[3]);
+                        break;
                     }
                     if (!int.TryParse(split[4], out lvl))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[4]);
+                        break;
                     }
 
                     bot = FindObjectOfType<Bot>();
@@ -649,14 +753,17 @@ namespace StarSalvager.Utilities
                     if (!Enum.TryParse(split[2], true, out PART_TYPE part))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
                     }
                     if (!Vector2IntExtensions.TryParseVector2Int(split[3], out coord))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[3]);
+                        break;
                     }
                     if (!int.TryParse(split[4], out lvl))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[4]);
+                        break;
                     }
 
                     bot = FindObjectOfType<Bot>();
@@ -675,10 +782,12 @@ namespace StarSalvager.Utilities
                     if (!Enum.TryParse(split[2], true, out COMPONENT_TYPE component))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
                     }
                     if (!Vector2IntExtensions.TryParseVector2Int(split[3], out coord))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[3]);
+                        break;
                     }
 
                     bot = FindObjectOfType<Bot>();
@@ -699,6 +808,7 @@ namespace StarSalvager.Utilities
                     if (!int.TryParse(split[3], out var count))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[3]);
+                        break;
                     }
                     
                     var manager = FindObjectOfType<EnemyManager>();
@@ -732,6 +842,13 @@ namespace StarSalvager.Utilities
         private static string GetDictionaryAsString<U, T>(Dictionary<U, T> dictionary)
         {
             return dictionary.Aggregate("", (current, o) => current + $"[{o.Key}] => {o.Value}\n");
+        }
+
+        private static string GetEnumsAsString<E>() where E : Enum
+        {
+            string[] names = Enum.GetNames(typeof(E));
+
+            return string.Join(", ", names);
         }
 
         private static string UnrecognizeCommand(string cmd)
