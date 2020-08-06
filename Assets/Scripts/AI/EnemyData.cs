@@ -2,6 +2,7 @@
 using StarSalvager.AI;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Animations;
+using StarSalvager.Utilities.JsonDataTypes;
 
 namespace StarSalvager
 {
@@ -53,6 +54,8 @@ namespace StarSalvager
 
         public Vector2Int Dimensions { get; }
 
+        public RDSTable rdsTable { get; }
+
         public EnemyData(EnemyRemoteData enemyRemoteData, EnemyProfileData enemyProfileData)
         {
             EnemyType = enemyRemoteData.EnemyType;
@@ -77,6 +80,33 @@ namespace StarSalvager
             MinBitExplosionCount = enemyRemoteData.MinBitExplosionCount;
             MaxBitExplosionCount = enemyRemoteData.MaxBitExplosionCount;
             Dimensions = enemyRemoteData.Dimensions;
+
+
+            //TESTING RDS TABLES - IF YOU SEE THIS, DELETE THIS WHOLE BELOW SECTION
+            rdsTable = new RDSTable();
+
+            BlockData blockData1 = new BlockData
+            {
+                ClassType = "Bit",
+                Type = (int)BIT_TYPE.BLUE,
+                Level = 0
+            };
+            BlockData blockData2 = new BlockData
+            {
+                ClassType = "Bit",
+                Type = (int)BIT_TYPE.RED,
+                Level = 1
+            };
+            BlockData blockData3 = new BlockData
+            {
+                ClassType = "Component",
+                Type = (int)COMPONENT_TYPE.DOHICKEY,
+            };
+            rdsTable.AddEntry(new RDSValue<BlockData>(blockData1, 3));
+            rdsTable.AddEntry(new RDSBlockData(blockData2, 3));
+            rdsTable.AddEntry(new RDSBlockData(blockData3, 3));
+
+            rdsTable.rdsCount = 5;
         }
 
         public EnemyData(string enemyType, string name, int health, float movementSpeed, bool isAttachable,

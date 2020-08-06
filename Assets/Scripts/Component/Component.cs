@@ -3,12 +3,13 @@ using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Component : CollidableBase, IComponent, IAttachable, ICustomRecycle, IHealth, ICanBeHit, IObstacle
+    public class Component : CollidableBase, IComponent, IAttachable, ICustomRecycle, IHealth, ICanBeHit, IObstacle, ISaveable
     {
         [SerializeField]
         private LayerMask collisionMask;
@@ -149,7 +150,26 @@ namespace StarSalvager
                 
             _damage.SetHealth(CurrentHealth/StartingHealth);
         }
-        
+
+        //ISaveable Functions
+        //============================================================================================================//
+
+        public BlockData ToBlockData()
+        {
+            return new BlockData
+            {
+                ClassType = GetType().Name,
+                Coordinate = Coordinate,
+                Type = (int)Type,
+            };
+        }
+
+        public void LoadBlockData(BlockData blockData)
+        {
+            Coordinate = blockData.Coordinate;
+            Type = (COMPONENT_TYPE)blockData.Type;
+        }
+
         //ICustomRecycle Functions
         //============================================================================================================//
 

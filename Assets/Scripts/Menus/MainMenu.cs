@@ -13,6 +13,7 @@ using StarSalvager.Factories;
 using StarSalvager.Missions;
 
 using CameraController = StarSalvager.Cameras.CameraController;
+using StarSalvager.Utilities.JsonDataTypes;
 
 namespace StarSalvager.UI
 {
