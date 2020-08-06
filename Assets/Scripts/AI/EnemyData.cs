@@ -102,8 +102,8 @@ namespace StarSalvager
                 ClassType = "Component",
                 Type = (int)COMPONENT_TYPE.DOHICKEY,
             };
-            rdsTable.AddEntry(new RDSValue<BlockData>(blockData1, 3));
-            rdsTable.AddEntry(new RDSBlockData(blockData2, 3));
+            rdsTable.AddEntry(new RDSValue<BlockData>(blockData1, 10));
+            rdsTable.AddEntry(new RDSBlockData(blockData2, 10));
             rdsTable.AddEntry(new RDSBlockData(blockData3, 3));
 
             rdsTable.rdsCount = 5;
