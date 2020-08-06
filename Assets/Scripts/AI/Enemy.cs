@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Animations;
 using StarSalvager.Missions;
 using StarSalvager.Utilities;
+using System.Linq;
 
 namespace StarSalvager.AI
 {
@@ -334,7 +335,7 @@ namespace StarSalvager.AI
         public void TryHitAt(Vector2 position, float damage)
         {
             //FIXME This should use IHealth
-            LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.position, m_enemyData.MinBitExplosionCount, m_enemyData.MaxBitExplosionCount);
+            LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.position, m_enemyData.rdsTable.rdsResult.ToList());
             MissionManager.ProcessEnemyKilledMissionData(m_enemyData.EnemyType, 1);
             Recycler.Recycle<Enemy>(this);
         }

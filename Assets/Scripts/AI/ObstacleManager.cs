@@ -9,6 +9,7 @@ using UnityEngine.UIElements;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.JsonDataTypes;
 
 namespace StarSalvager
 {
@@ -393,15 +394,37 @@ namespace StarSalvager
             }
         }
 
-        public void SpawnBitExplosion(Vector2 startingLocation, int minBits, int maxBits)
+        public void SpawnBitExplosion(Vector2 startingLocation, List<IRDSObject> rdsObjects)
         {
-            List<Vector2Int> bitExplosionPositions = LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, UnityEngine.Random.Range(minBits, maxBits + 1), 5, 5);
-
-            foreach (var bitPosition in bitExplosionPositions)
+            for (int i = rdsObjects.Count - 1; i >= 0; i--)
             {
-                Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject((BIT_TYPE)Random.Range(1, 6)).GetComponent<Bit>();
+                //Remove objects that aren't going on screen
+            }
+            
+            List<Vector2Int> bitExplosionPositions = LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, rdsObjects.Count, 5, 5);
+
+            for (int i = 0; i < rdsObjects.Count; i++)
+            {
+                if (rdsObjects[i] is RDSValue<BlockData> rdsValue)
+                {
+                    switch(rdsValue.rdsValue.ClassType)
+                    {
+                        case "Bit":
+                            Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>((BIT_TYPE)rdsValue.rdsValue.Type, rdsValue.rdsValue.Level);
+                            AddMovableToList(newBit);
+                            PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[i], 0.5f);
+                            break;
+                        case "Component":
+                            Component newComponent = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().CreateObject<Component>((COMPONENT_TYPE)rdsValue.rdsValue.Type);
+                            AddMovableToList(newComponent);
+                            PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[i], 0.5f);
+                            break;
+                    }
+                }
+                
+                /*Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject((BIT_TYPE)Random.Range(1, 6)).GetComponent<Bit>();
                 AddMovableToList(newBit);
-                PlaceMovableOffGrid(newBit, startingLocation, bitPosition, 0.5f);
+                PlaceMovableOffGrid(newBit, startingLocation, bitPosition, 0.5f);*/
             }
         }
 
