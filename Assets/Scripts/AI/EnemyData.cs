@@ -49,9 +49,6 @@ namespace StarSalvager
 
         public float SprayCount => m_sprayCount;
 
-        public int MinBitExplosionCount { get; }
-
-        public int MaxBitExplosionCount { get; }
         private readonly int m_sprayCount;
 
         public Vector2Int Dimensions { get; }
@@ -79,49 +76,40 @@ namespace StarSalvager
             AddVelocityToProjectiles = enemyProfileData.AddVelocityToProjectiles;
             SpreadAngle = enemyProfileData.SpreadAngle;
             m_sprayCount = enemyProfileData.SprayCount;
-            MinBitExplosionCount = enemyRemoteData.MinBitExplosionCount;
-            MaxBitExplosionCount = enemyRemoteData.MaxBitExplosionCount;
             Dimensions = enemyRemoteData.Dimensions;
 
 
-            //TESTING RDS TABLES - IF YOU SEE THIS, DELETE THIS WHOLE BELOW SECTION
             rdsTable = new RDSTable();
-
-            BlockData blockData1 = new BlockData
+            rdsTable.rdsCount = enemyRemoteData.MaxDrops;
+            foreach (var rdsData in enemyRemoteData.rdsEnemyData)
             {
-                ClassType = "Bit",
-                Type = (int)BIT_TYPE.BLUE,
-                Level = 0
-            };
-            BlockData blockData2 = new BlockData
-            {
-                ClassType = "Bit",
-                Type = (int)BIT_TYPE.RED,
-                Level = 1
-            };
-            BlockData blockData3 = new BlockData
-            {
-                ClassType = "Component",
-                Type = (int)COMPONENT_TYPE.DOHICKEY,
-            };
-            rdsTable.AddEntry(new RDSValue<BlockData>(blockData1, 10));
-            rdsTable.AddEntry(new RDSBlockData(blockData2, 10));
-            rdsTable.AddEntry(new RDSBlockData(blockData3, 3));
-            rdsTable.AddEntry(new RDSValue<TEST_Blueprint>(new TEST_Blueprint
-            {
-                name = PART_TYPE.MAGNET + " " + 1,
-                remoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.MAGNET),
-                level = 1
-            }, 1, true, false, true));
-
-            rdsTable.rdsCount = 5;
+                if (rdsData.rdsData == RDSEnemyData.TYPE.Bit)
+                {
+                    BlockData bitBlockData = new BlockData
+                    {
+                        ClassType = "Bit",
+                        Type = rdsData.type,
+                        Level = rdsData.level
+                    };
+                    rdsTable.AddEntry(new RDSValue<BlockData>(bitBlockData, rdsData.probability));
+                }
+                else if (rdsData.rdsData == RDSEnemyData.TYPE.Component)
+                {
+                    BlockData componentBlockData = new BlockData
+                    {
+                        ClassType = "Component",
+                        Type = rdsData.type,
+                    };
+                    rdsTable.AddEntry(new RDSValue<BlockData>(componentBlockData, rdsData.probability));
+                }
+            }
         }
 
         public EnemyData(string enemyType, string name, int health, float movementSpeed, bool isAttachable,
             float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType,
             string projectileType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange,
             float orbitRadius, float numberCellsDescend, bool addVelocityToProjectiles, float spreadAngle,
-            int sprayCount, int minBitExplosionCount, int maxBitExplosionCount)
+            int sprayCount)
         {
             EnemyType = enemyType;
             Name = name;
@@ -141,8 +129,6 @@ namespace StarSalvager
             AddVelocityToProjectiles = addVelocityToProjectiles;
             SpreadAngle = spreadAngle;
             m_sprayCount = sprayCount;
-            MinBitExplosionCount = minBitExplosionCount;
-            MaxBitExplosionCount = maxBitExplosionCount;
         }
     }
 }
