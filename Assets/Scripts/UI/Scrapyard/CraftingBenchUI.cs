@@ -92,7 +92,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 foreach (var partRemoteData in _remotePartProfileScriptable.partRemoteData)
                 {
-                    for (int i = 0; i < partRemoteData.levels.Count - 1; i++)
+                    for (int i = 0; i < 1; i++)
                     {
                         if (partRemoteData.partType == PART_TYPE.CORE)
                             continue;
@@ -103,7 +103,7 @@ namespace StarSalvager.UI.Scrapyard
                             remoteData = partRemoteData,
                             level = i
                         };
-                        PlayerPersistentData.PlayerData.unlockedBlueprints.Add(blueprint);
+                        PlayerPersistentData.PlayerData.UnlockBlueprint(blueprint);
                     }
                 }
             }

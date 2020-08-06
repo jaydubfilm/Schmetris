@@ -10,6 +10,7 @@ using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.UI.Scrapyard;
 
 namespace StarSalvager
 {
@@ -398,6 +399,11 @@ namespace StarSalvager
         {
             for (int i = rdsObjects.Count - 1; i >= 0; i--)
             {
+                if (rdsObjects[i] is RDSValue<TEST_Blueprint> rdsValueBlueprint)
+                {
+                    PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
+                    rdsObjects.RemoveAt(i);
+                }
                 //Remove objects that aren't going on screen
             }
             
@@ -405,17 +411,17 @@ namespace StarSalvager
 
             for (int i = 0; i < rdsObjects.Count; i++)
             {
-                if (rdsObjects[i] is RDSValue<BlockData> rdsValue)
+                if (rdsObjects[i] is RDSValue<BlockData> rdsValueBlockData)
                 {
-                    switch(rdsValue.rdsValue.ClassType)
+                    switch(rdsValueBlockData.rdsValue.ClassType)
                     {
                         case "Bit":
-                            Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>((BIT_TYPE)rdsValue.rdsValue.Type, rdsValue.rdsValue.Level);
+                            Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>((BIT_TYPE)rdsValueBlockData.rdsValue.Type, rdsValueBlockData.rdsValue.Level);
                             AddMovableToList(newBit);
                             PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;
                         case "Component":
-                            Component newComponent = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().CreateObject<Component>((COMPONENT_TYPE)rdsValue.rdsValue.Type);
+                            Component newComponent = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().CreateObject<Component>((COMPONENT_TYPE)rdsValueBlockData.rdsValue.Type);
                             AddMovableToList(newComponent);
                             PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;

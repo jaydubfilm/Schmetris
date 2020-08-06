@@ -3,6 +3,8 @@ using StarSalvager.AI;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.UI.Scrapyard;
+using StarSalvager.Factories;
 
 namespace StarSalvager
 {
@@ -105,6 +107,12 @@ namespace StarSalvager
             rdsTable.AddEntry(new RDSValue<BlockData>(blockData1, 10));
             rdsTable.AddEntry(new RDSBlockData(blockData2, 10));
             rdsTable.AddEntry(new RDSBlockData(blockData3, 3));
+            rdsTable.AddEntry(new RDSValue<TEST_Blueprint>(new TEST_Blueprint
+            {
+                name = PART_TYPE.MAGNET + " " + 1,
+                remoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.MAGNET),
+                level = 1
+            }, 1, true, false, true));
 
             rdsTable.rdsCount = 5;
         }
