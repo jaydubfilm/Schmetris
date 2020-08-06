@@ -246,7 +246,7 @@ namespace StarSalvager.UI
         [Button("Clear Remote Data"), DisableInPlayMode]
         private void ClearRemoteData()
         {
-            FactoryManager.ClearRemoteData();
+            FindObjectOfType<FactoryManager>().ClearRemoteData();
         }
         
         #endif

@@ -242,13 +242,14 @@ namespace StarSalvager.Factories
         }
         
         #if UNITY_EDITOR
-        public static void ClearRemoteData()
+        public void ClearRemoteData()
         {
             //FIXME This should be using persistent file names
             var files = new[]
             {
                 Application.dataPath + "/RemoteData/PlayerPersistentData.player",
-                Application.dataPath + "/RemoteData/MissionsCurrentData.mission"
+                Application.dataPath + "/RemoteData/MissionsCurrentData.mission",
+                Application.dataPath + "/RemoteData/MissionsMasterData.mission"
             };
 
             foreach (var file in files)
@@ -256,6 +257,11 @@ namespace StarSalvager.Factories
                 if (File.Exists(file))
                 {
                     File.Delete(file);
+                    File.Delete(file + ".meta");
+                }
+                else
+                {
+                    Debug.LogError($"{file} does not exist");
                 }
             }
         }

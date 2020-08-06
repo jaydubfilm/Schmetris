@@ -28,6 +28,9 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right")]
         private AnimationScriptableObject _animation;
 
+        [HorizontalGroup("$Name/row3")]
+        public Sprite refinedSprite;
+
         public Sprite[] Sprites
         {
             get => _sprites;
@@ -54,7 +57,11 @@ namespace StarSalvager.Factories.Data
                 return _animation == null ? _sprites[0] : _animation.GetFrame(0);
             }
         }
-        
+
+        [ShowInInspector, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right),
+         HorizontalGroup("$Name/row3", 65), HideLabel, PropertyOrder(-100), ReadOnly]
+        private Sprite refinedSpritePreview => refinedSprite;
+
 #endif
 
         #endregion

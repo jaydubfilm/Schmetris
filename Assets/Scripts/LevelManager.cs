@@ -153,6 +153,10 @@ namespace StarSalvager
             {
                 m_waveTimer += Time.deltaTime;
                 m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+                
+                //TODO Need to add the GameUI Timer here
+                //_gameUi.SetClockValue(CurrentWaveData.);
+                
                 if (m_currentStage == -1)
                     TransitionToNewWave();
             }

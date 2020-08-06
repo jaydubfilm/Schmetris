@@ -10,8 +10,10 @@ namespace StarSalvager
     {
         #if UNITY_EDITOR
         public string Name =>
-            $"Health: {health} - Data: {data} - Burn Rate: {(burnRate == 0f ? "None" : $"{burnRate}/s")}";
+            $"Health: {health} - Data: {data} - Burn Rate: {(burnRate == 0f ? "None" : $"{burnRate}/s")} - lvl req: {unlockLevel}";
         #endif
+
+        public int unlockLevel;
         
         public float health;
 

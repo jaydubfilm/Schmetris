@@ -211,6 +211,7 @@ namespace StarSalvager
                         //If we weren't able to find a part, see if the repairer needs to be fixed
                         if (toRepair is null)
                         {
+                            //TODO Need to determine if this is already happening
                             //If the repairer is also fine, then we can break out
                             if (part.CurrentHealth < part.StartingHealth)
                                 toRepair = part;
