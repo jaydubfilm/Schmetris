@@ -132,6 +132,13 @@ namespace StarSalvager.Factories
                     }
                 }
 
+                foreach (var attachable in shape.AttachedBits)
+                {
+                    attachable.transform.rotation = Quaternion.identity;
+                }
+
+                shape.GenerateGeometry();
+
                 return shape.GetComponent<T>();
             }
             else if (selectionType == SELECTION_TYPE.SHAPE)
@@ -157,6 +164,13 @@ namespace StarSalvager.Factories
                         attachable.transform.localPosition = (Vector2)attachable.Coordinate * Constants.gridCellSize;
                     }
                 }
+
+                foreach (var attachable in shape.AttachedBits)
+                {
+                    attachable.transform.rotation = Quaternion.identity;
+                }
+
+                shape.GenerateGeometry();
 
                 return shape.GetComponent<T>();
             }
