@@ -60,6 +60,9 @@ namespace StarSalvager.Factories.Data
         private float m_numberCellsDescend;
 
         [SerializeField, FoldoutGroup("$EnemyType")]
+        private bool m_ignoreObstacleAvoidance;
+
+        [SerializeField, FoldoutGroup("$EnemyType")]
         private bool m_addVelocityToProjectiles;
 
         private bool showSpreadAngle => m_attackType == ENEMY_ATTACKTYPE.AtPlayerCone || m_attackType == ENEMY_ATTACKTYPE.Spray;
@@ -94,6 +97,8 @@ namespace StarSalvager.Factories.Data
         public float OrbitRadius => m_orbitRadius;
 
         public float NumberCellsDescend => m_numberCellsDescend;
+
+        public bool IgnoreObstacleAvoidance => m_ignoreObstacleAvoidance;
 
         public bool AddVelocityToProjectiles => m_addVelocityToProjectiles;
 

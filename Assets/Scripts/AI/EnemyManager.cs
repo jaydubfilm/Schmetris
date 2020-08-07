@@ -148,8 +148,11 @@ namespace StarSalvager
                 {
                     Vector2 direction = new Vector2(destination.x - position.x, destination.y - position.y);
                     direction.Normalize();
-                    Vector2 force = LevelManager.Instance.AIObstacleAvoidance.CalculateForceAtPoint(position, m_enemies[i].m_enemyData.IsAttachable);
-                    direction += force;
+                    if (!m_enemies[i].m_enemyData.IgnoreObstacleAvoidance)
+                    {
+                        Vector2 force = LevelManager.Instance.AIObstacleAvoidance.CalculateForceAtPoint(position, m_enemies[i].m_enemyData.IsAttachable);
+                        direction += force;
+                    }
                     sumDirection += direction;
                 }
                 sumDirection.Normalize();

@@ -28,6 +28,8 @@ namespace StarSalvager
 
         public ENEMY_ATTACKTYPE AttackType { get; }
 
+        public bool IgnoreObstacleAvoidance { get; }
+
         public string ProjectileType { get; }
 
         public Sprite Sprite { get; }
@@ -66,6 +68,7 @@ namespace StarSalvager
             AttackSpeed = enemyRemoteData.AttackSpeed;
             MovementType = enemyProfileData.MovementType;
             AttackType = enemyProfileData.AttackType;
+            IgnoreObstacleAvoidance = enemyProfileData.IgnoreObstacleAvoidance;
             ProjectileType = enemyProfileData.ProjectileType;
             Sprite = enemyProfileData.Sprite;
             AnimationController = enemyProfileData.AnimationController;
