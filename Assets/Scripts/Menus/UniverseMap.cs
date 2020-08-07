@@ -37,9 +37,15 @@ namespace StarSalvager.UI
             swapUniverseButton.onClick.AddListener(() =>
             {
                 if (FactoryManager.Instance.currentModularDataIndex == FactoryManager.Instance.ModularDataCount - 1)
+                {
                     FactoryManager.Instance.currentModularDataIndex = 0;
+                    print("moo");
+                }
                 else
+                {
                     FactoryManager.Instance.currentModularDataIndex++;
+                    print("meow");
+                }
 
                 InitUniverseMapTemp();
             });
@@ -53,7 +59,7 @@ namespace StarSalvager.UI
         {
             foreach (var button in currentUniverseButtons)
             {
-                GameObject.Destroy(button);
+                GameObject.Destroy(button.gameObject);
             }
             currentUniverseButtons.Clear();
 
@@ -91,13 +97,16 @@ namespace StarSalvager.UI
         {
             foreach (var button in currentUniverseButtons)
             {
-                GameObject.Destroy(button);
+                GameObject.Destroy(button.gameObject);
             }
             currentUniverseButtons.Clear();
+
+            print("owl");
 
             Rect rect = m_scrollRectArea.rect;
             for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
             {
+                print("gummy");
                 UniverseMapButton button = Instantiate(m_universeSectorButtonPrefab);
                 button.SetupWaveButtons(FactoryManager.Instance.SectorRemoteData[i].GetNumberOfWaves());
                 button.transform.SetParent(m_scrollRectArea.transform);
