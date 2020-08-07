@@ -12,13 +12,13 @@ using UnityEngine.UI;
 namespace StarSalvager.UI.Scrapyard
 {
 
-    
+
     public class BlueprintUIElement : UIElement<TEST_Blueprint>, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
         private TMP_Text titleText;
 
-        
+
         [SerializeField]
         private Image image;
 
@@ -26,7 +26,7 @@ namespace StarSalvager.UI.Scrapyard
         private Button craftButton;
 
         private Action<TEST_Blueprint, bool, RectTransform> hoverCallback;
-        
+
         public void Init(TEST_Blueprint data, Action<TEST_Blueprint> OnCraftPressed, Action<TEST_Blueprint, bool, RectTransform> OnHover)
         {
             Init(data);
@@ -35,7 +35,7 @@ namespace StarSalvager.UI.Scrapyard
 
             craftButton.interactable =
                 PlayerPersistentData.PlayerData.CanAffordPart(data.remoteData.partType, data.level, false);
-            
+
             craftButton.onClick.RemoveAllListeners();
             craftButton.onClick.AddListener(() =>
             {
@@ -61,18 +61,18 @@ namespace StarSalvager.UI.Scrapyard
             hoverCallback?.Invoke(null, false, transform);
         }
     }
-    
+
     public class TEST_Blueprint : IEquatable<TEST_Blueprint>
     {
         public string name;
-        public PartRemoteData remoteData;
+        public PART_TYPE partType;
         public int level;
 
         public bool Equals(TEST_Blueprint other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return name == other.name && remoteData.Equals(other.remoteData) && level == other.level;
+            return name == other.name && partType.Equals(other.partType) && level == other.level;
         }
 
         public override bool Equals(object obj)
@@ -89,4 +89,3 @@ namespace StarSalvager.UI.Scrapyard
         }
     }
 }
-

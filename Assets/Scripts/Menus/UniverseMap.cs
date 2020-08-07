@@ -23,7 +23,7 @@ namespace StarSalvager.UI
 
         private void Start()
         {
-            InitUniverseMap();
+            InitUniverseMapTemp();
 
             InitButtons();
         }
@@ -65,6 +65,22 @@ namespace StarSalvager.UI
                 button.Text.text = $"Sector {i + 1}";
                 button.SectorNumber = i;
                 button.Button.onClick.AddListener(() => { button.SetActiveWaveButtons(!button.ButtonsActive); });
+            }
+        }
+
+        private void InitUniverseMapTemp()
+        {
+            Rect rect = m_scrollRectArea.rect;
+            for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
+            {
+                UniverseMapButton button = Instantiate(m_universeSectorButtonPrefab);
+                button.SetupWaveButtons(FactoryManager.Instance.SectorRemoteData[i].GetNumberOfWaves());
+                button.transform.SetParent(m_scrollRectArea.transform);
+                button.transform.localPosition = rect.center + Vector2.right * 400 * i;
+                button.Text.text = $"Sector {i + 1}";
+                button.SectorNumber = i;
+                button.Button.onClick.AddListener(() => { button.SetActiveWaveButtons(!button.ButtonsActive); });
+                button.SetActiveWaveButtons(true);
             }
         }
 

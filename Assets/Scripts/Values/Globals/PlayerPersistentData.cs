@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using StarSalvager.Factories;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -27,6 +28,16 @@ namespace StarSalvager.Values
             return m_playerData[index];
         }
 
+        public static void ResetPlayerData()
+        {
+            PlayerData data = new PlayerData();
+            for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
+            {
+                data.AddSectorProgression(i, 0);
+            }
+            m_playerData[0] = data;
+        }
+
         private static string ExportPlayerPersistentData(PlayerData editorData)
         {
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
@@ -43,7 +54,10 @@ namespace StarSalvager.Values
             if (!File.Exists(persistentDataPath))
             {
                 PlayerData data = new PlayerData();
-                data.AddSectorProgression(0, 0);
+                for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
+                {
+                    data.AddSectorProgression(i, 0);
+                }
                 return data;
             }
 

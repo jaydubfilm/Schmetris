@@ -48,7 +48,7 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField, Required]
         private CraftingBench mCraftingBench;
-        
+
         //[SerializeField, Required]
         private StorageUI storageUi;
 
@@ -63,9 +63,9 @@ namespace StarSalvager.UI.Scrapyard
         private void Start()
         {
             storageUi = FindObjectOfType<StorageUI>();
-            
+
             costWindowObject.SetActive(false);
-            
+
             InitButtons();
 
             InitUIScrollView();
@@ -115,7 +115,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 foreach (var partRemoteData in _remotePartProfileScriptable.partRemoteData)
                 {
-                    for (int i = 0; i < partRemoteData.levels.Count - 1; i++)
+                    for (int i = 0; i < 1; i++)
                     {
                         if (partRemoteData.partType == PART_TYPE.CORE)
                             continue;
@@ -123,10 +123,10 @@ namespace StarSalvager.UI.Scrapyard
                         TEST_Blueprint blueprint = new TEST_Blueprint
                         {
                             name = partRemoteData.partType + " " + i,
-                            remoteData = partRemoteData,
+                            partType = partRemoteData.partType,
                             level = i
                         };
-                        PlayerPersistentData.PlayerData.unlockedBlueprints.Add(blueprint);
+                        PlayerPersistentData.PlayerData.UnlockBlueprint(blueprint);
                     }
                 }
             }
@@ -139,7 +139,7 @@ namespace StarSalvager.UI.Scrapyard
                     Debug.Log("Craft button pressed");
                     mCraftingBench.CraftBlueprint(data);
                     storageUi.UpdateStorage();
-                    
+
                 }, SetupBlueprintCosts);
             }
         }
@@ -234,7 +234,7 @@ namespace StarSalvager.UI.Scrapyard
         private void SetupBlueprintCosts( TEST_Blueprint blueprint, bool showWindow, RectTransform buttonTransform)
         {
             costWindowObject.SetActive(showWindow);
-            
+
             costView.ClearElements<CostUIElement>();
 
             if (!showWindow)
@@ -250,7 +250,7 @@ namespace StarSalvager.UI.Scrapyard
             itemNameText.text = blueprint.remoteData.name;
             itemIcon.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetProfileData(blueprint.remoteData.partType).Sprites[blueprint.level];
-            
+
             var resources = blueprint.remoteData.levels[blueprint.level].cost;
 
             foreach (var resource in resources)
@@ -278,4 +278,3 @@ namespace StarSalvager.UI.Scrapyard
     public class BlueprintUIElementScrollView: UIElementContentScrollView<TEST_Blueprint>
     {}
 }
-

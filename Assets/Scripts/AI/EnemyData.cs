@@ -2,6 +2,9 @@
 using StarSalvager.AI;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Animations;
+using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.UI.Scrapyard;
+using StarSalvager.Factories;
 
 namespace StarSalvager
 {
@@ -25,6 +28,8 @@ namespace StarSalvager
 
         public ENEMY_ATTACKTYPE AttackType { get; }
 
+        public bool IgnoreObstacleAvoidance { get; }
+
         public string ProjectileType { get; }
 
         public Sprite Sprite { get; }
@@ -46,12 +51,11 @@ namespace StarSalvager
 
         public float SprayCount => m_sprayCount;
 
-        public int MinBitExplosionCount { get; }
-
-        public int MaxBitExplosionCount { get; }
         private readonly int m_sprayCount;
 
         public Vector2Int Dimensions { get; }
+
+        public RDSTable rdsTable { get; }
 
         public EnemyData(EnemyRemoteData enemyRemoteData, EnemyProfileData enemyProfileData)
         {
@@ -64,6 +68,7 @@ namespace StarSalvager
             AttackSpeed = enemyRemoteData.AttackSpeed;
             MovementType = enemyProfileData.MovementType;
             AttackType = enemyProfileData.AttackType;
+            IgnoreObstacleAvoidance = enemyProfileData.IgnoreObstacleAvoidance;
             ProjectileType = enemyProfileData.ProjectileType;
             Sprite = enemyProfileData.Sprite;
             AnimationController = enemyProfileData.AnimationController;
@@ -74,16 +79,50 @@ namespace StarSalvager
             AddVelocityToProjectiles = enemyProfileData.AddVelocityToProjectiles;
             SpreadAngle = enemyProfileData.SpreadAngle;
             m_sprayCount = enemyProfileData.SprayCount;
-            MinBitExplosionCount = enemyRemoteData.MinBitExplosionCount;
-            MaxBitExplosionCount = enemyRemoteData.MaxBitExplosionCount;
             Dimensions = enemyRemoteData.Dimensions;
+
+
+            rdsTable = new RDSTable();
+            rdsTable.rdsCount = enemyRemoteData.MaxDrops;
+            foreach (var rdsData in enemyRemoteData.rdsEnemyData)
+            {
+                if (rdsData.rdsData == RDSEnemyData.TYPE.Bit)
+                {
+                    BlockData bitBlockData = new BlockData
+                    {
+                        ClassType = "Bit",
+                        Type = rdsData.type,
+                        Level = rdsData.level
+                    };
+                    rdsTable.AddEntry(new RDSValue<BlockData>(bitBlockData, rdsData.probability, rdsData.isUniqueSpawn, rdsData.isAlwaysSpawn, true));
+                }
+                else if (rdsData.rdsData == RDSEnemyData.TYPE.Component)
+                {
+                    BlockData componentBlockData = new BlockData
+                    {
+                        ClassType = "Component",
+                        Type = rdsData.type,
+                    };
+                    rdsTable.AddEntry(new RDSValue<BlockData>(componentBlockData, rdsData.probability, rdsData.isUniqueSpawn, rdsData.isAlwaysSpawn, true));
+                }
+                else if (rdsData.rdsData == RDSEnemyData.TYPE.Blueprint)
+                {
+                    TEST_Blueprint blueprintData = new TEST_Blueprint
+                    {
+                        name = (PART_TYPE)rdsData.type + " " + rdsData.level,
+                        partType = (PART_TYPE)rdsData.type,
+                        level = rdsData.level
+                    };
+                    rdsTable.AddEntry(new RDSValue<TEST_Blueprint>(blueprintData, rdsData.probability, rdsData.isUniqueSpawn, rdsData.isAlwaysSpawn, true));
+                }
+            }
         }
 
         public EnemyData(string enemyType, string name, int health, float movementSpeed, bool isAttachable,
             float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType,
             string projectileType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange,
             float orbitRadius, float numberCellsDescend, bool addVelocityToProjectiles, float spreadAngle,
-            int sprayCount, int minBitExplosionCount, int maxBitExplosionCount)
+            int sprayCount)
         {
             EnemyType = enemyType;
             Name = name;
@@ -103,8 +142,6 @@ namespace StarSalvager
             AddVelocityToProjectiles = addVelocityToProjectiles;
             SpreadAngle = spreadAngle;
             m_sprayCount = sprayCount;
-            MinBitExplosionCount = minBitExplosionCount;
-            MaxBitExplosionCount = maxBitExplosionCount;
         }
     }
 }

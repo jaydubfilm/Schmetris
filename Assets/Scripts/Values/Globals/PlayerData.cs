@@ -174,5 +174,13 @@ namespace StarSalvager.Values
             partsInStorageBlockData.Remove(partsInStorageBlockData.FirstOrDefault(b => b.Level == blockData.Level && b.Type == blockData.Type));
             OnValuesChanged?.Invoke();
         }
+
+        public void UnlockBlueprint(TEST_Blueprint blueprint)
+        {   
+            if (!unlockedBlueprints.Any(b => b.name == blueprint.name))
+            {
+                unlockedBlueprints.Add(blueprint);
+            }
+        }
     }
 }
