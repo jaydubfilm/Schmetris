@@ -2,6 +2,7 @@
 using StarSalvager.Factories;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,11 +12,12 @@ namespace StarSalvager.UI
     {
         [SerializeField, Required] private UniverseMapButton m_universeSectorButtonPrefab;
 
-        //[SerializeField, Required]
-        //private Canvas m_universeCanvas;
-
         [SerializeField, Required] private RectTransform m_scrollRectArea;
 
+        private List<UniverseMapButton> currentUniverseButtons = new List<UniverseMapButton>();
+
+        [SerializeField, Required]
+        private Button swapUniverseButton;
         [SerializeField, Required]
         private Button backButton;
 
@@ -32,6 +34,16 @@ namespace StarSalvager.UI
 
         private void InitButtons()
         {
+            swapUniverseButton.onClick.AddListener(() =>
+            {
+                if (FactoryManager.Instance.currentModularDataIndex == FactoryManager.Instance.ModularDataCount - 1)
+                    FactoryManager.Instance.currentModularDataIndex = 0;
+                else
+                    FactoryManager.Instance.currentModularDataIndex++;
+
+                InitUniverseMapTemp();
+            });
+            
             backButton.onClick.AddListener(() => SceneLoader.LoadPreviousScene());
         }
 
@@ -39,6 +51,12 @@ namespace StarSalvager.UI
 
         private void InitUniverseMap()
         {
+            foreach (var button in currentUniverseButtons)
+            {
+                GameObject.Destroy(button);
+            }
+            currentUniverseButtons.Clear();
+
             HaltonSequence positionSequence = new HaltonSequence();
 
             Rect rect = m_scrollRectArea.rect;
@@ -65,11 +83,18 @@ namespace StarSalvager.UI
                 button.Text.text = $"Sector {i + 1}";
                 button.SectorNumber = i;
                 button.Button.onClick.AddListener(() => { button.SetActiveWaveButtons(!button.ButtonsActive); });
+                currentUniverseButtons.Add(button);
             }
         }
 
         private void InitUniverseMapTemp()
         {
+            foreach (var button in currentUniverseButtons)
+            {
+                GameObject.Destroy(button);
+            }
+            currentUniverseButtons.Clear();
+
             Rect rect = m_scrollRectArea.rect;
             for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
             {
@@ -81,6 +106,7 @@ namespace StarSalvager.UI
                 button.SectorNumber = i;
                 button.Button.onClick.AddListener(() => { button.SetActiveWaveButtons(!button.ButtonsActive); });
                 button.SetActiveWaveButtons(true);
+                currentUniverseButtons.Add(button);
             }
         }
 
