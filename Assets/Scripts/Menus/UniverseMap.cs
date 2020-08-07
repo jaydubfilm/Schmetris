@@ -101,12 +101,9 @@ namespace StarSalvager.UI
             }
             currentUniverseButtons.Clear();
 
-            print("owl");
-
             Rect rect = m_scrollRectArea.rect;
             for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
             {
-                print("gummy");
                 UniverseMapButton button = Instantiate(m_universeSectorButtonPrefab);
                 button.SetupWaveButtons(FactoryManager.Instance.SectorRemoteData[i].GetNumberOfWaves());
                 button.transform.SetParent(m_scrollRectArea.transform);

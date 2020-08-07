@@ -91,7 +91,7 @@ namespace StarSalvager
 
             attachedBits.Add(bit);
 
-            CompositeCollider.GenerateGeometry();
+            GenerateGeometry();
         }
 
         public void PushNewBit(Bit bit, Vector2Int coordinate)
@@ -106,6 +106,11 @@ namespace StarSalvager
 
             attachedBits.Add(bit);
 
+            GenerateGeometry();
+        }
+
+        public void GenerateGeometry()
+        {
             CompositeCollider.GenerateGeometry();
         }
 
