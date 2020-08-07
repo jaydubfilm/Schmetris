@@ -6,7 +6,12 @@
         MAGNET,
         REPAIR,
         ARMOR,
-        GUN
+        GUN,
+        
+        CONTAINER,
+        SHIELD,
+        BOOST,
+        SMRT_WPN
     } 
 }
 

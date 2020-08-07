@@ -128,7 +128,8 @@ namespace StarSalvager
             {
                 if (Type == BIT_TYPE.BLACK)
                 {
-                    Recycler.Recycle<Bit>(this);
+                    //Recycler.Recycle<Bit>(this);
+                    bot.Rotate(bot.MostRecentRotate.Invert());
                     return;
                 }
 

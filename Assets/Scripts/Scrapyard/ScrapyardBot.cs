@@ -361,13 +361,16 @@ namespace StarSalvager
             {
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type).levels[part.level];
 
-                switch (part.Type)
+                
+                magnetCount += (int)partData.GetDataValue(DataTest.TEST_KEYS.Magnet);
+                
+                /*switch (part.Type)
                 {
                     case PART_TYPE.MAGNET:
                     case PART_TYPE.CORE:
                         magnetCount += partData.data;
                         break;
-                }
+                }*/
             }
         }
 

@@ -119,17 +119,22 @@ namespace StarSalvager
             {
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                     .GetRemoteData(part.Type);
+                
+                magnetCount += (int)partData.levels[part.level].GetDataValue(DataTest.TEST_KEYS.Magnet);
 
-                switch (part.Type)
+                /*switch (part.Type)
                 {
                     case PART_TYPE.MAGNET:
                     case PART_TYPE.CORE:
-                        magnetCount += partData.levels[part.level].data;//.data[part.level];
+                        //.data[part.level];
                         break;
-                }
+                }*/
             }
         }
 
+        private Dictionary<Part, Bit> _burnRef = new Dictionary<Part, Bit>();
+
+        
         /// <summary>
         /// Parts specific update Loop. Updates all part information based on currently attached parts.
         /// </summary>
@@ -154,6 +159,32 @@ namespace StarSalvager
                 //var bitType = partRemoteData.levels[part.level].burnRate.type;
                 
                 var resourceValue = GetValueToBurn(levelData, partRemoteData.burnType);
+                
+                if (resourceValue == 0f && useBurnRate)
+                {
+                    if (!_burnRef.ContainsKey(part))
+                    {
+                        var targetBit = GetFurthestBitToBurn(levelData, partRemoteData.burnType);
+            
+                    
+                        //If we're unable to find a bit to burn, then we can't use this part
+                        if (targetBit == null)
+                            continue;
+                
+                        _burnRef.Add(part, targetBit);
+                    }
+                    else if (_burnRef[part] == null || _burnRef[part].IsRecycled)
+                    {
+                        var targetBit = GetFurthestBitToBurn(levelData, partRemoteData.burnType);
+            
+                    
+                        //If we're unable to find a bit to burn, then we can't use this part
+                        if (targetBit == null)
+                            continue;
+
+                        _burnRef[part] = targetBit;
+                    }
+                }
 
                 switch (part.Type)
                 {
@@ -161,6 +192,10 @@ namespace StarSalvager
 
                         if (resourceValue > 0f && useBurnRate)
                             resourceValue -= levelData.burnRate * Time.deltaTime;
+                        else if (_burnRef[part] && useBurnRate)
+                        {
+                            _burnRef[part].ChangeHealth(-levelData.burnRate * Time.deltaTime);
+                        }
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
@@ -193,19 +228,26 @@ namespace StarSalvager
                         break;
                     case PART_TYPE.REPAIR:
 
-                        if (!useBurnRate)
-                            break;
+                        
+                        
                         
                         if (resourceValue <= 0f && useBurnRate)
                         {
-                            continue;
+                            if (!_burnRef[part] && useBurnRate)
+                            {
+                                
+                                continue;
+                            }
+
                         }
 
                         IHealth toRepair;
                         
+                        var radius = (int)levelData.GetDataValue(DataTest.TEST_KEYS.Radius);
+                        
                         //FIXME I don't think using linq here, especially twice is the best option
                         //TODO This needs to fire every x Seconds
-                        toRepair = bot.attachedBlocks.GetAttachablesAroundInRadius<Part>(part, part.level + 1)
+                        toRepair = bot.attachedBlocks.GetAttachablesAroundInRadius<Part>(part, radius)
                             .Where(p => p.CurrentHealth < p.StartingHealth)
                             .Select(x => new KeyValuePair<Part, float>(x, FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(x.Type).priority / (x.CurrentHealth / x.StartingHealth)))
                             .OrderByDescending(x => x.Value)
@@ -234,17 +276,28 @@ namespace StarSalvager
                                 
                         }
 
-                        resourceValue -= levelData.burnRate * Time.deltaTime;
+                        if (useBurnRate)
+                        {
+                            if(resourceValue > 0f)
+                                resourceValue -= levelData.burnRate * Time.deltaTime;
+                            else if(_burnRef[part])
+                                _burnRef[part].ChangeHealth(-levelData.burnRate * Time.deltaTime);
+                        }
 
+                        var repairAmount = levelData.GetDataValue(DataTest.TEST_KEYS.Heal);
+                        
                         //Increase the health of this part depending on the current level of the repairer
-                        toRepair.ChangeHealth(levelData.data * Time.deltaTime);
+                        toRepair.ChangeHealth(repairAmount * Time.deltaTime);
 
                         break;
                     case PART_TYPE.GUN:
                         
                         if (resourceValue <= 0f && useBurnRate)
                         {
-                            continue;
+                            if (!_burnRef[part] && useBurnRate)
+                            {
+                                continue;
+                            }
                         }
                         
                         //TODO Need to determine if the shoot type is looking for enemies or not
@@ -258,7 +311,9 @@ namespace StarSalvager
                         //TODO This needs to fire every x Seconds
                         //--------------------------------------------------------------------------------------------//
 
-                        if (projectileTimers[part] < levelData.data / damageGuess)
+                        var cooldown = levelData.GetDataValue(DataTest.TEST_KEYS.Cooldown);
+                        
+                        if (projectileTimers[part] < cooldown)
                         {
                             projectileTimers[part] += Time.deltaTime;
                             break;
@@ -284,7 +339,10 @@ namespace StarSalvager
 
                         if (useBurnRate)
                         {
-                            resourceValue -= levelData.burnRate;
+                            if(resourceValue > 0)
+                                resourceValue -= levelData.burnRate;
+                            else if(_burnRef[part])
+                                _burnRef[part].ChangeHealth(-levelData.burnRate * Time.deltaTime);
                         }
 
                         Debug.Log("Fire");
@@ -328,6 +386,7 @@ namespace StarSalvager
                 .Where(b => b.Type == type)
                 .GetFurthestAttachable(Vector2Int.zero);
         }
+
         
         private float GetValueToBurn(PartLevelData partLevelData, BIT_TYPE type)
         {
@@ -338,19 +397,29 @@ namespace StarSalvager
                 ? default
                 : PlayerPersistentData.PlayerData.liquidResource[type];
 
-            if (value > 0)
-                return value;
+            return  value;
+
+
+            /*if (!_burnRef.ContainsKey(part))
+            {
+                var targetBit = GetFurthestBitToBurn(partLevelData, type);
             
-            var targetBit = GetFurthestBitToBurn(partLevelData, type);
                     
-            //If we're unable to find a bit to burn, then we can't use this part
-            if (targetBit == null)
-                return default;
+                //If we're unable to find a bit to burn, then we can't use this part
+                if (targetBit == null)
+                    return default;
+                
+                _burnRef.Add(part, targetBit);
+            }
+            
+            
+            
+           
 
             value = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResource(targetBit);
             bot.DestroyAttachable(targetBit);
 
-            return value;
+            return value;*/
         }
         
         //============================================================================================================//

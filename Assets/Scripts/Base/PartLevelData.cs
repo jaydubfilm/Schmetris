@@ -15,14 +15,14 @@ namespace StarSalvager
         #if UNITY_EDITOR
         [JsonIgnore]
         public string Name =>
-            $"Health: {health} - Data: {data} - Burn Rate: {(burnRate == 0f ? "None" : $"{burnRate}/s")} - lvl req: {unlockLevel}";
+            $"Health: {health} - Data: {dataTest.Length} - Burn Rate: {(burnRate == 0f ? "None" : $"{burnRate}/s")} - lvl req: {unlockLevel}";
         #endif
 
         public int unlockLevel;
         
         public float health;
 
-        public int data;
+        //public int data;
 
         [ShowInInspector]
         public DataTest[] dataTest;
@@ -32,9 +32,10 @@ namespace StarSalvager
         
         public List<CraftCost> cost;
 
-        public float GetDataValue(string key)
+        public float GetDataValue(DataTest.TEST_KEYS key)
         {
-            var dataValue = dataTest.FirstOrDefault(d => d.key.Equals(key));
+            var keyString = DataTest.TestList[(int) key];
+            var dataValue = dataTest.FirstOrDefault(d => d.key.Equals(keyString));
             return dataValue.Equals(null) ? 0f : dataValue.value;
         }
     }
@@ -42,7 +43,19 @@ namespace StarSalvager
     [Serializable]
     public struct DataTest: IEquatable<DataTest>
     {
-        private static readonly string[] TestList = 
+        public enum TEST_KEYS
+        {
+            Magnet,
+            Capacity,
+            Heal,
+            Radius,
+            Absorb,
+            Boost,
+            Time,
+            Damage,
+            Cooldown,
+        }
+        public static readonly string[] TestList = 
         {
             "Magnet",
             "Capacity",
@@ -55,7 +68,7 @@ namespace StarSalvager
             "Cooldown",
         };
         
-        [ValueDropdown(nameof(TestList)), HorizontalGroup("row1"), LabelWidth(30)]
+        [ValueDropdown(nameof(TestList)), HorizontalGroup("row1"), HideLabel]
         public string key;
         [HorizontalGroup("row1"), LabelWidth(40)]
         public float value;
@@ -72,10 +85,11 @@ namespace StarSalvager
 
         public override int GetHashCode()
         {
-            unchecked
+            return base.GetHashCode();
+            /*unchecked
             {
                 return ((key != null ? key.GetHashCode() : 0) * 397) ^ value.GetHashCode();
-            }
+            }*/
         }
     }
 }
