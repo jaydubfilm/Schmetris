@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using StarSalvager.Factories;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -43,7 +44,10 @@ namespace StarSalvager.Values
             if (!File.Exists(persistentDataPath))
             {
                 PlayerData data = new PlayerData();
-                data.AddSectorProgression(0, 0);
+                for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
+                {
+                    data.AddSectorProgression(i, 0);
+                }
                 return data;
             }
 
