@@ -15,17 +15,17 @@ namespace StarSalvager
 
         public void CraftBlueprint(TEST_Blueprint blueprint)
         {
-            if (!PlayerPersistentData.PlayerData.CanAffordPart(blueprint.remoteData.partType, blueprint.level, false))
+            if (!PlayerPersistentData.PlayerData.CanAffordPart(blueprint.partType, blueprint.level, false))
                 return;
 
             BlockData blockData = new BlockData
             {
                 ClassType = "Part",
-                Type = (int)blueprint.remoteData.partType,
+                Type = (int)blueprint.partType,
                 Level = blueprint.level
             };
 
-            PlayerPersistentData.PlayerData.SubtractPartCosts(blueprint.remoteData.partType, blueprint.level, false);
+            PlayerPersistentData.PlayerData.SubtractPartCosts(blueprint.partType, blueprint.level, false);
             PlayerPersistentData.PlayerData.AddPartToStorage(blockData);
         }
     }

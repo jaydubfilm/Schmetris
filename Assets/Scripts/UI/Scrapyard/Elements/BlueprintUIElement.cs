@@ -23,7 +23,7 @@ namespace StarSalvager.UI.Scrapyard
             this.data = data;
 
             titleText.text = data.name;
-            image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(data.remoteData.partType).Sprites[data.level];
+            image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(data.partType).Sprites[data.level];
             
             button.onClick.AddListener(() =>
             {
@@ -35,14 +35,14 @@ namespace StarSalvager.UI.Scrapyard
     public class TEST_Blueprint : IEquatable<TEST_Blueprint>
     {
         public string name;
-        public PartRemoteData remoteData;
+        public PART_TYPE partType;
         public int level;
 
         public bool Equals(TEST_Blueprint other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return name == other.name && remoteData.Equals(other.remoteData) && level == other.level;
+            return name == other.name && partType.Equals(other.partType) && level == other.level;
         }
 
         public override bool Equals(object obj)

@@ -402,6 +402,7 @@ namespace StarSalvager
                 if (rdsObjects[i] is RDSValue<TEST_Blueprint> rdsValueBlueprint)
                 {
                     PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
+                    Toast.AddToast("Unlocked Blueprint!");
                     rdsObjects.RemoveAt(i);
                 }
                 //Remove objects that aren't going on screen

@@ -13,7 +13,7 @@ namespace StarSalvager
         {
             Bit,
             Component,
-            Part
+            Blueprint
         }
 
         [FoldoutGroup("$Name"), EnumToggleButtons, LabelWidth(125), OnValueChanged("UpdateValue")]
@@ -22,10 +22,14 @@ namespace StarSalvager
         [FoldoutGroup("$Name"), ValueDropdown("GetTypes")]
         public int type;
 
-        [FoldoutGroup("$Name"), ShowIf("rdsData", TYPE.Bit)]
+        [FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Component)]
         public int level;
 
         [FoldoutGroup("$Name")] public int probability;
+
+        [FoldoutGroup("$Name")] public bool isUniqueSpawn;
+
+        [FoldoutGroup("$Name")] public bool isAlwaysSpawn;
 
         //This only compares Type and not all individual properties
 
@@ -79,7 +83,7 @@ namespace StarSalvager
                 case TYPE.Component:
                     value = $"{(COMPONENT_TYPE)type}";
                     break;
-                case TYPE.Part:
+                case TYPE.Blueprint:
                     value = $"{(PART_TYPE)type}";
                     break;
                 default:
@@ -102,7 +106,7 @@ namespace StarSalvager
                 case TYPE.Component:
                     valueType = typeof(COMPONENT_TYPE);
                     break;
-                case TYPE.Part:
+                case TYPE.Blueprint:
                     valueType = typeof(PART_TYPE);
                     break;
                 default:

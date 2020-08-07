@@ -100,7 +100,7 @@ namespace StarSalvager.UI.Scrapyard
                         TEST_Blueprint blueprint = new TEST_Blueprint
                         {
                             name = partRemoteData.partType + " " + i,
-                            remoteData = partRemoteData,
+                            partType = partRemoteData.partType,
                             level = i
                         };
                         PlayerPersistentData.PlayerData.UnlockBlueprint(blueprint);
@@ -204,7 +204,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void SetupBlueprintCosts(TEST_Blueprint blueprint)
         {
-            var resources = blueprint.remoteData.levels[blueprint.level].cost;
+            var resources = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(blueprint.partType).levels[blueprint.level].cost;
 
             costContentView.ClearElements<ResourceUIElement>();
             foreach (var resource in resources)
@@ -217,7 +217,7 @@ namespace StarSalvager.UI.Scrapyard
         private void BlueprintPressed(TEST_Blueprint blueprint)
         {
             itemNameText.text = blueprint.name;
-            PartProfile partProfile = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(blueprint.remoteData.partType);
+            PartProfile partProfile = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(blueprint.partType);
             resultImage.sprite = partProfile.Sprites[blueprint.level];
             SetupBlueprintCosts(blueprint);
             currentSelected = blueprint;
