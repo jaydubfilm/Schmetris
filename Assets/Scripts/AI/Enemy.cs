@@ -63,8 +63,8 @@ namespace StarSalvager.AI
             StateAnimator.SetController(m_enemyData?.AnimationController);
             
             m_horizontalMovementYLevel = transform.position.y;
-            horizontalFarLeftX = 0;
-            horizontalFarRightX = Values.Globals.GridSizeX * Constants.gridCellSize;
+            horizontalFarLeftX = (-1 * Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen) / 3.5f;
+            horizontalFarRightX = (Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen) / 3.5f;
         }
 
         protected virtual void Update()
