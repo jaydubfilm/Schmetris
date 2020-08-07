@@ -65,7 +65,7 @@ public class ProjectileManager : IReset, IMoveOnInput
             }
         }
 
-        CleanProjectiles(32f);
+        CleanProjectiles(Globals.GridSizeY * 1.1f * Constants.gridCellSize);
             
         foreach (var projectile in m_projectiles)
         {
