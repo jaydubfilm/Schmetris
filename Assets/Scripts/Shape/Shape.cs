@@ -201,7 +201,8 @@ namespace StarSalvager
             {
                 if (attachedBits[0].Type == BIT_TYPE.BLACK)
                 {
-                    Recycler.Recycle<Shape>(this);
+                    //Recycler.Recycle<Shape>(this);
+                    bot.Rotate(bot.MostRecentRotate.Invert());
                     return;
                 }
 

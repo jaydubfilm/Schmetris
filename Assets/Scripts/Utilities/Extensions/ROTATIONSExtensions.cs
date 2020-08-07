@@ -76,6 +76,19 @@ namespace StarSalvager.Utilities.Extensions
                     throw new ArgumentOutOfRangeException(nameof(rotation), rotation, null);
             }
         }
+        
+        public static ROTATION Invert(this ROTATION rotation)
+        {
+            switch (rotation)
+            {
+                case ROTATION.CW:
+                    return ROTATION.CCW;
+                case ROTATION.CCW:
+                    return ROTATION.CW;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rotation), rotation, null);
+            }
+        }
     }
 }
 

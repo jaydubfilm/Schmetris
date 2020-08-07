@@ -130,6 +130,9 @@ namespace StarSalvager
             }
         }
 
+        private Dictionary<Part, Bit> _burnRef = new Dictionary<Part, Bit>();
+
+        
         /// <summary>
         /// Parts specific update Loop. Updates all part information based on currently attached parts.
         /// </summary>
@@ -154,6 +157,32 @@ namespace StarSalvager
                 //var bitType = partRemoteData.levels[part.level].burnRate.type;
                 
                 var resourceValue = GetValueToBurn(levelData, partRemoteData.burnType);
+                
+                if (resourceValue == 0f && useBurnRate)
+                {
+                    if (!_burnRef.ContainsKey(part))
+                    {
+                        var targetBit = GetFurthestBitToBurn(levelData, partRemoteData.burnType);
+            
+                    
+                        //If we're unable to find a bit to burn, then we can't use this part
+                        if (targetBit == null)
+                            continue;
+                
+                        _burnRef.Add(part, targetBit);
+                    }
+                    else if (_burnRef[part] == null || _burnRef[part].IsRecycled)
+                    {
+                        var targetBit = GetFurthestBitToBurn(levelData, partRemoteData.burnType);
+            
+                    
+                        //If we're unable to find a bit to burn, then we can't use this part
+                        if (targetBit == null)
+                            continue;
+
+                        _burnRef[part] = targetBit;
+                    }
+                }
 
                 switch (part.Type)
                 {
@@ -161,6 +190,10 @@ namespace StarSalvager
 
                         if (resourceValue > 0f && useBurnRate)
                             resourceValue -= levelData.burnRate * Time.deltaTime;
+                        else if (_burnRef[part] && useBurnRate)
+                        {
+                            _burnRef[part].ChangeHealth(-levelData.burnRate * Time.deltaTime);
+                        }
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
@@ -193,12 +226,17 @@ namespace StarSalvager
                         break;
                     case PART_TYPE.REPAIR:
 
-                        if (!useBurnRate)
-                            break;
+                        
+                        
                         
                         if (resourceValue <= 0f && useBurnRate)
                         {
-                            continue;
+                            if (!_burnRef[part] && useBurnRate)
+                            {
+                                
+                                continue;
+                            }
+
                         }
 
                         IHealth toRepair;
@@ -234,8 +272,14 @@ namespace StarSalvager
                                 
                         }
 
-                        resourceValue -= levelData.burnRate * Time.deltaTime;
-
+                        if (useBurnRate)
+                        {
+                            if(resourceValue > 0f)
+                                resourceValue -= levelData.burnRate * Time.deltaTime;
+                            else if(_burnRef[part])
+                                _burnRef[part].ChangeHealth(-levelData.burnRate * Time.deltaTime);
+                        }
+                        
                         //Increase the health of this part depending on the current level of the repairer
                         toRepair.ChangeHealth(levelData.data * Time.deltaTime);
 
@@ -244,7 +288,10 @@ namespace StarSalvager
                         
                         if (resourceValue <= 0f && useBurnRate)
                         {
-                            continue;
+                            if (!_burnRef[part] && useBurnRate)
+                            {
+                                continue;
+                            }
                         }
                         
                         //TODO Need to determine if the shoot type is looking for enemies or not
@@ -284,7 +331,10 @@ namespace StarSalvager
 
                         if (useBurnRate)
                         {
-                            resourceValue -= levelData.burnRate;
+                            if(resourceValue > 0)
+                                resourceValue -= levelData.burnRate;
+                            else if(_burnRef[part])
+                                _burnRef[part].ChangeHealth(-levelData.burnRate * Time.deltaTime);
                         }
 
                         Debug.Log("Fire");
@@ -328,6 +378,7 @@ namespace StarSalvager
                 .Where(b => b.Type == type)
                 .GetFurthestAttachable(Vector2Int.zero);
         }
+
         
         private float GetValueToBurn(PartLevelData partLevelData, BIT_TYPE type)
         {
@@ -338,19 +389,29 @@ namespace StarSalvager
                 ? default
                 : PlayerPersistentData.PlayerData.liquidResource[type];
 
-            if (value > 0)
-                return value;
+            return  value;
+
+
+            /*if (!_burnRef.ContainsKey(part))
+            {
+                var targetBit = GetFurthestBitToBurn(partLevelData, type);
             
-            var targetBit = GetFurthestBitToBurn(partLevelData, type);
                     
-            //If we're unable to find a bit to burn, then we can't use this part
-            if (targetBit == null)
-                return default;
+                //If we're unable to find a bit to burn, then we can't use this part
+                if (targetBit == null)
+                    return default;
+                
+                _burnRef.Add(part, targetBit);
+            }
+            
+            
+            
+           
 
             value = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResource(targetBit);
             bot.DestroyAttachable(targetBit);
 
-            return value;
+            return value;*/
         }
         
         //============================================================================================================//
