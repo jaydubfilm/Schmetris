@@ -152,6 +152,7 @@ namespace StarSalvager.UI
             startGameButton.onClick.AddListener(() =>
             {
                 OpenMenu(MENU.MAIN);
+                PlayerPersistentData.ResetPlayerData();
                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
             });
             
@@ -159,13 +160,16 @@ namespace StarSalvager.UI
             tutorialButton.interactable = false;
             
             ngBackButton.onClick.AddListener(() => OpenMenu(MENU.MAIN));
-            
+
             //Load Game Buttons
             //--------------------------------------------------------------------------------------------------------//
 
             //FIXME This will likely need to be scalable
-            slot1Button.onClick.AddListener(() => throw new NotImplementedException());
-            slot1Button.interactable = false;
+            slot1Button.onClick.AddListener(() =>
+            {
+                OpenMenu(MENU.MAIN);
+                SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+            });
             
             slot2Button.onClick.AddListener(() => throw new NotImplementedException());
             slot2Button.interactable = false;
