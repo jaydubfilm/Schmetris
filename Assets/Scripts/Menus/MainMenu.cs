@@ -114,7 +114,12 @@ namespace StarSalvager.UI
             MissionManager.Init();
             PlayerPersistentData.Init();
         }
-        
+
+        private void Update()
+        {
+            continueButton.interactable = !PlayerPersistentData.IsNewFile;
+        }
+
         //============================================================================================================//
 
         private void InitButtons()
@@ -157,6 +162,7 @@ namespace StarSalvager.UI
             {
                 OpenMenu(MENU.MAIN);
                 PlayerPersistentData.ResetPlayerData();
+                PlayerPersistentData.IsNewFile = false;
                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
             });
             
@@ -172,6 +178,7 @@ namespace StarSalvager.UI
             slot1Button.onClick.AddListener(() =>
             {
                 OpenMenu(MENU.MAIN);
+                PlayerPersistentData.IsNewFile = false;
                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
             });
             

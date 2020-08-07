@@ -92,7 +92,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 foreach (var partRemoteData in _remotePartProfileScriptable.partRemoteData)
                 {
-                    for (int i = 0; i < 1; i++)
+                    for (int i = 0; i < partRemoteData.levels.Count; i++)
                     {
                         if (partRemoteData.partType == PART_TYPE.CORE)
                             continue;

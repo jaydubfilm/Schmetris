@@ -18,9 +18,14 @@ namespace StarSalvager.Factories
         public MissionRemoteDataScriptableObject MissionRemoteData => missionRemoteData;
 
         [SerializeField, Required, BoxGroup("Temporary")]
-        private List<SectorRemoteDataScriptableObject> m_sectorRemoteData;
+        private List<SectorModularData> m_sectorRemoteData;
 
-        public List<SectorRemoteDataScriptableObject> SectorRemoteData => m_sectorRemoteData;
+        public List<SectorRemoteDataScriptableObject> SectorRemoteData => m_sectorRemoteData[currentModularDataIndex].SectorData;
+
+        [SerializeField, Required, BoxGroup("Temporary")]
+        public int currentModularDataIndex = 0;
+
+        public int ModularDataCount => m_sectorRemoteData.Count;
 
         //============================================================================================================//
 

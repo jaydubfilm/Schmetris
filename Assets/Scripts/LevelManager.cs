@@ -219,6 +219,7 @@ namespace StarSalvager
             }
             WorldGrid.SetupGrid();
             ProjectileManager.Activate();
+            PlayerPersistentData.IsNewFile = false;
 
             GameTimer.SetPaused(false);
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
