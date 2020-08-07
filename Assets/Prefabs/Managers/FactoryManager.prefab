@@ -45,8 +45,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   missionRemoteData: {fileID: 11400000, guid: 7d456b233d9dde240ad75b09a9d76dd1, type: 2}
   m_sectorRemoteData:
-  - {fileID: 11400000, guid: 7ac9df6299ec27246841800d65fc57ec, type: 2}
-  - {fileID: 11400000, guid: 63cd5494bf32a7b4d9e634d59d26d498, type: 2}
+  - SectorData:
+    - {fileID: 11400000, guid: 7ac9df6299ec27246841800d65fc57ec, type: 2}
+    - {fileID: 11400000, guid: 63cd5494bf32a7b4d9e634d59d26d498, type: 2}
+  - SectorData:
+    - {fileID: 11400000, guid: 63cd5494bf32a7b4d9e634d59d26d498, type: 2}
+  currentModularDataIndex: 0
   bitProfile: {fileID: 11400000, guid: e28447dfb0dfb5443a8105eb274b5052, type: 2}
   bitRemoteData: {fileID: 11400000, guid: 284ddcd54ebc2154ab2a6da6644407e6, type: 2}
   componentProfile: {fileID: 11400000, guid: 0162e5c6fcd936548b93c28b633aa41e, type: 2}

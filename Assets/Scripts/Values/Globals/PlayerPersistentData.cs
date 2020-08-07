@@ -12,6 +12,8 @@ namespace StarSalvager.Values
         private static readonly string persistentDataPath = Application.dataPath + "/RemoteData/PlayerPersistentData.player";
         private static List<PlayerData> m_playerData = new List<PlayerData>();
 
+        public static bool IsNewFile = false;
+
         public static void Init()
         {
             m_playerData.Add(ImportPlayerPersistentData());
@@ -36,6 +38,8 @@ namespace StarSalvager.Values
                 data.AddSectorProgression(i, 0);
             }
             m_playerData[0] = data;
+
+            IsNewFile = true;
         }
 
         private static string ExportPlayerPersistentData(PlayerData editorData)
@@ -58,10 +62,13 @@ namespace StarSalvager.Values
                 {
                     data.AddSectorProgression(i, 0);
                 }
+                IsNewFile = true;
                 return data;
             }
 
             var loaded = JsonConvert.DeserializeObject<PlayerData>(File.ReadAllText(persistentDataPath));
+
+            IsNewFile = false;
 
             return loaded;
         }
