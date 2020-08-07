@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.Factories
@@ -252,6 +253,7 @@ namespace StarSalvager.Factories
                 Application.dataPath + "/RemoteData/MissionsMasterData.mission"
             };
 
+
             foreach (var file in files)
             {
                 if (File.Exists(file))
@@ -264,6 +266,9 @@ namespace StarSalvager.Factories
                     Debug.LogError($"{file} does not exist");
                 }
             }
+            
+            PlayerPersistentData.ClearPlayerData();
+
         }
         #endif
         

@@ -20,12 +20,12 @@ namespace StarSalvager.Factories
         //============================================================================================================//
 
         
-        public ComponentProfile GetBitProfile(COMPONENT_TYPE type)
+        public ComponentProfile GetComponentProfile(COMPONENT_TYPE type)
         {
             return factoryProfile.GetProfile(type);
         }
         
-        public ComponentRemoteData GetBitRemoteData(COMPONENT_TYPE type)
+        public ComponentRemoteData GetComponentRemoteData(COMPONENT_TYPE type)
         {
             return _remoteData.GetRemoteData(type);
         }

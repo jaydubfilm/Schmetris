@@ -10,44 +10,35 @@ namespace StarSalvager.UI.Scrapyard
 {
     public class ScrapyardUI : MonoBehaviour
     {
-        private enum MENU
-        {
-            LAUNCH,
-            DESIGN,
-            CRAFT,
-            STORAGE,
-            MISSION
-        }
-        
         //============================================================================================================//
         
-        [SerializeField, Required]
+        /*[SerializeField, Required]
         private GameObject droneDesignWindow;
         [SerializeField, Required]
         private GameObject craftingWindow;
         [SerializeField, Required]
-        private GameObject storageWindow;
+        private GameObject storageWindow;*/
         [SerializeField, Required]
         private GameObject missionsWindow;
         
         //============================================================================================================//
 
-        [SerializeField, Required, FoldoutGroup("View Drone Window")]
-        private GameObject viewDroneWindow;
+        /*[SerializeField, Required, FoldoutGroup("View Drone Window")]
+        private GameObject viewDroneWindow;*/
         [SerializeField, Required, FoldoutGroup("View Drone Window")]
         private Button launchButton;
 
         //============================================================================================================//
 
         
-        [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
+        /*[SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button launchNavButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button droneDesignButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button craftingButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
-        private Button storageButton;
+        private Button storageButton;*/
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button missionsButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
@@ -69,7 +60,8 @@ namespace StarSalvager.UI.Scrapyard
             
             InitButtons();
             
-            ShowMenu(MENU.LAUNCH);
+            //ShowMenu(MENU.LAUNCH);
+            missionsWindow.SetActive(false);
         }
         
         //============================================================================================================//
@@ -84,11 +76,14 @@ namespace StarSalvager.UI.Scrapyard
             //Navigation Buttons
             //--------------------------------------------------------------------------------------------------------//
 
-            launchNavButton.onClick.AddListener(() => ShowMenu(MENU.LAUNCH));
+            /*launchNavButton.onClick.AddListener(() => ShowMenu(MENU.LAUNCH));
             droneDesignButton.onClick.AddListener(() => ShowMenu(MENU.DESIGN));
             craftingButton.onClick.AddListener(() => ShowMenu(MENU.CRAFT));
-            storageButton.onClick.AddListener(() => ShowMenu(MENU.STORAGE));
-            missionsButton.onClick.AddListener(() => ShowMenu(MENU.MISSION));
+            storageButton.onClick.AddListener(() => ShowMenu(MENU.STORAGE));*/
+            missionsButton.onClick.AddListener(() =>
+            {
+                missionsWindow.SetActive(!missionsWindow.activeInHierarchy);
+            });
             menuButton.onClick.AddListener(() =>
             {
                 SceneLoader.ActivateScene("MainMenuScene", "ScrapyardScene");
@@ -114,7 +109,10 @@ namespace StarSalvager.UI.Scrapyard
             {
                 Alert.ShowAlert("Alert!",
                     "A disconnected piece is active on your Bot! Please repair before continuing", "Fix",
-                    () => ShowMenu(MENU.DESIGN));
+                    () =>
+                    {
+                        /*ShowMenu(MENU.DESIGN);*/
+                    });
                 
                 return;
             }
@@ -134,7 +132,7 @@ namespace StarSalvager.UI.Scrapyard
         //Menu Functions
         //============================================================================================================//
 
-        private void ShowMenu(MENU menu)
+        /*private void ShowMenu(MENU menu)
         {
             
             viewDroneWindow.SetActive(false);
@@ -167,7 +165,7 @@ namespace StarSalvager.UI.Scrapyard
                 default:
                     throw new ArgumentOutOfRangeException(nameof(menu), menu, null);
             }
-        }
+        }*/
         
         //============================================================================================================//
     } 

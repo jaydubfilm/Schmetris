@@ -17,7 +17,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard
 {
-    public class DroneDesignUI : MonoBehaviour, IDragHandler
+    public class DroneDesignUI : MonoBehaviour
     {
         [SerializeField, Required, BoxGroup("Part UI")]
         private GameObject partsWindow;
@@ -35,22 +35,22 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
-        [SerializeField, BoxGroup("View")]
-        private SliderText zoomSliderText;
-        [SerializeField, BoxGroup("View"), Required]
-        private Slider zoomSlider;
+        /*[SerializeField, BoxGroup("View")]
+        private SliderText zoomSliderText;*/
+        /*[SerializeField, BoxGroup("View"), Required]
+        private Slider zoomSlider;*/
 
-        [SerializeField, Required, BoxGroup("View")]
+        /*[SerializeField, Required, BoxGroup("View")]
         private Button leftTurnButton;
         [SerializeField, Required, BoxGroup("View")]
-        private Button rightTurnButton;
+        private Button rightTurnButton;*/
 
         //============================================================================================================//
 
-        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        /*[SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button saveButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
-        private Button loadButton;
+        private Button loadButton;*/
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button isUpgradingButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
@@ -116,10 +116,10 @@ namespace StarSalvager.UI.Scrapyard
 
         private void Start()
         {
-            zoomSliderText.Init();
+            /*zoomSliderText.Init();*/
 
-            zoomSlider.onValueChanged.AddListener(SetCameraZoom);
-            SetCameraZoom(zoomSlider.value);
+            /*zoomSlider.onValueChanged.AddListener(SetCameraZoom);
+            SetCameraZoom(zoomSlider.value);*/
 
             InitButtons();
 
@@ -134,11 +134,15 @@ namespace StarSalvager.UI.Scrapyard
         {
             if (scrollViewsSetup)
                 RefreshScrollViews();
+
+            PlayerPersistentData.PlayerData.OnValuesChanged += UpdateResources;
         }
 
         void OnDisable()
         {
             mDroneDesigner.ClearUndoRedoStacks();
+            
+            PlayerPersistentData.PlayerData.OnValuesChanged -= UpdateResources;
         }
 
         #endregion //Unity Functions
@@ -151,7 +155,7 @@ namespace StarSalvager.UI.Scrapyard
         {
             //--------------------------------------------------------------------------------------------------------//
 
-            leftTurnButton.onClick.AddListener(() =>
+            /*leftTurnButton.onClick.AddListener(() =>
             {
                 mDroneDesigner.RotateBots(-1.0f);
             });
@@ -159,11 +163,11 @@ namespace StarSalvager.UI.Scrapyard
             rightTurnButton.onClick.AddListener(() =>
             {
                 mDroneDesigner.RotateBots(1.0f);
-            });
+            });*/
 
             //--------------------------------------------------------------------------------------------------------//
 
-            saveButton.onClick.AddListener(() =>
+            /*saveButton.onClick.AddListener(() =>
             {
                 Debug.Log("Save Button Pressed");
             });
@@ -171,7 +175,7 @@ namespace StarSalvager.UI.Scrapyard
             loadButton.onClick.AddListener(() =>
             {
                 Debug.Log("Load Button Pressed");
-            });
+            });*/
 
             //--------------------------------------------------------------------------------------------------------//
 
@@ -310,7 +314,7 @@ namespace StarSalvager.UI.Scrapyard
 
         public void InitResourceScrollViews()
         {
-            var resources = PlayerPersistentData.PlayerData.GetResources();
+            var resources = PlayerPersistentData.PlayerData.resources;
 
             foreach (var resource in resources)
             {
@@ -325,7 +329,7 @@ namespace StarSalvager.UI.Scrapyard
                 element.Init(data);
             }
 
-            var components = PlayerPersistentData.PlayerData.GetComponents();
+            /*var components = PlayerPersistentData.PlayerData.GetComponents();
 
             foreach (var component in components)
             {
@@ -338,7 +342,7 @@ namespace StarSalvager.UI.Scrapyard
 
                 var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{component.Key}_UIElement");
                 element.Init(data);
-            }
+            }*/
         }
 
         public void AddToPartScrollView(BlockData blockData)
@@ -358,7 +362,7 @@ namespace StarSalvager.UI.Scrapyard
 
         public void UpdateResources()
         {
-            var resources = PlayerPersistentData.PlayerData.GetResources();
+            var resources = PlayerPersistentData.PlayerData.resources;
 
             foreach (var resource in resources)
             {
@@ -377,7 +381,7 @@ namespace StarSalvager.UI.Scrapyard
                 element.Init(data);
             }
 
-            var components = PlayerPersistentData.PlayerData.GetComponents();
+            var components = PlayerPersistentData.PlayerData.components;
 
             foreach (var component in components)
             {
@@ -416,11 +420,11 @@ namespace StarSalvager.UI.Scrapyard
 
         #region Other
 
-        private void SetCameraZoom(float value)
+        /*private void SetCameraZoom(float value)
         {
             m_cameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * value, Vector3.zero);
             m_cameraController.CameraOffset(Vector3.zero, true);
-        }
+        }*/
 
         public void DisplayInsufficientResources()
         {
@@ -446,11 +450,6 @@ namespace StarSalvager.UI.Scrapyard
         {
             currentSelected = botData;
             loadName.text = "Load " + botData.Name;
-        }
-
-        public void OnDrag(PointerEventData eventData)
-        {
-            Debug.Log("Dragging");
         }
 
         #endregion //Other

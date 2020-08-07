@@ -204,7 +204,7 @@ namespace StarSalvager
                 return;
             }*/
 
-            if (selectedPartType == null)
+            if (!selectedPartType.HasValue)
                 return;
 
             /*if (!PlayerPersistentData.PlayerData.CanAffordPart((PART_TYPE)selectedPartType, SelectedPartLevel, true))
@@ -222,7 +222,8 @@ namespace StarSalvager
                     continue;
                 }
 
-                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>((PART_TYPE)selectedPartType, SelectedPartLevel);
+                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(selectedPartType.Value, SelectedPartLevel);
+                //TODO Should be checking if the player does in-fact have the part in their storage
                 PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
                 droneDesignUi.RefreshScrollViews();
                 scrapBot.AttachNewBit(mouseCoordinate, attachable);
@@ -283,7 +284,7 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        #region Stack
+        #region Undo/Redo Stack
 
         public void UndoStackPop()
         {
@@ -460,7 +461,7 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        #region Layouts
+        #region Save/Load Layouts
 
         public void SaveLayout(string layoutName)
         {
@@ -495,9 +496,9 @@ namespace StarSalvager
             }
 
             //Setup your list of available resources by putting player resources into a temp list
-            Dictionary<BIT_TYPE, int> resourceComparer = new Dictionary<BIT_TYPE, int>(PlayerPersistentData.PlayerData.GetResources());
+            Dictionary<BIT_TYPE, int> resourceComparer = new Dictionary<BIT_TYPE, int>(PlayerPersistentData.PlayerData.resources);
             //Setup your list of available resources by putting player resources into a temp list
-            Dictionary<COMPONENT_TYPE, int> componentComparer = new Dictionary<COMPONENT_TYPE, int>(PlayerPersistentData.PlayerData.GetComponents());
+            Dictionary<COMPONENT_TYPE, int> componentComparer = new Dictionary<COMPONENT_TYPE, int>(PlayerPersistentData.PlayerData.components);
 
             //Setup your list of parts needing to be purchasing by comparing the list of parts in the layout to the list of available parts.
             List<BlockData> newLayoutComparer = new List<BlockData>();
@@ -534,7 +535,7 @@ namespace StarSalvager
 
             //Swap to new layout
             _currentLayout = tempLayout;
-            PlayerPersistentData.PlayerData.resources = resourceComparer;
+            PlayerPersistentData.PlayerData.SetResources(resourceComparer);
             PlayerPersistentData.PlayerData.SetCurrentPartsInStorage(partComparer);
 
             for (int i = _scrapyardBots[0].attachedBlocks.Count - 1; i >= 0; i--)

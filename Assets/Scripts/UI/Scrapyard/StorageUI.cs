@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Factories;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
 using UnityEngine;
@@ -30,11 +33,11 @@ namespace StarSalvager.UI.Scrapyard
         
         //============================================================================================================//
         
-        //TODO These need to be set up to function as a tab
+        /*//TODO These need to be set up to function as a tab
         [SerializeField, Required]
         private Button storageButton;
         [SerializeField, Required]
-        private Button inventoryButton;
+        private Button inventoryButton;*/
         
         [SerializeField]
         private StorageUIElementScrollView storageUiElementScrollView;
@@ -73,17 +76,24 @@ namespace StarSalvager.UI.Scrapyard
             InitButtons();
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
-            storageUiElementScrollView.ClearElements<StorageUIElement>();
-            InitContent();
+            
+            UpdateStorage();
+
+            PlayerPersistentData.PlayerData.OnValuesChanged += UpdateStorage;
+        }
+
+        private void OnDisable()
+        {
+            PlayerPersistentData.PlayerData.OnValuesChanged -= UpdateStorage;   
         }
 
         //============================================================================================================//
 
         private void InitButtons()
         {
-            storageButton.onClick.AddListener(() =>
+            /*storageButton.onClick.AddListener(() =>
             {
                 
             });
@@ -91,10 +101,10 @@ namespace StarSalvager.UI.Scrapyard
             inventoryButton.onClick.AddListener(() =>
             {
                 
-            });
+            });*/
         }
 
-        private void InitContent()
+        /*private void InitContent()
         {
             foreach (var storageBlockData in PlayerPersistentData.PlayerData.GetCurrentPartsInStorage())
             {
@@ -106,6 +116,46 @@ namespace StarSalvager.UI.Scrapyard
 
                 var temp = storageUiElementScrollView.AddElement<StorageUIElement>(testStorage, $"{testStorage.name}_UIElement", allowDuplicate: true);
                 temp.Init(testStorage);
+            }
+        }*/
+
+        public void UpdateStorage()
+        {
+            var droneDesign = FindObjectOfType<DroneDesigner>();
+            
+            storageUiElementScrollView.ClearElements<StorageUIElement>();
+            
+            foreach (var storageBlockData in PlayerPersistentData.PlayerData.GetCurrentPartsInStorage())
+            {
+                TEST_Storage testStorage = new TEST_Storage
+                {
+                    name = (PART_TYPE)storageBlockData.Type + " " + storageBlockData.Level,
+                    sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)storageBlockData.Type).GetSprite(storageBlockData.Level),
+                    blockData = storageBlockData
+                };
+
+                var temp = storageUiElementScrollView.AddElement<StorageUIElement>(testStorage, $"{testStorage.name}_UIElement", allowDuplicate: true);
+                temp.Init(testStorage, data =>
+                {
+                    droneDesign.selectedPartType = (PART_TYPE) data.blockData.Type;
+                    droneDesign.SelectedPartLevel = data.blockData.Level;
+                });
+            }
+            
+            foreach (var storageBlockData in PlayerPersistentData.PlayerData.components)
+            {
+                //TODO Need to separate the components
+                TEST_Storage testStorage = new TEST_Storage
+                {
+                    name = storageBlockData.Key.ToString(),
+                    sprite = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().GetComponentProfile(storageBlockData.Key).GetSprite(0),
+                };
+
+                for (int i = 0; i < storageBlockData.Value; i++)
+                {
+                    var temp = storageUiElementScrollView.AddElement<StorageUIElement>(testStorage, $"{testStorage.name}_UIElement", allowDuplicate: true);
+                    temp.Init(testStorage, null); 
+                }
             }
         }
 

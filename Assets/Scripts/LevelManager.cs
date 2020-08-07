@@ -153,15 +153,20 @@ namespace StarSalvager
             {
                 m_waveTimer += Time.deltaTime;
                 m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
-                
-                //TODO Need to add the GameUI Timer here
-                //_gameUi.SetClockValue(CurrentWaveData.);
-                
+
+                //Displays the time in timespan & the fill value
+                var duration = CurrentWaveData.GetWaveDuration();
+                var timeLeft = duration - m_waveTimer;
+                GameUi.SetClockValue( timeLeft / duration);
+                GameUi.SetTimeString((int)timeLeft);
+
                 if (m_currentStage == -1)
                     TransitionToNewWave();
             }
             else if (ObstacleManager.HasNoActiveObstacles)
             {
+                GameUi.SetClockValue(0f);
+                GameUi.SetTimeString("0:00");
                 SavePlayerData();
                 GameTimer.SetPaused(true);
                 m_levelManagerUI.ToggleBetweenWavesUIActive(true);

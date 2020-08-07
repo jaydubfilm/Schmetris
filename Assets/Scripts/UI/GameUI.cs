@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
@@ -154,6 +155,14 @@ namespace StarSalvager.UI
         public void SetClockValue(float value)
         {
             clockImage.fillAmount = value;
+        }
+        public void SetTimeString(int seconds)
+        {
+            TimeSpan time = TimeSpan.FromSeconds(seconds);
+
+            //here backslash is must to tell that colon is
+            //not the part of format, it just a character that we want in output
+            SetTimeString(time.ToString(@"m\:ss"));
         }
         public void SetTimeString(string time)
         {

@@ -52,6 +52,13 @@ namespace StarSalvager.Values
             return loaded;
         }
 
+        public static void ClearPlayerData()
+        {
+            m_playerData.Clear();
+            
+            Init();
+        }
+
         public static void CustomOnApplication()
         {
             ExportPlayerPersistentData(PlayerData);

@@ -1,21 +1,25 @@
-﻿using StarSalvager.Factories;
-using StarSalvager.Factories.Data;
+﻿using System;
 using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.JsonDataTypes;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace StarSalvager.Values
 {
     public class PlayerData
     {
-        //TODO: Add an add/subtract function for ResourceAmount
+        [JsonIgnore]
+        public Action OnValuesChanged;
         
-        public Dictionary<BIT_TYPE, int> resources = new Dictionary<BIT_TYPE, int>
+        //TODO: Add an add/subtract function for ResourceAmount
+        [JsonIgnore]
+        public Dictionary<BIT_TYPE, int> resources => _resources;
+
+        [JsonProperty]
+        private Dictionary<BIT_TYPE, int> _resources = new Dictionary<BIT_TYPE, int>
         {
             {BIT_TYPE.RED, 1250},
             {BIT_TYPE.BLUE, 1250},
@@ -24,7 +28,10 @@ namespace StarSalvager.Values
             {BIT_TYPE.GREY, 1250},
         };
 
-        public Dictionary<COMPONENT_TYPE, int> components = new Dictionary<COMPONENT_TYPE, int>
+        [JsonIgnore]
+        public Dictionary<COMPONENT_TYPE, int> components => _components;
+        [JsonProperty]
+        private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_TYPE, int>
         {
             {COMPONENT_TYPE.CALLIT, 3},
             {COMPONENT_TYPE.DOHICKEY, 3},
@@ -33,8 +40,11 @@ namespace StarSalvager.Values
             {COMPONENT_TYPE.THINGY, 3}
         };
         
+        [JsonIgnore]
+        public Dictionary<BIT_TYPE, float> liquidResource => _liquidResource;
+        [JsonProperty]
         //FIXME This needs to use some sort of capacity value
-        public Dictionary<BIT_TYPE, float> liquidResource = new Dictionary<BIT_TYPE, float>
+        private Dictionary<BIT_TYPE, float> _liquidResource = new Dictionary<BIT_TYPE, float>
         {
             {BIT_TYPE.RED, 250},
             {BIT_TYPE.BLUE, 0},
@@ -52,45 +62,50 @@ namespace StarSalvager.Values
 
         //============================================================================================================//
 
-        public Dictionary<BIT_TYPE, int> GetResources()
+        public void SetResources(Dictionary<BIT_TYPE, int> values)
         {
-            return resources;
+            _resources = values;
         }
 
-        public Dictionary<COMPONENT_TYPE, int> GetComponents()
-        {
-            return components;
-        }
+        //============================================================================================================//
 
         public void AddResources(Dictionary<BIT_TYPE, int> toAdd)
         {
-            CostCalculations.AddResources(ref resources, toAdd);
+            CostCalculations.AddResources(ref _resources, toAdd);
+            OnValuesChanged?.Invoke();
         }
 
         public void AddResources(PART_TYPE partType, int level, bool isRecursive)
         {
-            CostCalculations.AddResources(ref resources, partType, level, isRecursive);
+            CostCalculations.AddResources(ref _resources, partType, level, isRecursive);
+            OnValuesChanged?.Invoke();
         }
 
         public void SubtractResources(Dictionary<BIT_TYPE, int> toSubtract)
         {
-            CostCalculations.SubtractResources(ref resources, toSubtract);
+            CostCalculations.SubtractResources(ref _resources, toSubtract);
+            OnValuesChanged?.Invoke();
         }
 
         public void SubtractResources(PART_TYPE partType, int level, bool isRecursive)
         {
-            CostCalculations.SubtractResources(ref resources, partType, level, isRecursive);
+            CostCalculations.SubtractResources(ref _resources, partType, level, isRecursive);
+            OnValuesChanged?.Invoke();
         }
 
         public void SubtractResources(IEnumerable<CraftCost> cost)
         {
-            CostCalculations.SubtractResources(ref resources, cost);
+            CostCalculations.SubtractResources(ref _resources, cost);
+            OnValuesChanged?.Invoke();
         }
 
         public void SubtractPartCosts(PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
         {
-            CostCalculations.SubtractPartCosts(ref resources, ref components, partsInStorageBlockData, partType, level, isRecursive, costModifier);
+            CostCalculations.SubtractPartCosts(ref _resources, ref _components, partsInStorageBlockData, partType, level, isRecursive, costModifier);
+            OnValuesChanged?.Invoke();
         }
+        
+        //============================================================================================================//
 
         public bool CanAffordCost(IEnumerable<CraftCost> levelCost)
         {
@@ -151,11 +166,13 @@ namespace StarSalvager.Values
         public void AddPartToStorage(BlockData blockData)
         {
             partsInStorageBlockData.Add(blockData);
+            OnValuesChanged?.Invoke();
         }
 
         public void RemovePartFromStorage(BlockData blockData)
         {
             partsInStorageBlockData.Remove(partsInStorageBlockData.FirstOrDefault(b => b.Level == blockData.Level && b.Type == blockData.Type));
+            OnValuesChanged?.Invoke();
         }
     }
 }

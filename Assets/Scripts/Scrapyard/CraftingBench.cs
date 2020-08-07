@@ -2,8 +2,6 @@
 using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace StarSalvager
@@ -20,7 +18,7 @@ namespace StarSalvager
 
             BlockData blockData = new BlockData
             {
-                ClassType = "Part",
+                ClassType = nameof(Part),
                 Type = (int)blueprint.remoteData.partType,
                 Level = blueprint.level
             };

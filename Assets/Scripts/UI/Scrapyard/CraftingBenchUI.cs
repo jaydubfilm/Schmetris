@@ -1,10 +1,12 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
 using System.Collections.Generic;
+using StarSalvager.Prototype;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -17,23 +19,38 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required]
         private RemotePartProfileScriptableObject _remotePartProfileScriptable;
 
-        [SerializeField]
+        [SerializeField, Required, FoldoutGroup("Cost Window")]
+        private GameObject costWindowObject;
+
+        [SerializeField, Required, FoldoutGroup("Cost Window")]
+        private ResourceUIElementScrollView costView;
+
+        [SerializeField, Required, FoldoutGroup("Cost Window")]
+        private TMP_Text itemNameText;
+
+        [SerializeField, Required, FoldoutGroup("Cost Window")]
+        private Image itemIcon;
+
+        /*[SerializeField]
         private Button craftButton;
 
         [SerializeField]
         private TMP_Text itemNameText;
         [SerializeField]
-        private Image resultImage;
+        private Image resultImage;*/
 
         [FormerlySerializedAs("blueprints")] [SerializeField]
         private BlueprintUIElementScrollView blueprintsContentScrollView;
-        [SerializeField]
+        /*[SerializeField]
         private ResourceUIElementScrollView costContentView;
         [SerializeField]
-        private ResourceUIElementScrollView resourceScrollView;
+        private ResourceUIElementScrollView resourceScrollView;*/
 
         [SerializeField, Required]
         private CraftingBench mCraftingBench;
+        
+        //[SerializeField, Required]
+        private StorageUI storageUi;
 
         private TEST_Blueprint currentSelected;
 
@@ -45,6 +62,10 @@ namespace StarSalvager.UI.Scrapyard
 
         private void Start()
         {
+            storageUi = FindObjectOfType<StorageUI>();
+            
+            costWindowObject.SetActive(false);
+            
             InitButtons();
 
             InitUIScrollView();
@@ -52,14 +73,16 @@ namespace StarSalvager.UI.Scrapyard
             scrollViewsSetup = true;
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
             if (scrollViewsSetup)
                 RefreshScrollViews();
 
             blueprintsContentScrollView.ClearElements<BlueprintUIElement>();
             InitUIScrollView();
+
         }
+
 
         #endregion //Unity Functions
 
@@ -69,14 +92,14 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitButtons()
         {
-            craftButton.onClick.AddListener(() =>
+            /*craftButton.onClick.AddListener(() =>
             {
                 if (currentSelected == null)
                     return;
 
                 mCraftingBench.CraftBlueprint(currentSelected);
                 UpdateResources();
-            });
+            });*/
         }
 
         #endregion //Init
@@ -111,13 +134,19 @@ namespace StarSalvager.UI.Scrapyard
             foreach (var blueprint in PlayerPersistentData.PlayerData.unlockedBlueprints)
             {
                 var temp = blueprintsContentScrollView.AddElement<BlueprintUIElement>(blueprint, $"{blueprint.name}_UIElement");
-                temp.Init(blueprint, BlueprintPressed);
+                temp.Init(blueprint, data =>
+                {
+                    Debug.Log("Craft button pressed");
+                    mCraftingBench.CraftBlueprint(data);
+                    storageUi.UpdateStorage();
+                    
+                }, SetupBlueprintCosts);
             }
         }
 
         public void InitResourceScrollViews()
         {
-            var resources = PlayerPersistentData.PlayerData.GetResources();
+            /*var resources = PlayerPersistentData.PlayerData.GetResources();
 
             foreach (var resource in resources)
             {
@@ -145,7 +174,7 @@ namespace StarSalvager.UI.Scrapyard
 
                 var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{component.Key}_UIElement");
                 element.Init(data);
-            }
+            }*/
         }
 
         public void RefreshScrollViews()
@@ -157,7 +186,7 @@ namespace StarSalvager.UI.Scrapyard
 
         public void UpdateResources()
         {
-            var resources = PlayerPersistentData.PlayerData.GetResources();
+            /*var resources = PlayerPersistentData.PlayerData.GetResources();
 
             foreach (var resource in resources)
             {
@@ -193,7 +222,7 @@ namespace StarSalvager.UI.Scrapyard
                     continue;
 
                 element.Init(data);
-            }
+            }*/
         }
 
         #endregion //Scroll Views
@@ -202,26 +231,43 @@ namespace StarSalvager.UI.Scrapyard
 
         #region Other
 
-        private void SetupBlueprintCosts(TEST_Blueprint blueprint)
+        private void SetupBlueprintCosts( TEST_Blueprint blueprint, bool showWindow, RectTransform buttonTransform)
         {
+            costWindowObject.SetActive(showWindow);
+            
+            costView.ClearElements<CostUIElement>();
+
+            if (!showWindow)
+                return;
+
+            var windowTransform = costWindowObject.transform as RectTransform;
+
+
+            windowTransform.position = buttonTransform.position +
+                                       Vector3.left *
+                                       (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f);
+
+            itemNameText.text = blueprint.remoteData.name;
+            itemIcon.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                .GetProfileData(blueprint.remoteData.partType).Sprites[blueprint.level];
+            
             var resources = blueprint.remoteData.levels[blueprint.level].cost;
 
-            costContentView.ClearElements<ResourceUIElement>();
             foreach (var resource in resources)
             {
-                var element = costContentView.AddElement<ResourceUIElement>(resource, $"{resource.type}_UIElement");
+                var element = costView.AddElement<CostUIElement>(resource, $"{resource.type}_UIElement");
                 element.Init(resource);
             }
         }
 
-        private void BlueprintPressed(TEST_Blueprint blueprint)
+        /*private void BlueprintPressed(TEST_Blueprint blueprint)
         {
-            itemNameText.text = blueprint.name;
+            /*itemNameText.text = blueprint.name;
             PartProfile partProfile = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(blueprint.remoteData.partType);
-            resultImage.sprite = partProfile.Sprites[blueprint.level];
-            SetupBlueprintCosts(blueprint);
-            currentSelected = blueprint;
-        }
+            resultImage.sprite = partProfile.Sprites[blueprint.level];#1#
+            //SetupBlueprintCosts(blueprint);
+            //currentSelected = blueprint;
+        }*/
 
         #endregion //Other
 

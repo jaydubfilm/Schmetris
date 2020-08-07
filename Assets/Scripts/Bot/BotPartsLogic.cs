@@ -9,6 +9,7 @@ using StarSalvager.Prototype;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
 using UnityEngine;
+using Enemy = StarSalvager.AI.Enemy;
 using GameUI = StarSalvager.UI.GameUI;
 
 namespace StarSalvager
@@ -199,10 +200,12 @@ namespace StarSalvager
                         {
                             continue;
                         }
+
+                        IHealth toRepair;
                         
-                        //TODO Determine if this heals Bits & parts or just parts
+                        //FIXME I don't think using linq here, especially twice is the best option
                         //TODO This needs to fire every x Seconds
-                        var toRepair = bot.attachedBlocks.GetAttachablesAroundInRadius<Part>(part, part.level + 1)
+                        toRepair = bot.attachedBlocks.GetAttachablesAroundInRadius<Part>(part, part.level + 1)
                             .Where(p => p.CurrentHealth < p.StartingHealth)
                             .Select(x => new KeyValuePair<Part, float>(x, FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(x.Type).priority / (x.CurrentHealth / x.StartingHealth)))
                             .OrderByDescending(x => x.Value)
@@ -216,7 +219,19 @@ namespace StarSalvager
                             if (part.CurrentHealth < part.StartingHealth)
                                 toRepair = part;
                             else
-                                break;
+                            {
+                                //Trying out the parts only repair system
+                                /*//Find Bits to repair if any need it
+                                toRepair = bot.attachedBlocks
+                                    .GetAttachablesAroundInRadius<IAttachable>(part, part.level + 1)
+                                    .Where(x => !(x is Part) && !(x is Enemy))
+                                    .OfType<IHealth>()
+                                    .FirstOrDefault(p => p.CurrentHealth < p.StartingHealth);
+
+                                if (toRepair == null)*/
+                                    break;
+                            }
+                                
                         }
 
                         resourceValue -= levelData.burnRate * Time.deltaTime;

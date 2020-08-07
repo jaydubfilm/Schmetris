@@ -1,6 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
+using StarSalvager.Utilities.Extensions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,12 +13,10 @@ namespace StarSalvager.UI
         private static BitAttachableFactory _bitAttachableFactory;
         private static PartAttachableFactory _partAttachableFactory;
         private static ComponentAttachableFactory _componentAttachableFactory;
-        
-        [SerializeField, Required]
-        private TMP_Text resourceAmountText;
-        [SerializeField, Required]
-        private Image resourceImage;
-        
+
+        [SerializeField, Required] private TMP_Text resourceAmountText;
+        [SerializeField, Required] private Image resourceImage;
+
         public int Amount
         {
             set => resourceAmountText.text = $"{value}";
@@ -40,22 +39,24 @@ namespace StarSalvager.UI
 
             Amount = data.amount;
 
-            if (data.resourceType == CraftCost.TYPE.Bit)
+            switch (data.resourceType)
             {
-                resourceImage.sprite = _bitAttachableFactory.GetBitProfile((BIT_TYPE)data.type).Sprites[1];
-            }
-            else if (data.resourceType == CraftCost.TYPE.Component)
-            {
-                resourceImage.sprite = _componentAttachableFactory.GetBitProfile((COMPONENT_TYPE)data.type).Sprites[0];
-            }
-            else if (data.resourceType == CraftCost.TYPE.Part)
-            {
-                resourceImage.sprite = _partAttachableFactory.GetProfileData((PART_TYPE)data.type).Sprites[data.partPrerequisiteLevel];
+                case CraftCost.TYPE.Bit:
+                    resourceImage.sprite = _bitAttachableFactory.GetBitProfile((BIT_TYPE) data.type).refinedSprite;
+                    break;
+                case CraftCost.TYPE.Component:
+                    resourceImage.sprite = _componentAttachableFactory.GetComponentProfile((COMPONENT_TYPE) data.type)
+                        .GetSprite(0);
+                    break;
+                case CraftCost.TYPE.Part:
+                    resourceImage.sprite = _partAttachableFactory.GetProfileData((PART_TYPE) data.type)
+                        .Sprites[data.partPrerequisiteLevel];
+                    break;
             }
         }
 
 
-        
+
         //============================================================================================================//
     }
 }

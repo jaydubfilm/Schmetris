@@ -19,12 +19,18 @@ MonoBehaviour:
     priority: 200
     burnType: 4
     levels:
-    - health: 20
+    - unlockLevel: 0
+      health: 20
       data: 9
+      dataTest:
+      - key: test2
+        value: 0
       burnRate: 0.17
       cost: []
-    - health: 50
+    - unlockLevel: 0
+      health: 50
       data: 16
+      dataTest: []
       burnRate: 0.5
       cost:
       - resourceType: 0
@@ -47,8 +53,10 @@ MonoBehaviour:
         type: 5
         partPrerequisiteLevel: 0
         amount: 500
-    - health: 100
+    - unlockLevel: 0
+      health: 100
       data: 25
+      dataTest: []
       burnRate: 1
       cost:
       - resourceType: 0
@@ -77,8 +85,10 @@ MonoBehaviour:
     priority: 75
     burnType: 5
     levels:
-    - health: 80
+    - unlockLevel: 0
+      health: 80
       data: 5
+      dataTest: []
       burnRate: 0
       cost:
       - resourceType: 0
@@ -93,8 +103,10 @@ MonoBehaviour:
         type: 1
         partPrerequisiteLevel: 0
         amount: 1
-    - health: 100
+    - unlockLevel: 0
+      health: 100
       data: 10
+      dataTest: []
       burnRate: 0.1
       cost:
       - resourceType: 0
@@ -113,8 +125,10 @@ MonoBehaviour:
         type: 1
         partPrerequisiteLevel: 0
         amount: 1
-    - health: 120
+    - unlockLevel: 0
+      health: 120
       data: 20
+      dataTest: []
       burnRate: 0.17
       cost:
       - resourceType: 0
@@ -139,8 +153,10 @@ MonoBehaviour:
     priority: 50
     burnType: 2
     levels:
-    - health: 80
+    - unlockLevel: 0
+      health: 80
       data: 20
+      dataTest: []
       burnRate: 1
       cost:
       - resourceType: 0
@@ -151,8 +167,10 @@ MonoBehaviour:
         type: 2
         partPrerequisiteLevel: 0
         amount: 100
-    - health: 90
+    - unlockLevel: 0
+      health: 90
       data: 25
+      dataTest: []
       burnRate: 2
       cost:
       - resourceType: 0
@@ -163,8 +181,10 @@ MonoBehaviour:
         type: 2
         partPrerequisiteLevel: 0
         amount: 800
-    - health: 100
+    - unlockLevel: 0
+      health: 100
       data: 50
+      dataTest: []
       burnRate: 3
       cost:
       - resourceType: 0
@@ -181,24 +201,30 @@ MonoBehaviour:
     priority: 25
     burnType: 0
     levels:
-    - health: 150
+    - unlockLevel: 0
+      health: 150
       data: 0
+      dataTest: []
       burnRate: 0
       cost:
       - resourceType: 0
         type: 3
         partPrerequisiteLevel: 0
         amount: 200
-    - health: 300
+    - unlockLevel: 0
+      health: 300
       data: 0
+      dataTest: []
       burnRate: 0
       cost:
       - resourceType: 0
         type: 3
         partPrerequisiteLevel: 0
         amount: 2500
-    - health: 500
+    - unlockLevel: 0
+      health: 500
       data: 0
+      dataTest: []
       burnRate: 0
       cost:
       - resourceType: 0
@@ -211,8 +237,10 @@ MonoBehaviour:
     priority: 75
     burnType: 3
     levels:
-    - health: 60
+    - unlockLevel: 0
+      health: 60
       data: 10
+      dataTest: []
       burnRate: 0.1
       cost:
       - resourceType: 0
@@ -223,8 +251,10 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 150
-    - health: 80
+    - unlockLevel: 0
+      health: 80
       data: 20
+      dataTest: []
       burnRate: 0.2
       cost:
       - resourceType: 0
@@ -235,8 +265,10 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 200
-    - health: 100
+    - unlockLevel: 0
+      health: 100
       data: 30
+      dataTest: []
       burnRate: 0.3
       cost:
       - resourceType: 0
