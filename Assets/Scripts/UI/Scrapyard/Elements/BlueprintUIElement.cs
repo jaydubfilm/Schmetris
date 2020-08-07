@@ -34,7 +34,7 @@ namespace StarSalvager.UI.Scrapyard
             hoverCallback = OnHover;
 
             craftButton.interactable =
-                PlayerPersistentData.PlayerData.CanAffordPart(data.remoteData.partType, data.level, false);
+                PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false);
 
             craftButton.onClick.RemoveAllListeners();
             craftButton.onClick.AddListener(() =>
@@ -48,7 +48,7 @@ namespace StarSalvager.UI.Scrapyard
             this.data = data;
 
             titleText.text = data.name;
-            image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(data.remoteData.partType).Sprites[data.level];
+            image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(data.partType).Sprites[data.level];
         }
 
         public void OnPointerEnter(PointerEventData eventData)

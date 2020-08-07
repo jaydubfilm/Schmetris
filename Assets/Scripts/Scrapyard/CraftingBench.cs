@@ -19,7 +19,7 @@ namespace StarSalvager
             BlockData blockData = new BlockData
             {
                 ClassType = nameof(Part),
-                Type = (int)blueprint.remoteData.partType,
+                Type = (int)blueprint.partType,
                 Level = blueprint.level
             };
 

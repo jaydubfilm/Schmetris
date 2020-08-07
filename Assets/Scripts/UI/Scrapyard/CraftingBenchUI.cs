@@ -247,11 +247,17 @@ namespace StarSalvager.UI.Scrapyard
                                        Vector3.left *
                                        (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f);
 
-            itemNameText.text = blueprint.remoteData.name;
-            itemIcon.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                .GetProfileData(blueprint.remoteData.partType).Sprites[blueprint.level];
+            var partProfileData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                .GetProfileData(blueprint.partType);
+            itemIcon.sprite = partProfileData.Sprites[blueprint.level];
 
-            var resources = blueprint.remoteData.levels[blueprint.level].cost;
+
+            var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                .GetRemoteData(blueprint.partType);
+            
+            itemNameText.text = partRemoteData.name;
+
+            var resources = partRemoteData.levels[blueprint.level].cost;
 
             foreach (var resource in resources)
             {
