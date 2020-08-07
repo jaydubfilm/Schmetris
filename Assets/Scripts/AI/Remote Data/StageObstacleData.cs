@@ -18,6 +18,8 @@ namespace StarSalvager.AI
         private string m_category;
         [SerializeField, FoldoutGroup("$m_selectionType")]
         private int m_asteroidCountPerMinute;
+        [SerializeField, FoldoutGroup("$m_selectionType"), ValueDropdown("GetRotations")]
+        private string m_rotation;
 
         public SELECTION_TYPE SelectionType => m_selectionType;
         public string ShapeName => m_shapeName;
@@ -25,6 +27,31 @@ namespace StarSalvager.AI
         public int AsteroidCountPerMinute => m_asteroidCountPerMinute;
 
         public float AsteroidPerRowAverage => (m_asteroidCountPerMinute / 60.0f) * Constants.timeForAsteroidsToFall;
+
+        public int Rotation()
+        {
+            int rotations = 0;
+            switch(m_rotation)
+            {
+                case "Random":
+                    rotations = UnityEngine.Random.Range(0, 4);
+                    break;
+                case "0":
+                    rotations = 0;
+                    break;
+                case "1":
+                    rotations = 1;
+                    break;
+                case "2":
+                    rotations = 2;
+                    break;
+                case "3":
+                    rotations = 3;
+                    break;
+            }
+
+            return rotations;
+        }
 
         private IEnumerable<string> GetShapes()
         {
@@ -42,6 +69,17 @@ namespace StarSalvager.AI
         private IEnumerable<string> GetCatgories()
         {
             return GameObject.FindObjectOfType<FactoryManager>().EditorBotShapeData.m_categories;
+        }
+
+        private ValueDropdownList<string> GetRotations()
+        {
+            ValueDropdownList<string> enemyTypes = new ValueDropdownList<string>();
+            enemyTypes.Add("Random");
+            enemyTypes.Add("0");
+            enemyTypes.Add("90");
+            enemyTypes.Add("180");
+            enemyTypes.Add("270");
+            return enemyTypes;
         }
     }
 }

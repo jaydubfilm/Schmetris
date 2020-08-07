@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Recycling;
 using StarSalvager.Factories.Data;
+using StarSalvager.Utilities.Extensions;
+using StarSalvager.Values;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
@@ -103,7 +105,7 @@ namespace StarSalvager.Factories
             return shape.GetComponent<T>();
         }*/
     
-        public T CreateObject<T>(SELECTION_TYPE selectionType, string identifier)
+        public T CreateObject<T>(SELECTION_TYPE selectionType, string identifier, int numRotations)
         {
             //FIXME
             if (selectionType == SELECTION_TYPE.CATEGORY)
@@ -121,6 +123,15 @@ namespace StarSalvager.Factories
                     shape.PushNewBit(bit, shapeData.BlockData[i].Coordinate);
                 }
 
+                for (int i = 0; i < numRotations; i++)
+                {
+                    foreach (var attachable in shape.AttachedBits)
+                    {
+                        attachable.RotateCoordinate(ROTATION.CW);
+                        attachable.transform.localPosition = (Vector2)attachable.Coordinate;
+                    }
+                }
+
                 return shape.GetComponent<T>();
             }
             else if (selectionType == SELECTION_TYPE.SHAPE)
@@ -136,6 +147,15 @@ namespace StarSalvager.Factories
                 {
                     var bit = bitFactory.CreateObject<Bit>((BIT_TYPE)shapeData.BlockData[i].Type, shapeData.BlockData[i].Level);
                     shape.PushNewBit(bit, shapeData.BlockData[i].Coordinate);
+                }
+
+                for (int i = 0; i < numRotations; i++)
+                {
+                    foreach (var attachable in shape.AttachedBits)
+                    {
+                        attachable.RotateCoordinate(ROTATION.CW);
+                        attachable.transform.localPosition = (Vector2)attachable.Coordinate * Constants.gridCellSize;
+                    }
                 }
 
                 return shape.GetComponent<T>();

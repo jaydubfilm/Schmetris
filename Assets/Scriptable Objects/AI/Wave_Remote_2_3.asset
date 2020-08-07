@@ -24,7 +24,9 @@ MonoBehaviour:
       m_shapeName: Small1
       m_category: Small
       m_asteroidCountPerMinute: 250
+      m_rotation: Random
     - m_selectionType: 0
       m_shapeName: Smal2
       m_category: Medium
       m_asteroidCountPerMinute: 150
+      m_rotation: Random
