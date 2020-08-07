@@ -247,7 +247,6 @@ namespace StarSalvager.Factories
 #endif
         }
         
-        #if UNITY_EDITOR
         public void ClearRemoteData()
         {
             //FIXME This should be using persistent file names
@@ -275,7 +274,6 @@ namespace StarSalvager.Factories
             PlayerPersistentData.ClearPlayerData();
 
         }
-        #endif
         
         //============================================================================================================//
 

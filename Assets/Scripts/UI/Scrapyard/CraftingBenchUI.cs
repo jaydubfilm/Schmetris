@@ -117,8 +117,16 @@ namespace StarSalvager.UI.Scrapyard
                 {
                     for (int i = 0; i < partRemoteData.levels.Count; i++)
                     {
-                        if (partRemoteData.partType == PART_TYPE.CORE)
-                            continue;
+                        //TODO Add these back in when we're ready!
+                        switch (partRemoteData.partType)
+                        {
+                            case PART_TYPE.CORE:
+                            case PART_TYPE.CONTAINER:
+                            case PART_TYPE.SHIELD:
+                            case PART_TYPE.BOOST:
+                            case PART_TYPE.SMRT_WPN:
+                                continue;
+                        }
 
                         TEST_Blueprint blueprint = new TEST_Blueprint
                         {
