@@ -44,6 +44,8 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("Main Menu")]
         private Button newGameButton;
         [SerializeField, Required, FoldoutGroup("Main Menu")]
+        private Button continueButton;
+        [SerializeField, Required, FoldoutGroup("Main Menu")]
         private Button loadGameButton;
         [SerializeField, Required, FoldoutGroup("Main Menu")]
         private Button optionsButton;
@@ -132,7 +134,9 @@ namespace StarSalvager.UI
             //--------------------------------------------------------------------------------------------------------//
             
             newGameButton.onClick.AddListener(() => OpenMenu(MENU.NEW));
-            
+
+            continueButton.onClick.AddListener(() => SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene"));
+
             loadGameButton.onClick.AddListener(() => OpenMenu(MENU.LOAD));
             
             optionsButton.onClick.AddListener(() => OpenMenu(MENU.OPTION));
