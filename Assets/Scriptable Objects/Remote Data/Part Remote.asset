@@ -21,16 +21,20 @@ MonoBehaviour:
     levels:
     - unlockLevel: 0
       health: 20
-      data: 9
       dataTest:
-      - key: test2
-        value: 0
+      - key: Magnet
+        value: 9
+      - key: Capacity
+        value: 100
       burnRate: 0.17
       cost: []
     - unlockLevel: 0
       health: 50
-      data: 16
-      dataTest: []
+      dataTest:
+      - key: Magnet
+        value: 16
+      - key: Capacity
+        value: 200
       burnRate: 0.5
       cost:
       - resourceType: 0
@@ -55,8 +59,11 @@ MonoBehaviour:
         amount: 500
     - unlockLevel: 0
       health: 100
-      data: 25
-      dataTest: []
+      dataTest:
+      - key: Magnet
+        value: 25
+      - key: Capacity
+        value: 500
       burnRate: 1
       cost:
       - resourceType: 0
@@ -87,8 +94,9 @@ MonoBehaviour:
     levels:
     - unlockLevel: 0
       health: 80
-      data: 5
-      dataTest: []
+      dataTest:
+      - key: Magnet
+        value: 5
       burnRate: 0
       cost:
       - resourceType: 0
@@ -105,8 +113,9 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 0
       health: 100
-      data: 10
-      dataTest: []
+      dataTest:
+      - key: Magnet
+        value: 10
       burnRate: 0.1
       cost:
       - resourceType: 0
@@ -127,8 +136,9 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 0
       health: 120
-      data: 20
-      dataTest: []
+      dataTest:
+      - key: Magnet
+        value: 20
       burnRate: 0.17
       cost:
       - resourceType: 0
@@ -155,8 +165,11 @@ MonoBehaviour:
     levels:
     - unlockLevel: 0
       health: 80
-      data: 20
-      dataTest: []
+      dataTest:
+      - key: Heal
+        value: 20
+      - key: Radius
+        value: 3
       burnRate: 1
       cost:
       - resourceType: 0
@@ -169,8 +182,11 @@ MonoBehaviour:
         amount: 100
     - unlockLevel: 0
       health: 90
-      data: 25
-      dataTest: []
+      dataTest:
+      - key: Heal
+        value: 25
+      - key: Radius
+        value: 4
       burnRate: 2
       cost:
       - resourceType: 0
@@ -183,8 +199,11 @@ MonoBehaviour:
         amount: 800
     - unlockLevel: 0
       health: 100
-      data: 50
-      dataTest: []
+      dataTest:
+      - key: Heal
+        value: 50
+      - key: Radius
+        value: 5
       burnRate: 3
       cost:
       - resourceType: 0
@@ -203,7 +222,6 @@ MonoBehaviour:
     levels:
     - unlockLevel: 0
       health: 150
-      data: 0
       dataTest: []
       burnRate: 0
       cost:
@@ -213,7 +231,6 @@ MonoBehaviour:
         amount: 200
     - unlockLevel: 0
       health: 300
-      data: 0
       dataTest: []
       burnRate: 0
       cost:
@@ -223,7 +240,6 @@ MonoBehaviour:
         amount: 2500
     - unlockLevel: 0
       health: 500
-      data: 0
       dataTest: []
       burnRate: 0
       cost:
@@ -239,8 +255,11 @@ MonoBehaviour:
     levels:
     - unlockLevel: 0
       health: 60
-      data: 10
-      dataTest: []
+      dataTest:
+      - key: Damage
+        value: 10
+      - key: Cooldown
+        value: 0.5
       burnRate: 0.1
       cost:
       - resourceType: 0
@@ -253,8 +272,11 @@ MonoBehaviour:
         amount: 150
     - unlockLevel: 0
       health: 80
-      data: 20
-      dataTest: []
+      dataTest:
+      - key: Damage
+        value: 20
+      - key: Cooldown
+        value: 0.4
       burnRate: 0.2
       cost:
       - resourceType: 0
@@ -267,8 +289,11 @@ MonoBehaviour:
         amount: 200
     - unlockLevel: 0
       health: 100
-      data: 30
-      dataTest: []
+      dataTest:
+      - key: Damage
+        value: 30
+      - key: Cooldown
+        value: 0.2
       burnRate: 0.3
       cost:
       - resourceType: 0
@@ -279,3 +304,123 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 1500
+  - name: Container
+    partType: 5
+    canSell: 1
+    priority: 0
+    burnType: 0
+    levels:
+    - unlockLevel: 1
+      health: 50
+      dataTest:
+      - key: Capacity
+        value: 500
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 600
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 600
+    - unlockLevel: 3
+      health: 75
+      dataTest:
+      - key: Capacity
+        value: 100
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 600
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 600
+    - unlockLevel: 5
+      health: 100
+      dataTest:
+      - key: Capacity
+        value: 500
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 600
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 600
+  - name: Shield
+    partType: 6
+    canSell: 1
+    priority: 0
+    burnType: 1
+    levels:
+    - unlockLevel: 4
+      health: 100
+      dataTest:
+      - key: Absorb
+        value: 0.3
+      - key: Radius
+        value: 3
+      burnRate: 1
+      cost:
+      - resourceType: 0
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 200
+      - resourceType: 0
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 200
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 200
+    - unlockLevel: 6
+      health: 100
+      dataTest:
+      - key: Absorb
+        value: 0.5
+      - key: Radius
+        value: 4
+      burnRate: 1
+      cost:
+      - resourceType: 0
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 1000
+      - resourceType: 0
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 750
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 750
+    - unlockLevel: 8
+      health: 120
+      dataTest:
+      - key: Absorb
+        value: 0.75
+      - key: Radius
+        value: 5
+      burnRate: 1
+      cost:
+      - resourceType: 0
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 5000
+      - resourceType: 0
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 2500
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 2500
