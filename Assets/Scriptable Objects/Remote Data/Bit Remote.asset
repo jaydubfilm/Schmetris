@@ -14,67 +14,72 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BitRemoteData:
   - name: Bluesalt
+    refinedName: Water
     bitType: 1
     levels:
     - health: 10
-      resources: 50
+      resources: 10
     - health: 20
-      resources: 150
+      resources: 30
     - health: 30
-      resources: 300
+      resources: 90
     - health: 40
-      resources: 600
+      resources: 270
     - health: 50
-      resources: 1200
+      resources: 710
   - name: Greenium
+    refinedName: Plasma
     bitType: 2
     levels:
     - health: 10
-      resources: 50
+      resources: 10
     - health: 20
-      resources: 150
+      resources: 30
     - health: 30
-      resources: 300
+      resources: 90
     - health: 40
-      resources: 600
+      resources: 270
     - health: 50
-      resources: 1200
+      resources: 710
   - name: Greyscale
+    refinedName: Scrap Metal
     bitType: 3
     levels:
     - health: 10
-      resources: 50
+      resources: 10
     - health: 20
-      resources: 150
+      resources: 30
     - health: 30
-      resources: 300
+      resources: 90
     - health: 40
-      resources: 600
+      resources: 270
     - health: 50
-      resources: 1200
+      resources: 710
   - name: Reddite
+    refinedName: Fuel
     bitType: 4
     levels:
     - health: 10
-      resources: 50
+      resources: 10
     - health: 20
-      resources: 150
+      resources: 30
     - health: 30
-      resources: 300
+      resources: 90
     - health: 40
-      resources: 600
+      resources: 270
     - health: 50
-      resources: 1200
+      resources: 710
   - name: Yellectron
+    refinedName: Power
     bitType: 5
     levels:
     - health: 10
-      resources: 50
+      resources: 10
     - health: 20
-      resources: 150
+      resources: 30
     - health: 30
-      resources: 300
+      resources: 90
     - health: 40
-      resources: 600
+      resources: 270
     - health: 50
-      resources: 1200
+      resources: 710
