@@ -49,8 +49,7 @@ namespace StarSalvager.UI
                         .GetSprite(0);
                     break;
                 case CraftCost.TYPE.Part:
-                    resourceImage.sprite = _partAttachableFactory.GetProfileData((PART_TYPE) data.type)
-                        .Sprites[data.partPrerequisiteLevel];
+                    resourceImage.sprite = _partAttachableFactory.GetProfileData((PART_TYPE) data.type).GetSprite(data.partPrerequisiteLevel);
                     break;
             }
         }

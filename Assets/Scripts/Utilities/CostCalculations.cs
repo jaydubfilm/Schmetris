@@ -188,9 +188,11 @@ namespace StarSalvager.Utilities
         {
             List<BlockData> tempStoredParts = new List<BlockData>(storedParts);
 
-            return CanAffordPartResources(resources, partType, level, isRecursive, resourceCostModifier)
-                && CanAffordPartComponents(components, partType, level, isRecursive)
-                && HasPartPremades(tempStoredParts, partType, level, isRecursive);
+            var hasResources = CanAffordPartResources(resources, partType, level, isRecursive, resourceCostModifier);
+            var hasComponents = CanAffordPartComponents(components, partType, level, isRecursive);
+            var hasParts = HasPartPremades(tempStoredParts, partType, level, isRecursive);
+
+            return hasResources && hasComponents && hasParts;
         }
 
         public static bool CanAffordResources(Dictionary<BIT_TYPE, int> resources, IEnumerable<CraftCost> costs)
@@ -228,8 +230,9 @@ namespace StarSalvager.Utilities
             {
                 if (resource.resourceType != CraftCost.TYPE.Part)
                     continue;
-                
-                if (partData.FindAll(p => p.Type == resource.type && p.Level == resource.partPrerequisiteLevel).Count < resource.amount)
+
+                var partCount = partData.Count(p => p.Type == resource.type && p.Level == resource.partPrerequisiteLevel);
+                if (partCount < resource.amount)
                     return false;
             }
             return true;

@@ -239,14 +239,24 @@ namespace StarSalvager.UI.Scrapyard
 
         #region Other
 
-        private void SetupBlueprintCosts( TEST_Blueprint blueprint, bool showWindow, RectTransform buttonTransform)
+        private TEST_Blueprint lastBlueprint;
+
+        private void SetupBlueprintCosts(TEST_Blueprint blueprint, bool showWindow, RectTransform buttonTransform)
         {
             costWindowObject.SetActive(showWindow);
 
-            costView.ClearElements<CostUIElement>();
+            
 
             if (!showWindow)
+            {
+                PlayerPersistentData.PlayerData.OnValuesChanged -= UpdateCostUI;
+                lastBlueprint = null;
                 return;
+            }
+
+            PlayerPersistentData.PlayerData.OnValuesChanged += UpdateCostUI;
+
+            lastBlueprint = blueprint;
 
             var windowTransform = costWindowObject.transform as RectTransform;
 
@@ -255,17 +265,25 @@ namespace StarSalvager.UI.Scrapyard
                                        Vector3.left *
                                        (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f);
 
+            UpdateCostUI();
+        }
+
+        private void UpdateCostUI()
+        {
+            costView.ClearElements<CostUIElement>();
+            
             var partProfileData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                .GetProfileData(blueprint.partType);
-            itemIcon.sprite = partProfileData.Sprites[blueprint.level];
+                .GetProfileData(lastBlueprint.partType);
+            
+            itemIcon.sprite = partProfileData.Sprites[lastBlueprint.level];
 
 
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                .GetRemoteData(blueprint.partType);
+                .GetRemoteData(lastBlueprint.partType);
             
             itemNameText.text = partRemoteData.name;
 
-            var resources = partRemoteData.levels[blueprint.level].cost;
+            var resources = partRemoteData.levels[lastBlueprint.level].cost;
 
             foreach (var resource in resources)
             {

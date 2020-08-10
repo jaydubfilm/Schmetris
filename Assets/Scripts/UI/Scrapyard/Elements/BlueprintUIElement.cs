@@ -26,6 +26,20 @@ namespace StarSalvager.UI.Scrapyard
         private Button craftButton;
 
         private Action<TEST_Blueprint, bool, RectTransform> hoverCallback;
+        
+        //============================================================================================================//
+
+        private void OnEnable()
+        {
+            PlayerPersistentData.PlayerData.OnValuesChanged += UpdateUI;
+        }
+
+        private void OnDisable()
+        {
+            PlayerPersistentData.PlayerData.OnValuesChanged -= UpdateUI;
+        }
+
+        //============================================================================================================//
 
         public void Init(TEST_Blueprint data, Action<TEST_Blueprint> OnCraftPressed, Action<TEST_Blueprint, bool, RectTransform> OnHover)
         {
@@ -50,7 +64,17 @@ namespace StarSalvager.UI.Scrapyard
             titleText.text = data.name;
             image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(data.partType).Sprites[data.level];
         }
+        
+        //============================================================================================================//
 
+        private void UpdateUI()
+        {
+            craftButton.interactable =
+                PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false);
+        }
+        
+        //============================================================================================================//
+        
         public void OnPointerEnter(PointerEventData eventData)
         {
             hoverCallback?.Invoke(data, true, transform);
@@ -60,6 +84,8 @@ namespace StarSalvager.UI.Scrapyard
         {
             hoverCallback?.Invoke(null, false, transform);
         }
+        
+        //============================================================================================================//
     }
 
     public class TEST_Blueprint : IEquatable<TEST_Blueprint>

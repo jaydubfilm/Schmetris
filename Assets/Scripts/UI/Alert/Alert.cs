@@ -47,18 +47,21 @@ namespace StarSalvager.UI
 
         public static void ShowAlert(string Title, string Body, string neutralText, Action OnPressedCallback)
         {
+            SetLineHeight(0);
             Instance.Show(Title, Body, neutralText, OnPressedCallback);
         }
 
         public static void ShowAlert(string Title, string Body, string confirmText, string cancelText,
             Action<bool> OnConfirmedCallback)
         {
+            SetLineHeight(0);
             Instance.Show(Title, Body, confirmText, cancelText, OnConfirmedCallback);
         }
 
         public static void ShowAlert(string Title, string Body, string confirmText, string cancelText,
             string neutralText, Action<bool> OnConfirmedCallback, Action OnNeutralCallback)
         {
+            SetLineHeight(0);
             Instance.Show(Title, Body, confirmText, cancelText,neutralText, OnConfirmedCallback, OnNeutralCallback);
         }
         //============================================================================================================//
@@ -151,6 +154,13 @@ namespace StarSalvager.UI
                 SetActive(false);
                 OnNeutralCallback?.Invoke();
             });
+        }
+        
+        //============================================================================================================//
+
+        public static void SetLineHeight(float lineHeight)
+        {
+            Instance.bodyText.lineSpacing = lineHeight;
         }
         
         //============================================================================================================//
