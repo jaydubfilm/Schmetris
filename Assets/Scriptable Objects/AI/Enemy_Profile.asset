@@ -64,11 +64,11 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: 771806d5ec0835544862fa727f69e841,
       type: 2}
     m_attackType: 3
-    m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
+    m_projectileType: 315b7ca5-bf86-4e37-88db-d055fbea3f00
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
     m_orbitRadius: 0
-    m_numberCellsDescend: 2
+    m_numberCellsDescend: 4
     m_ignoreObstacleAvoidance: 1
     m_addVelocityToProjectiles: 0
     m_spreadAngle: 0
