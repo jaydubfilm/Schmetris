@@ -326,7 +326,7 @@ namespace StarSalvager
 
                         /*Vector2 shootDirection;*/
 
-                        var enemy = EnemyManager.GetClosestEnemy(transform.position, 10 * Constants.gridCellSize);
+                        var enemy = EnemyManager.GetClosestEnemy(transform.position, 100 * Constants.gridCellSize);
                         //TODO Determine if this fires at all times or just when there are active enemies in range
                         if (enemy == null)
                             break;
@@ -345,16 +345,17 @@ namespace StarSalvager
                                 _burnRef[part].ChangeHealth(-levelData.burnRate * Time.deltaTime);
                         }
 
-                        Debug.Log("Fire");
+                        //Debug.Log("Fire");
                         
                         //Create projectile
                         //--------------------------------------------------------------------------------------------//
 
+                        const string PROJECTILE_ID = "083be790-7a08-4f27-b506-e8e09a116bc8";
                         
                         //TODO Might need to add something to change the projectile used for each gun piece
                         var projectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
                             .CreateObject<Projectile>(
-                                "083be790-7a08-4f27-b506-e8e09a116bc8",
+                                PROJECTILE_ID,
                                 /*shootDirection*/Vector2.up,
                                 "Enemy");
 

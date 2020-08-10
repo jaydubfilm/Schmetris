@@ -269,9 +269,9 @@ namespace StarSalvager
             return new Vector2Int((int)Mathf.Floor((worldLocation.x - m_anchorPoint.x) / Constants.gridCellSize), (int)Mathf.Floor((worldLocation.y - m_anchorPoint.y) / Constants.gridCellSize));
         }
 
-        public List<Vector2Int> SelectBitExplosionPositions(Vector2 startingLocation, int numBits, int verticalExplosionRange, int horizontalExplosionRange)
+        public Vector2Int[] SelectBitExplosionPositions(Vector2 startingLocation, int numBits, int verticalExplosionRange, int horizontalExplosionRange)
         {
-            List<Vector2Int> bitExplosionPositions = new List<Vector2Int>();
+            Vector2Int[] bitExplosionPositions = new Vector2Int[numBits];
 
             Vector2Int startingPoint = GetGridPositionOfVector(startingLocation);
 
@@ -285,7 +285,7 @@ namespace StarSalvager
                 {
                     continue;
                 }
-                bitExplosionPositions.Add(bitPosition);
+                bitExplosionPositions[i] = bitPosition;
             }
 
             return bitExplosionPositions;

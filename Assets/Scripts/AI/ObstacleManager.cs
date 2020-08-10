@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using StarSalvager.Values;
@@ -11,6 +12,7 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.UI.Scrapyard;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
@@ -124,12 +126,17 @@ namespace StarSalvager
                     case Bit bit:
                         Recycler.Recycle<Bit>(bit);
                         break;
+                    case Component component:
+                        Recycler.Recycle<Component>(component);
+                        break;
                     case Shape shape:
                         Recycler.Recycle<Shape>(shape, new
                         {
                             recycleBits = false
                         });
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                 }
                 m_obstacles.RemoveAt(i);
             }
@@ -193,6 +200,17 @@ namespace StarSalvager
                                 bit.SetColliderActive(true);
                             }
                             break;
+                        case Component component:
+                            if (m_offGridMovingObstacles[i].DespawnOnEnd)
+                            {
+                                Recycler.Recycle<Component>(component);
+                            }
+                            else
+                            {
+                                PlaceMovableOnGrid(component, m_offGridMovingObstacles[i].EndPosition);
+                                component.SetColliderActive(true);
+                            }
+                            break;
                         case Shape shape:
                             if (m_offGridMovingObstacles[i].DespawnOnEnd)
                             {
@@ -204,6 +222,8 @@ namespace StarSalvager
                                 shape.SetColliderActive(true);
                             }
                             break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(OffGridMovement.Bit), m_offGridMovingObstacles[i].Bit, null);
                     }
                     
                     m_offGridMovingObstacles.RemoveAt(i);
@@ -245,6 +265,13 @@ namespace StarSalvager
                                 m_obstacles[i] = null;
                             }
                             break;
+                        case Component component:
+                            if (!component.Attached)
+                            {
+                                Recycler.Recycle<Component>(component);
+                                m_obstacles[i] = null;
+                            }
+                            break;
                         case Shape shape:
                             foreach (var attachedBit in shape.AttachedBits)
                             {
@@ -256,6 +283,8 @@ namespace StarSalvager
                             Recycler.Recycle<Shape>(shape);
                             m_obstacles[i] = null;
                             break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                     }
 
                     m_obstacles.RemoveAt(i);
@@ -408,20 +437,20 @@ namespace StarSalvager
                 //Remove objects that aren't going on screen
             }
             
-            List<Vector2Int> bitExplosionPositions = LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, rdsObjects.Count, 5, 5);
+            Vector2Int[] bitExplosionPositions = LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, rdsObjects.Count, 5, 5);
 
-            for (int i = 0; i < rdsObjects.Count; i++)
+            for (int i = 0; i < bitExplosionPositions.Length; i++)
             {
                 if (rdsObjects[i] is RDSValue<BlockData> rdsValueBlockData)
                 {
                     switch(rdsValueBlockData.rdsValue.ClassType)
                     {
-                        case "Bit":
+                        case nameof(Bit):
                             Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>((BIT_TYPE)rdsValueBlockData.rdsValue.Type, rdsValueBlockData.rdsValue.Level);
                             AddMovableToList(newBit);
                             PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;
-                        case "Component":
+                        case nameof(Component):
                             Component newComponent = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().CreateObject<Component>((COMPONENT_TYPE)rdsValueBlockData.rdsValue.Type);
                             AddMovableToList(newComponent);
                             PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[i], 0.5f);
@@ -484,11 +513,14 @@ namespace StarSalvager
             switch (movable)
             {
                 case Bit _:
+                case Component _:
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
                     break;
                 case Shape shape:
                     m_notFullyInGridShapes.Add(shape);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(movable), movable, null);
             }
         }
 
@@ -499,11 +531,14 @@ namespace StarSalvager
             switch (movable)
             {
                 case Bit _:
+                case Component _:
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
                     break;
                 case Shape shape:
                     m_notFullyInGridShapes.Add(shape);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(movable), movable, null);
             }
         }
 
@@ -516,22 +551,22 @@ namespace StarSalvager
             PlaceMovableOffGrid(bit, bit.transform.position, destination, Vector2.Distance(bit.transform.position, destination) / (m_bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
         }
 
-        private void PlaceMovableOffGrid(IObstacle bit, Vector2 startingPosition, Vector2Int gridEndPosition, float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false)
+        private void PlaceMovableOffGrid(IObstacle obstacle, Vector2 startingPosition, Vector2Int gridEndPosition, float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false)
         {
             Vector2 endPosition = LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(gridEndPosition);
-            PlaceMovableOffGrid(bit, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning, arc);
+            PlaceMovableOffGrid(obstacle, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning, arc);
         }
 
-        private void PlaceMovableOffGrid(IObstacle bit, Vector2 startingPosition, Vector2 endPosition, float lerpSpeed, float spinSpeed, bool despawnOnEnd, bool spinning, bool arc)
+        private void PlaceMovableOffGrid(IObstacle obstacle, Vector2 startingPosition, Vector2 endPosition, float lerpSpeed, float spinSpeed, bool despawnOnEnd, bool spinning, bool arc)
         {
-            bit.SetColliderActive(false);
-            bit.transform.parent = LevelManager.Instance.gameObject.transform;
-            bit.transform.position = startingPosition;
+            obstacle.SetColliderActive(false);
+            obstacle.transform.parent = LevelManager.Instance.gameObject.transform;
+            obstacle.transform.position = startingPosition;
 
             if (!arc)
-                m_offGridMovingObstacles.Add(new OffGridMovementLerp(bit, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning));
+                m_offGridMovingObstacles.Add(new OffGridMovementLerp(obstacle, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning));
             else
-                m_offGridMovingObstacles.Add(new OffGridMovementArc(bit, startingPosition, Vector2.down * 25, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning));
+                m_offGridMovingObstacles.Add(new OffGridMovementArc(obstacle, startingPosition, Vector2.down * 25, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning));
         }
 
         //============================================================================================================//
