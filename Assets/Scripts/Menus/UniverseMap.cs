@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class UniverseMap : MonoBehaviour
+    public class UniverseMap : MonoBehaviour, IReset
     {
         [SerializeField, Required] private UniverseMapButton m_universeSectorButtonPrefab;
 
@@ -25,9 +25,17 @@ namespace StarSalvager.UI
 
         private void Start()
         {
-            InitUniverseMapTemp();
-
             InitButtons();
+        }
+
+        public void Activate()
+        {
+            InitUniverseMapTemp();
+        }
+
+        public void Reset()
+        {
+            
         }
 
         //============================================================================================================//
