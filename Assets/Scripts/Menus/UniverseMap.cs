@@ -47,12 +47,10 @@ namespace StarSalvager.UI
                 if (FactoryManager.Instance.currentModularDataIndex == FactoryManager.Instance.ModularDataCount - 1)
                 {
                     FactoryManager.Instance.currentModularDataIndex = 0;
-                    print("moo");
                 }
                 else
                 {
                     FactoryManager.Instance.currentModularDataIndex++;
-                    print("meow");
                 }
 
                 InitUniverseMapTemp();
@@ -115,7 +113,7 @@ namespace StarSalvager.UI
                 UniverseMapButton button = Instantiate(m_universeSectorButtonPrefab);
                 button.SetupWaveButtons(FactoryManager.Instance.SectorRemoteData[i].GetNumberOfWaves());
                 button.transform.SetParent(m_scrollRectArea.transform);
-                button.transform.localPosition = rect.center + Vector2.right * 400 * i;
+                button.transform.localPosition = rect.center + Vector2.right * 500 * i;
                 button.Text.text = $"Sector {i + 1}";
                 button.SectorNumber = i;
                 button.Button.onClick.AddListener(() => { button.SetActiveWaveButtons(!button.ButtonsActive); });
