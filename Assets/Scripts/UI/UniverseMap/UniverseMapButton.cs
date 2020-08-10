@@ -54,7 +54,8 @@ namespace StarSalvager
         {
             foreach (var button in m_waveButtons)
             {
-                button.gameObject.SetActive(active && PlayerPersistentData.PlayerData.CheckIfQualifies(SectorNumber, button.WaveNumber));
+                button.gameObject.SetActive(active);
+                button.Button.interactable = PlayerPersistentData.PlayerData.CheckIfQualifies(SectorNumber, button.WaveNumber);
             }
             ButtonsActive = active;
         }
