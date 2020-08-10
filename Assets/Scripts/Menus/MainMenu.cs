@@ -178,16 +178,29 @@ namespace StarSalvager.UI
             slot1Button.onClick.AddListener(() =>
             {
                 OpenMenu(MENU.MAIN);
+                PlayerPersistentData.CurrentSaveFile = 0;
                 PlayerPersistentData.IsNewFile = false;
                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
             });
+
+            slot2Button.onClick.AddListener(() =>
+            {
+                OpenMenu(MENU.MAIN);
+                PlayerPersistentData.CurrentSaveFile = 1;
+                PlayerPersistentData.IsNewFile = false;
+                SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+            });
+            //slot2Button.interactable = false;
             
-            slot2Button.onClick.AddListener(() => throw new NotImplementedException());
-            slot2Button.interactable = false;
-            
-            slot3Button.onClick.AddListener(() => throw new NotImplementedException());
-            slot3Button.interactable = false;
-            
+            slot3Button.onClick.AddListener(() =>
+            {
+                OpenMenu(MENU.MAIN);
+                PlayerPersistentData.CurrentSaveFile = 2;
+                PlayerPersistentData.IsNewFile = false;
+                SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+            });
+            //slot3Button.interactable = false;
+
             lgBackButton.onClick.AddListener(() => OpenMenu(MENU.MAIN));
             
             //Options Buttons
