@@ -251,6 +251,7 @@ namespace StarSalvager.Factories
             //FIXME This should be using persistent file names
             var files = new[]
             {
+                Application.dataPath + "/RemoteData/PlayerPersistentMetadata.player",
                 Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile0.player",
                 Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile1.player",
                 Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile2.player",

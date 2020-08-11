@@ -16,9 +16,12 @@ namespace StarSalvager.Values
             Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile2.player"
         };
 
+        private static readonly string persistentMetadataPath =
+            Application.dataPath + "/RemoteData/PlayerPersistentMetadata.player";
+
         public static bool IsNewFile = false;
 
-        public static int CurrentSaveFile = -1;
+        private static int CurrentSaveFile = -1;
 
         public static void Init()
         {
@@ -27,14 +30,32 @@ namespace StarSalvager.Values
 
         public static PlayerData PlayerData = new PlayerData();
 
+        public static PlayerMetadata PlayerMetadata = ImportPlayerPersistentMetadata();
+
         public static void SetCurrentSaveFile(int saveFile)
         {
+            int index;
+            if (PlayerMetadata.saveFileLastAccessedOrder.Count <= saveFile)
+            {
+                index = PlayerMetadata.ActivateNextEmptySaveFile();
+            }
+            else 
+            {
+                PlayerMetadata.MoveSaveFileToFront(saveFile);
+                index = PlayerMetadata.GetSaveFileAtIndex(0);
+            }
+
             if (CurrentSaveFile >= 0)
             {
                 ExportPlayerPersistentData(PlayerData, CurrentSaveFile);
             }
-            CurrentSaveFile = saveFile;
-            PlayerData = ImportPlayerPersistentData(saveFile);
+            else if (index == CurrentSaveFile)
+            {
+                return;
+            }
+
+            CurrentSaveFile = index;
+            PlayerData = ImportPlayerPersistentData(index);
         }
 
         public static void ResetPlayerData()
@@ -53,6 +74,14 @@ namespace StarSalvager.Values
         {
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
             System.IO.File.WriteAllText(persistentDataPaths[saveSlot], export);
+
+            return export;
+        }
+
+        private static string ExportPlayerPersistentMetadata(PlayerMetadata editorData)
+        {
+            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
+            System.IO.File.WriteAllText(persistentMetadataPath, export);
 
             return export;
         }
@@ -80,6 +109,21 @@ namespace StarSalvager.Values
             return loaded;
         }
 
+        private static PlayerMetadata ImportPlayerPersistentMetadata()
+        {
+            if (!Directory.Exists(persistentMetadataPath))
+                System.IO.Directory.CreateDirectory(Application.dataPath + "/RemoteData/");
+
+            if (!File.Exists(persistentMetadataPath))
+            {
+                PlayerMetadata data = new PlayerMetadata();
+                return data;
+            }
+
+            var loaded = JsonConvert.DeserializeObject<PlayerMetadata>(File.ReadAllText(persistentMetadataPath));
+            return loaded;
+        }
+
         public static void ClearPlayerData()
         {
             PlayerData = null;
@@ -89,6 +133,8 @@ namespace StarSalvager.Values
         {
             if (CurrentSaveFile >= 0)
                 ExportPlayerPersistentData(PlayerData, CurrentSaveFile);
+
+            ExportPlayerPersistentMetadata(PlayerMetadata);
         }
     }
 }

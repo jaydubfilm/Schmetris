@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Wave_Remote_1_1
   m_EditorClassIdentifier: 
   StageRemoteData:
-  - m_stageDuration: 30
+  - m_stageDuration: 3
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
@@ -30,7 +30,7 @@ MonoBehaviour:
       m_category: Medium
       m_asteroidCountPerMinute: 100
       m_rotation: Random
-  - m_stageDuration: 30
+  - m_stageDuration: 3
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:

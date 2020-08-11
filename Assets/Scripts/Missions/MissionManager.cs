@@ -52,16 +52,23 @@ namespace StarSalvager.Missions
 
         public static MissionsCurrentData MissionsCurrentData = new MissionsCurrentData();
 
-        public static int CurrentSaveFile = -1;
+        private static int CurrentSaveFile = -1;
 
-        public static void SetCurrentSaveFile(int saveFile)
+        public static void SetCurrentSaveFile()
         {
+            int index = PlayerPersistentData.PlayerMetadata.GetSaveFileAtIndex(0);
+
             if (CurrentSaveFile >= 0)
             {
                 ExportMissionsCurrentRemoteData(MissionsCurrentData, CurrentSaveFile);
             }
-            CurrentSaveFile = saveFile;
-            MissionsCurrentData = ImportMissionsCurrentRemoteData(saveFile);
+            else if (index == CurrentSaveFile)
+            {
+                return;
+            }
+
+            CurrentSaveFile = index;
+            MissionsCurrentData = ImportMissionsCurrentRemoteData(index);
             MissionsCurrentData.LoadMissionData();
             CheckUnlocks();
         }
@@ -266,6 +273,9 @@ namespace StarSalvager.Missions
                 currentData.m_notStartedMissionData.Add(mission.ToMissionData());
             }
             MissionsCurrentData = currentData;
+
+            MissionsCurrentData.LoadMissionData();
+            CheckUnlocks();
         }
 
         public static void CustomOnApplicationQuit()

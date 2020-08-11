@@ -140,7 +140,12 @@ namespace StarSalvager.UI
             
             newGameButton.onClick.AddListener(() => OpenMenu(MENU.NEW));
 
-            continueButton.onClick.AddListener(() => SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene"));
+            continueButton.onClick.AddListener(() =>
+            {
+                PlayerPersistentData.SetCurrentSaveFile(0);
+                MissionManager.SetCurrentSaveFile();
+                SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+            });
 
             loadGameButton.onClick.AddListener(() => OpenMenu(MENU.LOAD));
             
@@ -161,8 +166,8 @@ namespace StarSalvager.UI
             startGameButton.onClick.AddListener(() =>
             {
                 OpenMenu(MENU.MAIN);
-                PlayerPersistentData.SetCurrentSaveFile(0);
-                MissionManager.SetCurrentSaveFile(0);
+                PlayerPersistentData.SetCurrentSaveFile(PlayerPersistentData.PlayerMetadata.saveFileLastAccessedOrder.Count);
+                MissionManager.SetCurrentSaveFile();
                 PlayerPersistentData.ResetPlayerData();
                 MissionManager.ResetMissionData();
                 PlayerPersistentData.IsNewFile = false;
@@ -182,7 +187,7 @@ namespace StarSalvager.UI
             {
                 OpenMenu(MENU.MAIN);
                 PlayerPersistentData.SetCurrentSaveFile(0);
-                MissionManager.SetCurrentSaveFile(0);
+                MissionManager.SetCurrentSaveFile();
                 PlayerPersistentData.IsNewFile = false;
                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
             });
@@ -191,7 +196,7 @@ namespace StarSalvager.UI
             {
                 OpenMenu(MENU.MAIN);
                 PlayerPersistentData.SetCurrentSaveFile(1);
-                MissionManager.SetCurrentSaveFile(1);
+                MissionManager.SetCurrentSaveFile();
                 PlayerPersistentData.IsNewFile = false;
                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
             });
@@ -201,7 +206,7 @@ namespace StarSalvager.UI
             {
                 OpenMenu(MENU.MAIN);
                 PlayerPersistentData.SetCurrentSaveFile(2);
-                MissionManager.SetCurrentSaveFile(2);
+                MissionManager.SetCurrentSaveFile();
                 PlayerPersistentData.IsNewFile = false;
                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
             });
