@@ -76,6 +76,20 @@ namespace StarSalvager
 
         //================================================================================================================//
 
+        private void OnEnable()
+        {
+            PlayerPersistentData.PlayerData.OnValuesChanged += ForceUpdateResourceUI;
+        }
+
+        private void OnDisable()
+        {
+            PlayerPersistentData.PlayerData.OnValuesChanged -= ForceUpdateResourceUI;
+        }
+
+
+        //================================================================================================================//
+
+
         public void SetMagentOverride(int magnet)
         {
             magnetOverride = magnet;
@@ -132,7 +146,7 @@ namespace StarSalvager
             }
         }
 
-        private Dictionary<Part, Bit> _burnRef = new Dictionary<Part, Bit>();
+        //private Dictionary<Part, Bit> _burnRef = new Dictionary<Part, Bit>();
 
         
         /// <summary>
@@ -160,9 +174,25 @@ namespace StarSalvager
                 
                 var resourceValue = GetValueToBurn(levelData, partRemoteData.burnType);
                 
-                if (resourceValue == 0f && useBurnRate)
+                //If we no longer have liquid to use, find a bit that could be refined
+                if (resourceValue <= 0f && useBurnRate)
                 {
-                    if (!_burnRef.ContainsKey(part))
+                    var targetBit = GetFurthestBitToBurn(levelData, partRemoteData.burnType);
+                    
+                    if (targetBit == null)
+                        continue;
+
+                    var addAmount = FactoryManager.Instance
+                        .GetFactory<BitAttachableFactory>().GetBitRemoteData(targetBit.Type).levels[targetBit.level]
+                        .resources;
+                    
+                    PlayerPersistentData.PlayerData.AddLiquidResource(partRemoteData.burnType, addAmount);
+
+                    bot.DestroyAttachable(targetBit);
+
+                    resourceValue = addAmount;
+
+                    /*if (!_burnRef.ContainsKey(part))
                     {
                         var targetBit = GetFurthestBitToBurn(levelData, partRemoteData.burnType);
             
@@ -183,7 +213,7 @@ namespace StarSalvager
                             continue;
 
                         _burnRef[part] = targetBit;
-                    }
+                    }*/
                 }
 
                 switch (part.Type)
@@ -192,10 +222,10 @@ namespace StarSalvager
 
                         if (resourceValue > 0f && useBurnRate)
                             resourceValue -= levelData.burnRate * Time.deltaTime;
-                        else if (_burnRef[part] && useBurnRate)
+                        /*else if (_burnRef[part] && useBurnRate)
                         {
                             _burnRef[part].ChangeHealth(-levelData.burnRate * Time.deltaTime);
-                        }
+                        }*/
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
@@ -233,12 +263,12 @@ namespace StarSalvager
                         
                         if (resourceValue <= 0f && useBurnRate)
                         {
-                            if (!_burnRef[part] && useBurnRate)
+                            /*if (!_burnRef[part] && useBurnRate)
                             {
                                 
                                 continue;
-                            }
-
+                            }*/
+                            continue;
                         }
 
                         IHealth toRepair;
@@ -280,8 +310,8 @@ namespace StarSalvager
                         {
                             if(resourceValue > 0f)
                                 resourceValue -= levelData.burnRate * Time.deltaTime;
-                            else if(_burnRef[part])
-                                _burnRef[part].ChangeHealth(-levelData.burnRate * Time.deltaTime);
+                            /*else if(_burnRef[part])
+                                _burnRef[part].ChangeHealth(-levelData.burnRate * Time.deltaTime);*/
                         }
 
                         var repairAmount = levelData.GetDataValue(DataTest.TEST_KEYS.Heal);
@@ -294,10 +324,12 @@ namespace StarSalvager
                         
                         if (resourceValue <= 0f && useBurnRate)
                         {
-                            if (!_burnRef[part] && useBurnRate)
+                            /*if (!_burnRef[part] && useBurnRate)
                             {
                                 continue;
-                            }
+                            }*/
+                            continue;
+                            
                         }
                         
                         //TODO Need to determine if the shoot type is looking for enemies or not
@@ -341,8 +373,8 @@ namespace StarSalvager
                         {
                             if(resourceValue > 0)
                                 resourceValue -= levelData.burnRate;
-                            else if(_burnRef[part])
-                                _burnRef[part].ChangeHealth(-levelData.burnRate * Time.deltaTime);
+                            /*else if(_burnRef[part])
+                                _burnRef[part].ChangeHealth(-levelData.burnRate * Time.deltaTime);*/
                         }
 
                         //Debug.Log("Fire");
@@ -424,6 +456,14 @@ namespace StarSalvager
         }
         
         //============================================================================================================//
+
+        private void ForceUpdateResourceUI()
+        {
+            foreach (var f in PlayerPersistentData.PlayerData.liquidResource)
+            {
+                UpdateUI(f.Key, f.Value);
+            }
+        }
 
         private void UpdateUI(BIT_TYPE type, float value)
         {

@@ -107,6 +107,21 @@ namespace StarSalvager.Values
         
         //============================================================================================================//
 
+        public void AddLiquidResource(BIT_TYPE type, float amount)
+        {
+            liquidResource[type] += Mathf.Abs(amount);
+            OnValuesChanged?.Invoke();
+        }
+        
+        public void SubtractLiquidResource(BIT_TYPE type, float amount)
+        {
+            liquidResource[type] -= Mathf.Abs(amount);
+            OnValuesChanged?.Invoke();
+        }
+        
+        //============================================================================================================//
+
+
         public bool CanAffordCost(IEnumerable<CraftCost> levelCost)
         {
             Dictionary<BIT_TYPE, int> tempDictionary = new Dictionary<BIT_TYPE, int>(resources);

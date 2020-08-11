@@ -76,9 +76,9 @@ namespace StarSalvager.UI
                     break;
                 case CraftCost.TYPE.Part:
                     resourceImage.sprite = _partAttachableFactory.GetProfileData((PART_TYPE) data.type)
-                        .Sprites[data.partPrerequisiteLevel];
+                        .GetSprite(data.partPrerequisiteLevel);
 
-                    var partCount = PlayerPersistentData.PlayerData.partsInStorageBlockData.Count(x => x.Type == data.type);
+                    var partCount = PlayerPersistentData.PlayerData.partsInStorageBlockData.Count(x => x.Type == data.type && x.Level == data.partPrerequisiteLevel);
                     
                     costText.text = $"{partCount}/{data.amount}";
                     break;

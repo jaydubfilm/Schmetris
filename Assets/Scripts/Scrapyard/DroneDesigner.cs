@@ -595,6 +595,44 @@ namespace StarSalvager
 
         #region Other
 
+        private readonly Dictionary<BIT_TYPE, string> _textSprites = new Dictionary<BIT_TYPE, string>
+        {
+            { BIT_TYPE.GREEN,  "<sprite=\"MaterIalIcons_SS_ver1\" name=\"MaterIalIcons_SS_ver1_4\">" },
+            { BIT_TYPE.GREY,   "<sprite=\"MaterIalIcons_SS_ver1\" name=\"MaterIalIcons_SS_ver1_3\">" },
+            { BIT_TYPE.RED,    "<sprite=\"MaterIalIcons_SS_ver1\" name=\"MaterIalIcons_SS_ver1_2\">" },
+            { BIT_TYPE.BLUE,   "<sprite=\"MaterIalIcons_SS_ver1\" name=\"MaterIalIcons_SS_ver1_1\">" },
+            { BIT_TYPE.YELLOW, "<sprite=\"MaterIalIcons_SS_ver1\" name=\"MaterIalIcons_SS_ver1_0\">" },
+        };
+
+        private static string GetBitSprite(BIT_TYPE type, int level)
+        {
+            int typeBase;
+            switch (type)
+            {
+                case BIT_TYPE.BLUE:
+                    typeBase = 0;
+                    break;
+                case BIT_TYPE.GREEN:
+                    typeBase = 3;
+                    break;
+                case BIT_TYPE.GREY:
+                    typeBase = 4;
+                    break;
+                case BIT_TYPE.RED:
+                    typeBase = 1;
+                    break;
+                case BIT_TYPE.YELLOW:
+                    typeBase = 2;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+
+            int levelOffset = level * 5;
+
+            return $"<sprite=\"GamePieces_Atlas\" name=\"GamePieces_Atlas_{typeBase + levelOffset}\">";
+        }
+
         private void SellBits()
         {
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
@@ -608,22 +646,24 @@ namespace StarSalvager
                 string resourcesGained = "";
                 foreach (var resource in bits)
                 {
-                    resourcesGained += resource.Key + ":\n";
-
-                    int numTotal = scrapBot.attachedBlocks.OfType<ScrapyardBit>().Where(b => b.Type == resource.Key).Count();
+                    int numTotal = scrapBot.attachedBlocks.OfType<ScrapyardBit>().Count(b => b.Type == resource.Key);
+                    
                     for (int i = 0; numTotal > 0; i++)
                     {
-                        int numAtLevel = scrapBot.attachedBlocks.OfType<ScrapyardBit>().Where(b => b.Type == resource.Key && b.level == i).Count();
+                        int numAtLevel = scrapBot.attachedBlocks.OfType<ScrapyardBit>().Count(b => b.Type == resource.Key && b.level == i);
                         if (numAtLevel == 0)
                             continue;
 
                         BitRemoteData remoteData = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(resource.Key);
                         int resourceAmount = numAtLevel * remoteData.levels[i].resources;
-                        resourcesGained += numAtLevel + " x (Level " + i + ") = " + resourceAmount + ",\n";
+                        resourcesGained += $"{numAtLevel} x {GetBitSprite(resource.Key, i)} = {resourceAmount} {_textSprites[resource.Key]} ";
                         numTotal -= numAtLevel;
                     }
+
+                    resourcesGained += "\n";
                 }
-                Alert.ShowAlert("Bits Sold", resourcesGained, "Okay", null);
+                Alert.ShowAlert("Resources Refined", resourcesGained, "Okay", null);
+                Alert.SetLineHeight(90f);
                 scrapBot.RemoveAllBits();
                 SaveBlockData();
 
