@@ -21,6 +21,7 @@ MonoBehaviour:
   - _name: Asteroid
     bitType: 0
     _animation: {fileID: 0}
+    refinedSprite: {fileID: 0}
     _sprites:
     - {fileID: -3680335508457511949, guid: f9d1bee348604c049920eaebab6d26f1, type: 3}
     - {fileID: 2715880458473573666, guid: f9d1bee348604c049920eaebab6d26f1, type: 3}
@@ -29,6 +30,7 @@ MonoBehaviour:
   - _name: Bluesalt
     bitType: 1
     _animation: {fileID: 0}
+    refinedSprite: {fileID: 0}
     _sprites:
     - {fileID: 6039155110419200008, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
     - {fileID: -1582512864064098049, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
@@ -38,6 +40,7 @@ MonoBehaviour:
   - _name: Greenium
     bitType: 2
     _animation: {fileID: 0}
+    refinedSprite: {fileID: 0}
     _sprites:
     - {fileID: 2578533267935622569, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
     - {fileID: 246965062356006632, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
@@ -47,6 +50,7 @@ MonoBehaviour:
   - _name: Greyscale
     bitType: 3
     _animation: {fileID: 0}
+    refinedSprite: {fileID: 0}
     _sprites:
     - {fileID: 6414958675908347751, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
     - {fileID: -7143617189628123940, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
@@ -56,6 +60,7 @@ MonoBehaviour:
   - _name: Reddite
     bitType: 4
     _animation: {fileID: 0}
+    refinedSprite: {fileID: 0}
     _sprites:
     - {fileID: 2516858116652281422, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
     - {fileID: -3372421307423276766, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
@@ -65,6 +70,7 @@ MonoBehaviour:
   - _name: Yelletron
     bitType: 5
     _animation: {fileID: 0}
+    refinedSprite: {fileID: 0}
     _sprites:
     - {fileID: 8947030836025851479, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
     - {fileID: -4944162547608504398, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
@@ -74,5 +80,76 @@ MonoBehaviour:
   - _name: Energy
     bitType: 6
     _animation: {fileID: 11400000, guid: fafe4dfee868e4949adf56733d997636, type: 2}
+    refinedSprite: {fileID: 0}
     _sprites:
     - {fileID: 21300000, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+  asteroidProfiles:
+  - _name: 1x1
+    bitType: 0
+    dimensions: {x: 1, y: 1}
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: 4740646371163351874, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: 7934934674122444120, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: 2397403726639049774, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: 1790308607095180760, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -4095796660550586790, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -958652295336994860, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: 6763511925473580942, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -6498644324137305759, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: 8674705024569528562, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - _name: 2x2
+    bitType: 0
+    dimensions: {x: 2, y: 2}
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: -5879238874074108907, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -8079408450588852037, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -4608251391778202509, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -2025138536200787235, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - _name: 3x3
+    bitType: 0
+    dimensions: {x: 3, y: 3}
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: 3623618048574350569, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: 6901109441678843779, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -6406978733277321545, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - _name: 4x4
+    bitType: 0
+    dimensions: {x: 4, y: 4}
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: -9179598121594932568, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -2483701044952898396, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -1850979172351868509, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - _name: 1x2
+    bitType: 0
+    dimensions: {x: 1, y: 2}
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: 8063439932728523541, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - _name: 2x1
+    bitType: 0
+    dimensions: {x: 2, y: 1}
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: -7924957166409073024, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - _name: 2x3
+    bitType: 0
+    dimensions: {x: 2, y: 3}
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: -5423605793893429019, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - _name: 3x2
+    bitType: 0
+    dimensions: {x: 3, y: 2}
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: -5826600065143060685, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - _name: 4x2
+    bitType: 0
+    dimensions: {x: 4, y: 2}
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: -9041514455604289002, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
