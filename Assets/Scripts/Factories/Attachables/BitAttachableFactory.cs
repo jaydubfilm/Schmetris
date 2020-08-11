@@ -151,31 +151,15 @@ namespace StarSalvager.Factories
             var remote = _remoteData.GetRemoteData(type);
             var profile = ((BitProfileScriptableObject)factoryProfile).GetAsteroidProfile();
             //FIXME I may want to put this somewhere else, and leave the level dependent sprite obtaining here
-            
-            
-            var sprite = profile.GetRandomSprite();
+
+
+            var sprite = profile.Sprites[Random.Range(0, profile.Sprites.Length)];
 
             //--------------------------------------------------------------------------------------------------------//
 
             Bit temp;
             //If there is an animation associated with this profile entry, create the animated version of the prefab
-            if (profile.animation != null)
-            {
-                if (!Recycler.TryGrab(out AnimatedBit anim))
-                {
-                    anim = CreateAnimatedObject<AnimatedBit>();
-                }
-
-                anim.SimpleAnimator.SetAnimation(profile.animation);
-                temp = anim;
-            }
-            else
-            {
-                if (!Recycler.TryGrab(out temp))
-                {
-                    temp = CreateObject<Bit>();
-                }
-            }
+            temp = CreateObject<Bit>();
 
             //--------------------------------------------------------------------------------------------------------//
 
