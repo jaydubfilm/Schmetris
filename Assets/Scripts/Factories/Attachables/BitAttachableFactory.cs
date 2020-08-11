@@ -113,9 +113,10 @@ namespace StarSalvager.Factories
                     temp = CreateObject<Bit>();
                 }
             }
-            
+
             //--------------------------------------------------------------------------------------------------------//
 
+            ((BoxCollider2D)temp.collider).size = sprite.bounds.size;
             temp.SetColliderActive(true);
             temp.SetSprite(sprite);
             temp.LoadBlockData(blockData);
