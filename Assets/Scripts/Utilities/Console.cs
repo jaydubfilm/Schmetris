@@ -300,13 +300,14 @@ namespace StarSalvager.Utilities
                             if (!PlayerPersistentData.PlayerData.resources.ContainsKey(value))
                                 continue;
                                 
+                            //I dont want to use AddLiquidResource() here because it would call the OnValuesChanged callback too much
                             PlayerPersistentData.PlayerData.liquidResource[value] += floatAmount;
                         }
                         
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
-                        PlayerPersistentData.PlayerData.liquidResource[bitType] += floatAmount;
+                        PlayerPersistentData.PlayerData.AddLiquidResource(bitType, floatAmount);
                     }
                     else
                     {

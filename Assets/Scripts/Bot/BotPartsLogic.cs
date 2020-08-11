@@ -76,6 +76,20 @@ namespace StarSalvager
 
         //================================================================================================================//
 
+        private void OnEnable()
+        {
+            PlayerPersistentData.PlayerData.OnValuesChanged += ForceUpdateResourceUI;
+        }
+
+        private void OnDisable()
+        {
+            PlayerPersistentData.PlayerData.OnValuesChanged -= ForceUpdateResourceUI;
+        }
+
+
+        //================================================================================================================//
+
+
         public void SetMagentOverride(int magnet)
         {
             magnetOverride = magnet;
@@ -160,18 +174,23 @@ namespace StarSalvager
                 
                 var resourceValue = GetValueToBurn(levelData, partRemoteData.burnType);
                 
-                if (resourceValue == 0f && useBurnRate)
+                //If we no longer have liquid to use, find a bit that could be refined
+                if (resourceValue <= 0f && useBurnRate)
                 {
                     var targetBit = GetFurthestBitToBurn(levelData, partRemoteData.burnType);
                     
                     if (targetBit == null)
                         continue;
 
-                    PlayerPersistentData.PlayerData.liquidResource[partRemoteData.burnType] += FactoryManager.Instance
+                    var addAmount = FactoryManager.Instance
                         .GetFactory<BitAttachableFactory>().GetBitRemoteData(targetBit.Type).levels[targetBit.level]
                         .resources;
                     
+                    PlayerPersistentData.PlayerData.AddLiquidResource(partRemoteData.burnType, addAmount);
+
                     bot.DestroyAttachable(targetBit);
+
+                    resourceValue = addAmount;
 
                     /*if (!_burnRef.ContainsKey(part))
                     {
@@ -437,6 +456,14 @@ namespace StarSalvager
         }
         
         //============================================================================================================//
+
+        private void ForceUpdateResourceUI()
+        {
+            foreach (var f in PlayerPersistentData.PlayerData.liquidResource)
+            {
+                UpdateUI(f.Key, f.Value);
+            }
+        }
 
         private void UpdateUI(BIT_TYPE type, float value)
         {
