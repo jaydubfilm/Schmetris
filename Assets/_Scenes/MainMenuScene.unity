@@ -348,6 +348,114 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 1466301388}
+    ActiveGameObject: {fileID: 1466301388}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1871337322}
+    ActiveGameObject: {fileID: 1871337322}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1871337322}
+    ActiveGameObject: {fileID: 1871337322}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1871337322}
+    ActiveGameObject: {fileID: 1871337322}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1871337322}
+    ActiveGameObject: {fileID: 1871337322}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1871337322}
+    ActiveGameObject: {fileID: 1871337322}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1871337322}
+    ActiveGameObject: {fileID: 1871337322}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1871337322}
+    ActiveGameObject: {fileID: 1871337322}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1871337322}
+    ActiveGameObject: {fileID: 1871337322}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 1871337322}
     ActiveGameObject: {fileID: 1871337322}
     GUIDsList: []
@@ -470,114 +578,6 @@ MonoBehaviour:
     list:
     - {fileID: 1871337322}
     ActiveGameObject: {fileID: 1871337322}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1871337322}
-    ActiveGameObject: {fileID: 1871337322}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1871337322}
-    ActiveGameObject: {fileID: 1871337322}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 575187813}
-    ActiveGameObject: {fileID: 575187813}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 575187813}
-    ActiveGameObject: {fileID: 575187813}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 8065688320005190947}
-    ActiveGameObject: {fileID: 8065688320005190947}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1871337322}
-    ActiveGameObject: {fileID: 1871337322}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1350056042}
-    ActiveGameObject: {fileID: 1350056042}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 997577175}
-    ActiveGameObject: {fileID: 997577175}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -629,12 +629,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &997577175 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7924511267928285753, guid: 648b56bc406ac8641bc6e42ebc0fcc48,
-    type: 3}
-  m_PrefabInstance: {fileID: 1179821266}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1179821266
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -945,6 +939,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de2e1a50fa4983e4898877b8f3ac6e72, type: 3}
+--- !u!1 &1466301388 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4238309709976736832, guid: df05b7231ba43c749b389e5e917a8fa3,
+    type: 3}
+  m_PrefabInstance: {fileID: 1380485831}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1871337322 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8017945059100664150, guid: ef8cd5dde79dff24381c55947014638c,

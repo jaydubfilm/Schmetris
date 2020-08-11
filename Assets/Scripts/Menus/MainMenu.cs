@@ -161,7 +161,10 @@ namespace StarSalvager.UI
             startGameButton.onClick.AddListener(() =>
             {
                 OpenMenu(MENU.MAIN);
+                PlayerPersistentData.SetCurrentSaveFile(0);
+                MissionManager.SetCurrentSaveFile(0);
                 PlayerPersistentData.ResetPlayerData();
+                MissionManager.ResetMissionData();
                 PlayerPersistentData.IsNewFile = false;
                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
             });
@@ -178,7 +181,8 @@ namespace StarSalvager.UI
             slot1Button.onClick.AddListener(() =>
             {
                 OpenMenu(MENU.MAIN);
-                PlayerPersistentData.CurrentSaveFile = 0;
+                PlayerPersistentData.SetCurrentSaveFile(0);
+                MissionManager.SetCurrentSaveFile(0);
                 PlayerPersistentData.IsNewFile = false;
                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
             });
@@ -186,7 +190,8 @@ namespace StarSalvager.UI
             slot2Button.onClick.AddListener(() =>
             {
                 OpenMenu(MENU.MAIN);
-                PlayerPersistentData.CurrentSaveFile = 1;
+                PlayerPersistentData.SetCurrentSaveFile(1);
+                MissionManager.SetCurrentSaveFile(1);
                 PlayerPersistentData.IsNewFile = false;
                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
             });
@@ -195,7 +200,8 @@ namespace StarSalvager.UI
             slot3Button.onClick.AddListener(() =>
             {
                 OpenMenu(MENU.MAIN);
-                PlayerPersistentData.CurrentSaveFile = 2;
+                PlayerPersistentData.SetCurrentSaveFile(2);
+                MissionManager.SetCurrentSaveFile(2);
                 PlayerPersistentData.IsNewFile = false;
                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
             });

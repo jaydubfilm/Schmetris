@@ -15,30 +15,26 @@ namespace StarSalvager.Values
             Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile1.player",
             Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile2.player"
         };
-        private static List<PlayerData> m_playerData = new List<PlayerData>();
 
         public static bool IsNewFile = false;
 
-        public static int CurrentSaveFile = 0;
+        public static int CurrentSaveFile = -1;
 
         public static void Init()
         {
-            for (int i = m_playerData.Count; i < 3; i++)
-            {
-                m_playerData.Add(ImportPlayerPersistentData(i));
-            }
+
         }
 
-        public static PlayerData PlayerData => GetPlayerData(CurrentSaveFile);
+        public static PlayerData PlayerData = new PlayerData();
 
-        public static PlayerData GetPlayerData(int index)
+        public static void SetCurrentSaveFile(int saveFile)
         {
-            CurrentSaveFile = index;
-            if (m_playerData.Count <= CurrentSaveFile)
+            if (CurrentSaveFile >= 0)
             {
-                Init();
+                ExportPlayerPersistentData(PlayerData, CurrentSaveFile);
             }
-            return m_playerData[CurrentSaveFile];
+            CurrentSaveFile = saveFile;
+            PlayerData = ImportPlayerPersistentData(saveFile);
         }
 
         public static void ResetPlayerData()
@@ -48,7 +44,7 @@ namespace StarSalvager.Values
             {
                 data.AddSectorProgression(i, 0);
             }
-            m_playerData[0] = data;
+            PlayerData = data;
 
             IsNewFile = true;
         }
@@ -86,17 +82,13 @@ namespace StarSalvager.Values
 
         public static void ClearPlayerData()
         {
-            m_playerData.Clear();
-            
-            Init();
+            PlayerData = null;
         }
 
         public static void CustomOnApplicationQuit()
         {
-            for (int i = 0; i < 3; i++)
-            {
-                ExportPlayerPersistentData(GetPlayerData(i), i);
-            }
+            if (CurrentSaveFile >= 0)
+                ExportPlayerPersistentData(PlayerData, CurrentSaveFile);
         }
     }
 }

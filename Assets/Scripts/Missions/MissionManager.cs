@@ -50,27 +50,24 @@ namespace StarSalvager.Missions
         }
         private static MissionsMasterData m_missionsMasterData = null;
 
-        private static List<MissionsCurrentData> m_missionsCurrentData = new List<MissionsCurrentData>();
+        public static MissionsCurrentData MissionsCurrentData = new MissionsCurrentData();
 
-        public static MissionsCurrentData MissionsCurrentData => GetMissionData(PlayerPersistentData.CurrentSaveFile);
+        public static int CurrentSaveFile = -1;
 
-        public static MissionsCurrentData GetMissionData(int index)
+        public static void SetCurrentSaveFile(int saveFile)
         {
-            if (m_missionsCurrentData.Count <= index)
+            if (CurrentSaveFile >= 0)
             {
-                Init();
+                ExportMissionsCurrentRemoteData(MissionsCurrentData, CurrentSaveFile);
             }
-            return m_missionsCurrentData[index];
+            CurrentSaveFile = saveFile;
+            MissionsCurrentData = ImportMissionsCurrentRemoteData(saveFile);
+            MissionsCurrentData.LoadMissionData();
+            CheckUnlocks();
         }
 
         public static void Init()
         {
-            for (int i = m_missionsCurrentData.Count; i < 3; i++)
-            {
-                m_missionsCurrentData.Add(ImportMissionsCurrentRemoteData(i));
-                m_missionsCurrentData[i].LoadMissionData();
-                CheckUnlocks(i);
-            }
         }
 
         public static void AddMissionCurrent(string missionName)
@@ -146,11 +143,13 @@ namespace StarSalvager.Missions
 
         public static void ProcessLevelProgressMissionData(int sectorNumber, int waveNumber)
         {
-            //Debug.Log("Level Progress mission event");
+            Debug.Log("Level Progress mission event");
             for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
             {
+                Debug.Log("0");
                 if (MissionsCurrentData.CurrentMissions[i] is LevelProgressMission levelProgressMission)
                 {
+                    Debug.Log("1");
                     levelProgressMission.ProcessMissionData(sectorNumber, waveNumber);
                     if (levelProgressMission.MissionComplete())
                     {
@@ -169,25 +168,25 @@ namespace StarSalvager.Missions
         {
             Toast.AddToast(missionName + " Successful!!!!", time: 3.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.End);
             recentCompletedMissionName = missionName;
-            CheckUnlocks(PlayerPersistentData.CurrentSaveFile);
+            CheckUnlocks();
         }
 
         private static void ProcessWaveComplete(int sectorNumber, int waveNumber)
         {
             recentCompletedSectorName = sectorNumber;
             recentCompletedWaveName = waveNumber;
-            CheckUnlocks(PlayerPersistentData.CurrentSaveFile);
+            CheckUnlocks();
         }
 
-        private static void CheckUnlocks(int saveFile)
+        private static void CheckUnlocks()
         {
-            for (int i = GetMissionData(saveFile).NotStartedMissions.Count - 1; i >= 0; i--)
+            for (int i = MissionsCurrentData.NotStartedMissions.Count - 1; i >= 0; i--)
             {
-                Mission mission = GetMissionData(saveFile).NotStartedMissions[i];
+                Mission mission = MissionsCurrentData.NotStartedMissions[i];
 
                 if (mission.CheckUnlockParameters())
                 {
-                    GetMissionData(saveFile).AddMission(mission);
+                    MissionsCurrentData.AddMission(mission);
                 }
             }
         }
@@ -259,6 +258,16 @@ namespace StarSalvager.Missions
             return loaded;
         }
 
+        public static void ResetMissionData()
+        {
+            MissionsCurrentData currentData = new MissionsCurrentData();
+            foreach (Mission mission in MissionsMasterData.GetMasterMissions())
+            {
+                currentData.m_notStartedMissionData.Add(mission.ToMissionData());
+            }
+            MissionsCurrentData = currentData;
+        }
+
         public static void CustomOnApplicationQuit()
         {
             SaveMissionDatas();
@@ -266,11 +275,11 @@ namespace StarSalvager.Missions
 
         public static void SaveMissionDatas()
         {
-            for (int i = 0; i < 3; i++)
+            if (CurrentSaveFile >= 0)
             {
-                ExportMissionsCurrentRemoteData(GetMissionData(i), i);
+                ExportMissionsCurrentRemoteData(MissionsCurrentData, CurrentSaveFile);
+                ExportMissionsMasterRemoteData(MissionsMasterData);
             }
-            ExportMissionsMasterRemoteData(MissionsMasterData);
         }
     }
 }
