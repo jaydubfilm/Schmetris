@@ -9,25 +9,53 @@ namespace StarSalvager.Values
 {
     public static class PlayerPersistentData
     {
-        private static readonly string persistentDataPath = Application.dataPath + "/RemoteData/PlayerPersistentData.player";
-        private static List<PlayerData> m_playerData = new List<PlayerData>();
+        private static readonly List<string> persistentDataPaths = new List<string>
+        {
+            Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile0.player",
+            Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile1.player",
+            Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile2.player"
+        };
+
+        private static readonly string persistentMetadataPath =
+            Application.dataPath + "/RemoteData/PlayerPersistentMetadata.player";
 
         public static bool IsNewFile = false;
 
+        private static int CurrentSaveFile = -1;
+
         public static void Init()
         {
-            m_playerData.Add(ImportPlayerPersistentData());
+
         }
 
-        public static PlayerData PlayerData => GetPlayerData(0);
-        
-        public static PlayerData GetPlayerData(int index)
-        {
-            if (m_playerData.Count > index)
-                return m_playerData[index];
+        public static PlayerData PlayerData = new PlayerData();
 
-            Init();
-            return m_playerData[index];
+        public static PlayerMetadata PlayerMetadata = ImportPlayerPersistentMetadata();
+
+        public static void SetCurrentSaveFile(int saveFile)
+        {
+            int index;
+            if (PlayerMetadata.saveFileLastAccessedOrder.Count <= saveFile)
+            {
+                index = PlayerMetadata.ActivateNextEmptySaveFile();
+            }
+            else 
+            {
+                PlayerMetadata.MoveSaveFileToFront(saveFile);
+                index = PlayerMetadata.GetSaveFileAtIndex(0);
+            }
+
+            if (CurrentSaveFile >= 0)
+            {
+                ExportPlayerPersistentData(PlayerData, CurrentSaveFile);
+            }
+            else if (index == CurrentSaveFile)
+            {
+                return;
+            }
+
+            CurrentSaveFile = index;
+            PlayerData = ImportPlayerPersistentData(index);
         }
 
         public static void ResetPlayerData()
@@ -37,25 +65,33 @@ namespace StarSalvager.Values
             {
                 data.AddSectorProgression(i, 0);
             }
-            m_playerData[0] = data;
+            PlayerData = data;
 
             IsNewFile = true;
         }
 
-        private static string ExportPlayerPersistentData(PlayerData editorData)
+        private static string ExportPlayerPersistentData(PlayerData editorData, int saveSlot)
         {
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
-            System.IO.File.WriteAllText(persistentDataPath, export);
+            System.IO.File.WriteAllText(persistentDataPaths[saveSlot], export);
 
             return export;
         }
 
-        private static PlayerData ImportPlayerPersistentData()
+        private static string ExportPlayerPersistentMetadata(PlayerMetadata editorData)
         {
-            if (!Directory.Exists(persistentDataPath))
+            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
+            System.IO.File.WriteAllText(persistentMetadataPath, export);
+
+            return export;
+        }
+
+        private static PlayerData ImportPlayerPersistentData(int saveSlot)
+        {
+            if (!Directory.Exists(persistentDataPaths[saveSlot]))
                 System.IO.Directory.CreateDirectory(Application.dataPath + "/RemoteData/");
 
-            if (!File.Exists(persistentDataPath))
+            if (!File.Exists(persistentDataPaths[saveSlot]))
             {
                 PlayerData data = new PlayerData();
                 for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
@@ -66,23 +102,39 @@ namespace StarSalvager.Values
                 return data;
             }
 
-            var loaded = JsonConvert.DeserializeObject<PlayerData>(File.ReadAllText(persistentDataPath));
+            var loaded = JsonConvert.DeserializeObject<PlayerData>(File.ReadAllText(persistentDataPaths[saveSlot]));
 
             IsNewFile = false;
 
             return loaded;
         }
 
-        public static void ClearPlayerData()
+        private static PlayerMetadata ImportPlayerPersistentMetadata()
         {
-            m_playerData.Clear();
-            
-            Init();
+            if (!Directory.Exists(persistentMetadataPath))
+                System.IO.Directory.CreateDirectory(Application.dataPath + "/RemoteData/");
+
+            if (!File.Exists(persistentMetadataPath))
+            {
+                PlayerMetadata data = new PlayerMetadata();
+                return data;
+            }
+
+            var loaded = JsonConvert.DeserializeObject<PlayerMetadata>(File.ReadAllText(persistentMetadataPath));
+            return loaded;
         }
 
-        public static void CustomOnApplication()
+        public static void ClearPlayerData()
         {
-            ExportPlayerPersistentData(PlayerData);
+            PlayerData = null;
+        }
+
+        public static void CustomOnApplicationQuit()
+        {
+            if (CurrentSaveFile >= 0)
+                ExportPlayerPersistentData(PlayerData, CurrentSaveFile);
+
+            ExportPlayerPersistentMetadata(PlayerMetadata);
         }
     }
 }
