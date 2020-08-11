@@ -140,7 +140,12 @@ namespace StarSalvager.UI
             
             newGameButton.onClick.AddListener(() => OpenMenu(MENU.NEW));
 
-            continueButton.onClick.AddListener(() => SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene"));
+            continueButton.onClick.AddListener(() =>
+            {
+                PlayerPersistentData.SetCurrentSaveFile(0);
+                MissionManager.SetCurrentSaveFile();
+                SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+            });
 
             loadGameButton.onClick.AddListener(() => OpenMenu(MENU.LOAD));
             
@@ -161,7 +166,10 @@ namespace StarSalvager.UI
             startGameButton.onClick.AddListener(() =>
             {
                 OpenMenu(MENU.MAIN);
+                PlayerPersistentData.SetCurrentSaveFile(PlayerPersistentData.PlayerMetadata.saveFileLastAccessedOrder.Count);
+                MissionManager.SetCurrentSaveFile();
                 PlayerPersistentData.ResetPlayerData();
+                MissionManager.ResetMissionData();
                 PlayerPersistentData.IsNewFile = false;
                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
             });
@@ -178,16 +186,32 @@ namespace StarSalvager.UI
             slot1Button.onClick.AddListener(() =>
             {
                 OpenMenu(MENU.MAIN);
+                PlayerPersistentData.SetCurrentSaveFile(0);
+                MissionManager.SetCurrentSaveFile();
                 PlayerPersistentData.IsNewFile = false;
                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
             });
+
+            slot2Button.onClick.AddListener(() =>
+            {
+                OpenMenu(MENU.MAIN);
+                PlayerPersistentData.SetCurrentSaveFile(1);
+                MissionManager.SetCurrentSaveFile();
+                PlayerPersistentData.IsNewFile = false;
+                SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+            });
+            //slot2Button.interactable = false;
             
-            slot2Button.onClick.AddListener(() => throw new NotImplementedException());
-            slot2Button.interactable = false;
-            
-            slot3Button.onClick.AddListener(() => throw new NotImplementedException());
-            slot3Button.interactable = false;
-            
+            slot3Button.onClick.AddListener(() =>
+            {
+                OpenMenu(MENU.MAIN);
+                PlayerPersistentData.SetCurrentSaveFile(2);
+                MissionManager.SetCurrentSaveFile();
+                PlayerPersistentData.IsNewFile = false;
+                SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+            });
+            //slot3Button.interactable = false;
+
             lgBackButton.onClick.AddListener(() => OpenMenu(MENU.MAIN));
             
             //Options Buttons
