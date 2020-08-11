@@ -297,6 +297,11 @@ namespace StarSalvager
                     pos += Vector3.left * (Values.Globals.GridSizeX * Constants.gridCellSize);
 
                 obstacle.transform.position = pos;
+
+                if (obstacle is IRotate rotate && rotate.Rotating)
+                {
+                    rotate.transform.Rotate(Vector3.forward * Time.deltaTime * -30.0f);
+                }
             }
 
             if (Mathf.Abs(m_distanceHorizontal) > 0.2f)
