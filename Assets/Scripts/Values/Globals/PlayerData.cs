@@ -21,11 +21,11 @@ namespace StarSalvager.Values
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _resources = new Dictionary<BIT_TYPE, int>
         {
-            {BIT_TYPE.RED, 1250},
-            {BIT_TYPE.BLUE, 1250},
-            {BIT_TYPE.YELLOW, 1250},
-            {BIT_TYPE.GREEN, 1250},
-            {BIT_TYPE.GREY, 1250},
+            {BIT_TYPE.RED, 0},
+            {BIT_TYPE.BLUE, 0},
+            {BIT_TYPE.YELLOW, 0},
+            {BIT_TYPE.GREEN, 0},
+            {BIT_TYPE.GREY, 0},
         };
 
         [JsonIgnore]
@@ -46,7 +46,7 @@ namespace StarSalvager.Values
         //FIXME This needs to use some sort of capacity value
         private Dictionary<BIT_TYPE, float> _liquidResource = new Dictionary<BIT_TYPE, float>
         {
-            {BIT_TYPE.RED, 250},
+            {BIT_TYPE.RED, 30},
             {BIT_TYPE.BLUE, 0},
             {BIT_TYPE.YELLOW, 0},
             {BIT_TYPE.GREEN, 0},

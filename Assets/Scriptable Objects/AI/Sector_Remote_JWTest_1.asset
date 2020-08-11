@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07556beae1525cb409df6b65d1c22548, type: 3}
   m_Name: Sector_Remote_JWTest_1
   m_EditorClassIdentifier: 
-  WaveRemoteData: []
+  WaveRemoteData:
+  - {fileID: 11400000, guid: deaafea46555544fc9dd1ea6f91dfcc6, type: 2}

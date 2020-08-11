@@ -56,8 +56,26 @@ MonoBehaviour:
     m_attackDamage: 6
     m_attackSpeed: 1
     m_dimensions: {x: 1, y: 1}
-    m_maxDrops: 0
-    m_rdsEnemyData: []
+    m_maxDrops: 5
+    m_rdsEnemyData:
+    - rdsData: 1
+      type: 0
+      level: 0
+      probability: 100
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+    - rdsData: 0
+      type: 4
+      level: 1
+      probability: 50
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 1
+    - rdsData: 0
+      type: 5
+      level: 1
+      probability: 40
+      isUniqueSpawn: 1
+      isAlwaysSpawn: 0
   - m_enemyType: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
     m_name: 
     m_health: 10

@@ -34,6 +34,12 @@ MonoBehaviour:
     - i1: -96205052
       i2: 1831848149
   - activeObject:
+      i1: -96205052
+      i2: 1831848149
+    list:
+    - i1: -96205052
+      i2: 1831848149
+  - activeObject:
       i1: -1
       i2: -1
     list:
@@ -135,12 +141,6 @@ MonoBehaviour:
     list:
     - i1: 598996318
       i2: 0
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
   - activeObject:
       i1: -1
       i2: -1
@@ -519,7 +519,7 @@ MonoBehaviour:
   Hash9: []
   Hash10: []
   _enableRegistrator: 0
-  _saveInFolder: FOLDER
+  _saveInFolder: SCENE
   _mFavoritCategorySelected: 0
   m_GetHash_IconImageKey: []
   m_GetHash_IconImageValue: []

@@ -257,7 +257,7 @@ MonoBehaviour:
       health: 60
       dataTest:
       - key: Damage
-        value: 10
+        value: 100
       - key: Cooldown
         value: 0.5
       burnRate: 0.1
