@@ -84,8 +84,7 @@ namespace StarSalvager.Utilities.SceneManagement
 
         public static bool ActivateScene(string sceneName, string sceneNameToDeload, bool updateJsonData = false)
         {
-            MissionManager.ExportMissionsMasterRemoteData(MissionManager.MissionsMasterData);
-            MissionManager.ExportMissionsCurrentRemoteData(MissionManager.MissionsCurrentData);
+            MissionManager.SaveMissionDatas();
 
             lastScene = sceneNameToDeload;
             currentScene = sceneName;

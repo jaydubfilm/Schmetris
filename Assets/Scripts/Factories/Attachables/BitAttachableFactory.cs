@@ -13,7 +13,7 @@ namespace StarSalvager.Factories
     public class BitAttachableFactory : AttachableFactoryBase<BitProfile, BIT_TYPE>
     {
         private readonly BitRemoteDataScriptableObject _remoteData;
-        
+
         //============================================================================================================//
         
         public BitAttachableFactory(AttachableProfileScriptableObject factoryProfile, BitRemoteDataScriptableObject remoteData) : base(factoryProfile)
@@ -70,15 +70,14 @@ namespace StarSalvager.Factories
         {
             return factoryProfile.GetProfile(type);
         }
-        
+
         public BitRemoteData GetBitRemoteData(BIT_TYPE type)
         {
             return _remoteData.GetRemoteData(type);
         }
-        
+
         //============================================================================================================//
 
-        
         /// <summary>
         /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the GameObject
         /// </summary>
@@ -114,9 +113,10 @@ namespace StarSalvager.Factories
                     temp = CreateObject<Bit>();
                 }
             }
-            
+
             //--------------------------------------------------------------------------------------------------------//
 
+            ((BoxCollider2D)temp.collider).size = sprite.bounds.size;
             temp.SetColliderActive(true);
             temp.SetSprite(sprite);
             temp.LoadBlockData(blockData);
@@ -142,6 +142,46 @@ namespace StarSalvager.Factories
 
             return temp.GetComponent<T>();
 
+        }
+
+        public T CreateLargeAsteroid<T>()
+        {
+            var type = BIT_TYPE.BLACK;
+
+            var remote = _remoteData.GetRemoteData(type);
+            var profile = ((BitProfileScriptableObject)factoryProfile).GetAsteroidProfile();
+            //FIXME I may want to put this somewhere else, and leave the level dependent sprite obtaining here
+
+
+            var sprite = profile.Sprites[Random.Range(0, profile.Sprites.Length)];
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            Bit temp;
+            //If there is an animation associated with this profile entry, create the animated version of the prefab
+            temp = CreateObject<Bit>();
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            ((BoxCollider2D)temp.collider).size = sprite.bounds.size;
+            temp.SetColliderActive(true);
+            temp.SetSprite(sprite);
+            temp.LoadBlockData(new BlockData
+            {
+                Level = 0,
+                Coordinate = Vector2Int.zero,
+                Type = (int)BIT_TYPE.BLACK
+            });
+            temp.SetRotating(true);
+
+            //Have to check for null, as the Asteroid/Energy does not have health
+            if (remote != null)
+            {
+                var health = remote.levels[0].health;
+                temp.SetupHealthValues(health, health);
+            }
+
+            return temp.GetComponent<T>();
         }
 
         //============================================================================================================//

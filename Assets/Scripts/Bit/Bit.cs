@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle, ICustomRecycle, ICanBeHit
+    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate
     {
         //IAttachable properties
         //============================================================================================================//
@@ -18,6 +18,9 @@ namespace StarSalvager
         public Vector2Int Coordinate { get; set; }
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
+
+        public bool Rotating => rotating;
+        private bool rotating = false;
 
         public bool CountAsConnected => true;
         public bool CanDisconnect => true;
@@ -56,6 +59,14 @@ namespace StarSalvager
         {
             Attached = isAttached;
             collider.usedByComposite = isAttached;
+        }
+
+        //IRotate Functions
+        //============================================================================================================//
+
+        public void SetRotating(bool isRotating)
+        {
+            rotating = isRotating;
         }
 
         //IHealth Functions
@@ -215,6 +226,7 @@ namespace StarSalvager
         public virtual void CustomRecycle(params object[] args)
         {
             SetAttached(false);
+            transform.rotation = Quaternion.identity;
 
             if (_damage)
             {

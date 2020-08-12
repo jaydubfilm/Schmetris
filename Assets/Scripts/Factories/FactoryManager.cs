@@ -232,7 +232,6 @@ namespace StarSalvager.Factories
 #if !UNITY_EDITOR
             if (!File.Exists(Application.dataPath + "/BuildData/BotShapeEditorData.txt"))
             {
-                Debug.LogError("BROKEN");
                 return new EditorBotShapeGeneratorData();
             }
 
@@ -254,8 +253,13 @@ namespace StarSalvager.Factories
             //FIXME This should be using persistent file names
             var files = new[]
             {
-                Application.dataPath + "/RemoteData/PlayerPersistentData.player",
-                Application.dataPath + "/RemoteData/MissionsCurrentData.mission",
+                Application.dataPath + "/RemoteData/PlayerPersistentMetadata.player",
+                Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile0.player",
+                Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile1.player",
+                Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile2.player",
+                Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile0.mission",
+                Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile1.mission",
+                Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile2.mission",
                 Application.dataPath + "/RemoteData/MissionsMasterData.mission"
             };
 
@@ -272,8 +276,11 @@ namespace StarSalvager.Factories
                     Debug.LogError($"{file} does not exist");
                 }
             }
-            
-            PlayerPersistentData.ClearPlayerData();
+
+            if (Application.isPlaying)
+            {
+                PlayerPersistentData.ClearPlayerData();
+            }
 
         }
         

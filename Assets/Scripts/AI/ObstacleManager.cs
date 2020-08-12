@@ -297,6 +297,11 @@ namespace StarSalvager
                     pos += Vector3.left * (Values.Globals.GridSizeX * Constants.gridCellSize);
 
                 obstacle.transform.position = pos;
+
+                if (obstacle is IRotate rotate && rotate.Rotating)
+                {
+                    rotate.transform.Rotate(Vector3.forward * Time.deltaTime * -30.0f);
+                }
             }
 
             if (Mathf.Abs(m_distanceHorizontal) > 0.2f)
@@ -466,6 +471,16 @@ namespace StarSalvager
 
         private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category, int numRotations, bool inRandomYLevel = false)
         {
+            int coinFlip = Random.Range(0, 10);
+            if (coinFlip <= 5)
+            {
+                Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateLargeAsteroid<Bit>();
+                AddMovableToList(newBit);
+                PlaceMovableOnGrid(newBit);
+
+                return;
+            }
+            
             if (selectionType == SELECTION_TYPE.CATEGORY)
             {
                 Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, category, numRotations);

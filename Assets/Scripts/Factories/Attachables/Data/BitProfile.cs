@@ -39,13 +39,11 @@ namespace StarSalvager.Factories.Data
 
         [SerializeField, FoldoutGroup("$Name"), ListDrawerSettings(ShowIndexLabels = true), Space(10f)]
         private Sprite[] _sprites;
-        
-
 
         #region UNITY_EDITOR
 
 #if UNITY_EDITOR
-        
+
         [ShowInInspector, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$Name/row2", 65), VerticalGroup("$Name/row2/left"), HideLabel, PropertyOrder(-100), ReadOnly]
         private Sprite spritePreview
         {
@@ -67,5 +65,4 @@ namespace StarSalvager.Factories.Data
         #endregion
 
     }
-
 }
