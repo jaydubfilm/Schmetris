@@ -260,10 +260,12 @@ namespace StarSalvager.UI.Scrapyard
 
             var windowTransform = costWindowObject.transform as RectTransform;
 
-
-            windowTransform.position = buttonTransform.position +
+            windowTransform.position = buttonTransform.position/* +
                                        Vector3.left *
-                                       (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f);
+                                       (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f)*/;
+            
+            windowTransform.localPosition += Vector3.left * (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f);
+            
 
             UpdateCostUI();
         }
