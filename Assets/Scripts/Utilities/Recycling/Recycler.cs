@@ -121,6 +121,8 @@ namespace Recycling
 			gameObject.transform.parent = transform;
 			gameObject.transform.rotation = Quaternion.identity;
 			
+			gameObject.SetActive(false);
+			
 			//If its a recyclable object, mark it as recycled
 			//--------------------------------------------------------------------------------------------------------//
 			

@@ -141,7 +141,7 @@ namespace StarSalvager
                 {
                     //Recycler.Recycle<Bit>(this);
                     bot.Rotate(bot.MostRecentRotate.Invert());
-                    bot.TryHitAt(hitPoint, 5);
+                    bot.TryHitAt(hitPoint, 10000);
                     return;
                 }
 

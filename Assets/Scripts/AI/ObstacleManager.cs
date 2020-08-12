@@ -381,7 +381,7 @@ namespace StarSalvager
             
             foreach (StageObstacleData stageObstacleData in m_currentStageData.StageObstacleData)
             {
-                float spawnVariable = stageObstacleData.AsteroidPerRowAverage;
+                float spawnVariable = stageObstacleData.CountPerRowAverage;
                 if (m_previousStageData != null && m_blendTimer < m_currentStageData.StageBlendPeriod)
                 {
                     spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
@@ -389,7 +389,7 @@ namespace StarSalvager
 
                 while (spawnVariable >= 1)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.Rotation());
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation());
                     spawnVariable -= 1;
                 }
 
@@ -400,7 +400,7 @@ namespace StarSalvager
 
                 if (random <= spawnVariable)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.Rotation());
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation());
                 }
             }
 
@@ -409,11 +409,11 @@ namespace StarSalvager
 
             foreach (StageObstacleData stageObstacleData in m_previousStageData.StageObstacleData)
             {
-                float spawnVariable = stageObstacleData.AsteroidPerRowAverage * Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                float spawnVariable = stageObstacleData.CountPerRowAverage * Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
 
                 while (spawnVariable >= 1)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.Rotation());
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation());
                     spawnVariable -= 1;
                 }
 
@@ -424,7 +424,7 @@ namespace StarSalvager
 
                 if (random <= spawnVariable)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.Rotation());
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation());
                 }
             }
         }
@@ -469,18 +469,8 @@ namespace StarSalvager
             }
         }
 
-        private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category, int numRotations, bool inRandomYLevel = false)
+        private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category, ASTEROID_SIZE asteroidSize, int numRotations, bool inRandomYLevel = false)
         {
-            int coinFlip = Random.Range(0, 10);
-            if (coinFlip <= 5)
-            {
-                Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateLargeAsteroid<Bit>();
-                AddMovableToList(newBit);
-                PlaceMovableOnGrid(newBit);
-
-                return;
-            }
-            
             if (selectionType == SELECTION_TYPE.CATEGORY)
             {
                 Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, category, numRotations);
@@ -509,6 +499,14 @@ namespace StarSalvager
                     AddMovableToList(bit);
                 }
                 PlaceMovableOnGrid(newShape);
+                return;
+            }
+            else if (selectionType == SELECTION_TYPE.ASTEROID)
+            {
+                Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateLargeAsteroid<Bit>(asteroidSize);
+                AddMovableToList(newBit);
+                PlaceMovableOnGrid(newBit);
+
                 return;
             }
         }
