@@ -172,6 +172,7 @@ namespace StarSalvager.Factories
                 Coordinate = Vector2Int.zero,
                 Type = (int)BIT_TYPE.BLACK
             });
+            temp.SetRotating(true);
 
             //Have to check for null, as the Asteroid/Energy does not have health
             if (remote != null)
