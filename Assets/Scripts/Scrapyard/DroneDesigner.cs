@@ -595,6 +595,9 @@ namespace StarSalvager
 
         #region Other
 
+        // TMP Sprites section
+        //============================================================================================================//
+
         private readonly Dictionary<BIT_TYPE, string> _textSprites = new Dictionary<BIT_TYPE, string>
         {
             { BIT_TYPE.GREEN,  "<sprite=\"MaterIalIcons_SS_ver1\" name=\"MaterIalIcons_SS_ver1_4\">" },
@@ -632,6 +635,8 @@ namespace StarSalvager
 
             return $"<sprite=\"GamePieces_Atlas\" name=\"GamePieces_Atlas_{typeBase + levelOffset}\">";
         }
+
+        //============================================================================================================//
 
         private void SellBits()
         {

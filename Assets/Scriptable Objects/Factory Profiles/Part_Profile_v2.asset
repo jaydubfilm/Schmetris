@@ -53,3 +53,10 @@ MonoBehaviour:
     - {fileID: -8584124092000404580, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
     - {fileID: -6262562140061562835, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
     - {fileID: -6262562140061562835, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+  - _name: Shield
+    partType: 6
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: 655678302706559697, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+    - {fileID: -1670221941872761086, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+    - {fileID: -1670221941872761086, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}

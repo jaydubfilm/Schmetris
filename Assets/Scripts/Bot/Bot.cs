@@ -17,6 +17,7 @@ using UnityEngine;
 using GameUI = StarSalvager.UI.GameUI;
 using StarSalvager.Utilities;
 using StarSalvager.Missions;
+using Enemy = StarSalvager.Prototype.Enemy;
 
 namespace StarSalvager
 {
@@ -897,49 +898,82 @@ namespace StarSalvager
                 return;
             
             var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
-            
-            if (PROTO_GodMode && closestAttachable.Coordinate == Vector2Int.zero)
+
+            // Enemies attached should not be hit by other enemy projectiles
+            if(closestAttachable is EnemyAttachable)
                 return;
             
+            TryHitAt(closestAttachable, damage);
+            
+            /*if (PROTO_GodMode && closestAttachable.Coordinate == Vector2Int.zero)
+                return;
 
-            //print("DAMAGE");
-
-            //FIXME Need to see how to fix this
-            if (closestAttachable is IHealth closestHealth)
+            
+            switch (closestAttachable)
             {
-                closestHealth.ChangeHealth(-Mathf.Abs(damage));
-
-
-                if (closestHealth.CurrentHealth > 0) 
+                case EnemyAttachable _:
                     return;
+                //FIXME Need to see how to fix this
+                case IHealth closestHealth:
+                {
+                    //Check to see if the shields can absorb any of the damage
+                    damage = BotPartsLogic.TryHitShield(closestAttachable.Coordinate, damage);
                 
-                if(closestAttachable.Coordinate == Vector2Int.zero)
-                    Destroy("Core Destroyed");
+                    closestHealth.ChangeHealth(-Mathf.Abs(damage));
+
+
+                    if (closestHealth.CurrentHealth > 0) 
+                        return;
+                
+                    if(closestAttachable.Coordinate == Vector2Int.zero)
+                        Destroy("Core Destroyed");
+                    break;
+                }
             }
             
-            
+            if(closestAttachable is Part)
+                BotPartsLogic.UpdatePartsList();
+
+
             RemoveAttachable(closestAttachable);
-            CheckForDisconnects();
+            CheckForDisconnects();*/
         }
 
         public void TryHitAt(IAttachable closestAttachable, float damage)
         {
             if (PROTO_GodMode && closestAttachable.Coordinate == Vector2Int.zero)
                 return;
-            
-            //FIXME Need to see how to fix this
-            if (closestAttachable is IHealth closestHealth)
-            {
-                closestHealth.ChangeHealth(-Mathf.Abs(damage));
-                
-                if (closestHealth.CurrentHealth > 0)
-                    return;
-                
-                if(closestAttachable.Coordinate == Vector2Int.zero)
-                    Destroy("Core Destroyed");
 
-                RemoveAttachable(closestAttachable);
-                CheckForDisconnects();
+            switch (closestAttachable)
+            {
+                
+                //FIXME Need to see how to fix this
+                case IHealth closestHealth:
+                {
+                    damage = BotPartsLogic.TryHitShield(closestAttachable.Coordinate, damage);
+
+                    if (damage <= 0f)
+                        return;
+                    
+                    closestHealth.ChangeHealth(-Mathf.Abs(damage));
+                
+                    if (closestHealth.CurrentHealth > 0)
+                        return;
+                    //Things to do if the attachable is destroyed
+                    //------------------------------------------------------------------------------------------------//
+                
+                    if(closestAttachable.Coordinate == Vector2Int.zero)
+                        Destroy("Core Destroyed");
+
+                    RemoveAttachable(closestAttachable);
+                    CheckForDisconnects();
+                    
+                    if(closestAttachable is Part)
+                        BotPartsLogic.UpdatePartsList();
+                    
+                    //------------------------------------------------------------------------------------------------//
+                    break;
+                }
             }
         }
 
@@ -967,7 +1001,8 @@ namespace StarSalvager
                 case Part _:
                     TryHitAt(attachable, 5f);
                     break;
-                case EnemyAttachable _:
+                case EnemyAttachable enemyAttachable:
+                    enemyAttachable.SetAttached(false);
                     return;
                 default:
                     TryHitAt(attachable, 10000);
@@ -1411,25 +1446,19 @@ namespace StarSalvager
         
         public void DestroyAttachable(IAttachable attachable)
         {
-            attachedBlocks.Remove(attachable);
-            attachable.SetAttached(false);
-
             switch (attachable)
             {
                 case Bit _:
-                    Recycler.Recycle<Bit>(attachable.gameObject);
+                    DestroyAttachable<Bit>(attachable);
                     break;
                 case Part _:
-                    Recycler.Recycle<Part>(attachable.gameObject);
+                    DestroyAttachable<Part>(attachable);
+                    BotPartsLogic.UpdatePartsList();
                     break;
                 case EnemyAttachable _:
-                    Recycler.Recycle<EnemyAttachable>(attachable.gameObject);
+                    DestroyAttachable<EnemyAttachable>(attachable);
                     break;
             }
-                        
-            CheckForDisconnects();
-            
-            CompositeCollider2D.GenerateGeometry();
         }
         
         /// <summary>
@@ -1437,7 +1466,7 @@ namespace StarSalvager
         /// </summary>
         /// <param name="attachable"></param>
         /// <typeparam name="T"></typeparam>
-        private void DestroyAttachable<T>(IAttachable attachable) where T: IAttachable
+        public void DestroyAttachable<T>(IAttachable attachable) where T: IAttachable
         {
             attachedBlocks.Remove(attachable);
             attachable.SetAttached(false);

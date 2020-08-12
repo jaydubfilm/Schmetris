@@ -26,7 +26,7 @@ MonoBehaviour:
         value: 8
       - key: Capacity
         value: 100
-      burnRate: 0.17
+      burnRate: 1
       cost: []
     - unlockLevel: 0
       health: 50
@@ -35,7 +35,7 @@ MonoBehaviour:
         value: 16
       - key: Capacity
         value: 200
-      burnRate: 0.5
+      burnRate: 2
       cost:
       - resourceType: 0
         type: 1
@@ -64,7 +64,7 @@ MonoBehaviour:
         value: 25
       - key: Capacity
         value: 500
-      burnRate: 1
+      burnRate: 3
       cost:
       - resourceType: 0
         type: 1
