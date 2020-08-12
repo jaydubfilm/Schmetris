@@ -121,6 +121,11 @@ namespace StarSalvager
         {
             Attached = isAttached;
             collider.usedByComposite = isAttached;
+
+            if (!isAttached)
+            {
+                transform.SetParent(null);
+            }
         }
         
         //IHealth Functions
