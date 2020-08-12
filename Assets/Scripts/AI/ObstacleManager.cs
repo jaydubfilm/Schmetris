@@ -341,7 +341,7 @@ namespace StarSalvager
                     }
                     else
                     {
-                        LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(bit.transform.position, true);
+                        LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(bit.transform.position, 0, true);
                     }
                 }
                 if (fullyInGrid)
@@ -505,7 +505,20 @@ namespace StarSalvager
             {
                 Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateLargeAsteroid<Bit>(asteroidSize);
                 AddMovableToList(newBit);
-                PlaceMovableOnGrid(newBit);
+
+                int radiusAround = 0;
+                switch(asteroidSize)
+                {
+                    case ASTEROID_SIZE.Small:
+                    case ASTEROID_SIZE.Medium:
+                        radiusAround = 1;
+                        break;
+                    case ASTEROID_SIZE.Large:
+                        radiusAround = 1;
+                        break;
+                }  
+
+                PlaceMovableOnGrid(newBit, radiusAround);
 
                 return;
             }
@@ -518,7 +531,7 @@ namespace StarSalvager
                 m_obstacles.Add(movable);
         }
 
-        private void PlaceMovableOnGrid(IObstacle movable)
+        private void PlaceMovableOnGrid(IObstacle movable, int radius = 0)
         {
             Vector2 position = LevelManager.Instance.WorldGrid.GetAvailableRandomTopGridSquareWorldPosition();
             movable.transform.parent = LevelManager.Instance.gameObject.transform;
@@ -527,7 +540,7 @@ namespace StarSalvager
             {
                 case Bit _:
                 case Component _:
-                    LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
+                    LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, radius, true);
                     break;
                 case Shape shape:
                     m_notFullyInGridShapes.Add(shape);
@@ -537,7 +550,7 @@ namespace StarSalvager
             }
         }
 
-        private void PlaceMovableOnGrid(IObstacle movable, Vector2 position)
+        private void PlaceMovableOnGrid(IObstacle movable, Vector2 position, int radius = 0)
         {
             movable.transform.parent = LevelManager.Instance.gameObject.transform;
             movable.transform.position = position;
@@ -545,7 +558,7 @@ namespace StarSalvager
             {
                 case Bit _:
                 case Component _:
-                    LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
+                    LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, radius, true);
                     break;
                 case Shape shape:
                     m_notFullyInGridShapes.Add(shape);
