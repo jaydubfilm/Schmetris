@@ -1,4 +1,5 @@
 ﻿using Recycling;
+using StarSalvager.Utilities;
 using UnityEngine;
 
 namespace StarSalvager.Factories
@@ -7,16 +8,18 @@ namespace StarSalvager.Factories
     {
         private readonly GameObject prefab;
         private readonly GameObject shieldPrototypePrefab;
+        private readonly GameObject alertIconPrefab;
         private readonly GameObject scrapyardPrefab;
         
         //============================================================================================================//
 
-        public BotFactory(GameObject prefab, GameObject scrapyardPrefab, GameObject shieldPrototypePrefab)
+        public BotFactory(GameObject prefab, GameObject scrapyardPrefab, GameObject shieldPrototypePrefab, GameObject alertIconPrefab)
         {
             this.prefab = prefab;
             this.scrapyardPrefab = scrapyardPrefab;
 
             this.shieldPrototypePrefab = shieldPrototypePrefab;
+            this.alertIconPrefab = alertIconPrefab;
         }
         
         //============================================================================================================//
@@ -24,6 +27,12 @@ namespace StarSalvager.Factories
         public Shield CreateShield()
         {
             var outData = !Recycler.TryGrab<Shield>(out Shield shield) ? Object.Instantiate(shieldPrototypePrefab).GetComponent<Shield>() : shield;
+            return outData;
+        }
+
+        public FlashSprite CreateAlertIcon()
+        {
+            var outData = !Recycler.TryGrab<FlashSprite>(out FlashSprite shield) ? Object.Instantiate(alertIconPrefab).GetComponent<FlashSprite>() : shield;
             return outData;
         }
         

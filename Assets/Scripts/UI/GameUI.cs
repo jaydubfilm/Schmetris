@@ -1,6 +1,7 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.UI;
+using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -80,7 +81,12 @@ namespace StarSalvager.UI
             
             InitValues();
         }
-        
+
+        private void OnEnable()
+        {
+            SetupPlayerValues();
+        }
+
         //============================================================================================================//
 
         private void InitValues()
@@ -108,6 +114,20 @@ namespace StarSalvager.UI
 
             //FIXME This should be set using a capacity value instead of hard set here
             SetResourceSliderBounds(0, 250);
+        }
+        
+        //============================================================================================================//
+
+        private void SetupPlayerValues()
+        {
+            var playerData = PlayerPersistentData.PlayerData;
+
+            if (playerData == null)
+                return;
+            
+            SetFuelValue(playerData.liquidResource[BIT_TYPE.RED]);
+            SetRepairValue(playerData.liquidResource[BIT_TYPE.GREEN]);
+            SetAmmoValue(playerData.liquidResource[BIT_TYPE.GREY]);
         }
         
         //============================================================================================================//

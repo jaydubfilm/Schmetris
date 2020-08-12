@@ -79,6 +79,8 @@ namespace StarSalvager.Factories
         [SerializeField, Required, BoxGroup("Bot")]
         private GameObject shieldPrototypePrefab;
         [SerializeField, Required, BoxGroup("Bot")]
+        private GameObject alertIconPrefab;
+        [SerializeField, Required, BoxGroup("Bot")]
         private GameObject scrapyardBotPrefab;
         [SerializeField, Required, BoxGroup("Puzzle Combos")]
         private ComboRemoteDataScriptableObject comboRemoteData;
@@ -202,7 +204,7 @@ namespace StarSalvager.Factories
                 case bool _ when type == typeof(ComboFactory):
                     return new ComboFactory(comboRemoteData) as T;
                 case bool _ when type == typeof(BotFactory):
-                    return new BotFactory(botPrefab, scrapyardBotPrefab, shieldPrototypePrefab) as T;
+                    return new BotFactory(botPrefab, scrapyardBotPrefab, shieldPrototypePrefab, alertIconPrefab) as T;
                 case bool _ when type == typeof(DamageFactory):
                     return new DamageFactory(damageFactory) as T;
                 default:

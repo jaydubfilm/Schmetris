@@ -7,10 +7,10 @@ using StarSalvager.AI;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Prototype;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
 using UnityEngine;
-using Enemy = StarSalvager.AI.Enemy;
 using GameUI = StarSalvager.UI.GameUI;
 
 namespace StarSalvager
@@ -19,8 +19,6 @@ namespace StarSalvager
     public class BotPartsLogic : MonoBehaviour
     {
         public Bot bot;
-
-        public GameObject shieldPrefab;
 
         //==============================================================================================================//
 
@@ -101,7 +99,11 @@ namespace StarSalvager
             }
         }
 
-        //==============================================================================================================//
+        //============================================================================================================//
+        
+        private Dictionary<Part, FlashSprite> _flashes;
+        
+        //============================================================================================================//
 
         private void OnEnable()
         {
@@ -204,7 +206,8 @@ namespace StarSalvager
                 magnetCount = magnetOverride;
             }
 
-            CheckForRecycledParts();
+            CheckIfShieldShouldRecycle();
+            CheckIfFlashIconShouldRecycle();
             
             
             magnetCount = 0;
@@ -296,7 +299,9 @@ namespace StarSalvager
 
                     if (targetBit == null)
                     {
-                        //TODO Need to show a no resource icon over par
+                        //FIXME I don't like how often this is called, will need to rethink this
+                        //Display the icon for this part if we have no more resources
+                        GetAlertIcon(part).SetActive(true);
                     }
                     else
                     {
@@ -311,6 +316,13 @@ namespace StarSalvager
                         resourceValue = addAmount;
                     }
                     
+                }
+                else
+                {
+                    //FIXME I don't like how often this is called, will need to rethink this
+                    //Hide the icon for part if it exists
+                    if(_flashes != null && _flashes.ContainsKey(part))
+                        GetAlertIcon(part).SetActive(false);
                 }
 
                 switch (part.Type)
@@ -558,7 +570,24 @@ namespace StarSalvager
         
         //============================================================================================================//
 
-        private void CheckForRecycledParts()
+        private FlashSprite GetAlertIcon(Part part)
+        {
+            if(_flashes == null)
+                _flashes = new Dictionary<Part, FlashSprite>();
+
+            if (_flashes.ContainsKey(part))
+                return _flashes[part];
+
+
+            var flash = FactoryManager.Instance.GetFactory<BotFactory>().CreateAlertIcon();//Instantiate(flashSpritePrefab).GetComponent<FlashSprite>();
+            flash.transform.SetParent(part.transform, false);
+                
+            _flashes.Add(part, flash);
+
+            return _flashes[part];
+        }
+
+        private void CheckIfShieldShouldRecycle()
         {
             if (_shields == null || _shields.Count == 0)
                 return;
@@ -567,6 +596,19 @@ namespace StarSalvager
             foreach (var data in copy.Where(data => data.Key.IsRecycled))
             {
                 Recycler.Recycle<Shield>(data.Value.shield.gameObject);
+                _shields.Remove(data.Key);
+            }
+        }
+        
+        private void CheckIfFlashIconShouldRecycle()
+        {
+            if (_flashes == null || _flashes.Count == 0)
+                return;
+            
+            var copy = new Dictionary<Part, FlashSprite>(_flashes);
+            foreach (var data in copy.Where(data => data.Key.IsRecycled))
+            {
+                Recycler.Recycle<FlashSprite>(data.Value.gameObject);
                 _shields.Remove(data.Key);
             }
         }
