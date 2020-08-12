@@ -122,7 +122,7 @@ namespace StarSalvager.UI.Scrapyard
                         {
                             case PART_TYPE.CORE:
                             case PART_TYPE.CONTAINER:
-                            case PART_TYPE.SHIELD:
+                            //case PART_TYPE.SHIELD:
                             case PART_TYPE.BOOST:
                             case PART_TYPE.SMRT_WPN:
                                 continue;

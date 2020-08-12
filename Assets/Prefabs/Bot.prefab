@@ -68,6 +68,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bot: {fileID: 2681746267895581274}
+  shieldPrefab: {fileID: 7381917469761121646, guid: b5a0b72d2da99e9468bd4f2b9034d44f,
+    type: 3}
   useMagnet: 1
   currentMagnet: 2
   useBurnRate: 1

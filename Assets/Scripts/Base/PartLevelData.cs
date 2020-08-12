@@ -38,6 +38,21 @@ namespace StarSalvager
             var dataValue = dataTest.FirstOrDefault(d => d.key.Equals(keyString));
             return dataValue.Equals(null) ? 0f : dataValue.value;
         }
+
+        public bool TryGetValue(DataTest.TEST_KEYS key, out float value)
+        {
+            value = 0f;
+            
+            var keyString = DataTest.TestList[(int) key];
+            var dataValue = dataTest.FirstOrDefault(d => d.key.Equals(keyString));
+
+            if (dataValue.Equals(null))
+                return false;
+
+            value = dataValue.value;
+
+            return true;
+        }
     }
 
     [Serializable]
