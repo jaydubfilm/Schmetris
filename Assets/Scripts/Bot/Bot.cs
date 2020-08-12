@@ -950,7 +950,9 @@ namespace StarSalvager
                 //FIXME Need to see how to fix this
                 case IHealth closestHealth:
                 {
-                    damage = BotPartsLogic.TryHitShield(closestAttachable.Coordinate, damage);
+                    //Don't want to apply shields to the Enemy
+                    if(!(closestAttachable is EnemyAttachable))
+                        damage = BotPartsLogic.TryHitShield(closestAttachable.Coordinate, damage);
 
                     if (damage <= 0f)
                         return;
@@ -959,6 +961,7 @@ namespace StarSalvager
                 
                     if (closestHealth.CurrentHealth > 0)
                         return;
+                    
                     //Things to do if the attachable is destroyed
                     //------------------------------------------------------------------------------------------------//
                 
@@ -970,6 +973,8 @@ namespace StarSalvager
                     
                     if(closestAttachable is Part)
                         BotPartsLogic.UpdatePartsList();
+                    
+                    FrameStop.Instance.Milliseconds(75);
                     
                     //------------------------------------------------------------------------------------------------//
                     break;
