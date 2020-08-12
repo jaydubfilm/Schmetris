@@ -300,7 +300,7 @@ namespace StarSalvager
 
                 if (obstacle is IRotate rotate && rotate.Rotating)
                 {
-                    rotate.transform.Rotate(Vector3.forward * Time.deltaTime * -30.0f);
+                    rotate.transform.Rotate(Vector3.forward * Time.deltaTime * 15.0f * rotate.RotateDirection);
                 }
             }
 

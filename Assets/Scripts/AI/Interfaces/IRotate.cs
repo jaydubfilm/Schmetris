@@ -7,6 +7,7 @@ namespace StarSalvager
         Transform transform { get; }
         GameObject gameObject { get; }
         bool Rotating { get; }
+        int RotateDirection { get; }
 
         void SetRotating(bool isRotating);
     }

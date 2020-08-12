@@ -22,12 +22,19 @@ namespace StarSalvager
         public bool Rotating => rotating;
         private bool rotating = false;
 
+        public int RotateDirection => rotateDirection;
+        private int rotateDirection = 1;
+
         public bool CountAsConnected => true;
         public bool CanDisconnect => true;
 
         [ShowInInspector, ReadOnly]
         public bool CanShift => true;
 
+        private void Start()
+        {
+            rotateDirection = Random.Range(0, 2) * 2 - 1;
+        }
 
         //IHealth Properties
         //============================================================================================================//
