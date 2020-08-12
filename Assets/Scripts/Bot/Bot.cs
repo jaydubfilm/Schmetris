@@ -490,7 +490,7 @@ namespace StarSalvager
                         case BIT_TYPE.BLACK:
                             //TODO Need to add animation/effects here 
                             //Destroy both this and collided Bit
-                            Recycler.Recycle<Bit>(attachable.gameObject);
+                            //Recycler.Recycle<Bit>(attachable.gameObject);
 
                             AsteroidDamageAt(closestAttachable);
                             break;
@@ -732,7 +732,7 @@ namespace StarSalvager
                 {
                     case BIT_TYPE.BLACK:
                         //TODO Damage/Destroy Bits as required
-                        shape.DestroyBit(closeBitOnShape);
+                        //shape.DestroyBit(closeBitOnShape);
 
                         AsteroidDamageAt(closestOnBot);
                         
@@ -995,9 +995,11 @@ namespace StarSalvager
         private void AsteroidDamageAt(IAttachable attachable)
         {
             
+            TryHitAt(attachable, 10000);
+            
             switch (attachable)
             {
-                case Bit bit:
+                /*case Bit bit:
                     TryHitAt(attachable, bit.CurrentHealth);
                     break;
                 case Component component:
@@ -1005,13 +1007,10 @@ namespace StarSalvager
                     break;
                 case Part _:
                     TryHitAt(attachable, 5f);
-                    break;
+                    break;*/
                 case EnemyAttachable enemyAttachable:
                     enemyAttachable.SetAttached(false);
                     return;
-                default:
-                    TryHitAt(attachable, 10000);
-                    break;
             }
 
             //FIXME This value should not be hardcoded
