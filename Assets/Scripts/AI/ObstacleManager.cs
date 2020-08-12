@@ -471,8 +471,6 @@ namespace StarSalvager
 
         private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category, ASTEROID_SIZE asteroidSize, int numRotations, bool inRandomYLevel = false)
         {
-            print(selectionType);
-
             if (selectionType == SELECTION_TYPE.CATEGORY)
             {
                 Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, category, numRotations);
@@ -505,7 +503,6 @@ namespace StarSalvager
             }
             else if (selectionType == SELECTION_TYPE.ASTEROID)
             {
-                print("meow");
                 Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateLargeAsteroid<Bit>(asteroidSize);
                 AddMovableToList(newBit);
                 PlaceMovableOnGrid(newBit);

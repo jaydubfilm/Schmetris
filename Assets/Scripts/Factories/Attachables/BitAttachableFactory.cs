@@ -150,7 +150,6 @@ namespace StarSalvager.Factories
             var type = BIT_TYPE.BLACK;
 
             var remote = _remoteData.GetRemoteData(type);
-            Debug.Log("MOO");
             var profile = ((BitProfileScriptableObject)factoryProfile).GetAsteroidProfile(asteroidSize);
             //FIXME I may want to put this somewhere else, and leave the level dependent sprite obtaining here
 
