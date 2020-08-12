@@ -543,7 +543,15 @@ namespace StarSalvager
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, radius, true);
                     break;
                 case Shape shape:
-                    LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, radius, true);
+                    foreach (Bit bit in shape.AttachedBits)
+                    {
+                        Vector2Int gridPosition = LevelManager.Instance.WorldGrid.GetGridPositionOfVector
+                            (bit.transform.position);
+                        if (gridPosition.y < Values.Globals.GridSizeY)
+                        {
+                            LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(bit.transform.position, 0, true);
+                        }
+                    }
                     m_notFullyInGridShapes.Add(shape);
                     break;
                 default:
