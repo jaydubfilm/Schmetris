@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Values;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace StarSalvager.AI
 {
@@ -16,17 +17,21 @@ namespace StarSalvager.AI
         private string m_shapeName;
         [SerializeField, FoldoutGroup("$m_selectionType"), ShowIf("m_selectionType", SELECTION_TYPE.CATEGORY), ValueDropdown("GetCatgories")]
         private string m_category;
+        [SerializeField, FoldoutGroup("$m_selectionType"), ShowIf("m_selectionType", SELECTION_TYPE.ASTEROID)]
+        private ASTEROID_SIZE m_asteroidSize;
         [SerializeField, FoldoutGroup("$m_selectionType")]
-        private int m_asteroidCountPerMinute;
+        [FormerlySerializedAs("m_asteroidCountPerMinute")]
+        private int m_countPerMinute;
         [SerializeField, FoldoutGroup("$m_selectionType"), ValueDropdown("GetRotations")]
         private string m_rotation;
 
         public SELECTION_TYPE SelectionType => m_selectionType;
         public string ShapeName => m_shapeName;
         public string Category => m_category;
-        public int AsteroidCountPerMinute => m_asteroidCountPerMinute;
+        public ASTEROID_SIZE AsteroidSize => m_asteroidSize;
+        public int CountPerMinute => m_countPerMinute;
 
-        public float AsteroidPerRowAverage => (m_asteroidCountPerMinute / 60.0f) * Constants.timeForAsteroidsToFall;
+        public float CountPerRowAverage => (m_countPerMinute / 60.0f) * Constants.timeForAsteroidsToFall;
 
         public int Rotation()
         {

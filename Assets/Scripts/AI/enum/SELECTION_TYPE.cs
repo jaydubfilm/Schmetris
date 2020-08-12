@@ -6,6 +6,7 @@ namespace StarSalvager
     public enum SELECTION_TYPE : int
     {
         SHAPE,
-        CATEGORY
+        CATEGORY,
+        ASTEROID
     }
 }

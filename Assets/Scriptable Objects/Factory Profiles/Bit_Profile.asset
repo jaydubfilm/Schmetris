@@ -96,6 +96,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
   asteroidProfiles:
   - dimensions: {x: 1, y: 1}
+    size: 0
     _sprites:
     - {fileID: 4740646371163351874, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
     - {fileID: 7934934674122444120, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
@@ -107,35 +108,43 @@ MonoBehaviour:
     - {fileID: -6498644324137305759, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
     - {fileID: -958652295336994860, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
   - dimensions: {x: 2, y: 2}
+    size: 1
     _sprites:
     - {fileID: -5879238874074108907, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
     - {fileID: -2025138536200787235, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
     - {fileID: -8079408450588852037, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
     - {fileID: -4608251391778202509, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
   - dimensions: {x: 3, y: 3}
+    size: 2
     _sprites:
     - {fileID: 3623618048574350569, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
     - {fileID: 7674548632909628920, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
     - {fileID: 6901109441678843779, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
   - dimensions: {x: 4, y: 4}
+    size: 3
     _sprites:
     - {fileID: -9179598121594932568, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
     - {fileID: -2483701044952898396, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
     - {fileID: -1850979172351868509, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
   - dimensions: {x: 1, y: 2}
+    size: 1
     _sprites:
     - {fileID: 8063439932728523541, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
   - dimensions: {x: 2, y: 1}
+    size: 1
     _sprites:
     - {fileID: -7924957166409073024, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
   - dimensions: {x: 2, y: 3}
+    size: 2
     _sprites:
     - {fileID: -5423605793893429019, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
     - {fileID: 1624234699885402242, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
     - {fileID: 470038388237685300, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
   - dimensions: {x: 3, y: 2}
+    size: 2
     _sprites:
     - {fileID: -5826600065143060685, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
   - dimensions: {x: 4, y: 2}
+    size: 3
     _sprites:
     - {fileID: -9041514455604289002, guid: 6805d750135d8f2489f25887cc37b437, type: 3}

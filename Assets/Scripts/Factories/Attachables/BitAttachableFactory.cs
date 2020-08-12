@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Recycling;
+using StarSalvager.AI;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
@@ -144,12 +145,13 @@ namespace StarSalvager.Factories
 
         }
 
-        public T CreateLargeAsteroid<T>()
+        public T CreateLargeAsteroid<T>(ASTEROID_SIZE asteroidSize)
         {
             var type = BIT_TYPE.BLACK;
 
             var remote = _remoteData.GetRemoteData(type);
-            var profile = ((BitProfileScriptableObject)factoryProfile).GetAsteroidProfile();
+            Debug.Log("MOO");
+            var profile = ((BitProfileScriptableObject)factoryProfile).GetAsteroidProfile(asteroidSize);
             //FIXME I may want to put this somewhere else, and leave the level dependent sprite obtaining here
 
 
