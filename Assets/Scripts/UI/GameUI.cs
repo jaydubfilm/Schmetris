@@ -57,6 +57,9 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Slider powerSlider;
         
+        [SerializeField, Required, FoldoutGroup("BR Window")]
+        private Image bombImageIcon;
+        
         //Heat Vignette
         //============================================================================================================//
         
@@ -91,6 +94,8 @@ namespace StarSalvager.UI
 
         private void InitValues()
         {
+            ShowBombIcon(false);
+            SetBombFill(1f);
             
             SetWaterValue(0f);
             SetPowerValue(0f);
@@ -190,6 +195,19 @@ namespace StarSalvager.UI
         }
         
         //============================================================================================================//
+
+        public void ShowBombIcon(bool state)
+        {
+            bombImageIcon.gameObject.SetActive(state);
+        }
+        
+        public void SetBombFill(float fillValue)
+        {
+            bombImageIcon.fillAmount = fillValue;
+        }
+        
+        //============================================================================================================//
+
         
         public void SetCurrentWaveText(int sector, int wave)
         {

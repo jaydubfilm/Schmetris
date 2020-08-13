@@ -266,6 +266,22 @@ namespace StarSalvager
         
         //============================================================================================================//
 
+        public void DamageAllEnemies(float damage)
+        {
+            var damageAbs = Mathf.Abs(damage);
+            foreach (var enemy in m_enemies)
+            {
+                if (enemy.IsRecycled)
+                    continue;
+
+                if (enemy is ICanBeHit canBeHit)
+                {
+                    //Position doesn't matter for enemies
+                    canBeHit.TryHitAt(Vector2.zero, damageAbs);
+                }
+            }
+        }
+
         public Enemy GetClosestEnemy(Vector2 position)
         {
             var shortestDist = 999f;

@@ -1,217 +1,217 @@
 fileFormatVersion: 2
-guid: ba6dff5f18f104743b976b3a76736f87
+guid: f38c5b581e204e840a5e9d02bb4f66cb
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 9082951539276711817
-    second: Parts_SS_ver6i_0
+      213: 491800448661723253
+    second: Parts_SS_ver4_0
   - first:
-      213: 110282902988763480
-    second: Parts_SS_ver6i_1
+      213: 525484151881941248
+    second: Parts_SS_ver4_1
   - first:
-      213: 3219021423565799616
-    second: Parts_SS_ver6i_2
+      213: 6624272187150114179
+    second: Parts_SS_ver4_2
   - first:
-      213: 2505722824048736994
-    second: Parts_SS_ver6i_3
+      213: 8848418020064854482
+    second: Parts_SS_ver4_3
   - first:
-      213: 2101839194858614299
-    second: Parts_SS_ver6i_4
+      213: -4204270239042512948
+    second: Parts_SS_ver4_4
   - first:
-      213: -5498027243287245632
-    second: Parts_SS_ver6i_5
+      213: -3293842873040105170
+    second: Parts_SS_ver4_5
   - first:
-      213: 6689816015764795035
-    second: Parts_SS_ver6i_6
+      213: 6847933455519164274
+    second: Parts_SS_ver4_6
   - first:
-      213: -2743902469909562030
-    second: Parts_SS_ver6i_7
+      213: 3106027871190466780
+    second: Parts_SS_ver4_7
   - first:
-      213: 6592370075082580989
-    second: Parts_SS_ver6i_8
+      213: -5767696442325698636
+    second: Parts_SS_ver4_8
   - first:
-      213: 3577003115968854452
-    second: Parts_SS_ver6i_9
+      213: -3599618884591661637
+    second: Parts_SS_ver4_9
   - first:
-      213: 1491963177875679311
-    second: Parts_SS_ver6i_10
+      213: 8944303473311167444
+    second: Parts_SS_ver4_10
   - first:
-      213: 7033120083777630763
-    second: Parts_SS_ver6i_11
+      213: -2980693074353761406
+    second: Parts_SS_ver4_11
   - first:
-      213: -2824577364582990659
-    second: Parts_SS_ver6i_12
+      213: -473676084289572092
+    second: Parts_SS_ver4_12
   - first:
-      213: 4614971518473656836
-    second: Parts_SS_ver6i_13
+      213: 1571965415017561209
+    second: Parts_SS_ver4_13
   - first:
-      213: 1640496330883735845
-    second: Parts_SS_ver6i_14
+      213: -3899642944988254190
+    second: Parts_SS_ver4_14
   - first:
-      213: 7276700248871157383
-    second: Parts_SS_ver6i_15
+      213: 6457030138040729693
+    second: Parts_SS_ver4_15
   - first:
-      213: 7393780612209014842
-    second: Parts_SS_ver6i_16
+      213: 6700648316499628030
+    second: Parts_SS_ver4_16
   - first:
-      213: -5261466848615280961
-    second: Parts_SS_ver6i_17
+      213: -7434554623417657901
+    second: Parts_SS_ver4_17
   - first:
-      213: -7812578542502681444
-    second: Parts_SS_ver6i_18
+      213: 8156598299399035081
+    second: Parts_SS_ver4_18
   - first:
-      213: 8809143076699041199
-    second: Parts_SS_ver6i_19
+      213: -9099734453507852498
+    second: Parts_SS_ver4_19
   - first:
-      213: 5182752986853462410
-    second: Parts_SS_ver6i_20
+      213: 566165399204994689
+    second: Parts_SS_ver4_20
   - first:
-      213: 5296225900024306486
-    second: Parts_SS_ver6i_21
+      213: -4920990885001970745
+    second: Parts_SS_ver4_21
   - first:
-      213: -9193191119987392557
-    second: Parts_SS_ver6i_22
+      213: 1268255891570998489
+    second: Parts_SS_ver4_22
   - first:
-      213: 76508018318850569
-    second: Parts_SS_ver6i_23
+      213: -1867650483643960963
+    second: Parts_SS_ver4_23
   - first:
-      213: 7725505614138422360
-    second: Parts_SS_ver6i_24
+      213: -3025457301850425108
+    second: Parts_SS_ver4_24
   - first:
-      213: -1833429521553580913
-    second: Parts_SS_ver6i_25
+      213: 3285890750107959661
+    second: Parts_SS_ver4_25
   - first:
-      213: -6917307309792707530
-    second: Parts_SS_ver6i_26
+      213: 4472484286209632114
+    second: Parts_SS_ver4_26
   - first:
-      213: 7068511435023955751
-    second: Parts_SS_ver6i_27
+      213: -3030809482771974601
+    second: Parts_SS_ver4_27
   - first:
-      213: 7481570018014010600
-    second: Parts_SS_ver6i_28
+      213: 8319067818260358006
+    second: Parts_SS_ver4_28
   - first:
-      213: -8915937898799314553
-    second: Parts_SS_ver6i_29
+      213: -2271972387219659982
+    second: Parts_SS_ver4_29
   - first:
-      213: -2331347120404730724
-    second: Parts_SS_ver6i_30
+      213: -5750722746702080356
+    second: Parts_SS_ver4_30
   - first:
-      213: 8213124396322477179
-    second: Parts_SS_ver6i_31
+      213: 3498163472888129967
+    second: Parts_SS_ver4_31
   - first:
-      213: 2033077242831816274
-    second: Parts_SS_ver6i_32
+      213: 6013187290223171902
+    second: Parts_SS_ver4_32
   - first:
-      213: 2141643211025861094
-    second: Parts_SS_ver6i_33
+      213: -1329319854521277849
+    second: Parts_SS_ver4_33
   - first:
-      213: -3402490369927339078
-    second: Parts_SS_ver6i_34
+      213: 120804681969015607
+    second: Parts_SS_ver4_34
   - first:
-      213: -8574746799440894260
-    second: Parts_SS_ver6i_35
+      213: 3458832071975268247
+    second: Parts_SS_ver4_35
   - first:
-      213: 4658754209006107095
-    second: Parts_SS_ver6i_36
+      213: 4413628395416232741
+    second: Parts_SS_ver4_36
   - first:
-      213: 3225115699997141681
-    second: Parts_SS_ver6i_37
+      213: -5742844235661333919
+    second: Parts_SS_ver4_37
   - first:
-      213: -1223596826047829291
-    second: Parts_SS_ver6i_38
+      213: 7261423174001908351
+    second: Parts_SS_ver4_38
   - first:
-      213: -7230194289270345538
-    second: Parts_SS_ver6i_39
+      213: 7805707442610895404
+    second: Parts_SS_ver4_39
   - first:
-      213: -5442477047593627925
-    second: Parts_SS_ver6i_40
+      213: -95454058170728625
+    second: Parts_SS_ver4_40
   - first:
-      213: -4903559468280153889
-    second: Parts_SS_ver6i_41
+      213: -3159931506152929884
+    second: Parts_SS_ver4_41
   - first:
-      213: -3083938135365083909
-    second: Parts_SS_ver6i_42
+      213: -3358841358303236448
+    second: Parts_SS_ver4_42
   - first:
-      213: 2945268613379484279
-    second: Parts_SS_ver6i_43
+      213: -6145191247265374845
+    second: Parts_SS_ver4_43
   - first:
-      213: -8607259824084380548
-    second: Parts_SS_ver6i_44
+      213: 7718718697772491442
+    second: Parts_SS_ver4_44
   - first:
-      213: -7128253435689899571
-    second: Parts_SS_ver6i_45
+      213: -9098046342601410555
+    second: Parts_SS_ver4_45
   - first:
-      213: -2331093905657050421
-    second: Parts_SS_ver6i_46
+      213: 5473821731970651972
+    second: Parts_SS_ver4_46
   - first:
-      213: 5967398330551122258
-    second: Parts_SS_ver6i_47
+      213: 950808287205277312
+    second: Parts_SS_ver4_47
   - first:
-      213: -5517591134190731820
-    second: Parts_SS_ver6i_48
+      213: -4038906813726053514
+    second: Parts_SS_ver4_48
   - first:
-      213: 5225890054400361969
-    second: Parts_SS_ver6i_49
+      213: 685931528199971733
+    second: Parts_SS_ver4_49
   - first:
-      213: 907392043188986514
-    second: Parts_SS_ver6i_50
+      213: 4558388320521600025
+    second: Parts_SS_ver4_50
   - first:
-      213: 9102363446576855807
-    second: Parts_SS_ver6i_51
+      213: -3182050454480287165
+    second: Parts_SS_ver4_51
   - first:
-      213: -803907859222134172
-    second: Parts_SS_ver6i_52
+      213: 6872861561549446439
+    second: Parts_SS_ver4_52
   - first:
-      213: -64779469555138354
-    second: Parts_SS_ver6i_53
+      213: 565920318615725631
+    second: Parts_SS_ver4_53
   - first:
-      213: -4129998745363999438
-    second: Parts_SS_ver6i_54
+      213: 6954297568182087119
+    second: Parts_SS_ver4_54
   - first:
-      213: -221622184046672542
-    second: Parts_SS_ver6i_55
+      213: 8813555017052491176
+    second: Parts_SS_ver4_55
   - first:
-      213: -6575996968688434957
-    second: Parts_SS_ver6i_56
+      213: 9054214022471508692
+    second: Parts_SS_ver4_56
   - first:
-      213: 3501018784664572273
-    second: Parts_SS_ver6i_57
+      213: -6611240317921980983
+    second: Parts_SS_ver4_57
   - first:
-      213: -1303635259504574126
-    second: Parts_SS_ver6i_58
+      213: 731854526909781100
+    second: Parts_SS_ver4_58
   - first:
-      213: -1490153530291521781
-    second: Parts_SS_ver6i_59
+      213: -5606072841213858278
+    second: Parts_SS_ver4_59
   - first:
-      213: -7584421515735770045
-    second: Parts_SS_ver6i_60
+      213: -2765976138225649967
+    second: Parts_SS_ver4_60
   - first:
-      213: 3534982232772010934
-    second: Parts_SS_ver6i_61
+      213: -3391505844440255105
+    second: Parts_SS_ver4_61
   - first:
-      213: 4245178361476593798
-    second: Parts_SS_ver6i_62
+      213: 3607978783058070024
+    second: Parts_SS_ver4_62
   - first:
-      213: 8744627300400505784
-    second: Parts_SS_ver6i_63
+      213: -5804119596372385166
+    second: Parts_SS_ver4_63
   - first:
-      213: 7097192176750056577
-    second: Parts_SS_ver6i_64
+      213: 8276714811182163069
+    second: Parts_SS_ver4_64
   - first:
-      213: 7711409456782417442
-    second: Parts_SS_ver6i_65
+      213: 2727823631970936230
+    second: Parts_SS_ver4_65
   - first:
-      213: 4323262877616555972
-    second: Parts_SS_ver6i_66
+      213: -8620616010150296221
+    second: Parts_SS_ver4_66
   - first:
-      213: -85532710913231405
-    second: Parts_SS_ver6i_67
+      213: 6015513576825902687
+    second: Parts_SS_ver4_67
   - first:
-      213: 715070135339410817
-    second: Parts_SS_ver6i_68
+      213: -6935994685237342762
+    second: Parts_SS_ver4_68
   - first:
-      213: -8940121425201384824
-    second: Parts_SS_ver6i_69
+      213: 7574191060232332906
+    second: Parts_SS_ver4_69
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -297,7 +297,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Parts_SS_ver6i_0
+      name: Parts_SS_ver4_0
       rect:
         serializedVersion: 2
         x: 0
@@ -311,14 +311,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9870daa2d402d0e70800000000000000
-      internalID: 9082951539276711817
+      spriteID: 5781cd207e933d600800000000000000
+      internalID: 491800448661723253
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_1
+      name: Parts_SS_ver4_1
       rect:
         serializedVersion: 2
         x: 128
@@ -332,14 +332,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 851b17947bdc78100800000000000000
-      internalID: 110282902988763480
+      spriteID: 00145005d05ea4700800000000000000
+      internalID: 525484151881941248
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_2
+      name: Parts_SS_ver4_2
       rect:
         serializedVersion: 2
         x: 256
@@ -353,14 +353,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0c0030cfde24cac20800000000000000
-      internalID: 3219021423565799616
+      spriteID: 38d159215742eeb50800000000000000
+      internalID: 6624272187150114179
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_3
+      name: Parts_SS_ver4_3
       rect:
         serializedVersion: 2
         x: 384
@@ -374,14 +374,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2ea7301f1ad16c220800000000000000
-      internalID: 2505722824048736994
+      spriteID: 2d1812eee45ebca70800000000000000
+      internalID: 8848418020064854482
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_4
+      name: Parts_SS_ver4_4
       rect:
         serializedVersion: 2
         x: 512
@@ -395,14 +395,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b1e6a889c9b3b2d10800000000000000
-      internalID: 2101839194858614299
+      spriteID: cc7df162e7e67a5c0800000000000000
+      internalID: -4204270239042512948
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_5
+      name: Parts_SS_ver4_5
       rect:
         serializedVersion: 2
         x: 640
@@ -416,14 +416,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0cc817e1a5513b3b0800000000000000
-      internalID: -5498027243287245632
+      spriteID: e211e76cb5be942d0800000000000000
+      internalID: -3293842873040105170
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_6
+      name: Parts_SS_ver4_6
       rect:
         serializedVersion: 2
         x: 768
@@ -437,14 +437,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b9e2160e83007dc50800000000000000
-      internalID: 6689816015764795035
+      spriteID: 277abb5223fb80f50800000000000000
+      internalID: 6847933455519164274
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_7
+      name: Parts_SS_ver4_7
       rect:
         serializedVersion: 2
         x: 896
@@ -458,14 +458,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 25d39becd33bbe9d0800000000000000
-      internalID: -2743902469909562030
+      spriteID: cd045c474e3da1b20800000000000000
+      internalID: 3106027871190466780
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_8
+      name: Parts_SS_ver4_8
       rect:
         serializedVersion: 2
         x: 1024
@@ -479,14 +479,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: df36639c7adcc7b50800000000000000
-      internalID: 6592370075082580989
+      spriteID: 4b774eee4a605ffa0800000000000000
+      internalID: -5767696442325698636
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_9
+      name: Parts_SS_ver4_9
       rect:
         serializedVersion: 2
         x: 1152
@@ -500,14 +500,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4b9f9c7d16114a130800000000000000
-      internalID: 3577003115968854452
+      spriteID: bbd402132b59b0ec0800000000000000
+      internalID: -3599618884591661637
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_10
+      name: Parts_SS_ver4_10
       rect:
         serializedVersion: 2
         x: 1280
@@ -521,14 +521,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f482e330b9484b410800000000000000
-      internalID: 1491963177875679311
+      spriteID: 4d3310abe9c802c70800000000000000
+      internalID: 8944303473311167444
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_11
+      name: Parts_SS_ver4_11
       rect:
         serializedVersion: 2
         x: 1408
@@ -542,14 +542,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b223b300479aa9160800000000000000
-      internalID: 7033120083777630763
+      spriteID: 2835da6f07372a6d0800000000000000
+      internalID: -2980693074353761406
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_12
+      name: Parts_SS_ver4_12
       rect:
         serializedVersion: 2
         x: 1536
@@ -563,14 +563,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dbcfb672ad51dc8d0800000000000000
-      internalID: -2824577364582990659
+      spriteID: 40372596c1a2d69f0800000000000000
+      internalID: -473676084289572092
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_13
+      name: Parts_SS_ver4_13
       rect:
         serializedVersion: 2
         x: 1664
@@ -584,14 +584,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 40ada27152cab0040800000000000000
-      internalID: 4614971518473656836
+      spriteID: 97c3251673eb0d510800000000000000
+      internalID: 1571965415017561209
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_14
+      name: Parts_SS_ver4_14
       rect:
         serializedVersion: 2
         x: 1792
@@ -605,14 +605,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 52128a1a8b634c610800000000000000
-      internalID: 1640496330883735845
+      spriteID: 210fd19176fa1e9c0800000000000000
+      internalID: -3899642944988254190
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_15
+      name: Parts_SS_ver4_15
       rect:
         serializedVersion: 2
         x: 1920
@@ -626,14 +626,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 78e36fe92580cf460800000000000000
-      internalID: 7276700248871157383
+      spriteID: d50c8e123bafb9950800000000000000
+      internalID: 6457030138040729693
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_16
+      name: Parts_SS_ver4_16
       rect:
         serializedVersion: 2
         x: 0
@@ -647,14 +647,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a3873e9fa4cfb9660800000000000000
-      internalID: 7393780612209014842
+      spriteID: eff87cd642c7dfc50800000000000000
+      internalID: 6700648316499628030
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_17
+      name: Parts_SS_ver4_17
       rect:
         serializedVersion: 2
         x: 128
@@ -668,14 +668,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fbecac217c38bf6b0800000000000000
-      internalID: -5261466848615280961
+      spriteID: 3d5d3ffb5f723d890800000000000000
+      internalID: -7434554623417657901
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_18
+      name: Parts_SS_ver4_18
       rect:
         serializedVersion: 2
         x: 256
@@ -689,14 +689,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c94e94a5535249390800000000000000
-      internalID: -7812578542502681444
+      spriteID: 9c81c3310fe023170800000000000000
+      internalID: 8156598299399035081
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_19
+      name: Parts_SS_ver4_19
       rect:
         serializedVersion: 2
         x: 384
@@ -710,14 +710,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fadec3694fc504a70800000000000000
-      internalID: 8809143076699041199
+      spriteID: e27f74c1abf37b180800000000000000
+      internalID: -9099734453507852498
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_20
+      name: Parts_SS_ver4_20
       rect:
         serializedVersion: 2
         x: 512
@@ -731,14 +731,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a81def3d166dce740800000000000000
-      internalID: 5182752986853462410
+      spriteID: 18e1bbf4e6c6bd700800000000000000
+      internalID: 566165399204994689
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_21
+      name: Parts_SS_ver4_21
       rect:
         serializedVersion: 2
         x: 640
@@ -752,14 +752,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 63b1c2d3569ff7940800000000000000
-      internalID: 5296225900024306486
+      spriteID: 7cbb584dcd025bbb0800000000000000
+      internalID: -4920990885001970745
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_22
+      name: Parts_SS_ver4_22
       rect:
         serializedVersion: 2
         x: 768
@@ -773,14 +773,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3df30ec42693b6080800000000000000
-      internalID: -9193191119987392557
+      spriteID: 9dcb26d8300c99110800000000000000
+      internalID: 1268255891570998489
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_23
+      name: Parts_SS_ver4_23
       rect:
         serializedVersion: 2
         x: 896
@@ -794,14 +794,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 90a3d5623afcf0100800000000000000
-      internalID: 76508018318850569
+      spriteID: d71b0d5c7c5c416e0800000000000000
+      internalID: -1867650483643960963
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_24
+      name: Parts_SS_ver4_24
       rect:
         serializedVersion: 2
         x: 1024
@@ -815,14 +815,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 854b101bc62863b60800000000000000
-      internalID: 7725505614138422360
+      spriteID: ce8f7101d9a6306d0800000000000000
+      internalID: -3025457301850425108
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_25
+      name: Parts_SS_ver4_25
       rect:
         serializedVersion: 2
         x: 1152
@@ -836,14 +836,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f8c951760995e86e0800000000000000
-      internalID: -1833429521553580913
+      spriteID: d614de25a34d99d20800000000000000
+      internalID: 3285890750107959661
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_26
+      name: Parts_SS_ver4_26
       rect:
         serializedVersion: 2
         x: 1280
@@ -857,14 +857,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 63cb795b6a9c000a0800000000000000
-      internalID: -6917307309792707530
+      spriteID: 277aa0713c4711e30800000000000000
+      internalID: 4472484286209632114
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_27
+      name: Parts_SS_ver4_27
       rect:
         serializedVersion: 2
         x: 1408
@@ -878,14 +878,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 727b36713b5681260800000000000000
-      internalID: 7068511435023955751
+      spriteID: 736bd7555d660f5d0800000000000000
+      internalID: -3030809482771974601
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_28
+      name: Parts_SS_ver4_28
       rect:
         serializedVersion: 2
         x: 1536
@@ -899,14 +899,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8ec10f5da40e3d760800000000000000
-      internalID: 7481570018014010600
+      spriteID: 673eac9ba14437370800000000000000
+      internalID: 8319067818260358006
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_29
+      name: Parts_SS_ver4_29
       rect:
         serializedVersion: 2
         x: 1664
@@ -920,14 +920,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 789cf9e38b9344480800000000000000
-      internalID: -8915937898799314553
+      spriteID: 233a648b6255870e0800000000000000
+      internalID: -2271972387219659982
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_30
+      name: Parts_SS_ver4_30
       rect:
         serializedVersion: 2
         x: 1792
@@ -941,14 +941,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c9c6520652465afd0800000000000000
-      internalID: -2331347120404730724
+      spriteID: c96501961245130b0800000000000000
+      internalID: -5750722746702080356
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_31
+      name: Parts_SS_ver4_31
       rect:
         serializedVersion: 2
         x: 1920
@@ -962,14 +962,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b7455ea9f11eaf170800000000000000
-      internalID: 8213124396322477179
+      spriteID: fa96ebff429fb8030800000000000000
+      internalID: 3498163472888129967
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_32
+      name: Parts_SS_ver4_32
       rect:
         serializedVersion: 2
         x: 0
@@ -983,14 +983,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 256cbeb0bf0f63c10800000000000000
-      internalID: 2033077242831816274
+      spriteID: e3955a13bf1237350800000000000000
+      internalID: 6013187290223171902
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_33
+      name: Parts_SS_ver4_33
       rect:
         serializedVersion: 2
         x: 128
@@ -1004,14 +1004,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6e9c2dc4725a8bd10800000000000000
-      internalID: 2141643211025861094
+      spriteID: 762a266a2ae4d8de0800000000000000
+      internalID: -1329319854521277849
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_34
+      name: Parts_SS_ver4_34
       rect:
         serializedVersion: 2
         x: 256
@@ -1025,14 +1025,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ab32bc4290de7c0d0800000000000000
-      internalID: -3402490369927339078
+      spriteID: 73b97fbd73f2da100800000000000000
+      internalID: 120804681969015607
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_35
+      name: Parts_SS_ver4_35
       rect:
         serializedVersion: 2
         x: 384
@@ -1046,14 +1046,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cc668648731600980800000000000000
-      internalID: -8574746799440894260
+      spriteID: 79f60db917d300030800000000000000
+      internalID: 3458832071975268247
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_36
+      name: Parts_SS_ver4_36
       rect:
         serializedVersion: 2
         x: 512
@@ -1067,14 +1067,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7d93aab154837a040800000000000000
-      internalID: 4658754209006107095
+      spriteID: 523ac5724ab504d30800000000000000
+      internalID: 4413628395416232741
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_37
+      name: Parts_SS_ver4_37
       rect:
         serializedVersion: 2
         x: 640
@@ -1088,14 +1088,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1ba6dd944a9e1cc20800000000000000
-      internalID: 3225115699997141681
+      spriteID: 16aa10538915d40b0800000000000000
+      internalID: -5742844235661333919
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_38
+      name: Parts_SS_ver4_38
       rect:
         serializedVersion: 2
         x: 768
@@ -1109,14 +1109,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5daaf1b6b29e40fe0800000000000000
-      internalID: -1223596826047829291
+      spriteID: f7a5c2277e1c5c460800000000000000
+      internalID: 7261423174001908351
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_39
+      name: Parts_SS_ver4_39
       rect:
         serializedVersion: 2
         x: 896
@@ -1130,14 +1130,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: eb0bbf2e99039ab90800000000000000
-      internalID: -7230194289270345538
+      spriteID: c2af1790091735c60800000000000000
+      internalID: 7805707442610895404
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_40
+      name: Parts_SS_ver4_40
       rect:
         serializedVersion: 2
         x: 1024
@@ -1151,14 +1151,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bee07ffe5ff6874b0800000000000000
-      internalID: -5442477047593627925
+      spriteID: f4f3d523a01ecaef0800000000000000
+      internalID: -95454058170728625
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_41
+      name: Parts_SS_ver4_41
       rect:
         serializedVersion: 2
         x: 1152
@@ -1172,14 +1172,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fd8782ec4ae03fbb0800000000000000
-      internalID: -4903559468280153889
+      spriteID: 4a58035890ba524d0800000000000000
+      internalID: -3159931506152929884
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_42
+      name: Parts_SS_ver4_42
       rect:
         serializedVersion: 2
         x: 1280
@@ -1193,14 +1193,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bfc9844fa96a335d0800000000000000
-      internalID: -3083938135365083909
+      spriteID: 0aee17d949ff261d0800000000000000
+      internalID: -3358841358303236448
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_43
+      name: Parts_SS_ver4_43
       rect:
         serializedVersion: 2
         x: 1408
@@ -1214,14 +1214,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 77a679cf232bfd820800000000000000
-      internalID: 2945268613379484279
+      spriteID: 38d58e58e15e7baa0800000000000000
+      internalID: -6145191247265374845
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_44
+      name: Parts_SS_ver4_44
       rect:
         serializedVersion: 2
         x: 1536
@@ -1235,14 +1235,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c7495ff0bcedc8880800000000000000
-      internalID: -8607259824084380548
+      spriteID: 2b225e592c56e1b60800000000000000
+      internalID: 7718718697772491442
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_45
+      name: Parts_SS_ver4_45
       rect:
         serializedVersion: 2
         x: 1664
@@ -1256,14 +1256,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dc9eeb0744b531d90800000000000000
-      internalID: -7128253435689899571
+      spriteID: 508733f0e0f3db180800000000000000
+      internalID: -9098046342601410555
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_46
+      name: Parts_SS_ver4_46
       rect:
         serializedVersion: 2
         x: 1792
@@ -1277,14 +1277,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bcacb37817a46afd0800000000000000
-      internalID: -2331093905657050421
+      spriteID: 4479ce91ddbe6fb40800000000000000
+      internalID: 5473821731970651972
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_47
+      name: Parts_SS_ver4_47
       rect:
         serializedVersion: 2
         x: 1920
@@ -1298,14 +1298,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 25932cd3a2570d250800000000000000
-      internalID: 5967398330551122258
+      spriteID: 08e3e508913f13d00800000000000000
+      internalID: 950808287205277312
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_48
+      name: Parts_SS_ver4_48
       rect:
         serializedVersion: 2
         x: 0
@@ -1319,14 +1319,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4dd77bec8149d63b0800000000000000
-      internalID: -5517591134190731820
+      spriteID: 67b24f6e6abe2f7c0800000000000000
+      internalID: -4038906813726053514
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_49
+      name: Parts_SS_ver4_49
       rect:
         serializedVersion: 2
         x: 128
@@ -1340,14 +1340,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1f5c7c70157168840800000000000000
-      internalID: 5225890054400361969
+      spriteID: 593a996371be48900800000000000000
+      internalID: 685931528199971733
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_50
+      name: Parts_SS_ver4_50
       rect:
         serializedVersion: 2
         x: 256
@@ -1361,14 +1361,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 292ab467144b79c00800000000000000
-      internalID: 907392043188986514
+      spriteID: 91cbaf0b606a24f30800000000000000
+      internalID: 4558388320521600025
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_51
+      name: Parts_SS_ver4_51
       rect:
         serializedVersion: 2
         x: 384
@@ -1382,14 +1382,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ffab6b90457125e70800000000000000
-      internalID: 9102363446576855807
+      spriteID: 34a055b88f517d3d0800000000000000
+      internalID: -3182050454480287165
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_52
+      name: Parts_SS_ver4_52
       rect:
         serializedVersion: 2
         x: 512
@@ -1403,14 +1403,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4628be2bf02f7d4f0800000000000000
-      internalID: -803907859222134172
+      spriteID: 72d579e1d2f416f50800000000000000
+      internalID: 6872861561549446439
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_53
+      name: Parts_SS_ver4_53
       rect:
         serializedVersion: 2
         x: 640
@@ -1424,14 +1424,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ec08d686a6bd91ff0800000000000000
-      internalID: -64779469555138354
+      spriteID: f36244a088d8ad700800000000000000
+      internalID: 565920318615725631
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_54
+      name: Parts_SS_ver4_54
       rect:
         serializedVersion: 2
         x: 768
@@ -1445,14 +1445,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 23515c3d50c4fa6c0800000000000000
-      internalID: -4129998745363999438
+      spriteID: fcd2bd5fac0a28060800000000000000
+      internalID: 6954297568182087119
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_55
+      name: Parts_SS_ver4_55
       rect:
         serializedVersion: 2
         x: 0
@@ -1466,14 +1466,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2654d8d3cc3acecf0800000000000000
-      internalID: -221622184046672542
+      spriteID: 8ad86cf7799005a70800000000000000
+      internalID: 8813555017052491176
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_56
+      name: Parts_SS_ver4_56
       rect:
         serializedVersion: 2
         x: 128
@@ -1487,14 +1487,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3f0c74d199d5db4a0800000000000000
-      internalID: -6575996968688434957
+      spriteID: 4d266c1aea707ad70800000000000000
+      internalID: 9054214022471508692
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_57
+      name: Parts_SS_ver4_57
       rect:
         serializedVersion: 2
         x: 256
@@ -1508,14 +1508,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 171d6e3190e169030800000000000000
-      internalID: 3501018784664572273
+      spriteID: 9cd058d65f72044a0800000000000000
+      internalID: -6611240317921980983
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_58
+      name: Parts_SS_ver4_58
       rect:
         serializedVersion: 2
         x: 384
@@ -1529,14 +1529,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2514e8073ae88ede0800000000000000
-      internalID: -1303635259504574126
+      spriteID: c6418bf80d1182a00800000000000000
+      internalID: 731854526909781100
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_59
+      name: Parts_SS_ver4_59
       rect:
         serializedVersion: 2
         x: 512
@@ -1550,14 +1550,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b07fd266249e15be0800000000000000
-      internalID: -1490153530291521781
+      spriteID: a1eab72047a3332b0800000000000000
+      internalID: -5606072841213858278
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_60
+      name: Parts_SS_ver4_60
       rect:
         serializedVersion: 2
         x: 640
@@ -1571,14 +1571,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 34c5dbfb0d8beb690800000000000000
-      internalID: -7584421515735770045
+      spriteID: 1d67ad76b574d99d0800000000000000
+      internalID: -2765976138225649967
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_61
+      name: Parts_SS_ver4_61
       rect:
         serializedVersion: 2
         x: 768
@@ -1592,14 +1592,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6b361bf8c97ce0130800000000000000
-      internalID: 3534982232772010934
+      spriteID: f753a784763fee0d0800000000000000
+      internalID: -3391505844440255105
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_62
+      name: Parts_SS_ver4_62
       rect:
         serializedVersion: 2
         x: 0
@@ -1613,14 +1613,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 688bcf35a37e9ea30800000000000000
-      internalID: 4245178361476593798
+      spriteID: 80a8259569d121230800000000000000
+      internalID: 3607978783058070024
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_63
+      name: Parts_SS_ver4_63
       rect:
         serializedVersion: 2
         x: 128
@@ -1634,14 +1634,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8b32e8dd2382b5970800000000000000
-      internalID: 8744627300400505784
+      spriteID: 27227588aff937fa0800000000000000
+      internalID: -5804119596372385166
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_64
+      name: Parts_SS_ver4_64
       rect:
         serializedVersion: 2
         x: 256
@@ -1655,14 +1655,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1845ed5aeaa4e7260800000000000000
-      internalID: 7097192176750056577
+      spriteID: d742ab3d44cccd270800000000000000
+      internalID: 8276714811182163069
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_65
+      name: Parts_SS_ver4_65
       rect:
         serializedVersion: 2
         x: 384
@@ -1676,14 +1676,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 22e9a1d4b0e640b60800000000000000
-      internalID: 7711409456782417442
+      spriteID: 6a52b81042d2bd520800000000000000
+      internalID: 2727823631970936230
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_66
+      name: Parts_SS_ver4_66
       rect:
         serializedVersion: 2
         x: 512
@@ -1697,14 +1697,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4c7c7fa7ea05ffb30800000000000000
-      internalID: 4323262877616555972
+      spriteID: 36542f9a96b6d5880800000000000000
+      internalID: -8620616010150296221
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_67
+      name: Parts_SS_ver4_67
       rect:
         serializedVersion: 2
         x: 640
@@ -1718,14 +1718,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3d5375dd37020def0800000000000000
-      internalID: -85532710913231405
+      spriteID: f565f300ab56b7350800000000000000
+      internalID: 6015513576825902687
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_68
+      name: Parts_SS_ver4_68
       rect:
         serializedVersion: 2
         x: 768
@@ -1739,14 +1739,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 185656edf707ce900800000000000000
-      internalID: 715070135339410817
+      spriteID: 6dd4e6e05956ebf90800000000000000
+      internalID: -6935994685237342762
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Parts_SS_ver6i_69
+      name: Parts_SS_ver4_69
       rect:
         serializedVersion: 2
         x: 1920
@@ -1760,8 +1760,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 882330a3eee4ee380800000000000000
-      internalID: -8940121425201384824
+      spriteID: a666616b3aeec1960800000000000000
+      internalID: 7574191060232332906
       vertices: []
       indices: 
       edges: []
@@ -1769,7 +1769,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: c31614d1aa195214fae5de6b327fce4b
+    spriteID: df43c021e780c0c4198f5f60bde7240a
     internalID: 0
     vertices: []
     indices: 

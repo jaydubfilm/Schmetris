@@ -497,3 +497,43 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 2500
+  - name: Bomb
+    partType: 8
+    canSell: 1
+    priority: 50
+    burnType: 4
+    levels:
+    - unlockLevel: 3
+      health: 100
+      dataTest:
+      - key: Cooldown
+        value: 5
+      - key: Damage
+        value: 50
+      burnRate: 5
+      cost:
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 150
+      - resourceType: 0
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 150
+    - unlockLevel: 8
+      health: 150
+      dataTest:
+      - key: Cooldown
+        value: 10
+      - key: Damage
+        value: 100
+      burnRate: 10
+      cost:
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 3500
+      - resourceType: 0
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 3500
