@@ -11,7 +11,7 @@
         CONTAINER,
         SHIELD,
         BOOST,
-        SMRT_WPN
+        BOMB
     } 
 }
 
