@@ -68,6 +68,8 @@ MonoBehaviour:
     type: 3}
   shieldPrototypePrefab: {fileID: 7381917469761121646, guid: b5a0b72d2da99e9468bd4f2b9034d44f,
     type: 3}
+  alertIconPrefab: {fileID: 7673582226122981316, guid: 54284c1381bfa804e89521c45d07d319,
+    type: 3}
   scrapyardBotPrefab: {fileID: 394989056214196771, guid: 635c72e78b83d2344a6460ef7d8059d5,
     type: 3}
   comboRemoteData: {fileID: 11400000, guid: e98ad69cab8c1364baddf1bc6ae8b077, type: 2}
