@@ -48,6 +48,7 @@ namespace StarSalvager.Factories
             travelDirection.Normalize();
             projectile.m_travelDirectionNormalized = travelDirection;
             projectile.SetCollisionTag(collisionTag);
+            projectile.SetSprite(projectile.m_projectileData.Sprite);
 
             return projectile.GetComponent<T>();
         }

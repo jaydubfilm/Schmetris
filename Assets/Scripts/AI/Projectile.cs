@@ -17,11 +17,6 @@ namespace StarSalvager.AI
 
         public float DamageAmount;
 
-        private void Start()
-        {
-            SetSprite(m_projectileData.Sprite);
-        }
-
         // Update is called once per frame
         private void Update()
         {
