@@ -2,6 +2,7 @@
 using StarSalvager.Factories;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
+using StarSalvager.Values;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -52,6 +53,7 @@ namespace StarSalvager.UI
                 {
                     FactoryManager.Instance.currentModularDataIndex++;
                 }
+                PlayerPersistentData.PlayerData.currentModularSectorIndex = FactoryManager.Instance.currentModularDataIndex;
 
                 InitUniverseMapTemp();
             });

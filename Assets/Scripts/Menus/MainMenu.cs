@@ -14,6 +14,7 @@ using StarSalvager.Missions;
 
 using CameraController = StarSalvager.Cameras.CameraController;
 using StarSalvager.Utilities.JsonDataTypes;
+using System.Collections;
 
 namespace StarSalvager.UI
 {
@@ -101,16 +102,24 @@ namespace StarSalvager.UI
         // Start is called before the first frame update
         private void Start()
         {
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.GameStart);
+            StartCoroutine(Init());
+        }
+
+        private IEnumerator Init()
+        {
+            while (!SceneLoader.IsReady)
+                yield return null;
             
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.GameStart);
+
             InitButtons();
 
             OpenMenu(MENU.MAIN);
-            
+
             if (gameObject.scene == SceneManager.GetActiveScene())
                 Globals.ScaleCamera(m_cameraZoomScaler.value);
-            
-            
+
+
             MissionManager.Init();
             PlayerPersistentData.Init();
         }
@@ -144,6 +153,7 @@ namespace StarSalvager.UI
             {
                 PlayerPersistentData.SetCurrentSaveFile(0);
                 MissionManager.SetCurrentSaveFile();
+                FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
             });
 

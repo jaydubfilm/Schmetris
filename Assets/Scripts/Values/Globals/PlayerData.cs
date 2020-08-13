@@ -60,6 +60,8 @@ namespace StarSalvager.Values
 
         public Dictionary<int, int> maxSectorProgression = new Dictionary<int, int>();
 
+        public int currentModularSectorIndex = 0;
+
         //============================================================================================================//
 
         public void SetResources(Dictionary<BIT_TYPE, int> values)
