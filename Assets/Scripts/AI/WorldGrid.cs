@@ -79,12 +79,21 @@ namespace StarSalvager
                 {
                     if (y + 1 == Values.Globals.GridSizeY)
                     {
-                        SetObstacleInGridSquare(x, y, false);
+                        SetObstacleInGridSquare(x, y, 0, false);
+                        
                     }
                     else
                     {
-                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x, y + 1).ObstacleInSquare);
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x, y + 1).RadiusMarkAround, GetGridSquareAtPosition(x, y + 1).ObstacleInSquare);
                     }
+                }
+            }
+
+            for (int y = 0; y < Values.Globals.GridSizeY; y++)
+            {
+                for (int x = 0; x < Values.Globals.GridSizeX; x++)
+                {
+                    MarkObjectsAroundGridSquare(x, y, GetGridSquareAtPosition(x, y).RadiusMarkAround);
                 }
             }
         }
@@ -97,12 +106,20 @@ namespace StarSalvager
                 {
                     if (x + amount >= Values.Globals.GridSizeX)
                     {
-                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x + amount - Values.Globals.GridSizeX, y).ObstacleInSquare);
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x + amount - Values.Globals.GridSizeX, y).RadiusMarkAround, GetGridSquareAtPosition(x + amount - Values.Globals.GridSizeX, y).ObstacleInSquare);
                     }
                     else
                     {
-                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x + amount, y).ObstacleInSquare);
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x + amount, y).RadiusMarkAround, GetGridSquareAtPosition(x + amount, y).ObstacleInSquare);
                     }
+                }
+            }
+
+            for (int y = 0; y < Values.Globals.GridSizeY; y++)
+            {
+                for (int x = 0; x < Values.Globals.GridSizeX; x++)
+                {
+                    //MarkObjectsAroundGridSquare(x, y, GetGridSquareAtPosition(x, y).RadiusMarkAround);
                 }
             }
         }
@@ -115,29 +132,54 @@ namespace StarSalvager
                 {
                     if (x - amount < 0)
                     {
-                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x - amount + Values.Globals.GridSizeX, y).ObstacleInSquare);
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x - amount + Values.Globals.GridSizeX, y).RadiusMarkAround, GetGridSquareAtPosition(x - amount + Values.Globals.GridSizeX, y).ObstacleInSquare);
                     }
                     else
                     {
-                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x - amount, y).ObstacleInSquare);
+                        SetObstacleInGridSquare(x, y, GetGridSquareAtPosition(x - amount, y).RadiusMarkAround, GetGridSquareAtPosition(x - amount, y).ObstacleInSquare);
                     }
+                }
+            }
+
+            for (int y = 0; y < Values.Globals.GridSizeY; y++)
+            {
+                for (int x = 0; x < Values.Globals.GridSizeX; x++)
+                {
+                    //MarkObjectsAroundGridSquare(x, y, GetGridSquareAtPosition(x, y).RadiusMarkAround);
                 }
             }
         }
 
-        public void SetObstacleInGridSquare(Vector2 obstaclePosition, bool occupied)
+        public void SetObstacleInGridSquare(Vector2 obstaclePosition, int radius, bool occupied)
         {
             GetGridSquareAtWorldPosition(obstaclePosition).SetObstacleInSquare(occupied);
+            GetGridSquareAtWorldPosition(obstaclePosition).SetRadiusMarkAround(radius);
         }
 
-        public void SetObstacleInGridSquare(Vector2Int gridPosition, bool occupied)
+        public void SetObstacleInGridSquare(Vector2Int gridPosition, int radius, bool occupied)
         {
             GetGridSquareAtPosition(gridPosition.x, gridPosition.y).SetObstacleInSquare(occupied);
+            GetGridSquareAtPosition(gridPosition.x, gridPosition.y).SetRadiusMarkAround(radius);
         }
 
-        public void SetObstacleInGridSquare(int x, int y, bool occupied)
+        public void SetObstacleInGridSquare(int x, int y, int radius, bool occupied)
         {
             GetGridSquareAtPosition(x, y).SetObstacleInSquare(occupied);
+            GetGridSquareAtPosition(x, y).SetRadiusMarkAround(radius);
+        }
+
+        public void MarkObjectsAroundGridSquare(int x, int y, int radiusAround)
+        {
+            if (radiusAround == 0)
+                return;
+
+            for (int i = Mathf.Max(0, x - radiusAround); i <= Mathf.Min(Globals.GridSizeX - 1, x + radiusAround); i++)
+            {
+                for (int k = Mathf.Max(0, y - radiusAround); k <= Mathf.Min(Globals.GridSizeY - 1, y + radiusAround); k++)
+                {
+                    GetGridSquareAtPosition(i, k).SetObstacleInSquare(true);
+                }
+            }
         }
 
         public GridSquare GetGridSquareAtPosition(Vector2Int gridPosition)
@@ -227,7 +269,7 @@ namespace StarSalvager
             return new Vector2Int(UnityEngine.Random.Range(0, Values.Globals.GridSizeX), Values.Globals.GridSizeY - 1);
         }
 
-        public Vector2 GetAvailableRandomTopGridSquareWorldPosition()
+        public Vector2 GetAvailableRandomTopGridSquareWorldPosition(int scanRadius)
         {
             int numTries = 100;
             for (int i = 0; i < numTries; i++)
@@ -235,11 +277,11 @@ namespace StarSalvager
                 Vector2Int randomTop = GetRandomTopGridSquareGridPosition();
                 bool isFreeSpace = true;
                 Vector2Int obstacleGridScanMinimum = new Vector2Int(
-                    Math.Max(0, randomTop.x - Constants.enemyGridScanRadius),
-                    Math.Max(0, randomTop.y - Constants.enemyGridScanRadius));
+                    Math.Max(0, randomTop.x - scanRadius),
+                    Math.Max(0, randomTop.y - scanRadius));
                 Vector2Int obstacleGridScanMaximum = new Vector2Int(
-                    Math.Min(Values.Globals.GridSizeX - 1, randomTop.x + Constants.enemyGridScanRadius),
-                    Math.Min(Values.Globals.GridSizeY - 1, randomTop.y + Constants.enemyGridScanRadius));
+                    Math.Min(Values.Globals.GridSizeX - 1, randomTop.x + scanRadius),
+                    Math.Min(Values.Globals.GridSizeY - 1, randomTop.y + scanRadius));
                 //Check each position in the box for whether an obstacle is there
                 for (int j = obstacleGridScanMinimum.x; j <= obstacleGridScanMaximum.x; j++)
                 {
@@ -261,7 +303,7 @@ namespace StarSalvager
                 }
             }
 
-            return GetRandomTopGridSquareWorldPosition();
+            return GetAvailableRandomTopGridSquareWorldPosition(scanRadius - 1);
         }
 
         public Vector2Int GetGridPositionOfVector(Vector2 worldLocation)

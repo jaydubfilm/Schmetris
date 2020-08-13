@@ -996,19 +996,20 @@ namespace StarSalvager
         {
             
             TryHitAt(attachable, 10000);
-            
+
             switch (attachable)
             {
-                /*case Bit bit:
-                    TryHitAt(attachable, bit.CurrentHealth);
+                case Bit bit:
+                    MissionManager.ProcessAsteroidCollisionMissionData(bit.Type, 1);
                     break;
                 case Component component:
-                    TryHitAt(attachable, component.CurrentHealth);
+                    MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
                     break;
-                case Part _:
-                    TryHitAt(attachable, 5f);
-                    break;*/
+                case Part part:
+                    MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
+                    break;
                 case EnemyAttachable enemyAttachable:
+                    MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
                     enemyAttachable.SetAttached(false);
                     return;
             }
@@ -1610,6 +1611,8 @@ namespace StarSalvager
             //Debug.Log($"Shifting {toShift.Count} objects");
             //Debug.Break();
 
+            MissionManager.ProcessWhiteBumperMissionData(toShift.Count, false);
+
             StartCoroutine(ShiftInDirectionCoroutine(toShift, 
                 direction,
                 TEST_MergeSpeed,
@@ -1656,7 +1659,7 @@ namespace StarSalvager
             if (data.comboData.points == 0)
                 return;
 
-            MissionManager.ProcessComboBlocksMissionData(data.toMove[0].Type, 1);
+            MissionManager.ProcessComboBlocksMissionData(data.toMove[0].Type, data.toMove[0].level + 1, 1);
             SimpleComboSolver(data.comboData, data.toMove);
         }
         private void CheckForCombosAround(Bit bit)
@@ -1675,7 +1678,7 @@ namespace StarSalvager
             //    AdvancedComboSolver(data.comboData, data.toMove);
             //}
             //else
-            MissionManager.ProcessComboBlocksMissionData(bit.Type, 1);
+            MissionManager.ProcessComboBlocksMissionData(bit.Type, bit.level + 1, 1);
             SimpleComboSolver(data.comboData, data.toMove);
         }
 

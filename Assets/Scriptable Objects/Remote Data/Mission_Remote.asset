@@ -13,71 +13,94 @@ MonoBehaviour:
   m_Name: Mission_Remote
   m_EditorClassIdentifier: 
   m_missionRemoteData:
+  - MissionType: 6
+    MissionName: Asteroid Mission 1
+    MissionUnlockParameters: []
+    AmountNeeded: 1
+    AnyResourceType: 1
+    ResourceType: 2
+    ComboLevel: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
   - MissionType: 1
     MissionName: Resource Mission 1
     MissionUnlockParameters: []
-    AmountNeeded: 200
+    AmountNeeded: 10
+    AnyResourceType: 0
     ResourceType: 3
-    EnemyType: 0
+    ComboLevel: 0
+    EnemyType: 
     SectorNumber: 0
     WaveNumber: 0
-  - MissionType: 1
-    MissionName: Resource Mission 2
-    MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
-      SectorUnlockNumber: 1
-      WaveUnlockNumber: 1
-      MissionUnlockName: 
-    - MissionUnlockType: Mission Complete
-      SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
-      MissionUnlockName: Resource Mission 1
-    AmountNeeded: 1000
-    ResourceType: 1
-    EnemyType: 0
-    SectorNumber: 0
-    WaveNumber: 0
-  - MissionType: 0
-    MissionName: Enemy Mission 1
-    MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
-      SectorUnlockNumber: 2
-      WaveUnlockNumber: 1
-      MissionUnlockName: 
-    AmountNeeded: 2
-    ResourceType: 0
-    EnemyType: 0
-    SectorNumber: 0
-    WaveNumber: 0
-  - MissionType: 0
-    MissionName: Enemy Mission 2
-    MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
-      SectorUnlockNumber: 2
-      WaveUnlockNumber: 1
-      MissionUnlockName: 
-    AmountNeeded: 2
-    ResourceType: 0
-    EnemyType: 1
-    SectorNumber: 0
-    WaveNumber: 0
-  - MissionType: 3
-    MissionName: Level Mission 1
-    MissionUnlockParameters: []
-    AmountNeeded: 0
-    ResourceType: 0
-    EnemyType: 0
-    SectorNumber: 1
-    WaveNumber: 1
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
   - MissionType: 2
     MissionName: Combo Mission 1
-    MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
-      SectorUnlockNumber: 2
-      WaveUnlockNumber: 1
-      MissionUnlockName: 
-    AmountNeeded: 3
+    MissionUnlockParameters: []
+    AmountNeeded: 1
+    AnyResourceType: 0
     ResourceType: 3
-    EnemyType: 0
+    ComboLevel: 1
+    EnemyType: 
     SectorNumber: 0
     WaveNumber: 0
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
+  - MissionType: 5
+    MissionName: Bumper Mission 1
+    MissionUnlockParameters: []
+    AmountNeeded: 1
+    AnyResourceType: 0
+    ResourceType: 0
+    ComboLevel: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
+  - MissionType: 5
+    MissionName: Bumper Mission 2
+    MissionUnlockParameters: []
+    AmountNeeded: 1
+    AnyResourceType: 0
+    ResourceType: 0
+    ComboLevel: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 1
+  - MissionType: 6
+    MissionName: Asteroid Mission 2
+    MissionUnlockParameters: []
+    AmountNeeded: 2
+    AnyResourceType: 0
+    ResourceType: 4
+    ComboLevel: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
+  - MissionType: 4
+    MissionName: Craft Mission 1
+    MissionUnlockParameters: []
+    AmountNeeded: 1
+    AnyResourceType: 0
+    ResourceType: 0
+    ComboLevel: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    PartType: 4
+    PartLevel: 0
+    ThroughPart: 0

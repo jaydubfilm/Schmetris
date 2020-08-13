@@ -300,7 +300,7 @@ namespace StarSalvager
 
                 if (obstacle is IRotate rotate && rotate.Rotating)
                 {
-                    rotate.transform.Rotate(Vector3.forward * Time.deltaTime * -30.0f);
+                    rotate.transform.Rotate(Vector3.forward * Time.deltaTime * 15.0f * rotate.RotateDirection);
                 }
             }
 
@@ -341,7 +341,7 @@ namespace StarSalvager
                     }
                     else
                     {
-                        LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(bit.transform.position, true);
+                        LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(bit.transform.position, 0, true);
                     }
                 }
                 if (fullyInGrid)
@@ -381,7 +381,7 @@ namespace StarSalvager
             
             foreach (StageObstacleData stageObstacleData in m_currentStageData.StageObstacleData)
             {
-                float spawnVariable = stageObstacleData.AsteroidPerRowAverage;
+                float spawnVariable = stageObstacleData.CountPerRowAverage;
                 if (m_previousStageData != null && m_blendTimer < m_currentStageData.StageBlendPeriod)
                 {
                     spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
@@ -389,7 +389,7 @@ namespace StarSalvager
 
                 while (spawnVariable >= 1)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.Rotation());
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation());
                     spawnVariable -= 1;
                 }
 
@@ -400,7 +400,7 @@ namespace StarSalvager
 
                 if (random <= spawnVariable)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.Rotation());
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation());
                 }
             }
 
@@ -409,11 +409,11 @@ namespace StarSalvager
 
             foreach (StageObstacleData stageObstacleData in m_previousStageData.StageObstacleData)
             {
-                float spawnVariable = stageObstacleData.AsteroidPerRowAverage * Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                float spawnVariable = stageObstacleData.CountPerRowAverage * Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
 
                 while (spawnVariable >= 1)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.Rotation());
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation());
                     spawnVariable -= 1;
                 }
 
@@ -424,7 +424,7 @@ namespace StarSalvager
 
                 if (random <= spawnVariable)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.Rotation());
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation());
                 }
             }
         }
@@ -469,18 +469,8 @@ namespace StarSalvager
             }
         }
 
-        private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category, int numRotations, bool inRandomYLevel = false)
+        private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category, ASTEROID_SIZE asteroidSize, int numRotations, bool inRandomYLevel = false)
         {
-            int coinFlip = Random.Range(0, 10);
-            if (coinFlip <= 5)
-            {
-                Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateLargeAsteroid<Bit>();
-                AddMovableToList(newBit);
-                PlaceMovableOnGrid(newBit);
-
-                return;
-            }
-            
             if (selectionType == SELECTION_TYPE.CATEGORY)
             {
                 Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, category, numRotations);
@@ -511,6 +501,27 @@ namespace StarSalvager
                 PlaceMovableOnGrid(newShape);
                 return;
             }
+            else if (selectionType == SELECTION_TYPE.ASTEROID)
+            {
+                Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateLargeAsteroid<Bit>(asteroidSize);
+                AddMovableToList(newBit);
+
+                int radiusAround = 0;
+                switch(asteroidSize)
+                {
+                    case ASTEROID_SIZE.Small:
+                    case ASTEROID_SIZE.Medium:
+                        radiusAround = 1;
+                        break;
+                    case ASTEROID_SIZE.Large:
+                        radiusAround = 1;
+                        break;
+                }  
+
+                PlaceMovableOnGrid(newBit, radiusAround);
+
+                return;
+            }
         }
 
         public void AddMovableToList(IObstacle movable)
@@ -520,18 +531,27 @@ namespace StarSalvager
                 m_obstacles.Add(movable);
         }
 
-        private void PlaceMovableOnGrid(IObstacle movable)
+        private void PlaceMovableOnGrid(IObstacle movable, int radius = 0)
         {
-            Vector2 position = LevelManager.Instance.WorldGrid.GetAvailableRandomTopGridSquareWorldPosition();
+            Vector2 position = LevelManager.Instance.WorldGrid.GetAvailableRandomTopGridSquareWorldPosition(Constants.enemyGridScanRadius);
             movable.transform.parent = LevelManager.Instance.gameObject.transform;
             movable.transform.position = position;
             switch (movable)
             {
                 case Bit _:
                 case Component _:
-                    LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
+                    LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, radius, true);
                     break;
                 case Shape shape:
+                    foreach (Bit bit in shape.AttachedBits)
+                    {
+                        Vector2Int gridPosition = LevelManager.Instance.WorldGrid.GetGridPositionOfVector
+                            (bit.transform.position);
+                        if (gridPosition.y < Values.Globals.GridSizeY)
+                        {
+                            LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(bit.transform.position, 0, true);
+                        }
+                    }
                     m_notFullyInGridShapes.Add(shape);
                     break;
                 default:
@@ -539,7 +559,7 @@ namespace StarSalvager
             }
         }
 
-        private void PlaceMovableOnGrid(IObstacle movable, Vector2 position)
+        private void PlaceMovableOnGrid(IObstacle movable, Vector2 position, int radius = 0)
         {
             movable.transform.parent = LevelManager.Instance.gameObject.transform;
             movable.transform.position = position;
@@ -547,7 +567,7 @@ namespace StarSalvager
             {
                 case Bit _:
                 case Component _:
-                    LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, true);
+                    LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, radius, true);
                     break;
                 case Shape shape:
                     m_notFullyInGridShapes.Add(shape);

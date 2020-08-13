@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using StarSalvager.Missions;
 using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
@@ -25,6 +26,7 @@ namespace StarSalvager
 
             PlayerPersistentData.PlayerData.SubtractPartCosts(blueprint.partType, blueprint.level, false);
             PlayerPersistentData.PlayerData.AddPartToStorage(blockData);
+            MissionManager.ProcessCraftPartMissionData(blueprint.partType, blueprint.level);
         }
     }
 }

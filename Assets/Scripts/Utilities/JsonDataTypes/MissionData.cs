@@ -16,9 +16,13 @@ namespace StarSalvager.Utilities.JsonDataTypes
         public MISSION_STATUS MissionStatus;
         public List<MissionUnlockCheckData> MissionUnlockChecks;
 
-        public BIT_TYPE ResourceType;
+        public BIT_TYPE? ResourceType;
+        public int ComboLevel;
         public string EnemyType;
         public int SectorNumber;
         public int WaveNumber;
+        public PART_TYPE PartType;
+        public int PartLevel;
+        public bool ThroughPart;
     }
 }
