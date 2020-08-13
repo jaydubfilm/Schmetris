@@ -50,6 +50,58 @@ namespace StarSalvager
         
         //==============================================================================================================//
 
+        #region Bomb
+
+        private Dictionary<Part, float> _bombTimers;
+
+        public void TryTriggerBomb()
+        {
+            if (_bombTimers == null || _bombTimers.Count == 0)
+                return;
+
+            var part = _bombTimers.FirstOrDefault(x => x.Value <= 0f).Key;
+
+
+            if (part == null)
+                return;
+            
+            var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                .GetRemoteData(part.Type);
+            var partLevelData = partData.levels[part.level];
+
+            var burnType = partData.burnType;
+            var useCost = partLevelData.burnRate;
+
+            
+            if (PlayerPersistentData.PlayerData.liquidResource[burnType] < useCost)
+                return;
+            
+            //Remove the resources here
+            PlayerPersistentData.PlayerData.SubtractLiquidResource(burnType, useCost);
+            
+            //Set the cooldown time
+            if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out var cooldown))
+            {
+                _bombTimers[part] = cooldown;
+            }
+            
+            //Damage all the enemies
+            if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Damage, out var damage))
+            {
+                EnemyManager.DamageAllEnemies(damage);
+            }
+        }
+        
+        #endregion
+        
+        //============================================================================================================//
+
+        #region Shield
+        
+        
+        #endregion //Shield
+        
+        //============================================================================================================//
 
         #region Parts
 
@@ -208,6 +260,7 @@ namespace StarSalvager
 
             CheckIfShieldShouldRecycle();
             CheckIfFlashIconShouldRecycle();
+            CheckIfBombsShouldRecycle();
             
             
             magnetCount = 0;
@@ -266,6 +319,16 @@ namespace StarSalvager
                             timer = 0f
                         });
                         
+                        break;
+                    case PART_TYPE.BOMB:
+                        if(_bombTimers == null)
+                            _bombTimers = new Dictionary<Part, float>();
+
+                        if (_bombTimers.ContainsKey(part))
+                            break;
+                        
+                        GameUI.ShowBombIcon(true);
+                        _bombTimers.Add(part, 0f);
                         break;
                 }
             }
@@ -497,6 +560,21 @@ namespace StarSalvager
                         shield.SetAlpha(0.5f * (data.currentHp / fakeHealth));
                         
                         break;
+                    case PART_TYPE.BOMB:
+
+                        //TODO This still needs to account for multiple bombs
+                        if (!_bombTimers.TryGetValue(part, out float timer))
+                            break;
+
+                        if (timer <= 0f)
+                            break;
+
+                        levelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out cooldown);
+                            
+                        _bombTimers[part] -= Time.deltaTime;
+                        GameUI.SetBombFill(1f - _bombTimers[part] / cooldown);
+                        
+                        break;
                 }
 
                 UpdateUI(partRemoteData.burnType, resourceValue);
@@ -611,6 +689,23 @@ namespace StarSalvager
                 Recycler.Recycle<FlashSprite>(data.Value.gameObject);
                 _shields.Remove(data.Key);
             }
+        }
+
+        private void CheckIfBombsShouldRecycle()
+        {
+            if (_bombTimers == null || _bombTimers.Count == 0)
+                return;
+            
+            var copy = new Dictionary<Part, float>(_bombTimers);
+            foreach (var data in copy.Where(data => data.Key.IsRecycled))
+            {
+               // Recycler.Recycle<FlashSprite>(data.Value.gameObject);
+               _bombTimers.Remove(data.Key);
+            }
+            
+            GameUI.ShowBombIcon(_bombTimers.Count > 0);
+            
+            
         }
         
         public void ClearList()

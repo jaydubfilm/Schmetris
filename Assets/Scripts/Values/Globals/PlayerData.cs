@@ -124,6 +124,10 @@ namespace StarSalvager.Values
         //============================================================================================================//
 
 
+        public bool CanAffordCost(BIT_TYPE type, int amount)
+        {
+            return CostCalculations.CanAffordResource(resources, type, amount);
+        }
         public bool CanAffordCost(IEnumerable<CraftCost> levelCost)
         {
             Dictionary<BIT_TYPE, int> tempDictionary = new Dictionary<BIT_TYPE, int>(resources);

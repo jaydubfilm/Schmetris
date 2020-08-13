@@ -15,45 +15,8 @@ namespace StarSalvager.Utilities.Inputs
     {
         private Bot[] _bots;
         private ScrapyardBot[] _scrapyardBots;
-        /*private Scrapyard _scrapyard;
-        private BotShapeEditor _botShapeEditor;*/
 
         public bool isPaused => GameTimer.IsPaused;
-
-        /*private ObstacleManager obstacleManager
-        {
-            get
-            {
-                if (_obstacleManager == null)
-                    _obstacleManager = FindObjectOfType<ObstacleManager>();
-
-                return _obstacleManager;
-            }
-        }
-        private ObstacleManager _obstacleManager;
-
-        private EnemyManager enemyManager
-        {
-            get
-            {
-                if (_enemyManager == null)
-                    _enemyManager = FindObjectOfType<EnemyManager>();
-                return _enemyManager;
-            }
-        }
-        private EnemyManager _enemyManager;
-
-        private CameraController cameraController
-        {
-            get
-            {
-                if (_cameraController == null)
-                    _cameraController = FindObjectOfType<CameraController>();
-
-                return _cameraController;
-            }
-        }
-        private CameraController _cameraController;*/
         
         
         [SerializeField, BoxGroup("DAS"), DisableInPlayMode]
@@ -66,6 +29,8 @@ namespace StarSalvager.Utilities.Inputs
         private float previousInput;
         [SerializeField, BoxGroup("DAS"), ReadOnly]
         private float currentInput;
+        
+        private Dictionary<InputAction, Action<InputAction.CallbackContext>> _inputMap;
 
         //============================================================================================================//
 
@@ -95,6 +60,13 @@ namespace StarSalvager.Utilities.Inputs
             Globals.OrientationChange -= SetOrientation;
         }
 
+        private void OnApplicationQuit()
+        {
+            Debug.Log($"{nameof(InputManager)} called {nameof(OnApplicationQuit)}");
+            GameTimer.CustomOnApplicationQuit();
+            MissionManager.CustomOnApplicationQuit();
+            PlayerPersistentData.CustomOnApplicationQuit();
+        }
 
         //============================================================================================================//
 
@@ -111,6 +83,7 @@ namespace StarSalvager.Utilities.Inputs
         
         //============================================================================================================//
 
+        #region Input Setup
 
         public void InitInput()
         {
@@ -122,109 +95,86 @@ namespace StarSalvager.Utilities.Inputs
             if (_scrapyardBots == null || _scrapyardBots.Length == 0)
                 _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
 
+            //Ensure that we clear any previously registered Inputs
             DeInitInput();
+            
+            //Then we'll create our input map to easily init below
+            SetupInputs();
             
             //--------------------------------------------------------------------------------------------------------//
             
-            Input.Actions.Default.Pause.Enable();
-            Input.Actions.Default.Pause.performed += Pause;
+            foreach (var func in _inputMap)
+            {
+                func.Key.Enable();
+                func.Key.performed += func.Value;
+            }
             
+            //--------------------------------------------------------------------------------------------------------//
+        }
+        
+        private void SetupInputs()
+        {
+            //Setup the unchanging inputs
+            _inputMap = new Dictionary<InputAction, Action<InputAction.CallbackContext>>
+            {
+                {
+                    Input.Actions.Default.Pause, Pause
+                },
+                {
+                    Input.Actions.Default.UseBomb, BombTrigger
+                },
+                {
+                    Input.Actions.Default.LeftClick, LeftClick
+                },
+                {
+                    Input.Actions.Default.RightClick, RightClick
+                }
+            };
+            
+            //Here we setup the inputs dependent on the orientation
             switch (Globals.Orientation)
             {
                 case ORIENTATION.VERTICAL:
-                    Input.Actions.Default.SideMovement.Enable();
-                    Input.Actions.Default.SideMovement.performed += SideMovement;
-
-                    Input.Actions.Default.Rotate.Enable();
-                    Input.Actions.Default.Rotate.performed += Rotate;
-
-                    Input.Actions.Default.LeftClick.Enable();
-                    Input.Actions.Default.LeftClick.performed += LeftClick;
-
-                    Input.Actions.Default.RightClick.Enable();
-                    Input.Actions.Default.RightClick.performed += RightClick;
+                    _inputMap.Add(Input.Actions.Default.SideMovement, SideMovement);
+                    _inputMap.Add(Input.Actions.Default.Rotate, Rotate);
                     break;
                 case ORIENTATION.HORIZONTAL:
-                    Input.Actions.Vertical.SideMovement.Enable();
-                    Input.Actions.Vertical.SideMovement.performed += SideMovement;
-
-                    Input.Actions.Vertical.Rotate.Enable();
-                    Input.Actions.Vertical.Rotate.performed += Rotate;
-
-                    Input.Actions.Default.LeftClick.Enable();
-                    Input.Actions.Default.LeftClick.performed += LeftClick;
-
-                    Input.Actions.Default.RightClick.Enable();
-                    Input.Actions.Default.RightClick.performed += RightClick;
+                    _inputMap.Add(Input.Actions.Vertical.SideMovement, SideMovement);
+                    _inputMap.Add(Input.Actions.Vertical.Rotate, Rotate);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
-            //--------------------------------------------------------------------------------------------------------//
         }
 
         public void DeInitInput()
         {
-            Input.Actions.Default.Pause.Disable();
-            Input.Actions.Default.Pause.performed -= Pause;
-            
-            Input.Actions.Default.SideMovement.Disable();
-            Input.Actions.Default.SideMovement.performed -= SideMovement;
-
-            Input.Actions.Default.Rotate.Disable();
-            Input.Actions.Default.Rotate.performed -= Rotate;
-            
-            
-            Input.Actions.Vertical.SideMovement.Disable();
-            Input.Actions.Vertical.SideMovement.performed -= SideMovement;
-
-            Input.Actions.Vertical.Rotate.Disable();
-            Input.Actions.Vertical.Rotate.performed -= Rotate;
-
-            Input.Actions.Default.LeftClick.Disable();
-            Input.Actions.Default.LeftClick.performed -= LeftClick;
-
-            Input.Actions.Default.RightClick.Disable();
-            Input.Actions.Default.RightClick.performed -= RightClick;
-        }
-        
-        //============================================================================================================//
-
-        private void SetOrientation(ORIENTATION orientation)
-        {
-            InitInput();
-        }
-        
-        //============================================================================================================//
-
-        
-
-        //float _prevMove = 0.0f;
-
-        private void DasChecks()
-        {
-            //If the user is no longer pressing a direction, these checks do not matter
-            if (currentInput == 0f)
+            if (_inputMap == null)
                 return;
             
-            //If we've already triggered the DAS, don't bother with following checks
-            if (dasTriggered)
-                return;
-
-            //If timer hasn't reached zero, continue counting down
-            if (dasTimer > 0f)
+            foreach (var func in _inputMap)
             {
-                dasTimer -= Time.deltaTime;
-                return;
+                func.Key.Disable();
+                func.Key.performed -= func.Value;
             }
+        }
+        
+        #endregion //Input Setup
+        
+        //============================================================================================================//
 
-            dasTriggered = true;
-            dasTimer = 0f;
+        #region Inputs
+        
+        private void BombTrigger(InputAction.CallbackContext ctx)
+        {
+            if (Console.Open)
+                return;
             
-            //If the User is still pressing the same input, go ahead and try and reapply it
-            if(currentInput == previousInput)
-                TryApplyMove(currentInput);
+            if (ctx.ReadValue<float>() != 1f)
+                return;
+            
+            //FIXME Need to ensure that I map appropriate inputs to associated bots
+            _bots[0].BotPartsLogic.TryTriggerBomb();
         }
 
         private void SideMovement(InputAction.CallbackContext ctx)
@@ -300,63 +250,8 @@ namespace StarSalvager.Utilities.Inputs
                 
                 move.Move(value);
             }
-            //if (obstacleManager != null)
-            //    obstacleManager.Move(value);
-            //if (enemyManager != null)
-            //    enemyManager.Move(value);
-            //if (cameraController != null)
-            //    cameraController.Move(value);
-            //if (LevelManager.Instance != null)
-            //    LevelManager.Instance.ProjectileManager.Move(value);
+
         }
-
-        /*private void SideMovement(float move)
-        {
-            if (isPaused)
-                return;
-
-            var noObstacles = obstacleManager is null;
-
-            foreach (var bot in _bots)
-            {
-                bot.Move(move, noObstacles);
-            }
-
-
-            if (noObstacles)
-            {
-                foreach (var bot in _bots)
-                {
-                    bot.Move(move, noObstacles);
-                }
-                return;
-            }
-            
-            if(!obstacleManager.isMoving)
-            {
-                foreach (var bot in _bots)
-                {
-                    bot.Move(move, noObstacles);
-                }
-            }
-
-            obstacleManager.Move(move);
-            enemyManager.Move(move);
-            cameraController.Move(move);
-
-            LevelManager.Instance.ProjectileManager.Move(move);
-        }
-
-        IEnumerator dasTimer(float direction)
-        {
-            SideMovement(0.0f);
-            yield return new WaitForSeconds(0.15f);
-
-            if (_prevMove == direction)
-            {
-                SideMovement(direction);
-            }
-        }*/
 
         private void Rotate(InputAction.CallbackContext ctx)
         {
@@ -384,20 +279,7 @@ namespace StarSalvager.Utilities.Inputs
             if (Console.Open)
                 return;
             
-            var clicked = ctx.ReadValue<float>();
-
-            /*if (clicked == 1)
-            {
-                if (_scrapyard != null)
-                {
-                    _scrapyard.OnLeftMouseButtonDown();
-                }
-
-                if (_botShapeEditor != null)
-                {
-                    _botShapeEditor.OnLeftMouseButtonDown();
-                }
-            }*/
+            //var clicked = ctx.ReadValue<float>();
         }
 
         private void RightClick(InputAction.CallbackContext ctx)
@@ -405,20 +287,7 @@ namespace StarSalvager.Utilities.Inputs
             if (Console.Open)
                 return;
             
-            var clicked = ctx.ReadValue<float>();
-
-            /*if (clicked == 1)
-            {
-                if (_scrapyard != null)
-                {
-                    _scrapyard.OnRightMouseButtonDown();
-                }
-
-                if (_botShapeEditor != null)
-                {
-                    _botShapeEditor.OnRightMouseButtonDown();
-                }
-            }*/
+            //var clicked = ctx.ReadValue<float>();
         }
 
         private void Pause(InputAction.CallbackContext ctx)
@@ -432,7 +301,45 @@ namespace StarSalvager.Utilities.Inputs
             if(ctx.ReadValue<float>() == 1f)
                 GameTimer.SetPaused(!isPaused);
         }
+        
+        #endregion //Inputs
 
+        //============================================================================================================//
+        
+        private void SetOrientation(ORIENTATION orientation)
+        {
+            //Update the current input setup
+            InitInput();
+        }
+        
+        //============================================================================================================//
+        
+        private void DasChecks()
+        {
+            //If the user is no longer pressing a direction, these checks do not matter
+            if (currentInput == 0f)
+                return;
+            
+            //If we've already triggered the DAS, don't bother with following checks
+            if (dasTriggered)
+                return;
+
+            //If timer hasn't reached zero, continue counting down
+            if (dasTimer > 0f)
+            {
+                dasTimer -= Time.deltaTime;
+                return;
+            }
+
+            dasTriggered = true;
+            dasTimer = 0f;
+            
+            //If the User is still pressing the same input, go ahead and try and reapply it
+            if(currentInput == previousInput)
+                TryApplyMove(currentInput);
+        }
+        
+        //IPausable Functions
         //============================================================================================================//
 
         public void RegisterPausable()
@@ -452,12 +359,6 @@ namespace StarSalvager.Utilities.Inputs
 
         //============================================================================================================//
 
-        private void OnApplicationQuit()
-        {
-            Debug.Log($"{nameof(InputManager)} called {nameof(OnApplicationQuit)}");
-            GameTimer.CustomOnApplicationQuit();
-            MissionManager.CustomOnApplicationQuit();
-            PlayerPersistentData.CustomOnApplicationQuit();
-        }
+
     }
 }

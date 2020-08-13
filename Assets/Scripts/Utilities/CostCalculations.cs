@@ -207,6 +207,10 @@ namespace StarSalvager.Utilities
             }
             return true;
         }
+        public static bool CanAffordResource(Dictionary<BIT_TYPE, int> resources, BIT_TYPE type, int amount)
+        {
+            return resources[type] >= amount;
+        }
 
         public static bool CanAffordComponents(Dictionary<COMPONENT_TYPE, int> components, IEnumerable<CraftCost> costs)
         {
