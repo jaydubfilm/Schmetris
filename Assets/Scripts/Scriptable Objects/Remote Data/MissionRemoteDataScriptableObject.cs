@@ -25,7 +25,7 @@ namespace StarSalvager.ScriptableObjects
                 }
                 else if (data.MissionType == MISSION_EVENT_TYPE.ENEMY_KILLED)
                 {
-                    EnemyKilledMission mission = new EnemyKilledMission(data.EnemyType, data.MissionName, data.GetMissionUnlockData(), data.AmountNeeded);
+                    EnemyKilledMission mission = new EnemyKilledMission(data.EnemyValue(), data.MissionName, data.GetMissionUnlockData(), data.AmountNeeded);
                     missions.Add(mission);
                 }
                 else if (data.MissionType == MISSION_EVENT_TYPE.COMBO_BLOCKS)
@@ -51,6 +51,26 @@ namespace StarSalvager.ScriptableObjects
                 else if (data.MissionType == MISSION_EVENT_TYPE.ASTEROID_COLLISION)
                 {
                     AsteroidCollisionMission mission = new AsteroidCollisionMission(data.ResourceValue(), data.MissionName, data.GetMissionUnlockData(), data.AmountNeeded);
+                    missions.Add(mission);
+                }
+                else if (data.MissionType == MISSION_EVENT_TYPE.LIQUID_RESOURCE)
+                {
+                    LiquidResourceConvertedMission mission = new LiquidResourceConvertedMission(data.ResourceValue(), data.MissionName, data.GetMissionUnlockData(), data.AmountNeeded);
+                    missions.Add(mission);
+                }
+                else if (data.MissionType == MISSION_EVENT_TYPE.CHAIN_WAVES)
+                {
+                    ChainWavesMission mission = new ChainWavesMission(data.WaveNumber, data.MissionName, data.GetMissionUnlockData(), data.AmountNeeded);
+                    missions.Add(mission);
+                }
+                else if (data.MissionType == MISSION_EVENT_TYPE.SECTORS_COMPLETED)
+                {
+                    SectorsCompletedMission mission = new SectorsCompletedMission(data.MissionName, data.GetMissionUnlockData(), data.AmountNeeded);
+                    missions.Add(mission);
+                }
+                else if (data.MissionType == MISSION_EVENT_TYPE.FLIGHT_LENGTH)
+                {
+                    FlightLengthMission mission = new FlightLengthMission(data.FlightLength, data.MissionName, data.GetMissionUnlockData(), data.AmountNeeded);
                     missions.Add(mission);
                 }
             }

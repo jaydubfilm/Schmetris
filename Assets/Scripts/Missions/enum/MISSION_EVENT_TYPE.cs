@@ -8,6 +8,10 @@
         LEVEL_PROGRESS,
         CRAFT_PART,
         WHITE_BUMPER,
-        ASTEROID_COLLISION
+        ASTEROID_COLLISION,
+        LIQUID_RESOURCE,
+        CHAIN_WAVES,
+        SECTORS_COMPLETED,
+        FLIGHT_LENGTH
     }
 }

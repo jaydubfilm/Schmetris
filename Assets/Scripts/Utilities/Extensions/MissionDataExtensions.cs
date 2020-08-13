@@ -38,6 +38,18 @@ namespace StarSalvager.Utilities.Extensions
                     case "AsteroidCollisionMission":
                         missions.Add(new AsteroidCollisionMission(missionData.ResourceType, missionData.MissionName, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
                         break;
+                    case "ChainWavesMission":
+                        missions.Add(new ChainWavesMission(missionData.WaveNumber, missionData.MissionName, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        break;
+                    case "LiquidResourceConvertedMission":
+                        missions.Add(new LiquidResourceConvertedMission(missionData.ResourceType, missionData.MissionName, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        break;
+                    case "SectorsCompletedMission":
+                        missions.Add(new SectorsCompletedMission(missionData.MissionName, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        break;
+                    case "FlightLengthMission":
+                        missions.Add(new FlightLengthMission(missionData.FlightLength, missionData.MissionName, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        break;
                 }
             }
 

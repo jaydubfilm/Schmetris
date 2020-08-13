@@ -11,7 +11,7 @@ namespace StarSalvager.Missions
         public BIT_TYPE? m_comboType;
         public int m_comboLevel;
 
-        public ComboBlocksMission(BIT_TYPE? comboType, int comboLevel, string missionName, List<IMissionUnlockCheck> missionUnlockData, int amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
+        public ComboBlocksMission(BIT_TYPE? comboType, int comboLevel, string missionName, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
         {
             MissionEventType = MISSION_EVENT_TYPE.ENEMY_KILLED;
             m_comboType = comboType;

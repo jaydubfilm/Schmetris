@@ -9,7 +9,7 @@ namespace StarSalvager.Missions
     {
         public BIT_TYPE? m_resourceType;
 
-        public ResourceCollectedMission(BIT_TYPE? resourceType, string missionName, List<IMissionUnlockCheck> missionUnlockData, int amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
+        public ResourceCollectedMission(BIT_TYPE? resourceType, string missionName, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
         {
             MissionEventType = MISSION_EVENT_TYPE.RESOURCE_COLLECTED;
             m_resourceType = resourceType;

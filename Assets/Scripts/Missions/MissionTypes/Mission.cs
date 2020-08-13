@@ -9,14 +9,14 @@ namespace StarSalvager.Missions
     public abstract class Mission
     {
         public string m_missionName;
-        public int m_amountNeeded;
-        public int m_currentAmount;
+        public float m_amountNeeded;
+        public float m_currentAmount;
         public MISSION_EVENT_TYPE MissionEventType { get; protected set; }
         public MISSION_STATUS MissionStatus;
 
         public List<IMissionUnlockCheck> missionUnlockChecks;
 
-        public Mission(string missionName, int amountNeeded, List<IMissionUnlockCheck> missionUnlockData)
+        public Mission(string missionName, float amountNeeded, List<IMissionUnlockCheck> missionUnlockData)
         {
             m_currentAmount = 0;
             m_missionName = missionName;

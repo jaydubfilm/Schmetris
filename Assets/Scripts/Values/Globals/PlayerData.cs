@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
+using StarSalvager.Missions;
 
 namespace StarSalvager.Values
 {
@@ -111,6 +112,7 @@ namespace StarSalvager.Values
 
         public void AddLiquidResource(BIT_TYPE type, float amount)
         {
+            MissionManager.ProcessLiquidResourceConvertedMission(type, amount);
             liquidResource[type] += Mathf.Abs(amount);
             OnValuesChanged?.Invoke();
         }

@@ -1,21 +1,18 @@
-﻿using StarSalvager.AI;
-using StarSalvager.Utilities.Extensions;
+﻿using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
 
 namespace StarSalvager.Missions
 {
     [System.Serializable]
-    public class LevelProgressMission : Mission
+    public class FlightLengthMission : Mission
     {
-        public int m_sectorNumber;
-        public int m_waveNumber;
-
-        public LevelProgressMission(int sectorNumber, int waveNumber, string missionName, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded = 1.0f) : base(missionName, amountNeeded, missionUnlockData)
+        float m_flightLength;
+        
+        public FlightLengthMission(float flightLength, string missionName, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded = 1.0f) : base(missionName, amountNeeded, missionUnlockData)
         {
-            MissionEventType = MISSION_EVENT_TYPE.LEVEL_PROGRESS;
-            m_sectorNumber = sectorNumber;
-            m_waveNumber = waveNumber;
+            MissionEventType = MISSION_EVENT_TYPE.FLIGHT_LENGTH;
+            m_flightLength = flightLength;
         }
 
         public override bool MissionComplete()
@@ -23,9 +20,9 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(int sectorNumber, int waveNumber)
+        public void ProcessMissionData(float flightLength)
         {
-            if (sectorNumber == m_sectorNumber && waveNumber == m_waveNumber)
+            if (flightLength >= m_flightLength)
             {
                 m_currentAmount += 1;
             }
@@ -43,8 +40,7 @@ namespace StarSalvager.Missions
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
-                SectorNumber = m_sectorNumber,
-                WaveNumber = m_waveNumber
+                FlightLength = m_flightLength
             };
         }
     }

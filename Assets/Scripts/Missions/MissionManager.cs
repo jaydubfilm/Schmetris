@@ -108,6 +108,26 @@ namespace StarSalvager.Missions
             }
         }
 
+        public static void ProcessLiquidResourceConvertedMission(BIT_TYPE resourceType, float amount)
+        {
+            //Debug.Log("Resource mission event");
+            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
+            {
+                if (MissionsCurrentData.CurrentMissions[i] is LiquidResourceConvertedMission liquidResourceConvertedMission)
+                {
+                    liquidResourceConvertedMission.ProcessMissionData(resourceType, amount);
+                    if (liquidResourceConvertedMission.MissionComplete())
+                    {
+                        Debug.Log("Mission " + liquidResourceConvertedMission.m_missionName + " Complete!");
+                        liquidResourceConvertedMission.MissionStatus = MISSION_STATUS.COMPLETED;
+                        MissionsCurrentData.CompleteMission(liquidResourceConvertedMission);
+                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
+                        ProcessMissionComplete(liquidResourceConvertedMission.m_missionName);
+                    }
+                }
+            }
+        }
+
         public static void ProcessEnemyKilledMissionData(string enemyType, int amount)
         {
             //Debug.Log("Enemy killed mission event");
@@ -167,6 +187,26 @@ namespace StarSalvager.Missions
                 }
             }
             ProcessWaveComplete(sectorNumber, waveNumber);
+        }
+
+        public static void ProcessChainWavesMissionData(int waveNumber)
+        {
+            //Debug.Log("Chain Waves mission event");
+            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
+            {
+                if (MissionsCurrentData.CurrentMissions[i] is ChainWavesMission chainWavesMission)
+                {
+                    chainWavesMission.ProcessMissionData(waveNumber);
+                    if (chainWavesMission.MissionComplete())
+                    {
+                        Debug.Log("Mission " + chainWavesMission.m_missionName + " Complete!");
+                        chainWavesMission.MissionStatus = MISSION_STATUS.COMPLETED;
+                        MissionsCurrentData.CompleteMission(chainWavesMission);
+                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
+                        ProcessMissionComplete(chainWavesMission.m_missionName);
+                    }
+                }
+            }
         }
 
         public static void ProcessCraftPartMissionData(PART_TYPE partType, int level)

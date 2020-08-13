@@ -1,20 +1,17 @@
-﻿using StarSalvager.AI;
-using StarSalvager.Utilities.Extensions;
+﻿using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
 
 namespace StarSalvager.Missions
 {
     [System.Serializable]
-    public class LevelProgressMission : Mission
+    public class ChainWavesMission : Mission
     {
-        public int m_sectorNumber;
         public int m_waveNumber;
 
-        public LevelProgressMission(int sectorNumber, int waveNumber, string missionName, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded = 1.0f) : base(missionName, amountNeeded, missionUnlockData)
+        public ChainWavesMission(int waveNumber, string missionName, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded = 1.0f) : base(missionName, amountNeeded, missionUnlockData)
         {
-            MissionEventType = MISSION_EVENT_TYPE.LEVEL_PROGRESS;
-            m_sectorNumber = sectorNumber;
+            MissionEventType = MISSION_EVENT_TYPE.CHAIN_WAVES;
             m_waveNumber = waveNumber;
         }
 
@@ -23,9 +20,9 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(int sectorNumber, int waveNumber)
+        public void ProcessMissionData(int waveNumber)
         {
-            if (sectorNumber == m_sectorNumber && waveNumber == m_waveNumber)
+            if (waveNumber == m_waveNumber)
             {
                 m_currentAmount += 1;
             }
@@ -43,7 +40,6 @@ namespace StarSalvager.Missions
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
-                SectorNumber = m_sectorNumber,
                 WaveNumber = m_waveNumber
             };
         }

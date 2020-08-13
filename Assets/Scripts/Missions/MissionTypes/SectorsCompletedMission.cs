@@ -1,21 +1,15 @@
-﻿using StarSalvager.AI;
-using StarSalvager.Utilities.Extensions;
+﻿using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
 
 namespace StarSalvager.Missions
 {
     [System.Serializable]
-    public class WhiteBumperMission : Mission
+    public class SectorsCompletedMission : Mission
     {
-        public bool m_throughPart;
-        public PART_TYPE m_partType;
-
-        public WhiteBumperMission(bool throughPart, PART_TYPE partType, string missionName, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
+        public SectorsCompletedMission(string missionName, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
         {
-            MissionEventType = MISSION_EVENT_TYPE.WHITE_BUMPER;
-            m_throughPart = throughPart;
-            m_partType = partType;
+            MissionEventType = MISSION_EVENT_TYPE.SECTORS_COMPLETED;
         }
 
         public override bool MissionComplete()
@@ -23,12 +17,9 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(bool throughPart, PART_TYPE partType, int amount)
+        public void ProcessMissionData()
         {
-            if (!m_throughPart || throughPart && m_throughPart)
-            {
-                m_currentAmount += amount;
-            }
+            m_currentAmount += 1;
         }
 
         public override MissionData ToMissionData()
@@ -42,8 +33,6 @@ namespace StarSalvager.Missions
                 MissionEventType = this.MissionEventType,
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
-
-                ThroughPart = m_throughPart
             };
         }
     }
