@@ -96,7 +96,7 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        private BotPartsLogic BotPartsLogic
+        public BotPartsLogic BotPartsLogic
         {
             get
             {

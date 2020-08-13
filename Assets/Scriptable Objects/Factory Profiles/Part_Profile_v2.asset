@@ -22,41 +22,48 @@ MonoBehaviour:
     partType: 0
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: 6070201078244642328, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
-    - {fileID: 4565593397535849320, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
-    - {fileID: 4565593397535849320, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+    - {fileID: 491800448661723253, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: 6700648316499628030, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: 6013187290223171902, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
   - _name: Magnet
     partType: 1
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: -722243328840746462, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
-    - {fileID: -2853014223648572609, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
-    - {fileID: -2853014223648572609, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+    - {fileID: 525484151881941248, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: -7434554623417657901, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: -1329319854521277849, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
   - _name: Repair
     partType: 2
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: -300592225256860258, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
-    - {fileID: -7002509201591867061, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
-    - {fileID: -7002509201591867061, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+    - {fileID: 6624272187150114179, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: 8156598299399035081, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: 120804681969015607, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
   - _name: Armor
     partType: 3
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: 655678302706559697, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
-    - {fileID: -1670221941872761086, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
-    - {fileID: -1670221941872761086, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+    - {fileID: 8848418020064854482, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: -9099734453507852498, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: 3458832071975268247, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
   - _name: Gun
     partType: 4
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: -8584124092000404580, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
-    - {fileID: -6262562140061562835, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
-    - {fileID: -6262562140061562835, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+    - {fileID: 685931528199971733, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: 9054214022471508692, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: -5804119596372385166, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
   - _name: Shield
     partType: 6
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: 655678302706559697, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
-    - {fileID: -1670221941872761086, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
-    - {fileID: -1670221941872761086, guid: 9de04f4d7cbc65942bd6e7ecfcd4cd5a, type: 3}
+    - {fileID: -3599618884591661637, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: 3285890750107959661, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: -3159931506152929884, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+  - _name: Bomb
+    partType: 8
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: -3899642944988254190, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: -5750722746702080356, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: 5473821731970651972, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
