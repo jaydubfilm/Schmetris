@@ -6,14 +6,16 @@ using System.Collections.Generic;
 namespace StarSalvager.Missions
 {
     [System.Serializable]
-    public class ComboBlocksMission : Mission
+    public class CraftPartMission : Mission
     {
-        public BIT_TYPE m_comboType;
+        public PART_TYPE m_partType;
+        public int m_partLevel;
 
-        public ComboBlocksMission(BIT_TYPE comboType, string missionName, List<IMissionUnlockCheck> missionUnlockData, int amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
+        public CraftPartMission(PART_TYPE partType, int partLevel, string missionName, List<IMissionUnlockCheck> missionUnlockData, int amountNeeded = 1) : base(missionName, amountNeeded, missionUnlockData)
         {
-            MissionEventType = MISSION_EVENT_TYPE.ENEMY_KILLED;
-            m_comboType = comboType;
+            MissionEventType = MISSION_EVENT_TYPE.CRAFT_PART;
+            m_partType = partType;
+            m_partLevel = partLevel;
         }
 
         public override bool MissionComplete()
@@ -21,11 +23,11 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(BIT_TYPE comboType, int amount)
+        public void ProcessMissionData(PART_TYPE partType, int partLevel)
         {
-            if (comboType == m_comboType)
+            if (partType == m_partType && partLevel == m_partLevel)
             {
-                m_currentAmount += amount;
+                m_currentAmount += 1;
             }
         }
 
@@ -41,7 +43,8 @@ namespace StarSalvager.Missions
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
-                ResourceType = m_comboType
+                PartType = m_partType,
+                PartLevel = m_partLevel
             };
         }
     }

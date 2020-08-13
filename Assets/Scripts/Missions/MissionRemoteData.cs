@@ -23,9 +23,16 @@ namespace StarSalvager.Missions
         [SerializeField, FoldoutGroup("$MissionName"), HideIf("MissionType", MISSION_EVENT_TYPE.LEVEL_PROGRESS)]
         public int AmountNeeded;
 
-        private bool ShowResourceType => MissionType == MISSION_EVENT_TYPE.RESOURCE_COLLECTED || MissionType == MISSION_EVENT_TYPE.COMBO_BLOCKS;
+        private bool ShowResources => MissionType == MISSION_EVENT_TYPE.RESOURCE_COLLECTED || MissionType == MISSION_EVENT_TYPE.COMBO_BLOCKS;
+        [SerializeField, FoldoutGroup("$MissionName"), ShowIf("ShowResources")]
+        public bool AnyResourceType;
+
+        private bool ShowResourceType => !AnyResourceType && ShowResources;
         [SerializeField, FoldoutGroup("$MissionName"), ShowIf("ShowResourceType")]
         public BIT_TYPE ResourceType;
+
+        [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.COMBO_BLOCKS)]
+        public int ComboLevel;
 
         [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.ENEMY_KILLED)]
         public string EnemyType;
@@ -35,6 +42,23 @@ namespace StarSalvager.Missions
 
         [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.LEVEL_PROGRESS)]
         public int WaveNumber;
+
+        [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.CRAFT_PART)]
+        public PART_TYPE PartType;
+
+        [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.CRAFT_PART)]
+        public int PartLevel;
+
+        [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.WHITE_BUMPER)]
+        public bool ThroughPart;
+
+        public BIT_TYPE? ResourceValue()
+        {
+            if (AnyResourceType)
+                return null;
+
+            return ResourceType;
+        }
 
         public List<IMissionUnlockCheck> GetMissionUnlockData()
         {

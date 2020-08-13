@@ -1610,6 +1610,8 @@ namespace StarSalvager
             //Debug.Log($"Shifting {toShift.Count} objects");
             //Debug.Break();
 
+            MissionManager.ProcessWhiteBumperMissionData(toShift.Count, false);
+
             StartCoroutine(ShiftInDirectionCoroutine(toShift, 
                 direction,
                 TEST_MergeSpeed,
@@ -1656,7 +1658,7 @@ namespace StarSalvager
             if (data.comboData.points == 0)
                 return;
 
-            MissionManager.ProcessComboBlocksMissionData(data.toMove[0].Type, 1);
+            MissionManager.ProcessComboBlocksMissionData(data.toMove[0].Type, data.toMove[0].level + 1, 1);
             SimpleComboSolver(data.comboData, data.toMove);
         }
         private void CheckForCombosAround(Bit bit)
@@ -1675,7 +1677,7 @@ namespace StarSalvager
             //    AdvancedComboSolver(data.comboData, data.toMove);
             //}
             //else
-            MissionManager.ProcessComboBlocksMissionData(bit.Type, 1);
+            MissionManager.ProcessComboBlocksMissionData(bit.Type, bit.level + 1, 1);
             SimpleComboSolver(data.comboData, data.toMove);
         }
 

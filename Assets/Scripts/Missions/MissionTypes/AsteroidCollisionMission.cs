@@ -5,13 +5,13 @@ using System.Collections.Generic;
 namespace StarSalvager.Missions
 {
     [System.Serializable]
-    public class ResourceCollectedMission : Mission
+    public class AsteroidCollisionMission : Mission
     {
-        public BIT_TYPE m_resourceType;
+        public BIT_TYPE? m_resourceType;
 
-        public ResourceCollectedMission(BIT_TYPE resourceType, string missionName, List<IMissionUnlockCheck> missionUnlockData, int amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
+        public AsteroidCollisionMission(BIT_TYPE? resourceType, string missionName, List<IMissionUnlockCheck> missionUnlockData, int amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
         {
-            MissionEventType = MISSION_EVENT_TYPE.RESOURCE_COLLECTED;
+            MissionEventType = MISSION_EVENT_TYPE.ASTEROID_COLLISION;
             m_resourceType = resourceType;
         }
 
@@ -20,9 +20,9 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(BIT_TYPE resourceType, int amount)
+        public void ProcessMissionData(BIT_TYPE? resourceType, int amount)
         {
-            if (resourceType == m_resourceType)
+            if (m_resourceType == null || m_resourceType == resourceType)
             {
                 m_currentAmount += amount;
             }

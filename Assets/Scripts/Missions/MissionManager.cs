@@ -9,7 +9,7 @@ namespace StarSalvager.Missions
 {
     public static class MissionManager
     {
-        private static bool fromScriptable = false;
+        private static bool fromScriptable = true;
 
         private static readonly string REMOTEDATA_PATH = Application.dataPath + "/RemoteData/";
         private static readonly List<string> currentDataPaths = new List<string>
@@ -87,7 +87,7 @@ namespace StarSalvager.Missions
 
         }*/
 
-        //Next 4 functions receive information from outside the missionmanager when an event relevant to missions has occurred.
+        //Next functions receive information from outside the missionmanager when an event relevant to missions has occurred.
         public static void ProcessResourceCollectedMissionData(BIT_TYPE resourceType, int amount)
         {
             //Debug.Log("Resource mission event");
@@ -128,14 +128,14 @@ namespace StarSalvager.Missions
             }
         }
 
-        public static void ProcessComboBlocksMissionData(BIT_TYPE comboType, int amount)
+        public static void ProcessComboBlocksMissionData(BIT_TYPE comboType, int comboLevel, int amount)
         {
             //Debug.Log("Combo Blocks mission event");
             for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
             {
                 if (MissionsCurrentData.CurrentMissions[i] is ComboBlocksMission comboBlocksMission)
                 {
-                    comboBlocksMission.ProcessMissionData(comboType, amount);
+                    comboBlocksMission.ProcessMissionData(comboType, comboLevel, amount);
                     if (comboBlocksMission.MissionComplete())
                     {
                         Debug.Log("Mission " + comboBlocksMission.m_missionName + " Complete!");
@@ -150,13 +150,11 @@ namespace StarSalvager.Missions
 
         public static void ProcessLevelProgressMissionData(int sectorNumber, int waveNumber)
         {
-            Debug.Log("Level Progress mission event");
+            //Debug.Log("Level Progress mission event");
             for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
             {
-                Debug.Log("0");
                 if (MissionsCurrentData.CurrentMissions[i] is LevelProgressMission levelProgressMission)
                 {
-                    Debug.Log("1");
                     levelProgressMission.ProcessMissionData(sectorNumber, waveNumber);
                     if (levelProgressMission.MissionComplete())
                     {
@@ -169,6 +167,46 @@ namespace StarSalvager.Missions
                 }
             }
             ProcessWaveComplete(sectorNumber, waveNumber);
+        }
+
+        public static void ProcessCraftPartMissionData(PART_TYPE partType, int level)
+        {
+            //Debug.Log("Enemy killed mission event");
+            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
+            {
+                if (MissionsCurrentData.CurrentMissions[i] is CraftPartMission craftPartMission)
+                {
+                    craftPartMission.ProcessMissionData(partType, level);
+                    if (craftPartMission.MissionComplete())
+                    {
+                        Debug.Log("Mission " + craftPartMission.m_missionName + " Complete!");
+                        craftPartMission.MissionStatus = MISSION_STATUS.COMPLETED;
+                        MissionsCurrentData.CompleteMission(craftPartMission);
+                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
+                        ProcessMissionComplete(craftPartMission.m_missionName);
+                    }
+                }
+            }
+        }
+
+        public static void ProcessWhiteBumperMissionData(int bitsShifted, bool shiftedThroughCenter)
+        {
+            //Debug.Log("Enemy killed mission event");
+            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
+            {
+                if (MissionsCurrentData.CurrentMissions[i] is WhiteBumperMission whiteBumperMission)
+                {
+                    whiteBumperMission.ProcessMissionData(shiftedThroughCenter, PART_TYPE.CORE, bitsShifted);
+                    if (whiteBumperMission.MissionComplete())
+                    {
+                        Debug.Log("Mission " + whiteBumperMission.m_missionName + " Complete!");
+                        whiteBumperMission.MissionStatus = MISSION_STATUS.COMPLETED;
+                        MissionsCurrentData.CompleteMission(whiteBumperMission);
+                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
+                        ProcessMissionComplete(whiteBumperMission.m_missionName);
+                    }
+                }
+            }
         }
 
         public static void ProcessMissionComplete(string missionName)

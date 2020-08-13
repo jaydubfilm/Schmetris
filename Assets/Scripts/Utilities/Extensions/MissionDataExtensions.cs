@@ -27,7 +27,16 @@ namespace StarSalvager.Utilities.Extensions
                         missions.Add(new LevelProgressMission(missionData.SectorNumber, missionData.WaveNumber, missionData.MissionName, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
                         break;
                     case "ComboBlocksMission":
-                        missions.Add(new ComboBlocksMission(missionData.ResourceType, missionData.MissionName, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        missions.Add(new ComboBlocksMission(missionData.ResourceType, missionData.ComboLevel, missionData.MissionName, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        break;
+                    case "CraftPartMission":
+                        missions.Add(new CraftPartMission(missionData.PartType, missionData.PartLevel, missionData.MissionName, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        break;
+                    case "WhiteBumperMission":
+                        missions.Add(new WhiteBumperMission(missionData.ThroughPart, missionData.PartType, missionData.MissionName, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        break;
+                    case "AsteroidCollisionMission":
+                        missions.Add(new AsteroidCollisionMission(missionData.ResourceType, missionData.MissionName, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
                         break;
                 }
             }
