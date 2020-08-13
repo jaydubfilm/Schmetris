@@ -2703,9 +2703,12 @@ namespace StarSalvager
                     case EnemyAttachable _:
                         Recycler.Recycle<EnemyAttachable>(attachable.gameObject);
                         break;
-                    default:
-                        throw new Exception($"No solver to recycle object {attachable.gameObject.name}");
+                    case Component _:
+                        Recycler.Recycle<Component>(attachable.gameObject);
                         break;
+                    default:
+                        //throw new Exception($"No solver to recycle object {attachable.gameObject.name}");
+                        throw new ArgumentOutOfRangeException(nameof(attachable), attachable.gameObject.name, null);
                 }
             }
             
