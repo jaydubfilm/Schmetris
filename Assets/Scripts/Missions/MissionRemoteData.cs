@@ -23,7 +23,7 @@ namespace StarSalvager.Missions
         [SerializeField, FoldoutGroup("$MissionName"), HideIf("MissionType", MISSION_EVENT_TYPE.LEVEL_PROGRESS)]
         public int AmountNeeded;
 
-        private bool ShowResources => MissionType == MISSION_EVENT_TYPE.RESOURCE_COLLECTED || MissionType == MISSION_EVENT_TYPE.COMBO_BLOCKS;
+        private bool ShowResources => MissionType == MISSION_EVENT_TYPE.RESOURCE_COLLECTED || MissionType == MISSION_EVENT_TYPE.COMBO_BLOCKS || MissionType == MISSION_EVENT_TYPE.ASTEROID_COLLISION;
         [SerializeField, FoldoutGroup("$MissionName"), ShowIf("ShowResources")]
         public bool AnyResourceType;
 

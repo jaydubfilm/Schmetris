@@ -171,7 +171,7 @@ namespace StarSalvager.Missions
 
         public static void ProcessCraftPartMissionData(PART_TYPE partType, int level)
         {
-            //Debug.Log("Enemy killed mission event");
+            //Debug.Log("Craft part mission event");
             for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
             {
                 if (MissionsCurrentData.CurrentMissions[i] is CraftPartMission craftPartMission)
@@ -191,7 +191,7 @@ namespace StarSalvager.Missions
 
         public static void ProcessWhiteBumperMissionData(int bitsShifted, bool shiftedThroughCenter)
         {
-            //Debug.Log("Enemy killed mission event");
+            //Debug.Log("White Bumper mission event");
             for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
             {
                 if (MissionsCurrentData.CurrentMissions[i] is WhiteBumperMission whiteBumperMission)
@@ -204,6 +204,26 @@ namespace StarSalvager.Missions
                         MissionsCurrentData.CompleteMission(whiteBumperMission);
                         MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(whiteBumperMission.m_missionName);
+                    }
+                }
+            }
+        }
+
+        public static void ProcessAsteroidCollisionMissionData(BIT_TYPE? bitType, int amount)
+        {
+            Debug.Log("Asteroid collision mission event");
+            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
+            {
+                if (MissionsCurrentData.CurrentMissions[i] is AsteroidCollisionMission asteroidCollisionMission)
+                {
+                    asteroidCollisionMission.ProcessMissionData(bitType, amount);
+                    if (asteroidCollisionMission.MissionComplete())
+                    {
+                        Debug.Log("Mission " + asteroidCollisionMission.m_missionName + " Complete!");
+                        asteroidCollisionMission.MissionStatus = MISSION_STATUS.COMPLETED;
+                        MissionsCurrentData.CompleteMission(asteroidCollisionMission);
+                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
+                        ProcessMissionComplete(asteroidCollisionMission.m_missionName);
                     }
                 }
             }

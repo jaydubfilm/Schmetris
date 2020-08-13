@@ -17,8 +17,8 @@ MonoBehaviour:
     MissionName: Asteroid Mission 1
     MissionUnlockParameters: []
     AmountNeeded: 1
-    AnyResourceType: 0
-    ResourceType: 0
+    AnyResourceType: 1
+    ResourceType: 2
     ComboLevel: 0
     EnemyType: 
     SectorNumber: 0
@@ -83,11 +83,24 @@ MonoBehaviour:
     MissionUnlockParameters: []
     AmountNeeded: 2
     AnyResourceType: 0
-    ResourceType: 0
+    ResourceType: 4
     ComboLevel: 0
     EnemyType: 
     SectorNumber: 0
     WaveNumber: 0
     PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
+  - MissionType: 4
+    MissionName: Craft Mission 1
+    MissionUnlockParameters: []
+    AmountNeeded: 1
+    AnyResourceType: 0
+    ResourceType: 0
+    ComboLevel: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    PartType: 4
     PartLevel: 0
     ThroughPart: 0

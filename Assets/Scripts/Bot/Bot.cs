@@ -996,19 +996,20 @@ namespace StarSalvager
         {
             
             TryHitAt(attachable, 10000);
-            
+
             switch (attachable)
             {
-                /*case Bit bit:
-                    TryHitAt(attachable, bit.CurrentHealth);
+                case Bit bit:
+                    MissionManager.ProcessAsteroidCollisionMissionData(bit.Type, 1);
                     break;
                 case Component component:
-                    TryHitAt(attachable, component.CurrentHealth);
+                    MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
                     break;
-                case Part _:
-                    TryHitAt(attachable, 5f);
-                    break;*/
+                case Part part:
+                    MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
+                    break;
                 case EnemyAttachable enemyAttachable:
+                    MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
                     enemyAttachable.SetAttached(false);
                     return;
             }
