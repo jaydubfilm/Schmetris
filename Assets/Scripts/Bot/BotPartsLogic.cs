@@ -258,6 +258,16 @@ namespace StarSalvager
             {
                 magnetCount = magnetOverride;
             }
+            
+            PlayerPersistentData.PlayerData.ClearLiquidCapacity();
+            var capacities = new Dictionary<BIT_TYPE, int>
+            {
+                {BIT_TYPE.RED, 0},
+                {BIT_TYPE.BLUE, 0},
+                {BIT_TYPE.YELLOW, 0},
+                {BIT_TYPE.GREEN, 0},
+                {BIT_TYPE.GREY, 0},
+            };
 
             CheckIfShieldShouldRecycle();
             CheckIfFlashIconShouldRecycle();
@@ -278,9 +288,9 @@ namespace StarSalvager
                         
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.RED] += (int)value;
-                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.GREEN] += (int)value;
-                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.GREY] += (int)value;
+                            capacities[BIT_TYPE.RED] += (int) value;
+                            capacities[BIT_TYPE.GREEN] += (int) value;
+                            capacities[BIT_TYPE.GREY] += (int) value;
                         }
                         
                         if (magnetOverride > 0)
@@ -341,27 +351,27 @@ namespace StarSalvager
                     case PART_TYPE.STORE:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.RED] += (int)value;
-                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.GREEN] += (int)value;
-                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.GREY] += (int)value;
+                            capacities[BIT_TYPE.RED] += (int) value;
+                            capacities[BIT_TYPE.GREEN] += (int) value;
+                            capacities[BIT_TYPE.GREY] += (int) value;
                         }
                         break;
                     case PART_TYPE.STORE_RED:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.RED] += (int)value;
+                            capacities[BIT_TYPE.RED] += (int) value;
                         }
                         break;
                     case PART_TYPE.STORE_GREEN:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.GREEN] += (int)value;
+                            capacities[BIT_TYPE.GREEN] += (int) value;
                         }
                         break;
                     case PART_TYPE.STORE_GREY:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.GREY] += (int)value;
+                            capacities[BIT_TYPE.GREY] += (int) value;
                         }
                         break;
                     case PART_TYPE.BOMB:
@@ -376,6 +386,9 @@ namespace StarSalvager
                         break;
                 }
             }
+
+            //Force update capacities, once new values determined
+            PlayerPersistentData.PlayerData.SetCapacities(capacities);
         }
 
         //============================================================================================================//
@@ -622,7 +635,7 @@ namespace StarSalvager
                 }
 
                 UpdateUI(partRemoteData.burnType, resourceValue);
-                PlayerPersistentData.PlayerData.liquidResource[partRemoteData.burnType] = resourceValue;
+                PlayerPersistentData.PlayerData.SetLiquidResource(partRemoteData.burnType, resourceValue);
             }
         }
         
