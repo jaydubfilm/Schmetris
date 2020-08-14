@@ -8,6 +8,7 @@ namespace StarSalvager.Utilities.Saving
         public DateTime Date { get; set; }
 
         public string FilePath { get; set; }
+        public string MissionFilePath { get; set; }
 
 
         #region IEquatable

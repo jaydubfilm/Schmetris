@@ -52,40 +52,33 @@ namespace StarSalvager.Missions
 
         public static MissionsCurrentData MissionsCurrentData = new MissionsCurrentData();
 
-        private static int CurrentSaveFile = -1;
+        private static string CurrentSaveFile = string.Empty;
 
-        public static void SetCurrentSaveFile()
+        public static void SetCurrentSaveFile(string saveFile)
         {
-            int index = PlayerPersistentData.PlayerMetadata.GetSaveFileAtIndex(0);
-
-            if (CurrentSaveFile >= 0)
-            {
-                ExportMissionsCurrentRemoteData(MissionsCurrentData, CurrentSaveFile);
-            }
-            else if (index == CurrentSaveFile)
-            {
-                return;
-            }
-
-            CurrentSaveFile = index;
-            MissionsCurrentData = ImportMissionsCurrentRemoteData(index);
+            MissionsCurrentData = ImportMissionsCurrentRemoteData(saveFile);
             MissionsCurrentData.LoadMissionData();
             CheckUnlocks();
         }
 
-        public static void Init()
+        public static string GetNextAvailableSaveSlot()
         {
+            foreach (var path in currentDataPaths)
+            {
+                if (!Directory.Exists(path))
+                    System.IO.Directory.CreateDirectory(Application.dataPath + "/RemoteData/");
+
+                if (!File.Exists(path))
+                    return path;
+            }
+
+            return string.Empty;
         }
 
         public static void AddMissionCurrent(string missionName)
         {
             MissionsCurrentData.AddMission(MissionsMasterData.GetMasterMissions().Find(m => m.m_missionName == missionName));
         }
-
-        /*public static void ProcessMissionData<T>() where T : Mission
-        {
-
-        }*/
 
         //Next functions receive information from outside the missionmanager when an event relevant to missions has occurred.
         public static void ProcessResourceCollectedMissionData(BIT_TYPE resourceType, int amount)
@@ -296,7 +289,7 @@ namespace StarSalvager.Missions
             }
         }
 
-        public static string ExportMissionsCurrentRemoteData(MissionsCurrentData editorData, int saveSlot)
+        public static string ExportMissionsCurrentRemoteData(MissionsCurrentData editorData, string saveSlot)
         {
             editorData.SaveMissionData();
             
@@ -304,7 +297,7 @@ namespace StarSalvager.Missions
                 System.IO.Directory.CreateDirectory(REMOTEDATA_PATH);
             
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
-            System.IO.File.WriteAllText(currentDataPaths[saveSlot], export);
+            System.IO.File.WriteAllText(saveSlot, export);
 
             return export;
         }
@@ -323,22 +316,23 @@ namespace StarSalvager.Missions
             return export;
         }
 
-        public static MissionsCurrentData ImportMissionsCurrentRemoteData(int saveSlot)
+        public static MissionsCurrentData ImportMissionsCurrentRemoteData(string saveSlot)
         {
             if (!Directory.Exists(REMOTEDATA_PATH))
                 System.IO.Directory.CreateDirectory(REMOTEDATA_PATH);
 
-            if (!File.Exists(currentDataPaths[saveSlot]))
+            if (!File.Exists(saveSlot))
             {
                 MissionsCurrentData currentData = new MissionsCurrentData();
                 foreach (Mission mission in MissionsMasterData.GetMasterMissions())
                 {
                     currentData.m_notStartedMissionData.Add(mission.ToMissionData());
                 }
+                ExportMissionsCurrentRemoteData(currentData, saveSlot);
                 return currentData;
             }
 
-            var loaded = JsonConvert.DeserializeObject<MissionsCurrentData>(File.ReadAllText(currentDataPaths[saveSlot]));
+            var loaded = JsonConvert.DeserializeObject<MissionsCurrentData>(File.ReadAllText(saveSlot));
 
             return loaded;
         }
@@ -383,7 +377,7 @@ namespace StarSalvager.Missions
 
         public static void SaveMissionDatas()
         {
-            if (CurrentSaveFile >= 0)
+            if (CurrentSaveFile != string.Empty)
             {
                 ExportMissionsCurrentRemoteData(MissionsCurrentData, CurrentSaveFile);
                 ExportMissionsMasterRemoteData(MissionsMasterData);
