@@ -13,49 +13,41 @@ namespace StarSalvager.Values
         {
             Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile0.player",
             Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile1.player",
-            Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile2.player"
+            Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile2.player",
+            Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile3.player",
+            Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile4.player",
+            Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile5.player"
         };
 
         private static readonly string persistentMetadataPath =
             Application.dataPath + "/RemoteData/PlayerPersistentMetadata.player";
 
-        public static bool IsNewFile = false;
+        public static bool IsNewFile = true;
 
-        private static int CurrentSaveFile = -1;
-
-        public static void Init()
-        {
-
-        }
+        private static string CurrentSaveFile = string.Empty;
 
         public static PlayerData PlayerData = new PlayerData();
 
         public static PlayerMetadata PlayerMetadata = ImportPlayerPersistentMetadata();
 
-        public static void SetCurrentSaveFile(int saveFile)
+        public static void SetCurrentSaveFile(string saveFile)
         {
-            int index;
-            if (PlayerMetadata.saveFileLastAccessedOrder.Count <= saveFile)
+            PlayerData = ImportPlayerPersistentData(saveFile);
+            CurrentSaveFile = saveFile;
+        }
+
+        public static string GetNextAvailableSaveSlot()
+        {
+            foreach (var path in persistentDataPaths)
             {
-                index = PlayerMetadata.ActivateNextEmptySaveFile();
-            }
-            else 
-            {
-                PlayerMetadata.MoveSaveFileToFront(saveFile);
-                index = PlayerMetadata.GetSaveFileAtIndex(0);
+                if (!Directory.Exists(path))
+                    System.IO.Directory.CreateDirectory(Application.dataPath + "/RemoteData/");
+
+                if (!File.Exists(path))
+                    return path;
             }
 
-            if (CurrentSaveFile >= 0)
-            {
-                ExportPlayerPersistentData(PlayerData, CurrentSaveFile);
-            }
-            else if (index == CurrentSaveFile)
-            {
-                return;
-            }
-
-            CurrentSaveFile = index;
-            PlayerData = ImportPlayerPersistentData(index);
+            return string.Empty;
         }
 
         public static void ResetPlayerData()
@@ -70,10 +62,10 @@ namespace StarSalvager.Values
             IsNewFile = true;
         }
 
-        private static string ExportPlayerPersistentData(PlayerData editorData, int saveSlot)
+        public static string ExportPlayerPersistentData(PlayerData editorData, string saveSlot)
         {
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
-            System.IO.File.WriteAllText(persistentDataPaths[saveSlot], export);
+            System.IO.File.WriteAllText(saveSlot, export);
 
             return export;
         }
@@ -86,12 +78,12 @@ namespace StarSalvager.Values
             return export;
         }
 
-        private static PlayerData ImportPlayerPersistentData(int saveSlot)
+        public static PlayerData ImportPlayerPersistentData(string saveSlot)
         {
-            if (!Directory.Exists(persistentDataPaths[saveSlot]))
+            if (!Directory.Exists(saveSlot))
                 System.IO.Directory.CreateDirectory(Application.dataPath + "/RemoteData/");
 
-            if (!File.Exists(persistentDataPaths[saveSlot]))
+            if (!File.Exists(saveSlot))
             {
                 PlayerData data = new PlayerData();
                 for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
@@ -99,10 +91,11 @@ namespace StarSalvager.Values
                     data.AddSectorProgression(i, 0);
                 }
                 IsNewFile = true;
+                //ExportPlayerPersistentData(data, saveSlot);
                 return data;
             }
 
-            var loaded = JsonConvert.DeserializeObject<PlayerData>(File.ReadAllText(persistentDataPaths[saveSlot]));
+            var loaded = JsonConvert.DeserializeObject<PlayerData>(File.ReadAllText(saveSlot));
 
             IsNewFile = false;
 
@@ -121,6 +114,8 @@ namespace StarSalvager.Values
             }
 
             var loaded = JsonConvert.DeserializeObject<PlayerMetadata>(File.ReadAllText(persistentMetadataPath));
+
+            IsNewFile = loaded.SaveFiles.Count == 0;
             return loaded;
         }
 
@@ -131,7 +126,7 @@ namespace StarSalvager.Values
 
         public static void CustomOnApplicationQuit()
         {
-            if (CurrentSaveFile >= 0)
+            if (CurrentSaveFile != string.Empty)
                 ExportPlayerPersistentData(PlayerData, CurrentSaveFile);
 
             ExportPlayerPersistentMetadata(PlayerMetadata);

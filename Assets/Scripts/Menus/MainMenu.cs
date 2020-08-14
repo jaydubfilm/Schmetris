@@ -15,6 +15,8 @@ using StarSalvager.Missions;
 using CameraController = StarSalvager.Cameras.CameraController;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections;
+using StarSalvager.Utilities.Saving;
+using System.Linq;
 
 namespace StarSalvager.UI
 {
@@ -75,17 +77,17 @@ namespace StarSalvager.UI
         
         [SerializeField, Required, FoldoutGroup("Load Game Menu")]
         private GameObject loadGameWindow;
-        [SerializeField, Required, FoldoutGroup("Load Game Menu")]
+        /*[SerializeField, Required, FoldoutGroup("Load Game Menu")]
         private Button slot1Button;
         [SerializeField, Required, FoldoutGroup("Load Game Menu")]
         private Button slot2Button;
         [SerializeField, Required, FoldoutGroup("Load Game Menu")]
         private Button slot3Button;
         [SerializeField, Required, FoldoutGroup("Load Game Menu")]
-        private Button lgBackButton;
-        
+        private Button lgBackButton;*/
+
         //============================================================================================================//
-        
+
         [SerializeField, Required, FoldoutGroup("Options Menu")]
         private GameObject optionsWindow;
         [SerializeField, Required, FoldoutGroup("Options Menu")]
@@ -118,10 +120,6 @@ namespace StarSalvager.UI
 
             if (gameObject.scene == SceneManager.GetActiveScene())
                 Globals.ScaleCamera(m_cameraZoomScaler.value);
-
-
-            MissionManager.Init();
-            PlayerPersistentData.Init();
         }
 
         private void Update()
@@ -151,13 +149,22 @@ namespace StarSalvager.UI
 
             continueButton.onClick.AddListener(() =>
             {
-                PlayerPersistentData.SetCurrentSaveFile(0);
-                MissionManager.SetCurrentSaveFile();
-                FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
-                SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+                string playerPath = PlayerPersistentData.PlayerMetadata.GetPathMostRecentFile();
+                string missionPath = PlayerPersistentData.PlayerMetadata.GetPathMostRecentMissionFile();
+
+                if (playerPath != string.Empty && missionPath != string.Empty)
+                {
+                    print("LOADING FILE " + playerPath);
+
+                    PlayerPersistentData.PlayerMetadata.CurrentSaveFile = PlayerPersistentData.PlayerMetadata.SaveFiles.FirstOrDefault(s => s.FilePath == playerPath);
+                    PlayerPersistentData.SetCurrentSaveFile(playerPath);
+                    MissionManager.SetCurrentSaveFile(missionPath);
+                    FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
+                    SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+                }
             });
 
-            loadGameButton.onClick.AddListener(() => OpenMenu(MENU.LOAD));
+            loadGameButton.onClick.AddListener(() => loadGameWindow.SetActive(true));
             
             optionsButton.onClick.AddListener(() => OpenMenu(MENU.OPTION));
             
@@ -176,12 +183,35 @@ namespace StarSalvager.UI
             startGameButton.onClick.AddListener(() =>
             {
                 OpenMenu(MENU.MAIN);
-                PlayerPersistentData.SetCurrentSaveFile(PlayerPersistentData.PlayerMetadata.saveFileLastAccessedOrder.Count);
-                MissionManager.SetCurrentSaveFile();
-                PlayerPersistentData.ResetPlayerData();
-                MissionManager.ResetMissionData();
-                PlayerPersistentData.IsNewFile = false;
-                SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+
+                string playerPath = PlayerPersistentData.GetNextAvailableSaveSlot();
+                string missionPath = MissionManager.GetNextAvailableSaveSlot();
+
+                if (playerPath != string.Empty && missionPath != string.Empty)
+                {
+                    /*SaveFileData newSaveFile = new SaveFileData
+                    {
+                        Name = DateTime.Now.ToString(),
+                        Date = DateTime.Now,
+                        FilePath = playerPath,
+                        MissionFilePath = missionPath
+                    };
+                    print("CREATING FILE " + playerPath);
+
+                    PlayerPersistentData.PlayerMetadata.SaveFiles.Add(newSaveFile);
+                    PlayerPersistentData.PlayerMetadata.CurrentSaveFile = newSaveFile;*/
+
+                    PlayerPersistentData.SetCurrentSaveFile(playerPath);
+                    MissionManager.SetCurrentSaveFile(missionPath);
+                    PlayerPersistentData.ResetPlayerData();
+                    MissionManager.ResetMissionData();
+                    PlayerPersistentData.IsNewFile = false;
+                    SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+                }
+                else
+                {
+                    print("NO EMPTY SLOTS");
+                }
             });
             
             tutorialButton.onClick.AddListener(() => throw new NotImplementedException());
@@ -193,7 +223,7 @@ namespace StarSalvager.UI
             //--------------------------------------------------------------------------------------------------------//
 
             //FIXME This will likely need to be scalable
-            slot1Button.onClick.AddListener(() =>
+           /* slot1Button.onClick.AddListener(() =>
             {
                 OpenMenu(MENU.MAIN);
                 PlayerPersistentData.SetCurrentSaveFile(0);
@@ -222,7 +252,7 @@ namespace StarSalvager.UI
             });
             //slot3Button.interactable = false;
 
-            lgBackButton.onClick.AddListener(() => OpenMenu(MENU.MAIN));
+            lgBackButton.onClick.AddListener(() => OpenMenu(MENU.MAIN));*/
             
             //Options Buttons
             //--------------------------------------------------------------------------------------------------------//
@@ -244,7 +274,6 @@ namespace StarSalvager.UI
         {
             mainMenuWindow.SetActive(false);
             newGameWindow.SetActive(false);
-            loadGameWindow.SetActive(false);
             optionsWindow.SetActive(false);
             
             switch (menu)
@@ -254,9 +283,6 @@ namespace StarSalvager.UI
                     break;
                 case MENU.NEW:
                     newGameWindow.SetActive(true);
-                    break;
-                case MENU.LOAD:
-                    loadGameWindow.SetActive(true);
                     break;
                 case MENU.OPTION:
                     optionsWindow.SetActive(true);

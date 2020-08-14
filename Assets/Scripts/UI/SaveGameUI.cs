@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Sirenix.OdinInspector;
+using StarSalvager.Factories;
+using StarSalvager.Missions;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.SceneManagement;
+using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,37 +31,22 @@ namespace StarSalvager.UI.Scrapyard
         private Button CancelButton;
 
         private SaveFileData? _selectedSaveFileData;
-        
+
+        [SerializeField]
+        private bool IsLoadMode;
         //----------------------------------------------------------//
-        List<SaveFileData> TEMP_FILES = new List<SaveFileData>
-        {
-            new SaveFileData
-            {
-                Name = "Test Save 1",
-                Date = DateTime.Now,
-                FilePath = "Application.dataPath"
-            },
-            new SaveFileData
-            {
-                Name = "Test Save 2",
-                Date = DateTime.Now.AddDays(-1),
-                FilePath = "Application.dataPath"
-            },
-            new SaveFileData
-            {
-                Name = "Test Save 3",
-                Date = DateTime.Now.AddDays(-2),
-                FilePath = "Application.dataPath"
-            }
-        };
-        //----------------------------------------------------------//
+
+        private string path;
         
         //============================================================================================================//
         
         // Start is called before the first frame update
         private void Start()
         {
-            SaveButton.onClick.AddListener(SavePressed);
+            if (IsLoadMode)
+                SaveButton.onClick.AddListener(LoadPressed);
+            else
+                SaveButton.onClick.AddListener(SavePressed);
             CancelButton.onClick.AddListener(CancelPressed);
         }
 
@@ -64,7 +54,15 @@ namespace StarSalvager.UI.Scrapyard
         {
             _selectedSaveFileData = null;
             
-            nameInputField.text = DateTime.Now.ToString(DATETIME_FORMAT);
+            path = Application.dataPath + "/RemoteData/";
+
+            if (PlayerPersistentData.PlayerMetadata.CurrentSaveFile != null)
+            {
+                nameInputField.text = PlayerPersistentData.PlayerMetadata.CurrentSaveFile.Value.Name;
+                _selectedSaveFileData = PlayerPersistentData.PlayerMetadata.CurrentSaveFile;
+            }
+            else
+                nameInputField.text = DateTime.Now.ToString(DATETIME_FORMAT);
 
             UpdateScrollView();
         }
@@ -75,15 +73,11 @@ namespace StarSalvager.UI.Scrapyard
         
         private void UpdateScrollView()
         {
-            //TODO Get all the save files here
-
-            
-            foreach (var saveFile in TEMP_FILES)
+            foreach (var saveFile in PlayerPersistentData.PlayerMetadata.SaveFiles)
             {
                 var element = SaveGameContentScrollView.AddElement<SaveGameUIElement>(saveFile, $"{saveFile.Name}_UIElement");
                 element.Init(saveFile, SaveFilePressed, DeleteSaveFilePressed);
             }
-            
         }
         
         //============================================================================================================//
@@ -105,18 +99,62 @@ namespace StarSalvager.UI.Scrapyard
                         return;
                         
                     SaveGameContentScrollView.RemoveElement<SaveGameUIElement>(data);
+                    File.Delete(data.FilePath);
+                    File.Delete(data.MissionFilePath);
+                    PlayerPersistentData.PlayerMetadata.SaveFiles.Remove(data);
                     //TODO Delete the file here
 
                     UpdateScrollView();
                 });
         }
 
+        private void LoadPressed()
+        {
+            if (_selectedSaveFileData.HasValue)
+            {
+                PlayerPersistentData.SetCurrentSaveFile(_selectedSaveFileData.Value.FilePath);
+                MissionManager.SetCurrentSaveFile(_selectedSaveFileData.Value.MissionFilePath);
+
+                CancelPressed();
+
+                FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
+                SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+            }
+        }
+
         private void SavePressed()
         {
-
-            if (!_selectedSaveFileData.HasValue)
+            if (!_selectedSaveFileData.HasValue || _selectedSaveFileData.Value.Name != nameInputField.text)
             {
-                //TODO Write a new save file
+                string playerPath = PlayerPersistentData.GetNextAvailableSaveSlot();
+                string missionPath = MissionManager.GetNextAvailableSaveSlot();
+
+                if (playerPath != string.Empty && missionPath != string.Empty)
+                {
+                    SaveFileData newSaveFile = new SaveFileData
+                    {
+                        Name = nameInputField.text,
+                        Date = DateTime.Now,
+                        FilePath = playerPath,
+                        MissionFilePath = missionPath
+                    };
+                    print("CREATING FILE " + playerPath);
+
+                    PlayerPersistentData.PlayerMetadata.SaveFiles.Add(newSaveFile);
+                    PlayerPersistentData.PlayerMetadata.CurrentSaveFile = newSaveFile;
+
+                    PlayerPersistentData.ExportPlayerPersistentData(PlayerPersistentData.PlayerData, playerPath);
+                    MissionManager.ExportMissionsCurrentRemoteData(MissionManager.MissionsCurrentData, missionPath);
+
+                    PlayerPersistentData.SetCurrentSaveFile(playerPath);
+                    MissionManager.SetCurrentSaveFile(missionPath);
+
+                    _selectedSaveFileData = newSaveFile;
+                }
+                else
+                {
+                    print("NO EMPTY SLOTS");
+                }
 
                 UpdateScrollView();
             }
@@ -130,8 +168,27 @@ namespace StarSalvager.UI.Scrapyard
                             return;
                         
                         SaveGameContentScrollView.RemoveElement<SaveGameUIElement>(_selectedSaveFileData.Value);
-                        //TODO Delete the old file here
-                        //TODO Need to save new file here
+                        string playerPath = _selectedSaveFileData.Value.FilePath;
+                        string missionPath = _selectedSaveFileData.Value.MissionFilePath;
+
+                        PlayerPersistentData.PlayerMetadata.SaveFiles.Remove(_selectedSaveFileData.Value);
+
+                        SaveFileData newSaveFile = new SaveFileData
+                        {
+                            Name = nameInputField.text,
+                            Date = DateTime.Now,
+                            FilePath = playerPath,
+                            MissionFilePath = missionPath
+                        };
+                        print("OVERWRITING FILE " + playerPath);
+
+                        PlayerPersistentData.PlayerMetadata.SaveFiles.Add(newSaveFile);
+                        PlayerPersistentData.PlayerMetadata.CurrentSaveFile = newSaveFile;
+
+                        PlayerPersistentData.ExportPlayerPersistentData(PlayerPersistentData.PlayerData, playerPath);
+                        MissionManager.ExportMissionsCurrentRemoteData(MissionManager.MissionsCurrentData, missionPath);
+
+                        _selectedSaveFileData = newSaveFile;
 
                         UpdateScrollView();
                     });
@@ -141,7 +198,8 @@ namespace StarSalvager.UI.Scrapyard
 
         private void CancelPressed()
         {
-            //TODO Need to close the window here
+            _selectedSaveFileData = null;
+            gameObject.SetActive(false);
         }
         
         //============================================================================================================//

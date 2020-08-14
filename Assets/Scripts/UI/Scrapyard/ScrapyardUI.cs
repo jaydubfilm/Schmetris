@@ -46,7 +46,9 @@ namespace StarSalvager.UI.Scrapyard
         private Button missionsButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button menuButton;
-        
+        [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
+        private Button saveGameButton;
+
         //============================================================================================================//
         [SerializeField]
         private CameraController CameraController;
@@ -91,7 +93,11 @@ namespace StarSalvager.UI.Scrapyard
             {
                 SceneLoader.ActivateScene("MainMenuScene", "ScrapyardScene");
             });
-            
+            saveGameButton.onClick.AddListener(() =>
+            {
+                saveGameWindow.SetActive(true);
+            });
+
             //launchNavButton.interactable = true;
             //droneDesignButton.interactable = true;
             //craftingButton.interactable = false;

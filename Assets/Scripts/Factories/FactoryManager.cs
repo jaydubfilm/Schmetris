@@ -274,9 +274,15 @@ namespace StarSalvager.Factories
                 Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile0.player",
                 Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile1.player",
                 Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile2.player",
+                Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile3.player",
+                Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile4.player",
+                Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile5.player",
                 Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile0.mission",
                 Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile1.mission",
                 Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile2.mission",
+                Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile3.mission",
+                Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile4.mission",
+                Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile5.mission",
                 Application.dataPath + "/RemoteData/MissionsMasterData.mission"
             };
 
