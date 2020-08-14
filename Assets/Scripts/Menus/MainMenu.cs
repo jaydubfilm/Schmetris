@@ -124,7 +124,7 @@ namespace StarSalvager.UI
 
         private void Update()
         {
-            continueButton.interactable = !PlayerPersistentData.IsNewFile;
+            continueButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0;
         }
 
         //============================================================================================================//
@@ -205,7 +205,6 @@ namespace StarSalvager.UI
                     MissionManager.SetCurrentSaveFile(missionPath);
                     PlayerPersistentData.ResetPlayerData();
                     MissionManager.ResetMissionData();
-                    PlayerPersistentData.IsNewFile = false;
                     SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
                 }
                 else
