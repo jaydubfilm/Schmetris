@@ -135,14 +135,14 @@ namespace StarSalvager.UI.Scrapyard
             if (scrollViewsSetup)
                 RefreshScrollViews();
 
-            PlayerPersistentData.PlayerData.OnValuesChanged += UpdateResources;
+            PlayerData.OnValuesChanged += UpdateResources;
         }
 
         void OnDisable()
         {
             mDroneDesigner.ClearUndoRedoStacks();
             
-            PlayerPersistentData.PlayerData.OnValuesChanged -= UpdateResources;
+            PlayerData.OnValuesChanged -= UpdateResources;
         }
 
         #endregion //Unity Functions

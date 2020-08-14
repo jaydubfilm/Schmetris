@@ -304,59 +304,8 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 1500
-  - name: Container
-    partType: 5
-    canSell: 1
-    priority: 0
-    burnType: 0
-    levels:
-    - unlockLevel: 1
-      health: 50
-      dataTest:
-      - key: Capacity
-        value: 500
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 600
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 600
-    - unlockLevel: 3
-      health: 75
-      dataTest:
-      - key: Capacity
-        value: 100
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 600
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 600
-    - unlockLevel: 5
-      health: 100
-      dataTest:
-      - key: Capacity
-        value: 500
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 600
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 600
   - name: Shield
-    partType: 6
+    partType: 5
     canSell: 1
     priority: 0
     burnType: 1
@@ -425,7 +374,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 2500
   - name: Bomb
-    partType: 8
+    partType: 7
     canSell: 1
     priority: 50
     burnType: 4
@@ -465,7 +414,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 3500
   - name: Container
-    partType: 9
+    partType: 8
     canSell: 1
     priority: 50
     burnType: 0
@@ -516,7 +465,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 2700
   - name: Fuel Tank
-    partType: 10
+    partType: 9
     canSell: 1
     priority: 50
     burnType: 0
@@ -567,7 +516,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 400
   - name: Plasma Drum
-    partType: 11
+    partType: 10
     canSell: 1
     priority: 50
     burnType: 0
@@ -618,7 +567,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 1600
   - name: Magazine
-    partType: 12
+    partType: 11
     canSell: 1
     priority: 0
     burnType: 0
