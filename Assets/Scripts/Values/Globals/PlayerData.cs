@@ -3,6 +3,7 @@ using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -14,7 +15,11 @@ namespace StarSalvager.Values
     {
         [JsonIgnore]
         public Action OnValuesChanged;
-        
+        [JsonIgnore]
+        public Action OnCapacitiesChanged;
+
+        //============================================================================================================//
+
         //TODO: Add an add/subtract function for ResourceAmount
         [JsonIgnore]
         public Dictionary<BIT_TYPE, int> resources => _resources;
@@ -40,21 +45,25 @@ namespace StarSalvager.Values
             {COMPONENT_TYPE.GIZMO, 3},
             {COMPONENT_TYPE.THINGY, 3}
         };
-        
+
         [JsonIgnore]
-        public Dictionary<BIT_TYPE, float> liquidResource => _liquidResource;
+        public ReadOnlyDictionary<BIT_TYPE, float> liquidResource => new ReadOnlyDictionary<BIT_TYPE, float>(_liquidResource);
         [JsonProperty]
         //FIXME This needs to use some sort of capacity value
         private Dictionary<BIT_TYPE, float> _liquidResource = new Dictionary<BIT_TYPE, float>
         {
-            {BIT_TYPE.RED, 250},
+            {BIT_TYPE.RED, 50},
             {BIT_TYPE.BLUE, 0},
             {BIT_TYPE.YELLOW, 0},
             {BIT_TYPE.GREEN, 0},
             {BIT_TYPE.GREY, 0},
         };
 
-        public Dictionary<BIT_TYPE, int> liquidCapacity = new Dictionary<BIT_TYPE, int>
+        //FIXME I think that this should not be so persistent (Shouldn't need to be saved data)
+        [JsonIgnore]
+        public ReadOnlyDictionary<BIT_TYPE, int> liquidCapacity => new ReadOnlyDictionary<BIT_TYPE, int>(_liquidCapacity);
+        [JsonProperty]
+        private Dictionary<BIT_TYPE, int> _liquidCapacity = new Dictionary<BIT_TYPE, int>
         {
             {BIT_TYPE.RED, 0},
             {BIT_TYPE.BLUE, 0},
@@ -77,6 +86,48 @@ namespace StarSalvager.Values
         public void SetResources(Dictionary<BIT_TYPE, int> values)
         {
             _resources = values;
+        }
+
+        //============================================================================================================//
+
+        public void SetLiquidResource(BIT_TYPE type, float value)
+        {
+            _liquidResource[type] = value;
+        }
+
+        //============================================================================================================//
+
+
+        //public void ChangeCapacity(BIT_TYPE type, int amount)
+        //{
+        //    _liquidCapacity[type] += amount;
+        //    OnCapacitiesChanged?.Invoke();
+        //}
+        public void SetCapacity(BIT_TYPE type, int amount)
+        {
+            _liquidCapacity[type] = amount;
+            OnCapacitiesChanged?.Invoke();
+        }
+        public void SetCapacities(Dictionary<BIT_TYPE, int> capacities)
+        {
+            foreach (var capacity in capacities)
+            {
+                _liquidCapacity[capacity.Key] = capacity.Value;
+            }
+
+            OnCapacitiesChanged?.Invoke();
+        }
+
+        public void ClearLiquidCapacity()
+        {
+            _liquidCapacity = new Dictionary<BIT_TYPE, int>
+            {
+                {BIT_TYPE.RED, 0},
+                {BIT_TYPE.BLUE, 0},
+                {BIT_TYPE.YELLOW, 0},
+                {BIT_TYPE.GREEN, 0},
+                {BIT_TYPE.GREY, 0},
+            };
         }
 
         //============================================================================================================//
@@ -116,22 +167,22 @@ namespace StarSalvager.Values
             CostCalculations.SubtractPartCosts(ref _resources, ref _components, partsInStorageBlockData, partType, level, isRecursive, costModifier);
             OnValuesChanged?.Invoke();
         }
-        
+
         //============================================================================================================//
 
         public void AddLiquidResource(BIT_TYPE type, float amount)
         {
             MissionManager.ProcessLiquidResourceConvertedMission(type, amount);
-            liquidResource[type] += Mathf.Abs(amount);
+            _liquidResource[type] = Mathf.Clamp(liquidResource[type] + Mathf.Abs(amount), 0, liquidCapacity[type]);
             OnValuesChanged?.Invoke();
         }
-        
+
         public void SubtractLiquidResource(BIT_TYPE type, float amount)
         {
-            liquidResource[type] -= Mathf.Abs(amount);
+            _liquidResource[type] = Mathf.Clamp(liquidResource[type] - Mathf.Abs(amount), 0, liquidCapacity[type]);
             OnValuesChanged?.Invoke();
         }
-        
+
         //============================================================================================================//
 
 
@@ -208,7 +259,7 @@ namespace StarSalvager.Values
         }
 
         public void UnlockBlueprint(TEST_Blueprint blueprint)
-        {   
+        {
             if (!unlockedBlueprints.Any(b => b.name == blueprint.name))
             {
                 unlockedBlueprints.Add(blueprint);
