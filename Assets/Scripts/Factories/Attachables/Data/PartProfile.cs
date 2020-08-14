@@ -11,7 +11,11 @@ namespace StarSalvager.Factories.Data
     {
         public string Name
         {
+            #if UNITY_EDITOR
             get => GetName();
+            #else
+            get => string.Empty;
+            #endif
             set => throw new NotImplementedException();
         }
 

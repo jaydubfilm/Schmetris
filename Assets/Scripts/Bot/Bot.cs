@@ -909,39 +909,7 @@ namespace StarSalvager
                 return;
             
             TryHitAt(closestAttachable, damage);
-            
-            /*if (PROTO_GodMode && closestAttachable.Coordinate == Vector2Int.zero)
-                return;
 
-            
-            switch (closestAttachable)
-            {
-                case EnemyAttachable _:
-                    return;
-                //FIXME Need to see how to fix this
-                case IHealth closestHealth:
-                {
-                    //Check to see if the shields can absorb any of the damage
-                    damage = BotPartsLogic.TryHitShield(closestAttachable.Coordinate, damage);
-                
-                    closestHealth.ChangeHealth(-Mathf.Abs(damage));
-
-
-                    if (closestHealth.CurrentHealth > 0) 
-                        return;
-                
-                    if(closestAttachable.Coordinate == Vector2Int.zero)
-                        Destroy("Core Destroyed");
-                    break;
-                }
-            }
-            
-            if(closestAttachable is Part)
-                BotPartsLogic.UpdatePartsList();
-
-
-            RemoveAttachable(closestAttachable);
-            CheckForDisconnects();*/
         }
 
         public void TryHitAt(IAttachable closestAttachable, float damage)
@@ -974,7 +942,10 @@ namespace StarSalvager
                         Destroy("Core Destroyed");
 
                     RemoveAttachable(closestAttachable);
-                    CheckForDisconnects();
+                    
+                    //I dont want to disconnect parts if we destroyed the core
+                    if(closestAttachable.Coordinate != Vector2Int.zero)
+                        CheckForDisconnects();
                     
                     if(closestAttachable is Part)
                         BotPartsLogic.UpdatePartsList();
@@ -1007,10 +978,10 @@ namespace StarSalvager
                 case Bit bit:
                     MissionManager.ProcessAsteroidCollisionMissionData(bit.Type, 1);
                     break;
-                case Component component:
+                case Component _:
                     MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
                     break;
-                case Part part:
+                case Part _:
                     MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
                     break;
                 case EnemyAttachable enemyAttachable:
@@ -2655,6 +2626,23 @@ namespace StarSalvager
 
                 foreach (var attachable in toDestroy)
                 {
+                    /*switch (attachable)
+                    {
+                        case Bit _:
+                            Recycler.Recycle<Bit>(attachable.gameObject);
+                            break;
+                        case Component _:
+                            Recycler.Recycle<Component>(attachable.gameObject);
+                            break;
+                        case Part _:
+                            Recycler.Recycle<Part>(attachable.gameObject);
+                            break;
+                        case EnemyAttachable _:
+                            Recycler.Recycle<EnemyAttachable>(attachable.gameObject);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }*/
                     attachable.gameObject.SetActive(false);
                 }
 

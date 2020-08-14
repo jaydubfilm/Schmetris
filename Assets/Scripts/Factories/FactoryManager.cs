@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
 using StarSalvager.Values;
@@ -267,9 +268,13 @@ namespace StarSalvager.Factories
         
         public void ClearRemoteData()
         {
+            var directory = new DirectoryInfo(Application.dataPath + "/RemoteData/");
+            
+            
+            
             //FIXME This should be using persistent file names
-            var files = new[]
-            {
+            var files = new List<FileInfo>();
+            /*{
                 Application.dataPath + "/RemoteData/PlayerPersistentMetadata.player",
                 Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile0.player",
                 Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile1.player",
@@ -284,20 +289,30 @@ namespace StarSalvager.Factories
                 Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile4.mission",
                 Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile5.mission",
                 Application.dataPath + "/RemoteData/MissionsMasterData.mission"
-            };
+            };*/
+            
+            files.AddRange(directory.GetFiles("*.player"));
+            files.AddRange(directory.GetFiles("*.mission"));
+            files.AddRange(directory.GetFiles("*.player.meta"));
+            files.AddRange(directory.GetFiles("*.mission.meta"));
 
 
             foreach (var file in files)
             {
-                if (File.Exists(file))
+                if(file == null)
+                    continue;
+                
+                File.Delete(file.FullName);
+                
+                /*if (file != null)
                 {
-                    File.Delete(file);
-                    File.Delete(file + ".meta");
+                    
+                    //File.Delete(file + ".meta");
                 }
                 else
                 {
-                    Debug.LogError($"{file} does not exist");
-                }
+                    Debug.LogError($"{file.Name} does not exist");
+                }*/
             }
 
             if (Application.isPlaying)
