@@ -27,6 +27,30 @@ namespace StarSalvager.UI.Scrapyard
 
         private SaveFileData? _selectedSaveFileData;
         
+        //----------------------------------------------------------//
+        List<SaveFileData> TEMP_FILES = new List<SaveFileData>
+        {
+            new SaveFileData
+            {
+                Name = "Test Save 1",
+                Date = DateTime.Now,
+                FilePath = Application.dataPath
+            },
+            new SaveFileData
+            {
+                Name = "Test Save 2",
+                Date = DateTime.Now.AddDays(-1),
+                FilePath = Application.dataPath
+            },
+            new SaveFileData
+            {
+                Name = "Test Save 3",
+                Date = DateTime.Now.AddDays(-2),
+                FilePath = Application.dataPath
+            }
+        };
+        //----------------------------------------------------------//
+        
         //============================================================================================================//
         
         // Start is called before the first frame update
@@ -47,33 +71,13 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
+
+        
         private void UpdateScrollView()
         {
             //TODO Get all the save files here
-            //----------------------------------------------------------//
-            var TEMP_FILES = new List<SaveFileData>
-            {
-                new SaveFileData
-                {
-                    Name = "Test Save 1",
-                    Date = DateTime.Now,
-                    FilePath = Application.dataPath
-                },
-                new SaveFileData
-                {
-                    Name = "Test Save 2",
-                    Date = DateTime.Now.AddDays(-1),
-                    FilePath = Application.dataPath
-                },
-                new SaveFileData
-                {
-                    Name = "Test Save 3",
-                    Date = DateTime.Now.AddDays(-2),
-                    FilePath = Application.dataPath
-                }
-            };
-            //----------------------------------------------------------//
 
+            
             foreach (var saveFile in TEMP_FILES)
             {
                 var element = SaveGameContentScrollView.AddElement<SaveGameUIElement>(saveFile, $"{saveFile.Name}_UIElement");
