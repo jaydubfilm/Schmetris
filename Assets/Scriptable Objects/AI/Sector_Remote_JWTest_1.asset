@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: Sector_Remote_JWTest_1
   m_EditorClassIdentifier: 
   WaveRemoteData:
-  - {fileID: 11400000, guid: 8e4de1ca4c0e648a0ae40122c1878fab, type: 2}
   - {fileID: 11400000, guid: 4255a0570f9f34d4ea9400edcef101d0, type: 2}
   - {fileID: 11400000, guid: 0d84dcadb2583400cbb7c1d90d070776, type: 2}
