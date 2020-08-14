@@ -15,6 +15,7 @@ using GameUI = StarSalvager.UI.GameUI;
 
 namespace StarSalvager
 {
+    //FIXME This will need to be reorganized badly
     [RequireComponent(typeof(Bot))]
     public class BotPartsLogic : MonoBehaviour
     {
@@ -273,8 +274,25 @@ namespace StarSalvager
                 float value;
                 switch (part.Type)
                 {
-                    case PART_TYPE.MAGNET:
                     case PART_TYPE.CORE:
+                        
+                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        {
+                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.RED] += (int)value;
+                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.GREEN] += (int)value;
+                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.GREY] += (int)value;
+                        }
+                        
+                        if (magnetOverride > 0)
+                            break;
+                        
+                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
+                        {
+                            magnetCount += (int)value;
+                        }
+                        break;
+                    case PART_TYPE.MAGNET:
+                    
                         if (magnetOverride > 0)
                             break;
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
@@ -319,6 +337,32 @@ namespace StarSalvager
                             timer = 0f
                         });
                         
+                        break;
+                    case PART_TYPE.STORE:
+                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        {
+                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.RED] += (int)value;
+                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.GREEN] += (int)value;
+                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.GREY] += (int)value;
+                        }
+                        break;
+                    case PART_TYPE.STORE_RED:
+                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        {
+                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.RED] += (int)value;
+                        }
+                        break;
+                    case PART_TYPE.STORE_GREEN:
+                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        {
+                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.GREEN] += (int)value;
+                        }
+                        break;
+                    case PART_TYPE.STORE_GREY:
+                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        {
+                            PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.GREY] += (int)value;
+                        }
                         break;
                     case PART_TYPE.BOMB:
                         if(_bombTimers == null)
