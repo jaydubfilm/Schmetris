@@ -22,7 +22,7 @@ namespace StarSalvager.Values
         private static readonly string persistentMetadataPath =
             Application.dataPath + "/RemoteData/PlayerPersistentMetadata.player";
 
-        public static bool IsNewFile = false;
+        public static bool IsNewFile = true;
 
         private static string CurrentSaveFile = string.Empty;
 
@@ -91,7 +91,7 @@ namespace StarSalvager.Values
                     data.AddSectorProgression(i, 0);
                 }
                 IsNewFile = true;
-                ExportPlayerPersistentData(data, saveSlot);
+                //ExportPlayerPersistentData(data, saveSlot);
                 return data;
             }
 
@@ -114,6 +114,8 @@ namespace StarSalvager.Values
             }
 
             var loaded = JsonConvert.DeserializeObject<PlayerMetadata>(File.ReadAllText(persistentMetadataPath));
+
+            IsNewFile = loaded.SaveFiles.Count == 0;
             return loaded;
         }
 

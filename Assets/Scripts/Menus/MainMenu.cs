@@ -16,6 +16,7 @@ using CameraController = StarSalvager.Cameras.CameraController;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections;
 using StarSalvager.Utilities.Saving;
+using System.Linq;
 
 namespace StarSalvager.UI
 {
@@ -84,9 +85,9 @@ namespace StarSalvager.UI
         private Button slot3Button;
         [SerializeField, Required, FoldoutGroup("Load Game Menu")]
         private Button lgBackButton;*/
-        
+
         //============================================================================================================//
-        
+
         [SerializeField, Required, FoldoutGroup("Options Menu")]
         private GameObject optionsWindow;
         [SerializeField, Required, FoldoutGroup("Options Menu")]
@@ -155,6 +156,7 @@ namespace StarSalvager.UI
                 {
                     print("LOADING FILE " + playerPath);
 
+                    PlayerPersistentData.PlayerMetadata.CurrentSaveFile = PlayerPersistentData.PlayerMetadata.SaveFiles.FirstOrDefault(s => s.FilePath == playerPath);
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     MissionManager.SetCurrentSaveFile(missionPath);
                     FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
@@ -187,15 +189,18 @@ namespace StarSalvager.UI
 
                 if (playerPath != string.Empty && missionPath != string.Empty)
                 {
-                    PlayerPersistentData.PlayerMetadata.SaveFiles.Add(new SaveFileData
+                    /*SaveFileData newSaveFile = new SaveFileData
                     {
                         Name = DateTime.Now.ToString(),
                         Date = DateTime.Now,
                         FilePath = playerPath,
                         MissionFilePath = missionPath
-                    });
+                    };
                     print("CREATING FILE " + playerPath);
-                    
+
+                    PlayerPersistentData.PlayerMetadata.SaveFiles.Add(newSaveFile);
+                    PlayerPersistentData.PlayerMetadata.CurrentSaveFile = newSaveFile;*/
+
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     MissionManager.SetCurrentSaveFile(missionPath);
                     PlayerPersistentData.ResetPlayerData();

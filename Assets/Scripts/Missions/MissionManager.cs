@@ -16,7 +16,10 @@ namespace StarSalvager.Missions
         {
             REMOTEDATA_PATH + "MissionsCurrentDataSaveFile0.mission",
             REMOTEDATA_PATH + "MissionsCurrentDataSaveFile1.mission",
-            REMOTEDATA_PATH + "MissionsCurrentDataSaveFile2.mission"
+            REMOTEDATA_PATH + "MissionsCurrentDataSaveFile2.mission",
+            REMOTEDATA_PATH + "MissionsCurrentDataSaveFile3.mission",
+            REMOTEDATA_PATH + "MissionsCurrentDataSaveFile4.mission",
+            REMOTEDATA_PATH + "MissionsCurrentDataSaveFile5.mission"
         };
         private static readonly string masterDataPath = REMOTEDATA_PATH + "MissionsMasterData.mission";
 
@@ -328,7 +331,7 @@ namespace StarSalvager.Missions
                 {
                     currentData.m_notStartedMissionData.Add(mission.ToMissionData());
                 }
-                ExportMissionsCurrentRemoteData(currentData, saveSlot);
+                //ExportMissionsCurrentRemoteData(currentData, saveSlot);
                 return currentData;
             }
 

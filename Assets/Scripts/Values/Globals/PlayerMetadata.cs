@@ -15,6 +15,8 @@ namespace StarSalvager.Values
         //TODO Get all the save files here
         public List<SaveFileData> SaveFiles = new List<SaveFileData>();
 
+        public SaveFileData? CurrentSaveFile;
+
         public PlayerMetadata()
         {
             /*SaveFiles.Clear();
