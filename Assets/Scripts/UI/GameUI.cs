@@ -57,8 +57,10 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Slider powerSlider;
         
-        [SerializeField, Required, FoldoutGroup("BR Window")]
+        [SerializeField, Required, FoldoutGroup("BR Window"), Space(10f)]
         private Image bombImageIcon;
+        [SerializeField, Required, FoldoutGroup("BR Window")]
+        private Image bombNoResourceIcon;
         
         //Heat Vignette
         //============================================================================================================//
@@ -89,12 +91,12 @@ namespace StarSalvager.UI
         {
             SetupPlayerValues();
 
-            PlayerPersistentData.PlayerData.OnCapacitiesChanged += SetupPlayerValues;
+            PlayerData.OnCapacitiesChanged += SetupPlayerValues;
         }
 
         private void OnDisable()
         {
-            PlayerPersistentData.PlayerData.OnCapacitiesChanged -= SetupPlayerValues;
+            PlayerData.OnCapacitiesChanged -= SetupPlayerValues;
         }
 
         //============================================================================================================//
@@ -102,6 +104,8 @@ namespace StarSalvager.UI
         private void InitValues()
         {
             ShowBombIcon(false);
+            bombNoResourceIcon.gameObject.SetActive(false);
+            
             SetBombFill(1f);
             
             SetWaterValue(0f);
@@ -226,6 +230,20 @@ namespace StarSalvager.UI
         public void ShowBombIcon(bool state)
         {
             bombImageIcon.gameObject.SetActive(state);
+        }
+
+        public void SetHasBombResource(bool hasAmmo)
+        {
+            //Doesn't matter if the thing isn't showing
+            if (!bombImageIcon.gameObject.activeInHierarchy)
+                return;
+
+            //Prevent constantly setting the below values
+            if (bombNoResourceIcon.gameObject.activeInHierarchy == !hasAmmo)
+                return;
+            
+            bombImageIcon.color = hasAmmo ? Color.white : Color.gray;
+            bombNoResourceIcon.gameObject.SetActive(!hasAmmo);
         }
         
         public void SetBombFill(float fillValue)

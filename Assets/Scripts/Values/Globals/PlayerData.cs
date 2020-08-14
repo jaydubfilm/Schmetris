@@ -14,9 +14,9 @@ namespace StarSalvager.Values
     public class PlayerData
     {
         [JsonIgnore]
-        public Action OnValuesChanged;
+        public static Action OnValuesChanged;
         [JsonIgnore]
-        public Action OnCapacitiesChanged;
+        public static Action OnCapacitiesChanged;
 
         //============================================================================================================//
 

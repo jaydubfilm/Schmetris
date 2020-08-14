@@ -247,12 +247,12 @@ namespace StarSalvager.UI.Scrapyard
 
             if (!showWindow)
             {
-                PlayerPersistentData.PlayerData.OnValuesChanged -= UpdateCostUI;
+                PlayerData.OnValuesChanged -= UpdateCostUI;
                 lastBlueprint = null;
                 return;
             }
 
-            PlayerPersistentData.PlayerData.OnValuesChanged += UpdateCostUI;
+            PlayerData.OnValuesChanged += UpdateCostUI;
 
             lastBlueprint = blueprint;
 

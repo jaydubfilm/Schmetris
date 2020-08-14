@@ -284,7 +284,7 @@ namespace StarSalvager.Utilities
                         break;
                     }
                     
-                    PlayerPersistentData.PlayerData.OnValuesChanged?.Invoke();
+                    PlayerData.OnValuesChanged?.Invoke();
 
                     break;
                 case "liquid":
@@ -316,7 +316,7 @@ namespace StarSalvager.Utilities
                         break;
                     }
 
-                    PlayerPersistentData.PlayerData.OnValuesChanged?.Invoke();
+                    PlayerData.OnValuesChanged?.Invoke();
                     break;
                 case "component":
                     if (!int.TryParse(split[3], out var compAmount))
@@ -345,7 +345,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                         break;
                     }
-                    PlayerPersistentData.PlayerData.OnValuesChanged?.Invoke();
+                    PlayerData.OnValuesChanged?.Invoke();
                     break;
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);
@@ -650,7 +650,7 @@ namespace StarSalvager.Utilities
                     }
 
                     
-                    PlayerPersistentData.PlayerData.OnValuesChanged?.Invoke();
+                    PlayerData.OnValuesChanged?.Invoke();
 
                     break;
                 case "component":
@@ -683,7 +683,7 @@ namespace StarSalvager.Utilities
                     }
 
                     
-                    PlayerPersistentData.PlayerData.OnValuesChanged?.Invoke();
+                    PlayerData.OnValuesChanged?.Invoke();
 
                     break;
                 case "godmode":

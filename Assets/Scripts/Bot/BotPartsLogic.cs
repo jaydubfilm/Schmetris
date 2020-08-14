@@ -160,12 +160,12 @@ namespace StarSalvager
 
         private void OnEnable()
         {
-            PlayerPersistentData.PlayerData.OnValuesChanged += ForceUpdateResourceUI;
+            PlayerData.OnValuesChanged += ForceUpdateResourceUI;
         }
 
         private void OnDisable()
         {
-            PlayerPersistentData.PlayerData.OnValuesChanged -= ForceUpdateResourceUI;
+            PlayerData.OnValuesChanged -= ForceUpdateResourceUI;
         }
 
 
@@ -272,6 +272,7 @@ namespace StarSalvager
             CheckIfShieldShouldRecycle();
             CheckIfFlashIconShouldRecycle();
             CheckIfBombsShouldRecycle();
+            GameUI?.ShowBombIcon(false);
             
             
             magnetCount = 0;
@@ -623,6 +624,11 @@ namespace StarSalvager
                         if (!_bombTimers.TryGetValue(part, out float timer))
                             break;
 
+                        //FIXME I don't like that this is getting called so often
+                        var hasAmmo = PlayerPersistentData.PlayerData.liquidResource[partRemoteData.burnType] >= levelData.burnRate;
+                        GameUI.SetHasBombResource(hasAmmo);
+                        //GetAlertIcon(part).SetActive(!hasAmmo);
+
                         if (timer <= 0f)
                             break;
 
@@ -744,7 +750,7 @@ namespace StarSalvager
             foreach (var data in copy.Where(data => data.Key.IsRecycled))
             {
                 Recycler.Recycle<FlashSprite>(data.Value.gameObject);
-                _shields.Remove(data.Key);
+                _flashes.Remove(data.Key);
             }
         }
 
