@@ -34,19 +34,19 @@ namespace StarSalvager.UI.Scrapyard
             {
                 Name = "Test Save 1",
                 Date = DateTime.Now,
-                FilePath = Application.dataPath
+                FilePath = "Application.dataPath"
             },
             new SaveFileData
             {
                 Name = "Test Save 2",
                 Date = DateTime.Now.AddDays(-1),
-                FilePath = Application.dataPath
+                FilePath = "Application.dataPath"
             },
             new SaveFileData
             {
                 Name = "Test Save 3",
                 Date = DateTime.Now.AddDays(-2),
-                FilePath = Application.dataPath
+                FilePath = "Application.dataPath"
             }
         };
         //----------------------------------------------------------//
