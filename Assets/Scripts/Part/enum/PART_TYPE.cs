@@ -11,7 +11,12 @@
         CONTAINER,
         SHIELD,
         BOOST,
-        BOMB
+        BOMB,
+        
+        STORE,
+        STORE_RED,
+        STORE_GREEN,
+        STORE_GREY
     } 
 }
 

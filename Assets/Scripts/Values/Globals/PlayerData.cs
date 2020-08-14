@@ -54,6 +54,15 @@ namespace StarSalvager.Values
             {BIT_TYPE.GREY, 0},
         };
 
+        public Dictionary<BIT_TYPE, int> liquidCapacity = new Dictionary<BIT_TYPE, int>
+        {
+            {BIT_TYPE.RED, 0},
+            {BIT_TYPE.BLUE, 0},
+            {BIT_TYPE.YELLOW, 0},
+            {BIT_TYPE.GREEN, 0},
+            {BIT_TYPE.GREY, 0},
+        };
+
         public List<BlockData> currentBlockData = new List<BlockData>();
         public List<BlockData> partsInStorageBlockData = new List<BlockData>();
 

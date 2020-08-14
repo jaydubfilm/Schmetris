@@ -120,6 +120,11 @@ namespace StarSalvager.UI.Scrapyard
                         //TODO Add these back in when we're ready!
                         switch (partRemoteData.partType)
                         {
+                            //case PART_TYPE.STORE:
+                            case PART_TYPE.STORE_RED:
+                            case PART_TYPE.STORE_GREEN:
+                            case PART_TYPE.STORE_GREY:
+                                
                             case PART_TYPE.CORE:
                             case PART_TYPE.CONTAINER:
                             //case PART_TYPE.SHIELD:

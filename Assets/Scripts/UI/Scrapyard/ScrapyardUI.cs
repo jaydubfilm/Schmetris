@@ -21,6 +21,9 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required]
         private GameObject missionsWindow;
         
+        [SerializeField, Required]
+        private GameObject saveGameWindow;
+        
         //============================================================================================================//
 
         /*[SerializeField, Required, FoldoutGroup("View Drone Window")]

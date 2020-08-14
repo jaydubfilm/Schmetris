@@ -67,3 +67,10 @@ MonoBehaviour:
     - {fileID: -3899642944988254190, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
     - {fileID: -5750722746702080356, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
     - {fileID: 5473821731970651972, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+  - _name: Container
+    partType: 9
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: -4204270239042512948, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: 566165399204994689, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: 4413628395416232741, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
