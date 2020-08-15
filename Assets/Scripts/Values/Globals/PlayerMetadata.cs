@@ -1,80 +1,40 @@
-﻿using StarSalvager.Utilities.Saving;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 namespace StarSalvager.Values
 {
     public class PlayerMetadata
     {
-        private string path = Application.dataPath + "/RemoteData/";
-        private int maxSaveSlots = 6;
+        private int maxSaveSlots = 3;
+        
+        public List<int> saveFileLastAccessedOrder = new List<int>();
 
-        //TODO Get all the save files here
-        public List<SaveFileData> SaveFiles = new List<SaveFileData>();
-
-        public SaveFileData? CurrentSaveFile;
-
-        public PlayerMetadata()
+        public int ActivateNextEmptySaveFile()
         {
-            /*SaveFiles.Clear();
-            foreach (var fileName in Directory.GetFiles(path))
+            int index = saveFileLastAccessedOrder.Count;
+            if (index >= maxSaveSlots)
             {
-                if (fileName.Contains("PlayerPersistentDataSaveFile") && !fileName.Contains(".meta"))
-                {
-                    SaveFiles.Add(new SaveFileData
-                    {
-                        Name = fileName,
-                        Date = System.IO.File.GetLastWriteTime(fileName),
-                        FilePath = fileName,
-                        MissionFilePath = fileName.Replace("PlayerPersistentDataSaveFile", "MissionsCurrentDataSaveFile")
-                    });
-                }
-            }*/
+                index = maxSaveSlots - 1;
+            }
+            else
+            {
+                saveFileLastAccessedOrder.Add(index);
+            }
+            MoveSaveFileToFront(index);
+            return GetSaveFileAtIndex(0);
         }
 
-        public string GetPathMostRecentFile()
+        public void MoveSaveFileToFront(int index)
         {
-            string saveFileMostRecent = string.Empty;
-            DateTime dateTimeMostRecent = new DateTime(2000, 1, 1);
-            foreach (var saveFile in SaveFiles)
-            {
-                if (saveFileMostRecent == string.Empty)
-                {
-                    saveFileMostRecent = saveFile.FilePath;
-                    dateTimeMostRecent = saveFile.Date;
-                }
-                else if (DateTime.Compare(dateTimeMostRecent, saveFile.Date) < 0)
-                {
-                    saveFileMostRecent = saveFile.FilePath;
-                    dateTimeMostRecent = saveFile.Date;
-                }
-            }
-            
-            return saveFileMostRecent;
+            int value = saveFileLastAccessedOrder[index];
+            saveFileLastAccessedOrder.RemoveAt(index);
+            saveFileLastAccessedOrder.Insert(0, value);
         }
 
-        public string GetPathMostRecentMissionFile()
+        public int GetSaveFileAtIndex(int index)
         {
-            string missionFileMostRecent = string.Empty;
-            DateTime dateTimeMostRecent = new DateTime(2000, 1, 1);
-            foreach (var saveFile in SaveFiles)
-            {
-                if (missionFileMostRecent == string.Empty)
-                {
-                    missionFileMostRecent = saveFile.MissionFilePath;
-                    dateTimeMostRecent = saveFile.Date;
-                }
-                else if (DateTime.Compare(dateTimeMostRecent, saveFile.Date) < 0)
-                {
-                    missionFileMostRecent = saveFile.FilePath;
-                    dateTimeMostRecent = saveFile.Date;
-                }
-            }
-
-            return missionFileMostRecent;
+            return saveFileLastAccessedOrder[index];
         }
     }
 }

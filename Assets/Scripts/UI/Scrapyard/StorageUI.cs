@@ -81,12 +81,12 @@ namespace StarSalvager.UI.Scrapyard
             
             UpdateStorage();
 
-            PlayerData.OnValuesChanged += UpdateStorage;
+            PlayerPersistentData.PlayerData.OnValuesChanged += UpdateStorage;
         }
 
         private void OnDisable()
         {
-            PlayerData.OnValuesChanged -= UpdateStorage;   
+            PlayerPersistentData.PlayerData.OnValuesChanged -= UpdateStorage;   
         }
 
         //============================================================================================================//

@@ -29,12 +29,12 @@ namespace StarSalvager.UI
 
         private void OnEnable()
         {
-            PlayerData.OnValuesChanged += UpdateData;
+            PlayerPersistentData.PlayerData.OnValuesChanged += UpdateData;
         }
 
         private void OnDisable()
         {
-            PlayerData.OnValuesChanged -= UpdateData;
+            PlayerPersistentData.PlayerData.OnValuesChanged -= UpdateData;
         }
 
 

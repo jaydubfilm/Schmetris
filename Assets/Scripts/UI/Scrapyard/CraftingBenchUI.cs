@@ -120,9 +120,11 @@ namespace StarSalvager.UI.Scrapyard
                         //TODO Add these back in when we're ready!
                         switch (partRemoteData.partType)
                         {
-                            //Still want to be able to upgrade the core, just don't want to buy new ones?
-                            case PART_TYPE.CORE /*when i == 0*/:
+                            case PART_TYPE.CORE:
+                            case PART_TYPE.CONTAINER:
+                            //case PART_TYPE.SHIELD:
                             case PART_TYPE.BOOST:
+                            //case PART_TYPE.BOMB:
                                 continue;
                         }
 
@@ -247,12 +249,12 @@ namespace StarSalvager.UI.Scrapyard
 
             if (!showWindow)
             {
-                PlayerData.OnValuesChanged -= UpdateCostUI;
+                PlayerPersistentData.PlayerData.OnValuesChanged -= UpdateCostUI;
                 lastBlueprint = null;
                 return;
             }
 
-            PlayerData.OnValuesChanged += UpdateCostUI;
+            PlayerPersistentData.PlayerData.OnValuesChanged += UpdateCostUI;
 
             lastBlueprint = blueprint;
 

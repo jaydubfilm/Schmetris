@@ -15,7 +15,6 @@ using GameUI = StarSalvager.UI.GameUI;
 
 namespace StarSalvager
 {
-    //FIXME This will need to be reorganized badly
     [RequireComponent(typeof(Bot))]
     public class BotPartsLogic : MonoBehaviour
     {
@@ -160,12 +159,12 @@ namespace StarSalvager
 
         private void OnEnable()
         {
-            PlayerData.OnValuesChanged += ForceUpdateResourceUI;
+            PlayerPersistentData.PlayerData.OnValuesChanged += ForceUpdateResourceUI;
         }
 
         private void OnDisable()
         {
-            PlayerData.OnValuesChanged -= ForceUpdateResourceUI;
+            PlayerPersistentData.PlayerData.OnValuesChanged -= ForceUpdateResourceUI;
         }
 
 
@@ -258,21 +257,10 @@ namespace StarSalvager
             {
                 magnetCount = magnetOverride;
             }
-            
-            PlayerPersistentData.PlayerData.ClearLiquidCapacity();
-            var capacities = new Dictionary<BIT_TYPE, int>
-            {
-                {BIT_TYPE.RED, 0},
-                {BIT_TYPE.BLUE, 0},
-                {BIT_TYPE.YELLOW, 0},
-                {BIT_TYPE.GREEN, 0},
-                {BIT_TYPE.GREY, 0},
-            };
 
             CheckIfShieldShouldRecycle();
             CheckIfFlashIconShouldRecycle();
             CheckIfBombsShouldRecycle();
-            GameUI?.ShowBombIcon(false);
             
             
             magnetCount = 0;
@@ -285,25 +273,8 @@ namespace StarSalvager
                 float value;
                 switch (part.Type)
                 {
-                    case PART_TYPE.CORE:
-                        
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            capacities[BIT_TYPE.RED] += (int) value;
-                            capacities[BIT_TYPE.GREEN] += (int) value;
-                            capacities[BIT_TYPE.GREY] += (int) value;
-                        }
-                        
-                        if (magnetOverride > 0)
-                            break;
-                        
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
-                        {
-                            magnetCount += (int)value;
-                        }
-                        break;
                     case PART_TYPE.MAGNET:
-                    
+                    case PART_TYPE.CORE:
                         if (magnetOverride > 0)
                             break;
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
@@ -349,32 +320,6 @@ namespace StarSalvager
                         });
                         
                         break;
-                    case PART_TYPE.STORE:
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            capacities[BIT_TYPE.RED] += (int) value;
-                            capacities[BIT_TYPE.GREEN] += (int) value;
-                            capacities[BIT_TYPE.GREY] += (int) value;
-                        }
-                        break;
-                    case PART_TYPE.STORE_RED:
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            capacities[BIT_TYPE.RED] += (int) value;
-                        }
-                        break;
-                    case PART_TYPE.STORE_GREEN:
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            capacities[BIT_TYPE.GREEN] += (int) value;
-                        }
-                        break;
-                    case PART_TYPE.STORE_GREY:
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            capacities[BIT_TYPE.GREY] += (int) value;
-                        }
-                        break;
                     case PART_TYPE.BOMB:
                         if(_bombTimers == null)
                             _bombTimers = new Dictionary<Part, float>();
@@ -387,9 +332,6 @@ namespace StarSalvager
                         break;
                 }
             }
-
-            //Force update capacities, once new values determined
-            PlayerPersistentData.PlayerData.SetCapacities(capacities);
         }
 
         //============================================================================================================//
@@ -624,11 +566,6 @@ namespace StarSalvager
                         if (!_bombTimers.TryGetValue(part, out float timer))
                             break;
 
-                        //FIXME I don't like that this is getting called so often
-                        var hasAmmo = PlayerPersistentData.PlayerData.liquidResource[partRemoteData.burnType] >= levelData.burnRate;
-                        GameUI.SetHasBombResource(hasAmmo);
-                        //GetAlertIcon(part).SetActive(!hasAmmo);
-
                         if (timer <= 0f)
                             break;
 
@@ -641,7 +578,7 @@ namespace StarSalvager
                 }
 
                 UpdateUI(partRemoteData.burnType, resourceValue);
-                PlayerPersistentData.PlayerData.SetLiquidResource(partRemoteData.burnType, resourceValue);
+                PlayerPersistentData.PlayerData.liquidResource[partRemoteData.burnType] = resourceValue;
             }
         }
         
@@ -750,7 +687,7 @@ namespace StarSalvager
             foreach (var data in copy.Where(data => data.Key.IsRecycled))
             {
                 Recycler.Recycle<FlashSprite>(data.Value.gameObject);
-                _flashes.Remove(data.Key);
+                _shields.Remove(data.Key);
             }
         }
 

@@ -52,7 +52,9 @@ namespace StarSalvager.Utilities
                 case LogType.Log:
                     break;*/
                 case LogType.Exception:
+#if !UNITY_EDITOR
                     Alert.ShowAlert("Error Occured", $"<b>{condition}</b>\n{stackTrace}", "Okay", null);
+#endif
                     break;
             }
             /*if (type == LogType.Exception)

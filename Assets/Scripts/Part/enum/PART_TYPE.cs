@@ -8,6 +8,7 @@
         ARMOR,
         GUN,
         
+        CONTAINER,
         SHIELD,
         BOOST,
         BOMB

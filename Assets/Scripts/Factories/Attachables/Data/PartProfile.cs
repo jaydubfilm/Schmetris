@@ -2,7 +2,6 @@
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Animations;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace StarSalvager.Factories.Data
 {
@@ -11,10 +10,12 @@ namespace StarSalvager.Factories.Data
     {
         public string Name
         {
-            get => GetName();
-            set => throw new NotImplementedException();
+            get => _name;
+            set => _name = value;
         }
 
+        [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right")]
+        private string _name;
 
         public int Type => (int) partType;
         [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right")]
@@ -53,12 +54,6 @@ namespace StarSalvager.Factories.Data
                 
                 return _animation == null ? _sprites[0] : _animation.GetFrame(0);
             }
-        }
-
-        private string GetName()
-        {
-            var remoteData = Object.FindObjectOfType<FactoryManager>().PartsRemoteData.GetRemoteData(partType);
-            return remoteData is null ? "NO REMOTE DATA" : remoteData.name;
         }
         
         #endif

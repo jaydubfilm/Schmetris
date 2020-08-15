@@ -465,27 +465,17 @@ namespace StarSalvager
                     bool legalDirection;
                     var direction = DIRECTION.NULL;
 
+
                     //Get the coordinate of the collision
                     var bitCoordinate = GetRelativeCoordinate(bit.transform.position);
 
-                    //------------------------------------------------------------------------------------------------//
+                    //----------------------------------------------------------------------------------------------------//
 
                     var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
                     legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
 
-                    //------------------------------------------------------------------------------------------------//
-                    
-                    if (bit.Type == BIT_TYPE.BLACK)
-                    {
-                        //TODO Need to add animation/effects here 
-                        //Destroy both this and collided Bit
-                        //Recycler.Recycle<Bit>(attachable.gameObject);
-
-                        AsteroidDamageAt(closestAttachable);
-                        return true;
-                    }
-                    //------------------------------------------------------------------------------------------------//
+                    //----------------------------------------------------------------------------------------------------//
 
                     if (!legalDirection)
                     {
@@ -493,12 +483,17 @@ namespace StarSalvager
                         if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
                             return false;
                     }
-                    //------------------------------------------------------------------------------------------------//
-
 
                     //Check if its legal to attach (Within threshold of connection)
                     switch (bit.Type)
                     {
+                        case BIT_TYPE.BLACK:
+                            //TODO Need to add animation/effects here 
+                            //Destroy both this and collided Bit
+                            //Recycler.Recycle<Bit>(attachable.gameObject);
+
+                            AsteroidDamageAt(closestAttachable);
+                            break;
                         case BIT_TYPE.BLUE:
                         case BIT_TYPE.GREEN:
                         case BIT_TYPE.GREY:

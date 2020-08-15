@@ -355,83 +355,23 @@ namespace StarSalvager
         /// </summary>
         private void UpdatePartData()
         {
-            PlayerPersistentData.PlayerData.ClearLiquidCapacity();
             magnetCount = 0;
-            
-            var capacities = new Dictionary<BIT_TYPE, int>
-            {
-                {BIT_TYPE.RED, 0},
-                {BIT_TYPE.BLUE, 0},
-                {BIT_TYPE.YELLOW, 0},
-                {BIT_TYPE.GREEN, 0},
-                {BIT_TYPE.GREY, 0},
-            };
 
             foreach (var part in _parts)
             {
-                float value;
-
-                
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type).levels[part.level];
-                
-                switch (part.Type)
-                { 
-                    case PART_TYPE.CORE:
-                        
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            capacities[BIT_TYPE.RED] += (int) value;
-                            capacities[BIT_TYPE.GREEN] += (int) value;
-                            capacities[BIT_TYPE.GREY] += (int) value;
-                        }
-                        
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
-                        {
-                            magnetCount += (int)value;
-                        }
-                        break;
-                    case PART_TYPE.MAGNET: 
-                    
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
-                        {
-                            magnetCount += (int)value;
-                        }
-                        break;
-                    //Determine if we need to setup the shield elements for the bot
-                    //FIXME I'll need a way of disposing of the shield visual object
-                    case PART_TYPE.SHIELD:
-                        break;
-                    case PART_TYPE.STORE:
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            capacities[BIT_TYPE.RED] += (int) value;
-                            capacities[BIT_TYPE.GREEN] += (int) value;
-                            capacities[BIT_TYPE.GREY] += (int) value;
-                        }
-                        break;
-                    case PART_TYPE.STORE_RED:
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            capacities[BIT_TYPE.RED] += (int) value;
-                        }
-                        break;
-                    case PART_TYPE.STORE_GREEN:
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            capacities[BIT_TYPE.GREEN] += (int) value;
-                        }
-                        break;
-                    case PART_TYPE.STORE_GREY:
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            capacities[BIT_TYPE.GREY] += (int) value;
-                        }
-                        break;
-                }
-            }
 
-            //Force only updating once I know all capacities
-            PlayerPersistentData.PlayerData.SetCapacities(capacities);
+                
+                magnetCount += (int)partData.GetDataValue(DataTest.TEST_KEYS.Magnet);
+                
+                /*switch (part.Type)
+                {
+                    case PART_TYPE.MAGNET:
+                    case PART_TYPE.CORE:
+                        magnetCount += partData.data;
+                        break;
+                }*/
+            }
         }
 
         #endregion //Parts
