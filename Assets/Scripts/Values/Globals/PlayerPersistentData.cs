@@ -1,5 +1,8 @@
 ﻿using Newtonsoft.Json;
 using StarSalvager.Factories;
+using StarSalvager.Missions;
+using StarSalvager.Utilities.Saving;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -21,8 +24,6 @@ namespace StarSalvager.Values
 
         private static readonly string persistentMetadataPath =
             Application.dataPath + "/RemoteData/PlayerPersistentMetadata.player";
-
-        public static bool IsNewFile = true;
 
         private static string CurrentSaveFile = string.Empty;
 
@@ -58,8 +59,6 @@ namespace StarSalvager.Values
                 data.AddSectorProgression(i, 0);
             }
             PlayerData = data;
-
-            IsNewFile = true;
         }
 
         public static string ExportPlayerPersistentData(PlayerData editorData, string saveSlot)
@@ -90,14 +89,11 @@ namespace StarSalvager.Values
                 {
                     data.AddSectorProgression(i, 0);
                 }
-                IsNewFile = true;
                 //ExportPlayerPersistentData(data, saveSlot);
                 return data;
             }
 
             var loaded = JsonConvert.DeserializeObject<PlayerData>(File.ReadAllText(saveSlot));
-
-            IsNewFile = false;
 
             return loaded;
         }
@@ -115,7 +111,6 @@ namespace StarSalvager.Values
 
             var loaded = JsonConvert.DeserializeObject<PlayerMetadata>(File.ReadAllText(persistentMetadataPath));
 
-            IsNewFile = loaded.SaveFiles.Count == 0;
             return loaded;
         }
 
@@ -128,6 +123,19 @@ namespace StarSalvager.Values
         {
             if (CurrentSaveFile != string.Empty)
                 ExportPlayerPersistentData(PlayerData, CurrentSaveFile);
+
+            if (PlayerMetadata.CurrentSaveFile == null)
+            {
+                SaveFileData newSaveFile = new SaveFileData
+                {
+                    Name = DateTime.Now.ToString(),
+                    Date = DateTime.Now,
+                    FilePath = CurrentSaveFile,
+                    MissionFilePath = CurrentSaveFile.Replace("PlayerPersistentData", "MissionsCurrentData")
+                };
+
+                PlayerMetadata.SaveFiles.Add(newSaveFile);
+            }
 
             ExportPlayerPersistentMetadata(PlayerMetadata);
         }
