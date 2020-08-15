@@ -57,8 +57,10 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Slider powerSlider;
         
-        [SerializeField, Required, FoldoutGroup("BR Window")]
+        [SerializeField, Required, FoldoutGroup("BR Window"), Space(10f)]
         private Image bombImageIcon;
+        [SerializeField, Required, FoldoutGroup("BR Window")]
+        private Image bombNoResourceIcon;
         
         //Heat Vignette
         //============================================================================================================//
@@ -88,6 +90,13 @@ namespace StarSalvager.UI
         private void OnEnable()
         {
             SetupPlayerValues();
+
+            PlayerData.OnCapacitiesChanged += SetupPlayerValues;
+        }
+
+        private void OnDisable()
+        {
+            PlayerData.OnCapacitiesChanged -= SetupPlayerValues;
         }
 
         //============================================================================================================//
@@ -95,6 +104,8 @@ namespace StarSalvager.UI
         private void InitValues()
         {
             ShowBombIcon(false);
+            bombNoResourceIcon.gameObject.SetActive(false);
+            
             SetBombFill(1f);
             
             SetWaterValue(0f);
@@ -117,8 +128,6 @@ namespace StarSalvager.UI
             repairSlider.Init();
             ammoSlider.Init();
 
-            //FIXME This should be set using a capacity value instead of hard set here
-            SetResourceSliderBounds(0, 250);
         }
         
         //============================================================================================================//
@@ -129,6 +138,10 @@ namespace StarSalvager.UI
 
             if (playerData == null)
                 return;
+
+            SetResourceSliderBounds(BIT_TYPE.RED, 0, playerData.liquidCapacity[BIT_TYPE.RED]);
+            SetResourceSliderBounds(BIT_TYPE.GREEN, 0, playerData.liquidCapacity[BIT_TYPE.GREEN]);
+            SetResourceSliderBounds(BIT_TYPE.GREY, 0, playerData.liquidCapacity[BIT_TYPE.GREY]);
             
             SetFuelValue(playerData.liquidResource[BIT_TYPE.RED]);
             SetRepairValue(playerData.liquidResource[BIT_TYPE.GREEN]);
@@ -154,11 +167,29 @@ namespace StarSalvager.UI
         
         //============================================================================================================//
         
-        public void SetResourceSliderBounds(int min, int max)
+        public void SetAllResourceSliderBounds(int min, int max)
         {
             fuelSlider.SetBounds(min, max);
             repairSlider.SetBounds(min, max);
             ammoSlider.SetBounds(min, max);
+        }
+
+        public void SetResourceSliderBounds(BIT_TYPE type, int min, int max)
+        {
+            switch (type)
+            {
+                case BIT_TYPE.GREEN:
+                    repairSlider.SetBounds(min, max);
+                    break;
+                case BIT_TYPE.GREY:
+                    ammoSlider.SetBounds(min, max);
+                    break;
+                case BIT_TYPE.RED:
+                    fuelSlider.SetBounds(min, max);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
         }
 
         public void SetFuelValue(float value)
@@ -199,6 +230,20 @@ namespace StarSalvager.UI
         public void ShowBombIcon(bool state)
         {
             bombImageIcon.gameObject.SetActive(state);
+        }
+
+        public void SetHasBombResource(bool hasAmmo)
+        {
+            //Doesn't matter if the thing isn't showing
+            if (!bombImageIcon.gameObject.activeInHierarchy)
+                return;
+
+            //Prevent constantly setting the below values
+            if (bombNoResourceIcon.gameObject.activeInHierarchy == !hasAmmo)
+                return;
+            
+            bombImageIcon.color = hasAmmo ? Color.white : Color.gray;
+            bombNoResourceIcon.gameObject.SetActive(!hasAmmo);
         }
         
         public void SetBombFill(float fillValue)

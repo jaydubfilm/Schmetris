@@ -20,6 +20,19 @@ namespace StarSalvager.Factories
 
         [SerializeField, Required, BoxGroup("Temporary")]
         private List<SectorModularData> m_sectorRemoteData;
+        
+        public EditorBotShapeGeneratorData EditorBotShapeData
+        {
+            get
+            {
+                if (editorBotShapeData == null)
+                    editorBotShapeData = ImportBotShapeRemoteData();
+
+                return editorBotShapeData;
+            }
+        }
+        
+        private EditorBotShapeGeneratorData editorBotShapeData;
 
         public List<SectorRemoteDataScriptableObject> SectorRemoteData => m_sectorRemoteData[currentModularDataIndex].SectorData;
 
@@ -36,23 +49,19 @@ namespace StarSalvager.Factories
         [SerializeField, Required, BoxGroup("Attachables/Bits")]
         private BitRemoteDataScriptableObject bitRemoteData;
         
+        //============================================================================================================//
+        
         [SerializeField, Required, BoxGroup("Attachables/Components")]
         private AttachableProfileScriptableObject componentProfile;
         
         [SerializeField, Required, BoxGroup("Attachables/Components")]
         private ComponentRemoteDataScriptableObject componentRemoteData;
 
-        public EditorBotShapeGeneratorData EditorBotShapeData
-        {
-            get
-            {
-                if (editorBotShapeData == null)
-                    editorBotShapeData = ImportBotShapeRemoteData();
 
-                return editorBotShapeData;
-            }
-        }
-        private EditorBotShapeGeneratorData editorBotShapeData;
+        
+        //============================================================================================================//
+
+        public RemotePartProfileScriptableObject PartsRemoteData => partRemoteData;
 
         [SerializeField, Required, BoxGroup("Attachables/Parts")] 
         private AttachableProfileScriptableObject partProfile;
@@ -62,6 +71,8 @@ namespace StarSalvager.Factories
 
         [SerializeField, Required, BoxGroup("Attachables")] 
         private GameObject shapePrefab;
+        
+        //============================================================================================================//
 
         [SerializeField, Required, BoxGroup("Enemies")]
         private EnemyProfileScriptableObject enemyProfile;
@@ -74,6 +85,8 @@ namespace StarSalvager.Factories
         private ProjectileProfileScriptableObject projectileProfile;
         public ProjectileProfileScriptableObject ProjectileProfile => projectileProfile;
         
+        //============================================================================================================//
+        
         [SerializeField, Required, BoxGroup("Bot")]
         private GameObject botPrefab;
         [SerializeField, Required, BoxGroup("Bot")]
@@ -84,6 +97,8 @@ namespace StarSalvager.Factories
         private GameObject scrapyardBotPrefab;
         [SerializeField, Required, BoxGroup("Puzzle Combos")]
         private ComboRemoteDataScriptableObject comboRemoteData;
+        
+        //============================================================================================================//
         
         [SerializeField, Required, BoxGroup("Damage")]
         private GameObject damageFactory;
@@ -259,9 +274,15 @@ namespace StarSalvager.Factories
                 Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile0.player",
                 Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile1.player",
                 Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile2.player",
+                Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile3.player",
+                Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile4.player",
+                Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile5.player",
                 Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile0.mission",
                 Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile1.mission",
                 Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile2.mission",
+                Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile3.mission",
+                Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile4.mission",
+                Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile5.mission",
                 Application.dataPath + "/RemoteData/MissionsMasterData.mission"
             };
 

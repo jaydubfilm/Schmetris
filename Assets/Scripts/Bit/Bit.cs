@@ -19,22 +19,17 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
 
-        public bool Rotating => rotating;
-        private bool rotating = false;
+        public bool Rotating => _rotating;
+        private bool _rotating;
 
-        public int RotateDirection => rotateDirection;
-        private int rotateDirection = 1;
+        public int RotateDirection => _rotateDirection;
+        private int _rotateDirection = 1;
 
         public bool CountAsConnected => true;
         public bool CanDisconnect => true;
 
         [ShowInInspector, ReadOnly]
         public bool CanShift => true;
-
-        private void Start()
-        {
-            rotateDirection = Random.Range(0, 2) * 2 - 1;
-        }
 
         //IHealth Properties
         //============================================================================================================//
@@ -73,7 +68,11 @@ namespace StarSalvager
 
         public void SetRotating(bool isRotating)
         {
-            rotating = isRotating;
+            _rotating = isRotating;
+            
+            //Only need to set the rotation value when setting rotation to true
+            if(_rotating)
+                _rotateDirection = Random.Range(-1, 2);
         }
 
         //IHealth Functions
@@ -171,6 +170,12 @@ namespace StarSalvager
                 return;
             }
 
+            if (Type == BIT_TYPE.BLACK)
+            {
+                bot.TryAddNewAttachable(this, DIRECTION.UP, hitPoint);
+                return;
+            }
+
             var dir = (hitPoint - (Vector2)transform.position).ToVector2Int();
 
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
@@ -234,6 +239,7 @@ namespace StarSalvager
         {
             SetAttached(false);
             transform.rotation = Quaternion.identity;
+            SetRotating(false);
 
             if (_damage)
             {

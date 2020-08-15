@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using StarSalvager.AI;
 using StarSalvager.Cameras.Data;
@@ -283,7 +284,7 @@ namespace StarSalvager.Utilities
                         break;
                     }
                     
-                    PlayerPersistentData.PlayerData.OnValuesChanged?.Invoke();
+                    PlayerData.OnValuesChanged?.Invoke();
 
                     break;
                 case "liquid":
@@ -295,13 +296,13 @@ namespace StarSalvager.Utilities
                     
                     if (split[2].ToLower().Equals("all"))
                     {
-                        foreach (BIT_TYPE value in Enum.GetValues(typeof(BIT_TYPE)))
+                        foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
                         {
-                            if (!PlayerPersistentData.PlayerData.resources.ContainsKey(value))
+                            if (!PlayerPersistentData.PlayerData.resources.ContainsKey(_bitType))
                                 continue;
                                 
                             //I dont want to use AddLiquidResource() here because it would call the OnValuesChanged callback too much
-                            PlayerPersistentData.PlayerData.liquidResource[value] += floatAmount;
+                            PlayerPersistentData.PlayerData.AddLiquidResource(_bitType, floatAmount);
                         }
                         
                     }
@@ -315,7 +316,7 @@ namespace StarSalvager.Utilities
                         break;
                     }
 
-                    PlayerPersistentData.PlayerData.OnValuesChanged?.Invoke();
+                    PlayerData.OnValuesChanged?.Invoke();
                     break;
                 case "component":
                     if (!int.TryParse(split[3], out var compAmount))
@@ -344,7 +345,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                         break;
                     }
-                    PlayerPersistentData.PlayerData.OnValuesChanged?.Invoke();
+                    PlayerData.OnValuesChanged?.Invoke();
                     break;
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);
@@ -649,7 +650,7 @@ namespace StarSalvager.Utilities
                     }
 
                     
-                    PlayerPersistentData.PlayerData.OnValuesChanged?.Invoke();
+                    PlayerData.OnValuesChanged?.Invoke();
 
                     break;
                 case "component":
@@ -682,7 +683,7 @@ namespace StarSalvager.Utilities
                     }
 
                     
-                    PlayerPersistentData.PlayerData.OnValuesChanged?.Invoke();
+                    PlayerData.OnValuesChanged?.Invoke();
 
                     break;
                 case "godmode":
@@ -712,12 +713,13 @@ namespace StarSalvager.Utilities
                     
                     if (split[2].ToLower().Equals("all"))
                     {
-                        foreach (BIT_TYPE value in Enum.GetValues(typeof(BIT_TYPE)))
+                        foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
                         {
-                            if (!PlayerPersistentData.PlayerData.liquidResource.ContainsKey(value))
+                            if (!PlayerPersistentData.PlayerData.liquidResource.ContainsKey(_bitType))
                                 continue;
                                 
-                            PlayerPersistentData.PlayerData.liquidResource[value] = floatAmount;
+                            //PlayerPersistentData.PlayerData.liquidResource[value] = floatAmount;
+                            PlayerPersistentData.PlayerData.AddLiquidResource(_bitType, floatAmount);
                         }
                         
                     }
@@ -726,15 +728,13 @@ namespace StarSalvager.Utilities
                         if (!PlayerPersistentData.PlayerData.liquidResource.ContainsKey(bitType))
                             break;
                         
-                        PlayerPersistentData.PlayerData.liquidResource[bitType] = floatAmount;
+                        //PlayerPersistentData.PlayerData.liquidResource[bitType] = floatAmount;
+                        PlayerPersistentData.PlayerData.AddLiquidResource(bitType, floatAmount);
                     }
                     else
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                     }
-                    
-                    PlayerPersistentData.PlayerData.OnValuesChanged?.Invoke();
-
                     break;
                 case "orientation":
                     switch (split[2].ToLower())
@@ -923,6 +923,10 @@ namespace StarSalvager.Utilities
         //============================================================================================================//
 
         private static string GetDictionaryAsString<U, T>(Dictionary<U, T> dictionary)
+        {
+            return dictionary.Aggregate("", (current, o) => current + $"[{o.Key}] => {o.Value}\n");
+        }
+        private static string GetDictionaryAsString<U, T>(ReadOnlyDictionary<U, T> dictionary)
         {
             return dictionary.Aggregate("", (current, o) => current + $"[{o.Key}] => {o.Value}\n");
         }
