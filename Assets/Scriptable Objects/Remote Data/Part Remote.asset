@@ -25,7 +25,7 @@ MonoBehaviour:
       - key: Magnet
         value: 8
       - key: Capacity
-        value: 100
+        value: 50
       burnRate: 1
       cost: []
     - unlockLevel: 0
@@ -377,59 +377,8 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 1500
-  - name: Container
-    partType: 5
-    canSell: 1
-    priority: 0
-    burnType: 0
-    levels:
-    - unlockLevel: 1
-      health: 50
-      dataTest:
-      - key: Capacity
-        value: 500
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 600
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 600
-    - unlockLevel: 3
-      health: 75
-      dataTest:
-      - key: Capacity
-        value: 100
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 600
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 600
-    - unlockLevel: 5
-      health: 100
-      dataTest:
-      - key: Capacity
-        value: 500
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 600
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 600
   - name: Shield
-    partType: 6
+    partType: 5
     canSell: 1
     priority: 0
     burnType: 1
@@ -498,7 +447,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 2500
   - name: Bomb
-    partType: 8
+    partType: 7
     canSell: 1
     priority: 50
     burnType: 4
@@ -537,3 +486,195 @@ MonoBehaviour:
         type: 4
         partPrerequisiteLevel: 0
         amount: 3500
+  - name: Container
+    partType: 8
+    canSell: 1
+    priority: 50
+    burnType: 0
+    levels:
+    - unlockLevel: 3
+      health: 50
+      dataTest:
+      - key: Capacity
+        value: 50
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 300
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 300
+    - unlockLevel: 5
+      health: 75
+      dataTest:
+      - key: Capacity
+        value: 100
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 900
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 900
+    - unlockLevel: 8
+      health: 100
+      dataTest:
+      - key: Capacity
+        value: 200
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2700
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 2700
+  - name: Fuel Tank
+    partType: 9
+    canSell: 1
+    priority: 50
+    burnType: 0
+    levels:
+    - unlockLevel: 1
+      health: 50
+      dataTest:
+      - key: Capacity
+        value: 100
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 60
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 40
+    - unlockLevel: 3
+      health: 75
+      dataTest:
+      - key: Capacity
+        value: 200
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 200
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 100
+    - unlockLevel: 5
+      health: 100
+      dataTest:
+      - key: Capacity
+        value: 500
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 800
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 400
+  - name: Plasma Drum
+    partType: 10
+    canSell: 1
+    priority: 50
+    burnType: 0
+    levels:
+    - unlockLevel: 2
+      health: 50
+      dataTest:
+      - key: Capacity
+        value: 100
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 80
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 120
+    - unlockLevel: 4
+      health: 75
+      dataTest:
+      - key: Capacity
+        value: 200
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 200
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 400
+    - unlockLevel: 6
+      health: 100
+      dataTest:
+      - key: Capacity
+        value: 500
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 800
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1600
+  - name: Magazine
+    partType: 11
+    canSell: 1
+    priority: 0
+    burnType: 0
+    levels:
+    - unlockLevel: 2
+      health: 50
+      dataTest:
+      - key: Capacity
+        value: 100
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 200
+    - unlockLevel: 4
+      health: 75
+      dataTest:
+      - key: Capacity
+        value: 200
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 600
+    - unlockLevel: 6
+      health: 100
+      dataTest:
+      - key: Capacity
+        value: 500
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 2400

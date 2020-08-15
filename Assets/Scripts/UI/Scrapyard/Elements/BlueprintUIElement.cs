@@ -31,12 +31,12 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnEnable()
         {
-            PlayerPersistentData.PlayerData.OnValuesChanged += UpdateUI;
+            PlayerData.OnValuesChanged += UpdateUI;
         }
 
         private void OnDisable()
         {
-            PlayerPersistentData.PlayerData.OnValuesChanged -= UpdateUI;
+            PlayerData.OnValuesChanged -= UpdateUI;
         }
 
         //============================================================================================================//
