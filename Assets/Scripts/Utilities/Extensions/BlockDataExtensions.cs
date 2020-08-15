@@ -16,8 +16,8 @@ namespace StarSalvager.Utilities.Extensions
             {
                 switch (blockData.ClassType)
                 {
-                    case nameof(Bit):
-                    case nameof(ScrapyardBit):
+                    case "Bit":
+                    case "ScrapyardBit":
                         if (inScrapyardForm)
                         {
                             attachables.Add(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<ScrapyardBit>(blockData));
@@ -27,8 +27,8 @@ namespace StarSalvager.Utilities.Extensions
                             attachables.Add(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(blockData));
                         }
                         break;
-                    case nameof(Part):
-                    case nameof(ScrapyardPart):
+                    case "Part":
+                    case "ScrapyardPart":
                         if (inScrapyardForm)
                         {
                             attachables.Add(FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(blockData));

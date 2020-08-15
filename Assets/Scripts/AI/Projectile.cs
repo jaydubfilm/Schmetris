@@ -22,12 +22,7 @@ namespace StarSalvager.AI
         {
             if(GameTimer.IsPaused)
                 return;
-
-            Vector3 screenPoint = Camera.main.WorldToViewportPoint(transform.position);
-            bool onScreen = screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
-            if (!onScreen)
-                Recycler.Recycle<Projectile>(this);
-
+            
             transform.position += (m_enemyVelocityModifier + m_travelDirectionNormalized * m_projectileData.ProjectileSpeed) * Time.deltaTime;
         }
 

@@ -267,13 +267,9 @@ namespace StarSalvager.Factories
         
         public void ClearRemoteData()
         {
-            var directory = new DirectoryInfo(Application.dataPath + "/RemoteData/");
-            
-            
-            
             //FIXME This should be using persistent file names
-            var files = new List<FileInfo>();
-            /*{
+            var files = new[]
+            {
                 Application.dataPath + "/RemoteData/PlayerPersistentMetadata.player",
                 Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile0.player",
                 Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile1.player",
@@ -288,30 +284,20 @@ namespace StarSalvager.Factories
                 Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile4.mission",
                 Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile5.mission",
                 Application.dataPath + "/RemoteData/MissionsMasterData.mission"
-            };*/
-            
-            files.AddRange(directory.GetFiles("*.player"));
-            files.AddRange(directory.GetFiles("*.mission"));
-            files.AddRange(directory.GetFiles("*.player.meta"));
-            files.AddRange(directory.GetFiles("*.mission.meta"));
+            };
 
 
             foreach (var file in files)
             {
-                if(file == null)
-                    continue;
-                
-                File.Delete(file.FullName);
-                
-                /*if (file != null)
+                if (File.Exists(file))
                 {
-                    
-                    //File.Delete(file + ".meta");
+                    File.Delete(file);
+                    File.Delete(file + ".meta");
                 }
                 else
                 {
-                    Debug.LogError($"{file.Name} does not exist");
-                }*/
+                    Debug.LogError($"{file} does not exist");
+                }
             }
 
             if (Application.isPlaying)

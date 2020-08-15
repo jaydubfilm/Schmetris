@@ -46,7 +46,7 @@ namespace StarSalvager
 
         private bool isStarted = false;
 
-        /*[Sirenix.OdinInspector.Button("Clear Remote Data")]
+        [Sirenix.OdinInspector.Button("Clear Remote Data")]
         private void ClearRemoteData()
         {
             string persistentPlayerDataPath = Application.dataPath + "/RemoteData/PlayerPersistentData.player";
@@ -59,7 +59,7 @@ namespace StarSalvager
             {
                 File.Delete(currentDataPath);
             }
-        }*/
+        }
 
         //============================================================================================================//
 
@@ -123,16 +123,13 @@ namespace StarSalvager
             Camera.onPostRender += DrawGL;
 
             _scrapyardBots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>());
-            
-            var currentBlockData = PlayerPersistentData.PlayerData.GetCurrentBlockData();
-            //Checks to make sure there is a core on the bot
-            if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
+            if (PlayerPersistentData.PlayerData.GetCurrentBlockData().Count == 0)
             {
                 _scrapyardBots[0].InitBot();
             }
             else
             {
-                _scrapyardBots[0].InitBot(currentBlockData.ImportBlockDatas(true));
+                _scrapyardBots[0].InitBot(PlayerPersistentData.PlayerData.GetCurrentBlockData().ImportBlockDatas(true));
             }
             SellBits();
             UpdateFloatingMarkers(false);

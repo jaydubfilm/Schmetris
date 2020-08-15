@@ -535,7 +535,7 @@ namespace StarSalvager
         {
             Vector2 position = LevelManager.Instance.WorldGrid.GetAvailableRandomTopGridSquareWorldPosition();
             movable.transform.parent = LevelManager.Instance.gameObject.transform;
-            movable.transform.position = position + Vector2.right * m_distanceHorizontal;
+            movable.transform.position = position;
             switch (movable)
             {
                 case Bit _:
@@ -553,7 +553,7 @@ namespace StarSalvager
         private void PlaceMovableOnGrid(IObstacle movable, Vector2 position, int radius = 0)
         {
             movable.transform.parent = LevelManager.Instance.gameObject.transform;
-            movable.transform.position = position + Vector2.right * m_distanceHorizontal;
+            movable.transform.position = position;
             switch (movable)
             {
                 case Bit _:

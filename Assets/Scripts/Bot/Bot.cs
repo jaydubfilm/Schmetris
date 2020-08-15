@@ -909,7 +909,39 @@ namespace StarSalvager
                 return;
             
             TryHitAt(closestAttachable, damage);
+            
+            /*if (PROTO_GodMode && closestAttachable.Coordinate == Vector2Int.zero)
+                return;
 
+            
+            switch (closestAttachable)
+            {
+                case EnemyAttachable _:
+                    return;
+                //FIXME Need to see how to fix this
+                case IHealth closestHealth:
+                {
+                    //Check to see if the shields can absorb any of the damage
+                    damage = BotPartsLogic.TryHitShield(closestAttachable.Coordinate, damage);
+                
+                    closestHealth.ChangeHealth(-Mathf.Abs(damage));
+
+
+                    if (closestHealth.CurrentHealth > 0) 
+                        return;
+                
+                    if(closestAttachable.Coordinate == Vector2Int.zero)
+                        Destroy("Core Destroyed");
+                    break;
+                }
+            }
+            
+            if(closestAttachable is Part)
+                BotPartsLogic.UpdatePartsList();
+
+
+            RemoveAttachable(closestAttachable);
+            CheckForDisconnects();*/
         }
 
         public void TryHitAt(IAttachable closestAttachable, float damage)
@@ -942,10 +974,7 @@ namespace StarSalvager
                         Destroy("Core Destroyed");
 
                     RemoveAttachable(closestAttachable);
-                    
-                    //I dont want to disconnect parts if we destroyed the core
-                    if(closestAttachable.Coordinate != Vector2Int.zero)
-                        CheckForDisconnects();
+                    CheckForDisconnects();
                     
                     if(closestAttachable is Part)
                         BotPartsLogic.UpdatePartsList();
@@ -972,20 +1001,19 @@ namespace StarSalvager
         {
             
             TryHitAt(attachable, 10000);
-
+            
             switch (attachable)
             {
-                case Bit bit:
-                    MissionManager.ProcessAsteroidCollisionMissionData(bit.Type, 1);
+                /*case Bit bit:
+                    TryHitAt(attachable, bit.CurrentHealth);
                     break;
-                case Component _:
-                    MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
+                case Component component:
+                    TryHitAt(attachable, component.CurrentHealth);
                     break;
                 case Part _:
-                    MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
-                    break;
+                    TryHitAt(attachable, 5f);
+                    break;*/
                 case EnemyAttachable enemyAttachable:
-                    MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
                     enemyAttachable.SetAttached(false);
                     return;
             }
@@ -1587,8 +1615,6 @@ namespace StarSalvager
             //Debug.Log($"Shifting {toShift.Count} objects");
             //Debug.Break();
 
-            MissionManager.ProcessWhiteBumperMissionData(toShift.Count, false);
-
             StartCoroutine(ShiftInDirectionCoroutine(toShift, 
                 direction,
                 TEST_MergeSpeed,
@@ -1635,7 +1661,7 @@ namespace StarSalvager
             if (data.comboData.points == 0)
                 return;
 
-            MissionManager.ProcessComboBlocksMissionData(data.toMove[0].Type, data.toMove[0].level + 1, 1);
+            MissionManager.ProcessComboBlocksMissionData(data.toMove[0].Type, 1);
             SimpleComboSolver(data.comboData, data.toMove);
         }
         private void CheckForCombosAround(Bit bit)
@@ -1654,7 +1680,7 @@ namespace StarSalvager
             //    AdvancedComboSolver(data.comboData, data.toMove);
             //}
             //else
-            MissionManager.ProcessComboBlocksMissionData(bit.Type, bit.level + 1, 1);
+            MissionManager.ProcessComboBlocksMissionData(bit.Type, 1);
             SimpleComboSolver(data.comboData, data.toMove);
         }
 
@@ -2626,23 +2652,6 @@ namespace StarSalvager
 
                 foreach (var attachable in toDestroy)
                 {
-                    /*switch (attachable)
-                    {
-                        case Bit _:
-                            Recycler.Recycle<Bit>(attachable.gameObject);
-                            break;
-                        case Component _:
-                            Recycler.Recycle<Component>(attachable.gameObject);
-                            break;
-                        case Part _:
-                            Recycler.Recycle<Part>(attachable.gameObject);
-                            break;
-                        case EnemyAttachable _:
-                            Recycler.Recycle<EnemyAttachable>(attachable.gameObject);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }*/
                     attachable.gameObject.SetActive(false);
                 }
 
