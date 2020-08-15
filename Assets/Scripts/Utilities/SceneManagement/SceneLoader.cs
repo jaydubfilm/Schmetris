@@ -26,6 +26,8 @@ namespace StarSalvager.Utilities.SceneManagement
 
         private static string currentScene;
         private static string lastScene;
+
+        public static bool IsReady;
         
 
         //============================================================================================================//
@@ -125,6 +127,8 @@ namespace StarSalvager.Utilities.SceneManagement
             {
                 ActivateScene(SceneManager.GetActiveScene().name);
             }
+
+            IsReady = true;
         }
 
         private static IEnumerator LoadSceneAsync(string sceneName)

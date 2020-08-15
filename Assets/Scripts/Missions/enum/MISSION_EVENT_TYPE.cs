@@ -6,6 +6,12 @@
         RESOURCE_COLLECTED,
         COMBO_BLOCKS,
         LEVEL_PROGRESS,
-        END_WAVE
+        CRAFT_PART,
+        WHITE_BUMPER,
+        ASTEROID_COLLISION,
+        LIQUID_RESOURCE,
+        CHAIN_WAVES,
+        SECTORS_COMPLETED,
+        FLIGHT_LENGTH
     }
 }

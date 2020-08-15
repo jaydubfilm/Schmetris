@@ -533,9 +533,9 @@ namespace StarSalvager
 
         private void PlaceMovableOnGrid(IObstacle movable, int radius = 0)
         {
-            Vector2 position = LevelManager.Instance.WorldGrid.GetAvailableRandomTopGridSquareWorldPosition();
+            Vector2 position = LevelManager.Instance.WorldGrid.GetAvailableRandomTopGridSquareWorldPosition(Constants.enemyGridScanRadius);
             movable.transform.parent = LevelManager.Instance.gameObject.transform;
-            movable.transform.position = position;
+            movable.transform.position = position + Vector2.right * m_distanceHorizontal;
             switch (movable)
             {
                 case Bit _:
@@ -543,6 +543,15 @@ namespace StarSalvager
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(position, radius, true);
                     break;
                 case Shape shape:
+                    foreach (Bit bit in shape.AttachedBits)
+                    {
+                        Vector2Int gridPosition = LevelManager.Instance.WorldGrid.GetGridPositionOfVector
+                            (bit.transform.position);
+                        if (gridPosition.y < Values.Globals.GridSizeY)
+                        {
+                            LevelManager.Instance.WorldGrid.SetObstacleInGridSquare(bit.transform.position, 0, true);
+                        }
+                    }
                     m_notFullyInGridShapes.Add(shape);
                     break;
                 default:
@@ -553,7 +562,7 @@ namespace StarSalvager
         private void PlaceMovableOnGrid(IObstacle movable, Vector2 position, int radius = 0)
         {
             movable.transform.parent = LevelManager.Instance.gameObject.transform;
-            movable.transform.position = position;
+            movable.transform.position = position + Vector2.right * m_distanceHorizontal;
             switch (movable)
             {
                 case Bit _:

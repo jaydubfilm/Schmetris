@@ -105,6 +105,16 @@ namespace StarSalvager.AI
         
         private void FireAttack()
         {
+            /*var distance = Vector3.Distance(transform.position, LevelManager.Instance.BotGameObject.transform.position);
+            //TODO Determine if this fires at all times or just when bot is in range
+            if (distance >= 100 * Constants.gridCellSize)
+                return;*/
+
+            Vector3 screenPoint = Camera.main.WorldToViewportPoint(transform.position);
+            bool onScreen = screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
+            if (!onScreen)
+                return;
+
             List<Vector2> fireLocations = GetFireDirection();
             foreach (Vector2 fireLocation in fireLocations)
             {

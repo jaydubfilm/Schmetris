@@ -14,70 +14,226 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_missionRemoteData:
   - MissionType: 1
-    MissionName: Resource Mission 1
+    MissionName: Mission 1
     MissionUnlockParameters: []
     AmountNeeded: 200
+    AnyResourceType: 0
     ResourceType: 3
-    EnemyType: 0
+    ComboLevel: 0
+    AnyEnemyType: 0
+    EnemyType: 
     SectorNumber: 0
     WaveNumber: 0
-  - MissionType: 1
-    MissionName: Resource Mission 2
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
+    FlightLength: 0
+  - MissionType: 10
+    MissionName: Mission 2
+    MissionUnlockParameters: []
+    AmountNeeded: 0
+    AnyResourceType: 0
+    ResourceType: 0
+    ComboLevel: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
+    FlightLength: 180
+  - MissionType: 2
+    MissionName: Mission 3
+    MissionUnlockParameters: []
+    AmountNeeded: 1
+    AnyResourceType: 1
+    ResourceType: 0
+    ComboLevel: 1
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
+    FlightLength: 0
+  - MissionType: 9
+    MissionName: Mission 4
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 1
       WaveUnlockNumber: 1
       MissionUnlockName: 
+    AmountNeeded: 1
+    AnyResourceType: 0
+    ResourceType: 0
+    ComboLevel: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
+    FlightLength: 0
+  - MissionType: 4
+    MissionName: Mission 5
+    MissionUnlockParameters:
+    - MissionUnlockType: Level Complete
+      SectorUnlockNumber: 1
+      WaveUnlockNumber: 2
+      MissionUnlockName: 
+    AmountNeeded: 1
+    AnyResourceType: 0
+    ResourceType: 0
+    ComboLevel: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    PartType: 1
+    PartLevel: 0
+    ThroughPart: 0
+    FlightLength: 0
+  - MissionType: 8
+    MissionName: Mission 6
+    MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
       WaveUnlockNumber: 0
-      MissionUnlockName: Resource Mission 1
-    AmountNeeded: 1000
-    ResourceType: 1
-    EnemyType: 0
-    SectorNumber: 0
-    WaveNumber: 0
-  - MissionType: 0
-    MissionName: Enemy Mission 1
-    MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
-      SectorUnlockNumber: 2
-      WaveUnlockNumber: 1
-      MissionUnlockName: 
-    AmountNeeded: 2
-    ResourceType: 0
-    EnemyType: 0
-    SectorNumber: 0
-    WaveNumber: 0
-  - MissionType: 0
-    MissionName: Enemy Mission 2
-    MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
-      SectorUnlockNumber: 2
-      WaveUnlockNumber: 1
-      MissionUnlockName: 
-    AmountNeeded: 2
-    ResourceType: 0
-    EnemyType: 1
-    SectorNumber: 0
-    WaveNumber: 0
-  - MissionType: 3
-    MissionName: Level Mission 1
-    MissionUnlockParameters: []
+      MissionUnlockName: Mission 4
     AmountNeeded: 0
+    AnyResourceType: 0
     ResourceType: 0
-    EnemyType: 0
-    SectorNumber: 1
-    WaveNumber: 1
-  - MissionType: 2
-    MissionName: Combo Mission 1
+    ComboLevel: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 3
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
+    FlightLength: 0
+  - MissionType: 5
+    MissionName: Mission 7
     MissionUnlockParameters:
+    - MissionUnlockType: Level Complete
+      SectorUnlockNumber: 1
+      WaveUnlockNumber: 1
+      MissionUnlockName: 
+    AmountNeeded: 1
+    AnyResourceType: 0
+    ResourceType: 0
+    ComboLevel: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
+    FlightLength: 0
+  - MissionType: 0
+    MissionName: Mission 8
+    MissionUnlockParameters:
+    - MissionUnlockType: Level Complete
+      SectorUnlockNumber: 1
+      WaveUnlockNumber: 1
+      MissionUnlockName: 
+    AmountNeeded: 1
+    AnyResourceType: 0
+    ResourceType: 0
+    ComboLevel: 0
+    AnyEnemyType: 0
+    EnemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
+    SectorNumber: 0
+    WaveNumber: 0
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
+    FlightLength: 0
+  - MissionType: 0
+    MissionName: Mission 9
+    MissionUnlockParameters:
+    - MissionUnlockType: Level Complete
+      SectorUnlockNumber: 1
+      WaveUnlockNumber: 1
+      MissionUnlockName: 
+    AmountNeeded: 1
+    AnyResourceType: 0
+    ResourceType: 0
+    ComboLevel: 0
+    AnyEnemyType: 0
+    EnemyType: 3363c379-70c7-47d1-8cc6-1ca650259a31
+    SectorNumber: 0
+    WaveNumber: 0
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
+    FlightLength: 0
+  - MissionType: 1
+    MissionName: Mission 11
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      WaveUnlockNumber: 0
+      MissionUnlockName: Mission 1
+    AmountNeeded: 200
+    AnyResourceType: 0
+    ResourceType: 2
+    ComboLevel: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
+    FlightLength: 0
+  - MissionType: 2
+    MissionName: Mission 12
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      WaveUnlockNumber: 0
+      MissionUnlockName: Mission 3
+    AmountNeeded: 1
+    AnyResourceType: 1
+    ResourceType: 0
+    ComboLevel: 2
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
+    FlightLength: 0
+  - MissionType: 0
+    MissionName: Mission 13
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      WaveUnlockNumber: 0
+      MissionUnlockName: Mission 8
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      WaveUnlockNumber: 0
+      MissionUnlockName: Mission 9
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 2
       WaveUnlockNumber: 1
       MissionUnlockName: 
-    AmountNeeded: 3
-    ResourceType: 3
-    EnemyType: 0
+    AmountNeeded: 5
+    AnyResourceType: 0
+    ResourceType: 0
+    ComboLevel: 0
+    AnyEnemyType: 1
+    EnemyType: 
     SectorNumber: 0
     WaveNumber: 0
+    PartType: 0
+    PartLevel: 0
+    ThroughPart: 0
+    FlightLength: 0

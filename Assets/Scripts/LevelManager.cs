@@ -10,10 +10,12 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Values;
 using System.Collections.Generic;
+using System.Linq;
 using StarSalvager.Utilities.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using StarSalvager.Missions;
+using StarSalvager.Utilities.JsonDataTypes;
 
 namespace StarSalvager
 {
@@ -224,7 +226,6 @@ namespace StarSalvager
             }
             WorldGrid.SetupGrid();
             ProjectileManager.Activate();
-            PlayerPersistentData.IsNewFile = false;
 
             GameTimer.SetPaused(false);
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
@@ -254,6 +255,7 @@ namespace StarSalvager
                 Toast.AddToast("Wave Complete!", time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
                 PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector, Globals.CurrentWave + 1);
                 MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
+                MissionManager.ProcessChainWavesMissionData(Globals.CurrentWave + 1);
                 EndWaveState = true;
                 Globals.CurrentWave++;
                 m_levelTimer += m_waveTimer;
@@ -276,7 +278,13 @@ namespace StarSalvager
         {
             foreach (Bot bot in m_bots)
             {
-                PlayerPersistentData.PlayerData.SetCurrentBlockData(bot.GetBlockDatas());
+                //FIXME Need to avoid saving in the event that the bot was destroyed
+
+                var blockData = bot.GetBlockDatas();
+                if (!blockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int) PART_TYPE.CORE))
+                    blockData = new List<BlockData>();
+                
+                PlayerPersistentData.PlayerData.SetCurrentBlockData(blockData);
             }
         }
 

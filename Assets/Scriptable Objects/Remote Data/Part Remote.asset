@@ -86,79 +86,6 @@ MonoBehaviour:
         type: 5
         partPrerequisiteLevel: 0
         amount: 10000
-  - name: Core
-    partType: 0
-    canSell: 0
-    priority: 200
-    burnType: 4
-    levels:
-    - unlockLevel: 0
-      health: 20
-      dataTest:
-      - key: Magnet
-        value: 8
-      - key: Capacity
-        value: 50
-      burnRate: 1
-      cost: []
-    - unlockLevel: 0
-      health: 50
-      dataTest:
-      - key: Magnet
-        value: 16
-      - key: Capacity
-        value: 200
-      burnRate: 0.5
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 500
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 500
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 500
-      - resourceType: 0
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 500
-      - resourceType: 0
-        type: 5
-        partPrerequisiteLevel: 0
-        amount: 500
-    - unlockLevel: 0
-      health: 100
-      dataTest:
-      - key: Magnet
-        value: 25
-      - key: Capacity
-        value: 500
-      burnRate: 1
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 10000
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 10000
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 10000
-      - resourceType: 0
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 10000
-      - resourceType: 0
-        type: 5
-        partPrerequisiteLevel: 0
-        amount: 10000
   - name: Magnet
     partType: 1
     canSell: 1
@@ -330,7 +257,7 @@ MonoBehaviour:
       health: 60
       dataTest:
       - key: Damage
-        value: 100
+        value: 10
       - key: Cooldown
         value: 0.5
       burnRate: 0.1

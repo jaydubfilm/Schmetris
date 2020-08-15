@@ -269,7 +269,7 @@ namespace StarSalvager
             return new Vector2Int(UnityEngine.Random.Range(0, Values.Globals.GridSizeX), Values.Globals.GridSizeY - 1);
         }
 
-        public Vector2 GetAvailableRandomTopGridSquareWorldPosition()
+        public Vector2 GetAvailableRandomTopGridSquareWorldPosition(int scanRadius)
         {
             int numTries = 100;
             for (int i = 0; i < numTries; i++)
@@ -277,11 +277,11 @@ namespace StarSalvager
                 Vector2Int randomTop = GetRandomTopGridSquareGridPosition();
                 bool isFreeSpace = true;
                 Vector2Int obstacleGridScanMinimum = new Vector2Int(
-                    Math.Max(0, randomTop.x - Constants.enemyGridScanRadius),
-                    Math.Max(0, randomTop.y - Constants.enemyGridScanRadius));
+                    Math.Max(0, randomTop.x - scanRadius),
+                    Math.Max(0, randomTop.y - scanRadius));
                 Vector2Int obstacleGridScanMaximum = new Vector2Int(
-                    Math.Min(Values.Globals.GridSizeX - 1, randomTop.x + Constants.enemyGridScanRadius),
-                    Math.Min(Values.Globals.GridSizeY - 1, randomTop.y + Constants.enemyGridScanRadius));
+                    Math.Min(Values.Globals.GridSizeX - 1, randomTop.x + scanRadius),
+                    Math.Min(Values.Globals.GridSizeY - 1, randomTop.y + scanRadius));
                 //Check each position in the box for whether an obstacle is there
                 for (int j = obstacleGridScanMinimum.x; j <= obstacleGridScanMaximum.x; j++)
                 {
@@ -303,7 +303,7 @@ namespace StarSalvager
                 }
             }
 
-            return GetRandomTopGridSquareWorldPosition();
+            return GetAvailableRandomTopGridSquareWorldPosition(scanRadius - 1);
         }
 
         public Vector2Int GetGridPositionOfVector(Vector2 worldLocation)
