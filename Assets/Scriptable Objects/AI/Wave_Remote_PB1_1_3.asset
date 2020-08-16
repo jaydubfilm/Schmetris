@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c59c6b39881711a4296e83fe97d9a858, type: 3}
-  m_Name: Wave_Remote_JWTest_1_1
+  m_Name: Wave_Remote_PB1_1_3
   m_EditorClassIdentifier: 
   StageRemoteData:
   - m_stageDuration: 30
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
-    - m_enemyType: f3c96622-609f-498c-be89-8cc575e46fe0
-      m_enemyCount: 3
+    - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
+      m_enemyCount: 1
     m_stageObstacleData:
     - m_selectionType: 2
       m_shapeName: BlackSingle
@@ -30,7 +30,7 @@ MonoBehaviour:
       m_shapeName: Asteroid3.0
       m_category: 
       m_asteroidSize: 2
-      m_countPerMinute: 100
+      m_countPerMinute: 60
       m_rotation: Random
     - m_selectionType: 2
       m_shapeName: Asteroid5.1
@@ -38,11 +38,17 @@ MonoBehaviour:
       m_asteroidSize: 1
       m_countPerMinute: 60
       m_rotation: Random
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_asteroidSize: 0
+      m_countPerMinute: 60
+      m_rotation: Random
     - m_selectionType: 0
       m_shapeName: RedSingle
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 100
+      m_countPerMinute: 60
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: GreySingle
@@ -54,20 +60,26 @@ MonoBehaviour:
       m_shapeName: GreenSingle
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 30
+      m_countPerMinute: 60
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: BlueSingle
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 30
+      m_countPerMinute: 60
+      m_rotation: 
+    - m_selectionType: 0
+      m_shapeName: YellowSingle
+      m_category: 
+      m_asteroidSize: 0
+      m_countPerMinute: 60
       m_rotation: 
   - m_stageDuration: 30
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
-    - m_enemyType: 29b4a36e-47f7-47a4-8922-f7de5f531383
-      m_enemyCount: 2
+    - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
+      m_enemyCount: 1
     m_stageObstacleData:
     - m_selectionType: 2
       m_shapeName: BlackSingle
@@ -79,7 +91,7 @@ MonoBehaviour:
       m_shapeName: Asteroid3.0
       m_category: 
       m_asteroidSize: 2
-      m_countPerMinute: 100
+      m_countPerMinute: 60
       m_rotation: Random
     - m_selectionType: 2
       m_shapeName: Asteroid5.1
@@ -87,11 +99,17 @@ MonoBehaviour:
       m_asteroidSize: 1
       m_countPerMinute: 60
       m_rotation: Random
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_asteroidSize: 0
+      m_countPerMinute: 60
+      m_rotation: Random
     - m_selectionType: 0
       m_shapeName: RedSingle
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 100
+      m_countPerMinute: 60
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: GreySingle
@@ -103,11 +121,17 @@ MonoBehaviour:
       m_shapeName: GreenSingle
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 30
+      m_countPerMinute: 60
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: BlueSingle
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 30
+      m_countPerMinute: 60
+      m_rotation: 
+    - m_selectionType: 0
+      m_shapeName: YellowSingle
+      m_category: 
+      m_asteroidSize: 0
+      m_countPerMinute: 60
       m_rotation: 

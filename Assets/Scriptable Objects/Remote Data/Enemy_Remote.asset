@@ -76,3 +76,12 @@ MonoBehaviour:
     m_dimensions: {x: 2, y: 2}
     m_maxDrops: 0
     m_rdsEnemyData: []
+  - m_enemyType: 29b4a36e-47f7-47a4-8922-f7de5f531383
+    m_name: SuperFly
+    m_health: 100
+    m_movementSpeed: 10
+    m_attackDamage: 0
+    m_attackSpeed: 1
+    m_dimensions: {x: 1, y: 1}
+    m_maxDrops: 0
+    m_rdsEnemyData: []

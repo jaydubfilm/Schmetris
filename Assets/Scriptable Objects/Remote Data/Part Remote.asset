@@ -107,10 +107,6 @@ MonoBehaviour:
         type: 5
         partPrerequisiteLevel: 0
         amount: 50
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 1
     - unlockLevel: 0
       health: 100
       dataTest:
