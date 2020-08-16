@@ -22,7 +22,7 @@ namespace StarSalvager.AI
         [SerializeField, FoldoutGroup("$m_selectionType")]
         [FormerlySerializedAs("m_asteroidCountPerMinute")]
         private int m_countPerMinute;
-        [SerializeField, FoldoutGroup("$m_selectionType"), ValueDropdown("GetRotations")]
+        [SerializeField, FoldoutGroup("$m_selectionType"), HideIf("m_selectionType", SELECTION_TYPE.BUMPER), ValueDropdown("GetRotations")]
         private string m_rotation;
 
         public SELECTION_TYPE SelectionType => m_selectionType;

@@ -117,9 +117,12 @@ namespace StarSalvager.Factories
 
             //--------------------------------------------------------------------------------------------------------//
 
-            ((BoxCollider2D)temp.collider).size = sprite.bounds.size;
-            temp.SetColliderActive(true);
+            if (profile.animation == null)
+            {
+                ((BoxCollider2D)temp.collider).size = sprite.bounds.size;
+            }
             temp.SetSprite(sprite);
+            temp.SetColliderActive(true);
             temp.LoadBlockData(blockData);
 
             //Have to check for null, as the Asteroid/Energy does not have health

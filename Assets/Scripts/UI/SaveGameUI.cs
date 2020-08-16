@@ -150,6 +150,8 @@ namespace StarSalvager.UI.Scrapyard
                     MissionManager.SetCurrentSaveFile(missionPath);
 
                     _selectedSaveFileData = newSaveFile;
+
+                    Alert.ShowAlert("Save Successful", "Game Saved. Click to Continue", "Continue", CancelPressed);
                 }
                 else
                 {

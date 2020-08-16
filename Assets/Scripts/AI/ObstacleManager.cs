@@ -522,6 +522,14 @@ namespace StarSalvager
 
                 return;
             }
+            else if (selectionType == SELECTION_TYPE.BUMPER)
+            {
+                Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(BIT_TYPE.WHITE, 0);
+                AddMovableToList(newBit);
+
+                PlaceMovableOnGrid(newBit);
+                return;
+            }
         }
 
         public void AddMovableToList(IObstacle movable)
