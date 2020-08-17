@@ -33,9 +33,9 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("View")]
         private Button toMainMenuButton;
         [SerializeField, Required, FoldoutGroup("View")]
-        private Button retryButton;
+        private Button deathWindowRetryButton;
         [SerializeField, Required, FoldoutGroup("View")]
-        private Button mainMenuButton;
+        private Button deathWindowScrapyrdButton;
 
         //============================================================================================================//
 
@@ -66,6 +66,7 @@ namespace StarSalvager.UI
             {
                 GameTimer.SetPaused(false);
                 ToggleBetweenWavesUIActive(false);
+                m_levelManager.m_isWaveProgressing = true;
                 LevelManager.Instance.EndWaveState = false;
             });
 
@@ -73,6 +74,7 @@ namespace StarSalvager.UI
             {
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
+                m_levelManager.m_isWaveProgressing = true;
                 LevelManager.Instance.EndWaveState = false;
                 SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             });
@@ -81,6 +83,7 @@ namespace StarSalvager.UI
             {
                 m_levelManager.SavePlayerData();
                 ToggleBetweenWavesUIActive(false);
+                m_levelManager.m_isWaveProgressing = true;
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             });
@@ -90,20 +93,21 @@ namespace StarSalvager.UI
                 SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
             });
 
-            retryButton.onClick.AddListener(() =>
+            deathWindowRetryButton.onClick.AddListener(() =>
             {
                 m_levelManager.RestartLevel();
             });
 
-            mainMenuButton.onClick.AddListener(() =>
+            deathWindowScrapyrdButton.onClick.AddListener(() =>
             {
                 GameTimer.SetPaused(false);
-                SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
+                SceneLoader.ActivateScene("Scrapyard", "AlexShulmanTestScene");
             });
             
             resumeButton.onClick.AddListener(() =>
             {
                 GameTimer.SetPaused(false);
+                m_levelManager.m_isWaveProgressing = true;
             });
             
             ToggleBetweenWavesUIActive(false);

@@ -38,6 +38,8 @@ namespace StarSalvager
         private float m_waveTimer;
         public float WaveTimer => m_waveTimer;
 
+        public bool m_isWaveProgressing = true;
+
         private float m_levelTimer = 0;
 
         private int m_currentStage;
@@ -153,7 +155,9 @@ namespace StarSalvager
 
             if (!EndWaveState)
             {
-                m_waveTimer += Time.deltaTime;
+                if (m_isWaveProgressing)
+                    m_waveTimer += Time.deltaTime;
+
                 m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
 
                 //Displays the time in timespan & the fill value
@@ -198,7 +202,7 @@ namespace StarSalvager
             }
             Bot.OnBotDied += (deadBot, deathMethod) =>
             {
-                GameTimer.SetPaused(true);
+                m_isWaveProgressing = false;
                 AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied);
                 Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>();
                 levelLostAnalyticsDictionary.Add("CurrentSector", Globals.CurrentSector);

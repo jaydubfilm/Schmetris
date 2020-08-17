@@ -17,7 +17,6 @@ using UnityEngine;
 using GameUI = StarSalvager.UI.GameUI;
 using StarSalvager.Utilities;
 using StarSalvager.Missions;
-using Enemy = StarSalvager.Prototype.Enemy;
 
 namespace StarSalvager
 {
