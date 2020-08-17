@@ -43,7 +43,7 @@ namespace StarSalvager.UI
         private SliderText repairSlider;
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderText ammoSlider;
-        
+
         [SerializeField, Required, FoldoutGroup("BL Window"), Space(10f)]
         private Slider heatSlider;
         [SerializeField, Required, FoldoutGroup("BL Window")]
@@ -142,6 +142,8 @@ namespace StarSalvager.UI
             SetResourceSliderBounds(BIT_TYPE.RED, 0, playerData.liquidCapacity[BIT_TYPE.RED]);
             SetResourceSliderBounds(BIT_TYPE.GREEN, 0, playerData.liquidCapacity[BIT_TYPE.GREEN]);
             SetResourceSliderBounds(BIT_TYPE.GREY, 0, playerData.liquidCapacity[BIT_TYPE.GREY]);
+            SetResourceSliderBounds(BIT_TYPE.BLUE, 0, playerData.liquidCapacity[BIT_TYPE.BLUE]);
+            SetResourceSliderBounds(BIT_TYPE.YELLOW, 0, playerData.liquidCapacity[BIT_TYPE.YELLOW]);
             
             SetFuelValue(playerData.liquidResource[BIT_TYPE.RED]);
             SetRepairValue(playerData.liquidResource[BIT_TYPE.GREEN]);
@@ -154,10 +156,12 @@ namespace StarSalvager.UI
         public void SetWaterValue(float value)
         {
             waterSlider.value = value;
+            print("watermoo");
         }
         public void SetPowerValue(float value)
         {
             powerSlider.value = value;
+            print("powermoo");
         }
 
         public void SetCarryCapacity(float value)
@@ -186,6 +190,14 @@ namespace StarSalvager.UI
                     break;
                 case BIT_TYPE.RED:
                     fuelSlider.SetBounds(min, max);
+                    break;
+                case BIT_TYPE.YELLOW:
+                    powerSlider.minValue = min;
+                    powerSlider.maxValue = max;
+                    break;
+                case BIT_TYPE.BLUE:
+                    waterSlider.minValue = min;
+                    waterSlider.maxValue = max;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);

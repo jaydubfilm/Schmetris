@@ -292,6 +292,8 @@ namespace StarSalvager
                             capacities[BIT_TYPE.RED] += (int) value;
                             capacities[BIT_TYPE.GREEN] += (int) value;
                             capacities[BIT_TYPE.GREY] += (int) value;
+                            capacities[BIT_TYPE.YELLOW] += (int) value;
+                            capacities[BIT_TYPE.BLUE] += (int) value;
                         }
                         
                         if (magnetOverride > 0)
@@ -649,6 +651,36 @@ namespace StarSalvager
             PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] - Time.deltaTime);
             UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] - Time.deltaTime);
             PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] - Time.deltaTime);
+
+            if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] <= 0)
+            {
+                var targetBit = GetFurthestBitToBurn(BIT_TYPE.YELLOW);
+
+                if (targetBit != null)
+                {
+                    var addAmount = FactoryManager.Instance
+                        .GetFactory<BitAttachableFactory>().GetBitRemoteData(targetBit.Type).levels[targetBit.level]
+                        .resources;
+
+                    PlayerPersistentData.PlayerData.AddLiquidResource(BIT_TYPE.YELLOW, addAmount);
+                    bot.DestroyAttachable<Bit>(targetBit);
+                }
+            }
+
+            if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] <= 0)
+            {
+                var targetBit = GetFurthestBitToBurn(BIT_TYPE.BLUE);
+
+                if (targetBit != null)
+                {
+                    var addAmount = FactoryManager.Instance
+                        .GetFactory<BitAttachableFactory>().GetBitRemoteData(targetBit.Type).levels[targetBit.level]
+                        .resources;
+
+                    PlayerPersistentData.PlayerData.AddLiquidResource(BIT_TYPE.BLUE, addAmount);
+                    bot.DestroyAttachable<Bit>(targetBit);
+                }
+            }
         }
 
         //============================================================================================================//
@@ -660,13 +692,18 @@ namespace StarSalvager
             
             if (partLevelData.burnRate == 0f)
                 return null;
-            
+
+            return GetFurthestBitToBurn(type);
+        }
+
+        private Bit GetFurthestBitToBurn(BIT_TYPE type)
+        {
             return bot.attachedBlocks.OfType<Bit>()
                 .Where(b => b.Type == type)
                 .GetFurthestAttachable(Vector2Int.zero);
         }
 
-        
+
         private float GetValueToBurn(PartLevelData partLevelData, BIT_TYPE type)
         {
             if (!useBurnRate)
