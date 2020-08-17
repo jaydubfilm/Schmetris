@@ -123,6 +123,7 @@ namespace StarSalvager
         }
         private GameUI _gameUi;
 
+        private Dictionary<BIT_TYPE, float> m_liquidResourcesAttBeginningOfSector = new Dictionary<BIT_TYPE, float>();
         private void Start()
         {
             m_bots = new List<Bot>();
@@ -190,6 +191,12 @@ namespace StarSalvager
         {
             m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
+
+            m_liquidResourcesAttBeginningOfSector.Clear();
+            foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
+            {
+                m_liquidResourcesAttBeginningOfSector.Add(resource.Key, resource.Value);
+            }
             BotGameObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
             if (PlayerPersistentData.PlayerData.GetCurrentBlockData().Count == 0)
             {
@@ -202,6 +209,10 @@ namespace StarSalvager
             }
             Bot.OnBotDied += (deadBot, deathMethod) =>
             {
+                foreach (var resource in m_liquidResourcesAttBeginningOfSector)
+                {
+                    PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
+                }
                 m_isWaveProgressing = false;
                 AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied);
                 Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>();
