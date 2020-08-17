@@ -17,7 +17,7 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData()
+        public void ProcessMissionData(int sectorNumber)
         {
             m_currentAmount += 1;
         }

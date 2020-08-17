@@ -256,6 +256,7 @@ namespace StarSalvager
                 PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector, Globals.CurrentWave + 1);
                 MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
                 MissionManager.ProcessChainWavesMissionData(Globals.CurrentWave + 1);
+                MissionManager.ProcessFlightLengthMissionData(m_levelTimer);
                 EndWaveState = true;
                 Globals.CurrentWave++;
                 m_levelTimer += m_waveTimer;
@@ -266,6 +267,10 @@ namespace StarSalvager
             else
             {
                 PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector + 1, 0);
+                MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
+                MissionManager.ProcessChainWavesMissionData(Globals.CurrentWave + 1);
+                MissionManager.ProcessSectorCompletedMissionData(Globals.CurrentSector + 1);
+                MissionManager.ProcessFlightLengthMissionData(m_levelTimer);
                 ProcessLevelCompleteAnalytics();
                 ProcessScrapyardUsageBeginAnalytics();
                 Globals.CurrentWave = 0;

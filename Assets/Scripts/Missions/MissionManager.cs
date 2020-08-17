@@ -185,6 +185,46 @@ namespace StarSalvager.Missions
             ProcessWaveComplete(sectorNumber, waveNumber);
         }
 
+        public static void ProcessSectorCompletedMissionData(int sectorNumber)
+        {
+            //Debug.Log("Level Progress mission event");
+            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
+            {
+                if (MissionsCurrentData.CurrentMissions[i] is SectorsCompletedMission SectorsCompletedMission)
+                {
+                    SectorsCompletedMission.ProcessMissionData(sectorNumber);
+                    if (SectorsCompletedMission.MissionComplete())
+                    {
+                        Debug.Log("Mission " + SectorsCompletedMission.m_missionName + " Complete!");
+                        SectorsCompletedMission.MissionStatus = MISSION_STATUS.COMPLETED;
+                        MissionsCurrentData.CompleteMission(SectorsCompletedMission);
+                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
+                        ProcessMissionComplete(SectorsCompletedMission.m_missionName);
+                    }
+                }
+            }
+        }
+
+        public static void ProcessFlightLengthMissionData(float flightLength)
+        {
+            //Debug.Log("Level Progress mission event");
+            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
+            {
+                if (MissionsCurrentData.CurrentMissions[i] is FlightLengthMission flightLengthMission)
+                {
+                    flightLengthMission.ProcessMissionData(flightLength);
+                    if (flightLengthMission.MissionComplete())
+                    {
+                        Debug.Log("Mission " + flightLengthMission.m_missionName + " Complete!");
+                        flightLengthMission.MissionStatus = MISSION_STATUS.COMPLETED;
+                        MissionsCurrentData.CompleteMission(flightLengthMission);
+                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
+                        ProcessMissionComplete(flightLengthMission.m_missionName);
+                    }
+                }
+            }
+        }
+
         public static void ProcessChainWavesMissionData(int waveNumber)
         {
             //Debug.Log("Chain Waves mission event");

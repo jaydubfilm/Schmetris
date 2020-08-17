@@ -7,6 +7,7 @@ namespace StarSalvager
     {
         SHAPE,
         CATEGORY,
-        ASTEROID
+        ASTEROID,
+        BUMPER
     }
 }
