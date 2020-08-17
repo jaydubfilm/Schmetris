@@ -38,7 +38,7 @@ namespace StarSalvager
         private float m_waveTimer;
         public float WaveTimer => m_waveTimer;
 
-        public bool m_isWaveProgressing = true;
+        public bool IsWaveProgressing = true;
 
         private float m_levelTimer = 0;
 
@@ -123,7 +123,7 @@ namespace StarSalvager
         }
         private GameUI _gameUi;
 
-        private Dictionary<BIT_TYPE, float> m_liquidResourcesAttBeginningOfSector = new Dictionary<BIT_TYPE, float>();
+        public Dictionary<BIT_TYPE, float> LiquidResourcesAttBeginningOfWave = new Dictionary<BIT_TYPE, float>();
         private void Start()
         {
             m_bots = new List<Bot>();
@@ -156,7 +156,7 @@ namespace StarSalvager
 
             if (!EndWaveState)
             {
-                if (m_isWaveProgressing)
+                if (IsWaveProgressing)
                     m_waveTimer += Time.deltaTime;
 
                 m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
@@ -192,10 +192,10 @@ namespace StarSalvager
             m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
 
-            m_liquidResourcesAttBeginningOfSector.Clear();
+            LiquidResourcesAttBeginningOfWave.Clear();
             foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
             {
-                m_liquidResourcesAttBeginningOfSector.Add(resource.Key, resource.Value);
+                LiquidResourcesAttBeginningOfWave.Add(resource.Key, resource.Value);
             }
             BotGameObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
             if (PlayerPersistentData.PlayerData.GetCurrentBlockData().Count == 0)
@@ -209,11 +209,11 @@ namespace StarSalvager
             }
             Bot.OnBotDied += (deadBot, deathMethod) =>
             {
-                foreach (var resource in m_liquidResourcesAttBeginningOfSector)
+                foreach (var resource in LiquidResourcesAttBeginningOfWave)
                 {
                     PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
                 }
-                m_isWaveProgressing = false;
+                IsWaveProgressing = false;
                 AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied);
                 Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>();
                 levelLostAnalyticsDictionary.Add("CurrentSector", Globals.CurrentSector);
@@ -310,12 +310,12 @@ namespace StarSalvager
 
         public void RestartLevel()
         {
-            Globals.CurrentWave = 0;
+            //Globals.CurrentWave = 0;
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
             //m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
             GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
             GameTimer.SetPaused(false);
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
+            //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
             SceneLoader.ActivateScene("AlexShulmanTestScene", "AlexShulmanTestScene");
         }
 

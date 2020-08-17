@@ -64,42 +64,50 @@ namespace StarSalvager.UI
         {
             continueButton.onClick.AddListener(() =>
             {
+                m_levelManager.IsWaveProgressing = true;
                 GameTimer.SetPaused(false);
                 ToggleBetweenWavesUIActive(false);
-                m_levelManager.m_isWaveProgressing = true;
                 LevelManager.Instance.EndWaveState = false;
+                m_levelManager.LiquidResourcesAttBeginningOfWave.Clear();
+                foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
+                {
+                    m_levelManager.LiquidResourcesAttBeginningOfWave.Add(resource.Key, resource.Value);
+                };
             });
 
             scrapyardButton.onClick.AddListener(() =>
             {
+                m_levelManager.IsWaveProgressing = true;
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
-                m_levelManager.m_isWaveProgressing = true;
                 LevelManager.Instance.EndWaveState = false;
                 SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             });
 
             toScrapyardButton.onClick.AddListener(() =>
             {
+                m_levelManager.IsWaveProgressing = true;
                 m_levelManager.SavePlayerData();
                 ToggleBetweenWavesUIActive(false);
-                m_levelManager.m_isWaveProgressing = true;
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             });
 
             toMainMenuButton.onClick.AddListener(() =>
             {
+                m_levelManager.IsWaveProgressing = true;
                 SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
             });
 
             deathWindowRetryButton.onClick.AddListener(() =>
             {
+                m_levelManager.IsWaveProgressing = true;
                 m_levelManager.RestartLevel();
             });
 
             deathWindowScrapyrdButton.onClick.AddListener(() =>
             {
+                m_levelManager.IsWaveProgressing = true;
                 GameTimer.SetPaused(false);
                 SceneLoader.ActivateScene("Scrapyard", "AlexShulmanTestScene");
             });
@@ -107,7 +115,7 @@ namespace StarSalvager.UI
             resumeButton.onClick.AddListener(() =>
             {
                 GameTimer.SetPaused(false);
-                m_levelManager.m_isWaveProgressing = true;
+                m_levelManager.IsWaveProgressing = true;
             });
             
             ToggleBetweenWavesUIActive(false);
