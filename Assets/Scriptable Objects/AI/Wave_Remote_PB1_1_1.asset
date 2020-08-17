@@ -16,9 +16,7 @@ MonoBehaviour:
   - m_stageDuration: 30
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
-    m_stageEnemyData:
-    - m_enemyType: 29b4a36e-47f7-47a4-8922-f7de5f531383
-      m_enemyCount: 3
+    m_stageEnemyData: []
     m_stageObstacleData:
     - m_selectionType: 2
       m_shapeName: BlackSingle
@@ -73,6 +71,12 @@ MonoBehaviour:
       m_category: 
       m_asteroidSize: 0
       m_countPerMinute: 60
+      m_rotation: 
+    - m_selectionType: 3
+      m_shapeName: 
+      m_category: 
+      m_asteroidSize: 0
+      m_countPerMinute: 100
       m_rotation: 
   - m_stageDuration: 30
     m_stageBlendPeriod: 0
@@ -134,4 +138,10 @@ MonoBehaviour:
       m_category: 
       m_asteroidSize: 0
       m_countPerMinute: 60
+      m_rotation: 
+    - m_selectionType: 3
+      m_shapeName: 
+      m_category: 
+      m_asteroidSize: 0
+      m_countPerMinute: 100
       m_rotation: 

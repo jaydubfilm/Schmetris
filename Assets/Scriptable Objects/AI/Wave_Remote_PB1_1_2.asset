@@ -74,6 +74,12 @@ MonoBehaviour:
       m_asteroidSize: 0
       m_countPerMinute: 60
       m_rotation: 
+    - m_selectionType: 3
+      m_shapeName: 
+      m_category: 
+      m_asteroidSize: 0
+      m_countPerMinute: 100
+      m_rotation: 
   - m_stageDuration: 30
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
@@ -134,4 +140,10 @@ MonoBehaviour:
       m_category: 
       m_asteroidSize: 0
       m_countPerMinute: 60
+      m_rotation: 
+    - m_selectionType: 3
+      m_shapeName: 
+      m_category: 
+      m_asteroidSize: 0
+      m_countPerMinute: 100
       m_rotation: 

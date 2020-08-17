@@ -57,6 +57,26 @@ MonoBehaviour:
         type: 5
         partPrerequisiteLevel: 0
         amount: 500
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 6
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 2
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 1
     - unlockLevel: 0
       health: 100
       dataTest:
@@ -86,6 +106,30 @@ MonoBehaviour:
         type: 5
         partPrerequisiteLevel: 0
         amount: 10000
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 12
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 6
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 2
+        type: 0
+        partPrerequisiteLevel: 1
+        amount: 1
   - name: Magnet
     partType: 1
     canSell: 1
@@ -130,6 +174,10 @@ MonoBehaviour:
         type: 1
         partPrerequisiteLevel: 0
         amount: 1
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 1
     - unlockLevel: 0
       health: 120
       dataTest:
@@ -150,9 +198,13 @@ MonoBehaviour:
         partPrerequisiteLevel: 1
         amount: 1
       - resourceType: 1
-        type: 0
+        type: 1
         partPrerequisiteLevel: 0
-        amount: 1
+        amount: 4
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 4
   - name: Repairer
     partType: 2
     canSell: 1
@@ -176,6 +228,10 @@ MonoBehaviour:
         type: 2
         partPrerequisiteLevel: 0
         amount: 100
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 3
     - unlockLevel: 0
       health: 90
       dataTest:
@@ -193,6 +249,22 @@ MonoBehaviour:
         type: 2
         partPrerequisiteLevel: 0
         amount: 800
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 2
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 1
     - unlockLevel: 0
       health: 100
       dataTest:
@@ -210,6 +282,18 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 6000
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 2
+        type: 2
+        partPrerequisiteLevel: 1
+        amount: 1
   - name: Armor
     partType: 3
     canSell: 1
@@ -225,6 +309,10 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 200
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
     - unlockLevel: 0
       health: 300
       dataTest: []
@@ -234,6 +322,22 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 2500
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 2
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1
     - unlockLevel: 0
       health: 500
       dataTest: []
@@ -243,6 +347,18 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 20000
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 2
+        type: 3
+        partPrerequisiteLevel: 1
+        amount: 1
   - name: Gun
     partType: 4
     canSell: 1
@@ -283,6 +399,18 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 200
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 2
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 1
     - unlockLevel: 0
       health: 100
       dataTest:
@@ -300,6 +428,18 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 1500
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 2
+        type: 4
+        partPrerequisiteLevel: 1
+        amount: 1
   - name: Shield
     partType: 5
     canSell: 1
@@ -327,6 +467,14 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 200
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 1
     - unlockLevel: 6
       health: 100
       dataTest:
@@ -348,6 +496,18 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 750
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 2
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 1
     - unlockLevel: 8
       health: 120
       dataTest:
@@ -369,6 +529,22 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 2500
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 2
+        type: 5
+        partPrerequisiteLevel: 1
+        amount: 1
   - name: Bomb
     partType: 7
     canSell: 1
@@ -392,6 +568,10 @@ MonoBehaviour:
         type: 4
         partPrerequisiteLevel: 0
         amount: 150
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 3
     - unlockLevel: 8
       health: 150
       dataTest:
@@ -409,6 +589,18 @@ MonoBehaviour:
         type: 4
         partPrerequisiteLevel: 0
         amount: 3500
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 3
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 3
+      - resourceType: 2
+        type: 7
+        partPrerequisiteLevel: 0
+        amount: 1
   - name: Container
     partType: 8
     canSell: 1
@@ -430,6 +622,10 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 300
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 1
     - unlockLevel: 5
       health: 75
       dataTest:
@@ -445,6 +641,14 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 900
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 2
+        type: 8
+        partPrerequisiteLevel: 0
+        amount: 1
     - unlockLevel: 8
       health: 100
       dataTest:
@@ -460,6 +664,18 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 2700
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 2
+        type: 8
+        partPrerequisiteLevel: 1
+        amount: 1
   - name: Fuel Tank
     partType: 9
     canSell: 1
@@ -496,6 +712,18 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 100
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 2
+        type: 9
+        partPrerequisiteLevel: 0
+        amount: 1
     - unlockLevel: 5
       health: 100
       dataTest:
@@ -511,6 +739,22 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 400
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 2
+        type: 9
+        partPrerequisiteLevel: 1
+        amount: 1
   - name: Plasma Drum
     partType: 10
     canSell: 1
@@ -532,6 +776,10 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 120
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 1
     - unlockLevel: 4
       health: 75
       dataTest:
@@ -547,6 +795,18 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 400
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 2
+        type: 10
+        partPrerequisiteLevel: 0
+        amount: 1
     - unlockLevel: 6
       health: 100
       dataTest:
@@ -562,6 +822,18 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 1600
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 2
+        type: 10
+        partPrerequisiteLevel: 1
+        amount: 1
   - name: Magazine
     partType: 11
     canSell: 1
@@ -579,6 +851,10 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 200
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 1
     - unlockLevel: 4
       health: 75
       dataTest:
@@ -590,6 +866,18 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 600
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 2
+        type: 11
+        partPrerequisiteLevel: 0
+        amount: 1
     - unlockLevel: 6
       health: 100
       dataTest:
@@ -601,3 +889,15 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 2400
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 2
+        type: 11
+        partPrerequisiteLevel: 1
+        amount: 1

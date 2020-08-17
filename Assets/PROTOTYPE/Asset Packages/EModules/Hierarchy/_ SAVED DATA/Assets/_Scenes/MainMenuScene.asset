@@ -34,6 +34,24 @@ MonoBehaviour:
     - i1: 403794180
       i2: 0
   - activeObject:
+      i1: 251966503
+      i2: 0
+    list:
+    - i1: 251966503
+      i2: 0
+  - activeObject:
+      i1: 403794180
+      i2: 0
+    list:
+    - i1: 403794180
+      i2: 0
+  - activeObject:
+      i1: 403794180
+      i2: 0
+    list:
+    - i1: 403794180
+      i2: 0
+  - activeObject:
       i1: -1
       i2: -1
     list:
@@ -93,24 +111,6 @@ MonoBehaviour:
     list:
     - i1: -96205052
       i2: 1831848149
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
   - activeObject:
       i1: -1
       i2: -1
