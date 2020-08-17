@@ -53,8 +53,8 @@ namespace StarSalvager.Values
         private Dictionary<BIT_TYPE, float> _liquidResource = new Dictionary<BIT_TYPE, float>
         {
             {BIT_TYPE.RED, 50},
-            {BIT_TYPE.BLUE, 0},
-            {BIT_TYPE.YELLOW, 0},
+            {BIT_TYPE.BLUE, 50},
+            {BIT_TYPE.YELLOW, 50},
             {BIT_TYPE.GREEN, 0},
             {BIT_TYPE.GREY, 0},
         };

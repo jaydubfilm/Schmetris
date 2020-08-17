@@ -643,8 +643,14 @@ namespace StarSalvager
                 UpdateUI(partRemoteData.burnType, resourceValue);
                 PlayerPersistentData.PlayerData.SetLiquidResource(partRemoteData.burnType, resourceValue);
             }
+
+            //TEMP: lines to slowly drain electricity and water
+            UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] - Time.deltaTime);
+            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] - Time.deltaTime);
+            UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] - Time.deltaTime);
+            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] - Time.deltaTime);
         }
-        
+
         //============================================================================================================//
 
         private Bit GetFurthestBitToBurn(PartLevelData partLevelData, BIT_TYPE type)
