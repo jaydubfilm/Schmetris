@@ -647,10 +647,11 @@ namespace StarSalvager
             }
 
             //TEMP: lines to slowly drain electricity and water
-            UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] - Time.deltaTime);
-            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] - Time.deltaTime);
-            UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] - Time.deltaTime);
-            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] - Time.deltaTime);
+            float baseDrainRate = Time.deltaTime / 4;
+            UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] - baseDrainRate);
+            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] - baseDrainRate);
+            UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] - baseDrainRate);
+            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] - baseDrainRate);
 
             if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] <= 0)
             {

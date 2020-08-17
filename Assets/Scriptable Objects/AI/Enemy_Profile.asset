@@ -41,11 +41,11 @@ MonoBehaviour:
     m_sprite: {fileID: 2357439660054832943, guid: ca216a3cd365bfe4e924677094170fdb,
       type: 3}
     m_enemyType: Ball Head
-    m_movementType: 0
+    m_movementType: 6
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 9a67d56bcff91044590444220f102079,
       type: 2}
-    m_attackType: 0
+    m_attackType: 1
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
@@ -109,3 +109,21 @@ MonoBehaviour:
     m_addVelocityToProjectiles: 0
     m_spreadAngle: 0
     m_sprayCount: 0
+  - m_enemyTypeID: 29b4a36e-47f7-47a4-8922-f7de5f531383
+    m_sprite: {fileID: 1155024208887532473, guid: db9adc14e8a7d054da2c1eed6b01af10,
+      type: 3}
+    m_enemyType: SuperFly
+    m_movementType: 5
+    m_isAttachable: 0
+    m_enemyAnimationController: {fileID: 11400000, guid: 771806d5ec0835544862fa727f69e841,
+      type: 2}
+    m_attackType: 3
+    m_projectileType: 54ef5003-668f-48e1-bd6b-9bfb3221d9d0
+    m_oscillationsPerSeconds: 0
+    m_oscillationAngleRange: 0
+    m_orbitRadius: 0
+    m_numberCellsDescend: 4
+    m_ignoreObstacleAvoidance: 0
+    m_addVelocityToProjectiles: 0
+    m_spreadAngle: 45
+    m_sprayCount: 3

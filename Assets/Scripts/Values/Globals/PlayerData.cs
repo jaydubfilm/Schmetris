@@ -27,11 +27,11 @@ namespace StarSalvager.Values
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _resources = new Dictionary<BIT_TYPE, int>
         {
-            {BIT_TYPE.RED, 1250},
-            {BIT_TYPE.BLUE, 1250},
-            {BIT_TYPE.YELLOW, 1250},
-            {BIT_TYPE.GREEN, 1250},
-            {BIT_TYPE.GREY, 1250},
+            {BIT_TYPE.RED, 0},
+            {BIT_TYPE.BLUE, 0},
+            {BIT_TYPE.YELLOW, 0},
+            {BIT_TYPE.GREEN, 0},
+            {BIT_TYPE.GREY, 0},
         };
 
         [JsonIgnore]
@@ -39,11 +39,11 @@ namespace StarSalvager.Values
         [JsonProperty]
         private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_TYPE, int>
         {
-            {COMPONENT_TYPE.CALLIT, 3},
-            {COMPONENT_TYPE.DOHICKEY, 3},
-            {COMPONENT_TYPE.GADGET, 3},
-            {COMPONENT_TYPE.GIZMO, 3},
-            {COMPONENT_TYPE.THINGY, 3}
+            {COMPONENT_TYPE.CALLIT, 0},
+            {COMPONENT_TYPE.DOHICKEY, 0},
+            {COMPONENT_TYPE.GADGET, 0},
+            {COMPONENT_TYPE.GIZMO, 0},
+            {COMPONENT_TYPE.THINGY, 0}
         };
 
         [JsonIgnore]
@@ -52,9 +52,9 @@ namespace StarSalvager.Values
         //FIXME This needs to use some sort of capacity value
         private Dictionary<BIT_TYPE, float> _liquidResource = new Dictionary<BIT_TYPE, float>
         {
-            {BIT_TYPE.RED, 50},
-            {BIT_TYPE.BLUE, 50},
-            {BIT_TYPE.YELLOW, 50},
+            {BIT_TYPE.RED, 30},
+            {BIT_TYPE.BLUE, 0},
+            {BIT_TYPE.YELLOW, 0},
             {BIT_TYPE.GREEN, 0},
             {BIT_TYPE.GREY, 0},
         };

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -685826432, guid: d0a3e0b9ac23d414d826899174e258c4, type: 3}
-  m_Name: BotShapeEditorScene
+  m_Name: MainMenuScene
   m_EditorClassIdentifier: 
   LOCALIDINFILE_HashFreeze: []
   LOCALIDINFILE_Hash1: []
@@ -21,14 +21,96 @@ MonoBehaviour:
   LOCALIDINFILE_Hash7_Fix2_0: []
   LOCALIDINFILE_Hash9: []
   LOCALIDINFILE_Hash_BookMarks:
-  - list: []
+  - list:
+    - activeObject:
+        i1: -1
+        i2: -1
+      list: []
   LOCALIDINFILE_Hash3:
   - activeObject:
-      i1: -993899739
-      i2: 1949387357
+      i1: 403794180
+      i2: 0
     list:
-    - i1: -993899739
-      i2: 1949387357
+    - i1: 403794180
+      i2: 0
+  - activeObject:
+      i1: 251966503
+      i2: 0
+    list:
+    - i1: 251966503
+      i2: 0
+  - activeObject:
+      i1: 403794180
+      i2: 0
+    list:
+    - i1: 403794180
+      i2: 0
+  - activeObject:
+      i1: 403794180
+      i2: 0
+    list:
+    - i1: 403794180
+      i2: 0
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: -96205052
+      i2: 1831848149
+    list:
+    - i1: -96205052
+      i2: 1831848149
+  - activeObject:
+      i1: -96205052
+      i2: 1831848149
+    list:
+    - i1: -96205052
+      i2: 1831848149
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: 598996318
+      i2: 0
+    list:
+    - i1: 598996318
+      i2: 0
+  - activeObject:
+      i1: 1933588733
+      i2: 0
+    list:
+    - i1: 1933588733
+      i2: 0
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: -96205052
+      i2: 1831848149
+    list:
+    - i1: -96205052
+      i2: 1831848149
   - activeObject:
       i1: -1
       i2: -1
@@ -89,85 +171,11 @@ MonoBehaviour:
     list:
     - i1: -1
       i2: -1
+  LOCALIDINFILE_Hash4:
   - activeObject:
       i1: -1
       i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  LOCALIDINFILE_Hash4: []
+    list: []
   LOCALIDINFILE_m_Hash_IconImageKey: []
   HashFreezeHashKeys: []
   HashFreezeHashValues: 
@@ -189,11 +197,11 @@ MonoBehaviour:
       GUIDsActiveGameObject: 
       PATHsList: []
       PATHsActiveGameObject: 
-      InstanceID: 2086451410
+      InstanceID: 1483367719
       wasInit: 0
       CashedBool: 0
     FavParams: 0
-    InstanceID: -517784499
+    InstanceID: 949199617
     Hierarchy_ScrollY: 0
     Window_ScrollY: 0
     ColabsedItems: 
@@ -499,7 +507,7 @@ MonoBehaviour:
     GUIDsActiveGameObject: 
     PATHsList: []
     PATHsActiveGameObject: 
-    InstanceID: 2086451410
+    InstanceID: 1483367719
     wasInit: 0
     CashedBool: 0
   Hash5: []
