@@ -81,6 +81,9 @@ namespace StarSalvager.Values
 
         public int currentModularSectorIndex = 0;
 
+        public int numLives = 3;
+        public bool firstFlight = true;
+
         //============================================================================================================//
 
         public void SetResources(Dictionary<BIT_TYPE, int> values)

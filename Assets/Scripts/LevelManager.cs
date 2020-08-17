@@ -140,6 +140,40 @@ namespace StarSalvager
 
             GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
 
+            Bot.OnBotDied += (deadBot, deathMethod) =>
+            {
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied);
+                Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>();
+                levelLostAnalyticsDictionary.Add("CurrentSector", Globals.CurrentSector);
+                levelLostAnalyticsDictionary.Add("CurrentWave", Globals.CurrentWave);
+                levelLostAnalyticsDictionary.Add("CurrentStage", m_currentStage);
+                levelLostAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelLost, eventDataDictionary: levelLostAnalyticsDictionary);
+
+                PlayerPersistentData.PlayerData.numLives--;
+                if (PlayerPersistentData.PlayerData.numLives > 0)
+                {
+                    foreach (var resource in LiquidResourcesAttBeginningOfWave)
+                    {
+                        PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
+                    }
+                    IsWaveProgressing = false;
+                    m_levelManagerUI.UpdateLivesText();
+                    m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
+                }
+                else
+                {
+                    Alert.ShowAlert("GAME OVER", "Ran out of lives. Click to return to main menu.", "Ok", () =>
+                    {
+                        Globals.CurrentWave = 0;
+                        GameTimer.SetPaused(false);
+                        PlayerPersistentData.PlayerData.numLives = 3;
+                        SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
+                    });
+                }
+                //Debug.LogError("Bot Died. Press 'R' to restart");
+            };
+
             Random.InitState(seed);
         }
 
@@ -207,23 +241,6 @@ namespace StarSalvager
                 print("Load from data");
                 BotGameObject.InitBot(PlayerPersistentData.PlayerData.GetCurrentBlockData().ImportBlockDatas(false));
             }
-            Bot.OnBotDied += (deadBot, deathMethod) =>
-            {
-                foreach (var resource in LiquidResourcesAttBeginningOfWave)
-                {
-                    PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
-                }
-                IsWaveProgressing = false;
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied);
-                Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>();
-                levelLostAnalyticsDictionary.Add("CurrentSector", Globals.CurrentSector);
-                levelLostAnalyticsDictionary.Add("CurrentWave", Globals.CurrentWave);
-                levelLostAnalyticsDictionary.Add("CurrentStage", m_currentStage);
-                levelLostAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelLost, eventDataDictionary: levelLostAnalyticsDictionary);
-                m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
-                //Debug.LogError("Bot Died. Press 'R' to restart");
-            };
             BotGameObject.transform.parent = null;
             SceneManager.MoveGameObjectToScene(BotGameObject.gameObject, gameObject.scene);
 
@@ -242,8 +259,15 @@ namespace StarSalvager
             WorldGrid.SetupGrid();
             ProjectileManager.Activate();
 
-            GameTimer.SetPaused(false);
+            m_levelManagerUI.UpdateLivesText();
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
+            GameTimer.SetPaused(false);
+
+            if (PlayerPersistentData.PlayerData.firstFlight)
+            {
+                PlayerPersistentData.PlayerData.firstFlight = false;
+                Toast.AddToast("Controls: AD for left/right movement, WS to rotate. Escape to pause.", time: 6.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
+            }
         }
 
         public void Reset()

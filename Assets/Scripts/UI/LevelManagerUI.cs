@@ -14,7 +14,9 @@ namespace StarSalvager.UI
         
         [SerializeField, Required]
         private TMP_Text deathText;
-        
+        [SerializeField, Required]
+        private TMP_Text livesText;
+
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("UISections")]
@@ -125,7 +127,10 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        
+        public void UpdateLivesText()
+        {
+            livesText.text = "Lives: " + PlayerPersistentData.PlayerData.numLives;
+        }
 
         public void ToggleBetweenWavesUIActive(bool active)
         {
