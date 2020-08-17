@@ -25,7 +25,7 @@ MonoBehaviour:
       - key: Magnet
         value: 8
       - key: Capacity
-        value: 50
+        value: 30
       burnRate: 1
       cost: []
     - unlockLevel: 0
