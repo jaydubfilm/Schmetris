@@ -14,7 +14,9 @@ namespace StarSalvager.UI
         
         [SerializeField, Required]
         private TMP_Text deathText;
-        
+        [SerializeField, Required]
+        private TMP_Text livesText;
+
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("UISections")]
@@ -33,9 +35,9 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("View")]
         private Button toMainMenuButton;
         [SerializeField, Required, FoldoutGroup("View")]
-        private Button retryButton;
+        private Button deathWindowRetryButton;
         [SerializeField, Required, FoldoutGroup("View")]
-        private Button mainMenuButton;
+        private Button deathWindowScrapyrdButton;
 
         //============================================================================================================//
 
@@ -64,13 +66,20 @@ namespace StarSalvager.UI
         {
             continueButton.onClick.AddListener(() =>
             {
+                m_levelManager.IsWaveProgressing = true;
                 GameTimer.SetPaused(false);
                 ToggleBetweenWavesUIActive(false);
                 LevelManager.Instance.EndWaveState = false;
+                m_levelManager.LiquidResourcesAttBeginningOfWave.Clear();
+                foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
+                {
+                    m_levelManager.LiquidResourcesAttBeginningOfWave.Add(resource.Key, resource.Value);
+                };
             });
 
             scrapyardButton.onClick.AddListener(() =>
             {
+                m_levelManager.IsWaveProgressing = true;
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
                 LevelManager.Instance.EndWaveState = false;
@@ -79,6 +88,7 @@ namespace StarSalvager.UI
 
             toScrapyardButton.onClick.AddListener(() =>
             {
+                m_levelManager.IsWaveProgressing = true;
                 m_levelManager.SavePlayerData();
                 ToggleBetweenWavesUIActive(false);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
@@ -87,23 +97,27 @@ namespace StarSalvager.UI
 
             toMainMenuButton.onClick.AddListener(() =>
             {
+                m_levelManager.IsWaveProgressing = true;
                 SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
             });
 
-            retryButton.onClick.AddListener(() =>
+            deathWindowRetryButton.onClick.AddListener(() =>
             {
+                m_levelManager.IsWaveProgressing = true;
                 m_levelManager.RestartLevel();
             });
 
-            mainMenuButton.onClick.AddListener(() =>
+            deathWindowScrapyrdButton.onClick.AddListener(() =>
             {
+                m_levelManager.IsWaveProgressing = true;
                 GameTimer.SetPaused(false);
-                SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
+                SceneLoader.ActivateScene("Scrapyard", "AlexShulmanTestScene");
             });
             
             resumeButton.onClick.AddListener(() =>
             {
                 GameTimer.SetPaused(false);
+                m_levelManager.IsWaveProgressing = true;
             });
             
             ToggleBetweenWavesUIActive(false);
@@ -113,7 +127,10 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        
+        public void UpdateLivesText()
+        {
+            livesText.text = "Lives: " + PlayerPersistentData.PlayerData.numLives;
+        }
 
         public void ToggleBetweenWavesUIActive(bool active)
         {

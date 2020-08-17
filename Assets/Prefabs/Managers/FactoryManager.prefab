@@ -50,8 +50,8 @@ MonoBehaviour:
   - SectorData:
     - {fileID: 11400000, guid: 084d6bc594ad746bf84ae0d507a37aa5, type: 2}
   - SectorData:
-    - {fileID: 11400000, guid: 084d6bc594ad746bf84ae0d507a37aa5, type: 2}
-  - SectorData:
+    - {fileID: 11400000, guid: 7ac9df6299ec27246841800d65fc57ec, type: 2}
+    - {fileID: 11400000, guid: 63cd5494bf32a7b4d9e634d59d26d498, type: 2}
     - {fileID: 11400000, guid: a717bd6db04690d488c33a7ed054e8f2, type: 2}
   currentModularDataIndex: 0
   bitProfile: {fileID: 11400000, guid: e28447dfb0dfb5443a8105eb274b5052, type: 2}

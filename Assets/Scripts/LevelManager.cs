@@ -38,6 +38,8 @@ namespace StarSalvager
         private float m_waveTimer;
         public float WaveTimer => m_waveTimer;
 
+        public bool IsWaveProgressing = true;
+
         private float m_levelTimer = 0;
 
         private int m_currentStage;
@@ -121,6 +123,7 @@ namespace StarSalvager
         }
         private GameUI _gameUi;
 
+        public Dictionary<BIT_TYPE, float> LiquidResourcesAttBeginningOfWave = new Dictionary<BIT_TYPE, float>();
         private void Start()
         {
             m_bots = new List<Bot>();
@@ -136,6 +139,40 @@ namespace StarSalvager
             //m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
 
             GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
+
+            Bot.OnBotDied += (deadBot, deathMethod) =>
+            {
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied);
+                Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>();
+                levelLostAnalyticsDictionary.Add("CurrentSector", Globals.CurrentSector);
+                levelLostAnalyticsDictionary.Add("CurrentWave", Globals.CurrentWave);
+                levelLostAnalyticsDictionary.Add("CurrentStage", m_currentStage);
+                levelLostAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelLost, eventDataDictionary: levelLostAnalyticsDictionary);
+
+                PlayerPersistentData.PlayerData.numLives--;
+                if (PlayerPersistentData.PlayerData.numLives > 0)
+                {
+                    foreach (var resource in LiquidResourcesAttBeginningOfWave)
+                    {
+                        PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
+                    }
+                    IsWaveProgressing = false;
+                    m_levelManagerUI.UpdateLivesText();
+                    m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
+                }
+                else
+                {
+                    Alert.ShowAlert("GAME OVER", "Ran out of lives. Click to return to main menu.", "Ok", () =>
+                    {
+                        Globals.CurrentWave = 0;
+                        GameTimer.SetPaused(false);
+                        PlayerPersistentData.PlayerData.numLives = 3;
+                        SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
+                    });
+                }
+                //Debug.LogError("Bot Died. Press 'R' to restart");
+            };
 
             Random.InitState(seed);
         }
@@ -153,7 +190,9 @@ namespace StarSalvager
 
             if (!EndWaveState)
             {
-                m_waveTimer += Time.deltaTime;
+                if (IsWaveProgressing)
+                    m_waveTimer += Time.deltaTime;
+
                 m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
 
                 //Displays the time in timespan & the fill value
@@ -186,6 +225,12 @@ namespace StarSalvager
         {
             m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
+
+            LiquidResourcesAttBeginningOfWave.Clear();
+            foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
+            {
+                LiquidResourcesAttBeginningOfWave.Add(resource.Key, resource.Value);
+            }
             BotGameObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
             if (PlayerPersistentData.PlayerData.GetCurrentBlockData().Count == 0)
             {
@@ -196,19 +241,6 @@ namespace StarSalvager
                 print("Load from data");
                 BotGameObject.InitBot(PlayerPersistentData.PlayerData.GetCurrentBlockData().ImportBlockDatas(false));
             }
-            Bot.OnBotDied += (deadBot, deathMethod) =>
-            {
-                GameTimer.SetPaused(true);
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied);
-                Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>();
-                levelLostAnalyticsDictionary.Add("CurrentSector", Globals.CurrentSector);
-                levelLostAnalyticsDictionary.Add("CurrentWave", Globals.CurrentWave);
-                levelLostAnalyticsDictionary.Add("CurrentStage", m_currentStage);
-                levelLostAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelLost, eventDataDictionary: levelLostAnalyticsDictionary);
-                m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
-                //Debug.LogError("Bot Died. Press 'R' to restart");
-            };
             BotGameObject.transform.parent = null;
             SceneManager.MoveGameObjectToScene(BotGameObject.gameObject, gameObject.scene);
 
@@ -227,8 +259,15 @@ namespace StarSalvager
             WorldGrid.SetupGrid();
             ProjectileManager.Activate();
 
-            GameTimer.SetPaused(false);
+            m_levelManagerUI.UpdateLivesText();
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
+            GameTimer.SetPaused(false);
+
+            if (PlayerPersistentData.PlayerData.firstFlight)
+            {
+                PlayerPersistentData.PlayerData.firstFlight = false;
+                Toast.AddToast("Controls: AD for left/right movement, WS to rotate. Escape to pause.", time: 6.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
+            }
         }
 
         public void Reset()
@@ -295,12 +334,12 @@ namespace StarSalvager
 
         public void RestartLevel()
         {
-            Globals.CurrentWave = 0;
+            //Globals.CurrentWave = 0;
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
             //m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
             GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
             GameTimer.SetPaused(false);
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
+            //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
             SceneLoader.ActivateScene("AlexShulmanTestScene", "AlexShulmanTestScene");
         }
 
