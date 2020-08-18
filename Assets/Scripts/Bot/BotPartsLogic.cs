@@ -67,7 +67,11 @@ namespace StarSalvager
             }
         }
         private GameUI _GameUI;
-        
+
+        //temp variables
+        float batteryDrainTimer = 0;
+        float waterDrainTimer = 0;
+
         //==============================================================================================================//
         
         [SerializeField, BoxGroup("Magnets")] public bool useMagnet = true;
@@ -529,42 +533,21 @@ namespace StarSalvager
                 PlayerPersistentData.PlayerData.SetLiquidResource(partRemoteData.burnType, resourceValue);
             }
 
-            //TEMP: lines to slowly drain electricity and water
-            float baseDrainRate = Time.deltaTime / 4;
-            UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] - baseDrainRate);
-            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] - baseDrainRate);
-            UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] - baseDrainRate);
-            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] - baseDrainRate);
+            batteryDrainTimer += Time.deltaTime / 2;
+            waterDrainTimer += Time.deltaTime / 4;
 
-            if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] <= 0)
+            if (batteryDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] > 0)
             {
-                var targetBit = GetFurthestBitToBurn(BIT_TYPE.YELLOW);
-
-                if (targetBit != null)
-                {
-                    var addAmount = FactoryManager.Instance
-                        .GetFactory<BitAttachableFactory>().GetBitRemoteData(targetBit.Type).levels[targetBit.level]
-                        .resources;
-
-                    PlayerPersistentData.PlayerData.AddLiquidResource(BIT_TYPE.YELLOW, addAmount);
-                    bot.DestroyAttachable<Bit>(targetBit);
-                }
+                batteryDrainTimer--;
+                PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] - 1);
             }
-
-            if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] <= 0)
+            if (waterDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0)
             {
-                var targetBit = GetFurthestBitToBurn(BIT_TYPE.BLUE);
-
-                if (targetBit != null)
-                {
-                    var addAmount = FactoryManager.Instance
-                        .GetFactory<BitAttachableFactory>().GetBitRemoteData(targetBit.Type).levels[targetBit.level]
-                        .resources;
-
-                    PlayerPersistentData.PlayerData.AddLiquidResource(BIT_TYPE.BLUE, addAmount);
-                    bot.DestroyAttachable<Bit>(targetBit);
-                }
+                waterDrainTimer--;
+                PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] - 1);
             }
+            UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW]);
+            UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE]);
         }
         
         //============================================================================================================//
@@ -688,6 +671,8 @@ namespace StarSalvager
             {
                 UpdateUI(f.Key, f.Value);
             }
+            UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW]);
+            UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE]);
         }
 
         private void UpdateUI(BIT_TYPE type, float value)

@@ -26,23 +26,26 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        [SerializeField, Required, FoldoutGroup("View")]
-        private Button continueButton;
-        [SerializeField, Required, FoldoutGroup("View")]
-        private Button scrapyardButton;
-        [SerializeField, Required, FoldoutGroup("View")]
-        private Button toScrapyardButton;
-        [SerializeField, Required, FoldoutGroup("View")]
-        private Button toMainMenuButton;
-        [SerializeField, Required, FoldoutGroup("View")]
+        [SerializeField, Required, FoldoutGroup("Between Waves")]
+        private Button betweenWavesContinueButton;
+        [SerializeField, Required, FoldoutGroup("Between Waves")]
+        private Button betweenWavesScrapyardButton;
+
+        //============================================================================================================//
+
+        [SerializeField, Required, FoldoutGroup("Death Window")]
         private Button deathWindowRetryButton;
-        [SerializeField, Required, FoldoutGroup("View")]
+        [SerializeField, Required, FoldoutGroup("Death Window")]
         private Button deathWindowScrapyrdButton;
 
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("Pause Menu")]
         private GameObject pauseWindow;
+        [SerializeField, Required, FoldoutGroup("Pause Menu")]
+        private Button pauseWindowScrapyardButton;
+        [SerializeField, Required, FoldoutGroup("Pause Menu")]
+        private Button pauseWindowMainMenuButton;
         [SerializeField, Required, FoldoutGroup("Pause Menu")]
         private Button resumeButton;
         [SerializeField, Required, FoldoutGroup("Pause Menu")]
@@ -60,11 +63,18 @@ namespace StarSalvager.UI
             InitButtons();
         }
 
+        private void Update()
+        {
+            betweenWavesContinueButton.interactable = 
+                PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] > 0
+                && PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0;
+        }
+
         //============================================================================================================//
 
         private void InitButtons()
         {
-            continueButton.onClick.AddListener(() =>
+            betweenWavesContinueButton.onClick.AddListener(() =>
             {
                 m_levelManager.IsWaveProgressing = true;
                 GameTimer.SetPaused(false);
@@ -77,7 +87,7 @@ namespace StarSalvager.UI
                 };
             });
 
-            scrapyardButton.onClick.AddListener(() =>
+            betweenWavesScrapyardButton.onClick.AddListener(() =>
             {
                 m_levelManager.IsWaveProgressing = true;
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
@@ -86,7 +96,7 @@ namespace StarSalvager.UI
                 SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             });
 
-            toScrapyardButton.onClick.AddListener(() =>
+            pauseWindowScrapyardButton.onClick.AddListener(() =>
             {
                 m_levelManager.IsWaveProgressing = true;
                 m_levelManager.SavePlayerData();
@@ -95,7 +105,7 @@ namespace StarSalvager.UI
                 SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
             });
 
-            toMainMenuButton.onClick.AddListener(() =>
+            pauseWindowMainMenuButton.onClick.AddListener(() =>
             {
                 m_levelManager.IsWaveProgressing = true;
                 SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");

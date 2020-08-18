@@ -2292,10 +2292,10 @@ MonoBehaviour:
   livesText: {fileID: 718807288243189152}
   m_betweenWavesUI: {fileID: 8672333737647323004}
   m_deathUI: {fileID: 8672333737287589470}
-  continueButton: {fileID: 8672333738695047967}
-  scrapyardButton: {fileID: 8672333737915462134}
-  toScrapyardButton: {fileID: 8672333738182108307}
-  toMainMenuButton: {fileID: 8672333737790453237}
+  betweenWavesContinueButton: {fileID: 8672333738695047967}
+  betweenWavesScrapyardButton: {fileID: 8672333737915462134}
+  pauseWindowScrapyardButton: {fileID: 8672333738182108307}
+  pauseWindowMainMenuButton: {fileID: 8672333737790453237}
   deathWindowRetryButton: {fileID: 8672333738047708705}
   deathWindowScrapyrdButton: {fileID: 8672333738578055755}
   pauseWindow: {fileID: 837782640108388277}

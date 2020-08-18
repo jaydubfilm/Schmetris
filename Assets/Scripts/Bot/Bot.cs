@@ -176,15 +176,14 @@ namespace StarSalvager
             
             BotPartsLogic.PartsUpdateLoop();
 
-
-            if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] <= 0)
+            /*if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] <= 0)
             {
                 Destroy("Ran out of power");
             }
             if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] <= 0)
             {
                 Destroy("Ran out of water");
-            }
+            }*/
         }
 
         private void FixedUpdate()
