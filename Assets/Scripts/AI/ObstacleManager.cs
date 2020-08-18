@@ -378,6 +378,9 @@ namespace StarSalvager
         {
             if (isPaused)
                 return;
+
+            if (LevelManager.Instance.CurrentWaveData.GetWaveDuration() <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod)
+                return;
             
             foreach (StageObstacleData stageObstacleData in m_currentStageData.StageObstacleData)
             {

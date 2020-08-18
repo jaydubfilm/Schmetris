@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Wave_Remote_1_1
   m_EditorClassIdentifier: 
   StageRemoteData:
-  - m_stageDuration: 5
+  - m_stageDuration: 10
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
@@ -23,45 +23,53 @@ MonoBehaviour:
     - m_selectionType: 0
       m_shapeName: RedSingle
       m_category: Small
-      m_asteroidCountPerMinute: 150
+      m_asteroidSize: 0
+      m_countPerMinute: 150
       m_rotation: Random
     - m_selectionType: 0
       m_shapeName: GreySingle
       m_category: Medium
-      m_asteroidCountPerMinute: 100
+      m_asteroidSize: 0
+      m_countPerMinute: 100
       m_rotation: Random
     - m_selectionType: 0
       m_shapeName: GreenSingle
       m_category: 
-      m_asteroidCountPerMinute: 50
+      m_asteroidSize: 0
+      m_countPerMinute: 50
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: BlueSingle
       m_category: 
-      m_asteroidCountPerMinute: 60
+      m_asteroidSize: 0
+      m_countPerMinute: 60
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: Asteroid3.0
       m_category: 
-      m_asteroidCountPerMinute: 50
+      m_asteroidSize: 0
+      m_countPerMinute: 50
       m_rotation: Random
     - m_selectionType: 0
       m_shapeName: Asteroid4.0
       m_category: 
-      m_asteroidCountPerMinute: 50
+      m_asteroidSize: 0
+      m_countPerMinute: 50
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: Asteroid5.2
       m_category: 
-      m_asteroidCountPerMinute: 50
+      m_asteroidSize: 0
+      m_countPerMinute: 50
       m_rotation: Random
     - m_selectionType: 0
       m_shapeName: Asteroid6.1
       m_category: 
-      m_asteroidCountPerMinute: 50
+      m_asteroidSize: 0
+      m_countPerMinute: 50
       m_rotation: 
-  - m_stageDuration: 5
-    m_stageBlendPeriod: 0
+  - m_stageDuration: 10
+    m_stageBlendPeriod: 5
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
     - m_enemyType: 3363c379-70c7-47d1-8cc6-1ca650259a31
@@ -70,40 +78,48 @@ MonoBehaviour:
     - m_selectionType: 0
       m_shapeName: RedSingle
       m_category: Small
-      m_asteroidCountPerMinute: 150
+      m_asteroidSize: 0
+      m_countPerMinute: 150
       m_rotation: Random
     - m_selectionType: 0
       m_shapeName: GreySingle
       m_category: Medium
-      m_asteroidCountPerMinute: 100
+      m_asteroidSize: 0
+      m_countPerMinute: 100
       m_rotation: Random
     - m_selectionType: 0
       m_shapeName: GreenSingle
       m_category: 
-      m_asteroidCountPerMinute: 50
+      m_asteroidSize: 0
+      m_countPerMinute: 50
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: BlueSingle
       m_category: 
-      m_asteroidCountPerMinute: 60
+      m_asteroidSize: 0
+      m_countPerMinute: 60
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: Asteroid3.0
       m_category: 
-      m_asteroidCountPerMinute: 50
+      m_asteroidSize: 0
+      m_countPerMinute: 50
       m_rotation: Random
     - m_selectionType: 0
       m_shapeName: Asteroid4.0
       m_category: 
-      m_asteroidCountPerMinute: 50
+      m_asteroidSize: 0
+      m_countPerMinute: 50
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: Asteroid5.2
       m_category: 
-      m_asteroidCountPerMinute: 50
+      m_asteroidSize: 0
+      m_countPerMinute: 50
       m_rotation: Random
     - m_selectionType: 0
       m_shapeName: Asteroid6.1
       m_category: 
-      m_asteroidCountPerMinute: 50
+      m_asteroidSize: 0
+      m_countPerMinute: 50
       m_rotation: 
