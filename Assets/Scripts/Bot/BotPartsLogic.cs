@@ -766,7 +766,8 @@ namespace StarSalvager
 
             var flash = FactoryManager.Instance.GetFactory<BotFactory>().CreateAlertIcon();//Instantiate(flashSpritePrefab).GetComponent<FlashSprite>();
             flash.transform.SetParent(part.transform, false);
-                
+            flash.transform.localPosition = Vector3.zero;
+            
             _flashes.Add(part, flash);
 
             return _flashes[part];
