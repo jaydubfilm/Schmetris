@@ -25,6 +25,8 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required]
         private Button craftButton;
 
+        private Image craftButtonImage;
+
         private Action<TEST_Blueprint, bool, RectTransform> hoverCallback;
         
         //============================================================================================================//
@@ -46,9 +48,12 @@ namespace StarSalvager.UI.Scrapyard
             Init(data);
 
             hoverCallback = OnHover;
+            craftButtonImage = craftButton.GetComponent<Image>();
 
-            craftButton.interactable =
-                PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false);
+            if (PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false))
+                craftButtonImage.color = craftButton.colors.normalColor;
+            else
+                craftButton.GetComponent<Image>().color = craftButton.colors.disabledColor;
 
             craftButton.onClick.RemoveAllListeners();
             craftButton.onClick.AddListener(() =>
@@ -69,8 +74,10 @@ namespace StarSalvager.UI.Scrapyard
 
         private void UpdateUI()
         {
-            craftButton.interactable =
-                PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false);
+            if (PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false))
+                craftButtonImage.color = craftButton.colors.normalColor;
+            else
+                craftButton.GetComponent<Image>().color = craftButton.colors.disabledColor;
         }
         
         //============================================================================================================//
