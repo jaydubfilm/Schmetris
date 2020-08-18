@@ -2,6 +2,7 @@
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
 namespace StarSalvager.Factories
@@ -65,6 +66,7 @@ namespace StarSalvager.Factories
             
             //--------------------------------------------------------------------------------------------------------//
 
+            temp.Type = type;
             temp.SetColliderActive(true);
             
 
@@ -126,6 +128,64 @@ namespace StarSalvager.Factories
         }
         
         //============================================================================================================//
+        public T CreateObject<T>(BlockData blockData)
+        {
+            var temp = CreateGameObject(blockData);
+
+            return temp.GetComponent<T>();
+
+        }
+        
+        public GameObject CreateGameObject(BlockData blockData)
+        {
+            var type = (COMPONENT_TYPE) blockData.Type;
+            
+            var remote = _remoteData.GetRemoteData(type);
+            var profile = factoryProfile.GetProfile(type);
+
+            var sprite = profile.GetSprite(0);
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            Component temp;
+            //If there is an animation associated with this profile entry, create the animated version of the prefab
+            if (profile.animation != null)
+            {
+                if (!Recycler.TryGrab(out AnimatedComponent anim))
+                {
+                    anim = CreateAnimatedObject<AnimatedComponent>();
+                }
+                
+                anim.SimpleAnimator.SetAnimation(profile.animation);
+                temp = anim;
+            }
+            else
+            {
+                if (!Recycler.TryGrab(out temp))
+                {
+                    temp = CreateObject<Component>();
+                }
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            if (profile.animation == null)
+            {
+                ((BoxCollider2D)temp.collider).size = sprite.bounds.size;
+            }
+            temp.SetSprite(sprite);
+            temp.SetColliderActive(true);
+            temp.LoadBlockData(blockData);
+
+            //Have to check for null, as the Asteroid/Energy does not have health
+            if (remote != null)
+            {
+                var health = remote.health;
+                temp.SetupHealthValues(health,health);
+            }
+
+            return temp.gameObject;
+        }
     }
 }
 

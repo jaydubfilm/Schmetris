@@ -1,4 +1,5 @@
-﻿using Recycling;
+﻿using System;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
 using StarSalvager.Values;
@@ -218,6 +219,17 @@ namespace StarSalvager
                 }
             }
         }
+        
+        public void RemoveAllComponents()
+        {
+            for (int i = attachedBlocks.Count - 1; i >= 0; i--)
+            {
+                if (attachedBlocks[i] is Component)
+                {
+                    DetachBit(attachedBlocks[i]);
+                }
+            }
+        }
 
         private void DetachBit(IAttachable attachable)
         {
@@ -245,6 +257,11 @@ namespace StarSalvager
                 case ScrapyardPart _:
                     Recycler.Recycle<ScrapyardPart>(attachable.gameObject);
                     break;
+                case Component _:
+                    Recycler.Recycle<Component>(attachable.gameObject);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(attachable), attachable, null);
             }
         }
 

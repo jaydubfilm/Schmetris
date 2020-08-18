@@ -132,7 +132,8 @@ namespace StarSalvager
             }
             else
             {
-                _scrapyardBots[0].InitBot(currentBlockData.ImportBlockDatas(true));
+                var importedData = currentBlockData.ImportBlockDatas(true);
+                _scrapyardBots[0].InitBot(importedData);
             }
             SellBits();
             UpdateFloatingMarkers(false);
@@ -646,19 +647,42 @@ namespace StarSalvager
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
                 List<ScrapyardBit> listBits = scrapBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
+
+                
+                List<Component> listComponents = scrapBot.attachedBlocks.OfType<Component>().ToList();
+                if (listComponents.Count > 0)
+                {
+                    scrapBot.RemoveAllComponents();
+                
+                    //TODO Need to think about if I should be displaying the components processed or not
+                    foreach (var component in listComponents)
+                    {
+                        PlayerPersistentData.PlayerData.components[component.Type]++;
+                    }
+                
+                    PlayerData.OnValuesChanged?.Invoke();
+                    SaveBlockData();
+                }
+
+                
                 if (listBits.Count == 0)
                     continue;
 
-                Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(scrapBot.attachedBlocks.OfType<ScrapyardBit>());
+                var scrapyardBits = scrapBot.attachedBlocks.OfType<ScrapyardBit>();
+
+                Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(scrapyardBits);
+
                 PlayerPersistentData.PlayerData.AddResources(bits);
+                
+                
                 string resourcesGained = "";
                 foreach (var resource in bits)
                 {
-                    int numTotal = scrapBot.attachedBlocks.OfType<ScrapyardBit>().Count(b => b.Type == resource.Key);
+                    int numTotal = scrapyardBits.Count(b => b.Type == resource.Key);
                     
                     for (int i = 0; numTotal > 0; i++)
                     {
-                        int numAtLevel = scrapBot.attachedBlocks.OfType<ScrapyardBit>().Count(b => b.Type == resource.Key && b.level == i);
+                        int numAtLevel = scrapyardBits.Count(b => b.Type == resource.Key && b.level == i);
                         if (numAtLevel == 0)
                             continue;
 
@@ -672,7 +696,12 @@ namespace StarSalvager
                 }
                 Alert.ShowAlert("Resources Refined", resourcesGained, "Okay", null);
                 Alert.SetLineHeight(90f);
+                
+                
                 scrapBot.RemoveAllBits();
+                
+                
+                
                 SaveBlockData();
 
                 droneDesignUi.UpdateResourceElements();
