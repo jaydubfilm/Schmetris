@@ -27,6 +27,20 @@ namespace StarSalvager.Utilities.Extensions
                             attachables.Add(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(blockData));
                         }
                         break;
+                    case nameof(Component):
+                        //case nameof(ScrapyardBit):
+                        var component = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>()
+                            .CreateObject<Component>(blockData);
+                            attachables.Add(component);
+                            /*if (inScrapyardForm)
+                            {
+                                throw new NotImplementedException();
+                            }
+                            else
+                            {
+                                
+                            }*/
+                        break;
                     case nameof(Part):
                     case nameof(ScrapyardPart):
                         if (inScrapyardForm)
@@ -38,6 +52,8 @@ namespace StarSalvager.Utilities.Extensions
                             attachables.Add(FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<Part>(blockData));
                         }
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(blockData.ClassType), blockData.ClassType, null);
                 }
             }
 

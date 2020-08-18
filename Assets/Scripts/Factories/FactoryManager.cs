@@ -14,6 +14,9 @@ namespace StarSalvager.Factories
     //Based on: https://www.dofactory.com/net/factory-method-design-pattern
     public class FactoryManager : Singleton<FactoryManager>
     {
+        [SerializeField]
+        public bool DisableTestingFeatures;
+        
         [SerializeField, Required, BoxGroup("Temporary")]
         private MissionRemoteDataScriptableObject missionRemoteData;
         public MissionRemoteDataScriptableObject MissionRemoteData => missionRemoteData;

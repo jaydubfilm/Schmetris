@@ -14,6 +14,7 @@ namespace StarSalvager.Utilities.UI
     {
         [SerializeField, Required]
         private TMP_Text sliderText;
+        public TMP_Text Text => sliderText;
 
         [SerializeField, Required]
         private Slider _slider;
@@ -30,6 +31,9 @@ namespace StarSalvager.Utilities.UI
 
         public void Init()
         {
+            //Ensure that we have a nice clean slate
+            _slider.onValueChanged.RemoveAllListeners();
+            
             _slider.onValueChanged.AddListener(ValueChanged);
             sliderText.text = FormattedSliderText(format, _slider.value);
         }

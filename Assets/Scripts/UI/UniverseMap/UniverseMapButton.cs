@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using StarSalvager.Factories;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
@@ -55,7 +56,10 @@ namespace StarSalvager
             foreach (var button in m_waveButtons)
             {
                 button.gameObject.SetActive(active);
-                button.Button.interactable = PlayerPersistentData.PlayerData.CheckIfQualifies(SectorNumber, button.WaveNumber);
+                if (FactoryManager.Instance.DisableTestingFeatures)
+                    button.Button.interactable = button.WaveNumber == 0 && PlayerPersistentData.PlayerData.CheckIfQualifies(SectorNumber, button.WaveNumber);
+                else
+                    button.Button.interactable = PlayerPersistentData.PlayerData.CheckIfQualifies(SectorNumber, button.WaveNumber);
             }
             ButtonsActive = active;
         }

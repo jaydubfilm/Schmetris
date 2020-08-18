@@ -23,7 +23,7 @@ namespace StarSalvager.UI.Scrapyard
         private GameObject costWindowObject;
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
-        private ResourceUIElementScrollView costView;
+        private CostUIElementScrollView costView;
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private TMP_Text itemNameText;

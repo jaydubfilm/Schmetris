@@ -97,6 +97,8 @@ namespace StarSalvager.UI
         private Slider sfxSlider;
         [SerializeField, Required, FoldoutGroup("Options Menu")]
         private Button oBackButton;
+        [SerializeField, Required, FoldoutGroup("Options Menu")]
+        private Toggle testingFeaturesToggle;
         
         #endregion //Menu Windows
         
@@ -121,11 +123,17 @@ namespace StarSalvager.UI
 
             if (gameObject.scene == SceneManager.GetActiveScene())
                 Globals.ScaleCamera(m_cameraZoomScaler.value);
+
+            testingFeaturesToggle.isOn = !FactoryManager.Instance.DisableTestingFeatures;
         }
 
         private void Update()
         {
             continueButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0;
+
+            m_toggleOrientationButton.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
+            m_cameraZoomScaler.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
+            _zoomSliderText.Text.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
         }
 
         //============================================================================================================//
@@ -261,6 +269,10 @@ namespace StarSalvager.UI
             sfxSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);
             
             oBackButton.onClick.AddListener(() => OpenMenu(MENU.MAIN));
+
+            testingFeaturesToggle.onValueChanged.AddListener(delegate {
+                FactoryManager.Instance.DisableTestingFeatures = !testingFeaturesToggle.isOn;
+            });
             
             //--------------------------------------------------------------------------------------------------------//
 

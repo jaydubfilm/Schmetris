@@ -163,7 +163,7 @@ namespace StarSalvager
         {
             return new BlockData
             {
-                ClassType = GetType().Name,
+                ClassType = nameof(Component),
                 Coordinate = Coordinate,
                 Type = (int)Type,
             };

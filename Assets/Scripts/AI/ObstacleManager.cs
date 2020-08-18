@@ -378,6 +378,10 @@ namespace StarSalvager
         {
             if (isPaused)
                 return;
+
+            //TODO: Find a better approach. This line is causing the stageblendperiod on the last stage of a wave to prevent spawning for that last portion of the wave. Temporary approach to the waveendsequence.
+            if (LevelManager.Instance.CurrentWaveData.GetWaveDuration() <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod)
+                return;
             
             foreach (StageObstacleData stageObstacleData in m_currentStageData.StageObstacleData)
             {

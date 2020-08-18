@@ -720,7 +720,7 @@ namespace StarSalvager.Utilities
                                 continue;
                                 
                             //PlayerPersistentData.PlayerData.liquidResource[value] = floatAmount;
-                            PlayerPersistentData.PlayerData.AddLiquidResource(_bitType, floatAmount);
+                            PlayerPersistentData.PlayerData.SetLiquidResource(_bitType, floatAmount);
                         }
                         
                     }
@@ -730,7 +730,7 @@ namespace StarSalvager.Utilities
                             break;
                         
                         //PlayerPersistentData.PlayerData.liquidResource[bitType] = floatAmount;
-                        PlayerPersistentData.PlayerData.AddLiquidResource(bitType, floatAmount);
+                        PlayerPersistentData.PlayerData.SetLiquidResource(bitType, floatAmount);
                     }
                     else
                     {

@@ -132,9 +132,19 @@ namespace StarSalvager
             }
             else
             {
-                _scrapyardBots[0].InitBot(currentBlockData.ImportBlockDatas(true));
+                var importedData = currentBlockData.ImportBlockDatas(true);
+                _scrapyardBots[0].InitBot(importedData);
             }
             SellBits();
+
+            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] == 0)
+            {
+                Alert.ShowAlert("Game Over", "You have run out of water. Your crew has died of thirst.", "Main Menu", () =>
+                {
+                    PlayerPersistentData.PlayerData.numLives = 3;
+                    SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
+                });
+            }
             UpdateFloatingMarkers(false);
         }
 
@@ -325,7 +335,7 @@ namespace StarSalvager
                     foreach (ScrapyardBot scrapBot in _scrapyardBots)
                     {
                         scrapBot.TryRemoveAttachableAt(toUndo.Coordinate, true);
-                        droneDesignUi.UpdateResources();
+                        droneDesignUi.UpdateResourceElements();
                         SaveBlockData();
                     }
                     break;
@@ -342,7 +352,7 @@ namespace StarSalvager
                                 return;
 
                             playerData.AddResources(toUndo.PartType, toUndo.Level, false);
-                            droneDesignUi.UpdateResources();
+                            droneDesignUi.UpdateResourceElements();
                             FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(scrapyardPart.Type, scrapyardPart.level - 1, ref scrapyardPart);
                             SaveBlockData();
                         }
@@ -358,7 +368,7 @@ namespace StarSalvager
                         var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(toUndo.PartType, toUndo.Level);
                         playerData.SubtractResources(toUndo.PartType, toUndo.Level, true);
                         scrapBot.AttachNewBit(toUndo.Coordinate, attachable);
-                        droneDesignUi.UpdateResources();
+                        droneDesignUi.UpdateResourceElements();
                         SaveBlockData();
                     }
                     break;
@@ -414,7 +424,7 @@ namespace StarSalvager
                         var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(toRedo.PartType, 0);
                         playerData.SubtractResources(toRedo.PartType, 0, false);
                         scrapBot.AttachNewBit(toRedo.Coordinate, attachable);
-                        droneDesignUi.UpdateResources();
+                        droneDesignUi.UpdateResourceElements();
                         SaveBlockData();
                     }
                     break;
@@ -431,7 +441,7 @@ namespace StarSalvager
                                 return;
 
                             playerData.SubtractResources(toRedo.PartType, scrapyardPart.level + 1, false);
-                            droneDesignUi.UpdateResources();
+                            droneDesignUi.UpdateResourceElements();
                             FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(scrapyardPart.Type, scrapyardPart.level + 1, ref scrapyardPart);
                             SaveBlockData();
                         }
@@ -441,7 +451,7 @@ namespace StarSalvager
                     foreach (ScrapyardBot scrapBot in _scrapyardBots)
                     {
                         scrapBot.TryRemoveAttachableAt(toRedo.Coordinate, true);
-                        droneDesignUi.UpdateResources();
+                        droneDesignUi.UpdateResourceElements();
                         SaveBlockData();
                     }
                     break;
@@ -553,7 +563,7 @@ namespace StarSalvager
             {
                 _scrapyardBots[0].AttachNewBit(attachable.Coordinate, attachable);
             }
-            droneDesignUi.UpdateResources();
+            droneDesignUi.UpdateResourceElements();
             droneDesignUi.RefreshScrollViews();
             SaveBlockData();
         }
@@ -646,19 +656,42 @@ namespace StarSalvager
             foreach (ScrapyardBot scrapBot in _scrapyardBots)
             {
                 List<ScrapyardBit> listBits = scrapBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
+
+                
+                List<Component> listComponents = scrapBot.attachedBlocks.OfType<Component>().ToList();
+                if (listComponents.Count > 0)
+                {
+                    scrapBot.RemoveAllComponents();
+                
+                    //TODO Need to think about if I should be displaying the components processed or not
+                    foreach (var component in listComponents)
+                    {
+                        PlayerPersistentData.PlayerData.components[component.Type]++;
+                    }
+                
+                    PlayerData.OnValuesChanged?.Invoke();
+                    SaveBlockData();
+                }
+
+                
                 if (listBits.Count == 0)
                     continue;
 
-                Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(scrapBot.attachedBlocks.OfType<ScrapyardBit>());
+                var scrapyardBits = scrapBot.attachedBlocks.OfType<ScrapyardBit>();
+
+                Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(scrapyardBits);
+
                 PlayerPersistentData.PlayerData.AddResources(bits);
+                
+                
                 string resourcesGained = "";
                 foreach (var resource in bits)
                 {
-                    int numTotal = scrapBot.attachedBlocks.OfType<ScrapyardBit>().Count(b => b.Type == resource.Key);
+                    int numTotal = scrapyardBits.Count(b => b.Type == resource.Key);
                     
                     for (int i = 0; numTotal > 0; i++)
                     {
-                        int numAtLevel = scrapBot.attachedBlocks.OfType<ScrapyardBit>().Count(b => b.Type == resource.Key && b.level == i);
+                        int numAtLevel = scrapyardBits.Count(b => b.Type == resource.Key && b.level == i);
                         if (numAtLevel == 0)
                             continue;
 
@@ -672,10 +705,15 @@ namespace StarSalvager
                 }
                 Alert.ShowAlert("Resources Refined", resourcesGained, "Okay", null);
                 Alert.SetLineHeight(90f);
+                
+                
                 scrapBot.RemoveAllBits();
+                
+                
+                
                 SaveBlockData();
 
-                droneDesignUi.UpdateResources();
+                droneDesignUi.UpdateResourceElements();
             }
         }
 

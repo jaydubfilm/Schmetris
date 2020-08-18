@@ -28,10 +28,20 @@ namespace StarSalvager.Values
         private Dictionary<BIT_TYPE, int> _resources = new Dictionary<BIT_TYPE, int>
         {
             {BIT_TYPE.RED, 0},
-            {BIT_TYPE.BLUE, 300},
-            {BIT_TYPE.YELLOW, 300},
+            {BIT_TYPE.BLUE, 100},
+            {BIT_TYPE.YELLOW, 100},
             {BIT_TYPE.GREEN, 0},
             {BIT_TYPE.GREY, 0},
+        };
+
+        [JsonProperty]
+        private Dictionary<BIT_TYPE, int> _resourceCapacity = new Dictionary<BIT_TYPE, int>
+        {
+            {BIT_TYPE.RED, 5000},
+            {BIT_TYPE.BLUE, 300},
+            {BIT_TYPE.YELLOW, 300},
+            {BIT_TYPE.GREEN, 5000},
+            {BIT_TYPE.GREY, 5000},
         };
 
         [JsonIgnore]
@@ -93,14 +103,14 @@ namespace StarSalvager.Values
 
         public void SetResources(BIT_TYPE type, int value)
         {
-            _resources[type] = value;
+            _resources[type] = Mathf.Min(value, _resourceCapacity[type]);
         }
 
         //============================================================================================================//
 
         public void SetLiquidResource(BIT_TYPE type, float value)
         {
-            _liquidResource[type] = value;
+            _liquidResource[type] = Mathf.Min(value, _resourceCapacity[type]);
         }
 
         //============================================================================================================//
