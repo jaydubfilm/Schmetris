@@ -67,10 +67,16 @@ namespace StarSalvager.UI.Scrapyard
             UpdateScrollView();
         }
 
+        private void Update()
+        {
+            SaveButton.interactable = _selectedSaveFileData != null;
+            nameInputField.interactable = _selectedSaveFileData != null;
+        }
+
         //============================================================================================================//
 
 
-        
+
         private void UpdateScrollView()
         {
             foreach (var saveFile in PlayerPersistentData.PlayerMetadata.SaveFiles)
@@ -78,6 +84,17 @@ namespace StarSalvager.UI.Scrapyard
                 var element = SaveGameContentScrollView.AddElement<SaveGameUIElement>(saveFile, $"{saveFile.Name}_UIElement");
                 element.Init(saveFile, SaveFilePressed, DeleteSaveFilePressed);
             }
+
+            SaveFileData emptyFile = new SaveFileData
+            {
+                Name = "New File",
+                //Date = DateTime.Now,
+                //FilePath = PlayerPersistentData.GetNextAvailableSaveSlot(),
+                //MissionFilePath = PlayerPersistentData.GetNextAvailableSaveSlot()
+            };
+
+            var emptyElement = SaveGameContentScrollView.AddElement<SaveGameUIElement>(emptyFile, $"{emptyFile.Name}_UIElement");
+            emptyElement.Init(emptyFile, SaveFilePressed, DeleteSaveFilePressed);
         }
         
         //============================================================================================================//
@@ -124,7 +141,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void SavePressed()
         {
-            if (!_selectedSaveFileData.HasValue || _selectedSaveFileData.Value.Name != nameInputField.text)
+            if (!_selectedSaveFileData.HasValue || _selectedSaveFileData.Value.Name != nameInputField.text || _selectedSaveFileData.Value.Name == "New File")
             {
                 string playerPath = PlayerPersistentData.GetNextAvailableSaveSlot();
                 string missionPath = MissionManager.GetNextAvailableSaveSlot();
