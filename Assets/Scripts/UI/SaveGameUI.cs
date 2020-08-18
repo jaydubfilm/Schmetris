@@ -93,8 +93,11 @@ namespace StarSalvager.UI.Scrapyard
                 //MissionFilePath = PlayerPersistentData.GetNextAvailableSaveSlot()
             };
 
-            var emptyElement = SaveGameContentScrollView.AddElement<SaveGameUIElement>(emptyFile, $"{emptyFile.Name}_UIElement");
-            emptyElement.Init(emptyFile, SaveFilePressed, DeleteSaveFilePressed);
+            if (!IsLoadMode)
+            {
+                var emptyElement = SaveGameContentScrollView.AddElement<SaveGameUIElement>(emptyFile, $"{emptyFile.Name}_UIElement");
+                emptyElement.Init(emptyFile, SaveFilePressed, DeleteSaveFilePressed);
+            }
         }
         
         //============================================================================================================//
@@ -103,7 +106,10 @@ namespace StarSalvager.UI.Scrapyard
         private void SaveFilePressed(SaveFileData data)
         {
             _selectedSaveFileData = data;
-            nameInputField.text = data.Name;
+            if (data.Name == "New File")
+                nameInputField.text = DateTime.Now.ToString(DATETIME_FORMAT);
+            else
+                nameInputField.text = data.Name;
         }
 
         private void DeleteSaveFilePressed(SaveFileData data)
