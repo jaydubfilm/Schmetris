@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using StarSalvager.Factories;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
@@ -65,9 +66,9 @@ namespace StarSalvager.UI
 
         private void Update()
         {
-            betweenWavesContinueButton.interactable = 
-                PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] > 0
-                && PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0;
+            betweenWavesContinueButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0;
+
+            pauseWindowScrapyardButton.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
         }
 
         //============================================================================================================//

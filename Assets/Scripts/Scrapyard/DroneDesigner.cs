@@ -135,6 +135,15 @@ namespace StarSalvager
                 _scrapyardBots[0].InitBot(currentBlockData.ImportBlockDatas(true));
             }
             SellBits();
+
+            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] == 0)
+            {
+                Alert.ShowAlert("Game Over", "You have run out of water. Your crew has died of thirst.", "Main Menu", () =>
+                {
+                    PlayerPersistentData.PlayerData.numLives = 3;
+                    SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
+                });
+            }
             UpdateFloatingMarkers(false);
         }
 
