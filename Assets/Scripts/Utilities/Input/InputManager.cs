@@ -17,8 +17,11 @@ namespace StarSalvager.Utilities.Inputs
         private ScrapyardBot[] _scrapyardBots;
 
         public bool isPaused => GameTimer.IsPaused;
-        
-        
+
+        [ShowInInspector, ReadOnly]
+        public bool LockSideMovement { get; set; }
+
+
         [SerializeField, BoxGroup("DAS"), DisableInPlayMode]
         private float DASTime = 0.15f;
         [SerializeField, BoxGroup("DAS"), ReadOnly]
@@ -183,6 +186,9 @@ namespace StarSalvager.Utilities.Inputs
                 return;
             
             if (isPaused)
+                return;
+
+            if (LockSideMovement)
                 return;
             
             var moveDirection = ctx.ReadValue<float>();

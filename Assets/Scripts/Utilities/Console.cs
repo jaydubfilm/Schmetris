@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using StarSalvager.AI;
+using StarSalvager.Audio;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
@@ -560,7 +561,7 @@ namespace StarSalvager.Utilities
                                 return;
                             }
 
-                            botPartsLogic.SetMagentOverride(magnet);
+                            botPartsLogic.SetMagnetOverride(magnet);
                     
                             //PlayerPersistentData.PlayerData.liquidResource[bit] = amount;
                     
@@ -772,7 +773,14 @@ namespace StarSalvager.Utilities
                     Time.timeScale = scale;
                     break;
                 case "volume":
-                    _consoleDisplay += "\nVolume is not yet implemented";
+                    if (!float.TryParse(split[2], out var volume))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
+                    }
+                    //_consoleDisplay += "\nVolume is not yet implemented";
+                    AudioController.SetVolume(volume);
+                    
                     break;
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);
