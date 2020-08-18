@@ -133,20 +133,20 @@ namespace StarSalvager.Cameras
             UpdateRect();
         }
 
-        public void CameraOffset(Vector3 pos, bool state)
+        public void CameraOffset(Vector3 pos, bool useHorizontalOffset)
         {
             transform.position = pos + Vector3.back * 10;
             
             //Scrapyard wants the camera anchored differently, so it uses a different formula
-            if (!state)
+            if (!useHorizontalOffset)
             {
                 transform.position += Vector3.up * (camera.orthographicSize / 2);
             }
-            else
-            {
-                transform.position += Vector3.down * (camera.orthographicSize / 2) / 4;
-                transform.position += Vector3.right * (camera.orthographicSize * Screen.width / Screen.height) / 4;
-            }
+            //else
+            //{
+            //    transform.position += Vector3.down * (camera.orthographicSize / 2) / 4;
+            //    transform.position += Vector3.right * (camera.orthographicSize * Screen.width / Screen.height) / 4;
+            //}
 
             UpdateRect();
         }

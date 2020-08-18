@@ -67,8 +67,15 @@ namespace StarSalvager.UI.Scrapyard
             
             //ShowMenu(MENU.LAUNCH);
             missionsWindow.SetActive(false);
+            
+            
         }
-        
+
+        private void OnEnable()
+        {
+            CameraController.CameraOffset(Vector3.zero, true);
+        }
+
         //============================================================================================================//
 
         private void InitButtons()
