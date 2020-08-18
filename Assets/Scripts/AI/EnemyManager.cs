@@ -10,6 +10,7 @@ using StarSalvager.Utilities;
 using StarSalvager.Utilities.Inputs;
 using Random = UnityEngine.Random;
 using Recycling;
+using StarSalvager.Cameras;
 using StarSalvager.Missions;
 
 namespace StarSalvager
@@ -274,6 +275,9 @@ namespace StarSalvager
                 if (enemy.IsRecycled)
                     continue;
 
+                if (!CameraController.IsPointInCameraRect(enemy.transform.position))
+                    continue;
+
                 if (enemy is ICanBeHit canBeHit)
                 {
                     //Position doesn't matter for enemies
@@ -289,6 +293,9 @@ namespace StarSalvager
             foreach (var enemy in m_enemies)
             {
                 if (enemy.IsRecycled)
+                    continue;
+                
+                if (!CameraController.IsPointInCameraRect(enemy.transform.position))
                     continue;
                 
                 var dist = Vector2.Distance(position, enemy.transform.position);
@@ -309,6 +316,9 @@ namespace StarSalvager
             foreach (var enemy in m_enemies)
             {
                 if (enemy.IsRecycled)
+                    continue;
+                
+                if (!CameraController.IsPointInCameraRect(enemy.transform.position))
                     continue;
                 
                 var dist = Vector2.Distance(position, enemy.transform.position);

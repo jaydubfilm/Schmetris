@@ -67,16 +67,36 @@ namespace StarSalvager.UI.Scrapyard
             UpdateScrollView();
         }
 
+        private void Update()
+        {
+            SaveButton.interactable = _selectedSaveFileData != null;
+            nameInputField.interactable = _selectedSaveFileData != null;
+        }
+
         //============================================================================================================//
 
 
-        
+
         private void UpdateScrollView()
         {
             foreach (var saveFile in PlayerPersistentData.PlayerMetadata.SaveFiles)
             {
                 var element = SaveGameContentScrollView.AddElement<SaveGameUIElement>(saveFile, $"{saveFile.Name}_UIElement");
                 element.Init(saveFile, SaveFilePressed, DeleteSaveFilePressed);
+            }
+
+            SaveFileData emptyFile = new SaveFileData
+            {
+                Name = "New File",
+                //Date = DateTime.Now,
+                //FilePath = PlayerPersistentData.GetNextAvailableSaveSlot(),
+                //MissionFilePath = PlayerPersistentData.GetNextAvailableSaveSlot()
+            };
+
+            if (!IsLoadMode)
+            {
+                var emptyElement = SaveGameContentScrollView.AddElement<SaveGameUIElement>(emptyFile, $"{emptyFile.Name}_UIElement");
+                emptyElement.Init(emptyFile, SaveFilePressed, DeleteSaveFilePressed);
             }
         }
         
@@ -86,7 +106,10 @@ namespace StarSalvager.UI.Scrapyard
         private void SaveFilePressed(SaveFileData data)
         {
             _selectedSaveFileData = data;
-            nameInputField.text = data.Name;
+            if (data.Name == "New File")
+                nameInputField.text = DateTime.Now.ToString(DATETIME_FORMAT);
+            else
+                nameInputField.text = data.Name;
         }
 
         private void DeleteSaveFilePressed(SaveFileData data)
@@ -124,7 +147,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void SavePressed()
         {
-            if (!_selectedSaveFileData.HasValue || _selectedSaveFileData.Value.Name != nameInputField.text)
+            if (!_selectedSaveFileData.HasValue || _selectedSaveFileData.Value.Name != nameInputField.text || _selectedSaveFileData.Value.Name == "New File")
             {
                 string playerPath = PlayerPersistentData.GetNextAvailableSaveSlot();
                 string missionPath = MissionManager.GetNextAvailableSaveSlot();

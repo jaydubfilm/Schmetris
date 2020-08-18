@@ -28,8 +28,8 @@ namespace StarSalvager.Values
         private Dictionary<BIT_TYPE, int> _resources = new Dictionary<BIT_TYPE, int>
         {
             {BIT_TYPE.RED, 0},
-            {BIT_TYPE.BLUE, 0},
-            {BIT_TYPE.YELLOW, 0},
+            {BIT_TYPE.BLUE, 300},
+            {BIT_TYPE.YELLOW, 300},
             {BIT_TYPE.GREEN, 0},
             {BIT_TYPE.GREY, 0},
         };
@@ -89,6 +89,11 @@ namespace StarSalvager.Values
         public void SetResources(Dictionary<BIT_TYPE, int> values)
         {
             _resources = values;
+        }
+
+        public void SetResources(BIT_TYPE type, int value)
+        {
+            _resources[type] = value;
         }
 
         //============================================================================================================//

@@ -17,6 +17,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections;
 using StarSalvager.Utilities.Saving;
 using System.Linq;
+using StarSalvager.Audio;
 
 namespace StarSalvager.UI
 {
@@ -256,8 +257,8 @@ namespace StarSalvager.UI
             //Options Buttons
             //--------------------------------------------------------------------------------------------------------//
 
-            musicSlider.onValueChanged.AddListener(value => { });
-            sfxSlider.onValueChanged.AddListener(value => { });
+            musicSlider.onValueChanged.AddListener(AudioController.SetMusicVolume);
+            sfxSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);
             
             oBackButton.onClick.AddListener(() => OpenMenu(MENU.MAIN));
             

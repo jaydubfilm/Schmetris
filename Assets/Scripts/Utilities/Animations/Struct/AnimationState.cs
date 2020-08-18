@@ -20,11 +20,16 @@ namespace StarSalvager.Utilities.Animations
         [NonSerialized, ReadOnly, ShowInInspector]
         public int _HashedID;
         
-        [HorizontalGroup("State"), LabelWidth(75), DisableInPlayMode]
+        [HorizontalGroup("State"), LabelWidth(75), DisableInPlayMode, DisableIf("IsDefault")]
         public string StateName;
         
         [HorizontalGroup("State"), LabelWidth(75), DisableInPlayMode]
         public AnimationScriptableObject Animation;
+
+        private bool IsDefault()
+        {
+            return StateName.Equals("Default");
+        }
     }
 }
 

@@ -87,6 +87,27 @@ namespace StarSalvager.Cameras
 
         //============================================================================================================//
 
+        private static Rect _cameraRect;
+
+        public static bool IsPointInCameraRect(Vector2 position)
+        {
+            return _cameraRect.Contains(position);
+        }
+
+        private void UpdateRect()
+        {
+            _cameraRect = new Rect
+            {
+                center = Vector2.zero,
+                height = 2f * camera.orthographicSize,
+                width = camera.aspect * 2f * camera.orthographicSize,
+            };
+        }
+        
+        
+        //================================================================================================================//
+
+
         public void SetOrthographicSize(float screenWidthInWorld, Vector3 botPosition)
         {
             var orthographicSize = screenWidthInWorld * (Screen.height / (float) Screen.width) / 2;
@@ -108,6 +129,8 @@ namespace StarSalvager.Cameras
             startPos = transform.position;
             targetPos = startPos;
             horzExtent = orthographicSize * Screen.width / Screen.height / 2;
+
+            UpdateRect();
         }
 
         public void CameraOffset(Vector3 pos, bool state)
@@ -123,8 +146,12 @@ namespace StarSalvager.Cameras
             {
                 transform.position += Vector3.down * (camera.orthographicSize / 2) / 4;
                 transform.position += Vector3.right * (camera.orthographicSize * Screen.width / Screen.height) / 4;
-            } 
+            }
+
+            UpdateRect();
         }
+        
+        //================================================================================================================//
 
         private void SetOrientation(ORIENTATION orientation)
         {
@@ -139,6 +166,8 @@ namespace StarSalvager.Cameras
                 default:
                     throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);
             }
+
+            UpdateRect();
         }
         
         #if UNITY_EDITOR

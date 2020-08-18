@@ -11,6 +11,7 @@ namespace StarSalvager.Utilities.Animations
         //============================================================================================================//
         
         [SerializeField]
+        [InfoBox("You must add sprites to the Animation", InfoMessageType.Error, "HasNoSprites")]
         private Sprite[] sprites;
 
         [SerializeField, Range(1f, 10f)]
@@ -75,7 +76,8 @@ namespace StarSalvager.Utilities.Animations
             catch (IndexOutOfRangeException e)
             {
                 Debug.LogError(e);
-                return sprites[0];
+
+                return sprites.Length == 0 ? null : sprites[0];
             }
         }
 
@@ -90,6 +92,17 @@ namespace StarSalvager.Utilities.Animations
         }
         
         //============================================================================================================//
+        
+        #if UNITY_EDITOR
+
+        private bool HasNoSprites()
+        {
+            return sprites == null || sprites.Length == 0;
+        }
+        
+        
+        #endif
+        
     }
 }
 

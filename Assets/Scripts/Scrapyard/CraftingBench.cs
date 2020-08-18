@@ -15,7 +15,17 @@ namespace StarSalvager
         public void CraftBlueprint(TEST_Blueprint blueprint)
         {
             if (!PlayerPersistentData.PlayerData.CanAffordPart(blueprint.partType, blueprint.level, false))
+            {
+                if (!Toast.Instance.showingToast)
+                    Toast.AddToast("Not enough resources to craft", time: 1.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
                 return;
+            }
+            
+            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] == 0)
+            {
+                Toast.AddToast("Not enough power to craft", time: 1.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
+                return;
+            }
 
             BlockData blockData = new BlockData
             {
