@@ -30,6 +30,9 @@ namespace StarSalvager.Utilities.UI
 
         public void Init()
         {
+            //Ensure that we have a nice clean slate
+            _slider.onValueChanged.RemoveAllListeners();
+            
             _slider.onValueChanged.AddListener(ValueChanged);
             sliderText.text = FormattedSliderText(format, _slider.value);
         }

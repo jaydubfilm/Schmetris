@@ -30,6 +30,13 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField, BoxGroup("Resource UI")]
         private ResourceUIElementScrollView resourceScrollView;
+        
+        [SerializeField, BoxGroup("Resource UI")]
+        private ResourceUIElementScrollView liquidResourceContentView;
+
+        [SerializeField, BoxGroup("Resource UI"), Required]
+        private Button fillBotButton;
+        
         [SerializeField, BoxGroup("Load List UI")]
         private LayoutElementScrollView layoutScrollView;
 
@@ -124,7 +131,7 @@ namespace StarSalvager.UI.Scrapyard
             InitButtons();
 
             InitUiScrollView();
-            InitResourceScrollViews();
+            UpdateResourceElements();
             scrollViewsSetup = true;
 
             _currentlyOverwriting = false;
@@ -135,14 +142,14 @@ namespace StarSalvager.UI.Scrapyard
             if (scrollViewsSetup)
                 RefreshScrollViews();
 
-            PlayerData.OnValuesChanged += UpdateResources;
+            PlayerData.OnValuesChanged += UpdateResourceElements;
         }
 
         void OnDisable()
         {
             mDroneDesigner.ClearUndoRedoStacks();
             
-            PlayerData.OnValuesChanged -= UpdateResources;
+            PlayerData.OnValuesChanged -= UpdateResourceElements;
         }
 
         #endregion //Unity Functions
@@ -293,6 +300,15 @@ namespace StarSalvager.UI.Scrapyard
 
             //--------------------------------------------------------------------------------------------------------//
 
+            fillBotButton.onClick.AddListener(() =>
+            {
+                TryFillBotResources();
+            });
+
+
+            //--------------------------------------------------------------------------------------------------------//
+
+
         }
 
         #endregion //Init
@@ -312,38 +328,51 @@ namespace StarSalvager.UI.Scrapyard
             }
         }
 
-        public void InitResourceScrollViews()
+        /*public void InitResourceScrollViews()
         {
             var resources = PlayerPersistentData.PlayerData.resources;
 
             foreach (var resource in resources)
             {
-                var data = new CraftCost
+                var data = new ResourceAmount
                 {
-                    resourceType = CraftCost.TYPE.Bit,
-                    type = (int)resource.Key,
-                    amount = resource.Value
+                    //resourceType = CraftCost.TYPE.Bit,
+                    type = resource.Key,
+                    amount = resource.Value,
+                    capacity = 2500
                 };
 
                 var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
                 element.Init(data);
             }
 
-            /*var components = PlayerPersistentData.PlayerData.GetComponents();
-
-            foreach (var component in components)
+            //liquidResourceContentView
+            var liquids = PlayerPersistentData.PlayerData.liquidResource;
+            var liquidsCapacity = PlayerPersistentData.PlayerData.liquidCapacity;
+            foreach (var liquid in liquids)
             {
-                var data = new CraftCost
+                var bitType = liquid.Key;
+
+                switch (bitType)
                 {
-                    resourceType = CraftCost.TYPE.Component,
-                    type = (int)component.Key,
-                    amount = component.Value
+                    case BIT_TYPE.BLACK:
+                    case BIT_TYPE.BLUE:
+                    case BIT_TYPE.YELLOW:
+                    case BIT_TYPE.WHITE:
+                        continue;
+                }
+                
+                var data = new ResourceAmount
+                {
+                    amount = (int)liquid.Value,
+                    capacity = liquidsCapacity[bitType],
+                    type = bitType,
                 };
 
-                var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{component.Key}_UIElement");
+                var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{liquid.Key}_UIElement");
                 element.Init(data);
-            }*/
-        }
+            }
+        }*/
 
         public void AddToPartScrollView(BlockData blockData)
         {
@@ -357,46 +386,51 @@ namespace StarSalvager.UI.Scrapyard
         {
             partsScrollView.ClearElements<BrickImageUIElement>();
             InitUiScrollView();
-            UpdateResources();
+            UpdateResourceElements();
         }
 
-        public void UpdateResources()
+        public void UpdateResourceElements()
         {
             var resources = PlayerPersistentData.PlayerData.resources;
 
             foreach (var resource in resources)
             {
-                var data = new CraftCost
+                var data = new ResourceAmount
                 {
-                    resourceType = CraftCost.TYPE.Bit,
-                    type = (int)resource.Key,
-                    amount = resource.Value
+                    //resourceType = CraftCost.TYPE.Bit,
+                    type = resource.Key,
+                    amount = resource.Value,
+                    capacity = 1000
                 };
 
-                var element = resourceScrollView.FindElement<ResourceUIElement>(data);
-
-                if (element == null)
-                    continue;
-
+                var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
                 element.Init(data);
             }
 
-            var components = PlayerPersistentData.PlayerData.components;
-
-            foreach (var component in components)
+            //liquidResourceContentView
+            var liquids = PlayerPersistentData.PlayerData.liquidResource;
+            var liquidsCapacity = PlayerPersistentData.PlayerData.liquidCapacity;
+            foreach (var liquid in liquids)
             {
-                var data = new CraftCost
+                var bitType = liquid.Key;
+
+                switch (bitType)
                 {
-                    resourceType = CraftCost.TYPE.Component,
-                    type = (int)component.Key,
-                    amount = component.Value
+                    case BIT_TYPE.BLACK:
+                    case BIT_TYPE.BLUE:
+                    case BIT_TYPE.YELLOW:
+                    case BIT_TYPE.WHITE:
+                        continue;
+                }
+                
+                var data = new ResourceAmount
+                {
+                    amount = (int)liquid.Value,
+                    capacity = liquidsCapacity[bitType],
+                    type = bitType,
                 };
 
-                var element = resourceScrollView.FindElement<ResourceUIElement>(data);
-
-                if (element == null)
-                    continue;
-
+                var element = liquidResourceContentView.AddElement<ResourceUIElement>(data, $"{liquid.Key}_UIElement");
                 element.Init(data);
             }
         }
@@ -415,6 +449,37 @@ namespace StarSalvager.UI.Scrapyard
         }
 
         #endregion //Scroll Views
+        
+        static readonly BIT_TYPE[] types = {
+            BIT_TYPE.RED,
+            BIT_TYPE.GREY,
+            BIT_TYPE.GREEN
+        };
+        private void TryFillBotResources()
+        {
+            foreach (var bitType in types)
+            {
+                var currentAmount = PlayerPersistentData.PlayerData.liquidResource[bitType];
+                var currentCapacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
+
+                var fillRemaining = currentCapacity - currentAmount;
+
+                //If its already full, then we're good to move on
+                if (fillRemaining <= 0f)
+                    continue;
+                
+                var availableResources = PlayerPersistentData.PlayerData.resources[bitType];
+                
+                //If we have no resources available to refill the liquid, move onto the next
+                if(availableResources <= 0)
+                    continue;
+
+                var movingAmount = Mathf.RoundToInt(Mathf.Min(availableResources, fillRemaining));
+                
+                PlayerPersistentData.PlayerData.resources[bitType] -= movingAmount;
+                PlayerPersistentData.PlayerData.AddLiquidResource(bitType, movingAmount);
+            }
+        }
 
         //============================================================================================================//
 

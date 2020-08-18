@@ -10,6 +10,7 @@ namespace StarSalvager.Factories.Data
     {
         public BIT_TYPE type;
         public int amount;
+        public int capacity;
 
         //This only compares Type and not all individual properties
 
