@@ -156,12 +156,10 @@ namespace StarSalvager.UI
         public void SetWaterValue(float value)
         {
             waterSlider.value = value;
-            print("watermoo");
         }
         public void SetPowerValue(float value)
         {
             powerSlider.value = value;
-            print("powermoo");
         }
 
         public void SetCarryCapacity(float value)

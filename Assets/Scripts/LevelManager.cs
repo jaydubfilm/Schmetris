@@ -266,7 +266,7 @@ namespace StarSalvager
             if (PlayerPersistentData.PlayerData.firstFlight)
             {
                 PlayerPersistentData.PlayerData.firstFlight = false;
-                Toast.AddToast("Controls: AD for left/right movement, WS to rotate. Escape to pause.", time: 6.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
+                Toast.AddToast("Controls: AD or Left/Right arrows for left/right movement, WS or Up/Down arrows to rotate. Escape to pause.", time: 6.0f, verticalLayout: Toast.Layout.End, horizontalLayout: Toast.Layout.Middle);
             }
         }
 
