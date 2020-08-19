@@ -50,6 +50,9 @@ namespace StarSalvager.Factories
             projectile.SetCollisionTag(collisionTag);
             projectile.SetSprite(projectile.m_projectileData.Sprite);
 
+            if (travelDirection == Vector3.up && projectile.m_projectileData.RequiresRotation)
+                projectile.FlipSpriteY(true);
+
             return projectile.GetComponent<T>();
         }
 

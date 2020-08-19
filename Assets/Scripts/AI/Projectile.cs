@@ -2,12 +2,13 @@
 using StarSalvager.Factories.Data;
 using System;
 using Recycling;
+using StarSalvager.Cameras;
 using StarSalvager.Utilities;
 
 namespace StarSalvager.AI
 {
     //TODO: Handle proper setting of the collision tag
-    public class Projectile : CollidableBase
+    public class Projectile : CollidableBase, ICustomRecycle
     {
         [NonSerialized]
         public Vector3 m_travelDirectionNormalized = Vector3.zero;
@@ -17,16 +18,31 @@ namespace StarSalvager.AI
 
         public float DamageAmount;
 
+        //============================================================================================================//
+
+        public void FlipSpriteX(bool state)
+        {
+            renderer.flipY = state;
+        }
+        
+        public void FlipSpriteY(bool state)
+        {
+            renderer.flipY = state;
+        }
+        
+        //============================================================================================================//
+
         // Update is called once per frame
         private void Update()
         {
             if(GameTimer.IsPaused)
                 return;
 
-            Vector3 screenPoint = Camera.main.WorldToViewportPoint(transform.position);
-            bool onScreen = screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
-            if (!onScreen)
+            if (!CameraController.IsPointInCameraRect(transform.position))
+            {
                 Recycler.Recycle<Projectile>(this);
+                return;
+            }
 
             transform.position += (m_enemyVelocityModifier + m_travelDirectionNormalized * m_projectileData.ProjectileSpeed) * Time.deltaTime;
         }
@@ -44,6 +60,13 @@ namespace StarSalvager.AI
             }
 
             Recycler.Recycle<Projectile>(this);
+        }
+        
+        //============================================================================================================//
+        
+        public void CustomRecycle(params object[] args)
+        {
+            renderer.flipX = renderer.flipY = false;
         }
     }
 }

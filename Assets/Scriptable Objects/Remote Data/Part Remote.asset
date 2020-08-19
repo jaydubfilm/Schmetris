@@ -23,9 +23,9 @@ MonoBehaviour:
       health: 20
       dataTest:
       - key: Magnet
-        value: 8
+        value: 9
       - key: Capacity
-        value: 30
+        value: 50
       burnRate: 1
       cost: []
     - unlockLevel: 0
@@ -371,7 +371,9 @@ MonoBehaviour:
       - key: Damage
         value: 10
       - key: Cooldown
-        value: 0.5
+        value: .5
+      - key: Projectile
+        value: 083be790-7a08-4f27-b506-e8e09a116bc8
       burnRate: 0.1
       cost:
       - resourceType: 0
@@ -388,7 +390,9 @@ MonoBehaviour:
       - key: Damage
         value: 20
       - key: Cooldown
-        value: 0.4
+        value: .4
+      - key: Projectile
+        value: 083be790-7a08-4f27-b506-e8e09a116bc8
       burnRate: 0.2
       cost:
       - resourceType: 0
@@ -417,7 +421,9 @@ MonoBehaviour:
       - key: Damage
         value: 30
       - key: Cooldown
-        value: 0.2
+        value: .2
+      - key: Projectile
+        value: 083be790-7a08-4f27-b506-e8e09a116bc8
       burnRate: 0.3
       cost:
       - resourceType: 0
@@ -450,7 +456,7 @@ MonoBehaviour:
       health: 100
       dataTest:
       - key: Absorb
-        value: 0.3
+        value: .3
       - key: Radius
         value: 3
       burnRate: 1
@@ -479,7 +485,7 @@ MonoBehaviour:
       health: 100
       dataTest:
       - key: Absorb
-        value: 0.5
+        value: .5
       - key: Radius
         value: 4
       burnRate: 1
@@ -512,7 +518,7 @@ MonoBehaviour:
       health: 120
       dataTest:
       - key: Absorb
-        value: 0.75
+        value: .75
       - key: Radius
         value: 5
       burnRate: 1
