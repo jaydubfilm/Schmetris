@@ -1,4 +1,5 @@
 ﻿using StarSalvager.Utilities.JsonDataTypes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine;
 namespace StarSalvager.Missions
 {
     [System.Serializable]
-    public abstract class Mission
+    public abstract class Mission : IEquatable<Mission>
     {
         public string m_missionName;
         public float m_amountNeeded;
@@ -66,5 +67,25 @@ namespace StarSalvager.Missions
         public abstract bool MissionComplete();
 
         public abstract MissionData ToMissionData();
+
+        public bool Equals(Mission other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return m_missionName == other.m_missionName;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Mission)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (m_missionName != null ? m_missionName.GetHashCode() : 0);
+        }
     }
 }
