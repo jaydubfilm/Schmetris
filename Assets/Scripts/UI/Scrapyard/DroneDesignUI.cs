@@ -477,6 +477,7 @@ namespace StarSalvager.UI.Scrapyard
         {
             mDroneDesigner.selectedPartType = tuple.partType;
             mDroneDesigner.SelectedPartLevel = tuple.level;
+            mDroneDesigner.selectedPartReturnToStorage = false;
         }
 
         private void LayoutPressed(ScrapyardLayout botData)

@@ -46,21 +46,6 @@ namespace StarSalvager
 
         private bool isStarted = false;
 
-        /*[Sirenix.OdinInspector.Button("Clear Remote Data")]
-        private void ClearRemoteData()
-        {
-            string persistentPlayerDataPath = Application.dataPath + "/RemoteData/PlayerPersistentData.player";
-            string currentDataPath = Application.dataPath + "/RemoteData/MissionsCurrentData.mission";
-            if (File.Exists(persistentPlayerDataPath))
-            {
-                File.Delete(persistentPlayerDataPath);
-            }
-            if (File.Exists(currentDataPath))
-            {
-                File.Delete(currentDataPath);
-            }
-        }*/
-
         //============================================================================================================//
 
         #region Unity Functions
@@ -80,6 +65,19 @@ namespace StarSalvager
             isStarted = true;
         }
 
+        /*private void LateUpdate()
+        {
+            if (UnityEngine.Input.GetMouseButtonDown(0))
+            {
+                print("moo");
+            }
+
+            if (UnityEngine.Input.GetMouseButtonUp(0))
+            {
+                print("mee");
+            }
+        }*/
+
         private void OnDestroy()
         {
             Camera.onPostRender -= DrawGL;
@@ -96,19 +94,19 @@ namespace StarSalvager
         public void InitInput()
         {
             Input.Actions.Default.LeftClick.Enable();
-            Input.Actions.Default.LeftClick.performed += OnLeftMouseButtonDown;
+            Input.Actions.Default.LeftClick.performed += OnLeftMouseButton;
 
             Input.Actions.Default.RightClick.Enable();
-            Input.Actions.Default.RightClick.performed += OnRightMouseButtonDown;
+            Input.Actions.Default.RightClick.performed += OnRightMouseButton;
         }
 
         public void DeInitInput()
         {
             Input.Actions.Default.LeftClick.Disable();
-            Input.Actions.Default.LeftClick.performed -= OnLeftMouseButtonDown;
+            Input.Actions.Default.LeftClick.performed -= OnLeftMouseButton;
 
             Input.Actions.Default.RightClick.Disable();
-            Input.Actions.Default.RightClick.performed -= OnRightMouseButtonDown;
+            Input.Actions.Default.RightClick.performed -= OnRightMouseButton;
         }
 
         #endregion
@@ -153,8 +151,18 @@ namespace StarSalvager
 
         public void Reset()
         {
-            Camera.onPostRender -= DrawGL;
+            if (selectedPartType != null && selectedPartReturnToStorage == true)
+            {
+                BlockData blockData = new BlockData
+                {
+                    ClassType = "Part",
+                    Type = (int)selectedPartType,
+                    Level = SelectedPartLevel
+                };
+                PlayerPersistentData.PlayerData.AddPartToStorage(blockData);
+            }
 
+            Camera.onPostRender -= DrawGL;
             for (int i = _scrapyardBots.Count() - 1; i >= 0; i--)
             {
                 Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBots[i].gameObject);
@@ -199,102 +207,103 @@ namespace StarSalvager
 
         #region User Input
 
-        //On left mouse button click, check if there is a bit/part at the mouse location. If there is not, purchase the selected part type and place it at this location.
-        private void OnLeftMouseButtonDown(InputAction.CallbackContext ctx)
+        private void OnLeftMouseButton(InputAction.CallbackContext ctx)
         {
             if (ctx.ReadValue<float>() == 1f)
-            {
-                UpdateFloatingMarkers(true);
-                return;
-            }
-            UpdateFloatingMarkers(false);
+                OnLeftMouseButtonDown();
+            else
+                OnLeftMouseButtonUp();
+        }
 
+        private void OnLeftMouseButtonDown()
+        {
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
 
-            /*if (IsUpgrading)
+            if (selectedPartType.HasValue)
+            {
+
+            }
+            else
             {
                 foreach (ScrapyardBot scrapBot in _scrapyardBots)
                 {
                     IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
-                    var playerData = PlayerPersistentData.PlayerData;
+
+                    if (attachableAtCoordinates == null)
+                    {
+                        continue;
+                    }
+
+                    if (attachableAtCoordinates is ScrapyardPart partAtCoordinates)
+                    {
+                        scrapBot.TryRemoveAttachableAt(mouseCoordinate, false);
+                        selectedPartType = partAtCoordinates.Type;
+                        SelectedPartLevel = partAtCoordinates.level;
+                        selectedPartReturnToStorage = true;
+                        SaveBlockData();
+                    }
+                }
+            }
+            UpdateFloatingMarkers(true);
+        }
+
+        private void OnLeftMouseButtonUp()
+        {
+            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
+                return;
+
+            if (selectedPartType.HasValue)
+            {
+                foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                {
+                    IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
 
                     if (attachableAtCoordinates != null)
                     {
-                        if (attachableAtCoordinates is ScrapyardPart partAtCoordinates)
-                        {
-                            if (!FactoryManager.Instance.GetFactory<PartAttachableFactory>().CheckLevelExists(partAtCoordinates.Type, partAtCoordinates.level + 1))
-                                return;
-
-                            if (!PlayerPersistentData.PlayerData.CanAffordPart(partAtCoordinates.Type, partAtCoordinates.level + 1, false))
-                            {
-                                droneDesignUi.DisplayInsufficientResources();
-                                return;
-                            }
-
-                            playerData.SubtractResources(partAtCoordinates.Type, partAtCoordinates.level + 1, false);
-                            droneDesignUi.UpdateResources(playerData.GetResources());
-                            _toUndoStack.Push(new ScrapyardEditData
-                            {
-                                EventType = SCRAPYARD_ACTION.UPGRADE,
-                                Coordinate = mouseCoordinate,
-                                PartType = partAtCoordinates.Type,
-                                Level = partAtCoordinates.level + 1
-                            });
-                            _toRedoStack.Clear();
-                            FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level + 1, ref partAtCoordinates);
-                            SaveBlockData();
-                        }
-                        return;
+                        continue;
                     }
+
+                    var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(selectedPartType.Value, SelectedPartLevel);
+                    
+                    //Check if part should be removed from storage
+                    //TODO Should be checking if the player does in-fact have the part in their storage
+                    if (selectedPartReturnToStorage)
+                        PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
+
+                    droneDesignUi.RefreshScrollViews();
+                    scrapBot.AttachNewBit(mouseCoordinate, attachable);
+                    _toUndoStack.Push(new ScrapyardEditData
+                    {
+                        EventType = SCRAPYARD_ACTION.EQUIP,
+                        Coordinate = mouseCoordinate,
+                        PartType = (PART_TYPE)selectedPartType
+                    });
+                    _toRedoStack.Clear();
+
+                    selectedPartType = null;
+                    SelectedPartLevel = 0;
+                    selectedPartReturnToStorage = false;
+                    SaveBlockData();
                 }
-                return;
-            }*/
-
-            if (!selectedPartType.HasValue)
-                return;
-
-            /*if (!PlayerPersistentData.PlayerData.CanAffordPart((PART_TYPE)selectedPartType, SelectedPartLevel, true))
+            }
+            else
             {
-                droneDesignUi.DisplayInsufficientResources();
-                return;
-            }*/
 
-            foreach (ScrapyardBot scrapBot in _scrapyardBots)
-            {
-                IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
-
-                if (attachableAtCoordinates != null)
-                {
-                    continue;
-                }
-
-                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(selectedPartType.Value, SelectedPartLevel);
-                //TODO Should be checking if the player does in-fact have the part in their storage
-                PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
-                droneDesignUi.RefreshScrollViews();
-                scrapBot.AttachNewBit(mouseCoordinate, attachable);
-                _toUndoStack.Push(new ScrapyardEditData
-                {
-                    EventType = SCRAPYARD_ACTION.EQUIP,
-                    Coordinate = mouseCoordinate,
-                    PartType = (PART_TYPE)selectedPartType
-                });
-                _toRedoStack.Clear();
-
-                selectedPartType = null;
-                SelectedPartLevel = 0;
-                SaveBlockData();
             }
             UpdateFloatingMarkers(false);
         }
 
-        //On right mouse button click, check for a bit/part at the clicked location. If one is there, sell it.
-        private void OnRightMouseButtonDown(InputAction.CallbackContext ctx)
+        private void OnRightMouseButton(InputAction.CallbackContext ctx)
         {
-            if (ctx.ReadValue<float>() == 0f)
-                return;
+            if (ctx.ReadValue<float>() == 1f)
+                OnRightMouseButtonDown();
+            else
+                OnRightMouseButtonUp();
+        }
 
+        private void OnRightMouseButtonDown()
+        {
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
 
@@ -325,6 +334,11 @@ namespace StarSalvager
                 SaveBlockData();
             }
             UpdateFloatingMarkers(false);
+        }
+
+        private void OnRightMouseButtonUp()
+        {
+
         }
 
         #endregion //User Input

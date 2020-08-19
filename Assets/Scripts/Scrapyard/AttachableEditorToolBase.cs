@@ -23,6 +23,9 @@ namespace StarSalvager
         [NonSerialized]
         public int SelectedPartLevel = 0;
 
+        [NonSerialized]
+        public bool selectedPartReturnToStorage = false;
+
         public void DrawGL(Camera camera)
         {
             Vector2 m_anchorPoint = new Vector2(-Values.Constants.gridCellSize * 3.5f, -Values.Constants.gridCellSize * 3.5f);
