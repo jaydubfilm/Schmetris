@@ -75,7 +75,7 @@ namespace StarSalvager.Utilities.Animations
             }
             catch (IndexOutOfRangeException e)
             {
-                Debug.LogError(e);
+                Debug.LogWarning(e);
 
                 return sprites.Length == 0 ? null : sprites[0];
             }

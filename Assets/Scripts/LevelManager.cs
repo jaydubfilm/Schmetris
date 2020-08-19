@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using StarSalvager.AI;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
@@ -17,6 +18,7 @@ using UnityEngine.SceneManagement;
 using StarSalvager.Missions;
 using StarSalvager.Utilities.JsonDataTypes;
 using Newtonsoft.Json;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
@@ -192,11 +194,11 @@ namespace StarSalvager
 
         private void Update()
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
+            /*if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
             {
                 WorldGrid.DrawDebugMarkedGridPoints();
                 Debug.Break();
-            }
+            }*/
 
             if (isPaused)
                 return;
@@ -252,7 +254,7 @@ namespace StarSalvager
         {
             m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
-            
+
             MissionsCompletedDuringThisFlight.Clear();
             LiquidResourcesAttBeginningOfWave.Clear();
             foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
@@ -369,7 +371,7 @@ namespace StarSalvager
                 var blockData = bot.GetBlockDatas();
                 if (!blockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int) PART_TYPE.CORE))
                     blockData = new List<BlockData>();
-                
+
                 PlayerPersistentData.PlayerData.SetCurrentBlockData(blockData);
             }
         }
@@ -418,5 +420,23 @@ namespace StarSalvager
             levelCompleteAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
             //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete, levelCompleteAnalyticsDictionary, Values.Globals.CurrentSector);
         }
+
+
+        #if UNITY_EDITOR
+
+        [SerializeField]
+        private bool drawGrid = true;
+
+        private void OnDrawGizmos()
+        {
+            if (!drawGrid)
+                return;
+
+            Gizmos.color = Color.red;
+            WorldGrid?.OnDrawGizmos();
+        }
+
+        #endif
+
     }
 }

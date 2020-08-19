@@ -39,24 +39,10 @@ namespace StarSalvager
             m_screenGridCellRange = new Vector2Int((int)(width / Constants.gridCellSize), (int)(height / Constants.gridCellSize));
             m_botGridPosition = GetGridPositionOfVector(LevelManager.Instance.BotGameObject.transform.position);
 
-#if UNITY_EDITOR
-            //Draw debug lines to show the area of the grid
-            for (int x = 0; x < Values.Globals.GridSizeX; x++)
-            {
-                for (int y = 0; y < Values.Globals.GridSizeY; y++)
-                {
-                    Vector2 tempVector = new Vector2(x, y);
 
-                    Debug.DrawLine(m_anchorPoint + tempVector * Constants.gridCellSize, m_anchorPoint + new Vector2(x, y + 1) * Constants.gridCellSize, new Color(255, 0, 0), 300f);
-                    Debug.DrawLine(m_anchorPoint + tempVector * Constants.gridCellSize, m_anchorPoint + new Vector2(x + 1, y) * Constants.gridCellSize, new Color(255, 0, 0), 300f);
-                }
-            }
-            Debug.DrawLine(m_anchorPoint + new Vector2(0, Values.Globals.GridSizeY) * Constants.gridCellSize, m_anchorPoint + new Vector2(Values.Globals.GridSizeX, Values.Globals.GridSizeY) * Constants.gridCellSize, new Color(255, 0, 0), 300f);
-            Debug.DrawLine(m_anchorPoint + new Vector2(Values.Globals.GridSizeX, 0) * Constants.gridCellSize, m_anchorPoint + new Vector2(Values.Globals.GridSizeX, Values.Globals.GridSizeY) * Constants.gridCellSize, new Color(255, 0, 0), 300f);
-#endif
         }
 
-        public void DrawDebugMarkedGridPoints()
+        /*public void DrawDebugMarkedGridPoints()
         {
             for (int x = 0; x < Values.Globals.GridSizeX; x++)
             {
@@ -69,7 +55,7 @@ namespace StarSalvager
                 }
             }
             Debug.Break();
-        }
+        }*/
 
         public void MoveObstacleMarkersDownwardOnGrid()
         {
@@ -332,5 +318,30 @@ namespace StarSalvager
 
             return bitExplosionPositions;
         }
+        
+        
+        #if UNITY_EDITOR
+
+        public void OnDrawGizmos()
+        {
+            
+            //Draw debug lines to show the area of the grid
+            for (int x = 0; x < Globals.GridSizeX; x++)
+            {
+                for (int y = 0; y < Globals.GridSizeY; y++)
+                {
+                    Gizmos.color = Color.red;
+                    Vector2 tempVector = new Vector2(x, y);
+
+                    Gizmos.DrawLine(m_anchorPoint + tempVector * Constants.gridCellSize, m_anchorPoint + new Vector2(x, y + 1) * Constants.gridCellSize);
+                    Debug.DrawLine(m_anchorPoint + tempVector * Constants.gridCellSize, m_anchorPoint + new Vector2(x + 1, y) * Constants.gridCellSize);
+                }
+            }
+            Debug.DrawLine(m_anchorPoint + new Vector2(0, Globals.GridSizeY) * Constants.gridCellSize, m_anchorPoint + new Vector2(Globals.GridSizeX, Globals.GridSizeY) * Constants.gridCellSize);
+            Debug.DrawLine(m_anchorPoint + new Vector2(Globals.GridSizeX, 0) * Constants.gridCellSize, m_anchorPoint + new Vector2(Globals.GridSizeX, Globals.GridSizeY) * Constants.gridCellSize);
+        }
+        
+        #endif
+        
     }
 }
