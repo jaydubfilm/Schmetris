@@ -139,6 +139,8 @@ namespace StarSalvager.UI.Scrapyard
                 {
                     droneDesign.selectedPartType = (PART_TYPE) data.blockData.Type;
                     droneDesign.SelectedPartLevel = data.blockData.Level;
+                    droneDesign.selectedPartRemoveFromStorage = true;
+                    droneDesign.selectedPartReturnToStorageIfNotPlaced = false;
                 });
             }
             

@@ -254,7 +254,11 @@ namespace StarSalvager
                         //Check if part should be removed from storage
                         //TODO Should be checking if the player does in-fact have the part in their storage
                         if (selectedPartRemoveFromStorage)
+                        {
+                            print("moo");
                             PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
+                        }
+                        print("yawu" + selectedPartRemoveFromStorage);
 
                         droneDesignUi.RefreshScrollViews();
                         _scrapyardBot.AttachNewBit(mouseCoordinate, attachable);
