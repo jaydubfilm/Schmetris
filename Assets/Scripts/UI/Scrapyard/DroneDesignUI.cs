@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
-using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
-using StarSalvager.Utilities.SceneManagement;
-using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -19,6 +14,8 @@ namespace StarSalvager.UI.Scrapyard
 {
     public class DroneDesignUI : MonoBehaviour
     {
+        private const int MAX_CAPACITY = 1500;
+        
         [SerializeField, Required, BoxGroup("Part UI")]
         private GameObject partsWindow;
         [SerializeField, Required, BoxGroup("Part UI")]
@@ -34,8 +31,8 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, BoxGroup("Resource UI")]
         private ResourceUIElementScrollView liquidResourceContentView;
 
-        [SerializeField, BoxGroup("Resource UI"), Required]
-        private Button fillBotButton;
+        //[SerializeField, BoxGroup("Resource UI"), Required]
+        //private Button fillBotButton;
         
         [SerializeField, BoxGroup("Load List UI")]
         private LayoutElementScrollView layoutScrollView;
@@ -300,10 +297,10 @@ namespace StarSalvager.UI.Scrapyard
 
             //--------------------------------------------------------------------------------------------------------//
 
-            fillBotButton.onClick.AddListener(() =>
+            /*fillBotButton.onClick.AddListener(() =>
             {
-                TryFillBotResources();
-            });
+                
+            });*/
 
 
             //--------------------------------------------------------------------------------------------------------//
@@ -400,7 +397,7 @@ namespace StarSalvager.UI.Scrapyard
                     //resourceType = CraftCost.TYPE.Bit,
                     type = resource.Key,
                     amount = resource.Value,
-                    capacity = 1000
+                    capacity = MAX_CAPACITY
                 };
 
                 var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
@@ -450,36 +447,7 @@ namespace StarSalvager.UI.Scrapyard
 
         #endregion //Scroll Views
         
-        static readonly BIT_TYPE[] types = {
-            BIT_TYPE.RED,
-            BIT_TYPE.GREY,
-            BIT_TYPE.GREEN
-        };
-        private void TryFillBotResources()
-        {
-            foreach (var bitType in types)
-            {
-                var currentAmount = PlayerPersistentData.PlayerData.liquidResource[bitType];
-                var currentCapacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
-
-                var fillRemaining = currentCapacity - currentAmount;
-
-                //If its already full, then we're good to move on
-                if (fillRemaining <= 0f)
-                    continue;
-                
-                var availableResources = PlayerPersistentData.PlayerData.resources[bitType];
-                
-                //If we have no resources available to refill the liquid, move onto the next
-                if(availableResources <= 0)
-                    continue;
-
-                var movingAmount = Mathf.RoundToInt(Mathf.Min(availableResources, fillRemaining));
-                
-                PlayerPersistentData.PlayerData.resources[bitType] -= movingAmount;
-                PlayerPersistentData.PlayerData.AddLiquidResource(bitType, movingAmount);
-            }
-        }
+        
 
         //============================================================================================================//
 

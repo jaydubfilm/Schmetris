@@ -328,18 +328,22 @@ namespace StarSalvager.Utilities
                     
                     if (split[2].ToLower().Equals("all"))
                     {
+                        var componentData = new Dictionary<COMPONENT_TYPE, int>(PlayerPersistentData.PlayerData.components);
+                        
                         foreach (COMPONENT_TYPE value in Enum.GetValues(typeof(COMPONENT_TYPE)))
                         {
-                            if (!PlayerPersistentData.PlayerData.components.ContainsKey(value))
+                            if (!componentData.ContainsKey(value))
                                 continue;
                                 
-                            PlayerPersistentData.PlayerData.components[value] += compAmount;
+                            componentData[value] += compAmount;
                         }
+                        
+                        PlayerPersistentData.PlayerData.SetComponents(componentData);
                         
                     }
                     else if (Enum.TryParse(split[2], true, out COMPONENT_TYPE compType))
                     {
-                        PlayerPersistentData.PlayerData.components[compType] += compAmount;
+                        PlayerPersistentData.PlayerData.AddComponent(compType, compAmount);
                     }
                     else
                     {
@@ -656,7 +660,6 @@ namespace StarSalvager.Utilities
                     break;
                 case "component":
 
-
                     if (!int.TryParse(split[3], out var compAmount))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[3]);
@@ -665,17 +668,21 @@ namespace StarSalvager.Utilities
                     
                     if (split[2].ToLower().Equals("all"))
                     {
+                        var componentData = new Dictionary<COMPONENT_TYPE, int>(PlayerPersistentData.PlayerData.components);
+                        
                         foreach (COMPONENT_TYPE value in Enum.GetValues(typeof(COMPONENT_TYPE)))
                         {
-                            if (!PlayerPersistentData.PlayerData.components.ContainsKey(value))
+                            if (!componentData.ContainsKey(value))
                                 continue;
                                 
-                            PlayerPersistentData.PlayerData.components[value] = compAmount;
+                            componentData[value] = compAmount;
                         }
+                        
+                        PlayerPersistentData.PlayerData.SetComponents(componentData);
                     }
                     else if (Enum.TryParse(split[2], true, out COMPONENT_TYPE compType))
                     {
-                        PlayerPersistentData.PlayerData.components[compType] = compAmount;
+                        PlayerPersistentData.PlayerData.SetComponents(compType, compAmount);
                     }
                     else
                     {
@@ -714,14 +721,17 @@ namespace StarSalvager.Utilities
                     
                     if (split[2].ToLower().Equals("all"))
                     {
+                        var data = new Dictionary<BIT_TYPE, float>(PlayerPersistentData.PlayerData.liquidResource);
+
                         foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
                         {
-                            if (!PlayerPersistentData.PlayerData.liquidResource.ContainsKey(_bitType))
+                            if (!data.ContainsKey(_bitType))
                                 continue;
-                                
-                            //PlayerPersistentData.PlayerData.liquidResource[value] = floatAmount;
-                            PlayerPersistentData.PlayerData.SetLiquidResource(_bitType, floatAmount);
+                            
+                            data[_bitType] = floatAmount;
                         }
+
+                        PlayerPersistentData.PlayerData.SetLiquidResource(data);
                         
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
@@ -729,7 +739,6 @@ namespace StarSalvager.Utilities
                         if (!PlayerPersistentData.PlayerData.liquidResource.ContainsKey(bitType))
                             break;
                         
-                        //PlayerPersistentData.PlayerData.liquidResource[bitType] = floatAmount;
                         PlayerPersistentData.PlayerData.SetLiquidResource(bitType, floatAmount);
                     }
                     else
