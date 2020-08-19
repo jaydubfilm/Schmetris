@@ -53,7 +53,6 @@ namespace StarSalvager
         // Start is called before the first frame update
         private void Start()
         {
-            _scrapyardBots = new List<ScrapyardBot>();
             _floatingPartWarnings = new List<GameObject>();
             _availablePointMarkers = new List<GameObject>();
             _toUndoStack = new Stack<ScrapyardEditData>();
@@ -64,19 +63,6 @@ namespace StarSalvager
             InitInput();
             isStarted = true;
         }
-
-        /*private void LateUpdate()
-        {
-            if (UnityEngine.Input.GetMouseButtonDown(0))
-            {
-                print("moo");
-            }
-
-            if (UnityEngine.Input.GetMouseButtonUp(0))
-            {
-                print("mee");
-            }
-        }*/
 
         private void OnDestroy()
         {
@@ -120,18 +106,18 @@ namespace StarSalvager
             GameTimer.SetPaused(true);
             Camera.onPostRender += DrawGL;
 
-            _scrapyardBots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>());
+            _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
 
             var currentBlockData = PlayerPersistentData.PlayerData.GetCurrentBlockData();
             //Checks to make sure there is a core on the bot
             if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
             {
-                _scrapyardBots[0].InitBot();
+                _scrapyardBot.InitBot();
             }
             else
             {
                 var importedData = currentBlockData.ImportBlockDatas(true);
-                _scrapyardBots[0].InitBot(importedData);
+                _scrapyardBot.InitBot(importedData);
             }
             SellBits();
             TryFillBotResources();
@@ -151,7 +137,7 @@ namespace StarSalvager
 
         public void Reset()
         {
-            if (selectedPartType != null && selectedPartReturnToStorage == true)
+            if (selectedPartType != null && selectedPartReturnToStorageIfNotPlaced == true)
             {
                 BlockData blockData = new BlockData
                 {
@@ -162,11 +148,17 @@ namespace StarSalvager
                 PlayerPersistentData.PlayerData.AddPartToStorage(blockData);
             }
 
+            selectedPartType = null;
+            SelectedPartLevel = 0;
+            selectedPartRemoveFromStorage = false;
+            selectedPartReturnToStorageIfNotPlaced = false;
+
             Camera.onPostRender -= DrawGL;
-            for (int i = _scrapyardBots.Count() - 1; i >= 0; i--)
+
+            if (_scrapyardBot != null)
             {
-                Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBots[i].gameObject);
-                _scrapyardBots.RemoveAt(i);
+                Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBot.gameObject);
+                _scrapyardBot = null;
             }
         }
 
@@ -226,21 +218,17 @@ namespace StarSalvager
             }
             else
             {
-                foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                if (_scrapyardBot != null)
                 {
-                    IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+                    IAttachable attachableAtCoordinates = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
 
-                    if (attachableAtCoordinates == null)
+                    if (attachableAtCoordinates != null && attachableAtCoordinates is ScrapyardPart partAtCoordinates)
                     {
-                        continue;
-                    }
-
-                    if (attachableAtCoordinates is ScrapyardPart partAtCoordinates)
-                    {
-                        scrapBot.TryRemoveAttachableAt(mouseCoordinate, false);
+                        _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
                         selectedPartType = partAtCoordinates.Type;
                         SelectedPartLevel = partAtCoordinates.level;
-                        selectedPartReturnToStorage = true;
+                        selectedPartRemoveFromStorage = false;
+                        selectedPartReturnToStorageIfNotPlaced = true;
                         SaveBlockData();
                     }
                 }
@@ -255,36 +243,35 @@ namespace StarSalvager
 
             if (selectedPartType.HasValue)
             {
-                foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                if (_scrapyardBot != null)
                 {
-                    IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+                    IAttachable attachableAtCoordinates = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
 
-                    if (attachableAtCoordinates != null)
+                    if (attachableAtCoordinates == null)
                     {
-                        continue;
+                        var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(selectedPartType.Value, SelectedPartLevel);
+
+                        //Check if part should be removed from storage
+                        //TODO Should be checking if the player does in-fact have the part in their storage
+                        if (selectedPartRemoveFromStorage)
+                            PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
+
+                        droneDesignUi.RefreshScrollViews();
+                        _scrapyardBot.AttachNewBit(mouseCoordinate, attachable);
+                        _toUndoStack.Push(new ScrapyardEditData
+                        {
+                            EventType = SCRAPYARD_ACTION.EQUIP,
+                            Coordinate = mouseCoordinate,
+                            PartType = (PART_TYPE)selectedPartType
+                        });
+                        _toRedoStack.Clear();
+
+                        selectedPartType = null;
+                        SelectedPartLevel = 0;
+                        selectedPartRemoveFromStorage = false;
+                        selectedPartReturnToStorageIfNotPlaced = false;
+                        SaveBlockData();
                     }
-
-                    var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(selectedPartType.Value, SelectedPartLevel);
-                    
-                    //Check if part should be removed from storage
-                    //TODO Should be checking if the player does in-fact have the part in their storage
-                    if (selectedPartReturnToStorage)
-                        PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
-
-                    droneDesignUi.RefreshScrollViews();
-                    scrapBot.AttachNewBit(mouseCoordinate, attachable);
-                    _toUndoStack.Push(new ScrapyardEditData
-                    {
-                        EventType = SCRAPYARD_ACTION.EQUIP,
-                        Coordinate = mouseCoordinate,
-                        PartType = (PART_TYPE)selectedPartType
-                    });
-                    _toRedoStack.Clear();
-
-                    selectedPartType = null;
-                    SelectedPartLevel = 0;
-                    selectedPartReturnToStorage = false;
-                    SaveBlockData();
                 }
             }
             else
@@ -307,16 +294,11 @@ namespace StarSalvager
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
 
-            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            if (_scrapyardBot != null)
             {
-                IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+                IAttachable attachableAtCoordinates = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
 
-                if (attachableAtCoordinates == null)
-                {
-                    continue;
-                }
-
-                if (attachableAtCoordinates is ScrapyardPart scrapPart)
+                if (attachableAtCoordinates != null && attachableAtCoordinates is ScrapyardPart scrapPart)
                 {
                     PlayerPersistentData.PlayerData.AddPartToStorage(scrapPart.ToBlockData());
                     droneDesignUi.AddToPartScrollView(scrapPart.ToBlockData());
@@ -328,10 +310,10 @@ namespace StarSalvager
                         Level = scrapPart.level
                     });
                     _toRedoStack.Clear();
+
+                    _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
+                    SaveBlockData();
                 }
-                scrapBot.TryRemoveAttachableAt(mouseCoordinate, false);
-                //droneDesignUi.UpdateResources(PlayerPersistentData.PlayerData.GetResources());
-                SaveBlockData();
             }
             UpdateFloatingMarkers(false);
         }
@@ -358,39 +340,39 @@ namespace StarSalvager
             switch (toUndo.EventType)
             {
                 case SCRAPYARD_ACTION.EQUIP:
-                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    if (_scrapyardBot != null)
                     {
                         PlayerPersistentData.PlayerData.AddPartToStorage
-                            (((ScrapyardPart)scrapBot.attachedBlocks.FirstOrDefault(a => a.Coordinate == toUndo.Coordinate)).ToBlockData());
+                            (((ScrapyardPart)_scrapyardBot.attachedBlocks.FirstOrDefault(a => a.Coordinate == toUndo.Coordinate)).ToBlockData());
 
-                        scrapBot.TryRemoveAttachableAt(toUndo.Coordinate, false);
+                        _scrapyardBot.TryRemoveAttachableAt(toUndo.Coordinate, false);
                         droneDesignUi.RefreshScrollViews();
                         SaveBlockData();
                     }
                     break;
                 case SCRAPYARD_ACTION.UNEQUIP:
-                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    if (_scrapyardBot != null)
                     {
                         var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(toUndo.PartType, toUndo.Level);
                         PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
-                        scrapBot.AttachNewBit(toUndo.Coordinate, attachable);
+                        _scrapyardBot.AttachNewBit(toUndo.Coordinate, attachable);
                         droneDesignUi.RefreshScrollViews();
                         SaveBlockData();
                     }
                     break;
 
                 case SCRAPYARD_ACTION.PURCHASE:
-                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    if (_scrapyardBot != null)
                     {
-                        scrapBot.TryRemoveAttachableAt(toUndo.Coordinate, true);
+                        _scrapyardBot.TryRemoveAttachableAt(toUndo.Coordinate, true);
                         droneDesignUi.UpdateResourceElements();
                         SaveBlockData();
                     }
                     break;
                 case SCRAPYARD_ACTION.UPGRADE:
-                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    if (_scrapyardBot != null)
                     {
-                        IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(toUndo.Coordinate);
+                        IAttachable attachableAtCoordinates = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(toUndo.Coordinate);
                         if (attachableAtCoordinates == null)
                             return;
 
@@ -407,15 +389,15 @@ namespace StarSalvager
                     }
                     break;
                 case SCRAPYARD_ACTION.SALE:
-                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    if (_scrapyardBot != null)
                     {
-                        IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(toUndo.Coordinate);
+                        IAttachable attachableAtCoordinates = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(toUndo.Coordinate);
                         if (attachableAtCoordinates != null)
                             return;
 
                         var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(toUndo.PartType, toUndo.Level);
                         playerData.SubtractResources(toUndo.PartType, toUndo.Level, true);
-                        scrapBot.AttachNewBit(toUndo.Coordinate, attachable);
+                        _scrapyardBot.AttachNewBit(toUndo.Coordinate, attachable);
                         droneDesignUi.UpdateResourceElements();
                         SaveBlockData();
                     }
@@ -437,22 +419,22 @@ namespace StarSalvager
             switch (toRedo.EventType)
             {
                 case SCRAPYARD_ACTION.EQUIP:
-                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    if (_scrapyardBot != null)
                     {
                         var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(toRedo.PartType, toRedo.Level);
                         PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
-                        scrapBot.AttachNewBit(toRedo.Coordinate, attachable);
+                        _scrapyardBot.AttachNewBit(toRedo.Coordinate, attachable);
                         droneDesignUi.RefreshScrollViews();
                         SaveBlockData();
                     }
                     break;
                 case SCRAPYARD_ACTION.UNEQUIP:
-                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    if (_scrapyardBot != null)
                     {
                         PlayerPersistentData.PlayerData.AddPartToStorage
-                            (((ScrapyardPart)scrapBot.attachedBlocks.FirstOrDefault(a => a.Coordinate == toRedo.Coordinate)).ToBlockData());
+                            (((ScrapyardPart)_scrapyardBot.attachedBlocks.FirstOrDefault(a => a.Coordinate == toRedo.Coordinate)).ToBlockData());
 
-                        scrapBot.TryRemoveAttachableAt(toRedo.Coordinate, false);
+                        _scrapyardBot.TryRemoveAttachableAt(toRedo.Coordinate, false);
                         droneDesignUi.RefreshScrollViews();
                         SaveBlockData();
                     }
@@ -460,9 +442,9 @@ namespace StarSalvager
 
 
                 case SCRAPYARD_ACTION.PURCHASE:
-                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    if (_scrapyardBot != null)
                     {
-                        IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(toRedo.Coordinate);
+                        IAttachable attachableAtCoordinates = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(toRedo.Coordinate);
                         if (attachableAtCoordinates != null)
                             return;
 
@@ -471,15 +453,15 @@ namespace StarSalvager
 
                         var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(toRedo.PartType, 0);
                         playerData.SubtractResources(toRedo.PartType, 0, false);
-                        scrapBot.AttachNewBit(toRedo.Coordinate, attachable);
+                        _scrapyardBot.AttachNewBit(toRedo.Coordinate, attachable);
                         droneDesignUi.UpdateResourceElements();
                         SaveBlockData();
                     }
                     break;
                 case SCRAPYARD_ACTION.UPGRADE:
-                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    if (_scrapyardBot != null)
                     {
-                        IAttachable attachableAtCoordinates = scrapBot.attachedBlocks.GetAttachableAtCoordinates(toRedo.Coordinate);
+                        IAttachable attachableAtCoordinates = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(toRedo.Coordinate);
                         if (attachableAtCoordinates == null)
                             return;
 
@@ -496,9 +478,9 @@ namespace StarSalvager
                     }
                     break;
                 case SCRAPYARD_ACTION.SALE:
-                    foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                    if (_scrapyardBot != null)
                     {
-                        scrapBot.TryRemoveAttachableAt(toRedo.Coordinate, true);
+                        _scrapyardBot.TryRemoveAttachableAt(toRedo.Coordinate, true);
                         droneDesignUi.UpdateResourceElements();
                         SaveBlockData();
                     }
@@ -529,11 +511,11 @@ namespace StarSalvager
             ScrapyardLayout saveLayout = _scrapyardLayouts.FirstOrDefault(l => l.Name == layoutName);
             if (saveLayout != null)
             {
-                saveLayout = new ScrapyardLayout(layoutName, _scrapyardBots[0].GetBlockDatas());
+                saveLayout = new ScrapyardLayout(layoutName, _scrapyardBot.GetBlockDatas());
             }
             else
             {
-                _scrapyardLayouts.Add(new ScrapyardLayout(layoutName, _scrapyardBots[0].GetBlockDatas()));
+                _scrapyardLayouts.Add(new ScrapyardLayout(layoutName, _scrapyardBot.GetBlockDatas()));
             }
             ExportRemoteData(_scrapyardLayouts);
         }
@@ -548,7 +530,7 @@ namespace StarSalvager
             //Setup your list of available parts by adding storage and parts on bot together into a temp list
             List<BlockData> partComparer = new List<BlockData>();
             partComparer.AddRange(PlayerPersistentData.PlayerData.GetCurrentPartsInStorage());
-            foreach (var attachable in _scrapyardBots[0].attachedBlocks)
+            foreach (var attachable in _scrapyardBot.attachedBlocks)
             {
                 if (attachable is ScrapyardPart part && part.Type != (int)PART_TYPE.CORE)
                 {
@@ -599,17 +581,17 @@ namespace StarSalvager
             PlayerPersistentData.PlayerData.SetResources(resourceComparer);
             PlayerPersistentData.PlayerData.SetCurrentPartsInStorage(partComparer);
 
-            for (int i = _scrapyardBots[0].attachedBlocks.Count - 1; i >= 0; i--)
+            for (int i = _scrapyardBot.attachedBlocks.Count - 1; i >= 0; i--)
             {
-                if (_scrapyardBots[0].attachedBlocks[i].Coordinate != Vector2Int.zero)
+                if (_scrapyardBot.attachedBlocks[i].Coordinate != Vector2Int.zero)
                 {
-                    _scrapyardBots[0].TryRemoveAttachableAt(_scrapyardBots[0].attachedBlocks[i].Coordinate, false);
+                    _scrapyardBot.TryRemoveAttachableAt(_scrapyardBot.attachedBlocks[i].Coordinate, false);
                 }
             }
 
             foreach (var attachable in tempLayout.BlockData.ImportBlockDatas(true))
             {
-                _scrapyardBots[0].AttachNewBit(attachable.Coordinate, attachable);
+                _scrapyardBot.AttachNewBit(attachable.Coordinate, attachable);
             }
             droneDesignUi.UpdateResourceElements();
             droneDesignUi.RefreshScrollViews();
@@ -626,9 +608,9 @@ namespace StarSalvager
         //Keep an eye on this - currently it will update the player block data each time there is a change
         public void SaveBlockData()
         {
-            foreach (ScrapyardBot scrapyardbot in _scrapyardBots)
+            if (_scrapyardBot != null)
             {
-                PlayerPersistentData.PlayerData.SetCurrentBlockData(scrapyardbot.attachedBlocks.GetBlockDatas());
+                PlayerPersistentData.PlayerData.SetCurrentBlockData(_scrapyardBot.attachedBlocks.GetBlockDatas());
             }
         }
 
@@ -701,15 +683,15 @@ namespace StarSalvager
 
         private void SellBits()
         {
-            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            if (_scrapyardBot != null)
             {
-                List<ScrapyardBit> listBits = scrapBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
+                List<ScrapyardBit> listBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
 
 
-                List<Component> listComponents = scrapBot.attachedBlocks.OfType<Component>().ToList();
+                List<Component> listComponents = _scrapyardBot.attachedBlocks.OfType<Component>().ToList();
                 if (listComponents.Count > 0)
                 {
-                    scrapBot.RemoveAllComponents();
+                    _scrapyardBot.RemoveAllComponents();
 
                     //TODO Need to think about if I should be displaying the components processed or not
                     foreach (var component in listComponents)
@@ -723,9 +705,9 @@ namespace StarSalvager
 
 
                 if (listBits.Count == 0)
-                    continue;
+                    return;
 
-                var scrapyardBits = scrapBot.attachedBlocks.OfType<ScrapyardBit>();
+                var scrapyardBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>();
 
                 Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(scrapyardBits);
 
@@ -755,7 +737,7 @@ namespace StarSalvager
                 Alert.SetLineHeight(90f);
 
 
-                scrapBot.RemoveAllBits();
+                _scrapyardBot.RemoveAllBits();
 
 
 
@@ -767,9 +749,9 @@ namespace StarSalvager
 
         public void RotateBots(float direction)
         {
-            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            if (_scrapyardBot != null)
             {
-                scrapBot.Rotate(direction);
+                _scrapyardBot.Rotate(direction);
             }
         }
 
@@ -781,43 +763,40 @@ namespace StarSalvager
             }
             _availablePointMarkers.Clear();
 
-            if (showAvailable)
+            if (showAvailable && _scrapyardBot != null)
             {
-                foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                foreach (var attached in _scrapyardBot.attachedBlocks)
                 {
-                    foreach (var attached in scrapBot.attachedBlocks)
-                    {
-                        if (!scrapBot.attachedBlocks.HasPathToCore(attached))
-                            continue;
+                    if (!_scrapyardBot.attachedBlocks.HasPathToCore(attached))
+                        continue;
 
-                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.left && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
-                        {
-                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
-                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
-                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.left) * Constants.gridCellSize + Vector3.back;
-                            _availablePointMarkers.Add(availableMarker);
-                        }
-                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.right && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
-                        {
-                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
-                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
-                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.right) * Constants.gridCellSize + Vector3.back;
-                            _availablePointMarkers.Add(availableMarker);
-                        }
-                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.up && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
-                        {
-                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
-                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
-                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.up) * Constants.gridCellSize + Vector3.back;
-                            _availablePointMarkers.Add(availableMarker);
-                        }
-                        if (scrapBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.down && scrapBot.attachedBlocks.HasPathToCore(a)).Count == 0)
-                        {
-                            if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
-                                availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
-                            availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.down) * Constants.gridCellSize + Vector3.back;
-                            _availablePointMarkers.Add(availableMarker);
-                        }
+                    if (_scrapyardBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.left && _scrapyardBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                    {
+                        if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                            availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                        availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.left) * Constants.gridCellSize + Vector3.back;
+                        _availablePointMarkers.Add(availableMarker);
+                    }
+                    if (_scrapyardBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.right && _scrapyardBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                    {
+                        if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                            availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                        availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.right) * Constants.gridCellSize + Vector3.back;
+                        _availablePointMarkers.Add(availableMarker);
+                    }
+                    if (_scrapyardBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.up && _scrapyardBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                    {
+                        if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                            availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                        availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.up) * Constants.gridCellSize + Vector3.back;
+                        _availablePointMarkers.Add(availableMarker);
+                    }
+                    if (_scrapyardBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.down && _scrapyardBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                    {
+                        if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
+                            availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
+                        availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.down) * Constants.gridCellSize + Vector3.back;
+                        _availablePointMarkers.Add(availableMarker);
                     }
                 }
             }
@@ -828,11 +807,11 @@ namespace StarSalvager
             }
             _floatingPartWarnings.Clear();
 
-            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            if (_scrapyardBot != null)
             {
-                foreach (var attached in scrapBot.attachedBlocks)
+                foreach (var attached in _scrapyardBot.attachedBlocks)
                 {
-                    if (!scrapBot.attachedBlocks.HasPathToCore(attached))
+                    if (!_scrapyardBot.attachedBlocks.HasPathToCore(attached))
                     {
                         if (!Recycler.TryGrab(ICONS.ALERT, out GameObject newWarning))
                             newWarning = GameObject.Instantiate(floatingPartWarningPrefab);
@@ -845,12 +824,9 @@ namespace StarSalvager
 
         public bool IsFullyConnected()
         {
-            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            if (_scrapyardBot != null && _scrapyardBot.CheckHasDisconnects())
             {
-                if (scrapBot.CheckHasDisconnects())
-                {
-                    return false;
-                }
+                return false;
             }
 
             return true;

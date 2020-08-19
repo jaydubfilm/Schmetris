@@ -17,13 +17,13 @@ namespace StarSalvager
 {
     public class BotShapeEditor : AttachableEditorToolBase, IReset, IInput
     {
-        private List<Shape> _shapes;
+        private Shape _shape = null;
+
+        public bool EditingBot => _scrapyardBot != null;
+        public bool EditingShape => _shape != null;
 
         [SerializeField]
         private BotShapeEditorUI m_botShapeEditorUI;
-
-        public bool EditingBot => _scrapyardBots.Count > 0;
-        public bool EditingShape => _shapes.Count > 0;
 
         public EditorBotShapeGeneratorData EditorBotShapeData
         {
@@ -44,8 +44,6 @@ namespace StarSalvager
         // Start is called before the first frame update
         private void Start()
         {
-            _scrapyardBots = new List<ScrapyardBot>();
-            _shapes = new List<Shape>();
             Activate();
 
             InitInput();
@@ -94,15 +92,9 @@ namespace StarSalvager
         }
         public void RotateBots(float direction)
         {
-            foreach (ScrapyardBot scrapBot in _scrapyardBots)
-            {
-                scrapBot.Rotate(direction);
-            }
+            _scrapyardBot.Rotate(direction);
 
-            foreach (Shape shape in _shapes)
-            {
-                //TODO: Rotate shape
-            }
+            //TODO Rotate shape
         }
         
         //============================================================================================================//
@@ -119,42 +111,40 @@ namespace StarSalvager
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
 
-            foreach (Shape shape in _shapes)
+            if (_shape != null && !_shape.AttachedBits.Any(b => b.Coordinate == mouseCoordinate))
             {
-                if (shape.AttachedBits.Any(b => b.Coordinate == mouseCoordinate))
-                    continue;
-
                 if (SelectedBitType is BIT_TYPE bitType)
                 {
-                    shape.PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(bitType, SelectedPartLevel), mouseCoordinate);
+                    _shape.PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(bitType, SelectedPartLevel), mouseCoordinate);
                 }
             }
 
-            foreach (ScrapyardBot scrapBot in _scrapyardBots)
+            if (_scrapyardBot != null)
             {
-                if (scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate) != null)
+                if (_scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate) != null)
                 {
-                    IAttachable attachable = scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+                    IAttachable attachable = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
                     if (attachable != null && attachable is ScrapyardPart partAtCoordinates && partAtCoordinates.Type == PART_TYPE.CORE)
                     {
                         FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level + 1, ref partAtCoordinates);
                     }
-                    continue;
                 }
+                else
+                {
+                    if (selectedPartType == null && SelectedBitType == null)
+                    {
+                        return;
+                    }
 
-                if (selectedPartType == null && SelectedBitType == null)
-                {
-                    return;
-                }
-
-                if (selectedPartType != null)
-                {
-                    var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)selectedPartType, SelectedPartLevel);
-                    scrapBot.AttachNewBit(mouseCoordinate, attachable);
-                }
-                else if (SelectedBitType is BIT_TYPE bitType)
-                {
-                    scrapBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<ScrapyardBit>(bitType, SelectedPartLevel));
+                    if (selectedPartType != null)
+                    {
+                        var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)selectedPartType, SelectedPartLevel);
+                        _scrapyardBot.AttachNewBit(mouseCoordinate, attachable);
+                    }
+                    else if (SelectedBitType is BIT_TYPE bitType)
+                    {
+                        _scrapyardBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<ScrapyardBit>(bitType, SelectedPartLevel));
+                    }
                 }
             }
         }
@@ -173,23 +163,23 @@ namespace StarSalvager
 
             if (mouseCoordinate.x != 0 || mouseCoordinate.y != 0)
             {
-                foreach (ScrapyardBot scrapBot in _scrapyardBots)
+                if (_scrapyardBot != null)
                 {
-                    IAttachable attachable = scrapBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+                    IAttachable attachable = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
                     if (attachable != null && attachable is ScrapyardPart partAtCoordinates && partAtCoordinates.Type == PART_TYPE.CORE && partAtCoordinates.level > 0)
                     {
                         FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level - 1, ref partAtCoordinates);
-                        continue;
+                        return;
                     }
-                    
-                    scrapBot.TryRemoveAttachableAt(mouseCoordinate, false);
+
+                    _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
                 } 
             }
                 
 
-            foreach (Shape shape in _shapes)
+            if (_shape != null)
             {
-                shape.DestroyBit(mouseCoordinate, false);
+                _shape.DestroyBit(mouseCoordinate, false);
             }
         }
 
@@ -200,10 +190,10 @@ namespace StarSalvager
         {
             DeloadAllBots();
             DeloadAllShapes();
-            _scrapyardBots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>());
+            _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
 
             if (initBot)
-                _scrapyardBots[0].InitBot();
+                _scrapyardBot.InitBot();
         }
 
         public void CreateShape(List<Bit> bits)
@@ -212,15 +202,14 @@ namespace StarSalvager
             DeloadAllShapes();
             if (bits == null || bits.Count == 0)
             {
-                _shapes.Add(FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>());
-                //_shapes[0].PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>((BIT_TYPE)Random.Range(0, 6), 0), Vector2Int.zero);
+                _shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>();
             }
             else
             {
-                _shapes.Add(FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bits));
+                _shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bits);
             }
 
-            _shapes[0].transform.position = Vector3.zero;
+            _shape.transform.position = Vector3.zero;
         }
 
         public void LoadBlockData(string inputName)
@@ -231,7 +220,7 @@ namespace StarSalvager
             if (botData != null && botData.BlockData != null)
             {
                 CreateBot(false);
-                _scrapyardBots[0].InitBot(botData.BlockData.ImportBlockDatas(true));
+                _scrapyardBot.InitBot(botData.BlockData.ImportBlockDatas(true));
                 m_botShapeEditorUI.SetPartsScrollActive(true);
                 m_botShapeEditorUI.SetCategoriesScrollActive(false);
                 return;
@@ -251,40 +240,34 @@ namespace StarSalvager
 
         private void DeloadAllBots()
         {
-            for (int i = _scrapyardBots.Count() - 1; i >= 0; i--)
-            {
-                Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBots[i].gameObject);
-                _scrapyardBots.RemoveAt(i);
-            }
+            Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBot.gameObject);
+            _scrapyardBot = null;
         }
 
         private void DeloadAllShapes()
         {
-            for (int i = _shapes.Count() - 1; i >= 0; i--)
-            {
-                Recycling.Recycler.Recycle<Shape>(_shapes[i].gameObject);
-                _shapes.RemoveAt(i);
-            }
+            Recycling.Recycler.Recycle<Shape>(_shape.gameObject);
+            _shape = null;
         }
 
         public bool CheckLegal()
         {
-            foreach (ScrapyardBot scrapyardBot in _scrapyardBots)
+            if (_scrapyardBot != null)
             {
-                foreach (var attached in scrapyardBot.attachedBlocks)
+                foreach (var attached in _scrapyardBot.attachedBlocks)
                 {
-                    if (!scrapyardBot.attachedBlocks.HasPathToCore(attached))
+                    if (!_scrapyardBot.attachedBlocks.HasPathToCore(attached))
                     {
                         return false;
                     }
                 }
             }
 
-            foreach (Shape shape in _shapes)
+            if (_shape != null)
             {
-                foreach (var attached in shape.AttachedBits)
+                foreach (var attached in _shape.AttachedBits)
                 {
-                    if (!shape.AttachedBits.HasPathToCore(attached))
+                    if (!_shape.AttachedBits.HasPathToCore(attached))
                     {
                         return false;
                     }
@@ -296,12 +279,12 @@ namespace StarSalvager
 
         public void RemoveFloating()
         {
-            foreach (ScrapyardBot scrapyardBot in _scrapyardBots)
+            if (_scrapyardBot != null)
             {
                 List<IAttachable> toRemove = new List<IAttachable>();
-                foreach (var attached in scrapyardBot.attachedBlocks)
+                foreach (var attached in _scrapyardBot.attachedBlocks)
                 {
-                    if (!scrapyardBot.attachedBlocks.HasPathToCore(attached))
+                    if (!_scrapyardBot.attachedBlocks.HasPathToCore(attached))
                     {
                         toRemove.Add(attached);
                     }
@@ -309,16 +292,16 @@ namespace StarSalvager
 
                 foreach (var remove in toRemove)
                 {
-                    scrapyardBot.TryRemoveAttachableAt(remove.Coordinate, false);
+                    _scrapyardBot.TryRemoveAttachableAt(remove.Coordinate, false);
                 }
             }
 
-            foreach (Shape shape in _shapes)
+            if (_shape != null)
             {
                 List<IAttachable> toRemove = new List<IAttachable>();
-                foreach (var attached in shape.AttachedBits)
+                foreach (var attached in _shape.AttachedBits)
                 {
-                    if (!shape.AttachedBits.HasPathToCore(attached))
+                    if (!_shape.AttachedBits.HasPathToCore(attached))
                     {
                         toRemove.Add(attached);
                     }
@@ -326,7 +309,7 @@ namespace StarSalvager
 
                 foreach (var remove in toRemove)
                 {
-                    shape.DestroyBit(remove.Coordinate);
+                    _shape.DestroyBit(remove.Coordinate);
                 }
             }
         }
@@ -334,27 +317,24 @@ namespace StarSalvager
         //Save the current bot's data in blockdata to be loaded in the level manager.
         public void SaveBlockData(string inputName)
         {
-            foreach (ScrapyardBot scrapyardbot in _scrapyardBots)
+            if (_scrapyardBot != null)
             {
-                EditorBotGeneratorData newData = new EditorBotGeneratorData(inputName, scrapyardbot.attachedBlocks.GetBlockDatas());
+                EditorBotGeneratorData newData = new EditorBotGeneratorData(inputName, _scrapyardBot.attachedBlocks.GetBlockDatas());
                 EditorBotShapeData.AddEditorBotData(newData);
             }
 
-            foreach (Shape shape in _shapes)
+            if (_shape != null)
             {
-                EditorShapeGeneratorData newData = new EditorShapeGeneratorData(inputName, shape.AttachedBits.GetBlockDatas(), m_botShapeEditorUI.GetCategories());
+                EditorShapeGeneratorData newData = new EditorShapeGeneratorData(inputName, _shape.AttachedBits.GetBlockDatas(), m_botShapeEditorUI.GetCategories());
                 EditorBotShapeData.AddEditorShapeData(newData);
             }
-
-            //DeloadAllBots();
-            //DeloadAllShapes();
         }
 
         public void PushBot()
         {
-            foreach (ScrapyardBot scrapyardbot in _scrapyardBots)
+            if (_scrapyardBot != null)
             {
-                PlayerPersistentData.PlayerData.SetCurrentBlockData(scrapyardbot.attachedBlocks.GetBlockDatas());
+                PlayerPersistentData.PlayerData.SetCurrentBlockData(_scrapyardBot.attachedBlocks.GetBlockDatas());
             }
         }
 
