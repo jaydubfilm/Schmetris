@@ -181,7 +181,7 @@ namespace StarSalvager
                         Globals.CurrentWave = 0;
                         GameTimer.SetPaused(false);
                         PlayerPersistentData.PlayerData.numLives = 3;
-                        SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
+                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.ALEX_TEST_SCENE);
                     });
                 }
                 //Debug.LogError("Bot Died. Press 'R' to restart");
@@ -356,7 +356,7 @@ namespace StarSalvager
                 ProcessScrapyardUsageBeginAnalytics();
                 Globals.CurrentWave = 0;
                 Globals.SectorComplete = true;
-                SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
+                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
             }
         }
 
@@ -382,7 +382,7 @@ namespace StarSalvager
             GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
             GameTimer.SetPaused(false);
             //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
-            SceneLoader.ActivateScene("AlexShulmanTestScene", "AlexShulmanTestScene");
+            SceneLoader.ActivateScene(SceneLoader.ALEX_TEST_SCENE, SceneLoader.ALEX_TEST_SCENE);
         }
 
         //============================================================================================================//

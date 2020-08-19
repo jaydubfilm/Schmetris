@@ -98,7 +98,7 @@ namespace StarSalvager.UI.Scrapyard
             });
             menuButton.onClick.AddListener(() =>
             {
-                SceneLoader.ActivateScene("MainMenuScene", "ScrapyardScene");
+                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
             });
             saveGameButton.onClick.AddListener(() =>
             {
@@ -140,7 +140,7 @@ namespace StarSalvager.UI.Scrapyard
                 Globals.SectorComplete = false;
             }
             
-            SceneLoader.ActivateScene("UniverseMapScene", "ScrapyardScene");
+            SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
             
         }
         
