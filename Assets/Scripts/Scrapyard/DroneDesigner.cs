@@ -123,7 +123,7 @@ namespace StarSalvager
             Camera.onPostRender += DrawGL;
 
             _scrapyardBots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>());
-            
+
             var currentBlockData = PlayerPersistentData.PlayerData.GetCurrentBlockData();
             //Checks to make sure there is a core on the bot
             if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
@@ -136,15 +136,18 @@ namespace StarSalvager
                 _scrapyardBots[0].InitBot(importedData);
             }
             SellBits();
+            TryFillBotResources();
 
             if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] == 0)
             {
                 Alert.ShowAlert("Game Over", "You have run out of water. Your crew has died of thirst.", "Main Menu", () =>
                 {
                     PlayerPersistentData.PlayerData.numLives = 3;
-                    SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
+                    SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.ALEX_TEST_SCENE);
                 });
             }
+
+
             UpdateFloatingMarkers(false);
         }
 
@@ -160,6 +163,37 @@ namespace StarSalvager
         }
 
         #endregion //IReset Functions
+
+        static readonly BIT_TYPE[] types = {
+            BIT_TYPE.RED,
+            BIT_TYPE.GREY,
+            BIT_TYPE.GREEN
+        };
+        private void TryFillBotResources()
+        {
+            foreach (var bitType in types)
+            {
+                var currentAmount = PlayerPersistentData.PlayerData.liquidResource[bitType];
+                var currentCapacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
+
+                var fillRemaining = currentCapacity - currentAmount;
+
+                //If its already full, then we're good to move on
+                if (fillRemaining <= 0f)
+                    continue;
+
+                var availableResources = PlayerPersistentData.PlayerData.resources[bitType];
+
+                //If we have no resources available to refill the liquid, move onto the next
+                if(availableResources <= 0)
+                    continue;
+
+                var movingAmount = Mathf.RoundToInt(Mathf.Min(availableResources, fillRemaining));
+
+                PlayerPersistentData.PlayerData.resources[bitType] -= movingAmount;
+                PlayerPersistentData.PlayerData.AddLiquidResource(bitType, movingAmount);
+            }
+        }
 
         //============================================================================================================//
 
@@ -314,7 +348,7 @@ namespace StarSalvager
                     {
                         PlayerPersistentData.PlayerData.AddPartToStorage
                             (((ScrapyardPart)scrapBot.attachedBlocks.FirstOrDefault(a => a.Coordinate == toUndo.Coordinate)).ToBlockData());
-                        
+
                         scrapBot.TryRemoveAttachableAt(toUndo.Coordinate, false);
                         droneDesignUi.RefreshScrollViews();
                         SaveBlockData();
@@ -382,7 +416,7 @@ namespace StarSalvager
         {
             if (_toRedoStack.Count == 0)
                 return;
-            
+
             ScrapyardEditData toRedo = _toRedoStack.Pop();
             var playerData = PlayerPersistentData.PlayerData;
 
@@ -533,7 +567,7 @@ namespace StarSalvager
             {
                 if (partData.Type == (int)PART_TYPE.CORE)
                     continue;
-                
+
                 if (CostCalculations.CanAffordPart(resourceComparer, componentComparer, partComparer, (PART_TYPE)partData.Type, partData.Level, true))
                 {
                     CostCalculations.SubtractPartCosts(ref resourceComparer, ref componentComparer, partComparer, (PART_TYPE)partData.Type, partData.Level, true);
@@ -657,23 +691,23 @@ namespace StarSalvager
             {
                 List<ScrapyardBit> listBits = scrapBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
 
-                
+
                 List<Component> listComponents = scrapBot.attachedBlocks.OfType<Component>().ToList();
                 if (listComponents.Count > 0)
                 {
                     scrapBot.RemoveAllComponents();
-                
+
                     //TODO Need to think about if I should be displaying the components processed or not
                     foreach (var component in listComponents)
                     {
-                        PlayerPersistentData.PlayerData.components[component.Type]++;
+                        PlayerPersistentData.PlayerData.AddComponent(component.Type, 1);
                     }
-                
+
                     PlayerData.OnValuesChanged?.Invoke();
                     SaveBlockData();
                 }
 
-                
+
                 if (listBits.Count == 0)
                     continue;
 
@@ -682,13 +716,13 @@ namespace StarSalvager
                 Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(scrapyardBits);
 
                 PlayerPersistentData.PlayerData.AddResources(bits);
-                
-                
+
+
                 string resourcesGained = "";
                 foreach (var resource in bits)
                 {
                     int numTotal = scrapyardBits.Count(b => b.Type == resource.Key);
-                    
+
                     for (int i = 0; numTotal > 0; i++)
                     {
                         int numAtLevel = scrapyardBits.Count(b => b.Type == resource.Key && b.level == i);
@@ -705,12 +739,12 @@ namespace StarSalvager
                 }
                 Alert.ShowAlert("Resources Refined", resourcesGained, "Okay", null);
                 Alert.SetLineHeight(90f);
-                
-                
+
+
                 scrapBot.RemoveAllBits();
-                
-                
-                
+
+
+
                 SaveBlockData();
 
                 droneDesignUi.UpdateResourceElements();

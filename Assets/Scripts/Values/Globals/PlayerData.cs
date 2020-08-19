@@ -45,7 +45,7 @@ namespace StarSalvager.Values
         };
 
         [JsonIgnore]
-        public Dictionary<COMPONENT_TYPE, int> components => _components;
+        public ReadOnlyDictionary<COMPONENT_TYPE, int> components => new ReadOnlyDictionary<COMPONENT_TYPE, int>(_components);
         [JsonProperty]
         private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_TYPE, int>
         {
@@ -110,17 +110,42 @@ namespace StarSalvager.Values
 
         public void SetLiquidResource(BIT_TYPE type, float value)
         {
-            _liquidResource[type] = Mathf.Min(value, _resourceCapacity[type]);
+            _liquidResource[type] = Mathf.Clamp(value, 0f, _liquidCapacity[type]);
+
+            OnValuesChanged?.Invoke();
+        }
+
+        public void SetLiquidResource(Dictionary<BIT_TYPE, float> liquidValues)
+        {
+            foreach (var value in liquidValues)
+            {
+              _liquidResource[value.Key] = Mathf.Clamp(value.Value, 0f, _liquidCapacity[value.Key]);
+            }
+
+            OnValuesChanged?.Invoke();
         }
 
         //============================================================================================================//
 
+        public void SetComponents(COMPONENT_TYPE type, int value)
+        {
+            _components[type] = value;
 
-        //public void ChangeCapacity(BIT_TYPE type, int amount)
-        //{
-        //    _liquidCapacity[type] += amount;
-        //    OnCapacitiesChanged?.Invoke();
-        //}
+            OnValuesChanged?.Invoke();
+        }
+
+        public void SetComponents(Dictionary<COMPONENT_TYPE, int> liquidValues)
+        {
+            foreach (var value in liquidValues)
+            {
+                _components[value.Key] = value.Value;
+            }
+
+            OnValuesChanged?.Invoke();
+        }
+
+        //============================================================================================================//
+
         public void SetCapacity(BIT_TYPE type, int amount)
         {
             _liquidCapacity[type] = amount;
@@ -198,6 +223,20 @@ namespace StarSalvager.Values
         public void SubtractLiquidResource(BIT_TYPE type, float amount)
         {
             _liquidResource[type] = Mathf.Clamp(liquidResource[type] - Mathf.Abs(amount), 0, liquidCapacity[type]);
+            OnValuesChanged?.Invoke();
+        }
+
+        //============================================================================================================//
+
+        public void AddComponent(COMPONENT_TYPE type, int amount)
+        {
+            _components[type] += Mathf.Abs(amount);
+            OnValuesChanged?.Invoke();
+        }
+
+        public void SubtractComponent(COMPONENT_TYPE type, int amount)
+        {
+            _components[type] -= Mathf.Abs(amount);
             OnValuesChanged?.Invoke();
         }
 

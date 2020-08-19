@@ -19,7 +19,19 @@ namespace StarSalvager.Utilities.Inputs
         public bool isPaused => GameTimer.IsPaused;
 
         [ShowInInspector, ReadOnly]
-        public bool LockSideMovement { get; set; }
+        public bool LockSideMovement
+        {
+            get => _LockSideMovement;
+            set
+            {
+                if (value)
+                    TryApplyMove(0f);
+                
+                _LockSideMovement = value;
+            } 
+        }
+
+        private bool _LockSideMovement;
 
 
         [SerializeField, BoxGroup("DAS"), DisableInPlayMode]
@@ -189,7 +201,10 @@ namespace StarSalvager.Utilities.Inputs
                 return;
 
             if (LockSideMovement)
+            {
+                TryApplyMove(0f);
                 return;
+            }
             
             var moveDirection = ctx.ReadValue<float>();
 
