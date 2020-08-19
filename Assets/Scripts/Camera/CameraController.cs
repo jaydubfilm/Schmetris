@@ -2,6 +2,7 @@
 using StarSalvager.Values;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras.Data;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -96,11 +97,14 @@ namespace StarSalvager.Cameras
 
         private void UpdateRect()
         {
+            var width = camera.aspect * 2f * camera.orthographicSize;
+            var height = 2f * camera.orthographicSize;
+            
             _cameraRect = new Rect
             {
-                center = Vector2.zero,
-                height = 2f * camera.orthographicSize,
-                width = camera.aspect * 2f * camera.orthographicSize,
+                center = -new Vector2(width / 2f, height / 2f) + (Vector2)transform.position,
+                height = height,
+                width = width,
             };
         }
         
@@ -187,8 +191,13 @@ namespace StarSalvager.Cameras
                     throw new ArgumentOutOfRangeException(nameof(Globals.Orientation), Globals.Orientation, null);
             }
         }
-        
-        #endif
+
+        private void OnDrawGizmosSelected()
+        {
+            GizmoExtensions.DrawRect(_cameraRect, Color.cyan);
+        }
+
+#endif
         
 
         //IMoveOnInput functions
