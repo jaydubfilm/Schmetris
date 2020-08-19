@@ -76,13 +76,15 @@ namespace StarSalvager.UI.Scrapyard
 
         private void UpdateScrollView()
         {
+            SaveGameContentScrollView.ClearElements<SaveGameUIElement>();
+            
             foreach (var saveFile in PlayerPersistentData.PlayerMetadata.SaveFiles)
             {
                 var element = SaveGameContentScrollView.AddElement<SaveGameUIElement>(saveFile, $"{saveFile.Name}_UIElement");
                 element.Init(saveFile, SaveFilePressed, DeleteSaveFilePressed);
             }
 
-            if (!IsLoadMode)
+            if (!IsLoadMode && PlayerPersistentData.PlayerMetadata.SaveFiles.Count < 6)
             {
                 SaveFileData emptyFile = new SaveFileData
                 {

@@ -223,7 +223,7 @@ namespace StarSalvager.UI
                 }
                 else
                 {
-                    print("NO EMPTY SLOTS");
+                    Toast.AddToast("No empty save slots! Load an existing game or delete a save file to proceed.", time: 3.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
                 }
             });
             
