@@ -328,7 +328,6 @@ namespace StarSalvager.Missions
 
                 if (mission.CheckUnlockParameters())
                 {
-                    Debug.Log("moo");
                     MissionsCurrentData.AddMission(mission);
                 }
             }
