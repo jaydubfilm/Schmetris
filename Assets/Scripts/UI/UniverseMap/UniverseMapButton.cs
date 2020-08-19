@@ -39,7 +39,7 @@ namespace StarSalvager
                     SetActiveWaveButtons(false);
                     Values.Globals.CurrentSector = SectorNumber;
                     Values.Globals.CurrentWave = button.WaveNumber;
-                    AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
+                    //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
                     SceneLoader.ActivateScene("AlexShulmanTestScene", "UniverseMapScene");
                 });
                 button.transform.position = new Vector2

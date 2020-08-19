@@ -16,6 +16,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using StarSalvager.Missions;
 using StarSalvager.Utilities.JsonDataTypes;
+using Newtonsoft.Json;
 
 namespace StarSalvager
 {
@@ -124,6 +125,9 @@ namespace StarSalvager
         private GameUI _gameUi;
 
         public Dictionary<BIT_TYPE, float> LiquidResourcesAttBeginningOfWave = new Dictionary<BIT_TYPE, float>();
+        public Dictionary<ENEMY_TYPE, int> EnemiesKilledInWave = new Dictionary<ENEMY_TYPE, int>();
+        public List<string> MissionsCompletedDuringThisFlight = new List<string>();
+
         private void Start()
         {
             m_bots = new List<Bot>();
@@ -142,13 +146,22 @@ namespace StarSalvager
 
             Bot.OnBotDied += (deadBot, deathMethod) =>
             {
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied);
-                Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>();
-                levelLostAnalyticsDictionary.Add("CurrentSector", Globals.CurrentSector);
-                levelLostAnalyticsDictionary.Add("CurrentWave", Globals.CurrentWave);
-                levelLostAnalyticsDictionary.Add("CurrentStage", m_currentStage);
-                levelLostAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelLost, eventDataDictionary: levelLostAnalyticsDictionary);
+                Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
+                foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
+                {
+                    tempDictionary.Add((int)resource.Key, resource.Value);
+                }
+
+                Dictionary<string, object> botDiedAnalyticsDictionary = new Dictionary<string, object>();
+                botDiedAnalyticsDictionary.Add("Death Cause", deathMethod);
+                botDiedAnalyticsDictionary.Add("CurrentSector", Globals.CurrentSector);
+                botDiedAnalyticsDictionary.Add("CurrentWave", Globals.CurrentWave);
+                botDiedAnalyticsDictionary.Add("CurrentStage", m_currentStage);
+                botDiedAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
+                botDiedAnalyticsDictionary.Add("Liquid Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None));
+                botDiedAnalyticsDictionary.Add("Enemies Killed", JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None));
+                botDiedAnalyticsDictionary.Add("Missions Completed", JsonConvert.SerializeObject(MissionsCompletedDuringThisFlight, Formatting.None));
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied, eventDataDictionary: botDiedAnalyticsDictionary);
 
                 PlayerPersistentData.PlayerData.numLives--;
                 if (PlayerPersistentData.PlayerData.numLives > 0)
@@ -216,6 +229,20 @@ namespace StarSalvager
                 EnemyManager.SetEnemiesInert(false);
                 EnemyManager.RecycleAllEnemies();
                 m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+
+                Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
+                foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
+                {
+                    tempDictionary.Add((int)resource.Key, resource.Value);
+                }
+
+                Dictionary<string, object> waveEndAnalyticsDictionary = new Dictionary<string, object>();
+                waveEndAnalyticsDictionary.Add("Bot Layout", JsonConvert.SerializeObject(BotGameObject.GetBlockDatas(), Formatting.None));
+                waveEndAnalyticsDictionary.Add("Liquid Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None));
+                waveEndAnalyticsDictionary.Add("Enemies Killed", JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None));
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.WaveEnd, eventDataDictionary: waveEndAnalyticsDictionary);
+
+                EnemiesKilledInWave.Clear();
             }
 
             ProjectileManager.UpdateForces();
@@ -225,7 +252,8 @@ namespace StarSalvager
         {
             m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
-
+            
+            MissionsCompletedDuringThisFlight.Clear();
             LiquidResourcesAttBeginningOfWave.Clear();
             foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
             {
@@ -268,6 +296,19 @@ namespace StarSalvager
                 PlayerPersistentData.PlayerData.firstFlight = false;
                 Toast.AddToast("Controls: AD or Left/Right arrows for left/right movement, WS or Up/Down arrows to rotate. Escape to pause.", time: 6.0f, verticalLayout: Toast.Layout.End, horizontalLayout: Toast.Layout.Middle);
             }
+
+            Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
+            foreach (var resource in PlayerPersistentData.PlayerData.resources)
+            {
+                tempDictionary.Add((int)resource.Key, resource.Value);
+            }
+
+            Dictionary<string, object> flightBeginAnalyticsDictionary = new Dictionary<string, object>();
+            flightBeginAnalyticsDictionary.Add("Stored Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None));
+            flightBeginAnalyticsDictionary.Add("Stored Parts and Components", JsonConvert.SerializeObject(PlayerPersistentData.PlayerData.partsInStorageBlockData, Formatting.None));
+            flightBeginAnalyticsDictionary.Add("Stored Parts and Components", JsonConvert.SerializeObject(PlayerPersistentData.PlayerData.components, Formatting.None));
+            flightBeginAnalyticsDictionary.Add("Bot Layout", JsonConvert.SerializeObject(BotGameObject.GetBlockDatas(), Formatting.None));
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.FlightBegin, eventDataDictionary: flightBeginAnalyticsDictionary);
         }
 
         public void Reset()
@@ -283,6 +324,7 @@ namespace StarSalvager
             m_waveTimer = 0;
             m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
             ProjectileManager.Reset();
+            MissionsCompletedDuringThisFlight.Clear();
         }
 
         private void TransitionToNewWave()
@@ -367,14 +409,14 @@ namespace StarSalvager
         {
             Dictionary<string, object> scrapyardUsageBeginAnalyticsDictionary = new Dictionary<string, object>();
             scrapyardUsageBeginAnalyticsDictionary.Add("Sector Number", Values.Globals.CurrentSector);
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageBegin, scrapyardUsageBeginAnalyticsDictionary);
+            //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageBegin, scrapyardUsageBeginAnalyticsDictionary);
         }
 
         private void ProcessLevelCompleteAnalytics()
         {
             Dictionary<string, object> levelCompleteAnalyticsDictionary = new Dictionary<string, object>();
             levelCompleteAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete, levelCompleteAnalyticsDictionary, Values.Globals.CurrentSector);
+            //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete, levelCompleteAnalyticsDictionary, Values.Globals.CurrentSector);
         }
     }
 }

@@ -308,6 +308,7 @@ namespace StarSalvager.Missions
         public static void ProcessMissionComplete(string missionName)
         {
             Toast.AddToast(missionName + " Successful!!!!", time: 3.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.End);
+            LevelManager.Instance.MissionsCompletedDuringThisFlight.Add(missionName);
             recentCompletedMissionName = missionName;
             CheckUnlocks();
         }

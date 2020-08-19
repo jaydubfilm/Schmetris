@@ -811,7 +811,7 @@ namespace StarSalvager
         public void ProcessScrapyardUsageEndAnalytics()
         {
             Dictionary<string, object> scrapyardUsageEndAnalyticsDictionary = new Dictionary<string, object>();
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageEnd, scrapyardUsageEndAnalyticsDictionary);
+            //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageEnd, scrapyardUsageEndAnalyticsDictionary);
         }
 
         #endregion //Other

@@ -21,13 +21,17 @@ namespace StarSalvager.Utilities
             MissionComplete,
 
             GameStart,
-            ApplicationQuit,
-            BotDied,
             LevelStart,
             LevelComplete,
             LevelLost,
             ScrapyardUsageBegin,
-            ScrapyardUsageEnd
+            ScrapyardUsageEnd,
+
+            ApplicationOpen,
+            ApplicationQuit,
+            BotDied,
+            FlightBegin,
+            WaveEnd
         }
 
         private static int m_recentAnalyticEvents = 0;
@@ -75,12 +79,6 @@ namespace StarSalvager.Utilities
                 case AnalyticsEventType.GameStart:
                     result = ReportGameStart(eventDataDictionary);
                     break;
-                case AnalyticsEventType.ApplicationQuit:
-                    result = ReportGameStart(eventDataDictionary);
-                    break;
-                case AnalyticsEventType.BotDied:
-                    result = ReportBotDied(eventDataDictionary);
-                    break;
                 case AnalyticsEventType.LevelStart:
                     result = ReportLevelStart(eventDataParameter.ToString(), eventDataDictionary);
                     break;
@@ -95,6 +93,22 @@ namespace StarSalvager.Utilities
                     break;
                 case AnalyticsEventType.ScrapyardUsageEnd:
                     result = ReportScraypardUsageEnd(eventDataDictionary);
+                    break;
+
+                case AnalyticsEventType.ApplicationOpen:
+                    result = ReportApplicationOpen(eventDataDictionary);
+                    break;
+                case AnalyticsEventType.ApplicationQuit:
+                    result = ReportApplicationQuit(eventDataDictionary);
+                    break;
+                case AnalyticsEventType.BotDied:
+                    result = ReportBotDied(eventDataDictionary);
+                    break;
+                case AnalyticsEventType.FlightBegin:
+                    result = ReportFlightBegin(eventDataDictionary);
+                    break;
+                case AnalyticsEventType.WaveEnd:
+                    result = ReportWaveEnd(eventDataDictionary);
                     break;
                 default:
                     Debug.Log("AnalyticsEventType not implemented in switch case");
@@ -199,11 +213,6 @@ namespace StarSalvager.Utilities
             return AnalyticsEvent.GameStart(eventData);
         }
 
-        private static AnalyticsResult ReportApplicationQuit(Dictionary<string, object> eventData = null)
-        {
-            return AnalyticsEvent.Custom("application_quit", eventData);
-        }
-
         private static AnalyticsResult ReportLevelStart(string levelName, Dictionary<string, object> eventData = null)
         {
             return AnalyticsEvent.LevelStart(levelName, eventData);
@@ -214,11 +223,6 @@ namespace StarSalvager.Utilities
             return AnalyticsEvent.Custom("level_lost", eventData);
         }
 
-        private static AnalyticsResult ReportBotDied(Dictionary<string, object> eventData = null)
-        {
-            return AnalyticsEvent.Custom("bot_died", eventData);
-        }
-
         private static AnalyticsResult ReportScraypardUsageBegin(Dictionary<string, object> eventData = null)
         {
             return AnalyticsEvent.Custom("scrapyard_usage_begin", eventData);
@@ -227,6 +231,33 @@ namespace StarSalvager.Utilities
         private static AnalyticsResult ReportScraypardUsageEnd(Dictionary<string, object> eventData = null)
         {
             return AnalyticsEvent.Custom("scrapyard_usage_end", eventData);
+        }
+
+        //============================================================================================================//
+
+        private static AnalyticsResult ReportApplicationOpen(Dictionary<string, object> eventData = null)
+        {
+            return AnalyticsEvent.Custom("application_open", eventData);
+        }
+
+        private static AnalyticsResult ReportApplicationQuit(Dictionary<string, object> eventData = null)
+        {
+            return AnalyticsEvent.Custom("application_quit", eventData);
+        }
+
+        private static AnalyticsResult ReportBotDied(Dictionary<string, object> eventData = null)
+        {
+            return AnalyticsEvent.Custom("bot_died", eventData);
+        }
+
+        private static AnalyticsResult ReportFlightBegin(Dictionary<string, object> eventData = null)
+        {
+            return AnalyticsEvent.Custom("flight_begin", eventData);
+        }
+
+        private static AnalyticsResult ReportWaveEnd(Dictionary<string, object> eventData = null)
+        {
+            return AnalyticsEvent.Custom("wave_end", eventData);
         }
     }
 }

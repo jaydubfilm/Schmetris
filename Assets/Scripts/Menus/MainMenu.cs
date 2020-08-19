@@ -18,6 +18,7 @@ using System.Collections;
 using StarSalvager.Utilities.Saving;
 using System.Linq;
 using StarSalvager.Audio;
+using System.Collections.Generic;
 
 namespace StarSalvager.UI
 {
@@ -114,8 +115,10 @@ namespace StarSalvager.UI
         {
             while (!SceneLoader.IsReady)
                 yield return null;
-            
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.GameStart);
+
+            Dictionary<string, object> applicationOpenAnalyticsDictionary = new Dictionary<string, object>();
+            applicationOpenAnalyticsDictionary.Add("Start Time", DateTime.Now.ToString());
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ApplicationOpen, eventDataDictionary: applicationOpenAnalyticsDictionary);
 
             InitButtons();
 

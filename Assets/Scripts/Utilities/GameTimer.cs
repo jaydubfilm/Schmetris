@@ -50,6 +50,8 @@ namespace StarSalvager.Utilities
 
             Dictionary<string, object> applicationQuitAnalyticsDictionary = new Dictionary<string, object>();
             applicationQuitAnalyticsDictionary.Add("Total Playtime", timePlayed.TotalSeconds);
+            applicationQuitAnalyticsDictionary.Add("End Time", DateTime.Now.ToString());
+
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ApplicationQuit, eventDataDictionary: applicationQuitAnalyticsDictionary);
         }
     }
