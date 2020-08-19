@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using StarSalvager.AI;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
@@ -16,6 +17,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using StarSalvager.Missions;
 using StarSalvager.Utilities.JsonDataTypes;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
@@ -179,11 +181,11 @@ namespace StarSalvager
 
         private void Update()
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
+            /*if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
             {
                 WorldGrid.DrawDebugMarkedGridPoints();
                 Debug.Break();
-            }
+            }*/
 
             if (isPaused)
                 return;
@@ -376,5 +378,23 @@ namespace StarSalvager
             levelCompleteAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete, levelCompleteAnalyticsDictionary, Values.Globals.CurrentSector);
         }
+        
+        
+        #if UNITY_EDITOR
+
+        [SerializeField]
+        private bool drawGrid = true;
+
+        private void OnDrawGizmos()
+        {
+            if (!drawGrid)
+                return;
+            
+            Gizmos.color = Color.red;
+            WorldGrid?.OnDrawGizmos();
+        }
+
+        #endif
+        
     }
 }
