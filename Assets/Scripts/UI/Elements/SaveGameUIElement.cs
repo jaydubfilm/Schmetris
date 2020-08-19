@@ -16,7 +16,7 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required]
         private TMP_Text dateText;
         
-        public void Init(SaveFileData data, Action<SaveFileData> OnPressed, Action<SaveFileData> OnDeletePressed)
+        public void Init(SaveFileData data, Action<SaveFileData> OnPressed, Action<SaveFileData> OnDeletePressed, bool hideDateAndDelete = false)
         {
             Init(data, OnPressed);
             
@@ -29,6 +29,11 @@ namespace StarSalvager.UI.Scrapyard
             nameText.text = data.Name;
             dateText.text = data.Date.ToString(SaveGameUI.DATETIME_FORMAT);
 
+            if (hideDateAndDelete)
+            {
+                dateText.gameObject.SetActive(false);
+                deleteButton.gameObject.SetActive(false);
+            }
         }
         
         /// <summary>

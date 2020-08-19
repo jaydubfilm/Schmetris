@@ -133,6 +133,7 @@ namespace StarSalvager.UI
         private void Update()
         {
             continueButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0;
+            loadGameButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0;
 
             m_toggleOrientationButton.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
             m_cameraZoomScaler.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
