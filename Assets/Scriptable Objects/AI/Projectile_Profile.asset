@@ -27,3 +27,27 @@ MonoBehaviour:
     m_sprite: {fileID: 21300014, guid: e7495963a94ea8c4d875690bf0db95e4, type: 3}
     m_projectileSpeed: 15
     m_projectileTypeID: 315b7ca5-bf86-4e37-88db-d055fbea3f00
+  - m_projectileType: Fly Needle
+    m_sprite: {fileID: 8060306004869834615, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
+      type: 3}
+    m_projectileSpeed: 14
+    m_projectileTypeID: 80e17eca-2642-4846-b12f-02a08cab40e9
+  - m_projectileType: Ballhead Blast
+    m_sprite: {fileID: 21300002, guid: e05867bf595405c46a8ee4ae392e9180, type: 3}
+    m_projectileSpeed: 6
+    m_projectileTypeID: 8f0be7e3-1231-4c2c-81ca-460162be6318
+  - m_projectileType: Mosquito Zap
+    m_sprite: {fileID: -27257796672442213, guid: cd42b1419861ceb4dae39c1c9ad09fb2,
+      type: 3}
+    m_projectileSpeed: 18
+    m_projectileTypeID: cac32cbf-8978-4092-ad94-3ab8e384a0c7
+  - m_projectileType: Squid Ball
+    m_sprite: {fileID: -3311313229851740455, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
+      type: 3}
+    m_projectileSpeed: 12
+    m_projectileTypeID: 30aba478-81d5-4d02-a410-9c321a671732
+  - m_projectileType: Gun Bullet
+    m_sprite: {fileID: 3878735451401828320, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
+      type: 3}
+    m_projectileSpeed: 12
+    m_projectileTypeID: fcd28cae-267c-4f46-ac9c-8da7a14e8f94
