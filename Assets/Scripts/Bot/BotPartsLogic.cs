@@ -165,18 +165,18 @@ namespace StarSalvager
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                     .GetRemoteData(part.Type);
                 
-                float value;
+                int value;
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
                         
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += (int) value;
-                            capacities[BIT_TYPE.GREEN] += (int) value;
-                            capacities[BIT_TYPE.GREY] += (int) value;
-                            capacities[BIT_TYPE.YELLOW] += (int) value;
-                            capacities[BIT_TYPE.BLUE] += (int) value;
+                            capacities[BIT_TYPE.RED] += value;
+                            capacities[BIT_TYPE.GREEN] += value;
+                            capacities[BIT_TYPE.GREY] += value;
+                            capacities[BIT_TYPE.YELLOW] += value;
+                            capacities[BIT_TYPE.BLUE] += value;
                         }
                         
                         if (magnetOverride > 0)
@@ -184,7 +184,7 @@ namespace StarSalvager
                         
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
                         {
-                            magnetCount += (int)value;
+                            magnetCount += value;
                         }
                         break;
                     case PART_TYPE.MAGNET:
@@ -193,7 +193,7 @@ namespace StarSalvager
                             break;
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
                         {
-                            magnetCount += (int)value;
+                            magnetCount += value;
                         }
                         break;
                     //Determine if we need to setup the shield elements for the bot
@@ -219,7 +219,7 @@ namespace StarSalvager
                         
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Radius, out value))
                         {
-                            shield.SetSize((int)value);
+                            shield.SetSize(value);
                         }
                         
                         shield.SetAlpha(0.5f);
@@ -228,7 +228,7 @@ namespace StarSalvager
                             shield = shield,
                             
                             currentHp = 25,
-                            radius = (int)value,
+                            radius = value,
                             
                             timer = 0f
                         });
@@ -237,27 +237,27 @@ namespace StarSalvager
                     case PART_TYPE.STORE:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += (int) value;
-                            capacities[BIT_TYPE.GREEN] += (int) value;
-                            capacities[BIT_TYPE.GREY] += (int) value;
+                            capacities[BIT_TYPE.RED] += value;
+                            capacities[BIT_TYPE.GREEN] += value;
+                            capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
                     case PART_TYPE.STORE_RED:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += (int) value;
+                            capacities[BIT_TYPE.RED] += value;
                         }
                         break;
                     case PART_TYPE.STORE_GREEN:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.GREEN] += (int) value;
+                            capacities[BIT_TYPE.GREEN] += value;
                         }
                         break;
                     case PART_TYPE.STORE_GREY:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.GREY] += (int) value;
+                            capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
                     case PART_TYPE.BOMB:
@@ -378,7 +378,7 @@ namespace StarSalvager
 
                         IHealth toRepair;
                         
-                        var radius = (int)levelData.GetDataValue(DataTest.TEST_KEYS.Radius);
+                        var radius = levelData.GetDataValue<int>(DataTest.TEST_KEYS.Radius);
                         
                         //FIXME I don't think using linq here, especially twice is the best option
                         //TODO This needs to fire every x Seconds
@@ -406,7 +406,7 @@ namespace StarSalvager
                                 resourceValue -= levelData.burnRate * Time.deltaTime;
                         }
 
-                        var repairAmount = levelData.GetDataValue(DataTest.TEST_KEYS.Heal);
+                        var repairAmount = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Heal);
                         
                         //Increase the health of this part depending on the current level of the repairer
                         toRepair.ChangeHealth(repairAmount * Time.deltaTime);
@@ -428,7 +428,7 @@ namespace StarSalvager
                         //TODO This needs to fire every x Seconds
                         //--------------------------------------------------------------------------------------------//
 
-                        var cooldown = levelData.GetDataValue(DataTest.TEST_KEYS.Cooldown);
+                        var cooldown = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Cooldown);
                         
                         if (_projectileTimers[part] < cooldown)
                         {
@@ -459,12 +459,14 @@ namespace StarSalvager
                         //Create projectile
                         //--------------------------------------------------------------------------------------------//
 
-                        const string PROJECTILE_ID = "083be790-7a08-4f27-b506-e8e09a116bc8";
+                        //const string PROJECTILE_ID = "083be790-7a08-4f27-b506-e8e09a116bc8";
+                        
+                        var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
                         
                         //TODO Might need to add something to change the projectile used for each gun piece
                         var projectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
                             .CreateObject<Projectile>(
-                                PROJECTILE_ID,
+                                projectileId,
                                 /*shootDirection*/Vector2.up,
                                 "Enemy");
 
@@ -510,7 +512,7 @@ namespace StarSalvager
                     case PART_TYPE.BOMB:
 
                         //TODO This still needs to account for multiple bombs
-                        if (!_bombTimers.TryGetValue(part, out float timer))
+                        if (!_bombTimers.TryGetValue(part, out var timer))
                             break;
 
                         //FIXME I don't like that this is getting called so often
@@ -580,13 +582,13 @@ namespace StarSalvager
             PlayerPersistentData.PlayerData.SubtractLiquidResource(burnType, useCost);
             
             //Set the cooldown time
-            if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out var cooldown))
+            if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float cooldown))
             {
                 _bombTimers[part] = cooldown;
             }
             
             //Damage all the enemies
-            if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Damage, out var damage))
+            if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Damage, out float damage))
             {
                 EnemyManager.DamageAllEnemies(damage);
             }

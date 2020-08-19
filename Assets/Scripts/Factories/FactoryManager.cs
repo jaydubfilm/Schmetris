@@ -108,16 +108,6 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        //FIXME This needs to be converted to an array
-        //private FactoryBase _bitAttachableFactory;
-        //private FactoryBase _partAttachableFactory;
-        //private FactoryBase _shapeFactory;
-        //private FactoryBase _enemyFactory;
-        //private FactoryBase _projectileFactory;
-        //private FactoryBase _comboFactory;
-        //private FactoryBase _botFactory;
-        //private FactoryBase _damageFactory;
-
         private Dictionary<Type, FactoryBase> _factoryBases;
         
         //============================================================================================================//
@@ -140,67 +130,7 @@ namespace StarSalvager.Factories
             return _factoryBases[type] as T;
         }
         
-        //#if UNITY_EDITOR || DEVELOPMENT_BUILD
-        //
-        //[SerializeField, Required, BoxGroup("Attachables/Bits"), Space(10f)]
-        //private AttachableProfileScriptableObject bitProfileAlt;
-        //
-        //private bool bitToggle;
-        //[BoxGroup("Attachables/Bits"), Button("Toggle Bit Profile"), DisableInEditorMode]
-        //public void ToggleBitProfile()
-        //{
-        //    bitToggle = !bitToggle;
-//
-        //    _bitAttachableFactory = bitToggle
-        //        ? new BitAttachableFactory(bitProfileAlt, bitRemoteData)
-        //        : new BitAttachableFactory(bitProfile, bitRemoteData);
-        //}
-        //
-        //#endif
-        
         //============================================================================================================//
-
-    
-        /// <summary>
-        /// Obtains a FactoryBase of Type T
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        //TODO Investigate whether or not I can combine both BitAttachableFactory & PartAttachableFactory into a single 
-        /*public T GetFactory<T>() where T: FactoryBase
-        {
-            var typeName = typeof(T).Name;
-            switch (typeName)
-            {
-                case nameof(BitAttachableFactory):
-                    return (_bitAttachableFactory ?? (_bitAttachableFactory = new BitAttachableFactory(bitProfile, bitRemoteData))) as T;
-
-                case nameof(PartAttachableFactory):
-                    return (_partAttachableFactory ?? (_partAttachableFactory = new PartAttachableFactory(partProfile, partRemoteData))) as T;
-                
-                case nameof(ShapeFactory):
-                    return (_shapeFactory ?? (_shapeFactory = new ShapeFactory(shapePrefab, EditorBotShapeData.GetEditorShapeData()))) as T;
-
-                case nameof(EnemyFactory):
-                    return (_enemyFactory ?? (_enemyFactory = new EnemyFactory(enemyProfile, enemyRemoteData))) as T;
-
-                case nameof(ProjectileFactory):
-                    return (_projectileFactory ?? (_projectileFactory = new ProjectileFactory(projectileProfile))) as T;
-                
-                case nameof(ComboFactory):
-                    return (_comboFactory ?? (_comboFactory = new ComboFactory(comboRemoteData))) as T;
-                
-                case nameof(BotFactory):
-                    return (_botFactory ?? (_botFactory = new BotFactory(botPrefab, scrapyardBotPrefab))) as T;
-                
-                case nameof(DamageFactory):
-                    return (_damageFactory ?? (_damageFactory = new DamageFactory(damageFactory))) as T;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(typeName), typeName, null);
-            }
-        }*/
 
         private T CreateFactory<T>() where T : FactoryBase
         {
@@ -272,27 +202,8 @@ namespace StarSalvager.Factories
         {
             var directory = new DirectoryInfo(Application.dataPath + "/RemoteData/");
             
-            
-            
             //FIXME This should be using persistent file names
             var files = new List<FileInfo>();
-            /*{
-                Application.dataPath + "/RemoteData/PlayerPersistentMetadata.player",
-                Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile0.player",
-                Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile1.player",
-                Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile2.player",
-                Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile3.player",
-                Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile4.player",
-                Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile5.player",
-                Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile0.mission",
-                Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile1.mission",
-                Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile2.mission",
-                Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile3.mission",
-                Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile4.mission",
-                Application.dataPath + "/RemoteData/MissionsCurrentDataSaveFile5.mission",
-                Application.dataPath + "/RemoteData/MissionsMasterData.mission"
-            };*/
-            
             files.AddRange(directory.GetFiles("*.player"));
             files.AddRange(directory.GetFiles("*.mission"));
             files.AddRange(directory.GetFiles("*.player.meta"));
@@ -305,16 +216,6 @@ namespace StarSalvager.Factories
                     continue;
                 
                 File.Delete(file.FullName);
-                
-                /*if (file != null)
-                {
-                    
-                    //File.Delete(file + ".meta");
-                }
-                else
-                {
-                    Debug.LogError($"{file.Name} does not exist");
-                }*/
             }
 
             if (Application.isPlaying)
