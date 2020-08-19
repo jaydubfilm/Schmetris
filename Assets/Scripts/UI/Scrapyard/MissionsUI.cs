@@ -1,19 +1,11 @@
-﻿using TMPro;
+﻿using StarSalvager.Missions;
+using TMPro;
 using UnityEngine;
 
 namespace StarSalvager.UI.Scrapyard
 {
     public class MissionsUI : MonoBehaviour
     {
-        private TEST_Mission[] _testMissions =
-        {
-            new TEST_Mission{ name = "Mission 1" }, 
-            new TEST_Mission{ name = "Mission 2" }, 
-            new TEST_Mission{ name = "Mission 3" }, 
-            new TEST_Mission{ name = "Mission 4" }, 
-            new TEST_Mission{ name = "Mission 5" }, 
-        };
-        
         //============================================================================================================//
         
         [SerializeField]
@@ -25,7 +17,7 @@ namespace StarSalvager.UI.Scrapyard
         //============================================================================================================//
         
         // Start is called before the first frame update
-        private void Start()
+        private void OnEnable()
         {
             InitScrollView();
         }
@@ -34,14 +26,14 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitScrollView()
         {
-            foreach (var testMission in _testMissions)
+            foreach (var testMission in MissionManager.MissionsCurrentData.CurrentMissions)
             {
                 var temp = MissionUiElementScrollView.AddElement<MissionUIElement>(testMission,
-                    $"{testMission.name}_UIElement");
+                    $"{testMission.m_missionName}_UIElement");
 
                 temp.Init(testMission, mission =>
                 {
-                    detailsText.text = mission.name;
+                    detailsText.text = mission.m_missionName;
                 });
             }
         }
@@ -51,7 +43,7 @@ namespace StarSalvager.UI.Scrapyard
     }
     
     [System.Serializable]
-    public class MissionUIElementScrollView: UIElementContentScrollView<TEST_Mission>
+    public class MissionUIElementScrollView: UIElementContentScrollView<Mission>
     {}
 }
 

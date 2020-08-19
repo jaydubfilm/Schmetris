@@ -45,6 +45,8 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button missionsButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
+        private Button closeMissionsButton;
+        [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button menuButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button saveGameButton;
@@ -95,6 +97,10 @@ namespace StarSalvager.UI.Scrapyard
             missionsButton.onClick.AddListener(() =>
             {
                 missionsWindow.SetActive(!missionsWindow.activeInHierarchy);
+            });
+            closeMissionsButton.onClick.AddListener(() =>
+            {
+                missionsWindow.SetActive(false);
             });
             menuButton.onClick.AddListener(() =>
             {

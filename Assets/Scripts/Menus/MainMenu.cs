@@ -133,6 +133,7 @@ namespace StarSalvager.UI
         private void Update()
         {
             continueButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0;
+            loadGameButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0;
 
             m_toggleOrientationButton.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
             m_cameraZoomScaler.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
@@ -172,7 +173,7 @@ namespace StarSalvager.UI
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     MissionManager.SetCurrentSaveFile(missionPath);
                     FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
-                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU);
                 }
             });
 
@@ -217,11 +218,12 @@ namespace StarSalvager.UI
                     MissionManager.SetCurrentSaveFile(missionPath);
                     PlayerPersistentData.ResetPlayerData();
                     MissionManager.ResetMissionData();
+
                     SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
                 }
                 else
                 {
-                    print("NO EMPTY SLOTS");
+                    Toast.AddToast("No empty save slots! Load an existing game or delete a save file to proceed.", time: 3.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
                 }
             });
             
