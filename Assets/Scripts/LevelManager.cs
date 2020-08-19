@@ -297,16 +297,22 @@ namespace StarSalvager
                 Toast.AddToast("Controls: AD or Left/Right arrows for left/right movement, WS or Up/Down arrows to rotate. Escape to pause.", time: 6.0f, verticalLayout: Toast.Layout.End, horizontalLayout: Toast.Layout.Middle);
             }
 
-            Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
+            Dictionary<int, float> tempResourceDictionary = new Dictionary<int, float>();
             foreach (var resource in PlayerPersistentData.PlayerData.resources)
             {
-                tempDictionary.Add((int)resource.Key, resource.Value);
+                tempResourceDictionary.Add((int)resource.Key, resource.Value);
+            }
+
+            Dictionary<int, int> tempComponentDictionary = new Dictionary<int, int>();
+            foreach (var component in PlayerPersistentData.PlayerData.components)
+            {
+                tempComponentDictionary.Add((int)component.Key, component.Value);
             }
 
             Dictionary<string, object> flightBeginAnalyticsDictionary = new Dictionary<string, object>();
-            flightBeginAnalyticsDictionary.Add("Stored Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None));
-            flightBeginAnalyticsDictionary.Add("Stored Parts and Components", JsonConvert.SerializeObject(PlayerPersistentData.PlayerData.partsInStorageBlockData, Formatting.None));
-            flightBeginAnalyticsDictionary.Add("Stored Parts and Components", JsonConvert.SerializeObject(PlayerPersistentData.PlayerData.components, Formatting.None));
+            flightBeginAnalyticsDictionary.Add("Stored Resources", JsonConvert.SerializeObject(tempResourceDictionary, Formatting.None));
+            flightBeginAnalyticsDictionary.Add("Stored Parts", JsonConvert.SerializeObject(PlayerPersistentData.PlayerData.partsInStorageBlockData, Formatting.None));
+            flightBeginAnalyticsDictionary.Add("Stored Components", JsonConvert.SerializeObject(tempComponentDictionary, Formatting.None));
             flightBeginAnalyticsDictionary.Add("Bot Layout", JsonConvert.SerializeObject(BotGameObject.GetBlockDatas(), Formatting.None));
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.FlightBegin, eventDataDictionary: flightBeginAnalyticsDictionary);
         }
