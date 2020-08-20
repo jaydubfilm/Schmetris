@@ -467,6 +467,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void PartPressed((Enum remoteDataType, int level) tuple)
         {
+            print("dak");
             if (tuple.remoteDataType is PART_TYPE partType)
             {
                 PartPressed((partType, tuple.level));
@@ -477,6 +478,9 @@ namespace StarSalvager.UI.Scrapyard
         {
             mDroneDesigner.selectedPartType = tuple.partType;
             mDroneDesigner.SelectedPartLevel = tuple.level;
+            mDroneDesigner.selectedPartRemoveFromStorage = true;
+            mDroneDesigner.selectedPartReturnToStorageIfNotPlaced = false;
+            print("mozo");
         }
 
         private void LayoutPressed(ScrapyardLayout botData)
