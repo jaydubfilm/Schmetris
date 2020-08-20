@@ -1,8 +1,6 @@
 ﻿using StarSalvager.Cameras;
 using StarSalvager.Values;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace StarSalvager
@@ -18,10 +16,16 @@ namespace StarSalvager
         private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
-        public PART_TYPE? selectedPartType = null;
+        public PART_TYPE? SelectedPartType = null;
 
         [NonSerialized]
         public int SelectedPartLevel = 0;
+        [NonSerialized]
+        public Vector2Int? SelectedPartPreviousGridPosition = null;
+        [NonSerialized]
+        public bool SelectedPartRemoveFromStorage = false;
+        [NonSerialized]
+        public bool SelectedPartReturnToStorageIfNotPlaced = false;
 
         [NonSerialized]
         public bool selectedPartRemoveFromStorage = false;
@@ -66,22 +70,6 @@ namespace StarSalvager
         {
             mouseCoordinate = Vector2Int.zero;
             Vector2 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            //if (worldMousePosition.x > 0)
-            //{
-            //    worldMousePosition.x += Constants.gridCellSize / 2;
-            //}
-            //else if (worldMousePosition.x < 0)
-            //{
-            //    worldMousePosition.x -= Constants.gridCellSize / 2;
-            //}
-            //if (worldMousePosition.y > 0)
-            //{
-            //    worldMousePosition.y += Constants.gridCellSize / 2;
-            //}
-            //else if (worldMousePosition.y < 0)
-            //{
-            //    worldMousePosition.y -= Constants.gridCellSize / 2;
-            //}
 
             var tempMouseCoord = new Vector2Int(
                 Mathf.RoundToInt(worldMousePosition.x / Constants.gridCellSize),

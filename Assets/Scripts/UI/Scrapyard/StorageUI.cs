@@ -137,10 +137,10 @@ namespace StarSalvager.UI.Scrapyard
                 var temp = storageUiElementScrollView.AddElement<StorageUIElement>(testStorage, $"{testStorage.name}_UIElement", allowDuplicate: true);
                 temp.Init(testStorage, data =>
                 {
-                    droneDesign.selectedPartType = (PART_TYPE) data.blockData.Type;
+                    droneDesign.SelectedPartType = (PART_TYPE) data.blockData.Type;
                     droneDesign.SelectedPartLevel = data.blockData.Level;
-                    droneDesign.selectedPartRemoveFromStorage = true;
-                    droneDesign.selectedPartReturnToStorageIfNotPlaced = false;
+                    droneDesign.SelectedPartRemoveFromStorage = true;
+                    droneDesign.SelectedPartReturnToStorageIfNotPlaced = false;
                 });
             }
             

@@ -548,7 +548,7 @@ namespace StarSalvager.UI
 
         private void PartPressed((PART_TYPE partType, int level) tuple)
         {
-            m_botShapeEditor.selectedPartType = tuple.partType;
+            m_botShapeEditor.SelectedPartType = tuple.partType;
             m_botShapeEditor.SelectedBitType = null;
             m_botShapeEditor.SelectedPartLevel = tuple.level;
         }
@@ -556,7 +556,7 @@ namespace StarSalvager.UI
         private void BitPressed((BIT_TYPE bitType, int level) tuple)
         {
             m_botShapeEditor.SelectedBitType = tuple.bitType;
-            m_botShapeEditor.selectedPartType = null;
+            m_botShapeEditor.SelectedPartType = null;
             m_botShapeEditor.SelectedPartLevel = tuple.level;
         }
 

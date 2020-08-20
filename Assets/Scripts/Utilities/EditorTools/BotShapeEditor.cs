@@ -131,14 +131,14 @@ namespace StarSalvager
                 }
                 else
                 {
-                    if (selectedPartType == null && SelectedBitType == null)
+                    if (SelectedPartType == null && SelectedBitType == null)
                     {
                         return;
                     }
 
-                    if (selectedPartType != null)
+                    if (SelectedPartType != null)
                     {
-                        var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)selectedPartType, SelectedPartLevel);
+                        var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)SelectedPartType, SelectedPartLevel);
                         _scrapyardBot.AttachNewBit(mouseCoordinate, attachable);
                     }
                     else if (SelectedBitType is BIT_TYPE bitType)

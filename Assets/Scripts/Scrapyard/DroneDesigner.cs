@@ -29,12 +29,15 @@ namespace StarSalvager
         private GameObject floatingPartWarningPrefab;
         [SerializeField]
         private GameObject availablePointMarkerPrefab;
+        [SerializeField]
+        private SpriteRenderer dismantleBinPrefab;
 
         [NonSerialized]
         public bool IsUpgrading;
 
         private List<GameObject> _floatingPartWarnings;
         private List<GameObject> _availablePointMarkers;
+        private SpriteRenderer dismantleBin;
 
         private Stack<ScrapyardEditData> _toUndoStack;
         private Stack<ScrapyardEditData> _toRedoStack;
@@ -131,27 +134,33 @@ namespace StarSalvager
                 });
             }
 
+            if (dismantleBin == null)
+            {
+                dismantleBin = GameObject.Instantiate(dismantleBinPrefab);
+                dismantleBin.transform.position = new Vector2(10, 10);
+                dismantleBin.gameObject.SetActive(false);
+            }
 
             UpdateFloatingMarkers(false);
         }
 
         public void Reset()
         {
-            if (selectedPartType != null && selectedPartReturnToStorageIfNotPlaced == true)
+            if (SelectedPartType != null && SelectedPartReturnToStorageIfNotPlaced == true)
             {
                 BlockData blockData = new BlockData
                 {
                     ClassType = "Part",
-                    Type = (int)selectedPartType,
+                    Type = (int)SelectedPartType,
                     Level = SelectedPartLevel
                 };
                 PlayerPersistentData.PlayerData.AddPartToStorage(blockData);
             }
 
-            selectedPartType = null;
+            SelectedPartType = null;
             SelectedPartLevel = 0;
-            selectedPartRemoveFromStorage = false;
-            selectedPartReturnToStorageIfNotPlaced = false;
+            SelectedPartRemoveFromStorage = false;
+            SelectedPartReturnToStorageIfNotPlaced = false;
 
             Camera.onPostRender -= DrawGL;
 
@@ -209,26 +218,30 @@ namespace StarSalvager
 
         private void OnLeftMouseButtonDown()
         {
+            if (dismantleBin != null)
+                dismantleBin.gameObject.SetActive(true);
+            
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
 
-            if (selectedPartType.HasValue)
+            if (SelectedPartType.HasValue)
             {
 
             }
             else
             {
-                if (_scrapyardBot != null)
+                if (_scrapyardBot != null && mouseCoordinate != Vector2Int.zero)
                 {
                     IAttachable attachableAtCoordinates = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
 
                     if (attachableAtCoordinates != null && attachableAtCoordinates is ScrapyardPart partAtCoordinates)
                     {
                         _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
-                        selectedPartType = partAtCoordinates.Type;
+                        SelectedPartType = partAtCoordinates.Type;
                         SelectedPartLevel = partAtCoordinates.level;
-                        selectedPartRemoveFromStorage = false;
-                        selectedPartReturnToStorageIfNotPlaced = true;
+                        SelectedPartPreviousGridPosition = mouseCoordinate;
+                        SelectedPartRemoveFromStorage = false;
+                        SelectedPartReturnToStorageIfNotPlaced = true;
                         SaveBlockData();
                     }
                 }
@@ -238,10 +251,74 @@ namespace StarSalvager
 
         private void OnLeftMouseButtonUp()
         {
-            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
-                return;
+            if (dismantleBin != null)
+                dismantleBin.gameObject.SetActive(false);
 
-            if (selectedPartType.HasValue)
+            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
+            {
+                if (SelectedPartType != null && dismantleBin != null)
+                {
+                    Vector2 worldMousePosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+                    if (Vector2.Distance(worldMousePosition, dismantleBin.transform.position) <= 3)
+                    {
+                        Toast.AddToast("Dismantle part", verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
+                        PlayerPersistentData.PlayerData.AddResources(SelectedPartType.Value, SelectedPartLevel, true);
+
+                        if (SelectedPartRemoveFromStorage)
+                        {
+                            BlockData blockData = new BlockData
+                            {
+                                Type = (int)SelectedPartType,
+                                Level = SelectedPartLevel
+                            };
+                            
+                            PlayerPersistentData.PlayerData.RemovePartFromStorage(blockData);
+                        }
+
+                        SelectedPartType = null;
+                        SelectedPartLevel = 0;
+                        SelectedPartPreviousGridPosition = null;
+                        SelectedPartRemoveFromStorage = false;
+                        SelectedPartReturnToStorageIfNotPlaced = false;
+                        SaveBlockData();
+                    }
+                    else
+                    {
+                        if (SelectedPartPreviousGridPosition != null)
+                        {
+                            var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(SelectedPartType.Value, SelectedPartLevel);
+
+                            //Check if part should be removed from storage
+                            //TODO Should be checking if the player does in-fact have the part in their storage
+                            if (SelectedPartRemoveFromStorage)
+                            {
+                                PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
+                            }
+
+                            droneDesignUi.RefreshScrollViews();
+                            _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
+                            _toUndoStack.Push(new ScrapyardEditData
+                            {
+                                EventType = SCRAPYARD_ACTION.EQUIP,
+                                Coordinate = SelectedPartPreviousGridPosition.Value,
+                                PartType = (PART_TYPE)SelectedPartType
+                            });
+                            _toRedoStack.Clear();
+
+                            SelectedPartType = null;
+                            SelectedPartLevel = 0;
+                            SelectedPartPreviousGridPosition = null;
+                            SelectedPartRemoveFromStorage = false;
+                            SelectedPartReturnToStorageIfNotPlaced = false;
+                            SaveBlockData();
+                        }
+                    }
+                }
+                UpdateFloatingMarkers(false);
+                return;
+            }
+            
+            if (SelectedPartType.HasValue)
             {
                 if (_scrapyardBot != null)
                 {
@@ -249,16 +326,14 @@ namespace StarSalvager
 
                     if (attachableAtCoordinates == null)
                     {
-                        var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(selectedPartType.Value, SelectedPartLevel);
+                        var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(SelectedPartType.Value, SelectedPartLevel);
 
                         //Check if part should be removed from storage
                         //TODO Should be checking if the player does in-fact have the part in their storage
-                        if (selectedPartRemoveFromStorage)
+                        if (SelectedPartRemoveFromStorage)
                         {
-                            print("moo");
                             PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
                         }
-                        print("yawu" + selectedPartRemoveFromStorage);
 
                         droneDesignUi.RefreshScrollViews();
                         _scrapyardBot.AttachNewBit(mouseCoordinate, attachable);
@@ -266,15 +341,47 @@ namespace StarSalvager
                         {
                             EventType = SCRAPYARD_ACTION.EQUIP,
                             Coordinate = mouseCoordinate,
-                            PartType = (PART_TYPE)selectedPartType
+                            PartType = (PART_TYPE)SelectedPartType
                         });
                         _toRedoStack.Clear();
 
-                        selectedPartType = null;
+                        SelectedPartType = null;
                         SelectedPartLevel = 0;
-                        selectedPartRemoveFromStorage = false;
-                        selectedPartReturnToStorageIfNotPlaced = false;
+                        SelectedPartPreviousGridPosition = null;
+                        SelectedPartRemoveFromStorage = false;
+                        SelectedPartReturnToStorageIfNotPlaced = false;
                         SaveBlockData();
+                    }
+                    else
+                    {
+                        if (SelectedPartPreviousGridPosition != null)
+                        {
+                            var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(SelectedPartType.Value, SelectedPartLevel);
+
+                            //Check if part should be removed from storage
+                            //TODO Should be checking if the player does in-fact have the part in their storage
+                            if (SelectedPartRemoveFromStorage)
+                            {
+                                PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
+                            }
+
+                            droneDesignUi.RefreshScrollViews();
+                            _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
+                            _toUndoStack.Push(new ScrapyardEditData
+                            {
+                                EventType = SCRAPYARD_ACTION.EQUIP,
+                                Coordinate = SelectedPartPreviousGridPosition.Value,
+                                PartType = (PART_TYPE)SelectedPartType
+                            });
+                            _toRedoStack.Clear();
+
+                            SelectedPartType = null;
+                            SelectedPartLevel = 0;
+                            SelectedPartPreviousGridPosition = null;
+                            SelectedPartRemoveFromStorage = false;
+                            SelectedPartReturnToStorageIfNotPlaced = false;
+                            SaveBlockData();
+                        }
                     }
                 }
             }
