@@ -120,7 +120,8 @@ namespace StarSalvager
                 _scrapyardBot.InitBot(importedData);
             }
             SellBits();
-            TryFillBotResources();
+            //TODO Need to decide if this should happen at arrival or at launch
+            //TryFillBotResources();
 
             if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] == 0)
             {
@@ -164,36 +165,7 @@ namespace StarSalvager
 
         #endregion //IReset Functions
 
-        static readonly BIT_TYPE[] types = {
-            BIT_TYPE.RED,
-            BIT_TYPE.GREY,
-            BIT_TYPE.GREEN
-        };
-        private void TryFillBotResources()
-        {
-            foreach (var bitType in types)
-            {
-                var currentAmount = PlayerPersistentData.PlayerData.liquidResource[bitType];
-                var currentCapacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
-
-                var fillRemaining = currentCapacity - currentAmount;
-
-                //If its already full, then we're good to move on
-                if (fillRemaining <= 0f)
-                    continue;
-
-                var availableResources = PlayerPersistentData.PlayerData.resources[bitType];
-
-                //If we have no resources available to refill the liquid, move onto the next
-                if(availableResources <= 0)
-                    continue;
-
-                var movingAmount = Mathf.RoundToInt(Mathf.Min(availableResources, fillRemaining));
-
-                PlayerPersistentData.PlayerData.resources[bitType] -= movingAmount;
-                PlayerPersistentData.PlayerData.AddLiquidResource(bitType, movingAmount);
-            }
-        }
+        
 
         //============================================================================================================//
 
