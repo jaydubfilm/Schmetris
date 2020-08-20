@@ -2,6 +2,8 @@
 {
     public enum MUSIC
     {
-        TEST
+        MAIN_MENU,
+        GAMEPLAY,
+        SCRAPYARD
     }
 }
