@@ -9,6 +9,8 @@ namespace StarSalvager.Values
 {
     public static class Globals
     {
+        public static string SessionID = System.Guid.NewGuid().ToString();
+
         public static DIRECTION MovingDirection = DIRECTION.NULL;
         
         public static int GridSizeX;

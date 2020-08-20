@@ -218,7 +218,7 @@ namespace StarSalvager
             }
             else
             {
-                if (_scrapyardBot != null)
+                if (_scrapyardBot != null && mouseCoordinate != Vector2Int.zero)
                 {
                     IAttachable attachableAtCoordinates = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
 

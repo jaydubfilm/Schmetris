@@ -19,6 +19,7 @@ using StarSalvager.Utilities.Saving;
 using System.Linq;
 using StarSalvager.Audio;
 using System.Collections.Generic;
+using UnityEngine.Analytics;
 
 namespace StarSalvager.UI
 {
@@ -117,6 +118,9 @@ namespace StarSalvager.UI
                 yield return null;
 
             Dictionary<string, object> applicationOpenAnalyticsDictionary = new Dictionary<string, object>();
+            applicationOpenAnalyticsDictionary.Add("User ID", AnalyticsSessionInfo.userId);
+            applicationOpenAnalyticsDictionary.Add("Session ID", Globals.SessionID);
+            applicationOpenAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
             applicationOpenAnalyticsDictionary.Add("Start Time", DateTime.Now.ToString());
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ApplicationOpen, eventDataDictionary: applicationOpenAnalyticsDictionary);
 
