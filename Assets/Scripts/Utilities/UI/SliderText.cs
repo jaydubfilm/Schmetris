@@ -30,8 +30,11 @@ namespace StarSalvager.Utilities.UI
             set => _slider.value = value;
         }
 
-        public void Init()
+        public bool showMax;
+
+        public void Init(bool showMaxValue = false)
         {
+            showMax = showMaxValue;
             //Ensure that we have a nice clean slate
             _slider.onValueChanged.RemoveAllListeners();
             
@@ -54,9 +57,9 @@ namespace StarSalvager.Utilities.UI
             sliderText.text = FormattedSliderText(format, data);
         }
 
-        private static string FormattedSliderText(string format, float data)
+        private string FormattedSliderText(string format, float data)
         {
-            return string.IsNullOrEmpty(format) ? $"{data}" : string.Format(format, data);
+            return string.IsNullOrEmpty(format) ? $"{data}{(showMax ? "/" + Slider.maxValue :"")}" : string.Format(format, data, Slider.maxValue);
         }
     }
 }
