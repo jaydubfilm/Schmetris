@@ -8,7 +8,7 @@ namespace StarSalvager.Editor
     {
         //============================================================================================================//
 
-        [MenuItem("Window/My Utilities/Sprites Tools")]
+        [MenuItem("Window/Star Salvager/Sprites Tools")]
         public static void SpriteTools()
         {
             var spriteTools = GetWindow<SpritesToolsWindow>("Sprites Tools", true);

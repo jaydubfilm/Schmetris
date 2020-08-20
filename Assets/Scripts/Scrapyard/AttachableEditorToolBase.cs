@@ -12,7 +12,7 @@ namespace StarSalvager
         private const int MAX_DISTANCE = 3;
         
         public Material material;
-        protected List<ScrapyardBot> _scrapyardBots;
+        protected ScrapyardBot _scrapyardBot = null;
 
         [SerializeField]
         private CameraController m_cameraController;
@@ -22,6 +22,11 @@ namespace StarSalvager
 
         [NonSerialized]
         public int SelectedPartLevel = 0;
+
+        [NonSerialized]
+        public bool selectedPartRemoveFromStorage = false;
+        [NonSerialized]
+        public bool selectedPartReturnToStorageIfNotPlaced = false;
 
         public void DrawGL(Camera camera)
         {
