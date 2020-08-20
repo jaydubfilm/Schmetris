@@ -248,6 +248,16 @@ namespace StarSalvager
                 AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.WaveEnd, eventDataDictionary: waveEndAnalyticsDictionary);
 
                 EnemiesKilledInWave.Clear();
+
+                if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 0)
+                Alert.ShowAlert("Out of water", "Your scrapyard is out of water. You must return now.", "Ok", () =>
+                {
+                    IsWaveProgressing = true;
+                    SavePlayerData();
+                    m_levelManagerUI.ToggleBetweenWavesUIActive(false);
+                    ProcessScrapyardUsageBeginAnalytics();
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
+                });
             }
 
             ProjectileManager.UpdateForces();
@@ -341,6 +351,7 @@ namespace StarSalvager
                 m_bots.RemoveAt(i);
             }
             m_waveTimer = 0;
+            m_levelTimer = 0;
             m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
             ProjectileManager.Reset();
             MissionsCompletedDuringThisFlight.Clear();

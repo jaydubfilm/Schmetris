@@ -122,17 +122,23 @@ namespace StarSalvager
                 var importedData = currentBlockData.ImportBlockDatas(true);
                 _scrapyardBot.InitBot(importedData);
             }
+
+            bool outOfWaterOnReturn = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 0;
             SellBits();
             //TODO Need to decide if this should happen at arrival or at launch
             //TryFillBotResources();
 
-            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] == 0)
+            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 0)
             {
-                Alert.ShowAlert("Game Over", "You have run out of water. Your crew has died of thirst.", "Main Menu", () =>
+                Alert.ShowAlert("Game Over", "Your crew has died of thirst - Game Over. thx!", "Main Menu", () =>
                 {
                     PlayerPersistentData.PlayerData.numLives = 3;
-                    SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.ALEX_TEST_SCENE);
+                    SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
                 });
+            }
+            else if (outOfWaterOnReturn)
+            {
+                Alert.ShowAlert("Water Restored", "You have resuscitated your thirsty crew.", "Phew!", null);
             }
 
             if (dismantleBin == null)
