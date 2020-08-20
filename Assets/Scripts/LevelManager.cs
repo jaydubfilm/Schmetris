@@ -19,6 +19,7 @@ using StarSalvager.Missions;
 using StarSalvager.Utilities.JsonDataTypes;
 using Newtonsoft.Json;
 using Random = UnityEngine.Random;
+using UnityEngine.Analytics;
 
 namespace StarSalvager
 {
@@ -155,10 +156,13 @@ namespace StarSalvager
                 }
 
                 Dictionary<string, object> botDiedAnalyticsDictionary = new Dictionary<string, object>();
+                botDiedAnalyticsDictionary.Add("User ID", AnalyticsSessionInfo.userId);
+                botDiedAnalyticsDictionary.Add("Session ID", Globals.SessionID);
+                botDiedAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
                 botDiedAnalyticsDictionary.Add("Death Cause", deathMethod);
                 botDiedAnalyticsDictionary.Add("CurrentSector", Globals.CurrentSector);
                 botDiedAnalyticsDictionary.Add("CurrentWave", Globals.CurrentWave);
-                botDiedAnalyticsDictionary.Add("CurrentStage", m_currentStage);
+                //botDiedAnalyticsDictionary.Add("CurrentStage", m_currentStage);
                 botDiedAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
                 botDiedAnalyticsDictionary.Add("Liquid Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None));
                 botDiedAnalyticsDictionary.Add("Enemies Killed", JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None));
@@ -239,6 +243,9 @@ namespace StarSalvager
                 }
 
                 Dictionary<string, object> waveEndAnalyticsDictionary = new Dictionary<string, object>();
+                waveEndAnalyticsDictionary.Add("User ID", AnalyticsSessionInfo.userId);
+                waveEndAnalyticsDictionary.Add("Session ID", Globals.SessionID);
+                waveEndAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
                 waveEndAnalyticsDictionary.Add("Bot Layout", JsonConvert.SerializeObject(BotGameObject.GetBlockDatas(), Formatting.None));
                 waveEndAnalyticsDictionary.Add("Liquid Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None));
                 waveEndAnalyticsDictionary.Add("Enemies Killed", JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None));
@@ -312,6 +319,9 @@ namespace StarSalvager
             }
 
             Dictionary<string, object> flightBeginAnalyticsDictionary = new Dictionary<string, object>();
+            flightBeginAnalyticsDictionary.Add("User ID", AnalyticsSessionInfo.userId);
+            flightBeginAnalyticsDictionary.Add("Session ID", Globals.SessionID);
+            flightBeginAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
             flightBeginAnalyticsDictionary.Add("Stored Resources", JsonConvert.SerializeObject(tempResourceDictionary, Formatting.None));
             flightBeginAnalyticsDictionary.Add("Stored Parts", JsonConvert.SerializeObject(PlayerPersistentData.PlayerData.partsInStorageBlockData, Formatting.None));
             flightBeginAnalyticsDictionary.Add("Stored Components", JsonConvert.SerializeObject(tempComponentDictionary, Formatting.None));

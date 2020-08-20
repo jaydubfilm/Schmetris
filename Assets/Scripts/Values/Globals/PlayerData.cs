@@ -94,6 +94,8 @@ namespace StarSalvager.Values
         public int numLives = 3;
         public bool firstFlight = true;
 
+        public string PlaythroughID = string.Empty;
+
         //============================================================================================================//
 
         public void SetResources(Dictionary<BIT_TYPE, int> values)
