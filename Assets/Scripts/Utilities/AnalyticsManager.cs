@@ -140,7 +140,7 @@ namespace StarSalvager.Utilities
             //Check if the dictionary length exceeds the cap. The cap for unity analytics is 10, in code we will cap to 9 since that 10 includes mandatory variables of standard events
             if (eventData.Count > 9)
             {
-                Debug.Log("Dictionary length too long to return as analytic event");
+                Debug.LogError("Dictionary length too long to return as analytic event");
                 return true;
             }
 

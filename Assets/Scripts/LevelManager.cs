@@ -172,10 +172,6 @@ namespace StarSalvager
                 PlayerPersistentData.PlayerData.numLives--;
                 if (PlayerPersistentData.PlayerData.numLives > 0)
                 {
-                    foreach (var resource in LiquidResourcesAttBeginningOfWave)
-                    {
-                        PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
-                    }
                     IsWaveProgressing = false;
                     m_levelManagerUI.UpdateLivesText();
                     m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
@@ -262,12 +258,6 @@ namespace StarSalvager
             m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
 
-            MissionsCompletedDuringThisFlight.Clear();
-            LiquidResourcesAttBeginningOfWave.Clear();
-            foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
-            {
-                LiquidResourcesAttBeginningOfWave.Add(resource.Key, resource.Value);
-            }
             BotGameObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
             if (PlayerPersistentData.PlayerData.GetCurrentBlockData().Count == 0)
             {
@@ -280,6 +270,19 @@ namespace StarSalvager
             }
             BotGameObject.transform.parent = null;
             SceneManager.MoveGameObjectToScene(BotGameObject.gameObject, gameObject.scene);
+
+            MissionsCompletedDuringThisFlight.Clear();
+            foreach (var resource in LiquidResourcesAttBeginningOfWave)
+            {
+                PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
+                Debug.Log("Set: " + resource.Key + " --- " + resource.Value);
+            }
+            LiquidResourcesAttBeginningOfWave.Clear();
+            foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
+            {
+                LiquidResourcesAttBeginningOfWave.Add(resource.Key, resource.Value);
+                Debug.Log("ADD" + resource.Key + " --- " + resource.Value);
+            }
 
             InputManager.Instance.InitInput();
             CameraController.SetOrthographicSize(Constants.gridCellSize * Values.Globals.ColumnsOnScreen, BotGameObject.transform.position);
