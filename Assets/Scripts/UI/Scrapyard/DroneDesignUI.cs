@@ -476,10 +476,10 @@ namespace StarSalvager.UI.Scrapyard
 
         private void PartPressed((PART_TYPE partType, int level) tuple)
         {
-            mDroneDesigner.selectedPartType = tuple.partType;
+            mDroneDesigner.SelectedPartType = tuple.partType;
             mDroneDesigner.SelectedPartLevel = tuple.level;
-            mDroneDesigner.selectedPartRemoveFromStorage = true;
-            mDroneDesigner.selectedPartReturnToStorageIfNotPlaced = false;
+            mDroneDesigner.SelectedPartRemoveFromStorage = true;
+            mDroneDesigner.SelectedPartReturnToStorageIfNotPlaced = false;
             print("mozo");
         }
 

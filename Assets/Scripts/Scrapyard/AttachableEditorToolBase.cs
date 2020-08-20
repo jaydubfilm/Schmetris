@@ -1,8 +1,6 @@
 ﻿using StarSalvager.Cameras;
 using StarSalvager.Values;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace StarSalvager
@@ -18,15 +16,16 @@ namespace StarSalvager
         private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
-        public PART_TYPE? selectedPartType = null;
+        public PART_TYPE? SelectedPartType = null;
 
         [NonSerialized]
         public int SelectedPartLevel = 0;
-
         [NonSerialized]
-        public bool selectedPartRemoveFromStorage = false;
+        public Vector2Int? SelectedPartPreviousGridPosition = null;
         [NonSerialized]
-        public bool selectedPartReturnToStorageIfNotPlaced = false;
+        public bool SelectedPartRemoveFromStorage = false;
+        [NonSerialized]
+        public bool SelectedPartReturnToStorageIfNotPlaced = false;
 
         public void DrawGL(Camera camera)
         {
