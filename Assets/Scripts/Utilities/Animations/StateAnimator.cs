@@ -23,6 +23,9 @@ namespace StarSalvager.Utilities.Animations
         
         public void SetController(AnimationControllerScriptableObject animationController)
         {
+            if(animationController == null)
+                return;
+            
             this.animationController = animationController;
             SetAnimation(animationController.GetDefaultAnimation());
         }

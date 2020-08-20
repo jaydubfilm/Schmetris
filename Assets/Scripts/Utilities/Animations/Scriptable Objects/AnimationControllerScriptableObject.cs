@@ -6,12 +6,14 @@ namespace StarSalvager.Utilities.Animations
     [CreateAssetMenu(fileName = "Animation Controller", menuName = "Star Salvager/Animations/Animation Controller")]
     public class AnimationControllerScriptableObject : ScriptableObject
     {
+        private const string DEFAULT = "Default";
+        
         [SerializeField]
         private AnimationState[] States = 
         {
             new AnimationState
             {
-                StateName = "Default",
+                StateName = DEFAULT,
                 Animation = null
             }
         };
@@ -21,7 +23,7 @@ namespace StarSalvager.Utilities.Animations
             if (States == null || States.Length < 1)
                 return null;
             
-            return States[0].Animation;
+            return States.FirstOrDefault(x => x.StateName == DEFAULT).Animation;
         }
 
         public AnimationScriptableObject GetAnimation(string StateName)
