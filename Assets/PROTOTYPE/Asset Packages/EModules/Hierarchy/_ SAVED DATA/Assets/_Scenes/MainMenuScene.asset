@@ -21,44 +21,60 @@ MonoBehaviour:
   LOCALIDINFILE_Hash7_Fix2_0: []
   LOCALIDINFILE_Hash9: []
   LOCALIDINFILE_Hash_BookMarks:
-  - list: []
+  - list:
+    - activeObject:
+        i1: -1
+        i2: -1
+      list: []
   LOCALIDINFILE_Hash3:
   - activeObject:
-      i1: -464838314
-      i2: 1866823308
+      i1: 403794180
+      i2: 0
     list:
-    - i1: -464838314
-      i2: 1866823308
+    - i1: 403794180
+      i2: 0
   - activeObject:
-      i1: -464838314
-      i2: 1866823308
+      i1: -1
+      i2: -1
     list:
-    - i1: -464838314
-      i2: 1866823308
+    - i1: -1
+      i2: -1
   - activeObject:
-      i1: -464838314
-      i2: 1866823308
+      i1: -1
+      i2: -1
     list:
-    - i1: -464838314
-      i2: 1866823308
+    - i1: -1
+      i2: -1
   - activeObject:
-      i1: -464838314
-      i2: 1866823308
+      i1: -1
+      i2: -1
     list:
-    - i1: -464838314
-      i2: 1866823308
+    - i1: -1
+      i2: -1
   - activeObject:
-      i1: -464838314
-      i2: 1866823308
+      i1: -1
+      i2: -1
     list:
-    - i1: -464838314
-      i2: 1866823308
+    - i1: -1
+      i2: -1
   - activeObject:
-      i1: -464838314
-      i2: 1866823308
+      i1: -1
+      i2: -1
     list:
-    - i1: -464838314
-      i2: 1866823308
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: -96205052
+      i2: 1831848149
+    list:
+    - i1: -96205052
+      i2: 1831848149
   - activeObject:
       i1: -96205052
       i2: 1831848149
@@ -72,59 +88,53 @@ MonoBehaviour:
     - i1: -96205052
       i2: 1831848149
   - activeObject:
-      i1: -96205052
-      i2: 1831848149
+      i1: -1
+      i2: -1
     list:
-    - i1: -96205052
-      i2: 1831848149
+    - i1: -1
+      i2: -1
   - activeObject:
-      i1: -464838314
-      i2: 1866823308
+      i1: -1
+      i2: -1
     list:
-    - i1: -464838314
-      i2: 1866823308
+    - i1: -1
+      i2: -1
   - activeObject:
-      i1: -464838314
-      i2: 1866823308
+      i1: -1
+      i2: -1
     list:
-    - i1: -464838314
-      i2: 1866823308
+    - i1: -1
+      i2: -1
   - activeObject:
-      i1: -464838314
-      i2: 1866823308
+      i1: -1
+      i2: -1
     list:
-    - i1: -464838314
-      i2: 1866823308
+    - i1: -1
+      i2: -1
   - activeObject:
-      i1: -464838314
-      i2: 1866823308
+      i1: -1
+      i2: -1
     list:
-    - i1: -464838314
-      i2: 1866823308
+    - i1: -1
+      i2: -1
   - activeObject:
-      i1: -464838314
-      i2: 1866823308
+      i1: -1
+      i2: -1
     list:
-    - i1: -464838314
-      i2: 1866823308
+    - i1: -1
+      i2: -1
   - activeObject:
-      i1: -1719251719
-      i2: 803331387
+      i1: -1
+      i2: -1
     list:
-    - i1: -1719251719
-      i2: 803331387
+    - i1: -1
+      i2: -1
   - activeObject:
-      i1: 58019462
-      i2: 972114225
+      i1: -1
+      i2: -1
     list:
-    - i1: 58019462
-      i2: 972114225
-  - activeObject:
-      i1: -1719251719
-      i2: 803331387
-    list:
-    - i1: -1719251719
-      i2: 803331387
+    - i1: -1
+      i2: -1
   - activeObject:
       i1: 801110177
       i2: 1296850351
@@ -156,18 +166,16 @@ MonoBehaviour:
     - i1: 801110177
       i2: 1296850351
   - activeObject:
-      i1: -464838314
-      i2: 1866823308
-    list:
-    - i1: -464838314
-      i2: 1866823308
-  - activeObject:
       i1: -1
       i2: -1
     list:
     - i1: -1
       i2: -1
-  LOCALIDINFILE_Hash4: []
+  LOCALIDINFILE_Hash4:
+  - activeObject:
+      i1: -1
+      i2: -1
+    list: []
   LOCALIDINFILE_m_Hash_IconImageKey: []
   HashFreezeHashKeys: []
   HashFreezeHashValues: 
@@ -511,7 +519,7 @@ MonoBehaviour:
   Hash9: []
   Hash10: []
   _enableRegistrator: 0
-  _saveInFolder: FOLDER
+  _saveInFolder: SCENE
   _mFavoritCategorySelected: 0
   m_GetHash_IconImageKey: []
   m_GetHash_IconImageValue: []
