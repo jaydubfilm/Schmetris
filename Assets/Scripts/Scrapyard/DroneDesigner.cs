@@ -29,12 +29,15 @@ namespace StarSalvager
         private GameObject floatingPartWarningPrefab;
         [SerializeField]
         private GameObject availablePointMarkerPrefab;
+        [SerializeField]
+        private SpriteRenderer dismantleBinPrefab;
 
         [NonSerialized]
         public bool IsUpgrading;
 
         private List<GameObject> _floatingPartWarnings;
         private List<GameObject> _availablePointMarkers;
+        private SpriteRenderer dismantleBin;
 
         private Stack<ScrapyardEditData> _toUndoStack;
         private Stack<ScrapyardEditData> _toRedoStack;
@@ -131,6 +134,12 @@ namespace StarSalvager
                 });
             }
 
+            if (dismantleBin == null)
+            {
+                dismantleBin = GameObject.Instantiate(dismantleBinPrefab);
+                dismantleBin.transform.position = new Vector2(10, 10);
+                dismantleBin.gameObject.SetActive(false);
+            }
 
             UpdateFloatingMarkers(false);
         }
@@ -209,6 +218,9 @@ namespace StarSalvager
 
         private void OnLeftMouseButtonDown()
         {
+            if (dismantleBin != null)
+                dismantleBin.gameObject.SetActive(true);
+            
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
 
@@ -238,9 +250,23 @@ namespace StarSalvager
 
         private void OnLeftMouseButtonUp()
         {
-            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
-                return;
+            if (dismantleBin != null)
+                dismantleBin.gameObject.SetActive(false);
 
+            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
+            {
+                if (selectedPartType != null && dismantleBin != null)
+                {
+                    Vector2 worldMousePosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+                    if (Vector2.Distance(worldMousePosition, dismantleBin.transform.position) <= 3)
+                    {
+                        print("moo");
+                    }
+                }
+
+                return;
+            }
+            
             if (selectedPartType.HasValue)
             {
                 if (_scrapyardBot != null)

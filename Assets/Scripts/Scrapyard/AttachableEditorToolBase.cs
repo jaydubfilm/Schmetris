@@ -66,22 +66,6 @@ namespace StarSalvager
         {
             mouseCoordinate = Vector2Int.zero;
             Vector2 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            //if (worldMousePosition.x > 0)
-            //{
-            //    worldMousePosition.x += Constants.gridCellSize / 2;
-            //}
-            //else if (worldMousePosition.x < 0)
-            //{
-            //    worldMousePosition.x -= Constants.gridCellSize / 2;
-            //}
-            //if (worldMousePosition.y > 0)
-            //{
-            //    worldMousePosition.y += Constants.gridCellSize / 2;
-            //}
-            //else if (worldMousePosition.y < 0)
-            //{
-            //    worldMousePosition.y -= Constants.gridCellSize / 2;
-            //}
 
             var tempMouseCoord = new Vector2Int(
                 Mathf.RoundToInt(worldMousePosition.x / Constants.gridCellSize),
