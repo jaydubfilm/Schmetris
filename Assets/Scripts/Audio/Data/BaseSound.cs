@@ -13,11 +13,43 @@ namespace StarSalvager.Audio.Data
 
 #if UNITY_EDITOR
 
+        private string playButtonText => playingSound ? "Stop" : "Play";
+        private bool playingSound;
+        private AudioSource playingSource;
+        private AudioClip previousClip;
+        
         [TableColumnWidth(80, false)]
-        [Button("Play"), DisableIf("HasNoSound")]
-        private void PlaySound()
+        [Button("$playButtonText"), DisableIf("HasNoSound")]
+        private void Listen()
         {
-            Object.FindObjectOfType<AudioSource>().PlayOneShot(clip, 1f);
+            if (playingSound)
+            {
+                if(playingSource == null)
+                    return;
+
+                playingSource.clip = previousClip;
+                playingSource.Stop();
+
+            
+            
+                playingSource = null;
+                previousClip = null;
+            
+                playingSound = false;
+                return;
+            }
+            
+            if(clip == null)
+                return;
+            
+            playingSource = Object.FindObjectOfType<AudioSource>();
+            previousClip = playingSource.clip;
+            
+            playingSource.Stop();
+            playingSource.clip = clip;
+            playingSource.Play();
+
+            playingSound = true;
         }
 
         private bool HasNoSound()

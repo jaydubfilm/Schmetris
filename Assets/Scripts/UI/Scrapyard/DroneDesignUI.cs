@@ -428,7 +428,7 @@ namespace StarSalvager.UI.Scrapyard
                 };
 
                 var element = liquidResourceContentView.AddElement<ResourceUIElement>(data, $"{liquid.Key}_UIElement");
-                element.Init(data);
+                element.Init(data, true);
             }
         }
 
