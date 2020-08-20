@@ -138,7 +138,6 @@ namespace StarSalvager
             {
                 dismantleBin = GameObject.Instantiate(dismantleBinPrefab);
                 dismantleBin.transform.position = new Vector2(10, 10);
-                dismantleBin.gameObject.SetActive(false);
             }
 
             UpdateFloatingMarkers(false);
@@ -218,9 +217,6 @@ namespace StarSalvager
 
         private void OnLeftMouseButtonDown()
         {
-            if (dismantleBin != null)
-                dismantleBin.gameObject.SetActive(true);
-            
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
 
@@ -251,9 +247,6 @@ namespace StarSalvager
 
         private void OnLeftMouseButtonUp()
         {
-            if (dismantleBin != null)
-                dismantleBin.gameObject.SetActive(false);
-
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
             {
                 if (SelectedPartType != null && dismantleBin != null)

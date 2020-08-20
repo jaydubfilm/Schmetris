@@ -40,7 +40,7 @@ namespace StarSalvager.Utilities
         public static bool ReportAnalyticsEvent(AnalyticsEventType eventType, Dictionary<string, object> eventDataDictionary = null, object eventDataParameter = null)
         {
             //Check to confirm if too many analytic events have been sent recently or the dictionary input is too large. If either is true, unity analytics won't accept the message, so we avoid sending it at all
-            if ((eventDataDictionary != null && ProcessDictionarySizeRestrictionsExceeded(eventDataDictionary)) || 
+            if ((eventDataDictionary != null && ProcessDictionarySizeRestrictionsExceeded(eventDataDictionary, eventDataParameter)) || 
                 ProcessRecentAnalyticEventCapMet())
             {
                 return false;
@@ -135,10 +135,10 @@ namespace StarSalvager.Utilities
             return true;
         }
 
-        public static bool ProcessDictionarySizeRestrictionsExceeded(Dictionary<string, object> eventData)
+        public static bool ProcessDictionarySizeRestrictionsExceeded(Dictionary<string, object> eventData, object eventDataParameter)
         {
             //Check if the dictionary length exceeds the cap. The cap for unity analytics is 10, in code we will cap to 9 since that 10 includes mandatory variables of standard events
-            if (eventData.Count > 9)
+            if (eventData.Count > 10 || eventData.Count > 9 && eventDataParameter != null)
             {
                 Debug.LogError("Dictionary length too long to return as analytic event");
                 return true;

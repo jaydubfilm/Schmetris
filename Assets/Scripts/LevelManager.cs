@@ -156,7 +156,7 @@ namespace StarSalvager
                 }
 
                 Dictionary<string, object> botDiedAnalyticsDictionary = new Dictionary<string, object>();
-                botDiedAnalyticsDictionary.Add("User ID", AnalyticsSessionInfo.userId);
+                botDiedAnalyticsDictionary.Add("User ID", Globals.UserID);
                 botDiedAnalyticsDictionary.Add("Session ID", Globals.SessionID);
                 botDiedAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
                 botDiedAnalyticsDictionary.Add("Death Cause", deathMethod);
@@ -239,7 +239,7 @@ namespace StarSalvager
                 }
 
                 Dictionary<string, object> waveEndAnalyticsDictionary = new Dictionary<string, object>();
-                waveEndAnalyticsDictionary.Add("User ID", AnalyticsSessionInfo.userId);
+                waveEndAnalyticsDictionary.Add("User ID", Globals.UserID);
                 waveEndAnalyticsDictionary.Add("Session ID", Globals.SessionID);
                 waveEndAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
                 waveEndAnalyticsDictionary.Add("Bot Layout", JsonConvert.SerializeObject(BotGameObject.GetBlockDatas(), Formatting.None));
@@ -275,13 +275,11 @@ namespace StarSalvager
             foreach (var resource in LiquidResourcesAttBeginningOfWave)
             {
                 PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
-                Debug.Log("Set: " + resource.Key + " --- " + resource.Value);
             }
             LiquidResourcesAttBeginningOfWave.Clear();
             foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
             {
                 LiquidResourcesAttBeginningOfWave.Add(resource.Key, resource.Value);
-                Debug.Log("ADD" + resource.Key + " --- " + resource.Value);
             }
 
             InputManager.Instance.InitInput();
@@ -322,7 +320,7 @@ namespace StarSalvager
             }
 
             Dictionary<string, object> flightBeginAnalyticsDictionary = new Dictionary<string, object>();
-            flightBeginAnalyticsDictionary.Add("User ID", AnalyticsSessionInfo.userId);
+            flightBeginAnalyticsDictionary.Add("User ID", Globals.UserID);
             flightBeginAnalyticsDictionary.Add("Session ID", Globals.SessionID);
             flightBeginAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
             flightBeginAnalyticsDictionary.Add("Stored Resources", JsonConvert.SerializeObject(tempResourceDictionary, Formatting.None));

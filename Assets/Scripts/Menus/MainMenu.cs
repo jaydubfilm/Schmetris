@@ -118,7 +118,7 @@ namespace StarSalvager.UI
                 yield return null;
 
             Dictionary<string, object> applicationOpenAnalyticsDictionary = new Dictionary<string, object>();
-            applicationOpenAnalyticsDictionary.Add("User ID", AnalyticsSessionInfo.userId);
+            applicationOpenAnalyticsDictionary.Add("User ID", Globals.UserID);
             applicationOpenAnalyticsDictionary.Add("Session ID", Globals.SessionID);
             applicationOpenAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
             applicationOpenAnalyticsDictionary.Add("Start Time", DateTime.Now.ToString());

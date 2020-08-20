@@ -58,6 +58,7 @@ namespace StarSalvager.Values
             {
                 data.AddSectorProgression(i, 0);
             }
+            data.PlaythroughID = System.Guid.NewGuid().ToString();
             PlayerData = data;
         }
 
