@@ -647,11 +647,11 @@ namespace StarSalvager
 
         private readonly Dictionary<BIT_TYPE, string> _textSprites = new Dictionary<BIT_TYPE, string>
         {
-            { BIT_TYPE.GREEN,  "<sprite=\"MaterIalIcons_SS_ver1\" name=\"MaterIalIcons_SS_ver1_4\">" },
-            { BIT_TYPE.GREY,   "<sprite=\"MaterIalIcons_SS_ver1\" name=\"MaterIalIcons_SS_ver1_3\">" },
-            { BIT_TYPE.RED,    "<sprite=\"MaterIalIcons_SS_ver1\" name=\"MaterIalIcons_SS_ver1_2\">" },
-            { BIT_TYPE.BLUE,   "<sprite=\"MaterIalIcons_SS_ver1\" name=\"MaterIalIcons_SS_ver1_1\">" },
-            { BIT_TYPE.YELLOW, "<sprite=\"MaterIalIcons_SS_ver1\" name=\"MaterIalIcons_SS_ver1_0\">" },
+            { BIT_TYPE.GREEN,  "<sprite=\"MaterIalIcons_SS_ver2\" name=\"MaterIalIcons_SS_ver2_4\">" },
+            { BIT_TYPE.GREY,   "<sprite=\"MaterIalIcons_SS_ver2\" name=\"MaterIalIcons_SS_ver2_3\">" },
+            { BIT_TYPE.RED,    "<sprite=\"MaterIalIcons_SS_ver2\" name=\"MaterIalIcons_SS_ver2_2\">" },
+            { BIT_TYPE.BLUE,   "<sprite=\"MaterIalIcons_SS_ver2\" name=\"MaterIalIcons_SS_ver2_1\">" },
+            { BIT_TYPE.YELLOW, "<sprite=\"MaterIalIcons_SS_ver2\" name=\"MaterIalIcons_SS_ver2_0\">" },
         };
 
         private static string GetBitSprite(BIT_TYPE type, int level)

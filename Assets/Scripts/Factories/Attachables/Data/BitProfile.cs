@@ -28,8 +28,11 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right")]
         private AnimationScriptableObject _animation;
 
-        [HorizontalGroup("$Name/row3")]
+        [HorizontalGroup("$Name/row3"), VerticalGroup("$Name/row3/col1")]
         public Sprite refinedSprite;
+        
+        [VerticalGroup("$Name/row3/col1")]
+        public Color color;
 
         public Sprite[] Sprites
         {

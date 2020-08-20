@@ -16,6 +16,7 @@ namespace StarSalvager.Utilities.UI
         private TMP_Text sliderText;
         public TMP_Text Text => sliderText;
 
+        public Slider Slider => _slider;
         [SerializeField, Required]
         private Slider _slider;
 

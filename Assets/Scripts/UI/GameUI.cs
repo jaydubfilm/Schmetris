@@ -13,16 +13,20 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         #region Properties
-        
-        //[SerializeField, Required, BoxGroup("Heat Slider")]
-        //private Slider HeatSlider;
-        //[SerializeField, Required, BoxGroup("Heat Slider")]
-        //private Image heatSliderImage;
-        //[SerializeField, Required, BoxGroup("Heat Slider")]
-        //private Color minColor;
-        //[SerializeField, Required, BoxGroup("Heat Slider")]
-        //private Color maxColor;
 
+        [SerializeField, Required, FoldoutGroup("Slider Glows")]
+        private Image redSliderGlow;
+        [SerializeField, Required, FoldoutGroup("Slider Glows")]
+        private Image greenSliderGlow;
+        [SerializeField, Required, FoldoutGroup("Slider Glows")]
+        private Image greySliderGlow;
+        [SerializeField, Required, FoldoutGroup("Slider Glows")]
+        private Image blueSliderGlow;
+        [SerializeField, Required, FoldoutGroup("Slider Glows")]
+        private Image yellowSliderGlow;
+        [SerializeField, Required, FoldoutGroup("Slider Glows")]
+        private Image heatSliderGlow;
+        
         //Top Left Window
         //============================================================================================================//
 
@@ -85,6 +89,17 @@ namespace StarSalvager.UI
             vignetteImage.gameObject.SetActive(useVignette);
             
             InitValues();
+
+
+            glowImages = new[]
+            {
+                redSliderGlow,
+                blueSliderGlow,
+                greenSliderGlow,
+                greenSliderGlow,
+                yellowSliderGlow,
+                heatSliderGlow
+            };
         }
 
         private void OnEnable()
@@ -92,6 +107,29 @@ namespace StarSalvager.UI
             SetupPlayerValues();
 
             PlayerData.OnCapacitiesChanged += SetupPlayerValues;
+        }
+
+
+        private Image[] glowImages;
+        private float _alpha;
+        private float speed = 4f;
+        
+        private void LateUpdate()
+        {
+            var value = 1f / (speed);
+
+            _alpha = Mathf.PingPong(Time.time, value) / value;
+            
+            foreach (var image in glowImages)
+            {
+                if (!image.enabled)
+                    continue;
+
+                var color = image.color;
+                color.a = _alpha;
+
+                image.color = color;
+            }
         }
 
         private void OnDisable()
@@ -157,10 +195,13 @@ namespace StarSalvager.UI
         public void SetWaterValue(float value)
         {
             waterSlider.value = value;
+
+            CheckActivateGlow(waterSlider, blueSliderGlow);
         }
         public void SetPowerValue(float value)
         {
             powerSlider.value = value;
+            CheckActivateGlow(powerSlider, yellowSliderGlow);
         }
 
         public void SetCarryCapacity(float value)
@@ -206,14 +247,17 @@ namespace StarSalvager.UI
         public void SetFuelValue(float value)
         {
             fuelSlider.value = value;
+            CheckActivateGlow(fuelSlider, redSliderGlow);
         }
         public void SetRepairValue(float value)
         {
             repairSlider.value = value;
+            CheckActivateGlow(repairSlider, greenSliderGlow);
         }
         public void SetAmmoValue(float value)
         {
             ammoSlider.value = value;
+            CheckActivateGlow(ammoSlider, greySliderGlow);
         }
         
         //============================================================================================================//
@@ -290,12 +334,28 @@ namespace StarSalvager.UI
 
             heatSlider.value = value;
 
+            CheckActivateGlowInverse(heatSlider, heatSliderGlow);
+
             if(useVignette)
                 vignetteImage.color = Color.Lerp(vignetteMinColor, vignetteMaxColor, value);
         }
         
         //============================================================================================================//
+
         
+        private static void CheckActivateGlow(SliderText slider, Behaviour glowSlider)
+        {
+            CheckActivateGlow(slider.Slider, glowSlider);
+        }
+        private static void CheckActivateGlow(Slider slider, Behaviour glowSlider)
+        {
+            var value = slider.value / slider.maxValue;
+            glowSlider.enabled =  value<= 0.25f;
+        }
+        private static void CheckActivateGlowInverse(Slider slider, Behaviour glowSlider)
+        {
+            glowSlider.enabled = slider.value / slider.maxValue >= 0.75f;
+        }
     }
 }
 

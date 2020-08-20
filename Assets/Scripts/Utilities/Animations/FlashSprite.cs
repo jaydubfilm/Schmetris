@@ -5,7 +5,7 @@ using UnityEngine;
 namespace StarSalvager.Utilities
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    public class FlashSprite : MonoBehaviour, IRecycled
+    public class FlashSprite : MonoBehaviour, IRecycled, ICustomRecycle
     {
         [SerializeField]
         private float onTime;
@@ -72,6 +72,14 @@ namespace StarSalvager.Utilities
         
         //============================================================================================================//
 
+        public void SetColor(Color color)
+        {
+            renderer.color = color;
+        }
+        
+        //============================================================================================================//
+
+
         public void SetActive(bool state)
         {
             if (state == _active)
@@ -83,7 +91,11 @@ namespace StarSalvager.Utilities
         }
         
         //============================================================================================================//
-        
+
+        public void CustomRecycle(params object[] args)
+        {
+            SetColor(Color.white);
+        }
     }
 }
 
