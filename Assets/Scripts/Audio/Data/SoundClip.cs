@@ -10,8 +10,13 @@ namespace StarSalvager.Audio.Data
         [ShowInInspector,TableColumnWidth(60), DisplayAsString,  PropertyOrder(-100)]
         public override SOUND sound { get; set; }
         
-        [ShowInInspector, AssetSelector(Paths = "Assets/Audio/SFX")]
-        public override AudioClip clip { get; set; }
+        public override AudioClip clip
+        {
+            get => _clip; 
+            set => _clip = value; 
+        }
+        [SerializeField, AssetSelector(Paths = "Assets/Audio/SFX")]
+        private AudioClip _clip;
     }
     
 }
