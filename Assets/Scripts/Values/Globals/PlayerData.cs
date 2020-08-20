@@ -113,6 +113,7 @@ namespace StarSalvager.Values
         public void SetLiquidResource(BIT_TYPE type, float value)
         {
             _liquidResource[type] = Mathf.Clamp(value, 0f, _liquidCapacity[type]);
+            //_liquidResource[type] = value;
 
             OnValuesChanged?.Invoke();
         }
