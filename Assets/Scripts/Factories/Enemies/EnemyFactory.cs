@@ -122,10 +122,6 @@ namespace StarSalvager.Factories
                 ? CreateAttachableGameObject().GetComponent<T>()
                 : CreateGameObject().GetComponent<T>();
 
-            //TODO Need to setup these enemy health values
-            if (enemyComponent is Enemy enemy)
-                enemy.SetupHealthValues(20, 20);
-
             return enemyComponent;
         }
 
@@ -133,25 +129,15 @@ namespace StarSalvager.Factories
 
         public T CreateObject<T>(string guid)
         {
-            EnemyData enemyData = enemyDatas.FirstOrDefault(p => p.EnemyType == guid);
+            EnemyData enemyData = enemyDatas.FirstOrDefault(p => p.EnemyType == guid) ?? SetupEnemyData(guid);
 
-            if (enemyData == null)
-            {
-                enemyData = SetupEnemyData(guid);
-            }
+            Enemy enemy = enemyData.IsAttachable ? CreateObject<EnemyAttachable>() : CreateObject<Enemy>();
+            
+            enemy.m_enemyData = enemyData;
+            enemy.SetupHealthValues(enemyData.Health, enemyData.Health);
+            enemy.SetupSprite();
 
-            if (enemyData.IsAttachable)
-            {
-                var enemy = CreateObject<EnemyAttachable>();
-                enemy.m_enemyData = enemyData;
-                return enemy.GetComponent<T>();
-            }
-            else
-            {
-                var enemy = CreateObject<Enemy>();
-                enemy.m_enemyData = enemyData;
-                return enemy.GetComponent<T>();
-            }
+            return enemy.GetComponent<T>();
         }
         
         public T CreateObjectName<T>(string enemyName)

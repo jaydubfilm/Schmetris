@@ -63,12 +63,6 @@ namespace StarSalvager.AI
             horizontalFarRightX = (Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen) / 3.5f;
         }
 
-        public void OnEnable()
-        {
-            renderer.sprite = m_enemyData?.Sprite;
-            StateAnimator.SetController(m_enemyData?.AnimationController);
-        }
-
         protected virtual void Update()
         {
             //Count down fire timer. If ready to fire, call fireAttack()
@@ -89,6 +83,12 @@ namespace StarSalvager.AI
         }
 
         //============================================================================================================//
+
+        public virtual void SetupSprite()
+        {
+            renderer.sprite = m_enemyData?.Sprite;
+            StateAnimator.SetController(m_enemyData?.AnimationController);
+        }
 
         private void SetupPositions()
         {
