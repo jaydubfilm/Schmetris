@@ -15,3 +15,6 @@ MonoBehaviour:
   WaveRemoteData:
   - {fileID: 11400000, guid: 0c755ff52ac964c7e937c4d867b52580, type: 2}
   - {fileID: 11400000, guid: 64e3b7a6981624363baaed84904e427e, type: 2}
+  - {fileID: 11400000, guid: d2cfc88a8b1aa4554943b58a025b885d, type: 2}
+  - {fileID: 11400000, guid: 53f3807f5f0514e1eb8da197430bba54, type: 2}
+  - {fileID: 11400000, guid: 97190fc923f3e46bd90765743df833ac, type: 2}
