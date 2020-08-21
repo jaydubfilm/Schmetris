@@ -29,6 +29,8 @@ namespace StarSalvager.Utilities.Animations
             }
         }
 
+        public bool Playing => _playing;
+        
         private bool _playing;
         
         //============================================================================================================//
@@ -53,11 +55,19 @@ namespace StarSalvager.Utilities.Animations
             if (!_playing)
                 return;
 
+            if (!animation.Loop && _t >= 1f)
+            {
+                Stop();
+                return;
+            }
+            
             targetRenderer.sprite = animation.PlayFrame(speed, ref _t);
+
         }
         
         //============================================================================================================//
 
+        [Button, HorizontalGroup("Row1"), DisableInEditorMode, DisableIf("_playing")]
         public void Play()
         {
             if (animation == null)
@@ -65,7 +75,7 @@ namespace StarSalvager.Utilities.Animations
             
             _playing = true;
         }
-
+        [Button, HorizontalGroup("Row1"), DisableInEditorMode, EnableIf("_playing")]
         public void Stop()
         {
             _playing = false;

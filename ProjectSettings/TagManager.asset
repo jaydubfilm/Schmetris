@@ -48,7 +48,7 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: symbols
+  - name: Symbols
     uniqueID: 350001811
     locked: 0
   - name: Overlay
