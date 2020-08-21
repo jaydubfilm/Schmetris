@@ -137,7 +137,16 @@ namespace StarSalvager.Utilities.Inputs
                     Input.Actions.Default.Pause, Pause
                 },
                 {
-                    Input.Actions.Default.UseBomb, BombTrigger
+                    Input.Actions.Default.SmartAction1, SmartAction1
+                },
+                {
+                    Input.Actions.Default.SmartAction2, SmartAction2
+                },
+                {
+                    Input.Actions.Default.SmartAction3, SmartAction3
+                },
+                {
+                    Input.Actions.Default.SmartAction4, SmartAction4
                 },
                 {
                     Input.Actions.Default.LeftClick, LeftClick
@@ -180,8 +189,25 @@ namespace StarSalvager.Utilities.Inputs
         //============================================================================================================//
 
         #region Inputs
-        
-        private void BombTrigger(InputAction.CallbackContext ctx)
+
+        private void SmartAction1(InputAction.CallbackContext ctx)
+        {
+            TriggerSmartWeapon(ctx, 0);
+        }
+        private void SmartAction2(InputAction.CallbackContext ctx)
+        {
+            TriggerSmartWeapon(ctx, 1);
+        }
+        private void SmartAction3(InputAction.CallbackContext ctx)
+        {
+            TriggerSmartWeapon(ctx, 2);
+        }
+        private void SmartAction4(InputAction.CallbackContext ctx)
+        {
+            TriggerSmartWeapon(ctx, 3);
+        }
+
+        private void TriggerSmartWeapon(InputAction.CallbackContext ctx, int index)
         {
             if (Console.Open)
                 return;
@@ -189,9 +215,13 @@ namespace StarSalvager.Utilities.Inputs
             if (ctx.ReadValue<float>() != 1f)
                 return;
             
+            
+            
             //FIXME Need to ensure that I map appropriate inputs to associated bots
-            _bots[0].BotPartsLogic.TryTriggerBomb();
+            _bots[0].BotPartsLogic.TryTriggerSmartWeapon(index);
         }
+        
+        //============================================================================================================//
 
         private void SideMovement(InputAction.CallbackContext ctx)
         {

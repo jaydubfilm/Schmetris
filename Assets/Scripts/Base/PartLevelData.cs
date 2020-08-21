@@ -80,6 +80,7 @@ namespace StarSalvager
             Damage,
             Cooldown,
             Projectile,
+            SMRTCapacity,
         }
         public static readonly string[] TestList = 
         {
@@ -93,6 +94,7 @@ namespace StarSalvager
             "Damage",
             "Cooldown",
             "Projectile",
+            "SMRTCapacity"
         };
 
         [ValueDropdown(nameof(TestList)), HorizontalGroup("row1", Width = 120), HideLabel]
@@ -116,6 +118,7 @@ namespace StarSalvager
                 case TEST_KEYS.Radius:
                 case TEST_KEYS.Capacity:
                 case TEST_KEYS.Magnet:
+                case TEST_KEYS.SMRTCapacity:
                     return int.Parse(value);
                 
                 case TEST_KEYS.Heal:
