@@ -164,6 +164,25 @@ namespace StarSalvager.UI.Scrapyard
         {
             foreach (var bitType in types)
             {
+                switch (bitType)
+                {
+                    case BIT_TYPE.GREEN:
+                        //TODO Check for repair
+                        if(!_droneDesigner.HasPart(PART_TYPE.REPAIR))
+                            continue;
+                        break;
+                    case BIT_TYPE.GREY:
+                        //TODO CHeck for a gun
+                        if(!_droneDesigner.HasPart(PART_TYPE.GUN))
+                            continue;
+                        break;
+                    case BIT_TYPE.RED:
+                        break;
+                    default:
+                        continue;
+                }
+                
+                
                 var currentAmount = PlayerPersistentData.PlayerData.liquidResource[bitType];
                 var currentCapacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
 

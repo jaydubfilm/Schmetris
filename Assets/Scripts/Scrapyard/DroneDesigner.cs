@@ -870,6 +870,11 @@ namespace StarSalvager
             }
         }
 
+        public bool HasPart(PART_TYPE partType)
+        {
+            return _scrapyardBot.attachedBlocks.OfType<Part>().Any(p => p.Type == partType);
+        }
+
         public void UpdateFloatingMarkers(bool showAvailable)
         {
             foreach (var availablePoint in _availablePointMarkers)
