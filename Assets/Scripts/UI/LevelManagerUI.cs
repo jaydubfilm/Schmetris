@@ -93,6 +93,7 @@ namespace StarSalvager.UI
                 m_levelManager.IsWaveProgressing = true;
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
+                m_levelManager.LiquidResourcesAttBeginningOfWave.Clear();
                 LevelManager.Instance.EndWaveState = false;
                 SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
             });
@@ -102,6 +103,7 @@ namespace StarSalvager.UI
                 m_levelManager.IsWaveProgressing = true;
                 m_levelManager.SavePlayerData();
                 ToggleBetweenWavesUIActive(false);
+                m_levelManager.LiquidResourcesAttBeginningOfWave.Clear();
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
             });
@@ -109,6 +111,7 @@ namespace StarSalvager.UI
             pauseWindowMainMenuButton.onClick.AddListener(() =>
             {
                 m_levelManager.IsWaveProgressing = true;
+                m_levelManager.LiquidResourcesAttBeginningOfWave.Clear();
                 SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.ALEX_TEST_SCENE);
             });
 

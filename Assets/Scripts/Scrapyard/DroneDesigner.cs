@@ -161,6 +161,7 @@ namespace StarSalvager
             {
                 dismantleBin = GameObject.Instantiate(dismantleBinPrefab);
                 dismantleBin.transform.position = new Vector2(10, 10);
+                dismantleBin.transform.parent = transform;
             }
 
             UpdateFloatingMarkers(false);
