@@ -48,6 +48,7 @@ namespace StarSalvager
         private List<ScrapyardLayout> _scrapyardLayouts;
 
         private bool isStarted = false;
+        private bool isDragging = false;
 
         private SpriteRenderer partDragImage = null;
 
@@ -73,9 +74,12 @@ namespace StarSalvager
         {
             if (partDragImage != null && partDragImage.gameObject.activeSelf)
             {
-                Vector3 position = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
-                partDragImage.transform.position = new Vector3(position.x, position.y, 0);
-                print("moo" + partDragImage.transform.position);
+                Vector3 screenToWorldPosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+                if (isDragging || (SelectedPartClickPosition != null && Vector3.Distance(SelectedPartClickPosition.Value, screenToWorldPosition) > 0.5f))
+                {
+                    isDragging = true;
+                    partDragImage.transform.position = new Vector3(screenToWorldPosition.x, screenToWorldPosition.y, 0);
+                }
             }
         }
 
@@ -220,9 +224,12 @@ namespace StarSalvager
 
                     if (attachableAtCoordinates != null && attachableAtCoordinates is ScrapyardPart partAtCoordinates)
                     {
+                        Vector3 currentAttachablePosition = attachableAtCoordinates.transform.position;
+
                         _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
                         SelectedPartType = partAtCoordinates.Type;
                         SelectedPartLevel = partAtCoordinates.level;
+                        SelectedPartClickPosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
                         SelectedPartPreviousGridPosition = mouseCoordinate;
                         SelectedPartRemoveFromStorage = false;
                         SelectedPartReturnToStorageIfNotPlaced = true;
@@ -234,8 +241,7 @@ namespace StarSalvager
                         }
                         partDragImage.gameObject.SetActive(true);
                         partDragImage.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(SelectedPartType.Value).Sprites[SelectedPartLevel];
-                        Vector3 position = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
-                        partDragImage.transform.position = new Vector3(position.x, position.y, 0);
+                        partDragImage.transform.position = currentAttachablePosition;
                     }
                 }
             }
@@ -246,7 +252,8 @@ namespace StarSalvager
         {
             if (partDragImage != null)
                 partDragImage.gameObject.SetActive(false);
-            
+            isDragging = false;
+
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
             {
                 if (SelectedPartType != null && dismantleBin != null)
@@ -270,6 +277,7 @@ namespace StarSalvager
 
                         SelectedPartType = null;
                         SelectedPartLevel = 0;
+                        SelectedPartClickPosition = null;
                         SelectedPartPreviousGridPosition = null;
                         SelectedPartRemoveFromStorage = false;
                         SelectedPartReturnToStorageIfNotPlaced = false;
@@ -300,6 +308,7 @@ namespace StarSalvager
 
                             SelectedPartType = null;
                             SelectedPartLevel = 0;
+                            SelectedPartClickPosition = null;
                             SelectedPartPreviousGridPosition = null;
                             SelectedPartRemoveFromStorage = false;
                             SelectedPartReturnToStorageIfNotPlaced = false;
@@ -340,6 +349,7 @@ namespace StarSalvager
 
                         SelectedPartType = null;
                         SelectedPartLevel = 0;
+                        SelectedPartClickPosition = null;
                         SelectedPartPreviousGridPosition = null;
                         SelectedPartRemoveFromStorage = false;
                         SelectedPartReturnToStorageIfNotPlaced = false;
