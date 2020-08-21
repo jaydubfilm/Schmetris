@@ -4,6 +4,11 @@
     {
         EQUIP,
         UNEQUIP,
+        RELOCATE,
+        DISMANTLE_FROM_STORAGE,
+        DISMANTLE_FROM_BOT,
+
+
         PURCHASE,
         SALE,
         UPGRADE

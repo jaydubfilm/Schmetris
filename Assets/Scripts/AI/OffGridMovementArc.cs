@@ -11,7 +11,6 @@ namespace StarSalvager
         public OffGridMovementArc(IObstacle bit, Vector2 startingPosition, Vector2 arcValue, Vector2 endPosition, float lerpSpeed, float spinSpeed, bool despawnOnEnd, bool spinning) : base(bit, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning)
         {
             ArcValue = arcValue;
-            Debug.Log("Arc");
         }
 
         public override void Move(Vector3 shiftValue)
