@@ -43,10 +43,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99d5f8cb99e5ee7488b354fe3cdae687, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DisableTestingFeatures: 0
   missionRemoteData: {fileID: 11400000, guid: 7d456b233d9dde240ad75b09a9d76dd1, type: 2}
   m_sectorRemoteData:
   - SectorData:
     - {fileID: 11400000, guid: 3ea88dc5bf0cb4d658e2e387e707ae74, type: 2}
+    - {fileID: 11400000, guid: fa7eeddeec05148069b80871397ddc97, type: 2}
+    - {fileID: 11400000, guid: a6a6e6b460f2e40ed9cb05243a91421a, type: 2}
+    - {fileID: 11400000, guid: f61d6a84bcd5c4b95b9700d32306bb88, type: 2}
   - SectorData:
     - {fileID: 11400000, guid: 084d6bc594ad746bf84ae0d507a37aa5, type: 2}
   - SectorData:
