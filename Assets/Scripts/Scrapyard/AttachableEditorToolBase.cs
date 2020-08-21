@@ -29,6 +29,11 @@ namespace StarSalvager
         [NonSerialized]
         public bool SelectedPartReturnToStorageIfNotPlaced = false;
 
+        [NonSerialized]
+        public bool selectedPartRemoveFromStorage = false;
+        [NonSerialized]
+        public bool selectedPartReturnToStorageIfNotPlaced = false;
+
         public void DrawGL(Camera camera)
         {
             Vector2 m_anchorPoint = new Vector2(-Values.Constants.gridCellSize * 3.5f, -Values.Constants.gridCellSize * 3.5f);

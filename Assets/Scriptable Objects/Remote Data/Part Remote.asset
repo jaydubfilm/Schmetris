@@ -24,7 +24,7 @@ MonoBehaviour:
       health: 20
       dataTest:
       - key: Magnet
-        value: 9
+        value: 8
       - key: Capacity
         value: 50
       - key: SMRTCapacity
