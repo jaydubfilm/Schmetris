@@ -46,6 +46,8 @@ namespace StarSalvager
         //==============================================================================================================//
 
         private List<Part> _parts;
+        private List<Part> _smartWeapons;
+        private int maxSmartWeapons;
 
         //FIXME This needs to something more manageable
         private EnemyManager EnemyManager
@@ -130,6 +132,9 @@ namespace StarSalvager
         public void UpdatePartsList()
         {
             _parts = bot.attachedBlocks.OfType<Part>().ToList();
+            _smartWeapons = _parts.Where(p => p.Type == PART_TYPE.BOMB).ToList();
+            
+            //TODO Need to update the UI here for the amount of smart weapons able to be used
 
             UpdatePartData();
         }
@@ -158,8 +163,23 @@ namespace StarSalvager
             CheckIfShieldShouldRecycle();
             CheckIfFlashIconShouldRecycle();
             CheckIfBombsShouldRecycle();
-            GameUI?.ShowBombIcon(false);
+
+            //Update the Game UI for the Smart Weapons
+            //--------------------------------------------------------------------------------------------------------//
             
+            GameUI?.ResetIcons();
+
+            for (int i = 0; i < maxSmartWeapons; i++)
+            {
+                if (i >= _smartWeapons.Count)
+                    break;
+
+                GameUI.SetIconImage(i, _smartWeapons[i].renderer.sprite);
+                GameUI.ShowIcon(i, true);
+            }
+            
+            //--------------------------------------------------------------------------------------------------------//
+
             
             magnetCount = 0;
 
@@ -180,6 +200,11 @@ namespace StarSalvager
                             capacities[BIT_TYPE.GREY] += value;
                             capacities[BIT_TYPE.YELLOW] += value;
                             capacities[BIT_TYPE.BLUE] += value;
+                        }
+
+                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.SMRTCapacity, out value))
+                        {
+                            maxSmartWeapons = value;
                         }
                         
                         if (magnetOverride > 0)
@@ -270,7 +295,7 @@ namespace StarSalvager
                         if (_bombTimers.ContainsKey(part))
                             break;
                         
-                        GameUI.ShowBombIcon(true);
+                        //GameUI.ShowBombIcon(true);
                         _bombTimers.Add(part, 0f);
                         break;
                 }
@@ -541,23 +566,32 @@ namespace StarSalvager
                         
                         break;
                     case PART_TYPE.BOMB:
-
+                        
                         //TODO This still needs to account for multiple bombs
                         if (!_bombTimers.TryGetValue(part, out var timer))
                             break;
 
-                        //FIXME I don't like that this is getting called so often
-                        var hasAmmo = PlayerPersistentData.PlayerData.liquidResource[partRemoteData.burnType] >= levelData.burnRate;
-                        GameUI.SetHasBombResource(hasAmmo);
-                        //GetAlertIcon(part).SetActive(!hasAmmo);
-
                         if (timer <= 0f)
                             break;
 
+                        var index = _smartWeapons.FindIndex(0, _smartWeapons.Count, x => x == part);
+                        
+                        if (useBurnRate && resourceValue <= 0)
+                        {
+                            //FIXME I don't like that this is getting called so often
+                            GameUI.SetHasResource(index, false);
+                            break;
+                        }
+                        
+                        GameUI.SetHasResource(index, true);
+                        
+
                         levelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out cooldown);
-                            
+
+                        resourceValue -= Time.deltaTime;
+                        
                         _bombTimers[part] -= Time.deltaTime;
-                        GameUI.SetBombFill(1f - _bombTimers[part] / cooldown);
+                        GameUI.SetFill(index, 1f - _bombTimers[part] / cooldown);
                         
                         break;
                 }
@@ -587,33 +621,49 @@ namespace StarSalvager
 
         #region Bomb
 
-        public void TryTriggerBomb()
+        /// <summary>
+        /// This should use values similar to an array (ie. starts at [0])
+        /// </summary>
+        /// <param name="index"></param>
+        public void TryTriggerSmartWeapon(int index)
+        {
+            if (_smartWeapons == null || _smartWeapons.Count == 0)
+                return;
+            //TODO Need to check the capacity of smart weapons on the bot
+            if (index - 1 > maxSmartWeapons)
+                return;
+                
+            if (index >= _smartWeapons.Count)
+                return;
+
+            var part = _smartWeapons[index];
+            
+            switch (part.Type)
+            {
+                case PART_TYPE.BOMB:
+                    TriggerBomb(part);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(Part.Type), _smartWeapons[index].Type, null);
+            }
+        }
+
+        private void TriggerBomb(Part part)
         {
             if (_bombTimers == null || _bombTimers.Count == 0)
                 return;
 
-            var part = _bombTimers.FirstOrDefault(x => x.Value <= 0f).Key;
-
-
-            if (part == null)
-                return;
-            
-            var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                .GetRemoteData(part.Type);
-            var partLevelData = partData.levels[part.level];
-
-            var burnType = partData.burnType;
-            var useCost = partLevelData.burnRate;
-
-
-            if (PlayerPersistentData.PlayerData.liquidResource[burnType] < useCost)
+            //If the bomb is still recharging, we tell the player that its unavailable
+            if (_bombTimers[part] > 0f)
             {
                 AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return;
             }
             
-            //Remove the resources here
-            PlayerPersistentData.PlayerData.SubtractLiquidResource(burnType, useCost);
+            var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                .GetRemoteData(part.Type);
+            
+            var partLevelData = partData.levels[part.level];
             
             //Set the cooldown time
             if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float cooldown))
@@ -839,10 +889,10 @@ namespace StarSalvager
             {
                // Recycler.Recycle<FlashSprite>(data.Value.gameObject);
                _bombTimers.Remove(data.Key);
+               
+               var index = _smartWeapons.FindIndex(0, _smartWeapons.Count, x => x == data.Key);
+               GameUI.ShowIcon(index, false);
             }
-            
-            GameUI.ShowBombIcon(_bombTimers.Count > 0);
-            
             
         }
         
