@@ -81,3 +81,5 @@ MonoBehaviour:
   comboRemoteData: {fileID: 11400000, guid: e98ad69cab8c1364baddf1bc6ae8b077, type: 2}
   damageFactory: {fileID: 7563446395452513033, guid: a3c8a083717316a47973770fe6593e47,
     type: 3}
+  explosionPrefab: {fileID: 238150696391007923, guid: 17239bb474ede86468099f6844d6a3b7,
+    type: 3}

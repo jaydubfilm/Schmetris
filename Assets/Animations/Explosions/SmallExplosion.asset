@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae94ebc07ea1de141874967c13a86044, type: 3}
+  m_Name: SmallExplosion
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: -27257796672442213, guid: cd42b1419861ceb4dae39c1c9ad09fb2, type: 3}
+  - {fileID: -8674144555403080493, guid: cd42b1419861ceb4dae39c1c9ad09fb2, type: 3}
+  - {fileID: -903440854708098604, guid: cd42b1419861ceb4dae39c1c9ad09fb2, type: 3}
+  - {fileID: 4288568296682243695, guid: cd42b1419861ceb4dae39c1c9ad09fb2, type: 3}
+  - {fileID: -6165085309457428773, guid: cd42b1419861ceb4dae39c1c9ad09fb2, type: 3}
+  - {fileID: -4056428157892887360, guid: cd42b1419861ceb4dae39c1c9ad09fb2, type: 3}
+  - {fileID: -5945569533624258326, guid: cd42b1419861ceb4dae39c1c9ad09fb2, type: 3}
+  - {fileID: -6410092231612441950, guid: cd42b1419861ceb4dae39c1c9ad09fb2, type: 3}
+  - {fileID: 1723951776177428942, guid: cd42b1419861ceb4dae39c1c9ad09fb2, type: 3}
+  - {fileID: 3368952865329820700, guid: cd42b1419861ceb4dae39c1c9ad09fb2, type: 3}
+  - {fileID: 4030853070167223001, guid: cd42b1419861ceb4dae39c1c9ad09fb2, type: 3}
+  - {fileID: -5354432350076008015, guid: cd42b1419861ceb4dae39c1c9ad09fb2, type: 3}
+  - {fileID: -3210811993661923812, guid: cd42b1419861ceb4dae39c1c9ad09fb2, type: 3}
+  - {fileID: -6505733799967681721, guid: cd42b1419861ceb4dae39c1c9ad09fb2, type: 3}
+  speed: 2
+  Loop: 0
+  PingPong: 0
+  useAnimationCurve: 0
+  curve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

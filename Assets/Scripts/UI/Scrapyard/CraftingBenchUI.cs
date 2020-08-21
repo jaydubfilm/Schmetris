@@ -27,6 +27,8 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private TMP_Text itemNameText;
+        [SerializeField, Required, FoldoutGroup("Cost Window")]
+        private TMP_Text itemDescriptionText;
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private Image itemIcon;
@@ -282,6 +284,7 @@ namespace StarSalvager.UI.Scrapyard
                 .GetRemoteData(lastBlueprint.partType);
             
             itemNameText.text = partRemoteData.name;
+            itemDescriptionText.text = partRemoteData.description;
 
             var resources = partRemoteData.levels[lastBlueprint.level].cost;
 

@@ -16,6 +16,7 @@ MonoBehaviour:
   - name: Core
     partType: 0
     canSell: 0
+    description: This is the core
     priority: 200
     burnType: 4
     levels:
@@ -133,6 +134,7 @@ MonoBehaviour:
   - name: Magnet
     partType: 1
     canSell: 1
+    description: This is a magnet
     priority: 75
     burnType: 5
     levels:
@@ -208,6 +210,7 @@ MonoBehaviour:
   - name: Repairer
     partType: 2
     canSell: 1
+    description: This is a Repairer
     priority: 50
     burnType: 2
     levels:
@@ -297,6 +300,7 @@ MonoBehaviour:
   - name: Armor
     partType: 3
     canSell: 1
+    description: This is armor
     priority: 25
     burnType: 0
     levels:
@@ -362,6 +366,7 @@ MonoBehaviour:
   - name: Gun
     partType: 4
     canSell: 1
+    description: This is a gun
     priority: 75
     burnType: 3
     levels:
@@ -449,6 +454,7 @@ MonoBehaviour:
   - name: Shield
     partType: 5
     canSell: 1
+    description: This is a shield
     priority: 0
     burnType: 1
     levels:
@@ -554,6 +560,7 @@ MonoBehaviour:
   - name: Bomb
     partType: 7
     canSell: 1
+    description: This is a bomb
     priority: 50
     burnType: 4
     levels:
@@ -610,6 +617,7 @@ MonoBehaviour:
   - name: Container
     partType: 8
     canSell: 1
+    description: This is a Container
     priority: 50
     burnType: 0
     levels:
@@ -685,6 +693,7 @@ MonoBehaviour:
   - name: Fuel Tank
     partType: 9
     canSell: 1
+    description: This is a fuel tank
     priority: 50
     burnType: 0
     levels:
@@ -764,6 +773,7 @@ MonoBehaviour:
   - name: Plasma Drum
     partType: 10
     canSell: 1
+    description: This is a plasma drum
     priority: 50
     burnType: 0
     levels:
@@ -843,6 +853,7 @@ MonoBehaviour:
   - name: Magazine
     partType: 11
     canSell: 1
+    description: This is a magazine
     priority: 0
     burnType: 0
     levels:

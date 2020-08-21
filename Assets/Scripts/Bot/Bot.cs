@@ -18,6 +18,7 @@ using UnityEngine;
 using GameUI = StarSalvager.UI.GameUI;
 using StarSalvager.Utilities;
 using StarSalvager.Missions;
+using StarSalvager.Utilities.Animations;
 using AudioController = StarSalvager.Audio.AudioController;
 
 namespace StarSalvager
@@ -919,6 +920,9 @@ namespace StarSalvager
             // Enemies attached should not be hit by other enemy projectiles
             if(closestAttachable is EnemyAttachable)
                 return;
+
+            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
+            explosion.transform.position = hitPosition;
             
             TryHitAt(closestAttachable, damage);
 
@@ -1013,6 +1017,9 @@ namespace StarSalvager
         {
             TryHitAt(attachable, 10000);
             AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
+            
+            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
+            explosion.transform.position = attachable.transform.position;
 
             switch (attachable)
             {

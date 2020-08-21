@@ -353,6 +353,9 @@ namespace StarSalvager.AI
 
             ChangeHealth(-damage);
             
+            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
+            explosion.transform.position = position;
+            
             if(CurrentHealth > 0)
                 AudioController.PlaySound(SOUND.ENEMY_IMPACT);
             

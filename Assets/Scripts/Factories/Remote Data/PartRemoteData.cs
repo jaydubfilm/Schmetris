@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace StarSalvager.Factories.Data
 {
@@ -16,6 +17,9 @@ namespace StarSalvager.Factories.Data
 
         [FoldoutGroup("$name")]
         public bool canSell = true;
+
+        [TextArea, FoldoutGroup("$name")]
+        public string description;
         
         [FoldoutGroup("$name")]
         public int priority;
