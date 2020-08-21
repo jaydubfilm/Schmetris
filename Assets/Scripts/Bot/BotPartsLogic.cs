@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Recycling;
@@ -320,10 +321,16 @@ namespace StarSalvager
                     
                         PlayerPersistentData.PlayerData.AddLiquidResource(partRemoteData.burnType, addAmount);
 
-                        bot.DestroyAttachable<Bit>(targetBit);
+                        //TODO May want to play around with the order of operations here
+                        StartCoroutine(RefineBitCoroutine(targetBit, 1.6f, 
+                            () =>
+                        {
+                            bot.DestroyAttachable<Bit>(targetBit);
+                        }));
+
+                        
 
                         resourceValue = addAmount;
-                        
                         AudioController.PlaySound(SOUND.BIT_REFINED);
                     }
                     
@@ -845,6 +852,43 @@ namespace StarSalvager
         }
         
         //============================================================================================================//
+
+        [SerializeField]
+        private AnimationCurve refineScaleCurve = new AnimationCurve();
+
+        [SerializeField]
+        private AnimationCurve moveSpeedCurve = new AnimationCurve();
+        
+        private IEnumerator RefineBitCoroutine(Bit bit, float speed, Action OnFinishedCallback)
+        {
+            var bitStartPosition = bit.transform.position;
+            var endPosition = bot.transform.position;
+            var t = 0f;
+
+            bit.SetColliderActive(false);
+            bit.Coordinate = Vector2Int.zero;
+            bit.renderer.sortingOrder = 10000;
+            
+            while (t < 1f)
+            {
+                bit.transform.position = Vector3.Lerp(bitStartPosition, endPosition, t);
+
+                //TODO Need to adjust the scale here
+                bit.transform.localScale = Vector3.LerpUnclamped(Vector3.zero, Vector3.one, refineScaleCurve.Evaluate(t));
+                
+                t += Time.deltaTime * speed * moveSpeedCurve.Evaluate(t);
+                
+                yield return null;
+            }
+            
+            OnFinishedCallback?.Invoke();
+            bit.transform.localScale = Vector3.one;
+            
+
+        }
+        
+        //============================================================================================================//
+
 
     }
 }
