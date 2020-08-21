@@ -347,10 +347,6 @@ namespace StarSalvager.AI
 
         public void TryHitAt(Vector2 position, float damage)
         {
-            //FIXME This should use IHealth
-            LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.position, m_enemyData.rdsTable.rdsResult.ToList());
-            MissionManager.ProcessEnemyKilledMissionData(m_enemyData.EnemyType, 1);
-
             ChangeHealth(-damage);
             
             var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
@@ -374,11 +370,15 @@ namespace StarSalvager.AI
         {
             CurrentHealth += amount;
 
-            if (CurrentHealth <= 0)
-            {
-                AudioController.PlaySound(SOUND.ENEMY_DEATH);
-                Recycler.Recycle<Enemy>(this);
-            }
+            if (CurrentHealth > 0) 
+                return;
+            
+            LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.position, m_enemyData.rdsTable.rdsResult.ToList());
+            MissionManager.ProcessEnemyKilledMissionData(m_enemyData.EnemyType, 1);
+                
+            AudioController.PlaySound(SOUND.ENEMY_DEATH);
+                
+            Recycler.Recycle<Enemy>(this);
         }
 
         //============================================================================================================//
