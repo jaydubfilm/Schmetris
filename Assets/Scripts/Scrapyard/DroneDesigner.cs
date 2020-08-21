@@ -48,6 +48,9 @@ namespace StarSalvager
         private List<ScrapyardLayout> _scrapyardLayouts;
 
         private bool isStarted = false;
+        private bool isDragging = false;
+
+        private SpriteRenderer partDragImage = null;
 
         //============================================================================================================//
 
@@ -65,6 +68,19 @@ namespace StarSalvager
             IsUpgrading = false;
             InitInput();
             isStarted = true;
+        }
+
+        private void Update()
+        {
+            if (partDragImage != null && partDragImage.gameObject.activeSelf)
+            {
+                Vector3 screenToWorldPosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+                if (isDragging || (SelectedPartClickPosition != null && Vector3.Distance(SelectedPartClickPosition.Value, screenToWorldPosition) > 0.5f))
+                {
+                    isDragging = true;
+                    partDragImage.transform.position = new Vector3(screenToWorldPosition.x, screenToWorldPosition.y, 0);
+                }
+            }
         }
 
         private void OnDestroy()
@@ -122,17 +138,23 @@ namespace StarSalvager
                 var importedData = currentBlockData.ImportBlockDatas(true);
                 _scrapyardBot.InitBot(importedData);
             }
+
+            bool outOfWaterOnReturn = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 0;
             SellBits();
             //TODO Need to decide if this should happen at arrival or at launch
             //TryFillBotResources();
 
-            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] == 0)
+            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 0)
             {
-                Alert.ShowAlert("Game Over", "You have run out of water. Your crew has died of thirst.", "Main Menu", () =>
+                Alert.ShowAlert("Game Over", "Your crew has died of thirst - Game Over. thx!", "Main Menu", () =>
                 {
                     PlayerPersistentData.PlayerData.numLives = 3;
-                    SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.ALEX_TEST_SCENE);
+                    SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
                 });
+            }
+            else if (outOfWaterOnReturn)
+            {
+                Alert.ShowAlert("Water Restored", "You have resuscitated your thirsty crew.", "Phew!", null);
             }
 
             if (dismantleBin == null)
@@ -173,8 +195,6 @@ namespace StarSalvager
 
         #endregion //IReset Functions
 
-        
-
         //============================================================================================================//
 
         #region User Input
@@ -204,13 +224,24 @@ namespace StarSalvager
 
                     if (attachableAtCoordinates != null && attachableAtCoordinates is ScrapyardPart partAtCoordinates)
                     {
+                        Vector3 currentAttachablePosition = attachableAtCoordinates.transform.position;
+
                         _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
                         SelectedPartType = partAtCoordinates.Type;
                         SelectedPartLevel = partAtCoordinates.level;
+                        SelectedPartClickPosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
                         SelectedPartPreviousGridPosition = mouseCoordinate;
                         SelectedPartRemoveFromStorage = false;
                         SelectedPartReturnToStorageIfNotPlaced = true;
                         SaveBlockData();
+
+                        if (partDragImage == null)
+                        {
+                            partDragImage = new GameObject().AddComponent<SpriteRenderer>();
+                        }
+                        partDragImage.gameObject.SetActive(true);
+                        partDragImage.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(SelectedPartType.Value).Sprites[SelectedPartLevel];
+                        partDragImage.transform.position = currentAttachablePosition;
                     }
                 }
             }
@@ -219,6 +250,10 @@ namespace StarSalvager
 
         private void OnLeftMouseButtonUp()
         {
+            if (partDragImage != null)
+                partDragImage.gameObject.SetActive(false);
+            isDragging = false;
+
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
             {
                 if (SelectedPartType != null && dismantleBin != null)
@@ -242,6 +277,7 @@ namespace StarSalvager
 
                         SelectedPartType = null;
                         SelectedPartLevel = 0;
+                        SelectedPartClickPosition = null;
                         SelectedPartPreviousGridPosition = null;
                         SelectedPartRemoveFromStorage = false;
                         SelectedPartReturnToStorageIfNotPlaced = false;
@@ -272,6 +308,7 @@ namespace StarSalvager
 
                             SelectedPartType = null;
                             SelectedPartLevel = 0;
+                            SelectedPartClickPosition = null;
                             SelectedPartPreviousGridPosition = null;
                             SelectedPartRemoveFromStorage = false;
                             SelectedPartReturnToStorageIfNotPlaced = false;
@@ -312,6 +349,7 @@ namespace StarSalvager
 
                         SelectedPartType = null;
                         SelectedPartLevel = 0;
+                        SelectedPartClickPosition = null;
                         SelectedPartPreviousGridPosition = null;
                         SelectedPartRemoveFromStorage = false;
                         SelectedPartReturnToStorageIfNotPlaced = false;
