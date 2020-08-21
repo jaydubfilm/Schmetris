@@ -102,7 +102,7 @@ MonoBehaviour:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
       WaveUnlockNumber: 0
-      MissionUnlockName: Mission 4
+      MissionUnlockName: complete Sector 1
     AmountNeeded: 0
     AnyResourceType: 0
     ResourceType: 0
@@ -178,7 +178,7 @@ MonoBehaviour:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
       WaveUnlockNumber: 0
-      MissionUnlockName: Mission 1
+      MissionUnlockName: collect 200 greyscale
     AmountNeeded: 200
     AnyResourceType: 0
     ResourceType: 2
@@ -216,11 +216,11 @@ MonoBehaviour:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
       WaveUnlockNumber: 0
-      MissionUnlockName: Mission 8
+      MissionUnlockName: kill a parasite
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
       WaveUnlockNumber: 0
-      MissionUnlockName: Mission 9
+      MissionUnlockName: kill an invader
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 2
       WaveUnlockNumber: 1
