@@ -49,6 +49,8 @@ namespace StarSalvager
 
         private bool isStarted = false;
 
+        private SpriteRenderer partDragImage = null;
+
         //============================================================================================================//
 
         #region Unity Functions
@@ -65,6 +67,16 @@ namespace StarSalvager
             IsUpgrading = false;
             InitInput();
             isStarted = true;
+        }
+
+        private void Update()
+        {
+            if (partDragImage != null && partDragImage.gameObject.activeSelf)
+            {
+                Vector3 position = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+                partDragImage.transform.position = new Vector3(position.x, position.y, 0);
+                print("moo" + partDragImage.transform.position);
+            }
         }
 
         private void OnDestroy()
@@ -179,8 +191,6 @@ namespace StarSalvager
 
         #endregion //IReset Functions
 
-        
-
         //============================================================================================================//
 
         #region User Input
@@ -217,6 +227,15 @@ namespace StarSalvager
                         SelectedPartRemoveFromStorage = false;
                         SelectedPartReturnToStorageIfNotPlaced = true;
                         SaveBlockData();
+
+                        if (partDragImage == null)
+                        {
+                            partDragImage = new GameObject().AddComponent<SpriteRenderer>();
+                        }
+                        partDragImage.gameObject.SetActive(true);
+                        partDragImage.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(SelectedPartType.Value).Sprites[SelectedPartLevel];
+                        Vector3 position = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+                        partDragImage.transform.position = new Vector3(position.x, position.y, 0);
                     }
                 }
             }
@@ -225,6 +244,9 @@ namespace StarSalvager
 
         private void OnLeftMouseButtonUp()
         {
+            if (partDragImage != null)
+                partDragImage.gameObject.SetActive(false);
+            
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
             {
                 if (SelectedPartType != null && dismantleBin != null)
