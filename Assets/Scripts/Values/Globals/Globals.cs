@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using UnityEngine;
+using UnityEngine.Analytics;
 using Object = UnityEngine.Object;
 
 namespace StarSalvager.Values
 {
     public static class Globals
     {
+        public static string UserID = AnalyticsSessionInfo.userId;
         public static string SessionID = System.Guid.NewGuid().ToString();
 
         public static DIRECTION MovingDirection = DIRECTION.NULL;

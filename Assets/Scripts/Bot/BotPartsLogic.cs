@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
+using StarSalvager.Audio;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Prototype;
@@ -12,6 +14,7 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Values;
 using UnityEngine;
+using AudioController = StarSalvager.Audio.AudioController;
 using GameUI = StarSalvager.UI.GameUI;
 
 namespace StarSalvager
@@ -318,9 +321,17 @@ namespace StarSalvager
                     
                         PlayerPersistentData.PlayerData.AddLiquidResource(partRemoteData.burnType, addAmount);
 
-                        bot.DestroyAttachable<Bit>(targetBit);
+                        //TODO May want to play around with the order of operations here
+                        StartCoroutine(RefineBitCoroutine(targetBit, 1.6f, 
+                            () =>
+                        {
+                            bot.DestroyAttachable<Bit>(targetBit);
+                        }));
+
+                        
 
                         resourceValue = addAmount;
+                        AudioController.PlaySound(SOUND.BIT_REFINED);
                     }
                     
                 }
@@ -408,14 +419,16 @@ namespace StarSalvager
 
                         var repairAmount = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Heal);
                         
+                        //FIXME This will need some sort of time cooldown
+                        //AudioController.PlaySound(SOUND.REPAIRER_PULSE);
+                        
                         //Increase the health of this part depending on the current level of the repairer
                         toRepair.ChangeHealth(repairAmount * Time.deltaTime);
 
                         break;
                     case PART_TYPE.GUN:
 
-                        if (resourceValue <= 0f && useBurnRate)
-                            break;
+                        
                         
                         //TODO Need to determine if the shoot type is looking for enemies or not
                         //--------------------------------------------------------------------------------------------//
@@ -452,6 +465,11 @@ namespace StarSalvager
 
                         if (useBurnRate)
                         {
+                            if (resourceValue <= 0f)
+                            {
+                                AudioController.PlaySound(SOUND.GUN_CLICK);
+                                break;
+                            }
                             if(resourceValue > 0)
                                 resourceValue -= levelData.burnRate;
                         }
@@ -473,6 +491,17 @@ namespace StarSalvager
                         projectile.transform.position = part.transform.position;
 
                         LevelManager.Instance.ProjectileManager.AddProjectile(projectile);
+
+
+                        switch (part.level)
+                        {
+                            case 0:
+                                AudioController.PlaySound(SOUND.GUNLVL1_FIRE);
+                                break;
+                            case 1 :
+                                AudioController.PlaySound(SOUND.GUNLVL2_FIRE);
+                                break;
+                        }
 
                         //--------------------------------------------------------------------------------------------//
 
@@ -505,6 +534,8 @@ namespace StarSalvager
                             }
                         }
                         
+                        //FIXME This needs to have some sort of play cooldown
+                        //AudioController.PlaySound(SOUND.SHIELD_RECHARGE);
 
                         shield.SetAlpha(0.5f * (data.currentHp / fakeHealth));
                         
@@ -574,9 +605,12 @@ namespace StarSalvager
             var burnType = partData.burnType;
             var useCost = partLevelData.burnRate;
 
-            
+
             if (PlayerPersistentData.PlayerData.liquidResource[burnType] < useCost)
+            {
+                AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return;
+            }
             
             //Remove the resources here
             PlayerPersistentData.PlayerData.SubtractLiquidResource(burnType, useCost);
@@ -592,6 +626,8 @@ namespace StarSalvager
             {
                 EnemyManager.DamageAllEnemies(damage);
             }
+            
+            AudioController.PlaySound(SOUND.BOMB_BLAST);
         }
         
         #endregion
@@ -642,6 +678,8 @@ namespace StarSalvager
                 outDamage += Mathf.Abs(_shields[hitPart].currentHp);
                 _shields[hitPart].currentHp = 0f;
             }
+            
+            AudioController.PlaySound(SOUND.SHIELD_ABSORB);
 
             return outDamage;
         }
@@ -814,6 +852,43 @@ namespace StarSalvager
         }
         
         //============================================================================================================//
+
+        [SerializeField]
+        private AnimationCurve refineScaleCurve = new AnimationCurve();
+
+        [SerializeField]
+        private AnimationCurve moveSpeedCurve = new AnimationCurve();
+        
+        private IEnumerator RefineBitCoroutine(Bit bit, float speed, Action OnFinishedCallback)
+        {
+            var bitStartPosition = bit.transform.position;
+            var endPosition = bot.transform.position;
+            var t = 0f;
+
+            bit.SetColliderActive(false);
+            bit.Coordinate = Vector2Int.zero;
+            bit.renderer.sortingOrder = 10000;
+            
+            while (t < 1f)
+            {
+                bit.transform.position = Vector3.Lerp(bitStartPosition, endPosition, t);
+
+                //TODO Need to adjust the scale here
+                bit.transform.localScale = Vector3.LerpUnclamped(Vector3.zero, Vector3.one, refineScaleCurve.Evaluate(t));
+                
+                t += Time.deltaTime * speed * moveSpeedCurve.Evaluate(t);
+                
+                yield return null;
+            }
+            
+            OnFinishedCallback?.Invoke();
+            bit.transform.localScale = Vector3.one;
+            
+
+        }
+        
+        //============================================================================================================//
+
 
     }
 }

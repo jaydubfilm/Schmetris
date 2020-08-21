@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Recycling;
 using StarSalvager;
+using StarSalvager.Audio;
 using StarSalvager.Values;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
@@ -208,6 +209,7 @@ namespace StarSalvager
                 {
                     //Recycler.Recycle<Shape>(this);
                     bot.Rotate(bot.MostRecentRotate.Invert());
+                    AudioController.PlaySound(SOUND.ASTEROID_BASH);
                     bot.TryHitAt(hitPoint, 10);
                     return;
                 }
@@ -218,9 +220,9 @@ namespace StarSalvager
                     rotation *= -1;
                 }
 
-                bool breakIntoBits = false;
+                /*bool breakIntoBits = false;
                 if (!breakIntoBits)
-                {
+                {*/
                     Vector2 direction = (Vector2)transform.position - hitPoint;
                     direction.Normalize();
                     /*if (direction != Vector2.up)
@@ -231,8 +233,9 @@ namespace StarSalvager
                         direction.Normalize();
                     }*/
                     LevelManager.Instance.ObstacleManager.BounceObstacle(this, direction, rotation, true, true, true);
-                }
-                else
+                    AudioController.PlaySound(SOUND.BIT_BOUNCE);
+                //}
+                /*else
                 {
                     foreach (Bit bit in attachedBits)
                     {
@@ -244,14 +247,14 @@ namespace StarSalvager
                             downVelocity.Normalize();
                             direction += downVelocity;
                             direction.Normalize();
-                        }*/
+                        }#1#
                         LevelManager.Instance.ObstacleManager.BounceObstacle(bit, direction, rotation, true, true, true);
                     }
                     Recycler.Recycle<Shape>(this, new
                     {
                         recycleBits = false
                     });
-                }
+                }*/
                 return;
             }
 

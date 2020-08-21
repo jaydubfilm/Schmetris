@@ -36,7 +36,8 @@ namespace StarSalvager
         }
         private Collider2D _collider;
 
-        protected new SpriteRenderer renderer
+        //FIXME I'd prefer that this remain protected
+        public new SpriteRenderer renderer
         {
             get
             {

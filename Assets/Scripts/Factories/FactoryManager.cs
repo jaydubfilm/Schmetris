@@ -105,6 +105,11 @@ namespace StarSalvager.Factories
         
         [SerializeField, Required, BoxGroup("Damage")]
         private GameObject damageFactory;
+        
+        //============================================================================================================//
+        
+        [SerializeField, Required, BoxGroup("Particles")]
+        private GameObject explosionPrefab;
 
         //============================================================================================================//
 
@@ -137,26 +142,40 @@ namespace StarSalvager.Factories
             var type = typeof(T);
             switch (true)
             {
+                //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(BitAttachableFactory):
                     return new BitAttachableFactory(bitProfile, bitRemoteData) as T;
+                //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(PartAttachableFactory):
                     return new PartAttachableFactory(partProfile, partRemoteData) as T;
+                //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(ComponentAttachableFactory):
                     return new ComponentAttachableFactory(componentProfile, componentRemoteData) as T;
+                //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(ShapeFactory):
                     return new ShapeFactory(shapePrefab, EditorBotShapeData.GetEditorShapeData()) as T;
+                //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(EnemyFactory):
                     return new EnemyFactory(enemyProfile, enemyRemoteData) as T;
+                //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(ProjectileFactory):
                     return new ProjectileFactory(projectileProfile) as T;
+                //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(ComboFactory):
                     return new ComboFactory(comboRemoteData) as T;
+                //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(BotFactory):
                     return new BotFactory(botPrefab, scrapyardBotPrefab, shieldPrototypePrefab, alertIconPrefab) as T;
+                //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(DamageFactory):
                     return new DamageFactory(damageFactory) as T;
+                //----------------------------------------------------------------------------------------------------//
+                case bool _ when type == typeof(ParticleFactory):
+                    return new ParticleFactory(explosionPrefab) as T;
+                //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type.Name, null);
+                //----------------------------------------------------------------------------------------------------//
             }
         }
 

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Missions;
@@ -200,13 +201,22 @@ namespace StarSalvager.Utilities.Inputs
             if (isPaused)
                 return;
 
+            var moveDirection = ctx.ReadValue<float>();
+            
             if (LockSideMovement)
             {
+                if (moveDirection != 0f)
+                {
+                    //TODO Sound to play if moving without fuel
+                    //AudioController.PlaySound(SOUND);
+                }
+                
+                
                 TryApplyMove(0f);
                 return;
             }
             
-            var moveDirection = ctx.ReadValue<float>();
+            
 
             TryApplyMove(moveDirection);
 
@@ -293,6 +303,8 @@ namespace StarSalvager.Utilities.Inputs
             {
                 scrapyardBot.Rotate(rot);
             }
+            
+            AudioController.PlaySound(SOUND.BOT_ROTATE);
         }
 
         private void LeftClick(InputAction.CallbackContext ctx)
