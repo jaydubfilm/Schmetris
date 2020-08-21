@@ -4,6 +4,7 @@ using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
+using StarSalvager.Audio;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Prototype;
@@ -12,6 +13,7 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Values;
 using UnityEngine;
+using AudioController = StarSalvager.Audio.AudioController;
 using GameUI = StarSalvager.UI.GameUI;
 
 namespace StarSalvager
@@ -321,6 +323,8 @@ namespace StarSalvager
                         bot.DestroyAttachable<Bit>(targetBit);
 
                         resourceValue = addAmount;
+                        
+                        AudioController.PlaySound(SOUND.BIT_REFINED);
                     }
                     
                 }
@@ -408,14 +412,16 @@ namespace StarSalvager
 
                         var repairAmount = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Heal);
                         
+                        //FIXME This will need some sort of time cooldown
+                        //AudioController.PlaySound(SOUND.REPAIRER_PULSE);
+                        
                         //Increase the health of this part depending on the current level of the repairer
                         toRepair.ChangeHealth(repairAmount * Time.deltaTime);
 
                         break;
                     case PART_TYPE.GUN:
 
-                        if (resourceValue <= 0f && useBurnRate)
-                            break;
+                        
                         
                         //TODO Need to determine if the shoot type is looking for enemies or not
                         //--------------------------------------------------------------------------------------------//
@@ -452,6 +458,11 @@ namespace StarSalvager
 
                         if (useBurnRate)
                         {
+                            if (resourceValue <= 0f)
+                            {
+                                AudioController.PlaySound(SOUND.GUN_CLICK);
+                                break;
+                            }
                             if(resourceValue > 0)
                                 resourceValue -= levelData.burnRate;
                         }
@@ -473,6 +484,17 @@ namespace StarSalvager
                         projectile.transform.position = part.transform.position;
 
                         LevelManager.Instance.ProjectileManager.AddProjectile(projectile);
+
+
+                        switch (part.level)
+                        {
+                            case 0:
+                                AudioController.PlaySound(SOUND.GUNLVL1_FIRE);
+                                break;
+                            case 1 :
+                                AudioController.PlaySound(SOUND.GUNLVL2_FIRE);
+                                break;
+                        }
 
                         //--------------------------------------------------------------------------------------------//
 
@@ -505,6 +527,8 @@ namespace StarSalvager
                             }
                         }
                         
+                        //FIXME This needs to have some sort of play cooldown
+                        //AudioController.PlaySound(SOUND.SHIELD_RECHARGE);
 
                         shield.SetAlpha(0.5f * (data.currentHp / fakeHealth));
                         
@@ -574,9 +598,12 @@ namespace StarSalvager
             var burnType = partData.burnType;
             var useCost = partLevelData.burnRate;
 
-            
+
             if (PlayerPersistentData.PlayerData.liquidResource[burnType] < useCost)
+            {
+                AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return;
+            }
             
             //Remove the resources here
             PlayerPersistentData.PlayerData.SubtractLiquidResource(burnType, useCost);
@@ -592,6 +619,8 @@ namespace StarSalvager
             {
                 EnemyManager.DamageAllEnemies(damage);
             }
+            
+            AudioController.PlaySound(SOUND.BOMB_BLAST);
         }
         
         #endregion
@@ -642,6 +671,8 @@ namespace StarSalvager
                 outDamage += Mathf.Abs(_shields[hitPart].currentHp);
                 _shields[hitPart].currentHp = 0f;
             }
+            
+            AudioController.PlaySound(SOUND.SHIELD_ABSORB);
 
             return outDamage;
         }

@@ -8,6 +8,7 @@ using StarSalvager.Utilities.Animations;
 using StarSalvager.Missions;
 using StarSalvager.Utilities;
 using System.Linq;
+using StarSalvager.Audio;
 
 namespace StarSalvager.AI
 {
@@ -349,7 +350,12 @@ namespace StarSalvager.AI
             //FIXME This should use IHealth
             LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.position, m_enemyData.rdsTable.rdsResult.ToList());
             MissionManager.ProcessEnemyKilledMissionData(m_enemyData.EnemyType, 1);
-            Recycler.Recycle<Enemy>(this);
+
+            ChangeHealth(-damage);
+            
+            if(CurrentHealth > 0)
+                AudioController.PlaySound(SOUND.ENEMY_IMPACT);
+            
         }
 
         //IHealth Functions
@@ -364,9 +370,12 @@ namespace StarSalvager.AI
         public virtual void ChangeHealth(float amount)
         {
             CurrentHealth += amount;
-            
-            if(CurrentHealth <= 0)
+
+            if (CurrentHealth <= 0)
+            {
+                AudioController.PlaySound(SOUND.ENEMY_DEATH);
                 Recycler.Recycle<Enemy>(this);
+            }
         }
 
         //============================================================================================================//
