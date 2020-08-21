@@ -874,8 +874,8 @@ namespace StarSalvager
             var copy = new Dictionary<Part, FlashSprite>(_flashes);
             foreach (var data in copy.Where(data => data.Key.IsRecycled))
             {
-                Recycler.Recycle<FlashSprite>(data.Value.gameObject);
                 _flashes.Remove(data.Key);
+                Recycler.Recycle<FlashSprite>(data.Value.gameObject);
             }
         }
 
