@@ -386,7 +386,12 @@ namespace StarSalvager
                 ProcessScrapyardUsageBeginAnalytics();
                 Globals.CurrentWave = 0;
                 Globals.SectorComplete = true;
-                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
+                GameTimer.SetPaused(true);
+                Alert.ShowAlert("Sector Completed", "Beat the last wave of the sector. Return to base!", "Ok", () =>
+                {
+                    GameTimer.SetPaused(false);
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
+                });
             }
         }
 
