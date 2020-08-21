@@ -504,9 +504,13 @@ namespace StarSalvager
                     _scrapyardBot.AttachNewBit(toUndo.Coordinate, attachable);
                     break;
                 case SCRAPYARD_ACTION.DISMANTLE_FROM_STORAGE:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(toUndo.PartType, toUndo.Level);
                     PlayerPersistentData.PlayerData.SubtractPartCosts(toUndo.PartType, toUndo.Level, true);
-                    PlayerPersistentData.PlayerData.AddPartToStorage(attachable.ToBlockData());
+                    PlayerPersistentData.PlayerData.AddPartToStorage(new BlockData
+                    {
+                        ClassType = "Part",
+                        Type = (int)toUndo.PartType,
+                        Level = toUndo.Level
+                    });
                     break;
                 case SCRAPYARD_ACTION.DISMANTLE_FROM_BOT:
                     attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(toUndo.PartType, toUndo.Level);
