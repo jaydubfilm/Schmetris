@@ -1618,7 +1618,7 @@ namespace StarSalvager
             
             //Debug.Log($"{inLine.Count} in line, moving {direction}");
 
-            bool passedCore;
+            var passedCore = false;
 
             for (var i = 0; i < inLine.Count; i++)
             {
