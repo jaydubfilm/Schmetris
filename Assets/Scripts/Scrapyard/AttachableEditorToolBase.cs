@@ -10,7 +10,7 @@ namespace StarSalvager
         private const int MAX_DISTANCE = 3;
         
         public Material material;
-        protected ScrapyardBot _scrapyardBot = null;
+        public ScrapyardBot _scrapyardBot { get; protected set; } = null;
 
         [SerializeField]
         private CameraController m_cameraController;
