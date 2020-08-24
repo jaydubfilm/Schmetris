@@ -122,7 +122,6 @@ namespace StarSalvager.UI.Scrapyard
                         
                     SaveGameContentScrollView.RemoveElement<SaveGameUIElement>(data);
                     File.Delete(data.FilePath);
-                    File.Delete(data.MissionFilePath);
                     PlayerPersistentData.PlayerMetadata.SaveFiles.Remove(data);
                     //TODO Delete the file here
 
@@ -135,7 +134,6 @@ namespace StarSalvager.UI.Scrapyard
             if (_selectedSaveFileData.HasValue)
             {
                 PlayerPersistentData.SetCurrentSaveFile(_selectedSaveFileData.Value.FilePath);
-                MissionManager.SetCurrentSaveFile(_selectedSaveFileData.Value.MissionFilePath);
 
                 CloseMenu();
 
@@ -149,16 +147,14 @@ namespace StarSalvager.UI.Scrapyard
             if (!_selectedSaveFileData.HasValue || _selectedSaveFileData.Value.Name != nameInputField.text || _selectedSaveFileData.Value.Name == "New File")
             {
                 string playerPath = PlayerPersistentData.GetNextAvailableSaveSlot();
-                string missionPath = MissionManager.GetNextAvailableSaveSlot();
 
-                if (playerPath != string.Empty && missionPath != string.Empty)
+                if (playerPath != string.Empty)
                 {
                     SaveFileData newSaveFile = new SaveFileData
                     {
                         Name = nameInputField.text,
                         Date = DateTime.Now,
-                        FilePath = playerPath,
-                        MissionFilePath = missionPath
+                        FilePath = playerPath
                     };
                     print("CREATING FILE " + playerPath);
 
@@ -166,10 +162,8 @@ namespace StarSalvager.UI.Scrapyard
                     PlayerPersistentData.PlayerMetadata.CurrentSaveFile = newSaveFile;
 
                     PlayerPersistentData.ExportPlayerPersistentData(PlayerPersistentData.PlayerData, playerPath);
-                    MissionManager.ExportMissionsCurrentRemoteData(MissionManager.MissionsCurrentData, missionPath);
 
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
-                    MissionManager.SetCurrentSaveFile(missionPath);
 
                     _selectedSaveFileData = newSaveFile;
 
@@ -193,7 +187,6 @@ namespace StarSalvager.UI.Scrapyard
                         
                         SaveGameContentScrollView.RemoveElement<SaveGameUIElement>(_selectedSaveFileData.Value);
                         string playerPath = _selectedSaveFileData.Value.FilePath;
-                        string missionPath = _selectedSaveFileData.Value.MissionFilePath;
 
                         PlayerPersistentData.PlayerMetadata.SaveFiles.Remove(_selectedSaveFileData.Value);
 
@@ -201,8 +194,7 @@ namespace StarSalvager.UI.Scrapyard
                         {
                             Name = nameInputField.text,
                             Date = DateTime.Now,
-                            FilePath = playerPath,
-                            MissionFilePath = missionPath
+                            FilePath = playerPath
                         };
                         print("OVERWRITING FILE " + playerPath);
 
@@ -210,7 +202,6 @@ namespace StarSalvager.UI.Scrapyard
                         PlayerPersistentData.PlayerMetadata.CurrentSaveFile = newSaveFile;
 
                         PlayerPersistentData.ExportPlayerPersistentData(PlayerPersistentData.PlayerData, playerPath);
-                        MissionManager.ExportMissionsCurrentRemoteData(MissionManager.MissionsCurrentData, missionPath);
 
                         _selectedSaveFileData = newSaveFile;
 
