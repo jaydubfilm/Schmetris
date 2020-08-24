@@ -58,7 +58,7 @@ namespace StarSalvager.Factories
         private AttachableProfileScriptableObject componentProfile;
         
         [SerializeField, Required, BoxGroup("Attachables/Components")]
-        private ComponentRemoteDataScriptableObject componentRemoteData;
+        public ComponentRemoteDataScriptableObject componentRemoteData;
 
 
         

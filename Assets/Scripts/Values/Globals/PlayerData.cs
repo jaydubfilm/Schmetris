@@ -49,11 +49,11 @@ namespace StarSalvager.Values
         [JsonProperty]
         private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_TYPE, int>
         {
-            {COMPONENT_TYPE.CALLIT, 0},
-            {COMPONENT_TYPE.DOHICKEY, 0},
-            {COMPONENT_TYPE.GADGET, 0},
-            {COMPONENT_TYPE.GIZMO, 0},
-            {COMPONENT_TYPE.THINGY, 0}
+            {COMPONENT_TYPE.FUSOR, 0},
+            {COMPONENT_TYPE.CHIP, 0},
+            {COMPONENT_TYPE.NUT, 0},
+            {COMPONENT_TYPE.BOLT, 0},
+            {COMPONENT_TYPE.COIL, 0}
         };
 
         [JsonIgnore]
