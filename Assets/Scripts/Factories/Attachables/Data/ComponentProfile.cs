@@ -1,6 +1,8 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Animations;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace StarSalvager.Factories.Data
 {
@@ -9,12 +11,13 @@ namespace StarSalvager.Factories.Data
     {
         public string Name
         {
-            get => _name;
-            set => _name = value;
+#if UNITY_EDITOR
+            get => GetName();
+#else
+            get => string.Empty;
+#endif
+            set => throw new NotImplementedException();
         }
-
-        [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right")]
-        private string _name;
 
         public int Type => (int) componentType;
         [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right")]
@@ -25,8 +28,6 @@ namespace StarSalvager.Factories.Data
             get => _animation;
             set => _animation = value;
         }
-        [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right")]
-        private AnimationScriptableObject _animation;
 
         public Sprite[] Sprites
         {
@@ -34,14 +35,12 @@ namespace StarSalvager.Factories.Data
             set => _sprites = value;
         }
 
+        [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right")]
+        private AnimationScriptableObject _animation;
+
         [SerializeField, FoldoutGroup("$Name"), ListDrawerSettings(ShowIndexLabels = true), Space(10f)]
         private Sprite[] _sprites;
-        
 
-
-        #region UNITY_EDITOR
-
-#if UNITY_EDITOR
 
         [ShowInInspector, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right),
          HorizontalGroup("$Name/row2", 65), VerticalGroup("$Name/row2/left"), HideLabel, PropertyOrder(-100), ReadOnly]
@@ -54,6 +53,16 @@ namespace StarSalvager.Factories.Data
                 
                 return _animation == null ? _sprites[0] : _animation.GetFrame(0);
             }
+        }
+
+        #region UNITY_EDITOR
+
+#if UNITY_EDITOR
+
+        private string GetName()
+        {
+            var remoteData = Object.FindObjectOfType<FactoryManager>().componentRemoteData.GetRemoteData(componentType);
+            return remoteData is null ? "NO REMOTE DATA" : remoteData.name;
         }
         
 #endif

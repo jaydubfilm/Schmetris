@@ -21,6 +21,8 @@ namespace StarSalvager
         [NonSerialized]
         public int SelectedPartLevel = 0;
         [NonSerialized]
+        public Vector3? SelectedPartClickPosition;
+        [NonSerialized]
         public Vector2Int? SelectedPartPreviousGridPosition = null;
         [NonSerialized]
         public bool SelectedPartRemoveFromStorage = false;

@@ -34,15 +34,15 @@ namespace StarSalvager.Editor
             
             
             [TableColumnWidth(50, Resizable = false)]
-            public int gadget;
+            public int nut;
             [TableColumnWidth(50, Resizable = false)]
-            public int gizmo;
+            public int bolt;
             [TableColumnWidth(50, Resizable = false)]
-            public int thingy;
+            public int coil;
             [TableColumnWidth(50, Resizable = false)]
-            public int doohickey;
+            public int chip;
             [TableColumnWidth(50, Resizable = false)]
-            public int whatcha;
+            public int fusor;
             
             [GUIColor(1,0.35f,0.35f)]
             public int red;
@@ -149,11 +149,11 @@ namespace StarSalvager.Editor
                         hp = partRemoteData.levels[j].health,
 
 
-                        gadget = components[COMPONENT_TYPE.GADGET],
-                        gizmo = components[COMPONENT_TYPE.GIZMO],
-                        doohickey = components[COMPONENT_TYPE.DOHICKEY],
-                        whatcha = components[COMPONENT_TYPE.CALLIT],
-                        thingy = components[COMPONENT_TYPE.THINGY],
+                        nut = components[COMPONENT_TYPE.NUT],
+                        bolt = components[COMPONENT_TYPE.BOLT],
+                        chip = components[COMPONENT_TYPE.CHIP],
+                        fusor = components[COMPONENT_TYPE.FUSOR],
+                        coil = components[COMPONENT_TYPE.COIL],
 
                         red = bits[BIT_TYPE.RED],
                         green = bits[BIT_TYPE.GREEN],
@@ -170,11 +170,11 @@ namespace StarSalvager.Editor
 
         private static void FillData(PartCostData partCostData, ref PartLevelData partLevelData)
         {
-            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.GADGET, partCostData.gadget, ref partLevelData);
-            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.GIZMO, partCostData.gizmo, ref partLevelData);
-            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.CALLIT, partCostData.whatcha, ref partLevelData);
-            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.DOHICKEY, partCostData.doohickey, ref partLevelData);
-            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.THINGY, partCostData.thingy, ref partLevelData);
+            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.NUT, partCostData.nut, ref partLevelData);
+            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.BOLT, partCostData.bolt, ref partLevelData);
+            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.FUSOR, partCostData.fusor, ref partLevelData);
+            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.CHIP, partCostData.chip, ref partLevelData);
+            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.COIL, partCostData.coil, ref partLevelData);
             
             
             FillCost(CraftCost.TYPE.Bit, (int) BIT_TYPE.RED, partCostData.red, ref partLevelData);

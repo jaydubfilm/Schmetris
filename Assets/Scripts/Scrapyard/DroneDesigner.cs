@@ -239,6 +239,7 @@ namespace StarSalvager
                         if (partDragImage == null)
                         {
                             partDragImage = new GameObject().AddComponent<SpriteRenderer>();
+                            partDragImage.sortingOrder = 1;
                         }
                         partDragImage.gameObject.SetActive(true);
                         partDragImage.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(SelectedPartType.Value).Sprites[SelectedPartLevel];
@@ -255,57 +256,52 @@ namespace StarSalvager
                 partDragImage.gameObject.SetActive(false);
             isDragging = false;
 
-            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
+            if (SelectedPartType.HasValue && _scrapyardBot != null)
             {
-                if (SelectedPartType != null && dismantleBin != null)
+                //Check if mouse coordinate is inside the editing grid
+                if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 {
-                    Vector2 worldMousePosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
-                    if (Vector2.Distance(worldMousePosition, dismantleBin.transform.position) <= 3)
+                    if (dismantleBin != null)
                     {
-                        Toast.AddToast("Dismantle part", verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
-                        PlayerPersistentData.PlayerData.AddResources(SelectedPartType.Value, SelectedPartLevel, true);
+                        Vector2 worldMousePosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
 
-                        if (SelectedPartRemoveFromStorage)
+                        //Dismantle part
+                        if (Vector2.Distance(worldMousePosition, dismantleBin.transform.position) <= 3)
                         {
-                            BlockData blockData = new BlockData
-                            {
-                                Type = (int)SelectedPartType,
-                                Level = SelectedPartLevel
-                            };
-                            
-                            PlayerPersistentData.PlayerData.RemovePartFromStorage(blockData);
-                        }
+                            Toast.AddToast("Dismantle part", verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
+                            PlayerPersistentData.PlayerData.AddResources(SelectedPartType.Value, SelectedPartLevel, true);
 
-                        SelectedPartType = null;
-                        SelectedPartLevel = 0;
-                        SelectedPartClickPosition = null;
-                        SelectedPartPreviousGridPosition = null;
-                        SelectedPartRemoveFromStorage = false;
-                        SelectedPartReturnToStorageIfNotPlaced = false;
-                        SaveBlockData();
-                    }
-                    else
-                    {
-                        if (SelectedPartPreviousGridPosition != null)
-                        {
-                            var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(SelectedPartType.Value, SelectedPartLevel);
-
-                            //Check if part should be removed from storage
-                            //TODO Should be checking if the player does in-fact have the part in their storage
+                            //Dismantle part from storage
                             if (SelectedPartRemoveFromStorage)
                             {
-                                PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
-                            }
+                                BlockData blockData = new BlockData
+                                {
+                                    Type = (int)SelectedPartType,
+                                    Level = SelectedPartLevel
+                                };
 
-                            droneDesignUi.RefreshScrollViews();
-                            _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
-                            _toUndoStack.Push(new ScrapyardEditData
+                                PlayerPersistentData.PlayerData.RemovePartFromStorage(blockData);
+
+                                _toUndoStack.Push(new ScrapyardEditData
+                                {
+                                    EventType = SCRAPYARD_ACTION.DISMANTLE_FROM_STORAGE,
+                                    PartType = (PART_TYPE)SelectedPartType,
+                                    Level = SelectedPartLevel
+                                });
+                                _toRedoStack.Clear();
+                            }
+                            //Dismantle part from bot
+                            else
                             {
-                                EventType = SCRAPYARD_ACTION.EQUIP,
-                                Coordinate = SelectedPartPreviousGridPosition.Value,
-                                PartType = (PART_TYPE)SelectedPartType
-                            });
-                            _toRedoStack.Clear();
+                                _toUndoStack.Push(new ScrapyardEditData
+                                {
+                                    EventType = SCRAPYARD_ACTION.DISMANTLE_FROM_BOT,
+                                    Coordinate = SelectedPartPreviousGridPosition.Value,
+                                    PartType = (PART_TYPE)SelectedPartType,
+                                    Level = SelectedPartLevel
+                                });
+                                _toRedoStack.Clear();
+                            }
 
                             SelectedPartType = null;
                             SelectedPartLevel = 0;
@@ -315,19 +311,85 @@ namespace StarSalvager
                             SelectedPartReturnToStorageIfNotPlaced = false;
                             SaveBlockData();
                         }
-                    }
-                }
-                UpdateFloatingMarkers(false);
-                return;
-            }
-            
-            if (SelectedPartType.HasValue)
-            {
-                if (_scrapyardBot != null)
-                {
-                    IAttachable attachableAtCoordinates = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+                        //Move part back to previous location since drag position is inviable
+                        else
+                        {
+                            if (SelectedPartPreviousGridPosition != null)
+                            {
+                                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(SelectedPartType.Value, SelectedPartLevel);
 
-                    if (attachableAtCoordinates == null)
+                                //Check if part should be removed from storage
+                                //TODO Should be checking if the player does in-fact have the part in their storage
+                                if (SelectedPartRemoveFromStorage)
+                                {
+                                    PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
+                                }
+
+                                droneDesignUi.RefreshScrollViews();
+                                _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
+
+                                SelectedPartType = null;
+                                SelectedPartLevel = 0;
+                                SelectedPartClickPosition = null;
+                                SelectedPartPreviousGridPosition = null;
+                                SelectedPartRemoveFromStorage = false;
+                                SelectedPartReturnToStorageIfNotPlaced = false;
+                                SaveBlockData();
+                            }
+                        }
+                    }
+                    UpdateFloatingMarkers(false);
+                    return;
+                }
+            
+                IAttachable attachableAtCoordinates = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+                //Check if there mouse coordinates are empty
+                if (attachableAtCoordinates == null)
+                {
+                    var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(SelectedPartType.Value, SelectedPartLevel);
+
+                    //Check if part should be removed from storage
+                    //TODO Should be checking if the player does in-fact have the part in their storage
+                    if (SelectedPartRemoveFromStorage)
+                    {
+                        PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
+
+                        _toUndoStack.Push(new ScrapyardEditData
+                        {
+                            EventType = SCRAPYARD_ACTION.EQUIP,
+                            Coordinate = mouseCoordinate,
+                            PartType = (PART_TYPE)SelectedPartType
+                        });
+                        _toRedoStack.Clear();
+                    }
+                    else
+                    {
+                        _toUndoStack.Push(new ScrapyardEditData
+                        {
+                            EventType = SCRAPYARD_ACTION.RELOCATE,
+                            Coordinate = SelectedPartPreviousGridPosition.Value,
+                            Destination = mouseCoordinate,
+                            PartType = (PART_TYPE)SelectedPartType
+                        });
+                        _toRedoStack.Clear();
+                    }
+
+                    droneDesignUi.RefreshScrollViews();
+                    _scrapyardBot.AttachNewBit(mouseCoordinate, attachable);
+
+                    SelectedPartType = null;
+                    SelectedPartLevel = 0;
+                    SelectedPartClickPosition = null;
+                    SelectedPartPreviousGridPosition = null;
+                    SelectedPartRemoveFromStorage = false;
+                    SelectedPartReturnToStorageIfNotPlaced = false;
+                    SaveBlockData();
+                }
+                //If there is an attachable at location
+                else
+                {
+                    //Return object to previous location on bot
+                    if (SelectedPartPreviousGridPosition != null)
                     {
                         var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(SelectedPartType.Value, SelectedPartLevel);
 
@@ -339,53 +401,21 @@ namespace StarSalvager
                         }
 
                         droneDesignUi.RefreshScrollViews();
-                        _scrapyardBot.AttachNewBit(mouseCoordinate, attachable);
-                        _toUndoStack.Push(new ScrapyardEditData
+                        _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
+                        /*_toUndoStack.Push(new ScrapyardEditData
                         {
                             EventType = SCRAPYARD_ACTION.EQUIP,
-                            Coordinate = mouseCoordinate,
+                            Coordinate = SelectedPartPreviousGridPosition.Value,
                             PartType = (PART_TYPE)SelectedPartType
                         });
-                        _toRedoStack.Clear();
+                        _toRedoStack.Clear();*/
 
                         SelectedPartType = null;
                         SelectedPartLevel = 0;
-                        SelectedPartClickPosition = null;
                         SelectedPartPreviousGridPosition = null;
                         SelectedPartRemoveFromStorage = false;
                         SelectedPartReturnToStorageIfNotPlaced = false;
                         SaveBlockData();
-                    }
-                    else
-                    {
-                        if (SelectedPartPreviousGridPosition != null)
-                        {
-                            var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(SelectedPartType.Value, SelectedPartLevel);
-
-                            //Check if part should be removed from storage
-                            //TODO Should be checking if the player does in-fact have the part in their storage
-                            if (SelectedPartRemoveFromStorage)
-                            {
-                                PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
-                            }
-
-                            droneDesignUi.RefreshScrollViews();
-                            _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
-                            _toUndoStack.Push(new ScrapyardEditData
-                            {
-                                EventType = SCRAPYARD_ACTION.EQUIP,
-                                Coordinate = SelectedPartPreviousGridPosition.Value,
-                                PartType = (PART_TYPE)SelectedPartType
-                            });
-                            _toRedoStack.Clear();
-
-                            SelectedPartType = null;
-                            SelectedPartLevel = 0;
-                            SelectedPartPreviousGridPosition = null;
-                            SelectedPartRemoveFromStorage = false;
-                            SelectedPartReturnToStorageIfNotPlaced = false;
-                            SaveBlockData();
-                        }
                     }
                 }
             }
@@ -452,31 +482,47 @@ namespace StarSalvager
             ScrapyardEditData toUndo = _toUndoStack.Pop();
             var playerData = PlayerPersistentData.PlayerData;
 
+            if (_scrapyardBot == null)
+                return;
+
+            ScrapyardPart attachable = null;
+
             switch (toUndo.EventType)
             {
                 case SCRAPYARD_ACTION.EQUIP:
-                    if (_scrapyardBot != null)
-                    {
-                        PlayerPersistentData.PlayerData.AddPartToStorage
-                            (((ScrapyardPart)_scrapyardBot.attachedBlocks.FirstOrDefault(a => a.Coordinate == toUndo.Coordinate)).ToBlockData());
-
-                        _scrapyardBot.TryRemoveAttachableAt(toUndo.Coordinate, false);
-                        droneDesignUi.RefreshScrollViews();
-                        SaveBlockData();
-                    }
+                    PlayerPersistentData.PlayerData.AddPartToStorage
+                        (((ScrapyardPart)_scrapyardBot.attachedBlocks.FirstOrDefault(a => a.Coordinate == toUndo.Coordinate)).ToBlockData());
+                    _scrapyardBot.TryRemoveAttachableAt(toUndo.Coordinate, false);
                     break;
                 case SCRAPYARD_ACTION.UNEQUIP:
-                    if (_scrapyardBot != null)
+                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(toUndo.PartType, toUndo.Level);
+                    PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
+                    _scrapyardBot.AttachNewBit(toUndo.Coordinate, attachable);
+                    break;
+                case SCRAPYARD_ACTION.RELOCATE:
+                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(toUndo.PartType, toUndo.Level);
+                    _scrapyardBot.TryRemoveAttachableAt(toUndo.Destination, false);
+                    _scrapyardBot.AttachNewBit(toUndo.Coordinate, attachable);
+                    break;
+                case SCRAPYARD_ACTION.DISMANTLE_FROM_STORAGE:
+                    PlayerPersistentData.PlayerData.SubtractPartCosts(toUndo.PartType, toUndo.Level, true);
+                    PlayerPersistentData.PlayerData.AddPartToStorage(new BlockData
                     {
-                        var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(toUndo.PartType, toUndo.Level);
-                        PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
-                        _scrapyardBot.AttachNewBit(toUndo.Coordinate, attachable);
-                        droneDesignUi.RefreshScrollViews();
-                        SaveBlockData();
-                    }
+                        ClassType = "Part",
+                        Type = (int)toUndo.PartType,
+                        Level = toUndo.Level
+                    });
+                    break;
+                case SCRAPYARD_ACTION.DISMANTLE_FROM_BOT:
+                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(toUndo.PartType, toUndo.Level);
+                    PlayerPersistentData.PlayerData.SubtractPartCosts(toUndo.PartType, toUndo.Level, true);
+                    _scrapyardBot.AttachNewBit(toUndo.Coordinate, attachable);
+                    break;
+                default:
+                    Debug.LogError("Unhandled undo/redo stack case");
                     break;
 
-                case SCRAPYARD_ACTION.PURCHASE:
+                /*case SCRAPYARD_ACTION.PURCHASE:
                     if (_scrapyardBot != null)
                     {
                         _scrapyardBot.TryRemoveAttachableAt(toUndo.Coordinate, true);
@@ -516,8 +562,11 @@ namespace StarSalvager
                         droneDesignUi.UpdateResourceElements();
                         SaveBlockData();
                     }
-                    break;
+                    break;*/
             }
+
+            droneDesignUi.RefreshScrollViews();
+            SaveBlockData();
 
             UpdateFloatingMarkers(false);
             _toRedoStack.Push(toUndo);
@@ -528,35 +577,51 @@ namespace StarSalvager
             if (_toRedoStack.Count == 0)
                 return;
 
+            if (_scrapyardBot == null)
+                return;
+
             ScrapyardEditData toRedo = _toRedoStack.Pop();
             var playerData = PlayerPersistentData.PlayerData;
+
+
+            ScrapyardPart attachable = null;
 
             switch (toRedo.EventType)
             {
                 case SCRAPYARD_ACTION.EQUIP:
-                    if (_scrapyardBot != null)
-                    {
-                        var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(toRedo.PartType, toRedo.Level);
-                        PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
-                        _scrapyardBot.AttachNewBit(toRedo.Coordinate, attachable);
-                        droneDesignUi.RefreshScrollViews();
-                        SaveBlockData();
-                    }
+                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(toRedo.PartType, toRedo.Level);
+                    PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
+                    _scrapyardBot.AttachNewBit(toRedo.Coordinate, attachable);
                     break;
                 case SCRAPYARD_ACTION.UNEQUIP:
-                    if (_scrapyardBot != null)
+                    PlayerPersistentData.PlayerData.AddPartToStorage
+                        (((ScrapyardPart)_scrapyardBot.attachedBlocks.FirstOrDefault(a => a.Coordinate == toRedo.Coordinate)).ToBlockData());
+                    _scrapyardBot.TryRemoveAttachableAt(toRedo.Coordinate, false);
+                    break;
+                case SCRAPYARD_ACTION.RELOCATE:
+                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(toRedo.PartType, toRedo.Level);
+                    _scrapyardBot.TryRemoveAttachableAt(toRedo.Coordinate, false);
+                    _scrapyardBot.AttachNewBit(toRedo.Destination, attachable);
+                    break;
+                case SCRAPYARD_ACTION.DISMANTLE_FROM_STORAGE:
+                    PlayerPersistentData.PlayerData.AddResources(toRedo.PartType, toRedo.Level, true);
+                    PlayerPersistentData.PlayerData.RemovePartFromStorage(new BlockData
                     {
-                        PlayerPersistentData.PlayerData.AddPartToStorage
-                            (((ScrapyardPart)_scrapyardBot.attachedBlocks.FirstOrDefault(a => a.Coordinate == toRedo.Coordinate)).ToBlockData());
-
-                        _scrapyardBot.TryRemoveAttachableAt(toRedo.Coordinate, false);
-                        droneDesignUi.RefreshScrollViews();
-                        SaveBlockData();
-                    }
+                        ClassType = "Part",
+                        Type = (int)toRedo.PartType,
+                        Level = toRedo.Level
+                    });
+                    break;
+                case SCRAPYARD_ACTION.DISMANTLE_FROM_BOT:
+                    PlayerPersistentData.PlayerData.AddResources(toRedo.PartType, toRedo.Level, true);
+                    _scrapyardBot.TryRemoveAttachableAt(toRedo.Coordinate, false);
+                    break;
+                default:
+                    Debug.LogError("Unhandled undo/redo stack case");
                     break;
 
 
-                case SCRAPYARD_ACTION.PURCHASE:
+                /*case SCRAPYARD_ACTION.PURCHASE:
                     if (_scrapyardBot != null)
                     {
                         IAttachable attachableAtCoordinates = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(toRedo.Coordinate);
@@ -599,8 +664,11 @@ namespace StarSalvager
                         droneDesignUi.UpdateResourceElements();
                         SaveBlockData();
                     }
-                    break;
+                    break;*/
             }
+
+            droneDesignUi.RefreshScrollViews();
+            SaveBlockData();
 
             UpdateFloatingMarkers(false);
             _toUndoStack.Push(toRedo);

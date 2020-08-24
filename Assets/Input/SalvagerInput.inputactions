@@ -46,9 +46,33 @@
                     "interactions": "Press(behavior=2)"
                 },
                 {
-                    "name": "UseBomb",
+                    "name": "SmartAction1",
                     "type": "Button",
-                    "id": "e758f89c-6d93-4423-882c-8d8b2930bd69",
+                    "id": "e2eb2b5c-b9b5-4e20-bc42-b583bd66256c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "SmartAction2",
+                    "type": "Button",
+                    "id": "5e24e476-5e45-48f3-84ab-eda07748ce4a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "SmartAction3",
+                    "type": "Button",
+                    "id": "13c775c0-f0d7-419f-a344-abde5b074c9d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "SmartAction4",
+                    "type": "Button",
+                    "id": "5d09092d-457a-4720-9f18-b4b584fd9e21",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
@@ -222,12 +246,45 @@
                 },
                 {
                     "name": "",
-                    "id": "e592cb76-9feb-4911-96c8-ae6eb2439125",
-                    "path": "<Keyboard>/space",
+                    "id": "5ce964b7-0b1f-4db0-809a-fa6ba2389678",
+                    "path": "<Keyboard>/1",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "UseBomb",
+                    "action": "SmartAction1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "70947527-d913-4d8d-9e8e-f27b3aa38fb6",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SmartAction2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cdecaf24-137c-46af-9e5a-d7bcfc13c852",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SmartAction3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5579b4d4-5853-4c62-adfd-fcc6d1a87a06",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SmartAction4",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
