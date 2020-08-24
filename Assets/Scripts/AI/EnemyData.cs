@@ -22,7 +22,7 @@ namespace StarSalvager
 
         public float AttackDamage { get; }
 
-        public float AttackSpeed { get; }
+        public float RateOfFire { get; }
 
         public ENEMY_MOVETYPE MovementType { get; }
 
@@ -65,7 +65,7 @@ namespace StarSalvager
             MovementSpeed = enemyRemoteData.MovementSpeed;
             IsAttachable = enemyProfileData.IsAttachable;
             AttackDamage = enemyRemoteData.AttackDamage;
-            AttackSpeed = enemyRemoteData.AttackSpeed;
+            RateOfFire = enemyRemoteData.RateOfFire;
             MovementType = enemyProfileData.MovementType;
             AttackType = enemyProfileData.AttackType;
             IgnoreObstacleAvoidance = enemyProfileData.IgnoreObstacleAvoidance;
@@ -130,7 +130,7 @@ namespace StarSalvager
             MovementSpeed = movementSpeed;
             IsAttachable = isAttachable;
             AttackDamage = attackDamage;
-            AttackSpeed = attackSpeed;
+            RateOfFire = attackSpeed;
             MovementType = movementType;
             AttackType = attackType;
             ProjectileType = projectileType;
