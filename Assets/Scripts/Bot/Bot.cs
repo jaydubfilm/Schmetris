@@ -1618,6 +1618,8 @@ namespace StarSalvager
             
             //Debug.Log($"{inLine.Count} in line, moving {direction}");
 
+            bool passedCore;
+
             for (var i = 0; i < inLine.Count; i++)
             {
                 var check = inLine.FirstOrDefault(x => x.Coordinate == currentPos);
@@ -1630,6 +1632,9 @@ namespace StarSalvager
                 else
                     toShift.Clear();
 
+                if (check is Part part && part.Type == PART_TYPE.CORE)
+                    passedCore = true;
+
                 
                 currentPos += dir;
             }
@@ -1637,12 +1642,8 @@ namespace StarSalvager
             if (toShift.Count == 0)
                 return false;
 
-            //Debug.Log($"Shifting {toShift.Count} objects");
-            //Debug.Break();
-
-            MissionManager.ProcessWhiteBumperMissionData(toShift.Count, false);
-            //TODO Need to check if pieces have shifted through the core
-
+            MissionManager.ProcessWhiteBumperMissionData(toShift.Count, passedCore);
+            
             StartCoroutine(ShiftInDirectionCoroutine(toShift, 
                 direction,
                 TEST_MergeSpeed,
