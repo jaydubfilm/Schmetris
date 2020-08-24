@@ -22,6 +22,8 @@ namespace StarSalvager.Values
             Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile5.player"
         };
 
+        public static readonly string autosaveDataPath = Application.dataPath + "/RemoteData/PlayerPersistentDataSaveFile6.player";
+
         private static readonly string persistentMetadataPath =
             Application.dataPath + "/RemoteData/PlayerPersistentMetadata.player";
 
@@ -48,7 +50,7 @@ namespace StarSalvager.Values
                     return path;
             }
 
-            return string.Empty;
+            return autosaveDataPath;
         }
 
         public static void ResetPlayerData()

@@ -206,18 +206,6 @@ namespace StarSalvager.UI
 
                 if (playerPath != string.Empty && missionPath != string.Empty)
                 {
-                    /*SaveFileData newSaveFile = new SaveFileData
-                    {
-                        Name = DateTime.Now.ToString(),
-                        Date = DateTime.Now,
-                        FilePath = playerPath,
-                        MissionFilePath = missionPath
-                    };
-                    print("CREATING FILE " + playerPath);
-
-                    PlayerPersistentData.PlayerMetadata.SaveFiles.Add(newSaveFile);
-                    PlayerPersistentData.PlayerMetadata.CurrentSaveFile = newSaveFile;*/
-
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     MissionManager.SetCurrentSaveFile(missionPath);
                     PlayerPersistentData.ResetPlayerData();

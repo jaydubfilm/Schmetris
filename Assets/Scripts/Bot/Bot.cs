@@ -515,7 +515,6 @@ namespace StarSalvager
                         case BIT_TYPE.GREY:
                         case BIT_TYPE.RED:
                         case BIT_TYPE.YELLOW:
-                            
                             //TODO This needs to bounce off instead of being destroyed
                             if (closestAttachable is EnemyAttachable)
                             {
@@ -544,8 +543,29 @@ namespace StarSalvager
 
                             break;
                         case BIT_TYPE.WHITE:
-                            //Destroy collided Bit
-                            Recycler.Recycle<Bit>(attachable.gameObject);
+                            //bounce white bit off of bot
+                            var bounce = true;
+                            if (bounce)
+                            {
+                                Vector2 directionBounce = (Vector2)bit.transform.position - collisionPoint;
+                                directionBounce.Normalize();
+                                if (directionBounce != Vector2.up)
+                                {
+                                    Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
+                                    downVelocity.Normalize();
+                                    downVelocity *= 0.5f;
+                                    directionBounce += downVelocity;
+                                    directionBounce.Normalize();
+                                }
+
+                                float rotation = 180.0f;
+                                if (directionBounce.x >= 0)
+                                {
+                                    rotation *= -1;
+                                }
+
+                                LevelManager.Instance.ObstacleManager.BounceObstacle(bit, directionBounce, rotation, true, true, true);
+                            }
 
                             //We don't want to move a row if it hit an enemy instead of a bit
                             if (closestAttachable is EnemyAttachable)
@@ -1618,7 +1638,7 @@ namespace StarSalvager
             
             //Debug.Log($"{inLine.Count} in line, moving {direction}");
 
-            bool passedCore;
+            var passedCore = false;
 
             for (var i = 0; i < inLine.Count; i++)
             {
