@@ -25,7 +25,8 @@ namespace StarSalvager.Factories.Data
         private float m_attackDamage;
 
         [SerializeField, FoldoutGroup("$GetEnemyType")]
-        private float m_attackSpeed;
+        [UnityEngine.Serialization.FormerlySerializedAs("m_attackSpeed")]
+        private float m_rateOfFire;
 
         [SerializeField, FoldoutGroup("$GetEnemyType")]
         private Vector2Int m_dimensions;
@@ -46,7 +47,7 @@ namespace StarSalvager.Factories.Data
 
         public float AttackDamage => m_attackDamage;
 
-        public float AttackSpeed => m_attackSpeed;
+        public float RateOfFire => m_rateOfFire;
 
         public Vector2Int Dimensions => m_dimensions;
 

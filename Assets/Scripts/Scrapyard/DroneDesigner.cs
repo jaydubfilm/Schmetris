@@ -239,6 +239,7 @@ namespace StarSalvager
                         if (partDragImage == null)
                         {
                             partDragImage = new GameObject().AddComponent<SpriteRenderer>();
+                            partDragImage.sortingOrder = 1;
                         }
                         partDragImage.gameObject.SetActive(true);
                         partDragImage.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(SelectedPartType.Value).Sprites[SelectedPartLevel];
