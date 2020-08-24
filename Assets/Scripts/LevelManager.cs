@@ -143,7 +143,6 @@ namespace StarSalvager
 
             RegisterPausable();
             m_levelManagerUI = FindObjectOfType<LevelManagerUI>();
-            //m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
 
             GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
 
