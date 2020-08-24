@@ -553,6 +553,7 @@ namespace StarSalvager
                                 {
                                     Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
                                     downVelocity.Normalize();
+                                    downVelocity *= 0.5f;
                                     directionBounce += downVelocity;
                                     directionBounce.Normalize();
                                 }
