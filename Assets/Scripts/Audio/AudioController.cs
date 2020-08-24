@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio.Data;
@@ -193,6 +194,45 @@ namespace StarSalvager.Audio
         #region Auto-populate List
         
         #if UNITY_EDITOR
+        [Button, FoldoutGroup("Sound Effects"), PropertyOrder(-100), DisableInPlayMode]
+        private void FindSFXAssets()
+        {
+            const string FILE_START = "sfx_SS_";
+
+            foreach (SOUND sound in Enum.GetValues(typeof(SOUND)))
+            {
+                var soundName = sound.ToString().ToLower();
+                var results = UnityEditor.AssetDatabase.FindAssets($"{FILE_START}{soundName}");
+                
+                if(results.Length == 0 || results.Length > 1)
+                    throw new FileLoadException($"Multiple files found with the name: {FILE_START}{soundName}");
+
+                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(results[0]);
+                var audioClip = UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof(AudioClip)) as AudioClip;
+
+                var index = soundClips.FindIndex(0, soundClips.Count, x => x.sound == sound);
+
+                if(index < 0)
+                {
+                    soundClips.Add(new SoundClip
+                    {
+                        sound = sound,
+                        clip = audioClip
+                    });
+                    
+                    continue;
+                }
+                
+                soundClips[index].clip = audioClip;
+            }
+            
+            UnityEditor.EditorUtility.SetDirty(gameObject);
+            UnityEditor.AssetDatabase.SaveAssets();
+
+            
+            //UnityEditor.AssetDatabase.GUIDToAssetPath()
+            //UnityEditor.AssetDatabase.LoadAssetAtPath()
+        }
 
         [Button]
         private void PopulateValues()
