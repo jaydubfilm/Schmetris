@@ -1,5 +1,6 @@
 ﻿using Recycling;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
 using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
@@ -147,6 +148,7 @@ namespace StarSalvager
                 {
                     //Recycler.Recycle<Bit>(this);
                     bot.Rotate(bot.MostRecentRotate.Invert());
+                    AudioController.PlaySound(SOUND.ASTEROID_BASH);
                     bot.TryHitAt(hitPoint, 10);
                     return;
                 }
@@ -167,6 +169,7 @@ namespace StarSalvager
                     direction.Normalize();
                 }*/
                 LevelManager.Instance.ObstacleManager.BounceObstacle(this, direction, rotation, true, true, true);
+                AudioController.PlaySound(SOUND.BIT_BOUNCE);
                 return;
             }
 
@@ -240,6 +243,8 @@ namespace StarSalvager
             SetAttached(false);
             transform.rotation = Quaternion.identity;
             SetRotating(false);
+
+            renderer.sortingOrder = 0;
 
             if (_damage)
             {

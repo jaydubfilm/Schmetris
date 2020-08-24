@@ -5,6 +5,7 @@ using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
+using StarSalvager.Audio;
 using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
@@ -17,6 +18,8 @@ using UnityEngine;
 using GameUI = StarSalvager.UI.GameUI;
 using StarSalvager.Utilities;
 using StarSalvager.Missions;
+using StarSalvager.Utilities.Animations;
+using AudioController = StarSalvager.Audio.AudioController;
 
 namespace StarSalvager
 {
@@ -176,15 +179,14 @@ namespace StarSalvager
             
             BotPartsLogic.PartsUpdateLoop();
 
-
-            if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] <= 0)
+            /*if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] <= 0)
             {
                 Destroy("Ran out of power");
             }
             if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] <= 0)
             {
                 Destroy("Ran out of water");
-            }
+            }*/
         }
 
         private void FixedUpdate()
@@ -513,7 +515,6 @@ namespace StarSalvager
                         case BIT_TYPE.GREY:
                         case BIT_TYPE.RED:
                         case BIT_TYPE.YELLOW:
-                            
                             //TODO This needs to bounce off instead of being destroyed
                             if (closestAttachable is EnemyAttachable)
                             {
@@ -542,15 +543,38 @@ namespace StarSalvager
 
                             break;
                         case BIT_TYPE.WHITE:
-                            //Destroy collided Bit
-                            Recycler.Recycle<Bit>(attachable.gameObject);
+                            //bounce white bit off of bot
+                            var bounce = true;
+                            if (bounce)
+                            {
+                                Vector2 directionBounce = (Vector2)bit.transform.position - collisionPoint;
+                                directionBounce.Normalize();
+                                if (directionBounce != Vector2.up)
+                                {
+                                    Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
+                                    downVelocity.Normalize();
+                                    downVelocity *= 0.5f;
+                                    directionBounce += downVelocity;
+                                    directionBounce.Normalize();
+                                }
+
+                                float rotation = 180.0f;
+                                if (directionBounce.x >= 0)
+                                {
+                                    rotation *= -1;
+                                }
+
+                                LevelManager.Instance.ObstacleManager.BounceObstacle(bit, directionBounce, rotation, true, true, true);
+                            }
 
                             //We don't want to move a row if it hit an enemy instead of a bit
                             if (closestAttachable is EnemyAttachable)
                                 break;
                             
                             //Try and shift collided row (Depending on direction)
-                            TryShift(connectionDirection.Reflected(), closestAttachable);
+                            var shift = TryShift(connectionDirection.Reflected(), closestAttachable);
+                            AudioController.PlaySound(shift ? SOUND.BUMPER_BONK_SHIFT : SOUND.BUMPER_BONK_NOSHIFT);
+                            
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(bit.Type), bit.Type, null);
@@ -827,7 +851,7 @@ namespace StarSalvager
                         
                         CheckForCombosAround(bitsToAdd);
 
-                        CheckForMagnetOverage();
+                        CheckHasMagnetOverage();
                         
                         CompositeCollider2D.GenerateGeometry();
 
@@ -916,12 +940,15 @@ namespace StarSalvager
             // Enemies attached should not be hit by other enemy projectiles
             if(closestAttachable is EnemyAttachable)
                 return;
+
+            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
+            explosion.transform.position = hitPosition;
             
             TryHitAt(closestAttachable, damage);
 
         }
 
-        public void TryHitAt(IAttachable closestAttachable, float damage)
+        public void TryHitAt(IAttachable closestAttachable, float damage, bool withSound = true)
         {
             if (PROTO_GodMode && closestAttachable.Coordinate == Vector2Int.zero)
                 return;
@@ -940,10 +967,39 @@ namespace StarSalvager
                         return;
                     
                     closestHealth.ChangeHealth(-Mathf.Abs(damage));
-                
+
                     if (closestHealth.CurrentHealth > 0)
+                    {
+                        if (!withSound) 
+                            return;
+                        
+                        switch (closestAttachable)
+                        {
+                            case Bit _:
+                                AudioController.PlaySound(SOUND.BIT_DAMAGE);
+                                break;
+                            case Part _:
+                                AudioController.PlaySound(SOUND.PART_DAMAGE);
+                                break;
+                        }
+
                         return;
+                    }
+
+                    if (withSound)
+                    {
+                        switch (closestAttachable)
+                        {
+                            case Bit _:
+                                AudioController.PlaySound(SOUND.BIT_EXPLODE);
+                                break;
+                            case Part _:
+                                AudioController.PlaySound(SOUND.PART_EXPLODE);
+                                break;
+                        }
+                    }
                     
+
                     //Things to do if the attachable is destroyed
                     //------------------------------------------------------------------------------------------------//
                 
@@ -959,7 +1015,6 @@ namespace StarSalvager
                     if(closestAttachable is Part)
                         BotPartsLogic.UpdatePartsList();
                     
-                    FrameStop.Instance.Milliseconds(75);
                     
                     //------------------------------------------------------------------------------------------------//
                     break;
@@ -979,8 +1034,13 @@ namespace StarSalvager
         /// <param name="attachable"></param>
         private void AsteroidDamageAt(IAttachable attachable)
         {
-            
+            FrameStop.Instance.Milliseconds(75);
+
             TryHitAt(attachable, 10000);
+            AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
+            
+            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
+            explosion.transform.position = attachable.transform.position;
 
             switch (attachable)
             {
@@ -1174,7 +1234,7 @@ namespace StarSalvager
             if (checkForCombo)
             {
                 CheckForCombosAround(coordinate);
-                CheckForMagnetOverage();
+                CheckHasMagnetOverage();
             }
 
             if (updateColliderGeometry)
@@ -1259,7 +1319,7 @@ namespace StarSalvager
             if (checkForCombo)
             {
                 CheckForCombosAround(newCoord);
-                CheckForMagnetOverage();
+                CheckHasMagnetOverage();
             }
 
             if(updateColliderGeometry)
@@ -1285,7 +1345,8 @@ namespace StarSalvager
             if (checkForCombo)
             {
                 CheckForCombosAround(newCoord);
-                CheckForMagnetOverage();
+
+                AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
             }
             
             if(updateColliderGeometry)
@@ -1549,12 +1610,12 @@ namespace StarSalvager
         #region Shifting Bits
         
         /// <summary>
-        /// Shits an entire row or column based on the direction and the bit selected.
+        /// Shits an entire row or column based on the direction and the bit selected. Returns true if anything was shifted
         /// </summary>
         /// <param name="direction"></param>
         /// <param name="attachable"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        private void TryShift(DIRECTION direction, IAttachable attachable)
+        private bool TryShift(DIRECTION direction, IAttachable attachable)
         {
             List<IAttachable> inLine;
             switch (direction)
@@ -1577,6 +1638,8 @@ namespace StarSalvager
             
             //Debug.Log($"{inLine.Count} in line, moving {direction}");
 
+            var passedCore = false;
+
             for (var i = 0; i < inLine.Count; i++)
             {
                 var check = inLine.FirstOrDefault(x => x.Coordinate == currentPos);
@@ -1589,15 +1652,18 @@ namespace StarSalvager
                 else
                     toShift.Clear();
 
+                if (check is Part part && part.Type == PART_TYPE.CORE)
+                    passedCore = true;
+
                 
                 currentPos += dir;
             }
 
-            //Debug.Log($"Shifting {toShift.Count} objects");
-            //Debug.Break();
+            if (toShift.Count == 0)
+                return false;
 
-            MissionManager.ProcessWhiteBumperMissionData(toShift.Count, false);
-
+            MissionManager.ProcessWhiteBumperMissionData(toShift.Count, passedCore);
+            
             StartCoroutine(ShiftInDirectionCoroutine(toShift, 
                 direction,
                 TEST_MergeSpeed,
@@ -1609,6 +1675,8 @@ namespace StarSalvager
                 CheckForCombosAround(toShift.Where(x => attachedBlocks.Contains(x) && x is Bit).Select(x => x as Bit));
             }));
 
+
+            return true;
         }
 
         #endregion //Shifting Bits
@@ -1630,7 +1698,7 @@ namespace StarSalvager
                 if (bit == null)
                     continue;
             
-                if (bit.level >= 2)
+                if (bit.level >= 4)
                     continue;
 
                 if (!PuzzleChecker.TryGetComboData(this, bit, out var temp))
@@ -1652,7 +1720,7 @@ namespace StarSalvager
             if (bit == null)
                 return;
             
-            if (bit.level >= 2)
+            if (bit.level >= 4)
                 return;
 
             if (!PuzzleChecker.TryGetComboData(this, bit, out var data))
@@ -1684,11 +1752,11 @@ namespace StarSalvager
             //Decide who gets to upgrade
             //--------------------------------------------------------------------------------------------------------//
 
-            foreach (var bit in comboBits)
+            foreach (IAttachable iAttachable in comboBits)
             {
                 //Need to make sure that if we choose this block, that it is connected to the core one way or another
-                var hasPath = attachedBlocks.HasPathToCore(bit as Bit,
-                    comboBits.Where(ab => ab != bit)
+                var hasPath = attachedBlocks.HasPathToCore(iAttachable as Bit,
+                    comboBits.Where(ab => ab != iAttachable)
                         .Select(b => b.Coordinate)
                         .ToList());
 
@@ -1697,12 +1765,12 @@ namespace StarSalvager
                     continue;
 
 
-                var dist = Vector2Int.Distance(bit.Coordinate, Vector2Int.zero);
+                var dist = Vector2Int.Distance(iAttachable.Coordinate, Vector2Int.zero);
                 if (!(dist < shortest))
                     continue;
 
                 shortest = dist;
-                closestToCore = bit;
+                closestToCore = iAttachable;
             }
 
             //Make sure that things are working
@@ -1728,8 +1796,30 @@ namespace StarSalvager
             
             //if(orphans.Count > 0)
             //    Debug.Break();
+
+            var bit = closestToCore as Bit;
+            bit.IncreaseLevel(comboData.addLevels);
+
+
+            //TODO May want to place this in the coroutine
+            //Plays the sound for the new level achieved by the bit
+            switch (bit.level)
+            {
+                case 1:
+                    AudioController.PlaySound(SOUND.BIT_LVL1MERGE);
+                    break;
+                case 2:
+                    AudioController.PlaySound(SOUND.BIT_LVL2MERGE);
+                    break;
+                case 3:
+                    AudioController.PlaySound(SOUND.BIT_LVL3MERGE);
+                    break;
+                case 4:
+                    AudioController.PlaySound(SOUND.BIT_LVL4MERGE);
+                    break;
+            }
             
-            (closestToCore as Bit)?.IncreaseLevel(comboData.addLevels);
+            
 
             //Debug.Break();
             //Move all of the components that need to be moved
@@ -1740,7 +1830,7 @@ namespace StarSalvager
                 TEST_MergeSpeed,
                 () =>
                 {
-                    var bit = closestToCore as Bit;
+                    //var bit = closestToCore as Bit;
 
                     //We need to update the positions and level before we move them in case we interact with bits while they're moving
 
@@ -2093,10 +2183,10 @@ namespace StarSalvager
         /// <summary>
         /// Determines based on the total of magnet slots which pieces must be removed to fit within the expected capacity
         /// </summary>
-        public void CheckForMagnetOverage()
+        public bool CheckHasMagnetOverage()
         {
             if (!BotPartsLogic.useMagnet)
-                return;
+                return false;
 
 
             var magnetCount = BotPartsLogic.magnetCount;
@@ -2106,7 +2196,7 @@ namespace StarSalvager
             
             //Checks here if the total of attached blocks (Minus the Core) change
             if (bits.Count <= magnetCount)
-                return;
+                return false;
             
             //--------------------------------------------------------------------------------------------------------//
 
@@ -2172,8 +2262,8 @@ namespace StarSalvager
             else
                 this.DelayedCall(TEST_DetachTime, onDetach);
             //--------------------------------------------------------------------------------------------------------//
-            
-            
+
+            return true;
         }
 
         private void DefaultMagnetCheck(List<Bit> bits, out List<Bit> bitsToRemove, in int toRemoveCount)

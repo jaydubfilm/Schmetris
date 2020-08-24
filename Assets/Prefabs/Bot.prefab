@@ -68,8 +68,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bot: {fileID: 2681746267895581274}
-  flashSpritePrefab: {fileID: 7673582226122981316, guid: 54284c1381bfa804e89521c45d07d319,
-    type: 3}
   useMagnet: 1
   currentMagnet: 2
   useBurnRate: 1
@@ -77,6 +75,72 @@ MonoBehaviour:
   coolSpeed: 20
   coolDelay: 1
   coolTimer: 0
+  refineScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.012723142
+      outSlope: -0.012723142
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.151803
+    - serializedVersion: 3
+      time: 0.875234
+      value: 0.5235705
+      inSlope: -9.922964
+      outSlope: -9.922964
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.029643668
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0.0023584962
+      inSlope: -0.047169745
+      outSlope: -0.047169745
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.18987347
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  moveSpeedCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.012723142
+      outSlope: -0.012723142
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.151803
+    - serializedVersion: 3
+      time: 0.8519007
+      value: 0.65646046
+      inSlope: -1.9921578
+      outSlope: -1.9921578
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.10317204
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0.28646797
+      inSlope: 0.49490094
+      outSlope: 0.49490094
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.79542315
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!66 &2681746267895581254
 CompositeCollider2D:
   m_ObjectHideFlags: 0

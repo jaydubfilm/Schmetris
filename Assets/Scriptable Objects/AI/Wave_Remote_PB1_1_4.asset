@@ -24,49 +24,49 @@ MonoBehaviour:
       m_shapeName: BlackSingle
       m_category: 
       m_asteroidSize: 3
-      m_countPerMinute: 60
+      m_countPerMinute: 10
       m_rotation: Random
     - m_selectionType: 2
       m_shapeName: Asteroid3.0
       m_category: 
       m_asteroidSize: 2
-      m_countPerMinute: 60
+      m_countPerMinute: 20
       m_rotation: Random
     - m_selectionType: 2
       m_shapeName: Asteroid5.1
       m_category: 
       m_asteroidSize: 1
-      m_countPerMinute: 60
+      m_countPerMinute: 20
       m_rotation: Random
     - m_selectionType: 2
       m_shapeName: 
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 60
+      m_countPerMinute: 10
       m_rotation: Random
     - m_selectionType: 0
       m_shapeName: RedSingle
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 60
+      m_countPerMinute: 30
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: GreySingle
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 60
+      m_countPerMinute: 30
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: GreenSingle
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 30
+      m_countPerMinute: 60
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: BlueSingle
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 30
+      m_countPerMinute: 60
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: YellowSingle
@@ -81,13 +81,13 @@ MonoBehaviour:
       m_countPerMinute: 100
       m_rotation: 
     - m_selectionType: 0
-      m_shapeName: BlueDouble
+      m_shapeName: RedDouble
       m_category: 
       m_asteroidSize: 0
       m_countPerMinute: 30
       m_rotation: Random
     - m_selectionType: 0
-      m_shapeName: GreenDouble
+      m_shapeName: GreyDouble
       m_category: 
       m_asteroidSize: 0
       m_countPerMinute: 30
@@ -105,49 +105,49 @@ MonoBehaviour:
       m_shapeName: BlackSingle
       m_category: 
       m_asteroidSize: 3
-      m_countPerMinute: 60
+      m_countPerMinute: 10
       m_rotation: Random
     - m_selectionType: 2
       m_shapeName: Asteroid3.0
       m_category: 
       m_asteroidSize: 2
-      m_countPerMinute: 60
+      m_countPerMinute: 20
       m_rotation: Random
     - m_selectionType: 2
       m_shapeName: Asteroid5.1
       m_category: 
       m_asteroidSize: 1
-      m_countPerMinute: 60
+      m_countPerMinute: 20
       m_rotation: Random
     - m_selectionType: 2
       m_shapeName: 
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 60
+      m_countPerMinute: 10
       m_rotation: Random
     - m_selectionType: 0
       m_shapeName: RedSingle
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 60
+      m_countPerMinute: 30
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: GreySingle
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 60
+      m_countPerMinute: 30
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: GreenSingle
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 30
+      m_countPerMinute: 60
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: BlueSingle
       m_category: 
       m_asteroidSize: 0
-      m_countPerMinute: 30
+      m_countPerMinute: 60
       m_rotation: 
     - m_selectionType: 0
       m_shapeName: YellowSingle
@@ -162,13 +162,13 @@ MonoBehaviour:
       m_countPerMinute: 100
       m_rotation: 
     - m_selectionType: 0
-      m_shapeName: BlueDouble
+      m_shapeName: RedDouble
       m_category: 
       m_asteroidSize: 0
       m_countPerMinute: 30
       m_rotation: Random
     - m_selectionType: 0
-      m_shapeName: GreenDouble
+      m_shapeName: GreyDouble
       m_category: 
       m_asteroidSize: 0
       m_countPerMinute: 30

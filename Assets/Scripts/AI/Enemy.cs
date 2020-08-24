@@ -8,6 +8,7 @@ using StarSalvager.Utilities.Animations;
 using StarSalvager.Missions;
 using StarSalvager.Utilities;
 using System.Linq;
+using StarSalvager.Audio;
 
 namespace StarSalvager.AI
 {
@@ -58,10 +59,6 @@ namespace StarSalvager.AI
         {
             SetupPositions();
 
-            renderer.sprite = m_enemyData?.Sprite;
-            
-            StateAnimator.SetController(m_enemyData?.AnimationController);
-            
             m_horizontalMovementYLevel = transform.position.y;
             horizontalFarLeftX = (-1 * Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen) / 3.5f;
             horizontalFarRightX = (Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen) / 3.5f;
@@ -79,14 +76,20 @@ namespace StarSalvager.AI
 
             m_fireTimer += Time.deltaTime;
 
-            if (m_fireTimer < 1 / m_enemyData.AttackSpeed)
+            if (m_fireTimer < 1 / m_enemyData.RateOfFire)
                 return;
 
-            m_fireTimer -= 1 / m_enemyData.AttackSpeed;
+            m_fireTimer -= 1 / m_enemyData.RateOfFire;
             FireAttack();
         }
 
         //============================================================================================================//
+
+        public virtual void SetupSprite()
+        {
+            renderer.sprite = m_enemyData?.Sprite;
+            StateAnimator.SetController(m_enemyData?.AnimationController);
+        }
 
         private void SetupPositions()
         {
@@ -344,10 +347,14 @@ namespace StarSalvager.AI
 
         public void TryHitAt(Vector2 position, float damage)
         {
-            //FIXME This should use IHealth
-            LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.position, m_enemyData.rdsTable.rdsResult.ToList());
-            MissionManager.ProcessEnemyKilledMissionData(m_enemyData.EnemyType, 1);
-            Recycler.Recycle<Enemy>(this);
+            ChangeHealth(-damage);
+            
+            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
+            explosion.transform.position = position;
+            
+            if(CurrentHealth > 0)
+                AudioController.PlaySound(SOUND.ENEMY_IMPACT);
+            
         }
 
         //IHealth Functions
@@ -362,9 +369,16 @@ namespace StarSalvager.AI
         public virtual void ChangeHealth(float amount)
         {
             CurrentHealth += amount;
+
+            if (CurrentHealth > 0) 
+                return;
             
-            if(CurrentHealth <= 0)
-                Recycler.Recycle<Enemy>(this);
+            LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.position, m_enemyData.rdsTable.rdsResult.ToList());
+            MissionManager.ProcessEnemyKilledMissionData(m_enemyData.EnemyType, 1);
+                
+            AudioController.PlaySound(SOUND.ENEMY_DEATH);
+                
+            Recycler.Recycle<Enemy>(this);
         }
 
         //============================================================================================================//

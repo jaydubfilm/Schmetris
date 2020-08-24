@@ -358,8 +358,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b509d015b2fe9c488869e96ce74b5a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resourceAmountText: {fileID: 5983468868690763532}
   resourceImage: {fileID: 5281681497824432829}
+  amountSliderText:
+    sliderText: {fileID: 5983468868690763532}
+    _slider: {fileID: 7445176364708496060}
+    format: 
 --- !u!114 &9121675495920685103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -413,8 +416,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 1.4199982, y: 0}
-  m_SizeDelta: {x: -2.83078, y: -5.165286}
+  m_AnchoredPosition: {x: -22.890953, y: 0.010000229}
+  m_SizeDelta: {x: -51.448112, y: -5.165286}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5634373014810041877
 GameObject:

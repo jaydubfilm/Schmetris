@@ -21,6 +21,8 @@ namespace StarSalvager.Missions
             REMOTEDATA_PATH + "MissionsCurrentDataSaveFile4.mission",
             REMOTEDATA_PATH + "MissionsCurrentDataSaveFile5.mission"
         };
+        public static readonly string autosaveDataPath = REMOTEDATA_PATH + "MissionsCurrentDataSaveFile6.mission";
+
         private static readonly string masterDataPath = REMOTEDATA_PATH + "MissionsMasterData.mission";
 
         public static string recentCompletedMissionName = "";
@@ -75,7 +77,7 @@ namespace StarSalvager.Missions
                     return path;
             }
 
-            return string.Empty;
+            return autosaveDataPath;
         }
 
         public static void AddMissionCurrent(string missionName)
@@ -308,6 +310,7 @@ namespace StarSalvager.Missions
         public static void ProcessMissionComplete(string missionName)
         {
             Toast.AddToast(missionName + " Successful!!!!", time: 3.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.End);
+            LevelManager.Instance.MissionsCompletedDuringThisFlight.Add(missionName);
             recentCompletedMissionName = missionName;
             CheckUnlocks();
         }

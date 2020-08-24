@@ -32,24 +32,34 @@ namespace StarSalvager
         
         public List<CraftCost> cost;
 
-        public float GetDataValue(DataTest.TEST_KEYS key)
+        public T GetDataValue<T>(DataTest.TEST_KEYS key)
         {
             var keyString = DataTest.TestList[(int) key];
             var dataValue = dataTest.FirstOrDefault(d => d.key.Equals(keyString));
-            return dataValue.Equals(null) ? 0f : dataValue.value;
+
+            if (dataValue.Equals(null))
+                return default;
+
+            if (!(dataValue.GetValue() is T i))
+                return default;
+
+            return i;
         }
 
-        public bool TryGetValue(DataTest.TEST_KEYS key, out float value)
+        public bool TryGetValue<T>(DataTest.TEST_KEYS key, out T value)
         {
-            value = 0f;
+            value = default;
             
             var keyString = DataTest.TestList[(int) key];
             var dataValue = dataTest.FirstOrDefault(d => d.key.Equals(keyString));
 
             if (dataValue.Equals(null))
                 return false;
+            
+            if (!(dataValue.GetValue() is T i)) 
+                return false;
 
-            value = dataValue.value;
+            value = i;
 
             return true;
         }
@@ -69,6 +79,8 @@ namespace StarSalvager
             Time,
             Damage,
             Cooldown,
+            Projectile,
+            SMRTCapacity,
         }
         public static readonly string[] TestList = 
         {
@@ -81,12 +93,48 @@ namespace StarSalvager
             "Time",
             "Damage",
             "Cooldown",
+            "Projectile",
+            "SMRTCapacity"
         };
-        
-        [ValueDropdown(nameof(TestList)), HorizontalGroup("row1"), HideLabel]
+
+        [ValueDropdown(nameof(TestList)), HorizontalGroup("row1", Width = 120), HideLabel]
         public string key;
-        [HorizontalGroup("row1"), LabelWidth(40)]
-        public float value;
+
+        //TODO I'll need a way of preventing editors from entering incorrect values here
+        [InfoBox("$GetRequiredType", InfoMessageType.Error, "IsWrongType")]
+        [SerializeField, HorizontalGroup("row1"), LabelWidth(40)]
+        private string value;
+
+        public object GetValue()
+        {
+            if (!Enum.TryParse(key, out TEST_KEYS _out))
+                return default;
+
+            if (string.IsNullOrEmpty(value))
+                return default;
+                
+            switch (_out)
+            {
+                case TEST_KEYS.Radius:
+                case TEST_KEYS.Capacity:
+                case TEST_KEYS.Magnet:
+                case TEST_KEYS.SMRTCapacity:
+                    return int.Parse(value);
+                
+                case TEST_KEYS.Heal:
+                case TEST_KEYS.Absorb:
+                case TEST_KEYS.Boost:
+                case TEST_KEYS.Time:
+                case TEST_KEYS.Damage:
+                case TEST_KEYS.Cooldown:
+                    return float.Parse(value);
+                
+                case TEST_KEYS.Projectile:
+                    return value;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(key), _out, null);
+            }
+        }
 
         public bool Equals(DataTest other)
         {
@@ -106,5 +154,51 @@ namespace StarSalvager
                 return ((key != null ? key.GetHashCode() : 0) * 397) ^ value.GetHashCode();
             }*/
         }
+        
+        #if UNITY_EDITOR
+
+        private bool IsWrongType()
+        {
+            try
+            {
+                GetValue();
+            }
+            catch (Exception)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private string GetRequiredType()
+        {
+            if (!Enum.TryParse(key, out TEST_KEYS _out))
+                return default;
+
+            switch (_out)
+            {
+                case TEST_KEYS.Radius:
+                case TEST_KEYS.Capacity:
+                case TEST_KEYS.Magnet:
+                    return $"{_out} should be of type int";
+                
+                case TEST_KEYS.Heal:
+                case TEST_KEYS.Absorb:
+                case TEST_KEYS.Boost:
+                case TEST_KEYS.Time:
+                case TEST_KEYS.Damage:
+                case TEST_KEYS.Cooldown:
+                    return $"{_out} should be of type float";
+                
+                case TEST_KEYS.Projectile:
+                    return $"{_out} should be of type string";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(key), _out, null);
+            }
+        }
+        
+        #endif
+
     }
 }

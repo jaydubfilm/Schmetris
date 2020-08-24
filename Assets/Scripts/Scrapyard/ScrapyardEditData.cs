@@ -8,6 +8,7 @@ namespace StarSalvager
     {
         public SCRAPYARD_ACTION EventType;
         public Vector2Int Coordinate;
+        public Vector2Int Destination;
 
         public PART_TYPE PartType;
         public BIT_TYPE BitType;

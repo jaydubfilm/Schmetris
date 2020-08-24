@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using StarSalvager.Factories;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
@@ -26,23 +27,26 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        [SerializeField, Required, FoldoutGroup("View")]
-        private Button continueButton;
-        [SerializeField, Required, FoldoutGroup("View")]
-        private Button scrapyardButton;
-        [SerializeField, Required, FoldoutGroup("View")]
-        private Button toScrapyardButton;
-        [SerializeField, Required, FoldoutGroup("View")]
-        private Button toMainMenuButton;
-        [SerializeField, Required, FoldoutGroup("View")]
+        [SerializeField, Required, FoldoutGroup("Between Waves")]
+        private Button betweenWavesContinueButton;
+        [SerializeField, Required, FoldoutGroup("Between Waves")]
+        private Button betweenWavesScrapyardButton;
+
+        //============================================================================================================//
+
+        [SerializeField, Required, FoldoutGroup("Death Window")]
         private Button deathWindowRetryButton;
-        [SerializeField, Required, FoldoutGroup("View")]
+        [SerializeField, Required, FoldoutGroup("Death Window")]
         private Button deathWindowScrapyrdButton;
 
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("Pause Menu")]
         private GameObject pauseWindow;
+        [SerializeField, Required, FoldoutGroup("Pause Menu")]
+        private Button pauseWindowScrapyardButton;
+        [SerializeField, Required, FoldoutGroup("Pause Menu")]
+        private Button pauseWindowMainMenuButton;
         [SerializeField, Required, FoldoutGroup("Pause Menu")]
         private Button resumeButton;
         [SerializeField, Required, FoldoutGroup("Pause Menu")]
@@ -60,11 +64,18 @@ namespace StarSalvager.UI
             InitButtons();
         }
 
+        private void Update()
+        {
+            //betweenWavesContinueButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0;
+
+            pauseWindowScrapyardButton.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
+        }
+
         //============================================================================================================//
 
         private void InitButtons()
         {
-            continueButton.onClick.AddListener(() =>
+            betweenWavesContinueButton.onClick.AddListener(() =>
             {
                 m_levelManager.IsWaveProgressing = true;
                 GameTimer.SetPaused(false);
@@ -77,28 +88,31 @@ namespace StarSalvager.UI
                 };
             });
 
-            scrapyardButton.onClick.AddListener(() =>
+            betweenWavesScrapyardButton.onClick.AddListener(() =>
             {
                 m_levelManager.IsWaveProgressing = true;
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
+                m_levelManager.LiquidResourcesAttBeginningOfWave.Clear();
                 LevelManager.Instance.EndWaveState = false;
-                SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
+                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
             });
 
-            toScrapyardButton.onClick.AddListener(() =>
+            pauseWindowScrapyardButton.onClick.AddListener(() =>
             {
                 m_levelManager.IsWaveProgressing = true;
                 m_levelManager.SavePlayerData();
                 ToggleBetweenWavesUIActive(false);
+                m_levelManager.LiquidResourcesAttBeginningOfWave.Clear();
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
-                SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
+                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
             });
 
-            toMainMenuButton.onClick.AddListener(() =>
+            pauseWindowMainMenuButton.onClick.AddListener(() =>
             {
                 m_levelManager.IsWaveProgressing = true;
-                SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
+                m_levelManager.LiquidResourcesAttBeginningOfWave.Clear();
+                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.ALEX_TEST_SCENE);
             });
 
             deathWindowRetryButton.onClick.AddListener(() =>
@@ -111,7 +125,7 @@ namespace StarSalvager.UI
             {
                 m_levelManager.IsWaveProgressing = true;
                 GameTimer.SetPaused(false);
-                SceneLoader.ActivateScene("Scrapyard", "AlexShulmanTestScene");
+                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
             });
             
             resumeButton.onClick.AddListener(() =>

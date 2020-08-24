@@ -10,24 +10,73 @@ namespace StarSalvager.UI
 {
     public class GameUI : MonoBehaviour
     {
+        [Serializable]
+        public struct SmartWeapon
+        {
+            public Image image;
+            public Image NoResourceIcon;
+
+            public TMP_Text keyText;
+
+            public void Reset()
+            {
+                SetFill(1f);
+                SetHasResource(true);
+                SetActive(false);
+            }
+
+            public void SetActive(bool state)
+            {
+                image.gameObject.SetActive(state);
+            }
+
+            public void SetHasResource(bool hasResource)
+            {
+                //Doesn't matter if the thing isn't showing
+                if (!image.gameObject.activeInHierarchy)
+                    return;
+
+                //Prevent constantly setting the below values
+                if (NoResourceIcon.gameObject.activeInHierarchy == !hasResource)
+                    return;
+
+                image.color = hasResource ? Color.white : Color.gray;
+                NoResourceIcon.gameObject.SetActive(!hasResource);
+            }
+
+            public void SetFill(float fillValue)
+            {
+                image.fillAmount = fillValue;
+            }
+        }
         //============================================================================================================//
 
         #region Properties
-        
-        //[SerializeField, Required, BoxGroup("Heat Slider")]
-        //private Slider HeatSlider;
-        //[SerializeField, Required, BoxGroup("Heat Slider")]
-        //private Image heatSliderImage;
-        //[SerializeField, Required, BoxGroup("Heat Slider")]
-        //private Color minColor;
-        //[SerializeField, Required, BoxGroup("Heat Slider")]
-        //private Color maxColor;
+
+        [SerializeField, Required, FoldoutGroup("Slider Glows")]
+        private Image redSliderGlow;
+
+        [SerializeField, Required, FoldoutGroup("Slider Glows")]
+        private Image greenSliderGlow;
+
+        [SerializeField, Required, FoldoutGroup("Slider Glows")]
+        private Image greySliderGlow;
+
+        [SerializeField, Required, FoldoutGroup("Slider Glows")]
+        private Image blueSliderGlow;
+
+        [SerializeField, Required, FoldoutGroup("Slider Glows")]
+        private Image yellowSliderGlow;
+
+        [SerializeField, Required, FoldoutGroup("Slider Glows")]
+        private Image heatSliderGlow;
 
         //Top Left Window
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("TL Window")]
         private TMP_Text sectorText;
+
         [SerializeField, Required, FoldoutGroup("TL Window")]
         private TMP_Text timeText;
 
@@ -36,55 +85,79 @@ namespace StarSalvager.UI
 
         //Bottom Left Window
         //============================================================================================================//
-        
+
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderText fuelSlider;
+
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderText repairSlider;
+
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderText ammoSlider;
 
         [SerializeField, Required, FoldoutGroup("BL Window"), Space(10f)]
         private Slider heatSlider;
+
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private Slider carryCapacitySlider;
 
+        //Right Window
+        //============================================================================================================//
+        [SerializeField, Required, FoldoutGroup("R Window")]
+        private SmartWeapon[] SmartWeaponsUI;
+
         //Bottom Right Window
         //============================================================================================================//
-        
+
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Slider waterSlider;
+
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Slider powerSlider;
-        
+
         [SerializeField, Required, FoldoutGroup("BR Window"), Space(10f)]
         private Image bombImageIcon;
+
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Image bombNoResourceIcon;
-        
+
         //Heat Vignette
         //============================================================================================================//
-        
+
         [SerializeField, Required, ToggleGroup("useVignette")]
         private bool useVignette;
+
         [SerializeField, Required, ToggleGroup("useVignette")]
         private Image vignetteImage;
+
         [SerializeField, Required, ToggleGroup("useVignette")]
         private Color vignetteMinColor;
+
         [SerializeField, Required, ToggleGroup("useVignette")]
         private Color vignetteMaxColor;
 
         #endregion //Properties
-        
+
         //============================================================================================================//
-        
+
         private void Start()
         {
             InitSliderText();
-            
+
             vignetteImage.gameObject.SetActive(useVignette);
-            
+
             InitValues();
+
+
+            glowImages = new[]
+            {
+                redSliderGlow,
+                blueSliderGlow,
+                greenSliderGlow,
+                greenSliderGlow,
+                yellowSliderGlow,
+                heatSliderGlow
+            };
         }
 
         private void OnEnable()
@@ -92,6 +165,29 @@ namespace StarSalvager.UI
             SetupPlayerValues();
 
             PlayerData.OnCapacitiesChanged += SetupPlayerValues;
+        }
+
+
+        private Image[] glowImages;
+        private float _alpha;
+        private float speed = 4f;
+
+        private void LateUpdate()
+        {
+            var value = 1f / (speed);
+
+            _alpha = Mathf.PingPong(Time.time, value) / value;
+
+            foreach (var image in glowImages)
+            {
+                if (!image.enabled)
+                    continue;
+
+                var color = image.color;
+                color.a = _alpha;
+
+                image.color = color;
+            }
         }
 
         private void OnDisable()
@@ -103,21 +199,18 @@ namespace StarSalvager.UI
 
         private void InitValues()
         {
-            ShowBombIcon(false);
-            bombNoResourceIcon.gameObject.SetActive(false);
-            
-            SetBombFill(1f);
-            
+            ResetIcons();
+
             SetWaterValue(0f);
             SetPowerValue(0f);
-            
+
             SetHeatSliderValue(0f);
             SetCarryCapacity(0f);
-            
+
             SetFuelValue(0f);
             SetRepairValue(0f);
             SetAmmoValue(0f);
-            
+
             SetClockValue(1f);
             SetTimeString("0:00");
         }
@@ -129,7 +222,7 @@ namespace StarSalvager.UI
             ammoSlider.Init();
 
         }
-        
+
         //============================================================================================================//
 
         private void SetupPlayerValues()
@@ -142,35 +235,38 @@ namespace StarSalvager.UI
             SetResourceSliderBounds(BIT_TYPE.RED, 0, playerData.liquidCapacity[BIT_TYPE.RED]);
             SetResourceSliderBounds(BIT_TYPE.GREEN, 0, playerData.liquidCapacity[BIT_TYPE.GREEN]);
             SetResourceSliderBounds(BIT_TYPE.GREY, 0, playerData.liquidCapacity[BIT_TYPE.GREY]);
-            SetResourceSliderBounds(BIT_TYPE.BLUE, 0, playerData.liquidCapacity[BIT_TYPE.BLUE]);
-            SetResourceSliderBounds(BIT_TYPE.YELLOW, 0, playerData.liquidCapacity[BIT_TYPE.YELLOW]);
-            
+
+            SetResourceSliderBounds(BIT_TYPE.BLUE, 0, 300);
+            SetResourceSliderBounds(BIT_TYPE.YELLOW, 0, 300);
+
             SetFuelValue(playerData.liquidResource[BIT_TYPE.RED]);
             SetRepairValue(playerData.liquidResource[BIT_TYPE.GREEN]);
             SetAmmoValue(playerData.liquidResource[BIT_TYPE.GREY]);
         }
-        
+
         //============================================================================================================//
-        
+
 
         public void SetWaterValue(float value)
         {
             waterSlider.value = value;
-            print("watermoo");
+
+            CheckActivateGlow(waterSlider, blueSliderGlow);
         }
+
         public void SetPowerValue(float value)
         {
             powerSlider.value = value;
-            print("powermoo");
+            CheckActivateGlow(powerSlider, yellowSliderGlow);
         }
 
         public void SetCarryCapacity(float value)
         {
             carryCapacitySlider.value = value;
         }
-        
+
         //============================================================================================================//
-        
+
         public void SetAllResourceSliderBounds(int min, int max)
         {
             fuelSlider.SetBounds(min, max);
@@ -207,16 +303,21 @@ namespace StarSalvager.UI
         public void SetFuelValue(float value)
         {
             fuelSlider.value = value;
+            CheckActivateGlow(fuelSlider, redSliderGlow);
         }
+
         public void SetRepairValue(float value)
         {
             repairSlider.value = value;
+            CheckActivateGlow(repairSlider, greenSliderGlow);
         }
+
         public void SetAmmoValue(float value)
         {
             ammoSlider.value = value;
+            CheckActivateGlow(ammoSlider, greySliderGlow);
         }
-        
+
         //============================================================================================================//
 
 
@@ -224,6 +325,7 @@ namespace StarSalvager.UI
         {
             clockImage.fillAmount = value;
         }
+
         public void SetTimeString(int seconds)
         {
             TimeSpan time = TimeSpan.FromSeconds(seconds);
@@ -232,14 +334,17 @@ namespace StarSalvager.UI
             //not the part of format, it just a character that we want in output
             SetTimeString(time.ToString(@"m\:ss"));
         }
+
         public void SetTimeString(string time)
         {
             timeText.text = time;
         }
-        
+
+
+
         //============================================================================================================//
 
-        public void ShowBombIcon(bool state)
+        /*public void ShowBombIcon(bool state)
         {
             bombImageIcon.gameObject.SetActive(state);
         }
@@ -261,25 +366,58 @@ namespace StarSalvager.UI
         public void SetBombFill(float fillValue)
         {
             bombImageIcon.fillAmount = fillValue;
+        }*/
+        public void SetIconImage(int index, Sprite sprite)
+        {
+            if (index < 0) return;
+            SmartWeaponsUI[index].image.sprite = sprite;
         }
-        
+
+        public void ShowIcon(int index, bool state)
+        {
+            if (index < 0) return;
+            SmartWeaponsUI[index].SetActive(state);
+        }
+
+        public void SetHasResource(int index, bool hasResource)
+        {
+            if (index < 0) return;
+            SmartWeaponsUI[index].SetHasResource(hasResource);
+        }
+
+        public void SetFill(int index, float fillValue)
+        {
+            if (index < 0) return;
+            SmartWeaponsUI[index].SetFill(fillValue);
+        }
+
+        public void ResetIcons()
+        {
+            for (var i = 0; i < SmartWeaponsUI.Length; i++)
+            {
+                SmartWeaponsUI[i].keyText.text = $"{i + 1}";
+                SmartWeaponsUI[i].Reset();
+            }
+        }
+
         //============================================================================================================//
 
-        
+
         public void SetCurrentWaveText(int sector, int wave)
         {
             sectorText.text = $"Sector {sector} Wave {wave}";
-            
+
             //m_currentWaveText.text = "Sector " + (Values.Globals.CurrentSector + 1) + " Wave " + endString;
         }
+
         public void SetCurrentWaveText(string text)
         {
             sectorText.text = text;
         }
-        
+
         //============================================================================================================//
 
-        
+
         /// <summary>
         /// Value sent should be normalized
         /// </summary>
@@ -291,12 +429,30 @@ namespace StarSalvager.UI
 
             heatSlider.value = value;
 
-            if(useVignette)
+            CheckActivateGlowInverse(heatSlider, heatSliderGlow);
+
+            if (useVignette)
                 vignetteImage.color = Color.Lerp(vignetteMinColor, vignetteMaxColor, value);
         }
-        
+
         //============================================================================================================//
-        
+
+
+        private static void CheckActivateGlow(SliderText slider, Behaviour glowSlider)
+        {
+            CheckActivateGlow(slider.Slider, glowSlider);
+        }
+
+        private static void CheckActivateGlow(Slider slider, Behaviour glowSlider)
+        {
+            var value = slider.value / slider.maxValue;
+            glowSlider.enabled = value <= 0.25f;
+        }
+
+        private static void CheckActivateGlowInverse(Slider slider, Behaviour glowSlider)
+        {
+            glowSlider.enabled = slider.value / slider.maxValue >= 0.75f;
+        }
     }
 }
 

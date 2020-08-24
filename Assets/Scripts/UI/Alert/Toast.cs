@@ -43,7 +43,7 @@ public class Toast : Singleton<Toast>
 
     private RectTransform toastTransform;
 
-    private bool showingToast;
+    public bool showingToast { get; private set; }
     
     private Queue<ToastData> pendingToasts;
     

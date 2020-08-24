@@ -47,7 +47,7 @@ namespace StarSalvager.Prototype
         [Button("Test Magnet"), DisableInEditorMode]
         private void TestMagnet()
         {
-            testingBot.CheckForMagnetOverage();
+            testingBot.CheckHasMagnetOverage();
         }
         
     }

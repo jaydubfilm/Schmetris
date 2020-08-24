@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
-using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
-using StarSalvager.Utilities.SceneManagement;
-using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -19,6 +14,8 @@ namespace StarSalvager.UI.Scrapyard
 {
     public class DroneDesignUI : MonoBehaviour
     {
+        private const int MAX_CAPACITY = 1500;
+        
         [SerializeField, Required, BoxGroup("Part UI")]
         private GameObject partsWindow;
         [SerializeField, Required, BoxGroup("Part UI")]
@@ -30,6 +27,13 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField, BoxGroup("Resource UI")]
         private ResourceUIElementScrollView resourceScrollView;
+        
+        [SerializeField, BoxGroup("Resource UI")]
+        private ResourceUIElementScrollView liquidResourceContentView;
+
+        //[SerializeField, BoxGroup("Resource UI"), Required]
+        //private Button fillBotButton;
+        
         [SerializeField, BoxGroup("Load List UI")]
         private LayoutElementScrollView layoutScrollView;
 
@@ -124,7 +128,7 @@ namespace StarSalvager.UI.Scrapyard
             InitButtons();
 
             InitUiScrollView();
-            InitResourceScrollViews();
+            UpdateResourceElements();
             scrollViewsSetup = true;
 
             _currentlyOverwriting = false;
@@ -135,14 +139,14 @@ namespace StarSalvager.UI.Scrapyard
             if (scrollViewsSetup)
                 RefreshScrollViews();
 
-            PlayerData.OnValuesChanged += UpdateResources;
+            PlayerData.OnValuesChanged += UpdateResourceElements;
         }
 
         void OnDisable()
         {
             mDroneDesigner.ClearUndoRedoStacks();
             
-            PlayerData.OnValuesChanged -= UpdateResources;
+            PlayerData.OnValuesChanged -= UpdateResourceElements;
         }
 
         #endregion //Unity Functions
@@ -293,6 +297,15 @@ namespace StarSalvager.UI.Scrapyard
 
             //--------------------------------------------------------------------------------------------------------//
 
+            /*fillBotButton.onClick.AddListener(() =>
+            {
+                
+            });*/
+
+
+            //--------------------------------------------------------------------------------------------------------//
+
+
         }
 
         #endregion //Init
@@ -312,38 +325,51 @@ namespace StarSalvager.UI.Scrapyard
             }
         }
 
-        public void InitResourceScrollViews()
+        /*public void InitResourceScrollViews()
         {
             var resources = PlayerPersistentData.PlayerData.resources;
 
             foreach (var resource in resources)
             {
-                var data = new CraftCost
+                var data = new ResourceAmount
                 {
-                    resourceType = CraftCost.TYPE.Bit,
-                    type = (int)resource.Key,
-                    amount = resource.Value
+                    //resourceType = CraftCost.TYPE.Bit,
+                    type = resource.Key,
+                    amount = resource.Value,
+                    capacity = 2500
                 };
 
                 var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
                 element.Init(data);
             }
 
-            /*var components = PlayerPersistentData.PlayerData.GetComponents();
-
-            foreach (var component in components)
+            //liquidResourceContentView
+            var liquids = PlayerPersistentData.PlayerData.liquidResource;
+            var liquidsCapacity = PlayerPersistentData.PlayerData.liquidCapacity;
+            foreach (var liquid in liquids)
             {
-                var data = new CraftCost
+                var bitType = liquid.Key;
+
+                switch (bitType)
                 {
-                    resourceType = CraftCost.TYPE.Component,
-                    type = (int)component.Key,
-                    amount = component.Value
+                    case BIT_TYPE.BLACK:
+                    case BIT_TYPE.BLUE:
+                    case BIT_TYPE.YELLOW:
+                    case BIT_TYPE.WHITE:
+                        continue;
+                }
+                
+                var data = new ResourceAmount
+                {
+                    amount = (int)liquid.Value,
+                    capacity = liquidsCapacity[bitType],
+                    type = bitType,
                 };
 
-                var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{component.Key}_UIElement");
+                var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{liquid.Key}_UIElement");
                 element.Init(data);
-            }*/
-        }
+            }
+        }*/
 
         public void AddToPartScrollView(BlockData blockData)
         {
@@ -357,47 +383,52 @@ namespace StarSalvager.UI.Scrapyard
         {
             partsScrollView.ClearElements<BrickImageUIElement>();
             InitUiScrollView();
-            UpdateResources();
+            UpdateResourceElements();
         }
 
-        public void UpdateResources()
+        public void UpdateResourceElements()
         {
             var resources = PlayerPersistentData.PlayerData.resources;
 
             foreach (var resource in resources)
             {
-                var data = new CraftCost
+                var data = new ResourceAmount
                 {
-                    resourceType = CraftCost.TYPE.Bit,
-                    type = (int)resource.Key,
-                    amount = resource.Value
+                    //resourceType = CraftCost.TYPE.Bit,
+                    type = resource.Key,
+                    amount = resource.Value,
+                    capacity = MAX_CAPACITY
                 };
 
-                var element = resourceScrollView.FindElement<ResourceUIElement>(data);
-
-                if (element == null)
-                    continue;
-
+                var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
                 element.Init(data);
             }
 
-            var components = PlayerPersistentData.PlayerData.components;
-
-            foreach (var component in components)
+            //liquidResourceContentView
+            var liquids = PlayerPersistentData.PlayerData.liquidResource;
+            var liquidsCapacity = PlayerPersistentData.PlayerData.liquidCapacity;
+            foreach (var liquid in liquids)
             {
-                var data = new CraftCost
+                var bitType = liquid.Key;
+
+                switch (bitType)
                 {
-                    resourceType = CraftCost.TYPE.Component,
-                    type = (int)component.Key,
-                    amount = component.Value
+                    case BIT_TYPE.BLACK:
+                    case BIT_TYPE.BLUE:
+                    case BIT_TYPE.YELLOW:
+                    case BIT_TYPE.WHITE:
+                        continue;
+                }
+                
+                var data = new ResourceAmount
+                {
+                    amount = (int)liquid.Value,
+                    capacity = liquidsCapacity[bitType],
+                    type = bitType,
                 };
 
-                var element = resourceScrollView.FindElement<ResourceUIElement>(data);
-
-                if (element == null)
-                    continue;
-
-                element.Init(data);
+                var element = liquidResourceContentView.AddElement<ResourceUIElement>(data, $"{liquid.Key}_UIElement");
+                element.Init(data, true);
             }
         }
 
@@ -415,6 +446,8 @@ namespace StarSalvager.UI.Scrapyard
         }
 
         #endregion //Scroll Views
+        
+        
 
         //============================================================================================================//
 
@@ -434,6 +467,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void PartPressed((Enum remoteDataType, int level) tuple)
         {
+            print("dak");
             if (tuple.remoteDataType is PART_TYPE partType)
             {
                 PartPressed((partType, tuple.level));
@@ -442,8 +476,11 @@ namespace StarSalvager.UI.Scrapyard
 
         private void PartPressed((PART_TYPE partType, int level) tuple)
         {
-            mDroneDesigner.selectedPartType = tuple.partType;
+            mDroneDesigner.SelectedPartType = tuple.partType;
             mDroneDesigner.SelectedPartLevel = tuple.level;
+            mDroneDesigner.SelectedPartRemoveFromStorage = true;
+            mDroneDesigner.SelectedPartReturnToStorageIfNotPlaced = false;
+            print("mozo");
         }
 
         private void LayoutPressed(ScrapyardLayout botData)

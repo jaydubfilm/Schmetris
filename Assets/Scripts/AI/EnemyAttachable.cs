@@ -62,10 +62,10 @@ namespace StarSalvager.AI
 
             m_fireTimer += Time.deltaTime;
 
-            if (m_fireTimer < 1 / m_enemyData.AttackSpeed)
+            if (m_fireTimer < 1 / m_enemyData.RateOfFire)
                 return;
 
-            m_fireTimer -= 1 / m_enemyData.AttackSpeed;
+            m_fireTimer -= 1 / m_enemyData.RateOfFire;
 
             attachedBot.TryHitAt(target, m_enemyData.AttackDamage);
         }

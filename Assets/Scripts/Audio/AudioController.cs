@@ -32,18 +32,28 @@ namespace StarSalvager.Audio
 
         [SerializeField, Required, FoldoutGroup("Audio Mixers")]
         private AudioMixer masterMixer;
+        [SerializeField, Required, FoldoutGroup("Audio Mixers")]
+        private AudioMixer musicMixer;
         
         //Sound Lists
         //============================================================================================================//
         
-        [SerializeField, BoxGroup("Sound Effects")]
+        [SerializeField, FoldoutGroup("Sound Effects")]
         [TableList(DrawScrollView = true, MaxScrollViewHeight = 300, AlwaysExpanded = true, HideToolbar = true)]
         private List<SoundClip> soundClips;
         
-        [SerializeField, BoxGroup("Music")]
+        [SerializeField, FoldoutGroup("Music")]
         [TableList(DrawScrollView = true, MaxScrollViewHeight = 300, AlwaysExpanded = true, HideToolbar = true)]
         private List<MusicClip> musicClips;
-        
+
+        [SerializeField, FoldoutGroup("Music Fade")]
+        private AudioMixerSnapshot[] musicSnapshots;
+
+        [SerializeField, FoldoutGroup("Music Fade")]
+        private float musicFadeTime;
+        //MAIN_MENU
+        //GAMEPLAY
+        //SCRAPYARD
         
         //Static functions
         //============================================================================================================//
@@ -150,10 +160,20 @@ namespace StarSalvager.Audio
             if (clip == null)
                 return;
 
+            var weights = new float[Enum.GetValues(typeof(MUSIC)).Length];
+            
+            for (int i = 0; i < musicSnapshots.Length; i++)
+            {
+                weights[i] = i == (int) music ? 1f : 0f;
+            }
+            
+            musicMixer.TransitionToSnapshots(musicSnapshots, weights, musicFadeTime);
+            
+
             //TODO Set Pitch here
-            musicAudioSource.clip = clip;
-            musicAudioSource.loop = true;
-            musicAudioSource.Play();
+            //musicAudioSource.clip = clip;
+            //musicAudioSource.loop = true;
+            //musicAudioSource.Play();
         }
         
         //Volume Functions
@@ -174,7 +194,8 @@ namespace StarSalvager.Audio
         
         #if UNITY_EDITOR
 
-        private void OnValidate()
+        [Button]
+        private void PopulateValues()
         {
             var sfx = Enum.GetValues(typeof(SOUND));
             var music = Enum.GetValues(typeof(MUSIC));

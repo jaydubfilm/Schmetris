@@ -1,16 +1,20 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
+using StarSalvager.Audio;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Inputs;
 using StarSalvager.Values;
 using UnityEngine;
+using AudioController = StarSalvager.Audio.AudioController;
 using GameUI = StarSalvager.UI.GameUI;
 
 namespace StarSalvager
@@ -19,11 +23,31 @@ namespace StarSalvager
     [RequireComponent(typeof(Bot))]
     public class BotPartsLogic : MonoBehaviour
     {
+        private class ShieldData
+        {
+            public readonly float waitTime;
+            public int radius;
+
+            public float currentHp;
+            public float timer;
+
+            public Shield shield;
+
+            public ShieldData(float waitTime)
+            {
+                this.waitTime = waitTime;
+            }
+        }
+
+        //==============================================================================================================//
+
         public Bot bot;
 
         //==============================================================================================================//
 
         private List<Part> _parts;
+        private List<Part> _smartWeapons;
+        private int maxSmartWeapons;
 
         //FIXME This needs to something more manageable
         private EnemyManager EnemyManager
@@ -33,7 +57,7 @@ namespace StarSalvager
                 if (_EnemyManager == null)
                     _EnemyManager = FindObjectOfType<EnemyManager>();
                 return _EnemyManager;
-            }   
+            }
         }
         private EnemyManager _EnemyManager;
 
@@ -43,68 +67,17 @@ namespace StarSalvager
             {
                 if (_GameUI == null)
                     _GameUI = FindObjectOfType<GameUI>();
-                
+
                 return _GameUI;
             }
         }
         private GameUI _GameUI;
-        
+
+        //temp variables
+        float batteryDrainTimer = 0;
+        float waterDrainTimer = 0;
+
         //==============================================================================================================//
-
-        #region Bomb
-
-        private Dictionary<Part, float> _bombTimers;
-
-        public void TryTriggerBomb()
-        {
-            if (_bombTimers == null || _bombTimers.Count == 0)
-                return;
-
-            var part = _bombTimers.FirstOrDefault(x => x.Value <= 0f).Key;
-
-
-            if (part == null)
-                return;
-            
-            var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                .GetRemoteData(part.Type);
-            var partLevelData = partData.levels[part.level];
-
-            var burnType = partData.burnType;
-            var useCost = partLevelData.burnRate;
-
-            
-            if (PlayerPersistentData.PlayerData.liquidResource[burnType] < useCost)
-                return;
-            
-            //Remove the resources here
-            PlayerPersistentData.PlayerData.SubtractLiquidResource(burnType, useCost);
-            
-            //Set the cooldown time
-            if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out var cooldown))
-            {
-                _bombTimers[part] = cooldown;
-            }
-            
-            //Damage all the enemies
-            if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Damage, out var damage))
-            {
-                EnemyManager.DamageAllEnemies(damage);
-            }
-        }
-        
-        #endregion
-        
-        //============================================================================================================//
-
-        #region Shield
-        
-        
-        #endregion //Shield
-        
-        //============================================================================================================//
-
-        #region Parts
 
         [SerializeField, BoxGroup("Magnets")] public bool useMagnet = true;
         [SerializeField, BoxGroup("Magnets")] public MAGNET currentMagnet = MAGNET.DEFAULT;
@@ -126,37 +99,18 @@ namespace StarSalvager
 
         [ShowInInspector, BoxGroup("Bot Part Data"), ReadOnly]
         public int magnetCount { get; private set; }
-
         private int magnetOverride;
 
+        //==============================================================================================================//
+
+
         private Dictionary<Part, float> _projectileTimers;
-        
-        //Shield Prototype Functionality
-        //============================================================================================================//
-
         private Dictionary<Part, ShieldData> _shields;
-
-        private class ShieldData
-        {
-            public readonly float waitTime;
-            public int radius;
-            
-            public float currentHp;
-            public float timer;
-
-            public Shield shield;
-
-            public ShieldData(float waitTime)
-            {
-                this.waitTime = waitTime;
-            }
-        }
-
-        //============================================================================================================//
-        
         private Dictionary<Part, FlashSprite> _flashes;
-        
-        //============================================================================================================//
+        private Dictionary<Part, float> _bombTimers;
+
+        //Unity Functions
+        //==============================================================================================================//
 
         private void OnEnable()
         {
@@ -168,73 +122,6 @@ namespace StarSalvager
             PlayerData.OnValuesChanged -= ForceUpdateResourceUI;
         }
 
-
-        //==============================================================================================================//
-
-
-        public void SetMagentOverride(int magnet)
-        {
-            magnetOverride = magnet;
-            magnetCount = magnetOverride;
-        }
-        
-        //==============================================================================================================//
-
-
-        public void AddCoreHeat(float amount)
-        {
-            coreHeat += amount;
-            coolTimer = coolDelay;
-        }
-        
-        //==============================================================================================================//
-
-        public float TryHitShield(Vector2Int coordinate, float damage)
-        {
-            //If no shields exist, don't attempt to sort damage distribution
-            if (_shields == null || _shields.Count == 0)
-                return damage;
-
-            var shieldHitParts = new List<Part>();
-            
-            //Search through our active shields to determine if any were hit 
-            foreach (var shieldData in _shields)
-            {
-                var rad = shieldData.Value.radius;
-                var part = shieldData.Key;
-                var direction = coordinate - part.Coordinate;
-
-                if (Mathf.Abs(direction.x) > rad || Mathf.Abs(direction.y) > rad)
-                    continue;
-                
-                shieldHitParts.Add(part);
-            }
-
-            //If we see that 0 were hit, return our full damage amount
-            if (shieldHitParts.Count <= 0)
-                return damage;
-
-            var outDamage = 0f;
-            
-            //FIXME I feel as if there is a better way of tackling this problem, as I don't like the back and forth calculations
-            var dividedDamage = damage / shieldHitParts.Count;
-            foreach (var hitPart in shieldHitParts)
-            {
-                _shields[hitPart].currentHp -= dividedDamage;
-                _shields[hitPart].timer = 0f;
-                
-                //Check to see if the shield still has health
-                if (_shields[hitPart].currentHp >= 0f)
-                    continue;
-
-                //If the damage added goes below 0, push it back to outDamage value to be returned
-                outDamage += Mathf.Abs(_shields[hitPart].currentHp);
-                _shields[hitPart].currentHp = 0f;
-            }
-
-            return outDamage;
-        }
-        
         //==============================================================================================================//
 
 
@@ -245,10 +132,14 @@ namespace StarSalvager
         public void UpdatePartsList()
         {
             _parts = bot.attachedBlocks.OfType<Part>().ToList();
+            _smartWeapons = _parts.Where(p => p.Type == PART_TYPE.BOMB).ToList();
+
+            //TODO Need to update the UI here for the amount of smart weapons able to be used
 
             UpdatePartData();
         }
 
+        //FIXME I Will want to separate these functions as this is getting too large
         /// <summary>
         /// Called to update the bot about relevant data to function.
         /// </summary>
@@ -258,7 +149,7 @@ namespace StarSalvager
             {
                 magnetCount = magnetOverride;
             }
-            
+
             PlayerPersistentData.PlayerData.ClearLiquidCapacity();
             var capacities = new Dictionary<BIT_TYPE, int>
             {
@@ -272,45 +163,65 @@ namespace StarSalvager
             CheckIfShieldShouldRecycle();
             CheckIfFlashIconShouldRecycle();
             CheckIfBombsShouldRecycle();
-            GameUI?.ShowBombIcon(false);
-            
-            
+
+            //Update the Game UI for the Smart Weapons
+            //--------------------------------------------------------------------------------------------------------//
+
+            GameUI?.ResetIcons();
+
+            for (int i = 0; i < maxSmartWeapons; i++)
+            {
+                if (i >= _smartWeapons.Count)
+                    break;
+
+                GameUI.SetIconImage(i, _smartWeapons[i].renderer.sprite);
+                GameUI.ShowIcon(i, true);
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
+
             magnetCount = 0;
 
             foreach (var part in _parts)
             {
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                     .GetRemoteData(part.Type);
-                
-                float value;
+
+                int value;
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
-                        
+
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += (int) value;
-                            capacities[BIT_TYPE.GREEN] += (int) value;
-                            capacities[BIT_TYPE.GREY] += (int) value;
-                            capacities[BIT_TYPE.YELLOW] += (int) value;
-                            capacities[BIT_TYPE.BLUE] += (int) value;
+                            capacities[BIT_TYPE.RED] += value;
+                            capacities[BIT_TYPE.GREEN] += value;
+                            capacities[BIT_TYPE.GREY] += value;
+                            capacities[BIT_TYPE.YELLOW] += value;
+                            capacities[BIT_TYPE.BLUE] += value;
                         }
-                        
+
+                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.SMRTCapacity, out value))
+                        {
+                            maxSmartWeapons = value;
+                        }
+
                         if (magnetOverride > 0)
                             break;
-                        
+
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
                         {
-                            magnetCount += (int)value;
+                            magnetCount += value;
                         }
                         break;
                     case PART_TYPE.MAGNET:
-                    
+
                         if (magnetOverride > 0)
                             break;
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
                         {
-                            magnetCount += (int)value;
+                            magnetCount += value;
                         }
                         break;
                     //Determine if we need to setup the shield elements for the bot
@@ -332,49 +243,49 @@ namespace StarSalvager
 
                         shield.transform.SetParent(part.transform);
                         shield.transform.localPosition = Vector3.zero;
-                        
-                        
+
+
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Radius, out value))
                         {
-                            shield.SetSize((int)value);
+                            shield.SetSize(value);
                         }
-                        
+
                         shield.SetAlpha(0.5f);
                         _shields.Add(part, new ShieldData(4f)
                         {
                             shield = shield,
-                            
+
                             currentHp = 25,
-                            radius = (int)value,
-                            
+                            radius = value,
+
                             timer = 0f
                         });
-                        
+
                         break;
                     case PART_TYPE.STORE:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += (int) value;
-                            capacities[BIT_TYPE.GREEN] += (int) value;
-                            capacities[BIT_TYPE.GREY] += (int) value;
+                            capacities[BIT_TYPE.RED] += value;
+                            capacities[BIT_TYPE.GREEN] += value;
+                            capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
                     case PART_TYPE.STORE_RED:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += (int) value;
+                            capacities[BIT_TYPE.RED] += value;
                         }
                         break;
                     case PART_TYPE.STORE_GREEN:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.GREEN] += (int) value;
+                            capacities[BIT_TYPE.GREEN] += value;
                         }
                         break;
                     case PART_TYPE.STORE_GREY:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.GREY] += (int) value;
+                            capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
                     case PART_TYPE.BOMB:
@@ -383,8 +294,8 @@ namespace StarSalvager
 
                         if (_bombTimers.ContainsKey(part))
                             break;
-                        
-                        GameUI.ShowBombIcon(true);
+
+                        //GameUI.ShowBombIcon(true);
                         _bombTimers.Add(part, 0f);
                         break;
                 }
@@ -395,7 +306,8 @@ namespace StarSalvager
         }
 
         //============================================================================================================//
-        
+
+        //FIXME I Will want to separate these functions as this is getting too large
         /// <summary>
         /// Parts specific update Loop. Updates all part information based on currently attached parts.
         /// </summary>
@@ -414,7 +326,7 @@ namespace StarSalvager
                     continue;
 
                 var resourceValue = GetValueToBurn(levelData, partRemoteData.burnType);
-                
+
                 //If we no longer have liquid to use, find a bit that could be refined
                 if (resourceValue <= 0f && useBurnRate)
                 {
@@ -431,14 +343,22 @@ namespace StarSalvager
                         var addAmount = FactoryManager.Instance
                             .GetFactory<BitAttachableFactory>().GetBitRemoteData(targetBit.Type).levels[targetBit.level]
                             .resources;
-                    
+
                         PlayerPersistentData.PlayerData.AddLiquidResource(partRemoteData.burnType, addAmount);
 
-                        bot.DestroyAttachable<Bit>(targetBit);
+                        //TODO May want to play around with the order of operations here
+                        StartCoroutine(RefineBitCoroutine(targetBit, 1.6f,
+                            () =>
+                        {
+                            bot.DestroyAttachable<Bit>(targetBit);
+                        }));
+
+
 
                         resourceValue = addAmount;
+                        AudioController.PlaySound(SOUND.BIT_REFINED);
                     }
-                    
+
                 }
                 else
                 {
@@ -454,6 +374,9 @@ namespace StarSalvager
 
                         if (resourceValue > 0f && useBurnRate)
                             resourceValue -= levelData.burnRate * Time.deltaTime;
+
+                        //Determines if the player can move with no available fuel
+                        InputManager.Instance.LockSideMovement = resourceValue <= 0f;
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
@@ -490,9 +413,9 @@ namespace StarSalvager
                             break;
 
                         IHealth toRepair;
-                        
-                        var radius = (int)levelData.GetDataValue(DataTest.TEST_KEYS.Radius);
-                        
+
+                        var radius = levelData.GetDataValue<int>(DataTest.TEST_KEYS.Radius);
+
                         //FIXME I don't think using linq here, especially twice is the best option
                         //TODO This needs to fire every x Seconds
                         toRepair = bot.attachedBlocks.GetAttachablesAroundInRadius<Part>(part, radius)
@@ -510,7 +433,7 @@ namespace StarSalvager
                                 toRepair = part;
                             else
                                 break;
-                                
+
                         }
 
                         if (useBurnRate)
@@ -519,17 +442,19 @@ namespace StarSalvager
                                 resourceValue -= levelData.burnRate * Time.deltaTime;
                         }
 
-                        var repairAmount = levelData.GetDataValue(DataTest.TEST_KEYS.Heal);
-                        
+                        var repairAmount = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Heal);
+
+                        //FIXME This will need some sort of time cooldown
+                        //AudioController.PlaySound(SOUND.REPAIRER_PULSE);
+
                         //Increase the health of this part depending on the current level of the repairer
                         toRepair.ChangeHealth(repairAmount * Time.deltaTime);
 
                         break;
                     case PART_TYPE.GUN:
 
-                        if (resourceValue <= 0f && useBurnRate)
-                            break;
-                        
+
+
                         //TODO Need to determine if the shoot type is looking for enemies or not
                         //--------------------------------------------------------------------------------------------//
                         if (_projectileTimers == null)
@@ -541,8 +466,8 @@ namespace StarSalvager
                         //TODO This needs to fire every x Seconds
                         //--------------------------------------------------------------------------------------------//
 
-                        var cooldown = levelData.GetDataValue(DataTest.TEST_KEYS.Cooldown);
-                        
+                        var cooldown = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Cooldown);
+
                         if (_projectileTimers[part] < cooldown)
                         {
                             _projectileTimers[part] += Time.deltaTime;
@@ -565,6 +490,11 @@ namespace StarSalvager
 
                         if (useBurnRate)
                         {
+                            if (resourceValue <= 0f)
+                            {
+                                AudioController.PlaySound(SOUND.GUN_CLICK);
+                                break;
+                            }
                             if(resourceValue > 0)
                                 resourceValue -= levelData.burnRate;
                         }
@@ -572,18 +502,31 @@ namespace StarSalvager
                         //Create projectile
                         //--------------------------------------------------------------------------------------------//
 
-                        const string PROJECTILE_ID = "083be790-7a08-4f27-b506-e8e09a116bc8";
-                        
+                        //const string PROJECTILE_ID = "083be790-7a08-4f27-b506-e8e09a116bc8";
+
+                        var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
+
                         //TODO Might need to add something to change the projectile used for each gun piece
                         var projectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
                             .CreateObject<Projectile>(
-                                PROJECTILE_ID,
+                                projectileId,
                                 /*shootDirection*/Vector2.up,
                                 "Enemy");
 
                         projectile.transform.position = part.transform.position;
 
                         LevelManager.Instance.ProjectileManager.AddProjectile(projectile);
+
+
+                        switch (part.level)
+                        {
+                            case 0:
+                                AudioController.PlaySound(SOUND.GUNLVL1_FIRE);
+                                break;
+                            case 1 :
+                                AudioController.PlaySound(SOUND.GUNLVL2_FIRE);
+                                break;
+                        }
 
                         //--------------------------------------------------------------------------------------------//
 
@@ -594,7 +537,7 @@ namespace StarSalvager
                         var data = _shields[part];
                         var shield = data.shield;
                         //shield.transform.position = part.transform.position;
-                        
+
                         if (resourceValue <= 0f && useBurnRate && data.currentHp <= 0)
                         {
                             shield.SetAlpha(0f);
@@ -615,30 +558,41 @@ namespace StarSalvager
                                 _shields[part].timer += Time.deltaTime;
                             }
                         }
-                        
+
+                        //FIXME This needs to have some sort of play cooldown
+                        //AudioController.PlaySound(SOUND.SHIELD_RECHARGE);
 
                         shield.SetAlpha(0.5f * (data.currentHp / fakeHealth));
-                        
+
                         break;
                     case PART_TYPE.BOMB:
 
                         //TODO This still needs to account for multiple bombs
-                        if (!_bombTimers.TryGetValue(part, out float timer))
+                        if (!_bombTimers.TryGetValue(part, out var timer))
                             break;
-
-                        //FIXME I don't like that this is getting called so often
-                        var hasAmmo = PlayerPersistentData.PlayerData.liquidResource[partRemoteData.burnType] >= levelData.burnRate;
-                        GameUI.SetHasBombResource(hasAmmo);
-                        //GetAlertIcon(part).SetActive(!hasAmmo);
 
                         if (timer <= 0f)
                             break;
 
+                        var index = _smartWeapons.FindIndex(0, _smartWeapons.Count, x => x == part);
+
+                        if (useBurnRate && resourceValue <= 0)
+                        {
+                            //FIXME I don't like that this is getting called so often
+                            GameUI.SetHasResource(index, false);
+                            break;
+                        }
+
+                        GameUI.SetHasResource(index, true);
+
+
                         levelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out cooldown);
-                            
+
+                        resourceValue -= Time.deltaTime;
+
                         _bombTimers[part] -= Time.deltaTime;
-                        GameUI.SetBombFill(1f - _bombTimers[part] / cooldown);
-                        
+                        GameUI.SetFill(index, 1f - _bombTimers[part] / cooldown);
+
                         break;
                 }
 
@@ -646,77 +600,159 @@ namespace StarSalvager
                 PlayerPersistentData.PlayerData.SetLiquidResource(partRemoteData.burnType, resourceValue);
             }
 
-            //TEMP: lines to slowly drain electricity and water
-            float baseDrainRate = Time.deltaTime / 4;
-            UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] - baseDrainRate);
-            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] - baseDrainRate);
-            UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] - baseDrainRate);
-            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] - baseDrainRate);
+            batteryDrainTimer += Time.deltaTime / 2;
+            waterDrainTimer += Time.deltaTime / 4;
 
-            if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] <= 0)
+            if (batteryDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] > 0)
             {
-                var targetBit = GetFurthestBitToBurn(BIT_TYPE.YELLOW);
-
-                if (targetBit != null)
-                {
-                    var addAmount = FactoryManager.Instance
-                        .GetFactory<BitAttachableFactory>().GetBitRemoteData(targetBit.Type).levels[targetBit.level]
-                        .resources;
-
-                    PlayerPersistentData.PlayerData.AddLiquidResource(BIT_TYPE.YELLOW, addAmount);
-                    bot.DestroyAttachable<Bit>(targetBit);
-                }
+                batteryDrainTimer--;
+                PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] - 1);
             }
-
-            if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] <= 0)
+            if (waterDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0)
             {
-                var targetBit = GetFurthestBitToBurn(BIT_TYPE.BLUE);
-
-                if (targetBit != null)
-                {
-                    var addAmount = FactoryManager.Instance
-                        .GetFactory<BitAttachableFactory>().GetBitRemoteData(targetBit.Type).levels[targetBit.level]
-                        .resources;
-
-                    PlayerPersistentData.PlayerData.AddLiquidResource(BIT_TYPE.BLUE, addAmount);
-                    bot.DestroyAttachable<Bit>(targetBit);
-                }
+                waterDrainTimer--;
+                PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] - 1);
             }
+            UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW]);
+            UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE]);
         }
 
         //============================================================================================================//
 
-        private Bit GetFurthestBitToBurn(PartLevelData partLevelData, BIT_TYPE type)
-        {
-            if (!useBurnRate)
-                return null;
-            
-            if (partLevelData.burnRate == 0f)
-                return null;
+        #region Bomb
 
-            return GetFurthestBitToBurn(type);
+        /// <summary>
+        /// This should use values similar to an array (ie. starts at [0])
+        /// </summary>
+        /// <param name="index"></param>
+        public void TryTriggerSmartWeapon(int index)
+        {
+            if (_smartWeapons == null || _smartWeapons.Count == 0)
+                return;
+            //TODO Need to check the capacity of smart weapons on the bot
+            if (index - 1 > maxSmartWeapons)
+                return;
+
+            if (index >= _smartWeapons.Count)
+                return;
+
+            var part = _smartWeapons[index];
+
+            switch (part.Type)
+            {
+                case PART_TYPE.BOMB:
+                    TriggerBomb(part);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(Part.Type), _smartWeapons[index].Type, null);
+            }
         }
 
-        private Bit GetFurthestBitToBurn(BIT_TYPE type)
+        private void TriggerBomb(Part part)
         {
-            return bot.attachedBlocks.OfType<Bit>()
-                .Where(b => b.Type == type)
-                .GetFurthestAttachable(Vector2Int.zero);
+            if (_bombTimers == null || _bombTimers.Count == 0)
+                return;
+
+            //If the bomb is still recharging, we tell the player that its unavailable
+            if (_bombTimers[part] > 0f)
+            {
+                AudioController.PlaySound(SOUND.BOMB_CLICK);
+                return;
+            }
+
+            var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                .GetRemoteData(part.Type);
+
+            var partLevelData = partData.levels[part.level];
+
+            //Set the cooldown time
+            if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float cooldown))
+            {
+                _bombTimers[part] = cooldown;
+            }
+
+            //Damage all the enemies
+            if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Damage, out float damage))
+            {
+                EnemyManager.DamageAllEnemies(damage);
+            }
+
+            AudioController.PlaySound(SOUND.BOMB_BLAST);
         }
 
+        #endregion
 
-        private float GetValueToBurn(PartLevelData partLevelData, BIT_TYPE type)
+        //============================================================================================================//
+
+        #region Shield
+
+        public float TryHitShield(Vector2Int coordinate, float damage)
         {
-            if (!useBurnRate)
-                return default;
+            //If no shields exist, don't attempt to sort damage distribution
+            if (_shields == null || _shields.Count == 0)
+                return damage;
 
-            var value = partLevelData.burnRate == 0
-                ? default
-                : PlayerPersistentData.PlayerData.liquidResource[type];
+            var shieldHitParts = new List<Part>();
 
-            return  value;
+            //Search through our active shields to determine if any were hit
+            foreach (var shieldData in _shields)
+            {
+                var rad = shieldData.Value.radius;
+                var part = shieldData.Key;
+                var direction = coordinate - part.Coordinate;
+
+                if (Mathf.Abs(direction.x) > rad || Mathf.Abs(direction.y) > rad)
+                    continue;
+
+                shieldHitParts.Add(part);
+            }
+
+            //If we see that 0 were hit, return our full damage amount
+            if (shieldHitParts.Count <= 0)
+                return damage;
+
+            var outDamage = 0f;
+
+            //FIXME I feel as if there is a better way of tackling this problem, as I don't like the back and forth calculations
+            var dividedDamage = damage / shieldHitParts.Count;
+            foreach (var hitPart in shieldHitParts)
+            {
+                _shields[hitPart].currentHp -= dividedDamage;
+                _shields[hitPart].timer = 0f;
+
+                //Check to see if the shield still has health
+                if (_shields[hitPart].currentHp >= 0f)
+                    continue;
+
+                //If the damage added goes below 0, push it back to outDamage value to be returned
+                outDamage += Mathf.Abs(_shields[hitPart].currentHp);
+                _shields[hitPart].currentHp = 0f;
+            }
+
+            AudioController.PlaySound(SOUND.SHIELD_ABSORB);
+
+            return outDamage;
         }
-        
+
+        #endregion //Shield
+
+        //============================================================================================================//
+
+        public void SetMagnetOverride(int magnet)
+        {
+            magnetOverride = magnet;
+            magnetCount = magnetOverride;
+        }
+
+        //==============================================================================================================//
+
+        public void AddCoreHeat(float amount)
+        {
+            coreHeat += amount;
+            coolTimer = coolDelay;
+        }
+
+        //Updating UI
         //============================================================================================================//
 
         private void ForceUpdateResourceUI()
@@ -725,6 +761,9 @@ namespace StarSalvager
             {
                 UpdateUI(f.Key, f.Value);
             }
+
+            UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW]);
+            UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE]);
         }
 
         private void UpdateUI(BIT_TYPE type, float value)
@@ -751,8 +790,7 @@ namespace StarSalvager
             }
         }
 
-        #endregion //Parts
-        
+        //Getting Alert Icons/Flash Sprites
         //============================================================================================================//
 
         private FlashSprite GetAlertIcon(Part part)
@@ -767,17 +805,59 @@ namespace StarSalvager
             var flash = FactoryManager.Instance.GetFactory<BotFactory>().CreateAlertIcon();//Instantiate(flashSpritePrefab).GetComponent<FlashSprite>();
             flash.transform.SetParent(part.transform, false);
             flash.transform.localPosition = Vector3.zero;
-            
+
+
+            var burnType = FactoryManager.Instance.PartsRemoteData.GetRemoteData(part.Type).burnType;
+            var bitColor = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitProfile(burnType).color;
+
+            flash.SetColor(bitColor);
+
             _flashes.Add(part, flash);
 
             return _flashes[part];
         }
 
+        //Find Bits/Values to burn
+        //============================================================================================================//
+
+        private Bit GetFurthestBitToBurn(PartLevelData partLevelData, BIT_TYPE type)
+        {
+            if (!useBurnRate)
+                return null;
+
+            if (partLevelData.burnRate == 0f)
+                return null;
+
+            return GetFurthestBitToBurn(type);
+        }
+
+        private Bit GetFurthestBitToBurn(BIT_TYPE type)
+        {
+            return bot.attachedBlocks.OfType<Bit>()
+                .Where(b => b.Type == type)
+                .GetFurthestAttachable(Vector2Int.zero);
+        }
+
+        private float GetValueToBurn(PartLevelData partLevelData, BIT_TYPE type)
+        {
+            if (!useBurnRate)
+                return default;
+
+            var value = partLevelData.burnRate == 0
+                ? default
+                : PlayerPersistentData.PlayerData.liquidResource[type];
+
+            return  value;
+        }
+
+        //Checking for recycled extras
+        //============================================================================================================//
+
         private void CheckIfShieldShouldRecycle()
         {
             if (_shields == null || _shields.Count == 0)
                 return;
-            
+
             var copy = new Dictionary<Part, ShieldData>(_shields);
             foreach (var data in copy.Where(data => data.Key.IsRecycled))
             {
@@ -785,17 +865,17 @@ namespace StarSalvager
                 _shields.Remove(data.Key);
             }
         }
-        
+
         private void CheckIfFlashIconShouldRecycle()
         {
             if (_flashes == null || _flashes.Count == 0)
                 return;
-            
+
             var copy = new Dictionary<Part, FlashSprite>(_flashes);
             foreach (var data in copy.Where(data => data.Key.IsRecycled))
             {
-                Recycler.Recycle<FlashSprite>(data.Value.gameObject);
                 _flashes.Remove(data.Key);
+                Recycler.Recycle<FlashSprite>(data.Value.gameObject);
             }
         }
 
@@ -803,25 +883,62 @@ namespace StarSalvager
         {
             if (_bombTimers == null || _bombTimers.Count == 0)
                 return;
-            
+
             var copy = new Dictionary<Part, float>(_bombTimers);
             foreach (var data in copy.Where(data => data.Key.IsRecycled))
             {
                // Recycler.Recycle<FlashSprite>(data.Value.gameObject);
                _bombTimers.Remove(data.Key);
+
+               var index = _smartWeapons.FindIndex(0, _smartWeapons.Count, x => x == data.Key);
+               GameUI.ShowIcon(index, false);
             }
-            
-            GameUI.ShowBombIcon(_bombTimers.Count > 0);
-            
-            
+
         }
-        
+
         public void ClearList()
         {
             _parts.Clear();
         }
-        
+
         //============================================================================================================//
+
+        [SerializeField]
+        private AnimationCurve refineScaleCurve = new AnimationCurve();
+
+        [SerializeField]
+        private AnimationCurve moveSpeedCurve = new AnimationCurve();
+
+        private IEnumerator RefineBitCoroutine(Bit bit, float speed, Action OnFinishedCallback)
+        {
+            var bitStartPosition = bit.transform.position;
+            var endPosition = bot.transform.position;
+            var t = 0f;
+
+            bit.SetColliderActive(false);
+            bit.Coordinate = Vector2Int.zero;
+            bit.renderer.sortingOrder = 10000;
+
+            while (t < 1f)
+            {
+                bit.transform.position = Vector3.Lerp(bitStartPosition, endPosition, t);
+
+                //TODO Need to adjust the scale here
+                bit.transform.localScale = Vector3.LerpUnclamped(Vector3.zero, Vector3.one, refineScaleCurve.Evaluate(t));
+
+                t += Time.deltaTime * speed * moveSpeedCurve.Evaluate(t);
+
+                yield return null;
+            }
+
+            OnFinishedCallback?.Invoke();
+            bit.transform.localScale = Vector3.one;
+
+
+        }
+
+        //============================================================================================================//
+
 
     }
 }

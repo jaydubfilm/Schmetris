@@ -1,9 +1,11 @@
-﻿using System;
+﻿using StarSalvager.Values;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 namespace StarSalvager.Utilities
 {
@@ -49,7 +51,12 @@ namespace StarSalvager.Utilities
             TimeSpan timePlayed = currentTime - startingTime;
 
             Dictionary<string, object> applicationQuitAnalyticsDictionary = new Dictionary<string, object>();
+            applicationQuitAnalyticsDictionary.Add("User ID", Globals.UserID);
+            applicationQuitAnalyticsDictionary.Add("Session ID", Globals.SessionID);
+            applicationQuitAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
             applicationQuitAnalyticsDictionary.Add("Total Playtime", timePlayed.TotalSeconds);
+            applicationQuitAnalyticsDictionary.Add("End Time", DateTime.Now.ToString());
+
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ApplicationQuit, eventDataDictionary: applicationQuitAnalyticsDictionary);
         }
     }

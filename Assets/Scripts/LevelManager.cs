@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using StarSalvager.AI;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
@@ -16,6 +17,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using StarSalvager.Missions;
 using StarSalvager.Utilities.JsonDataTypes;
+using Newtonsoft.Json;
+using Random = UnityEngine.Random;
+using UnityEngine.Analytics;
 
 namespace StarSalvager
 {
@@ -124,6 +128,9 @@ namespace StarSalvager
         private GameUI _gameUi;
 
         public Dictionary<BIT_TYPE, float> LiquidResourcesAttBeginningOfWave = new Dictionary<BIT_TYPE, float>();
+        public Dictionary<ENEMY_TYPE, int> EnemiesKilledInWave = new Dictionary<ENEMY_TYPE, int>();
+        public List<string> MissionsCompletedDuringThisFlight = new List<string>();
+
         private void Start()
         {
             m_bots = new List<Bot>();
@@ -136,27 +143,34 @@ namespace StarSalvager
 
             RegisterPausable();
             m_levelManagerUI = FindObjectOfType<LevelManagerUI>();
-            //m_levelManagerUI.SetCurrentWaveText((m_currentWave + 1).ToString() + "/" + CurrentSector.GetNumberOfWaves());
 
             GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
 
             Bot.OnBotDied += (deadBot, deathMethod) =>
             {
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied);
-                Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>();
-                levelLostAnalyticsDictionary.Add("CurrentSector", Globals.CurrentSector);
-                levelLostAnalyticsDictionary.Add("CurrentWave", Globals.CurrentWave);
-                levelLostAnalyticsDictionary.Add("CurrentStage", m_currentStage);
-                levelLostAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelLost, eventDataDictionary: levelLostAnalyticsDictionary);
+                Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
+                foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
+                {
+                    tempDictionary.Add((int)resource.Key, resource.Value);
+                }
+
+                Dictionary<string, object> botDiedAnalyticsDictionary = new Dictionary<string, object>();
+                botDiedAnalyticsDictionary.Add("User ID", Globals.UserID);
+                botDiedAnalyticsDictionary.Add("Session ID", Globals.SessionID);
+                botDiedAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
+                botDiedAnalyticsDictionary.Add("Death Cause", deathMethod);
+                botDiedAnalyticsDictionary.Add("CurrentSector", Globals.CurrentSector);
+                botDiedAnalyticsDictionary.Add("CurrentWave", Globals.CurrentWave);
+                //botDiedAnalyticsDictionary.Add("CurrentStage", m_currentStage);
+                botDiedAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
+                botDiedAnalyticsDictionary.Add("Liquid Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None));
+                botDiedAnalyticsDictionary.Add("Enemies Killed", JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None));
+                botDiedAnalyticsDictionary.Add("Missions Completed", JsonConvert.SerializeObject(MissionsCompletedDuringThisFlight, Formatting.None));
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied, eventDataDictionary: botDiedAnalyticsDictionary);
 
                 PlayerPersistentData.PlayerData.numLives--;
                 if (PlayerPersistentData.PlayerData.numLives > 0)
                 {
-                    foreach (var resource in LiquidResourcesAttBeginningOfWave)
-                    {
-                        PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
-                    }
                     IsWaveProgressing = false;
                     m_levelManagerUI.UpdateLivesText();
                     m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
@@ -168,7 +182,7 @@ namespace StarSalvager
                         Globals.CurrentWave = 0;
                         GameTimer.SetPaused(false);
                         PlayerPersistentData.PlayerData.numLives = 3;
-                        SceneLoader.ActivateScene("MainMenuScene", "AlexShulmanTestScene");
+                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.ALEX_TEST_SCENE);
                     });
                 }
                 //Debug.LogError("Bot Died. Press 'R' to restart");
@@ -179,11 +193,11 @@ namespace StarSalvager
 
         private void Update()
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
+            /*if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
             {
                 WorldGrid.DrawDebugMarkedGridPoints();
                 Debug.Break();
-            }
+            }*/
 
             if (isPaused)
                 return;
@@ -216,6 +230,33 @@ namespace StarSalvager
                 EnemyManager.SetEnemiesInert(false);
                 EnemyManager.RecycleAllEnemies();
                 m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+
+                Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
+                foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
+                {
+                    tempDictionary.Add((int)resource.Key, resource.Value);
+                }
+
+                Dictionary<string, object> waveEndAnalyticsDictionary = new Dictionary<string, object>();
+                waveEndAnalyticsDictionary.Add("User ID", Globals.UserID);
+                waveEndAnalyticsDictionary.Add("Session ID", Globals.SessionID);
+                waveEndAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
+                waveEndAnalyticsDictionary.Add("Bot Layout", JsonConvert.SerializeObject(BotGameObject.GetBlockDatas(), Formatting.None));
+                waveEndAnalyticsDictionary.Add("Liquid Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None));
+                waveEndAnalyticsDictionary.Add("Enemies Killed", JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None));
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.WaveEnd, eventDataDictionary: waveEndAnalyticsDictionary);
+
+                EnemiesKilledInWave.Clear();
+
+                if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 0)
+                Alert.ShowAlert("Out of water", "Your scrapyard is out of water. You must return now.", "Ok", () =>
+                {
+                    IsWaveProgressing = true;
+                    SavePlayerData();
+                    m_levelManagerUI.ToggleBetweenWavesUIActive(false);
+                    ProcessScrapyardUsageBeginAnalytics();
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
+                });
             }
 
             ProjectileManager.UpdateForces();
@@ -226,11 +267,6 @@ namespace StarSalvager
             m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
 
-            LiquidResourcesAttBeginningOfWave.Clear();
-            foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
-            {
-                LiquidResourcesAttBeginningOfWave.Add(resource.Key, resource.Value);
-            }
             BotGameObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
             if (PlayerPersistentData.PlayerData.GetCurrentBlockData().Count == 0)
             {
@@ -243,6 +279,17 @@ namespace StarSalvager
             }
             BotGameObject.transform.parent = null;
             SceneManager.MoveGameObjectToScene(BotGameObject.gameObject, gameObject.scene);
+
+            MissionsCompletedDuringThisFlight.Clear();
+            foreach (var resource in LiquidResourcesAttBeginningOfWave)
+            {
+                PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
+            }
+            LiquidResourcesAttBeginningOfWave.Clear();
+            foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
+            {
+                LiquidResourcesAttBeginningOfWave.Add(resource.Key, resource.Value);
+            }
 
             InputManager.Instance.InitInput();
             CameraController.SetOrthographicSize(Constants.gridCellSize * Values.Globals.ColumnsOnScreen, BotGameObject.transform.position);
@@ -266,8 +313,30 @@ namespace StarSalvager
             if (PlayerPersistentData.PlayerData.firstFlight)
             {
                 PlayerPersistentData.PlayerData.firstFlight = false;
-                Toast.AddToast("Controls: AD for left/right movement, WS to rotate. Escape to pause.", time: 6.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
+                Toast.AddToast("Controls: AD or Left/Right arrows for left/right movement, WS or Up/Down arrows to rotate. Escape to pause.", time: 6.0f, verticalLayout: Toast.Layout.End, horizontalLayout: Toast.Layout.Middle);
             }
+
+            Dictionary<int, float> tempResourceDictionary = new Dictionary<int, float>();
+            foreach (var resource in PlayerPersistentData.PlayerData.resources)
+            {
+                tempResourceDictionary.Add((int)resource.Key, resource.Value);
+            }
+
+            Dictionary<int, int> tempComponentDictionary = new Dictionary<int, int>();
+            foreach (var component in PlayerPersistentData.PlayerData.components)
+            {
+                tempComponentDictionary.Add((int)component.Key, component.Value);
+            }
+
+            Dictionary<string, object> flightBeginAnalyticsDictionary = new Dictionary<string, object>();
+            flightBeginAnalyticsDictionary.Add("User ID", Globals.UserID);
+            flightBeginAnalyticsDictionary.Add("Session ID", Globals.SessionID);
+            flightBeginAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
+            flightBeginAnalyticsDictionary.Add("Stored Resources", JsonConvert.SerializeObject(tempResourceDictionary, Formatting.None));
+            flightBeginAnalyticsDictionary.Add("Stored Parts", JsonConvert.SerializeObject(PlayerPersistentData.PlayerData.partsInStorageBlockData, Formatting.None));
+            flightBeginAnalyticsDictionary.Add("Stored Components", JsonConvert.SerializeObject(tempComponentDictionary, Formatting.None));
+            flightBeginAnalyticsDictionary.Add("Bot Layout", JsonConvert.SerializeObject(BotGameObject.GetBlockDatas(), Formatting.None));
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.FlightBegin, eventDataDictionary: flightBeginAnalyticsDictionary);
         }
 
         public void Reset()
@@ -281,8 +350,10 @@ namespace StarSalvager
                 m_bots.RemoveAt(i);
             }
             m_waveTimer = 0;
+            m_levelTimer = 0;
             m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
             ProjectileManager.Reset();
+            MissionsCompletedDuringThisFlight.Clear();
         }
 
         private void TransitionToNewWave()
@@ -314,7 +385,12 @@ namespace StarSalvager
                 ProcessScrapyardUsageBeginAnalytics();
                 Globals.CurrentWave = 0;
                 Globals.SectorComplete = true;
-                SceneLoader.ActivateScene("ScrapyardScene", "AlexShulmanTestScene");
+                GameTimer.SetPaused(true);
+                Alert.ShowAlert("Sector Completed", "Beat the last wave of the sector. Return to base!", "Ok", () =>
+                {
+                    GameTimer.SetPaused(false);
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
+                });
             }
         }
 
@@ -327,7 +403,7 @@ namespace StarSalvager
                 var blockData = bot.GetBlockDatas();
                 if (!blockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int) PART_TYPE.CORE))
                     blockData = new List<BlockData>();
-                
+
                 PlayerPersistentData.PlayerData.SetCurrentBlockData(blockData);
             }
         }
@@ -340,7 +416,7 @@ namespace StarSalvager
             GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
             GameTimer.SetPaused(false);
             //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
-            SceneLoader.ActivateScene("AlexShulmanTestScene", "AlexShulmanTestScene");
+            SceneLoader.ActivateScene(SceneLoader.ALEX_TEST_SCENE, SceneLoader.ALEX_TEST_SCENE);
         }
 
         //============================================================================================================//
@@ -367,14 +443,32 @@ namespace StarSalvager
         {
             Dictionary<string, object> scrapyardUsageBeginAnalyticsDictionary = new Dictionary<string, object>();
             scrapyardUsageBeginAnalyticsDictionary.Add("Sector Number", Values.Globals.CurrentSector);
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageBegin, scrapyardUsageBeginAnalyticsDictionary);
+            //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageBegin, scrapyardUsageBeginAnalyticsDictionary);
         }
 
         private void ProcessLevelCompleteAnalytics()
         {
             Dictionary<string, object> levelCompleteAnalyticsDictionary = new Dictionary<string, object>();
             levelCompleteAnalyticsDictionary.Add("Level Time", m_levelTimer + m_waveTimer);
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete, levelCompleteAnalyticsDictionary, Values.Globals.CurrentSector);
+            //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete, levelCompleteAnalyticsDictionary, Values.Globals.CurrentSector);
         }
+
+
+        #if UNITY_EDITOR
+
+        [SerializeField]
+        private bool drawGrid = true;
+
+        private void OnDrawGizmos()
+        {
+            if (!drawGrid)
+                return;
+
+            Gizmos.color = Color.red;
+            WorldGrid?.OnDrawGizmos();
+        }
+
+        #endif
+
     }
 }

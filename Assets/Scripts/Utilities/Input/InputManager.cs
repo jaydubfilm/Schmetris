@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Missions;
@@ -17,8 +18,23 @@ namespace StarSalvager.Utilities.Inputs
         private ScrapyardBot[] _scrapyardBots;
 
         public bool isPaused => GameTimer.IsPaused;
-        
-        
+
+        [ShowInInspector, ReadOnly]
+        public bool LockSideMovement
+        {
+            get => _LockSideMovement;
+            set
+            {
+                if (value)
+                    TryApplyMove(0f);
+                
+                _LockSideMovement = value;
+            } 
+        }
+
+        private bool _LockSideMovement;
+
+
         [SerializeField, BoxGroup("DAS"), DisableInPlayMode]
         private float DASTime = 0.15f;
         [SerializeField, BoxGroup("DAS"), ReadOnly]
@@ -121,7 +137,16 @@ namespace StarSalvager.Utilities.Inputs
                     Input.Actions.Default.Pause, Pause
                 },
                 {
-                    Input.Actions.Default.UseBomb, BombTrigger
+                    Input.Actions.Default.SmartAction1, SmartAction1
+                },
+                {
+                    Input.Actions.Default.SmartAction2, SmartAction2
+                },
+                {
+                    Input.Actions.Default.SmartAction3, SmartAction3
+                },
+                {
+                    Input.Actions.Default.SmartAction4, SmartAction4
                 },
                 {
                     Input.Actions.Default.LeftClick, LeftClick
@@ -164,8 +189,25 @@ namespace StarSalvager.Utilities.Inputs
         //============================================================================================================//
 
         #region Inputs
-        
-        private void BombTrigger(InputAction.CallbackContext ctx)
+
+        private void SmartAction1(InputAction.CallbackContext ctx)
+        {
+            TriggerSmartWeapon(ctx, 0);
+        }
+        private void SmartAction2(InputAction.CallbackContext ctx)
+        {
+            TriggerSmartWeapon(ctx, 1);
+        }
+        private void SmartAction3(InputAction.CallbackContext ctx)
+        {
+            TriggerSmartWeapon(ctx, 2);
+        }
+        private void SmartAction4(InputAction.CallbackContext ctx)
+        {
+            TriggerSmartWeapon(ctx, 3);
+        }
+
+        private void TriggerSmartWeapon(InputAction.CallbackContext ctx, int index)
         {
             if (Console.Open)
                 return;
@@ -173,9 +215,13 @@ namespace StarSalvager.Utilities.Inputs
             if (ctx.ReadValue<float>() != 1f)
                 return;
             
+            
+            
             //FIXME Need to ensure that I map appropriate inputs to associated bots
-            _bots[0].BotPartsLogic.TryTriggerBomb();
+            _bots[0].BotPartsLogic.TryTriggerSmartWeapon(index);
         }
+        
+        //============================================================================================================//
 
         private void SideMovement(InputAction.CallbackContext ctx)
         {
@@ -184,8 +230,23 @@ namespace StarSalvager.Utilities.Inputs
             
             if (isPaused)
                 return;
-            
+
             var moveDirection = ctx.ReadValue<float>();
+            
+            if (LockSideMovement)
+            {
+                if (moveDirection != 0f)
+                {
+                    //TODO Sound to play if moving without fuel
+                    //AudioController.PlaySound(SOUND);
+                }
+                
+                
+                TryApplyMove(0f);
+                return;
+            }
+            
+            
 
             TryApplyMove(moveDirection);
 
@@ -272,6 +333,8 @@ namespace StarSalvager.Utilities.Inputs
             {
                 scrapyardBot.Rotate(rot);
             }
+            
+            AudioController.PlaySound(SOUND.BOT_ROTATE);
         }
 
         private void LeftClick(InputAction.CallbackContext ctx)

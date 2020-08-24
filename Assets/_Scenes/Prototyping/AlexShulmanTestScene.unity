@@ -550,6 +550,18 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 2055442825}
+    ActiveGameObject: {fileID: 2055442825}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 860255031}
     ActiveGameObject: {fileID: 860255031}
     GUIDsList: []
@@ -576,18 +588,6 @@ MonoBehaviour:
     list:
     - {fileID: 8672333739092931101}
     ActiveGameObject: {fileID: 8672333739092931101}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -895,6 +895,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2055442827}
   - component: {fileID: 2055442826}
+  - component: {fileID: 2055442828}
   m_Layer: 0
   m_Name: SceneRoot
   m_TagString: Untagged
@@ -928,6 +929,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2055442828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2055442825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee11983ba697f4d448e1955c3d956af3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  music: 1
 --- !u!1 &2115897764
 GameObject:
   m_ObjectHideFlags: 0

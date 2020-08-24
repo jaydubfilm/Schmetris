@@ -1,4 +1,5 @@
-﻿using StarSalvager.Missions;
+﻿using System;
+using StarSalvager.Missions;
 using StarSalvager.Utilities.Extensions;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,13 +11,20 @@ namespace StarSalvager.Utilities.SceneManagement
 {
     public static class SceneLoader
     {
+
+        public const string MAIN_MENU = "MainMenuScene";
+        public const string LEVEL = "LevelScene";
+        public const string SCRAPYARD = "ScrapyardScene";
+        public const string ALEX_TEST_SCENE = "AlexShulmanTestScene";
+        public const string UNIVERSE_MAP = "UniverseMapScene";
+        
         private static readonly Dictionary<string, SceneRoot> SCENES = new Dictionary<string, SceneRoot>
         {
-            { "MainMenuScene", null },
-            { "LevelScene", null },
-            { "ScrapyardScene", null },
-            { "AlexShulmanTestScene", null },
-            { "UniverseMapScene", null }
+            { MAIN_MENU, null },
+            { LEVEL, null },
+            { SCRAPYARD, null },
+            { ALEX_TEST_SCENE, null },
+            { UNIVERSE_MAP, null }
         };
 
         private static MonoBehaviour _coroutineRunner;
@@ -120,8 +128,8 @@ namespace StarSalvager.Utilities.SceneManagement
 
             if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("StarSalvagerMainScene"))
             {
-                ActivateScene("MainMenuScene");
-                SetActiveScene("MainMenuScene");
+                ActivateScene(MAIN_MENU);
+                SetActiveScene(MAIN_MENU);
             }
             else
             {
@@ -161,11 +169,13 @@ namespace StarSalvager.Utilities.SceneManagement
                 SCENES[sceneName].SetSceneObjectsActive(active);
                 return true;
             }
-            
-            Debug.Log("Attempted to set scene active that is not loaded");
+
+            throw new Exception(
+                $"Attempted to set {sceneName} scene {(active ? "active" : "inactive")} that is not loaded");
+
             return false;
         }
-        
+
         //============================================================================================================//
     }
 }

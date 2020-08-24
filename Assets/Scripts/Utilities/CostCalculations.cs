@@ -235,6 +235,9 @@ namespace StarSalvager.Utilities
                 if (resource.resourceType != CraftCost.TYPE.Part)
                     continue;
 
+                if (resource.type == (int)PART_TYPE.CORE)
+                    continue;
+
                 var partCount = partData.Count(p => p.Type == resource.type && p.Level == resource.partPrerequisiteLevel);
                 if (partCount < resource.amount)
                     return false;

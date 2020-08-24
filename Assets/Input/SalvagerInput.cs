@@ -61,9 +61,33 @@ namespace StarSalvager.Utilities.Inputs
                     ""interactions"": ""Press(behavior=2)""
                 },
                 {
-                    ""name"": ""UseBomb"",
+                    ""name"": ""SmartAction1"",
                     ""type"": ""Button"",
-                    ""id"": ""e758f89c-6d93-4423-882c-8d8b2930bd69"",
+                    ""id"": ""e2eb2b5c-b9b5-4e20-bc42-b583bd66256c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""SmartAction2"",
+                    ""type"": ""Button"",
+                    ""id"": ""5e24e476-5e45-48f3-84ab-eda07748ce4a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""SmartAction3"",
+                    ""type"": ""Button"",
+                    ""id"": ""13c775c0-f0d7-419f-a344-abde5b074c9d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""SmartAction4"",
+                    ""type"": ""Button"",
+                    ""id"": ""5d09092d-457a-4720-9f18-b4b584fd9e21"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
@@ -237,12 +261,45 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     ""name"": """",
-                    ""id"": ""e592cb76-9feb-4911-96c8-ae6eb2439125"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""id"": ""5ce964b7-0b1f-4db0-809a-fa6ba2389678"",
+                    ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""UseBomb"",
+                    ""action"": ""SmartAction1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""70947527-d913-4d8d-9e8e-f27b3aa38fb6"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SmartAction2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cdecaf24-137c-46af-9e5a-d7bcfc13c852"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SmartAction3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5579b4d4-5853-4c62-adfd-fcc6d1a87a06"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SmartAction4"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -668,7 +725,10 @@ namespace StarSalvager.Utilities.Inputs
             m_Default_LeftClick = m_Default.FindAction("Left Click", throwIfNotFound: true);
             m_Default_RightClick = m_Default.FindAction("Right Click", throwIfNotFound: true);
             m_Default_Pause = m_Default.FindAction("Pause", throwIfNotFound: true);
-            m_Default_UseBomb = m_Default.FindAction("UseBomb", throwIfNotFound: true);
+            m_Default_SmartAction1 = m_Default.FindAction("SmartAction1", throwIfNotFound: true);
+            m_Default_SmartAction2 = m_Default.FindAction("SmartAction2", throwIfNotFound: true);
+            m_Default_SmartAction3 = m_Default.FindAction("SmartAction3", throwIfNotFound: true);
+            m_Default_SmartAction4 = m_Default.FindAction("SmartAction4", throwIfNotFound: true);
             // Vertical
             m_Vertical = asset.FindActionMap("Vertical", throwIfNotFound: true);
             m_Vertical_SideMovement = m_Vertical.FindAction("Side Movement", throwIfNotFound: true);
@@ -735,7 +795,10 @@ namespace StarSalvager.Utilities.Inputs
         private readonly InputAction m_Default_LeftClick;
         private readonly InputAction m_Default_RightClick;
         private readonly InputAction m_Default_Pause;
-        private readonly InputAction m_Default_UseBomb;
+        private readonly InputAction m_Default_SmartAction1;
+        private readonly InputAction m_Default_SmartAction2;
+        private readonly InputAction m_Default_SmartAction3;
+        private readonly InputAction m_Default_SmartAction4;
         public struct DefaultActions
         {
             private @SalvagerInput m_Wrapper;
@@ -745,7 +808,10 @@ namespace StarSalvager.Utilities.Inputs
             public InputAction @LeftClick => m_Wrapper.m_Default_LeftClick;
             public InputAction @RightClick => m_Wrapper.m_Default_RightClick;
             public InputAction @Pause => m_Wrapper.m_Default_Pause;
-            public InputAction @UseBomb => m_Wrapper.m_Default_UseBomb;
+            public InputAction @SmartAction1 => m_Wrapper.m_Default_SmartAction1;
+            public InputAction @SmartAction2 => m_Wrapper.m_Default_SmartAction2;
+            public InputAction @SmartAction3 => m_Wrapper.m_Default_SmartAction3;
+            public InputAction @SmartAction4 => m_Wrapper.m_Default_SmartAction4;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -770,9 +836,18 @@ namespace StarSalvager.Utilities.Inputs
                     @Pause.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnPause;
                     @Pause.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnPause;
                     @Pause.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnPause;
-                    @UseBomb.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnUseBomb;
-                    @UseBomb.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnUseBomb;
-                    @UseBomb.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnUseBomb;
+                    @SmartAction1.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction1;
+                    @SmartAction1.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction1;
+                    @SmartAction1.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction1;
+                    @SmartAction2.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction2;
+                    @SmartAction2.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction2;
+                    @SmartAction2.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction2;
+                    @SmartAction3.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction3;
+                    @SmartAction3.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction3;
+                    @SmartAction3.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction3;
+                    @SmartAction4.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction4;
+                    @SmartAction4.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction4;
+                    @SmartAction4.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction4;
                 }
                 m_Wrapper.m_DefaultActionsCallbackInterface = instance;
                 if (instance != null)
@@ -792,9 +867,18 @@ namespace StarSalvager.Utilities.Inputs
                     @Pause.started += instance.OnPause;
                     @Pause.performed += instance.OnPause;
                     @Pause.canceled += instance.OnPause;
-                    @UseBomb.started += instance.OnUseBomb;
-                    @UseBomb.performed += instance.OnUseBomb;
-                    @UseBomb.canceled += instance.OnUseBomb;
+                    @SmartAction1.started += instance.OnSmartAction1;
+                    @SmartAction1.performed += instance.OnSmartAction1;
+                    @SmartAction1.canceled += instance.OnSmartAction1;
+                    @SmartAction2.started += instance.OnSmartAction2;
+                    @SmartAction2.performed += instance.OnSmartAction2;
+                    @SmartAction2.canceled += instance.OnSmartAction2;
+                    @SmartAction3.started += instance.OnSmartAction3;
+                    @SmartAction3.performed += instance.OnSmartAction3;
+                    @SmartAction3.canceled += instance.OnSmartAction3;
+                    @SmartAction4.started += instance.OnSmartAction4;
+                    @SmartAction4.performed += instance.OnSmartAction4;
+                    @SmartAction4.canceled += instance.OnSmartAction4;
                 }
             }
         }
@@ -920,7 +1004,10 @@ namespace StarSalvager.Utilities.Inputs
             void OnLeftClick(InputAction.CallbackContext context);
             void OnRightClick(InputAction.CallbackContext context);
             void OnPause(InputAction.CallbackContext context);
-            void OnUseBomb(InputAction.CallbackContext context);
+            void OnSmartAction1(InputAction.CallbackContext context);
+            void OnSmartAction2(InputAction.CallbackContext context);
+            void OnSmartAction3(InputAction.CallbackContext context);
+            void OnSmartAction4(InputAction.CallbackContext context);
         }
         public interface IVerticalActions
         {

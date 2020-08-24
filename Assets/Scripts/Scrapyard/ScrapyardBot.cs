@@ -1,4 +1,5 @@
-﻿using Recycling;
+﻿using System;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
 using StarSalvager.Values;
@@ -218,6 +219,17 @@ namespace StarSalvager
                 }
             }
         }
+        
+        public void RemoveAllComponents()
+        {
+            for (int i = attachedBlocks.Count - 1; i >= 0; i--)
+            {
+                if (attachedBlocks[i] is Component)
+                {
+                    DetachBit(attachedBlocks[i]);
+                }
+            }
+        }
 
         private void DetachBit(IAttachable attachable)
         {
@@ -245,6 +257,11 @@ namespace StarSalvager
                 case ScrapyardPart _:
                     Recycler.Recycle<ScrapyardPart>(attachable.gameObject);
                     break;
+                case Component _:
+                    Recycler.Recycle<Component>(attachable.gameObject);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(attachable), attachable, null);
             }
         }
 
@@ -369,7 +386,7 @@ namespace StarSalvager
 
             foreach (var part in _parts)
             {
-                float value;
+                int value;
 
                 
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type).levels[part.level];
@@ -380,21 +397,21 @@ namespace StarSalvager
                         
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += (int) value;
-                            capacities[BIT_TYPE.GREEN] += (int) value;
-                            capacities[BIT_TYPE.GREY] += (int) value;
+                            capacities[BIT_TYPE.RED] += value;
+                            capacities[BIT_TYPE.GREEN] += value;
+                            capacities[BIT_TYPE.GREY] += value;
                         }
                         
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
                         {
-                            magnetCount += (int)value;
+                            magnetCount += value;
                         }
                         break;
                     case PART_TYPE.MAGNET: 
                     
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
                         {
-                            magnetCount += (int)value;
+                            magnetCount += value;
                         }
                         break;
                     //Determine if we need to setup the shield elements for the bot
@@ -404,27 +421,27 @@ namespace StarSalvager
                     case PART_TYPE.STORE:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += (int) value;
-                            capacities[BIT_TYPE.GREEN] += (int) value;
-                            capacities[BIT_TYPE.GREY] += (int) value;
+                            capacities[BIT_TYPE.RED] += value;
+                            capacities[BIT_TYPE.GREEN] += value;
+                            capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
                     case PART_TYPE.STORE_RED:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += (int) value;
+                            capacities[BIT_TYPE.RED] += value;
                         }
                         break;
                     case PART_TYPE.STORE_GREEN:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.GREEN] += (int) value;
+                            capacities[BIT_TYPE.GREEN] += value;
                         }
                         break;
                     case PART_TYPE.STORE_GREY:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.GREY] += (int) value;
+                            capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
                 }

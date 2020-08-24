@@ -2,11 +2,11 @@
 {
     public enum COMPONENT_TYPE
     {
-        GADGET,
-        GIZMO,
-        THINGY,
-        DOHICKEY,
-        CALLIT,
+        NUT,
+        BOLT,
+        COIL,
+        CHIP,
+        FUSOR
     }
 }
 

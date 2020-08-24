@@ -16,6 +16,9 @@ namespace StarSalvager.Utilities.Animations
 
         [SerializeField, Range(1f, 10f)]
         private float speed;
+        
+        [SerializeField]
+        public bool Loop = true;
 
         [SerializeField]
         private bool PingPong;
@@ -58,7 +61,7 @@ namespace StarSalvager.Utilities.Animations
                 }
                 else
                 {
-                    if (t >= 1f)
+                    if (t >= 1f && Loop)
                         t = 0f;
 
                     t += Time.deltaTime * speed * speedMult;
@@ -75,7 +78,7 @@ namespace StarSalvager.Utilities.Animations
             }
             catch (IndexOutOfRangeException e)
             {
-                Debug.LogError(e);
+                Debug.LogWarning(e);
 
                 return sprites.Length == 0 ? null : sprites[0];
             }
@@ -88,7 +91,7 @@ namespace StarSalvager.Utilities.Animations
 
         private static int GetIndex(float t, int count)
         {
-            return (int) (count * t);
+            return Mathf.Clamp((int) (count * t), 0, count);
         }
         
         //============================================================================================================//

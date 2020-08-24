@@ -23,10 +23,12 @@ namespace StarSalvager.UI.Scrapyard
         private GameObject costWindowObject;
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
-        private ResourceUIElementScrollView costView;
+        private CostUIElementScrollView costView;
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private TMP_Text itemNameText;
+        [SerializeField, Required, FoldoutGroup("Cost Window")]
+        private TMP_Text itemDescriptionText;
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private Image itemIcon;
@@ -121,7 +123,7 @@ namespace StarSalvager.UI.Scrapyard
                         switch (partRemoteData.partType)
                         {
                             //Still want to be able to upgrade the core, just don't want to buy new ones?
-                            case PART_TYPE.CORE /*when i == 0*/:
+                            case PART_TYPE.CORE when i == 0:
                             case PART_TYPE.BOOST:
                                 continue;
                         }
@@ -282,6 +284,7 @@ namespace StarSalvager.UI.Scrapyard
                 .GetRemoteData(lastBlueprint.partType);
             
             itemNameText.text = partRemoteData.name;
+            itemDescriptionText.text = partRemoteData.description;
 
             var resources = partRemoteData.levels[lastBlueprint.level].cost;
 

@@ -14,7 +14,9 @@ namespace StarSalvager.Utilities.UI
     {
         [SerializeField, Required]
         private TMP_Text sliderText;
+        public TMP_Text Text => sliderText;
 
+        public Slider Slider => _slider;
         [SerializeField, Required]
         private Slider _slider;
 
@@ -28,8 +30,14 @@ namespace StarSalvager.Utilities.UI
             set => _slider.value = value;
         }
 
-        public void Init()
+        public bool showMax;
+
+        public void Init(bool showMaxValue = false)
         {
+            showMax = showMaxValue;
+            //Ensure that we have a nice clean slate
+            _slider.onValueChanged.RemoveAllListeners();
+            
             _slider.onValueChanged.AddListener(ValueChanged);
             sliderText.text = FormattedSliderText(format, _slider.value);
         }
@@ -49,9 +57,9 @@ namespace StarSalvager.Utilities.UI
             sliderText.text = FormattedSliderText(format, data);
         }
 
-        private static string FormattedSliderText(string format, float data)
+        private string FormattedSliderText(string format, float data)
         {
-            return string.IsNullOrEmpty(format) ? $"{data}" : string.Format(format, data);
+            return string.IsNullOrEmpty(format) ? $"{data}{(showMax ? "/" + Slider.maxValue :"")}" : string.Format(format, data, Slider.maxValue);
         }
     }
 }

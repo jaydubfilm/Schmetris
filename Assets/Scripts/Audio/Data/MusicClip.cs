@@ -16,8 +16,13 @@ namespace StarSalvager.Audio.Data
         [SerializeField, TableColumnWidth(60), DisplayAsString, PropertyOrder(-100)]
         private MUSIC Music;
 
-        [ShowInInspector, AssetSelector(Paths = "Assets/Audio/Music")]
-        public override AudioClip clip { get; set; }
+        public override AudioClip clip
+        {
+            get => _clip; 
+            set => _clip = value; 
+        }
+        [SerializeField, AssetSelector(Paths = "Assets/Audio/Music")]
+        private AudioClip _clip;
     }
 
 }

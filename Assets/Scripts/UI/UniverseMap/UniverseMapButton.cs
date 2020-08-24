@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using StarSalvager.Factories;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
@@ -38,8 +39,8 @@ namespace StarSalvager
                     SetActiveWaveButtons(false);
                     Values.Globals.CurrentSector = SectorNumber;
                     Values.Globals.CurrentWave = button.WaveNumber;
-                    AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
-                    SceneLoader.ActivateScene("AlexShulmanTestScene", "UniverseMapScene");
+                    //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
+                    SceneLoader.ActivateScene(SceneLoader.ALEX_TEST_SCENE, SceneLoader.UNIVERSE_MAP);
                 });
                 button.transform.position = new Vector2
                     (transform.position.x + 80 * Mathf.Cos((((float)i / (float)numberWaves) * 360 - 90) * -1 * Mathf.Deg2Rad), 
@@ -55,7 +56,10 @@ namespace StarSalvager
             foreach (var button in m_waveButtons)
             {
                 button.gameObject.SetActive(active);
-                button.Button.interactable = PlayerPersistentData.PlayerData.CheckIfQualifies(SectorNumber, button.WaveNumber);
+                if (FactoryManager.Instance.DisableTestingFeatures)
+                    button.Button.interactable = button.WaveNumber == 0 && PlayerPersistentData.PlayerData.CheckIfQualifies(SectorNumber, button.WaveNumber);
+                else
+                    button.Button.interactable = PlayerPersistentData.PlayerData.CheckIfQualifies(SectorNumber, button.WaveNumber);
             }
             ButtonsActive = active;
         }

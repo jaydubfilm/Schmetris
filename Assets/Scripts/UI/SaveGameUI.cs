@@ -47,7 +47,7 @@ namespace StarSalvager.UI.Scrapyard
                 SaveButton.onClick.AddListener(LoadPressed);
             else
                 SaveButton.onClick.AddListener(SavePressed);
-            CancelButton.onClick.AddListener(CancelPressed);
+            CancelButton.onClick.AddListener(CloseMenu);
         }
 
         private void OnEnable()
@@ -56,27 +56,46 @@ namespace StarSalvager.UI.Scrapyard
             
             path = Application.dataPath + "/RemoteData/";
 
-            if (PlayerPersistentData.PlayerMetadata.CurrentSaveFile != null)
-            {
-                nameInputField.text = PlayerPersistentData.PlayerMetadata.CurrentSaveFile.Value.Name;
-                _selectedSaveFileData = PlayerPersistentData.PlayerMetadata.CurrentSaveFile;
-            }
+            if (IsLoadMode)
+                nameInputField.gameObject.SetActive(false);
             else
                 nameInputField.text = DateTime.Now.ToString(DATETIME_FORMAT);
 
             UpdateScrollView();
         }
 
+        private void Update()
+        {
+            SaveButton.interactable = _selectedSaveFileData != null;
+            nameInputField.interactable = _selectedSaveFileData != null;
+        }
+
         //============================================================================================================//
 
 
-        
+
         private void UpdateScrollView()
         {
+            SaveGameContentScrollView.ClearElements<SaveGameUIElement>();
+            
             foreach (var saveFile in PlayerPersistentData.PlayerMetadata.SaveFiles)
             {
+                if (saveFile.FilePath == PlayerPersistentData.autosaveDataPath)
+                    continue;
+
                 var element = SaveGameContentScrollView.AddElement<SaveGameUIElement>(saveFile, $"{saveFile.Name}_UIElement");
                 element.Init(saveFile, SaveFilePressed, DeleteSaveFilePressed);
+            }
+
+            if (!IsLoadMode && PlayerPersistentData.PlayerMetadata.SaveFiles.Count < 6)
+            {
+                SaveFileData emptyFile = new SaveFileData
+                {
+                    Name = "New File",
+                };
+
+                var emptyElement = SaveGameContentScrollView.AddElement<SaveGameUIElement>(emptyFile, $"{emptyFile.Name}_UIElement");
+                emptyElement.Init(emptyFile, SaveFilePressed, DeleteSaveFilePressed, true);
             }
         }
         
@@ -86,7 +105,10 @@ namespace StarSalvager.UI.Scrapyard
         private void SaveFilePressed(SaveFileData data)
         {
             _selectedSaveFileData = data;
-            nameInputField.text = data.Name;
+            if (data.Name == "New File")
+                nameInputField.text = DateTime.Now.ToString(DATETIME_FORMAT);
+            else
+                nameInputField.text = data.Name;
         }
 
         private void DeleteSaveFilePressed(SaveFileData data)
@@ -115,16 +137,16 @@ namespace StarSalvager.UI.Scrapyard
                 PlayerPersistentData.SetCurrentSaveFile(_selectedSaveFileData.Value.FilePath);
                 MissionManager.SetCurrentSaveFile(_selectedSaveFileData.Value.MissionFilePath);
 
-                CancelPressed();
+                CloseMenu();
 
                 FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
-                SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU);
             }
         }
 
         private void SavePressed()
         {
-            if (!_selectedSaveFileData.HasValue || _selectedSaveFileData.Value.Name != nameInputField.text)
+            if (!_selectedSaveFileData.HasValue || _selectedSaveFileData.Value.Name != nameInputField.text || _selectedSaveFileData.Value.Name == "New File")
             {
                 string playerPath = PlayerPersistentData.GetNextAvailableSaveSlot();
                 string missionPath = MissionManager.GetNextAvailableSaveSlot();
@@ -151,7 +173,7 @@ namespace StarSalvager.UI.Scrapyard
 
                     _selectedSaveFileData = newSaveFile;
 
-                    Alert.ShowAlert("Save Successful", "Game Saved. Click to Continue", "Continue", CancelPressed);
+                    Alert.ShowAlert("Save Successful", "Game Saved. Click to Continue", "Continue", CloseMenu);
                 }
                 else
                 {
@@ -193,12 +215,14 @@ namespace StarSalvager.UI.Scrapyard
                         _selectedSaveFileData = newSaveFile;
 
                         UpdateScrollView();
+
+                        CloseMenu();
                     });
             }
             
         }
 
-        private void CancelPressed()
+        private void CloseMenu()
         {
             _selectedSaveFileData = null;
             gameObject.SetActive(false);

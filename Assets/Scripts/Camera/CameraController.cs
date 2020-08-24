@@ -2,6 +2,7 @@
 using StarSalvager.Values;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras.Data;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -87,6 +88,30 @@ namespace StarSalvager.Cameras
 
         //============================================================================================================//
 
+        private static Rect _cameraRect;
+
+        public static bool IsPointInCameraRect(Vector2 position)
+        {
+            return _cameraRect.Contains(position);
+        }
+
+        private void UpdateRect()
+        {
+            var width = camera.aspect * 2f * camera.orthographicSize;
+            var height = 2f * camera.orthographicSize;
+            
+            _cameraRect = new Rect
+            {
+                center = -new Vector2(width / 2f, height / 2f) + (Vector2)transform.position,
+                height = height,
+                width = width,
+            };
+        }
+        
+        
+        //================================================================================================================//
+
+
         public void SetOrthographicSize(float screenWidthInWorld, Vector3 botPosition)
         {
             var orthographicSize = screenWidthInWorld * (Screen.height / (float) Screen.width) / 2;
@@ -108,23 +133,29 @@ namespace StarSalvager.Cameras
             startPos = transform.position;
             targetPos = startPos;
             horzExtent = orthographicSize * Screen.width / Screen.height / 2;
+
+            UpdateRect();
         }
 
-        public void CameraOffset(Vector3 pos, bool state)
+        public void CameraOffset(Vector3 pos, bool useHorizontalOffset)
         {
             transform.position = pos + Vector3.back * 10;
             
             //Scrapyard wants the camera anchored differently, so it uses a different formula
-            if (!state)
+            if (!useHorizontalOffset)
             {
                 transform.position += Vector3.up * (camera.orthographicSize / 2);
             }
-            else
-            {
-                transform.position += Vector3.down * (camera.orthographicSize / 2) / 4;
-                transform.position += Vector3.right * (camera.orthographicSize * Screen.width / Screen.height) / 4;
-            } 
+            //else
+            //{
+            //    transform.position += Vector3.down * (camera.orthographicSize / 2) / 4;
+            //    transform.position += Vector3.right * (camera.orthographicSize * Screen.width / Screen.height) / 4;
+            //}
+
+            UpdateRect();
         }
+        
+        //================================================================================================================//
 
         private void SetOrientation(ORIENTATION orientation)
         {
@@ -139,6 +170,8 @@ namespace StarSalvager.Cameras
                 default:
                     throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);
             }
+
+            UpdateRect();
         }
         
         #if UNITY_EDITOR
@@ -158,8 +191,13 @@ namespace StarSalvager.Cameras
                     throw new ArgumentOutOfRangeException(nameof(Globals.Orientation), Globals.Orientation, null);
             }
         }
-        
-        #endif
+
+        private void OnDrawGizmosSelected()
+        {
+            GizmoExtensions.DrawRect(_cameraRect, Color.cyan);
+        }
+
+#endif
         
 
         //IMoveOnInput functions

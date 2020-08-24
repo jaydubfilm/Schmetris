@@ -17,6 +17,9 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections;
 using StarSalvager.Utilities.Saving;
 using System.Linq;
+using StarSalvager.Audio;
+using System.Collections.Generic;
+using UnityEngine.Analytics;
 
 namespace StarSalvager.UI
 {
@@ -96,6 +99,8 @@ namespace StarSalvager.UI
         private Slider sfxSlider;
         [SerializeField, Required, FoldoutGroup("Options Menu")]
         private Button oBackButton;
+        [SerializeField, Required, FoldoutGroup("Options Menu")]
+        private Toggle testingFeaturesToggle;
         
         #endregion //Menu Windows
         
@@ -111,8 +116,13 @@ namespace StarSalvager.UI
         {
             while (!SceneLoader.IsReady)
                 yield return null;
-            
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.GameStart);
+
+            Dictionary<string, object> applicationOpenAnalyticsDictionary = new Dictionary<string, object>();
+            applicationOpenAnalyticsDictionary.Add("User ID", Globals.UserID);
+            applicationOpenAnalyticsDictionary.Add("Session ID", Globals.SessionID);
+            applicationOpenAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
+            applicationOpenAnalyticsDictionary.Add("Start Time", DateTime.Now.ToString());
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ApplicationOpen, eventDataDictionary: applicationOpenAnalyticsDictionary);
 
             InitButtons();
 
@@ -120,11 +130,18 @@ namespace StarSalvager.UI
 
             if (gameObject.scene == SceneManager.GetActiveScene())
                 Globals.ScaleCamera(m_cameraZoomScaler.value);
+
+            testingFeaturesToggle.isOn = !FactoryManager.Instance.DisableTestingFeatures;
         }
 
         private void Update()
         {
             continueButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0;
+            loadGameButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0;
+
+            m_toggleOrientationButton.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
+            m_cameraZoomScaler.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
+            _zoomSliderText.Text.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
         }
 
         //============================================================================================================//
@@ -160,7 +177,7 @@ namespace StarSalvager.UI
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     MissionManager.SetCurrentSaveFile(missionPath);
                     FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
-                    SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU);
                 }
             });
 
@@ -189,27 +206,16 @@ namespace StarSalvager.UI
 
                 if (playerPath != string.Empty && missionPath != string.Empty)
                 {
-                    /*SaveFileData newSaveFile = new SaveFileData
-                    {
-                        Name = DateTime.Now.ToString(),
-                        Date = DateTime.Now,
-                        FilePath = playerPath,
-                        MissionFilePath = missionPath
-                    };
-                    print("CREATING FILE " + playerPath);
-
-                    PlayerPersistentData.PlayerMetadata.SaveFiles.Add(newSaveFile);
-                    PlayerPersistentData.PlayerMetadata.CurrentSaveFile = newSaveFile;*/
-
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     MissionManager.SetCurrentSaveFile(missionPath);
                     PlayerPersistentData.ResetPlayerData();
                     MissionManager.ResetMissionData();
-                    SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+
+                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
                 }
                 else
                 {
-                    print("NO EMPTY SLOTS");
+                    Toast.AddToast("No empty save slots! Load an existing game or delete a save file to proceed.", time: 3.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
                 }
             });
             
@@ -256,10 +262,14 @@ namespace StarSalvager.UI
             //Options Buttons
             //--------------------------------------------------------------------------------------------------------//
 
-            musicSlider.onValueChanged.AddListener(value => { });
-            sfxSlider.onValueChanged.AddListener(value => { });
+            musicSlider.onValueChanged.AddListener(AudioController.SetMusicVolume);
+            sfxSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);
             
             oBackButton.onClick.AddListener(() => OpenMenu(MENU.MAIN));
+
+            testingFeaturesToggle.onValueChanged.AddListener(delegate {
+                FactoryManager.Instance.DisableTestingFeatures = !testingFeaturesToggle.isOn;
+            });
             
             //--------------------------------------------------------------------------------------------------------//
 
