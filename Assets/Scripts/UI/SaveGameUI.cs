@@ -80,6 +80,9 @@ namespace StarSalvager.UI.Scrapyard
             
             foreach (var saveFile in PlayerPersistentData.PlayerMetadata.SaveFiles)
             {
+                if (saveFile.FilePath == PlayerPersistentData.autosaveDataPath)
+                    continue;
+
                 var element = SaveGameContentScrollView.AddElement<SaveGameUIElement>(saveFile, $"{saveFile.Name}_UIElement");
                 element.Init(saveFile, SaveFilePressed, DeleteSaveFilePressed);
             }
@@ -155,8 +158,8 @@ namespace StarSalvager.UI.Scrapyard
                         Name = nameInputField.text,
                         Date = DateTime.Now,
                         FilePath = playerPath,
-                        MissionFilePath = missionPath,
-                };
+                        MissionFilePath = missionPath
+                    };
                     print("CREATING FILE " + playerPath);
 
                     PlayerPersistentData.PlayerMetadata.SaveFiles.Add(newSaveFile);

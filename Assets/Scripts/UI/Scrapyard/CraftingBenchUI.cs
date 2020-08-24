@@ -123,7 +123,7 @@ namespace StarSalvager.UI.Scrapyard
                         switch (partRemoteData.partType)
                         {
                             //Still want to be able to upgrade the core, just don't want to buy new ones?
-                            case PART_TYPE.CORE /*when i == 0*/:
+                            case PART_TYPE.CORE when i == 0:
                             case PART_TYPE.BOOST:
                                 continue;
                         }
