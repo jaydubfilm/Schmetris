@@ -995,7 +995,6 @@ namespace StarSalvager
                     if(closestAttachable is Part)
                         BotPartsLogic.UpdatePartsList();
                     
-                    FrameStop.Instance.Milliseconds(75);
                     
                     //------------------------------------------------------------------------------------------------//
                     break;
@@ -1015,6 +1014,8 @@ namespace StarSalvager
         /// <param name="attachable"></param>
         private void AsteroidDamageAt(IAttachable attachable)
         {
+            FrameStop.Instance.Milliseconds(75);
+
             TryHitAt(attachable, 10000);
             AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
             
