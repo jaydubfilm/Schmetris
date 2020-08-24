@@ -16,8 +16,11 @@ namespace StarSalvager.UI
         private static BitAttachableFactory _bitAttachableFactory;
         private static PartAttachableFactory _partAttachableFactory;
         private static ComponentAttachableFactory _componentAttachableFactory;
-        
+
+        private static DroneDesigner mDroneDesigner;
+
         //============================================================================================================//
+
 
         [SerializeField, Required]
         private Image resourceImage;
@@ -52,6 +55,9 @@ namespace StarSalvager.UI
             if (_componentAttachableFactory == null)
                 _componentAttachableFactory = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>();
 
+            if (mDroneDesigner == null)
+                mDroneDesigner = FindObjectOfType<DroneDesigner>();
+
             this.data = data;
 
 
@@ -78,7 +84,15 @@ namespace StarSalvager.UI
                     resourceImage.sprite = _partAttachableFactory.GetProfileData((PART_TYPE) data.type)
                         .GetSprite(data.partPrerequisiteLevel);
 
-                    var partCount = PlayerPersistentData.PlayerData.partsInStorageBlockData.Count(x => x.Type == data.type && x.Level == data.partPrerequisiteLevel);
+                    int partCount;
+                    if (data.type == (int)PART_TYPE.CORE)
+                    {
+                        partCount = mDroneDesigner._scrapyardBot.attachedBlocks.GetBlockDatas().Count(x => x.Type == (int)PART_TYPE.CORE && x.Level == data.partPrerequisiteLevel);
+                    }
+                    else
+                    {
+                        partCount = PlayerPersistentData.PlayerData.partsInStorageBlockData.Count(x => x.Type == data.type && x.Level == data.partPrerequisiteLevel);
+                    }
                     
                     costText.text = $"{partCount}/{data.amount}";
                     break;
