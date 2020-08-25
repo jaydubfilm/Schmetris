@@ -23,7 +23,8 @@ namespace StarSalvager.Audio
         private const string MUSIC_VOLUME ="Music_Volume";
         private const string SFX_VOLUME ="SFX_Volume";
         private const string SFX_PITCH ="SFX_Pitch";
-            
+
+        private const int MAX_CHANNELS = 2;
         
         //Audio Sources
         //============================================================================================================//
@@ -103,11 +104,35 @@ namespace StarSalvager.Audio
 
             volume = Mathf.Clamp01(volume);
             pitch = Mathf.Clamp(pitch, 0.01f, 3f);
+
+
+            switch (sound)
+            {
+                case SOUND.REPAIRER_PULSE:
+                case SOUND.SHIELD_RECHARGE:
+                    Instance.PlayLoopingSound(sound);
+                    return;
+            }
+            
             
             if(pitch != 1f)
                 Instance.PlaySoundPitched(sound, pitch);
             else
                 Instance.PlayOneShot(sound, volume);
+        }
+        
+        public static void StopSound(SOUND sound)
+        {
+            if (Instance == null)
+                return;
+            
+            switch (sound)
+            {
+                case SOUND.REPAIRER_PULSE:
+                case SOUND.SHIELD_RECHARGE:
+                    Instance.StopLoopingSound(sound);
+                    return;
+            }
         }
         
         public static void PlayMusic(MUSIC music)
@@ -180,29 +205,7 @@ namespace StarSalvager.Audio
             
             Instance?.StopMoveSound(enemyId);
         }
-        
-        //============================================================================================================//
 
-        /*public static void PlayLoopingSound(SOUND sound)
-        {
-            switch (sound)
-            {
-                case SOUND.REPAIRER_PULSE:
-                case SOUND.SHIELD_RECHARGE:
-                    break;
-            }
-        }
-        
-        public static void StopLoopingSound(SOUND sound)
-        {
-            switch (sound)
-            {
-                case SOUND.REPAIRER_PULSE:
-                case SOUND.SHIELD_RECHARGE:
-                    break;
-            }
-        }*/
-        
         //============================================================================================================//
 
         private void EnemyFireSound(string enemyId, float volume)
@@ -253,16 +256,15 @@ namespace StarSalvager.Audio
 
         private void PlayOneShot(SOUND sound, float volume)
         {
-            var clip = soundClips.FirstOrDefault(s => s.sound == sound)?.clip;
+            if (!TryGetSoundClip(sound, out AudioClip clip))
+                return;
 
             PlayOneShot(clip, volume);
         }
 
         private void PlaySoundPitched(SOUND sound, float pitch)
         {
-            var clip = soundClips.FirstOrDefault(s => s.sound == sound)?.clip;
-
-            if (clip == null)
+            if (!TryGetSoundClip(sound, out AudioClip clip))
                 return;
 
             masterMixer.SetFloat(SFX_PITCH, pitch * 100f);
@@ -285,10 +287,7 @@ namespace StarSalvager.Audio
 
         private void PlayMusicLoop(MUSIC music)
         {
-            //TODO Still need to setup fading here
-            var clip = musicClips.FirstOrDefault(s => s.sound == music)?.clip;
-            
-            if (clip == null)
+            if (!TryGetMusicClip(music, out AudioClip clip))
                 return;
 
             var weights = new float[Enum.GetValues(typeof(MUSIC)).Length];
@@ -310,6 +309,30 @@ namespace StarSalvager.Audio
         //Looping Sounds
         //============================================================================================================//
 
+        private void PlayLoopingSound(SOUND sound)
+        {
+            if (!TryGetSoundClip(sound, out AudioClip clip))
+                return;
+            
+            PlayLoopingSound(new LoopingSound
+            {
+                clip = clip,
+                maxChannels = MAX_CHANNELS
+            });
+        }
+        
+        private void StopLoopingSound(SOUND sound)
+        {
+            if (!TryGetSoundClip(sound, out AudioClip clip))
+                return;
+            
+            StopLoopingSound(new LoopingSound
+            {
+                clip = clip,
+                maxChannels = MAX_CHANNELS
+            });
+        }
+        
         private void PlayLoopingSound(LoopingSound loopingSound)
         {
             if(activeLoopingSounds == null)
@@ -369,6 +392,23 @@ namespace StarSalvager.Audio
         }
         
         //============================================================================================================//
+
+        private bool TryGetMusicClip(MUSIC music, out AudioClip clip)
+        {
+            return TryGetClip(musicClips, music, out clip);
+        }
+        private bool TryGetSoundClip(SOUND sound, out AudioClip clip)
+        {
+            return TryGetClip(soundClips, sound, out clip);
+        }
+
+        //============================================================================================================//
+        
+        private static bool TryGetClip<T>(IEnumerable<BaseSound<T>> list, T sound, out AudioClip clip) where T : Enum
+        {
+            clip = list.FirstOrDefault(s => Equals(s.sound, sound))?.clip;
+            return clip != null;
+        }
 
         #endregion
         
@@ -459,7 +499,11 @@ namespace StarSalvager.Audio
                 {
                     attackClip = null,
                     enemyID = enemyID,
-                    moveSound = LoopingSound.Empty
+                    moveSound = new LoopingSound
+                    {
+                        clip = null,
+                        maxChannels = MAX_CHANNELS
+                    }
                 });
             }
         }
