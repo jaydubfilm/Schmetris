@@ -135,7 +135,7 @@ namespace StarSalvager.Factories
             
             enemy.m_enemyData = enemyData;
             enemy.SetupHealthValues(enemyData.Health, enemyData.Health);
-            enemy.SetupSprite();
+            enemy.Init();
 
             return enemy.GetComponent<T>();
         }

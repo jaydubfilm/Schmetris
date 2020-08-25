@@ -13,7 +13,7 @@ using StarSalvager.Audio;
 namespace StarSalvager.AI
 {
     [RequireComponent(typeof(StateAnimator))]
-    public class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation
+    public class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle
     {
         public EnemyData m_enemyData;
 
@@ -85,10 +85,12 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
-        public virtual void SetupSprite()
+        public void Init()
         {
             renderer.sprite = m_enemyData?.Sprite;
             StateAnimator.SetController(m_enemyData?.AnimationController);
+            
+            AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
         }
 
         private void SetupPositions()
@@ -133,6 +135,8 @@ namespace StarSalvager.AI
 
                 LevelManager.Instance.ProjectileManager.AddProjectile(newProjectile);
             }
+            
+            AudioController.PlayEnemyFireSound(m_enemyData.EnemyType, 1f);
         }
 
         //Check what attack style this enemy uses, and use the appropriate method to get the firing location
@@ -383,6 +387,10 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
+        public void CustomRecycle(params object[] args)
+        {
+            AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
+        }
     }
 }
  

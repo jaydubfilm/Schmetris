@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Recycling;
 using Sirenix.OdinInspector;
+using StarSalvager.AI;
 using StarSalvager.Audio.Data;
+using StarSalvager.Factories;
+using StarSalvager.Factories.Data;
 using StarSalvager.Utilities;
 using UnityEngine;
 using UnityEngine.Audio;
+using Object = UnityEngine.Object;
 
 namespace StarSalvager.Audio
 {
@@ -39,23 +45,47 @@ namespace StarSalvager.Audio
         //Sound Lists
         //============================================================================================================//
         
+        [SerializeField, Required, FoldoutGroup("Audio Mixer Groups")]
+        private AudioMixerGroup sfxAudioMixerGroup;
+        
+        //Sound Lists
+        //============================================================================================================//
+        
         [SerializeField, FoldoutGroup("Sound Effects")]
         [TableList(DrawScrollView = true, MaxScrollViewHeight = 300, AlwaysExpanded = true, HideToolbar = true)]
         private List<SoundClip> soundClips;
         
-        [SerializeField, FoldoutGroup("Music")]
+        [SerializeField, FoldoutGroup("Music"), PropertySpace(SpaceBefore = 10f)]
         [TableList(DrawScrollView = true, MaxScrollViewHeight = 300, AlwaysExpanded = true, HideToolbar = true)]
         private List<MusicClip> musicClips;
 
-        [SerializeField, FoldoutGroup("Music Fade")]
+        [SerializeField, FoldoutGroup("Music/Music Fade", Order = -100)]
         private AudioMixerSnapshot[] musicSnapshots;
 
-        [SerializeField, FoldoutGroup("Music Fade")]
-        private float musicFadeTime;
+        [SerializeField, FoldoutGroup("Music/Music Fade")]
         //MAIN_MENU
         //GAMEPLAY
         //SCRAPYARD
+        private float musicFadeTime;
         
+        //============================================================================================================//
+
+        [SerializeField]
+        private List<EnemySound> EnemyEffects;
+
+        [SerializeField]
+        private GameObject audioSourcePrefab;
+
+        private Dictionary<LoopingSound, Stack<AudioSource>> activeLoopingSounds;
+
+        //============================================================================================================//
+
+        private new Transform transform => _transform ? _transform : _transform = gameObject.transform;
+        private Transform _transform;
+        //============================================================================================================//
+
+        #region Staic Functions
+
         //Static functions
         //============================================================================================================//
 
@@ -122,6 +152,152 @@ namespace StarSalvager.Audio
             volume = Mathf.Clamp01(volume);
             Instance.SetVolume(MUSIC_VOLUME, volume);
         }
+        
+        #endregion //Static Functions
+        
+        //============================================================================================================//
+
+        public static void PlayEnemyFireSound(string enemyId, float volume)
+        {
+            if (string.IsNullOrEmpty(enemyId)) return;
+            
+            Instance?.EnemyFireSound(enemyId, volume);
+        }
+        
+        public static void PlayEnemyMoveSound(string enemyId)
+        {
+            if (string.IsNullOrEmpty(enemyId)) return;
+            
+            Instance?.EnemyMoveSound(enemyId);
+        }
+        
+        public static void StopEnemyMoveSound(string enemyId)
+        {
+            if (string.IsNullOrEmpty(enemyId)) return;
+            
+            Instance?.StopMoveSound(enemyId);
+        }
+        
+        //============================================================================================================//
+
+        private void EnemyFireSound(string enemyId, float volume)
+        {
+            var clip = EnemyEffects.FirstOrDefault(x => x.enemyID == enemyId).attackClip;
+            
+            PlayOneShot(clip, volume);
+        }
+
+        //TODO I'll need to play with the volume based on its proximity to the center of the screen
+        private void EnemyMoveSound(string enemyId)
+        {
+            if(activeEnemySounds == null)
+                activeEnemySounds = new Dictionary<EnemySound, Stack<AudioSource>>();
+            
+            var enemySoundData = EnemyEffects.FirstOrDefault(x => x.enemyID == enemyId);
+
+            if (!activeEnemySounds.ContainsKey(enemySoundData))
+            {
+                activeEnemySounds.Add(enemySoundData, new Stack<AudioSource>());   
+            }
+
+            if (activeEnemySounds[enemySoundData].Count >= enemySoundData.maxChannels)
+                return;
+
+            //TODO Need to get use the recycling system here
+            if (!Recycler.TryGrab<AudioSource>(out AudioSource newAudioSource))
+            {
+                newAudioSource = Instantiate(audioSourcePrefab).GetComponent<AudioSource>();
+            }
+            
+            newAudioSource.transform.SetParent(transform, false);
+            newAudioSource.transform.localPosition = Vector3.zero;
+            
+            
+            activeEnemySounds[enemySoundData].Push(newAudioSource);
+            newAudioSource.outputAudioMixerGroup = sfxAudioMixerGroup;
+            newAudioSource.clip = enemySoundData.moveClip;
+            newAudioSource.loop = true;
+            newAudioSource.Play();
+
+        }
+
+        private void StopMoveSound(string enemyId)
+        {
+            if (activeEnemySounds == null || activeEnemySounds.Count == 0)
+                return;
+            
+            var enemySoundData = EnemyEffects.FirstOrDefault(x => x.enemyID == enemyId);
+            
+            if (!activeEnemySounds.ContainsKey(enemySoundData))
+                return;
+            
+            //TODO Need to check if there are any existing sounds when trying to remove it
+
+            var toRemove = activeEnemySounds[enemySoundData].Pop();
+            toRemove.Stop();
+            toRemove.clip = null;
+            
+            Recycler.Recycle<AudioSource>(toRemove);
+            
+        }
+        
+        //============================================================================================================//
+
+        #region Instance Functions
+
+        //Looping Sounds
+        //============================================================================================================//
+
+        private void PlayLoopingSound(LoopingSound loopingSound)
+        {
+            if(activeLoopingSounds == null)
+                activeLoopingSounds = new Dictionary<LoopingSound, Stack<AudioSource>>();
+            
+            //var enemySoundData = EnemyEffects.FirstOrDefault(x => x.enemyID == enemyId);
+
+            if (!activeLoopingSounds.ContainsKey(loopingSound))
+            {
+                activeLoopingSounds.Add(loopingSound, new Stack<AudioSource>());   
+            }
+
+            if (activeLoopingSounds[loopingSound].Count >= loopingSound.maxChannels)
+                return;
+
+            //TODO Need to get use the recycling system here
+            if (!Recycler.TryGrab<AudioSource>(out AudioSource newAudioSource))
+            {
+                newAudioSource = Instantiate(audioSourcePrefab).GetComponent<AudioSource>();
+            }
+            
+            newAudioSource.transform.SetParent(transform, false);
+            newAudioSource.transform.localPosition = Vector3.zero;
+            
+            
+            activeLoopingSounds[loopingSound].Push(newAudioSource);
+            newAudioSource.outputAudioMixerGroup = sfxAudioMixerGroup;
+            newAudioSource.clip = loopingSound.clip;
+            newAudioSource.loop = true;
+            newAudioSource.Play();
+        }
+
+        private void StopLoopingSound(LoopingSound loopingSound)
+        {
+            if (activeLoopingSounds == null || activeLoopingSounds.Count == 0)
+                return;
+            
+            
+            if (!activeLoopingSounds.ContainsKey(enemySoundData))
+                return;
+            
+            //TODO Need to check if there are any existing sounds when trying to remove it
+
+            var toRemove = activeEnemySounds[enemySoundData].Pop();
+            toRemove.Stop();
+            toRemove.clip = null;
+            
+            Recycler.Recycle<AudioSource>(toRemove);
+        }
+        
 
         //SFX Functions
         //============================================================================================================//
@@ -130,10 +306,7 @@ namespace StarSalvager.Audio
         {
             var clip = soundClips.FirstOrDefault(s => s.sound == sound)?.clip;
 
-            if (clip == null)
-                return;
-            
-            sfxAudioSource.PlayOneShot(clip, volume);
+            PlayOneShot(clip, volume);
         }
 
         private void PlaySoundPitched(SOUND sound, float pitch)
@@ -148,6 +321,14 @@ namespace StarSalvager.Audio
             //TODO Set Pitch here
             sfxAudioSource.clip = clip;
             sfxAudioSource.Play();
+        }
+        
+        private void PlayOneShot(AudioClip clip, float volume)
+        {
+            if (clip == null)
+                return;
+            
+            sfxAudioSource.PlayOneShot(clip, volume);
         }
         
         //Music Functions
@@ -188,13 +369,16 @@ namespace StarSalvager.Audio
         }
         
         //============================================================================================================//
-        //============================================================================================================//
-        //============================================================================================================//
+
+        #endregion
         
+        //============================================================================================================//
+
+#if UNITY_EDITOR
+
         #region Auto-populate List
         
-        #if UNITY_EDITOR
-        [Button, FoldoutGroup("Sound Effects"), PropertyOrder(-100), DisableInPlayMode]
+        [Button(ButtonSizes.Large), DisableInPlayMode, HorizontalGroup("Row1", Order =  -100)]
         private void FindSFXAssets()
         {
             const string FILE_START = "sfx_SS_";
@@ -234,7 +418,7 @@ namespace StarSalvager.Audio
             //UnityEditor.AssetDatabase.LoadAssetAtPath()
         }
 
-        [Button]
+        [Button("Refresh Data", ButtonSizes.Large), HorizontalGroup("Row1", Order =  -100)]
         private void PopulateValues()
         {
             var sfx = Enum.GetValues(typeof(SOUND));
@@ -267,12 +451,66 @@ namespace StarSalvager.Audio
             }    
         }
 
-        #endif
         
         #endregion //Auto-populate List
-        
+
+#endif
+
         //============================================================================================================//
 
+    }
+
+    [Serializable]
+    public struct LoopingSound
+    {
+        [FoldoutGroup("$GetEnemyType")]
+        public int maxChannels;
+        
+        
+        [FoldoutGroup("$GetEnemyType")]
+        public AudioClip clip;
+    }
+
+    [Serializable]
+    public struct EnemySound
+    {
+        [FoldoutGroup("$GetEnemyType"), ValueDropdown("GetEnemyTypes"), LabelText("Enemy")]
+        public string enemyID;
+
+        public LoopingSound moveSound;
+        
+        [FoldoutGroup("$GetEnemyType")]
+        [DetailedInfoBox("AttackClip Only Plays as OneShot","This sound does not use the looping system, and is not affected by the max channel value")]
+        public AudioClip attackClip;
+
+        #region Unity Editor
+
+#if UNITY_EDITOR
+
+        private string GetEnemyType()
+        {
+            string value = enemyID;
+            ValueDropdownList<string> enemyTypes = new ValueDropdownList<string>();
+            foreach (EnemyProfileData data in Object.FindObjectOfType<FactoryManager>().EnemyProfile.m_enemyProfileData)
+            {
+                enemyTypes.Add(data.EnemyType, data.EnemyTypeID);
+            }
+            return enemyTypes.Find(s => s.Value == value).Text;
+        }
+        
+        private static IEnumerable GetEnemyTypes()
+        {
+            ValueDropdownList<string> enemyTypes = new ValueDropdownList<string>();
+            foreach (EnemyProfileData data in Object.FindObjectOfType<FactoryManager>().EnemyProfile.m_enemyProfileData)
+            {
+                enemyTypes.Add(data.EnemyType, data.EnemyTypeID);
+            }
+            return enemyTypes;
+        }
+        
+#endif
+
+        #endregion
     }
 }
 
