@@ -372,11 +372,12 @@ namespace StarSalvager
                 {
                     case PART_TYPE.CORE:
 
+                        //Determines if the player can move with no available fuel
+                        //NOTE: This needs to happen before the subtraction of resources to prevent premature force-stop
+                        InputManager.Instance.LockSideMovement = resourceValue <= 0f;
+                        
                         if (resourceValue > 0f && useBurnRate)
                             resourceValue -= levelData.burnRate * Time.deltaTime;
-
-                        //Determines if the player can move with no available fuel
-                        InputManager.Instance.LockSideMovement = resourceValue <= 0f;
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
