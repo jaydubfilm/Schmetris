@@ -7,9 +7,14 @@ namespace StarSalvager.Audio.Data
     [Serializable]
     public class SoundClip : BaseSound<SOUND>
     {
-        [ShowInInspector,TableColumnWidth(60), DisplayAsString,  PropertyOrder(-100)]
-        public override SOUND sound { get; set; }
-        
+        public override SOUND sound
+        {
+            get => _sound;
+            set => _sound = value;
+        }
+        [SerializeField, TableColumnWidth(60), DisplayAsString,  PropertyOrder(-100)]
+        private SOUND _sound;
+
         public override AudioClip clip
         {
             get => _clip; 
