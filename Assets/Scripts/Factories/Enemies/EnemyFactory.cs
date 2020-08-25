@@ -142,9 +142,9 @@ namespace StarSalvager.Factories
         
         public T CreateObjectName<T>(string enemyName)
         {
-            var enemyData = m_enemyProfile.m_enemyProfileData.FirstOrDefault(x => x.EnemyType == enemyName);
+            var enemyID = m_enemyProfile.GetEnemyProfileDataByName(enemyName).EnemyID;
 
-            return enemyData == null ? default : CreateObject<T>(enemyData.EnemyTypeID);
+            return string.IsNullOrEmpty(enemyID) ? default : CreateObject<T>(enemyID);
         }
 
 
