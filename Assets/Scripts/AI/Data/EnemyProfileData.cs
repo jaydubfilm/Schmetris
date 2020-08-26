@@ -13,7 +13,7 @@ namespace StarSalvager.Factories.Data
     [Serializable]
     public class EnemyProfileData
     {
-        [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$GetEnemyType/row2", 65), VerticalGroup("$EnemyName/row2/left"), HideLabel]
+        [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$GetEnemyType/row2", 65), VerticalGroup("$GetEnemyType/row2/left"), HideLabel]
         private Sprite m_sprite;
 
         [SerializeField, VerticalGroup("$GetEnemyType/row2/right"), ValueDropdown("GetEnemyTypes")]
