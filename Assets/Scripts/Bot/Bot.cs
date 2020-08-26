@@ -557,6 +557,13 @@ namespace StarSalvager
                                     directionBounce += downVelocity;
                                     directionBounce.Normalize();
                                 }
+                                else
+                                {
+                                    Vector2 sideVelocity = Vector2.left * (UnityEngine.Random.Range(0, 2) * 2 - 1);
+                                    sideVelocity *= 0.5f;
+                                    directionBounce += sideVelocity;
+                                    directionBounce.Normalize();
+                                }
 
                                 float rotation = 180.0f;
                                 if (directionBounce.x >= 0)

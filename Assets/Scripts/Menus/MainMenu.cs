@@ -140,7 +140,7 @@ namespace StarSalvager.UI
             loadGameButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0;
 
             m_toggleOrientationButton.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
-            m_cameraZoomScaler.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
+            //m_cameraZoomScaler.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
             _zoomSliderText.Text.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
         }
 
@@ -154,14 +154,14 @@ namespace StarSalvager.UI
                     ? ORIENTATION.VERTICAL
                     : ORIENTATION.HORIZONTAL;
             });
-            
-            m_cameraZoomScaler.onValueChanged.AddListener(Globals.ScaleCamera);
-            _zoomSliderText.Init();
 
-            
+            _zoomSliderText.Init();
+            m_cameraZoomScaler.onValueChanged.AddListener(Globals.ScaleCamera);
+
+
             //Main Menu Buttons
             //--------------------------------------------------------------------------------------------------------//
-            
+
             newGameButton.onClick.AddListener(() => OpenMenu(MENU.NEW));
 
             continueButton.onClick.AddListener(() =>
