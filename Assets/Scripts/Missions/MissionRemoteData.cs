@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace StarSalvager.Missions
 {
@@ -100,12 +101,7 @@ namespace StarSalvager.Missions
 
         private IEnumerable GetEnemyTypes()
         {
-            ValueDropdownList<string> enemyTypes = new ValueDropdownList<string>();
-            foreach (EnemyProfileData data in GameObject.FindObjectOfType<FactoryManager>().EnemyProfile.m_enemyProfileData)
-            {
-                enemyTypes.Add(data.EnemyType, data.EnemyTypeID);
-            }
-            return enemyTypes;
+            return Object.FindObjectOfType<FactoryManager>().EnemyProfile.GetEnemyTypes();
         }
     }
 }

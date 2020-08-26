@@ -5,17 +5,19 @@ using System.Collections.Generic;
 using System;
 using System.Collections;
 using StarSalvager.Utilities.Animations;
+using UnityEngine.Serialization;
+using Object = UnityEngine.Object;
 
 namespace StarSalvager.Factories.Data
 {
-    [System.Serializable]
+    [Serializable]
     public class EnemyProfileData
     {
-        [SerializeField, HorizontalGroup("$EnemyType/row1"), DisplayAsString]
-        private string m_enemyTypeID = System.Guid.NewGuid().ToString();
+        [SerializeField, HorizontalGroup("$EnemyName/row1"), DisplayAsString, LabelText("Enemy ID")]
+        private string m_enemyTypeID = Guid.NewGuid().ToString();
 
         #if UNITY_EDITOR
-        [Button("Copy"),HorizontalGroup("$EnemyType/row1", 45)]
+        [Button("Copy"),HorizontalGroup("$EnemyName/row1", 45)]
         private void CopyID()
         {
             GUIUtility.systemCopyBuffer = m_enemyTypeID;
@@ -23,60 +25,60 @@ namespace StarSalvager.Factories.Data
         
         #endif
         
-        [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$EnemyType/row2", 65), VerticalGroup("$EnemyType/row2/left"), HideLabel]
+        [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$EnemyName/row2", 65), VerticalGroup("$EnemyName/row2/left"), HideLabel]
         private Sprite m_sprite;
 
-        [SerializeField, VerticalGroup("$EnemyType/row2/right")]
-        private string m_enemyType;
+        [FormerlySerializedAs("m_enemyType")] [SerializeField, VerticalGroup("$EnemyName/row2/right")]
+        private string m_enemyName;
 
-        [SerializeField, VerticalGroup("$EnemyType/row2/right")]
+        [SerializeField, VerticalGroup("$EnemyName/row2/right")]
         private ENEMY_MOVETYPE m_movementType;
 
-        [SerializeField, VerticalGroup("$EnemyType/row2/right")]
+        [SerializeField, VerticalGroup("$EnemyName/row2/right")]
         private bool m_isAttachable;
         
-        [SerializeField, FoldoutGroup("$EnemyType"), OnValueChanged("OnAnimationValueChanged")]
+        [SerializeField, FoldoutGroup("$EnemyName"), OnValueChanged("OnAnimationValueChanged")]
         private AnimationControllerScriptableObject m_enemyAnimationController;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$EnemyName")]
         private ENEMY_ATTACKTYPE m_attackType;
         
-        [SerializeField, FoldoutGroup("$EnemyType"), ValueDropdown("GetProjectileTypes")]
+        [SerializeField, FoldoutGroup("$EnemyName"), ValueDropdown("GetProjectileTypes")]
         private string m_projectileType;
 
         //Variables that are only shown based on the EnemyType
         private bool showOscillationsPerSecond => m_movementType == ENEMY_MOVETYPE.Oscillate || m_movementType == ENEMY_MOVETYPE.OscillateHorizontal;
-        [SerializeField, FoldoutGroup("$EnemyType"), ShowIf("showOscillationsPerSecond")]
+        [SerializeField, FoldoutGroup("$EnemyName"), ShowIf("showOscillationsPerSecond")]
         private float m_oscillationsPerSeconds;
 
         private bool showOscillationAngleRange => m_movementType == ENEMY_MOVETYPE.Oscillate || m_movementType == ENEMY_MOVETYPE.OscillateHorizontal;
-        [SerializeField, FoldoutGroup("$EnemyType"), ShowIf("showOscillationAngleRange")]
+        [SerializeField, FoldoutGroup("$EnemyName"), ShowIf("showOscillationAngleRange")]
         private float m_oscillationAngleRange;
 
-        [SerializeField, FoldoutGroup("$EnemyType"), ShowIf("m_movementType", ENEMY_MOVETYPE.Orbit)]
+        [SerializeField, FoldoutGroup("$EnemyName"), ShowIf("m_movementType", ENEMY_MOVETYPE.Orbit)]
         private float m_orbitRadius;
 
-        [SerializeField, FoldoutGroup("$EnemyType"), ShowIf("m_movementType", ENEMY_MOVETYPE.HorizontalDescend)]
+        [SerializeField, FoldoutGroup("$EnemyName"), ShowIf("m_movementType", ENEMY_MOVETYPE.HorizontalDescend)]
         private float m_numberCellsDescend;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$EnemyName")]
         private bool m_ignoreObstacleAvoidance;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$EnemyName")]
         private bool m_addVelocityToProjectiles;
 
         private bool showSpreadAngle => m_attackType == ENEMY_ATTACKTYPE.AtPlayerCone || m_attackType == ENEMY_ATTACKTYPE.Spray;
-        [SerializeField, FoldoutGroup("$EnemyType"), ShowIf("showSpreadAngle")]
+        [SerializeField, FoldoutGroup("$EnemyName"), ShowIf("showSpreadAngle")]
         private float m_spreadAngle;
 
-        [SerializeField, FoldoutGroup("$EnemyType"), ShowIf("m_attackType", ENEMY_ATTACKTYPE.Spray)]
+        [SerializeField, FoldoutGroup("$EnemyName"), ShowIf("m_attackType", ENEMY_ATTACKTYPE.Spray)]
         private int m_sprayCount;
 
         
 
-        public string EnemyType => m_enemyType;
+        public string EnemyName => m_enemyName;
 
-        public string EnemyTypeID => m_enemyTypeID;
+        public string EnemyID => m_enemyTypeID;
 
         public Sprite Sprite => m_sprite;
         
@@ -121,7 +123,7 @@ namespace StarSalvager.Factories.Data
         private IEnumerable GetProjectileTypes()
         {
             ValueDropdownList<string> projectileTypes = new ValueDropdownList<string>();
-            foreach (ProjectileProfileData data in GameObject.FindObjectOfType<FactoryManager>().ProjectileProfile.m_projectileProfileData)
+            foreach (ProjectileProfileData data in Object.FindObjectOfType<FactoryManager>().ProjectileProfile.m_projectileProfileData)
             {
                 projectileTypes.Add(data.ProjectileType, data.ProjectileTypeID);
             }

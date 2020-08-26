@@ -13,18 +13,18 @@ MonoBehaviour:
   m_Name: Component Remote
   m_EditorClassIdentifier: 
   ComponentRemoteData:
-  - name: Gadget
+  - name: Nut
     componentType: 0
     health: 50
-  - name: Gizmo
+  - name: Bolt
     componentType: 1
     health: 50
   - name: Thingy
     componentType: 2
     health: 50
-  - name: Dohickey
+  - name: Chip
     componentType: 3
     health: 50
-  - name: Whatchamecallit
+  - name: Fusor
     componentType: 4
     health: 50

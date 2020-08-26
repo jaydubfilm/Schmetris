@@ -82,6 +82,7 @@ namespace StarSalvager
         [SerializeField, BoxGroup("Magnets")] public bool useMagnet = true;
         [SerializeField, BoxGroup("Magnets")] public MAGNET currentMagnet = MAGNET.DEFAULT;
 
+        //FIXME I don't think this is the best way of preventing using resouces. Should consider another way
         [SerializeField, BoxGroup("BurnRates")]
         private bool useBurnRate = true;
 
@@ -94,14 +95,16 @@ namespace StarSalvager
         [SerializeField, BoxGroup("Bot Part Data"), DisableInPlayMode, SuffixLabel("s", Overlay = true)]
         private float coolDelay;
 
-        [SerializeField, BoxGroup("Bot Part Data"), ReadOnly]
-        private float coolTimer;
+        [ShowInInspector, BoxGroup("Bot Part Data"), ReadOnly]
+        private float _coreCoolTimer;
 
         [ShowInInspector, BoxGroup("Bot Part Data"), ReadOnly]
-        public int magnetCount { get; private set; }
-        private int magnetOverride;
+        public int MagnetCount { get; private set; }
+        private int _magnetOverride;
 
         //==============================================================================================================//
+
+        private Dictionary<Part, bool> _playingSounds;
 
 
         private Dictionary<Part, float> _projectileTimers;
@@ -145,9 +148,9 @@ namespace StarSalvager
         /// </summary>
         private void UpdatePartData()
         {
-            if (magnetOverride > 0)
+            if (_magnetOverride > 0)
             {
-                magnetCount = magnetOverride;
+                MagnetCount = _magnetOverride;
             }
 
             PlayerPersistentData.PlayerData.ClearLiquidCapacity();
@@ -181,7 +184,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
 
-            magnetCount = 0;
+            MagnetCount = 0;
 
             foreach (var part in _parts)
             {
@@ -207,21 +210,21 @@ namespace StarSalvager
                             maxSmartWeapons = value;
                         }
 
-                        if (magnetOverride > 0)
+                        if (_magnetOverride > 0)
                             break;
 
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
                         {
-                            magnetCount += value;
+                            MagnetCount += value;
                         }
                         break;
                     case PART_TYPE.MAGNET:
 
-                        if (magnetOverride > 0)
+                        if (_magnetOverride > 0)
                             break;
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
                         {
-                            magnetCount += value;
+                            MagnetCount += value;
                         }
                         break;
                     //Determine if we need to setup the shield elements for the bot
@@ -235,11 +238,6 @@ namespace StarSalvager
 
                         //TODO Need to add the use of the recycler
                         var shield = FactoryManager.Instance.GetFactory<BotFactory>().CreateShield();
-
-                        //if (!Recycler.TryGrab<Shield>(out Shield shield))
-                        //{
-                        //    shield = Instantiate(shieldPrefab).GetComponent<Shield>();
-                        //}
 
                         shield.transform.SetParent(part.transform);
                         shield.transform.localPosition = Vector3.zero;
@@ -372,11 +370,12 @@ namespace StarSalvager
                 {
                     case PART_TYPE.CORE:
 
+                        //Determines if the player can move with no available fuel
+                        //NOTE: This needs to happen before the subtraction of resources to prevent premature force-stop
+                        InputManager.Instance.LockSideMovement = resourceValue <= 0f;
+                        
                         if (resourceValue > 0f && useBurnRate)
                             resourceValue -= levelData.burnRate * Time.deltaTime;
-
-                        //Determines if the player can move with no available fuel
-                        InputManager.Instance.LockSideMovement = resourceValue <= 0f;
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
@@ -390,13 +389,13 @@ namespace StarSalvager
 
                         part.SetColor(Color.Lerp(Color.white, Color.red, coreHeat / 100f));
 
-                        if (coolTimer > 0f)
+                        if (_coreCoolTimer > 0f)
                         {
-                            coolTimer -= Time.deltaTime;
+                            _coreCoolTimer -= Time.deltaTime;
                             break;
                         }
                         else
-                            coolTimer = 0;
+                            _coreCoolTimer = 0;
 
                         coreHeat -= coolSpeed * Time.deltaTime;
 
@@ -410,7 +409,10 @@ namespace StarSalvager
                     case PART_TYPE.REPAIR:
 
                         if (resourceValue <= 0f && useBurnRate)
+                        {
+                            //TODO Need to play the no resources for repair sound here
                             break;
+                        }
 
                         IHealth toRepair;
 
@@ -433,14 +435,10 @@ namespace StarSalvager
                                 toRepair = part;
                             else
                                 break;
-
                         }
 
-                        if (useBurnRate)
-                        {
-                            if(resourceValue > 0f)
-                                resourceValue -= levelData.burnRate * Time.deltaTime;
-                        }
+                        
+                        resourceValue -= levelData.burnRate * Time.deltaTime;
 
                         var repairAmount = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Heal);
 
@@ -449,7 +447,9 @@ namespace StarSalvager
 
                         //Increase the health of this part depending on the current level of the repairer
                         toRepair.ChangeHealth(repairAmount * Time.deltaTime);
+                        
 
+                        TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
                         break;
                     case PART_TYPE.GUN:
 
@@ -534,6 +534,7 @@ namespace StarSalvager
                     case PART_TYPE.SHIELD:
 
                         const float fakeHealth = 25f;
+                        
                         var data = _shields[part];
                         var shield = data.shield;
                         //shield.transform.position = part.transform.position;
@@ -552,11 +553,17 @@ namespace StarSalvager
                                 //TODO Shield only use resources when recharging
                                 resourceValue -= levelData.burnRate * Time.deltaTime;
                                 _shields[part].currentHp += levelData.burnRate * Time.deltaTime;
+                                
+                                TryPlaySound(part, SOUND.SHIELD_RECHARGE, true);
                             }
                             else
                             {
                                 _shields[part].timer += Time.deltaTime;
                             }
+                        }
+                        else
+                        {
+                            TryPlaySound(part, SOUND.SHIELD_RECHARGE, false);
                         }
 
                         //FIXME This needs to have some sort of play cooldown
@@ -740,8 +747,8 @@ namespace StarSalvager
 
         public void SetMagnetOverride(int magnet)
         {
-            magnetOverride = magnet;
-            magnetCount = magnetOverride;
+            _magnetOverride = magnet;
+            MagnetCount = _magnetOverride;
         }
 
         //==============================================================================================================//
@@ -749,7 +756,7 @@ namespace StarSalvager
         public void AddCoreHeat(float amount)
         {
             coreHeat += amount;
-            coolTimer = coolDelay;
+            _coreCoolTimer = coolDelay;
         }
 
         //Updating UI
@@ -900,6 +907,28 @@ namespace StarSalvager
         {
             _parts.Clear();
         }
+        
+        //============================================================================================================//
+
+        private void TryPlaySound(Part part, SOUND sound, bool play)
+        {
+            if(_playingSounds == null)
+                _playingSounds = new Dictionary<Part, bool>();
+
+            if (!_playingSounds.ContainsKey(part))
+            {
+                _playingSounds.Add(part, play);
+            }
+            else if(_playingSounds[part] == play)
+                return;
+
+            _playingSounds[part] = play;
+            
+            if(play)
+                AudioController.PlaySound(sound);
+            else
+                AudioController.StopSound(sound);
+        }
 
         //============================================================================================================//
 
@@ -938,6 +967,7 @@ namespace StarSalvager
         }
 
         //============================================================================================================//
+        
 
 
     }
