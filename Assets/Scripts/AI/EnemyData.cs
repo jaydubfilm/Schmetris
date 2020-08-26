@@ -59,7 +59,7 @@ namespace StarSalvager
 
         public EnemyData(EnemyRemoteData enemyRemoteData, EnemyProfileData enemyProfileData)
         {
-            EnemyType = enemyRemoteData.EnemyType;
+            EnemyType = enemyRemoteData.EnemyID;
             Name = enemyRemoteData.Name;
             Health = enemyRemoteData.Health;
             MovementSpeed = enemyRemoteData.MovementSpeed;

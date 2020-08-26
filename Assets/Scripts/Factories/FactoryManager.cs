@@ -83,6 +83,7 @@ namespace StarSalvager.Factories
 
         [SerializeField, Required, BoxGroup("Enemies")]
         private EnemyRemoteDataScriptableObject enemyRemoteData;
+        public EnemyRemoteDataScriptableObject EnemyRemoteData => enemyRemoteData;
 
         [SerializeField, Required, BoxGroup("Projectiles")]
         private ProjectileProfileScriptableObject projectileProfile;
