@@ -17,16 +17,18 @@ MonoBehaviour:
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
-    - m_enemyType: 3363c379-70c7-47d1-8cc6-1ca650259a31
+    - m_enemyType: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
       m_enemyCount: 1
     m_stageObstacleData:
     - m_selectionType: 0
       m_shapeName: Small1
       m_category: Small
-      m_asteroidCountPerMinute: 250
+      m_asteroidSize: 0
+      m_countPerMinute: 250
       m_rotation: Random
     - m_selectionType: 0
       m_shapeName: Smal2
       m_category: Medium
-      m_asteroidCountPerMinute: 150
+      m_asteroidSize: 0
+      m_countPerMinute: 150
       m_rotation: Random

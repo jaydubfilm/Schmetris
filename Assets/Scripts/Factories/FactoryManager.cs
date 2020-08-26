@@ -16,7 +16,10 @@ namespace StarSalvager.Factories
     {
         [SerializeField]
         public bool DisableTestingFeatures;
-        
+
+        [SerializeField]
+        private float TimeForAsteroidToFallOneSquare;
+
         [SerializeField, Required, BoxGroup("Temporary")]
         private MissionRemoteDataScriptableObject missionRemoteData;
         public MissionRemoteDataScriptableObject MissionRemoteData => missionRemoteData;
@@ -115,8 +118,13 @@ namespace StarSalvager.Factories
         //============================================================================================================//
 
         private Dictionary<Type, FactoryBase> _factoryBases;
-        
+
         //============================================================================================================//
+
+        public void Start()
+        {
+            Globals.TimeForAsteroidToFallOneSquare = TimeForAsteroidToFallOneSquare;
+        }
 
         public T GetFactory<T>() where T : FactoryBase
         {

@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DisableTestingFeatures: 0
+  TimeForAsteroidToFallOneSquare: 0.25
   missionRemoteData: {fileID: 11400000, guid: 7d456b233d9dde240ad75b09a9d76dd1, type: 2}
   m_sectorRemoteData:
   - SectorData:

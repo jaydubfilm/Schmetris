@@ -14,14 +14,15 @@ namespace StarSalvager.Values
         public static string SessionID = System.Guid.NewGuid().ToString();
 
         public static DIRECTION MovingDirection = DIRECTION.NULL;
-        
+
+        public static float TimeForAsteroidToFallOneSquare = 0.25f;
         public static int GridSizeX;
         public static int GridSizeY;
         public static int ColumnsOnScreen = Constants.initialColumnsOnScreen;
         public static int CurrentSector = 0;
         public static int CurrentWave = 0;
         public static bool SectorComplete = false;
-        public static float AsteroidFallTimer = Constants.timeForAsteroidsToFall / 2;
+        public static float AsteroidFallTimer = TimeForAsteroidToFallOneSquare / 2;
         public static Action<ORIENTATION> OrientationChange;
         
         public static float DASTime = 0.15f;

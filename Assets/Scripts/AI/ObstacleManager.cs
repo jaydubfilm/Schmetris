@@ -71,9 +71,9 @@ namespace StarSalvager
 
             //Simulate the speed of downward movement for obstacles and move the prefabs on screen downward
             Globals.AsteroidFallTimer += Time.deltaTime;
-            if (Globals.AsteroidFallTimer >= Constants.timeForAsteroidsToFall)
+            if (Globals.AsteroidFallTimer >= Globals.TimeForAsteroidToFallOneSquare)
             {
-                Globals.AsteroidFallTimer -= Constants.timeForAsteroidsToFall;
+                Globals.AsteroidFallTimer -= Globals.TimeForAsteroidToFallOneSquare;
                 LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid();
                 if (!LevelManager.Instance.EndWaveState)
                 {
@@ -152,7 +152,7 @@ namespace StarSalvager
 
         private void HandleObstacleMovement()
         {
-            Vector3 amountShift = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Constants.timeForAsteroidsToFall);
+            Vector3 amountShift = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
 
             if (m_distanceHorizontal != 0)
             {

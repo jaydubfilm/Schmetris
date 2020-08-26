@@ -9,7 +9,6 @@ namespace StarSalvager.Values
         public const float gridCellSize = 1.28f;
         private const float gridWidthRelativeToScreen = 3.0f;
         private const float gridHeightRelativeToScreen = 1.25f;
-        public const float timeForAsteroidsToFall = 0.25f;
         public const int enemyGridScanRadius = 4;
         public const float obstacleMass = 2.0f;
         public const float botHorizontalSpeed = 30.0f;
