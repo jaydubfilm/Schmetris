@@ -70,6 +70,7 @@ namespace StarSalvager.Values
             }
             data.PlaythroughID = System.Guid.NewGuid().ToString();
             PlayerData = data;
+            MissionManager.LoadMissionData();
         }
 
         public static string ExportPlayerPersistentData(PlayerData editorData, string saveSlot)

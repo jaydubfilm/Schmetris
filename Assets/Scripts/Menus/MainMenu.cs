@@ -205,7 +205,6 @@ namespace StarSalvager.UI
                 {
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     PlayerPersistentData.ResetPlayerData();
-                    MissionManager.LoadMissionData();
 
                     SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
                 }

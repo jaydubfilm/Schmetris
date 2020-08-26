@@ -304,7 +304,6 @@ namespace StarSalvager.Missions
             for (int i = MissionsCurrentData.NotStartedMissions.Count - 1; i >= 0; i--)
             {
                 Mission mission = MissionsCurrentData.NotStartedMissions[i];
-
                 if (mission.CheckUnlockParameters())
                 {
                     MissionsCurrentData.AddMission(mission);
@@ -351,7 +350,7 @@ namespace StarSalvager.Missions
             MissionsCurrentData currentData = new MissionsCurrentData();
             foreach (Mission mission in MissionsMasterData.GetMasterMissions())
             {
-                currentData.m_notStartedMissionData.Add(mission.ToMissionData());
+                currentData.NotStartedMissionData.Add(mission.ToMissionData());
             }
             PlayerPersistentData.PlayerData.missionsCurrentData = currentData;
         }
