@@ -19,20 +19,7 @@ namespace StarSalvager.Values
 
         public PlayerMetadata()
         {
-            /*SaveFiles.Clear();
-            foreach (var fileName in Directory.GetFiles(path))
-            {
-                if (fileName.Contains("PlayerPersistentDataSaveFile") && !fileName.Contains(".meta"))
-                {
-                    SaveFiles.Add(new SaveFileData
-                    {
-                        Name = fileName,
-                        Date = System.IO.File.GetLastWriteTime(fileName),
-                        FilePath = fileName,
-                        MissionFilePath = fileName.Replace("PlayerPersistentDataSaveFile", "MissionsCurrentDataSaveFile")
-                    });
-                }
-            }*/
+
         }
 
         public string GetPathMostRecentFile()
@@ -54,27 +41,6 @@ namespace StarSalvager.Values
             }
             
             return saveFileMostRecent;
-        }
-
-        public string GetPathMostRecentMissionFile()
-        {
-            string missionFileMostRecent = string.Empty;
-            DateTime dateTimeMostRecent = new DateTime(2000, 1, 1);
-            foreach (var saveFile in SaveFiles)
-            {
-                if (missionFileMostRecent == string.Empty)
-                {
-                    missionFileMostRecent = saveFile.MissionFilePath;
-                    dateTimeMostRecent = saveFile.Date;
-                }
-                else if (DateTime.Compare(dateTimeMostRecent, saveFile.Date) < 0)
-                {
-                    missionFileMostRecent = saveFile.FilePath;
-                    dateTimeMostRecent = saveFile.Date;
-                }
-            }
-
-            return missionFileMostRecent;
         }
     }
 }

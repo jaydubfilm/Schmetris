@@ -140,7 +140,7 @@ namespace StarSalvager.UI
             loadGameButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0;
 
             m_toggleOrientationButton.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
-            m_cameraZoomScaler.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
+            //m_cameraZoomScaler.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
             _zoomSliderText.Text.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
         }
 
@@ -154,28 +154,26 @@ namespace StarSalvager.UI
                     ? ORIENTATION.VERTICAL
                     : ORIENTATION.HORIZONTAL;
             });
-            
-            m_cameraZoomScaler.onValueChanged.AddListener(Globals.ScaleCamera);
-            _zoomSliderText.Init();
 
-            
+            _zoomSliderText.Init();
+            m_cameraZoomScaler.onValueChanged.AddListener(Globals.ScaleCamera);
+
+
             //Main Menu Buttons
             //--------------------------------------------------------------------------------------------------------//
-            
+
             newGameButton.onClick.AddListener(() => OpenMenu(MENU.NEW));
 
             continueButton.onClick.AddListener(() =>
             {
                 string playerPath = PlayerPersistentData.PlayerMetadata.GetPathMostRecentFile();
-                string missionPath = PlayerPersistentData.PlayerMetadata.GetPathMostRecentMissionFile();
 
-                if (playerPath != string.Empty && missionPath != string.Empty)
+                if (playerPath != string.Empty)
                 {
                     print("LOADING FILE " + playerPath);
 
                     PlayerPersistentData.PlayerMetadata.CurrentSaveFile = PlayerPersistentData.PlayerMetadata.SaveFiles.FirstOrDefault(s => s.FilePath == playerPath);
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
-                    MissionManager.SetCurrentSaveFile(missionPath);
                     FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU);
                 }
@@ -202,14 +200,11 @@ namespace StarSalvager.UI
                 OpenMenu(MENU.MAIN);
 
                 string playerPath = PlayerPersistentData.GetNextAvailableSaveSlot();
-                string missionPath = MissionManager.GetNextAvailableSaveSlot();
 
-                if (playerPath != string.Empty && missionPath != string.Empty)
+                if (playerPath != string.Empty)
                 {
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
-                    MissionManager.SetCurrentSaveFile(missionPath);
                     PlayerPersistentData.ResetPlayerData();
-                    MissionManager.ResetMissionData();
 
                     SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
                 }

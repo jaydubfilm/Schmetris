@@ -130,6 +130,7 @@ namespace StarSalvager
         public Dictionary<BIT_TYPE, float> LiquidResourcesAttBeginningOfWave = new Dictionary<BIT_TYPE, float>();
         public Dictionary<ENEMY_TYPE, int> EnemiesKilledInWave = new Dictionary<ENEMY_TYPE, int>();
         public List<string> MissionsCompletedDuringThisFlight = new List<string>();
+        public bool ResetFromDeath = false;
 
         private void Start()
         {
@@ -281,11 +282,18 @@ namespace StarSalvager
             SceneManager.MoveGameObjectToScene(BotGameObject.gameObject, gameObject.scene);
 
             MissionsCompletedDuringThisFlight.Clear();
-            foreach (var resource in LiquidResourcesAttBeginningOfWave)
+
+            if (ResetFromDeath)
             {
-                PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
+                print("Reset liquid resources to before death state");
+                foreach (var resource in LiquidResourcesAttBeginningOfWave)
+                {
+                    PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
+                }
+                LiquidResourcesAttBeginningOfWave.Clear();
+                ResetFromDeath = false;
             }
-            LiquidResourcesAttBeginningOfWave.Clear();
+
             foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
             {
                 LiquidResourcesAttBeginningOfWave.Add(resource.Key, resource.Value);
@@ -349,6 +357,12 @@ namespace StarSalvager
                 Recycling.Recycler.Recycle<Bot>(m_bots[i].gameObject);
                 m_bots.RemoveAt(i);
             }
+
+            if (!ResetFromDeath)
+            {
+                LiquidResourcesAttBeginningOfWave.Clear();
+            }
+
             m_waveTimer = 0;
             m_levelTimer = 0;
             m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
