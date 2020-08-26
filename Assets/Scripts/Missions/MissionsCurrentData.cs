@@ -9,7 +9,7 @@ namespace StarSalvager.Missions
     public class MissionsCurrentData
     {
         //TODO: Switch this set of lists into a dictionary with key = type, value = list<mission>
-        public List<MissionData> m_notStartedMissionData;
+        public List<MissionData> NotStartedMissionData;
         public List<MissionData> CurrentMissionData;
         public List<MissionData> CompletedMissionData;
 
@@ -22,7 +22,7 @@ namespace StarSalvager.Missions
 
         public MissionsCurrentData()
         {
-            m_notStartedMissionData = new List<MissionData>();
+            NotStartedMissionData = new List<MissionData>();
             CurrentMissionData = new List<MissionData>();
             CompletedMissionData = new List<MissionData>();
             NotStartedMissions = new List<Mission>();
@@ -36,6 +36,10 @@ namespace StarSalvager.Missions
             {
                 NotStartedMissions.RemoveAll(m => m.m_missionName == mission.m_missionName);
                 CurrentMissions.Add(mission);
+
+                MissionData missionData = NotStartedMissionData.Find(m => m.MissionName == mission.m_missionName);
+                NotStartedMissionData.RemoveAll(m => m.MissionName == mission.m_missionName);
+                CurrentMissionData.Add(missionData);
             }
         }
 
@@ -55,17 +59,17 @@ namespace StarSalvager.Missions
 
         public void LoadMissionData()
         {
-            NotStartedMissions = m_notStartedMissionData.ImportMissionDatas();
+            NotStartedMissions = NotStartedMissionData.ImportMissionDatas();
             CurrentMissions = CurrentMissionData.ImportMissionDatas();
             CompletedMissions = CompletedMissionData.ImportMissionDatas();
         }
 
         public void SaveMissionData()
         {
-            m_notStartedMissionData.Clear();
+            NotStartedMissionData.Clear();
             foreach(Mission mission in NotStartedMissions)
             {
-                m_notStartedMissionData.Add(mission.ToMissionData());
+                NotStartedMissionData.Add(mission.ToMissionData());
             }
 
             CurrentMissionData.Clear();

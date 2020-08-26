@@ -57,7 +57,7 @@ namespace Recycling
 				return true;
 		}
 		
-		public static bool TryGrab<T>(Enum @enum, out T monoBehaviour, bool returnActive = true) where T: MonoBehaviour
+		public static bool TryGrab<T>(Enum @enum, out T monoBehaviour, bool returnActive = true) where T: Behaviour
 		{
 			monoBehaviour = null;
 
@@ -136,10 +136,12 @@ namespace Recycling
 		{
 			Recycle(typeof(T), gameObject,args);
 		}
-		public static void Recycle<T>(MonoBehaviour mono, params object[] args)
+		public static void Recycle<T>(Behaviour mono, params object[] args)
 		{
 			Recycle(typeof(T), mono.gameObject,args);
 		}
+		
+		//============================================================================================================//
 
 		public static bool TryGrab(Type type, out GameObject gameObject, bool returnActive = true)
 		{
@@ -168,7 +170,7 @@ namespace Recycling
 			return TryGrab(typeof(T), out gameObject, returnActive);
 		}
 		
-		public static bool TryGrab<T>(out T monoBehaviour, bool returnActive = true) where T: MonoBehaviour
+		public static bool TryGrab<T>(out T monoBehaviour, bool returnActive = true) where T: Behaviour
 		{
 			
 			monoBehaviour = null;
@@ -191,9 +193,13 @@ namespace Recycling
 
 			return true;
 		}
-	}
+		
+		//============================================================================================================//
 
+	}
+	
 	//============================================================================================================//
+
 
 	internal class RecycleBin
 	{

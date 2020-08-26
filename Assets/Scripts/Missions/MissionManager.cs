@@ -12,17 +12,6 @@ namespace StarSalvager.Missions
         private static bool fromScriptable = true;
 
         private static readonly string REMOTEDATA_PATH = Application.dataPath + "/RemoteData/";
-        private static readonly List<string> currentDataPaths = new List<string>
-        {
-            REMOTEDATA_PATH + "MissionsCurrentDataSaveFile0.mission",
-            REMOTEDATA_PATH + "MissionsCurrentDataSaveFile1.mission",
-            REMOTEDATA_PATH + "MissionsCurrentDataSaveFile2.mission",
-            REMOTEDATA_PATH + "MissionsCurrentDataSaveFile3.mission",
-            REMOTEDATA_PATH + "MissionsCurrentDataSaveFile4.mission",
-            REMOTEDATA_PATH + "MissionsCurrentDataSaveFile5.mission"
-        };
-        public static readonly string autosaveDataPath = REMOTEDATA_PATH + "MissionsCurrentDataSaveFile6.mission";
-
         private static readonly string masterDataPath = REMOTEDATA_PATH + "MissionsMasterData.mission";
 
         public static string recentCompletedMissionName = "";
@@ -55,29 +44,17 @@ namespace StarSalvager.Missions
         }
         private static MissionsMasterData m_missionsMasterData = null;
 
-        public static MissionsCurrentData MissionsCurrentData = new MissionsCurrentData();
+        public static MissionsCurrentData MissionsCurrentData => PlayerPersistentData.PlayerData.missionsCurrentData;
 
-        private static string CurrentSaveFile = string.Empty;
-
-        public static void SetCurrentSaveFile(string saveFile)
+        public static void LoadMissionData()
         {
-            MissionsCurrentData = ImportMissionsCurrentRemoteData(saveFile);
+            if (MissionsCurrentData == null)
+            {
+                ResetMissionData();
+            }
+            
             MissionsCurrentData.LoadMissionData();
             CheckUnlocks();
-        }
-
-        public static string GetNextAvailableSaveSlot()
-        {
-            foreach (var path in currentDataPaths)
-            {
-                if (!Directory.Exists(path))
-                    System.IO.Directory.CreateDirectory(Application.dataPath + "/RemoteData/");
-
-                if (!File.Exists(path))
-                    return path;
-            }
-
-            return autosaveDataPath;
         }
 
         public static void AddMissionCurrent(string missionName)
@@ -327,25 +304,11 @@ namespace StarSalvager.Missions
             for (int i = MissionsCurrentData.NotStartedMissions.Count - 1; i >= 0; i--)
             {
                 Mission mission = MissionsCurrentData.NotStartedMissions[i];
-
                 if (mission.CheckUnlockParameters())
                 {
                     MissionsCurrentData.AddMission(mission);
                 }
             }
-        }
-
-        public static string ExportMissionsCurrentRemoteData(MissionsCurrentData editorData, string saveSlot)
-        {
-            editorData.SaveMissionData();
-            
-            if (!Directory.Exists(REMOTEDATA_PATH))
-                System.IO.Directory.CreateDirectory(REMOTEDATA_PATH);
-            
-            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
-            System.IO.File.WriteAllText(saveSlot, export);
-
-            return export;
         }
 
         public static string ExportMissionsMasterRemoteData(MissionsMasterData editorData)
@@ -360,27 +323,6 @@ namespace StarSalvager.Missions
             System.IO.File.WriteAllText(masterDataPath, export);
 
             return export;
-        }
-
-        public static MissionsCurrentData ImportMissionsCurrentRemoteData(string saveSlot)
-        {
-            if (!Directory.Exists(REMOTEDATA_PATH))
-                System.IO.Directory.CreateDirectory(REMOTEDATA_PATH);
-
-            if (!File.Exists(saveSlot))
-            {
-                MissionsCurrentData currentData = new MissionsCurrentData();
-                foreach (Mission mission in MissionsMasterData.GetMasterMissions())
-                {
-                    currentData.m_notStartedMissionData.Add(mission.ToMissionData());
-                }
-                //ExportMissionsCurrentRemoteData(currentData, saveSlot);
-                return currentData;
-            }
-
-            var loaded = JsonConvert.DeserializeObject<MissionsCurrentData>(File.ReadAllText(saveSlot));
-
-            return loaded;
         }
 
         public static MissionsMasterData ImportMissionsMasterRemoteData()
@@ -403,17 +345,14 @@ namespace StarSalvager.Missions
             return loaded;
         }
 
-        public static void ResetMissionData()
+        private static void ResetMissionData()
         {
             MissionsCurrentData currentData = new MissionsCurrentData();
             foreach (Mission mission in MissionsMasterData.GetMasterMissions())
             {
-                currentData.m_notStartedMissionData.Add(mission.ToMissionData());
+                currentData.NotStartedMissionData.Add(mission.ToMissionData());
             }
-            MissionsCurrentData = currentData;
-
-            MissionsCurrentData.LoadMissionData();
-            CheckUnlocks();
+            PlayerPersistentData.PlayerData.missionsCurrentData = currentData;
         }
 
         public static void CustomOnApplicationQuit()
@@ -423,11 +362,7 @@ namespace StarSalvager.Missions
 
         public static void SaveMissionDatas()
         {
-            if (CurrentSaveFile != string.Empty)
-            {
-                ExportMissionsCurrentRemoteData(MissionsCurrentData, CurrentSaveFile);
-                ExportMissionsMasterRemoteData(MissionsMasterData);
-            }
+            ExportMissionsMasterRemoteData(MissionsMasterData);
         }
     }
 }

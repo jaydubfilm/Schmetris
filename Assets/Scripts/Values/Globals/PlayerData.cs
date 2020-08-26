@@ -89,12 +89,16 @@ namespace StarSalvager.Values
 
         public Dictionary<int, int> maxSectorProgression = new Dictionary<int, int>();
 
+        public MissionsCurrentData missionsCurrentData = null;
+
         public int currentModularSectorIndex = 0;
 
         public int numLives = 3;
         public bool firstFlight = true;
 
         public string PlaythroughID = string.Empty;
+
+        //============================================================================================================//
 
         //============================================================================================================//
 

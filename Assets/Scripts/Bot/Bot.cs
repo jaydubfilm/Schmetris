@@ -557,6 +557,13 @@ namespace StarSalvager
                                     directionBounce += downVelocity;
                                     directionBounce.Normalize();
                                 }
+                                else
+                                {
+                                    Vector2 sideVelocity = Vector2.left * (UnityEngine.Random.Range(0, 2) * 2 - 1);
+                                    sideVelocity *= 0.5f;
+                                    directionBounce += sideVelocity;
+                                    directionBounce.Normalize();
+                                }
 
                                 float rotation = 180.0f;
                                 if (directionBounce.x >= 0)
@@ -2189,7 +2196,7 @@ namespace StarSalvager
                 return false;
 
 
-            var magnetCount = BotPartsLogic.magnetCount;
+            var magnetCount = BotPartsLogic.MagnetCount;
             var bits = attachedBlocks.OfType<Bit>().ToList();
             
             GameUi.SetCarryCapacity(bits.Count / (float)magnetCount);
@@ -2268,7 +2275,7 @@ namespace StarSalvager
 
         private void DefaultMagnetCheck(List<Bit> bits, out List<Bit> bitsToRemove, in int toRemoveCount)
         {
-            var magnetCount = BotPartsLogic.magnetCount;
+            var magnetCount = BotPartsLogic.MagnetCount;
             
             //Gets the last added overage to remove
             bitsToRemove = bits.GetRange(magnetCount, toRemoveCount);
@@ -2293,7 +2300,7 @@ namespace StarSalvager
 
         private void BumpMagnetCheck(List<Bit> bits, out List<Bit> bitsToRemove, in int toRemoveCount)
         {
-            var magnetCount = BotPartsLogic.magnetCount;
+            var magnetCount = BotPartsLogic.MagnetCount;
             
             //Gets the last added overage to remove
             bitsToRemove = bits.GetRange(magnetCount, toRemoveCount);

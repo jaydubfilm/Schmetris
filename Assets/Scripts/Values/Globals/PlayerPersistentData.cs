@@ -37,6 +37,7 @@ namespace StarSalvager.Values
         {
             PlayerData = ImportPlayerPersistentData(saveFile);
             CurrentSaveFile = saveFile;
+            MissionManager.LoadMissionData();
         }
 
         public static string GetNextAvailableSaveSlot()
@@ -69,6 +70,7 @@ namespace StarSalvager.Values
             }
             data.PlaythroughID = System.Guid.NewGuid().ToString();
             PlayerData = data;
+            MissionManager.LoadMissionData();
         }
 
         public static string ExportPlayerPersistentData(PlayerData editorData, string saveSlot)
@@ -148,8 +150,7 @@ namespace StarSalvager.Values
                 {
                     Name = DateTime.Now.ToString(),
                     Date = DateTime.Now,
-                    FilePath = CurrentSaveFile,
-                    MissionFilePath = CurrentSaveFile.Replace("PlayerPersistentData", "MissionsCurrentData")
+                    FilePath = CurrentSaveFile
                 };
 
                 PlayerMetadata.SaveFiles.Add(newSaveFile);

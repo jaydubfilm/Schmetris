@@ -135,16 +135,16 @@ namespace StarSalvager.Factories
             
             enemy.m_enemyData = enemyData;
             enemy.SetupHealthValues(enemyData.Health, enemyData.Health);
-            enemy.SetupSprite();
+            enemy.Init();
 
             return enemy.GetComponent<T>();
         }
         
         public T CreateObjectName<T>(string enemyName)
         {
-            var enemyData = m_enemyProfile.m_enemyProfileData.FirstOrDefault(x => x.EnemyType == enemyName);
+            var enemyID = m_enemyProfile.GetEnemyProfileDataByName(enemyName).EnemyID;
 
-            return enemyData == null ? default : CreateObject<T>(enemyData.EnemyTypeID);
+            return string.IsNullOrEmpty(enemyID) ? default : CreateObject<T>(enemyID);
         }
 
 
