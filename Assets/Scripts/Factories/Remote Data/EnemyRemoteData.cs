@@ -9,11 +9,11 @@ namespace StarSalvager.Factories.Data
     [System.Serializable]
     public class EnemyRemoteData
     {
-        [SerializeField, FoldoutGroup("$EnemyType"), DisplayAsString, LabelText("Enemy ID")]
-        private string m_enemyType = Guid.NewGuid().ToString();
+        [SerializeField, HorizontalGroup("$Name/row1"), DisplayAsString, LabelText("Enemy ID")]
+        private string m_enemyType = System.Guid.NewGuid().ToString();
 
 #if UNITY_EDITOR
-        [Button("Copy"), FoldoutGroup("$EnemyType")]
+        [Button("Copy"), HorizontalGroup("$Name/row1", 45)]
         private void CopyID()
         {
             GUIUtility.systemCopyBuffer = m_enemyType;
@@ -21,29 +21,29 @@ namespace StarSalvager.Factories.Data
 
 #endif
         
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$Name")]
         private string m_name;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$Name")]
         private int m_health;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$Name")]
         private float m_movementSpeed;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$Name")]
         private float m_attackDamage;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$Name")]
         [UnityEngine.Serialization.FormerlySerializedAs("m_attackSpeed")]
         private float m_rateOfFire;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$Name")]
         private Vector2Int m_dimensions;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$Name")]
         private int m_maxDrops;
 
-        [SerializeField, FoldoutGroup("$EnemyType")]
+        [SerializeField, FoldoutGroup("$Name")]
         private List<RDSEnemyData> m_rdsEnemyData;
 
         public string EnemyID => m_enemyType;
