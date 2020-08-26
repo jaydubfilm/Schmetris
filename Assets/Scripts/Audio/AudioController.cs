@@ -374,6 +374,9 @@ namespace StarSalvager.Audio
             
             //TODO Need to check if there are any existing sounds when trying to remove it
 
+            if (activeLoopingSounds[loopingSound].Count <= 0)
+                return;
+            
             var audioSource = activeLoopingSounds[loopingSound].Pop();
             audioSource.Stop();
             audioSource.clip = null;
