@@ -56,7 +56,7 @@ namespace StarSalvager.Factories.Data
         private bool m_addVelocityToProjectiles;
 
         private bool showSpreadAngle => m_attackType == ENEMY_ATTACKTYPE.AtPlayerCone || m_attackType == ENEMY_ATTACKTYPE.Spray;
-        [SerializeField, FoldoutGroup("$EnemyName"), ShowIf("showSpreadAngle")]
+        [SerializeField, FoldoutGroup("$GetEnemyType"), ShowIf("showSpreadAngle")]
         private float m_spreadAngle;
 
         [SerializeField, FoldoutGroup("$GetEnemyType"), ShowIf("m_attackType", ENEMY_ATTACKTYPE.Spray)]

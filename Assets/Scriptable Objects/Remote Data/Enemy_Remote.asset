@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Enemy_Remote
   m_EditorClassIdentifier: 
   m_enemyRemoteData:
-  - m_enemyType: 3363c379-70c7-47d1-8cc6-1ca650259a31
+  - m_enemyType: 
     m_name: 
     m_health: 10
     m_movementSpeed: 9
     m_attackDamage: 6
-    m_attackSpeed: 0.7
+    m_rateOfFire: 0.7
     m_dimensions: {x: 1, y: 1}
     m_maxDrops: 3
     m_rdsEnemyData:
@@ -34,12 +34,12 @@ MonoBehaviour:
       probability: 5
       isUniqueSpawn: 1
       isAlwaysSpawn: 0
-  - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
+  - m_enemyType: 
     m_name: 
     m_health: 20
     m_movementSpeed: 4.5
     m_attackDamage: 2
-    m_attackSpeed: 2
+    m_rateOfFire: 2
     m_dimensions: {x: 1, y: 1}
     m_maxDrops: 4
     m_rdsEnemyData:
@@ -61,12 +61,12 @@ MonoBehaviour:
       probability: 10
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
-  - m_enemyType: f3c96622-609f-498c-be89-8cc575e46fe0
+  - m_enemyType: 
     m_name: 
     m_health: 50
     m_movementSpeed: 3
     m_attackDamage: 20
-    m_attackSpeed: 0.4
+    m_rateOfFire: 0.4
     m_dimensions: {x: 1, y: 2}
     m_maxDrops: 5
     m_rdsEnemyData:
@@ -88,12 +88,12 @@ MonoBehaviour:
       probability: 10
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
-  - m_enemyType: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
+  - m_enemyType: 
     m_name: 
     m_health: 25
     m_movementSpeed: 4
     m_attackDamage: 15
-    m_attackSpeed: 0.6
+    m_rateOfFire: 0.6
     m_dimensions: {x: 1, y: 1}
     m_maxDrops: 6
     m_rdsEnemyData:
@@ -115,12 +115,12 @@ MonoBehaviour:
       probability: 10
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
-  - m_enemyType: 71b8347a-1d17-4ade-81d4-85930af8210e
+  - m_enemyType: 
     m_name: 
     m_health: 100
     m_movementSpeed: 7
     m_attackDamage: 35
-    m_attackSpeed: 1
+    m_rateOfFire: 1
     m_dimensions: {x: 2, y: 2}
     m_maxDrops: 8
     m_rdsEnemyData:
@@ -142,48 +142,48 @@ MonoBehaviour:
       probability: 10
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
-  - m_enemyType: 29b4a36e-47f7-47a4-8922-f7de5f531383
-    m_name: SuperFly
+  - m_enemyType: 
+    m_name: 
     m_health: 100
     m_movementSpeed: 10
     m_attackDamage: 0
-    m_attackSpeed: 1
+    m_rateOfFire: 1
     m_dimensions: {x: 1, y: 1}
     m_maxDrops: 0
     m_rdsEnemyData: []
-  - m_enemyType: 599761cf-c12a-45b0-bbab-918008384f28
+  - m_enemyType: 
     m_name: 
     m_health: 0
     m_movementSpeed: 0
     m_attackDamage: 0
-    m_attackSpeed: 0
+    m_rateOfFire: 0
     m_dimensions: {x: 1, y: 1}
     m_maxDrops: 0
     m_rdsEnemyData: []
-  - m_enemyType: 842a2d03-61be-4bc2-8391-ae25826a30af
+  - m_enemyType: 
     m_name: 
     m_health: 0
     m_movementSpeed: 0
     m_attackDamage: 0
-    m_attackSpeed: 0
+    m_rateOfFire: 0
     m_dimensions: {x: 1, y: 2}
     m_maxDrops: 0
     m_rdsEnemyData: []
-  - m_enemyType: e90054ce-9f64-4b84-9aab-5c6808cf3c67
+  - m_enemyType: 
     m_name: 
     m_health: 0
     m_movementSpeed: 0
     m_attackDamage: 0
-    m_attackSpeed: 0
+    m_rateOfFire: 0
     m_dimensions: {x: 1, y: 1}
     m_maxDrops: 0
     m_rdsEnemyData: []
-  - m_enemyType: 1f78cb36-17d7-48d7-8e1c-a44536df7949
+  - m_enemyType: 
     m_name: 
     m_health: 0
     m_movementSpeed: 0
     m_attackDamage: 0
-    m_attackSpeed: 0
+    m_rateOfFire: 0
     m_dimensions: {x: 2, y: 2}
     m_maxDrops: 0
     m_rdsEnemyData: []
