@@ -119,7 +119,7 @@ namespace StarSalvager
 
             if (m_enemiesInert)
             {
-                gridMovement += Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Constants.timeForAsteroidsToFall);
+                gridMovement += Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
             }
 
             //Iterate through all agents, and for each one, add the forces from nearby obstacles to their current direction vector

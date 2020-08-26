@@ -31,7 +31,7 @@ namespace StarSalvager.AI
         public ASTEROID_SIZE AsteroidSize => m_asteroidSize;
         public int CountPerMinute => m_countPerMinute;
 
-        public float CountPerRowAverage => (m_countPerMinute / 60.0f) * Constants.timeForAsteroidsToFall;
+        public float CountPerRowAverage => (m_countPerMinute / 60.0f) * Globals.TimeForAsteroidToFallOneSquare;
 
         public int Rotation()
         {

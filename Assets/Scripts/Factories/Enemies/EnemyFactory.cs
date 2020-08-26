@@ -38,7 +38,7 @@ namespace StarSalvager.Factories
         private EnemyData SetupEnemyData(string enemyTypeID)
         {
             EnemyProfileData profile = m_enemyProfile.GetEnemyProfileData(enemyTypeID);
-            EnemyRemoteData remoteData = m_enemyRemoteData.GetRemoteData(enemyTypeID);
+            EnemyRemoteData remoteData = m_enemyRemoteData.GetEnemyRemoteData(enemyTypeID);
             
             if(profile == null)
                 throw new Exception($"No profile found for enemy ID [{enemyTypeID}]");

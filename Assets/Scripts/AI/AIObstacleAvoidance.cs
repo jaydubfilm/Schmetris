@@ -72,7 +72,7 @@ namespace StarSalvager.AI
         //It doesn't look like it was correct. Do a deep dive on the math to make sure it should be there
         private Vector2 CalculateObstaclePositionChange(int x, int y)
         {
-            return LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * (Globals.AsteroidFallTimer / Constants.timeForAsteroidsToFall);
+            return LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * (Globals.AsteroidFallTimer / Globals.TimeForAsteroidToFallOneSquare);
         }
     }
 }

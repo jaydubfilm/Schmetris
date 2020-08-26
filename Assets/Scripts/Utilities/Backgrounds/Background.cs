@@ -43,7 +43,9 @@ namespace StarSalvager.Utilities.Backgrounds
         //============================================================================================================//
         
         private Material m_material;
-        private new Renderer renderer;
+        private new Renderer renderer => _renderer ? _renderer : _renderer = GetComponent<Renderer>();
+        private Renderer _renderer;
+
 
         //private float dasTimer;
         
@@ -51,15 +53,20 @@ namespace StarSalvager.Utilities.Backgrounds
 
         public void Init(Transform cameraTransform, float zDepth)
         {
-            renderer = GetComponent<Renderer>();
+            if (m_material == null)
+            {
+                m_material = new Material(Material);
+                m_material.SetTexture(MainTexture, Texture);
+                m_material.SetColor(MainColor, color);
+            }
             
-            m_material = new Material(Material);
-            m_material.SetTexture(MainTexture, Texture);
-            m_material.SetColor(MainColor, color);
             m_material.mainTextureScale = startTiling;
             m_material.mainTextureOffset = startOffset;
 
             renderer.material = m_material;
+            
+            _moveAmount = Vector2.zero;
+            
             
             _zDepth = zDepth;
             
@@ -73,13 +80,10 @@ namespace StarSalvager.Utilities.Backgrounds
             }
 
 
-            if (moveSpeed == Vector2.zero)
-            {
-                enabled = false;
+            if (moveSpeed != Vector2.zero) 
                 return;
-            }
-
-            //RegisterMoveOnInput();
+            
+            enabled = false;
         }
         
         public void UpdatePosition()
@@ -87,15 +91,8 @@ namespace StarSalvager.Utilities.Backgrounds
             if (moveSpeed == Vector2.zero)
                 return;
 
-            //if (dasTimer > 0f)
-            //    dasTimer -= Time.deltaTime;
-            //else
-            //{
-            //    _horizontalDirecion = _pendingHorizontalDirecion;
-            //}
 
             var horizontalMove = GameTimer.IsPaused ? Vector2.zero : Vector2.right * (horizontalMoveSpeed * Globals.MovingDirection.GetHorizontalDirectionFloat());
-
             SetOffset((moveSpeed + horizontalMove) * Time.deltaTime);
         }
         
@@ -112,23 +109,25 @@ namespace StarSalvager.Utilities.Backgrounds
 
             if (Mathf.Abs(_moveAmount.x) >= 1f)
             {
-                if (_moveAmount.x < 0)
-                    _moveAmount.x += 1;
-                else 
-                    _moveAmount.x -= 1;
+                _moveAmount.x += _moveAmount.x < 0 ? 1f : -1f;
                 
-                //_moveAmount.x = 0f;
+                if (Mathf.Abs(_moveAmount.x) > 0.1f)
+                {
+                    System.Console.WriteLine("Test");
+                }
+
                 offset.x = startOffset.x + _moveAmount.x;
             }
 
             if (Mathf.Abs(_moveAmount.y) >= 1f)
             {
-                if (_moveAmount.y < 0)
-                    _moveAmount.y += 1;
-                else 
-                    _moveAmount.y -= 1;
-                
-                //_moveAmount.y = 0f;
+                _moveAmount.y += _moveAmount.y < 0 ? 1f : -1f;
+
+                if (Mathf.Abs(_moveAmount.y) > 0.1f)
+                {
+                    System.Console.WriteLine("Test");
+                }
+
                 offset.y = startOffset.y + _moveAmount.y;
             }
 
@@ -152,31 +151,9 @@ namespace StarSalvager.Utilities.Backgrounds
                     throw new ArgumentOutOfRangeException(nameof(newOrientation), newOrientation, null);
             }
         }
+
+        //====================================================================================================================//
         
-        //IMoveOnInput
-        //============================================================================================================//
-
-        /*public void RegisterMoveOnInput()
-        {
-            InputManager.RegisterMoveOnInput(this);
-        }*/
-
-        /*
-        //private float _horizontalDirecion;
-        //private float _pendingHorizontalDirecion;
-
-        public void Move(float direction)
-        {
-            //if (Globals.MovingDirection)
-            //{
-            //    _pendingHorizontalDirecion = direction;
-            //    return;
-            //}
-            //
-            //_pendingHorizontalDirecion = _horizontalDirecion = direction;
-//
-            ////dasTimer = Globals.DASTime;
-        }*/
     }
 }
 
