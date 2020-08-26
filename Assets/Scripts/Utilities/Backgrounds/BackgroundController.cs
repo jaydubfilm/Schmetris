@@ -13,16 +13,12 @@ namespace StarSalvager.Utilities.Backgrounds
         [SerializeField]
         private bool ignorePaused;
         
-        //[SerializeField, Required, DisableInPlayMode]
-        private Transform cameraTransform;
-        
-        [SerializeField, ReadOnly]
-        private IBackground[] backgrounds;
-        
+        private Transform _cameraTransform;
+        private IBackground[] _backgrounds;
 
-
+        //Unity Functions
         //================================================================================================================//
-
+                
         private void Start()
         {
             RegisterPausable();
@@ -32,7 +28,7 @@ namespace StarSalvager.Utilities.Backgrounds
         {
             FindCamera();
             
-            backgrounds = GetComponentsInChildren<IBackground>();
+            _backgrounds = GetComponentsInChildren<IBackground>();
 
             InitBackgrounds();
 
@@ -41,9 +37,8 @@ namespace StarSalvager.Utilities.Backgrounds
         }
         private void LateUpdate()
         {
-
             //If the Camera is off, we're using a different one
-            if (cameraTransform.gameObject.activeInHierarchy == false)
+            if (_cameraTransform.gameObject.activeInHierarchy == false)
             {
                 FindCamera();
                 InitBackgrounds();
@@ -52,36 +47,36 @@ namespace StarSalvager.Utilities.Backgrounds
             if (isPaused)
                 return;
             
-            foreach (var background in backgrounds)
+            foreach (var background in _backgrounds)
             {
                 background.UpdatePosition();
             }
+
         }
 
         //================================================================================================================//
 
         private void FindCamera()
         {
-            cameraTransform = FindObjectOfType<Camera>()?.transform;
+            _cameraTransform = FindObjectOfType<Camera>()?.transform;
             
-            if(cameraTransform == null)
+            if(_cameraTransform == null)
                 throw new NullReferenceException("No Active Camera found");
-            
         }
         
         private void InitBackgrounds()
         {
-            var count = backgrounds.Length;
+            var count = _backgrounds.Length;
             
             for (var i = 0; i < count; i++)
             {
-                backgrounds[i].Init(cameraTransform, count - i);
+                _backgrounds[i].Init(_cameraTransform, count - i);
             }
         }
 
         private void SetOrientation(ORIENTATION newOrientation)
         {
-            foreach (var background in backgrounds)
+            foreach (var background in _backgrounds)
             {
                 background.SetOrientation(newOrientation);
             }
@@ -92,7 +87,7 @@ namespace StarSalvager.Utilities.Backgrounds
 
         public void SetActive(bool state)
         {
-            foreach (var background in backgrounds)
+            foreach (var background in _backgrounds)
             {
                 background.gameObject.SetActive(state);
             }   
