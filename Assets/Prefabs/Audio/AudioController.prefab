@@ -563,6 +563,8 @@ MonoBehaviour:
   musicAudioSource: {fileID: 6446213061020250975}
   masterMixer: {fileID: 24100000, guid: a2e153dc1c5ab37498cbd00d93cc5ddd, type: 2}
   musicMixer: {fileID: 24100000, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}
+  sfxAudioMixerGroup: {fileID: 7001779846859700073, guid: a2e153dc1c5ab37498cbd00d93cc5ddd,
+    type: 2}
   soundClips:
   - _sound: 0
     _clip: {fileID: 8300000, guid: 365a0e09e5a7c384a904305561bff330, type: 3}
@@ -640,6 +642,11 @@ MonoBehaviour:
     _clip: {fileID: 8300000, guid: 560ab6084ec5b7f46bf8db19ee50cde4, type: 3}
   - _sound: 37
     _clip: {fileID: 8300000, guid: b151e5ac18d68694fbaeea150c758b9e, type: 3}
+  musicMixerSnapshots:
+  - {fileID: 24500006, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}
+  - {fileID: -8389569066866548857, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}
+  - {fileID: -8638311823700195328, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}
+  musicFadeTime: 2
   musicClips:
   - Music: 0
     _clip: {fileID: 8300000, guid: f6e8c984e95b252469b96b4711a36167, type: 3}
@@ -647,8 +654,31 @@ MonoBehaviour:
     _clip: {fileID: 8300000, guid: 442c5dbdb4c60534d89ae775b1005597, type: 3}
   - Music: 2
     _clip: {fileID: 8300000, guid: 02c3dea1c8327964ea3646af4eb36c31, type: 3}
-  musicSnapshots:
-  - {fileID: 24500006, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}
-  - {fileID: -8389569066866548857, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}
-  - {fileID: -8638311823700195328, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}
-  musicFadeTime: 2
+  EnemyEffects:
+  - enemyID: 3363c379-70c7-47d1-8cc6-1ca650259a31
+    moveSound:
+      clip: {fileID: 8300000, guid: c42fa33ccff9e3446a2b596dc5b933e8, type: 3}
+      maxChannels: 2
+    attackClip: {fileID: 8300000, guid: d58c98190d06eb04da6ce0231ebcb356, type: 3}
+  - enemyID: 4eeac5cf-1c0c-492d-82a1-86108b574464
+    moveSound:
+      clip: {fileID: 8300000, guid: 707e738e2031e7e47a4fa4cc9d0d15dc, type: 3}
+      maxChannels: 2
+    attackClip: {fileID: 8300000, guid: cd4d5e8bd9fd3f2408e1347c533c4ccd, type: 3}
+  - enemyID: f3c96622-609f-498c-be89-8cc575e46fe0
+    moveSound:
+      clip: {fileID: 8300000, guid: ffe73d9309c4d7a428a333cecba2e338, type: 3}
+      maxChannels: 2
+    attackClip: {fileID: 8300000, guid: b14bfed80763c124e9de5d644c1d5ec9, type: 3}
+  - enemyID: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
+    moveSound:
+      clip: {fileID: 8300000, guid: 82faa0e5dca6a3b41b5cdc4083c2f1a7, type: 3}
+      maxChannels: 2
+    attackClip: {fileID: 8300000, guid: 5c24b43784be3a443a963dab8799bacf, type: 3}
+  - enemyID: 71b8347a-1d17-4ade-81d4-85930af8210e
+    moveSound:
+      clip: {fileID: 8300000, guid: bd29752dc806102439df484a078113e7, type: 3}
+      maxChannels: 2
+    attackClip: {fileID: 0}
+  audioSourcePrefab: {fileID: 8252700639282968980, guid: 4f40b5a640b0cea4bbd3a7078911d340,
+    type: 3}

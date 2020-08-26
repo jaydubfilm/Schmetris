@@ -17,6 +17,7 @@ namespace StarSalvager.ScriptableObjects
 
         [SerializeField, Required] public GameObject m_enemyDecoy;
 
+        [SerializeField]
         private List<EnemyProfileData> m_enemyProfileData = new List<EnemyProfileData>();
 
         
