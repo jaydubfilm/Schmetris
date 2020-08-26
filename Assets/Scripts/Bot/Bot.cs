@@ -541,6 +541,7 @@ namespace StarSalvager
                             //Add these to the block depending on its relative position
                             AttachNewBitToExisting(bit, closestAttachable, connectionDirection);
 
+                            AudioController.PlaySound(SOUND.BIT_SNAP);
                             break;
                         case BIT_TYPE.WHITE:
                             //bounce white bit off of bot
