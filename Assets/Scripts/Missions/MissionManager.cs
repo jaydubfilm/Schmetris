@@ -1,22 +1,17 @@
-﻿using Newtonsoft.Json;
-using StarSalvager.Factories;
+﻿using StarSalvager.Factories;
 using StarSalvager.Values;
-using System.Collections.Generic;
-using System.IO;
+using StarSalvager.Utilities.FileIO;
 using UnityEngine;
 
 namespace StarSalvager.Missions
 {
     public static class MissionManager
     {
-        private static bool fromScriptable = true;
+        private static readonly bool fromScriptable = true;
 
-        private static readonly string REMOTEDATA_PATH = Application.dataPath + "/RemoteData/";
-        private static readonly string masterDataPath = REMOTEDATA_PATH + "MissionsMasterData.mission";
-
-        public static string recentCompletedMissionName = "";
-        public static int recentCompletedSectorName;
-        public static int recentCompletedWaveName;
+        public static string RecentCompletedMissionName = "";
+        public static int RecentCompletedSectorName;
+        public static int RecentCompletedWaveName;
 
         public static MissionsMasterData MissionsMasterData
         {
@@ -34,7 +29,7 @@ namespace StarSalvager.Missions
                     }
                     else
                     {
-                        m_missionsMasterData = ImportMissionsMasterRemoteData();
+                        m_missionsMasterData = Files.ImportMissionsMasterRemoteData();
                     }
                     m_missionsMasterData.LoadMissionData();
                 }
@@ -288,14 +283,14 @@ namespace StarSalvager.Missions
         {
             Toast.AddToast(missionName + " Successful!!!!", time: 3.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.End);
             LevelManager.Instance.MissionsCompletedDuringThisFlight.Add(missionName);
-            recentCompletedMissionName = missionName;
+            RecentCompletedMissionName = missionName;
             CheckUnlocks();
         }
 
         private static void ProcessWaveComplete(int sectorNumber, int waveNumber)
         {
-            recentCompletedSectorName = sectorNumber;
-            recentCompletedWaveName = waveNumber;
+            RecentCompletedSectorName = sectorNumber;
+            RecentCompletedWaveName = waveNumber;
             CheckUnlocks();
         }
 
@@ -311,39 +306,7 @@ namespace StarSalvager.Missions
             }
         }
 
-        public static string ExportMissionsMasterRemoteData(MissionsMasterData editorData)
-        {
-            editorData.SaveMissionData();
 
-            if (!Directory.Exists(REMOTEDATA_PATH))
-                System.IO.Directory.CreateDirectory(REMOTEDATA_PATH);
-
-            
-            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
-            System.IO.File.WriteAllText(masterDataPath, export);
-
-            return export;
-        }
-
-        public static MissionsMasterData ImportMissionsMasterRemoteData()
-        {
-            if (!Directory.Exists(REMOTEDATA_PATH))
-                System.IO.Directory.CreateDirectory(REMOTEDATA_PATH);
-
-            if (!File.Exists(masterDataPath))
-            {
-                MissionsMasterData masterData = new MissionsMasterData();
-                foreach (var mission in FactoryManager.Instance.MissionRemoteData.GenerateMissionData())
-                {
-                    masterData.m_missionsMasterData.Add(mission.ToMissionData());
-                }
-                return masterData;
-            }
-
-            var loaded = JsonConvert.DeserializeObject<MissionsMasterData>(File.ReadAllText(masterDataPath));
-
-            return loaded;
-        }
 
         private static void ResetMissionData()
         {
@@ -362,7 +325,7 @@ namespace StarSalvager.Missions
 
         public static void SaveMissionDatas()
         {
-            ExportMissionsMasterRemoteData(MissionsMasterData);
+            Files.ExportMissionsMasterRemoteData(MissionsMasterData);
         }
     }
 }

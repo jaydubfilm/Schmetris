@@ -11,13 +11,13 @@ using UnityEngine.InputSystem;
 
 using Input = StarSalvager.Utilities.Inputs.Input;
 using Recycling;
-using System.IO;
 using Newtonsoft.Json;
 using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using StarSalvager.UI.Scrapyard;
 using UnityEngine.Serialization;
 using StarSalvager.Factories.Data;
+using StarSalvager.Utilities.FileIO;
 
 namespace StarSalvager
 {
@@ -63,7 +63,7 @@ namespace StarSalvager
             _availablePointMarkers = new List<GameObject>();
             _toUndoStack = new Stack<ScrapyardEditData>();
             _toRedoStack = new Stack<ScrapyardEditData>();
-            _scrapyardLayouts = ImportRemoteData();
+            _scrapyardLayouts = Files.ImportLayoutData();
             _currentLayout = null;
             IsUpgrading = false;
             InitInput();
@@ -700,7 +700,7 @@ namespace StarSalvager
             {
                 _scrapyardLayouts.Add(new ScrapyardLayout(layoutName, _scrapyardBot.GetBlockDatas()));
             }
-            ExportRemoteData(_scrapyardLayouts);
+            Files.ExportLayoutData(_scrapyardLayouts);
         }
 
         public void LoadLayout(string name)
@@ -797,23 +797,7 @@ namespace StarSalvager
             }
         }
 
-        public string ExportRemoteData(List<ScrapyardLayout> editorData)
-        {
-            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
-            System.IO.File.WriteAllText(Application.dataPath + "/RemoteData/ScrapyardLayoutData.txt", export);
 
-            return export;
-        }
-
-        public List<ScrapyardLayout> ImportRemoteData()
-        {
-            if (!File.Exists(Application.dataPath + "/RemoteData/ScrapyardLayoutData.txt"))
-                return new List<ScrapyardLayout>();
-
-            var loaded = JsonConvert.DeserializeObject<List<ScrapyardLayout>>(File.ReadAllText(Application.dataPath + "/RemoteData/ScrapyardLayoutData.txt"));
-
-            return loaded;
-        }
 
         #endregion
 
