@@ -13,6 +13,7 @@ using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.UI.Scrapyard;
 using Random = UnityEngine.Random;
+using UnityEngine.SceneManagement;
 
 namespace StarSalvager
 {
@@ -32,6 +33,9 @@ namespace StarSalvager
         private int m_nextStageToSpawn;
 
         private float m_distanceHorizontal = 0.0f;
+
+        private GameObject m_worldElementsRoot;
+        public GameObject WorldElementsRoot => m_worldElementsRoot;
 
         public bool isPaused => GameTimer.IsPaused;
 
@@ -56,6 +60,8 @@ namespace StarSalvager
             m_notFullyInGridShapes = new List<Shape>();
             m_offGridMovingObstacles = new List<OffGridMovement>();
             RegisterPausable();
+            m_worldElementsRoot = new GameObject("WorldElementRoot");
+            SceneManager.MoveGameObjectToScene(m_worldElementsRoot, gameObject.scene);
 
             SetupStage(0);
 
@@ -161,17 +167,17 @@ namespace StarSalvager
                 if (m_distanceHorizontal > 0)
                 {
                     float toMove = Mathf.Min(m_distanceHorizontal, Constants.botHorizontalSpeed * Time.deltaTime);
-                    amountShift += Vector3.right * toMove;
                     m_distanceHorizontal -= toMove;
+                    m_worldElementsRoot.transform.position += Vector3.left * toMove;
                 }
                 else if (m_distanceHorizontal < 0)
                 {
                     float toMove = Mathf.Min(Mathf.Abs(m_distanceHorizontal), Constants.botHorizontalSpeed * Time.deltaTime);
-                    amountShift += Vector3.left * toMove;
                     m_distanceHorizontal += toMove;
+                    m_worldElementsRoot.transform.position += Vector3.right * toMove;
                 }
 
-                int gridPositionXCurrent = (int)Mathf.Ceil(m_distanceHorizontal + (Constants.gridCellSize / 2) / Constants.gridCellSize);
+                /*int gridPositionXCurrent = (int)Mathf.Ceil(m_distanceHorizontal + (Constants.gridCellSize / 2) / Constants.gridCellSize);
                 if (gridPositionXPrevious > gridPositionXCurrent)
                 {
                     LevelManager.Instance.WorldGrid.MoveObstacleMarkersLeftOnGrid(gridPositionXPrevious - gridPositionXCurrent);
@@ -179,7 +185,7 @@ namespace StarSalvager
                 else if (gridPositionXPrevious < gridPositionXCurrent)
                 {
                     LevelManager.Instance.WorldGrid.MoveObstacleMarkersRightOnGrid(gridPositionXCurrent - gridPositionXPrevious);
-                }
+                }*/
             }
 
             for (int i = m_offGridMovingObstacles.Count - 1; i >= 0; i--)
@@ -291,10 +297,10 @@ namespace StarSalvager
                     continue;
                 }
 
-                if (gridPosition.x < 0)
+                /*if (gridPosition.x < 0)
                     pos += Vector3.right * (Values.Globals.GridSizeX * Constants.gridCellSize);
                 else if (gridPosition.x >= Values.Globals.GridSizeX)
-                    pos += Vector3.left * (Values.Globals.GridSizeX * Constants.gridCellSize);
+                    pos += Vector3.left * (Values.Globals.GridSizeX * Constants.gridCellSize);*/
 
                 obstacle.transform.position = pos;
 
@@ -376,6 +382,8 @@ namespace StarSalvager
 
         public void SpawnNewRowOfObstacles()
         {
+            print(LevelManager.Instance.WorldGrid.GetGridPositionOfVector(LevelManager.Instance.BotGameObject.transform.position));
+
             if (isPaused)
                 return;
 
@@ -474,10 +482,6 @@ namespace StarSalvager
                             break;
                     }
                 }
-                
-                /*Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject((BIT_TYPE)Random.Range(1, 6)).GetComponent<Bit>();
-                AddMovableToList(newBit);
-                PlaceMovableOffGrid(newBit, startingLocation, bitPosition, 0.5f);*/
             }
         }
 
@@ -486,7 +490,7 @@ namespace StarSalvager
             if (selectionType == SELECTION_TYPE.CATEGORY)
             {
                 Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, category, numRotations);
-                
+
                 if (LevelManager.Instance != null)
                     LevelManager.Instance.ObstacleManager.AddMovableToList(newShape);
                 
@@ -554,8 +558,8 @@ namespace StarSalvager
         private void PlaceMovableOnGrid(IObstacle movable, Vector2 gridRegion, int radius = 0)
         {
             Vector2 position = LevelManager.Instance.WorldGrid.GetAvailableRandomTopGridSquareWorldPosition(Constants.enemyGridScanRadius, gridRegion);
-            movable.transform.parent = LevelManager.Instance.gameObject.transform;
-            movable.transform.position = position + Vector2.right * m_distanceHorizontal;
+            movable.transform.parent = m_worldElementsRoot.transform;
+            movable.transform.localPosition = position + Vector2.right * m_distanceHorizontal;
             switch (movable)
             {
                 case Bit _:
@@ -581,8 +585,8 @@ namespace StarSalvager
 
         private void PlaceMovableOnGridSpecific(IObstacle movable, Vector2 position, int radius = 0)
         {
-            movable.transform.parent = LevelManager.Instance.gameObject.transform;
-            movable.transform.position = position + Vector2.right * m_distanceHorizontal;
+            movable.transform.parent = m_worldElementsRoot.transform;
+            movable.transform.localPosition = position + Vector2.right * m_distanceHorizontal;
             switch (movable)
             {
                 case Bit _:
@@ -615,8 +619,8 @@ namespace StarSalvager
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector2 startingPosition, Vector2 endPosition, float lerpSpeed, float spinSpeed, bool despawnOnEnd, bool spinning, bool arc)
         {
             obstacle.SetColliderActive(false);
-            obstacle.transform.parent = LevelManager.Instance.gameObject.transform;
-            obstacle.transform.position = startingPosition;
+            obstacle.transform.parent = m_worldElementsRoot.transform;
+            obstacle.transform.localPosition = startingPosition;
 
             if (!arc)
                 m_offGridMovingObstacles.Add(new OffGridMovementLerp(obstacle, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning));

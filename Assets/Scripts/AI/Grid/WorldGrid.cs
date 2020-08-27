@@ -18,9 +18,18 @@ namespace StarSalvager
 
         private int m_positionsShiftedHorizontally = 0;
 
-        public WorldGrid()
+        private GameObject WorldElementsRoot
         {
+            get
+            {
+                if (m_worldElementsRoot == null)
+                {
+                    m_worldElementsRoot = LevelManager.Instance.ObstacleManager.WorldElementsRoot;
+                }
+                return m_worldElementsRoot;
+            }
         }
+        private GameObject m_worldElementsRoot = null;
 
         public void SetupGrid()
         {
@@ -185,7 +194,7 @@ namespace StarSalvager
                 gridPosition.y = 0;
             }
 
-            return m_gridArray[gridPosition.x + (gridPosition.y * Values.Globals.GridSizeX)];
+            return m_gridArray[gridPosition.x + (gridPosition.y * Globals.GridSizeX)];
         }
 
         public GridSquare GetGridSquareAtPosition(int x, int y)
@@ -200,12 +209,24 @@ namespace StarSalvager
 
         public Vector2 GetCenterOfGridSquareInGridPosition(Vector2Int gridPosition)
         {
-            return m_anchorPoint + ((new Vector2(gridPosition.x, gridPosition.y) + m_adjustToMiddleOfGridSquare) * Constants.gridCellSize);
+            Vector2 anchorPoint = m_anchorPoint;
+            /*if (WorldElementsRoot != null)
+            {
+                anchorPoint -= (Vector2)(WorldElementsRoot.transform.position);
+            }*/
+
+            return anchorPoint + ((new Vector2(gridPosition.x, gridPosition.y) + m_adjustToMiddleOfGridSquare) * Constants.gridCellSize);
         }
 
         public Vector2 GetCenterOfGridSquareInGridPosition(int x, int y)
         {
-            return m_anchorPoint + ((new Vector2(x, y) + m_adjustToMiddleOfGridSquare) * Constants.gridCellSize);
+            Vector2 anchorPoint = m_anchorPoint;
+            /*if (WorldElementsRoot != null)
+            {
+                anchorPoint -= (Vector2)(WorldElementsRoot.transform.position);
+            }*/
+
+            return anchorPoint + ((new Vector2(x, y) + m_adjustToMiddleOfGridSquare) * Constants.gridCellSize);
         }
 
         public GridSquare GetGridSquareAtWorldPosition(Vector2 worldPosition)
@@ -252,11 +273,21 @@ namespace StarSalvager
 
         private Vector2 GetRandomTopGridSquareWorldPosition(Vector2 gridRegion)
         {
+            /*if (WorldElementsRoot != null)
+            {
+                gridRegion -= (Vector2)(WorldElementsRoot.transform.position);
+            }*/
+
             return GetCenterOfGridSquareInGridPosition(UnityEngine.Random.Range((int)(Values.Globals.GridSizeX * gridRegion.x), (int)(Values.Globals.GridSizeX * gridRegion.y)), Values.Globals.GridSizeY - 1);
         }
 
         private Vector2Int GetRandomTopGridSquareGridPosition(Vector2 gridRegion)
         {
+            /*if (WorldElementsRoot != null)
+            {
+                gridRegion -= (Vector2)(WorldElementsRoot.transform.position);
+            }*/
+
             return new Vector2Int(UnityEngine.Random.Range((int)(Values.Globals.GridSizeX * gridRegion.x), (int)(Values.Globals.GridSizeX * gridRegion.y)), Values.Globals.GridSizeY - 1);
         }
 
@@ -265,7 +296,8 @@ namespace StarSalvager
             int numTries = 100;
             for (int i = 0; i < numTries; i++)
             {
-                Vector2Int randomTop = GetRandomTopGridSquareGridPosition(gridRegion) + (Vector2Int.right * m_positionsShiftedHorizontally);
+                Vector2Int randomTop = GetRandomTopGridSquareGridPosition(gridRegion);
+                //Vector2Int randomTop = GetRandomTopGridSquareGridPosition(gridRegion) + (Vector2Int.right * m_positionsShiftedHorizontally);
                 bool isFreeSpace = true;
                 Vector2Int obstacleGridScanMinimum = new Vector2Int(
                     Math.Max(0, randomTop.x - scanRadius),
@@ -299,6 +331,11 @@ namespace StarSalvager
 
         public Vector2Int GetGridPositionOfVector(Vector2 worldLocation)
         {
+            /*if (WorldElementsRoot != null)
+            {
+                worldLocation -= (Vector2)(WorldElementsRoot.transform.position);
+            }*/
+            
             return new Vector2Int((int)Mathf.Floor((worldLocation.x - m_anchorPoint.x) / Constants.gridCellSize), (int)Mathf.Floor((worldLocation.y - m_anchorPoint.y) / Constants.gridCellSize));
         }
 

@@ -20,8 +20,17 @@ MonoBehaviour:
     - m_enemyType: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
       m_enemyCount: 1
     m_stageColumnGroupObstacleData:
-    - m_columnGroupMinimum: 0.48
-      m_columnGroupMaximum: 0.52
+    - m_columnGroupMinimum: 0.42
+      m_columnGroupMaximum: 0.44
+      m_stageObstacleData:
+      - m_selectionType: 1
+        m_shapeName: 
+        m_category: Random
+        m_asteroidSize: 0
+        m_countPerMinute: 500
+        m_rotation: Random
+    - m_columnGroupMinimum: 0.56
+      m_columnGroupMaximum: 0.58
       m_stageObstacleData:
       - m_selectionType: 1
         m_shapeName: 
