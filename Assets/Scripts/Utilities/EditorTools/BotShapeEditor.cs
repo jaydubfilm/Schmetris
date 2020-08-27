@@ -11,6 +11,7 @@ using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
 using Newtonsoft.Json;
 using System.IO;
+using StarSalvager.Utilities.FileIO;
 using StarSalvager.Values;
 
 namespace StarSalvager
@@ -25,17 +26,8 @@ namespace StarSalvager
         [SerializeField]
         private BotShapeEditorUI m_botShapeEditorUI;
 
-        public EditorBotShapeGeneratorData EditorBotShapeData
-        {
-            get
-            {
-                if (m_editorBotShapeData == null)
-                    m_editorBotShapeData = FactoryManager.Instance.ImportBotShapeRemoteData();
-
-                return m_editorBotShapeData;
-            }
-        }
-        private EditorBotShapeGeneratorData m_editorBotShapeData = null;
+        public EditorBotShapeGeneratorData EditorBotShapeData => _mEditorBotShapeData ?? (_mEditorBotShapeData = Files.ImportBotShapeRemoteData());
+        private EditorBotShapeGeneratorData _mEditorBotShapeData;
 
         public BIT_TYPE? SelectedBitType = null;
 
@@ -346,7 +338,7 @@ namespace StarSalvager
 
         public void OnApplicationQuit()
         {
-            FactoryManager.Instance.ExportBotShapeRemoteData(m_editorBotShapeData);
+            Files.ExportBotShapeRemoteData(_mEditorBotShapeData);
         }
     }
 }
