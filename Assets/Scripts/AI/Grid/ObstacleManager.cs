@@ -196,7 +196,7 @@ namespace StarSalvager
                             }
                             else
                             {
-                                PlaceMovableOnGrid(bit, m_offGridMovingObstacles[i].EndPosition);
+                                PlaceMovableOnGridSpecific(bit, m_offGridMovingObstacles[i].EndPosition);
                                 bit.SetColliderActive(true);
                             }
                             break;
@@ -207,7 +207,7 @@ namespace StarSalvager
                             }
                             else
                             {
-                                PlaceMovableOnGrid(component, m_offGridMovingObstacles[i].EndPosition);
+                                PlaceMovableOnGridSpecific(component, m_offGridMovingObstacles[i].EndPosition);
                                 component.SetColliderActive(true);
                             }
                             break;
@@ -218,7 +218,7 @@ namespace StarSalvager
                             }
                             else
                             {
-                                PlaceMovableOnGrid(shape, m_offGridMovingObstacles[i].EndPosition);
+                                PlaceMovableOnGridSpecific(shape, m_offGridMovingObstacles[i].EndPosition);
                                 shape.SetColliderActive(true);
                             }
                             break;
@@ -382,53 +382,61 @@ namespace StarSalvager
             //TODO: Find a better approach. This line is causing the stageblendperiod on the last stage of a wave to prevent spawning for that last portion of the wave. Temporary approach to the waveendsequence.
             if (LevelManager.Instance.CurrentWaveData.GetWaveDuration() <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod)
                 return;
-            
-            foreach (StageObstacleData stageObstacleData in m_currentStageData.StageObstacleData)
+
+            foreach (StageColumnGroupObstacleData stageColumnGroupObstacleData in m_currentStageData.StageColumnGroupObstacleData)
             {
-                float spawnVariable = stageObstacleData.CountPerRowAverage;
-                if (m_previousStageData != null && m_blendTimer < m_currentStageData.StageBlendPeriod)
+                Vector2 columnFieldRange = new Vector2(stageColumnGroupObstacleData.ColumnGroupMinimum, stageColumnGroupObstacleData.ColumnGroupMaximum);
+                foreach (StageObstacleData stageObstacleData in stageColumnGroupObstacleData.StageObstacleData)
                 {
-                    spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
-                }
+                    float spawnVariable = stageObstacleData.CountPerRowAverage;
+                    if (m_previousStageData != null && m_blendTimer < m_currentStageData.StageBlendPeriod)
+                    {
+                        spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                    }
 
-                while (spawnVariable >= 1)
-                {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation());
-                    spawnVariable -= 1;
-                }
+                    while (spawnVariable >= 1)
+                    {
+                        SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange);
+                        spawnVariable -= 1;
+                    }
 
-                if (spawnVariable == 0)
-                    continue;
+                    if (spawnVariable == 0)
+                        continue;
 
-                float random = Random.Range(0.0f, 1.0f);
+                    float random = Random.Range(0.0f, 1.0f);
 
-                if (random <= spawnVariable)
-                {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation());
+                    if (random <= spawnVariable)
+                    {
+                        SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange);
+                    }
                 }
             }
 
             if (m_previousStageData == null || m_blendTimer > m_currentStageData.StageBlendPeriod)
                 return;
 
-            foreach (StageObstacleData stageObstacleData in m_previousStageData.StageObstacleData)
+            foreach (StageColumnGroupObstacleData stageColumnGroupObstacleData in m_previousStageData.StageColumnGroupObstacleData)
             {
-                float spawnVariable = stageObstacleData.CountPerRowAverage * Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
-
-                while (spawnVariable >= 1)
+                Vector2 columnFieldRange = new Vector2(stageColumnGroupObstacleData.ColumnGroupMinimum, stageColumnGroupObstacleData.ColumnGroupMaximum);
+                foreach (StageObstacleData stageObstacleData in stageColumnGroupObstacleData.StageObstacleData)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation());
-                    spawnVariable -= 1;
-                }
+                    float spawnVariable = stageObstacleData.CountPerRowAverage * Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
 
-                if (spawnVariable == 0)
-                    continue;
+                    while (spawnVariable >= 1)
+                    {
+                        SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange);
+                        spawnVariable -= 1;
+                    }
 
-                float random = Random.Range(0.0f, 1.0f);
+                    if (spawnVariable == 0)
+                        continue;
 
-                if (random <= spawnVariable)
-                {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation());
+                    float random = Random.Range(0.0f, 1.0f);
+
+                    if (random <= spawnVariable)
+                    {
+                        SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange);
+                    }
                 }
             }
         }
@@ -473,7 +481,7 @@ namespace StarSalvager
             }
         }
 
-        private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category, ASTEROID_SIZE asteroidSize, int numRotations, bool inRandomYLevel = false)
+        private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category, ASTEROID_SIZE asteroidSize, int numRotations, Vector2 gridRegion, bool inRandomYLevel = false)
         {
             if (selectionType == SELECTION_TYPE.CATEGORY)
             {
@@ -487,7 +495,7 @@ namespace StarSalvager
                 {
                     AddMovableToList(bit);
                 }
-                PlaceMovableOnGrid(newShape);
+                PlaceMovableOnGrid(newShape, gridRegion);
                 return;
             }
             else if (selectionType == SELECTION_TYPE.SHAPE)
@@ -502,7 +510,7 @@ namespace StarSalvager
                 {
                     AddMovableToList(bit);
                 }
-                PlaceMovableOnGrid(newShape);
+                PlaceMovableOnGrid(newShape, gridRegion);
                 return;
             }
             else if (selectionType == SELECTION_TYPE.ASTEROID)
@@ -522,7 +530,7 @@ namespace StarSalvager
                         break;
                 }  
 
-                PlaceMovableOnGrid(newBit, radiusAround);
+                PlaceMovableOnGrid(newBit, gridRegion, radiusAround);
 
                 return;
             }
@@ -531,7 +539,7 @@ namespace StarSalvager
                 Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(BIT_TYPE.WHITE, 0);
                 AddMovableToList(newBit);
 
-                PlaceMovableOnGrid(newBit);
+                PlaceMovableOnGrid(newBit, gridRegion);
                 return;
             }
         }
@@ -543,9 +551,9 @@ namespace StarSalvager
                 m_obstacles.Add(movable);
         }
 
-        private void PlaceMovableOnGrid(IObstacle movable, int radius = 0)
+        private void PlaceMovableOnGrid(IObstacle movable, Vector2 gridRegion, int radius = 0)
         {
-            Vector2 position = LevelManager.Instance.WorldGrid.GetAvailableRandomTopGridSquareWorldPosition(Constants.enemyGridScanRadius);
+            Vector2 position = LevelManager.Instance.WorldGrid.GetAvailableRandomTopGridSquareWorldPosition(Constants.enemyGridScanRadius, gridRegion);
             movable.transform.parent = LevelManager.Instance.gameObject.transform;
             movable.transform.position = position + Vector2.right * m_distanceHorizontal;
             switch (movable)
@@ -571,7 +579,7 @@ namespace StarSalvager
             }
         }
 
-        private void PlaceMovableOnGrid(IObstacle movable, Vector2 position, int radius = 0)
+        private void PlaceMovableOnGridSpecific(IObstacle movable, Vector2 position, int radius = 0)
         {
             movable.transform.parent = LevelManager.Instance.gameObject.transform;
             movable.transform.position = position + Vector2.right * m_distanceHorizontal;

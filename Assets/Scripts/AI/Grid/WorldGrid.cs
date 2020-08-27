@@ -16,6 +16,8 @@ namespace StarSalvager
         private Vector2Int m_screenGridCellRange;
         private Vector2Int m_botGridPosition;
 
+        private int m_positionsShiftedHorizontally = 0;
+
         public WorldGrid()
         {
         }
@@ -28,6 +30,7 @@ namespace StarSalvager
                 + Vector2.down * Values.Constants.gridCellSize / 2;
 
             m_gridArray = new GridSquare[Values.Globals.GridSizeX * Values.Globals.GridSizeY];
+            m_positionsShiftedHorizontally = 0;
 
             for (int i = 0; i < m_gridArray.Length; i++)
             {
@@ -86,6 +89,7 @@ namespace StarSalvager
 
         public void MoveObstacleMarkersLeftOnGrid(int amount)
         {
+            m_positionsShiftedHorizontally--;
             for (int x = 0; x < Values.Globals.GridSizeX; x++)
             {
                 for (int y = 0; y < Values.Globals.GridSizeY; y++)
@@ -112,6 +116,7 @@ namespace StarSalvager
 
         public void MoveObstacleMarkersRightOnGrid(int amount)
         {
+            m_positionsShiftedHorizontally++;
             for (int x = Values.Globals.GridSizeX - 1; x >= 0; x--)
             {
                 for (int y = 0; y < Values.Globals.GridSizeY; y++)
@@ -245,22 +250,22 @@ namespace StarSalvager
                 UnityEngine.Random.Range(m_screenGridCellRange.y, Values.Globals.GridSizeY));
         }
 
-        private Vector2 GetRandomTopGridSquareWorldPosition()
+        private Vector2 GetRandomTopGridSquareWorldPosition(Vector2 gridRegion)
         {
-            return GetCenterOfGridSquareInGridPosition(UnityEngine.Random.Range(0, Values.Globals.GridSizeX), Values.Globals.GridSizeY - 1);
+            return GetCenterOfGridSquareInGridPosition(UnityEngine.Random.Range((int)(Values.Globals.GridSizeX * gridRegion.x), (int)(Values.Globals.GridSizeX * gridRegion.y)), Values.Globals.GridSizeY - 1);
         }
 
-        private Vector2Int GetRandomTopGridSquareGridPosition()
+        private Vector2Int GetRandomTopGridSquareGridPosition(Vector2 gridRegion)
         {
-            return new Vector2Int(UnityEngine.Random.Range(0, Values.Globals.GridSizeX), Values.Globals.GridSizeY - 1);
+            return new Vector2Int(UnityEngine.Random.Range((int)(Values.Globals.GridSizeX * gridRegion.x), (int)(Values.Globals.GridSizeX * gridRegion.y)), Values.Globals.GridSizeY - 1);
         }
 
-        public Vector2 GetAvailableRandomTopGridSquareWorldPosition(int scanRadius)
+        public Vector2 GetAvailableRandomTopGridSquareWorldPosition(int scanRadius, Vector2 gridRegion)
         {
             int numTries = 100;
             for (int i = 0; i < numTries; i++)
             {
-                Vector2Int randomTop = GetRandomTopGridSquareGridPosition();
+                Vector2Int randomTop = GetRandomTopGridSquareGridPosition(gridRegion) + (Vector2Int.right * m_positionsShiftedHorizontally);
                 bool isFreeSpace = true;
                 Vector2Int obstacleGridScanMinimum = new Vector2Int(
                     Math.Max(0, randomTop.x - scanRadius),
@@ -289,7 +294,7 @@ namespace StarSalvager
                 }
             }
 
-            return GetAvailableRandomTopGridSquareWorldPosition(scanRadius - 1);
+            return GetAvailableRandomTopGridSquareWorldPosition(scanRadius - 1, gridRegion);
         }
 
         public Vector2Int GetGridPositionOfVector(Vector2 worldLocation)

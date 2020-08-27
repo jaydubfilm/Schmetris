@@ -17,12 +17,12 @@ namespace StarSalvager.AI
         [SerializeField]
         private List<StageEnemyData> m_stageEnemyData;
         [SerializeField]
-        private List<StageObstacleData> m_stageObstacleData;
+        private List<StageColumnGroupObstacleData> m_stageColumnGroupObstacleData;
 
         public float StageDuration => m_stageDuration;
         public float StageBlendPeriod => m_stageBlendPeriod;
         public bool WaitUntilAllEnemiesDefeatedToBegin => m_waitUntilAllEnemiesDefeatedToBegin;
         public List<StageEnemyData> StageEnemyData => m_stageEnemyData;
-        public List<StageObstacleData> StageObstacleData => m_stageObstacleData;
+        public List<StageColumnGroupObstacleData> StageColumnGroupObstacleData => m_stageColumnGroupObstacleData;
     }
 }
