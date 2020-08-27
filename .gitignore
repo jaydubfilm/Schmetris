@@ -13,17 +13,17 @@
 [Aa]ssets/AssetStoreTools*
 [Aa]ssets/Spine Examples/
 
-*.player
-*.player.meta
-*.mission
-*.mission.meta
-
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 [Mm]emoryCaptures/
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 ![Aa]ssets/**/*.meta
+
+*.player
+*.player.meta
+*.mission
+*.mission.meta
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # [Aa]ssets/AssetStoreTools*
@@ -143,3 +143,5 @@ Assets/Prefabs/DinV/Dynamic Space Background.meta
 Assets/Scripts/Dynamic Space Background.meta
 Assets/Asset Packages.meta
 Assets/Asset Packages/DinV.meta
+Assets/RemoteData/PlayerPersistentDataSaveFile3.player.meta
+Assets/RemoteData/PlayerPersistentDataSaveFile3.player.meta

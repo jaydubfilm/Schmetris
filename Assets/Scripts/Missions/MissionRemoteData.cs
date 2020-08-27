@@ -99,9 +99,12 @@ namespace StarSalvager.Missions
             return missionUnlockData;
         }
 
+
+#if UNITY_EDITOR
         private IEnumerable GetEnemyTypes()
         {
             return Object.FindObjectOfType<FactoryManager>().EnemyProfile.GetEnemyTypes();
         }
+#endif
     }
 }

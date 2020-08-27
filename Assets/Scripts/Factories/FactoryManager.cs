@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
-using StarSalvager.Values;
+using StarSalvager.Utilities.FileIO;
 using UnityEngine;
 
 namespace StarSalvager.Factories
@@ -24,18 +22,8 @@ namespace StarSalvager.Factories
         [SerializeField, Required, BoxGroup("Temporary")]
         private List<SectorModularData> m_sectorRemoteData;
         
-        public EditorBotShapeGeneratorData EditorBotShapeData
-        {
-            get
-            {
-                if (editorBotShapeData == null)
-                    editorBotShapeData = ImportBotShapeRemoteData();
-
-                return editorBotShapeData;
-            }
-        }
-        
-        private EditorBotShapeGeneratorData editorBotShapeData;
+        public EditorBotShapeGeneratorData EditorBotShapeData => _editorBotShapeData ?? (_editorBotShapeData = Files.ImportBotShapeRemoteData());
+        private EditorBotShapeGeneratorData _editorBotShapeData;
 
         public List<SectorRemoteDataScriptableObject> SectorRemoteData => m_sectorRemoteData[currentModularDataIndex].SectorData;
 
@@ -179,71 +167,6 @@ namespace StarSalvager.Factories
             }
         }
 
-        //============================================================================================================//
-
-        public string ExportBotShapeRemoteData(EditorBotShapeGeneratorData editorData)
-        {
-            if (editorData == null)
-                return string.Empty;
-
-            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
-#if !UNITY_EDITOR
-            System.IO.File.WriteAllText(Application.dataPath + "/BuildData/BotShapeEditorData.txt", export);
-#else
-            System.IO.File.WriteAllText(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt", export);
-#endif
-
-            return export;
-        }
-
-        public EditorBotShapeGeneratorData ImportBotShapeRemoteData()
-        {
-#if !UNITY_EDITOR
-            if (!File.Exists(Application.dataPath + "/BuildData/BotShapeEditorData.txt"))
-            {
-                return new EditorBotShapeGeneratorData();
-            }
-
-            var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText(Application.dataPath + "/BuildData/BotShapeEditorData.txt"));
-
-            return loaded;
-#else
-            if (!File.Exists(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"))
-                return new EditorBotShapeGeneratorData();
-
-            var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"));
-
-            return loaded;
-#endif
-        }
-        
-        public void ClearRemoteData()
-        {
-            var directory = new DirectoryInfo(Application.dataPath + "/RemoteData/");
-            
-            //FIXME This should be using persistent file names
-            var files = new List<FileInfo>();
-            files.AddRange(directory.GetFiles("*.player"));
-            files.AddRange(directory.GetFiles("*.mission"));
-            files.AddRange(directory.GetFiles("*.player.meta"));
-            files.AddRange(directory.GetFiles("*.mission.meta"));
-
-
-            foreach (var file in files)
-            {
-                if(file == null)
-                    continue;
-                
-                File.Delete(file.FullName);
-            }
-
-            if (Application.isPlaying)
-            {
-                PlayerPersistentData.ClearPlayerData();
-            }
-
-        }
-        
         //============================================================================================================//
 
     }

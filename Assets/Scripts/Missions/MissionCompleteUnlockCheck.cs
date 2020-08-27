@@ -21,7 +21,7 @@ namespace StarSalvager.Missions
             if (IsComplete)
                 return true;
             
-            if (MissionManager.recentCompletedMissionName == m_missionName)
+            if (MissionManager.RecentCompletedMissionName == m_missionName)
             {
                 IsComplete = true;
                 return true;

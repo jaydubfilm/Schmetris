@@ -7,19 +7,15 @@ using StarSalvager.Values;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.UI;
-using System.IO;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
-using StarSalvager.Missions;
 
 using CameraController = StarSalvager.Cameras.CameraController;
-using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections;
-using StarSalvager.Utilities.Saving;
 using System.Linq;
 using StarSalvager.Audio;
 using System.Collections.Generic;
-using UnityEngine.Analytics;
+using StarSalvager.Utilities.FileIO;
 
 namespace StarSalvager.UI
 {
@@ -199,7 +195,7 @@ namespace StarSalvager.UI
             {
                 OpenMenu(MENU.MAIN);
 
-                string playerPath = PlayerPersistentData.GetNextAvailableSaveSlot();
+                string playerPath = Files.GetNextAvailableSaveSlot();
 
                 if (playerPath != string.Empty)
                 {
@@ -326,7 +322,7 @@ namespace StarSalvager.UI
         [Button("Clear Remote Data"), DisableInPlayMode]
         private void ClearRemoteData()
         {
-            FindObjectOfType<FactoryManager>().ClearRemoteData();
+            Files.ClearRemoteData();
         }
         
         #endif

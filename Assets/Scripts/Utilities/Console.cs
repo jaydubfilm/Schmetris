@@ -7,6 +7,7 @@ using StarSalvager.Audio;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using UnityEngine;
@@ -366,8 +367,9 @@ namespace StarSalvager.Utilities
                     _consoleDisplay = string.Empty;
                     _cmds.Clear();
                     break;
+                case "remote data":
                 case "remotedata":
-                    FindObjectOfType<FactoryManager>().ClearRemoteData();
+                    Files.ClearRemoteData();
                     break;
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);
