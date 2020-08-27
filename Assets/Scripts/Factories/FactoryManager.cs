@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.FileIO;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.Factories
