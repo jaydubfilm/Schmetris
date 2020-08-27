@@ -1,0 +1,387 @@
+{
+  "id": "0",
+  "date": "2020-08-27T19:49:26.7062915Z",
+  "waves": [
+    {
+      "date": "2020-08-27T19:50:47.8089467Z",
+      "timeIn": 95.3686752,
+      "waveNumber": 0,
+      "sectorNumber": 0,
+      "playerWasKilled": false,
+      "bumpersHit": 0,
+      "totalDamageReceived": 0.0,
+      "botAtStart": [
+        {
+          "ClassType": "Part",
+          "Coordinate": {
+            "x": 0,
+            "y": 0
+          },
+          "Type": 0,
+          "Level": 0
+        }
+      ],
+      "botAtEnd": [
+        {
+          "ClassType": "Part",
+          "Coordinate": {
+            "x": 0,
+            "y": 0
+          },
+          "Type": 0,
+          "Level": 0
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": 1,
+            "y": 0
+          },
+          "Type": 3,
+          "Level": 2
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": 0,
+            "y": 1
+          },
+          "Type": 5,
+          "Level": 0
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": 0,
+            "y": 2
+          },
+          "Type": 2,
+          "Level": 1
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": 1,
+            "y": 2
+          },
+          "Type": 5,
+          "Level": 0
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": 1,
+            "y": 1
+          },
+          "Type": 4,
+          "Level": 1
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": 1,
+            "y": 3
+          },
+          "Type": 5,
+          "Level": 0
+        }
+      ],
+      "liquidProcessed": {
+        "RED": 50
+      },
+      "bitsCollected": {
+        "GREY": 9,
+        "RED": 6,
+        "YELLOW": 3,
+        "GREEN": 3
+      },
+      "bitsDisconnected": null,
+      "componentsCollected": null,
+      "enemiesKilled": null
+    },
+    {
+      "date": "2020-08-27T19:52:33.2148648Z",
+      "timeIn": 78.52902,
+      "waveNumber": 1,
+      "sectorNumber": 0,
+      "playerWasKilled": false,
+      "bumpersHit": 0,
+      "totalDamageReceived": 18.0,
+      "botAtStart": [
+        {
+          "ClassType": "Part",
+          "Coordinate": {
+            "x": 0,
+            "y": 0
+          },
+          "Type": 0,
+          "Level": 0
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": 1,
+            "y": 0
+          },
+          "Type": 3,
+          "Level": 2
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": 0,
+            "y": 1
+          },
+          "Type": 5,
+          "Level": 0
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": 0,
+            "y": 2
+          },
+          "Type": 2,
+          "Level": 1
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": 1,
+            "y": 2
+          },
+          "Type": 5,
+          "Level": 0
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": 1,
+            "y": 1
+          },
+          "Type": 4,
+          "Level": 1
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": 1,
+            "y": 3
+          },
+          "Type": 5,
+          "Level": 0
+        }
+      ],
+      "botAtEnd": [
+        {
+          "ClassType": "Part",
+          "Coordinate": {
+            "x": 0,
+            "y": 0
+          },
+          "Type": 0,
+          "Level": 0
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": 0,
+            "y": 1
+          },
+          "Type": 3,
+          "Level": 2
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": -1,
+            "y": 0
+          },
+          "Type": 5,
+          "Level": 1
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": -2,
+            "y": 0
+          },
+          "Type": 2,
+          "Level": 1
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": -2,
+            "y": 1
+          },
+          "Type": 5,
+          "Level": 1
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": -1,
+            "y": 1
+          },
+          "Type": 1,
+          "Level": 0
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": 1,
+            "y": 1
+          },
+          "Type": 2,
+          "Level": 1
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": -1,
+            "y": 2
+          },
+          "Type": 4,
+          "Level": 0
+        }
+      ],
+      "liquidProcessed": {
+        "RED": 50
+      },
+      "bitsCollected": {
+        "GREEN": 7,
+        "YELLOW": 3,
+        "BLUE": 1,
+        "RED": 3
+      },
+      "bitsDisconnected": null,
+      "componentsCollected": null,
+      "enemiesKilled": null
+    },
+    {
+      "date": "2020-08-27T19:54:29.8572371Z",
+      "timeIn": 73.8309,
+      "waveNumber": 0,
+      "sectorNumber": 0,
+      "playerWasKilled": false,
+      "bumpersHit": 0,
+      "totalDamageReceived": 18.0,
+      "botAtStart": [
+        {
+          "ClassType": "Part",
+          "Coordinate": {
+            "x": 0,
+            "y": 0
+          },
+          "Type": 0,
+          "Level": 0
+        },
+        {
+          "ClassType": "Part",
+          "Coordinate": {
+            "x": -1,
+            "y": 0
+          },
+          "Type": 1,
+          "Level": 0
+        }
+      ],
+      "botAtEnd": [
+        {
+          "ClassType": "Part",
+          "Coordinate": {
+            "x": 0,
+            "y": 0
+          },
+          "Type": 0,
+          "Level": 0
+        },
+        {
+          "ClassType": "Part",
+          "Coordinate": {
+            "x": 0,
+            "y": 1
+          },
+          "Type": 1,
+          "Level": 0
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": -1,
+            "y": 1
+          },
+          "Type": 2,
+          "Level": 2
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": 0,
+            "y": 2
+          },
+          "Type": 3,
+          "Level": 1
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": -1,
+            "y": 2
+          },
+          "Type": 2,
+          "Level": 0
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": -2,
+            "y": 2
+          },
+          "Type": 3,
+          "Level": 1
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": -2,
+            "y": 3
+          },
+          "Type": 3,
+          "Level": 0
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": -1,
+            "y": 0
+          },
+          "Type": 4,
+          "Level": 1
+        },
+        {
+          "ClassType": "Bit",
+          "Coordinate": {
+            "x": -2,
+            "y": 1
+          },
+          "Type": 1,
+          "Level": 0
+        }
+      ],
+      "liquidProcessed": {
+        "RED": 50
+      },
+      "bitsCollected": {
+        "RED": 9,
+        "GREEN": 10,
+        "GREY": 7,
+        "BLUE": 1
+      },
+      "bitsDisconnected": null,
+      "componentsCollected": null,
+      "enemiesKilled": null
+    }
+  ]
+}

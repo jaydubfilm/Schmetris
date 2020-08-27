@@ -57,6 +57,7 @@ namespace StarSalvager.Factories
         //============================================================================================================//
 
         public RemotePartProfileScriptableObject PartsRemoteData => partRemoteData;
+        public PartProfileScriptableObject PartsProfileData => partProfile as PartProfileScriptableObject;
 
         [SerializeField, Required, BoxGroup("Attachables/Parts")] 
         private AttachableProfileScriptableObject partProfile;

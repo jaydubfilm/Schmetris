@@ -10,6 +10,7 @@ using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Values;
@@ -354,6 +355,7 @@ namespace StarSalvager
 
 
                         resourceValue = addAmount;
+                        SessionDataProcessor.Instance.LiquidProcessed(targetBit.Type, addAmount);
                         AudioController.PlaySound(SOUND.BIT_REFINED);
                     }
 

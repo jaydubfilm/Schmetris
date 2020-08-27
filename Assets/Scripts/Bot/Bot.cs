@@ -18,6 +18,7 @@ using UnityEngine;
 using GameUI = StarSalvager.UI.GameUI;
 using StarSalvager.Utilities;
 using StarSalvager.Missions;
+using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
 using AudioController = StarSalvager.Audio.AudioController;
 
@@ -539,40 +540,17 @@ namespace StarSalvager
                             }
 
                             //Add these to the block depending on its relative position
-                            AttachNewBitToExisting(bit, closestAttachable, connectionDirection);
+                            AttachAttachableToExisting(bit, closestAttachable, connectionDirection);
 
                             AudioController.PlaySound(SOUND.BIT_SNAP);
+                            SessionDataProcessor.Instance.BitCollected(bit.Type);
                             break;
                         case BIT_TYPE.WHITE:
                             //bounce white bit off of bot
                             var bounce = true;
                             if (bounce)
                             {
-                                Vector2 directionBounce = (Vector2)bit.transform.position - collisionPoint;
-                                directionBounce.Normalize();
-                                if (directionBounce != Vector2.up)
-                                {
-                                    Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                                    downVelocity.Normalize();
-                                    downVelocity *= 0.5f;
-                                    directionBounce += downVelocity;
-                                    directionBounce.Normalize();
-                                }
-                                else
-                                {
-                                    Vector2 sideVelocity = Vector2.left * (UnityEngine.Random.Range(0, 2) * 2 - 1);
-                                    sideVelocity *= 0.5f;
-                                    directionBounce += sideVelocity;
-                                    directionBounce.Normalize();
-                                }
-
-                                float rotation = 180.0f;
-                                if (directionBounce.x >= 0)
-                                {
-                                    rotation *= -1;
-                                }
-
-                                LevelManager.Instance.ObstacleManager.BounceObstacle(bit, directionBounce, rotation, true, true, true);
+                                bit.Bounce(collisionPoint);
                             }
 
                             //We don't want to move a row if it hit an enemy instead of a bit
@@ -582,7 +560,7 @@ namespace StarSalvager
                             //Try and shift collided row (Depending on direction)
                             var shift = TryShift(connectionDirection.Reflected(), closestAttachable);
                             AudioController.PlaySound(shift ? SOUND.BUMPER_BONK_SHIFT : SOUND.BUMPER_BONK_NOSHIFT);
-                            
+                            SessionDataProcessor.Instance.HitBumper();
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(bit.Type), bit.Type, null);
@@ -639,8 +617,9 @@ namespace StarSalvager
                     }
 
                     //Add these to the block depending on its relative position
-                    AttachNewBitToExisting(component, closestAttachable, connectionDirection);
-
+                    AttachAttachableToExisting(component, closestAttachable, connectionDirection);
+                    SessionDataProcessor.Instance.ComponentCollected(component.Type);
+                    
                     break;
                 }
                 //FIXME This seems to be wanting to attach to the wrong direction
@@ -672,7 +651,7 @@ namespace StarSalvager
                     }
 
                     //Add these to the block depending on its relative position
-                    AttachNewBitToExisting(enemyAttachable, closestAttachable, connectionDirection);
+                    AttachAttachableToExisting(enemyAttachable, closestAttachable, connectionDirection);
                     break;
                 }
             }
@@ -849,6 +828,7 @@ namespace StarSalvager
                             }
                             
                             AttachNewBit(newBotCoordinate + differences[i], bitsToAdd[i], false, false);
+                            SessionDataProcessor.Instance.BitCollected(bitsToAdd[i].Type);
                         }
                         
                         //Recycle the Shape, without also recycling the Bits since they were just attached to the bot
@@ -940,6 +920,8 @@ namespace StarSalvager
 
         public void TryHitAt(Vector2 hitPosition, float damage)
         {
+            SessionDataProcessor.Instance.ReceivedDamage(damage);
+            
             if(LevelManager.Instance.EndWaveState)
                 return;
             
@@ -1181,7 +1163,7 @@ namespace StarSalvager
                 CompositeCollider2D.GenerateGeometry();
         }
 
-        public void AttachNewBitToExisting(IAttachable newAttachable, IAttachable existingAttachable,
+        public void AttachAttachableToExisting(IAttachable newAttachable, IAttachable existingAttachable,
             DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true,
             bool updateMissions = true)
         {
@@ -1560,17 +1542,22 @@ namespace StarSalvager
                 if(hasPathToCore)
                     continue;
 
-                var attachedBits = new List<IAttachable>();
-                attachedBlocks.GetAllAttachedDetachables(attachable, null, ref attachedBits);
+                var attachables = new List<IAttachable>();
+                attachedBlocks.GetAllAttachedDetachables(attachable, null, ref attachables);
 
-                if (attachedBits.Count == 1)
+                foreach (var attachedBit in attachables.OfType<Bit>())
                 {
-                    DetachBit(attachedBits[0]);
+                    SessionDataProcessor.Instance.BitDetached(attachedBit.Type);
+                }
+
+                if (attachables.Count == 1)
+                {
+                    DetachBit(attachables[0]);
                     continue;
                 }
                 
                 
-                DetachBits(attachedBits);
+                DetachBits(attachables);
             }
         }
 

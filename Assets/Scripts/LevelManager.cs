@@ -18,6 +18,7 @@ using UnityEngine.SceneManagement;
 using StarSalvager.Missions;
 using StarSalvager.Utilities.JsonDataTypes;
 using Newtonsoft.Json;
+using StarSalvager.Utilities.Analytics;
 using Random = UnityEngine.Random;
 using UnityEngine.Analytics;
 
@@ -29,7 +30,7 @@ namespace StarSalvager
         [DisableIf("$generateRandomSeed")] public int seed = 1234567890;
 
         private List<Bot> m_bots;
-        public Bot BotGameObject => m_bots[0];
+        public Bot BotObject => m_bots[0];
 
         [SerializeField]
         private CameraController m_cameraController;
@@ -132,6 +133,8 @@ namespace StarSalvager
         public List<string> MissionsCompletedDuringThisFlight = new List<string>();
         public bool ResetFromDeath = false;
 
+        //====================================================================================================================//
+        
         private void Start()
         {
             m_bots = new List<Bot>();
@@ -168,6 +171,9 @@ namespace StarSalvager
                 botDiedAnalyticsDictionary.Add("Enemies Killed", JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None));
                 botDiedAnalyticsDictionary.Add("Missions Completed", JsonConvert.SerializeObject(MissionsCompletedDuringThisFlight, Formatting.None));
                 AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied, eventDataDictionary: botDiedAnalyticsDictionary);
+                
+                SessionDataProcessor.Instance.PlayerKilled();
+                SessionDataProcessor.Instance.EndActiveWave();
 
                 PlayerPersistentData.PlayerData.numLives--;
                 if (PlayerPersistentData.PlayerData.numLives > 0)
@@ -221,6 +227,11 @@ namespace StarSalvager
             }
             else if (ObstacleManager.HasNoActiveObstacles)
             {
+                var botBlockData = BotObject.GetBlockDatas();
+                SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
+                SessionDataProcessor.Instance.EndActiveWave();
+                
+                
                 GameUi.SetClockValue(0f);
                 GameUi.SetTimeString("0:00");
                 SavePlayerData();
@@ -242,7 +253,7 @@ namespace StarSalvager
                 waveEndAnalyticsDictionary.Add("User ID", Globals.UserID);
                 waveEndAnalyticsDictionary.Add("Session ID", Globals.SessionID);
                 waveEndAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
-                waveEndAnalyticsDictionary.Add("Bot Layout", JsonConvert.SerializeObject(BotGameObject.GetBlockDatas(), Formatting.None));
+                waveEndAnalyticsDictionary.Add("Bot Layout", JsonConvert.SerializeObject(BotObject.GetBlockDatas(), Formatting.None));
                 waveEndAnalyticsDictionary.Add("Liquid Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None));
                 waveEndAnalyticsDictionary.Add("Enemies Killed", JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None));
                 AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.WaveEnd, eventDataDictionary: waveEndAnalyticsDictionary);
@@ -263,23 +274,27 @@ namespace StarSalvager
             ProjectileManager.UpdateForces();
         }
 
+        //====================================================================================================================//
+        
         public void Activate()
         {
             m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
 
-            BotGameObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
+            BotObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
             if (PlayerPersistentData.PlayerData.GetCurrentBlockData().Count == 0)
             {
-                BotGameObject.InitBot();
+                BotObject.InitBot();
             }
             else
             {
                 print("Load from data");
-                BotGameObject.InitBot(PlayerPersistentData.PlayerData.GetCurrentBlockData().ImportBlockDatas(false));
+                BotObject.InitBot(PlayerPersistentData.PlayerData.GetCurrentBlockData().ImportBlockDatas(false));
             }
-            BotGameObject.transform.parent = null;
-            SceneManager.MoveGameObjectToScene(BotGameObject.gameObject, gameObject.scene);
+            BotObject.transform.parent = null;
+            SceneManager.MoveGameObjectToScene(BotObject.gameObject, gameObject.scene);
+            
+            SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
 
             MissionsCompletedDuringThisFlight.Clear();
 
@@ -299,8 +314,9 @@ namespace StarSalvager
                 LiquidResourcesAttBeginningOfWave.Add(resource.Key, resource.Value);
             }
 
+            //FIXME We shouldn't be using Camera.main
             InputManager.Instance.InitInput();
-            CameraController.SetOrthographicSize(Constants.gridCellSize * Values.Globals.ColumnsOnScreen, BotGameObject.transform.position);
+            CameraController.SetOrthographicSize(Constants.gridCellSize * Values.Globals.ColumnsOnScreen, BotObject.transform.position);
             if (Globals.Orientation == ORIENTATION.VERTICAL)
             {
                 Values.Globals.GridSizeX = (int)(Values.Globals.ColumnsOnScreen * Values.Constants.GridWidthRelativeToScreen);
@@ -343,7 +359,7 @@ namespace StarSalvager
             flightBeginAnalyticsDictionary.Add("Stored Resources", JsonConvert.SerializeObject(tempResourceDictionary, Formatting.None));
             flightBeginAnalyticsDictionary.Add("Stored Parts", JsonConvert.SerializeObject(PlayerPersistentData.PlayerData.partsInStorageBlockData, Formatting.None));
             flightBeginAnalyticsDictionary.Add("Stored Components", JsonConvert.SerializeObject(tempComponentDictionary, Formatting.None));
-            flightBeginAnalyticsDictionary.Add("Bot Layout", JsonConvert.SerializeObject(BotGameObject.GetBlockDatas(), Formatting.None));
+            flightBeginAnalyticsDictionary.Add("Bot Layout", JsonConvert.SerializeObject(BotObject.GetBlockDatas(), Formatting.None));
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.FlightBegin, eventDataDictionary: flightBeginAnalyticsDictionary);
         }
 
@@ -370,10 +386,22 @@ namespace StarSalvager
             MissionsCompletedDuringThisFlight.Clear();
         }
 
+        //====================================================================================================================//
+
+        public void ContinueToNextWave()
+        {
+            IsWaveProgressing = true;
+            EndWaveState = false;
+                
+            LiquidResourcesAttBeginningOfWave = new Dictionary<BIT_TYPE, float>(PlayerPersistentData.PlayerData.liquidResource);
+            
+            SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
+        }
+        
         private void TransitionToNewWave()
         {
             SavePlayerData();
-
+            
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
                 Toast.AddToast("Wave Complete!", time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
@@ -400,12 +428,16 @@ namespace StarSalvager
                 Globals.CurrentWave = 0;
                 Globals.SectorComplete = true;
                 GameTimer.SetPaused(true);
-                Alert.ShowAlert("Sector Completed", "Beat the last wave of the sector. Return to base!", "Ok", () =>
+                Alert.ShowAlert("Sector Completed", "You beat the last wave of the sector. Return to base!", "Ok", () =>
                 {
                     GameTimer.SetPaused(false);
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
                 });
             }
+
+            
+            
+            
         }
 
         public void SavePlayerData()
@@ -467,7 +499,8 @@ namespace StarSalvager
             //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete, levelCompleteAnalyticsDictionary, Values.Globals.CurrentSector);
         }
 
-
+        //====================================================================================================================//
+        
         #if UNITY_EDITOR
 
         [SerializeField]
