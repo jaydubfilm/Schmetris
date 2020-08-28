@@ -194,11 +194,11 @@ namespace StarSalvager
 
         private void Update()
         {
-            /*if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
             {
                 WorldGrid.DrawDebugMarkedGridPoints();
                 Debug.Break();
-            }*/
+            }
 
             if (isPaused)
                 return;

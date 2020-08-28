@@ -128,7 +128,7 @@ namespace StarSalvager.Factories
                     foreach (var attachable in shape.AttachedBits)
                     {
                         attachable.RotateCoordinate(ROTATION.CW);
-                        attachable.transform.localPosition = (Vector2)attachable.Coordinate;
+                        attachable.transform.localPosition = (Vector2)attachable.Coordinate * Constants.gridCellSize;
                     }
                 }
 

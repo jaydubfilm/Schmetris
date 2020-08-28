@@ -227,7 +227,8 @@ namespace StarSalvager
         {
             Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(enemyType);
             m_enemies.Add(newEnemy);
-            newEnemy.transform.position = LevelManager.Instance.WorldGrid.GetSpawnPositionForEnemy(newEnemy.m_enemyData.MovementType);
+            newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
+            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.m_enemyData.MovementType);
         }
         
         public void AddEnemy(Enemy newEnemy)
@@ -236,7 +237,8 @@ namespace StarSalvager
                 return;
             
             m_enemies.Add(newEnemy);
-            newEnemy.transform.position = LevelManager.Instance.WorldGrid.GetSpawnPositionForEnemy(newEnemy.m_enemyData.MovementType);
+            newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
+            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.m_enemyData.MovementType);
         }
 
         public bool HasEnemiesRemaining()
