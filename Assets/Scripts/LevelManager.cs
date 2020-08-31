@@ -208,16 +208,18 @@ namespace StarSalvager
                 if (IsWaveProgressing)
                     m_waveTimer += Time.deltaTime;
 
-                m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+                int currentStage = m_currentStage;
+                if (!CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage))
+                {
+                    if (m_currentStage == currentStage + 1)
+                        TransitionToNewWave();
+                }
 
                 //Displays the time in timespan & the fill value
                 var duration = CurrentWaveData.GetWaveDuration();
                 var timeLeft = duration - m_waveTimer;
                 GameUi.SetClockValue( timeLeft / duration);
                 GameUi.SetTimeString((int)timeLeft);
-
-                if (m_currentStage == -1)
-                    TransitionToNewWave();
             }
             else if (ObstacleManager.HasNoActiveObstacles)
             {
@@ -230,7 +232,7 @@ namespace StarSalvager
                 EnemyManager.MoveToNewWave();
                 EnemyManager.SetEnemiesInert(false);
                 EnemyManager.RecycleAllEnemies();
-                m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+                CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
 
                 Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
                 foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
@@ -365,7 +367,7 @@ namespace StarSalvager
 
             m_waveTimer = 0;
             m_levelTimer = 0;
-            m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+            CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
             ProjectileManager.Reset();
             MissionsCompletedDuringThisFlight.Clear();
         }

@@ -562,6 +562,42 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 3152543544831635707}
+    ActiveGameObject: {fileID: 3152543544831635707}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 2055442825}
+    ActiveGameObject: {fileID: 2055442825}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 2055442825}
+    ActiveGameObject: {fileID: 2055442825}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 860255031}
     ActiveGameObject: {fileID: 860255031}
     GUIDsList: []
@@ -588,42 +624,6 @@ MonoBehaviour:
     list:
     - {fileID: 8672333739092931101}
     ActiveGameObject: {fileID: 8672333739092931101}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -897,7 +897,7 @@ GameObject:
   - component: {fileID: 2055442826}
   - component: {fileID: 2055442828}
   m_Layer: 0
-  m_Name: SceneRoot
+  m_Name: AlexShulmanTestScene
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1115,6 +1115,12 @@ PrefabInstance:
       objectReference: {fileID: 1784563040}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0fe23b0698003a34295497882a41b94d, type: 3}
+--- !u!1 &3152543544831635707 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3152543544327253056, guid: 0fe23b0698003a34295497882a41b94d,
+    type: 3}
+  m_PrefabInstance: {fileID: 3152543544831635706}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7867727894043253979
 PrefabInstance:
   m_ObjectHideFlags: 0

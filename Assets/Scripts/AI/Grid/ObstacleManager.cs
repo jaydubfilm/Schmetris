@@ -311,7 +311,8 @@ namespace StarSalvager
 
         private void SetupStage(int waveNumber)
         {
-            m_previousStageData = m_currentStageData;
+            if (waveNumber > 0)
+                m_previousStageData = LevelManager.Instance.CurrentWaveData.GetRemoteData(waveNumber - 1);
             m_currentStageData = LevelManager.Instance.CurrentWaveData.GetRemoteData(waveNumber);
             m_nextStageToSpawn = waveNumber + 1;
             m_blendTimer = 0;
@@ -385,8 +386,6 @@ namespace StarSalvager
                 float sidesBlend = sidesWidth * FactoryManager.Instance.StandardBufferZoneObstacleData.PortionOfEdgesUsedForBlend;
                 Vector2 bufferFieldLeft = new Vector2(sidesBlend / 2, sidesWidth - (sidesBlend / 2));
                 Vector2 bufferFieldRight = new Vector2(sidesWidth + m_currentStageData.CenterColumnWidth + (sidesBlend / 2), 1 - (sidesBlend / 2));
-                print(bufferFieldLeft);
-                print(bufferFieldRight);
                 SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldLeft, false);
                 SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldRight, false);
             }
@@ -411,8 +410,6 @@ namespace StarSalvager
                 float sidesBlend = sidesWidth * FactoryManager.Instance.StandardBufferZoneObstacleData.PortionOfEdgesUsedForBlend;
                 Vector2 bufferFieldLeft = new Vector2(sidesBlend / 2, sidesWidth - (sidesBlend / 2));
                 Vector2 bufferFieldRight = new Vector2(sidesWidth + m_previousStageData.CenterColumnWidth + (sidesBlend / 2), 1 - (sidesBlend / 2));
-                print(bufferFieldLeft);
-                print(bufferFieldRight);
                 SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldLeft, true);
                 SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldRight, true);
             }
@@ -432,9 +429,13 @@ namespace StarSalvager
             {
                 float spawnVariable = stageObstacleData.CountPerRowAverage;
                 if (isPrevious)
+                {
                     spawnVariable *= Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                }
                 else if (m_previousStageData != null && m_blendTimer <= m_currentStageData.StageBlendPeriod)
+                {
                     spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                }
 
                 while (spawnVariable >= 1)
                 {

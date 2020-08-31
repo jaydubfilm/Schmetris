@@ -8,7 +8,7 @@ namespace StarSalvager.AI
     [Serializable]
     public class StageRemoteData
     {
-        [SerializeField]
+        [SerializeField, Min(1.0f)]
         private float m_stageDuration;
         [SerializeField]
         private float m_stageBlendPeriod;
