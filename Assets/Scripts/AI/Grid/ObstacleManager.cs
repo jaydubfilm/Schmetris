@@ -379,15 +379,7 @@ namespace StarSalvager
 
             if (m_currentStageData.StageType == STAGE_TYPE.STANDARD)
             {
-                Vector2 columnFieldRange = new Vector2(0.5f - m_currentStageData.CenterColumnWidth / 2, 0.5f + m_currentStageData.CenterColumnWidth / 2);
-                SpawnObstacleData(m_currentStageData.StageObstacleData, columnFieldRange, m_currentStageData.SpawningObstacleMultiplier, false);
-
-                float sidesWidth = (1 - m_currentStageData.CenterColumnWidth) / 2;
-                float sidesBlend = sidesWidth * FactoryManager.Instance.StandardBufferZoneObstacleData.PortionOfEdgesUsedForBlend;
-                Vector2 bufferFieldLeft = new Vector2(sidesBlend / 2, sidesWidth - (sidesBlend / 2));
-                Vector2 bufferFieldRight = new Vector2(sidesWidth + m_currentStageData.CenterColumnWidth + (sidesBlend / 2), 1 - (sidesBlend / 2));
-                SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldLeft, m_currentStageData.SpawningObstacleMultiplier, false);
-                SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldRight, m_currentStageData.SpawningObstacleMultiplier, false);
+                SpawnStandardObstacleData(m_currentStageData, false);
             }
             else if (m_currentStageData.StageType == STAGE_TYPE.CUSTOM)
             {
@@ -403,15 +395,7 @@ namespace StarSalvager
 
             if (m_previousStageData.StageType == STAGE_TYPE.STANDARD)
             {
-                Vector2 columnFieldRange = new Vector2(0.5f - m_previousStageData.CenterColumnWidth / 2, 0.5f + m_previousStageData.CenterColumnWidth / 2);
-                SpawnObstacleData(m_previousStageData.StageObstacleData, columnFieldRange, m_previousStageData.SpawningObstacleMultiplier, true);
-
-                float sidesWidth = (1 - m_previousStageData.CenterColumnWidth) / 2;
-                float sidesBlend = sidesWidth * FactoryManager.Instance.StandardBufferZoneObstacleData.PortionOfEdgesUsedForBlend;
-                Vector2 bufferFieldLeft = new Vector2(sidesBlend / 2, sidesWidth - (sidesBlend / 2));
-                Vector2 bufferFieldRight = new Vector2(sidesWidth + m_previousStageData.CenterColumnWidth + (sidesBlend / 2), 1 - (sidesBlend / 2));
-                SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldLeft, m_previousStageData.SpawningObstacleMultiplier, true);
-                SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldRight, m_previousStageData.SpawningObstacleMultiplier, true);
+                SpawnStandardObstacleData(m_previousStageData, true);
             }
             else if (m_previousStageData.StageType == STAGE_TYPE.CUSTOM)
             {
@@ -421,6 +405,36 @@ namespace StarSalvager
                     SpawnObstacleData(stageColumnGroupObstacleData.StageObstacleData, columnFieldRange, m_previousStageData.SpawningObstacleMultiplier, true);
                 }
             }
+        }
+
+        private void SpawnStandardObstacleData(StageRemoteData stageRemoteData, bool isPrevious)
+        {
+            Vector2 columnFieldRange = new Vector2(0.5f - stageRemoteData.CenterColumnWidth / 2, 0.5f + stageRemoteData.CenterColumnWidth / 2);
+            SpawnObstacleData(stageRemoteData.StageObstacleData, columnFieldRange, stageRemoteData.SpawningObstacleMultiplier, isPrevious);
+
+            float sidesWidth = (1 - stageRemoteData.CenterColumnWidth) / 2;
+            float sidesBlend = sidesWidth * FactoryManager.Instance.StandardBufferZoneObstacleData.PortionOfEdgesUsedForBlend;
+            Vector2 bufferFieldLeft = new Vector2(sidesBlend / 2, sidesWidth - (sidesBlend / 2));
+            Vector2 bufferFieldRight = new Vector2(sidesWidth + stageRemoteData.CenterColumnWidth + (sidesBlend / 2), 1 - (sidesBlend / 2));
+            Vector2 wallFieldLeft = FactoryManager.Instance.StandardBufferZoneObstacleData.WallBufferLeft;
+            Vector2 wallFieldRight = FactoryManager.Instance.StandardBufferZoneObstacleData.WallBufferRight;
+            Vector2 blendFieldLeft = new Vector2(bufferFieldLeft.y, columnFieldRange.x);
+            Vector2 blendFieldRight = new Vector2(columnFieldRange.y, bufferFieldRight.x);
+            Vector2 wallBlendFieldLeft = new Vector2(wallFieldLeft.y, bufferFieldLeft.x);
+            Vector2 wallBlendFieldRight = new Vector2(bufferFieldRight.y, wallFieldRight.x);
+            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldLeft, stageRemoteData.SpawningObstacleMultiplier, isPrevious);
+            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldRight, stageRemoteData.SpawningObstacleMultiplier, isPrevious);
+            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.WallObstacleData, wallFieldLeft, 1, isPrevious);
+            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.WallObstacleData, wallFieldRight, 1, isPrevious);
+
+            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.WallObstacleData, wallBlendFieldLeft, 0.5f, isPrevious);
+            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, wallBlendFieldLeft, stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious);
+            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.WallObstacleData, wallBlendFieldRight, 0.5f, isPrevious);
+            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, wallBlendFieldRight, stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious);
+            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, blendFieldLeft, stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious);
+            SpawnObstacleData(stageRemoteData.StageObstacleData, blendFieldLeft, stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious);
+            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, blendFieldRight, stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious);
+            SpawnObstacleData(stageRemoteData.StageObstacleData, blendFieldRight, stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious);
         }
 
         private void SpawnObstacleData(List<StageObstacleData> obstacleData, Vector2 columnFieldRange, float spawningMultiplier, bool isPrevious)
@@ -436,17 +450,18 @@ namespace StarSalvager
                 {
                     spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
                 }
+                float amountDecrement = 100 / ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
 
-                while (spawnVariable >= 1)
+                while (spawnVariable >= amountDecrement)
                 {
                     SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange);
-                    spawnVariable -= 1;
+                    spawnVariable -= amountDecrement;
                 }
 
                 if (spawnVariable == 0)
                     continue;
 
-                float random = Random.Range(0.0f, 1.0f);
+                float random = Random.Range(0.0f, amountDecrement);
 
                 if (random <= spawnVariable)
                 {

@@ -25,6 +25,6 @@ MonoBehaviour:
       m_shapeName: 
       m_category: Small
       m_asteroidSize: 0
-      m_countPerMinute: 300
+      m_density: 300
       m_rotation: Random
     m_stageColumnGroupObstacleData: []
