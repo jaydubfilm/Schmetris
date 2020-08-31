@@ -441,7 +441,7 @@ namespace StarSalvager
         {
             foreach (StageObstacleData stageObstacleData in obstacleData)
             {
-                float spawnVariable = stageObstacleData.CountPerRowAverage * spawningMultiplier;
+                float spawnVariable = stageObstacleData.Density * spawningMultiplier * ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
                 if (isPrevious)
                 {
                     spawnVariable *= Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
@@ -450,18 +450,17 @@ namespace StarSalvager
                 {
                     spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
                 }
-                float amountDecrement = 100 / ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
 
-                while (spawnVariable >= amountDecrement)
+                while (spawnVariable >= 1)
                 {
                     SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange);
-                    spawnVariable -= amountDecrement;
+                    spawnVariable -= 1;
                 }
 
                 if (spawnVariable == 0)
                     continue;
 
-                float random = Random.Range(0.0f, amountDecrement);
+                float random = Random.Range(0.0f, 1.0f);
 
                 if (random <= spawnVariable)
                 {

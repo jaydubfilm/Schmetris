@@ -53,12 +53,10 @@ namespace StarSalvager.Values
 
             if (Orientation == ORIENTATION.VERTICAL)
             {
-                GridSizeX = (int)(ColumnsOnScreen * Constants.GridWidthRelativeToScreen);
                 GridSizeY = (int)((Camera.main.orthographicSize * Constants.GridHeightRelativeToScreen * 2) / Constants.gridCellSize);
             }
             else
             {
-                GridSizeX = (int)(ColumnsOnScreen * Constants.GridWidthRelativeToScreen * (Screen.height / (float)Screen.width));
                 GridSizeY = (int)((Camera.main.orthographicSize * Constants.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Constants.gridCellSize);
             }
         }

@@ -23,8 +23,7 @@ namespace StarSalvager
         public void SetupGrid()
         {
             m_anchorPoint = Vector2.left *
-                ((Values.Globals.GridSizeX / 1.5f) * Constants.gridCellSize -
-                ((Camera.main.orthographicSize * Screen.width / Screen.height)))
+                ((Values.Globals.GridSizeX / 2.0f) * Constants.gridCellSize)
                 + Vector2.down * Values.Constants.gridCellSize / 2;
 
             m_gridArray = new GridSquare[Values.Globals.GridSizeX * Values.Globals.GridSizeY];

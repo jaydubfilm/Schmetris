@@ -15,8 +15,6 @@ namespace StarSalvager.Values
         public const int initialColumnsOnScreen = 51;
 
         
-
-        public static float GridWidthRelativeToScreen => gridWidthRelativeToScreen;
         public static float GridHeightRelativeToScreen => gridHeightRelativeToScreen;
     }
 }
