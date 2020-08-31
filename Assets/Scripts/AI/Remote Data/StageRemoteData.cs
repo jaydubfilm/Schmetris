@@ -18,6 +18,8 @@ namespace StarSalvager.AI
         private List<StageEnemyData> m_stageEnemyData;
         [SerializeField]
         private STAGE_TYPE m_stageType;
+        [SerializeField]
+        private float m_spawningObstacleMultiplier = 1.0f;
 
         [SerializeField, ShowIf("m_stageType", STAGE_TYPE.STANDARD), Required, Range(0.0f, 1.0f)]
         private float m_centerColumnWidth = 0.5f;
@@ -31,6 +33,7 @@ namespace StarSalvager.AI
         public float StageBlendPeriod => m_stageBlendPeriod;
         public bool WaitUntilAllEnemiesDefeatedToBegin => m_waitUntilAllEnemiesDefeatedToBegin;
         public STAGE_TYPE StageType => m_stageType;
+        public float SpawningObstacleMultiplier => m_spawningObstacleMultiplier;
         public List<StageEnemyData> StageEnemyData => m_stageEnemyData;
 
         public List<StageObstacleData> StageObstacleData => m_stageObstacleData;
