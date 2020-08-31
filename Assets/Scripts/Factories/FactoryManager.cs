@@ -38,6 +38,8 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
+        public BitProfileScriptableObject BitProfileData => bitProfile as BitProfileScriptableObject;
+        
         [SerializeField, Required, BoxGroup("Attachables/Bits")]
         private AttachableProfileScriptableObject bitProfile;
         
@@ -45,6 +47,8 @@ namespace StarSalvager.Factories
         private BitRemoteDataScriptableObject bitRemoteData;
         
         //============================================================================================================//
+        
+        public ComponentProfileScriptableObject ComponentProfile => componentProfile as ComponentProfileScriptableObject;
         
         [SerializeField, Required, BoxGroup("Attachables/Components")]
         private AttachableProfileScriptableObject componentProfile;

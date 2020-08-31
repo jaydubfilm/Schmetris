@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
@@ -10,17 +11,37 @@ namespace StarSalvager.Utilities.Analytics
     public class SessionDataProcessor : Singleton<SessionDataProcessor>
     {
         private SessionData _currentSession;
+        private int CurrentSession;
 
         private WaveData? _currentWave;
+
+        private string playerID
+        {
+            get
+            {
+                _playerId = PlayerPrefs.GetString("PlayerID");
+                
+                if (!string.IsNullOrEmpty(_playerId))
+                    return _playerId;
+                
+                _playerId = Guid.NewGuid().ToString();
+                PlayerPrefs.SetString("PlayerID", _playerId);
+                PlayerPrefs.Save();
+
+                return _playerId;
+            }
+        }
+        private string _playerId;
 
         //====================================================================================================================//
 
         private void Start()
         {
+            CurrentSession = 0;
+
             _currentSession = new SessionData
             {
-                //FIXME This needs to be generate somewhere
-                id = "0",
+                PlayerID = playerID,
                 date = DateTime.UtcNow,
                 waves = new List<WaveData>()
                 
@@ -29,7 +50,7 @@ namespace StarSalvager.Utilities.Analytics
 
         private void OnApplicationQuit()
         {
-            ExportSession();
+            Files.ExportSessionData(playerID, _currentSession);
         }
 
         //====================================================================================================================//
@@ -41,15 +62,9 @@ namespace StarSalvager.Utilities.Analytics
                 //TODO Need to end the existing wave
                 EndActiveWave();
             }
-            
-            _currentWave = new WaveData
-            {
-                date = DateTime.UtcNow,
-                sectorNumber = sector,
-                waveNumber = wave,
-                botAtStart = new List<BlockData>(initialBot)
-                
-            };
+
+            var botAtStart = new List<BlockData>(initialBot);
+            _currentWave = new WaveData(botAtStart, sector, wave);
         }
 
         public void EndActiveWave()
@@ -59,7 +74,7 @@ namespace StarSalvager.Utilities.Analytics
 
             var wave = _currentWave.Value;
 
-            wave.timeIn = (float)(DateTime.UtcNow - wave.date).TotalSeconds;
+            wave.timeIn = (float)Math.Round((DateTime.UtcNow - wave.date).TotalSeconds, 2);
             
             
             _currentSession.waves.Add(wave);
@@ -121,13 +136,26 @@ namespace StarSalvager.Utilities.Analytics
 
             var wave = _currentWave.Value;
             
-            if(wave.liquidProcessed == null)
-                wave.liquidProcessed = new Dictionary<BIT_TYPE, int>();
+            if(wave.BitSummaryData == null)
+                wave.BitSummaryData = new List<BitSummaryData>();
 
-            if (!wave.liquidProcessed.ContainsKey(type))
-                wave.liquidProcessed.Add(type, amount);
+            var summaryIndex = wave.BitSummaryData.FindIndex(x => x.type == type);
+            
+            if(summaryIndex < 0)
+                wave.BitSummaryData.Add(new BitSummaryData
+                {
+                    type = type,
+                    liquidProcessed = amount
+                });
             else
-                wave.liquidProcessed[type] += amount;
+            {
+                var tempData = wave.BitSummaryData[summaryIndex];
+                tempData.liquidProcessed += amount;
+
+                wave.BitSummaryData[summaryIndex] = tempData;
+            }
+
+                
 
             _currentWave = wave;
         }
@@ -140,13 +168,32 @@ namespace StarSalvager.Utilities.Analytics
 
             var wave = _currentWave.Value;
             
-            if(wave.bitsCollected == null)
+            /*if(wave.bitsCollected == null)
                 wave.bitsCollected = new Dictionary<BIT_TYPE, int>();
 
             if (!wave.bitsCollected.ContainsKey(type))
                 wave.bitsCollected.Add(type, 1);
             else
-                wave.bitsCollected[type]++;
+                wave.bitsCollected[type]++;*/
+            
+            if(wave.BitSummaryData == null)
+                wave.BitSummaryData = new List<BitSummaryData>();
+
+            var summaryIndex = wave.BitSummaryData.FindIndex(x => x.type == type);
+            
+            if(summaryIndex < 0)
+                wave.BitSummaryData.Add(new BitSummaryData
+                {
+                    type = type,
+                    collected = 1
+                });
+            else
+            {
+                var tempData = wave.BitSummaryData[summaryIndex];
+                tempData.collected++;
+
+                wave.BitSummaryData[summaryIndex] = tempData;
+            }
 
             _currentWave = wave;
         }
@@ -158,13 +205,32 @@ namespace StarSalvager.Utilities.Analytics
 
             var wave = _currentWave.Value;
             
-            if(wave.bitsDisconnected == null)
+            /*if(wave.bitsDisconnected == null)
                 wave.bitsDisconnected = new Dictionary<BIT_TYPE, int>();
 
             if (!wave.bitsDisconnected.ContainsKey(type))
                 wave.bitsDisconnected.Add(type, 1);
             else
-                wave.bitsDisconnected[type]++;
+                wave.bitsDisconnected[type]++;*/
+            
+            if(wave.BitSummaryData == null)
+                wave.BitSummaryData = new List<BitSummaryData>();
+
+            var summaryIndex = wave.BitSummaryData.FindIndex(x => x.type == type);
+            
+            if(summaryIndex < 0)
+                wave.BitSummaryData.Add(new BitSummaryData
+                {
+                    type = type,
+                    diconnected = 1
+                });
+            else
+            {
+                var tempData = wave.BitSummaryData[summaryIndex];
+                tempData.diconnected++;
+
+                wave.BitSummaryData[summaryIndex] = tempData;
+            }
             
             _currentWave = wave;
         }
@@ -176,13 +242,31 @@ namespace StarSalvager.Utilities.Analytics
 
             var wave = _currentWave.Value;
             
-            if(wave.componentsCollected == null)
+            /*if(wave.componentsCollected == null)
                 wave.componentsCollected = new Dictionary<COMPONENT_TYPE, int>();
 
             if (!wave.componentsCollected.ContainsKey(type))
                 wave.componentsCollected.Add(type, 1);
             else
-                wave.componentsCollected[type]++;
+                wave.componentsCollected[type]++;*/
+            if(wave.ComponentSummaryData == null)
+                wave.ComponentSummaryData = new List<ComponentSummaryData>();
+
+            var summaryIndex = wave.ComponentSummaryData.FindIndex(x => x.type == type);
+            
+            if(summaryIndex < 0)
+                wave.ComponentSummaryData.Add(new ComponentSummaryData
+                {
+                    type = type,
+                    collected = 1
+                });
+            else
+            {
+                var tempData = wave.ComponentSummaryData[summaryIndex];
+                tempData.collected++;
+
+                wave.ComponentSummaryData[summaryIndex] = tempData;
+            }
             
             _currentWave = wave;
         }
@@ -194,31 +278,38 @@ namespace StarSalvager.Utilities.Analytics
 
             var wave = _currentWave.Value;
             
-            if(wave.enemiesKilled == null)
+            /*if(wave.enemiesKilled == null)
                 wave.enemiesKilled = new Dictionary<string, int>();
 
             if (!wave.enemiesKilled.ContainsKey(enemyId))
                 wave.enemiesKilled.Add(enemyId, 1);
             else
-                wave.enemiesKilled[enemyId]++;
+                wave.enemiesKilled[enemyId]++;*/
+            if(wave.enemiesKilledData == null)
+                wave.enemiesKilledData = new List<EnemySummaryData>();
+
+            //FIXME I hate the long string comparisons happening here
+            var summaryIndex = wave.enemiesKilledData.FindIndex(x => x.id == enemyId);
+            
+            if(summaryIndex < 0)
+                wave.enemiesKilledData.Add(new EnemySummaryData
+                {
+                    id = enemyId,
+                    killed = 1
+                });
+            else
+            {
+                var tempData = wave.enemiesKilledData[summaryIndex];
+                tempData.killed++;
+
+                wave.enemiesKilledData[summaryIndex] = tempData;
+            }
             
             _currentWave = wave;
         }
 
         //====================================================================================================================//
-
-        //TODO Move this to the Files location
-        public void ExportSession()
-        {
-            if (_currentSession.waves.Count == 0)
-                return;
-            
-            var path = Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "RemoteData", $"Test_Session_{_currentSession.id}.txt");
-
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(_currentSession, Formatting.Indented);
-            
-            File.WriteAllText(path, json);
-        }
+        
         
         
         //====================================================================================================================//

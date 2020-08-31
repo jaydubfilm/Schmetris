@@ -62,9 +62,21 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$GetEnemyType"), ShowIf("m_attackType", ENEMY_ATTACKTYPE.Spray)]
         private int m_sprayCount;
 
-        
 
-        public string EnemyName => GetEnemyType();
+
+        public string EnemyName
+        {
+            get
+            {
+#if UNITY_EDITOR
+                
+                return GetEnemyType();
+#else
+                return string.Empty;
+
+#endif
+            }
+        }
 
         public string EnemyID => m_enemyTypeID;
 
