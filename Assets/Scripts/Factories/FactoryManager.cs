@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.AI;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.FileIO;
@@ -18,6 +19,10 @@ namespace StarSalvager.Factories
 
         [SerializeField]
         private float TimeForAsteroidToFallOneSquare;
+
+        [SerializeField, Required]
+        private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
+        public StandardBufferZoneObstacleData StandardBufferZoneObstacleData => m_standardBufferZoneObstacleData;
 
         [SerializeField, Required, BoxGroup("Temporary")]
         private MissionRemoteDataScriptableObject missionRemoteData;

@@ -376,60 +376,80 @@ namespace StarSalvager
             if (LevelManager.Instance.CurrentWaveData.GetWaveDuration() <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod)
                 return;
 
-            foreach (StageColumnGroupObstacleData stageColumnGroupObstacleData in m_currentStageData.StageColumnGroupObstacleData)
+            if (m_currentStageData.StageType == STAGE_TYPE.STANDARD)
             {
-                Vector2 columnFieldRange = new Vector2(stageColumnGroupObstacleData.ColumnGroupMinimum, stageColumnGroupObstacleData.ColumnGroupMaximum);
-                foreach (StageObstacleData stageObstacleData in stageColumnGroupObstacleData.StageObstacleData)
+                Vector2 columnFieldRange = new Vector2(0.5f - m_currentStageData.CenterColumnWidth / 2, 0.5f + m_currentStageData.CenterColumnWidth / 2);
+                SpawnObstacleData(m_currentStageData.StageObstacleData, columnFieldRange, false);
+
+                float sidesWidth = (1 - m_currentStageData.CenterColumnWidth) / 2;
+                float sidesBlend = sidesWidth * FactoryManager.Instance.StandardBufferZoneObstacleData.PortionOfEdgesUsedForBlend;
+                Vector2 bufferFieldLeft = new Vector2(sidesBlend / 2, sidesWidth - (sidesBlend / 2));
+                Vector2 bufferFieldRight = new Vector2(sidesWidth + m_currentStageData.CenterColumnWidth + (sidesBlend / 2), 1 - (sidesBlend / 2));
+                print(bufferFieldLeft);
+                print(bufferFieldRight);
+                SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldLeft, false);
+                SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldRight, false);
+            }
+            else if (m_currentStageData.StageType == STAGE_TYPE.CUSTOM)
+            {
+                foreach (StageColumnGroupObstacleData stageColumnGroupObstacleData in m_currentStageData.StageColumnGroupObstacleData)
                 {
-                    float spawnVariable = stageObstacleData.CountPerRowAverage;
-                    if (m_previousStageData != null && m_blendTimer < m_currentStageData.StageBlendPeriod)
-                    {
-                        spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
-                    }
-
-                    while (spawnVariable >= 1)
-                    {
-                        SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange);
-                        spawnVariable -= 1;
-                    }
-
-                    if (spawnVariable == 0)
-                        continue;
-
-                    float random = Random.Range(0.0f, 1.0f);
-
-                    if (random <= spawnVariable)
-                    {
-                        SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange);
-                    }
+                    Vector2 columnFieldRange = new Vector2(stageColumnGroupObstacleData.ColumnGroupMinimum, stageColumnGroupObstacleData.ColumnGroupMaximum);
+                    SpawnObstacleData(stageColumnGroupObstacleData.StageObstacleData, columnFieldRange, false);
                 }
             }
 
             if (m_previousStageData == null || m_blendTimer > m_currentStageData.StageBlendPeriod)
                 return;
 
-            foreach (StageColumnGroupObstacleData stageColumnGroupObstacleData in m_previousStageData.StageColumnGroupObstacleData)
+            if (m_previousStageData.StageType == STAGE_TYPE.STANDARD)
             {
-                Vector2 columnFieldRange = new Vector2(stageColumnGroupObstacleData.ColumnGroupMinimum, stageColumnGroupObstacleData.ColumnGroupMaximum);
-                foreach (StageObstacleData stageObstacleData in stageColumnGroupObstacleData.StageObstacleData)
+                Vector2 columnFieldRange = new Vector2(0.5f - m_previousStageData.CenterColumnWidth / 2, 0.5f + m_previousStageData.CenterColumnWidth / 2);
+                SpawnObstacleData(m_previousStageData.StageObstacleData, columnFieldRange, true);
+
+                float sidesWidth = (1 - m_previousStageData.CenterColumnWidth) / 2;
+                float sidesBlend = sidesWidth * FactoryManager.Instance.StandardBufferZoneObstacleData.PortionOfEdgesUsedForBlend;
+                Vector2 bufferFieldLeft = new Vector2(sidesBlend / 2, sidesWidth - (sidesBlend / 2));
+                Vector2 bufferFieldRight = new Vector2(sidesWidth + m_previousStageData.CenterColumnWidth + (sidesBlend / 2), 1 - (sidesBlend / 2));
+                print(bufferFieldLeft);
+                print(bufferFieldRight);
+                SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldLeft, true);
+                SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldRight, true);
+            }
+            else if (m_previousStageData.StageType == STAGE_TYPE.CUSTOM)
+            {
+                foreach (StageColumnGroupObstacleData stageColumnGroupObstacleData in m_previousStageData.StageColumnGroupObstacleData)
                 {
-                    float spawnVariable = stageObstacleData.CountPerRowAverage * Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                    Vector2 columnFieldRange = new Vector2(stageColumnGroupObstacleData.ColumnGroupMinimum, stageColumnGroupObstacleData.ColumnGroupMaximum);
+                    SpawnObstacleData(stageColumnGroupObstacleData.StageObstacleData, columnFieldRange, true);
+                }
+            }
+        }
 
-                    while (spawnVariable >= 1)
-                    {
-                        SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange);
-                        spawnVariable -= 1;
-                    }
+        private void SpawnObstacleData(List<StageObstacleData> ObstacleData, Vector2 columnFieldRange, bool isPrevious)
+        {
+            foreach (StageObstacleData stageObstacleData in ObstacleData)
+            {
+                float spawnVariable = stageObstacleData.CountPerRowAverage;
+                if (isPrevious)
+                    spawnVariable *= Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                else if (m_previousStageData != null && m_blendTimer <= m_currentStageData.StageBlendPeriod)
+                    spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
 
-                    if (spawnVariable == 0)
-                        continue;
+                while (spawnVariable >= 1)
+                {
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange);
+                    spawnVariable -= 1;
+                }
 
-                    float random = Random.Range(0.0f, 1.0f);
+                if (spawnVariable == 0)
+                    continue;
 
-                    if (random <= spawnVariable)
-                    {
-                        SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange);
-                    }
+                float random = Random.Range(0.0f, 1.0f);
+
+                if (random <= spawnVariable)
+                {
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange);
                 }
             }
         }

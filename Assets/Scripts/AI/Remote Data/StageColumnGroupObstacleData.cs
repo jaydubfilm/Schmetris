@@ -10,16 +10,16 @@ namespace StarSalvager.AI
     public class StageColumnGroupObstacleData
     {
         [SerializeField, Required, Range(0.0f, 1.0f)]
-        private float m_columnGroupMinimum;
+        public float m_columnGroupMinimum;
 
         [SerializeField, Required, Range(0.0f, 1.0f)]
-        private float m_columnGroupMaximum;
+        public float m_columnGroupMaximum;
 
         [SerializeField]
-        private bool m_isBlendZone;
+        public bool m_isBlendZone;
 
         [SerializeField, HideIf("IsBlendZone")]
-        private List<StageObstacleData> m_stageObstacleData;
+        public List<StageObstacleData> m_stageObstacleData;
 
         public float ColumnGroupMinimum => m_columnGroupMinimum;
         public float ColumnGroupMaximum => m_columnGroupMaximum;

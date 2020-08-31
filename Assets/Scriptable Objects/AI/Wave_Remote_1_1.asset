@@ -13,28 +13,11 @@ MonoBehaviour:
   m_Name: Wave_Remote_1_1
   m_EditorClassIdentifier: 
   StageRemoteData:
-  - m_stageDuration: 100
+  - m_stageDuration: 0
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
-    m_stageColumnGroupObstacleData:
-    - m_columnGroupMinimum: 0.42
-      m_columnGroupMaximum: 0.44
-      m_isBlendZone: 0
-      m_stageObstacleData:
-      - m_selectionType: 3
-        m_shapeName: 
-        m_category: 
-        m_asteroidSize: 0
-        m_countPerMinute: 500
-        m_rotation: 
-    - m_columnGroupMinimum: 0.56
-      m_columnGroupMaximum: 0.58
-      m_isBlendZone: 0
-      m_stageObstacleData:
-      - m_selectionType: 3
-        m_shapeName: 
-        m_category: 
-        m_asteroidSize: 0
-        m_countPerMinute: 500
-        m_rotation: 
+    m_stageType: 0
+    m_centerColumnWidth: 0.5
+    m_stageObstacleData: []
+    m_stageColumnGroupObstacleData: []
