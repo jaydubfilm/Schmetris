@@ -59,7 +59,7 @@ namespace StarSalvager.AI
         //Create a "reverse gravity" force for the agent from the obstacle, using a mass value and the distance between them
         private Vector2 GetForce(Vector2 agentPosition, Vector2 obstaclePosition)
         {
-            float magnitude = Constants.obstacleMass / Vector2.SqrMagnitude(obstaclePosition - agentPosition);
+            float magnitude = Globals.ObstacleMass / Vector2.SqrMagnitude(obstaclePosition - agentPosition);
             Vector2 direction = new Vector2(agentPosition.x - obstaclePosition.x, agentPosition.y - obstaclePosition.y);
             direction.Normalize();
             direction *= magnitude;

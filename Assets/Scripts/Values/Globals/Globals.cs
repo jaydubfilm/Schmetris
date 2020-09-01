@@ -31,6 +31,9 @@ namespace StarSalvager.Values
         public static bool AllowAccessToUnlockedLaterWaves => m_gameSettings.allowAccessToUnlockedLaterWaves;
         public static float TimeForAsteroidToFallOneSquare => m_gameSettings.timeForAsteroidToFallOneSquare;
         public static float DASTime => m_gameSettings.DASTime;
+        public static float GridHeightRelativeToScreen => m_gameSettings.gridHeightRelativeToScreen;
+        public static float ObstacleMass => m_gameSettings.obstacleMass;
+        public static float BotHorizontalSpeed => m_gameSettings.botHorizontalSpeed;
 
         //Values set by Game Settings - do not set values here
         public static bool DisableTestingFeatures;
@@ -69,11 +72,11 @@ namespace StarSalvager.Values
 
             if (Orientation == ORIENTATION.VERTICAL)
             {
-                GridSizeY = (int)((Camera.main.orthographicSize * Constants.GridHeightRelativeToScreen * 2) / Constants.gridCellSize);
+                GridSizeY = (int)((Camera.main.orthographicSize * GridHeightRelativeToScreen * 2) / Constants.gridCellSize);
             }
             else
             {
-                GridSizeY = (int)((Camera.main.orthographicSize * Constants.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Constants.gridCellSize);
+                GridSizeY = (int)((Camera.main.orthographicSize * GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Constants.gridCellSize);
             }
         }
     }

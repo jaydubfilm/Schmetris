@@ -322,15 +322,15 @@ namespace StarSalvager
 
             //FIXME We shouldn't be using Camera.main
             InputManager.Instance.InitInput();
-            CameraController.SetOrthographicSize(Constants.gridCellSize * Values.Globals.ColumnsOnScreen, BotObject.transform.position);
+            CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, BotObject.transform.position);
             Globals.GridSizeX = CurrentSector.GridSizeX;
             if (Globals.Orientation == ORIENTATION.VERTICAL)
             {
-                Globals.GridSizeY = (int)((Camera.main.orthographicSize * Values.Constants.GridHeightRelativeToScreen * 2) / Values.Constants.gridCellSize);
+                Globals.GridSizeY = (int)((Camera.main.orthographicSize * Globals.GridHeightRelativeToScreen * 2) / Values.Constants.gridCellSize);
             }
             else
             {
-                Globals.GridSizeY = (int)((Camera.main.orthographicSize * Values.Constants.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Values.Constants.gridCellSize);
+                Globals.GridSizeY = (int)((Camera.main.orthographicSize * Globals.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Values.Constants.gridCellSize);
             }
             WorldGrid.SetupGrid();
             ProjectileManager.Activate();

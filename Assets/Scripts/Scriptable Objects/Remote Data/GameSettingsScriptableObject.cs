@@ -9,9 +9,12 @@ namespace StarSalvager.ScriptableObjects
     public class GameSettingsScriptableObject : ScriptableObject
     {
         public bool allowAccessToUnlockedLaterWaves = true;
+        public bool disableTestingFeatures = false;
         public float timeForAsteroidToFallOneSquare = 0.25f;
         public float DASTime = 0.15f;
-        public bool disableTestingFeatures = false;
+        public float gridHeightRelativeToScreen = 1.25f;
+        public float obstacleMass = 2.0f;
+        public float botHorizontalSpeed = 30.0f;
 
         public void SetupGameSettings()
         {

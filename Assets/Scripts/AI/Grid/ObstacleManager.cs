@@ -166,13 +166,13 @@ namespace StarSalvager
 
                 if (m_distanceHorizontal > 0)
                 {
-                    float toMove = Mathf.Min(m_distanceHorizontal, Constants.botHorizontalSpeed * Time.deltaTime);
+                    float toMove = Mathf.Min(m_distanceHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
                     m_distanceHorizontal -= toMove;
                     m_worldElementsRoot.transform.position += Vector3.left * toMove;
                 }
                 else if (m_distanceHorizontal < 0)
                 {
-                    float toMove = Mathf.Min(Mathf.Abs(m_distanceHorizontal), Constants.botHorizontalSpeed * Time.deltaTime);
+                    float toMove = Mathf.Min(Mathf.Abs(m_distanceHorizontal), Globals.BotHorizontalSpeed * Time.deltaTime);
                     m_distanceHorizontal += toMove;
                     m_worldElementsRoot.transform.position += Vector3.right * toMove;
                 }
