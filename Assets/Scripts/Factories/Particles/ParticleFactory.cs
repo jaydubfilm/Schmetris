@@ -1,6 +1,7 @@
 ﻿using System;
 using Recycling;
 using StarSalvager.Utilities.Animations;
+using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -8,13 +9,15 @@ namespace StarSalvager.Factories
 {
     public class ParticleFactory : FactoryBase
     {
-        private readonly GameObject explosionPrefab;
+        private readonly GameObject _explosionPrefab;
+        private readonly GameObject _labelPrefab;
         
         //============================================================================================================//
 
-        public ParticleFactory(GameObject explosionPrefab)
+        public ParticleFactory(GameObject explosionPrefab, GameObject labelPrefab)
         {
-            this.explosionPrefab = explosionPrefab;
+            _explosionPrefab = explosionPrefab;
+            _labelPrefab = labelPrefab;
         }
         
         //============================================================================================================//
@@ -34,11 +37,15 @@ namespace StarSalvager.Factories
             {
                 case nameof(Explosion):
                     gameObject = CreateExplosion();
-                    return gameObject.GetComponent<T>();
-                
+                    break;
+                case nameof(TextMeshPro):
+                    gameObject = CreateLabel();
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
+            
+            return gameObject.GetComponent<T>();
         }
         
         //============================================================================================================//
@@ -47,7 +54,17 @@ namespace StarSalvager.Factories
         {
             if (!Recycler.TryGrab<Explosion>(out GameObject gameObject))
             {
-                gameObject = Object.Instantiate(explosionPrefab);
+                gameObject = Object.Instantiate(_explosionPrefab);
+            }
+
+            return gameObject;
+        }
+        
+        private GameObject CreateLabel()
+        {
+            if (!Recycler.TryGrab<TextMeshPro>(out GameObject gameObject))
+            {
+                gameObject = Object.Instantiate(_labelPrefab);
             }
 
             return gameObject;

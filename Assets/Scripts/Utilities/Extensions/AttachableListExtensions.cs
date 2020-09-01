@@ -651,22 +651,21 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="level"></param>
         /// <param name="coordinate"></param>
         /// <param name="direction"></param>
-        /// <param name="bitList"></param>
+        /// <param name="iCanCombos"></param>
         /// <returns></returns>
-        public static bool ComboCountAlgorithm(this List<IAttachable> attachables, BIT_TYPE type, int level, Vector2Int coordinate, Vector2Int direction,
-            ref List<Bit> bitList)
+        public static bool ComboCountAlgorithm<T>(this List<IAttachable> attachables, T type, int level, Vector2Int coordinate, Vector2Int direction,
+            ref List<IAttachable> iCanCombos) where T: Enum
         {
             var nextCoords = coordinate + direction;
 
             //Try and get the attachableBase Bit at the new Coordinate
-            var nextBit = attachables
-                .FirstOrDefault(a => a.Coordinate == nextCoords && a is Bit) as Bit;
 
-            if (nextBit == null)
+            if (!(attachables
+                .FirstOrDefault(a => a.Coordinate == nextCoords && a is ICanCombo) is ICanCombo<T> nextBit))
                 return false;
 
             //We only care about bits that share the same type
-            if (nextBit.Type != type)
+            if (!nextBit.Type.Equals(type))
                 return false;
 
             //We only care about bits that share the same level
@@ -674,10 +673,10 @@ namespace StarSalvager.Utilities.Extensions
                 return false;
 
             //Add the bit to our combo check list
-            bitList.Add(nextBit);
+            iCanCombos.Add(nextBit.iAttachable);
 
             //Keep checking in this direction
-            return attachables.ComboCountAlgorithm(type, level, nextCoords, direction, ref bitList);
+            return attachables.ComboCountAlgorithm(type, level, nextCoords, direction, ref iCanCombos);
         }
 
         

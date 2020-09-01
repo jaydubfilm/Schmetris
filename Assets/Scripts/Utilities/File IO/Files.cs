@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Mail;
 using Newtonsoft.Json;
 using StarSalvager.Factories;
 using StarSalvager.Missions;
+using StarSalvager.Utilities.Analytics.Data;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
 using UnityEngine;
@@ -152,7 +154,7 @@ namespace StarSalvager.Utilities.FileIO
             if (!File.Exists(saveSlot))
             {
                 PlayerData data = new PlayerData();
-                if (!FactoryManager.Instance.DisableTestingFeatures)
+                if (!Globals.DisableTestingFeatures)
                 {
                     for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
                     {
@@ -248,6 +250,47 @@ namespace StarSalvager.Utilities.FileIO
         }
 
         #endregion //Drone Data
+
+        //Session Summary Data
+        //====================================================================================================================//
+        
+        //TODO Move this to the Files location
+        public static void ExportSessionData(string playerID, SessionData sessionData)
+        {
+            if (sessionData.waves.Count == 0)
+                return;
+
+            var fileName = Base64.Encode($"{playerID}_{sessionData.date:yyyyMMddHHmm}");
+
+            var path = Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "RemoteData", $"{fileName}.session");
+
+            var json = JsonConvert.SerializeObject(sessionData, Formatting.Indented);
+            
+            File.WriteAllText(path, json);
+
+            //TODO Need to get the email data for this
+            //SendSessionData(path);
+        }
+
+        private static void SendSessionData(string filePath, string playerID)
+        {
+            MailMessage mail = new MailMessage();
+            SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+            mail.From = new MailAddress("your mail@gmail.com");
+            mail.To.Add("to_mail@gmail.com");
+            mail.Subject = "New Player Session";
+            mail.Body = $"New session for {playerID}";
+
+            Attachment attachment;
+            attachment = new Attachment(filePath);
+            mail.Attachments.Add(attachment);
+
+            SmtpServer.Port = 587;
+            SmtpServer.Credentials = new System.Net.NetworkCredential("your mail@gmail.com", "your password");
+            SmtpServer.EnableSsl = true;
+
+            SmtpServer.Send(mail);
+        }
         
         //Clearing Remote Data
         //====================================================================================================================//

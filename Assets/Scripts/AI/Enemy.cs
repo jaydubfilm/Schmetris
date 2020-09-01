@@ -9,6 +9,7 @@ using StarSalvager.Missions;
 using StarSalvager.Utilities;
 using System.Linq;
 using StarSalvager.Audio;
+using StarSalvager.Utilities.Analytics;
 
 namespace StarSalvager.AI
 {
@@ -143,8 +144,8 @@ namespace StarSalvager.AI
         private List<Vector2> GetFireDirection()
         {
             //Firing styles are based on the player location. For now, hardcode this
-            Vector3 playerLocation = LevelManager.Instance.BotGameObject != null
-                ? LevelManager.Instance.BotGameObject.transform.position
+            Vector3 playerLocation = LevelManager.Instance.BotObject != null
+                ? LevelManager.Instance.BotObject.transform.position
                 : Vector3.right * 50;
 
             List<Vector2> fireDirections = new List<Vector2>();
@@ -205,8 +206,8 @@ namespace StarSalvager.AI
         public Vector3 GetDestination()
         {
             //Movement styles are based on the player location. For now, hardcode this
-            Vector3 playerLocation = LevelManager.Instance.BotGameObject != null
-                ? LevelManager.Instance.BotGameObject.transform.position
+            Vector3 playerLocation = LevelManager.Instance.BotObject != null
+                ? LevelManager.Instance.BotObject.transform.position
                 : Vector3.right * 50;
 
             switch (m_enemyData.MovementType)
@@ -379,7 +380,8 @@ namespace StarSalvager.AI
             
             LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.position, m_enemyData.rdsTable.rdsResult.ToList());
             MissionManager.ProcessEnemyKilledMissionData(m_enemyData.EnemyType, 1);
-                
+            
+            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             AudioController.PlaySound(SOUND.ENEMY_DEATH);
                 
             Recycler.Recycle<Enemy>(this);

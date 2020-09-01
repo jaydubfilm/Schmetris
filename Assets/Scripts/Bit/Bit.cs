@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate
+    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>
     {
         //IAttachable properties
         //============================================================================================================//
@@ -31,6 +31,8 @@ namespace StarSalvager
 
         [ShowInInspector, ReadOnly]
         public bool CanShift => true;
+        
+        public IAttachable iAttachable => this;
 
         //IHealth Properties
         //============================================================================================================//
@@ -125,16 +127,6 @@ namespace StarSalvager
         //Bit Functions
         //============================================================================================================//
 
-        public void IncreaseLevel(int amount = 1)
-        {
-            level += amount;
-            renderer.sortingOrder = level;
-
-            //Sets the gameObject info (Sprite)
-            var bit = this;
-            FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
-        }
-
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
             //Debug.Break();
@@ -213,6 +205,19 @@ namespace StarSalvager
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
             var inDirection = (-rayDirection).ToDirection();
             bot.TryAddNewAttachable(this, inDirection, hit.point);
+        }
+
+        //ICanCombo Functions
+        //====================================================================================================================//
+        
+        public void IncreaseLevel(int amount = 1)
+        {
+            level += amount;
+            renderer.sortingOrder = level;
+
+            //Sets the gameObject info (Sprite)
+            var bit = this;
+            FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
         }
 
         //ISaveable Functions

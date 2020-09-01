@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.AI;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.FileIO;
@@ -13,12 +14,6 @@ namespace StarSalvager.Factories
     //Based on: https://www.dofactory.com/net/factory-method-design-pattern
     public class FactoryManager : Singleton<FactoryManager>
     {
-        [SerializeField]
-        public bool DisableTestingFeatures;
-
-        [SerializeField]
-        private float TimeForAsteroidToFallOneSquare;
-
         [SerializeField, Required, BoxGroup("Temporary")]
         private MissionRemoteDataScriptableObject missionRemoteData;
         public MissionRemoteDataScriptableObject MissionRemoteData => missionRemoteData;
@@ -38,6 +33,8 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
+        public BitProfileScriptableObject BitProfileData => bitProfile as BitProfileScriptableObject;
+        
         [SerializeField, Required, BoxGroup("Attachables/Bits")]
         private AttachableProfileScriptableObject bitProfile;
         
@@ -45,6 +42,8 @@ namespace StarSalvager.Factories
         private BitRemoteDataScriptableObject bitRemoteData;
         
         //============================================================================================================//
+        
+        public ComponentProfileScriptableObject ComponentProfile => componentProfile as ComponentProfileScriptableObject;
         
         [SerializeField, Required, BoxGroup("Attachables/Components")]
         private AttachableProfileScriptableObject componentProfile;
@@ -57,6 +56,7 @@ namespace StarSalvager.Factories
         //============================================================================================================//
 
         public RemotePartProfileScriptableObject PartsRemoteData => partRemoteData;
+        public PartProfileScriptableObject PartsProfileData => partProfile as PartProfileScriptableObject;
 
         [SerializeField, Required, BoxGroup("Attachables/Parts")] 
         private AttachableProfileScriptableObject partProfile;
@@ -103,17 +103,15 @@ namespace StarSalvager.Factories
         
         [SerializeField, Required, BoxGroup("Particles")]
         private GameObject explosionPrefab;
+        
+        [SerializeField, Required, BoxGroup("Particles")]
+        private GameObject labelPrefab;
 
         //============================================================================================================//
 
         private Dictionary<Type, FactoryBase> _factoryBases;
 
         //============================================================================================================//
-
-        public void Start()
-        {
-            Globals.TimeForAsteroidToFallOneSquare = TimeForAsteroidToFallOneSquare;
-        }
 
         public T GetFactory<T>() where T : FactoryBase
         {
@@ -169,7 +167,7 @@ namespace StarSalvager.Factories
                     return new DamageFactory(damageFactory) as T;
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(ParticleFactory):
-                    return new ParticleFactory(explosionPrefab) as T;
+                    return new ParticleFactory(explosionPrefab, labelPrefab) as T;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type.Name, null);

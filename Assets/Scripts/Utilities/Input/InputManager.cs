@@ -35,8 +35,6 @@ namespace StarSalvager.Utilities.Inputs
         private bool _LockSideMovement;
 
 
-        [SerializeField, BoxGroup("DAS"), DisableInPlayMode]
-        private float DASTime = 0.15f;
         [SerializeField, BoxGroup("DAS"), ReadOnly]
         private float dasTimer;
         [SerializeField, BoxGroup("DAS"), ReadOnly]
@@ -52,8 +50,6 @@ namespace StarSalvager.Utilities.Inputs
 
         private void Start()
         {
-            Globals.DASTime = DASTime;
-
             Globals.OrientationChange += SetOrientation;
             RegisterPausable();
         }
@@ -281,7 +277,7 @@ namespace StarSalvager.Utilities.Inputs
                 previousInput = currentInput;
 
                 //Set the countdown timer to the intended value
-                dasTimer = DASTime;
+                dasTimer = Globals.DASTime;
                 
                 //Quickly move the relevant managers, then reset their input, so that they will pause until DAS is ready
                 Move(currentInput);
@@ -299,6 +295,9 @@ namespace StarSalvager.Utilities.Inputs
         /// <param name="value"></param>
         private void Move(float value)
         {
+            if (moveOnInput == null)
+                return;
+            
             for (var i = moveOnInput.Count - 1; i >= 0; i--)
             {
                 var move = moveOnInput[i];

@@ -19,9 +19,8 @@ namespace StarSalvager.AI
         private string m_category;
         [SerializeField, FoldoutGroup("$m_selectionType"), ShowIf("m_selectionType", SELECTION_TYPE.ASTEROID)]
         private ASTEROID_SIZE m_asteroidSize;
-        [SerializeField, FoldoutGroup("$m_selectionType")]
-        [FormerlySerializedAs("m_asteroidCountPerMinute")]
-        private int m_countPerMinute;
+        [SerializeField, FoldoutGroup("$m_selectionType"), Range(0, 1)]
+        private float m_density;
         [SerializeField, FoldoutGroup("$m_selectionType"), HideIf("m_selectionType", SELECTION_TYPE.BUMPER), ValueDropdown("GetRotations")]
         private string m_rotation;
 
@@ -29,9 +28,8 @@ namespace StarSalvager.AI
         public string ShapeName => m_shapeName;
         public string Category => m_category;
         public ASTEROID_SIZE AsteroidSize => m_asteroidSize;
-        public int CountPerMinute => m_countPerMinute;
 
-        public float CountPerRowAverage => (m_countPerMinute / 60.0f) * Globals.TimeForAsteroidToFallOneSquare;
+        public float Density => m_density / 6;
 
         public int Rotation()
         {
