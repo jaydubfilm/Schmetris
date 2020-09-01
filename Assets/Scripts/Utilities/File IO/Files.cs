@@ -5,7 +5,7 @@ using System.Net.Mail;
 using Newtonsoft.Json;
 using StarSalvager.Factories;
 using StarSalvager.Missions;
-using StarSalvager.Utilities.Analytics;
+using StarSalvager.Utilities.Analytics.Data;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
 using UnityEngine;

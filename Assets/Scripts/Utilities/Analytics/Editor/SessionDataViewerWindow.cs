@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Sirenix.OdinInspector.Editor;
-using Sirenix.Utilities;
-using Sirenix.Utilities.Editor;
 using StarSalvager.Factories;
+using StarSalvager.ScriptableObjects.Analytics;
+using StarSalvager.ScriptableObjects.Analytics.StarSalvager.ScriptableObjects.Analytics.Editor;
+using StarSalvager.Utilities.Analytics.Data;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEditor;
@@ -16,21 +16,46 @@ namespace StarSalvager.Utilities.Analytics.Editor
 {
     public class SessionDataViewerWindow : OdinMenuEditorWindow
     {
-
         private Dictionary<string, List<SessionData>> _playerSessions;
+
+        private GameSummarySettingsScriptableObject _summarySettingsScriptableObject;
         
         [MenuItem("Window/Star Salvager/Review Sessions")]
         private static void OpenWindow()
         {
             GetWindow<SessionDataViewerWindow>().Show();
+            
+            
+            
+        }
+
+        private void FindSettingsAsset()
+        {
+            string[] guids = AssetDatabase.FindAssets("Game Summary Settings t:GameSummarySettingsScriptableObject", new[] {"Assets/Scriptable Objects"});
+
+            if (guids.Length <= 0)
+            {
+                GameSummarySettings.CreateMyAsset();
+                
+                guids = AssetDatabase.FindAssets("Game Summary Settings t:GameSummarySettingsScriptableObject", new[] {"Assets/Scriptable Objects"});
+                
+                if (guids.Length <= 0)
+                    throw new FileLoadException("Cannot find the Game Summary Settings File");
+            }
+
+            _summarySettingsScriptableObject = AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(guids[0]),
+                typeof(GameSummarySettingsScriptableObject)) as GameSummarySettingsScriptableObject ;
+
         }
 
         protected override OdinMenuTree BuildMenuTree()
         {
+            FindSettingsAsset();
+                
             var tree = new OdinMenuTree();
             tree.Selection.SupportsMultiSelect = false;
             
-            var directory = new DirectoryInfo( Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "RemoteData"));
+            var directory = new DirectoryInfo(_summarySettingsScriptableObject.SessionsDirectory);
 
             var files = directory.GetFiles("*.session");
             
@@ -48,6 +73,10 @@ namespace StarSalvager.Utilities.Analytics.Editor
                 
                 _playerSessions[sessionData.PlayerID].Add(sessionData);
             }
+            
+            tree.Add("Settings", _summarySettingsScriptableObject);
+            
+            tree.Add("Total Summary", new SessionSummaryData("Total Summary", _playerSessions.Values));
 
             foreach (var playerSession in _playerSessions)
             {
