@@ -154,7 +154,7 @@ namespace StarSalvager.Utilities.FileIO
             if (!File.Exists(saveSlot))
             {
                 PlayerData data = new PlayerData();
-                if (!FactoryManager.Instance.DisableTestingFeatures)
+                if (!Globals.DisableTestingFeatures)
                 {
                     for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
                     {

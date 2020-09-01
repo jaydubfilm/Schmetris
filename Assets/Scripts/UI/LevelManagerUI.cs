@@ -69,7 +69,7 @@ namespace StarSalvager.UI
         {
             //betweenWavesContinueButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0;
 
-            pauseWindowScrapyardButton.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
+            pauseWindowScrapyardButton.gameObject.SetActive(!Globals.DisableTestingFeatures);
         }
 
         //============================================================================================================//
@@ -90,7 +90,7 @@ namespace StarSalvager.UI
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
                 LevelManager.Instance.EndWaveState = false;
-                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
+                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
             });
 
             pauseWindowScrapyardButton.onClick.AddListener(() =>
@@ -99,13 +99,13 @@ namespace StarSalvager.UI
                 m_levelManager.SavePlayerData();
                 ToggleBetweenWavesUIActive(false);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
-                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
+                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
             });
 
             pauseWindowMainMenuButton.onClick.AddListener(() =>
             {
                 m_levelManager.IsWaveProgressing = true;
-                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.ALEX_TEST_SCENE);
+                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
             });
 
             deathWindowRetryButton.onClick.AddListener(() =>
@@ -118,7 +118,7 @@ namespace StarSalvager.UI
             {
                 m_levelManager.IsWaveProgressing = true;
                 GameTimer.SetPaused(false);
-                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
+                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
             });
             
             resumeButton.onClick.AddListener(() =>

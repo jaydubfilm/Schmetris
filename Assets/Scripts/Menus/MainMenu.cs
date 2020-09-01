@@ -127,7 +127,7 @@ namespace StarSalvager.UI
             if (gameObject.scene == SceneManager.GetActiveScene())
                 Globals.ScaleCamera(m_cameraZoomScaler.value);
 
-            testingFeaturesToggle.isOn = !FactoryManager.Instance.DisableTestingFeatures;
+            testingFeaturesToggle.isOn = !Globals.DisableTestingFeatures;
         }
 
         private void Update()
@@ -135,9 +135,9 @@ namespace StarSalvager.UI
             continueButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0;
             loadGameButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0;
 
-            m_toggleOrientationButton.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
-            //m_cameraZoomScaler.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
-            _zoomSliderText.Text.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
+            m_toggleOrientationButton.gameObject.SetActive(!Globals.DisableTestingFeatures);
+            m_cameraZoomScaler.gameObject.SetActive(!Globals.DisableTestingFeatures);
+            _zoomSliderText.Text.gameObject.SetActive(!Globals.DisableTestingFeatures);
         }
 
         //============================================================================================================//
@@ -259,7 +259,7 @@ namespace StarSalvager.UI
             oBackButton.onClick.AddListener(() => OpenMenu(MENU.MAIN));
 
             testingFeaturesToggle.onValueChanged.AddListener(delegate {
-                FactoryManager.Instance.DisableTestingFeatures = !testingFeaturesToggle.isOn;
+                Globals.DisableTestingFeatures = !testingFeaturesToggle.isOn;
             });
             
             //--------------------------------------------------------------------------------------------------------//

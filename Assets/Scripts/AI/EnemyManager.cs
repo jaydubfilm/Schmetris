@@ -105,13 +105,13 @@ namespace StarSalvager
             {
                 if (m_distanceHorizontal > 0)
                 {
-                    float toMove = Mathf.Min(m_distanceHorizontal, Constants.botHorizontalSpeed * Time.deltaTime);
+                    float toMove = Mathf.Min(m_distanceHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
                     gridMovement = Vector3.right * toMove;
                     m_distanceHorizontal -= toMove;
                 }
                 else if (m_distanceHorizontal < 0)
                 {
-                    float toMove = Mathf.Min(Mathf.Abs(m_distanceHorizontal), Constants.botHorizontalSpeed * Time.deltaTime);
+                    float toMove = Mathf.Min(Mathf.Abs(m_distanceHorizontal), Globals.BotHorizontalSpeed * Time.deltaTime);
                     gridMovement = Vector3.left * toMove;
                     m_distanceHorizontal += toMove;
                 }
@@ -227,7 +227,8 @@ namespace StarSalvager
         {
             Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(enemyType);
             m_enemies.Add(newEnemy);
-            newEnemy.transform.position = LevelManager.Instance.WorldGrid.GetSpawnPositionForEnemy(newEnemy.m_enemyData.MovementType);
+            newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
+            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.m_enemyData.MovementType);
         }
         
         public void AddEnemy(Enemy newEnemy)
@@ -236,7 +237,8 @@ namespace StarSalvager
                 return;
             
             m_enemies.Add(newEnemy);
-            newEnemy.transform.position = LevelManager.Instance.WorldGrid.GetSpawnPositionForEnemy(newEnemy.m_enemyData.MovementType);
+            newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
+            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.m_enemyData.MovementType);
         }
 
         public bool HasEnemiesRemaining()

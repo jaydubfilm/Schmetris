@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.AI;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.FileIO;
@@ -13,12 +14,6 @@ namespace StarSalvager.Factories
     //Based on: https://www.dofactory.com/net/factory-method-design-pattern
     public class FactoryManager : Singleton<FactoryManager>
     {
-        [SerializeField]
-        public bool DisableTestingFeatures;
-
-        [SerializeField]
-        private float TimeForAsteroidToFallOneSquare;
-
         [SerializeField, Required, BoxGroup("Temporary")]
         private MissionRemoteDataScriptableObject missionRemoteData;
         public MissionRemoteDataScriptableObject MissionRemoteData => missionRemoteData;
@@ -117,11 +112,6 @@ namespace StarSalvager.Factories
         private Dictionary<Type, FactoryBase> _factoryBases;
 
         //============================================================================================================//
-
-        public void Start()
-        {
-            Globals.TimeForAsteroidToFallOneSquare = TimeForAsteroidToFallOneSquare;
-        }
 
         public T GetFactory<T>() where T : FactoryBase
         {

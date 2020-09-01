@@ -15,16 +15,16 @@ namespace StarSalvager.ScriptableObjects
             return StageRemoteData[waveNumber];
         }
 
-        public int GetCurrentStage(float stageTimer)
+        public bool TrySetCurrentStage(float stageTimer, out int currentStage)
         {
-            int currentStage = 0;
+            currentStage = 0;
 
             while (stageTimer >= StageRemoteData[currentStage].StageDuration)
             {
                 if (StageRemoteData[currentStage].WaitUntilAllEnemiesDefeatedToBegin &&
                     LevelManager.Instance.EnemyManager.HasEnemiesRemaining())
                 {
-                    return currentStage;
+                    return true;
                 }
 
                 stageTimer -= StageRemoteData[currentStage].StageDuration;
@@ -32,11 +32,11 @@ namespace StarSalvager.ScriptableObjects
 
                 if (currentStage >= StageRemoteData.Count)
                 {
-                    return -1;
+                    return false;
                 }
             }
 
-            return currentStage;
+            return true;
         }
 
         public float GetWaveDuration()

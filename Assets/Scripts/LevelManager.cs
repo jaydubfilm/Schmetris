@@ -40,6 +40,10 @@ namespace StarSalvager
 
         public WaveRemoteDataScriptableObject CurrentWaveData => CurrentSector.GetRemoteData(Globals.CurrentWave);
 
+        [SerializeField, Required]
+        private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
+        public StandardBufferZoneObstacleData StandardBufferZoneObstacleData => m_standardBufferZoneObstacleData;
+
         private float m_waveTimer;
         public float WaveTimer => m_waveTimer;
 
@@ -189,7 +193,7 @@ namespace StarSalvager
                         Globals.CurrentWave = 0;
                         GameTimer.SetPaused(false);
                         PlayerPersistentData.PlayerData.numLives = 3;
-                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.ALEX_TEST_SCENE);
+                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
                     });
                 }
                 //Debug.LogError("Bot Died. Press 'R' to restart");
@@ -200,11 +204,11 @@ namespace StarSalvager
 
         private void Update()
         {
-            /*if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
             {
                 WorldGrid.DrawDebugMarkedGridPoints();
                 Debug.Break();
-            }*/
+            }
 
             if (isPaused)
                 return;
@@ -214,16 +218,18 @@ namespace StarSalvager
                 if (IsWaveProgressing)
                     m_waveTimer += Time.deltaTime;
 
-                m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+                int currentStage = m_currentStage;
+                if (!CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage))
+                {
+                    if (m_currentStage == currentStage + 1)
+                        TransitionToNewWave();
+                }
 
                 //Displays the time in timespan & the fill value
                 var duration = CurrentWaveData.GetWaveDuration();
                 var timeLeft = duration - m_waveTimer;
                 GameUi.SetClockValue( timeLeft / duration);
                 GameUi.SetTimeString((int)timeLeft);
-
-                if (m_currentStage == -1)
-                    TransitionToNewWave();
             }
             else if (ObstacleManager.HasNoActiveObstacles)
             {
@@ -241,7 +247,7 @@ namespace StarSalvager
                 EnemyManager.MoveToNewWave();
                 EnemyManager.SetEnemiesInert(false);
                 EnemyManager.RecycleAllEnemies();
-                m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+                CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
 
                 Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
                 foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
@@ -267,7 +273,7 @@ namespace StarSalvager
                     SavePlayerData();
                     m_levelManagerUI.ToggleBetweenWavesUIActive(false);
                     ProcessScrapyardUsageBeginAnalytics();
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
                 });
             }
 
@@ -316,16 +322,15 @@ namespace StarSalvager
 
             //FIXME We shouldn't be using Camera.main
             InputManager.Instance.InitInput();
-            CameraController.SetOrthographicSize(Constants.gridCellSize * Values.Globals.ColumnsOnScreen, BotObject.transform.position);
+            CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, BotObject.transform.position);
+            Globals.GridSizeX = CurrentSector.GridSizeX;
             if (Globals.Orientation == ORIENTATION.VERTICAL)
             {
-                Values.Globals.GridSizeX = (int)(Values.Globals.ColumnsOnScreen * Values.Constants.GridWidthRelativeToScreen);
-                Values.Globals.GridSizeY = (int)((Camera.main.orthographicSize * Values.Constants.GridHeightRelativeToScreen * 2) / Values.Constants.gridCellSize);
+                Globals.GridSizeY = (int)((Camera.main.orthographicSize * Globals.GridHeightRelativeToScreen * 2) / Values.Constants.gridCellSize);
             }
             else
             {
-                Values.Globals.GridSizeX = (int)(Values.Globals.ColumnsOnScreen * Values.Constants.GridWidthRelativeToScreen * (Screen.height / (float)Screen.width));
-                Values.Globals.GridSizeY = (int)((Camera.main.orthographicSize * Values.Constants.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Values.Constants.gridCellSize);
+                Globals.GridSizeY = (int)((Camera.main.orthographicSize * Globals.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Values.Constants.gridCellSize);
             }
             WorldGrid.SetupGrid();
             ProjectileManager.Activate();
@@ -381,7 +386,7 @@ namespace StarSalvager
 
             m_waveTimer = 0;
             m_levelTimer = 0;
-            m_currentStage = CurrentWaveData.GetCurrentStage(m_waveTimer);
+            CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
             ProjectileManager.Reset();
             MissionsCompletedDuringThisFlight.Clear();
         }
@@ -431,7 +436,7 @@ namespace StarSalvager
                 Alert.ShowAlert("Sector Completed", "You beat the last wave of the sector. Return to base!", "Ok", () =>
                 {
                     GameTimer.SetPaused(false);
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
                 });
             }
 
@@ -462,7 +467,7 @@ namespace StarSalvager
             GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
             GameTimer.SetPaused(false);
             //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
-            SceneLoader.ActivateScene(SceneLoader.ALEX_TEST_SCENE, SceneLoader.ALEX_TEST_SCENE);
+            SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.LEVEL);
         }
 
         //============================================================================================================//
