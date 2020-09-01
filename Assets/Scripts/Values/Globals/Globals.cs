@@ -29,6 +29,7 @@ namespace StarSalvager.Values
         private static GameSettingsScriptableObject m_gameSettings = null;
         //Properties from Game Settings - do not give explicit values
         public static bool AllowAccessToUnlockedLaterWaves => m_gameSettings.allowAccessToUnlockedLaterWaves;
+        public static bool BitsPushThroughParts => m_gameSettings.bitsPushThroughParts;
         public static float TimeForAsteroidToFallOneSquare => m_gameSettings.timeForAsteroidToFallOneSquare;
         public static float DASTime => m_gameSettings.DASTime;
         public static float GridHeightRelativeToScreen => m_gameSettings.gridHeightRelativeToScreen;
