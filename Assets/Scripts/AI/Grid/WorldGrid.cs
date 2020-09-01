@@ -37,9 +37,7 @@ namespace StarSalvager
             float height = Camera.main.orthographicSize * 2.0f;
             float width = height * Screen.width / Screen.height;
             m_screenGridCellRange = new Vector2Int((int)(width / Constants.gridCellSize), (int)(height / Constants.gridCellSize));
-            m_botGridPosition = GetCoordinatesOfGridSquareAtLocalPosition(LevelManager.Instance.BotGameObject.transform.position);
-
-
+            m_botGridPosition = GetCoordinatesOfGridSquareAtLocalPosition(LevelManager.Instance.BotObject.transform.position);
         }
 
         public void MoveObstacleMarkersDownwardOnGrid()

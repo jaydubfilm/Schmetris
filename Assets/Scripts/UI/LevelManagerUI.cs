@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
@@ -77,15 +78,10 @@ namespace StarSalvager.UI
         {
             betweenWavesContinueButton.onClick.AddListener(() =>
             {
-                m_levelManager.IsWaveProgressing = true;
                 GameTimer.SetPaused(false);
                 ToggleBetweenWavesUIActive(false);
-                LevelManager.Instance.EndWaveState = false;
-                m_levelManager.LiquidResourcesAttBeginningOfWave.Clear();
-                foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
-                {
-                    m_levelManager.LiquidResourcesAttBeginningOfWave.Add(resource.Key, resource.Value);
-                };
+
+                m_levelManager.ContinueToNextWave();
             });
 
             betweenWavesScrapyardButton.onClick.AddListener(() =>

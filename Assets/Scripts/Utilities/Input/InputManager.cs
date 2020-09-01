@@ -299,6 +299,9 @@ namespace StarSalvager.Utilities.Inputs
         /// <param name="value"></param>
         private void Move(float value)
         {
+            if (moveOnInput == null)
+                return;
+            
             for (var i = moveOnInput.Count - 1; i >= 0; i--)
             {
                 var move = moveOnInput[i];

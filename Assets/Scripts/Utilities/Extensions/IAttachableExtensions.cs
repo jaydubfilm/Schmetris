@@ -1,4 +1,5 @@
 ﻿using System;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Extensions
@@ -40,6 +41,39 @@ namespace StarSalvager.Utilities.Extensions
             //Rotate opposite of the Core rotation 
             attachable.transform.localRotation *= rotation.ToInverseQuaternion();
             
+        }
+
+        public static void Bounce(this IAttachable attachable, Vector2 contactPoint)
+        {
+            if (!(attachable is IObstacle obstacle))
+                return;
+                
+            Vector2 directionBounce = (Vector2)attachable.transform.position - contactPoint;
+            directionBounce.Normalize();
+            if (directionBounce != Vector2.up)
+            {
+                Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
+                downVelocity.Normalize();
+                downVelocity *= 0.5f;
+                directionBounce += downVelocity;
+                directionBounce.Normalize();
+            }
+            else
+            {
+                Vector2 sideVelocity = Vector2.left * (UnityEngine.Random.Range(0, 2) * 2 - 1);
+                sideVelocity *= 0.5f;
+                directionBounce += sideVelocity;
+                directionBounce.Normalize();
+            }
+
+            float rotation = 180.0f;
+            if (directionBounce.x >= 0)
+            {
+                rotation *= -1;
+            }
+            
+            
+            LevelManager.Instance.ObstacleManager.BounceObstacle(obstacle, directionBounce, rotation, true, true, true);
         }
     }
 }
