@@ -35,6 +35,7 @@ namespace StarSalvager.Values
         public static float GridHeightRelativeToScreen => m_gameSettings.gridHeightRelativeToScreen;
         public static float ObstacleMass => m_gameSettings.obstacleMass;
         public static float BotHorizontalSpeed => m_gameSettings.botHorizontalSpeed;
+        public static float MissionReminderFrequency => m_gameSettings.missionReminderFrequency;
 
         //Values set by Game Settings - do not set values here
         public static bool DisableTestingFeatures;

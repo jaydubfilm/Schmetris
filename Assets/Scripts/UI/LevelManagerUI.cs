@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
+using StarSalvager.Missions;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
@@ -55,6 +56,8 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
+        private float m_missionReminderTimer = 0.0f;
+
         private LevelManager m_levelManager;
 
         // Start is called before the first frame update
@@ -70,6 +73,16 @@ namespace StarSalvager.UI
             //betweenWavesContinueButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0;
 
             pauseWindowScrapyardButton.gameObject.SetActive(!Globals.DisableTestingFeatures);
+
+            if (!isPaused)
+            {
+                m_missionReminderTimer += Time.deltaTime;
+                if (m_missionReminderTimer >= Globals.MissionReminderFrequency)
+                {
+                    m_missionReminderTimer -= Globals.MissionReminderFrequency;
+                    PlayMissionReminder();
+                }
+            }
         }
 
         //============================================================================================================//
@@ -149,6 +162,12 @@ namespace StarSalvager.UI
             m_deathUI.SetActive(active);
 
             deathText.text = description;
+        }
+
+        private void PlayMissionReminder()
+        {
+            string missionReminderText = MissionManager.MissionsCurrentData.CurrentMissions[Random.Range(0, Mathf.Min(3, MissionManager.MissionsCurrentData.CurrentMissions.Count))].m_missionDescription;
+            Toast.AddToast(missionReminderText, time: 2.0f);
         }
 
         //============================================================================================================//

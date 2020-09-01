@@ -10,6 +10,7 @@ namespace StarSalvager.Utilities.JsonDataTypes
         public string ClassType;
 
         public string MissionName;
+        public string MissionDescription;
         public float AmountNeeded;
         public float CurrentAmount;
         public MISSION_EVENT_TYPE MissionEventType;
