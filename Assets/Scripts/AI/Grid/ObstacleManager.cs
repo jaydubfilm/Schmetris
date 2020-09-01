@@ -389,7 +389,28 @@ namespace StarSalvager
                     foreach (StageColumnGroupObstacleData stageColumnGroupObstacleData in m_currentStageData.StageColumnGroupObstacleData)
                     {
                         Vector2 columnFieldRange = new Vector2(stageColumnGroupObstacleData.ColumnGroupMinimum, stageColumnGroupObstacleData.ColumnGroupMaximum);
-                        SpawnObstacleData(stageColumnGroupObstacleData.StageObstacleData, columnFieldRange, m_currentStageData.SpawningObstacleMultiplier, false);
+                        if (stageColumnGroupObstacleData.IsBlendZone)
+                        {
+                            IEnumerable<StageColumnGroupObstacleData> columnsLeft = m_currentStageData.StageColumnGroupObstacleData.Where(s => s.ColumnGroupMaximum <= columnFieldRange.x && !s.IsBlendZone);
+                            IEnumerable<StageColumnGroupObstacleData> columnsRight = m_currentStageData.StageColumnGroupObstacleData.Where(s => s.ColumnGroupMinimum >= columnFieldRange.y && !s.IsBlendZone);
+                            if (columnsLeft.Count() > 0 && columnsRight.Count() > 0)
+                            {
+                                float columnGroupLeftPosition = columnsLeft.Max(s => s.ColumnGroupMaximum);
+                                StageColumnGroupObstacleData columnGroupLeft = m_currentStageData.StageColumnGroupObstacleData.FirstOrDefault(s => s.ColumnGroupMaximum == columnGroupLeftPosition);
+                                float columnGroupRightPosition = columnsRight.Min(s => s.ColumnGroupMinimum);
+                                StageColumnGroupObstacleData columnGroupRight = m_currentStageData.StageColumnGroupObstacleData.FirstOrDefault(s => s.ColumnGroupMinimum == columnGroupRightPosition);
+
+                                if (columnGroupLeft != null && columnGroupRight != null)
+                                {
+                                    SpawnObstacleData(columnGroupLeft.StageObstacleData, columnFieldRange, m_currentStageData.SpawningObstacleMultiplier / 2, false);
+                                    SpawnObstacleData(columnGroupRight.StageObstacleData, columnFieldRange, m_currentStageData.SpawningObstacleMultiplier / 2, false);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            SpawnObstacleData(stageColumnGroupObstacleData.StageObstacleData, columnFieldRange, m_currentStageData.SpawningObstacleMultiplier, false);
+                        }
                     }
                     break;
             }
@@ -409,7 +430,28 @@ namespace StarSalvager
                     foreach (StageColumnGroupObstacleData stageColumnGroupObstacleData in m_previousStageData.StageColumnGroupObstacleData)
                     {
                         Vector2 columnFieldRange = new Vector2(stageColumnGroupObstacleData.ColumnGroupMinimum, stageColumnGroupObstacleData.ColumnGroupMaximum);
-                        SpawnObstacleData(stageColumnGroupObstacleData.StageObstacleData, columnFieldRange, m_previousStageData.SpawningObstacleMultiplier, true);
+                        if (stageColumnGroupObstacleData.IsBlendZone)
+                        {
+                            IEnumerable<StageColumnGroupObstacleData> columnsLeft = m_currentStageData.StageColumnGroupObstacleData.Where(s => s.ColumnGroupMaximum <= columnFieldRange.x && !s.IsBlendZone);
+                            IEnumerable<StageColumnGroupObstacleData> columnsRight = m_currentStageData.StageColumnGroupObstacleData.Where(s => s.ColumnGroupMinimum >= columnFieldRange.y && !s.IsBlendZone);
+                            if (columnsLeft.Count() > 0 && columnsRight.Count() > 0)
+                            {
+                                float columnGroupLeftPosition = columnsLeft.Max(s => s.ColumnGroupMaximum);
+                                StageColumnGroupObstacleData columnGroupLeft = m_previousStageData.StageColumnGroupObstacleData.FirstOrDefault(s => s.ColumnGroupMaximum == columnGroupLeftPosition);
+                                float columnGroupRightPosition = columnsRight.Min(s => s.ColumnGroupMinimum);
+                                StageColumnGroupObstacleData columnGroupRight = m_previousStageData.StageColumnGroupObstacleData.FirstOrDefault(s => s.ColumnGroupMinimum == columnGroupRightPosition);
+
+                                if (columnGroupLeft != null && columnGroupRight != null)
+                                {
+                                    SpawnObstacleData(columnGroupLeft.StageObstacleData, columnFieldRange, m_previousStageData.SpawningObstacleMultiplier / 2, true);
+                                    SpawnObstacleData(columnGroupRight.StageObstacleData, columnFieldRange, m_previousStageData.SpawningObstacleMultiplier / 2, true);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            SpawnObstacleData(stageColumnGroupObstacleData.StageObstacleData, columnFieldRange, m_previousStageData.SpawningObstacleMultiplier, true);
+                        }
                     }
                     break;
             }

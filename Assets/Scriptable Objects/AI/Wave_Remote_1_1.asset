@@ -17,7 +17,7 @@ MonoBehaviour:
     m_stageBlendPeriod: 5
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
-    m_stageType: 0
+    m_stageType: 2
     m_spawningObstacleMultiplier: 1
     m_centerColumnWidth: 0.5
     m_stageObstacleData:
@@ -27,7 +27,31 @@ MonoBehaviour:
       m_asteroidSize: 0
       m_density: 0.5
       m_rotation: Random
-    m_stageColumnGroupObstacleData: []
+    m_stageColumnGroupObstacleData:
+    - m_columnGroupMinimum: 0
+      m_columnGroupMaximum: 0.3
+      m_isBlendZone: 0
+      m_stageObstacleData:
+      - m_selectionType: 3
+        m_shapeName: 
+        m_category: 
+        m_asteroidSize: 0
+        m_density: 0.1
+        m_rotation: 
+    - m_columnGroupMinimum: 0.3
+      m_columnGroupMaximum: 0.7
+      m_isBlendZone: 1
+      m_stageObstacleData: []
+    - m_columnGroupMinimum: 0.7
+      m_columnGroupMaximum: 1
+      m_isBlendZone: 0
+      m_stageObstacleData:
+      - m_selectionType: 2
+        m_shapeName: 
+        m_category: 
+        m_asteroidSize: 0
+        m_density: 0.1
+        m_rotation: 
   - m_stageDuration: 30
     m_stageBlendPeriod: 5
     m_waitUntilAllEnemiesDefeatedToBegin: 0
@@ -40,7 +64,7 @@ MonoBehaviour:
       m_shapeName: 
       m_category: 
       m_asteroidSize: 0
-      m_density: 500
+      m_density: 0.5
       m_rotation: 
     m_stageColumnGroupObstacleData:
     - m_columnGroupMinimum: 0.42
