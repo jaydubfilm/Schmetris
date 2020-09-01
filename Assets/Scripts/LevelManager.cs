@@ -193,7 +193,7 @@ namespace StarSalvager
                         Globals.CurrentWave = 0;
                         GameTimer.SetPaused(false);
                         PlayerPersistentData.PlayerData.numLives = 3;
-                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.ALEX_TEST_SCENE);
+                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
                     });
                 }
                 //Debug.LogError("Bot Died. Press 'R' to restart");
@@ -273,7 +273,7 @@ namespace StarSalvager
                     SavePlayerData();
                     m_levelManagerUI.ToggleBetweenWavesUIActive(false);
                     ProcessScrapyardUsageBeginAnalytics();
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
                 });
             }
 
@@ -436,7 +436,7 @@ namespace StarSalvager
                 Alert.ShowAlert("Sector Completed", "You beat the last wave of the sector. Return to base!", "Ok", () =>
                 {
                     GameTimer.SetPaused(false);
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.ALEX_TEST_SCENE);
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
                 });
             }
 
@@ -467,7 +467,7 @@ namespace StarSalvager
             GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
             GameTimer.SetPaused(false);
             //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
-            SceneLoader.ActivateScene(SceneLoader.ALEX_TEST_SCENE, SceneLoader.ALEX_TEST_SCENE);
+            SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.LEVEL);
         }
 
         //============================================================================================================//

@@ -15,7 +15,6 @@ namespace StarSalvager.Utilities.SceneManagement
         public const string MAIN_MENU = "MainMenuScene";
         public const string LEVEL = "LevelScene";
         public const string SCRAPYARD = "ScrapyardScene";
-        public const string ALEX_TEST_SCENE = "AlexShulmanTestScene";
         public const string UNIVERSE_MAP = "UniverseMapScene";
         
         private static readonly Dictionary<string, SceneRoot> SCENES = new Dictionary<string, SceneRoot>
@@ -23,7 +22,6 @@ namespace StarSalvager.Utilities.SceneManagement
             { MAIN_MENU, null },
             { LEVEL, null },
             { SCRAPYARD, null },
-            { ALEX_TEST_SCENE, null },
             { UNIVERSE_MAP, null }
         };
 
