@@ -20,10 +20,6 @@ namespace StarSalvager.Factories
         [SerializeField]
         private float TimeForAsteroidToFallOneSquare;
 
-        [SerializeField, Required]
-        private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
-        public StandardBufferZoneObstacleData StandardBufferZoneObstacleData => m_standardBufferZoneObstacleData;
-
         [SerializeField, Required, BoxGroup("Temporary")]
         private MissionRemoteDataScriptableObject missionRemoteData;
         public MissionRemoteDataScriptableObject MissionRemoteData => missionRemoteData;

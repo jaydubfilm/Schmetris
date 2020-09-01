@@ -39,6 +39,10 @@ namespace StarSalvager
 
         public WaveRemoteDataScriptableObject CurrentWaveData => CurrentSector.GetRemoteData(Globals.CurrentWave);
 
+        [SerializeField, Required]
+        private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
+        public StandardBufferZoneObstacleData StandardBufferZoneObstacleData => m_standardBufferZoneObstacleData;
+
         private float m_waveTimer;
         public float WaveTimer => m_waveTimer;
 

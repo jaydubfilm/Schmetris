@@ -24,7 +24,8 @@ namespace StarSalvager
         {
             m_anchorPoint = Vector2.left *
                 ((Values.Globals.GridSizeX / 2.0f) * Constants.gridCellSize)
-                + Vector2.down * Values.Constants.gridCellSize / 2;
+                + (Vector2.left * Constants.gridCellSize * 0.5f)
+                + (Vector2.down * Values.Constants.gridCellSize / 2);
 
             m_gridArray = new GridSquare[Values.Globals.GridSizeX * Values.Globals.GridSizeY];
 

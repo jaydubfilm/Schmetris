@@ -21,11 +21,11 @@ MonoBehaviour:
     m_spawningObstacleMultiplier: 1
     m_centerColumnWidth: 0.5
     m_stageObstacleData:
-    - m_selectionType: 1
+    - m_selectionType: 3
       m_shapeName: 
       m_category: Small
       m_asteroidSize: 0
-      m_density: 0.1
+      m_density: 0.5
       m_rotation: Random
     m_stageColumnGroupObstacleData: []
   - m_stageDuration: 30

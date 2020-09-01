@@ -6,6 +6,7 @@ namespace StarSalvager
     public enum STAGE_TYPE : int
     {
         STANDARD,
+        FULLSCREEN,
         CUSTOM
     }
 }

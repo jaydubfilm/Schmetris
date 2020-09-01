@@ -23,7 +23,7 @@ namespace StarSalvager.AI
 
         [SerializeField, ShowIf("m_stageType", STAGE_TYPE.STANDARD), Required, Range(0.0f, 1.0f)]
         private float m_centerColumnWidth = 0.5f;
-        [SerializeField, ShowIf("m_stageType", STAGE_TYPE.STANDARD)]
+        [SerializeField, HideIf("m_stageType", STAGE_TYPE.CUSTOM)]
         private List<StageObstacleData> m_stageObstacleData;
 
         [SerializeField, ShowIf("m_stageType", STAGE_TYPE.CUSTOM)]

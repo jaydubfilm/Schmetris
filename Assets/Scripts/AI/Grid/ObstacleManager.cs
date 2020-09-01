@@ -377,67 +377,45 @@ namespace StarSalvager
             if (LevelManager.Instance.CurrentWaveData.GetWaveDuration() <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod)
                 return;
 
-            if (m_currentStageData.StageType == STAGE_TYPE.STANDARD)
+            switch (m_currentStageData.StageType)
             {
-                SpawnStandardObstacleData(m_currentStageData, false);
-            }
-            else if (m_currentStageData.StageType == STAGE_TYPE.CUSTOM)
-            {
-                foreach (StageColumnGroupObstacleData stageColumnGroupObstacleData in m_currentStageData.StageColumnGroupObstacleData)
-                {
-                    Vector2 columnFieldRange = new Vector2(stageColumnGroupObstacleData.ColumnGroupMinimum, stageColumnGroupObstacleData.ColumnGroupMaximum);
-                    SpawnObstacleData(stageColumnGroupObstacleData.StageObstacleData, columnFieldRange, m_currentStageData.SpawningObstacleMultiplier, false);
-                }
+                case STAGE_TYPE.STANDARD:
+                    LevelManager.Instance.StandardBufferZoneObstacleData.SetObstacleDataSpawns(m_currentStageData, false, this);
+                    break;
+                case STAGE_TYPE.FULLSCREEN:
+                    SpawnObstacleData(m_currentStageData.StageObstacleData, new Vector2(0, 1), m_currentStageData.SpawningObstacleMultiplier, false);
+                    break;
+                case STAGE_TYPE.CUSTOM:
+                    foreach (StageColumnGroupObstacleData stageColumnGroupObstacleData in m_currentStageData.StageColumnGroupObstacleData)
+                    {
+                        Vector2 columnFieldRange = new Vector2(stageColumnGroupObstacleData.ColumnGroupMinimum, stageColumnGroupObstacleData.ColumnGroupMaximum);
+                        SpawnObstacleData(stageColumnGroupObstacleData.StageObstacleData, columnFieldRange, m_currentStageData.SpawningObstacleMultiplier, false);
+                    }
+                    break;
             }
 
             if (m_previousStageData == null || m_blendTimer > m_currentStageData.StageBlendPeriod)
                 return;
 
-            if (m_previousStageData.StageType == STAGE_TYPE.STANDARD)
+            switch(m_previousStageData.StageType)
             {
-                SpawnStandardObstacleData(m_previousStageData, true);
-            }
-            else if (m_previousStageData.StageType == STAGE_TYPE.CUSTOM)
-            {
-                foreach (StageColumnGroupObstacleData stageColumnGroupObstacleData in m_previousStageData.StageColumnGroupObstacleData)
-                {
-                    Vector2 columnFieldRange = new Vector2(stageColumnGroupObstacleData.ColumnGroupMinimum, stageColumnGroupObstacleData.ColumnGroupMaximum);
-                    SpawnObstacleData(stageColumnGroupObstacleData.StageObstacleData, columnFieldRange, m_previousStageData.SpawningObstacleMultiplier, true);
-                }
+                case STAGE_TYPE.STANDARD:
+                    LevelManager.Instance.StandardBufferZoneObstacleData.SetObstacleDataSpawns(m_previousStageData, true, this);
+                    break;
+                case STAGE_TYPE.FULLSCREEN:
+                    SpawnObstacleData(m_previousStageData.StageObstacleData, new Vector2(0, 1), m_previousStageData.SpawningObstacleMultiplier, true);
+                    break;
+                case STAGE_TYPE.CUSTOM:
+                    foreach (StageColumnGroupObstacleData stageColumnGroupObstacleData in m_previousStageData.StageColumnGroupObstacleData)
+                    {
+                        Vector2 columnFieldRange = new Vector2(stageColumnGroupObstacleData.ColumnGroupMinimum, stageColumnGroupObstacleData.ColumnGroupMaximum);
+                        SpawnObstacleData(stageColumnGroupObstacleData.StageObstacleData, columnFieldRange, m_previousStageData.SpawningObstacleMultiplier, true);
+                    }
+                    break;
             }
         }
 
-        private void SpawnStandardObstacleData(StageRemoteData stageRemoteData, bool isPrevious)
-        {
-            Vector2 columnFieldRange = new Vector2(0.5f - stageRemoteData.CenterColumnWidth / 2, 0.5f + stageRemoteData.CenterColumnWidth / 2);
-            SpawnObstacleData(stageRemoteData.StageObstacleData, columnFieldRange, stageRemoteData.SpawningObstacleMultiplier, isPrevious);
-
-            float sidesWidth = (1 - stageRemoteData.CenterColumnWidth) / 2;
-            float sidesBlend = sidesWidth * FactoryManager.Instance.StandardBufferZoneObstacleData.PortionOfEdgesUsedForBlend;
-            Vector2 bufferFieldLeft = new Vector2(sidesBlend / 2, sidesWidth - (sidesBlend / 2));
-            Vector2 bufferFieldRight = new Vector2(sidesWidth + stageRemoteData.CenterColumnWidth + (sidesBlend / 2), 1 - (sidesBlend / 2));
-            Vector2 wallFieldLeft = FactoryManager.Instance.StandardBufferZoneObstacleData.WallBufferLeft;
-            Vector2 wallFieldRight = FactoryManager.Instance.StandardBufferZoneObstacleData.WallBufferRight;
-            Vector2 blendFieldLeft = new Vector2(bufferFieldLeft.y, columnFieldRange.x);
-            Vector2 blendFieldRight = new Vector2(columnFieldRange.y, bufferFieldRight.x);
-            Vector2 wallBlendFieldLeft = new Vector2(wallFieldLeft.y, bufferFieldLeft.x);
-            Vector2 wallBlendFieldRight = new Vector2(bufferFieldRight.y, wallFieldRight.x);
-            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldLeft, stageRemoteData.SpawningObstacleMultiplier, isPrevious);
-            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, bufferFieldRight, stageRemoteData.SpawningObstacleMultiplier, isPrevious);
-            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.WallObstacleData, wallFieldLeft, 1, isPrevious);
-            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.WallObstacleData, wallFieldRight, 1, isPrevious);
-
-            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.WallObstacleData, wallBlendFieldLeft, 0.5f, isPrevious);
-            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, wallBlendFieldLeft, stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious);
-            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.WallObstacleData, wallBlendFieldRight, 0.5f, isPrevious);
-            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, wallBlendFieldRight, stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious);
-            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, blendFieldLeft, stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious);
-            SpawnObstacleData(stageRemoteData.StageObstacleData, blendFieldLeft, stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious);
-            SpawnObstacleData(FactoryManager.Instance.StandardBufferZoneObstacleData.BufferObstacleData, blendFieldRight, stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious);
-            SpawnObstacleData(stageRemoteData.StageObstacleData, blendFieldRight, stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious);
-        }
-
-        private void SpawnObstacleData(List<StageObstacleData> obstacleData, Vector2 columnFieldRange, float spawningMultiplier, bool isPrevious)
+        public void SpawnObstacleData(List<StageObstacleData> obstacleData, Vector2 columnFieldRange, float spawningMultiplier, bool isPrevious)
         {
             foreach (StageObstacleData stageObstacleData in obstacleData)
             {
