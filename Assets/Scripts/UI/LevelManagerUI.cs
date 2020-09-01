@@ -69,7 +69,7 @@ namespace StarSalvager.UI
         {
             //betweenWavesContinueButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0;
 
-            pauseWindowScrapyardButton.gameObject.SetActive(!FactoryManager.Instance.DisableTestingFeatures);
+            pauseWindowScrapyardButton.gameObject.SetActive(!Globals.DisableTestingFeatures);
         }
 
         //============================================================================================================//
