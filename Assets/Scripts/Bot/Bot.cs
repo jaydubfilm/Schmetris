@@ -27,6 +27,18 @@ namespace StarSalvager
     [RequireComponent(typeof(BotPartsLogic))]
     public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable
     {
+        private readonly struct ShiftData
+        {
+            public readonly IAttachable Target;
+            public readonly Vector2Int TargetCoordinate;
+
+            public ShiftData(IAttachable target, Vector2Int targetCoordinate)
+            {
+                Target = target;
+                TargetCoordinate = targetCoordinate;
+            }
+        }
+        
         public static Action<Bot, string> OnBotDied;
 
         [BoxGroup("Smoke Particles")]
@@ -462,7 +474,6 @@ namespace StarSalvager
                 case Bit bit:
                 {
                     bool legalDirection;
-                    var direction = DIRECTION.NULL;
 
                     //Get the coordinate of the collision
                     var bitCoordinate = GetRelativeCoordinate(bit.transform.position);
@@ -471,7 +482,7 @@ namespace StarSalvager
 
                     var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
-                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
+                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
                     //------------------------------------------------------------------------------------------------//
                     
@@ -558,7 +569,6 @@ namespace StarSalvager
                 case Component component:
                 {
                     bool legalDirection;
-                    var direction = DIRECTION.NULL;
 
 
                     //Get the coordinate of the collision
@@ -568,7 +578,7 @@ namespace StarSalvager
 
                     var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
-                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
+                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
                     //----------------------------------------------------------------------------------------------------//
 
@@ -613,7 +623,6 @@ namespace StarSalvager
                 case EnemyAttachable enemyAttachable:
                 {
                     bool legalDirection;
-                    var direction = DIRECTION.NULL;
 
 
                     //Get the coordinate of the collision
@@ -626,7 +635,7 @@ namespace StarSalvager
                     if (closestAttachable is EnemyAttachable)
                         return false;
                     
-                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out direction);
+                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
                     //----------------------------------------------------------------------------------------------------//
 
@@ -1672,35 +1681,62 @@ namespace StarSalvager
                 case DIRECTION.DOWN:
                     inLine = attachedBlocks.Where(ab => ab.Coordinate.x == attachable.Coordinate.x).ToList();
                     break;
+                case DIRECTION.NULL:
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
 
-            var toShift = new List<IAttachable>();
+            var toShift = new List<ShiftData>();
             var dir = direction.ToVector2Int();
-            var currentPos = attachable.Coordinate;
+            var currentCoordinate = attachable.Coordinate;
             
-            //Debug.Log($"{inLine.Count} in line, moving {direction}");
-
             var passedCore = false;
 
             for (var i = 0; i < inLine.Count; i++)
             {
-                var check = inLine.FirstOrDefault(x => x.Coordinate == currentPos);
+                var targetAttachable = inLine.FirstOrDefault(x => x.Coordinate == currentCoordinate);
 
-                if (check == null)
+                if (targetAttachable == null)
                     break;
-                
-                if(check.CanShift)
-                    toShift.Add(check);
+
+                if (targetAttachable.CanShift)
+                {
+                    IAttachable nextCheck;
+
+                    var noShiftOffset = 1;
+                    do
+                    {
+                        //TODO I think that I can combine both the While Loop and the Linq expression
+                        nextCheck = inLine.FirstOrDefault(x => x.Coordinate == currentCoordinate + (dir * noShiftOffset));
+                        if (nextCheck is null || nextCheck.CanShift) break;
+
+                        noShiftOffset++;
+                        
+                    } while (!nextCheck.CanShift);
+
+                    currentCoordinate += dir * noShiftOffset;
+                }
                 else
-                    toShift.Clear();
+                {
+                    currentCoordinate += dir;
+                    continue;
+                }
 
-                if (check is Part part && part.Type == PART_TYPE.CORE)
-                    passedCore = true;
-
+                toShift.Add(new ShiftData(targetAttachable, currentCoordinate));
                 
-                currentPos += dir;
+                /*
+                if (check is Part part && part.Type == PART_TYPE.CORE)
+                    passedCore = true;*/
+                
+                /*if(check.CanShift)
+                    toShift.Add(check);
+                //If we've hit a part, then move onto the next position, we'll resolve the overlap later
+                else
+                {
+                    currentPos += dir;
+                    continue;
+                }*/
+                
             }
 
             if (toShift.Count == 0)
@@ -1709,14 +1745,27 @@ namespace StarSalvager
             MissionManager.ProcessWhiteBumperMissionData(toShift.Count, passedCore);
             
             StartCoroutine(ShiftInDirectionCoroutine(toShift, 
-                direction,
+                /*direction,*/
                 TEST_MergeSpeed,
                 () =>
             {
                 //Checks for floaters
                 CheckForDisconnects();
+
+                var comboCheckGroup = toShift.Select(x => x.Target).Where(x => attachedBlocks.Contains(x) && x is ICanCombo)
+                    .OfType<ICanCombo>();
                 
-                CheckForCombosAround(toShift.Where(x => attachedBlocks.Contains(x) && x is Bit).Select(x => x as Bit));
+                switch (attachable)
+                {
+                    case Bit _:
+                        CheckForCombosAround<BIT_TYPE>(comboCheckGroup);
+                        break;
+                    case Component _:
+                        CheckForCombosAround<COMPONENT_TYPE>(comboCheckGroup);
+
+                        break;
+                }
+                
             }));
 
 
@@ -1734,6 +1783,11 @@ namespace StarSalvager
             CheckForCombosAround(attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate && a is ICanCombo) as ICanCombo<T>);
         }
 
+        private void CheckForCombosAround<T>(IEnumerable<ICanCombo> iCanCombos) where T : Enum
+        {
+            CheckForCombosAround(iCanCombos.OfType <ICanCombo<T>>());
+        }
+        
         private void CheckForCombosAround<T>(IEnumerable<ICanCombo<T>> iCanCombos) where T: Enum
         {
             (ComboRemoteData comboData, List<IAttachable> toMove) data = (ComboRemoteData.zero, null);
@@ -2732,19 +2786,34 @@ namespace StarSalvager
         /// <param name="speed"></param>
         /// <param name="OnFinishedCallback"></param>
         /// <returns></returns>
-        private IEnumerator ShiftInDirectionCoroutine(IReadOnlyList<IAttachable> toMove, DIRECTION direction, float speed, Action OnFinishedCallback)
+        private IEnumerator ShiftInDirectionCoroutine(IReadOnlyList<ShiftData> toMove, /*DIRECTION direction, */float speed, Action OnFinishedCallback)
         {
-            var dir = direction.ToVector2Int();
-            var transforms = toMove.Select(x => x.transform).ToArray();
+            //var dir = direction.ToVector2Int();
+            /*var transforms = toMove.Select(x => x.transform).ToArray();
             var startPositions = transforms.Select(x => x.localPosition).ToArray();
             var targetPositions = toMove.Select(o =>
                 transform.InverseTransformPoint((Vector2) transform.position +
-                                                ((Vector2) o.Coordinate + dir)  * Constants.gridCellSize)).ToArray();
+                                                ((Vector2) o.Coordinate + dir)  * Constants.gridCellSize)).ToArray();*/
+            var count = toMove.Count;
+            
+            var transforms = new Transform[count];
+            var startPositions = new Vector3[count];
+            var targetPositions = new Vector3[count];
 
-            foreach (var attachableBase in toMove)
+            for (var i = 0; i < count; i++)
             {
-                (attachableBase as Bit)?.SetColliderActive(false);
-                attachableBase.Coordinate += dir;
+                transforms[i] = toMove[i].Target.transform;
+                startPositions[i] = toMove[i].Target.transform.localPosition;
+
+                targetPositions[i] = transform.InverseTransformPoint((Vector2) transform.position +
+                                                                     (Vector2)toMove[i].TargetCoordinate *
+                                                                     Constants.gridCellSize);
+            }
+
+            foreach (var shiftData in toMove)
+            {
+                (shiftData.Target as CollidableBase)?.SetColliderActive(false);
+                shiftData.Target.Coordinate = shiftData.TargetCoordinate;
             }
             
             CompositeCollider2D.GenerateGeometry();
@@ -2755,7 +2824,7 @@ namespace StarSalvager
             {
                 for (var i = 0; i < transforms.Length; i++)
                 {
-                    if (toMove[i].Attached == false)
+                    if (toMove[i].Target.Attached == false)
                         continue;
                     
                     transforms[i].localPosition = Vector2.Lerp(startPositions[i], targetPositions[i], t);
@@ -2769,7 +2838,7 @@ namespace StarSalvager
             for (var i = 0; i < toMove.Count; i++)
             {
                 transforms[i].localPosition = targetPositions[i];
-                (toMove[i] as Bit)?.SetColliderActive(true);
+                (toMove[i].Target as CollidableBase)?.SetColliderActive(true);
             }
             
             OnFinishedCallback?.Invoke();
