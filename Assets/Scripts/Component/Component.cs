@@ -1,20 +1,32 @@
 ﻿using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
+using StarSalvager.Prototype;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
+using TMPro;
 using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Component : CollidableBase, IComponent, IAttachable, ICustomRecycle, IHealth, ICanBeHit, IObstacle, ISaveable
+    public class Component : CollidableBase, IComponent, IAttachable, ICustomRecycle, IHealth, ICanBeHit, IObstacle, ISaveable, ICanCombo<COMPONENT_TYPE>
     {
         [SerializeField]
         private LayerMask collisionMask;
         
         private Damage _damage;
+
+        private TextMeshPro _label;
+
+        //ICanCombo Properties
+        //====================================================================================================================//
+
+        public IAttachable iAttachable => this;
+
+        [ShowInInspector, ReadOnly]
+        public int level { get; private set; }
         
         //IObstacle Properties
         //============================================================================================================//
@@ -112,6 +124,31 @@ namespace StarSalvager
         public void TryHitAt(Vector2 position, float damage)
         {
             ChangeHealth(-damage);
+        }
+
+        //ICanCombo Functions
+        //====================================================================================================================//
+        
+        public void IncreaseLevel(int amount = 1)
+        {
+            level += amount;
+            renderer.sortingOrder = level;
+
+            if (level == 0)
+            {
+                if (_label) _label.text = string.Empty;
+
+                return;
+            }
+
+            if (!_label)
+            {
+                _label = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<TextMeshPro>();
+                _label.transform.SetParent(transform, false);
+                _label.transform.localPosition = Vector3.zero;
+            }
+
+            _label.text = $"{level * 3}";
         }
         
         //IAttachableFunctions

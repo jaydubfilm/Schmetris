@@ -78,7 +78,7 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
                 legalBits[Random.Range(0, legalBits.Length)],
                 Random.Range(0, 3));
 
-        bot.PushNewBit(newBit, direction);
+        bot.PushNewAttachable(newBit, direction);
     }
 
     private void GetTotalResources()

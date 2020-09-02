@@ -863,7 +863,12 @@ namespace StarSalvager
                     //TODO Need to think about if I should be displaying the components processed or not
                     foreach (var component in listComponents)
                     {
-                        PlayerPersistentData.PlayerData.AddComponent(component.Type, 1);
+                        var amount = 1;
+                        
+                        if (component.level > 0)
+                            amount = component.level * 3;
+                        
+                        PlayerPersistentData.PlayerData.AddComponent(component.Type, amount);
                     }
 
                     PlayerData.OnValuesChanged?.Invoke();

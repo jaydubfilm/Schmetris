@@ -7,9 +7,9 @@ namespace StarSalvager.Utilities.Puzzle.Combos
 {
     public class XCombo : LineCombo
     {
-        public override bool TryGetCombo(Bit origin, List<Bit>[] directions,
+        public override bool TryGetCombo(IAttachable origin, List<IAttachable>[] directions,
             (bool hasCombo, int horizontalCount, int verticalCount) lineData,
-            out (ComboRemoteData comboData, List<Bit> toMove) outData)
+            out (ComboRemoteData comboData, List<IAttachable> toMove) outData)
         {
             outData = (emptyCombo, null);
 
@@ -27,7 +27,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
                 && directions[(int) DIRECTION.UP].Count == check
                 && directions[(int) DIRECTION.DOWN].Count == check)
             {
-                outData.toMove = new List<Bit>{ origin };
+                outData.toMove = new List<IAttachable>{ origin };
                 outData.toMove.AddRange(directions[(int) DIRECTION.LEFT]);
                 outData.toMove.AddRange(directions[(int) DIRECTION.RIGHT]);
                 outData.toMove.AddRange(directions[(int) DIRECTION.UP]);

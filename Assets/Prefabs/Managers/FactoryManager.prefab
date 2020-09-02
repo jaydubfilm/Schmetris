@@ -79,3 +79,5 @@ MonoBehaviour:
     type: 3}
   explosionPrefab: {fileID: 238150696391007923, guid: 17239bb474ede86468099f6844d6a3b7,
     type: 3}
+  labelPrefab: {fileID: 9099319384489682599, guid: 8a229f5344f29bc42a484ccc31bdec75,
+    type: 3}

@@ -9,9 +9,9 @@ namespace StarSalvager.Utilities.Puzzle.Combos
     public class LCombo : LineCombo
     {
         //FIXME I need to improve this functionality, as it feels very inefficient
-        public override bool TryGetCombo(Bit origin, List<Bit>[] directions,
+        public override bool TryGetCombo(IAttachable origin, List<IAttachable>[] directions,
             (bool hasCombo, int horizontalCount, int verticalCount) lineData,
-            out (ComboRemoteData comboData, List<Bit> toMove) outData)
+            out (ComboRemoteData comboData, List<IAttachable> toMove) outData)
         {
             outData = (emptyCombo, null);
 
@@ -38,7 +38,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
                     case 0 when directions[(int) DIRECTION.DOWN].Count == 7:
                     case 0 when directions[(int) DIRECTION.DOWN].Count == 8:
                         //Debug.Log("Down");
-                        outData.toMove = new List<Bit> { origin };
+                        outData.toMove = new List<IAttachable> { origin };
                         outData.toMove.AddRange(directions[(int) DIRECTION.LEFT]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.DOWN]);
 
@@ -51,7 +51,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
                     case 7 when directions[(int) DIRECTION.DOWN].Count == 0:
                     case 8 when directions[(int) DIRECTION.DOWN].Count == 0:
                         //Debug.Log("Up");
-                        outData.toMove = new List<Bit> { origin };
+                        outData.toMove = new List<IAttachable> { origin };
                         outData.toMove.AddRange(directions[(int) DIRECTION.LEFT]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.UP]);
                         break;
@@ -76,7 +76,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
                     case 0 when directions[(int) DIRECTION.DOWN].Count == 7:
                     case 0 when directions[(int) DIRECTION.DOWN].Count == 8:
                         //Debug.Log("Down");
-                        outData.toMove = new List<Bit> { origin };
+                        outData.toMove = new List<IAttachable> { origin };
                         outData.toMove.AddRange(directions[(int) DIRECTION.RIGHT]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.DOWN]);
 
@@ -89,7 +89,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
                     case 7 when directions[(int) DIRECTION.DOWN].Count == 0:
                     case 8 when directions[(int) DIRECTION.DOWN].Count == 0:
                         //Debug.Log("Up");
-                        outData.toMove = new List<Bit> { origin };
+                        outData.toMove = new List<IAttachable> { origin };
                         outData.toMove.AddRange(directions[(int) DIRECTION.RIGHT]);
                         outData.toMove.AddRange(directions[(int) DIRECTION.UP]);
                         break;
