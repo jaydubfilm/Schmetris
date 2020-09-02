@@ -13,6 +13,11 @@ MonoBehaviour:
   m_Name: Game Settings
   m_EditorClassIdentifier: 
   allowAccessToUnlockedLaterWaves: 1
+  disableTestingFeatures: 1
+  bitsPushThroughParts: 0
   timeForAsteroidToFallOneSquare: 0.25
   DASTime: 0.15
-  disableTestingFeatures: 1
+  gridHeightRelativeToScreen: 1.25
+  obstacleMass: 2
+  botHorizontalSpeed: 30
+  missionReminderFrequency: 25

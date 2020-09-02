@@ -19,6 +19,8 @@ namespace StarSalvager.UI
         private TMP_Text deathText;
         [SerializeField, Required]
         private TMP_Text livesText;
+        [SerializeField, Required]
+        private TMP_Text scrollingMissionsText;
 
         //============================================================================================================//
 
@@ -57,8 +59,10 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         private float m_missionReminderTimer = 0.0f;
+        private bool m_isMissionReminderScrolling = false;
 
         private LevelManager m_levelManager;
+        private RectTransform m_canvasRect;
 
         // Start is called before the first frame update
         private void Start()
@@ -66,6 +70,9 @@ namespace StarSalvager.UI
             RegisterPausable();
             m_levelManager = FindObjectOfType<LevelManager>();
             InitButtons();
+
+            m_canvasRect = GetComponent<RectTransform>();
+            scrollingMissionsText.rectTransform.anchoredPosition = Vector3.right * ((m_canvasRect.rect.width / 2) + (scrollingMissionsText.rectTransform.rect.width / 2));
         }
 
         private void Update()
@@ -83,6 +90,14 @@ namespace StarSalvager.UI
                     PlayMissionReminder();
                 }
             }
+
+            if (scrollingMissionsText.rectTransform.anchoredPosition.x < (-1 * ((m_canvasRect.rect.width / 2) + (scrollingMissionsText.rectTransform.rect.width / 2))))
+            {
+                scrollingMissionsText.rectTransform.anchoredPosition = Vector3.right * ((m_canvasRect.rect.width / 2) + (scrollingMissionsText.rectTransform.rect.width / 2));
+                m_isMissionReminderScrolling = false;
+            }
+            else if (m_isMissionReminderScrolling)
+                scrollingMissionsText.rectTransform.anchoredPosition += Vector2.left * Time.deltaTime * 200;
         }
 
         //============================================================================================================//
@@ -167,7 +182,8 @@ namespace StarSalvager.UI
         private void PlayMissionReminder()
         {
             string missionReminderText = MissionManager.MissionsCurrentData.CurrentMissions[Random.Range(0, Mathf.Min(3, MissionManager.MissionsCurrentData.CurrentMissions.Count))].m_missionDescription;
-            Toast.AddToast(missionReminderText, time: 2.0f);
+            scrollingMissionsText.text = missionReminderText;
+            m_isMissionReminderScrolling = true;
         }
 
         //============================================================================================================//
