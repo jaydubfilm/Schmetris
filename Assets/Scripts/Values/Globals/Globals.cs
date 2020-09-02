@@ -36,11 +36,13 @@ namespace StarSalvager.Values
         public static float ObstacleMass => m_gameSettings.obstacleMass;
         public static float BotHorizontalSpeed => m_gameSettings.botHorizontalSpeed;
         public static float MissionReminderFrequency => m_gameSettings.missionReminderFrequency;
+        public static bool CameraUseInputMotion => m_gameSettings.cameraUseInputMotion;
+        public static float CameraSmoothing => m_gameSettings.cameraSmoothing;
+        public static float CameraOffsetBounds => Constants.gridCellSize * Globals.ColumnsOnScreen * m_gameSettings.cameraOffsetBounds / 2;
 
         //Values set by Game Settings - do not set values here
         public static bool DisableTestingFeatures;
         public static float AsteroidFallTimer;
-
 
         public static ORIENTATION Orientation
         {

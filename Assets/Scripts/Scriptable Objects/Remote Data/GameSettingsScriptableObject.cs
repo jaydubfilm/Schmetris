@@ -18,6 +18,10 @@ namespace StarSalvager.ScriptableObjects
         public float botHorizontalSpeed = 30.0f;
         public float missionReminderFrequency = 25.0f;
 
+        public bool cameraUseInputMotion = true;
+        public float cameraSmoothing = 8.0f;
+        public float cameraOffsetBounds = 0.5f;
+
         public void SetupGameSettings()
         {
             Globals.SetGameSettings(this);
