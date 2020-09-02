@@ -1,4 +1,5 @@
-﻿using StarSalvager.Values;
+﻿using Sirenix.OdinInspector;
+using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +20,9 @@ namespace StarSalvager.ScriptableObjects
         public float missionReminderFrequency = 25.0f;
 
         public bool cameraUseInputMotion = true;
+        [ShowIf("cameraUseInputMotion", true)]
         public float cameraSmoothing = 8.0f;
+        [ShowIf("cameraUseInputMotion", true)]
         public float cameraOffsetBounds = 0.5f;
 
         public void SetupGameSettings()
