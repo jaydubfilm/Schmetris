@@ -13,19 +13,11 @@ namespace StarSalvager.Cameras
     public class CameraController : MonoBehaviour, IMoveOnInput
     {
         //============================================================================================================//
-
-        [SerializeField, ToggleGroup("useInputMotion")]
-        private bool useInputMotion;
-        [SerializeField, ToggleGroup("useInputMotion")]
-        private float smoothing = 4.0f;
         
         private Vector3 startPos;
         private Vector3 edgePos;
         private Vector3 targetPos;
         private float horzExtent;
-
-        //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
-        private float m_currentInput;
 
         //============================================================================================================//
 
@@ -62,7 +54,7 @@ namespace StarSalvager.Cameras
         {
             Globals.OrientationChange += SetOrientation;
             
-            if(useInputMotion)
+            if(Globals.CameraUseInputMotion)
                 RegisterMoveOnInput();
         }
 
@@ -75,10 +67,13 @@ namespace StarSalvager.Cameras
         //Smooth camera to center over bot
         private void Update()
         {
-            if (!useInputMotion)
+            if (!Globals.CameraUseInputMotion)
                 return;
-            
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, smoothing * Time.deltaTime);
+
+            if (InputManager.Instance.mostRecentSideMovement == 0 || 
+                transform.position.x > Globals.CameraOffsetBounds || 
+                transform.position.x < -Globals.CameraOffsetBounds)
+                transform.position = Vector3.MoveTowards(transform.position, startPos, Globals.CameraSmoothing * Time.deltaTime);
         }
 
         private void OnDestroy()
@@ -107,10 +102,26 @@ namespace StarSalvager.Cameras
                 width = width,
             };
         }
-        
-        
+
+
         //================================================================================================================//
 
+        public void MoveCameraWithObstacles(Vector3 toMoveCamera)
+        {
+            if (!Globals.CameraUseInputMotion)
+                return;
+
+            transform.position += toMoveCamera;
+
+            if (transform.position.x > Globals.CameraOffsetBounds)
+            {
+                transform.position = new Vector3(Globals.CameraOffsetBounds, transform.position.y, transform.position.z);
+            }
+            else if (transform.position.x < -Globals.CameraOffsetBounds)
+            {
+                transform.position = new Vector3(-Globals.CameraOffsetBounds, transform.position.y, transform.position.z);
+            }
+        }
 
         public void SetOrthographicSize(float screenWidthInWorld, Vector3 botPosition)
         {
@@ -210,10 +221,10 @@ namespace StarSalvager.Cameras
             
         public void Move(float direction)
         {
-            if (!useInputMotion)
+            if (!Globals.CameraUseInputMotion)
                 return;
             
-            m_currentInput = direction;
+            /*m_currentInput = direction;
             
             if (m_currentInput == 0)
             {
@@ -225,7 +236,7 @@ namespace StarSalvager.Cameras
             cameraOff.x += -direction * horzExtent;
             
             edgePos = cameraOff;
-            targetPos = edgePos;
+            targetPos = edgePos;*/
         }
 
         //============================================================================================================//

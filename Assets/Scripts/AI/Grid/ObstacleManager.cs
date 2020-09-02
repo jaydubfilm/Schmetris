@@ -14,6 +14,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.UI.Scrapyard;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
+using StarSalvager.Cameras;
 
 namespace StarSalvager
 {
@@ -169,12 +170,14 @@ namespace StarSalvager
                     float toMove = Mathf.Min(m_distanceHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
                     m_distanceHorizontal -= toMove;
                     m_worldElementsRoot.transform.position += Vector3.left * toMove;
+                    LevelManager.Instance.CameraController.MoveCameraWithObstacles(Vector3.left * toMove);
                 }
                 else if (m_distanceHorizontal < 0)
                 {
                     float toMove = Mathf.Min(Mathf.Abs(m_distanceHorizontal), Globals.BotHorizontalSpeed * Time.deltaTime);
                     m_distanceHorizontal += toMove;
                     m_worldElementsRoot.transform.position += Vector3.right * toMove;
+                    LevelManager.Instance.CameraController.MoveCameraWithObstacles(Vector3.right * toMove);
                 }
             }
 
