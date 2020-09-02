@@ -39,6 +39,7 @@ namespace StarSalvager.Values
         public static bool CameraUseInputMotion => m_gameSettings.cameraUseInputMotion;
         public static float CameraSmoothing => m_gameSettings.cameraSmoothing;
         public static float CameraOffsetBounds => Constants.gridCellSize * Globals.ColumnsOnScreen * m_gameSettings.cameraOffsetBounds / 2;
+        public static int GridWidth => m_gameSettings.GridWidth;
 
         //Values set by Game Settings - do not set values here
         public static bool DisableTestingFeatures;

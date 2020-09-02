@@ -15,6 +15,7 @@ MonoBehaviour:
   allowAccessToUnlockedLaterWaves: 1
   disableTestingFeatures: 1
   bitsPushThroughParts: 0
+  GridWidth: 500
   timeForAsteroidToFallOneSquare: 0.25
   DASTime: 0.15
   gridHeightRelativeToScreen: 1.25

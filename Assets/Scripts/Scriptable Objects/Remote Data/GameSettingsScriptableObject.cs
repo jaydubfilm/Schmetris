@@ -12,6 +12,7 @@ namespace StarSalvager.ScriptableObjects
         public bool allowAccessToUnlockedLaterWaves = true;
         public bool disableTestingFeatures = false;
         public bool bitsPushThroughParts = false;
+        public int GridWidth = 300;
         public float timeForAsteroidToFallOneSquare = 0.25f;
         public float DASTime = 0.15f;
         public float gridHeightRelativeToScreen = 1.25f;
