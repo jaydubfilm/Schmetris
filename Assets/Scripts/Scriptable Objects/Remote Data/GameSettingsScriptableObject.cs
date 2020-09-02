@@ -16,6 +16,7 @@ namespace StarSalvager.ScriptableObjects
         public float gridHeightRelativeToScreen = 1.25f;
         public float obstacleMass = 2.0f;
         public float botHorizontalSpeed = 30.0f;
+        public float missionReminderFrequency = 25.0f;
 
         public void SetupGameSettings()
         {

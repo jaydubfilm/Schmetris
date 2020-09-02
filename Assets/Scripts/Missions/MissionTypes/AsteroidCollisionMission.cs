@@ -9,7 +9,7 @@ namespace StarSalvager.Missions
     {
         public BIT_TYPE? m_resourceType;
 
-        public AsteroidCollisionMission(BIT_TYPE? resourceType, string missionName, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
+        public AsteroidCollisionMission(BIT_TYPE? resourceType, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
         {
             MissionEventType = MISSION_EVENT_TYPE.ASTEROID_COLLISION;
             m_resourceType = resourceType;
@@ -34,6 +34,7 @@ namespace StarSalvager.Missions
             {
                 ClassType = GetType().Name,
                 MissionName = m_missionName,
+                MissionDescription = m_missionDescription,
                 AmountNeeded = m_amountNeeded,
                 CurrentAmount = m_currentAmount,
                 MissionEventType = this.MissionEventType,

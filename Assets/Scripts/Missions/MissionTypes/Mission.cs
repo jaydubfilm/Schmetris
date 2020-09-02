@@ -10,6 +10,7 @@ namespace StarSalvager.Missions
     public abstract class Mission : IEquatable<Mission>
     {
         public string m_missionName;
+        public string m_missionDescription;
         public float m_amountNeeded;
         public float m_currentAmount;
         public MISSION_EVENT_TYPE MissionEventType { get; protected set; }
@@ -17,10 +18,11 @@ namespace StarSalvager.Missions
 
         public List<IMissionUnlockCheck> missionUnlockChecks;
 
-        public Mission(string missionName, float amountNeeded, List<IMissionUnlockCheck> missionUnlockData)
+        public Mission(string missionName, string missionDescription, float amountNeeded, List<IMissionUnlockCheck> missionUnlockData)
         {
             m_currentAmount = 0;
             m_missionName = missionName;
+            m_missionDescription = missionDescription;
             m_amountNeeded = amountNeeded;
             missionUnlockChecks = missionUnlockData;
         }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
+using StarSalvager.Missions;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
@@ -18,6 +19,8 @@ namespace StarSalvager.UI
         private TMP_Text deathText;
         [SerializeField, Required]
         private TMP_Text livesText;
+        [SerializeField, Required]
+        private TMP_Text scrollingMissionsText;
 
         //============================================================================================================//
 
@@ -55,7 +58,11 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
+        private float m_missionReminderTimer = 0.0f;
+        private bool m_isMissionReminderScrolling = false;
+
         private LevelManager m_levelManager;
+        private RectTransform m_canvasRect;
 
         // Start is called before the first frame update
         private void Start()
@@ -63,6 +70,9 @@ namespace StarSalvager.UI
             RegisterPausable();
             m_levelManager = FindObjectOfType<LevelManager>();
             InitButtons();
+
+            m_canvasRect = GetComponent<RectTransform>();
+            scrollingMissionsText.rectTransform.anchoredPosition = Vector3.right * ((m_canvasRect.rect.width / 2) + (scrollingMissionsText.rectTransform.rect.width / 2));
         }
 
         private void Update()
@@ -70,6 +80,24 @@ namespace StarSalvager.UI
             //betweenWavesContinueButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0;
 
             pauseWindowScrapyardButton.gameObject.SetActive(!Globals.DisableTestingFeatures);
+
+            if (!isPaused)
+            {
+                m_missionReminderTimer += Time.deltaTime;
+                if (m_missionReminderTimer >= Globals.MissionReminderFrequency)
+                {
+                    m_missionReminderTimer -= Globals.MissionReminderFrequency;
+                    PlayMissionReminder();
+                }
+            }
+
+            if (scrollingMissionsText.rectTransform.anchoredPosition.x < (-1 * ((m_canvasRect.rect.width / 2) + (scrollingMissionsText.rectTransform.rect.width / 2))))
+            {
+                scrollingMissionsText.rectTransform.anchoredPosition = Vector3.right * ((m_canvasRect.rect.width / 2) + (scrollingMissionsText.rectTransform.rect.width / 2));
+                m_isMissionReminderScrolling = false;
+            }
+            else if (m_isMissionReminderScrolling)
+                scrollingMissionsText.rectTransform.anchoredPosition += Vector2.left * Time.deltaTime * 200;
         }
 
         //============================================================================================================//
@@ -149,6 +177,13 @@ namespace StarSalvager.UI
             m_deathUI.SetActive(active);
 
             deathText.text = description;
+        }
+
+        private void PlayMissionReminder()
+        {
+            string missionReminderText = MissionManager.MissionsCurrentData.CurrentMissions[Random.Range(0, Mathf.Min(3, MissionManager.MissionsCurrentData.CurrentMissions.Count))].m_missionDescription;
+            scrollingMissionsText.text = missionReminderText;
+            m_isMissionReminderScrolling = true;
         }
 
         //============================================================================================================//

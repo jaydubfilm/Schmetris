@@ -11,7 +11,7 @@ namespace StarSalvager.Missions
         public int m_sectorNumber;
         public int m_waveNumber;
 
-        public LevelProgressMission(int sectorNumber, int waveNumber, string missionName, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded = 1.0f) : base(missionName, amountNeeded, missionUnlockData)
+        public LevelProgressMission(int sectorNumber, int waveNumber, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded = 1.0f) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
         {
             MissionEventType = MISSION_EVENT_TYPE.LEVEL_PROGRESS;
             m_sectorNumber = sectorNumber;
@@ -37,6 +37,7 @@ namespace StarSalvager.Missions
             {
                 ClassType = GetType().Name,
                 MissionName = m_missionName,
+                MissionDescription = m_missionDescription,
                 AmountNeeded = m_amountNeeded,
                 CurrentAmount = m_currentAmount,
                 MissionEventType = this.MissionEventType,

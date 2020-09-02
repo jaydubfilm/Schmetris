@@ -15,6 +15,7 @@ MonoBehaviour:
   m_missionRemoteData:
   - MissionType: 1
     MissionName: collect 200 greyscale
+    MissionDescription: Collect 200 greyscale
     MissionUnlockParameters: []
     AmountNeeded: 200
     AnyResourceType: 0
@@ -30,6 +31,7 @@ MonoBehaviour:
     FlightLength: 0
   - MissionType: 10
     MissionName: fly for 2 minutes
+    MissionDescription: Fly for 2 minutes
     MissionUnlockParameters: []
     AmountNeeded: 0
     AnyResourceType: 0
@@ -45,6 +47,7 @@ MonoBehaviour:
     FlightLength: 180
   - MissionType: 2
     MissionName: Mission 3
+    MissionDescription: Combo 1 set of blocks
     MissionUnlockParameters: []
     AmountNeeded: 1
     AnyResourceType: 1
@@ -60,6 +63,7 @@ MonoBehaviour:
     FlightLength: 0
   - MissionType: 9
     MissionName: complete Sector 1
+    MissionDescription: Complete sector 1
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 2
@@ -79,6 +83,7 @@ MonoBehaviour:
     FlightLength: 0
   - MissionType: 4
     MissionName: craft a magnet
+    MissionDescription: Craft a magnet
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 1
@@ -98,6 +103,7 @@ MonoBehaviour:
     FlightLength: 0
   - MissionType: 8
     MissionName: Mission 6
+    MissionDescription: Beat three waves in a row
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
@@ -117,6 +123,7 @@ MonoBehaviour:
     FlightLength: 0
   - MissionType: 5
     MissionName: Mission 7
+    MissionDescription: Move blocks with a white bumper
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 1
@@ -136,6 +143,7 @@ MonoBehaviour:
     FlightLength: 0
   - MissionType: 0
     MissionName: kill a parasite
+    MissionDescription: Kill a parasite
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 1
@@ -155,6 +163,7 @@ MonoBehaviour:
     FlightLength: 0
   - MissionType: 0
     MissionName: kill an invader
+    MissionDescription: Kill an invader
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 1
@@ -174,6 +183,7 @@ MonoBehaviour:
     FlightLength: 0
   - MissionType: 1
     MissionName: Mission 11
+    MissionDescription: Collect 200 green resources
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
@@ -193,6 +203,7 @@ MonoBehaviour:
     FlightLength: 0
   - MissionType: 2
     MissionName: Mission 12
+    MissionDescription: Combo a level two block set
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
@@ -212,6 +223,7 @@ MonoBehaviour:
     FlightLength: 0
   - MissionType: 0
     MissionName: Mission 13
+    MissionDescription: Kill five enemies
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0

@@ -11,7 +11,7 @@ namespace StarSalvager.Missions
         public PART_TYPE m_partType;
         public int m_partLevel;
 
-        public CraftPartMission(PART_TYPE partType, int partLevel, string missionName, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
+        public CraftPartMission(PART_TYPE partType, int partLevel, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
         {
             MissionEventType = MISSION_EVENT_TYPE.CRAFT_PART;
             m_partType = partType;
@@ -37,6 +37,7 @@ namespace StarSalvager.Missions
             {
                 ClassType = GetType().Name,
                 MissionName = m_missionName,
+                MissionDescription = m_missionDescription,
                 AmountNeeded = m_amountNeeded,
                 CurrentAmount = m_currentAmount,
                 MissionEventType = this.MissionEventType,
