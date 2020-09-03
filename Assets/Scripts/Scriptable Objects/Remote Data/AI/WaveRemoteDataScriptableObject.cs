@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.AI;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.ScriptableObjects

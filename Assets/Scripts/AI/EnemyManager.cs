@@ -101,7 +101,8 @@ namespace StarSalvager
         private void HandleEnemyMovement()
         {
             Vector3 gridMovement = Vector3.zero;
-            if (m_distanceHorizontal != 0)
+            
+            /*if (m_distanceHorizontal != 0)
             {
                 if (m_distanceHorizontal > 0)
                 {
@@ -115,7 +116,7 @@ namespace StarSalvager
                     gridMovement = Vector3.left * toMove;
                     m_distanceHorizontal += toMove;
                 }
-            }
+            }*/
 
             if (m_enemiesInert)
             {
@@ -161,10 +162,10 @@ namespace StarSalvager
                 m_enemies[i].ProcessMovement(sumDirection);
             }
 
-            if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)
+            /*if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)
             {
                 Move(m_currentInput);
-            }
+            }*/
         }
 
         public void MoveToNewWave()
@@ -256,7 +257,7 @@ namespace StarSalvager
 
         public void Move(float direction)
         {
-            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+            /*if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
             {
                 m_currentInput = 0f;
                 return;
@@ -264,7 +265,7 @@ namespace StarSalvager
 
             m_currentInput = direction;
 
-            m_distanceHorizontal += direction * Constants.gridCellSize;
+            m_distanceHorizontal += direction * Constants.gridCellSize;*/
         }
         
         //============================================================================================================//

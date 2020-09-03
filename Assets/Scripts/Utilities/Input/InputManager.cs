@@ -46,6 +46,9 @@ namespace StarSalvager.Utilities.Inputs
         
         private Dictionary<InputAction, Action<InputAction.CallbackContext>> _inputMap;
 
+        [NonSerialized]
+        public float mostRecentSideMovement;
+
         //============================================================================================================//
 
         private void Start()
@@ -228,7 +231,8 @@ namespace StarSalvager.Utilities.Inputs
                 return;
 
             var moveDirection = ctx.ReadValue<float>();
-            
+            mostRecentSideMovement = moveDirection;
+
             if (LockSideMovement)
             {
                 if (moveDirection != 0f)
