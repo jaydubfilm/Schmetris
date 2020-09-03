@@ -152,7 +152,7 @@ namespace StarSalvager.Audio
             if (Instance == null)
                 return;
             
-            volume = Mathf.Clamp01(volume);
+            volume = Mathf.Clamp(volume, 0.001f, 1f);
             Instance.SetVolume(MASTER_VOLUME, volume);
             
         }
@@ -389,9 +389,9 @@ namespace StarSalvager.Audio
         
         private void SetVolume(string parameterName, float volume)
         {
-            var vol = Mathf.Lerp(-80f, 0f, volume);    
+            volume = Mathf.Clamp(volume, 0.001f, 1f);
             
-            masterMixer.SetFloat(parameterName, vol);
+            masterMixer.SetFloat(parameterName, Mathf.Log(volume) * 13);
         }
         
         //============================================================================================================//

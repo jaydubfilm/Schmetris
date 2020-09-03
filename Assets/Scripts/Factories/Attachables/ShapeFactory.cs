@@ -125,6 +125,11 @@ namespace StarSalvager.Factories
                 int totalBits = shapeData.BlockData.Count;
 
                 var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
+                
+                if (totalBits == 1 && typeof(T) == typeof(IObstacle))
+                {
+                    return bitFactory.CreateObject<T>((BIT_TYPE)shapeData.BlockData[0].Type, shapeData.BlockData[0].Level);
+                }
 
                 if (totalBits == 1 && typeof(T) == typeof(IObstacle))
                 {
