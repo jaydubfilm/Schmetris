@@ -793,7 +793,7 @@ namespace StarSalvager
                         
                         CheckForCombosAround(bitsToAdd);
 
-                        CheckHasMagnetOverage();
+                        AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
                         
                         CompositeCollider2D.GenerateGeometry();
 
