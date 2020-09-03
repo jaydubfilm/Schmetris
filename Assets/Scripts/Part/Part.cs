@@ -1,6 +1,8 @@
-﻿using Recycling;
+﻿using System;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
@@ -35,6 +37,11 @@ namespace StarSalvager
         public int level { get; private set; }
         
         private Damage _damage;
+        
+        //============================================================================================================//
+
+        
+
 
         //IAttachable Functions
         //============================================================================================================//

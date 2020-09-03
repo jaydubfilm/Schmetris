@@ -9,6 +9,7 @@ namespace StarSalvager.Utilities.Analytics
 {
     public class SessionDataProcessor : Singleton<SessionDataProcessor>
     {
+        public static readonly Version VERSION = new Version(1,0,0,0);
         private SessionData _currentSession;
         private int CurrentSession;
 
@@ -40,6 +41,7 @@ namespace StarSalvager.Utilities.Analytics
 
             _currentSession = new SessionData
             {
+                Version = VERSION,
                 PlayerID = playerID,
                 date = DateTime.UtcNow,
                 waves = new List<WaveData>()
@@ -73,7 +75,7 @@ namespace StarSalvager.Utilities.Analytics
 
             var wave = _currentWave.Value;
 
-            wave.timeIn = (float)Math.Round((DateTime.UtcNow - wave.date).TotalSeconds, 2);
+            wave.timeIn = (float)System.Math.Round((DateTime.UtcNow - wave.date).TotalSeconds, 2);
             
             
             _currentSession.waves.Add(wave);

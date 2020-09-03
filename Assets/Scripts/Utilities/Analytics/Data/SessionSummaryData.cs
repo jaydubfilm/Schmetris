@@ -107,16 +107,16 @@ namespace StarSalvager.Utilities.Analytics.Data
 
         public SessionSummaryData(string Title, IReadOnlyList<SessionData> sessionDatas)
         {
-            var SessionData = new SessionSummaryData
+            var sessionSummaryData = new SessionSummaryData
             {
                 Title = Title,
                 date = sessionDatas[sessionDatas.Count - 1].date
             };
 
-            SessionData = sessionDatas.Aggregate(SessionData,
+            sessionSummaryData = sessionDatas.Aggregate(sessionSummaryData,
                 (current, sessionData) => current.Add(sessionData.GetSessionSummary()));
 
-            this = SessionData;
+            this = sessionSummaryData;
         }
 
         public SessionSummaryData(string Title, IEnumerable<List<SessionData>> playerSessionsValues)

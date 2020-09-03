@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db87288e39f7dd4596f43d854fd1fb7, type: 3}
   m_Name: Game Summary Settings
   m_EditorClassIdentifier: 
-  SessionsDirectory: D:\Repos\A Game Studios\Schmetris\RemoteData
+  SessionsDirectory: D:/Repos/A Game Studios/Schmetris/RemoteData/Sessions

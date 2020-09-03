@@ -39,6 +39,13 @@ namespace StarSalvager.Utilities.Extensions
             }
             
             //Rotate opposite of the Core rotation 
+            //attachable.transform.localRotation *= rotation.ToInverseQuaternion();
+            
+        }
+        
+        public static void RotateSprite(this IAttachable attachable, ROTATION rotation)
+        {
+            //Rotate opposite of the Core rotation 
             attachable.transform.localRotation *= rotation.ToInverseQuaternion();
             
         }
