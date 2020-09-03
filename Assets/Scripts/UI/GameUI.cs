@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
@@ -10,7 +11,7 @@ namespace StarSalvager.UI
 {
     public class GameUI : MonoBehaviour
     {
-        [Serializable]
+        /*[Serializable, Obsolete]
         public struct SmartWeapon
         {
             public Image image;
@@ -47,6 +48,72 @@ namespace StarSalvager.UI
             public void SetFill(float fillValue)
             {
                 image.fillAmount = fillValue;
+            }
+        }*/
+        [Serializable]
+        public struct SmartWeaponV2
+        {
+            [Required, FoldoutGroup("$NAME")]
+            public Button buttonObject;
+            [Required, FoldoutGroup("$NAME")]
+            public Image iconImage;
+            [Required, FoldoutGroup("$NAME")]
+            public Image fillImage;
+            /*[Required] 
+            public Image noResourceIcon;*/
+            /*[Required, FoldoutGroup("$NAME")] 
+            public TMP_Text keyText;*/
+
+#if UNITY_EDITOR
+            private string NAME => buttonObject ? buttonObject.gameObject.name : "Null";
+            [SerializeField, HorizontalGroup("$NAME/Row1")]
+            private Color color;
+
+            [Button, HorizontalGroup("$NAME/Row1")]
+            private void SetColors()
+            {
+                var images = new List<Image>(buttonObject.GetComponentsInChildren<Image>())
+                {
+                    buttonObject.targetGraphic as Image
+                };
+
+                foreach (var image in images)
+                {
+                    image.color = color;
+                }
+                
+            }
+#endif
+
+            public void Reset()
+            {
+                SetFill(1f);
+                //SetHasResource(true);
+                SetActive(false);
+            }
+
+            public void SetActive(bool state)
+            {
+                buttonObject.gameObject.SetActive(state);
+            }
+
+            /*public void SetHasResource(bool hasResource)
+            {
+                //Doesn't matter if the thing isn't showing
+                if (!buttonObject.gameObject.activeInHierarchy)
+                    return;
+
+                //Prevent constantly setting the below values
+                if (noResourceIcon.gameObject.activeInHierarchy == !hasResource)
+                    return;
+
+                //fillImage.color = hasResource ? Color.white : Color.gray;
+                noResourceIcon.gameObject.SetActive(!hasResource);
+            }*/
+
+            public void SetFill(float fillValue)
+            {
+                fillImage.fillAmount = fillValue;
             }
         }
         //============================================================================================================//
@@ -104,7 +171,8 @@ namespace StarSalvager.UI
         //Right Window
         //============================================================================================================//
         [SerializeField, Required, FoldoutGroup("R Window")]
-        private SmartWeapon[] SmartWeaponsUI;
+        //private SmartWeapon[] SmartWeaponsUI;
+        private SmartWeaponV2[] SmartWeaponsUI;
 
         //Bottom Right Window
         //============================================================================================================//
@@ -137,6 +205,10 @@ namespace StarSalvager.UI
         private Color vignetteMaxColor;
 
         #endregion //Properties
+        
+        private Image[] glowImages;
+        private float _alpha;
+        private float speed = 4f;
 
         //============================================================================================================//
 
@@ -166,11 +238,6 @@ namespace StarSalvager.UI
 
             PlayerData.OnCapacitiesChanged += SetupPlayerValues;
         }
-
-
-        private Image[] glowImages;
-        private float _alpha;
-        private float speed = 4f;
 
         private void LateUpdate()
         {
@@ -370,7 +437,7 @@ namespace StarSalvager.UI
         public void SetIconImage(int index, Sprite sprite)
         {
             if (index < 0) return;
-            SmartWeaponsUI[index].image.sprite = sprite;
+            SmartWeaponsUI[index].iconImage.sprite = sprite;
         }
 
         public void ShowIcon(int index, bool state)
@@ -379,10 +446,12 @@ namespace StarSalvager.UI
             SmartWeaponsUI[index].SetActive(state);
         }
 
+        //FIXME Need to determine what's happening with this
+        [Obsolete("Currently not using the resource indicator for the Smart Weapons")]
         public void SetHasResource(int index, bool hasResource)
         {
-            if (index < 0) return;
-            SmartWeaponsUI[index].SetHasResource(hasResource);
+            /*if (index < 0) return;
+            SmartWeaponsUI[index].SetHasResource(hasResource);*/
         }
 
         public void SetFill(int index, float fillValue)
@@ -395,7 +464,8 @@ namespace StarSalvager.UI
         {
             for (var i = 0; i < SmartWeaponsUI.Length; i++)
             {
-                SmartWeaponsUI[i].keyText.text = $"{i + 1}";
+                //FIXME Need to determine if we're still using the number text here
+                /*SmartWeaponsUI[i].keyText.text = $"{i + 1}";*/
                 SmartWeaponsUI[i].Reset();
             }
         }
@@ -453,6 +523,9 @@ namespace StarSalvager.UI
         {
             glowSlider.enabled = slider.value / slider.maxValue >= 0.75f;
         }
+
+        //====================================================================================================================//
+
     }
 }
 

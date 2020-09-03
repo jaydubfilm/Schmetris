@@ -21,6 +21,7 @@ namespace StarSalvager.Editor
 
         public Texture2D spritesheet;
 
+        private Vector2Int _mOffset;
         private Vector2Int _mCommonPivot;
         private string _mLog;
 
@@ -32,17 +33,51 @@ namespace StarSalvager.Editor
             spritesheet =
                 EditorGUILayout.ObjectField("Texture SpriteSheet", spritesheet, typeof(Texture2D), false) as
                     Texture2D;
-            _mCommonPivot = EditorGUILayout.Vector2IntField("Pivot (Pixels)", _mCommonPivot);
-            using (new EditorGUI.DisabledGroupScope(spritesheet == null))
-                if (GUILayout.Button("Edit sprites"))
-                    EditSprites();
 
-            _mLog = EditorGUILayout.TextArea(_mLog);
+            #region Pivot Change
+            
+            EditorGUILayout.BeginHorizontal();
+            
+            _mCommonPivot = EditorGUILayout.Vector2IntField("Pivot (Pixels)", _mCommonPivot);
+            
+            
+            
+            using (new EditorGUI.DisabledGroupScope(spritesheet == null))
+            {
+                if (GUILayout.Button("Change Pivot"))
+                {
+                    EditSpritesPivot();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+            
+            #endregion //Pivot Change
+            
+            #region position Change
+            
+            EditorGUILayout.BeginHorizontal();
+            
+            _mOffset = EditorGUILayout.Vector2IntField("Shift (Pixels)", _mOffset);
+            
+            
+            
+            using (new EditorGUI.DisabledGroupScope(spritesheet == null))
+            {
+                if (GUILayout.Button("Change Position"))
+                {
+                    EditSpritesPosition();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+            
+            #endregion //Pivot Change
+
+            EditorGUILayout.SelectableLabel(_mLog);
         }
 
         //============================================================================================================//
         
-        private void EditSprites()
+        private void EditSpritesPivot()
         {
             if (spritesheet != null)
             {
@@ -72,6 +107,51 @@ namespace StarSalvager.Editor
                         importer.SaveAndReimport();
 
                         _mLog += $"Edited {spritesMetaData.Length} sprites in {spritesheetPath}\n";
+                        return;
+                    }
+
+                    _mLog += "Texture is not a spritesheet.\n";
+                }
+            }
+
+            _mLog += "Could not complete action.\n";
+        }
+        
+        private void EditSpritesPosition()
+        {
+            if (spritesheet != null)
+            {
+                var spritesheetPath = AssetDatabase.GetAssetPath(spritesheet);
+
+                if (!string.IsNullOrEmpty(spritesheetPath))
+                {
+
+                    var importer = AssetImporter.GetAtPath(spritesheetPath) as TextureImporter;
+
+                    if (importer != null && importer.spritesheet != null &&
+                        importer.spriteImportMode == SpriteImportMode.Multiple)
+                    {
+                        var spritesMetaData = importer.spritesheet;
+                        for (var i = 0; i < spritesMetaData.Length; i++)
+                        {
+                            var metaData = spritesMetaData[i];
+
+                            metaData.rect.x += _mOffset.x;
+                            metaData.rect.y += _mOffset.y;
+                            
+                            
+                            spritesMetaData[i] = metaData;
+                        }
+
+                        importer.spritesheet =
+                            spritesMetaData; // seems like this setter internally change stuff (needed)
+                        EditorUtility.SetDirty(importer);
+                        importer.SaveAndReimport();
+
+                        _mLog += $"Edited {spritesMetaData.Length} sprites in {spritesheetPath}\n";
+                        
+                        _mOffset = Vector2Int.zero;
+                        
                         return;
                     }
 

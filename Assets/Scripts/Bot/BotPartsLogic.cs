@@ -588,11 +588,11 @@ namespace StarSalvager
                         if (useBurnRate && resourceValue <= 0)
                         {
                             //FIXME I don't like that this is getting called so often
-                            GameUI.SetHasResource(index, false);
+                            //GameUI.SetHasResource(index, false);
                             break;
                         }
 
-                        GameUI.SetHasResource(index, true);
+                        //GameUI.SetHasResource(index, true);
 
 
                         levelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out cooldown);
