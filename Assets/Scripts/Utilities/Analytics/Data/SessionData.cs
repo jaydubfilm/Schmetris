@@ -6,6 +6,7 @@ namespace StarSalvager.Utilities.Analytics.Data
     [Serializable]
     public struct SessionData
     {
+        public Version Version;
         public string PlayerID;
         public DateTime date;
         public List<WaveData> waves;

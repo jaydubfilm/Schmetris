@@ -21,6 +21,7 @@ using StarSalvager.Missions;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
 using AudioController = StarSalvager.Audio.AudioController;
+using Math = StarSalvager.Utilities.Math;
 
 namespace StarSalvager
 {
@@ -313,6 +314,8 @@ namespace StarSalvager
         {
             float toRotate = rotation.ToAngle();
             MostRecentRotate = rotation;
+            
+            //TODO Need to do the angle clamps here to prevent TargetRotation from going over bounds
 
             //If we're already rotating, we need to add the direction to the target
             if (Rotating)
@@ -324,6 +327,8 @@ namespace StarSalvager
                 targetRotation = rigidbody.rotation + toRotate;
             }
 
+            targetRotation = Math.ClampAngle(targetRotation);
+
             foreach (var attachedBlock in attachedBlocks)
             {
                 attachedBlock.RotateCoordinate(rotation);
@@ -333,120 +338,41 @@ namespace StarSalvager
 
         }
 
-        /*public void Move(float direction)
-        {
-            if (Input.GetKey(KeyCode.LeftAlt))
-            {
-                _currentInput = 0f;
-                return;
-            }
-            
-            Debug.Log($"Set my direction to {_currentInput}", this);
-            
-            _currentInput = direction;
-            DIRECTION moveDirection;
-
-            if (direction < 0)
-                moveDirection = DIRECTION.LEFT;
-            else if (direction > 0)
-                moveDirection = DIRECTION.RIGHT;
-            else
-            {
-                return;
-            }
-
-            Move(moveDirection);
-        }
-
-        private void Move(DIRECTION direction)
-        {
-            Vector2 toMove;
-            switch (direction)
-            {
-                case DIRECTION.LEFT:
-                case DIRECTION.RIGHT:
-                    toMove = direction.ToVector2Int();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-            }
-
-            if (Moving)
-            {
-                targetPosition += toMove * Constants.gridCellSize;
-            }
-            else
-            {
-                targetPosition = (Vector2) transform.position + toMove * Constants.gridCellSize;
-                _dasTimer = 0f;
-            }
-
-            _moving = true;
-        }*/
-
         #endregion //Input Solver
 
         //============================================================================================================//
 
-        #region Movement
+        #region Rotation
 
-        /*private void MoveBot()
-        {
-            var position = rigidbody.position;
-
-            //TODO See if this will be enough for the current setup, or if we will need something more robust.
-            position = Vector2.MoveTowards(position, targetPosition, TEST_Speed * Time.fixedDeltaTime);
-
-            _movingDirection = (targetPosition - position).normalized.ToDirection();
-
-            //Using MovePosition() for the kinematic object since I still want it to interpolate nicely there (In the physics) 
-            rigidbody.MovePosition(position);
-
-            var remainingDistance = Vector2.Distance(position, targetPosition);
-            
-            if (remainingDistance > 0.2f)
-                return;
-
-
-
-            if (_currentInput != 0)
-            {
-                if (_dasTimer < DelayedAutoStartTime)
-                {
-                    _dasTimer += Time.deltaTime;
-                    return;
-                }
-
-                Move(_currentInput);
-                return;
-            }
-
-            _moving = false;
-            rigidbody.position = targetPosition;
-            targetPosition = Vector2.zero;
-            _movingDirection = DIRECTION.NULL;
-            _dasTimer = 0f;
-        }*/
+        private bool rotate;
 
         private void RotateBot()
         {
             var rotation = rigidbody.rotation;
 
             //Rotates towards the target rotation.
-            //rotation = Quaternion.RotateTowards(rotation, targetRotation, TEST_RotSpeed * Time.deltaTime);
             rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, TEST_RotSpeed * Time.fixedDeltaTime);
             rigidbody.rotation = rotation;
             
             //FIXME Remove this when ready
             TEST_ParticleSystem.transform.rotation = Quaternion.identity;
             
-
             //Here we check how close to the final rotation we are.
             var remainingDegrees = Mathf.Abs(Mathf.DeltaAngle(rotation, targetRotation));
+            
+            //TODO Here we'll need to rotate the sprites & Coordinates after a certain threshold is met for that rotation
 
+            if (remainingDegrees > 10f)
+                return;
+
+            TryRotateBits();
+            
+            
             //If we're within 1deg we will count it as complete, otherwise continue to rotate.
             if (remainingDegrees > 1f)
                 return;
+            
+            rotate = false;
 
             _rotating = false;
 
@@ -455,7 +381,39 @@ namespace StarSalvager
             targetRotation = 0f;
         }
 
-        #endregion //Movement
+        private void TryRotateBits()
+        {
+            if (rotate) 
+                return;
+            
+            var check = (int) targetRotation;
+            float deg;
+            if (check == 180)
+            {
+                deg = 180;
+            }
+            else if (check == 0f || check == 360)
+            {
+                deg = 0;
+            }
+            else
+            {
+                deg = targetRotation + 180;
+            }
+
+            var rot = Quaternion.Euler(0, 0, deg);
+                
+            foreach (var attachedBlock in attachedBlocks)
+            {
+                //attachedBlock.RotateSprite(MostRecentRotate);
+                attachedBlock.transform.localRotation = rot;
+            }
+
+            rotate = true;
+        }
+
+
+        #endregion //Rotation
 
         //============================================================================================================//
 
@@ -835,7 +793,7 @@ namespace StarSalvager
                         
                         CheckForCombosAround(bitsToAdd);
 
-                        CheckHasMagnetOverage();
+                        AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
                         
                         CompositeCollider2D.GenerateGeometry();
 

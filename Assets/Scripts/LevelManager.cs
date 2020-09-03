@@ -406,7 +406,24 @@ namespace StarSalvager
         private void TransitionToNewWave()
         {
             SavePlayerData();
-            
+
+            //Unlock loot for completing wave
+
+            CurrentWaveData.ConfigureLootTable();
+            List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
+
+            for (int i = newWaveLoot.Count - 1; i >= 0; i--)
+            {
+                if (newWaveLoot[i] is RDSValue<Blueprint> rdsValueBlueprint)
+                {
+                    PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
+                    Toast.AddToast("Unlocked Blueprint!");
+                    newWaveLoot.RemoveAt(i);
+                }
+            }
+
+            ObstacleManager.SpawnBitExplosion(-ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), newWaveLoot);
+
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
                 Toast.AddToast("Wave Complete!", time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);

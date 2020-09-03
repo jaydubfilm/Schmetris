@@ -6,6 +6,7 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using StarSalvager.Utilities.SceneManagement;
 
 namespace StarSalvager.Cameras
 {
@@ -67,7 +68,7 @@ namespace StarSalvager.Cameras
         //Smooth camera to center over bot
         private void Update()
         {
-            if (!Globals.CameraUseInputMotion)
+            if (!Globals.CameraUseInputMotion || gameObject.scene.name != SceneLoader.LEVEL)
                 return;
 
             if (InputManager.Instance.mostRecentSideMovement == 0 || 

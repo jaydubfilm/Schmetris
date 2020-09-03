@@ -44,9 +44,9 @@ namespace StarSalvager.AI
 
         public void SetObstacleDataSpawns(StageRemoteData stageRemoteData, bool isPrevious, ObstacleManager obstacleManager)
         {
-            if (stageRemoteData.CenterColumnWidth != m_centerColumnWidth)
+            if (stageRemoteData.CenterChannelWidth != m_centerColumnWidth)
             {
-                m_centerColumnWidth = stageRemoteData.CenterColumnWidth;
+                m_centerColumnWidth = stageRemoteData.CenterChannelWidth;
                 m_centerColumnFieldRange = new Vector2(0.5f - m_centerColumnWidth / 2, 0.5f + m_centerColumnWidth / 2);
                 float sidesWidth = (1 - m_centerColumnWidth) / 2;
                 float sidesBlend = sidesWidth * LevelManager.Instance.StandardBufferZoneObstacleData.PortionOfEdgesUsedForBlend;

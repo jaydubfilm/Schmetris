@@ -18,7 +18,7 @@ namespace StarSalvager
         [SerializeField, Required]
         private DroneDesigner mDroneDesigner;
 
-        public void CraftBlueprint(TEST_Blueprint blueprint)
+        public void CraftBlueprint(Blueprint blueprint)
         {
             if (!PlayerPersistentData.PlayerData.CanAffordPart(blueprint.partType, blueprint.level, false)
                 || blueprint.partType == PART_TYPE.CORE && !mDroneDesigner._scrapyardBot.attachedBlocks.GetBlockDatas().Any(p => p.Type == (int)PART_TYPE.CORE && p.Level == blueprint.level - 1))

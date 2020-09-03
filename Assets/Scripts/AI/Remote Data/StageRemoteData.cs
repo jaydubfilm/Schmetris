@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using StarSalvager.Values;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,7 +23,9 @@ namespace StarSalvager.AI
         private float m_spawningObstacleMultiplier = 1.0f;
 
         [SerializeField, ShowIf("m_stageType", STAGE_TYPE.STANDARD), Required, Range(0.0f, 1.0f)]
-        private float m_centerColumnWidth = 0.5f;
+        private float m_centerChannelWidth = 0.5f;
+        [ShowInInspector, ShowIf("m_stageType", STAGE_TYPE.STANDARD), DisplayAsString]
+        private string m_numColumns => (Globals.GridWidth * m_centerChannelWidth).ToString();
         [SerializeField, HideIf("m_stageType", STAGE_TYPE.CUSTOM)]
         private List<StageObstacleData> m_stageObstacleData;
 
@@ -37,7 +40,7 @@ namespace StarSalvager.AI
         public List<StageEnemyData> StageEnemyData => m_stageEnemyData;
 
         public List<StageObstacleData> StageObstacleData => m_stageObstacleData;
-        public float CenterColumnWidth => m_centerColumnWidth;
+        public float CenterChannelWidth => m_centerChannelWidth;
 
         public List<StageColumnGroupObstacleData> StageColumnGroupObstacleData => m_stageColumnGroupObstacleData;
     }

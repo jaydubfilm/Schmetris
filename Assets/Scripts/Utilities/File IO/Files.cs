@@ -262,31 +262,43 @@ namespace StarSalvager.Utilities.FileIO
 
             var fileName = Base64.Encode($"{playerID}_{sessionData.date:yyyyMMddHHmm}");
 
-            var path = Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "RemoteData", $"{fileName}.session");
+            var directory = Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "RemoteData",
+                "Sessions");
+
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+            
+
+            var path = Path.Combine(directory, $"{fileName}.session");
 
             var json = JsonConvert.SerializeObject(sessionData, Formatting.Indented);
             
             File.WriteAllText(path, json);
 
-            //TODO Need to get the email data for this
-            //SendSessionData(path);
+
+#if !UNITY_EDITOR
+            //Sends file to master to review data
+            SendSessionData(path, playerID);
+#endif
         }
 
         private static void SendSessionData(string filePath, string playerID)
         {
+            var from = Base64.Decode("YW5hbHl0aWNzQGFnYW1lc3R1ZGlvcy5jYQ==");
+            var to = Base64.Decode("");
+            
             MailMessage mail = new MailMessage();
-            SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
-            mail.From = new MailAddress("your mail@gmail.com");
-            mail.To.Add("to_mail@gmail.com");
-            mail.Subject = "New Player Session";
+            SmtpClient SmtpServer = new SmtpClient("mail.agamestudios.ca");
+            mail.From = new MailAddress(from);
+            mail.To.Add(from);
+            mail.Subject = "New Player Session File";
             mail.Body = $"New session for {playerID}";
 
-            Attachment attachment;
-            attachment = new Attachment(filePath);
+            var attachment = new Attachment(filePath);
             mail.Attachments.Add(attachment);
 
             SmtpServer.Port = 587;
-            SmtpServer.Credentials = new System.Net.NetworkCredential("your mail@gmail.com", "your password");
+            SmtpServer.Credentials = new System.Net.NetworkCredential(from, Base64.Decode("TTMxbWIxMzRSIQ=="));
             SmtpServer.EnableSsl = true;
 
             SmtpServer.Send(mail);

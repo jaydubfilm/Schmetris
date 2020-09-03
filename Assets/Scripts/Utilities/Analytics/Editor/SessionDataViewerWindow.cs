@@ -16,6 +16,7 @@ namespace StarSalvager.Utilities.Analytics.Editor
 {
     public class SessionDataViewerWindow : OdinMenuEditorWindow
     {
+        
         private Dictionary<string, List<SessionData>> _playerSessions;
 
         private GameSummarySettingsScriptableObject _summarySettingsScriptableObject;
@@ -66,7 +67,11 @@ namespace StarSalvager.Utilities.Analytics.Editor
                 var jsonData = File.ReadAllText(file.FullName);
 
                 var sessionData = Newtonsoft.Json.JsonConvert.DeserializeObject<SessionData>(jsonData);
-            
+
+                //Don't want to add any sessions that are no longer supported
+                if (sessionData.Version != SessionDataProcessor.VERSION)
+                    continue;
+                
             
                 if(!_playerSessions.ContainsKey(sessionData.PlayerID))
                     _playerSessions.Add(sessionData.PlayerID, new List<SessionData>());

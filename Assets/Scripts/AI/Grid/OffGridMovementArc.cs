@@ -16,7 +16,7 @@ namespace StarSalvager
         public override void Move(Vector3 shiftValue)
         {
             ShiftOnGrid(shiftValue);
-            Bit.transform.position = Vector2.Lerp(StartingPosition, EndPosition, LerpTimer);
+            Bit.transform.localPosition = Vector2.Lerp(StartingPosition, EndPosition, LerpTimer);
             EndPosition += ArcValue * Time.deltaTime;
         }
     }

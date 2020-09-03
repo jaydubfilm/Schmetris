@@ -169,15 +169,22 @@ namespace StarSalvager
                 {
                     float toMove = Mathf.Min(m_distanceHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
                     m_distanceHorizontal -= toMove;
-                    m_worldElementsRoot.transform.position += Vector3.left * toMove;
-                    LevelManager.Instance.CameraController.MoveCameraWithObstacles(Vector3.left * toMove);
+
+                    if (m_worldElementsRoot.transform.position.x > -0.5f * Constants.gridCellSize * Globals.GridSizeX)
+                    {
+                        m_worldElementsRoot.transform.position += Vector3.left * toMove;
+                        LevelManager.Instance.CameraController.MoveCameraWithObstacles(Vector3.left * toMove);
+                    }
                 }
                 else if (m_distanceHorizontal < 0)
                 {
                     float toMove = Mathf.Min(Mathf.Abs(m_distanceHorizontal), Globals.BotHorizontalSpeed * Time.deltaTime);
                     m_distanceHorizontal += toMove;
-                    m_worldElementsRoot.transform.position += Vector3.right * toMove;
-                    LevelManager.Instance.CameraController.MoveCameraWithObstacles(Vector3.right * toMove);
+                    if (m_worldElementsRoot.transform.position.x < 0.5f * Constants.gridCellSize * Globals.GridSizeX)
+                    {
+                        m_worldElementsRoot.transform.position += Vector3.right * toMove;
+                        LevelManager.Instance.CameraController.MoveCameraWithObstacles(Vector3.right * toMove);
+                    }
                 }
             }
 
@@ -496,7 +503,7 @@ namespace StarSalvager
         {
             for (int i = rdsObjects.Count - 1; i >= 0; i--)
             {
-                if (rdsObjects[i] is RDSValue<TEST_Blueprint> rdsValueBlueprint)
+                if (rdsObjects[i] is RDSValue<Blueprint> rdsValueBlueprint)
                 {
                     PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
                     Toast.AddToast("Unlocked Blueprint!");
@@ -532,32 +539,38 @@ namespace StarSalvager
         {
             if (selectionType == SELECTION_TYPE.CATEGORY)
             {
-                Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, category, numRotations);
+                IObstacle newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<IObstacle>(selectionType, category, numRotations);
 
                 if (LevelManager.Instance != null)
-                    LevelManager.Instance.ObstacleManager.AddMovableToList(newShape);
+                    LevelManager.Instance.ObstacleManager.AddMovableToList(newObstacle);
                 
-                AddMovableToList(newShape);
-                foreach (Bit bit in newShape.AttachedBits)
+                AddMovableToList(newObstacle);
+                if (newObstacle is Shape newShape)
                 {
-                    AddMovableToList(bit);
+                    foreach (Bit bit in newShape.AttachedBits)
+                    {
+                        AddMovableToList(bit);
+                    }
                 }
-                PlaceMovableOnGrid(newShape, gridRegion);
+                PlaceMovableOnGrid(newObstacle, gridRegion);
                 return;
             }
             else if (selectionType == SELECTION_TYPE.SHAPE)
             {
-                Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, shapeName, numRotations);
+                IObstacle newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<IObstacle>(selectionType, shapeName, numRotations);
 
                 if (LevelManager.Instance != null)
-                    LevelManager.Instance.ObstacleManager.AddMovableToList(newShape);
+                    LevelManager.Instance.ObstacleManager.AddMovableToList(newObstacle);
 
-                AddMovableToList(newShape);
-                foreach (Bit bit in newShape.AttachedBits)
+                AddMovableToList(newObstacle);
+                if (newObstacle is Shape newShape)
                 {
-                    AddMovableToList(bit);
+                    foreach (Bit bit in newShape.AttachedBits)
+                    {
+                        AddMovableToList(bit);
+                    }
                 }
-                PlaceMovableOnGrid(newShape, gridRegion);
+                PlaceMovableOnGrid(newObstacle, gridRegion);
                 return;
             }
             else if (selectionType == SELECTION_TYPE.ASTEROID)
@@ -649,8 +662,8 @@ namespace StarSalvager
         public void BounceObstacle(IObstacle bit, Vector2 direction, float spinSpeed, bool despawnOnEnd, bool spinning, bool arc)
         {
             m_obstacles.Remove(bit);
-            Vector2 destination = (Vector2)bit.transform.position + direction * m_bounceTravelDistance;
-            PlaceMovableOffGrid(bit, bit.transform.position, destination, Vector2.Distance(bit.transform.position, destination) / (m_bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
+            Vector2 destination = (Vector2)bit.transform.localPosition + direction * m_bounceTravelDistance;
+            PlaceMovableOffGrid(bit, bit.transform.localPosition, destination, Vector2.Distance(bit.transform.localPosition, destination) / (m_bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
         }
 
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector2 startingPosition, Vector2Int gridEndPosition, float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false)

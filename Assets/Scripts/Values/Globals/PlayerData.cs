@@ -85,7 +85,7 @@ namespace StarSalvager.Values
         public List<BlockData> currentBlockData = new List<BlockData>();
         public List<BlockData> partsInStorageBlockData = new List<BlockData>();
 
-        public List<TEST_Blueprint> unlockedBlueprints = new List<TEST_Blueprint>();
+        public List<Blueprint> unlockedBlueprints = new List<Blueprint>();
 
         public Dictionary<int, int> maxSectorProgression = new Dictionary<int, int>();
 
@@ -322,7 +322,7 @@ namespace StarSalvager.Values
             OnValuesChanged?.Invoke();
         }
 
-        public void UnlockBlueprint(TEST_Blueprint blueprint)
+        public void UnlockBlueprint(Blueprint blueprint)
         {
             if (!unlockedBlueprints.Any(b => b.name == blueprint.name))
             {

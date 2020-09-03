@@ -7,7 +7,7 @@ namespace StarSalvager.ScriptableObjects.Analytics
     //[CreateAssetMenu(fileName = "Game Summary Settings", menuName = "Star Salvager/Scriptable Objects/Game Summary Settings")]
     public class GameSummarySettingsScriptableObject : ScriptableObject
     {
-        [FolderPath]
+        [FolderPath(AbsolutePath = true)]
         public string SessionsDirectory;
     }
 

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace StarSalvager
 {
     [Serializable]
-    public class RDSEnemyData : IEquatable<RDSEnemyData>
+    public class RDSLootData : IEquatable<RDSLootData>
     {
         public enum TYPE
         {
@@ -40,7 +40,7 @@ namespace StarSalvager
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals(RDSEnemyData other)
+        public bool Equals(RDSLootData other)
         {
             return type == other.type && rdsData == other.rdsData;
         }
@@ -52,7 +52,7 @@ namespace StarSalvager
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            return obj is RDSEnemyData other && Equals(other);
+            return obj is RDSLootData other && Equals(other);
         }
 
         public override int GetHashCode()
