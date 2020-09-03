@@ -29,7 +29,8 @@ namespace StarSalvager.AI
         public string Category => m_category;
         public ASTEROID_SIZE AsteroidSize => m_asteroidSize;
 
-        public float Density => m_density / 6;
+        private float DensityExponential => m_density * m_density;
+        public float Density => DensityExponential / Globals.ObstacleDensityReductionModifier;
 
         public int Rotation()
         {

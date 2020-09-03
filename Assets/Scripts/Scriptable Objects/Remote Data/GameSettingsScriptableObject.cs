@@ -17,6 +17,7 @@ namespace StarSalvager.ScriptableObjects
         public float DASTime = 0.15f;
         public float gridHeightRelativeToScreen = 1.25f;
         public float obstacleMass = 2.0f;
+        public float obstacleDensityReductionModifier = 5.0f;
         public float botHorizontalSpeed = 30.0f;
         public float missionReminderFrequency = 25.0f;
 

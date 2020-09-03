@@ -11,8 +11,10 @@ namespace StarSalvager.Values
     public static class Globals
     {
         //Values that don't change throughout gameplay
-        public static string UserID = AnalyticsSessionInfo.userId;
-        public static string SessionID = System.Guid.NewGuid().ToString();
+        public static string UserID = string.Empty;
+        //public static string UserID = AnalyticsSessionInfo.userId;
+        //public static string SessionID = System.Guid.NewGuid().ToString();
+        public static string SessionID = string.Empty;
 
 
         //Values that change throughout gameplay - only set defaults here
@@ -34,6 +36,7 @@ namespace StarSalvager.Values
         public static float DASTime => m_gameSettings.DASTime;
         public static float GridHeightRelativeToScreen => m_gameSettings.gridHeightRelativeToScreen;
         public static float ObstacleMass => m_gameSettings.obstacleMass;
+        public static float ObstacleDensityReductionModifier => m_gameSettings.obstacleDensityReductionModifier;
         public static float BotHorizontalSpeed => m_gameSettings.botHorizontalSpeed;
         public static float MissionReminderFrequency => m_gameSettings.missionReminderFrequency;
         public static bool CameraUseInputMotion => m_gameSettings.cameraUseInputMotion;

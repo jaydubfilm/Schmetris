@@ -15,11 +15,12 @@ MonoBehaviour:
   allowAccessToUnlockedLaterWaves: 1
   disableTestingFeatures: 1
   bitsPushThroughParts: 0
-  GridWidth: 500
+  GridWidth: 100
   timeForAsteroidToFallOneSquare: 0.25
   DASTime: 0.15
   gridHeightRelativeToScreen: 1.25
   obstacleMass: 2
+  obstacleDensityReductionModifier: 5
   botHorizontalSpeed: 30
   missionReminderFrequency: 25
   cameraUseInputMotion: 1

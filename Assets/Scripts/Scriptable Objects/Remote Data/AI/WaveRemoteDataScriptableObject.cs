@@ -9,9 +9,6 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Wave Remote", menuName = "Star Salvager/Scriptable Objects/Wave Remote Data")]
     public class WaveRemoteDataScriptableObject : ScriptableObject
     {
-        [Range(3, 1000)]
-        public int ColumnRepresentation;
-        
         public List<StageRemoteData> StageRemoteData = new List<StageRemoteData>();
 
         public StageRemoteData GetRemoteData(int waveNumber)
