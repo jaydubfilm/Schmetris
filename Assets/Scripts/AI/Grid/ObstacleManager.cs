@@ -539,32 +539,38 @@ namespace StarSalvager
         {
             if (selectionType == SELECTION_TYPE.CATEGORY)
             {
-                Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, category, numRotations);
+                IObstacle newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<IObstacle>(selectionType, category, numRotations);
 
                 if (LevelManager.Instance != null)
-                    LevelManager.Instance.ObstacleManager.AddMovableToList(newShape);
+                    LevelManager.Instance.ObstacleManager.AddMovableToList(newObstacle);
                 
-                AddMovableToList(newShape);
-                foreach (Bit bit in newShape.AttachedBits)
+                AddMovableToList(newObstacle);
+                if (newObstacle is Shape newShape)
                 {
-                    AddMovableToList(bit);
+                    foreach (Bit bit in newShape.AttachedBits)
+                    {
+                        AddMovableToList(bit);
+                    }
                 }
-                PlaceMovableOnGrid(newShape, gridRegion);
+                PlaceMovableOnGrid(newObstacle, gridRegion);
                 return;
             }
             else if (selectionType == SELECTION_TYPE.SHAPE)
             {
-                Shape newShape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(selectionType, shapeName, numRotations);
+                IObstacle newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<IObstacle>(selectionType, shapeName, numRotations);
 
                 if (LevelManager.Instance != null)
-                    LevelManager.Instance.ObstacleManager.AddMovableToList(newShape);
+                    LevelManager.Instance.ObstacleManager.AddMovableToList(newObstacle);
 
-                AddMovableToList(newShape);
-                foreach (Bit bit in newShape.AttachedBits)
+                AddMovableToList(newObstacle);
+                if (newObstacle is Shape newShape)
                 {
-                    AddMovableToList(bit);
+                    foreach (Bit bit in newShape.AttachedBits)
+                    {
+                        AddMovableToList(bit);
+                    }
                 }
-                PlaceMovableOnGrid(newShape, gridRegion);
+                PlaceMovableOnGrid(newObstacle, gridRegion);
                 return;
             }
             else if (selectionType == SELECTION_TYPE.ASTEROID)
