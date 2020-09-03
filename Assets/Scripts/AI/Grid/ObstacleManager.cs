@@ -662,8 +662,8 @@ namespace StarSalvager
         public void BounceObstacle(IObstacle bit, Vector2 direction, float spinSpeed, bool despawnOnEnd, bool spinning, bool arc)
         {
             m_obstacles.Remove(bit);
-            Vector2 destination = (Vector2)bit.transform.position + direction * m_bounceTravelDistance;
-            PlaceMovableOffGrid(bit, bit.transform.position, destination, Vector2.Distance(bit.transform.position, destination) / (m_bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
+            Vector2 destination = (Vector2)bit.transform.localPosition + direction * m_bounceTravelDistance;
+            PlaceMovableOffGrid(bit, bit.transform.localPosition, destination, Vector2.Distance(bit.transform.localPosition, destination) / (m_bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
         }
 
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector2 startingPosition, Vector2Int gridEndPosition, float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false)
