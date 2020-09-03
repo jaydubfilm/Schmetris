@@ -56,9 +56,14 @@ namespace StarSalvager.UI
             [Required, FoldoutGroup("$NAME")]
             public Button buttonObject;
             [Required, FoldoutGroup("$NAME")]
+            public Image buttonImage;
+            [Required, FoldoutGroup("$NAME")]
             public Image iconImage;
             [Required, FoldoutGroup("$NAME")]
             public Image fillImage;
+
+            public Sprite[] sprites;
+            
             /*[Required] 
             public Image noResourceIcon;*/
             /*[Required, FoldoutGroup("$NAME")] 
@@ -66,7 +71,7 @@ namespace StarSalvager.UI
 
 #if UNITY_EDITOR
             private string NAME => buttonObject ? buttonObject.gameObject.name : "Null";
-            [SerializeField, HorizontalGroup("$NAME/Row1")]
+            /*[SerializeField, HorizontalGroup("$NAME/Row1")]
             private Color color;
 
             [Button, HorizontalGroup("$NAME/Row1")]
@@ -82,7 +87,7 @@ namespace StarSalvager.UI
                     image.color = color;
                 }
                 
-            }
+            }*/
 #endif
 
             public void Reset()
@@ -96,24 +101,36 @@ namespace StarSalvager.UI
             {
                 buttonObject.gameObject.SetActive(state);
             }
-
-            /*public void SetHasResource(bool hasResource)
+            
+            /*//FIXME I'll need to prevent constant setting here
+            public void SetHasResource(bool hasResource)
             {
                 //Doesn't matter if the thing isn't showing
                 if (!buttonObject.gameObject.activeInHierarchy)
                     return;
 
-                //Prevent constantly setting the below values
-                if (noResourceIcon.gameObject.activeInHierarchy == !hasResource)
-                    return;
+                /#1#/Prevent constantly setting the below values
+                if (buttonObject.image.sprite == _sprites[2])
+                    return;#1#
 
+                //If the resource is full & we have resources, set the sprite to glow
+                if (fillImage.fillAmount >= 1f && hasResource)
+                    buttonImage.sprite = sprites[1];
+                else
+                {
+                    buttonImage.sprite = hasResource ? sprites[1] : sprites[2];
+                }
+                    
+                
                 //fillImage.color = hasResource ? Color.white : Color.gray;
-                noResourceIcon.gameObject.SetActive(!hasResource);
+                //noResourceIcon.gameObject.SetActive(!hasResource);
             }*/
 
             public void SetFill(float fillValue)
             {
                 fillImage.fillAmount = fillValue;
+                
+                buttonImage.sprite = fillValue >= 1f ? sprites[1] : sprites[2];
             }
         }
         //============================================================================================================//
@@ -170,9 +187,19 @@ namespace StarSalvager.UI
 
         //Right Window
         //============================================================================================================//
+        
+        [SerializeField, Required, FoldoutGroup("R Window")]
+        private Sprite normalSprite;
+        [SerializeField, Required, FoldoutGroup("R Window")]
+        private Sprite readySprite;
+        [SerializeField, Required, FoldoutGroup("R Window")]
+        private Sprite disabledSprite;
+       
         [SerializeField, Required, FoldoutGroup("R Window")]
         //private SmartWeapon[] SmartWeaponsUI;
         private SmartWeaponV2[] SmartWeaponsUI;
+
+
 
         //Bottom Right Window
         //============================================================================================================//
@@ -218,8 +245,10 @@ namespace StarSalvager.UI
 
             vignetteImage.gameObject.SetActive(useVignette);
 
+            
             InitValues();
 
+            
 
             glowImages = new[]
             {
@@ -266,6 +295,7 @@ namespace StarSalvager.UI
 
         private void InitValues()
         {
+            InitSmartWeaponUI();
             ResetIcons();
 
             SetWaterValue(0f);
@@ -288,6 +318,25 @@ namespace StarSalvager.UI
             repairSlider.Init();
             ammoSlider.Init();
 
+        }
+
+        private void InitSmartWeaponUI()
+        {
+            var sprites = new []
+            {
+                normalSprite,
+                readySprite, 
+                disabledSprite
+            };
+
+            for (var i = 0; i < SmartWeaponsUI.Length; i++)
+            {
+                var temp = SmartWeaponsUI[i];
+
+                temp.sprites = sprites;
+
+                SmartWeaponsUI[i] = temp;
+            }
         }
 
         //============================================================================================================//
@@ -447,12 +496,12 @@ namespace StarSalvager.UI
         }
 
         //FIXME Need to determine what's happening with this
-        [Obsolete("Currently not using the resource indicator for the Smart Weapons")]
+        /*[Obsolete("Currently not using the resource indicator for the Smart Weapons")]
         public void SetHasResource(int index, bool hasResource)
         {
-            /*if (index < 0) return;
-            SmartWeaponsUI[index].SetHasResource(hasResource);*/
-        }
+            if (index < 0) return;
+            SmartWeaponsUI[index].SetHasResource(hasResource);
+        }*/
 
         public void SetFill(int index, float fillValue)
         {
