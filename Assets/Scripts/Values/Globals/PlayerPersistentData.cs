@@ -42,6 +42,17 @@ namespace StarSalvager.Values
             data.PlaythroughID = Guid.NewGuid().ToString();
             PlayerData = data;
             MissionManager.LoadMissionData();
+
+            foreach (var blueprintData in Globals.BlueprintInitialData)
+            {
+                Blueprint blueprint = new Blueprint
+                {
+                    name = (PART_TYPE)blueprintData.type + " " + blueprintData.level,
+                    partType = (PART_TYPE)blueprintData.type,
+                    level = blueprintData.level
+                };
+                PlayerPersistentData.PlayerData.UnlockBlueprint(blueprint);
+            }
         }
 
         //====================================================================================================================//

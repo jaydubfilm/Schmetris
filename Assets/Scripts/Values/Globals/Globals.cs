@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using StarSalvager.ScriptableObjects;
@@ -42,7 +43,8 @@ namespace StarSalvager.Values
         public static bool CameraUseInputMotion => m_gameSettings.cameraUseInputMotion;
         public static float CameraSmoothing => m_gameSettings.cameraSmoothing;
         public static float CameraOffsetBounds => Constants.gridCellSize * Globals.ColumnsOnScreen * m_gameSettings.cameraOffsetBounds / 2;
-        public static int GridWidth => m_gameSettings.GridWidth;
+        public static int GridWidth => m_gameSettings.gridWidth;
+        public static List<BlueprintInitialData> BlueprintInitialData => m_gameSettings.blueprintInitialData;
 
         //Values set by Game Settings - do not set values here
         public static bool DisableTestingFeatures;

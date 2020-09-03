@@ -54,7 +54,7 @@ namespace StarSalvager.UI.Scrapyard
         //[SerializeField, Required]
         private StorageUI storageUi;
 
-        private TEST_Blueprint currentSelected;
+        private Blueprint currentSelected;
 
         private bool scrollViewsSetup = false;
 
@@ -113,7 +113,7 @@ namespace StarSalvager.UI.Scrapyard
         private void InitUIScrollView()
         {
             //FIXME This needs to move to the Factory
-            if (PlayerPersistentData.PlayerData.unlockedBlueprints.Count == 0)
+            if (!Globals.DisableTestingFeatures)
             {
                 foreach (var partRemoteData in _remotePartProfileScriptable.partRemoteData)
                 {
@@ -128,7 +128,7 @@ namespace StarSalvager.UI.Scrapyard
                                 continue;
                         }
 
-                        TEST_Blueprint blueprint = new TEST_Blueprint
+                        Blueprint blueprint = new Blueprint
                         {
                             name = partRemoteData.partType + " " + i,
                             partType = partRemoteData.partType,
@@ -239,9 +239,9 @@ namespace StarSalvager.UI.Scrapyard
 
         #region Other
 
-        private TEST_Blueprint lastBlueprint;
+        private Blueprint lastBlueprint;
 
-        private void SetupBlueprintCosts(TEST_Blueprint blueprint, bool showWindow, RectTransform buttonTransform)
+        private void SetupBlueprintCosts(Blueprint blueprint, bool showWindow, RectTransform buttonTransform)
         {
             costWindowObject.SetActive(showWindow);
 
@@ -310,6 +310,6 @@ namespace StarSalvager.UI.Scrapyard
     }
 
     [System.Serializable]
-    public class BlueprintUIElementScrollView: UIElementContentScrollView<TEST_Blueprint>
+    public class BlueprintUIElementScrollView: UIElementContentScrollView<Blueprint>
     {}
 }

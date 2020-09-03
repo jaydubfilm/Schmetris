@@ -12,7 +12,7 @@ namespace StarSalvager.ScriptableObjects
         public bool allowAccessToUnlockedLaterWaves = true;
         public bool disableTestingFeatures = false;
         public bool bitsPushThroughParts = false;
-        public int GridWidth = 300;
+        public int gridWidth = 300;
         public float timeForAsteroidToFallOneSquare = 0.25f;
         public float DASTime = 0.15f;
         public float gridHeightRelativeToScreen = 1.25f;
@@ -26,6 +26,8 @@ namespace StarSalvager.ScriptableObjects
         public float cameraSmoothing = 8.0f;
         [ShowIf("cameraUseInputMotion", true)]
         public float cameraOffsetBounds = 0.5f;
+
+        public List<BlueprintInitialData> blueprintInitialData = new List<BlueprintInitialData>();
 
         public void SetupGameSettings()
         {

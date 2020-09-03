@@ -503,7 +503,7 @@ namespace StarSalvager
         {
             for (int i = rdsObjects.Count - 1; i >= 0; i--)
             {
-                if (rdsObjects[i] is RDSValue<TEST_Blueprint> rdsValueBlueprint)
+                if (rdsObjects[i] is RDSValue<Blueprint> rdsValueBlueprint)
                 {
                     PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
                     Toast.AddToast("Unlocked Blueprint!");
