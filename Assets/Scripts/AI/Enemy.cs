@@ -378,7 +378,7 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0) 
                 return;
             
-            LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.position, m_enemyData.rdsTable.rdsResult.ToList());
+            LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.localPosition, m_enemyData.rdsTable.rdsResult.ToList());
             MissionManager.ProcessEnemyKilledMissionData(m_enemyData.EnemyType, 1);
             
             SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
