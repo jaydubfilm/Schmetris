@@ -74,7 +74,8 @@ namespace StarSalvager.Cameras
             if (InputManager.Instance.MostRecentSideMovement == 0 || 
                 transform.position.x > Globals.CameraOffsetBounds || 
                 transform.position.x < -Globals.CameraOffsetBounds)
-                transform.position = Vector3.MoveTowards(transform.position, startPos, Globals.CameraSmoothing * Time.deltaTime);
+                transform.position = Vector3.Lerp(transform.position, startPos, Globals.CameraSmoothing * Time.deltaTime);
+                //transform.position = Vector3.MoveTowards(transform.position, startPos, Globals.CameraSmoothing * Time.deltaTime);
         }
 
         private void OnDestroy()
