@@ -604,11 +604,19 @@ namespace StarSalvager
             }
         }
 
-        public void AddMovableToList(IObstacle movable)
+        public void AddOrphanToObstacles(IObstacle movable)
+        {
+            movable.transform.parent = WorldElementsRoot.transform;
+            AddMovableToList(movable);
+        }
+
+        private void AddMovableToList(IObstacle movable)
         {
             //TODO: Find a more elegant solution for this if statement. This is catching the scenario where a bit is recycled and reused in the same frame, before it can be removed by the update loop, resulting in it being in the list twice.
             if (!m_obstacles.Contains(movable))
+            {
                 m_obstacles.Add(movable);
+            }
         }
 
         private void PlaceMovableOnGrid(IObstacle movable, Vector2 gridRegion, int radius = 0)

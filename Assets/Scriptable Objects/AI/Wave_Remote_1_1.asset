@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Wave_Remote_1_1
   m_EditorClassIdentifier: 
   StageRemoteData:
-  - m_stageDuration: 5
+  - m_stageDuration: 30
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
@@ -25,7 +25,13 @@ MonoBehaviour:
       m_shapeName: 
       m_category: 
       m_asteroidSize: 0
-      m_density: 0.4
+      m_density: 0.2
+      m_rotation: 
+    - m_selectionType: 1
+      m_shapeName: Small1
+      m_category: Small
+      m_asteroidSize: 0
+      m_density: 0.2
       m_rotation: 
     m_stageColumnGroupObstacleData: []
   maxDrops: 6

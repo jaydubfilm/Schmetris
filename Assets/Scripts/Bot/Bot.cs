@@ -1396,9 +1396,9 @@ namespace StarSalvager
                     }
                     
                     var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(shapeBits);
-                    
+
                     if (LevelManager.Instance != null)
-                        LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
+                        LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(shape);
                     
                     if (delayedCollider)
                     {
@@ -1419,10 +1419,10 @@ namespace StarSalvager
                     bit.SetColliderActive(false);
                     bit.transform.parent = null;
                     bit.transform.rotation = Quaternion.identity;
-                    
+
                     if (LevelManager.Instance != null)
-                        LevelManager.Instance.ObstacleManager.AddMovableToList(bit);
-                    
+                        LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(bit);
+
                     bits.RemoveAt(0);
                 }
             }
@@ -1489,6 +1489,9 @@ namespace StarSalvager
         private void DetachBit(IAttachable attachable)
         {
             attachable.transform.parent = null;
+
+            if (LevelManager.Instance != null && attachable is IObstacle obstacle)
+                LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(obstacle);
 
             RemoveAttachable(attachable);
         }
