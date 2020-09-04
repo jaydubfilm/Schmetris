@@ -515,9 +515,9 @@ namespace StarSalvager
                                 bit.Bounce(collisionPoint);
                             }
 
-                            //We don't want to move a row if it hit an enemy instead of a bit
-                            if (closestAttachable is EnemyAttachable)
-                                break;
+                            ////We don't want to move a row if it hit an enemy instead of a bit
+                            //if (closestAttachable is EnemyAttachable)
+                            //    break;
                             
                             //Try and shift collided row (Depending on direction)
                             var shift = TryShift(connectionDirection.Reflected(), closestAttachable);
