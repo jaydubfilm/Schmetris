@@ -16,7 +16,7 @@ namespace StarSalvager
             Blueprint
         }
 
-        [FoldoutGroup("$Name"), EnumToggleButtons, LabelWidth(125), OnValueChanged("UpdateValue")]
+        [FoldoutGroup("$Name"), EnumToggleButtons, LabelWidth(75), OnValueChanged("UpdateValue")]
         public TYPE rdsData;
 
         [FoldoutGroup("$Name"), ValueDropdown("GetTypes")]
