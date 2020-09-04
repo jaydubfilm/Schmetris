@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.AI;
 using Recycling;
@@ -29,18 +27,13 @@ namespace StarSalvager.Factories
 
         public override T CreateObject<T>()
         {
-            if (Recycler.TryGrab<T>(out T newObject))
-            {
-                return newObject;
-            }
-            
-            return CreateGameObject().GetComponent<T>();
+            return Recycler.TryGrab(out T newObject) ? newObject : CreateGameObject().GetComponent<T>();
         }
 
         //============================================================================================================//
 
         //TODO: Add setting the collisionTag for the projectile
-        public T CreateObject<T>(string projectileType, Vector3 travelDirection, string collisionTag)
+        public T CreateObject<T>(string projectileType, Vector3 travelDirection, float damage, string collisionTag)
         {
             var projectile = CreateObject<Projectile>();
 
@@ -52,6 +45,8 @@ namespace StarSalvager.Factories
 
             if (travelDirection == Vector3.up && projectile.m_projectileData.RequiresRotation)
                 projectile.FlipSpriteY(true);
+
+            projectile.SetDamage(damage);
 
             return projectile.GetComponent<T>();
         }
