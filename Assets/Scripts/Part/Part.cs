@@ -112,9 +112,12 @@ namespace StarSalvager
         public void CustomRecycle(params object[] args)
         {
             SetColor(Color.white);
+
+            if (!_damage) 
+                return;
             
-            if(_damage)
-                Recycler.Recycle<Damage>(_damage);
+            Recycler.Recycle<Damage>(_damage);
+            _damage = null;
         }
     }
 }
