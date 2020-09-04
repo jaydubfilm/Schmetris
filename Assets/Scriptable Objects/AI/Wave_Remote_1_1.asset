@@ -34,7 +34,7 @@ MonoBehaviour:
       m_density: 0.2
       m_rotation: 
     m_stageColumnGroupObstacleData: []
-  maxDrops: 2
+  maxDrops: 3
   RDSEndOfWaveLoot:
   - rdsData: 2
     type: 1
@@ -43,8 +43,14 @@ MonoBehaviour:
     isUniqueSpawn: 1
     isAlwaysSpawn: 1
   - rdsData: 2
-    type: 3
+    type: 7
     level: 1
+    probability: 0
+    isUniqueSpawn: 1
+    isAlwaysSpawn: 1
+  - rdsData: 2
+    type: 7
+    level: 0
     probability: 0
     isUniqueSpawn: 1
     isAlwaysSpawn: 1

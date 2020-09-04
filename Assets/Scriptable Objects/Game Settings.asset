@@ -25,7 +25,11 @@ MonoBehaviour:
   missionReminderFrequency: 25
   cameraUseInputMotion: 1
   cameraSmoothing: 8
-  cameraOffsetBounds: 0.5
+  cameraOffsetBounds: 0.2
   blueprintInitialData:
   - type: 4
     level: 0
+  - type: 0
+    level: 2
+  - type: 2
+    level: 2
