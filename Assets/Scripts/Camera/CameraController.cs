@@ -71,7 +71,7 @@ namespace StarSalvager.Cameras
             if (!Globals.CameraUseInputMotion || gameObject.scene.name != SceneLoader.LEVEL)
                 return;
 
-            if (InputManager.Instance.mostRecentSideMovement == 0 || 
+            if (InputManager.Instance.MostRecentSideMovement == 0 || 
                 transform.position.x > Globals.CameraOffsetBounds || 
                 transform.position.x < -Globals.CameraOffsetBounds)
                 transform.position = Vector3.MoveTowards(transform.position, startPos, Globals.CameraSmoothing * Time.deltaTime);
