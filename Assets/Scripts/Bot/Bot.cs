@@ -405,6 +405,12 @@ namespace StarSalvager
                 
             foreach (var attachedBlock in attachedBlocks)
             {
+                if (attachedBlock is ICustomRotate rotate)
+                {
+                    rotate.CustomRotate();
+                    continue;
+                }
+                
                 //attachedBlock.RotateSprite(MostRecentRotate);
                 attachedBlock.transform.localRotation = rot;
             }
