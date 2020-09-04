@@ -66,8 +66,9 @@ namespace StarSalvager.Utilities
                 _timer += Time.deltaTime;
             }
             
-            //Force the rotation to remain as default
-            transform.rotation = Quaternion.identity;
+            //This doesn't need to happen anymore because the icon is no longer part of the flashing
+            ////Force the rotation to remain as default
+            //transform.rotation = Quaternion.identity;
         }
         
         //============================================================================================================//

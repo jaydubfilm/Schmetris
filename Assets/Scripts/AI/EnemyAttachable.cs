@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class EnemyAttachable : Enemy, IAttachable, ICustomRecycle, ICustomRotate
+    public class EnemyAttachable : Enemy, IAttachable, ICustomRotate
     {
         private static readonly int DEFAULT = Animator.StringToHash("Default");
         private static readonly int ATTACK  = Animator.StringToHash("Attack");
@@ -38,15 +38,14 @@ namespace StarSalvager.AI
         //private Vector2Int targetDirection;
 
         //FIXME This needs to be removed
-        public GameObject TEST_TARGET;
+        //public GameObject TEST_TARGET;
 
         protected override void Update()
         {
-
             if (!Attached)
             {
-                if(attachedBot != null )
-                    Debug.Break();
+                /*if(attachedBot != null )
+                    Debug.Break();*/
                 
                 return;
             }
@@ -203,6 +202,11 @@ namespace StarSalvager.AI
         //Attachable Enemy Movement when Attacking
         //============================================================================================================//
 
+        public void CheckUpdateTarget()
+        {
+            TryUpdateTarget();
+        }
+
         private void EnsureTargetValidity()
         {
             //If our target has been destroyed (Killed/Recycled) we want to move to its position
@@ -269,8 +273,6 @@ namespace StarSalvager.AI
             }
         }
 
-
-
         private bool TryMoveToTargetPosition()
         {
             if (target == null)
@@ -297,6 +299,12 @@ namespace StarSalvager.AI
 
         private bool TryUpdateTarget()
         {
+            if (attachedBot is null)
+            {
+                SetAttached(false);
+                return false;
+            }
+            
             //We set the max distance here because we want to ensure we're attacking something right next to us
             target = attachedBot.GetClosestAttachable(Coordinate, 1f);
 
@@ -306,9 +314,8 @@ namespace StarSalvager.AI
                 return false;
             }
 
-            TEST_TARGET = target.gameObject;
-
-            Debug.Log($"{gameObject.name} has new target. TARGET : {TEST_TARGET.gameObject.name}", TEST_TARGET);
+            //TEST_TARGET = target.gameObject;
+            //Debug.Log($"{gameObject.name} has new target. TARGET : {TEST_TARGET.gameObject.name}", TEST_TARGET);
 
             RotateTowardsTarget(target);
 

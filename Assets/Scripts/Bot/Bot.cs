@@ -1719,6 +1719,13 @@ namespace StarSalvager
                 //Checks for floaters
                 CheckForDisconnects();
 
+                //Force all attached enemies whom have shifted to update their targets
+                foreach (var enemyAttachable in toShift.Select(x => x.Target).OfType<EnemyAttachable>())
+                {
+                    enemyAttachable.CheckUpdateTarget();
+                }
+
+
                 var comboCheckGroup = toShift.Select(x => x.Target).Where(x => attachedBlocks.Contains(x) && x is ICanCombo)
                     .OfType<ICanCombo>();
                 
