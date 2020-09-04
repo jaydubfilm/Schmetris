@@ -81,8 +81,8 @@ namespace StarSalvager.Utilities.Backgrounds
         private float movingDirection;
         [SerializeField, ReadOnly]
         private DIRECTION direction;
-        
-        public void UpdatePosition()
+
+        public void UpdatePosition(bool ignoreInput = false)
         {
             lowestPoint = _camera.ViewportToWorldPoint(Vector3.zero).y;
             highestPoint = _camera.ViewportToWorldPoint(Vector3.one).y;
@@ -93,9 +93,11 @@ namespace StarSalvager.Utilities.Backgrounds
             direction = Globals.MovingDirection;
             
             movingDirection = Globals.MovingDirection.GetHorizontalDirectionFloat();
-            
-            horizontalMove = GameTimer.IsPaused ? Vector3.zero : Vector3.right *
-                                                                 (horizontalMoveSpeed * Globals.MovingDirection.GetHorizontalDirectionFloat());
+
+            horizontalMove = GameTimer.IsPaused || ignoreInput
+                ? Vector3.zero
+                : Vector3.right *
+                  (horizontalMoveSpeed * Globals.MovingDirection.GetHorizontalDirectionFloat());
             
             var pos = transform.position;
             pos += ((Vector3)moveSpeed + horizontalMove) * Time.deltaTime;

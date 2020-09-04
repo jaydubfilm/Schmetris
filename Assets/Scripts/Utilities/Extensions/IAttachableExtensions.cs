@@ -43,12 +43,19 @@ namespace StarSalvager.Utilities.Extensions
             
         }
         
-        public static void RotateSprite(this IAttachable attachable, ROTATION rotation)
+        /*public static void RotateSprite(this IAttachable attachable, ROTATION rotation)
         {
+            if (attachable is ICustomRotate customRotate)
+            {
+                Debug.Log("Rotate");
+                customRotate.CustomRotate();
+                return;
+            }
+            
             //Rotate opposite of the Core rotation 
             attachable.transform.localRotation *= rotation.ToInverseQuaternion();
             
-        }
+        }*/
 
         public static void Bounce(this IAttachable attachable, Vector2 contactPoint)
         {
