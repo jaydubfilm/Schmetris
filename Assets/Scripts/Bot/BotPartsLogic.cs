@@ -507,14 +507,16 @@ namespace StarSalvager
                         //const string PROJECTILE_ID = "083be790-7a08-4f27-b506-e8e09a116bc8";
 
                         var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
+                        var damage = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Damage);
 
                         //TODO Might need to add something to change the projectile used for each gun piece
                         var projectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
                             .CreateObject<Projectile>(
                                 projectileId,
                                 /*shootDirection*/Vector2.up,
+                                damage,
                                 "Enemy");
-
+                        
                         projectile.transform.position = part.transform.position;
 
                         LevelManager.Instance.ProjectileManager.AddProjectile(projectile);
