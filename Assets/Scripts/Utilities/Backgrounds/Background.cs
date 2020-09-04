@@ -86,13 +86,17 @@ namespace StarSalvager.Utilities.Backgrounds
             enabled = false;
         }
         
-        public void UpdatePosition()
+        public void UpdatePosition(bool ignoreInput = false)
         {
             if (moveSpeed == Vector2.zero)
                 return;
 
 
-            var horizontalMove = GameTimer.IsPaused ? Vector2.zero : Vector2.right * (horizontalMoveSpeed * Globals.MovingDirection.GetHorizontalDirectionFloat());
+            var horizontalMove = GameTimer.IsPaused || ignoreInput
+                ? Vector2.zero
+                : Vector2.right * (horizontalMoveSpeed * Globals.MovingDirection.GetHorizontalDirectionFloat());
+            
+            
             SetOffset((moveSpeed + horizontalMove) * Time.deltaTime);
         }
         
