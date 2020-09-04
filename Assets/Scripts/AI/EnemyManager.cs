@@ -350,7 +350,7 @@ namespace StarSalvager
         {
             foreach (var enemy in m_enemies)
             {
-                MissionManager.ProcessEnemyKilledMissionData(enemy.m_enemyData.EnemyType, 1);
+                //MissionManager.ProcessEnemyKilledMissionData(enemy.m_enemyData.EnemyType, 1);
                 Recycler.Recycle<Enemy>(enemy);
             }
             m_enemies.Clear();

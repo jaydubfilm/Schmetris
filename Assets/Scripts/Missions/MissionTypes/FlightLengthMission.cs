@@ -1,6 +1,7 @@
 ﻿using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace StarSalvager.Missions
 {
@@ -24,6 +25,7 @@ namespace StarSalvager.Missions
         {
             if (flightLength >= m_flightLength)
             {
+                Debug.WriteLine(flightLength + " --- " + m_flightLength);
                 m_currentAmount += 1;
             }
         }

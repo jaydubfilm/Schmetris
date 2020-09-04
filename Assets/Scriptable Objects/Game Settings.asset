@@ -24,7 +24,7 @@ MonoBehaviour:
   botHorizontalSpeed: 30
   missionReminderFrequency: 25
   cameraUseInputMotion: 1
-  cameraSmoothing: 8
+  cameraSmoothing: 4
   cameraOffsetBounds: 0.2
   blueprintInitialData:
   - type: 4
