@@ -26,4 +26,6 @@ MonoBehaviour:
   cameraUseInputMotion: 1
   cameraSmoothing: 8
   cameraOffsetBounds: 0.5
-  blueprintInitialData: []
+  blueprintInitialData:
+  - type: 4
+    level: 0
