@@ -9,6 +9,7 @@ using StarSalvager.Missions;
 using StarSalvager.Utilities;
 using System.Linq;
 using StarSalvager.Audio;
+using StarSalvager.Cameras;
 using StarSalvager.Utilities.Analytics;
 
 namespace StarSalvager.AI
@@ -116,17 +117,21 @@ namespace StarSalvager.AI
             if (distance >= 100 * Constants.gridCellSize)
                 return;*/
 
-            Vector3 screenPoint = Camera.main.WorldToViewportPoint(transform.position);
-            bool onScreen = screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
-            if (!onScreen)
+            //Vector3 screenPoint = Camera.main.WorldToViewportPoint();
+            //bool onScreen = screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
+            if (!CameraController.IsPointInCameraRect(transform.position))
                 return;
 
             List<Vector2> fireLocations = GetFireDirection();
             foreach (Vector2 fireLocation in fireLocations)
             {
                 Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
-                    .CreateObject<Projectile>(m_enemyData.ProjectileType, fireLocation, "Player");
-                newProjectile.DamageAmount = m_enemyData.AttackDamage;
+                    .CreateObject<Projectile>(
+                        m_enemyData.ProjectileType,
+                        fireLocation,
+                        m_enemyData.AttackDamage,
+                        "Player");
+
                 newProjectile.transform.parent = LevelManager.Instance.gameObject.transform;
                 newProjectile.transform.position = transform.position;
                 if (m_enemyData.AddVelocityToProjectiles)
