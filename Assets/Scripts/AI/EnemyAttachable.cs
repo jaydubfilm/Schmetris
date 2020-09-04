@@ -381,8 +381,10 @@ namespace StarSalvager.AI
         //ICustomRecycle functions
         //============================================================================================================//
 
-        public void CustomRecycle(params object[] args)
+        public override void CustomRecycle(params object[] args)
         {
+            base.CustomRecycle(args);
+            
             _enemyDecoy = null;
             attachedBot = null;
             target = null;
