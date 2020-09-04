@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Wave_Remote_1_1
   m_EditorClassIdentifier: 
   StageRemoteData:
-  - m_stageDuration: 30
+  - m_stageDuration: 5
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
@@ -34,10 +34,22 @@ MonoBehaviour:
       m_density: 0.2
       m_rotation: 
     m_stageColumnGroupObstacleData: []
-  maxDrops: 6
+  maxDrops: 3
   RDSEndOfWaveLoot:
   - rdsData: 2
     type: 1
+    level: 0
+    probability: 0
+    isUniqueSpawn: 1
+    isAlwaysSpawn: 1
+  - rdsData: 2
+    type: 7
+    level: 1
+    probability: 0
+    isUniqueSpawn: 1
+    isAlwaysSpawn: 1
+  - rdsData: 2
+    type: 7
     level: 0
     probability: 0
     isUniqueSpawn: 1
