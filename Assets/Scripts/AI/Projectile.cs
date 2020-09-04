@@ -16,19 +16,7 @@ namespace StarSalvager.AI
         [NonSerialized]
         public ProjectileProfileData m_projectileData;
 
-        public float DamageAmount;
-
-        //============================================================================================================//
-
-        public void FlipSpriteX(bool state)
-        {
-            renderer.flipY = state;
-        }
-        
-        public void FlipSpriteY(bool state)
-        {
-            renderer.flipY = state;
-        }
+        public float DamageAmount { get; private set; }
         
         //============================================================================================================//
 
@@ -46,6 +34,16 @@ namespace StarSalvager.AI
 
             transform.position += (m_enemyVelocityModifier + m_travelDirectionNormalized * m_projectileData.ProjectileSpeed) * Time.deltaTime;
         }
+        
+        //============================================================================================================//
+
+        public void SetDamage(float damage)
+        {
+            DamageAmount = damage;
+        }
+        
+        //============================================================================================================//
+
 
         public void SetCollisionTag(string collisionTag)
         {
@@ -60,6 +58,18 @@ namespace StarSalvager.AI
             }
 
             Recycler.Recycle<Projectile>(this);
+        }
+
+        //====================================================================================================================//
+        
+        public void FlipSpriteX(bool state)
+        {
+            renderer.flipY = state;
+        }
+        
+        public void FlipSpriteY(bool state)
+        {
+            renderer.flipY = state;
         }
         
         //============================================================================================================//
