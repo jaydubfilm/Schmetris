@@ -8,6 +8,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using StarSalvager.Utilities.Extensions;
 
 namespace StarSalvager.UI.Scrapyard
 {
@@ -67,7 +68,7 @@ namespace StarSalvager.UI.Scrapyard
             this.data = data;
 
             titleText.text = data.name;
-            image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(data.partType).Sprites[data.level];
+            image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(data.partType).GetSprite(data.level);
         }
         
         //============================================================================================================//

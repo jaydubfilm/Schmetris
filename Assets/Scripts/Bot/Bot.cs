@@ -405,6 +405,12 @@ namespace StarSalvager
                 
             foreach (var attachedBlock in attachedBlocks)
             {
+                if (attachedBlock is ICustomRotate rotate)
+                {
+                    rotate.CustomRotate();
+                    continue;
+                }
+                
                 //attachedBlock.RotateSprite(MostRecentRotate);
                 attachedBlock.transform.localRotation = rot;
             }
@@ -509,9 +515,9 @@ namespace StarSalvager
                                 bit.Bounce(collisionPoint);
                             }
 
-                            //We don't want to move a row if it hit an enemy instead of a bit
-                            if (closestAttachable is EnemyAttachable)
-                                break;
+                            ////We don't want to move a row if it hit an enemy instead of a bit
+                            //if (closestAttachable is EnemyAttachable)
+                            //    break;
                             
                             //Try and shift collided row (Depending on direction)
                             var shift = TryShift(connectionDirection.Reflected(), closestAttachable);
@@ -1396,9 +1402,9 @@ namespace StarSalvager
                     }
                     
                     var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(shapeBits);
-                    
+
                     if (LevelManager.Instance != null)
-                        LevelManager.Instance.ObstacleManager.AddMovableToList(shape);
+                        LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(shape);
                     
                     if (delayedCollider)
                     {
@@ -1419,10 +1425,10 @@ namespace StarSalvager
                     bit.SetColliderActive(false);
                     bit.transform.parent = null;
                     bit.transform.rotation = Quaternion.identity;
-                    
+
                     if (LevelManager.Instance != null)
-                        LevelManager.Instance.ObstacleManager.AddMovableToList(bit);
-                    
+                        LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(bit);
+
                     bits.RemoveAt(0);
                 }
             }
@@ -1489,6 +1495,9 @@ namespace StarSalvager
         private void DetachBit(IAttachable attachable)
         {
             attachable.transform.parent = null;
+
+            if (LevelManager.Instance != null && attachable is IObstacle obstacle)
+                LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(obstacle);
 
             RemoveAttachable(attachable);
         }
@@ -1709,6 +1718,13 @@ namespace StarSalvager
             {
                 //Checks for floaters
                 CheckForDisconnects();
+
+                //Force all attached enemies whom have shifted to update their targets
+                foreach (var enemyAttachable in toShift.Select(x => x.Target).OfType<EnemyAttachable>())
+                {
+                    enemyAttachable.CheckUpdateTarget();
+                }
+
 
                 var comboCheckGroup = toShift.Select(x => x.Target).Where(x => attachedBlocks.Contains(x) && x is ICanCombo)
                     .OfType<ICanCombo>();

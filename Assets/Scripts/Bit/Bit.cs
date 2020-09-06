@@ -1,12 +1,15 @@
-﻿using Recycling;
+﻿using System;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
@@ -151,8 +154,8 @@ namespace StarSalvager
                     rotation *= -1;
                 }
 
-                Vector2 direction = (Vector2)transform.position - hitPoint;
-                direction.Normalize();
+                Vector2 rotDirection = (Vector2)transform.position - hitPoint;
+                rotDirection.Normalize();
                 /*if (direction != Vector2.up)
                 {
                     Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
@@ -160,18 +163,36 @@ namespace StarSalvager
                     direction += downVelocity;
                     direction.Normalize();
                 }*/
-                LevelManager.Instance.ObstacleManager.BounceObstacle(this, direction, rotation, true, true, true);
+                LevelManager.Instance.ObstacleManager.BounceObstacle(this, rotDirection, rotation, true, true, true);
                 AudioController.PlaySound(SOUND.BIT_BOUNCE);
                 return;
             }
 
-            if (Type == BIT_TYPE.BLACK)
-            {
-                bot.TryAddNewAttachable(this, DIRECTION.UP, hitPoint);
-                return;
-            }
+            
 
             var dir = (hitPoint - (Vector2)transform.position).ToVector2Int();
+            var direction = dir.ToDirection();
+            
+            if (Type == BIT_TYPE.BLACK)
+            {
+                //If the player moves sideways into this asteroid, push them away, and damage them, to give them a chance
+                switch (direction)
+                {
+                    case DIRECTION.LEFT:
+                    case DIRECTION.RIGHT:
+                        InputManager.Instance.ForceMove(direction);
+                        bot.TryHitAt(hitPoint, 10);
+                        break;
+                    case DIRECTION.UP:
+                    case DIRECTION.DOWN:
+                        bot.TryAddNewAttachable(this, DIRECTION.UP, hitPoint);
+                        break;
+                    //default:
+                    //    throw new ArgumentOutOfRangeException();
+                }             
+                
+                return;
+            }
 
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
             //return the direction to shoot the ray

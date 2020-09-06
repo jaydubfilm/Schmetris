@@ -70,7 +70,7 @@ namespace StarSalvager.ScriptableObjects
                 }
                 else if (data.MissionType == MISSION_EVENT_TYPE.FLIGHT_LENGTH)
                 {
-                    FlightLengthMission mission = new FlightLengthMission(data.FlightLength, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
+                    FlightLengthMission mission = new FlightLengthMission(data.FlightLength, data.MissionName, data.MissionDescription, data.GetMissionUnlockData());
                     missions.Add(mission);
                 }
             }

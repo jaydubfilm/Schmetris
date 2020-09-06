@@ -56,7 +56,7 @@ namespace StarSalvager
             foreach (var button in m_waveButtons)
             {
                 button.gameObject.SetActive(active);
-                if (Globals.DisableTestingFeatures || !Globals.AllowAccessToUnlockedLaterWaves)
+                if (Globals.DisableTestingFeatures && !Globals.AllowAccessToUnlockedLaterWaves)
                     button.Button.interactable = button.WaveNumber == 0 && PlayerPersistentData.PlayerData.CheckIfQualifies(SectorNumber, button.WaveNumber);
                 else
                     button.Button.interactable = PlayerPersistentData.PlayerData.CheckIfQualifies(SectorNumber, button.WaveNumber);

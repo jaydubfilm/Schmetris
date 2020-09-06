@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: Wave_Remote_1_1
   m_EditorClassIdentifier: 
   StageRemoteData:
-  - m_stageDuration: 5
+  - m_stageDuration: 30
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
-    m_stageEnemyData: []
+    m_stageEnemyData:
+    - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
+      m_enemyCount: 1
     m_stageType: 1
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
@@ -25,13 +27,31 @@ MonoBehaviour:
       m_shapeName: 
       m_category: 
       m_asteroidSize: 0
-      m_density: 0.4
+      m_density: 0.2
+      m_rotation: 
+    - m_selectionType: 1
+      m_shapeName: Small1
+      m_category: Small
+      m_asteroidSize: 0
+      m_density: 0.2
       m_rotation: 
     m_stageColumnGroupObstacleData: []
-  maxDrops: 6
+  maxDrops: 3
   RDSEndOfWaveLoot:
   - rdsData: 2
     type: 1
+    level: 0
+    probability: 0
+    isUniqueSpawn: 1
+    isAlwaysSpawn: 1
+  - rdsData: 2
+    type: 7
+    level: 1
+    probability: 0
+    isUniqueSpawn: 1
+    isAlwaysSpawn: 1
+  - rdsData: 2
+    type: 7
     level: 0
     probability: 0
     isUniqueSpawn: 1

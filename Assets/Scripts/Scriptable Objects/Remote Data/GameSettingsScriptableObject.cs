@@ -12,9 +12,13 @@ namespace StarSalvager.ScriptableObjects
         public bool allowAccessToUnlockedLaterWaves = true;
         public bool disableTestingFeatures = false;
         public bool bitsPushThroughParts = false;
+        
+        [DisableInPlayMode]
         public int gridWidth = 300;
         public float timeForAsteroidToFallOneSquare = 0.25f;
         public float DASTime = 0.15f;
+
+        [DisableInPlayMode]
         public float gridHeightRelativeToScreen = 1.25f;
         public float obstacleMass = 2.0f;
         public float obstacleDensityReductionModifier = 5.0f;
@@ -23,7 +27,7 @@ namespace StarSalvager.ScriptableObjects
 
         public bool cameraUseInputMotion = true;
         [ShowIf("cameraUseInputMotion", true)]
-        public float cameraSmoothing = 8.0f;
+        public float cameraSmoothing = 4.0f;
         [ShowIf("cameraUseInputMotion", true)]
         public float cameraOffsetBounds = 0.5f;
 
