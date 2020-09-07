@@ -48,6 +48,8 @@ namespace StarSalvager
         public bool AddVelocityToProjectiles { get; }
 
         public float SpreadAngle { get; }
+        
+        public int Gears { get; }
 
         public float SprayCount => m_sprayCount;
 

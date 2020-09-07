@@ -380,6 +380,11 @@ namespace StarSalvager.AI
             
             if(CurrentHealth > 0)
                 AudioController.PlaySound(SOUND.ENEMY_IMPACT);
+
+            if (CurrentHealth <= 0)
+            {
+                //TODO Need to add the gears addition
+            }
             
         }
 

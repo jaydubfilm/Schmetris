@@ -60,16 +60,7 @@ namespace StarSalvager
 
         public bool isPaused => GameTimer.IsPaused;
 
-        public WorldGrid WorldGrid
-        {
-            get
-            {
-                if (m_worldGrid == null)
-                    m_worldGrid = new WorldGrid();
-
-                return m_worldGrid;
-            }
-        }
+        public WorldGrid WorldGrid => m_worldGrid ?? (m_worldGrid = new WorldGrid());
         private WorldGrid m_worldGrid;
 
         public AIObstacleAvoidance AIObstacleAvoidance
@@ -108,16 +99,7 @@ namespace StarSalvager
         }
         private ObstacleManager m_obstacleManager;
 
-        public ProjectileManager ProjectileManager
-        {
-            get
-            {
-                if (m_projectileManager == null)
-                    m_projectileManager = new ProjectileManager();
-
-                return m_projectileManager;
-            }
-        }
+        public ProjectileManager ProjectileManager => m_projectileManager ?? (m_projectileManager = new ProjectileManager());
         private ProjectileManager m_projectileManager;
 
         private GameUI GameUi

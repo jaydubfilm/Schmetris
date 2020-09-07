@@ -1959,11 +1959,10 @@ namespace StarSalvager
                 TEST_MergeSpeed,
                 () =>
                 {
-                    //var bit = closestToCore as Bit;
+                    //Waits till after combo finishes combining to add the points 
+                    PlayerPersistentData.PlayerData.ChangeGears(comboData.points);
 
                     //We need to update the positions and level before we move them in case we interact with bits while they're moving
-
-                    //bit.IncreaseLevel();
                     switch (iCanCombo)
                     {
                         case Bit bit:
