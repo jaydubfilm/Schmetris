@@ -4,6 +4,8 @@ namespace StarSalvager.Utilities.Animations
 {
     public class StateAnimator : SimpleAnimator
     {
+        public const string DEFAULT = "Default";
+        
         [SerializeField]
         private AnimationControllerScriptableObject animationController;
 

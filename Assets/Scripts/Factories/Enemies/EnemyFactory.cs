@@ -46,28 +46,6 @@ namespace StarSalvager.Factories
 
             EnemyData enemyData = new EnemyData(remoteData, profile);
 
-            /*EnemyData enemyData = new EnemyData(
-                remoteData.EnemyType,
-                remoteData.Name,
-                remoteData.Health,
-                remoteData.MovementSpeed,
-                profile.IsAttachable,
-                remoteData.AttackDamage,
-                remoteData.AttackSpeed,
-                profile.MovementType,
-                profile.AttackType,
-                profile.ProjectileType,
-                profile.Sprite,
-                profile.OscillationsPerSeconds,
-                profile.OscillationAngleRange,
-                profile.OrbitRadius,
-                profile.NumberCellsDescend,
-                profile.AddVelocityToProjectiles,
-                profile.SpreadAngle, 
-                profile.SprayCount,
-                remoteData.MinBitExplosionCount, 
-                remoteData.MaxBitExplosionCount);*/
-
             enemyDatas.Add(enemyData);
 
             return enemyData;
@@ -77,22 +55,16 @@ namespace StarSalvager.Factories
 
         public GameObject CreateEnemyDecoyObject()
         {
-            if (Recycler.TryGrab<EnemyDecoy>(out GameObject newObject))
-            {
-                return newObject;
-            }
-            
-            return Object.Instantiate(m_enemyProfile.m_enemyDecoy);
+            return Recycler.TryGrab<EnemyDecoy>(out GameObject newObject)
+                ? newObject
+                : Object.Instantiate(m_enemyProfile.m_enemyDecoy);
         }
         
         public EnemyDecoy CreateEnemyDecoy()
         {
-            if (Recycler.TryGrab(out EnemyDecoy newObject))
-            {
-                return newObject;
-            }
-            
-            return Object.Instantiate(m_enemyProfile.m_enemyDecoy).GetComponent<EnemyDecoy>();
+            return Recycler.TryGrab(out EnemyDecoy newObject)
+                ? newObject
+                : Object.Instantiate(m_enemyProfile.m_enemyDecoy).GetComponent<EnemyDecoy>();
         }
         
         //============================================================================================================//
@@ -133,9 +105,7 @@ namespace StarSalvager.Factories
 
             Enemy enemy = enemyData.IsAttachable ? CreateObject<EnemyAttachable>() : CreateObject<Enemy>();
             
-            enemy.m_enemyData = enemyData;
-            enemy.SetupHealthValues(enemyData.Health, enemyData.Health);
-            enemy.Init();
+            enemy.Init(enemyData);
 
             return enemy.GetComponent<T>();
         }

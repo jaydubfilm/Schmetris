@@ -1,9 +1,5 @@
 ﻿using Recycling;
 using Sirenix.OdinInspector;
-using StarSalvager.Factories;
-using StarSalvager.Utilities.Debugging;
-using StarSalvager.Utilities.Extensions;
-using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager
@@ -26,6 +22,8 @@ namespace StarSalvager
         //============================================================================================================//
         public COMPONENT_TYPE Type { get; set; }
 
+        public int level => 0;
+
         //IAttachable Properties
         //============================================================================================================//
         
@@ -33,10 +31,11 @@ namespace StarSalvager
         public Vector2Int Coordinate { get; set; }
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
-        public bool CountAsConnected => true;
+        public bool CountAsConnectedToCore => true;
         public bool CanDisconnect => true;
         public bool CanShift => true;
-        
+        public bool CountTowardsMagnetism => true;
+
         //IAttachableFunctions
         //============================================================================================================//
         
@@ -55,6 +54,7 @@ namespace StarSalvager
         }
         
         //============================================================================================================//
+
 
     }
 }

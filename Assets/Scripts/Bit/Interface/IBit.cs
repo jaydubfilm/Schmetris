@@ -1,10 +1,9 @@
 ﻿namespace StarSalvager
 {
-    public interface IBit
+    public interface IBit : ILevel
     {
         BIT_TYPE Type { get; set; }
 
-        int level { get; }
     }
 }
 

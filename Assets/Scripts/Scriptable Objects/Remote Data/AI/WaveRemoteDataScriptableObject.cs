@@ -29,7 +29,7 @@ namespace StarSalvager.ScriptableObjects
                 {
                     BlockData bitBlockData = new BlockData
                     {
-                        ClassType = "Bit",
+                        ClassType = nameof(Bit),
                         Type = rdsData.type,
                         Level = rdsData.level
                     };
@@ -39,7 +39,7 @@ namespace StarSalvager.ScriptableObjects
                 {
                     BlockData componentBlockData = new BlockData
                     {
-                        ClassType = "Component",
+                        ClassType= nameof(Component),
                         Type = rdsData.type,
                     };
                     rdsTable.AddEntry(new RDSValue<BlockData>(componentBlockData, rdsData.probability, rdsData.isUniqueSpawn, rdsData.isAlwaysSpawn, true));

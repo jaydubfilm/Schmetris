@@ -35,8 +35,9 @@ namespace StarSalvager
 
         private float m_distanceHorizontal = 0.0f;
 
-        private GameObject m_worldElementsRoot;
-        public GameObject WorldElementsRoot => m_worldElementsRoot;
+        public Transform WorldElementsRoot => m_worldElementsRoot;
+        private Transform m_worldElementsRoot;
+
 
         public bool isPaused => GameTimer.IsPaused;
 
@@ -54,6 +55,9 @@ namespace StarSalvager
             }
         }
 
+        //Unity Functions
+        //====================================================================================================================//
+        
         // Start is called before the first frame update
         private void Start()
         {
@@ -61,8 +65,8 @@ namespace StarSalvager
             m_notFullyInGridShapes = new List<Shape>();
             m_offGridMovingObstacles = new List<OffGridMovement>();
             RegisterPausable();
-            m_worldElementsRoot = new GameObject("WorldElementRoot");
-            SceneManager.MoveGameObjectToScene(m_worldElementsRoot, gameObject.scene);
+            m_worldElementsRoot = new GameObject("WorldElementRoot").transform;
+            SceneManager.MoveGameObjectToScene(m_worldElementsRoot.gameObject, gameObject.scene);
 
             SetupStage(0);
 
@@ -104,6 +108,8 @@ namespace StarSalvager
             //Set the movement direction 
             Globals.MovingDirection = Mathf.Abs(m_distanceHorizontal) <= 0.2f ? DIRECTION.NULL: m_distanceHorizontal.GetHorizontalDirection();
         }
+
+        //====================================================================================================================//
 
         public void Activate()
         {
@@ -157,6 +163,8 @@ namespace StarSalvager
             }
         }
 
+        //====================================================================================================================//
+        
         private void HandleObstacleMovement()
         {
             Vector3 amountShift = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
@@ -170,9 +178,9 @@ namespace StarSalvager
                     float toMove = Mathf.Min(m_distanceHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
                     m_distanceHorizontal -= toMove;
 
-                    if (m_worldElementsRoot.transform.position.x > -0.5f * Constants.gridCellSize * Globals.GridSizeX)
+                    if (m_worldElementsRoot.position.x > -0.5f * Constants.gridCellSize * Globals.GridSizeX)
                     {
-                        m_worldElementsRoot.transform.position += Vector3.left * toMove;
+                        m_worldElementsRoot.position += Vector3.left * toMove;
                         LevelManager.Instance.CameraController.MoveCameraWithObstacles(Vector3.left * toMove);
                     }
                 }
@@ -180,9 +188,9 @@ namespace StarSalvager
                 {
                     float toMove = Mathf.Min(Mathf.Abs(m_distanceHorizontal), Globals.BotHorizontalSpeed * Time.deltaTime);
                     m_distanceHorizontal += toMove;
-                    if (m_worldElementsRoot.transform.position.x < 0.5f * Constants.gridCellSize * Globals.GridSizeX)
+                    if (m_worldElementsRoot.position.x < 0.5f * Constants.gridCellSize * Globals.GridSizeX)
                     {
-                        m_worldElementsRoot.transform.position += Vector3.right * toMove;
+                        m_worldElementsRoot.position += Vector3.right * toMove;
                         LevelManager.Instance.CameraController.MoveCameraWithObstacles(Vector3.right * toMove);
                     }
                 }
@@ -314,6 +322,8 @@ namespace StarSalvager
             }
         }
 
+        //====================================================================================================================//
+        
         public void MoveToNewWave()
         {
             SetupStage(0);
@@ -375,6 +385,11 @@ namespace StarSalvager
         }
         
         //================================================================================================================//
+
+        public void AddTransformToRoot(Transform toReParent)
+        {
+            toReParent.SetParent(m_worldElementsRoot, true);
+        }
 
         public void SpawnNewRowOfObstacles()
         {
@@ -622,7 +637,7 @@ namespace StarSalvager
         private void PlaceMovableOnGrid(IObstacle movable, Vector2 gridRegion, int radius = 0)
         {
             Vector2 position = LevelManager.Instance.WorldGrid.GetLocalPositionOfRandomTopGridSquareInGridRegion(Constants.enemyGridScanRadius, gridRegion);
-            movable.transform.parent = m_worldElementsRoot.transform;
+            movable.transform.parent = m_worldElementsRoot;
             movable.transform.localPosition = position;
             switch (movable)
             {
@@ -649,7 +664,7 @@ namespace StarSalvager
 
         private void PlaceMovableOnGridSpecific(IObstacle movable, Vector2 position, int radius = 0)
         {
-            movable.transform.parent = m_worldElementsRoot.transform;
+            movable.transform.parent = m_worldElementsRoot;
             movable.transform.localPosition = position;
             switch (movable)
             {
@@ -671,7 +686,9 @@ namespace StarSalvager
         {
             m_obstacles.Remove(bit);
             Vector2 destination = (Vector2)bit.transform.localPosition + direction * m_bounceTravelDistance;
-            PlaceMovableOffGrid(bit, bit.transform.localPosition, destination, Vector2.Distance(bit.transform.localPosition, destination) / (m_bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
+            PlaceMovableOffGrid(bit, bit.transform.localPosition, destination,
+                Vector2.Distance(bit.transform.localPosition, destination) /
+                (m_bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
         }
 
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector2 startingPosition, Vector2Int gridEndPosition, float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false)
@@ -683,7 +700,7 @@ namespace StarSalvager
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector2 startingPosition, Vector2 endPosition, float lerpSpeed, float spinSpeed, bool despawnOnEnd, bool spinning, bool arc)
         {
             obstacle.SetColliderActive(false);
-            obstacle.transform.parent = m_worldElementsRoot.transform;
+            obstacle.transform.parent = m_worldElementsRoot;
             obstacle.transform.localPosition = startingPosition;
 
             if (!arc)
