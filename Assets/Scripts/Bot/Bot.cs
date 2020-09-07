@@ -878,6 +878,35 @@ namespace StarSalvager
         [SerializeField, BoxGroup("PROTOTYPE")]
         public bool PROTO_GodMode;
 
+        /// <summary>
+        /// Decides if the Attachable closest to the hit position should be destroyed or damaged on the bounce
+        /// </summary>
+        /// <param name="hitPosition"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public void TryBounceAt(Vector2 hitPosition)
+        {
+            if(LevelManager.Instance.EndWaveState)
+                return;
+            
+            var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
+
+            switch (closestAttachable)
+            {
+                case EnemyAttachable _:
+                    AsteroidDamageAt(closestAttachable);
+                    break;
+                case Bit _:
+                case Component _:
+                case Part _:
+                    TryHitAt(closestAttachable, 10f);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(closestAttachable), closestAttachable, null);
+            }
+            
+            TryHitAt(hitPosition, 10);
+        }
+
         public void TryHitAt(Vector2 hitPosition, float damage)
         {
             SessionDataProcessor.Instance.ReceivedDamage(damage);

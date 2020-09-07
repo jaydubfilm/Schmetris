@@ -183,7 +183,7 @@ namespace StarSalvager
                     case DIRECTION.LEFT:
                     case DIRECTION.RIGHT:
                         InputManager.Instance.ForceMove(direction);
-                        bot.TryHitAt(hitPoint, 10);
+                        bot.TryBounceAt(hitPoint);
                         break;
                     case DIRECTION.UP:
                     case DIRECTION.DOWN:
