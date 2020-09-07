@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
@@ -21,6 +22,9 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private GameObject costWindowObject;
+
+        private CanvasGroup costWindowCanvasGroup;
+        private VerticalLayoutGroup costWindowVerticalLayoutGroup;
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private CostUIElementScrollView costView;
@@ -66,7 +70,9 @@ namespace StarSalvager.UI.Scrapyard
         {
             storageUi = FindObjectOfType<StorageUI>();
 
-            costWindowObject.SetActive(false);
+            //costWindowObject.SetActive(false);
+            costWindowVerticalLayoutGroup = costWindowObject.GetComponent<VerticalLayoutGroup>();
+            costWindowCanvasGroup = costWindowObject.GetComponent<CanvasGroup>();
 
             InitButtons();
 
@@ -82,6 +88,8 @@ namespace StarSalvager.UI.Scrapyard
 
             blueprintsContentScrollView.ClearElements<BlueprintUIElement>();
             InitUIScrollView();
+            
+            costWindowObject.SetActive(false);
 
         }
 
@@ -245,7 +253,9 @@ namespace StarSalvager.UI.Scrapyard
         {
             costWindowObject.SetActive(showWindow);
 
-            
+
+            costWindowVerticalLayoutGroup.enabled = false;
+            costWindowCanvasGroup.alpha = 0;
 
             if (!showWindow)
             {
@@ -258,16 +268,31 @@ namespace StarSalvager.UI.Scrapyard
 
             lastBlueprint = blueprint;
 
-            var windowTransform = costWindowObject.transform as RectTransform;
-
-            windowTransform.position = buttonTransform.position/* +
-                                       Vector3.left *
-                                       (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f)*/;
-            
-            windowTransform.localPosition += Vector3.left * (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f);
-            
-
             UpdateCostUI();
+
+            //FIXME This is just a temp setup to ensure the functionality
+            StartCoroutine(TestCoroutine(buttonTransform));
+
+            /*Canvas.ForceUpdateCanvases();
+            costWindowVerticalLayoutGroup.enabled = true;
+            
+            var windowTransform = costWindowObject.transform as RectTransform;
+            windowTransform.position = buttonTransform.position;
+            windowTransform.localPosition += Vector3.left * (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f);*/
+        }
+
+        private IEnumerator TestCoroutine(RectTransform buttonTransform)
+        {
+            Canvas.ForceUpdateCanvases();
+            costWindowVerticalLayoutGroup.enabled = true;
+            
+            yield return new WaitForEndOfFrame();
+            
+            var windowTransform = costWindowObject.transform as RectTransform;
+            windowTransform.position = buttonTransform.position;
+            windowTransform.localPosition += Vector3.left * (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f);
+
+            costWindowCanvasGroup.alpha = 1;
         }
 
         private void UpdateCostUI()
