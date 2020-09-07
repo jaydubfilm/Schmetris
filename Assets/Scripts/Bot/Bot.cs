@@ -903,8 +903,6 @@ namespace StarSalvager
                 default:
                     throw new ArgumentOutOfRangeException(nameof(closestAttachable), closestAttachable, null);
             }
-            
-            TryHitAt(hitPosition, 10);
         }
 
         public void TryHitAt(Vector2 hitPosition, float damage)
