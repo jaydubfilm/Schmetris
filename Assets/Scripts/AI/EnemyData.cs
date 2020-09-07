@@ -59,38 +59,40 @@ namespace StarSalvager
 
         public EnemyData(EnemyRemoteData enemyRemoteData, EnemyProfileData enemyProfileData)
         {
-            EnemyType = enemyRemoteData.EnemyID;
-            Name = enemyRemoteData.Name;
-            Health = enemyRemoteData.Health;
-            MovementSpeed = enemyRemoteData.MovementSpeed;
-            IsAttachable = enemyProfileData.IsAttachable;
-            AttackDamage = enemyRemoteData.AttackDamage;
-            RateOfFire = enemyRemoteData.RateOfFire;
-            MovementType = enemyProfileData.MovementType;
-            AttackType = enemyProfileData.AttackType;
-            IgnoreObstacleAvoidance = enemyProfileData.IgnoreObstacleAvoidance;
-            ProjectileType = enemyProfileData.ProjectileType;
-            Sprite = enemyProfileData.Sprite;
-            AnimationController = enemyProfileData.AnimationController;
-            OscillationsPerSecond = enemyProfileData.OscillationsPerSeconds;
-            OscillationAngleRange = enemyProfileData.OscillationAngleRange;
-            OrbitRadius = enemyProfileData.OrbitRadius;
-            NumberCellsDescend = enemyProfileData.NumberCellsDescend;
-            AddVelocityToProjectiles = enemyProfileData.AddVelocityToProjectiles;
-            SpreadAngle = enemyProfileData.SpreadAngle;
-            m_sprayCount = enemyProfileData.SprayCount;
-            Dimensions = enemyRemoteData.Dimensions;
+            EnemyType                   = enemyRemoteData.EnemyID;
+            Name                        = enemyRemoteData.Name;
+            Health                      = enemyRemoteData.Health;
+            MovementSpeed               = enemyRemoteData.MovementSpeed;
+            IsAttachable                = enemyProfileData.IsAttachable;
+            AttackDamage                = enemyRemoteData.AttackDamage;
+            RateOfFire                  = enemyRemoteData.RateOfFire;
+            MovementType                = enemyProfileData.MovementType;
+            AttackType                  = enemyProfileData.AttackType;
+            IgnoreObstacleAvoidance     = enemyProfileData.IgnoreObstacleAvoidance;
+            ProjectileType              = enemyProfileData.ProjectileType;
+            Sprite                      = enemyProfileData.Sprite;
+            AnimationController         = enemyProfileData.AnimationController;
+            OscillationsPerSecond       = enemyProfileData.OscillationsPerSeconds;
+            OscillationAngleRange       = enemyProfileData.OscillationAngleRange;
+            OrbitRadius                 = enemyProfileData.OrbitRadius;
+            NumberCellsDescend          = enemyProfileData.NumberCellsDescend;
+            AddVelocityToProjectiles    = enemyProfileData.AddVelocityToProjectiles;
+            SpreadAngle                 = enemyProfileData.SpreadAngle;
+            m_sprayCount                = enemyProfileData.SprayCount;
+            Dimensions                  = enemyRemoteData.Dimensions;
 
 
-            rdsTable = new RDSTable();
-            rdsTable.rdsCount = enemyRemoteData.MaxDrops;
+            rdsTable = new RDSTable
+            {
+                rdsCount = enemyRemoteData.MaxDrops
+            };
             foreach (var rdsData in enemyRemoteData.rdsEnemyData)
             {
                 if (rdsData.rdsData == RDSLootData.TYPE.Bit)
                 {
                     BlockData bitBlockData = new BlockData
                     {
-                        ClassType = "Bit",
+                        ClassType = nameof(Bit),
                         Type = rdsData.type,
                         Level = rdsData.level
                     };
@@ -100,7 +102,7 @@ namespace StarSalvager
                 {
                     BlockData componentBlockData = new BlockData
                     {
-                        ClassType = "Component",
+                        ClassType = nameof(Component),
                         Type = rdsData.type,
                     };
                     rdsTable.AddEntry(new RDSValue<BlockData>(componentBlockData, rdsData.probability, rdsData.isUniqueSpawn, rdsData.isAlwaysSpawn, true));
@@ -118,7 +120,7 @@ namespace StarSalvager
             }
         }
 
-        public EnemyData(string enemyType, string name, int health, float movementSpeed, bool isAttachable,
+        /*public EnemyData(string enemyType, string name, int health, float movementSpeed, bool isAttachable,
             float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType,
             string projectileType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange,
             float orbitRadius, float numberCellsDescend, bool addVelocityToProjectiles, float spreadAngle,
@@ -142,6 +144,6 @@ namespace StarSalvager
             AddVelocityToProjectiles = addVelocityToProjectiles;
             SpreadAngle = spreadAngle;
             m_sprayCount = sprayCount;
-        }
+        }*/
     }
 }

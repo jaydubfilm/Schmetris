@@ -1648,7 +1648,6 @@ namespace StarSalvager
                 case DIRECTION.DOWN:
                     inLine = attachedBlocks.Where(ab => ab.Coordinate.x == attachable.Coordinate.x).ToList();
                     break;
-                case DIRECTION.NULL:
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
@@ -1712,19 +1711,18 @@ namespace StarSalvager
             MissionManager.ProcessWhiteBumperMissionData(toShift.Count, passedCore);
             
             StartCoroutine(ShiftInDirectionCoroutine(toShift, 
-                /*direction,*/
                 TEST_MergeSpeed,
                 () =>
             {
+                //TODO May want to consider that Enemies may still attack while being shifted
+                //This needs to happen before checking for disconnects because otherwise attached will be set to false
+                foreach (var wasBumped in toShift.Select(x => x.Target).OfType<IWasBumped>())
+                {
+                    wasBumped.OnBumped();
+                }
+                
                 //Checks for floaters
                 CheckForDisconnects();
-
-                //Force all attached enemies whom have shifted to update their targets
-                foreach (var enemyAttachable in toShift.Select(x => x.Target).OfType<EnemyAttachable>())
-                {
-                    enemyAttachable.CheckUpdateTarget();
-                }
-
 
                 var comboCheckGroup = toShift.Select(x => x.Target).Where(x => attachedBlocks.Contains(x) && x is ICanCombo)
                     .OfType<ICanCombo>();

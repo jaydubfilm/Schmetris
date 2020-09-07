@@ -75,6 +75,13 @@ namespace StarSalvager.Utilities.Animations
             
             _playing = true;
         }
+        //[Button, HorizontalGroup("Row1"), DisableInEditorMode, EnableIf("_playing")]
+        public void Pause()
+        {
+            _playing = false;
+            //_t = 0f;
+            //targetRenderer.sprite = null;
+        }
         [Button, HorizontalGroup("Row1"), DisableInEditorMode, EnableIf("_playing")]
         public void Stop()
         {
@@ -86,9 +93,13 @@ namespace StarSalvager.Utilities.Animations
         public void SetAnimation(AnimationScriptableObject animation)
         {
             this.animation = animation;
-            
-            if(playOnAwake && this.animation != null)
+            _t = 0f;
+
+            if (playOnAwake && this.animation != null)
+            {
                 _playing = true;
+                targetRenderer.sprite = animation.GetFrame(0);
+            }
         }
 
         //============================================================================================================//

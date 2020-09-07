@@ -5,13 +5,11 @@ using UnityEngine;
 using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.AI;
-using System.Linq;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Inputs;
 using Random = UnityEngine.Random;
 using Recycling;
 using StarSalvager.Cameras;
-using StarSalvager.Missions;
 
 namespace StarSalvager
 {
@@ -101,6 +99,7 @@ namespace StarSalvager
         private void HandleEnemyMovement()
         {
             Vector3 gridMovement = Vector3.zero;
+            Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
             
             /*if (m_distanceHorizontal != 0)
             {
@@ -118,31 +117,25 @@ namespace StarSalvager
                 }
             }*/
 
-            if (m_enemiesInert)
-            {
-                gridMovement += Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
-            }
 
             //Iterate through all agents, and for each one, add the forces from nearby obstacles to their current direction vector
             //After adding the forces, normalize and multiply by the velocity to ensure consistent speed
             for (int i = 0; i < m_enemies.Count; i++)
             {
-                if (m_enemies[i] is EnemyAttachable enemyAttachable)
+                if (m_enemies[i] is EnemyAttachable enemyAttachable && enemyAttachable.Attached)
                 {
-                    if (enemyAttachable.Attached)
-                    {
-                        continue;
-                    }
+                    continue;
                 }
 
                 //TODO: This process shouldn't be straight summing and averaging the different forces on different parts. 
                 //We should be selecting for the strongest forces and using those in any given direction, otherwise, the strong forces on one position can be dampened by the weaker on others.
-                m_enemies[i].transform.position -= gridMovement;
-
-                if (m_enemiesInert)
+                if (m_enemiesInert || m_enemies[i].Disabled)
                 {
+                    m_enemies[i].transform.position -= fallAmount;
                     continue;
                 }
+                
+                m_enemies[i].transform.position -= gridMovement;
 
                 Vector3 destination = m_enemies[i].GetDestination();
                 Vector2 sumDirection = Vector2.zero;
@@ -150,9 +143,9 @@ namespace StarSalvager
                 {
                     Vector2 direction = new Vector2(destination.x - position.x, destination.y - position.y);
                     direction.Normalize();
-                    if (!m_enemies[i].m_enemyData.IgnoreObstacleAvoidance)
+                    if (!m_enemies[i].IgnoreObstacleAvoidance)
                     {
-                        Vector2 force = LevelManager.Instance.AIObstacleAvoidance.CalculateForceAtPoint(position, m_enemies[i].m_enemyData.IsAttachable);
+                        Vector2 force = LevelManager.Instance.AIObstacleAvoidance.CalculateForceAtPoint(position, m_enemies[i].IsAttachable);
                         direction += force;
                     }
                     sumDirection += direction;
@@ -229,7 +222,7 @@ namespace StarSalvager
             Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(enemyType);
             m_enemies.Add(newEnemy);
             newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
-            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.m_enemyData.MovementType);
+            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.MovementType);
         }
         
         public void AddEnemy(Enemy newEnemy)
@@ -238,13 +231,18 @@ namespace StarSalvager
                 return;
             
             m_enemies.Add(newEnemy);
-            newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
-            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.m_enemyData.MovementType);
+            ReParentEnemy(newEnemy);
+            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.MovementType);
         }
 
         public bool HasEnemiesRemaining()
         {
             return m_enemies.Count != 0;
+        }
+
+        public void ReParentEnemy(Enemy enemy)
+        {
+            LevelManager.Instance.ObstacleManager.AddTransformToRoot(enemy.transform);
         }
 
         //IMoveOnInput
