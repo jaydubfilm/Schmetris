@@ -271,7 +271,7 @@ namespace StarSalvager.UI.Scrapyard
             UpdateCostUI();
 
             //FIXME This is just a temp setup to ensure the functionality
-            StartCoroutine(TestCoroutine(buttonTransform));
+            StartCoroutine(ResizeRepositionCostWindowCoroutine(buttonTransform));
 
             /*Canvas.ForceUpdateCanvases();
             costWindowVerticalLayoutGroup.enabled = true;
@@ -281,7 +281,7 @@ namespace StarSalvager.UI.Scrapyard
             windowTransform.localPosition += Vector3.left * (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f);*/
         }
 
-        private IEnumerator TestCoroutine(RectTransform buttonTransform)
+        private IEnumerator ResizeRepositionCostWindowCoroutine(RectTransform buttonTransform)
         {
             Canvas.ForceUpdateCanvases();
             costWindowVerticalLayoutGroup.enabled = true;

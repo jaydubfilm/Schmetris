@@ -2843,6 +2843,8 @@ namespace StarSalvager
             var transforms = new Transform[count];
             var startPositions = new Vector3[count];
             var targetPositions = new Vector3[count];
+            
+            var skipsCoordinate = new bool[count];
 
             for (var i = 0; i < count; i++)
             {
@@ -2852,6 +2854,15 @@ namespace StarSalvager
                 targetPositions[i] = transform.InverseTransformPoint((Vector2) transform.position +
                                                                      (Vector2)toMove[i].TargetCoordinate *
                                                                      Constants.gridCellSize);
+
+                var distance = System.Math.Round(Vector2.Distance(startPositions[i], targetPositions[i]), 2);
+                skipsCoordinate[i] = distance > Constants.gridCellSize;
+
+                if (skipsCoordinate[i])
+                {
+                    var spriteRenderer = toMove[i].Target.gameObject.GetComponent<SpriteRenderer>();
+                    spriteRenderer.enabled = false;
+                }
             }
 
             foreach (var shiftData in toMove)
@@ -2883,6 +2894,12 @@ namespace StarSalvager
             {
                 transforms[i].localPosition = targetPositions[i];
                 (toMove[i].Target as CollidableBase)?.SetColliderActive(true);
+
+                if (skipsCoordinate[i])
+                {
+                    var spriteRenderer = toMove[i].Target.gameObject.GetComponent<SpriteRenderer>();
+                    spriteRenderer.enabled = true;
+                }
             }
             
             OnFinishedCallback?.Invoke();
