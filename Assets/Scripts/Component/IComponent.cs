@@ -1,7 +1,7 @@
 ﻿
 namespace StarSalvager
 {
-    public interface IComponent
+    public interface IComponent: ILevel
     {
         COMPONENT_TYPE Type { get; set; }
     }

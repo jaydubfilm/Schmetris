@@ -22,9 +22,10 @@ namespace StarSalvager.AI
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
 
-        public bool CountAsConnected => false;
+        public bool CountAsConnectedToCore => false;
         public bool CanDisconnect => true;
         public bool CanShift => true;
+        public bool CountTowardsMagnetism => false;
 
         //EnemyAttachable Properties
         //============================================================================================================//

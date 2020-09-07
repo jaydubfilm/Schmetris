@@ -40,11 +40,13 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
 
-        public bool CountAsConnected => true;
+        public bool CountAsConnectedToCore => true;
         public bool CanDisconnect => false;
 
         [ShowInInspector, ReadOnly]
         public bool CanShift => false;
+
+        public bool CountTowardsMagnetism => false;
 
         //Part Properties
         //============================================================================================================//

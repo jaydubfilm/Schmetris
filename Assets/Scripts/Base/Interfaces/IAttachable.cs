@@ -9,9 +9,11 @@ namespace StarSalvager
         GameObject gameObject { get; }
 
         bool Attached { get; set; }
-        bool CountAsConnected { get; }
+        bool CountAsConnectedToCore { get; }
         bool CanDisconnect { get; }
         bool CanShift { get; }
+
+        bool CountTowardsMagnetism { get; }
 
         void SetAttached(bool isAttached);
     }
