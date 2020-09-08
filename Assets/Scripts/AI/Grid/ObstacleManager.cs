@@ -42,6 +42,8 @@ namespace StarSalvager
         public float m_bonusShapeTimer = 0.0f;
         public int m_bonusShapesSpawned = 0;
 
+        public List<Shape> ActiveBonusShapes => m_bonusShapes;
+
         public bool isPaused => GameTimer.IsPaused;
 
         public bool HasNoActiveObstacles
@@ -114,7 +116,6 @@ namespace StarSalvager
                 m_bonusShapeTimer += Time.deltaTime;
                 if (m_bonusShapeTimer >= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency)
                 {
-                    print("MAKE BONUS SHAPE");
                     m_bonusShapeTimer -= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency;
                     StageObstacleData bonusShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
                     SpawnBonusShape(bonusShapeData.SelectionType, bonusShapeData.ShapeName, bonusShapeData.Category, bonusShapeData.Rotation());
@@ -243,6 +244,10 @@ namespace StarSalvager
                             }
                             break;
                         case Shape shape:
+                            if (m_bonusShapes.Contains(shape))
+                            {
+                                m_bonusShapes.Remove(shape);
+                            }
                             if (m_offGridMovingObstacles[i].DespawnOnEnd)
                             {
                                 Recycler.Recycle<Shape>(shape);
@@ -752,10 +757,10 @@ namespace StarSalvager
 
             float screenOffset = Globals.ColumnsOnScreen * Constants.gridCellSize * 0.6f;
             //float height = Camera.main.orthographicSize * 0.5f;
-            float height = Constants.gridCellSize * 10.0f;
+            float height = Constants.gridCellSize * Random.Range(8.0f, 12.0f);
 
-            Vector3 startingPosition = new Vector3(screenOffset * tryFlipSides, height, 10);
-            Vector3 endPosition = new Vector3(screenOffset * -tryFlipSides, height, 10);
+            Vector3 startingPosition = new Vector3(screenOffset * tryFlipSides, height, 11);
+            Vector3 endPosition = new Vector3(screenOffset * -tryFlipSides, height, 11);
 
             obstacle.SetColliderActive(false);
             obstacle.transform.parent = LevelManager.Instance.CameraController.transform;
