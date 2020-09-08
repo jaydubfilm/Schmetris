@@ -16,9 +16,8 @@ namespace StarSalvager.Cameras
         //============================================================================================================//
         
         private Vector3 startPos;
-        private Vector3 edgePos;
-        private Vector3 targetPos;
-        private float horzExtent;
+        private Vector3 beginningLerpPos;
+        private float lerpValue = 0.0f;
 
         //============================================================================================================//
 
@@ -76,8 +75,9 @@ namespace StarSalvager.Cameras
                 transform.position.x > Globals.CameraOffsetBounds ||
                 transform.position.x < -Globals.CameraOffsetBounds))
             {
-                transform.position = Vector3.Lerp(transform.position, startPos, Globals.CameraSmoothing * Time.deltaTime);
-                if (Vector3.Distance(transform.position, startPos) < 0.05f)
+                lerpValue = Mathf.Min(1.0f, lerpValue + Globals.CameraSmoothing * Time.deltaTime);
+                transform.position = Vector3.Lerp(beginningLerpPos, startPos, Mathf.SmoothStep(0.0f, 1.0f, lerpValue));
+                if (lerpValue == 1.0f)
                 {
                     transform.position = startPos;
                 }
@@ -151,8 +151,8 @@ namespace StarSalvager.Cameras
             CameraOffset(botPosition, false);
 
             startPos = transform.position;
-            targetPos = startPos;
-            horzExtent = orthographicSize * Screen.width / Screen.height / 2;
+            //targetPos = startPos;
+            //horzExtent = orthographicSize * Screen.width / Screen.height / 2;
 
             UpdateRect();
         }
@@ -232,6 +232,12 @@ namespace StarSalvager.Cameras
         {
             if (!Globals.CameraUseInputMotion)
                 return;
+
+            if (direction == 0)
+            {
+                beginningLerpPos = transform.position;
+                lerpValue = 0.0f;
+            }
             
             /*m_currentInput = direction;
             
