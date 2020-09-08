@@ -17,9 +17,10 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
 
-        public bool CountAsConnected => true;
+        public bool CountAsConnectedToCore => true;
         public bool CanDisconnect => false;
         public bool CanShift => false;
+        public bool CountTowardsMagnetism => false;
 
         //IHealth Properties
         //============================================================================================================//
@@ -112,9 +113,12 @@ namespace StarSalvager
         public void CustomRecycle(params object[] args)
         {
             SetColor(Color.white);
+
+            if (!_damage) 
+                return;
             
-            if(_damage)
-                Recycler.Recycle<Damage>(_damage);
+            Recycler.Recycle<Damage>(_damage);
+            _damage = null;
         }
     }
 }

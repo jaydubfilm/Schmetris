@@ -1,7 +1,6 @@
 ﻿using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
-using StarSalvager.Prototype;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -44,10 +43,11 @@ namespace StarSalvager
         public Vector2Int Coordinate { get; set; }
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
-        public bool CountAsConnected => true;
+        public bool CountAsConnectedToCore => true;
         public bool CanDisconnect => true;
         public bool CanShift => true;
-        
+        public bool CountTowardsMagnetism => true;
+
         //IHealth Properties
         //============================================================================================================//
         public float StartingHealth { get; private set; }

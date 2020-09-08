@@ -62,9 +62,9 @@ namespace StarSalvager.Utilities.Extensions
             var blockDatas = new List<BlockData>();
             
             var attachables = new List<IAttachable>(bot.attachedBlocks);
-            var ignoreAttachables = bot.BitsPendingDetach == null
+            var ignoreAttachables = bot.PendingDetach == null
                 ? new List<IAttachable>()
-                : new List<IAttachable>(bot.BitsPendingDetach);
+                : new List<IAttachable>(bot.PendingDetach);
 
             foreach (var attachable in attachables.Where(attachable => !ignoreAttachables.Contains(attachable)))
             {
