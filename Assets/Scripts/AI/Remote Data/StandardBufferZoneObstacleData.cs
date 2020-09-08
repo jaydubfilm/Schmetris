@@ -19,17 +19,25 @@ namespace StarSalvager.AI
         public List<StageObstacleData> BufferObstacleData => m_bufferObstacleData;
         public List<StageObstacleData> WallObstacleData => m_wallObstacleData;
 
-
+        [NonSerialized]
         private float m_centerColumnWidth = 0.0f;
-
+        [NonSerialized]
         private Vector2 m_centerColumnFieldRange;
+        [NonSerialized]
         private Vector2 m_wallFieldLeft = new Vector2(0, 0.02f);
-        private Vector2 m_wallFieldRight = new Vector2(0, 0.02f);
+        [NonSerialized]
+        private Vector2 m_wallFieldRight = new Vector2(0.98f, 1.0f);
+        [NonSerialized]
         private Vector2 m_bufferFieldLeft;
+        [NonSerialized]
         private Vector2 m_bufferFieldRight;
+        [NonSerialized]
         private Vector2 m_blendFieldLeft;
+        [NonSerialized]
         private Vector2 m_blendFieldRight;
+        [NonSerialized]
         private Vector2 m_wallBlendFieldLeft;
+        [NonSerialized]
         private Vector2 m_wallBlendFieldRight;
 
         /*public Vector2 CenterColumnFieldRange => m_centerColumnFieldRange;
@@ -56,6 +64,13 @@ namespace StarSalvager.AI
                 m_blendFieldRight = new Vector2(m_centerColumnFieldRange.y, m_bufferFieldRight.x);
                 m_wallBlendFieldLeft = new Vector2(m_wallFieldLeft.y, m_bufferFieldLeft.x);
                 m_wallBlendFieldRight = new Vector2(m_bufferFieldRight.y, m_wallFieldRight.x);
+                Debug.Log("IMOO");
+                Debug.Log(m_bufferFieldLeft.x + " / " + m_bufferFieldLeft.y + " -- BufferFieldLeft");
+                Debug.Log(m_bufferFieldRight.x + " / " + m_bufferFieldRight.y + " -- BufferFieldRight");
+                Debug.Log(m_blendFieldLeft.x + " / " + m_blendFieldLeft.y + " -- BlendFieldLeft");
+                Debug.Log(m_blendFieldRight.x + " / " + m_blendFieldRight.y + " -- BlendFieldRight");
+                Debug.Log(m_wallBlendFieldLeft.x + " / " + m_wallBlendFieldLeft.y + " -- WallBlendFieldLeft");
+                Debug.Log(m_wallBlendFieldRight.x + " / " + m_wallBlendFieldRight.y + " -- WallBlendFieldRight");
             }
 
             obstacleManager.SpawnObstacleData(stageRemoteData.StageObstacleData, m_centerColumnFieldRange, stageRemoteData.SpawningObstacleMultiplier, isPrevious);

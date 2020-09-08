@@ -25,7 +25,6 @@ namespace StarSalvager.Values
         public static int CurrentWave = 0;
         public static bool SectorComplete = false;
         public static Action<ORIENTATION> OrientationChange;
-        public static int GridSizeX;
         public static int GridSizeY;
 
 
@@ -43,7 +42,7 @@ namespace StarSalvager.Values
         public static bool CameraUseInputMotion => m_gameSettings.cameraUseInputMotion;
         public static float CameraSmoothing => m_gameSettings.cameraSmoothing;
         public static float CameraOffsetBounds => Constants.gridCellSize * Globals.ColumnsOnScreen * m_gameSettings.cameraOffsetBounds / 2;
-        public static int GridWidth => m_gameSettings.gridWidth;
+        public static int GridSizeX => m_gameSettings.gridWidth;
         public static List<BlueprintInitialData> BlueprintInitialData => m_gameSettings.blueprintInitialData;
 
         //Values set by Game Settings - do not set values here
