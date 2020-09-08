@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public interface IPart: ILevel
+    public interface ILevel
     {
-        PART_TYPE Type { get; set; }
+        int level { get; }
     }
-}
 
+}

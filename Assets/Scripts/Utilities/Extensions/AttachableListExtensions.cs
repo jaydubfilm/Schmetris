@@ -60,7 +60,7 @@ namespace StarSalvager.Utilities.Extensions
                     continue;
                 }
 
-                if (attachablesAround[i].CountAsConnected == false)
+                if (attachablesAround[i].CountAsConnectedToCore == false)
                 {
                     attachablesAround[i] = null;
                     continue;
@@ -144,7 +144,7 @@ namespace StarSalvager.Utilities.Extensions
                     continue;
                 }
                 
-                if (attachablesAround[i].CountAsConnected == false)
+                if (attachablesAround[i].CountAsConnectedToCore == false)
                 {
                     attachablesAround[i] = null;
                     continue;
@@ -473,7 +473,7 @@ namespace StarSalvager.Utilities.Extensions
             return enumerable
                 .Where(a => a.gameObject.activeInHierarchy)
                 .OfType<T>()
-                .Where(a => a.CountAsConnected)
+                .Where(a => a.CountAsConnectedToCore)
                 .Where(a => InRadius(center, a.Coordinate, radius))
                 .ToList();
         }

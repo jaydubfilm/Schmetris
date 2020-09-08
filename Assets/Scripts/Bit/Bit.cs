@@ -29,12 +29,14 @@ namespace StarSalvager
         public int RotateDirection => _rotateDirection;
         private int _rotateDirection = 1;
 
-        public bool CountAsConnected => true;
+        public bool CountAsConnectedToCore => true;
         public bool CanDisconnect => true;
 
         [ShowInInspector, ReadOnly]
         public bool CanShift => true;
-        
+
+        public bool CountTowardsMagnetism => true;
+
         public IAttachable iAttachable => this;
 
         //IHealth Properties
@@ -181,7 +183,7 @@ namespace StarSalvager
                     case DIRECTION.LEFT:
                     case DIRECTION.RIGHT:
                         InputManager.Instance.ForceMove(direction);
-                        bot.TryHitAt(hitPoint, 10);
+                        bot.TryBounceAt(hitPoint);
                         break;
                     case DIRECTION.UP:
                     case DIRECTION.DOWN:

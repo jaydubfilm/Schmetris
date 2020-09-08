@@ -41,11 +41,13 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
 
-        public bool CountAsConnected => true;
+        public bool CountAsConnectedToCore => true;
         public bool CanDisconnect => true;
 
         [ShowInInspector, ReadOnly]
         public bool CanShift => true;
+
+        public bool CountTowardsMagnetism => true;
 
         //Bit Properties
         //============================================================================================================//

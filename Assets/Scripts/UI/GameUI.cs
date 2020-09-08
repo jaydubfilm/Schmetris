@@ -171,6 +171,9 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("BL Window")]
+        private TMP_Text levelText;
+        
+        [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderText fuelSlider;
 
         [SerializeField, Required, FoldoutGroup("BL Window")]
@@ -266,6 +269,7 @@ namespace StarSalvager.UI
             SetupPlayerValues();
 
             PlayerData.OnCapacitiesChanged += SetupPlayerValues;
+            PlayerData.OnValuesChanged += UpdatePlayerGearsLevel;
         }
 
         private void LateUpdate()
@@ -289,6 +293,7 @@ namespace StarSalvager.UI
         private void OnDisable()
         {
             PlayerData.OnCapacitiesChanged -= SetupPlayerValues;
+            PlayerData.OnValuesChanged -= UpdatePlayerGearsLevel;
         }
 
         //============================================================================================================//
@@ -310,6 +315,8 @@ namespace StarSalvager.UI
 
             SetClockValue(1f);
             SetTimeString("0:00");
+            
+            SetPlayerGearsLevel(0,0);
         }
 
         private void InitSliderText()
@@ -358,6 +365,8 @@ namespace StarSalvager.UI
             SetFuelValue(playerData.liquidResource[BIT_TYPE.RED]);
             SetRepairValue(playerData.liquidResource[BIT_TYPE.GREEN]);
             SetAmmoValue(playerData.liquidResource[BIT_TYPE.GREY]);
+
+            SetPlayerGearsLevel(playerData.Level, playerData.Gears);
         }
 
         //============================================================================================================//
@@ -382,6 +391,17 @@ namespace StarSalvager.UI
         }
 
         //============================================================================================================//
+
+        //TODO I should look into the NotifyPropertyChanged for setting up this functionality
+        private void UpdatePlayerGearsLevel()
+        {
+            SetPlayerGearsLevel(PlayerPersistentData.PlayerData.Level, PlayerPersistentData.PlayerData.Gears);
+        }
+        
+        public void SetPlayerGearsLevel(int playerLevel, int gears)
+        {
+            levelText.text = $"{gears} lvl {playerLevel}";
+        }
 
         public void SetAllResourceSliderBounds(int min, int max)
         {
