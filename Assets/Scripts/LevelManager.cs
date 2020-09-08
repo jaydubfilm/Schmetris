@@ -167,6 +167,7 @@ namespace StarSalvager
                     IsWaveProgressing = false;
                     m_levelManagerUI.UpdateLivesText();
                     m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
+                    ResetFromDeath = true;
                 }
                 else
                 {
@@ -365,6 +366,8 @@ namespace StarSalvager
             {
                 LiquidResourcesAttBeginningOfWave.Clear();
             }
+
+            ObstacleManager.WorldElementsRoot.transform.position = Vector3.zero;
 
             m_waveTimer = 0;
             m_levelTimer = 0;
