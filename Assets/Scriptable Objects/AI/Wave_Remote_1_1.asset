@@ -19,7 +19,7 @@ MonoBehaviour:
     m_stageEnemyData:
     - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
       m_enemyCount: 1
-    m_stageType: 1
+    m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
     m_stageObstacleData:

@@ -27,7 +27,7 @@ namespace StarSalvager.ScriptableObjects
 
         public bool cameraUseInputMotion = true;
         [ShowIf("cameraUseInputMotion", true)]
-        public float cameraSmoothing = 4.0f;
+        public float cameraSmoothing = 1.0f;
         [ShowIf("cameraUseInputMotion", true)]
         public float cameraOffsetBounds = 0.5f;
 

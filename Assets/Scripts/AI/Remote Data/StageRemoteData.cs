@@ -25,7 +25,7 @@ namespace StarSalvager.AI
         [SerializeField, ShowIf("m_stageType", STAGE_TYPE.STANDARD), Required, Range(0.0f, 1.0f)]
         private float m_centerChannelWidth = 0.5f;
         [ShowInInspector, ShowIf("m_stageType", STAGE_TYPE.STANDARD), DisplayAsString]
-        private string m_numColumns => (Globals.GridWidth * m_centerChannelWidth).ToString();
+        private string m_numColumns => (Globals.GridSizeX * m_centerChannelWidth).ToString();
         [SerializeField, HideIf("m_stageType", STAGE_TYPE.CUSTOM)]
         private List<StageObstacleData> m_stageObstacleData;
 

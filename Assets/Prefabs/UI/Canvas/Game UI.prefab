@@ -5619,6 +5619,7 @@ MonoBehaviour:
   sectorText: {fileID: 6911570991818720931}
   timeText: {fileID: 8924258879179884294}
   clockImage: {fileID: 6871274495945776635}
+  levelText: {fileID: 4275896384204888228}
   fuelSlider:
     sliderText: {fileID: 3023622809918278114}
     _slider: {fileID: 3498181361887163554}

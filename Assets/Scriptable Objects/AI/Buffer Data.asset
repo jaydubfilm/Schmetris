@@ -18,19 +18,19 @@ MonoBehaviour:
     m_shapeName: 
     m_category: 
     m_asteroidSize: 2
-    m_density: 0.1
+    m_density: 0.4
     m_rotation: Random
   - m_selectionType: 2
     m_shapeName: 
     m_category: 
     m_asteroidSize: 1
-    m_density: 0.1
+    m_density: 0.4
     m_rotation: Random
   - m_selectionType: 3
     m_shapeName: 
     m_category: 
     m_asteroidSize: 0
-    m_density: 0.1
+    m_density: 0.4
     m_rotation: 
   m_wallObstacleData:
   - m_selectionType: 2
