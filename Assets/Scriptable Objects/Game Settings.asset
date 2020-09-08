@@ -23,8 +23,9 @@ MonoBehaviour:
   obstacleDensityReductionModifier: 5
   botHorizontalSpeed: 30
   missionReminderFrequency: 25
+  bonusShapeSpeed: 12
   cameraUseInputMotion: 1
-  cameraSmoothing: 0
+  cameraSmoothing: 1
   cameraOffsetBounds: 0.2
   blueprintInitialData:
   - type: 4

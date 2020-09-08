@@ -7,15 +7,16 @@ namespace StarSalvager
     public abstract class OffGridMovement
     {
         public IObstacle Bit;
-        public Vector2 StartingPosition;
-        public Vector2 EndPosition;
+        public Vector3 StartingPosition;
+        public Vector3 EndPosition;
         public float SpinSpeed;
         public bool Spinning;
         public bool DespawnOnEnd;
         public float LerpSpeed;
         public float LerpTimer;
+        public bool ParentToGrid;
 
-        public OffGridMovement(IObstacle bit, Vector2 startingPosition, Vector2 endPosition, float lerpSpeed, float spinSpeed, bool despawnOnEnd, bool spinning)
+        public OffGridMovement(IObstacle bit, Vector3 startingPosition, Vector3 endPosition, float lerpSpeed, float spinSpeed, bool despawnOnEnd, bool spinning, bool parentToGrid)
         {
             Bit = bit;
             StartingPosition = startingPosition;
@@ -25,14 +26,14 @@ namespace StarSalvager
             SpinSpeed = spinSpeed;
             DespawnOnEnd = despawnOnEnd;
             Spinning = spinning;
+            ParentToGrid = parentToGrid;
         }
 
         protected void ShiftOnGrid(Vector3 shiftValue)
         {
-            Vector2 shiftValueVector2 = shiftValue;
             Bit.transform.position += shiftValue;
-            StartingPosition += shiftValueVector2;
-            EndPosition += shiftValueVector2;
+            StartingPosition += shiftValue;
+            EndPosition += shiftValue;
         }
 
         public abstract void Move(Vector3 shiftValue);

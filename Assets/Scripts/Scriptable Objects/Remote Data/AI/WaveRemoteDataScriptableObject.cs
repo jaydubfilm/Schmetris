@@ -8,6 +8,8 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Wave Remote", menuName = "Star Salvager/Scriptable Objects/Wave Remote Data")]
     public class WaveRemoteDataScriptableObject : ScriptableObject
     {
+        public List<StageObstacleData> BonusShapes = new List<StageObstacleData>();
+        
         public List<StageRemoteData> StageRemoteData = new List<StageRemoteData>();
 
         [SerializeField]
@@ -17,6 +19,8 @@ namespace StarSalvager.ScriptableObjects
         private List<RDSLootData> RDSEndOfWaveLoot = new List<RDSLootData>();
 
         public RDSTable rdsTable;
+
+        public float BonusShapeFrequency => GetWaveDuration() / (BonusShapes.Count + 1);
 
         public void ConfigureLootTable()
         {

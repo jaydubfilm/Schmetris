@@ -17,6 +17,7 @@ namespace StarSalvager.Cameras
         
         private Vector3 startPos;
         private Vector3 beginningLerpPos;
+        private float horzExtent;
         private float lerpValue = 0.0f;
 
         //============================================================================================================//
@@ -82,7 +83,6 @@ namespace StarSalvager.Cameras
                     transform.position = startPos;
                 }
             }
-                //transform.position = Vector3.MoveTowards(transform.position, startPos, Globals.CameraSmoothing * Time.deltaTime);
         }
 
         private void OnDestroy()
@@ -152,7 +152,7 @@ namespace StarSalvager.Cameras
 
             startPos = transform.position;
             //targetPos = startPos;
-            //horzExtent = orthographicSize * Screen.width / Screen.height / 2;
+            horzExtent = orthographicSize * Screen.width / Screen.height / 2;
 
             UpdateRect();
         }
