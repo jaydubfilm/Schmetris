@@ -12,6 +12,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c59c6b39881711a4296e83fe97d9a858, type: 3}
   m_Name: Wave_Remote_PB1_1_1
   m_EditorClassIdentifier: 
+  BonusShapes:
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: Medium
+    m_asteroidSize: 0
+    m_density: 0
+    m_rotation: Random
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: Medium
+    m_asteroidSize: 0
+    m_density: 0
+    m_rotation: 
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: Medium
+    m_asteroidSize: 0
+    m_density: 0
+    m_rotation: 
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: Medium
+    m_asteroidSize: 0
+    m_density: 0
+    m_rotation: 
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: Medium
+    m_asteroidSize: 0
+    m_density: 0
+    m_rotation: 
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: Medium
+    m_asteroidSize: 0
+    m_density: 0
+    m_rotation: 
   StageRemoteData:
   - m_stageDuration: 30
     m_stageBlendPeriod: 0
