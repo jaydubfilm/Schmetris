@@ -20,6 +20,8 @@ namespace StarSalvager
 {
     public class ObstacleManager : MonoBehaviour, IReset, IPausable, IMoveOnInput
     {
+        public static Action NewShapeOnScreen;
+        
         private List<IObstacle> m_obstacles;
         private List<IObstacle> m_wallObstacles;
         private List<Shape> m_bonusShapes;
@@ -40,9 +42,10 @@ namespace StarSalvager
         public Transform WorldElementsRoot => m_worldElementsRoot;
         private Transform m_worldElementsRoot;
 
-        public float m_bonusShapeTimer = 0.0f;
-        public int m_bonusShapesSpawned = 0;
+        private float m_bonusShapeTimer = 0.0f;
+        private int m_bonusShapesSpawned = 0;
 
+        public bool HasActiveBonusShapes => m_bonusShapes != null && m_bonusShapes.Count > 0;
         public List<Shape> ActiveBonusShapes => m_bonusShapes;
 
         public bool isPaused => GameTimer.IsPaused;
@@ -219,9 +222,25 @@ namespace StarSalvager
             for (int i = m_offGridMovingObstacles.Count - 1; i >= 0; i--)
             {
                 m_offGridMovingObstacles[i].LerpTimer += Time.deltaTime / m_offGridMovingObstacles[i].LerpSpeed;
+
+                //Determines if a new bonus shape is now visible on screen, notifies those who care about the change
+                //----------------------------------------------------------------------------------------------------//
+                
+                if (!m_offGridMovingObstacles[i].isVisible && m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
+                    m_bonusShapes.Contains(checkShape))
+                {
+                    if (CameraController.IsPointInCameraRect(checkShape.transform.position))
+                    {
+                        m_offGridMovingObstacles[i].isVisible = true;
+                        NewShapeOnScreen?.Invoke();
+                    }
+                }
+                
+                //----------------------------------------------------------------------------------------------------//
+
                 if (m_offGridMovingObstacles[i].LerpTimer >= 1)
                 {
-                    switch(m_offGridMovingObstacles[i].Bit)
+                    switch(m_offGridMovingObstacles[i].Obstacle)
                     {
                         case Bit bit:
                             if (m_offGridMovingObstacles[i].DespawnOnEnd)
@@ -261,7 +280,7 @@ namespace StarSalvager
                             }
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(OffGridMovement.Bit), m_offGridMovingObstacles[i].Bit, null);
+                            throw new ArgumentOutOfRangeException(nameof(OffGridMovement.Obstacle), m_offGridMovingObstacles[i].Obstacle, null);
                     }
                     
                     m_offGridMovingObstacles.RemoveAt(i);
@@ -272,6 +291,8 @@ namespace StarSalvager
                     m_offGridMovingObstacles[i].Move(-amountShift);
                 else
                     m_offGridMovingObstacles[i].Move(Vector3.zero);
+                
+                
                 m_offGridMovingObstacles[i].Spin();
             }
 
