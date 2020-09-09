@@ -6,6 +6,7 @@ using StarSalvager.Values;
 using StarSalvager.AI;
 using UnityEngine.InputSystem.Interactions;
 using StarSalvager.ScriptableObjects;
+using StarSalvager.Cameras;
 
 namespace StarSalvager
 {
@@ -54,22 +55,37 @@ namespace StarSalvager
                 if (obstacles[i] == null)
                     continue;
                 
-                Vector2Int gridCoordinatesAbove = GetCoordinatesOfGridSquareAtLocalPosition(obstacles[i].transform.localPosition + (Vector3.up * Constants.gridCellSize));
 
-                if (stageData.StageType == STAGE_TYPE.STANDARD && 
+                /*if (stageData.StageType == STAGE_TYPE.STANDARD && 
                     (gridCoordinatesAbove.x <= LevelManager.Instance.StandardBufferZoneObstacleData.m_wallBlendFieldLeft.y * m_gridSizeX ||
                     gridCoordinatesAbove.x >= LevelManager.Instance.StandardBufferZoneObstacleData.m_wallBlendFieldRight.x * m_gridSizeX))
                 {
                     continue;
+                }*/
+
+
+                //TODO: Consider whether this should be using screen padding
+                bool onScreen = CameraController.IsPointInCameraRect(obstacles[i].transform.position);
+
+                Vector2Int gridCoordinates = GetCoordinatesOfGridSquareAtLocalPosition(obstacles[i].transform.localPosition);
+                GridSquare gridSquare = GetGridSquareAtCoordinates(gridCoordinates);
+
+                if (!onScreen && !gridSquare.ObstacleInSquare)
+                {
+                    continue;
                 }
 
+                Vector2Int gridCoordinatesAbove = GetCoordinatesOfGridSquareAtLocalPosition(obstacles[i].transform.localPosition + (Vector3.up * Constants.gridCellSize));
                 GridSquare gridSquareAbove = GetGridSquareAtCoordinates(gridCoordinatesAbove);
                 int radiusMarkAround = gridSquareAbove.RadiusMarkAround;
                 SetObstacleInGridSquare(gridSquareAbove, 0, false);
                 SetObstacleInSquaresAroundCoordinates(gridCoordinatesAbove.x, gridCoordinatesAbove.y, radiusMarkAround, false);
 
-                Vector2Int gridCoordinates = GetCoordinatesOfGridSquareAtLocalPosition(obstacles[i].transform.localPosition);
-                GridSquare gridSquare = GetGridSquareAtCoordinates(gridCoordinates);
+                if (!onScreen)
+                {
+                    continue;
+                }
+
                 SetObstacleInGridSquare(gridSquare, radiusMarkAround, true);
                 SetObstacleInSquaresAroundCoordinates(gridCoordinates.x, gridCoordinates.y, radiusMarkAround, true);
             }
