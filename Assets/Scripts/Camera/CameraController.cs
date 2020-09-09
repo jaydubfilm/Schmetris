@@ -13,7 +13,7 @@ using StarSalvager.Utilities.SceneManagement;
 namespace StarSalvager.Cameras
 {
     [DefaultExecutionOrder(-1000)]
-    public class CameraController : MonoBehaviour, IMoveOnInput,  IReset
+    public class CameraController : MonoBehaviour, IMoveOnInput/*,  IReset*/
     {
         //============================================================================================================//
         
@@ -50,7 +50,7 @@ namespace StarSalvager.Cameras
 
         private Camera _camera;
         
-        protected GameUI GameUI
+        /*protected GameUI GameUI
         {
             get
             {
@@ -61,7 +61,7 @@ namespace StarSalvager.Cameras
             }
         }
 
-        private GameUI _GameUI;
+        private GameUI _GameUI;*/
 
         //============================================================================================================//
 
@@ -113,6 +113,15 @@ namespace StarSalvager.Cameras
         {
             return _cameraRect.Contains(position);
         }
+        
+        public static bool IsPointInCameraRect(Vector2 position, float xTotal, float yTotal = 1f)
+        {
+            var rect = _cameraRect;
+            rect.width *= xTotal;
+            rect.height *= yTotal;
+            
+            return rect.Contains(position);
+        }
 
         
         
@@ -122,7 +131,7 @@ namespace StarSalvager.Cameras
             var width = camera.aspect * 2f * (orthographicSize = camera.orthographicSize);
             var height = 2f * orthographicSize;
 
-            var gameUIViewableRectSize = GameUI?.GetViewSizeNormalize();//FindObjectOfType<GameUI>?.GetViewSizeNormalize();
+            /*var gameUIViewableRectSize = GameUI?.GetViewSizeNormalize();//FindObjectOfType<GameUI>?.GetViewSizeNormalize();
 
             if (gameUIViewableRectSize.HasValue)
             {
@@ -131,7 +140,7 @@ namespace StarSalvager.Cameras
 
                 width *= size.x;
                 height *= size.y;
-            }
+            }*/
                 
             _cameraRect = new Rect
             {
@@ -286,13 +295,13 @@ namespace StarSalvager.Cameras
 
         //IReset Functions
         //============================================================================================================//
-        public void Activate()
+        /*public void Activate()
         {
             UpdateRect();
         }
 
         public void Reset()
-        { }
+        { }*/
 
         //====================================================================================================================//
         

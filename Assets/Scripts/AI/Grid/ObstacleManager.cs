@@ -227,7 +227,7 @@ namespace StarSalvager
                 if (!m_offGridMovingObstacles[i].isVisible && m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
                     m_bonusShapes.Contains(checkShape))
                 {
-                    if (CameraController.IsPointInCameraRect(checkShape.transform.position))
+                    if (CameraController.IsPointInCameraRect(checkShape.transform.position, 0.5f))
                     {
                         m_offGridMovingObstacles[i].isVisible = true;
                         NewShapeOnScreen?.Invoke();
