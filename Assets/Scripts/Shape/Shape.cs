@@ -34,6 +34,13 @@ namespace StarSalvager
         }
         private bool m_isRegistered = false;
 
+        public bool IsMarkedOnGrid
+        {
+            get { return m_isMarkedOnGrid; }
+            set { m_isMarkedOnGrid = value; }
+        }
+        private bool m_isMarkedOnGrid = false;
+
         //================================================================================================================//
 
         protected new Rigidbody2D rigidbody

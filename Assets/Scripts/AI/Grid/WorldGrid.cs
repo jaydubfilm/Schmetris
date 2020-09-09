@@ -56,21 +56,10 @@ namespace StarSalvager
                     continue;
                 
 
-                /*if (stageData.StageType == STAGE_TYPE.STANDARD && 
-                    (gridCoordinatesAbove.x <= LevelManager.Instance.StandardBufferZoneObstacleData.m_wallBlendFieldLeft.y * m_gridSizeX ||
-                    gridCoordinatesAbove.x >= LevelManager.Instance.StandardBufferZoneObstacleData.m_wallBlendFieldRight.x * m_gridSizeX))
-                {
-                    continue;
-                }*/
-
-
                 //TODO: Consider whether this should be using screen padding
                 bool onScreen = CameraController.IsPointInCameraRect(obstacles[i].transform.position);
 
-                Vector2Int gridCoordinates = GetCoordinatesOfGridSquareAtLocalPosition(obstacles[i].transform.localPosition);
-                GridSquare gridSquare = GetGridSquareAtCoordinates(gridCoordinates);
-
-                if (!onScreen && !gridSquare.ObstacleInSquare)
+                if (!onScreen && !obstacles[i].IsMarkedOnGrid)
                 {
                     continue;
                 }
@@ -83,11 +72,15 @@ namespace StarSalvager
 
                 if (!onScreen)
                 {
+                    obstacles[i].IsMarkedOnGrid = false;
                     continue;
                 }
 
+                Vector2Int gridCoordinates = GetCoordinatesOfGridSquareAtLocalPosition(obstacles[i].transform.localPosition);
+                GridSquare gridSquare = GetGridSquareAtCoordinates(gridCoordinates);
                 SetObstacleInGridSquare(gridSquare, radiusMarkAround, true);
                 SetObstacleInSquaresAroundCoordinates(gridCoordinates.x, gridCoordinates.y, radiusMarkAround, true);
+                obstacles[i].IsMarkedOnGrid = true;
             }
         }
 
