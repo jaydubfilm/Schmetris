@@ -21,6 +21,7 @@ namespace StarSalvager
     public class ObstacleManager : MonoBehaviour, IReset, IPausable, IMoveOnInput
     {
         private List<IObstacle> m_obstacles;
+        private List<Shape> m_bonusShapes;
         private List<Shape> m_notFullyInGridShapes;
         private List<OffGridMovement> m_offGridMovingObstacles;
 
@@ -38,6 +39,10 @@ namespace StarSalvager
         public Transform WorldElementsRoot => m_worldElementsRoot;
         private Transform m_worldElementsRoot;
 
+        public float m_bonusShapeTimer = 0.0f;
+        public int m_bonusShapesSpawned = 0;
+
+        public List<Shape> ActiveBonusShapes => m_bonusShapes;
 
         public bool isPaused => GameTimer.IsPaused;
 
@@ -62,6 +67,7 @@ namespace StarSalvager
         private void Start()
         {
             m_obstacles = new List<IObstacle>();
+            m_bonusShapes = new List<Shape>();
             m_notFullyInGridShapes = new List<Shape>();
             m_offGridMovingObstacles = new List<OffGridMovement>();
             RegisterPausable();
@@ -104,7 +110,19 @@ namespace StarSalvager
             }
 
             HandleObstacleMovement();
-            
+
+            if (m_bonusShapesSpawned < LevelManager.Instance.CurrentWaveData.BonusShapes.Count)
+            {
+                m_bonusShapeTimer += Time.deltaTime;
+                if (m_bonusShapeTimer >= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency)
+                {
+                    m_bonusShapeTimer -= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency;
+                    StageObstacleData bonusShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
+                    SpawnBonusShape(bonusShapeData.SelectionType, bonusShapeData.ShapeName, bonusShapeData.Category, bonusShapeData.Rotation());
+                    m_bonusShapesSpawned++;
+                }
+            }
+
             //Set the movement direction 
             Globals.MovingDirection = Mathf.Abs(m_distanceHorizontal) <= 0.2f ? DIRECTION.NULL: m_distanceHorizontal.GetHorizontalDirection();
         }
@@ -226,6 +244,10 @@ namespace StarSalvager
                             }
                             break;
                         case Shape shape:
+                            if (m_bonusShapes.Contains(shape))
+                            {
+                                m_bonusShapes.Remove(shape);
+                            }
                             if (m_offGridMovingObstacles[i].DespawnOnEnd)
                             {
                                 Recycler.Recycle<Shape>(shape);
@@ -244,7 +266,10 @@ namespace StarSalvager
                     continue;
                 }
 
-                m_offGridMovingObstacles[i].Move(-amountShift);
+                if (m_offGridMovingObstacles[i].ParentToGrid)
+                    m_offGridMovingObstacles[i].Move(-amountShift);
+                else
+                    m_offGridMovingObstacles[i].Move(Vector3.zero);
                 m_offGridMovingObstacles[i].Spin();
             }
 
@@ -691,22 +716,58 @@ namespace StarSalvager
                 (m_bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
         }
 
-        private void PlaceMovableOffGrid(IObstacle obstacle, Vector2 startingPosition, Vector2Int gridEndPosition, float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false)
+        private void PlaceMovableOffGrid(IObstacle obstacle, Vector3 startingPosition, Vector2Int gridEndPosition, float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false, bool parentToGrid = true)
         {
-            Vector2 endPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfCenterOfGridSquareAtCoordinates(gridEndPosition);
-            PlaceMovableOffGrid(obstacle, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning, arc);
+            Vector3 endPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfCenterOfGridSquareAtCoordinates(gridEndPosition);
+            PlaceMovableOffGrid(obstacle, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning, arc, parentToGrid);
         }
 
-        private void PlaceMovableOffGrid(IObstacle obstacle, Vector2 startingPosition, Vector2 endPosition, float lerpSpeed, float spinSpeed, bool despawnOnEnd, bool spinning, bool arc)
+        private void PlaceMovableOffGrid(IObstacle obstacle, Vector3 startingPosition, Vector3 endPosition, float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false, bool parentToGrid = true)
         {
             obstacle.SetColliderActive(false);
-            obstacle.transform.parent = m_worldElementsRoot;
+            if (parentToGrid)
+                obstacle.transform.parent = m_worldElementsRoot;
             obstacle.transform.localPosition = startingPosition;
 
             if (!arc)
-                m_offGridMovingObstacles.Add(new OffGridMovementLerp(obstacle, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning));
+                m_offGridMovingObstacles.Add(new OffGridMovementLerp(obstacle, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning, parentToGrid));
             else
-                m_offGridMovingObstacles.Add(new OffGridMovementArc(obstacle, startingPosition, Vector2.down * 25, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning));
+                m_offGridMovingObstacles.Add(new OffGridMovementArc(obstacle, startingPosition, Vector2.down * 25, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning, parentToGrid));
+        }
+
+        public void SpawnBonusShape(SELECTION_TYPE selectionType, string shapeName, string category, int numRotations)
+        {
+            if (selectionType == SELECTION_TYPE.CATEGORY)
+            {
+                IObstacle newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<IObstacle>(selectionType, category, numRotations);
+                PlaceBonusShapeInLevel(newObstacle);
+                return;
+            }
+            else if (selectionType == SELECTION_TYPE.SHAPE)
+            {
+                IObstacle newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<IObstacle>(selectionType, shapeName, numRotations);
+                PlaceBonusShapeInLevel(newObstacle);
+                return;
+            }
+        }
+
+        private void PlaceBonusShapeInLevel(IObstacle obstacle)
+        {
+            int tryFlipSides = Random.Range(0, 2) * 2 - 1;
+
+            float screenOffset = Globals.ColumnsOnScreen * Constants.gridCellSize * 0.6f;
+            //float height = Camera.main.orthographicSize * 0.5f;
+            float height = Constants.gridCellSize * Random.Range(8.0f, 12.0f);
+
+            Vector3 startingPosition = new Vector3(screenOffset * tryFlipSides, height, 11);
+            Vector3 endPosition = new Vector3(screenOffset * -tryFlipSides, height, 11);
+
+            obstacle.SetColliderActive(false);
+            obstacle.transform.parent = LevelManager.Instance.CameraController.transform;
+            obstacle.transform.localPosition = startingPosition;
+
+            PlaceMovableOffGrid(obstacle, startingPosition, endPosition, Globals.BonusShapeDuration, despawnOnEnd: true, parentToGrid: false);
+            m_bonusShapes.Add((Shape)obstacle);
         }
 
         //============================================================================================================//

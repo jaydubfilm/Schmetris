@@ -167,6 +167,7 @@ namespace StarSalvager
                     IsWaveProgressing = false;
                     m_levelManagerUI.UpdateLivesText();
                     m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
+                    ResetFromDeath = true;
                 }
                 else
                 {
@@ -305,7 +306,7 @@ namespace StarSalvager
             //FIXME We shouldn't be using Camera.main
             InputManager.Instance.InitInput();
             CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, BotObject.transform.position);
-            Globals.GridSizeX = CurrentSector.GridSizeX;
+            //Globals.GridSizeX = CurrentSector.GridSizeX;
             if (Globals.Orientation == ORIENTATION.VERTICAL)
             {
                 Globals.GridSizeY = (int)((Camera.main.orthographicSize * Globals.GridHeightRelativeToScreen * 2) / Values.Constants.gridCellSize);
@@ -365,6 +366,8 @@ namespace StarSalvager
             {
                 LiquidResourcesAttBeginningOfWave.Clear();
             }
+
+            ObstacleManager.WorldElementsRoot.transform.position = Vector3.zero;
 
             m_waveTimer = 0;
             m_levelTimer = 0;
