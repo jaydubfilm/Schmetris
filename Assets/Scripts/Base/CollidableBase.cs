@@ -56,9 +56,6 @@ namespace StarSalvager
             {
                 if (isSet) return _transform;
 
-                if (_transform != null) 
-                    return _transform;
-                
                 _transform = gameObject.GetComponent<Transform>();
                 isSet = _transform != null;
 
