@@ -8,6 +8,8 @@ namespace StarSalvager
         GameObject gameObject { get; }
         bool CanMove { get; }
 
+        bool IsRegistered { get; set; }
+
         void SetColliderActive(bool active);
     }
 }

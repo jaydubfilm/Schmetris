@@ -50,6 +50,13 @@ namespace StarSalvager
         //============================================================================================================//
         public bool CanMove => !Attached;
 
+        public bool IsRegistered
+        {
+            get { return m_isRegistered; }
+            set { m_isRegistered = value; }
+        }
+        private bool m_isRegistered = false;
+
         //Bit Properties
         //============================================================================================================//
         [ShowInInspector, ReadOnly]

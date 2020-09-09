@@ -27,6 +27,13 @@ namespace StarSalvager
 
         public bool CanMove => true;
 
+        public bool IsRegistered
+        {
+            get { return m_isRegistered; }
+            set { m_isRegistered = value; }
+        }
+        private bool m_isRegistered = false;
+
         //================================================================================================================//
 
         protected new Rigidbody2D rigidbody
