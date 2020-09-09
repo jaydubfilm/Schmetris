@@ -91,7 +91,7 @@ namespace StarSalvager
             if (Globals.AsteroidFallTimer >= Globals.TimeForAsteroidToFallOneSquare)
             {
                 Globals.AsteroidFallTimer -= Globals.TimeForAsteroidToFallOneSquare;
-                LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid();
+                LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid(m_obstacles);
                 if (!LevelManager.Instance.EndWaveState)
                 {
                     SpawnNewRowOfObstacles();
@@ -142,7 +142,7 @@ namespace StarSalvager
                 var obstacle = m_obstacles[i];
                 if (obstacle == null)
                 {
-                    m_obstacles.RemoveAt(i);
+                    RemoveObstacleFromList(obstacle);
                     continue;
                 }
 
@@ -169,7 +169,7 @@ namespace StarSalvager
                     default:
                         throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                 }
-                m_obstacles.RemoveAt(i);
+                RemoveObstacleFromList(obstacle);
             }
             for (int i = m_notFullyInGridShapes.Count - 1; i >= 0; i--)
             {
@@ -278,7 +278,7 @@ namespace StarSalvager
                 var obstacle = m_obstacles[i];
                 if (obstacle == null)
                 {
-                    m_obstacles.RemoveAt(i);
+                    RemoveObstacleFromList(obstacle);
                     continue;
                 }
 
@@ -326,7 +326,7 @@ namespace StarSalvager
                             throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                     }
 
-                    m_obstacles.RemoveAt(i);
+                    RemoveObstacleFromList(obstacle);
                     continue;
                 }
 
@@ -562,12 +562,12 @@ namespace StarSalvager
                     {
                         case nameof(Bit):
                             Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>((BIT_TYPE)rdsValueBlockData.rdsValue.Type, rdsValueBlockData.rdsValue.Level);
-                            AddMovableToList(newBit);
+                            AddObstacleToList(newBit);
                             PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;
                         case nameof(Component):
                             Component newComponent = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().CreateObject<Component>((COMPONENT_TYPE)rdsValueBlockData.rdsValue.Type);
-                            AddMovableToList(newComponent);
+                            AddObstacleToList(newComponent);
                             PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;
                     }
@@ -582,14 +582,14 @@ namespace StarSalvager
                 IObstacle newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<IObstacle>(selectionType, category, numRotations);
 
                 if (LevelManager.Instance != null)
-                    LevelManager.Instance.ObstacleManager.AddMovableToList(newObstacle);
+                    LevelManager.Instance.ObstacleManager.AddObstacleToList(newObstacle);
                 
-                AddMovableToList(newObstacle);
+                AddObstacleToList(newObstacle);
                 if (newObstacle is Shape newShape)
                 {
                     foreach (Bit bit in newShape.AttachedBits)
                     {
-                        AddMovableToList(bit);
+                        AddObstacleToList(bit);
                     }
                 }
                 PlaceMovableOnGrid(newObstacle, gridRegion);
@@ -600,14 +600,14 @@ namespace StarSalvager
                 IObstacle newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<IObstacle>(selectionType, shapeName, numRotations);
 
                 if (LevelManager.Instance != null)
-                    LevelManager.Instance.ObstacleManager.AddMovableToList(newObstacle);
+                    LevelManager.Instance.ObstacleManager.AddObstacleToList(newObstacle);
 
-                AddMovableToList(newObstacle);
+                AddObstacleToList(newObstacle);
                 if (newObstacle is Shape newShape)
                 {
                     foreach (Bit bit in newShape.AttachedBits)
                     {
-                        AddMovableToList(bit);
+                        AddObstacleToList(bit);
                     }
                 }
                 PlaceMovableOnGrid(newObstacle, gridRegion);
@@ -616,7 +616,7 @@ namespace StarSalvager
             else if (selectionType == SELECTION_TYPE.ASTEROID)
             {
                 Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateLargeAsteroid<Bit>(asteroidSize);
-                AddMovableToList(newBit);
+                AddObstacleToList(newBit);
 
                 int radiusAround = 0;
                 switch(asteroidSize)
@@ -637,7 +637,7 @@ namespace StarSalvager
             else if (selectionType == SELECTION_TYPE.BUMPER)
             {
                 Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(BIT_TYPE.WHITE, 0);
-                AddMovableToList(newBit);
+                AddObstacleToList(newBit);
 
                 PlaceMovableOnGrid(newBit, gridRegion);
                 return;
@@ -647,15 +647,26 @@ namespace StarSalvager
         public void AddOrphanToObstacles(IObstacle movable)
         {
             movable.transform.parent = WorldElementsRoot.transform;
-            AddMovableToList(movable);
+            AddObstacleToList(movable);
         }
 
-        private void AddMovableToList(IObstacle movable)
+        private void AddObstacleToList(IObstacle movable)
         {
             //TODO: Find a more elegant solution for this if statement. This is catching the scenario where a bit is recycled and reused in the same frame, before it can be removed by the update loop, resulting in it being in the list twice.
-            if (!m_obstacles.Contains(movable))
+            if (!movable.IsRegistered)
             {
                 m_obstacles.Add(movable);
+                movable.IsRegistered = true;
+            }
+        }
+
+        private void RemoveObstacleFromList(IObstacle movable)
+        {
+            //TODO: Find a more elegant solution for this if statement. This is catching the scenario where a bit is recycled and reused in the same frame, before it can be removed by the update loop, resulting in it being in the list twice.
+            if (movable.IsRegistered)
+            {
+                m_obstacles.Remove(movable);
+                movable.IsRegistered = false;
             }
         }
 
@@ -709,7 +720,7 @@ namespace StarSalvager
         private float m_bounceSpeedAdjustment = 0.5f;
         public void BounceObstacle(IObstacle bit, Vector2 direction, float spinSpeed, bool despawnOnEnd, bool spinning, bool arc)
         {
-            m_obstacles.Remove(bit);
+            RemoveObstacleFromList(bit);
             Vector2 destination = (Vector2)bit.transform.localPosition + direction * m_bounceTravelDistance;
             PlaceMovableOffGrid(bit, bit.transform.localPosition, destination,
                 Vector2.Distance(bit.transform.localPosition, destination) /

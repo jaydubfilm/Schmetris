@@ -16,18 +16,24 @@ namespace StarSalvager
         private Vector2Int m_screenGridCellRange;
         private Vector2Int m_botGridPosition;
 
+        private int m_gridSizeX;
+        private int m_gridSizeY;
+
         //============================================================================================================//
 
         #region Setup
 
         public void SetupGrid()
         {
+            m_gridSizeX = Globals.GridSizeX;
+            m_gridSizeY = Globals.GridSizeY;
+
             m_anchorPoint = Vector2.left *
-                ((Values.Globals.GridSizeX / 2.0f) * Constants.gridCellSize)
+                ((m_gridSizeX / 2.0f) * Constants.gridCellSize)
                 + (Vector2.left * Constants.gridCellSize * 0.5f)
                 + (Vector2.down * Values.Constants.gridCellSize / 2);
 
-            m_gridArray = new GridSquare[Values.Globals.GridSizeX * Values.Globals.GridSizeY];
+            m_gridArray = new GridSquare[m_gridSizeX * m_gridSizeY];
 
             for (int i = 0; i < m_gridArray.Length; i++)
             {
@@ -40,13 +46,30 @@ namespace StarSalvager
             m_botGridPosition = GetCoordinatesOfGridSquareAtLocalPosition(LevelManager.Instance.BotObject.transform.position);
         }
 
-        public void MoveObstacleMarkersDownwardOnGrid()
+        public void MoveObstacleMarkersDownwardOnGrid(List<IObstacle> obstacles)
         {
-            for (int y = 0; y < Values.Globals.GridSizeY; y++)
+            for (int i = 0; i < obstacles.Count; i++)
             {
-                for (int x = 0; x < Values.Globals.GridSizeX; x++)
+                Vector2Int gridCoordinatesAbove = GetCoordinatesOfGridSquareAtLocalPosition(obstacles[i].transform.localPosition + (Vector3.up * Constants.gridCellSize));
+                GridSquare gridSquareAbove = GetGridSquareAtCoordinates(gridCoordinatesAbove);
+                int radiusMarkAround = gridSquareAbove.RadiusMarkAround;
+                SetObstacleInGridSquare(gridSquareAbove, 0, false);
+                SetObstacleInSquaresAroundCoordinates(gridCoordinatesAbove.x, gridCoordinatesAbove.y, radiusMarkAround, false);
+
+                Vector2Int gridCoordinates = GetCoordinatesOfGridSquareAtLocalPosition(obstacles[i].transform.localPosition);
+                GridSquare gridSquare = GetGridSquareAtCoordinates(gridCoordinates);
+                SetObstacleInGridSquare(gridSquare, radiusMarkAround, true);
+                SetObstacleInSquaresAroundCoordinates(gridCoordinates.x, gridCoordinates.y, radiusMarkAround, true);
+            }
+        }
+
+        /*public void MoveObstacleMarkersDownwardOnGridArchived()
+        {
+            for (int y = 0; y < m_gridSizeY; y++)
+            {
+                for (int x = 0; x < m_gridSizeX; x++)
                 {
-                    if (y + 1 == Values.Globals.GridSizeY)
+                    if (y + 1 == m_gridSizeY)
                     {
                         SetObstacleInGridSquareAtCoordiantes(x, y, 0, false);
                         
@@ -58,14 +81,14 @@ namespace StarSalvager
                 }
             }
 
-            for (int y = 0; y < Values.Globals.GridSizeY; y++)
+            for (int y = 0; y < m_gridSizeY; y++)
             {
-                for (int x = 0; x < Values.Globals.GridSizeX; x++)
+                for (int x = 0; x < m_gridSizeX; x++)
                 {
                     SetObstacleInSquaresAroundCoordinates(x, y, GetGridSquareAtCoordinates(x, y).RadiusMarkAround, true);
                 }
             }
-        }
+        }*/
 
         #endregion //Setup
 
@@ -75,27 +98,27 @@ namespace StarSalvager
 
         private GridSquare GetGridSquareAtCoordinates(Vector2Int gridPosition)
         {
-            if (gridPosition.x >= Values.Globals.GridSizeX)
-                gridPosition.x -= Values.Globals.GridSizeX;
+            if (gridPosition.x >= m_gridSizeX)
+                gridPosition.x -= m_gridSizeX;
             else if (gridPosition.x < 0)
-                gridPosition.x += Values.Globals.GridSizeX;
+                gridPosition.x += m_gridSizeX;
 
             if (gridPosition.y < 0)
             {
                 gridPosition.y = 0;
             }
 
-            return m_gridArray[gridPosition.x + (gridPosition.y * Globals.GridSizeX)];
+            return m_gridArray[gridPosition.x + (gridPosition.y * m_gridSizeX)];
         }
 
         public GridSquare GetGridSquareAtCoordinates(int x, int y)
         {
-            if (x >= Values.Globals.GridSizeX)
-                x -= Values.Globals.GridSizeX;
+            if (x >= m_gridSizeX)
+                x -= m_gridSizeX;
             else if (x < 0)
-                x += Values.Globals.GridSizeX;
+                x += m_gridSizeX;
 
-            return m_gridArray[x + (y * Values.Globals.GridSizeX)];
+            return m_gridArray[x + (y * m_gridSizeX)];
         }
 
         public Vector2 GetLocalPositionOfCenterOfGridSquareAtCoordinates(Vector2Int gridPosition)
@@ -112,9 +135,9 @@ namespace StarSalvager
             return anchorPoint + ((new Vector2(x, y) + m_adjustToMiddleOfGridSquare) * Constants.gridCellSize);
         }
 
-        private GridSquare GetGridSquareAtLocalPosition(Vector2 worldPosition)
+        private GridSquare GetGridSquareAtLocalPosition(Vector2 localPosition)
         {
-            Vector2Int coordinates = GetCoordinatesOfGridSquareAtLocalPosition(worldPosition);
+            Vector2Int coordinates = GetCoordinatesOfGridSquareAtLocalPosition(localPosition);
 
             return GetGridSquareAtCoordinates(coordinates);
         }
@@ -129,6 +152,12 @@ namespace StarSalvager
         //============================================================================================================//
 
         #region Set Grid Obstacles
+
+        public void SetObstacleInGridSquare(GridSquare gridSquare, int radius, bool occupied)
+        {
+            gridSquare.SetObstacleInSquare(occupied);
+            gridSquare.SetRadiusMarkAround(radius);
+        }
 
         public void SetObstacleInGridSquareAtLocalPosition(Vector2 obstaclePosition, int radius, bool occupied)
         {
@@ -159,9 +188,9 @@ namespace StarSalvager
             if (radiusAround == 0)
                 return;
 
-            for (int i = Mathf.Max(0, x - radiusAround); i <= Mathf.Min(Globals.GridSizeX - 1, x + radiusAround); i++)
+            for (int i = Mathf.Max(0, x - radiusAround); i <= Mathf.Min(m_gridSizeX - 1, x + radiusAround); i++)
             {
-                for (int k = Mathf.Max(0, y - radiusAround); k <= Mathf.Min(Globals.GridSizeY - 1, y + radiusAround); k++)
+                for (int k = Mathf.Max(0, y - radiusAround); k <= Mathf.Min(m_gridSizeY - 1, y + radiusAround); k++)
                 {
                     GetGridSquareAtCoordinates(i, k).SetObstacleInSquare(occupied);
                 }
@@ -203,7 +232,7 @@ namespace StarSalvager
         {
             return GetLocalPositionOfCenterOfGridSquareAtCoordinates(
                 m_botGridPosition.x + ((UnityEngine.Random.Range(0, 2) * 2 - 1) * UnityEngine.Random.Range(0, m_screenGridCellRange.x / 2)),
-                UnityEngine.Random.Range(m_screenGridCellRange.y, Values.Globals.GridSizeY));
+                UnityEngine.Random.Range(m_screenGridCellRange.y, m_gridSizeY));
         }
 
         #endregion
@@ -212,12 +241,12 @@ namespace StarSalvager
 
         private Vector2Int GetCoordinatesOfRandomTopGridSquareInGridRegion(Vector2 gridRegion)
         {
-            return new Vector2Int(UnityEngine.Random.Range((int)(Values.Globals.GridSizeX * gridRegion.x), (int)(Values.Globals.GridSizeX * gridRegion.y)), Values.Globals.GridSizeY - 1);
+            return new Vector2Int(UnityEngine.Random.Range((int)(m_gridSizeX * gridRegion.x), (int)(m_gridSizeX * gridRegion.y)), m_gridSizeY - 1);
         }
 
         public Vector2 GetLocalPositionOfRandomTopGridSquareInGridRegion(int scanRadius, Vector2 gridRegion)
         {
-            int numTries = 100;
+            int numTries = 10;
             for (int i = 0; i < numTries; i++)
             {
                 Vector2Int randomTop = GetCoordinatesOfRandomTopGridSquareInGridRegion(gridRegion);
@@ -227,8 +256,8 @@ namespace StarSalvager
                     Math.Max(0, randomTop.x - scanRadius),
                     Math.Max(0, randomTop.y - scanRadius));
                 Vector2Int obstacleGridScanMaximum = new Vector2Int(
-                    Math.Min(Values.Globals.GridSizeX - 1, randomTop.x + scanRadius),
-                    Math.Min(Values.Globals.GridSizeY - 1, randomTop.y + scanRadius));
+                    Math.Min(m_gridSizeX - 1, randomTop.x + scanRadius),
+                    Math.Min(m_gridSizeY - 1, randomTop.y + scanRadius));
                 //Check each position in the box for whether an obstacle is there
                 for (int j = obstacleGridScanMinimum.x; j <= obstacleGridScanMaximum.x; j++)
                 {
@@ -285,9 +314,9 @@ namespace StarSalvager
         {
             
             //Draw debug lines to show the area of the grid
-            for (int x = 0; x < Globals.GridSizeX; x++)
+            for (int x = 0; x < m_gridSizeX; x++)
             {
-                for (int y = 0; y < Globals.GridSizeY; y++)
+                for (int y = 0; y < m_gridSizeY; y++)
                 {
                     Gizmos.color = Color.red;
                     Vector2 tempVector = new Vector2(x, y);
@@ -296,8 +325,8 @@ namespace StarSalvager
                     Debug.DrawLine(m_anchorPoint + tempVector * Constants.gridCellSize, m_anchorPoint + new Vector2(x + 1, y) * Constants.gridCellSize);
                 }
             }
-            Debug.DrawLine(m_anchorPoint + new Vector2(0, Globals.GridSizeY) * Constants.gridCellSize, m_anchorPoint + new Vector2(Globals.GridSizeX, Globals.GridSizeY) * Constants.gridCellSize);
-            Debug.DrawLine(m_anchorPoint + new Vector2(Globals.GridSizeX, 0) * Constants.gridCellSize, m_anchorPoint + new Vector2(Globals.GridSizeX, Globals.GridSizeY) * Constants.gridCellSize);
+            Debug.DrawLine(m_anchorPoint + new Vector2(0, m_gridSizeY) * Constants.gridCellSize, m_anchorPoint + new Vector2(m_gridSizeX, m_gridSizeY) * Constants.gridCellSize);
+            Debug.DrawLine(m_anchorPoint + new Vector2(m_gridSizeX, 0) * Constants.gridCellSize, m_anchorPoint + new Vector2(m_gridSizeX, m_gridSizeY) * Constants.gridCellSize);
         }
 
 #endif
@@ -364,9 +393,9 @@ namespace StarSalvager
 
         public void DrawDebugMarkedGridPoints()
         {
-            for (int x = 0; x < Values.Globals.GridSizeX; x++)
+            for (int x = 0; x < m_gridSizeX; x++)
             {
-                for (int y = 0; y < Values.Globals.GridSizeY; y++)
+                for (int y = 0; y < m_gridSizeY; y++)
                 {
                     if (GetGridSquareAtCoordinates(x, y).ObstacleInSquare == true)
                     {
