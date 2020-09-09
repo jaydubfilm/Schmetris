@@ -3011,5 +3011,49 @@ namespace StarSalvager
         
         //============================================================================================================//
 
+        #region UNITY EDITOR
+
+#if UNITY_EDITOR
+        
+        [Button]
+        private void TestContains()
+        {
+            var testBlockData = new List<BlockData>
+            {
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Type = (int)BIT_TYPE.RED,
+                    Level = 0,
+                    Coordinate = new Vector2Int(0,0)
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Type = (int)BIT_TYPE.RED,
+                    Level = 0,
+                    Coordinate = new Vector2Int(1,0)
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Type = (int)BIT_TYPE.RED,
+                    Level = 0,
+                    Coordinate = new Vector2Int(1,-1)
+                },
+            };
+            
+            var result =attachedBlocks.Contains<Bit>(testBlockData);
+            
+            Debug.LogError($"{nameof(attachedBlocks)} contains match: {result}");
+
+
+        }
+#endif
+
+        #endregion //UNITY EDITOR
+
+        //====================================================================================================================//
+        
     }
 }

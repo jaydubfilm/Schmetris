@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.JsonDataTypes
 {
-    [System.Serializable]
+    [Serializable]
     public struct BlockData : IEquatable<BlockData>
     {
         [ShowInInspector]
@@ -19,6 +17,14 @@ namespace StarSalvager.Utilities.JsonDataTypes
         public int Type { get; set; }
         [ShowInInspector]
         public int Level { get; set; }
+
+        public BlockData(string classType, Vector2Int coordinate, int type, int level)
+        {
+            ClassType = classType;
+            Coordinate = coordinate;
+            Type = type;
+            Level = level;
+        }
 
         #region IEquatable
 
