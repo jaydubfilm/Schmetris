@@ -771,6 +771,18 @@ namespace StarSalvager
             m_bonusShapes.Add((Shape)obstacle);
         }
 
+        public void MatchBonusShape(Shape shape)
+        {
+            if (!m_bonusShapes.Contains(shape))
+            {
+                return;
+            }
+
+            m_bonusShapes.Remove(shape);
+            m_notFullyInGridShapes.Remove(shape);
+            Recycler.Recycle<Shape>(shape);
+        }
+
         //============================================================================================================//
 
         public void RegisterPausable()
