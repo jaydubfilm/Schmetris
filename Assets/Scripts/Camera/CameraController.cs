@@ -2,6 +2,8 @@
 using StarSalvager.Values;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras.Data;
+using StarSalvager.UI;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using UnityEngine;
@@ -11,7 +13,7 @@ using StarSalvager.Utilities.SceneManagement;
 namespace StarSalvager.Cameras
 {
     [DefaultExecutionOrder(-1000)]
-    public class CameraController : MonoBehaviour, IMoveOnInput
+    public class CameraController : MonoBehaviour, IMoveOnInput,  IReset
     {
         //============================================================================================================//
         
@@ -47,6 +49,19 @@ namespace StarSalvager.Cameras
         }
 
         private Camera _camera;
+        
+        protected GameUI GameUI
+        {
+            get
+            {
+                if (_GameUI == null)
+                    _GameUI = gameObject.FindObjectOfTypeInScene<GameUI>(true);
+
+                return _GameUI;
+            }
+        }
+
+        private GameUI _GameUI;
 
         //============================================================================================================//
 
@@ -99,17 +114,32 @@ namespace StarSalvager.Cameras
             return _cameraRect.Contains(position);
         }
 
+        
+        
         private void UpdateRect()
         {
-            var width = camera.aspect * 2f * camera.orthographicSize;
-            var height = 2f * camera.orthographicSize;
-            
+            float orthographicSize;
+            var width = camera.aspect * 2f * (orthographicSize = camera.orthographicSize);
+            var height = 2f * orthographicSize;
+
+            var gameUIViewableRectSize = GameUI?.GetViewSizeNormalize();//FindObjectOfType<GameUI>?.GetViewSizeNormalize();
+
+            if (gameUIViewableRectSize.HasValue)
+            {
+                var size = gameUIViewableRectSize.Value;
+                //Debug.LogError($"{nameof(gameUIViewableRectSize)}: {size}");
+
+                width *= size.x;
+                height *= size.y;
+            }
+                
             _cameraRect = new Rect
             {
                 center = -new Vector2(width / 2f, height / 2f) + (Vector2)transform.position,
                 height = height,
                 width = width,
-            };
+            }; 
+            
         }
 
 
@@ -254,7 +284,18 @@ namespace StarSalvager.Cameras
             targetPos = edgePos;*/
         }
 
+        //IReset Functions
         //============================================================================================================//
+        public void Activate()
+        {
+            UpdateRect();
+        }
+
+        public void Reset()
+        { }
+
+        //====================================================================================================================//
+        
     }
 }
 

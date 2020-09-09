@@ -272,6 +272,8 @@ namespace StarSalvager
                 });
 
             AttachNewBit(Vector2Int.zero, core, updateMissions: false);
+
+            ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
         }
         
         public void InitBot(IEnumerable<IAttachable> botAttachables)
@@ -336,7 +338,7 @@ namespace StarSalvager
 
             _rotating = true;
 
-            CheckForBonusShapeMatches();
+            
 
         }
 
@@ -381,6 +383,9 @@ namespace StarSalvager
             //Force set the rotation to the target, in case the bot is not exactly on target
             rigidbody.rotation = targetRotation;
             targetRotation = 0f;
+            
+            //Should only be called after the rotation finishes
+            CheckForBonusShapeMatches();
         }
 
         private void TryRotateBits()
@@ -1811,6 +1816,8 @@ namespace StarSalvager
         
         //============================================================================================================//
 
+        #region Check For Bonus Shape Matches
+
         /// <summary>
         /// Searches Bot for any matches to Active Bonus Shapes. Solves if any matches are found. Assumes that all matches are Bits.
         /// </summary>
@@ -1838,6 +1845,7 @@ namespace StarSalvager
                 
                 
                 //TODO Remove the Shape
+                obstacleManager.MatchBonusShape(shape);
 
 
                 //Check for Combos
@@ -1850,6 +1858,8 @@ namespace StarSalvager
 
             }
         }
+
+        #endregion //CheckForBonusShapeMatches
         
         //============================================================================================================//
 
@@ -3059,6 +3069,8 @@ namespace StarSalvager
             PendingDetach?.Clear();
             BotPartsLogic.ClearList();
             //_parts.Clear();
+            
+            ObstacleManager.NewShapeOnScreen -= CheckForBonusShapeMatches;
         }
         
         #endregion //Custom Recycle
