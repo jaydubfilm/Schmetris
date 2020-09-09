@@ -24,9 +24,9 @@ namespace StarSalvager.AI
         [NonSerialized]
         private Vector2 m_centerColumnFieldRange;
         [NonSerialized]
-        private Vector2 m_wallFieldLeft = new Vector2(0, 0.02f);
+        public Vector2 m_wallFieldLeft = new Vector2(0, 0.02f);
         [NonSerialized]
-        private Vector2 m_wallFieldRight = new Vector2(0.98f, 1.0f);
+        public Vector2 m_wallFieldRight = new Vector2(0.98f, 1.0f);
         [NonSerialized]
         private Vector2 m_bufferFieldLeft;
         [NonSerialized]
@@ -36,9 +36,9 @@ namespace StarSalvager.AI
         [NonSerialized]
         private Vector2 m_blendFieldRight;
         [NonSerialized]
-        private Vector2 m_wallBlendFieldLeft;
+        public Vector2 m_wallBlendFieldLeft;
         [NonSerialized]
-        private Vector2 m_wallBlendFieldRight;
+        public Vector2 m_wallBlendFieldRight;
 
         /*public Vector2 CenterColumnFieldRange => m_centerColumnFieldRange;
         public Vector2 WallFieldLeft => m_wallFieldLeft;

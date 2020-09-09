@@ -5,6 +5,7 @@ using System;
 using StarSalvager.Values;
 using StarSalvager.AI;
 using UnityEngine.InputSystem.Interactions;
+using StarSalvager.ScriptableObjects;
 
 namespace StarSalvager
 {
@@ -46,11 +47,22 @@ namespace StarSalvager
             m_botGridPosition = GetCoordinatesOfGridSquareAtLocalPosition(LevelManager.Instance.BotObject.transform.position);
         }
 
-        public void MoveObstacleMarkersDownwardOnGrid(List<IObstacle> obstacles)
+        public void MoveObstacleMarkersDownwardOnGrid(List<IObstacle> obstacles, StageRemoteData stageData)
         {
             for (int i = 0; i < obstacles.Count; i++)
             {
+                if (obstacles[i] == null)
+                    continue;
+                
                 Vector2Int gridCoordinatesAbove = GetCoordinatesOfGridSquareAtLocalPosition(obstacles[i].transform.localPosition + (Vector3.up * Constants.gridCellSize));
+
+                if (stageData.StageType == STAGE_TYPE.STANDARD && 
+                    (gridCoordinatesAbove.x <= LevelManager.Instance.StandardBufferZoneObstacleData.m_wallBlendFieldLeft.y * m_gridSizeX ||
+                    gridCoordinatesAbove.x >= LevelManager.Instance.StandardBufferZoneObstacleData.m_wallBlendFieldRight.x * m_gridSizeX))
+                {
+                    continue;
+                }
+
                 GridSquare gridSquareAbove = GetGridSquareAtCoordinates(gridCoordinatesAbove);
                 int radiusMarkAround = gridSquareAbove.RadiusMarkAround;
                 SetObstacleInGridSquare(gridSquareAbove, 0, false);
@@ -188,9 +200,14 @@ namespace StarSalvager
             if (radiusAround == 0)
                 return;
 
-            for (int i = Mathf.Max(0, x - radiusAround); i <= Mathf.Min(m_gridSizeX - 1, x + radiusAround); i++)
+            int iMin = Mathf.Max(0, x - radiusAround);
+            int iMax = Mathf.Min(m_gridSizeX - 1, x + radiusAround);
+            int kMin = Mathf.Max(0, y - radiusAround);
+            int kMax = Mathf.Min(m_gridSizeY - 1, y + radiusAround);
+
+            for (int i = iMin; i <= iMax; i++)
             {
-                for (int k = Mathf.Max(0, y - radiusAround); k <= Mathf.Min(m_gridSizeY - 1, y + radiusAround); k++)
+                for (int k = kMin; k <= kMax; k++)
                 {
                     GetGridSquareAtCoordinates(i, k).SetObstacleInSquare(occupied);
                 }

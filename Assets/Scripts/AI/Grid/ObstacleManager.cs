@@ -21,6 +21,7 @@ namespace StarSalvager
     public class ObstacleManager : MonoBehaviour, IReset, IPausable, IMoveOnInput
     {
         private List<IObstacle> m_obstacles;
+        private List<IObstacle> m_wallObstacles;
         private List<Shape> m_bonusShapes;
         private List<Shape> m_notFullyInGridShapes;
         private List<OffGridMovement> m_offGridMovingObstacles;
@@ -67,6 +68,7 @@ namespace StarSalvager
         private void Start()
         {
             m_obstacles = new List<IObstacle>();
+            m_wallObstacles = new List<IObstacle>();
             m_bonusShapes = new List<Shape>();
             m_notFullyInGridShapes = new List<Shape>();
             m_offGridMovingObstacles = new List<OffGridMovement>();
@@ -91,7 +93,7 @@ namespace StarSalvager
             if (Globals.AsteroidFallTimer >= Globals.TimeForAsteroidToFallOneSquare)
             {
                 Globals.AsteroidFallTimer -= Globals.TimeForAsteroidToFallOneSquare;
-                LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid(m_obstacles);
+                LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid(m_obstacles, m_currentStageData);
                 if (!LevelManager.Instance.EndWaveState)
                 {
                     SpawnNewRowOfObstacles();
@@ -142,7 +144,7 @@ namespace StarSalvager
                 var obstacle = m_obstacles[i];
                 if (obstacle == null)
                 {
-                    RemoveObstacleFromList(obstacle);
+                    m_obstacles.RemoveAt(i);
                     continue;
                 }
 
@@ -278,7 +280,7 @@ namespace StarSalvager
                 var obstacle = m_obstacles[i];
                 if (obstacle == null)
                 {
-                    RemoveObstacleFromList(obstacle);
+                    m_obstacles.RemoveAt(i);
                     continue;
                 }
 
@@ -300,6 +302,7 @@ namespace StarSalvager
                         case Bit bit:
                             if (!bit.Attached)
                             {
+                                bit.IsRegistered = false;
                                 Recycler.Recycle<Bit>(bit);
                                 m_obstacles[i] = null;
                             }
@@ -307,6 +310,7 @@ namespace StarSalvager
                         case Component component:
                             if (!component.Attached)
                             {
+                                component.IsRegistered = false;
                                 Recycler.Recycle<Component>(component);
                                 m_obstacles[i] = null;
                             }
@@ -316,10 +320,12 @@ namespace StarSalvager
                             {
                                 if(m_obstacles.Contains(attachedBit))
                                 {
+                                    attachedBit.IsRegistered = false;
                                     m_obstacles[m_obstacles.IndexOf(attachedBit)] = null;
                                 }
                             }
                             Recycler.Recycle<Shape>(shape);
+                            m_obstacles[i].IsRegistered = false;
                             m_obstacles[i] = null;
                             break;
                         default:
@@ -334,7 +340,7 @@ namespace StarSalvager
 
                 if (obstacle is IRotate rotate && rotate.Rotating)
                 {
-                    rotate.transform.Rotate(Vector3.forward * Time.deltaTime * 15.0f * rotate.RotateDirection);
+                    rotate.transform.localRotation *= Quaternion.Euler(0.0f, 0.0f, Time.deltaTime * 15.0f * rotate.RotateDirection);
                 }
             }
 
@@ -663,10 +669,14 @@ namespace StarSalvager
         private void RemoveObstacleFromList(IObstacle movable)
         {
             //TODO: Find a more elegant solution for this if statement. This is catching the scenario where a bit is recycled and reused in the same frame, before it can be removed by the update loop, resulting in it being in the list twice.
-            if (movable.IsRegistered)
+            if (movable != null)
             {
                 m_obstacles.Remove(movable);
                 movable.IsRegistered = false;
+            }
+            else
+            {
+                Debug.Log("RemoveObstacleFromList received null value");
             }
         }
 
