@@ -39,9 +39,10 @@ namespace StarSalvager
         public Transform WorldElementsRoot => m_worldElementsRoot;
         private Transform m_worldElementsRoot;
 
-        public float m_bonusShapeTimer = 0.0f;
-        public int m_bonusShapesSpawned = 0;
+        private float m_bonusShapeTimer = 0.0f;
+        private int m_bonusShapesSpawned = 0;
 
+        public bool HasActiveBonusShapes => m_bonusShapes != null && m_bonusShapes.Count > 0;
         public List<Shape> ActiveBonusShapes => m_bonusShapes;
 
         public bool isPaused => GameTimer.IsPaused;

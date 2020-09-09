@@ -709,12 +709,13 @@ namespace StarSalvager.Utilities.Extensions
         /// </summary>
         /// <param name="attachables"></param>
         /// <param name="comparison"></param>
+        /// <param name="upgrading"></param>
         /// <typeparam name="T">Constrain search to this ISaveable type</typeparam>
         /// <returns>Does the list contain the passed shape</returns>
-        public static bool Contains<T>(this List<IAttachable> attachables, IEnumerable<T> comparison)
+        public static bool Contains<T>(this List<IAttachable> attachables, IEnumerable<T> comparison, out List<Vector2Int> upgrading)
             where T : IAttachable, ISaveable
         {
-            return attachables.Contains<T>(comparison.OfType<ISaveable>().GetBlockDatas());
+            return attachables.Contains<T>(comparison.OfType<ISaveable>().GetBlockDatas(), out upgrading);
         }
 
         /// <summary>
@@ -723,9 +724,10 @@ namespace StarSalvager.Utilities.Extensions
         /// </summary>
         /// <param name="attachables"></param>
         /// <param name="comparison"></param>
+        /// <param name="upgrading"></param>
         /// <typeparam name="T">Constrain search to this ISaveable type</typeparam>
         /// <returns>Does the list contain the passed shape</returns>
-        public static bool Contains<T>(this List<IAttachable> attachables, IReadOnlyList<BlockData> comparison)
+        public static bool Contains<T>(this List<IAttachable> attachables, IReadOnlyList<BlockData> comparison, out List<Vector2Int> upgrading)
             where T : IAttachable, ISaveable
         {
             //--------------------------------------------------------------------------------------------------------//
@@ -744,6 +746,8 @@ namespace StarSalvager.Utilities.Extensions
             }
 
             //--------------------------------------------------------------------------------------------------------//
+            
+            upgrading = null;
 
             //Don't bother if the lists are empty
             if (comparison.Count == 0 || attachables.Count == 0)
@@ -766,9 +770,11 @@ namespace StarSalvager.Utilities.Extensions
             foreach (var startingPoint in startingPoints)
             {
                 var temp1 = new List<Vector2Int>();
+                upgrading = new List<Vector2Int>();
+                
                 var check = TraversalContains(startingPoint, _compare[0], Vector2Int.zero, DIRECTION.UP, _original,
                     _compare,
-                    ref temp1);
+                    ref temp1, ref upgrading);
 
                 if (check)
                     return true;
@@ -781,7 +787,7 @@ namespace StarSalvager.Utilities.Extensions
 
         private static bool TraversalContains(BlockData start, BlockData toCompare, Vector2Int currentCoordinate,
             DIRECTION currentDirection, IReadOnlyCollection<BlockData> originalList,
-            IReadOnlyCollection<BlockData> compareList, ref List<Vector2Int> traversedCompared)
+            IReadOnlyCollection<BlockData> compareList, ref List<Vector2Int> traversedCompared, ref List<Vector2Int> upgrading)
         {
             //Ensure we haven't already been here, and that we're not storing doubles
             if (traversedCompared.Contains(currentCoordinate))
@@ -798,6 +804,7 @@ namespace StarSalvager.Utilities.Extensions
                 return false;
 
             traversedCompared.Add(currentCoordinate);
+            upgrading.Add(found.Coordinate);
 
             //If we've checked everything, we're good to return
             if (traversedCompared.Count == compareList.Count)
@@ -827,13 +834,13 @@ namespace StarSalvager.Utilities.Extensions
 
 
             var result = TraversalContains(start, toCompare, nextCoordinate, nextDirection, originalList, compareList,
-                ref traversedCompared);
+                ref traversedCompared, ref upgrading);
 
             if (result) return true;
 
 
             return TraversalContains(start, toCompare, nextCoordinate, nextDirection, originalList, compareList,
-                ref traversedCompared);
+                ref traversedCompared, ref upgrading);
 
         }
 

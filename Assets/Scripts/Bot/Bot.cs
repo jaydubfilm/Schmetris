@@ -336,6 +336,8 @@ namespace StarSalvager
 
             _rotating = true;
 
+            CheckForBonusShapeMatches();
+
         }
 
         #endregion //Input Solver
@@ -504,6 +506,8 @@ namespace StarSalvager
                             //Add these to the block depending on its relative position
                             AttachAttachableToExisting(bit, closestAttachable, connectionDirection);
 
+                            CheckForBonusShapeMatches();
+
                             AudioController.PlaySound(SOUND.BIT_SNAP);
                             SessionDataProcessor.Instance.BitCollected(bit.Type);
                             break;
@@ -580,6 +584,8 @@ namespace StarSalvager
                     //Add these to the block depending on its relative position
                     AttachAttachableToExisting(component, closestAttachable, connectionDirection);
                     SessionDataProcessor.Instance.ComponentCollected(component.Type);
+
+                    CheckForBonusShapeMatches();
                     
                     break;
                 }
@@ -796,6 +802,8 @@ namespace StarSalvager
                         {
                             recycleBits = false
                         });
+
+                        CheckForBonusShapeMatches();
                         
                         CheckForCombosAround(bitsToAdd);
 
@@ -1803,6 +1811,48 @@ namespace StarSalvager
         
         //============================================================================================================//
 
+        /// <summary>
+        /// Searches Bot for any matches to Active Bonus Shapes. Solves if any matches are found. Assumes that all matches are Bits.
+        /// </summary>
+        private void CheckForBonusShapeMatches()
+        {
+            var obstacleManager = LevelManager.Instance.ObstacleManager;
+
+            if (!obstacleManager.HasActiveBonusShapes)
+                return;
+            
+            IReadOnlyList<Shape> shapesToCheck = obstacleManager.ActiveBonusShapes;
+
+            foreach (var shape in shapesToCheck)
+            {
+                if (!attachedBlocks.Contains(shape.AttachedBits, out var upgrading))
+                    continue;
+                
+                //TODO Need to upgrade the pieces matched
+                foreach (var coordinate in upgrading)
+                {
+                    var toUpgrade = attachedBlocks.OfType<Bit>().FirstOrDefault(x => x.Coordinate == coordinate);
+
+                    toUpgrade?.IncreaseLevel();
+                }
+                
+                
+                //TODO Remove the Shape
+
+
+                //Check for Combos
+                CheckForCombosAround<BIT_TYPE>(attachedBlocks);
+                //CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
+
+                //Call this function again
+                CheckForBonusShapeMatches();
+                break;
+
+            }
+        }
+        
+        //============================================================================================================//
+
         #region Puzzle Checks
 
         private void CheckForCombosAround<T>(Vector2Int coordinate) where T: Enum
@@ -1810,6 +1860,10 @@ namespace StarSalvager
             CheckForCombosAround(attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate && a is ICanCombo) as ICanCombo<T>);
         }
 
+        private void CheckForCombosAround<T>(IEnumerable<IAttachable> iAttachables) where T : Enum
+        {
+            CheckForCombosAround(iAttachables.OfType <ICanCombo<T>>());
+        }
         private void CheckForCombosAround<T>(IEnumerable<ICanCombo> iCanCombos) where T : Enum
         {
             CheckForCombosAround(iCanCombos.OfType <ICanCombo<T>>());
@@ -3043,7 +3097,7 @@ namespace StarSalvager
                 },
             };
             
-            var result =attachedBlocks.Contains<Bit>(testBlockData);
+            var result =attachedBlocks.Contains<Bit>(testBlockData, out _);
             
             Debug.LogError($"{nameof(attachedBlocks)} contains match: {result}");
 
