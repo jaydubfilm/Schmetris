@@ -43,13 +43,13 @@ namespace StarSalvager.AI
                 case "0":
                     rotations = 0;
                     break;
-                case "1":
+                case "90":
                     rotations = 1;
                     break;
-                case "2":
+                case "180":
                     rotations = 2;
                     break;
-                case "3":
+                case "270":
                     rotations = 3;
                     break;
             }
