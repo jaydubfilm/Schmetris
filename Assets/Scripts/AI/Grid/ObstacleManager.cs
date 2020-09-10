@@ -826,6 +826,7 @@ namespace StarSalvager
 
             m_bonusShapes.Remove(shape);
             m_notFullyInGridShapes.Remove(shape);
+            m_offGridMovingObstacles.Remove(m_offGridMovingObstacles.FirstOrDefault(s => s.Obstacle is Shape offGridShape && offGridShape == shape));
             Recycler.Recycle<Shape>(shape);
         }
 
