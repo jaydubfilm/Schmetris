@@ -1846,6 +1846,7 @@ namespace StarSalvager
                 
                 //TODO Remove the Shape
                 obstacleManager.MatchBonusShape(shape);
+                PlayerPersistentData.PlayerData.ChangeGears(Globals.BonusShapeGearsReward);
 
 
                 //Check for Combos

@@ -44,6 +44,7 @@ namespace StarSalvager.Values
         public static float CameraOffsetBounds => Constants.gridCellSize * Globals.ColumnsOnScreen * m_gameSettings.cameraOffsetBounds / 2;
         public static int GridSizeX => m_gameSettings.gridWidth;
         public static float BonusShapeDuration => m_gameSettings.bonusShapeSpeed;
+        public static int BonusShapeGearsReward => m_gameSettings.bonusShapeGearsReward;
         public static List<BlueprintInitialData> BlueprintInitialData => m_gameSettings.blueprintInitialData;
 
         //Values set by Game Settings - do not set values here

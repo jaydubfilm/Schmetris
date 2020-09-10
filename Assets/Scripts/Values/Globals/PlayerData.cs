@@ -130,6 +130,11 @@ namespace StarSalvager.Values
                     Toast.AddToast("Unlocked Blueprint!");
                     levelUpLoot.RemoveAt(i);
                 }
+                else if (levelUpLoot[i] is RDSValue<Vector2Int> rdsValueGears)
+                {
+                    PlayerPersistentData.PlayerData.ChangeGears(UnityEngine.Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
+                    levelUpLoot.RemoveAt(i);
+                }
             }
         }
 

@@ -20,7 +20,7 @@ MonoBehaviour:
     m_density: 1
     m_rotation: Random
   StageRemoteData:
-  - m_stageDuration: 30
+  - m_stageDuration: 5
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
@@ -53,7 +53,7 @@ MonoBehaviour:
       m_density: 0.2
       m_rotation: 0
     m_stageColumnGroupObstacleData: []
-  - m_stageDuration: 30
+  - m_stageDuration: 5
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
@@ -118,5 +118,12 @@ MonoBehaviour:
       m_density: 0.3
       m_rotation: 
     m_stageColumnGroupObstacleData: []
-  maxDrops: 0
-  RDSEndOfWaveLoot: []
+  maxDrops: 1
+  RDSEndOfWaveLoot:
+  - rdsData: 3
+    type: 0
+    level: 0
+    probability: 0
+    gearDropRange: {x: 100, y: 200}
+    isUniqueSpawn: 0
+    isAlwaysSpawn: 0

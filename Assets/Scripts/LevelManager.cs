@@ -446,6 +446,11 @@ namespace StarSalvager
                     Toast.AddToast("Unlocked Blueprint!");
                     loot.RemoveAt(i);
                 }
+                else if (loot[i] is RDSValue<Vector2Int> rdsValueGears)
+                {
+                    PlayerPersistentData.PlayerData.ChangeGears(Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
+                    loot.RemoveAt(i);
+                }
             }
 
             ObstacleManager.SpawnBitExplosion(-ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), loot);

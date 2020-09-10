@@ -98,7 +98,7 @@ namespace StarSalvager
                         Type = rdsData.type,
                         Level = rdsData.level
                     };
-                    rdsTable.AddEntry(new RDSValue<BlockData>(bitBlockData, rdsData.probability, rdsData.isUniqueSpawn, rdsData.isAlwaysSpawn, true));
+                    rdsTable.AddEntry(new RDSValue<BlockData>(bitBlockData, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
                 }
                 else if (rdsData.rdsData == RDSLootData.TYPE.Component)
                 {
@@ -107,7 +107,7 @@ namespace StarSalvager
                         ClassType = nameof(Component),
                         Type = rdsData.type,
                     };
-                    rdsTable.AddEntry(new RDSValue<BlockData>(componentBlockData, rdsData.probability, rdsData.isUniqueSpawn, rdsData.isAlwaysSpawn, true));
+                    rdsTable.AddEntry(new RDSValue<BlockData>(componentBlockData, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
                 }
                 else if (rdsData.rdsData == RDSLootData.TYPE.Blueprint)
                 {
@@ -117,7 +117,11 @@ namespace StarSalvager
                         partType = (PART_TYPE)rdsData.type,
                         level = rdsData.level
                     };
-                    rdsTable.AddEntry(new RDSValue<Blueprint>(blueprintData, rdsData.probability, rdsData.isUniqueSpawn, rdsData.isAlwaysSpawn, true));
+                    rdsTable.AddEntry(new RDSValue<Blueprint>(blueprintData, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
+                }
+                else if (rdsData.rdsData == RDSLootData.TYPE.Gears)
+                {
+                    rdsTable.AddEntry(new RDSValue<Vector2Int>(rdsData.GearDropRange, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
                 }
             }
         }

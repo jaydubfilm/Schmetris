@@ -576,6 +576,11 @@ namespace StarSalvager
                     Toast.AddToast("Unlocked Blueprint!");
                     rdsObjects.RemoveAt(i);
                 }
+                else if (rdsObjects[i] is RDSValue<Vector2Int> rdsValueGears)
+                {
+                    PlayerPersistentData.PlayerData.ChangeGears(Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
+                    rdsObjects.RemoveAt(i);
+                }
                 //Remove objects that aren't going on screen
             }
             

@@ -55,6 +55,10 @@ namespace StarSalvager.ScriptableObjects
                     };
                     rdsTable.AddEntry(new RDSValue<Blueprint>(blueprintData, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
                 }
+                else if (rdsData.rdsData == RDSLootData.TYPE.Gears)
+                {
+                    rdsTable.AddEntry(new RDSValue<Vector2Int>(rdsData.GearDropRange, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
+                }
             }
         }
     }
