@@ -189,6 +189,14 @@ namespace StarSalvager
                 });
                 m_notFullyInGridShapes.RemoveAt(i);
             }
+            for (int i = m_bonusShapes.Count - 1; i >= 0; i--)
+            {
+                Recycler.Recycle<Shape>(m_bonusShapes[i].gameObject, new
+                {
+                    recycleBits = false
+                });
+                m_bonusShapes.RemoveAt(i);
+            }
         }
 
         //====================================================================================================================//
