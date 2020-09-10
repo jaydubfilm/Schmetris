@@ -51,6 +51,8 @@ MonoBehaviour:
   m_cameraController: {fileID: 0}
   m_standardBufferZoneObstacleData: {fileID: 11400000, guid: 05371574dd867a64aa488e704f2e3a46,
     type: 2}
+  m_playerlevelRemoteDataScriptableObject: {fileID: 11400000, guid: 9103b0c0575cb044991331f95006d802,
+    type: 2}
   IsWaveProgressing: 1
   EndWaveState: 0
   MissionsCompletedDuringThisFlight: []
