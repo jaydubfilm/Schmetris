@@ -1845,7 +1845,7 @@ namespace StarSalvager
 
 
                 //TODO Remove the Shape
-                PlayerPersistentData.PlayerData.ChangeGears(Globals.BonusShapeGearsReward * shape.AttachedBits.Count);
+                PlayerPersistentData.PlayerData.ChangeGears(Globals.GetBonusShapeGearRewards(shape.AttachedBits.Count) * shape.AttachedBits.Count);
                 obstacleManager.MatchBonusShape(shape);
 
 

@@ -44,7 +44,6 @@ namespace StarSalvager.Values
         public static float CameraOffsetBounds => Constants.gridCellSize * Globals.ColumnsOnScreen * m_gameSettings.cameraOffsetBounds / 2;
         public static int GridSizeX => m_gameSettings.gridWidth;
         public static float BonusShapeDuration => m_gameSettings.bonusShapeSpeed;
-        public static int BonusShapeGearsReward => m_gameSettings.bonusShapeGearsReward;
         public static List<BlueprintInitialData> BlueprintInitialData => m_gameSettings.blueprintInitialData;
 
         //Values set by Game Settings - do not set values here
@@ -61,6 +60,13 @@ namespace StarSalvager.Values
             }
         }
         private static ORIENTATION _orientation;
+
+        public static int GetBonusShapeGearRewards(int i)
+        {
+            if (i > 6)
+                i = 6;
+            return m_gameSettings.bonusShapeGearsRewards[i - 1];
+        }
 
         public static void SetGameSettings(GameSettingsScriptableObject gameSettings)
         {
