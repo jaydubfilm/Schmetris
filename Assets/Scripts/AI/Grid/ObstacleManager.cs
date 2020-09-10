@@ -353,7 +353,7 @@ namespace StarSalvager
                             throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                     }
 
-                    RemoveObstacleFromList(obstacle);
+                    m_obstacles.RemoveAt(i);
                     continue;
                 }
 
