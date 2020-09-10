@@ -21,6 +21,8 @@ namespace StarSalvager
     public class ObstacleManager : MonoBehaviour, IReset, IPausable, IMoveOnInput
     {
         public static Action NewShapeOnScreen;
+
+        private const float BONUS_SCREEN_AREA = 0.5f;
         
         private List<IObstacle> m_obstacles;
         private List<IObstacle> m_wallObstacles;
@@ -45,8 +47,11 @@ namespace StarSalvager
         private float m_bonusShapeTimer = 0.0f;
         private int m_bonusShapesSpawned = 0;
 
-        public bool HasActiveBonusShapes => m_bonusShapes != null && m_bonusShapes.Count > 0;
-        public List<Shape> ActiveBonusShapes => m_bonusShapes;
+        public bool HasActiveBonusShapes => m_bonusShapes != null && m_bonusShapes.Count > 0 && m_bonusShapes.Any(x =>
+            CameraController.IsPointInCameraRect(x.transform.position, BONUS_SCREEN_AREA));
+
+        public List<Shape> ActiveBonusShapes => m_bonusShapes
+            .Where(x => CameraController.IsPointInCameraRect(x.transform.position, BONUS_SCREEN_AREA)).ToList();
 
         public bool isPaused => GameTimer.IsPaused;
 
@@ -242,7 +247,7 @@ namespace StarSalvager
                 if (!m_offGridMovingObstacles[i].isVisible && m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
                     m_bonusShapes.Contains(checkShape))
                 {
-                    if (CameraController.IsPointInCameraRect(checkShape.transform.position, 0.5f))
+                    if (CameraController.IsPointInCameraRect(checkShape.transform.position, BONUS_SCREEN_AREA))
                     {
                         m_offGridMovingObstacles[i].isVisible = true;
                         NewShapeOnScreen?.Invoke();

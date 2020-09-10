@@ -21,7 +21,7 @@ namespace StarSalvager
             if (value <= 3)
                 return (DIRECTION) value;
             
-            var diff = value % 3;
+            var diff = value - 4;
             return (DIRECTION) diff;
         }
     }

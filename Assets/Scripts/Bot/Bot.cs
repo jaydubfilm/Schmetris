@@ -288,6 +288,8 @@ namespace StarSalvager
                 AttachNewBit(attachable.Coordinate, attachable, updateMissions: false);
             }
         }
+
+
         
         #endregion // Init Bot 
         
@@ -1880,9 +1882,12 @@ namespace StarSalvager
             CheckForCombosAround(iCanCombos.OfType <ICanCombo<T>>());
         }
         
+
+        
         private void CheckForCombosAround<T>(IEnumerable<ICanCombo<T>> iCanCombos) where T: Enum
         {
-            (ComboRemoteData comboData, List<IAttachable> toMove) data = (ComboRemoteData.zero, null);
+            List<PendingCombo> pendingCombos = null;
+            
             foreach (var iCanCombo in iCanCombos)
             {
                 if (iCanCombo == null)
@@ -1894,18 +1899,36 @@ namespace StarSalvager
                 if (!PuzzleChecker.TryGetComboData(this, iCanCombo, out var temp))
                     continue;
 
-                if (temp.comboData.points > data.comboData.points)
-                    data = temp;
+                if (pendingCombos == null)
+                    pendingCombos = new List<PendingCombo>();
 
+                if (pendingCombos.Contains(iCanCombo as IAttachable, out var index))
+                {
+                    if (pendingCombos[index].ComboData.points <= temp.comboData.points)
+                        continue;
+                    
+                    pendingCombos.RemoveAt(index);
+                    
+                    pendingCombos.Add(new PendingCombo(temp));
+                    
+                }
+                else
+                {
+                    pendingCombos.Add(new PendingCombo(temp));
+                }
             }
 
-            if (data.comboData.points == 0)
+            if (pendingCombos == null || pendingCombos.Count == 0)
                 return;
 
-            if(data.toMove[0] is Bit bit)
-                MissionManager.ProcessComboBlocksMissionData(bit.Type, bit.level + 1, 1);
-            
-            SimpleComboSolver(data.comboData, data.toMove);
+            //TODO Need to figure out the multi-combo scores
+            foreach (var pendingCombo in pendingCombos)
+            {
+                if(pendingCombo.ToMove[0] is Bit bit)
+                    MissionManager.ProcessComboBlocksMissionData(bit.Type, bit.level + 1, 1);
+                
+                SimpleComboSolver(pendingCombo);
+            }
         }
         private void CheckForCombosAround<T>(ICanCombo<T> iCanCombo) where T: Enum
         {
@@ -1932,7 +1955,12 @@ namespace StarSalvager
         //============================================================================================================//
         
         #region Combo Solvers
-        
+
+        private void SimpleComboSolver(PendingCombo pendingCombo)
+        {
+            SimpleComboSolver(pendingCombo.ComboData, pendingCombo.ToMove);
+        }
+
         /// <summary>
         /// Solves movement and upgrade logic to do with simple combos of blocks.
         /// </summary>
@@ -2030,11 +2058,11 @@ namespace StarSalvager
                     //We need to update the positions and level before we move them in case we interact with bits while they're moving
                     switch (iCanCombo)
                     {
-                        case Bit bit:
-                            CheckForCombosAround(bit);
+                        case Bit _:
+                            CheckForCombosAround<BIT_TYPE>(attachedBlocks);
                             break;
-                        case Component combo:
-                            CheckForCombosAround(combo);
+                        case Component _:
+                            CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
                             break;
                     }
 
@@ -3081,6 +3109,127 @@ namespace StarSalvager
         #region UNITY EDITOR
 
 #if UNITY_EDITOR
+        [Button]
+        private void SetupTest()
+        {
+            var blocks = new List<BlockData>
+            {
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(2,-1),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREY
+                },
+                
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(1,0),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(2,0),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(3,-1),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(3,-2),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+
+            };
+
+            AddMorePieces(blocks, false);
+        }
+        [Button]
+        private void AddComboTestPieces()
+        {
+            var blocks = new List<BlockData>
+            {
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(2,1),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(2,2),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(3,1),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(3,2),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+            };
+            
+            AddMorePieces(blocks, true);
+        }
+        
+        private void AddMorePieces(IEnumerable<BlockData> blocks, bool checkForCombos)
+        {
+            var toAdd = new List<IAttachable>();
+            foreach (var blockData in blocks)
+            {
+                IAttachable attachable;
+
+                switch (blockData.ClassType)
+                {
+                    case nameof(Bit):
+                        attachable = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
+                            .CreateObject<Bit>(blockData);
+                        break;
+                    case nameof(Part):
+                        attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                            .CreateObject<Part>(blockData);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(blockData.ClassType), blockData.ClassType, null);
+                }
+                
+                toAdd.Add(attachable);
+            }
+
+            AddMorePieces(toAdd, checkForCombos);
+        }
+        
+        private void AddMorePieces(IReadOnlyCollection<IAttachable> attachables, bool checkForCombos)
+        {
+            foreach (var attachable in attachables)
+            {
+                AttachNewBit(attachable.Coordinate, attachable, updateMissions: false, checkForCombo: false, checkMagnet:false);
+            }
+
+            if(checkForCombos)
+                CheckForCombosAround<BIT_TYPE>(attachables);
+        }
         
         [Button]
         private void TestContains()
@@ -3123,4 +3272,57 @@ namespace StarSalvager
         //====================================================================================================================//
         
     }
+    
+    public struct PendingCombo
+    {
+        public readonly ComboRemoteData ComboData;
+        public readonly List<IAttachable> ToMove;
+
+        public PendingCombo(ComboRemoteData comboData, List<IAttachable> toMove)
+        {
+            ComboData = comboData;
+            ToMove = toMove;
+        }
+        public PendingCombo((ComboRemoteData comboData, List<IAttachable> toMove) data)
+        {
+            var (comboData, toMove) = data;
+            ComboData = comboData;
+            ToMove = toMove;
+        }
+
+        public bool Contains(IAttachable attachable)
+        {
+            if (ToMove == null || ToMove.Count == 0)
+                return false;
+                
+            return ToMove.Contains(attachable);
+        }
+
+    }
+
+    public static class PendingComboListExtensions
+    {
+        public static bool Contains(this List<PendingCombo> list, IAttachable attachable)
+        {
+            return list.Any(pendingCombo => pendingCombo.Contains(attachable));
+        }
+        
+        public static bool Contains(this List<PendingCombo> list, IAttachable attachable, out int index)
+        {
+            index = -1;
+            
+            var temp = list.ToArray();
+            for (var i = 0; i < temp.Length; i++)
+            {
+                if (!temp[i].Contains(attachable))
+                    continue;
+                
+                index = i;
+                return true;
+            }
+
+            return false;
+        }
+    }
 }
+
