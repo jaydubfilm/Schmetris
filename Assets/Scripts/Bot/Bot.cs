@@ -1844,9 +1844,10 @@ namespace StarSalvager
 
                     toUpgrade?.IncreaseLevel();
                 }
-                
-                
+
+
                 //TODO Remove the Shape
+                PlayerPersistentData.PlayerData.ChangeGears(Globals.GetBonusShapeGearRewards(shape.AttachedBits.Count) * shape.AttachedBits.Count);
                 obstacleManager.MatchBonusShape(shape);
 
 

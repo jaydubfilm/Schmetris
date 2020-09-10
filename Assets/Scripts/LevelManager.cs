@@ -44,6 +44,10 @@ namespace StarSalvager
         private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
         public StandardBufferZoneObstacleData StandardBufferZoneObstacleData => m_standardBufferZoneObstacleData;
 
+        [SerializeField, Required]
+        private PlayerLevelRemoteDataScriptableObject m_playerlevelRemoteDataScriptableObject;
+        public PlayerLevelRemoteDataScriptableObject PlayerlevelRemoteDataScriptableObject => m_playerlevelRemoteDataScriptableObject;
+
         private float m_waveTimer;
         public float WaveTimer => m_waveTimer;
 
@@ -396,18 +400,7 @@ namespace StarSalvager
 
             CurrentWaveData.ConfigureLootTable();
             List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
-
-            for (int i = newWaveLoot.Count - 1; i >= 0; i--)
-            {
-                if (newWaveLoot[i] is RDSValue<Blueprint> rdsValueBlueprint)
-                {
-                    PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
-                    Toast.AddToast("Unlocked Blueprint!");
-                    newWaveLoot.RemoveAt(i);
-                }
-            }
-
-            ObstacleManager.SpawnBitExplosion(-ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), newWaveLoot);
+            DropLoot(newWaveLoot);
 
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
@@ -441,10 +434,26 @@ namespace StarSalvager
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
                 });
             }
+        }
 
-            
-            
-            
+        private void DropLoot(List<IRDSObject> loot)
+        {
+            for (int i = loot.Count - 1; i >= 0; i--)
+            {
+                if (loot[i] is RDSValue<Blueprint> rdsValueBlueprint)
+                {
+                    PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
+                    Toast.AddToast("Unlocked Blueprint!");
+                    loot.RemoveAt(i);
+                }
+                else if (loot[i] is RDSValue<Vector2Int> rdsValueGears)
+                {
+                    PlayerPersistentData.PlayerData.ChangeGears(Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
+                    loot.RemoveAt(i);
+                }
+            }
+
+            ObstacleManager.SpawnBitExplosion(-ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), loot);
         }
 
         public void SavePlayerData()

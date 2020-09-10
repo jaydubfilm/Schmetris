@@ -106,8 +106,36 @@ namespace StarSalvager.Values
         public void ChangeGears(int amount)
         {
             Gears += amount;
+
+            int gearsToLevelUp = LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).GearsToLevelUp;
+            if (Gears >= gearsToLevelUp)
+            {
+                Gears -= gearsToLevelUp;
+                DropLevelLoot();
+                Level++;
+            }
             
             OnValuesChanged?.Invoke();
+        }
+
+        private void DropLevelLoot()
+        {
+            LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).ConfigureLootTable();
+            List<IRDSObject> levelUpLoot = LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).rdsTable.rdsResult.ToList();
+            for (int i = levelUpLoot.Count - 1; i >= 0; i--)
+            {
+                if (levelUpLoot[i] is RDSValue<Blueprint> rdsValueBlueprint)
+                {
+                    PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
+                    Toast.AddToast("Unlocked Blueprint!");
+                    levelUpLoot.RemoveAt(i);
+                }
+                else if (levelUpLoot[i] is RDSValue<Vector2Int> rdsValueGears)
+                {
+                    PlayerPersistentData.PlayerData.ChangeGears(UnityEngine.Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
+                    levelUpLoot.RemoveAt(i);
+                }
+            }
         }
 
         //============================================================================================================//

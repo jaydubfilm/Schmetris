@@ -25,6 +25,7 @@ namespace StarSalvager.ScriptableObjects
         public float botHorizontalSpeed = 30.0f;
         public float missionReminderFrequency = 25.0f;
         public float bonusShapeSpeed = 12.0f;
+        public List<int> bonusShapeGearsRewards;
 
         public bool cameraUseInputMotion = true;
         [ShowIf("cameraUseInputMotion", true)]

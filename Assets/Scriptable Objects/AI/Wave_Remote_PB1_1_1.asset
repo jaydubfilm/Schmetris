@@ -17,7 +17,19 @@ MonoBehaviour:
     m_shapeName: BlueDouble
     m_category: 
     m_asteroidSize: 0
-    m_density: 1
+    m_density: 0
+    m_rotation: Random
+  - m_selectionType: 0
+    m_shapeName: GreenDouble
+    m_category: 
+    m_asteroidSize: 0
+    m_density: 0
+    m_rotation: Random
+  - m_selectionType: 0
+    m_shapeName: RedDouble
+    m_category: 
+    m_asteroidSize: 0
+    m_density: 0
     m_rotation: Random
   StageRemoteData:
   - m_stageDuration: 30
@@ -118,5 +130,12 @@ MonoBehaviour:
       m_density: 0.3
       m_rotation: 
     m_stageColumnGroupObstacleData: []
-  maxDrops: 0
-  RDSEndOfWaveLoot: []
+  maxDrops: 1
+  RDSEndOfWaveLoot:
+  - rdsData: 3
+    type: 0
+    level: 0
+    probability: 0
+    gearDropRange: {x: 100, y: 200}
+    isUniqueSpawn: 0
+    isAlwaysSpawn: 0

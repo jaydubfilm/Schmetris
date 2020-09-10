@@ -13,23 +13,34 @@ namespace StarSalvager
         {
             Bit,
             Component,
-            Blueprint
+            Blueprint,
+            Gears
         }
 
         [FoldoutGroup("$Name"), EnumToggleButtons, LabelWidth(75), OnValueChanged("UpdateValue")]
         public TYPE rdsData;
 
-        [FoldoutGroup("$Name"), ValueDropdown("GetTypes")]
+        [FoldoutGroup("$Name"), ValueDropdown("GetTypes"), HideIf("rdsData", TYPE.Gears)]
         public int type;
 
-        [FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Component)]
+        [FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Component), HideIf("rdsData", TYPE.Gears)]
         public int level;
 
-        [FoldoutGroup("$Name")] public int probability;
+        [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears)]
+        private int probability;
+        public int Probability => probability;
 
-        [FoldoutGroup("$Name")] public bool isUniqueSpawn;
+        [SerializeField, FoldoutGroup("$Name"), ShowIf("rdsData", TYPE.Gears)]
+        private Vector2Int gearDropRange;
+        public Vector2Int GearDropRange => gearDropRange;
 
-        [FoldoutGroup("$Name")] public bool isAlwaysSpawn;
+        [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears)]
+        private bool isUniqueSpawn;
+        public bool IsUniqueSpawn => isUniqueSpawn || rdsData == TYPE.Gears;
+
+        [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears)]
+        private bool isAlwaysSpawn;
+        public bool IsAlwaysSpawn => isAlwaysSpawn || rdsData == TYPE.Gears;
 
         //This only compares Type and not all individual properties
 
@@ -86,11 +97,14 @@ namespace StarSalvager
                 case TYPE.Blueprint:
                     value = $"{(PART_TYPE)type}";
                     break;
+                case TYPE.Gears:
+                    value = "Gears";
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            return $"{rdsData} - {value} - {probability}";
+            return $"{rdsData} - {value} - {Probability}";
         }
 
         private IEnumerable GetTypes()
@@ -109,6 +123,8 @@ namespace StarSalvager
                 case TYPE.Blueprint:
                     valueType = typeof(PART_TYPE);
                     break;
+                case TYPE.Gears:
+                    return null;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
