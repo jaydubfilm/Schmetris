@@ -65,24 +65,39 @@ namespace StarSalvager.Cameras
             SetOrientation(Values.Globals.Orientation);
         }
 
+        private Vector3 tempPosition;
+
         //Smooth camera to center over bot
         private void Update()
         {
             if (!Globals.CameraUseInputMotion || gameObject.scene.name != SceneLoader.LEVEL)
                 return;
 
-            if (transform.position != startPos &&
+            if (InputManager.Instance.MostRecentSideMovement == 0 && tempPosition == transform.position && lerpValue == 0.0f)
+            {
+                beginningLerpPos = transform.position;
+            }
+            else if (lerpValue == 0.0f)
+            {
+                beginningLerpPos = startPos;
+            }
+
+            if (beginningLerpPos != startPos &&
                 (InputManager.Instance.MostRecentSideMovement == 0 ||
                 transform.position.x > Globals.CameraOffsetBounds ||
                 transform.position.x < -Globals.CameraOffsetBounds))
             {
                 lerpValue = Mathf.Min(1.0f, lerpValue + Globals.CameraSmoothing * Time.deltaTime);
+                //print(lerpValue + " --- " + Mathf.SmoothStep(0.0f, 1.0f, lerpValue));
                 transform.position = Vector3.Lerp(beginningLerpPos, startPos, Mathf.SmoothStep(0.0f, 1.0f, lerpValue));
                 if (lerpValue == 1.0f)
                 {
                     transform.position = startPos;
+                    lerpValue = 0.0f;
                 }
             }
+
+            tempPosition = transform.position;
         }
 
         private void OnDestroy()
@@ -178,6 +193,7 @@ namespace StarSalvager.Cameras
             CameraOffset(botPosition, false);
 
             startPos = transform.position;
+            beginningLerpPos = transform.position;
             //targetPos = startPos;
             horzExtent = orthographicSize * Screen.width / Screen.height / 2;
 
@@ -255,9 +271,9 @@ namespace StarSalvager.Cameras
             if (!Globals.CameraUseInputMotion)
                 return;
 
-            if (direction == 0)
+            if (direction != 0)
             {
-                beginningLerpPos = transform.position;
+                beginningLerpPos = startPos;
                 lerpValue = 0.0f;
             }
         }

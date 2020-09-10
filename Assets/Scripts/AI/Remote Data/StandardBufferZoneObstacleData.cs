@@ -99,12 +99,8 @@ namespace StarSalvager.AI
                 m_wallBlendFieldRight = new Vector2(m_bufferFieldRight.y, m_wallFieldRight.x);
             }
 
-            Debug.Log(Values.Globals.GridSizeY);
-            Debug.Log(m_wallFieldLeft.x + " --- " + m_wallFieldLeft.y);
-            Debug.Log(m_wallFieldRight.x + " --- " + m_wallFieldRight.y);
             for (int i = 0; i < StarSalvager.Values.Globals.GridSizeY; i++)
             {
-                Debug.Log("Moo");
                 obstacleManager.SpawnObstacleData(m_wallObstacleData, m_wallFieldLeft, 1, isPrevious, true);
                 obstacleManager.SpawnObstacleData(m_wallObstacleData, m_wallFieldRight, 1, isPrevious, true);
             }
