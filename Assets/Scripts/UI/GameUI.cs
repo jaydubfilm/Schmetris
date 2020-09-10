@@ -137,6 +137,9 @@ namespace StarSalvager.UI
 
         #region Properties
 
+        [SerializeField]
+        private RectTransform viewableAreaTransform;
+
         [SerializeField, Required, FoldoutGroup("Slider Glows")]
         private Image redSliderGlow;
 
@@ -297,6 +300,27 @@ namespace StarSalvager.UI
         }
 
         //============================================================================================================//
+
+        private Canvas _canvas;
+        public Vector2 GetViewSizeNormalize()
+        {
+            if(_canvas is null)
+                _canvas = GetComponentInParent<Canvas>();
+
+            var canvasSize = (_canvas.transform as RectTransform).sizeDelta;
+
+            var size = viewableAreaTransform.rect.size;
+            
+            return new Vector2
+            {
+                x = size.x / canvasSize.x,
+                y = size.y / canvasSize.y,  
+            };
+        }
+        
+        
+        //============================================================================================================//
+
 
         private void InitValues()
         {

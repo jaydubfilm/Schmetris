@@ -272,6 +272,8 @@ namespace StarSalvager
                 });
 
             AttachNewBit(Vector2Int.zero, core, updateMissions: false);
+
+            ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
         }
         
         public void InitBot(IEnumerable<IAttachable> botAttachables)
@@ -336,6 +338,8 @@ namespace StarSalvager
 
             _rotating = true;
 
+            
+
         }
 
         #endregion //Input Solver
@@ -379,6 +383,9 @@ namespace StarSalvager
             //Force set the rotation to the target, in case the bot is not exactly on target
             rigidbody.rotation = targetRotation;
             targetRotation = 0f;
+            
+            //Should only be called after the rotation finishes
+            CheckForBonusShapeMatches();
         }
 
         private void TryRotateBits()
@@ -504,6 +511,8 @@ namespace StarSalvager
                             //Add these to the block depending on its relative position
                             AttachAttachableToExisting(bit, closestAttachable, connectionDirection);
 
+                            CheckForBonusShapeMatches();
+
                             AudioController.PlaySound(SOUND.BIT_SNAP);
                             SessionDataProcessor.Instance.BitCollected(bit.Type);
                             break;
@@ -580,6 +589,8 @@ namespace StarSalvager
                     //Add these to the block depending on its relative position
                     AttachAttachableToExisting(component, closestAttachable, connectionDirection);
                     SessionDataProcessor.Instance.ComponentCollected(component.Type);
+
+                    CheckForBonusShapeMatches();
                     
                     break;
                 }
@@ -796,6 +807,8 @@ namespace StarSalvager
                         {
                             recycleBits = false
                         });
+
+                        CheckForBonusShapeMatches();
                         
                         CheckForCombosAround(bitsToAdd);
 
@@ -1803,6 +1816,53 @@ namespace StarSalvager
         
         //============================================================================================================//
 
+        #region Check For Bonus Shape Matches
+
+        /// <summary>
+        /// Searches Bot for any matches to Active Bonus Shapes. Solves if any matches are found. Assumes that all matches are Bits.
+        /// </summary>
+        private void CheckForBonusShapeMatches()
+        {
+            var obstacleManager = LevelManager.Instance.ObstacleManager;
+
+            if (!obstacleManager.HasActiveBonusShapes)
+                return;
+            
+            IReadOnlyList<Shape> shapesToCheck = obstacleManager.ActiveBonusShapes;
+
+            foreach (var shape in shapesToCheck)
+            {
+                if (!attachedBlocks.Contains(shape.AttachedBits, out var upgrading))
+                    continue;
+                
+                //TODO Need to upgrade the pieces matched
+                foreach (var coordinate in upgrading)
+                {
+                    var toUpgrade = attachedBlocks.OfType<Bit>().FirstOrDefault(x => x.Coordinate == coordinate);
+
+                    toUpgrade?.IncreaseLevel();
+                }
+                
+                
+                //TODO Remove the Shape
+                obstacleManager.MatchBonusShape(shape);
+
+
+                //Check for Combos
+                CheckForCombosAround<BIT_TYPE>(attachedBlocks);
+                //CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
+
+                //Call this function again
+                CheckForBonusShapeMatches();
+                break;
+
+            }
+        }
+
+        #endregion //CheckForBonusShapeMatches
+        
+        //============================================================================================================//
+
         #region Puzzle Checks
 
         private void CheckForCombosAround<T>(Vector2Int coordinate) where T: Enum
@@ -1810,6 +1870,10 @@ namespace StarSalvager
             CheckForCombosAround(attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate && a is ICanCombo) as ICanCombo<T>);
         }
 
+        private void CheckForCombosAround<T>(IEnumerable<IAttachable> iAttachables) where T : Enum
+        {
+            CheckForCombosAround(iAttachables.OfType <ICanCombo<T>>());
+        }
         private void CheckForCombosAround<T>(IEnumerable<ICanCombo> iCanCombos) where T : Enum
         {
             CheckForCombosAround(iCanCombos.OfType <ICanCombo<T>>());
@@ -3005,11 +3069,57 @@ namespace StarSalvager
             PendingDetach?.Clear();
             BotPartsLogic.ClearList();
             //_parts.Clear();
+            
+            ObstacleManager.NewShapeOnScreen -= CheckForBonusShapeMatches;
         }
         
         #endregion //Custom Recycle
         
         //============================================================================================================//
 
+        #region UNITY EDITOR
+
+#if UNITY_EDITOR
+        
+        [Button]
+        private void TestContains()
+        {
+            var testBlockData = new List<BlockData>
+            {
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Type = (int)BIT_TYPE.RED,
+                    Level = 0,
+                    Coordinate = new Vector2Int(0,0)
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Type = (int)BIT_TYPE.RED,
+                    Level = 0,
+                    Coordinate = new Vector2Int(1,0)
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Type = (int)BIT_TYPE.RED,
+                    Level = 0,
+                    Coordinate = new Vector2Int(1,-1)
+                },
+            };
+            
+            var result =attachedBlocks.Contains<Bit>(testBlockData, out _);
+            
+            Debug.LogError($"{nameof(attachedBlocks)} contains match: {result}");
+
+
+        }
+#endif
+
+        #endregion //UNITY EDITOR
+
+        //====================================================================================================================//
+        
     }
 }

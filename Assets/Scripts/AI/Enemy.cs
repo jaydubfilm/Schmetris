@@ -133,7 +133,7 @@ namespace StarSalvager.AI
 
             //Vector3 screenPoint = Camera.main.WorldToViewportPoint();
             //bool onScreen = screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
-            if (!CameraController.IsPointInCameraRect(transform.position))
+            if (!CameraController.IsPointInCameraRect(transform.position, 0.6f))
                 return;
 
             List<Vector2> fireLocations = GetFireDirection();

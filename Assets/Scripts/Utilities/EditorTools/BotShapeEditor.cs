@@ -317,7 +317,10 @@ namespace StarSalvager
 
             if (_shape != null)
             {
-                EditorShapeGeneratorData newData = new EditorShapeGeneratorData(inputName, _shape.AttachedBits.GetBlockDatas(), m_botShapeEditorUI.GetCategories());
+                EditorShapeGeneratorData newData = new EditorShapeGeneratorData(inputName,
+                    _shape.AttachedBits.GetBlockDatas(), 
+                    m_botShapeEditorUI.GetCategories());
+                
                 EditorBotShapeData.AddEditorShapeData(newData);
             }
         }
