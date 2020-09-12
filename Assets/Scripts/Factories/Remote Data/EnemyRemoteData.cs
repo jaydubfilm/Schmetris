@@ -43,7 +43,7 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$Name")]
         private int m_maxDrops;
 
-        [SerializeField, FoldoutGroup("$Name")]
+        [SerializeField, FoldoutGroup("$Name"), LabelText("Loot Drops")]
         private List<RDSLootData> m_rdsEnemyData;
 
         public string EnemyID => m_enemyType;

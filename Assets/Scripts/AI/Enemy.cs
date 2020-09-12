@@ -17,11 +17,17 @@ using Random = UnityEngine.Random;
 namespace StarSalvager.AI
 {
     [RequireComponent(typeof(StateAnimator))]
-    public class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle
+    public class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle, ICanBeSeen
     {
         public bool IsAttachable => m_enemyData.IsAttachable;
         public bool IgnoreObstacleAvoidance => m_enemyData.IgnoreObstacleAvoidance;
         public ENEMY_MOVETYPE MovementType => m_enemyData.MovementType;
+
+        //ICanBeSeen Properties
+        //====================================================================================================================//
+        
+        public bool IsSeen { get; set; }
+        public float CameraCheckArea => 0.6f;
         
         //============================================================================================================//
         
@@ -74,6 +80,7 @@ namespace StarSalvager.AI
             m_horizontalMovementYLevel = transform.position.y;
             horizontalFarLeftX = -1 * Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
             horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
+            
         }
 
         protected virtual void Update()
@@ -106,7 +113,7 @@ namespace StarSalvager.AI
             renderer.sprite = m_enemyData?.Sprite;
             StateAnimator.SetController(m_enemyData?.AnimationController);
             
-            AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
+            RegisterCanBeSeen();
         }
 
         private void SetupPositions()
@@ -413,13 +420,41 @@ namespace StarSalvager.AI
             Recycler.Recycle<Enemy>(this);
         }
 
+        //ICanBeSeen Functions
+        //============================================================================================================//
+
+        public void RegisterCanBeSeen()
+        {
+            CameraController.RegisterCanBeSeen(this);
+        }
+
+        public void UnregisterCanBeSeen()
+        {
+            CameraController.UnRegisterCanBeSeen(this);
+        }
+
+        public void EnteredCamera()
+        {
+            AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
+        }
+
+        public void ExitedCamera()
+        {
+            AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
+        }
         //============================================================================================================//
 
         public virtual void CustomRecycle(params object[] args)
         {
             Disabled = false;
             AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
+            UnregisterCanBeSeen();
         }
+
+
+        
+        //============================================================================================================//
+
     }
 }
  
