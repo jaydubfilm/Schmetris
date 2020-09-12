@@ -137,6 +137,9 @@ namespace StarSalvager.UI
 
         #region Properties
 
+        [SerializeField]
+        private RectTransform viewableAreaTransform;
+
         [SerializeField, Required, FoldoutGroup("Slider Glows")]
         private Image redSliderGlow;
 
@@ -170,6 +173,11 @@ namespace StarSalvager.UI
         //Bottom Left Window
         //============================================================================================================//
 
+        [SerializeField, Required, FoldoutGroup("BL Window")]
+        private TMP_Text levelText;
+        [SerializeField, Required, FoldoutGroup("BL Window")]
+        private TMP_Text gearsText;
+        
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderText fuelSlider;
 
@@ -266,6 +274,7 @@ namespace StarSalvager.UI
             SetupPlayerValues();
 
             PlayerData.OnCapacitiesChanged += SetupPlayerValues;
+            PlayerData.OnValuesChanged += UpdatePlayerGearsLevel;
         }
 
         private void LateUpdate()
@@ -289,9 +298,31 @@ namespace StarSalvager.UI
         private void OnDisable()
         {
             PlayerData.OnCapacitiesChanged -= SetupPlayerValues;
+            PlayerData.OnValuesChanged -= UpdatePlayerGearsLevel;
         }
 
         //============================================================================================================//
+
+        private Canvas _canvas;
+        public Vector2 GetViewSizeNormalize()
+        {
+            if(_canvas is null)
+                _canvas = GetComponentInParent<Canvas>();
+
+            var canvasSize = (_canvas.transform as RectTransform).sizeDelta;
+
+            var size = viewableAreaTransform.rect.size;
+            
+            return new Vector2
+            {
+                x = size.x / canvasSize.x,
+                y = size.y / canvasSize.y,  
+            };
+        }
+        
+        
+        //============================================================================================================//
+
 
         private void InitValues()
         {
@@ -310,6 +341,8 @@ namespace StarSalvager.UI
 
             SetClockValue(1f);
             SetTimeString("0:00");
+            
+            SetPlayerGearsLevel(0,0, 0);
         }
 
         private void InitSliderText()
@@ -358,6 +391,8 @@ namespace StarSalvager.UI
             SetFuelValue(playerData.liquidResource[BIT_TYPE.RED]);
             SetRepairValue(playerData.liquidResource[BIT_TYPE.GREEN]);
             SetAmmoValue(playerData.liquidResource[BIT_TYPE.GREY]);
+
+            SetPlayerGearsLevel(playerData.Level, playerData.Gears, 999);
         }
 
         //============================================================================================================//
@@ -382,6 +417,18 @@ namespace StarSalvager.UI
         }
 
         //============================================================================================================//
+
+        //TODO I should look into the NotifyPropertyChanged for setting up this functionality
+        private void UpdatePlayerGearsLevel()
+        {
+            SetPlayerGearsLevel(PlayerPersistentData.PlayerData.Level, PlayerPersistentData.PlayerData.Gears, 999);
+        }
+        
+        public void SetPlayerGearsLevel(int playerLevel, int gears, int gearsRemaining)
+        {
+            levelText.text = $"{gears} lvl {playerLevel}";
+            gearsText.text = $"/{gearsRemaining}";
+        }
 
         public void SetAllResourceSliderBounds(int min, int max)
         {

@@ -19,18 +19,26 @@ namespace StarSalvager.AI
         public List<StageObstacleData> BufferObstacleData => m_bufferObstacleData;
         public List<StageObstacleData> WallObstacleData => m_wallObstacleData;
 
-
+        [NonSerialized]
         private float m_centerColumnWidth = 0.0f;
-
+        [NonSerialized]
         private Vector2 m_centerColumnFieldRange;
-        private Vector2 m_wallFieldLeft = new Vector2(0, 0.02f);
-        private Vector2 m_wallFieldRight = new Vector2(0, 0.02f);
+        [NonSerialized]
+        public Vector2 m_wallFieldLeft = new Vector2(0, 0.02f);
+        [NonSerialized]
+        public Vector2 m_wallFieldRight = new Vector2(0.98f, 1.0f);
+        [NonSerialized]
         private Vector2 m_bufferFieldLeft;
+        [NonSerialized]
         private Vector2 m_bufferFieldRight;
+        [NonSerialized]
         private Vector2 m_blendFieldLeft;
+        [NonSerialized]
         private Vector2 m_blendFieldRight;
-        private Vector2 m_wallBlendFieldLeft;
-        private Vector2 m_wallBlendFieldRight;
+        [NonSerialized]
+        public Vector2 m_wallBlendFieldLeft;
+        [NonSerialized]
+        public Vector2 m_wallBlendFieldRight;
 
         /*public Vector2 CenterColumnFieldRange => m_centerColumnFieldRange;
         public Vector2 WallFieldLeft => m_wallFieldLeft;
@@ -73,6 +81,29 @@ namespace StarSalvager.AI
             obstacleManager.SpawnObstacleData(stageRemoteData.StageObstacleData, m_blendFieldLeft, stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious);
             obstacleManager.SpawnObstacleData(m_bufferObstacleData, m_blendFieldRight, stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious);
             obstacleManager.SpawnObstacleData(stageRemoteData.StageObstacleData, m_blendFieldRight, stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious);
+        }
+
+        public void PrespawnWalls(StageRemoteData stageRemoteData, bool isPrevious, ObstacleManager obstacleManager)
+        {
+            if (stageRemoteData.CenterChannelWidth != m_centerColumnWidth)
+            {
+                m_centerColumnWidth = stageRemoteData.CenterChannelWidth;
+                m_centerColumnFieldRange = new Vector2(0.5f - m_centerColumnWidth / 2, 0.5f + m_centerColumnWidth / 2);
+                float sidesWidth = (1 - m_centerColumnWidth) / 2;
+                float sidesBlend = sidesWidth * LevelManager.Instance.StandardBufferZoneObstacleData.PortionOfEdgesUsedForBlend;
+                m_bufferFieldLeft = new Vector2(sidesBlend / 2, sidesWidth - (sidesBlend / 2));
+                m_bufferFieldRight = new Vector2(sidesWidth + m_centerColumnWidth + (sidesBlend / 2), 1 - (sidesBlend / 2));
+                m_blendFieldLeft = new Vector2(m_bufferFieldLeft.y, m_centerColumnFieldRange.x);
+                m_blendFieldRight = new Vector2(m_centerColumnFieldRange.y, m_bufferFieldRight.x);
+                m_wallBlendFieldLeft = new Vector2(m_wallFieldLeft.y, m_bufferFieldLeft.x);
+                m_wallBlendFieldRight = new Vector2(m_bufferFieldRight.y, m_wallFieldRight.x);
+            }
+
+            for (int i = 0; i < StarSalvager.Values.Globals.GridSizeY; i++)
+            {
+                obstacleManager.SpawnObstacleData(m_wallObstacleData, m_wallFieldLeft, 1, isPrevious, true);
+                obstacleManager.SpawnObstacleData(m_wallObstacleData, m_wallFieldRight, 1, isPrevious, true);
+            }
         }
     }
 }

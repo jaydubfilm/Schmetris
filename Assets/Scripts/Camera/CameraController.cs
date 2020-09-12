@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using StarSalvager.Values;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using StarSalvager.Utilities.SceneManagement;
 
 namespace StarSalvager.Cameras
@@ -16,9 +16,9 @@ namespace StarSalvager.Cameras
         //============================================================================================================//
         
         private Vector3 startPos;
-        private Vector3 edgePos;
-        private Vector3 targetPos;
+        private Vector3 beginningLerpPos;
         private float horzExtent;
+        private float lerpValue = 0.0f;
 
         //============================================================================================================//
 
@@ -65,17 +65,39 @@ namespace StarSalvager.Cameras
             SetOrientation(Values.Globals.Orientation);
         }
 
+        private Vector3 tempPosition;
+
         //Smooth camera to center over bot
         private void Update()
         {
             if (!Globals.CameraUseInputMotion || gameObject.scene.name != SceneLoader.LEVEL)
                 return;
 
-            if (InputManager.Instance.MostRecentSideMovement == 0 || 
-                transform.position.x > Globals.CameraOffsetBounds || 
-                transform.position.x < -Globals.CameraOffsetBounds)
-                transform.position = Vector3.Lerp(transform.position, startPos, Globals.CameraSmoothing * Time.deltaTime);
-                //transform.position = Vector3.MoveTowards(transform.position, startPos, Globals.CameraSmoothing * Time.deltaTime);
+            if (InputManager.Instance.MostRecentSideMovement == 0 && tempPosition == transform.position && lerpValue == 0.0f)
+            {
+                beginningLerpPos = transform.position;
+            }
+            else if (lerpValue == 0.0f)
+            {
+                beginningLerpPos = startPos;
+            }
+
+            if (beginningLerpPos != startPos &&
+                (InputManager.Instance.MostRecentSideMovement == 0 ||
+                transform.position.x > Globals.CameraOffsetBounds ||
+                transform.position.x < -Globals.CameraOffsetBounds))
+            {
+                lerpValue = Mathf.Min(1.0f, lerpValue + Globals.CameraSmoothing * Time.deltaTime);
+                //print(lerpValue + " --- " + Mathf.SmoothStep(0.0f, 1.0f, lerpValue));
+                transform.position = Vector3.Lerp(beginningLerpPos, startPos, Mathf.SmoothStep(0.0f, 1.0f, lerpValue));
+                if (lerpValue == 1.0f)
+                {
+                    transform.position = startPos;
+                    lerpValue = 0.0f;
+                }
+            }
+
+            tempPosition = transform.position;
         }
 
         private void OnDestroy()
@@ -86,23 +108,61 @@ namespace StarSalvager.Cameras
         //============================================================================================================//
 
         private static Rect _cameraRect;
+        private static Vector2 center;
+        private static Vector2 pos;
+
+        private static Dictionary<float, Rect> checkRects;
 
         public static bool IsPointInCameraRect(Vector2 position)
         {
             return _cameraRect.Contains(position);
         }
+        
+        public static bool IsPointInCameraRect(Vector2 position, float xTotal)
+        {
+            if (checkRects == null)
+                checkRects = new Dictionary<float, Rect>();
 
+
+            //Don't want to be calculating the dimensions of the rectangle all the time, so store it for future use
+            if (!checkRects.TryGetValue(xTotal, out var rect))
+            {
+                rect = _cameraRect;
+                rect.width *= xTotal;
+                //rect.height *= yTotal;
+                rect.x = center.x + rect.width / 2f;
+                
+                
+                
+                checkRects.Add(xTotal, rect);
+            }
+            
+            
+            GizmoExtensions.DrawDebugRect(rect, Color.red);
+            
+            return rect.Contains(position);
+        }
+
+        
+        
         private void UpdateRect()
         {
-            var width = camera.aspect * 2f * camera.orthographicSize;
-            var height = 2f * camera.orthographicSize;
+            float orthographicSize;
+            var width = camera.aspect * 2f * (orthographicSize = camera.orthographicSize);
+            var height = 2f * orthographicSize;
+
+            
+            pos = transform.position;
+            center = -new Vector2(width / 2f, height / 2f) + pos;
+
             
             _cameraRect = new Rect
             {
-                center = -new Vector2(width / 2f, height / 2f) + (Vector2)transform.position,
+                center = center,
                 height = height,
                 width = width,
-            };
+            }; 
+            
         }
 
 
@@ -130,21 +190,11 @@ namespace StarSalvager.Cameras
             var orthographicSize = screenWidthInWorld * (Screen.height / (float) Screen.width) / 2;
             camera.orthographicSize = orthographicSize;
 
-            //Scrapyard wants the camera anchored differently, so it uses a different formula
-            //if (!inScrapyard)
-            //{
-            //    transform.position += Vector3.up * (orthographicSize / 2);
-            //}
-            //else
-            //{
-            //    transform.position += Vector3.down * (orthographicSize / 2) / 4;
-            //    transform.position += Vector3.right * (orthographicSize * Screen.width / Screen.height) / 4;
-            //}
-
             CameraOffset(botPosition, false);
 
             startPos = transform.position;
-            targetPos = startPos;
+            beginningLerpPos = transform.position;
+            //targetPos = startPos;
             horzExtent = orthographicSize * Screen.width / Screen.height / 2;
 
             UpdateRect();
@@ -159,11 +209,6 @@ namespace StarSalvager.Cameras
             {
                 transform.position += Vector3.up * (camera.orthographicSize / 2);
             }
-            //else
-            //{
-            //    transform.position += Vector3.down * (camera.orthographicSize / 2) / 4;
-            //    transform.position += Vector3.right * (camera.orthographicSize * Screen.width / Screen.height) / 4;
-            //}
 
             UpdateRect();
         }
@@ -225,23 +270,16 @@ namespace StarSalvager.Cameras
         {
             if (!Globals.CameraUseInputMotion)
                 return;
-            
-            /*m_currentInput = direction;
-            
-            if (m_currentInput == 0)
+
+            if (direction != 0)
             {
-                targetPos = startPos;
-                return;
+                beginningLerpPos = startPos;
+                lerpValue = 0.0f;
             }
-            
-            Vector3 cameraOff = startPos;
-            cameraOff.x += -direction * horzExtent;
-            
-            edgePos = cameraOff;
-            targetPos = edgePos;*/
         }
 
-        //============================================================================================================//
+        //====================================================================================================================//
+        
     }
 }
 

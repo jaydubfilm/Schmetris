@@ -6,18 +6,21 @@ namespace StarSalvager
 {
     public abstract class OffGridMovement
     {
-        public IObstacle Bit;
-        public Vector2 StartingPosition;
-        public Vector2 EndPosition;
+        public IObstacle Obstacle;
+        public Vector3 StartingPosition;
+        public Vector3 EndPosition;
         public float SpinSpeed;
         public bool Spinning;
         public bool DespawnOnEnd;
         public float LerpSpeed;
         public float LerpTimer;
+        public bool ParentToGrid;
 
-        public OffGridMovement(IObstacle bit, Vector2 startingPosition, Vector2 endPosition, float lerpSpeed, float spinSpeed, bool despawnOnEnd, bool spinning)
+        public bool isVisible;
+
+        public OffGridMovement(IObstacle obstacle, Vector3 startingPosition, Vector3 endPosition, float lerpSpeed, float spinSpeed, bool despawnOnEnd, bool spinning, bool parentToGrid)
         {
-            Bit = bit;
+            Obstacle = obstacle;
             StartingPosition = startingPosition;
             EndPosition = endPosition;
             LerpSpeed = lerpSpeed;
@@ -25,14 +28,14 @@ namespace StarSalvager
             SpinSpeed = spinSpeed;
             DespawnOnEnd = despawnOnEnd;
             Spinning = spinning;
+            ParentToGrid = parentToGrid;
         }
 
         protected void ShiftOnGrid(Vector3 shiftValue)
         {
-            Vector2 shiftValueVector2 = shiftValue;
-            Bit.transform.position += shiftValue;
-            StartingPosition += shiftValueVector2;
-            EndPosition += shiftValueVector2;
+            Obstacle.transform.position += shiftValue;
+            StartingPosition += shiftValue;
+            EndPosition += shiftValue;
         }
 
         public abstract void Move(Vector3 shiftValue);
@@ -41,7 +44,7 @@ namespace StarSalvager
         {
             if (Spinning)
             {
-                Bit.transform.Rotate(new Vector3(0, 0, SpinSpeed * Time.deltaTime));
+                Obstacle.transform.Rotate(new Vector3(0, 0, SpinSpeed * Time.deltaTime));
             }
         }
     }

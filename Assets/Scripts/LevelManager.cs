@@ -44,6 +44,10 @@ namespace StarSalvager
         private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
         public StandardBufferZoneObstacleData StandardBufferZoneObstacleData => m_standardBufferZoneObstacleData;
 
+        [SerializeField, Required]
+        private PlayerLevelRemoteDataScriptableObject m_playerlevelRemoteDataScriptableObject;
+        public PlayerLevelRemoteDataScriptableObject PlayerlevelRemoteDataScriptableObject => m_playerlevelRemoteDataScriptableObject;
+
         private float m_waveTimer;
         public float WaveTimer => m_waveTimer;
 
@@ -60,16 +64,7 @@ namespace StarSalvager
 
         public bool isPaused => GameTimer.IsPaused;
 
-        public WorldGrid WorldGrid
-        {
-            get
-            {
-                if (m_worldGrid == null)
-                    m_worldGrid = new WorldGrid();
-
-                return m_worldGrid;
-            }
-        }
+        public WorldGrid WorldGrid => m_worldGrid ?? (m_worldGrid = new WorldGrid());
         private WorldGrid m_worldGrid;
 
         public AIObstacleAvoidance AIObstacleAvoidance
@@ -108,16 +103,7 @@ namespace StarSalvager
         }
         private ObstacleManager m_obstacleManager;
 
-        public ProjectileManager ProjectileManager
-        {
-            get
-            {
-                if (m_projectileManager == null)
-                    m_projectileManager = new ProjectileManager();
-
-                return m_projectileManager;
-            }
-        }
+        public ProjectileManager ProjectileManager => m_projectileManager ?? (m_projectileManager = new ProjectileManager());
         private ProjectileManager m_projectileManager;
 
         private GameUI GameUi
@@ -185,6 +171,7 @@ namespace StarSalvager
                     IsWaveProgressing = false;
                     m_levelManagerUI.UpdateLivesText();
                     m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
+                    ResetFromDeath = true;
                 }
                 else
                 {
@@ -323,7 +310,7 @@ namespace StarSalvager
             //FIXME We shouldn't be using Camera.main
             InputManager.Instance.InitInput();
             CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, BotObject.transform.position);
-            Globals.GridSizeX = CurrentSector.GridSizeX;
+            //Globals.GridSizeX = CurrentSector.GridSizeX;
             if (Globals.Orientation == ORIENTATION.VERTICAL)
             {
                 Globals.GridSizeY = (int)((Camera.main.orthographicSize * Globals.GridHeightRelativeToScreen * 2) / Values.Constants.gridCellSize);
@@ -384,6 +371,8 @@ namespace StarSalvager
                 LiquidResourcesAttBeginningOfWave.Clear();
             }
 
+            ObstacleManager.WorldElementsRoot.transform.position = Vector3.zero;
+
             m_waveTimer = 0;
             m_levelTimer = 0;
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
@@ -411,18 +400,7 @@ namespace StarSalvager
 
             CurrentWaveData.ConfigureLootTable();
             List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
-
-            for (int i = newWaveLoot.Count - 1; i >= 0; i--)
-            {
-                if (newWaveLoot[i] is RDSValue<Blueprint> rdsValueBlueprint)
-                {
-                    PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
-                    Toast.AddToast("Unlocked Blueprint!");
-                    newWaveLoot.RemoveAt(i);
-                }
-            }
-
-            ObstacleManager.SpawnBitExplosion(-ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), newWaveLoot);
+            DropLoot(newWaveLoot);
 
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
@@ -456,10 +434,26 @@ namespace StarSalvager
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
                 });
             }
+        }
 
-            
-            
-            
+        private void DropLoot(List<IRDSObject> loot)
+        {
+            for (int i = loot.Count - 1; i >= 0; i--)
+            {
+                if (loot[i] is RDSValue<Blueprint> rdsValueBlueprint)
+                {
+                    PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
+                    Toast.AddToast("Unlocked Blueprint!");
+                    loot.RemoveAt(i);
+                }
+                else if (loot[i] is RDSValue<Vector2Int> rdsValueGears)
+                {
+                    PlayerPersistentData.PlayerData.ChangeGears(Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
+                    loot.RemoveAt(i);
+                }
+            }
+
+            ObstacleManager.SpawnBitExplosion(-ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), loot);
         }
 
         public void SavePlayerData()

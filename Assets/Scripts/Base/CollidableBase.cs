@@ -54,19 +54,21 @@ namespace StarSalvager
         {
             get
             {
-                if (_transform == null)
-                    _transform = gameObject.GetComponent<Transform>();
+                if (isSet) return _transform;
+
+                _transform = gameObject.GetComponent<Transform>();
+                isSet = _transform != null;
 
                 return _transform;
             }
         }
         private Transform _transform;
+        private bool isSet;
         
         //============================================================================================================//
 
         private void OnCollisionEnter2D(Collision2D other)
         {
-            
             if (!useCollision)
                 return;
             

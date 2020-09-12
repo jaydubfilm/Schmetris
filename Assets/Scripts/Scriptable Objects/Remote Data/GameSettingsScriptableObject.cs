@@ -24,10 +24,12 @@ namespace StarSalvager.ScriptableObjects
         public float obstacleDensityReductionModifier = 5.0f;
         public float botHorizontalSpeed = 30.0f;
         public float missionReminderFrequency = 25.0f;
+        public float bonusShapeSpeed = 12.0f;
+        public List<int> bonusShapeGearsRewards;
 
         public bool cameraUseInputMotion = true;
         [ShowIf("cameraUseInputMotion", true)]
-        public float cameraSmoothing = 4.0f;
+        public float cameraSmoothing = 1.0f;
         [ShowIf("cameraUseInputMotion", true)]
         public float cameraOffsetBounds = 0.5f;
 

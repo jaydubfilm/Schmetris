@@ -272,6 +272,8 @@ namespace StarSalvager
                 });
 
             AttachNewBit(Vector2Int.zero, core, updateMissions: false);
+
+            ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
         }
         
         public void InitBot(IEnumerable<IAttachable> botAttachables)
@@ -286,6 +288,8 @@ namespace StarSalvager
                 AttachNewBit(attachable.Coordinate, attachable, updateMissions: false);
             }
         }
+
+
         
         #endregion // Init Bot 
         
@@ -336,6 +340,8 @@ namespace StarSalvager
 
             _rotating = true;
 
+            
+
         }
 
         #endregion //Input Solver
@@ -379,6 +385,9 @@ namespace StarSalvager
             //Force set the rotation to the target, in case the bot is not exactly on target
             rigidbody.rotation = targetRotation;
             targetRotation = 0f;
+            
+            //Should only be called after the rotation finishes
+            CheckForBonusShapeMatches();
         }
 
         private void TryRotateBits()
@@ -504,6 +513,8 @@ namespace StarSalvager
                             //Add these to the block depending on its relative position
                             AttachAttachableToExisting(bit, closestAttachable, connectionDirection);
 
+                            CheckForBonusShapeMatches();
+
                             AudioController.PlaySound(SOUND.BIT_SNAP);
                             SessionDataProcessor.Instance.BitCollected(bit.Type);
                             break;
@@ -580,6 +591,8 @@ namespace StarSalvager
                     //Add these to the block depending on its relative position
                     AttachAttachableToExisting(component, closestAttachable, connectionDirection);
                     SessionDataProcessor.Instance.ComponentCollected(component.Type);
+
+                    CheckForBonusShapeMatches();
                     
                     break;
                 }
@@ -796,6 +809,8 @@ namespace StarSalvager
                         {
                             recycleBits = false
                         });
+
+                        CheckForBonusShapeMatches();
                         
                         CheckForCombosAround(bitsToAdd);
 
@@ -877,6 +892,33 @@ namespace StarSalvager
 
         [SerializeField, BoxGroup("PROTOTYPE")]
         public bool PROTO_GodMode;
+
+        /// <summary>
+        /// Decides if the Attachable closest to the hit position should be destroyed or damaged on the bounce
+        /// </summary>
+        /// <param name="hitPosition"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public void TryBounceAt(Vector2 hitPosition)
+        {
+            if(LevelManager.Instance.EndWaveState)
+                return;
+            
+            var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
+
+            switch (closestAttachable)
+            {
+                case EnemyAttachable _:
+                    AsteroidDamageAt(closestAttachable);
+                    break;
+                case Bit _:
+                case Component _:
+                case Part _:
+                    TryHitAt(closestAttachable, 10f);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(closestAttachable), closestAttachable, null);
+            }
+        }
 
         public void TryHitAt(Vector2 hitPosition, float damage)
         {
@@ -1776,6 +1818,54 @@ namespace StarSalvager
         
         //============================================================================================================//
 
+        #region Check For Bonus Shape Matches
+
+        /// <summary>
+        /// Searches Bot for any matches to Active Bonus Shapes. Solves if any matches are found. Assumes that all matches are Bits.
+        /// </summary>
+        private void CheckForBonusShapeMatches()
+        {
+            var obstacleManager = LevelManager.Instance.ObstacleManager;
+
+            if (!obstacleManager.HasActiveBonusShapes)
+                return;
+            
+            IReadOnlyList<Shape> shapesToCheck = obstacleManager.ActiveBonusShapes;
+
+            foreach (var shape in shapesToCheck)
+            {
+                if (!attachedBlocks.Contains(shape.AttachedBits, out var upgrading))
+                    continue;
+                
+                //TODO Need to upgrade the pieces matched
+                foreach (var coordinate in upgrading)
+                {
+                    var toUpgrade = attachedBlocks.OfType<Bit>().FirstOrDefault(x => x.Coordinate == coordinate);
+
+                    toUpgrade?.IncreaseLevel();
+                }
+
+
+                //TODO Remove the Shape
+                PlayerPersistentData.PlayerData.ChangeGears(Globals.GetBonusShapeGearRewards(shape.AttachedBits.Count) * shape.AttachedBits.Count);
+                obstacleManager.MatchBonusShape(shape);
+
+
+                //Check for Combos
+                CheckForCombosAround<BIT_TYPE>(attachedBlocks);
+                //CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
+
+                //Call this function again
+                CheckForBonusShapeMatches();
+                break;
+
+            }
+        }
+
+        #endregion //CheckForBonusShapeMatches
+        
+        //============================================================================================================//
+
         #region Puzzle Checks
 
         private void CheckForCombosAround<T>(Vector2Int coordinate) where T: Enum
@@ -1783,14 +1873,21 @@ namespace StarSalvager
             CheckForCombosAround(attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate && a is ICanCombo) as ICanCombo<T>);
         }
 
+        private void CheckForCombosAround<T>(IEnumerable<IAttachable> iAttachables) where T : Enum
+        {
+            CheckForCombosAround(iAttachables.OfType <ICanCombo<T>>());
+        }
         private void CheckForCombosAround<T>(IEnumerable<ICanCombo> iCanCombos) where T : Enum
         {
             CheckForCombosAround(iCanCombos.OfType <ICanCombo<T>>());
         }
         
+
+        
         private void CheckForCombosAround<T>(IEnumerable<ICanCombo<T>> iCanCombos) where T: Enum
         {
-            (ComboRemoteData comboData, List<IAttachable> toMove) data = (ComboRemoteData.zero, null);
+            List<PendingCombo> pendingCombos = null;
+            
             foreach (var iCanCombo in iCanCombos)
             {
                 if (iCanCombo == null)
@@ -1802,18 +1899,36 @@ namespace StarSalvager
                 if (!PuzzleChecker.TryGetComboData(this, iCanCombo, out var temp))
                     continue;
 
-                if (temp.comboData.points > data.comboData.points)
-                    data = temp;
+                if (pendingCombos == null)
+                    pendingCombos = new List<PendingCombo>();
 
+                if (pendingCombos.Contains(iCanCombo as IAttachable, out var index))
+                {
+                    if (pendingCombos[index].ComboData.points <= temp.comboData.points)
+                        continue;
+                    
+                    pendingCombos.RemoveAt(index);
+                    
+                    pendingCombos.Add(new PendingCombo(temp));
+                    
+                }
+                else
+                {
+                    pendingCombos.Add(new PendingCombo(temp));
+                }
             }
 
-            if (data.comboData.points == 0)
+            if (pendingCombos == null || pendingCombos.Count == 0)
                 return;
 
-            if(data.toMove[0] is Bit bit)
-                MissionManager.ProcessComboBlocksMissionData(bit.Type, bit.level + 1, 1);
-            
-            SimpleComboSolver(data.comboData, data.toMove);
+            //TODO Need to figure out the multi-combo scores
+            foreach (var pendingCombo in pendingCombos)
+            {
+                if(pendingCombo.ToMove[0] is Bit bit)
+                    MissionManager.ProcessComboBlocksMissionData(bit.Type, bit.level + 1, 1);
+                
+                SimpleComboSolver(pendingCombo);
+            }
         }
         private void CheckForCombosAround<T>(ICanCombo<T> iCanCombo) where T: Enum
         {
@@ -1840,7 +1955,12 @@ namespace StarSalvager
         //============================================================================================================//
         
         #region Combo Solvers
-        
+
+        private void SimpleComboSolver(PendingCombo pendingCombo)
+        {
+            SimpleComboSolver(pendingCombo.ComboData, pendingCombo.ToMove);
+        }
+
         /// <summary>
         /// Solves movement and upgrade logic to do with simple combos of blocks.
         /// </summary>
@@ -1932,18 +2052,17 @@ namespace StarSalvager
                 TEST_MergeSpeed,
                 () =>
                 {
-                    //var bit = closestToCore as Bit;
+                    //Waits till after combo finishes combining to add the points 
+                    PlayerPersistentData.PlayerData.ChangeGears(comboData.points);
 
                     //We need to update the positions and level before we move them in case we interact with bits while they're moving
-
-                    //bit.IncreaseLevel();
                     switch (iCanCombo)
                     {
-                        case Bit bit:
-                            CheckForCombosAround(bit);
+                        case Bit _:
+                            CheckForCombosAround<BIT_TYPE>(attachedBlocks);
                             break;
-                        case Component combo:
-                            CheckForCombosAround(combo);
+                        case Component _:
+                            CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
                             break;
                     }
 
@@ -2816,6 +2935,8 @@ namespace StarSalvager
             var transforms = new Transform[count];
             var startPositions = new Vector3[count];
             var targetPositions = new Vector3[count];
+            
+            var skipsCoordinate = new bool[count];
 
             for (var i = 0; i < count; i++)
             {
@@ -2825,6 +2946,15 @@ namespace StarSalvager
                 targetPositions[i] = transform.InverseTransformPoint((Vector2) transform.position +
                                                                      (Vector2)toMove[i].TargetCoordinate *
                                                                      Constants.gridCellSize);
+
+                var distance = System.Math.Round(Vector2.Distance(startPositions[i], targetPositions[i]), 2);
+                skipsCoordinate[i] = distance > Constants.gridCellSize;
+
+                if (skipsCoordinate[i])
+                {
+                    var spriteRenderer = toMove[i].Target.gameObject.GetComponent<SpriteRenderer>();
+                    spriteRenderer.enabled = false;
+                }
             }
 
             foreach (var shiftData in toMove)
@@ -2856,6 +2986,12 @@ namespace StarSalvager
             {
                 transforms[i].localPosition = targetPositions[i];
                 (toMove[i].Target as CollidableBase)?.SetColliderActive(true);
+
+                if (skipsCoordinate[i])
+                {
+                    var spriteRenderer = toMove[i].Target.gameObject.GetComponent<SpriteRenderer>();
+                    spriteRenderer.enabled = true;
+                }
             }
             
             OnFinishedCallback?.Invoke();
@@ -2962,11 +3098,231 @@ namespace StarSalvager
             PendingDetach?.Clear();
             BotPartsLogic.ClearList();
             //_parts.Clear();
+            
+            ObstacleManager.NewShapeOnScreen -= CheckForBonusShapeMatches;
         }
         
         #endregion //Custom Recycle
         
         //============================================================================================================//
 
+        #region UNITY EDITOR
+
+#if UNITY_EDITOR
+        [Button]
+        private void SetupTest()
+        {
+            var blocks = new List<BlockData>
+            {
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(2,-1),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREY
+                },
+                
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(1,0),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(2,0),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(3,-1),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(3,-2),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+
+            };
+
+            AddMorePieces(blocks, false);
+        }
+        [Button]
+        private void AddComboTestPieces()
+        {
+            var blocks = new List<BlockData>
+            {
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(2,1),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(2,2),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(3,1),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(3,2),
+                    Level =0,
+                    Type = (int)BIT_TYPE.GREEN
+                },
+            };
+            
+            AddMorePieces(blocks, true);
+        }
+        
+        private void AddMorePieces(IEnumerable<BlockData> blocks, bool checkForCombos)
+        {
+            var toAdd = new List<IAttachable>();
+            foreach (var blockData in blocks)
+            {
+                IAttachable attachable;
+
+                switch (blockData.ClassType)
+                {
+                    case nameof(Bit):
+                        attachable = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
+                            .CreateObject<Bit>(blockData);
+                        break;
+                    case nameof(Part):
+                        attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                            .CreateObject<Part>(blockData);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(blockData.ClassType), blockData.ClassType, null);
+                }
+                
+                toAdd.Add(attachable);
+            }
+
+            AddMorePieces(toAdd, checkForCombos);
+        }
+        
+        private void AddMorePieces(IReadOnlyCollection<IAttachable> attachables, bool checkForCombos)
+        {
+            foreach (var attachable in attachables)
+            {
+                AttachNewBit(attachable.Coordinate, attachable, updateMissions: false, checkForCombo: false, checkMagnet:false);
+            }
+
+            if(checkForCombos)
+                CheckForCombosAround<BIT_TYPE>(attachables);
+        }
+        
+        [Button]
+        private void TestContains()
+        {
+            var testBlockData = new List<BlockData>
+            {
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Type = (int)BIT_TYPE.RED,
+                    Level = 0,
+                    Coordinate = new Vector2Int(0,0)
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Type = (int)BIT_TYPE.RED,
+                    Level = 0,
+                    Coordinate = new Vector2Int(1,0)
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Type = (int)BIT_TYPE.RED,
+                    Level = 0,
+                    Coordinate = new Vector2Int(1,-1)
+                },
+            };
+            
+            var result =attachedBlocks.Contains<Bit>(testBlockData, out _);
+            
+            Debug.LogError($"{nameof(attachedBlocks)} contains match: {result}");
+
+
+        }
+#endif
+
+        #endregion //UNITY EDITOR
+
+        //====================================================================================================================//
+        
+    }
+    
+    public struct PendingCombo
+    {
+        public readonly ComboRemoteData ComboData;
+        public readonly List<IAttachable> ToMove;
+
+        public PendingCombo(ComboRemoteData comboData, List<IAttachable> toMove)
+        {
+            ComboData = comboData;
+            ToMove = toMove;
+        }
+        public PendingCombo((ComboRemoteData comboData, List<IAttachable> toMove) data)
+        {
+            var (comboData, toMove) = data;
+            ComboData = comboData;
+            ToMove = toMove;
+        }
+
+        public bool Contains(IAttachable attachable)
+        {
+            if (ToMove == null || ToMove.Count == 0)
+                return false;
+                
+            return ToMove.Contains(attachable);
+        }
+
+    }
+
+    public static class PendingComboListExtensions
+    {
+        public static bool Contains(this List<PendingCombo> list, IAttachable attachable)
+        {
+            return list.Any(pendingCombo => pendingCombo.Contains(attachable));
+        }
+        
+        public static bool Contains(this List<PendingCombo> list, IAttachable attachable, out int index)
+        {
+            index = -1;
+            
+            var temp = list.ToArray();
+            for (var i = 0; i < temp.Length; i++)
+            {
+                if (!temp[i].Contains(attachable))
+                    continue;
+                
+                index = i;
+                return true;
+            }
+
+            return false;
+        }
     }
 }
+
