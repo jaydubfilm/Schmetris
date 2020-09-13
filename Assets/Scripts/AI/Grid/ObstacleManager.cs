@@ -127,8 +127,8 @@ namespace StarSalvager
                 if (m_bonusShapeTimer >= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency)
                 {
                     m_bonusShapeTimer -= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency;
-                    StageObstacleData bonusShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
-                    SpawnBonusShape(bonusShapeData.SelectionType, bonusShapeData.ShapeName, bonusShapeData.Category, bonusShapeData.Rotation());
+                    StageObstacleShapeData bonusObstacleShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
+                    SpawnBonusShape(bonusObstacleShapeData.SelectionType, bonusObstacleShapeData.ShapeName, bonusObstacleShapeData.Category, bonusObstacleShapeData.Rotation);
                     m_bonusShapesSpawned++;
                 }
             }
@@ -568,7 +568,7 @@ namespace StarSalvager
 
                 while (spawnVariable >= 1)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange, inRandomYLevel);
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation, columnFieldRange, inRandomYLevel);
                     spawnVariable -= 1;
                 }
 
@@ -579,7 +579,7 @@ namespace StarSalvager
 
                 if (random <= spawnVariable)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange, inRandomYLevel);
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation, columnFieldRange, inRandomYLevel);
                 }
             }
         }

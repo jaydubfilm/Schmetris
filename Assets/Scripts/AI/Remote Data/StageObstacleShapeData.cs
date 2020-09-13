@@ -1,0 +1,95 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using StarSalvager.Factories;
+using StarSalvager.Values;
+using UnityEngine;
+using Object = UnityEngine.Object;
+
+
+namespace StarSalvager.AI
+{
+    [Serializable]
+    public class StageObstacleShapeData
+    {
+        public SELECTION_TYPE SelectionType => m_selectionType;
+        public string ShapeName => m_shapeName;
+        public string Category => m_category;
+        
+        public int Rotation
+        {
+            get
+            {
+                switch(m_rotation)
+                {
+                    case -1:
+                        return UnityEngine.Random.Range(0, 4);
+                    default:
+                        return m_rotation;
+                }
+            }
+
+        }
+
+        //====================================================================================================================//
+
+        [SerializeField, FoldoutGroup("$SelectionType"), ValueDropdown(nameof(GetSelectionOptions))]
+        protected SELECTION_TYPE m_selectionType;
+        [SerializeField, FoldoutGroup("$SelectionType"), ShowIf(nameof(SelectionType), SELECTION_TYPE.SHAPE), ValueDropdown(nameof(GetShapes))]
+        private string m_shapeName;
+        [SerializeField, FoldoutGroup("$SelectionType"), ShowIf(nameof(SelectionType), SELECTION_TYPE.CATEGORY), ValueDropdown(nameof(GetCategories))]
+        private string m_category;
+        [SerializeField, FoldoutGroup("$SelectionType"), HideIf(nameof(SelectionType), SELECTION_TYPE.BUMPER), ValueDropdown(nameof(EnemyTypes))]
+        private int m_rotation;
+
+        //====================================================================================================================//
+        
+
+
+        #region Unity Editor Functions
+
+#if UNITY_EDITOR
+        protected readonly ValueDropdownList<int> EnemyTypes = new ValueDropdownList<int>
+        {
+            {"Random", -1},
+            {"0", 0},
+            {"90", 1},
+            {"180", 2},
+            {"270", 3}
+        };
+        
+        protected IEnumerable<string> GetShapes()
+        {
+            var shapeDatas = Object.FindObjectOfType<FactoryManager>().EditorBotShapeData.GetEditorShapeData();
+            List<string> shapeNames = new List<string>();
+
+            foreach (var shapeData in shapeDatas)
+            {
+                shapeNames.Add(shapeData.Name);
+            }
+
+            return shapeNames;
+        }
+
+        protected IEnumerable<string> GetCategories()
+        {
+            return Object.FindObjectOfType<FactoryManager>().EditorBotShapeData.m_categories;
+        }
+
+        protected virtual ValueDropdownList<SELECTION_TYPE> GetSelectionOptions()
+        {
+            var valueDropdownItems = new ValueDropdownList<SELECTION_TYPE>
+            {
+                {"Shape", SELECTION_TYPE.SHAPE},
+                {"Category", SELECTION_TYPE.CATEGORY},
+            };
+
+            return valueDropdownItems;
+        }
+        
+#endif
+
+        #endregion //Unity Editor Functions
+    }
+}
