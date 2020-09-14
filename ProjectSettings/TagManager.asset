@@ -8,6 +8,7 @@ TagManager:
   - Moveable
   - DoNotCollideWithBullet
   - Enemy
+  - Asteroid
   layers:
   - Default
   - TransparentFX

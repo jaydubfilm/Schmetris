@@ -85,7 +85,7 @@ namespace StarSalvager
 
             if (CurrentHealth <= 0)
             {
-                Recycler.Recycle<Bit>(this);
+                Recycler.Recycle<Asteroid>(this);
                 return;
             }
 
@@ -110,6 +110,8 @@ namespace StarSalvager
         public void TryHitAt(Vector2 position, float damage)
         {
             ChangeHealth(-damage);
+
+            print("SHOT ASTEROID");
         }
 
         //CollidableBase Functions
@@ -125,7 +127,7 @@ namespace StarSalvager
             {
                 if (bot.Rotating)
                 {
-                    //Recycler.Recycle<Bit>(this);
+                    //Recycler.Recycle<Asteroid>(this);
                     bot.Rotate(bot.MostRecentRotate.Invert());
                     AudioController.PlaySound(SOUND.ASTEROID_BASH);
                     bot.TryHitAt(hitPoint, 10);
