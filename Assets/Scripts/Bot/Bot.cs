@@ -21,6 +21,7 @@ using StarSalvager.Missions;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
 using AudioController = StarSalvager.Audio.AudioController;
+using FloatingText = StarSalvager.Utilities.FloatingText;
 using Math = StarSalvager.Utilities.Math;
 
 namespace StarSalvager
@@ -1837,7 +1838,7 @@ namespace StarSalvager
                 if (!attachedBlocks.Contains(shape.AttachedBits, out var upgrading))
                     continue;
                 
-                //TODO Need to upgrade the pieces matched
+                //Upgrade the pieces matched
                 foreach (var coordinate in upgrading)
                 {
                     var toUpgrade = attachedBlocks.OfType<Bit>().FirstOrDefault(x => x.Coordinate == coordinate);
@@ -1845,10 +1846,14 @@ namespace StarSalvager
                     toUpgrade?.IncreaseLevel();
                 }
 
-
-                //TODO Remove the Shape
-                PlayerPersistentData.PlayerData.ChangeGears(Globals.GetBonusShapeGearRewards(shape.AttachedBits.Count) * shape.AttachedBits.Count);
+                var gears = Globals.GetBonusShapeGearRewards(shape.AttachedBits.Count) * shape.AttachedBits.Count;
+                
+                //Remove the Shape
+                PlayerPersistentData.PlayerData.ChangeGears(gears);
                 obstacleManager.MatchBonusShape(shape);
+                
+                //FIXME We'll need to double check the position here
+                FloatingText.Create($"+{gears}", shape.transform.position, Color.white);
 
 
                 //Check for Combos
@@ -2054,6 +2059,8 @@ namespace StarSalvager
                 {
                     //Waits till after combo finishes combining to add the points 
                     PlayerPersistentData.PlayerData.ChangeGears(comboData.points);
+                    
+                    FloatingText.Create($"+{comboData.points}", closestToCore.transform.position, Color.white);
 
                     //We need to update the positions and level before we move them in case we interact with bits while they're moving
                     switch (iCanCombo)
@@ -2948,7 +2955,7 @@ namespace StarSalvager
                                                                      Constants.gridCellSize);
 
                 var distance = System.Math.Round(Vector2.Distance(startPositions[i], targetPositions[i]), 2);
-                skipsCoordinate[i] = distance > Constants.gridCellSize;
+                skipsCoordinate[i] = distance > System.Math.Round(Constants.gridCellSize, 2);
 
                 if (skipsCoordinate[i])
                 {

@@ -241,21 +241,6 @@ namespace StarSalvager
             {
                 m_offGridMovingObstacles[i].LerpTimer += Time.deltaTime / m_offGridMovingObstacles[i].LerpSpeed;
 
-                //Determines if a new bonus shape is now visible on screen, notifies those who care about the change
-                //----------------------------------------------------------------------------------------------------//
-                
-                if (!m_offGridMovingObstacles[i].isVisible && m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
-                    m_bonusShapes.Contains(checkShape))
-                {
-                    if (CameraController.IsPointInCameraRect(checkShape.transform.position, BONUS_SCREEN_AREA))
-                    {
-                        m_offGridMovingObstacles[i].isVisible = true;
-                        NewShapeOnScreen?.Invoke();
-                    }
-                }
-                
-                //----------------------------------------------------------------------------------------------------//
-
                 if (m_offGridMovingObstacles[i].LerpTimer >= 1)
                 {
                     switch(m_offGridMovingObstacles[i].Obstacle)
@@ -312,6 +297,22 @@ namespace StarSalvager
                 
                 
                 m_offGridMovingObstacles[i].Spin();
+
+
+                //Determines if a new bonus shape is now visible on screen, notifies those who care about the change
+                //----------------------------------------------------------------------------------------------------//
+
+                if (!m_offGridMovingObstacles[i].isVisible && m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
+                    m_bonusShapes.Contains(checkShape))
+                {
+                    if (CameraController.IsPointInCameraRect(checkShape.transform.position, BONUS_SCREEN_AREA))
+                    {
+                        m_offGridMovingObstacles[i].isVisible = true;
+                        NewShapeOnScreen?.Invoke();
+                    }
+                }
+
+                //----------------------------------------------------------------------------------------------------//
             }
 
             for (int i = m_obstacles.Count - 1; i >= 0; i--)
@@ -557,13 +558,16 @@ namespace StarSalvager
             foreach (StageObstacleData stageObstacleData in obstacleData)
             {
                 float spawnVariable = stageObstacleData.Density * spawningMultiplier * ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
-                if (isPrevious)
+                if (m_currentStageData.StageBlendPeriod > 0)
                 {
-                    spawnVariable *= Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
-                }
-                else if (m_previousStageData != null && m_blendTimer <= m_currentStageData.StageBlendPeriod)
-                {
-                    spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                    if (isPrevious)
+                    {
+                        spawnVariable *= Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                    }
+                    else if (m_previousStageData != null && m_blendTimer <= m_currentStageData.StageBlendPeriod)
+                    {
+                        spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                    }
                 }
 
                 while (spawnVariable >= 1)

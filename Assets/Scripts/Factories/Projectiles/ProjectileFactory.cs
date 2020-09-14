@@ -2,6 +2,7 @@
 using StarSalvager.ScriptableObjects;
 using StarSalvager.AI;
 using Recycling;
+using StarSalvager.Factories.Data;
 
 namespace StarSalvager.Factories
 {
@@ -19,6 +20,11 @@ namespace StarSalvager.Factories
         }
 
         //============================================================================================================//
+
+        public ProjectileProfileData GetProfileData(string projectileType)
+        {
+            return m_projectileProfile.GetProjectileProfileData(projectileType);
+        }
 
         public override GameObject CreateGameObject()
         {

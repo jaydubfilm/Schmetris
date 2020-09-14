@@ -61,6 +61,13 @@ namespace StarSalvager
 
         public EnemyData(EnemyRemoteData enemyRemoteData, EnemyProfileData enemyProfileData)
         {
+            ProjectileProfileData projectileProfileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(enemyProfileData.ProjectileType);
+
+            AttackType = projectileProfileData.AttackType;
+            AddVelocityToProjectiles = projectileProfileData.AddVelocityToProjectiles;
+            SpreadAngle = projectileProfileData.SpreadAngle;
+            m_sprayCount = projectileProfileData.SprayCount;
+
             EnemyType                   = enemyRemoteData.EnemyID;
             Name                        = enemyRemoteData.Name;
             Health                      = enemyRemoteData.Health;
@@ -69,7 +76,6 @@ namespace StarSalvager
             AttackDamage                = enemyRemoteData.AttackDamage;
             RateOfFire                  = enemyRemoteData.RateOfFire;
             MovementType                = enemyProfileData.MovementType;
-            AttackType                  = enemyProfileData.AttackType;
             IgnoreObstacleAvoidance     = enemyProfileData.IgnoreObstacleAvoidance;
             ProjectileType              = enemyProfileData.ProjectileType;
             Sprite                      = enemyProfileData.Sprite;
@@ -78,9 +84,6 @@ namespace StarSalvager
             OscillationAngleRange       = enemyProfileData.OscillationAngleRange;
             OrbitRadius                 = enemyProfileData.OrbitRadius;
             NumberCellsDescend          = enemyProfileData.NumberCellsDescend;
-            AddVelocityToProjectiles    = enemyProfileData.AddVelocityToProjectiles;
-            SpreadAngle                 = enemyProfileData.SpreadAngle;
-            m_sprayCount                = enemyProfileData.SprayCount;
             Dimensions                  = enemyRemoteData.Dimensions;
 
 
