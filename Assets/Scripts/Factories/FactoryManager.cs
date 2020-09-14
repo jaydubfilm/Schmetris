@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using StarSalvager.AI;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.FileIO;
-using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.Factories
@@ -107,6 +105,9 @@ namespace StarSalvager.Factories
         [SerializeField, Required, BoxGroup("Particles")]
         private GameObject labelPrefab;
 
+        [SerializeField, Required, BoxGroup("Particles")]
+        private GameObject floatingTextPrefab;
+
         //============================================================================================================//
 
         private Dictionary<Type, FactoryBase> _factoryBases;
@@ -167,7 +168,7 @@ namespace StarSalvager.Factories
                     return new DamageFactory(damageFactory) as T;
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(ParticleFactory):
-                    return new ParticleFactory(explosionPrefab, labelPrefab) as T;
+                    return new ParticleFactory(explosionPrefab, labelPrefab, floatingTextPrefab) as T;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type.Name, null);
