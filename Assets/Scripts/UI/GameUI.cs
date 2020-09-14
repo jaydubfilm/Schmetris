@@ -175,6 +175,8 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private TMP_Text levelText;
+        [SerializeField, Required, FoldoutGroup("BL Window")]
+        private TMP_Text gearsText;
         
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderText fuelSlider;
@@ -340,7 +342,7 @@ namespace StarSalvager.UI
             SetClockValue(1f);
             SetTimeString("0:00");
             
-            SetPlayerGearsLevel(0,0);
+            SetPlayerGearsLevel(0,0, 0);
         }
 
         private void InitSliderText()
@@ -390,7 +392,7 @@ namespace StarSalvager.UI
             SetRepairValue(playerData.liquidResource[BIT_TYPE.GREEN]);
             SetAmmoValue(playerData.liquidResource[BIT_TYPE.GREY]);
 
-            SetPlayerGearsLevel(playerData.Level, playerData.Gears);
+            SetPlayerGearsLevel(playerData.Level, playerData.Gears, 999);
         }
 
         //============================================================================================================//
@@ -419,12 +421,13 @@ namespace StarSalvager.UI
         //TODO I should look into the NotifyPropertyChanged for setting up this functionality
         private void UpdatePlayerGearsLevel()
         {
-            SetPlayerGearsLevel(PlayerPersistentData.PlayerData.Level, PlayerPersistentData.PlayerData.Gears);
+            SetPlayerGearsLevel(PlayerPersistentData.PlayerData.Level, PlayerPersistentData.PlayerData.Gears, 999);
         }
         
-        public void SetPlayerGearsLevel(int playerLevel, int gears)
+        public void SetPlayerGearsLevel(int playerLevel, int gears, int gearsRemaining)
         {
             levelText.text = $"{gears} lvl {playerLevel}";
+            gearsText.text = $"/{gearsRemaining}";
         }
 
         public void SetAllResourceSliderBounds(int min, int max)

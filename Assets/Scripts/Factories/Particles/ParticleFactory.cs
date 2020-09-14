@@ -1,5 +1,6 @@
 ﻿using System;
 using Recycling;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Animations;
 using TMPro;
 using UnityEngine;
@@ -11,13 +12,15 @@ namespace StarSalvager.Factories
     {
         private readonly GameObject _explosionPrefab;
         private readonly GameObject _labelPrefab;
+        private readonly GameObject _floatingTextPrefab;
         
         //============================================================================================================//
 
-        public ParticleFactory(GameObject explosionPrefab, GameObject labelPrefab)
+        public ParticleFactory(GameObject explosionPrefab, GameObject labelPrefab, GameObject floatingTextPrefab)
         {
             _explosionPrefab = explosionPrefab;
             _labelPrefab = labelPrefab;
+            _floatingTextPrefab = floatingTextPrefab;
         }
         
         //============================================================================================================//
@@ -32,14 +35,17 @@ namespace StarSalvager.Factories
         {
             GameObject gameObject;
             
-            var type = typeof(T).Name;
-            switch (type)
+            var type = typeof(T);
+            switch (true)
             {
-                case nameof(Explosion):
+                case bool _ when type == typeof(Explosion):
                     gameObject = CreateExplosion();
                     break;
-                case nameof(TextMeshPro):
+                case bool _ when type == typeof(TextMeshPro):
                     gameObject = CreateLabel();
+                    break;
+                case bool _ when type == typeof(FloatingText):
+                    gameObject = CreateFloatingText();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -65,6 +71,16 @@ namespace StarSalvager.Factories
             if (!Recycler.TryGrab<TextMeshPro>(out GameObject gameObject))
             {
                 gameObject = Object.Instantiate(_labelPrefab);
+            }
+
+            return gameObject;
+        }
+
+        private GameObject CreateFloatingText()
+        {
+            if (!Recycler.TryGrab<FloatingText>(out GameObject gameObject))
+            {
+                gameObject = Object.Instantiate(_floatingTextPrefab);
             }
 
             return gameObject;

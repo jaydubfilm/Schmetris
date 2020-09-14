@@ -8,6 +8,8 @@ using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 using StarSalvager.Missions;
+using UnityEngine.SceneManagement;
+using StarSalvager.Utilities.SceneManagement;
 
 namespace StarSalvager.Values
 {
@@ -96,8 +98,8 @@ namespace StarSalvager.Values
         public int numLives = 3;
         public bool firstFlight = true;
 
-        public int Level { get; private set; }
-        public int Gears { get; private set; }
+        public int Level;
+        public int Gears;
 
         public string PlaythroughID = string.Empty;
 
@@ -106,8 +108,44 @@ namespace StarSalvager.Values
         public void ChangeGears(int amount)
         {
             Gears += amount;
+            if (LevelManager.Instance.WaveEndSummaryData != null)
+            {
+                LevelManager.Instance.WaveEndSummaryData.numGearsGained += amount;
+            }
+
+            int gearsToLevelUp = LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).GearsToLevelUp;
+            if (Gears >= gearsToLevelUp)
+            {
+                Gears -= gearsToLevelUp;
+                DropLevelLoot();
+                if (LevelManager.Instance.WaveEndSummaryData != null)
+                {
+                    LevelManager.Instance.WaveEndSummaryData.numLevelsGained++;
+                }
+                Level++;
+            }
             
             OnValuesChanged?.Invoke();
+        }
+
+        private void DropLevelLoot()
+        {
+            LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).ConfigureLootTable();
+            List<IRDSObject> levelUpLoot = LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).rdsTable.rdsResult.ToList();
+            for (int i = levelUpLoot.Count - 1; i >= 0; i--)
+            {
+                if (levelUpLoot[i] is RDSValue<Blueprint> rdsValueBlueprint)
+                {
+                    PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
+                    Toast.AddToast("Unlocked Blueprint!");
+                    levelUpLoot.RemoveAt(i);
+                }
+                else if (levelUpLoot[i] is RDSValue<Vector2Int> rdsValueGears)
+                {
+                    PlayerPersistentData.PlayerData.ChangeGears(UnityEngine.Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
+                    levelUpLoot.RemoveAt(i);
+                }
+            }
         }
 
         //============================================================================================================//
@@ -337,6 +375,12 @@ namespace StarSalvager.Values
             if (!unlockedBlueprints.Any(b => b.name == blueprint.name))
             {
                 unlockedBlueprints.Add(blueprint);
+
+                if (LevelManager.Instance.WaveEndSummaryData != null)
+                {
+                    LevelManager.Instance.WaveEndSummaryData.numBlueprintsUnlocked++;
+                    LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprint.name);
+                }
             }
         }
     }

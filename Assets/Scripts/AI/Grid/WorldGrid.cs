@@ -265,17 +265,24 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        private Vector2Int GetCoordinatesOfRandomTopGridSquareInGridRegion(Vector2 gridRegion)
+        private Vector2Int GetCoordinatesOfRandomGridSquareInGridRegion(Vector2 gridRegion, bool inRandomYLevel)
         {
-            return new Vector2Int(UnityEngine.Random.Range((int)(m_gridSizeX * gridRegion.x), (int)(m_gridSizeX * gridRegion.y)), m_gridSizeY - 1);
+            if (inRandomYLevel)
+            {
+                return new Vector2Int(UnityEngine.Random.Range((int)(m_gridSizeX * gridRegion.x), (int)(m_gridSizeX * gridRegion.y)), UnityEngine.Random.Range(0, m_gridSizeY - 1));
+            }
+            else
+            {
+                return new Vector2Int(UnityEngine.Random.Range((int)(m_gridSizeX * gridRegion.x), (int)(m_gridSizeX * gridRegion.y)), m_gridSizeY - 1);
+            }
         }
 
-        public Vector2 GetLocalPositionOfRandomTopGridSquareInGridRegion(int scanRadius, Vector2 gridRegion)
+        public Vector2 GetLocalPositionOfRandomGridSquareInGridRegion(int scanRadius, Vector2 gridRegion, bool inRandomYLevel)
         {
             int numTries = 10;
             for (int i = 0; i < numTries; i++)
             {
-                Vector2Int randomTop = GetCoordinatesOfRandomTopGridSquareInGridRegion(gridRegion);
+                Vector2Int randomTop = GetCoordinatesOfRandomGridSquareInGridRegion(gridRegion, inRandomYLevel);
                 //Vector2Int randomTop = GetRandomTopGridSquareGridPosition(gridRegion) + (Vector2Int.right * m_positionsShiftedHorizontally);
                 bool isFreeSpace = true;
                 Vector2Int obstacleGridScanMinimum = new Vector2Int(
@@ -305,7 +312,7 @@ namespace StarSalvager
                 }
             }
 
-            return GetLocalPositionOfRandomTopGridSquareInGridRegion(scanRadius - 1, gridRegion);
+            return GetLocalPositionOfRandomGridSquareInGridRegion(scanRadius - 1, gridRegion, inRandomYLevel);
         }
 
         public Vector2Int[] SelectBitExplosionPositions(Vector2 startingLocation, int numBits, int verticalExplosionRange, int horizontalExplosionRange)

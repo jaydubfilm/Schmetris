@@ -44,6 +44,10 @@ namespace StarSalvager
         private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
         public StandardBufferZoneObstacleData StandardBufferZoneObstacleData => m_standardBufferZoneObstacleData;
 
+        [SerializeField, Required]
+        private PlayerLevelRemoteDataScriptableObject m_playerlevelRemoteDataScriptableObject;
+        public PlayerLevelRemoteDataScriptableObject PlayerlevelRemoteDataScriptableObject => m_playerlevelRemoteDataScriptableObject;
+
         private float m_waveTimer;
         public float WaveTimer => m_waveTimer;
 
@@ -101,6 +105,9 @@ namespace StarSalvager
 
         public ProjectileManager ProjectileManager => m_projectileManager ?? (m_projectileManager = new ProjectileManager());
         private ProjectileManager m_projectileManager;
+
+        public WaveEndSummaryData WaveEndSummaryData => m_waveEndSummaryData;
+        private WaveEndSummaryData m_waveEndSummaryData;
 
         private GameUI GameUi
         {
@@ -225,6 +232,10 @@ namespace StarSalvager
                 GameUi.SetTimeString("0:00");
                 SavePlayerData();
                 GameTimer.SetPaused(true);
+                //Turn wave end summary data into string, post in alert, and clear wave end summary data
+                Alert.ShowAlert("Wave End Data", m_waveEndSummaryData.GetWaveEndSummaryDataString(), "Continue", null);
+
+                m_waveEndSummaryData = new WaveEndSummaryData();
                 m_levelManagerUI.ToggleBetweenWavesUIActive(true);
                 ObstacleManager.MoveToNewWave();
                 EnemyManager.MoveToNewWave();
@@ -269,6 +280,7 @@ namespace StarSalvager
         {
             m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
+            m_waveEndSummaryData = new WaveEndSummaryData();
 
             BotObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
             if (PlayerPersistentData.PlayerData.GetCurrentBlockData().Count == 0)
@@ -374,6 +386,7 @@ namespace StarSalvager
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
             ProjectileManager.Reset();
             MissionsCompletedDuringThisFlight.Clear();
+            m_waveEndSummaryData = null;
         }
 
         //====================================================================================================================//
@@ -396,18 +409,7 @@ namespace StarSalvager
 
             CurrentWaveData.ConfigureLootTable();
             List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
-
-            for (int i = newWaveLoot.Count - 1; i >= 0; i--)
-            {
-                if (newWaveLoot[i] is RDSValue<Blueprint> rdsValueBlueprint)
-                {
-                    PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
-                    Toast.AddToast("Unlocked Blueprint!");
-                    newWaveLoot.RemoveAt(i);
-                }
-            }
-
-            ObstacleManager.SpawnBitExplosion(-ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), newWaveLoot);
+            DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize));
 
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
@@ -441,10 +443,26 @@ namespace StarSalvager
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
                 });
             }
+        }
 
-            
-            
-            
+        public void DropLoot(List<IRDSObject> loot, Vector3 position)
+        {
+            for (int i = loot.Count - 1; i >= 0; i--)
+            {
+                if (loot[i] is RDSValue<Blueprint> rdsValueBlueprint)
+                {
+                    PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
+                    Toast.AddToast("Unlocked Blueprint!");
+                    loot.RemoveAt(i);
+                }
+                else if (loot[i] is RDSValue<Vector2Int> rdsValueGears)
+                {
+                    PlayerPersistentData.PlayerData.ChangeGears(Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
+                    loot.RemoveAt(i);
+                }
+            }
+
+            ObstacleManager.SpawnObstacleExplosion(position, loot);
         }
 
         public void SavePlayerData()

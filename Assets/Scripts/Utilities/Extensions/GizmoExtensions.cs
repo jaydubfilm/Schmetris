@@ -26,11 +26,7 @@ namespace StarSalvager.Utilities.Extensions
             Gizmos.DrawLine(BL, TL);
         }*/
 
-        public static void DrawDebugRect(Rect rect, Color color)
-        {
-            DrawDebugRect(rect, color, 1f);
-        }
-        public static void DrawDebugRect(Rect rect, Color color, float duration = 1f)
+        public static void DrawDebugRect(Rect rect, Color color, float duration = 0.1f)
         {
             var TL = new Vector2(rect.xMin, rect.yMin);
             var TR = new Vector2(rect.xMax, rect.yMin);
