@@ -172,6 +172,9 @@ namespace StarSalvager
                     case Bit bit:
                         Recycler.Recycle<Bit>(bit);
                         break;
+                    case Asteroid asteroid:
+                        Recycler.Recycle<Asteroid>(asteroid);
+                        break;
                     case Component component:
                         Recycler.Recycle<Component>(component);
                         break;
@@ -254,6 +257,17 @@ namespace StarSalvager
                             {
                                 PlaceMovableOnGridSpecific(bit, m_offGridMovingObstacles[i].EndPosition);
                                 bit.SetColliderActive(true);
+                            }
+                            break;
+                        case Asteroid asteroid:
+                            if (m_offGridMovingObstacles[i].DespawnOnEnd)
+                            {
+                                Recycler.Recycle<Asteroid>(asteroid);
+                            }
+                            else
+                            {
+                                PlaceMovableOnGridSpecific(asteroid, m_offGridMovingObstacles[i].EndPosition);
+                                asteroid.SetColliderActive(true);
                             }
                             break;
                         case Component component:
@@ -620,6 +634,11 @@ namespace StarSalvager
                             AddObstacleToList(newBit);
                             PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;
+                        case nameof(Asteroid):
+                            Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroidRandom<Asteroid>();
+                            AddObstacleToList(newAsteroid);
+                            PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
+                            break;
                         case nameof(Component):
                             Component newComponent = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().CreateObject<Component>((COMPONENT_TYPE)rdsValueBlockData.rdsValue.Type);
                             AddObstacleToList(newComponent);
@@ -670,7 +689,7 @@ namespace StarSalvager
             }
             else if (selectionType == SELECTION_TYPE.ASTEROID)
             {
-                Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateLargeAsteroid<Asteroid>(asteroidSize);
+                Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(asteroidSize);
                 AddObstacleToList(newAsteroid);
 
                 int radiusAround = 0;
@@ -765,6 +784,7 @@ namespace StarSalvager
             switch (movable)
             {
                 case Bit _:
+                case Asteroid _:
                 case Component _:
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
                     break;

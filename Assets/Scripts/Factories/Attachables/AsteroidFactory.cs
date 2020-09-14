@@ -29,7 +29,13 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        public T CreateLargeAsteroid<T>(ASTEROID_SIZE asteroidSize)
+        public T CreateAsteroidRandom<T>()
+        {
+            ASTEROID_SIZE asteroidSize = (ASTEROID_SIZE)Random.Range(0, 4);
+            return CreateAsteroid<T>(asteroidSize);
+        }
+
+        public T CreateAsteroid<T>(ASTEROID_SIZE asteroidSize)
         {
             var profile = ((AsteroidProfileScriptableObject)_profileData).GetAsteroidProfile(asteroidSize);
             var remote = _remoteData.GetRemoteData(asteroidSize);
