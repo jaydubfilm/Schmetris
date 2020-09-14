@@ -391,7 +391,7 @@ namespace StarSalvager.UI
                     if (partRemoteData.partType == PART_TYPE.CORE)
                         continue;
 
-                    var element = partsScrollView.AddElement<BrickImageUIElement>(partRemoteData, $"{partRemoteData.partType}_{i}_UIElement", true);
+                    var element = partsScrollView.AddElement(partRemoteData, $"{partRemoteData.partType}_{i}_UIElement", true);
                     element.Init(partRemoteData, PartBitPressed, i);
                 }
             }
@@ -401,16 +401,16 @@ namespace StarSalvager.UI
             {
                 for (int i = 0; i < bitRemoteData.levels.Length; i++)
                 {
-                    var element = partsScrollView.AddElement<BrickImageUIElement>(bitRemoteData, $"{bitRemoteData.bitType}_{i}_UIElement", true);
+                    var element = partsScrollView.AddElement(bitRemoteData, $"{bitRemoteData.bitType}_{i}_UIElement", true);
                     element.Init(bitRemoteData, PartBitPressed, i);
-                    var element2 = bitsScrollView.AddElement<BrickImageUIElement>(bitRemoteData, $"{bitRemoteData.bitType}_{i}_UIElement", true);
+                    var element2 = bitsScrollView.AddElement(bitRemoteData, $"{bitRemoteData.bitType}_{i}_UIElement", true);
                     element2.Init(bitRemoteData, PartBitPressed, i);
                 }
             }
 
             BitRemoteData remoteData = new BitRemoteData();
             remoteData.bitType = BIT_TYPE.BLACK;
-            var test = bitsScrollView.AddElement<BrickImageUIElement>(remoteData, $"{remoteData.bitType}_0_UIElement", true);
+            var test = bitsScrollView.AddElement(remoteData, $"{remoteData.bitType}_0_UIElement", true);
             test.Init(remoteData, PartBitPressed, 0);
 
             UpdateCategoriesScrollViews();
@@ -426,7 +426,7 @@ namespace StarSalvager.UI
             //FIXME This needs to move to the Factory
             foreach (var category in m_botShapeEditor.EditorBotShapeData.m_categories)
             {
-                var element = categoriesScrollView.AddElement<CategoryToggleUIElement>(category, category);
+                var element = categoriesScrollView.AddElement(category, category);
                 element.Init(category, CategoryPressed);
             }
         }
@@ -435,19 +435,19 @@ namespace StarSalvager.UI
         {
             foreach (var botGeneratorData in m_botShapeEditor.EditorBotShapeData.m_editorBotGeneratorData)
             {
-                if (botLoadListScrollView.FindElement<BotLoadListUIElement>(botGeneratorData))
+                if (botLoadListScrollView.FindElement(botGeneratorData))
                     continue;
 
-                var element = botLoadListScrollView.AddElement<BotLoadListUIElement>(botGeneratorData, $"{botGeneratorData.Name}_UIElement");
+                var element = botLoadListScrollView.AddElement(botGeneratorData, $"{botGeneratorData.Name}_UIElement");
                 element.Init(botGeneratorData, BotShapePressed);
             }
 
             foreach (var shapeGeneratorData in m_botShapeEditor.EditorBotShapeData.m_editorShapeGeneratorData)
             {
-                if (shapeLoadListScrollView.FindElement<BotLoadListUIElement>(shapeGeneratorData))
+                if (shapeLoadListScrollView.FindElement(shapeGeneratorData))
                     continue;
 
-                var element = shapeLoadListScrollView.AddElement<BotLoadListUIElement>(shapeGeneratorData, $"{shapeGeneratorData.Name}_UIElement");
+                var element = shapeLoadListScrollView.AddElement(shapeGeneratorData, $"{shapeGeneratorData.Name}_UIElement");
                 element.Init(shapeGeneratorData, BotShapePressed);
             }
 

@@ -10,7 +10,7 @@ using Object = UnityEngine.Object;
 namespace StarSalvager.UI
 {
     [Serializable]
-    public class UIElementContentScrollView<T> where T : IEquatable<T>
+    public class UIElementContentScrollView<U, T> where U: UIElement<T> where T : IEquatable<T>
     {
         [SerializeField, Required]
         private RectTransform contentTransform;
@@ -18,21 +18,21 @@ namespace StarSalvager.UI
         [SerializeField, Required]
         private GameObject contentPrefab;
 
-        public List<UIElement<T>> Elements { get; private set; }
+        public List<U> Elements { get; private set; }
 
         //TODO: find a better method then the compareNames for the current cases using this comparison (botshapeeditorui)
-        public U AddElement<U>(T data, string gameObjectName = "", bool compareNames = false, bool allowDuplicate = false) where U: UIElement<T>
+        public U AddElement(T data, string gameObjectName = "", bool compareNames = false, bool allowDuplicate = false)
         {
             if (Elements == null)
-                Elements = new List<UIElement<T>>();
+                Elements = new List<U>();
 
             if (!allowDuplicate)
             {
                 U exists;
                 if (compareNames)
-                    exists = FindElement<U>(data, gameObjectName);
+                    exists = FindElement(data, gameObjectName);
                 else
-                    exists = FindElement<U>(data);
+                    exists = FindElement(data);
 
                 if (exists != null)
                     return exists;
@@ -51,17 +51,17 @@ namespace StarSalvager.UI
             return element;
         }
 
-        public U FindElement<U>(T data) where U : UIElement<T>
+        public U FindElement(T data)
         {
-            return (U) Elements?.FirstOrDefault(x => x.data.Equals(data));
+            return Elements?.FirstOrDefault(x => x.data.Equals(data));
         }
 
-        public U FindElement<U>(T data, string name) where U : UIElement<T>
+        public U FindElement(T data, string name)
         {
-            return (U)Elements?.FirstOrDefault(x => x.data.Equals(data) && x.name == name);
+            return Elements?.FirstOrDefault(x => x.data.Equals(data) && x.name == name);
         }
 
-        public void RemoveElement<U>(T data) where U : UIElement<T>
+        public void RemoveElement(T data)
         {
             if (Elements == null)
                 return;
@@ -81,16 +81,16 @@ namespace StarSalvager.UI
             if (index < 0)
                 return;
 
-            RemoveElementAtIndex<U>(index);
+            RemoveElementAtIndex(index);
         }
 
-        public void RemoveElementAtIndex<U>(int index) where U : UIElement<T>
+        public void RemoveElementAtIndex(int index)
         {
             Recycler.Recycle<U>(Elements[index]);
             Elements.RemoveAt(index);
         }
 
-        public void ClearElements<U>() where U : UIElement<T> 
+        public void ClearElements()
         {
             if (Elements == null)
                 return;
@@ -109,7 +109,7 @@ namespace StarSalvager.UI
         public void SetElementsActive(bool state)
         {
             if (Elements == null)
-                Elements = new List<UIElement<T>>();
+                Elements = new List<U>();
 
             foreach (var uiElement in Elements)
             {

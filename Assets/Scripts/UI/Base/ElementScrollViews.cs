@@ -7,27 +7,27 @@ using UnityEngine;
 namespace StarSalvager.UI
 {
     [System.Serializable]
-    public class PartUIElementScrollView: UIElementContentScrollView<RemoteDataBase>
+    public class PartUIElementScrollView: UIElementContentScrollView<BrickImageUIElement, RemoteDataBase>
     {}
 
     [System.Serializable]
-    public class CategoryElementScrollView : UIElementContentScrollView<string>
+    public class CategoryElementScrollView : UIElementContentScrollView<CategoryToggleUIElement, string>
     { }
 
     [System.Serializable]
-    public class ResourceUIElementScrollView: UIElementContentScrollView<ResourceAmount>
+    public class ResourceUIElementScrollView: UIElementContentScrollView<ResourceUIElement, ResourceAmount>
     {}
     
     [System.Serializable]
-    public class CostUIElementScrollView: UIElementContentScrollView<CraftCost>
+    public class CostUIElementScrollView: UIElementContentScrollView<CostUIElement, CraftCost>
     {}
 
     [System.Serializable]
-    public class BotShapeDataElementScrollView : UIElementContentScrollView<EditorGeneratorDataBase>
+    public class BotShapeDataElementScrollView : UIElementContentScrollView<BotLoadListUIElement, EditorGeneratorDataBase>
     { }
 
     [System.Serializable]
-    public class LayoutElementScrollView : UIElementContentScrollView<ScrapyardLayout>
+    public class LayoutElementScrollView : UIElementContentScrollView<LayoutUIElement, ScrapyardLayout>
     { }
 }
 

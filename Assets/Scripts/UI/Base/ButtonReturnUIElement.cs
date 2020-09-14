@@ -24,4 +24,20 @@ namespace StarSalvager.UI
             });
         }
     } 
+    
+    [RequireComponent(typeof(Button))]
+    public abstract class ButtonReturnUIElement<T> : ButtonUIElement<T> where T : IEquatable<T>
+    {
+        public abstract void Init(T data, Action<T> OnPressed);
+
+        public sealed override void Init(T data, Action OnPressed)
+        {
+            Init(data);
+            
+            button.onClick.AddListener(() =>
+            {
+                OnPressed?.Invoke();
+            });
+        }
+    } 
 }

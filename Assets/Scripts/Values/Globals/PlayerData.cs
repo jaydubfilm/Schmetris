@@ -36,6 +36,8 @@ namespace StarSalvager.Values
             {BIT_TYPE.GREY, 0},
         };
 
+        [JsonIgnore]
+        public Dictionary<BIT_TYPE, int> resourceCapacities => _resourceCapacity;
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _resourceCapacity = new Dictionary<BIT_TYPE, int>
         {

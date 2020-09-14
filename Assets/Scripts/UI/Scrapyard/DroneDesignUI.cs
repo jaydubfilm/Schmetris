@@ -320,7 +320,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 var partRemoteData = remotePartProfileScriptable.GetRemoteData((PART_TYPE)blockData.Type);
 
-                var element = partsScrollView.AddElement<BrickImageUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
+                var element = partsScrollView.AddElement(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
                 element.Init(partRemoteData, PartPressed, blockData.Level);
             }
         }
@@ -375,13 +375,13 @@ namespace StarSalvager.UI.Scrapyard
         {
             var partRemoteData = remotePartProfileScriptable.GetRemoteData((PART_TYPE)blockData.Type);
 
-            var element = partsScrollView.AddElement<BrickImageUIElement>(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
+            var element = partsScrollView.AddElement(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
             element.Init(partRemoteData, PartPressed, blockData.Level);
         }
 
         public void RefreshScrollViews()
         {
-            partsScrollView.ClearElements<BrickImageUIElement>();
+            partsScrollView.ClearElements();
             InitUiScrollView();
             UpdateResourceElements();
         }
@@ -400,7 +400,7 @@ namespace StarSalvager.UI.Scrapyard
                     capacity = MAX_CAPACITY
                 };
 
-                var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
+                var element = resourceScrollView.AddElement(data, $"{resource.Key}_UIElement");
                 element.Init(data);
             }
 
@@ -427,7 +427,7 @@ namespace StarSalvager.UI.Scrapyard
                     type = bitType,
                 };
 
-                var element = liquidResourceContentView.AddElement<ResourceUIElement>(data, $"{liquid.Key}_UIElement");
+                var element = liquidResourceContentView.AddElement(data, $"{liquid.Key}_UIElement");
                 element.Init(data, true);
             }
         }
@@ -436,10 +436,10 @@ namespace StarSalvager.UI.Scrapyard
         {
             foreach (var layoutData in mDroneDesigner.ScrapyardLayouts)
             {
-                if (layoutScrollView.FindElement<LayoutUIElement>(layoutData))
+                if (layoutScrollView.FindElement(layoutData))
                     continue;
 
-                var element = layoutScrollView.AddElement<LayoutUIElement>(layoutData, $"{layoutData.Name}_UIElement");
+                var element = layoutScrollView.AddElement(layoutData, $"{layoutData.Name}_UIElement");
                 element.Init(layoutData, LayoutPressed);
             }
             layoutScrollView.SetElementsActive(true);
