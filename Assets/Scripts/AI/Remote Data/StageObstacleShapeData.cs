@@ -34,7 +34,9 @@ namespace StarSalvager.AI
 
         [SerializeField, FoldoutGroup("$SelectionType"), ValueDropdown(nameof(GetSelectionOptions))]
         protected SELECTION_TYPE m_selectionType;
-        [SerializeField, FoldoutGroup("$SelectionType"), ShowIf(nameof(SelectionType), SELECTION_TYPE.SHAPE), ValueDropdown(nameof(GetShapes))]
+        [SerializeField, FoldoutGroup("$SelectionType"), ShowIf(nameof(SelectionType), 
+             SELECTION_TYPE.SHAPE), ValueDropdown(nameof(GetShapes)), 
+         InfoBox("No Name Selected", InfoMessageType.Error, VisibleIf = nameof(HasNoSelectedName))]
         private string m_shapeName;
         [SerializeField, FoldoutGroup("$SelectionType"), ShowIf(nameof(SelectionType), SELECTION_TYPE.CATEGORY), ValueDropdown(nameof(GetCategories))]
         private string m_category;
@@ -84,6 +86,11 @@ namespace StarSalvager.AI
             };
 
             return valueDropdownItems;
+        }
+
+        private bool HasNoSelectedName()
+        {
+            return string.IsNullOrEmpty(m_shapeName);
         }
         
 #endif
