@@ -557,13 +557,16 @@ namespace StarSalvager
             foreach (StageObstacleData stageObstacleData in obstacleData)
             {
                 float spawnVariable = stageObstacleData.Density * spawningMultiplier * ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
-                if (isPrevious)
+                if (m_currentStageData.StageBlendPeriod > 0)
                 {
-                    spawnVariable *= Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
-                }
-                else if (m_previousStageData != null && m_blendTimer <= m_currentStageData.StageBlendPeriod)
-                {
-                    spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                    if (isPrevious)
+                    {
+                        spawnVariable *= Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                    }
+                    else if (m_previousStageData != null && m_blendTimer <= m_currentStageData.StageBlendPeriod)
+                    {
+                        spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                    }
                 }
 
                 while (spawnVariable >= 1)
