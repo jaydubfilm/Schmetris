@@ -1,5 +1,6 @@
 ﻿using Recycling;
 using Sirenix.OdinInspector;
+using StarSalvager.Factories;
 using TMPro;
 using UnityEngine;
 
@@ -58,8 +59,8 @@ namespace StarSalvager.Utilities
 
             if (_fadeTime < 0f)
             {
-                isReady = false;
-                //Recycler.Recycle<FloatingText>(this);
+                //isReady = false;
+                Recycler.Recycle<FloatingText>(this);
                 return;
             }
             
@@ -71,7 +72,10 @@ namespace StarSalvager.Utilities
         }
 
         //====================================================================================================================//
-        
+        public void Init(string text, Vector3 position, Color color)
+        {
+            Init(text, position, 0.75f, 1f, 5f, color);
+        }
         public void Init(string text, Vector3 position, float waitTime, float fadeTime, float floatSpeed, Color color)
         {
             if (!_text)
@@ -103,6 +107,15 @@ namespace StarSalvager.Utilities
         public void CustomRecycle(params object[] args)
         {
             isReady = false;
+        }
+
+
+        //====================================================================================================================//
+
+        public static void Create(string text, Vector3 position, Color color)
+        {
+            FactoryManager.Instance?.GetFactory<ParticleFactory>().CreateObject<FloatingText>()
+                .Init(text, position, color);
         }
 
         //Unity Editor Functions
