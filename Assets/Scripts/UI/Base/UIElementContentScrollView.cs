@@ -116,6 +116,5 @@ namespace StarSalvager.UI
                 uiElement.gameObject.SetActive(state);
             }
         }
-
     }
 }
