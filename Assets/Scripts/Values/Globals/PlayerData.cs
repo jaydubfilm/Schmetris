@@ -98,8 +98,8 @@ namespace StarSalvager.Values
         public int numLives = 3;
         public bool firstFlight = true;
 
-        public int Level { get; private set; }
-        public int Gears { get; private set; }
+        public int Level;
+        public int Gears;
 
         public string PlaythroughID = string.Empty;
 

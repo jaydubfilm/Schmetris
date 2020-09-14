@@ -112,7 +112,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void DeleteSaveFilePressed(SaveFileData data)
         {
-            Alert.ShowAlert("Delete Save File", $"Are you sure you want to Delete {_selectedSaveFileData.Value.Name}?", "Delete", "Cancel",
+            Alert.ShowAlert("Delete Save File", $"Are you sure you want to Delete {data.Name}?", "Delete", "Cancel",
                 answer =>
                 {
                     //Decided to cancel action
