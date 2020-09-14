@@ -5,7 +5,6 @@ namespace StarSalvager
     [Serializable]
     public enum BIT_TYPE : int
     {
-        BLACK,
         BLUE,
         GREEN,
         GREY,

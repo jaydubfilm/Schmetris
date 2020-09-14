@@ -459,17 +459,6 @@ namespace StarSalvager
                     legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
                     //------------------------------------------------------------------------------------------------//
-                    
-                    if (bit.Type == BIT_TYPE.BLACK)
-                    {
-                        //TODO Need to add animation/effects here 
-                        //Destroy both this and collided Bit
-                        //Recycler.Recycle<Bit>(attachable.gameObject);
-
-                        AsteroidDamageAt(closestAttachable);
-                        return true;
-                    }
-                    //------------------------------------------------------------------------------------------------//
 
                     if (!legalDirection)
                     {
@@ -729,13 +718,6 @@ namespace StarSalvager
             {
                 switch (closeBitOnShape.Type)
                 {
-                    case BIT_TYPE.BLACK:
-                        //TODO Damage/Destroy Bits as required
-                        //shape.DestroyBit(closeBitOnShape);
-
-                        AsteroidDamageAt(closestOnBot);
-                        
-                        break;
                     case BIT_TYPE.BLUE:
                     case BIT_TYPE.GREEN:
                     case BIT_TYPE.GREY:
@@ -1021,6 +1003,20 @@ namespace StarSalvager
         
         #region Asteroid Collision
         
+        public bool TryAsteroidDamageAt(Vector2 collisionPoint)
+        {
+            var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+
+            //------------------------------------------------------------------------------------------------//
+
+            //TODO Need to add animation/effects here 
+            //Destroy both this and collided Bit
+            //Recycler.Recycle<Bit>(attachable.gameObject);
+
+            AsteroidDamageAt(closestAttachable);
+            return true;
+        }
+
         /// <summary>
         /// Applies pre-determine asteroid damage to the specified IAttachable
         /// </summary>

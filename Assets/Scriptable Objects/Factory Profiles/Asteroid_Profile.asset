@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b72c765c178c3cb40a4870fe60ca63a1, type: 3}
+  m_Name: Asteroid_Profile
+  m_EditorClassIdentifier: 
+  asteroidProfiles:
+  - size: 0
+    dimensions: {x: 1, y: 1}
+    _sprites:
+    - {fileID: 4740646371163351874, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: 7934934674122444120, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: 2397403726639049774, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: 1790308607095180760, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -4095796660550586790, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: 6763511925473580942, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -958652295336994860, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -6498644324137305759, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: 8674705024569528562, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - size: 1
+    dimensions: {x: 2, y: 2}
+    _sprites:
+    - {fileID: -5879238874074108907, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -2025138536200787235, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -8079408450588852037, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -4608251391778202509, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - size: 2
+    dimensions: {x: 3, y: 3}
+    _sprites:
+    - {fileID: 3623618048574350569, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: 7674548632909628920, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: 6901109441678843779, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - size: 3
+    dimensions: {x: 4, y: 4}
+    _sprites:
+    - {fileID: -9179598121594932568, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -2483701044952898396, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: -1850979172351868509, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - size: 1
+    dimensions: {x: 1, y: 2}
+    _sprites:
+    - {fileID: 8063439932728523541, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - size: 1
+    dimensions: {x: 2, y: 1}
+    _sprites:
+    - {fileID: -7924957166409073024, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - size: 2
+    dimensions: {x: 2, y: 3}
+    _sprites:
+    - {fileID: -5423605793893429019, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: 1624234699885402242, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+    - {fileID: 470038388237685300, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - size: 2
+    dimensions: {x: 3, y: 2}
+    _sprites:
+    - {fileID: -5826600065143060685, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  - size: 3
+    dimensions: {x: 4, y: 2}
+    _sprites:
+    - {fileID: -9041514455604289002, guid: 6805d750135d8f2489f25887cc37b437, type: 3}

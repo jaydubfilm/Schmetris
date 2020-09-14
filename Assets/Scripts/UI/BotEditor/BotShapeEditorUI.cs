@@ -408,10 +408,10 @@ namespace StarSalvager.UI
                 }
             }
 
-            BitRemoteData remoteData = new BitRemoteData();
+            /*BitRemoteData remoteData = new BitRemoteData();
             remoteData.bitType = BIT_TYPE.BLACK;
             var test = bitsScrollView.AddElement<BrickImageUIElement>(remoteData, $"{remoteData.bitType}_0_UIElement", true);
-            test.Init(remoteData, PartBitPressed, 0);
+            test.Init(remoteData, PartBitPressed, 0);*/
 
             UpdateCategoriesScrollViews();
             UpdateLoadListUiScrollViews();

@@ -52,6 +52,7 @@ namespace StarSalvager.AI
 
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
+            print("ONCOLLIDE");
             if (gameObject.GetComponent<ICanBeHit>() is ICanBeHit iCanBeHit)
             {
                 iCanBeHit.TryHitAt(transform.position, DamageAmount);

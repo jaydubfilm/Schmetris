@@ -42,6 +42,9 @@ namespace StarSalvager.Factories.Data
         private int m_sprayCount;
 
         [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        private bool m_canHitAsteroids;
+
+        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
         private bool m_addVelocityToProjectiles;
 
 
@@ -61,6 +64,7 @@ namespace StarSalvager.Factories.Data
 
         public int SprayCount => m_sprayCount;
 
+        public bool CanHitAsteroids => m_canHitAsteroids;
         public bool AddVelocityToProjectiles => m_addVelocityToProjectiles;
     }
 }

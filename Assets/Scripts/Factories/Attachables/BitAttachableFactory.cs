@@ -91,7 +91,7 @@ namespace StarSalvager.Factories
             var remote = _remoteData.GetRemoteData(type);
             var profile = factoryProfile.GetProfile(type);
             //FIXME I may want to put this somewhere else, and leave the level dependent sprite obtaining here
-            var sprite = type == BIT_TYPE.BLACK ? profile.GetRandomSprite() : profile.GetSprite(blockData.Level);
+            var sprite = profile.GetSprite(blockData.Level);
 
             //--------------------------------------------------------------------------------------------------------//
             
@@ -146,46 +146,6 @@ namespace StarSalvager.Factories
 
             return temp.GetComponent<T>();
 
-        }
-
-        public T CreateLargeAsteroid<T>(ASTEROID_SIZE asteroidSize)
-        {
-            var type = BIT_TYPE.BLACK;
-
-            var remote = _remoteData.GetRemoteData(type);
-            var profile = ((BitProfileScriptableObject)factoryProfile).GetAsteroidProfile(asteroidSize);
-            //FIXME I may want to put this somewhere else, and leave the level dependent sprite obtaining here
-
-
-            var sprite = profile.Sprites[Random.Range(0, profile.Sprites.Length)];
-
-            //--------------------------------------------------------------------------------------------------------//
-
-            Bit temp;
-            //If there is an animation associated with this profile entry, create the animated version of the prefab
-            temp = CreateObject<Bit>();
-
-            //--------------------------------------------------------------------------------------------------------//
-
-            ((BoxCollider2D)temp.collider).size = sprite.bounds.size;
-            temp.SetColliderActive(true);
-            temp.SetSprite(sprite);
-            temp.LoadBlockData(new BlockData
-            {
-                Level = 0,
-                Coordinate = Vector2Int.zero,
-                Type = (int)BIT_TYPE.BLACK
-            });
-            temp.SetRotating(true);
-
-            //Have to check for null, as the Asteroid/Energy does not have health
-            if (remote != null)
-            {
-                var health = remote.levels[0].health;
-                temp.SetupHealthValues(health, health);
-            }
-
-            return temp.GetComponent<T>();
         }
 
         //============================================================================================================//

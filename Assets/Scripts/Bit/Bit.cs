@@ -155,15 +155,6 @@ namespace StarSalvager
 
             if (bot.Rotating)
             {
-                if (Type == BIT_TYPE.BLACK)
-                {
-                    //Recycler.Recycle<Bit>(this);
-                    bot.Rotate(bot.MostRecentRotate.Invert());
-                    AudioController.PlaySound(SOUND.ASTEROID_BASH);
-                    bot.TryHitAt(hitPoint, 10);
-                    return;
-                }
-
                 float rotation = 180.0f;
                 if (bot.MostRecentRotate == ROTATION.CW)
                 {
@@ -184,31 +175,8 @@ namespace StarSalvager
                 return;
             }
 
-            
-
             var dir = (hitPoint - (Vector2)transform.position).ToVector2Int();
             var direction = dir.ToDirection();
-            
-            if (Type == BIT_TYPE.BLACK)
-            {
-                //If the player moves sideways into this asteroid, push them away, and damage them, to give them a chance
-                switch (direction)
-                {
-                    case DIRECTION.LEFT:
-                    case DIRECTION.RIGHT:
-                        InputManager.Instance.ForceMove(direction);
-                        bot.TryBounceAt(hitPoint);
-                        break;
-                    case DIRECTION.UP:
-                    case DIRECTION.DOWN:
-                        bot.TryAddNewAttachable(this, DIRECTION.UP, hitPoint);
-                        break;
-                    //default:
-                    //    throw new ArgumentOutOfRangeException();
-                }             
-                
-                return;
-            }
 
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
             //return the direction to shoot the ray
