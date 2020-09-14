@@ -584,22 +584,18 @@ namespace StarSalvager
             }
         }
 
-        public void SpawnBitExplosion(Vector2 startingLocation, List<IRDSObject> rdsObjects)
+        public void SpawnObstacleExplosion(Vector2 startingLocation, List<IRDSObject> rdsObjects)
         {
             for (int i = rdsObjects.Count - 1; i >= 0; i--)
             {
                 if (rdsObjects[i] is RDSValue<Blueprint> rdsValueBlueprint)
                 {
-                    PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
-                    Toast.AddToast("Unlocked Blueprint!");
-                    rdsObjects.RemoveAt(i);
+                    Debug.LogError("Blueprint in SpawnBitExplosion");
                 }
                 else if (rdsObjects[i] is RDSValue<Vector2Int> rdsValueGears)
                 {
-                    PlayerPersistentData.PlayerData.ChangeGears(Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
-                    rdsObjects.RemoveAt(i);
+                    Debug.LogError("Gears in SpawnBitExplosion");
                 }
-                //Remove objects that aren't going on screen
             }
             
             Vector2Int[] bitExplosionPositions = LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, rdsObjects.Count, 5, 5);
@@ -833,6 +829,7 @@ namespace StarSalvager
 
             PlaceMovableOffGrid(obstacle, startingPosition, endPosition, Globals.BonusShapeDuration, despawnOnEnd: true, parentToGrid: false);
             m_bonusShapes.Add((Shape)obstacle);
+            LevelManager.Instance.WaveEndSummaryData.numTotalBonusShapesSpawned++;
         }
 
         public void MatchBonusShape(Shape shape)
@@ -846,6 +843,7 @@ namespace StarSalvager
             m_notFullyInGridShapes.Remove(shape);
             m_offGridMovingObstacles.Remove(m_offGridMovingObstacles.FirstOrDefault(s => s.Obstacle is Shape offGridShape && offGridShape == shape));
             Recycler.Recycle<Shape>(shape);
+            LevelManager.Instance.WaveEndSummaryData.numBonusShapesMatched++;
         }
 
         //============================================================================================================//

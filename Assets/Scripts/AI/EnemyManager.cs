@@ -223,6 +223,16 @@ namespace StarSalvager
             m_enemies.Add(newEnemy);
             newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
             newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.MovementType);
+
+            LevelManager.Instance.WaveEndSummaryData.numTotalEnemiesSpawned++;
+            if (LevelManager.Instance.WaveEndSummaryData.dictTotalEnemiesSpawned.ContainsKey(newEnemy.EnemyName))
+            {
+                LevelManager.Instance.WaveEndSummaryData.dictTotalEnemiesSpawned[newEnemy.EnemyName]++;
+            }
+            else
+            {
+                LevelManager.Instance.WaveEndSummaryData.dictTotalEnemiesSpawned.Add(newEnemy.EnemyName, 1);
+            }
         }
         
         public void AddEnemy(Enemy newEnemy)

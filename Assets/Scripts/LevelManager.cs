@@ -106,6 +106,9 @@ namespace StarSalvager
         public ProjectileManager ProjectileManager => m_projectileManager ?? (m_projectileManager = new ProjectileManager());
         private ProjectileManager m_projectileManager;
 
+        public WaveEndSummaryData WaveEndSummaryData => m_waveEndSummaryData;
+        private WaveEndSummaryData m_waveEndSummaryData;
+
         private GameUI GameUi
         {
             get
@@ -229,6 +232,10 @@ namespace StarSalvager
                 GameUi.SetTimeString("0:00");
                 SavePlayerData();
                 GameTimer.SetPaused(true);
+                //Turn wave end summary data into string, post in alert, and clear wave end summary data
+                Alert.ShowAlert("Wave End Data", m_waveEndSummaryData.GetWaveEndSummaryDataString(), "Continue", null);
+
+                m_waveEndSummaryData = new WaveEndSummaryData();
                 m_levelManagerUI.ToggleBetweenWavesUIActive(true);
                 ObstacleManager.MoveToNewWave();
                 EnemyManager.MoveToNewWave();
@@ -273,6 +280,7 @@ namespace StarSalvager
         {
             m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
+            m_waveEndSummaryData = new WaveEndSummaryData();
 
             BotObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
             if (PlayerPersistentData.PlayerData.GetCurrentBlockData().Count == 0)
@@ -378,6 +386,7 @@ namespace StarSalvager
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
             ProjectileManager.Reset();
             MissionsCompletedDuringThisFlight.Clear();
+            m_waveEndSummaryData = null;
         }
 
         //====================================================================================================================//
@@ -400,7 +409,7 @@ namespace StarSalvager
 
             CurrentWaveData.ConfigureLootTable();
             List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
-            DropLoot(newWaveLoot);
+            DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize));
 
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
@@ -436,7 +445,7 @@ namespace StarSalvager
             }
         }
 
-        private void DropLoot(List<IRDSObject> loot)
+        public void DropLoot(List<IRDSObject> loot, Vector3 position)
         {
             for (int i = loot.Count - 1; i >= 0; i--)
             {
@@ -453,7 +462,7 @@ namespace StarSalvager
                 }
             }
 
-            ObstacleManager.SpawnBitExplosion(-ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), loot);
+            ObstacleManager.SpawnObstacleExplosion(position, loot);
         }
 
         public void SavePlayerData()
