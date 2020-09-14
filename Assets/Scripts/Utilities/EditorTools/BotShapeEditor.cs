@@ -80,7 +80,7 @@ namespace StarSalvager
         {
             Camera.onPostRender -= DrawGL;
 
-            DeloadAllBots();
+            DeloadBot();
         }
         public void RotateBots(float direction)
         {
@@ -180,8 +180,8 @@ namespace StarSalvager
         
         public void CreateBot(bool initBot)
         {
-            DeloadAllBots();
-            DeloadAllShapes();
+            DeloadBot();
+            DeloadShape();
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
 
             if (initBot)
@@ -190,8 +190,8 @@ namespace StarSalvager
 
         public void CreateShape(List<Bit> bits)
         {
-            DeloadAllBots();
-            DeloadAllShapes();
+            DeloadBot();
+            DeloadShape();
             if (bits == null || bits.Count == 0)
             {
                 _shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>();
@@ -206,8 +206,8 @@ namespace StarSalvager
 
         public void LoadBlockData(string inputName)
         {
-            DeloadAllBots();
-            DeloadAllShapes();
+            DeloadBot();
+            DeloadShape();
             var botData = EditorBotShapeData.GetEditorBotData(inputName);
             if (botData != null && botData.BlockData != null)
             {
@@ -230,16 +230,22 @@ namespace StarSalvager
             }
         }
 
-        private void DeloadAllBots()
+        private void DeloadBot()
         {
-            Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBot.gameObject);
-            _scrapyardBot = null;
+            if (_scrapyardBot != null)
+            {
+                Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBot.gameObject);
+                _scrapyardBot = null;
+            }
         }
 
-        private void DeloadAllShapes()
+        private void DeloadShape()
         {
-            Recycling.Recycler.Recycle<Shape>(_shape.gameObject);
-            _shape = null;
+            if (_shape != null)
+            {
+                Recycling.Recycler.Recycle<Shape>(_shape.gameObject);
+                _shape = null;
+            }
         }
 
         public bool CheckLegal()
