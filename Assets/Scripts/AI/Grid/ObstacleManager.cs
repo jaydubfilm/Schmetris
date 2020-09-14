@@ -241,21 +241,6 @@ namespace StarSalvager
             {
                 m_offGridMovingObstacles[i].LerpTimer += Time.deltaTime / m_offGridMovingObstacles[i].LerpSpeed;
 
-                //Determines if a new bonus shape is now visible on screen, notifies those who care about the change
-                //----------------------------------------------------------------------------------------------------//
-                
-                if (!m_offGridMovingObstacles[i].isVisible && m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
-                    m_bonusShapes.Contains(checkShape))
-                {
-                    if (CameraController.IsPointInCameraRect(checkShape.transform.position, BONUS_SCREEN_AREA))
-                    {
-                        m_offGridMovingObstacles[i].isVisible = true;
-                        NewShapeOnScreen?.Invoke();
-                    }
-                }
-                
-                //----------------------------------------------------------------------------------------------------//
-
                 if (m_offGridMovingObstacles[i].LerpTimer >= 1)
                 {
                     switch(m_offGridMovingObstacles[i].Obstacle)
@@ -312,6 +297,22 @@ namespace StarSalvager
                 
                 
                 m_offGridMovingObstacles[i].Spin();
+
+
+                //Determines if a new bonus shape is now visible on screen, notifies those who care about the change
+                //----------------------------------------------------------------------------------------------------//
+
+                if (!m_offGridMovingObstacles[i].isVisible && m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
+                    m_bonusShapes.Contains(checkShape))
+                {
+                    if (CameraController.IsPointInCameraRect(checkShape.transform.position, BONUS_SCREEN_AREA))
+                    {
+                        m_offGridMovingObstacles[i].isVisible = true;
+                        NewShapeOnScreen?.Invoke();
+                    }
+                }
+
+                //----------------------------------------------------------------------------------------------------//
             }
 
             for (int i = m_obstacles.Count - 1; i >= 0; i--)
