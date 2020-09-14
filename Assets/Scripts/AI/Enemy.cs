@@ -22,6 +22,7 @@ namespace StarSalvager.AI
         public bool IsAttachable => m_enemyData.IsAttachable;
         public bool IgnoreObstacleAvoidance => m_enemyData.IgnoreObstacleAvoidance;
         public ENEMY_MOVETYPE MovementType => m_enemyData.MovementType;
+        public string EnemyName => m_enemyData.Name;
         
         //============================================================================================================//
         
@@ -404,12 +405,22 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0) 
                 return;
             
-            LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.localPosition, m_enemyData.rdsTable.rdsResult.ToList());
+            LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition);
             MissionManager.ProcessEnemyKilledMissionData(m_enemyData.EnemyType, 1);
             
             SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             AudioController.PlaySound(SOUND.ENEMY_DEATH);
-                
+
+            LevelManager.Instance.WaveEndSummaryData.numEnemiesKilled++;
+            if (LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled.ContainsKey(name))
+            {
+                LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled[name]++;
+            }
+            else
+            {
+                LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled.Add(name, 1);
+            }
+
             Recycler.Recycle<Enemy>(this);
         }
 

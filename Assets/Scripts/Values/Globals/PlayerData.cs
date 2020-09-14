@@ -8,6 +8,8 @@ using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 using StarSalvager.Missions;
+using UnityEngine.SceneManagement;
+using StarSalvager.Utilities.SceneManagement;
 
 namespace StarSalvager.Values
 {
@@ -106,12 +108,20 @@ namespace StarSalvager.Values
         public void ChangeGears(int amount)
         {
             Gears += amount;
+            if (LevelManager.Instance.WaveEndSummaryData != null)
+            {
+                LevelManager.Instance.WaveEndSummaryData.numGearsGained += amount;
+            }
 
             int gearsToLevelUp = LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).GearsToLevelUp;
             if (Gears >= gearsToLevelUp)
             {
                 Gears -= gearsToLevelUp;
                 DropLevelLoot();
+                if (LevelManager.Instance.WaveEndSummaryData != null)
+                {
+                    LevelManager.Instance.WaveEndSummaryData.numLevelsGained++;
+                }
                 Level++;
             }
             
@@ -365,6 +375,12 @@ namespace StarSalvager.Values
             if (!unlockedBlueprints.Any(b => b.name == blueprint.name))
             {
                 unlockedBlueprints.Add(blueprint);
+
+                if (LevelManager.Instance.WaveEndSummaryData != null)
+                {
+                    LevelManager.Instance.WaveEndSummaryData.numBlueprintsUnlocked++;
+                    LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprint.name);
+                }
             }
         }
     }

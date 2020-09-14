@@ -32,7 +32,7 @@ MonoBehaviour:
     m_density: 0
     m_rotation: Random
   StageRemoteData:
-  - m_stageDuration: 30
+  - m_stageDuration: 5
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
@@ -65,7 +65,7 @@ MonoBehaviour:
       m_density: 0.2
       m_rotation: 0
     m_stageColumnGroupObstacleData: []
-  - m_stageDuration: 30
+  - m_stageDuration: 5
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
