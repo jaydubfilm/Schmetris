@@ -449,16 +449,23 @@ namespace StarSalvager
         {
             for (int i = loot.Count - 1; i >= 0; i--)
             {
-                if (loot[i] is RDSValue<Blueprint> rdsValueBlueprint)
+                switch (loot[i])
                 {
-                    PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
-                    Toast.AddToast("Unlocked Blueprint!");
-                    loot.RemoveAt(i);
-                }
-                else if (loot[i] is RDSValue<Vector2Int> rdsValueGears)
-                {
-                    PlayerPersistentData.PlayerData.ChangeGears(Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
-                    loot.RemoveAt(i);
+                    case RDSValue<Blueprint> rdsValueBlueprint:
+                        PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
+                        Toast.AddToast("Unlocked Blueprint!");
+                        loot.RemoveAt(i);
+                        break;
+                    case RDSValue<Vector2Int> rdsValueGears:
+                    {
+                        var gears = Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y);
+                        PlayerPersistentData.PlayerData.ChangeGears(gears);
+                        loot.RemoveAt(i);
+                        
+                        FloatingText.Create($"+{gears}", position, Color.white);
+                        
+                        break;
+                    }
                 }
             }
 
