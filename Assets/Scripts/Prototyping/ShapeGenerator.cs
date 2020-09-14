@@ -26,7 +26,7 @@ namespace StarSalvager.Prototype
             var newShape = FactoryManager.Instance
                 .GetFactory<ShapeFactory>()
                 .CreateObject<Shape>(
-                    (BIT_TYPE) Random.Range(0, 7),
+                    (BIT_TYPE) Random.Range(1, 7),
                     Random.Range(1, 10));
 
             temp = newShape.gameObject;
