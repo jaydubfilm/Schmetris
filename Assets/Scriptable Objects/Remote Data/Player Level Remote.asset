@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Player Level Remote
   m_EditorClassIdentifier: 
   m_playerLevelRemoteData:
-  - GearsToLevelUp: 100
+  - GearsToLevelUp: 500
     maxDrops: 0
     RDSLevelUpLoot: []
-  - GearsToLevelUp: 200
+  - GearsToLevelUp: 1000
     maxDrops: 0
     RDSLevelUpLoot: []
-  - GearsToLevelUp: 300
+  - GearsToLevelUp: 2000
     maxDrops: 0
     RDSLevelUpLoot: []

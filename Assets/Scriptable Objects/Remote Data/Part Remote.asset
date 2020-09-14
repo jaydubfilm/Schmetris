@@ -16,7 +16,9 @@ MonoBehaviour:
   - name: Core
     partType: 0
     canSell: 0
-    description: This is the core
+    description: The heart and soul of your bot.  The core contains a powerful electro-magnet
+      that attracts raw materials, as well as a limited storage capacity for refined
+      resources.  Protect it at all costs!
     priority: 200
     burnType: 4
     levels:
@@ -140,7 +142,8 @@ MonoBehaviour:
   - name: Magnet
     partType: 1
     canSell: 1
-    description: This is a magnet
+    description: Enhances the basic magnetism strength of your core, to allow the
+      collection of additional materials and components in the field.
     priority: 75
     burnType: 5
     levels:
@@ -216,7 +219,7 @@ MonoBehaviour:
   - name: Repairer
     partType: 2
     canSell: 1
-    description: This is a Repairer
+    description: Uses plasma to repair damaged parts within range.
     priority: 50
     burnType: 2
     levels:
@@ -306,7 +309,8 @@ MonoBehaviour:
   - name: Armor
     partType: 3
     canSell: 1
-    description: This is armor
+    description: 'These forge-hardened titanium plates are the building blocks of
+      a great defense. '
     priority: 25
     burnType: 0
     levels:
@@ -372,7 +376,8 @@ MonoBehaviour:
   - name: Gun
     partType: 4
     canSell: 1
-    description: This is a gun
+    description: This basic offensive weapon will fire on any enemy within range
+      and consumes scrap metal ammunition.
     priority: 75
     burnType: 3
     levels:
@@ -460,7 +465,8 @@ MonoBehaviour:
   - name: Shield
     partType: 5
     canSell: 1
-    description: This is a shield
+    description: 'When fully charged, this hydrogen-powered shield absorbs damage
+      to all cells within its radius. '
     priority: 0
     burnType: 1
     levels:
@@ -566,7 +572,8 @@ MonoBehaviour:
   - name: Bomb
     partType: 7
     canSell: 1
-    description: This is a bomb
+    description: 'This powerfu pilot-triggered weapon deals explosive damage to all
+      enemies on the screen. '
     priority: 50
     burnType: 4
     levels:
@@ -623,7 +630,8 @@ MonoBehaviour:
   - name: Container
     partType: 8
     canSell: 1
-    description: This is a Container
+    description: This multi-purpose container provides extra on-board storage for
+      all resource types.
     priority: 50
     burnType: 0
     levels:
@@ -699,7 +707,7 @@ MonoBehaviour:
   - name: Fuel Tank
     partType: 9
     canSell: 1
-    description: This is a fuel tank
+    description: Provides extra on-board fuel storage.
     priority: 50
     burnType: 0
     levels:
@@ -779,7 +787,7 @@ MonoBehaviour:
   - name: Plasma Drum
     partType: 10
     canSell: 1
-    description: This is a plasma drum
+    description: Provides extra on-board plasma storage.
     priority: 50
     burnType: 0
     levels:
@@ -859,7 +867,7 @@ MonoBehaviour:
   - name: Magazine
     partType: 11
     canSell: 1
-    description: This is a magazine
+    description: 'Provides extra on-board storage for refined scrap metal. '
     priority: 0
     burnType: 0
     levels:
