@@ -2955,7 +2955,7 @@ namespace StarSalvager
                                                                      Constants.gridCellSize);
 
                 var distance = System.Math.Round(Vector2.Distance(startPositions[i], targetPositions[i]), 2);
-                skipsCoordinate[i] = distance > Constants.gridCellSize;
+                skipsCoordinate[i] = distance > System.Math.Round(Constants.gridCellSize, 2);
 
                 if (skipsCoordinate[i])
                 {
