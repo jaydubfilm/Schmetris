@@ -24,6 +24,7 @@ MonoBehaviour:
     m_attackType: 0
     m_spreadAngle: 0
     m_sprayCount: 0
+    m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: 54ef5003-668f-48e1-bd6b-9bfb3221d9d0
     m_sprite: {fileID: 21300012, guid: a6d1b10b2671f96418d37196aacabe1b, type: 3}
@@ -33,6 +34,7 @@ MonoBehaviour:
     m_attackType: 0
     m_spreadAngle: 0
     m_sprayCount: 0
+    m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: 315b7ca5-bf86-4e37-88db-d055fbea3f00
     m_sprite: {fileID: 21300014, guid: e7495963a94ea8c4d875690bf0db95e4, type: 3}
@@ -42,6 +44,7 @@ MonoBehaviour:
     m_attackType: 0
     m_spreadAngle: 0
     m_sprayCount: 0
+    m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: 80e17eca-2642-4846-b12f-02a08cab40e9
     m_sprite: {fileID: 8060306004869834615, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
@@ -52,6 +55,7 @@ MonoBehaviour:
     m_attackType: 3
     m_spreadAngle: 0
     m_sprayCount: 0
+    m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: 8f0be7e3-1231-4c2c-81ca-460162be6318
     m_sprite: {fileID: 21300002, guid: e05867bf595405c46a8ee4ae392e9180, type: 3}
@@ -61,6 +65,7 @@ MonoBehaviour:
     m_attackType: 1
     m_spreadAngle: 0
     m_sprayCount: 0
+    m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: cac32cbf-8978-4092-ad94-3ab8e384a0c7
     m_sprite: {fileID: -27257796672442213, guid: cd42b1419861ceb4dae39c1c9ad09fb2,
@@ -71,6 +76,7 @@ MonoBehaviour:
     m_attackType: 1
     m_spreadAngle: 0
     m_sprayCount: 0
+    m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: 30aba478-81d5-4d02-a410-9c321a671732
     m_sprite: {fileID: -3311313229851740455, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
@@ -81,6 +87,7 @@ MonoBehaviour:
     m_attackType: 4
     m_spreadAngle: 45
     m_sprayCount: 3
+    m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: fcd28cae-267c-4f46-ac9c-8da7a14e8f94
     m_sprite: {fileID: 3878735451401828320, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
@@ -91,4 +98,16 @@ MonoBehaviour:
     m_attackType: 0
     m_spreadAngle: 0
     m_sprayCount: 0
+    m_canHitAsteroids: 0
+    m_addVelocityToProjectiles: 0
+  - m_projectileTypeID: 00c01728-210c-4944-b1a3-0c3bf2183d42
+    m_sprite: {fileID: 1247627281784427692, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
+      type: 3}
+    m_projectileType: Triple
+    m_projectileSpeed: 10
+    m_requiredRotate: 1
+    m_attackType: 7
+    m_spreadAngle: 90
+    m_sprayCount: 3
+    m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0

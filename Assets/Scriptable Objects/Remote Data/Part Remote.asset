@@ -477,7 +477,7 @@ MonoBehaviour:
       - key: Cooldown
         value: 0.5
       - key: Projectile
-        value: 083be790-7a08-4f27-b506-e8e09a116bc8
+        value: 00c01728-210c-4944-b1a3-0c3bf2183d42
       burnRate: 0.5
       cost:
       - resourceType: 1
@@ -504,7 +504,7 @@ MonoBehaviour:
       - key: Cooldown
         value: 0.3
       - key: Projectile
-        value: 083be790-7a08-4f27-b506-e8e09a116bc8
+        value: 00c01728-210c-4944-b1a3-0c3bf2183d42
       burnRate: 0.5
       cost:
       - resourceType: 1

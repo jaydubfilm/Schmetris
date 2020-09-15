@@ -58,15 +58,19 @@ namespace StarSalvager.Factories.Data
         [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
         private ENEMY_ATTACKTYPE m_attackType;
 
-        private bool showSpreadAngle => m_attackType == ENEMY_ATTACKTYPE.AtPlayerCone ||
-                                        m_attackType == ENEMY_ATTACKTYPE.Random_Spray ||
-                                        m_attackType == ENEMY_ATTACKTYPE.Fixed_Spray;
+        private bool showSpreadAngle => m_attackType == ENEMY_ATTACKTYPE.AtPlayerCone || showSprayCount;
+                                        
+        private bool showSprayCount => m_attackType == ENEMY_ATTACKTYPE.Random_Spray ||
+                                      m_attackType == ENEMY_ATTACKTYPE.Fixed_Spray;
+        
+        
+
 
         [SerializeField, VerticalGroup("$ProjectileType/row2/right"), ShowIf(nameof(showSpreadAngle))]
         private float m_spreadAngle;
 
         [SerializeField, VerticalGroup("$ProjectileType/row2/right"),
-         ShowIf(nameof(m_attackType), ENEMY_ATTACKTYPE.Random_Spray)]
+         ShowIf(nameof(showSprayCount))]
         private int m_sprayCount;
 
         [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
