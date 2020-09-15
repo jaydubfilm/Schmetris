@@ -11,43 +11,34 @@ namespace StarSalvager.UI.Scrapyard
     public class ScrapyardUI : MonoBehaviour
     {
         //============================================================================================================//
-        
-        /*[SerializeField, Required]
-        private GameObject droneDesignWindow;
-        [SerializeField, Required]
-        private GameObject craftingWindow;
-        [SerializeField, Required]
-        private GameObject storageWindow;*/
+
         [SerializeField, Required]
         private GameObject missionsWindow;
+        
+        [SerializeField, Required]
+        private GameObject workbenchWindow;
+
+        [SerializeField, Required]
+        private GameObject logisticsWindow;
         
         [SerializeField, Required]
         private GameObject saveGameWindow;
         
         //============================================================================================================//
 
-        /*[SerializeField, Required, FoldoutGroup("View Drone Window")]
-        private GameObject viewDroneWindow;*/
-        [SerializeField, Required, FoldoutGroup("View Drone Window")]
-        private Button launchButton;
-
-        //============================================================================================================//
-
-        
-        /*[SerializeField, Required, FoldoutGroup("Navigation Buttons")]
-        private Button launchNavButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
-        private Button droneDesignButton;
+        private Button workbenchButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
-        private Button craftingButton;
+        private Button mapButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
-        private Button storageButton;*/
+        private Button logisticsButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button missionsButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
-        private Button closeMissionsButton;
-        [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button menuButton;
+
+        //====================================================================================================================//
+        
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button saveGameButton;
 
@@ -67,10 +58,11 @@ namespace StarSalvager.UI.Scrapyard
             
             InitButtons();
             
-            //ShowMenu(MENU.LAUNCH);
+                        
+            workbenchWindow.SetActive(true);
+            saveGameWindow.SetActive(false);
+            logisticsWindow.SetActive(false);
             missionsWindow.SetActive(false);
-            
-            
         }
 
         private void OnEnable()
@@ -84,24 +76,29 @@ namespace StarSalvager.UI.Scrapyard
         {
             //Launch Window Buttons
             //--------------------------------------------------------------------------------------------------------//
-
-            launchButton.onClick.AddListener(Launch);
+            
+            mapButton.onClick.AddListener(Launch);
             
             //Navigation Buttons
             //--------------------------------------------------------------------------------------------------------//
 
-            /*launchNavButton.onClick.AddListener(() => ShowMenu(MENU.LAUNCH));
-            droneDesignButton.onClick.AddListener(() => ShowMenu(MENU.DESIGN));
-            craftingButton.onClick.AddListener(() => ShowMenu(MENU.CRAFT));
-            storageButton.onClick.AddListener(() => ShowMenu(MENU.STORAGE));*/
-            missionsButton.onClick.AddListener(() =>
+            workbenchButton.onClick.AddListener(() =>
             {
-                missionsWindow.SetActive(!missionsWindow.activeInHierarchy);
-            });
-            closeMissionsButton.onClick.AddListener(() =>
-            {
+                workbenchWindow.SetActive(true);
+                saveGameWindow.SetActive(false);
+                logisticsWindow.SetActive(false);
                 missionsWindow.SetActive(false);
             });
+            
+            
+            missionsButton.onClick.AddListener(() =>
+            {
+                workbenchWindow.SetActive(false);
+                saveGameWindow.SetActive(false);
+                logisticsWindow.SetActive(false);
+                missionsWindow.SetActive(true);
+            });
+
             menuButton.onClick.AddListener(() =>
             {
                 SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
@@ -110,13 +107,14 @@ namespace StarSalvager.UI.Scrapyard
             {
                 saveGameWindow.SetActive(true);
             });
-
-            //launchNavButton.interactable = true;
-            //droneDesignButton.interactable = true;
-            //craftingButton.interactable = false;
-            //storageButton.interactable = false;
-            //missionsButton.interactable = false;
-            //menuButton.interactable = true;
+            
+            logisticsButton.onClick.AddListener(() =>
+            {
+                workbenchWindow.SetActive(false);
+                saveGameWindow.SetActive(false);
+                logisticsWindow.SetActive(true);
+                missionsWindow.SetActive(false);
+            });
 
             //--------------------------------------------------------------------------------------------------------//
 

@@ -1,6 +1,4 @@
 ﻿using StarSalvager.Factories;
-using StarSalvager.Factories.Data;
-using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using Sirenix.OdinInspector;
 using StarSalvager.Values;
@@ -12,13 +10,10 @@ using StarSalvager.Utilities.Extensions;
 
 namespace StarSalvager.UI.Scrapyard
 {
-
-
     public class BlueprintUIElement : UIElement<Blueprint>, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
         private TMP_Text titleText;
-
 
         [SerializeField]
         private Image image;
@@ -68,7 +63,10 @@ namespace StarSalvager.UI.Scrapyard
             this.data = data;
 
             titleText.text = data.name;
-            image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(data.partType).GetSprite(data.level);
+            
+            //Only try and fill the image in the event its enabled
+            if(image.isActiveAndEnabled)
+                image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(data.partType).GetSprite(data.level);
         }
         
         //============================================================================================================//

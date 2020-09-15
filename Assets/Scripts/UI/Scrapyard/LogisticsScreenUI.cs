@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories.Data;
 using StarSalvager.Values;
@@ -32,12 +33,16 @@ namespace StarSalvager.UI.Scrapyard
         private ResourceUIElementScrollView resourceUIElementScrollView;
         
         //TODO Need to add Components
+        [SerializeField]
+        private ComponentResourceUIElementScrollView componentResourceUIElementScrollView;
 
         //====================================================================================================================//
 
         private void Start()
         {
             InitScrollViews();
+            
+            SetupDetailsWindow(false, (TEST_FacilityItem) null);
         }
 
         //====================================================================================================================//
@@ -85,16 +90,19 @@ namespace StarSalvager.UI.Scrapyard
             //TODO Still need to setup the OnHover
             foreach (var facilityItem in TEST_FacilityItems)
             {
-                facilityItemUIElements.AddElement(facilityItem);
+                var element = facilityItemUIElements.AddElement(facilityItem, $"{facilityItem.name}_UIElement");
+                element.Init(facilityItem);
             }
-            
+
             foreach (var facilityBlueprint in TEST_facilityBlueprints)
             {
-                facilityBlueprintUIElements.AddElement(facilityBlueprint);
+                var element = facilityBlueprintUIElements.AddElement(facilityBlueprint);
+                element.Init(facilityBlueprint);
             }
 
             SetupResourceScrollView();
-            
+            SetupComponentResourceScrollView();
+
         }
 
         private void SetupResourceScrollView()
@@ -115,21 +123,38 @@ namespace StarSalvager.UI.Scrapyard
                 element.Init(data);
             }
         }
+        
+        private void SetupComponentResourceScrollView()
+        {
+            var resources = PlayerPersistentData.PlayerData.components;
+
+            foreach (var resource in resources)
+            {
+                var data = new ComponentAmount
+                {
+                    type = resource.Key,
+                    amount = resource.Value,
+                };
+
+                var element = componentResourceUIElementScrollView.AddElement(data, $"{resource.Key}_UIElement");
+                element.Init(data);
+            }
+        }
 
         //====================================================================================================================//
         
-        private void SetupDetailsWindow(bool active, TEST_FacilityItem item)
+        private void SetupDetailsWindow(bool active, [CanBeNull] TEST_FacilityItem item)
         {
             detailsWindow.SetActive(active);
             detailsCostSection.SetActive(false);
 
             if (!active) return;
             
-            detailsTitle.text = item.name;
-            detailsDescription.text = item.description;
+            detailsTitle.text = item?.name;
+            detailsDescription.text = item?.description;
         }
         
-        private void SetupDetailsWindow(bool active, TEST_FacilityBlueprint item)
+        private void SetupDetailsWindow(bool active, [CanBeNull] TEST_FacilityBlueprint item)
         {
             detailsWindow.SetActive(active);
             detailsCostSection.SetActive(active);
@@ -137,13 +162,15 @@ namespace StarSalvager.UI.Scrapyard
             if (!active)
                 return;
             
-            detailsTitle.text = item.name;
-            detailsDescription.text = item.description;
-            DisplayCost(item.cost);
+            detailsTitle.text = item?.name;
+            detailsDescription.text = item?.description;
+            DisplayCost(item?.cost);
         }
 
         private void DisplayCost(IEnumerable<CraftCost> costs)
         {
+            costUIElementScrollView.ClearElements();
+            
             foreach (var cost in costs)
             {
                 costUIElementScrollView.AddElement(cost);
@@ -154,12 +181,12 @@ namespace StarSalvager.UI.Scrapyard
 
     }
 
-    [System.Serializable]
+    [Serializable]
     public class FacilityItemUIElementScrollView : UIElementContentScrollView<FacilityItemUIElement, TEST_FacilityItem>
     {
     }
 
-    [System.Serializable]
+    [Serializable]
     public class FacilityBlueprintUIElementScrollView : UIElementContentScrollView<FacilityBlueprintUIElement,
             TEST_FacilityBlueprint>
     {

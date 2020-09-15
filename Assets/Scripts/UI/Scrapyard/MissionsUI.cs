@@ -26,6 +26,9 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitScrollView()
         {
+            if (MissionManager.MissionsCurrentData is null)
+                return;
+            
             foreach (var testMission in MissionManager.MissionsCurrentData.CurrentMissions)
             {
                 var temp = MissionUiElementScrollView.AddElement(testMission,

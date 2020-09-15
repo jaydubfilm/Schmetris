@@ -28,11 +28,7 @@ namespace StarSalvager.UI
 
             if (!allowDuplicate)
             {
-                U exists;
-                if (compareNames)
-                    exists = FindElement(data, gameObjectName);
-                else
-                    exists = FindElement(data);
+                var exists = compareNames ? FindElement(data, gameObjectName) : FindElement(data);
 
                 if (exists != null)
                     return exists;
