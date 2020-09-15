@@ -361,7 +361,7 @@ namespace StarSalvager.AI
         //ICustomRotate functions
         //============================================================================================================//
 
-        public void CustomRotate()
+        public void CustomRotate(Quaternion _)
         {
             //We don't want to rotate the Attachable enemy because they need to face specific directions to
             //indicate their attack direction

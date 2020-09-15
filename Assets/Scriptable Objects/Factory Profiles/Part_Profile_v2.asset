@@ -48,6 +48,12 @@ MonoBehaviour:
     - {fileID: 685931528199971733, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
     - {fileID: 9054214022471508692, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
     - {fileID: -5804119596372385166, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+  - partType: 12
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: 4558388320521600025, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: -6611240317921980983, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: 8276714811182163069, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
   - partType: 5
     _animation: {fileID: 0}
     _sprites:

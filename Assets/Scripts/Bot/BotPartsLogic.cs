@@ -453,6 +453,7 @@ namespace StarSalvager
 
                         TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
                         break;
+                    case PART_TYPE.TRIPLE_SHOT:
                     case PART_TYPE.GUN:
 
 
@@ -509,17 +510,22 @@ namespace StarSalvager
                         var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
                         var damage = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Damage);
 
-                        //TODO Might need to add something to change the projectile used for each gun piece
-                        var projectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
-                            .CreateObject<Projectile>(
-                                projectileId,
-                                /*shootDirection*/Vector2.up,
-                                damage,
-                                "Enemy");
-                        
-                        projectile.transform.position = part.transform.position;
+                        var position = part.transform.position;
+                        var target = position + part.transform.up;
 
-                        LevelManager.Instance.ProjectileManager.AddProjectile(projectile);
+                        //TODO Might need to add something to change the projectile used for each gun piece
+                        FactoryManager.Instance.GetFactory<ProjectileFactory>()
+                            .CreateObjects<Projectile>(
+                                projectileId,
+                                position,
+                                target,
+                                damage,
+                                "Enemy",
+                                true);
+                        
+                        /*projectile.transform.position = part.transform.position;
+
+                        LevelManager.Instance.ProjectileManager.AddProjectile(projectile);*/
 
 
                         switch (part.level)
@@ -605,6 +611,7 @@ namespace StarSalvager
                         GameUI.SetFill(index, 1f - _bombTimers[part] / cooldown);
 
                         break;
+                    
                 }
 
                 UpdateUI(partRemoteData.burnType, resourceValue);

@@ -30,13 +30,13 @@ namespace StarSalvager.Utilities.Extensions
             attachable.Coordinate = temp;
 
             
-            //Custom rotate
+            /*//Custom rotate
             if (attachable is ICustomRotate customRotate)
             {
                 Debug.Log("Rotate");
                 customRotate.CustomRotate();
                 return;
-            }
+            }*/
             
             //Rotate opposite of the Core rotation 
             //attachable.transform.localRotation *= rotation.ToInverseQuaternion();
