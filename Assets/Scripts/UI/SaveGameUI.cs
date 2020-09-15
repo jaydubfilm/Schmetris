@@ -74,7 +74,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void UpdateScrollView()
         {
-            SaveGameContentScrollView.ClearElements<SaveGameUIElement>();
+            SaveGameContentScrollView.ClearElements();
             
             foreach (var saveFile in PlayerPersistentData.PlayerMetadata.SaveFiles)
             {
@@ -82,7 +82,7 @@ namespace StarSalvager.UI.Scrapyard
                 //if (saveFile.FilePath == PlayerPersistentData.autosaveDataPath)
                 //    continue;
 
-                var element = SaveGameContentScrollView.AddElement<SaveGameUIElement>(saveFile, $"{saveFile.Name}_UIElement");
+                var element = SaveGameContentScrollView.AddElement(saveFile, $"{saveFile.Name}_UIElement");
                 element.Init(saveFile, SaveFilePressed, DeleteSaveFilePressed);
             }
 
@@ -93,7 +93,7 @@ namespace StarSalvager.UI.Scrapyard
                     Name = "New File",
                 };
 
-                var emptyElement = SaveGameContentScrollView.AddElement<SaveGameUIElement>(emptyFile, $"{emptyFile.Name}_UIElement");
+                var emptyElement = SaveGameContentScrollView.AddElement(emptyFile, $"{emptyFile.Name}_UIElement");
                 emptyElement.Init(emptyFile, SaveFilePressed, DeleteSaveFilePressed, true);
             }
         }
@@ -119,7 +119,7 @@ namespace StarSalvager.UI.Scrapyard
                     if(!answer)
                         return;
                         
-                    SaveGameContentScrollView.RemoveElement<SaveGameUIElement>(data);
+                    SaveGameContentScrollView.RemoveElement(data);
                     Files.DeleteFile(data.FilePath);
                     PlayerPersistentData.PlayerMetadata.SaveFiles.Remove(data);
                     //TODO Delete the file here
@@ -184,7 +184,7 @@ namespace StarSalvager.UI.Scrapyard
                         if(!answer)
                             return;
                         
-                        SaveGameContentScrollView.RemoveElement<SaveGameUIElement>(_selectedSaveFileData.Value);
+                        SaveGameContentScrollView.RemoveElement(_selectedSaveFileData.Value);
                         string playerPath = _selectedSaveFileData.Value.FilePath;
 
                         PlayerPersistentData.PlayerMetadata.SaveFiles.Remove(_selectedSaveFileData.Value);
@@ -223,7 +223,7 @@ namespace StarSalvager.UI.Scrapyard
     }
     
     [Serializable]
-    public class SaveGameContentScrollView : UIElementContentScrollView<SaveFileData>
+    public class SaveGameContentScrollView : UIElementContentScrollView<SaveGameUIElement, SaveFileData>
     {}
 }
 
