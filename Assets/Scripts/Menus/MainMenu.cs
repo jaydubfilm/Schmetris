@@ -97,6 +97,9 @@ namespace StarSalvager.UI
         private Button oBackButton;
         [SerializeField, Required, FoldoutGroup("Options Menu")]
         private Toggle testingFeaturesToggle;
+
+        [SerializeField, Required]
+        private GameObject introSceneCanvas;
         
         #endregion //Menu Windows
         
@@ -202,7 +205,9 @@ namespace StarSalvager.UI
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     PlayerPersistentData.ResetPlayerData();
 
-                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
+                    introSceneCanvas.SetActive(true);
+
+                    //SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
                 }
                 else
                 {
