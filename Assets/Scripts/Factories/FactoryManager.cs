@@ -110,6 +110,17 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
+        [SerializeField, Required, BoxGroup("Asteroid")]
+        private AsteroidProfileScriptableObject asteroidProfile;
+
+        [SerializeField, Required, BoxGroup("Asteroid")]
+        private AsteroidRemoteDataScriptableObject asteroidRemote;
+
+        [SerializeField, Required, BoxGroup("Asteroid")]
+        private GameObject asteroidPrefab;
+
+        //============================================================================================================//
+
         private Dictionary<Type, FactoryBase> _factoryBases;
 
         //============================================================================================================//
@@ -142,6 +153,9 @@ namespace StarSalvager.Factories
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(BitAttachableFactory):
                     return new BitAttachableFactory(bitProfile, bitRemoteData) as T;
+                //----------------------------------------------------------------------------------------------------//
+                case bool _ when type == typeof(AsteroidFactory):
+                    return new AsteroidFactory(asteroidPrefab, asteroidProfile, asteroidRemote) as T;
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(PartAttachableFactory):
                     return new PartAttachableFactory(partProfile, partRemoteData) as T;

@@ -172,6 +172,9 @@ namespace StarSalvager
                     case Bit bit:
                         Recycler.Recycle<Bit>(bit);
                         break;
+                    case Asteroid asteroid:
+                        Recycler.Recycle<Asteroid>(asteroid);
+                        break;
                     case Component component:
                         Recycler.Recycle<Component>(component);
                         break;
@@ -241,21 +244,6 @@ namespace StarSalvager
             {
                 m_offGridMovingObstacles[i].LerpTimer += Time.deltaTime / m_offGridMovingObstacles[i].LerpSpeed;
 
-                //Determines if a new bonus shape is now visible on screen, notifies those who care about the change
-                //----------------------------------------------------------------------------------------------------//
-                
-                if (!m_offGridMovingObstacles[i].isVisible && m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
-                    m_bonusShapes.Contains(checkShape))
-                {
-                    if (CameraController.IsPointInCameraRect(checkShape.transform.position, BONUS_SCREEN_AREA))
-                    {
-                        m_offGridMovingObstacles[i].isVisible = true;
-                        NewShapeOnScreen?.Invoke();
-                    }
-                }
-                
-                //----------------------------------------------------------------------------------------------------//
-
                 if (m_offGridMovingObstacles[i].LerpTimer >= 1)
                 {
                     switch(m_offGridMovingObstacles[i].Obstacle)
@@ -269,6 +257,17 @@ namespace StarSalvager
                             {
                                 PlaceMovableOnGridSpecific(bit, m_offGridMovingObstacles[i].EndPosition);
                                 bit.SetColliderActive(true);
+                            }
+                            break;
+                        case Asteroid asteroid:
+                            if (m_offGridMovingObstacles[i].DespawnOnEnd)
+                            {
+                                Recycler.Recycle<Asteroid>(asteroid);
+                            }
+                            else
+                            {
+                                PlaceMovableOnGridSpecific(asteroid, m_offGridMovingObstacles[i].EndPosition);
+                                asteroid.SetColliderActive(true);
                             }
                             break;
                         case Component component:
@@ -312,6 +311,22 @@ namespace StarSalvager
                 
                 
                 m_offGridMovingObstacles[i].Spin();
+
+
+                //Determines if a new bonus shape is now visible on screen, notifies those who care about the change
+                //----------------------------------------------------------------------------------------------------//
+
+                if (!m_offGridMovingObstacles[i].isVisible && m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
+                    m_bonusShapes.Contains(checkShape))
+                {
+                    if (CameraController.IsPointInCameraRect(checkShape.transform.position, BONUS_SCREEN_AREA))
+                    {
+                        m_offGridMovingObstacles[i].isVisible = true;
+                        NewShapeOnScreen?.Invoke();
+                    }
+                }
+
+                //----------------------------------------------------------------------------------------------------//
             }
 
             for (int i = m_obstacles.Count - 1; i >= 0; i--)
@@ -345,6 +360,11 @@ namespace StarSalvager
                                 Recycler.Recycle<Bit>(bit);
                                 m_obstacles[i] = null;
                             }
+                            break;
+                        case Asteroid asteroid:
+                            asteroid.IsRegistered = false;
+                            Recycler.Recycle<Asteroid>(asteroid);
+                            m_obstacles[i] = null;
                             break;
                         case Component component:
                             if (!component.Attached)
@@ -614,6 +634,11 @@ namespace StarSalvager
                             AddObstacleToList(newBit);
                             PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;
+                        case nameof(Asteroid):
+                            Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroidRandom<Asteroid>();
+                            AddObstacleToList(newAsteroid);
+                            PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
+                            break;
                         case nameof(Component):
                             Component newComponent = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().CreateObject<Component>((COMPONENT_TYPE)rdsValueBlockData.rdsValue.Type);
                             AddObstacleToList(newComponent);
@@ -664,8 +689,8 @@ namespace StarSalvager
             }
             else if (selectionType == SELECTION_TYPE.ASTEROID)
             {
-                Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateLargeAsteroid<Bit>(asteroidSize);
-                AddObstacleToList(newBit);
+                Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(asteroidSize);
+                AddObstacleToList(newAsteroid);
 
                 int radiusAround = 0;
                 switch(asteroidSize)
@@ -679,7 +704,7 @@ namespace StarSalvager
                         break;
                 }  
 
-                PlaceMovableOnGrid(newBit, gridRegion, inRandomYLevel, radiusAround);
+                PlaceMovableOnGrid(newAsteroid, gridRegion, inRandomYLevel, radiusAround);
 
                 return;
             }
@@ -731,6 +756,7 @@ namespace StarSalvager
             switch (movable)
             {
                 case Bit _:
+                case Asteroid _:
                 case Component _:
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
                     break;
@@ -758,6 +784,7 @@ namespace StarSalvager
             switch (movable)
             {
                 case Bit _:
+                case Asteroid _:
                 case Component _:
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
                     break;

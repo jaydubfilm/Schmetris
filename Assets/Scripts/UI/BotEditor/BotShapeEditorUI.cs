@@ -34,6 +34,13 @@ namespace StarSalvager.UI
         [SerializeField, Required, BoxGroup("Part UI")]
         private TMP_Text partsLabel;
 
+        [SerializeField]
+        private ScrollRect scrollRect;
+        [SerializeField]
+        private RectTransform bitRect;
+        [SerializeField]
+        private RectTransform categoryRect;
+
         //============================================================================================================//
 
         [SerializeField, Required, BoxGroup("Category UI")]
@@ -63,7 +70,7 @@ namespace StarSalvager.UI
         private Button leftTurnButton;
         [SerializeField, Required, BoxGroup("View")]
         private Button rightTurnButton;
-        
+
         //============================================================================================================//
 
         [SerializeField, Required, BoxGroup("Menu Buttons")]
@@ -148,12 +155,12 @@ namespace StarSalvager.UI
         public bool IsPopupActive => LoadMenu.activeSelf || SaveMenu.activeSelf || Alert.Displayed || NewCategoryMenu.activeSelf;
         private bool m_currentlyOverwriting = false;
 
-        
+
         private void Start()
         {
             m_cameraController = FindObjectOfType<CameraController>();
             m_botShapeEditor = FindObjectOfType<BotShapeEditor>();
-            
+
             zoomSliderText.Init();
 
             zoomSlider.onValueChanged.AddListener(SetCameraZoom);
@@ -256,7 +263,7 @@ namespace StarSalvager.UI
                 }
                 ScreenBlackImage.gameObject.SetActive(true);
             });
-            
+
             LoadButton.onClick.AddListener(() =>
             {
                 LoadMenu.SetActive(true);
@@ -408,10 +415,10 @@ namespace StarSalvager.UI
                 }
             }
 
-            BitRemoteData remoteData = new BitRemoteData();
+            /*BitRemoteData remoteData = new BitRemoteData();
             remoteData.bitType = BIT_TYPE.BLACK;
-            var test = bitsScrollView.AddElement(remoteData, $"{remoteData.bitType}_0_UIElement", true);
-            test.Init(remoteData, PartBitPressed, 0);
+            var test = bitsScrollView.AddElement<BrickImageUIElement>(remoteData, $"{remoteData.bitType}_0_UIElement", true);
+            test.Init(remoteData, PartBitPressed, 0);*/
 
             UpdateCategoriesScrollViews();
             UpdateLoadListUiScrollViews();
@@ -459,9 +466,9 @@ namespace StarSalvager.UI
             m_cameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * value, Vector3.zero);
             m_cameraController.CameraOffset(Vector3.zero, true);
         }
-        
+
         //============================================================================================================//
-        
+
         public void SetPartsScrollActive(bool active)
         {
             partsScrollView.SetElementsActive(active);
@@ -474,6 +481,11 @@ namespace StarSalvager.UI
 
         public void SetBitsScrollActive(bool active)
         {
+            if (active)
+            {
+                scrollRect.content = bitRect;
+            }
+
             bitsScrollView.SetElementsActive(active);
             if (active)
             {
@@ -487,6 +499,11 @@ namespace StarSalvager.UI
 
         public void SetCategoriesScrollActive(bool active)
         {
+            if (active)
+            {
+                scrollRect.content = categoryRect;
+            }
+
             categoriesScrollView.SetElementsActive(active);
             if (active)
             {
@@ -569,8 +586,7 @@ namespace StarSalvager.UI
 
         private void CategoryPressed(string categoryName, bool active)
         {
-            
+
         }
     }
 }
-

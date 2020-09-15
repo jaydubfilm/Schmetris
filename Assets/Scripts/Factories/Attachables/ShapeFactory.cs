@@ -163,7 +163,7 @@ namespace StarSalvager.Factories
             }
             else
             {
-                return CreateObject<T>((BIT_TYPE)Random.Range(0, 6), 1);
+                return CreateObject<T>((BIT_TYPE)Random.Range(1, 6), 1);
             }
         }
 
