@@ -1,6 +1,7 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace StarSalvager.UI.Scrapyard
 {
@@ -33,16 +34,35 @@ namespace StarSalvager.UI.Scrapyard
 
         #endregion //IEquatable
     }
-    public class FacilityItemUIElement : UIElement<TEST_FacilityItem>
+    public class FacilityItemUIElement : UIElement<TEST_FacilityItem>, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
         private TMP_Text itemNameText;
+
+        private Action<TEST_FacilityItem, bool> _onHoverCallback;
+        
+        public void Init(TEST_FacilityItem data, Action<TEST_FacilityItem, bool> onHoverCallback)
+        {
+            Init(data);
+
+            _onHoverCallback = onHoverCallback;
+        }
         
         public override void Init(TEST_FacilityItem data)
         {
             this.data = data;
 
             itemNameText.text = this.data.name;
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            _onHoverCallback?.Invoke(data, true);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            _onHoverCallback?.Invoke(null, false);
         }
     }
 }

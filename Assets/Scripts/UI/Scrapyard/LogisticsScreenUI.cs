@@ -42,7 +42,7 @@ namespace StarSalvager.UI.Scrapyard
         {
             InitScrollViews();
             
-            SetupDetailsWindow(false, (TEST_FacilityItem) null);
+            SetupDetailsWindow((TEST_FacilityItem) null, false);
         }
 
         //====================================================================================================================//
@@ -91,13 +91,13 @@ namespace StarSalvager.UI.Scrapyard
             foreach (var facilityItem in TEST_FacilityItems)
             {
                 var element = facilityItemUIElements.AddElement(facilityItem, $"{facilityItem.name}_UIElement");
-                element.Init(facilityItem);
+                element.Init(facilityItem, SetupDetailsWindow);
             }
 
             foreach (var facilityBlueprint in TEST_facilityBlueprints)
             {
                 var element = facilityBlueprintUIElements.AddElement(facilityBlueprint);
-                element.Init(facilityBlueprint);
+                element.Init(facilityBlueprint, null, SetupDetailsWindow);
             }
 
             SetupResourceScrollView();
@@ -143,7 +143,7 @@ namespace StarSalvager.UI.Scrapyard
 
         //====================================================================================================================//
         
-        private void SetupDetailsWindow(bool active, [CanBeNull] TEST_FacilityItem item)
+        private void SetupDetailsWindow([CanBeNull] TEST_FacilityItem item, bool active)
         {
             detailsWindow.SetActive(active);
             detailsCostSection.SetActive(false);
@@ -154,7 +154,7 @@ namespace StarSalvager.UI.Scrapyard
             detailsDescription.text = item?.description;
         }
         
-        private void SetupDetailsWindow(bool active, [CanBeNull] TEST_FacilityBlueprint item)
+        private void SetupDetailsWindow([CanBeNull] TEST_FacilityBlueprint item, bool active)
         {
             detailsWindow.SetActive(active);
             detailsCostSection.SetActive(active);
@@ -173,7 +173,8 @@ namespace StarSalvager.UI.Scrapyard
             
             foreach (var cost in costs)
             {
-                costUIElementScrollView.AddElement(cost);
+                var element = costUIElementScrollView.AddElement(cost);
+                element.Init(cost);
             }
         }
 
