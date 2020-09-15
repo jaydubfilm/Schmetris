@@ -10,9 +10,10 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.Prototype
 {
+    [System.Obsolete]
     public class PROTO_BitSpawner : MonoBehaviour
     {
-        public bool generateRandomSeed;
+        /*public bool generateRandomSeed;
         [DisableIf("$generateRandomSeed")]
         public int seed = 1234567890;
         
@@ -65,7 +66,7 @@ namespace StarSalvager.Prototype
                         Random.Range(-spawnGridDimensions.y, spawnGridDimensions.y));
                 }
 
-                var type = (BIT_TYPE) Random.Range(0, 7);
+                var type = (BIT_TYPE) Random.Range(1, 7);
                 //var type = BIT_TYPE.GREY;
 
                 var temp = bitFactory.CreateGameObject(type).transform;
@@ -79,7 +80,7 @@ namespace StarSalvager.Prototype
                 
                 usedCoordinates.Add(coordinate);
             }
-        }
+        }*/
         
     }
 }

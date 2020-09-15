@@ -219,15 +219,6 @@ namespace StarSalvager
 
             if (bot.Rotating)
             {
-                if (attachedBits[0].Type == BIT_TYPE.BLACK)
-                {
-                    //Recycler.Recycle<Shape>(this);
-                    bot.Rotate(bot.MostRecentRotate.Invert());
-                    AudioController.PlaySound(SOUND.ASTEROID_BASH);
-                    bot.TryHitAt(hitPoint, 10);
-                    return;
-                }
-
                 float rotation = 180.0f;
                 if (bot.MostRecentRotate == ROTATION.CW)
                 {

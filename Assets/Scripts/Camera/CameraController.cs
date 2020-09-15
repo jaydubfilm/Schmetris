@@ -14,7 +14,9 @@ namespace StarSalvager.Cameras
     public class CameraController : MonoBehaviour, IMoveOnInput
     {
         //============================================================================================================//
-        
+
+        #region Properties
+
         private Vector3 startPos;
         private Vector3 beginningLerpPos;
         private float horzExtent;
@@ -48,9 +50,12 @@ namespace StarSalvager.Cameras
 
         private Camera _camera;
 
+        #endregion //Properties
+
         //============================================================================================================//
 
-        //Init
+        #region Unity Functions
+
         private void Start()
         {
             Globals.OrientationChange += SetOrientation;
@@ -61,8 +66,8 @@ namespace StarSalvager.Cameras
 
         private void OnEnable()
         {
-            SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen, Vector3.zero);
-            SetOrientation(Values.Globals.Orientation);
+            SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, Vector3.zero);
+            SetOrientation(Globals.Orientation);
         }
 
         private Vector3 tempPosition;
@@ -84,8 +89,8 @@ namespace StarSalvager.Cameras
 
             if (beginningLerpPos != startPos &&
                 (InputManager.Instance.MostRecentSideMovement == 0 ||
-                transform.position.x > Globals.CameraOffsetBounds ||
-                transform.position.x < -Globals.CameraOffsetBounds))
+                 transform.position.x > Globals.CameraOffsetBounds ||
+                 transform.position.x < -Globals.CameraOffsetBounds))
             {
                 lerpValue = Mathf.Min(1.0f, lerpValue + Globals.CameraSmoothing * Time.deltaTime);
                 //print(lerpValue + " --- " + Mathf.SmoothStep(0.0f, 1.0f, lerpValue));
@@ -95,9 +100,16 @@ namespace StarSalvager.Cameras
                     transform.position = startPos;
                     lerpValue = 0.0f;
                 }
+
+                _cameraXOffset = transform.position.x;
             }
 
             tempPosition = transform.position;
+        }
+
+        private void LateUpdate()
+        {
+            CheckForCanBeSeen();
         }
 
         private void OnDestroy()
@@ -105,13 +117,21 @@ namespace StarSalvager.Cameras
             Globals.OrientationChange -= SetOrientation;
         }
 
+        #endregion //Unity Functions
+
         //============================================================================================================//
 
+        #region Camera Rect
+
+        private static float _cameraXOffset;
         private static Rect _cameraRect;
         private static Vector2 center;
         private static Vector2 pos;
 
         private static Dictionary<float, Rect> checkRects;
+
+        private static List<ICanBeSeen> _canBeSeens;
+        
 
         public static bool IsPointInCameraRect(Vector2 position)
         {
@@ -127,23 +147,24 @@ namespace StarSalvager.Cameras
             //Don't want to be calculating the dimensions of the rectangle all the time, so store it for future use
             if (!checkRects.TryGetValue(xTotal, out var rect))
             {
+                
                 rect = _cameraRect;
                 rect.width *= xTotal;
-                //rect.height *= yTotal;
-                rect.x = center.x + rect.width / 2f;
-                
-                
+
+                //Offset by the remaining area
+                rect.x += (_cameraRect.width * (1f - xTotal)) / 2f;
                 
                 checkRects.Add(xTotal, rect);
             }
             
             
-            GizmoExtensions.DrawDebugRect(rect, Color.red);
+            var tempRect = rect;
+            tempRect.x += _cameraXOffset * -1f;
             
-            return rect.Contains(position);
+            GizmoExtensions.DrawDebugRect(tempRect, Color.red);
+            
+            return tempRect.Contains(position);
         }
-
-        
         
         private void UpdateRect()
         {
@@ -165,6 +186,57 @@ namespace StarSalvager.Cameras
             
         }
 
+        //====================================================================================================================//
+        
+        //TODO May want to change the naming of some of the CanBeSeen properties
+        public static void RegisterCanBeSeen(ICanBeSeen canBeSeen)
+        {
+            if(_canBeSeens == null)
+                _canBeSeens = new List<ICanBeSeen>();
+            
+            _canBeSeens.Add(canBeSeen);
+        }
+        
+        public static void UnRegisterCanBeSeen(ICanBeSeen canBeSeen)
+        {
+            if (_canBeSeens == null || _canBeSeens.Count == 0)
+                return;
+
+            if (!_canBeSeens.Contains(canBeSeen))
+                return;
+
+            canBeSeen.ExitedCamera();
+            canBeSeen.IsSeen = false;
+            
+            _canBeSeens.Remove(canBeSeen);
+        }
+
+        private static void CheckForCanBeSeen()
+        {
+            if (_canBeSeens == null)
+                return;
+            
+            foreach (var canBeSeen in _canBeSeens)
+            {
+                CheckCanBeSeen(canBeSeen);
+            }
+        }
+
+        private static void CheckCanBeSeen(ICanBeSeen canBeSeen)
+        {
+            var seen = IsPointInCameraRect(canBeSeen.transform.position, canBeSeen.CameraCheckArea);
+
+            if (canBeSeen.IsSeen == seen)
+                return;
+
+            canBeSeen.IsSeen = seen;
+                
+            if(seen) canBeSeen.EnteredCamera();
+            else canBeSeen.ExitedCamera();
+        }
+
+        #endregion //Camera Rect
+
 
         //================================================================================================================//
 
@@ -173,16 +245,21 @@ namespace StarSalvager.Cameras
             if (!Globals.CameraUseInputMotion)
                 return;
 
-            transform.position += toMoveCamera;
+            var newPosition = transform.position;
+            newPosition += toMoveCamera;
 
-            if (transform.position.x > Globals.CameraOffsetBounds)
+            if (newPosition.x > Globals.CameraOffsetBounds)
             {
-                transform.position = new Vector3(Globals.CameraOffsetBounds, transform.position.y, transform.position.z);
+                newPosition = new Vector3(Globals.CameraOffsetBounds, newPosition.y, newPosition.z);
             }
-            else if (transform.position.x < -Globals.CameraOffsetBounds)
+            else if (newPosition.x < -Globals.CameraOffsetBounds)
             {
-                transform.position = new Vector3(-Globals.CameraOffsetBounds, transform.position.y, transform.position.z);
+                newPosition = new Vector3(-Globals.CameraOffsetBounds, newPosition.y, newPosition.z);
             }
+
+            transform.position = newPosition;
+
+            _cameraXOffset = newPosition.x;
         }
 
         public void SetOrthographicSize(float screenWidthInWorld, Vector3 botPosition)
@@ -232,7 +309,32 @@ namespace StarSalvager.Cameras
             UpdateRect();
         }
         
-        #if UNITY_EDITOR
+
+        //IMoveOnInput functions
+        //================================================================================================================//
+
+        public void RegisterMoveOnInput()
+        {
+            InputManager.RegisterMoveOnInput(this);
+        }
+            
+        public void Move(float direction)
+        {
+            if (!Globals.CameraUseInputMotion)
+                return;
+
+            if (direction != 0)
+            {
+                beginningLerpPos = startPos;
+                lerpValue = 0.0f;
+            }
+        }
+
+        //====================================================================================================================//
+
+        #region Unity Editor Functions
+
+#if UNITY_EDITOR
 
         [Button("Toggle Orientation"), DisableInEditorMode]
         private void ToggleOrientation()
@@ -256,27 +358,8 @@ namespace StarSalvager.Cameras
         }
 
 #endif
-        
 
-        //IMoveOnInput functions
-        //================================================================================================================//
-
-        public void RegisterMoveOnInput()
-        {
-            InputManager.RegisterMoveOnInput(this);
-        }
-            
-        public void Move(float direction)
-        {
-            if (!Globals.CameraUseInputMotion)
-                return;
-
-            if (direction != 0)
-            {
-                beginningLerpPos = startPos;
-                lerpValue = 0.0f;
-            }
-        }
+        #endregion //Unity Editor Functions
 
         //====================================================================================================================//
         

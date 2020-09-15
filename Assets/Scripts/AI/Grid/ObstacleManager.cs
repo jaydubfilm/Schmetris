@@ -127,8 +127,8 @@ namespace StarSalvager
                 if (m_bonusShapeTimer >= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency)
                 {
                     m_bonusShapeTimer -= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency;
-                    StageObstacleData bonusShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
-                    SpawnBonusShape(bonusShapeData.SelectionType, bonusShapeData.ShapeName, bonusShapeData.Category, bonusShapeData.Rotation());
+                    StageObstacleShapeData bonusObstacleShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
+                    SpawnBonusShape(bonusObstacleShapeData.SelectionType, bonusObstacleShapeData.ShapeName, bonusObstacleShapeData.Category, bonusObstacleShapeData.Rotation);
                     m_bonusShapesSpawned++;
                 }
             }
@@ -171,6 +171,9 @@ namespace StarSalvager
                 {
                     case Bit bit:
                         Recycler.Recycle<Bit>(bit);
+                        break;
+                    case Asteroid asteroid:
+                        Recycler.Recycle<Asteroid>(asteroid);
                         break;
                     case Component component:
                         Recycler.Recycle<Component>(component);
@@ -241,21 +244,6 @@ namespace StarSalvager
             {
                 m_offGridMovingObstacles[i].LerpTimer += Time.deltaTime / m_offGridMovingObstacles[i].LerpSpeed;
 
-                //Determines if a new bonus shape is now visible on screen, notifies those who care about the change
-                //----------------------------------------------------------------------------------------------------//
-                
-                if (!m_offGridMovingObstacles[i].isVisible && m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
-                    m_bonusShapes.Contains(checkShape))
-                {
-                    if (CameraController.IsPointInCameraRect(checkShape.transform.position, BONUS_SCREEN_AREA))
-                    {
-                        m_offGridMovingObstacles[i].isVisible = true;
-                        NewShapeOnScreen?.Invoke();
-                    }
-                }
-                
-                //----------------------------------------------------------------------------------------------------//
-
                 if (m_offGridMovingObstacles[i].LerpTimer >= 1)
                 {
                     switch(m_offGridMovingObstacles[i].Obstacle)
@@ -269,6 +257,17 @@ namespace StarSalvager
                             {
                                 PlaceMovableOnGridSpecific(bit, m_offGridMovingObstacles[i].EndPosition);
                                 bit.SetColliderActive(true);
+                            }
+                            break;
+                        case Asteroid asteroid:
+                            if (m_offGridMovingObstacles[i].DespawnOnEnd)
+                            {
+                                Recycler.Recycle<Asteroid>(asteroid);
+                            }
+                            else
+                            {
+                                PlaceMovableOnGridSpecific(asteroid, m_offGridMovingObstacles[i].EndPosition);
+                                asteroid.SetColliderActive(true);
                             }
                             break;
                         case Component component:
@@ -312,6 +311,22 @@ namespace StarSalvager
                 
                 
                 m_offGridMovingObstacles[i].Spin();
+
+
+                //Determines if a new bonus shape is now visible on screen, notifies those who care about the change
+                //----------------------------------------------------------------------------------------------------//
+
+                if (!m_offGridMovingObstacles[i].isVisible && m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
+                    m_bonusShapes.Contains(checkShape))
+                {
+                    if (CameraController.IsPointInCameraRect(checkShape.transform.position, BONUS_SCREEN_AREA))
+                    {
+                        m_offGridMovingObstacles[i].isVisible = true;
+                        NewShapeOnScreen?.Invoke();
+                    }
+                }
+
+                //----------------------------------------------------------------------------------------------------//
             }
 
             for (int i = m_obstacles.Count - 1; i >= 0; i--)
@@ -345,6 +360,11 @@ namespace StarSalvager
                                 Recycler.Recycle<Bit>(bit);
                                 m_obstacles[i] = null;
                             }
+                            break;
+                        case Asteroid asteroid:
+                            asteroid.IsRegistered = false;
+                            Recycler.Recycle<Asteroid>(asteroid);
+                            m_obstacles[i] = null;
                             break;
                         case Component component:
                             if (!component.Attached)
@@ -557,18 +577,21 @@ namespace StarSalvager
             foreach (StageObstacleData stageObstacleData in obstacleData)
             {
                 float spawnVariable = stageObstacleData.Density * spawningMultiplier * ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
-                if (isPrevious)
+                if (m_currentStageData.StageBlendPeriod > 0)
                 {
-                    spawnVariable *= Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
-                }
-                else if (m_previousStageData != null && m_blendTimer <= m_currentStageData.StageBlendPeriod)
-                {
-                    spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                    if (isPrevious)
+                    {
+                        spawnVariable *= Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                    }
+                    else if (m_previousStageData != null && m_blendTimer <= m_currentStageData.StageBlendPeriod)
+                    {
+                        spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                    }
                 }
 
                 while (spawnVariable >= 1)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange, inRandomYLevel);
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation, columnFieldRange, inRandomYLevel);
                     spawnVariable -= 1;
                 }
 
@@ -579,27 +602,23 @@ namespace StarSalvager
 
                 if (random <= spawnVariable)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation(), columnFieldRange, inRandomYLevel);
+                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation, columnFieldRange, inRandomYLevel);
                 }
             }
         }
 
-        public void SpawnBitExplosion(Vector2 startingLocation, List<IRDSObject> rdsObjects)
+        public void SpawnObstacleExplosion(Vector2 startingLocation, List<IRDSObject> rdsObjects)
         {
             for (int i = rdsObjects.Count - 1; i >= 0; i--)
             {
                 if (rdsObjects[i] is RDSValue<Blueprint> rdsValueBlueprint)
                 {
-                    PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
-                    Toast.AddToast("Unlocked Blueprint!");
-                    rdsObjects.RemoveAt(i);
+                    Debug.LogError("Blueprint in SpawnBitExplosion");
                 }
                 else if (rdsObjects[i] is RDSValue<Vector2Int> rdsValueGears)
                 {
-                    PlayerPersistentData.PlayerData.ChangeGears(Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
-                    rdsObjects.RemoveAt(i);
+                    Debug.LogError("Gears in SpawnBitExplosion");
                 }
-                //Remove objects that aren't going on screen
             }
             
             Vector2Int[] bitExplosionPositions = LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, rdsObjects.Count, 5, 5);
@@ -614,6 +633,11 @@ namespace StarSalvager
                             Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>((BIT_TYPE)rdsValueBlockData.rdsValue.Type, rdsValueBlockData.rdsValue.Level);
                             AddObstacleToList(newBit);
                             PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[i], 0.5f);
+                            break;
+                        case nameof(Asteroid):
+                            Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroidRandom<Asteroid>();
+                            AddObstacleToList(newAsteroid);
+                            PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;
                         case nameof(Component):
                             Component newComponent = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().CreateObject<Component>((COMPONENT_TYPE)rdsValueBlockData.rdsValue.Type);
@@ -665,8 +689,8 @@ namespace StarSalvager
             }
             else if (selectionType == SELECTION_TYPE.ASTEROID)
             {
-                Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateLargeAsteroid<Bit>(asteroidSize);
-                AddObstacleToList(newBit);
+                Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(asteroidSize);
+                AddObstacleToList(newAsteroid);
 
                 int radiusAround = 0;
                 switch(asteroidSize)
@@ -680,7 +704,7 @@ namespace StarSalvager
                         break;
                 }  
 
-                PlaceMovableOnGrid(newBit, gridRegion, inRandomYLevel, radiusAround);
+                PlaceMovableOnGrid(newAsteroid, gridRegion, inRandomYLevel, radiusAround);
 
                 return;
             }
@@ -732,6 +756,7 @@ namespace StarSalvager
             switch (movable)
             {
                 case Bit _:
+                case Asteroid _:
                 case Component _:
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
                     break;
@@ -759,6 +784,7 @@ namespace StarSalvager
             switch (movable)
             {
                 case Bit _:
+                case Asteroid _:
                 case Component _:
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
                     break;
@@ -833,6 +859,7 @@ namespace StarSalvager
 
             PlaceMovableOffGrid(obstacle, startingPosition, endPosition, Globals.BonusShapeDuration, despawnOnEnd: true, parentToGrid: false);
             m_bonusShapes.Add((Shape)obstacle);
+            LevelManager.Instance.WaveEndSummaryData.numTotalBonusShapesSpawned++;
         }
 
         public void MatchBonusShape(Shape shape)
@@ -846,6 +873,7 @@ namespace StarSalvager
             m_notFullyInGridShapes.Remove(shape);
             m_offGridMovingObstacles.Remove(m_offGridMovingObstacles.FirstOrDefault(s => s.Obstacle is Shape offGridShape && offGridShape == shape));
             Recycler.Recycle<Shape>(shape);
+            LevelManager.Instance.WaveEndSummaryData.numBonusShapesMatched++;
         }
 
         //============================================================================================================//

@@ -30,7 +30,23 @@ namespace StarSalvager.Factories.Data
 
         [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
         private bool m_requiredRotate;
-        
+
+        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        private ENEMY_ATTACKTYPE m_attackType;
+
+        private bool showSpreadAngle => m_attackType == ENEMY_ATTACKTYPE.AtPlayerCone || m_attackType == ENEMY_ATTACKTYPE.Spray;
+        [SerializeField, VerticalGroup("$ProjectileType/row2/right"), ShowIf("showSpreadAngle")]
+        private float m_spreadAngle;
+
+        [SerializeField, VerticalGroup("$ProjectileType/row2/right"), ShowIf("m_attackType", ENEMY_ATTACKTYPE.Spray)]
+        private int m_sprayCount;
+
+        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        private bool m_canHitAsteroids;
+
+        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        private bool m_addVelocityToProjectiles;
+
 
         public string ProjectileType => m_projectileType;
 
@@ -41,5 +57,14 @@ namespace StarSalvager.Factories.Data
         public float ProjectileSpeed => m_projectileSpeed;
 
         public bool RequiresRotation => m_requiredRotate;
+
+        public ENEMY_ATTACKTYPE AttackType => m_attackType;
+
+        public float SpreadAngle => m_spreadAngle;
+
+        public int SprayCount => m_sprayCount;
+
+        public bool CanHitAsteroids => m_canHitAsteroids;
+        public bool AddVelocityToProjectiles => m_addVelocityToProjectiles;
     }
 }

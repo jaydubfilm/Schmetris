@@ -413,7 +413,6 @@ namespace StarSalvager.UI.Scrapyard
 
                 switch (bitType)
                 {
-                    case BIT_TYPE.BLACK:
                     case BIT_TYPE.BLUE:
                     case BIT_TYPE.YELLOW:
                     case BIT_TYPE.WHITE:

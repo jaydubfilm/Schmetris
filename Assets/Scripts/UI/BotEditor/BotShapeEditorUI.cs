@@ -34,6 +34,13 @@ namespace StarSalvager.UI
         [SerializeField, Required, BoxGroup("Part UI")]
         private TMP_Text partsLabel;
 
+        [SerializeField]
+        private ScrollRect scrollRect;
+        [SerializeField]
+        private RectTransform bitRect;
+        [SerializeField]
+        private RectTransform categoryRect;
+
         //============================================================================================================//
 
         [SerializeField, Required, BoxGroup("Category UI")]
@@ -408,10 +415,10 @@ namespace StarSalvager.UI
                 }
             }
 
-            BitRemoteData remoteData = new BitRemoteData();
+            /*BitRemoteData remoteData = new BitRemoteData();
             remoteData.bitType = BIT_TYPE.BLACK;
             var test = bitsScrollView.AddElement<BrickImageUIElement>(remoteData, $"{remoteData.bitType}_0_UIElement", true);
-            test.Init(remoteData, PartBitPressed, 0);
+            test.Init(remoteData, PartBitPressed, 0);*/
 
             UpdateCategoriesScrollViews();
             UpdateLoadListUiScrollViews();
@@ -474,6 +481,11 @@ namespace StarSalvager.UI
 
         public void SetBitsScrollActive(bool active)
         {
+            if (active)
+            {
+                scrollRect.content = bitRect;
+            }
+
             bitsScrollView.SetElementsActive(active);
             if (active)
             {
@@ -487,6 +499,11 @@ namespace StarSalvager.UI
 
         public void SetCategoriesScrollActive(bool active)
         {
+            if (active)
+            {
+                scrollRect.content = categoryRect;
+            }
+            
             categoriesScrollView.SetElementsActive(active);
             if (active)
             {

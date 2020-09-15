@@ -17,11 +17,18 @@ using Random = UnityEngine.Random;
 namespace StarSalvager.AI
 {
     [RequireComponent(typeof(StateAnimator))]
-    public class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle
+    public class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle, ICanBeSeen
     {
         public bool IsAttachable => m_enemyData.IsAttachable;
         public bool IgnoreObstacleAvoidance => m_enemyData.IgnoreObstacleAvoidance;
         public ENEMY_MOVETYPE MovementType => m_enemyData.MovementType;
+        public string EnemyName => m_enemyData.Name;
+
+        //ICanBeSeen Properties
+        //====================================================================================================================//
+        
+        public bool IsSeen { get; set; }
+        public float CameraCheckArea => 0.6f;
         
         //============================================================================================================//
         
@@ -74,6 +81,7 @@ namespace StarSalvager.AI
             m_horizontalMovementYLevel = transform.position.y;
             horizontalFarLeftX = -1 * Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
             horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
+            
         }
 
         protected virtual void Update()
@@ -106,7 +114,7 @@ namespace StarSalvager.AI
             renderer.sprite = m_enemyData?.Sprite;
             StateAnimator.SetController(m_enemyData?.AnimationController);
             
-            AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
+            RegisterCanBeSeen();
         }
 
         private void SetupPositions()
@@ -404,22 +412,60 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0) 
                 return;
             
-            LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.localPosition, m_enemyData.rdsTable.rdsResult.ToList());
+            LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition);
             MissionManager.ProcessEnemyKilledMissionData(m_enemyData.EnemyType, 1);
             
             SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             AudioController.PlaySound(SOUND.ENEMY_DEATH);
-                
+
+            LevelManager.Instance.WaveEndSummaryData.numEnemiesKilled++;
+            if (LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled.ContainsKey(name))
+            {
+                LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled[name]++;
+            }
+            else
+            {
+                LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled.Add(name, 1);
+            }
+
             Recycler.Recycle<Enemy>(this);
         }
 
+        //ICanBeSeen Functions
+        //============================================================================================================//
+
+        public void RegisterCanBeSeen()
+        {
+            CameraController.RegisterCanBeSeen(this);
+        }
+
+        public void UnregisterCanBeSeen()
+        {
+            CameraController.UnRegisterCanBeSeen(this);
+        }
+
+        public void EnteredCamera()
+        {
+            AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
+        }
+
+        public void ExitedCamera()
+        {
+            AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
+        }
         //============================================================================================================//
 
         public virtual void CustomRecycle(params object[] args)
         {
             Disabled = false;
             AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
+            UnregisterCanBeSeen();
         }
+
+
+        
+        //============================================================================================================//
+
     }
 }
  
