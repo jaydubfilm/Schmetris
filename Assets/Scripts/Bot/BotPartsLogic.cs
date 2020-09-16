@@ -430,6 +430,7 @@ namespace StarSalvager
                         //FIXME I don't think using linq here, especially twice is the best option
                         //TODO This needs to fire every x Seconds
                         toRepair = bot.attachedBlocks.GetAttachablesAroundInRadius<Part>(part, radius)
+                            .Where(p => p.Destroyed == false)
                             .Where(p => p.CurrentHealth < p.StartingHealth)
                             .Select(x => new KeyValuePair<Part, float>(x, FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(x.Type).priority / (x.CurrentHealth / x.StartingHealth)))
                             .OrderByDescending(x => x.Value)

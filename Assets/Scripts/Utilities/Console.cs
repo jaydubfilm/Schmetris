@@ -329,7 +329,7 @@ namespace StarSalvager.Utilities
                     
                     if (split[2].ToLower().Equals("all"))
                     {
-                        var componentData = new Dictionary<COMPONENT_TYPE, int>(PlayerPersistentData.PlayerData.components);
+                        var componentData = new Dictionary<COMPONENT_TYPE, int>((IDictionary<COMPONENT_TYPE, int>) PlayerPersistentData.PlayerData.components);
                         
                         foreach (COMPONENT_TYPE value in Enum.GetValues(typeof(COMPONENT_TYPE)))
                         {
@@ -670,7 +670,7 @@ namespace StarSalvager.Utilities
                     
                     if (split[2].ToLower().Equals("all"))
                     {
-                        var componentData = new Dictionary<COMPONENT_TYPE, int>(PlayerPersistentData.PlayerData.components);
+                        var componentData = new Dictionary<COMPONENT_TYPE, int>((IDictionary<COMPONENT_TYPE, int>) PlayerPersistentData.PlayerData.components);
                         
                         foreach (COMPONENT_TYPE value in Enum.GetValues(typeof(COMPONENT_TYPE)))
                         {
@@ -723,7 +723,7 @@ namespace StarSalvager.Utilities
                     
                     if (split[2].ToLower().Equals("all"))
                     {
-                        var data = new Dictionary<BIT_TYPE, float>(PlayerPersistentData.PlayerData.liquidResource);
+                        var data = new Dictionary<BIT_TYPE, float>((IDictionary<BIT_TYPE, float>) PlayerPersistentData.PlayerData.liquidResource);
 
                         foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
                         {
@@ -945,7 +945,7 @@ namespace StarSalvager.Utilities
         {
             return dictionary.Aggregate("", (current, o) => current + $"[{o.Key}] => {o.Value}\n");
         }
-        private static string GetDictionaryAsString<U, T>(ReadOnlyDictionary<U, T> dictionary)
+        private static string GetDictionaryAsString<U, T>(IReadOnlyDictionary<U, T> dictionary)
         {
             return dictionary.Aggregate("", (current, o) => current + $"[{o.Key}] => {o.Value}\n");
         }

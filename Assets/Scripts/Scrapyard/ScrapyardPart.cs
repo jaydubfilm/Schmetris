@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class ScrapyardPart : MonoBehaviour, IAttachable, ISaveable, IPart
+    public class ScrapyardPart : MonoBehaviour, IAttachable, ISaveable, IPart, IHealth
     {
         protected new SpriteRenderer renderer
         {
@@ -31,6 +31,13 @@ namespace StarSalvager
         }
         private Transform _transform;
 
+        //IHealth Properties
+        //====================================================================================================================//
+        
+        public float StartingHealth { get; private set; }
+        public float CurrentHealth { get; private set; }
+
+
         //IAttachable Properties
         //============================================================================================================//
         [ShowInInspector, ReadOnly]
@@ -48,14 +55,12 @@ namespace StarSalvager
 
         //Part Properties
         //============================================================================================================//
-        public bool Destroyed => Health <= 0f;
+        public bool Destroyed => CurrentHealth <= 0f;
 
         [ShowInInspector, ReadOnly]
         public PART_TYPE Type { get; set; }
         [ShowInInspector, ReadOnly]
         public int level { get; private set; }
-        [ShowInInspector, ReadOnly]
-        public float Health { get; private set; }
 
         //IAttachable Functions
         //============================================================================================================//
@@ -63,6 +68,20 @@ namespace StarSalvager
         public void SetAttached(bool isAttached)
         {
             Attached = isAttached;
+        }
+
+        //IHealth Functions
+        //====================================================================================================================//
+        
+        public void SetupHealthValues(float startingHealth, float currentHealth)
+        {
+            StartingHealth = startingHealth;
+            CurrentHealth = currentHealth;
+        }
+
+        public void ChangeHealth(float amount)
+        {
+            throw new System.NotImplementedException();
         }
 
         //ISaveable Functions
@@ -76,7 +95,7 @@ namespace StarSalvager
                 Coordinate = Coordinate,
                 Type = (int)Type,
                 Level = level,
-                Health = Health
+                Health = CurrentHealth
             };
         }
 
@@ -85,7 +104,7 @@ namespace StarSalvager
             Coordinate = blockData.Coordinate;
             Type = (PART_TYPE)blockData.Type;
             level = blockData.Level;
-            Health = blockData.Health;
+            CurrentHealth = blockData.Health;
         }
 
         //============================================================================================================//
@@ -99,5 +118,7 @@ namespace StarSalvager
         {
             level = newLevel;
         }
+
+
     }
 }

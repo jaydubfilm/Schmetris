@@ -46,6 +46,10 @@ namespace StarSalvager.UI.Scrapyard
         private Button saveLayoutButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button loadLayoutButton;
+        
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button repairButton;
+        private TMP_Text _repairButtonText;
 
         [SerializeField, Required, BoxGroup("Load Menu")]
         private GameObject loadMenu;
@@ -111,7 +115,6 @@ namespace StarSalvager.UI.Scrapyard
 
         private void Start()
         {
-
             InitButtons();
 
             InitUiScrollView();
@@ -131,7 +134,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnDisable()
         {
-            DroneDesigner.ClearUndoRedoStacks();
+            DroneDesigner?.ClearUndoRedoStacks();
             
             PlayerData.OnValuesChanged -= UpdateResourceElements;
         }
@@ -145,6 +148,13 @@ namespace StarSalvager.UI.Scrapyard
         private void InitButtons()
         {
 
+            _repairButtonText = repairButton.GetComponentInChildren<TMP_Text>();
+            
+            repairButton.onClick.AddListener(() =>
+            {
+                DroneDesigner.RepairParts();
+            });
+            
             //--------------------------------------------------------------------------------------------------------//
 
             undoButton.onClick.AddListener(() =>
@@ -356,6 +366,21 @@ namespace StarSalvager.UI.Scrapyard
         #endregion //Scroll Views
 
         //============================================================================================================//
+
+        public void ShowRepairCost(int repairCost)
+        {
+            var show = repairCost > 0;
+            
+            repairButton.gameObject.SetActive(show);
+
+            if (!show)
+                return;
+                
+            if(_repairButtonText != null)
+                _repairButtonText.text = $"Repair all {DroneDesigner.GetRepairCost()}";
+
+            repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] >= repairCost;
+        }
 
         #region Other
 

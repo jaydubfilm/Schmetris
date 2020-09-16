@@ -52,6 +52,8 @@ namespace StarSalvager.Factories
             var remote = remotePartData.GetRemoteData((PART_TYPE) blockData.Type);
             var profile = factoryProfile.GetProfile((PART_TYPE)blockData.Type);
             var sprite = profile.GetSprite(blockData.Level);
+            var startingHealth = remote.levels[blockData.Level].health;//.health[blockData.Level];
+
             
             //--------------------------------------------------------------------------------------------------------//
 
@@ -81,7 +83,6 @@ namespace StarSalvager.Factories
             temp.SetSprite(sprite);
             temp.LoadBlockData(blockData);
 
-            var startingHealth = remote.levels[blockData.Level].health;//.health[blockData.Level];
 
             //temp.StartingHealth =
             temp.SetupHealthValues(startingHealth, blockData.Health);
@@ -101,7 +102,7 @@ namespace StarSalvager.Factories
 
         public GameObject CreateGameObject(PART_TYPE partType, int level = 0)
         {
-            var startingHealth = remotePartData.GetRemoteData(partType).levels[0].health;
+            var startingHealth = remotePartData.GetRemoteData(partType).levels[level].health;
             var blockData = new BlockData
             {
                 Level = level,
@@ -125,10 +126,11 @@ namespace StarSalvager.Factories
         {
             var profileData = (PartProfileScriptableObject)factoryProfile;
             
-            //var remote = remotePartData.GetRemoteData((PART_TYPE)blockData.Type);
+            var remote = remotePartData.GetRemoteData((PART_TYPE)blockData.Type);
             var profile = factoryProfile.GetProfile((PART_TYPE)blockData.Type);
             var sprite = profile.GetSprite(blockData.Level);
-
+            var startingHealth = remote.levels[blockData.Level].health;
+            
             //var temp = Object.Instantiate(factoryProfile.ScrapyardPrefab).GetComponent<ScrapyardPart>();
 
             if (!Recycler.TryGrab(out ScrapyardPart temp))
@@ -138,6 +140,7 @@ namespace StarSalvager.Factories
             
             temp.LoadBlockData(blockData);
             temp.SetSprite(temp.Destroyed ? profileData.GetDamageSprite(blockData.Level) : sprite);
+            temp.SetupHealthValues(startingHealth, blockData.Health);
 
 
             var gameObject = temp.gameObject;
@@ -150,7 +153,7 @@ namespace StarSalvager.Factories
 
         public GameObject CreateScrapyardGameObject(PART_TYPE partType, int level = 0)
         {
-            var startingHealth = remotePartData.GetRemoteData(partType).levels[0].health;
+            var startingHealth = remotePartData.GetRemoteData(partType).levels[level].health;
             var blockData = new BlockData
             {
                 Level = level,

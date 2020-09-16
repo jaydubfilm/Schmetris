@@ -72,6 +72,7 @@ namespace StarSalvager
 
             if (CurrentHealth <= 0)
             {
+                CurrentHealth = 0;
                 SetDestroyed(true);
                 return;
             }

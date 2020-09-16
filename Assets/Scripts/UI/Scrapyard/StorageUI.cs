@@ -19,6 +19,9 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required]
         private Storage mStorage;
 
+        private DroneDesigner DroneDesigner => _droneDesigner ? _droneDesigner : (_droneDesigner = FindObjectOfType<DroneDesigner>());
+        private DroneDesigner _droneDesigner;
+        
         //============================================================================================================//
 
         // Start is called before the first frame update
@@ -49,7 +52,7 @@ namespace StarSalvager.UI.Scrapyard
 
         public void UpdateStorage()
         {
-            var droneDesign = FindObjectOfType<DroneDesigner>();
+            //var droneDesign = FindObjectOfType<DroneDesigner>();
             
             storageUiElementScrollView.ClearElements();
             
@@ -65,7 +68,7 @@ namespace StarSalvager.UI.Scrapyard
                 var temp = storageUiElementScrollView.AddElement(testStorage, $"{testStorage.name}_UIElement", allowDuplicate: true);
                 temp.Init(testStorage, data =>
                 {
-                    droneDesign.SelectPartFromStorage(data.blockData);
+                    DroneDesigner.SelectPartFromStorage(data.blockData);
                 });
             }
             

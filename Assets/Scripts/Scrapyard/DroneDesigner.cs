@@ -82,14 +82,15 @@ namespace StarSalvager
 
         private void Update()
         {
-            if (partDragImage != null && partDragImage.gameObject.activeSelf)
+            if (partDragImage == null || !partDragImage.gameObject.activeSelf) 
+                return;
+            
+            
+            Vector3 screenToWorldPosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+            if (isDragging || (SelectedPartClickPosition != null && Vector3.Distance(SelectedPartClickPosition.Value, screenToWorldPosition) > 0.5f))
             {
-                Vector3 screenToWorldPosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
-                if (isDragging || (SelectedPartClickPosition != null && Vector3.Distance(SelectedPartClickPosition.Value, screenToWorldPosition) > 0.5f))
-                {
-                    isDragging = true;
-                    partDragImage.transform.position = new Vector3(screenToWorldPosition.x, screenToWorldPosition.y, 0);
-                }
+                isDragging = true;
+                partDragImage.transform.position = new Vector3(screenToWorldPosition.x, screenToWorldPosition.y, 0);
             }
         }
 
@@ -175,6 +176,8 @@ namespace StarSalvager
             }
 
             UpdateFloatingMarkers(false);
+            
+            droneDesignUi.ShowRepairCost(GetRepairCost());
         }
 
         public void Reset()
@@ -337,6 +340,8 @@ namespace StarSalvager
                         SelectedPartReturnToStorageIfNotPlaced = false;
                         
                         SaveBlockData();
+                        
+                        
                     }
                 }
                 UpdateFloatingMarkers(false);
@@ -412,7 +417,10 @@ namespace StarSalvager
                 SelectedPartReturnToStorageIfNotPlaced = false;
                 SaveBlockData();
             }
+            
+            
             UpdateFloatingMarkers(false);
+            droneDesignUi.ShowRepairCost(GetRepairCost());
         }
 
         private void OnRightMouseButton(InputAction.CallbackContext ctx)
@@ -455,6 +463,7 @@ namespace StarSalvager
             }
             
             UpdateFloatingMarkers(false);
+            droneDesignUi.ShowRepairCost(GetRepairCost());
         }
 
         private void OnRightMouseButtonUp()
@@ -618,7 +627,7 @@ namespace StarSalvager
             //Setup your list of available resources by putting player resources into a temp list
             Dictionary<BIT_TYPE, int> resourceComparer = new Dictionary<BIT_TYPE, int>(PlayerPersistentData.PlayerData.resources);
             //Setup your list of available resources by putting player resources into a temp list
-            Dictionary<COMPONENT_TYPE, int> componentComparer = new Dictionary<COMPONENT_TYPE, int>(PlayerPersistentData.PlayerData.components);
+            Dictionary<COMPONENT_TYPE, int> componentComparer = new Dictionary<COMPONENT_TYPE, int>((IDictionary<COMPONENT_TYPE, int>) PlayerPersistentData.PlayerData.components);
 
             //Setup your list of parts needing to be purchasing by comparing the list of parts in the layout to the list of available parts.
             List<BlockData> newLayoutComparer = new List<BlockData>();
@@ -744,73 +753,117 @@ namespace StarSalvager
 
         private void SellBits()
         {
-            if (_scrapyardBot != null)
+            if (_scrapyardBot == null) 
+                return;
+            
+            List<ScrapyardBit> listBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
+            List<Component> listComponents = _scrapyardBot.attachedBlocks.OfType<Component>().ToList();
+            if (listComponents.Count > 0)
             {
-                List<ScrapyardBit> listBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
+                _scrapyardBot.RemoveAllComponents();
 
-
-                List<Component> listComponents = _scrapyardBot.attachedBlocks.OfType<Component>().ToList();
-                if (listComponents.Count > 0)
+                //TODO Need to think about if I should be displaying the components processed or not
+                foreach (var component in listComponents)
                 {
-                    _scrapyardBot.RemoveAllComponents();
-
-                    //TODO Need to think about if I should be displaying the components processed or not
-                    foreach (var component in listComponents)
-                    {
-                        var amount = 1;
+                    var amount = 1;
                         
-                        if (component.level > 0)
-                            amount = component.level * 3;
+                    if (component.level > 0)
+                        amount = component.level * 3;
                         
-                        PlayerPersistentData.PlayerData.AddComponent(component.Type, amount);
-                    }
-
-                    PlayerData.OnValuesChanged?.Invoke();
-                    SaveBlockData();
+                    PlayerPersistentData.PlayerData.AddComponent(component.Type, amount);
                 }
 
-
-                if (listBits.Count == 0)
-                    return;
-
-                var scrapyardBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>();
-
-                Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(scrapyardBits);
-
-                PlayerPersistentData.PlayerData.AddResources(bits);
-
-
-                string resourcesGained = "";
-                foreach (var resource in bits)
-                {
-                    int numTotal = scrapyardBits.Count(b => b.Type == resource.Key);
-
-                    for (int i = 0; numTotal > 0; i++)
-                    {
-                        int numAtLevel = scrapyardBits.Count(b => b.Type == resource.Key && b.level == i);
-                        if (numAtLevel == 0)
-                            continue;
-
-                        BitRemoteData remoteData = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(resource.Key);
-                        int resourceAmount = numAtLevel * remoteData.levels[i].resources;
-                        resourcesGained += $"{numAtLevel} x {GetBitSprite(resource.Key, i)} = {resourceAmount} {_textSprites[resource.Key]} ";
-                        numTotal -= numAtLevel;
-                    }
-
-                    resourcesGained += "\n";
-                }
-                Alert.ShowAlert("Resources Refined", resourcesGained, "Okay", null);
-                Alert.SetLineHeight(90f);
-
-
-                _scrapyardBot.RemoveAllBits();
-
-
-
+                PlayerData.OnValuesChanged?.Invoke();
                 SaveBlockData();
-
-                droneDesignUi.UpdateResourceElements();
             }
+
+
+            if (listBits.Count == 0)
+                return;
+
+            var scrapyardBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>();
+
+            var enumerable = scrapyardBits as ScrapyardBit[] ?? scrapyardBits.ToArray();
+            Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(enumerable);
+
+            PlayerPersistentData.PlayerData.AddResources(bits);
+
+
+            string resourcesGained = "";
+            foreach (var resource in bits)
+            {
+                int numTotal = enumerable.Count(b => b.Type == resource.Key);
+
+                for (int i = 0; numTotal > 0; i++)
+                {
+                    int numAtLevel = enumerable.Count(b => b.Type == resource.Key && b.level == i);
+                    if (numAtLevel == 0)
+                        continue;
+
+                    BitRemoteData remoteData = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(resource.Key);
+                    int resourceAmount = numAtLevel * remoteData.levels[i].resources;
+                    resourcesGained += $"{numAtLevel} x {GetBitSprite(resource.Key, i)} = {resourceAmount} {_textSprites[resource.Key]} ";
+                    numTotal -= numAtLevel;
+                }
+
+                resourcesGained += "\n";
+            }
+            Alert.ShowAlert("Resources Refined", resourcesGained, "Okay", null);
+            Alert.SetLineHeight(90f);
+
+
+            _scrapyardBot.RemoveAllBits();
+
+
+
+            SaveBlockData();
+
+            droneDesignUi.UpdateResourceElements();
+        }
+
+        public int GetRepairCost()
+        {
+            if (_scrapyardBot == null)
+                return 0;
+            
+            var damagedPartList = _scrapyardBot.attachedBlocks.OfType<ScrapyardPart>()
+                .Where(x => x.CurrentHealth < x.StartingHealth).ToList();
+
+            return Mathf.RoundToInt(damagedPartList.Sum(x => x.StartingHealth - x.CurrentHealth));
+        }
+        
+        public void RepairParts()
+        {
+            if (_scrapyardBot == null) 
+                return;
+
+            var damagedPartList = _scrapyardBot.attachedBlocks.OfType<ScrapyardPart>()
+                .Where(x => x.CurrentHealth < x.StartingHealth).ToList();
+
+            var totalRepairCost = GetRepairCost();
+            var availableResources = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN];
+
+            if (totalRepairCost > availableResources)
+            {
+                Debug.LogError("Cannot Afford");
+                return;
+            }
+
+            PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] -= totalRepairCost;
+            foreach (var damagedPart in damagedPartList)
+            {
+                if (!(damagedPart is IHealth partHealth))
+                    continue;
+                
+                partHealth.SetupHealthValues(damagedPart.StartingHealth, damagedPart.StartingHealth);
+                damagedPart.SetSprite(FactoryManager.Instance.PartsProfileData.GetProfile(damagedPart.Type)
+                    .GetSprite(damagedPart.level));
+            }
+            
+            SaveBlockData();
+
+            droneDesignUi.UpdateResourceElements();
+            droneDesignUi.ShowRepairCost(0);
         }
 
         public void RotateBots(float direction)
