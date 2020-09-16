@@ -26,7 +26,7 @@ namespace StarSalvager.UI.Scrapyard
         
         //============================================================================================================//
         
-        public override void Init(TEST_Storage data, Action<TEST_Storage> OnPressed)
+        public override void Init(TEST_Storage data, Action<TEST_Storage> onPressedCallback)
         {
             this.data = data;
 
@@ -41,7 +41,7 @@ namespace StarSalvager.UI.Scrapyard
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() =>
             {
-                OnPressed?.Invoke(data);
+                onPressedCallback?.Invoke(data);
             });
         }
         

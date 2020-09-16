@@ -15,7 +15,7 @@ namespace StarSalvager.UI
         
         //============================================================================================================//
         
-        public override void Init(EditorGeneratorDataBase data, Action<EditorGeneratorDataBase> OnPressed)
+        public override void Init(EditorGeneratorDataBase data, Action<EditorGeneratorDataBase> onPressedCallback)
         {
             this.data = data;
 
@@ -23,7 +23,7 @@ namespace StarSalvager.UI
 
             button.onClick.AddListener(() =>
             {
-                OnPressed?.Invoke(data);
+                onPressedCallback?.Invoke(data);
             });
         }
         

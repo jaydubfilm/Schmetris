@@ -57,12 +57,10 @@ namespace StarSalvager.Utilities.Extensions
             
         }*/
 
-        public static void Bounce(this IAttachable attachable, Vector2 contactPoint)
+
+        public static void Bounce(this IObstacle obstacle, Vector2 contactPoint)
         {
-            if (!(attachable is IObstacle obstacle))
-                return;
-                
-            Vector2 directionBounce = (Vector2)attachable.transform.position - contactPoint;
+            Vector2 directionBounce = (Vector2)obstacle.transform.position - contactPoint;
             directionBounce.Normalize();
             if (directionBounce != Vector2.up)
             {
@@ -88,6 +86,20 @@ namespace StarSalvager.Utilities.Extensions
             
             
             LevelManager.Instance.ObstacleManager.BounceObstacle(obstacle, directionBounce, rotation, true, true, true);
+        }
+        
+        public static void Bounce(this IObstacle obstacle, Vector2 contactPoint, ROTATION rotation)
+        {
+            float degrees = 180.0f;
+            if (rotation == ROTATION.CW)
+            {
+                degrees *= -1;
+            }
+
+            Vector2 rotDirection = (Vector2)obstacle.transform.position - contactPoint;
+            rotDirection.Normalize();
+
+            LevelManager.Instance.ObstacleManager.BounceObstacle(obstacle, rotDirection, degrees, true, true, true);
         }
     }
 }

@@ -196,7 +196,7 @@ namespace StarSalvager
         
         public void TryHitAt(Vector2 position, float damage)
         {
-            var closestAttachable = attachedBits.GetClosestAttachable(position) as Bit;
+            var closestAttachable = attachedBits.GetClosestAttachable(position);
 
             //FIXME Need to see how to fix this
             if (closestAttachable is IHealth closestHealth)
@@ -219,52 +219,11 @@ namespace StarSalvager
 
             if (bot.Rotating)
             {
-                float rotation = 180.0f;
-                if (bot.MostRecentRotate == ROTATION.CW)
-                {
-                    rotation *= -1;
-                }
+                this.Bounce(hitPoint, bot.MostRecentRotate);
 
-                /*bool breakIntoBits = false;
-                if (!breakIntoBits)
-                {*/
-                    Vector2 direction = (Vector2)transform.position - hitPoint;
-                    direction.Normalize();
-                    /*if (direction != Vector2.up)
-                    {
-                        Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                        downVelocity.Normalize();
-                        direction += downVelocity;
-                        direction.Normalize();
-                    }*/
-                    LevelManager.Instance.ObstacleManager.BounceObstacle(this, direction, rotation, true, true, true);
                     AudioController.PlaySound(SOUND.BIT_BOUNCE);
-                //}
-                /*else
-                {
-                    foreach (Bit bit in attachedBits)
-                    {
-                        Vector2 direction = (Vector2)bit.transform.position - hitPoint;
-                        direction.Normalize();
-                        /*if (direction != Vector2.up)
-                        {
-                            Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                            downVelocity.Normalize();
-                            direction += downVelocity;
-                            direction.Normalize();
-                        }#1#
-                        LevelManager.Instance.ObstacleManager.BounceObstacle(bit, direction, rotation, true, true, true);
-                    }
-                    Recycler.Recycle<Shape>(this, new
-                    {
-                        recycleBits = false
-                    });
-                }*/
-                return;
+                    return;
             }
-
-            //Debug.Break();
-
 
             if (!TryGetRayDirectionFromBot(Globals.MovingDirection, out var rayDirection))
                 return;

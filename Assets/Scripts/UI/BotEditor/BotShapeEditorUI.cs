@@ -7,6 +7,7 @@ using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
@@ -399,7 +400,7 @@ namespace StarSalvager.UI
                         continue;
 
                     var element = partsScrollView.AddElement(partRemoteData, $"{partRemoteData.partType}_{i}_UIElement", true);
-                    element.Init(partRemoteData, PartBitPressed, i);
+                    element.Init(partRemoteData, OnBrickElementPressed, i);
                 }
             }
 
@@ -409,9 +410,9 @@ namespace StarSalvager.UI
                 for (int i = 0; i < bitRemoteData.levels.Length; i++)
                 {
                     var element = partsScrollView.AddElement(bitRemoteData, $"{bitRemoteData.bitType}_{i}_UIElement", true);
-                    element.Init(bitRemoteData, PartBitPressed, i);
+                    element.Init(bitRemoteData, OnBrickElementPressed, i);
                     var element2 = bitsScrollView.AddElement(bitRemoteData, $"{bitRemoteData.bitType}_{i}_UIElement", true);
-                    element2.Init(bitRemoteData, PartBitPressed, i);
+                    element2.Init(bitRemoteData, OnBrickElementPressed, i);
                 }
             }
 
@@ -551,30 +552,37 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        private void PartBitPressed((Enum remoteDataType, int level) tuple)
+        private void OnBrickElementPressed((Enum remoteDataType, int level) tuple)
         {
-            if (tuple.remoteDataType is PART_TYPE partType)
+            var (remoteDataType, level) = tuple;
+            
+            string classType;
+            int type;
+            float health;
+            
+            switch (remoteDataType)
             {
-                PartPressed((partType, tuple.level));
+                case PART_TYPE partType:
+                    type = (int) partType;
+                    classType = nameof(Part);
+                    health = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).levels[level].health;
+                    break;
+                case BIT_TYPE bitType:
+                    classType = nameof(Bit);
+                    type = (int) bitType;
+                    health = FactoryManager.Instance.BitsRemoteData.GetRemoteData(bitType).levels[level].health;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(remoteDataType), remoteDataType, null);
             }
-            else if (tuple.remoteDataType is BIT_TYPE bitType)
+            
+            m_botShapeEditor.SelectedBrick = new BlockData
             {
-                BitPressed((bitType, tuple.level));
-            }
-        }
-
-        private void PartPressed((PART_TYPE partType, int level) tuple)
-        {
-            m_botShapeEditor.SelectedPartType = tuple.partType;
-            m_botShapeEditor.SelectedBitType = null;
-            m_botShapeEditor.SelectedPartLevel = tuple.level;
-        }
-
-        private void BitPressed((BIT_TYPE bitType, int level) tuple)
-        {
-            m_botShapeEditor.SelectedBitType = tuple.bitType;
-            m_botShapeEditor.SelectedPartType = null;
-            m_botShapeEditor.SelectedPartLevel = tuple.level;
+                ClassType = classType,
+                Type = type,
+                Level = level,
+                Health = health
+            };
         }
 
         private void BotShapePressed(EditorGeneratorDataBase botData)

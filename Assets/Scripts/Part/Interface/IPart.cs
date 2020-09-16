@@ -6,6 +6,7 @@ namespace StarSalvager
 {
     public interface IPart: ILevel
     {
+        bool Destroyed { get;}
         PART_TYPE Type { get; set; }
     }
 }

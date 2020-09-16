@@ -243,6 +243,13 @@ namespace StarSalvager.Values
             CostCalculations.AddResources(ref _resources, partType, level, isRecursive);
             OnValuesChanged?.Invoke();
         }
+        public void AddResources(BlockData blockData, bool isRecursive)
+        {
+            if (!blockData.ClassType.Equals(nameof(Part)))
+                return;
+            
+            AddResources((PART_TYPE) blockData.Type, blockData.Level, isRecursive);
+        }
 
         public void SubtractResources(Dictionary<BIT_TYPE, int> toSubtract)
         {

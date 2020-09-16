@@ -262,7 +262,8 @@ namespace StarSalvager
             CompositeCollider2D.enabled = true;
 
             BotPartsLogic.coreHeat = 0f;
-            
+
+            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
             //Add core component
             var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(
                 new BlockData
@@ -270,6 +271,7 @@ namespace StarSalvager
                     Type = (int)PART_TYPE.CORE,
                     Coordinate = Vector2Int.zero,
                     Level = 0,
+                    Health = startingHealth
                 });
 
             AttachNewBit(Vector2Int.zero, core, updateMissions: false);
@@ -478,9 +480,12 @@ namespace StarSalvager
                         case BIT_TYPE.RED:
                         case BIT_TYPE.YELLOW:
                             //TODO This needs to bounce off instead of being destroyed
-                            if (closestAttachable is EnemyAttachable || closestAttachable is Part part && part.Destroyed)
+                            if (closestAttachable is EnemyAttachable ||
+                                closestAttachable is Part part && part.Destroyed)
                             {
-                                attachable.Bounce(collisionPoint);
+                                if (attachable is IObstacle obstacle)
+                                    obstacle.Bounce(collisionPoint);
+
                                 return false;
                             }
 
@@ -540,25 +545,12 @@ namespace StarSalvager
 
                     //Check if its legal to attach (Within threshold of connection)
                     //TODO This needs to bounce off instead of being destroyed
-                    if (closestAttachable is EnemyAttachable)
+                    if (closestAttachable is EnemyAttachable ||
+                        closestAttachable is Part part && part.Destroyed)
                     {
-                        Vector2 directionBounce = (Vector2)component.transform.position - collisionPoint;
-                        directionBounce.Normalize();
-                        if (directionBounce != Vector2.up)
-                        {
-                            Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                            downVelocity.Normalize();
-                            directionBounce += downVelocity;
-                            directionBounce.Normalize();
-                        }
+                        if (attachable is IObstacle obstacle)
+                            obstacle.Bounce(collisionPoint);
 
-                        float rotation = 180.0f;
-                        if (directionBounce.x >= 0)
-                        {
-                            rotation *= -1;
-                        }
-
-                        LevelManager.Instance.ObstacleManager.BounceObstacle(component, directionBounce, rotation, true, true, true);
                         return false;
                     }
 
@@ -709,26 +701,12 @@ namespace StarSalvager
                     case BIT_TYPE.YELLOW:
                         
                         //TODO This needs to bounce off instead of being destroyed
-                        if (closestOnBot is EnemyAttachable)
+                        if (closestOnBot is EnemyAttachable ||
+                            closestOnBot is Part part && part.Destroyed)
                         {
-                            Vector2 directionBounce = (Vector2)shape.transform.position - collisionPoint;
-                            directionBounce.Normalize();
+                            if (closestOnBot is IObstacle obstacle)
+                                obstacle.Bounce(collisionPoint);
 
-                            if (directionBounce != Vector2.up)
-                            {
-                                Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                                downVelocity.Normalize();
-                                directionBounce += downVelocity;
-                                directionBounce.Normalize();
-                            }
-
-                            float rotation = 180.0f;
-                            if (directionBounce.x >= 0)
-                            {
-                                rotation *= -1;
-                            }
-
-                            LevelManager.Instance.ObstacleManager.BounceObstacle(shape, directionBounce, rotation, true, true, true);
                             return false;
                         }
                         

@@ -129,10 +129,11 @@ namespace StarSalvager
         {
             return new BlockData
             {
-                ClassType = GetType().Name,
+                ClassType = nameof(Part),
                 Coordinate = Coordinate,
                 Type = (int) Type,
-                Level = level
+                Level = level,
+                Health = CurrentHealth
             };
         }
 
@@ -141,6 +142,8 @@ namespace StarSalvager
             Coordinate = blockData.Coordinate;
             Type = (PART_TYPE) blockData.Type;
             level = blockData.Level;
+            CurrentHealth = blockData.Health;
+
         }
 
         //============================================================================================================//

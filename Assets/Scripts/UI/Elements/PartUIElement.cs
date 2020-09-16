@@ -36,7 +36,7 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        public override void Init(RemoteDataBase data, Action<PART_TYPE> OnPressed)
+        public override void Init(RemoteDataBase data, Action<PART_TYPE> onPressedCallback)
         {
             if (data is PartRemoteData partRemote)
             {
@@ -65,7 +65,7 @@ namespace StarSalvager.UI
 
                 button.onClick.AddListener(() =>
                 {
-                    OnPressed?.Invoke(partRemote.partType);
+                    onPressedCallback?.Invoke(partRemote.partType);
                 });
             }
             else

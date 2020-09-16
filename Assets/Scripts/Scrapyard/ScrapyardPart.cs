@@ -1,7 +1,5 @@
 ﻿using Sirenix.OdinInspector;
 using StarSalvager.Utilities.JsonDataTypes;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace StarSalvager
@@ -40,7 +38,7 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
 
-        public bool CountAsConnectedToCore => true;
+        public bool CountAsConnectedToCore => !Destroyed;
         public bool CanDisconnect => false;
 
         [ShowInInspector, ReadOnly]
@@ -50,10 +48,14 @@ namespace StarSalvager
 
         //Part Properties
         //============================================================================================================//
+        public bool Destroyed => Health <= 0f;
+
         [ShowInInspector, ReadOnly]
         public PART_TYPE Type { get; set; }
         [ShowInInspector, ReadOnly]
         public int level { get; private set; }
+        [ShowInInspector, ReadOnly]
+        public float Health { get; private set; }
 
         //IAttachable Functions
         //============================================================================================================//
@@ -73,7 +75,8 @@ namespace StarSalvager
                 ClassType = GetType().Name,
                 Coordinate = Coordinate,
                 Type = (int)Type,
-                Level = level
+                Level = level,
+                Health = Health
             };
         }
 
@@ -82,6 +85,7 @@ namespace StarSalvager
             Coordinate = blockData.Coordinate;
             Type = (PART_TYPE)blockData.Type;
             level = blockData.Level;
+            Health = blockData.Health;
         }
 
         //============================================================================================================//

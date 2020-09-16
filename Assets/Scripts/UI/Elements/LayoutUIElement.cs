@@ -16,7 +16,7 @@ namespace StarSalvager.UI
         
         //============================================================================================================//
         
-        public override void Init(ScrapyardLayout data, Action<ScrapyardLayout> OnPressed)
+        public override void Init(ScrapyardLayout data, Action<ScrapyardLayout> onPressedCallback)
         {
             this.data = data;
 
@@ -24,7 +24,7 @@ namespace StarSalvager.UI
 
             button.onClick.AddListener(() =>
             {
-                OnPressed?.Invoke(data);
+                onPressedCallback?.Invoke(data);
             });
         }
         
