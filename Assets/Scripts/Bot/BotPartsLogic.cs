@@ -189,6 +189,10 @@ namespace StarSalvager
 
             foreach (var part in _parts)
             {
+                //Destroyed parts should not contribute to the stats of the bot anymore
+                if (part.Destroyed)
+                    continue;
+                
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                     .GetRemoteData(part.Type);
 
@@ -315,6 +319,9 @@ namespace StarSalvager
             //Be careful to not use return here
             foreach (var part in _parts)
             {
+                if(part.Destroyed)
+                    continue;
+
                 PartRemoteData partRemoteData =
                     FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
 

@@ -17,16 +17,12 @@ namespace StarSalvager
 {
     public class Asteroid : CollidableBase, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate
     {
-        private Damage _damage;
-
         //IRotate properties
         //============================================================================================================//
 
-        public bool Rotating => _rotating;
-        private bool _rotating;
+        public bool Rotating { get; private set; }
 
-        public int RotateDirection => _rotateDirection;
-        private int _rotateDirection = 1;
+        public int RotateDirection { get; private set; } = 1;
 
 
         //IHealth Properties
@@ -40,30 +36,20 @@ namespace StarSalvager
         //============================================================================================================//
         public bool CanMove => true;
 
-        public bool IsRegistered
-        {
-            get { return m_isRegistered; }
-            set { m_isRegistered = value; }
-        }
-        private bool m_isRegistered = false;
+        public bool IsRegistered { get; set; } = false;
 
-        public bool IsMarkedOnGrid
-        {
-            get { return m_isMarkedOnGrid; }
-            set { m_isMarkedOnGrid = value; }
-        }
-        private bool m_isMarkedOnGrid = false;
+        public bool IsMarkedOnGrid { get; set; } = false;
 
         //IRotate Functions
         //============================================================================================================//
 
         public void SetRotating(bool isRotating)
         {
-            _rotating = isRotating;
+            Rotating = isRotating;
             
             //Only need to set the rotation value when setting rotation to true
-            if(_rotating)
-                _rotateDirection = Random.Range(-1, 2);
+            if(Rotating)
+                RotateDirection = Random.Range(-1, 2);
         }
 
         //IHealth Functions
@@ -79,8 +65,6 @@ namespace StarSalvager
 
         public void ChangeHealth(float amount)
         {
-            //float previousHealth = _currentHealth;
-
             CurrentHealth += amount;
 
             if (CurrentHealth <= 0)
@@ -88,20 +72,6 @@ namespace StarSalvager
                 Recycler.Recycle<Asteroid>(this);
                 return;
             }
-
-            ////TODO - temporary demo color change, remove later
-            //if (previousHealth > _currentHealth)
-            //{
-            //    SetColor(Color.Lerp(renderer.color, Color.black, 0.2f));
-            //}
-            
-            if (_damage == null)
-            {
-                _damage = FactoryManager.Instance.GetFactory<DamageFactory>().CreateObject<Damage>();
-                _damage.transform.SetParent(transform, false);
-            }
-                
-            _damage.SetHealth(CurrentHealth/StartingHealth);
         }
 
         //ICanBeHit Functions
@@ -142,8 +112,10 @@ namespace StarSalvager
                 {
                     case DIRECTION.LEFT:
                     case DIRECTION.RIGHT:
-                        InputManager.Instance.ForceMove(direction);
-                        bot.TryBounceAt(hitPoint);
+                        //Only want to move the bot if we're legally allowed
+                        if(bot.TryBounceAt(hitPoint))
+                            InputManager.Instance.ForceMove(direction);
+
                         break;
                     case DIRECTION.UP:
                     case DIRECTION.DOWN:
@@ -172,12 +144,6 @@ namespace StarSalvager
             SetRotating(false);
 
             renderer.sortingOrder = 0;
-
-            if (_damage)
-            {
-                Recycler.Recycle<Damage>(_damage);
-                _damage = null;
-            }
         }
     }
 }

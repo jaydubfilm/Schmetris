@@ -90,3 +90,7 @@ MonoBehaviour:
     - {fileID: 3106027871190466780, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
     - {fileID: -1867650483643960963, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
     - {fileID: 7805707442610895404, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+  damagedSprites:
+  - {fileID: 8564895758720257271, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+  - {fileID: 6090780171333522907, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+  - {fileID: -3178243908905154898, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
