@@ -143,13 +143,46 @@ namespace StarSalvager.AI
             //bool onScreen = screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
             if (!CameraController.IsPointInCameraRect(transform.position, 0.6f))
                 return;
+            
+            Vector3 playerLocation = LevelManager.Instance.BotObject != null
+                ? LevelManager.Instance.BotObject.transform.position
+                : Vector3.right * 50;
 
-            List<Vector2> fireLocations = GetFireDirection();
+            Vector2 targetLocation;
+            
+            switch (m_enemyData.AttackType)
+            {
+                case ENEMY_ATTACKTYPE.Forward:
+                    targetLocation = GetDestination();
+                    break;
+                case ENEMY_ATTACKTYPE.AtPlayer:
+                case ENEMY_ATTACKTYPE.AtPlayerCone:
+                case ENEMY_ATTACKTYPE.Random_Spray:
+                    targetLocation = playerLocation;
+                    break;
+                case ENEMY_ATTACKTYPE.Spiral:
+                case ENEMY_ATTACKTYPE.Down:
+                    targetLocation = Vector2.down;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(m_enemyData.AttackType), m_enemyData.AttackType, null);
+            }
+            
+            FactoryManager.Instance.GetFactory<ProjectileFactory>()
+                .CreateObjects<Projectile>(
+                    m_enemyData.ProjectileType, 
+                    transform.position,
+                    targetLocation,
+                    m_mostRecentMovementDirection * m_enemyData.MovementSpeed,
+                    m_enemyData.AttackDamage,
+                    "Player");
+
+            /*List<Vector2> fireLocations = GetFireDirection();
             foreach (Vector2 fireLocation in fireLocations)
             {
                 Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
                     .CreateObject<Projectile>(
-                        m_enemyData.ProjectileType,
+                        m_enemyData.ProjectileType, 
                         fireLocation,
                         m_enemyData.AttackDamage,
                         "Player");
@@ -162,13 +195,13 @@ namespace StarSalvager.AI
                 }
 
                 LevelManager.Instance.ProjectileManager.AddProjectile(newProjectile);
-            }
+            }*/
             
             AudioController.PlayEnemyFireSound(m_enemyData.EnemyType, 1f);
         }
 
         //Check what attack style this enemy uses, and use the appropriate method to get the firing location
-        private List<Vector2> GetFireDirection()
+        /*private List<Vector2> GetFireDirection()
         {
             //Firing styles are based on the player location. For now, hardcode this
             Vector3 playerLocation = LevelManager.Instance.BotObject != null
@@ -224,7 +257,7 @@ namespace StarSalvager.AI
                     transform.position, Vector3.forward * 30) - transform.position;
 
             return m_spiralAttackDirection;
-        }
+        }*/
         
         #endregion Firing
 

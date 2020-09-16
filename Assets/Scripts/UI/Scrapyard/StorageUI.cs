@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
-using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard
 {
@@ -123,7 +118,7 @@ namespace StarSalvager.UI.Scrapyard
         {
             var droneDesign = FindObjectOfType<DroneDesigner>();
             
-            storageUiElementScrollView.ClearElements<StorageUIElement>();
+            storageUiElementScrollView.ClearElements();
             
             foreach (var storageBlockData in PlayerPersistentData.PlayerData.GetCurrentPartsInStorage())
             {
@@ -134,7 +129,7 @@ namespace StarSalvager.UI.Scrapyard
                     blockData = storageBlockData
                 };
 
-                var temp = storageUiElementScrollView.AddElement<StorageUIElement>(testStorage, $"{testStorage.name}_UIElement", allowDuplicate: true);
+                var temp = storageUiElementScrollView.AddElement(testStorage, $"{testStorage.name}_UIElement", allowDuplicate: true);
                 temp.Init(testStorage, data =>
                 {
                     droneDesign.SelectedPartType = (PART_TYPE) data.blockData.Type;
@@ -155,7 +150,7 @@ namespace StarSalvager.UI.Scrapyard
 
                 for (int i = 0; i < storageBlockData.Value; i++)
                 {
-                    var temp = storageUiElementScrollView.AddElement<StorageUIElement>(testStorage, $"{testStorage.name}_UIElement", allowDuplicate: true);
+                    var temp = storageUiElementScrollView.AddElement(testStorage, $"{testStorage.name}_UIElement", allowDuplicate: true);
                     temp.Init(testStorage, null); 
                 }
             }
@@ -166,7 +161,7 @@ namespace StarSalvager.UI.Scrapyard
     }
     
     [System.Serializable]
-    public class StorageUIElementScrollView: UIElementContentScrollView<TEST_Storage>
+    public class StorageUIElementScrollView: UIElementContentScrollView<StorageUIElement, TEST_Storage>
     {}
 }
 

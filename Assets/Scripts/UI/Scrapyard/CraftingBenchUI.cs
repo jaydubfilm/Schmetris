@@ -86,7 +86,7 @@ namespace StarSalvager.UI.Scrapyard
             if (scrollViewsSetup)
                 RefreshScrollViews();
 
-            blueprintsContentScrollView.ClearElements<BlueprintUIElement>();
+            blueprintsContentScrollView.ClearElements();
             InitUIScrollView();
             
             costWindowObject.SetActive(false);
@@ -149,7 +149,7 @@ namespace StarSalvager.UI.Scrapyard
 
             foreach (var blueprint in PlayerPersistentData.PlayerData.unlockedBlueprints)
             {
-                var temp = blueprintsContentScrollView.AddElement<BlueprintUIElement>(blueprint, $"{blueprint.name}_UIElement");
+                var temp = blueprintsContentScrollView.AddElement(blueprint, $"{blueprint.name}_UIElement");
                 temp.Init(blueprint, data =>
                 {
                     Debug.Log("Craft button pressed");
@@ -195,7 +195,7 @@ namespace StarSalvager.UI.Scrapyard
 
         public void RefreshScrollViews()
         {
-            blueprintsContentScrollView.ClearElements<BlueprintUIElement>();
+            blueprintsContentScrollView.ClearElements();
             InitUIScrollView();
             UpdateResources();
         }
@@ -297,7 +297,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void UpdateCostUI()
         {
-            costView.ClearElements<CostUIElement>();
+            costView.ClearElements();
             
             var partProfileData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetProfileData(lastBlueprint.partType);
@@ -315,7 +315,7 @@ namespace StarSalvager.UI.Scrapyard
 
             foreach (var resource in resources)
             {
-                var element = costView.AddElement<CostUIElement>(resource, $"{resource.type}_UIElement");
+                var element = costView.AddElement(resource, $"{resource.type}_UIElement");
                 element.Init(resource);
             }
         }
@@ -335,6 +335,6 @@ namespace StarSalvager.UI.Scrapyard
     }
 
     [System.Serializable]
-    public class BlueprintUIElementScrollView: UIElementContentScrollView<Blueprint>
+    public class BlueprintUIElementScrollView: UIElementContentScrollView<BlueprintUIElement, Blueprint>
     {}
 }

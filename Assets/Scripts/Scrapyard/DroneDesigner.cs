@@ -23,8 +23,18 @@ namespace StarSalvager
 {
     public class DroneDesigner : AttachableEditorToolBase, IReset, IInput
     {
-        [FormerlySerializedAs("scrapyardUI")] [SerializeField]
-        private DroneDesignUI droneDesignUi;
+        //[FormerlySerializedAs("scrapyardUI")] [SerializeField]
+        private DroneDesignUI droneDesignUi
+        {
+            get
+            {
+                if (_droneDesignUi == null)
+                    _droneDesignUi = FindObjectOfType<DroneDesignUI>();
+
+                return _droneDesignUi;
+            }
+        }
+        private DroneDesignUI _droneDesignUi;
         [SerializeField]
         private GameObject floatingPartWarningPrefab;
         [SerializeField]
@@ -47,10 +57,10 @@ namespace StarSalvager
         public List<ScrapyardLayout> ScrapyardLayouts => _scrapyardLayouts;
         private List<ScrapyardLayout> _scrapyardLayouts;
 
-        private bool isStarted = false;
-        private bool isDragging = false;
+        private bool isStarted;
+        private bool isDragging;
 
-        private SpriteRenderer partDragImage = null;
+        private SpriteRenderer partDragImage;
 
         //============================================================================================================//
 

@@ -9,8 +9,9 @@ namespace StarSalvager.AI
         AtPlayer,
         AtPlayerCone,
         Down,
-        Spray,
+        Random_Spray,
         Spiral,
-        None
+        None,
+        Fixed_Spray
     }
 }

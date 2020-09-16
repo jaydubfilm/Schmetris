@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Part : CollidableBase, IAttachable, ISaveable, IPart, IHealth, ICustomRecycle
+    public class Part : CollidableBase, IAttachable, ICustomRotate, ISaveable, IPart, IHealth, ICustomRecycle
     {
         //IAttachable Properties
         //============================================================================================================//
@@ -119,6 +119,14 @@ namespace StarSalvager
             
             Recycler.Recycle<Damage>(_damage);
             _damage = null;
+        }
+
+        public void CustomRotate(Quaternion rotation)
+        {
+            if (Type == PART_TYPE.TRIPLE_SHOT)
+                return;
+            
+            transform.localRotation = rotation;
         }
     }
 }

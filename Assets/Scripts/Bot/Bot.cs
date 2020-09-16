@@ -417,7 +417,7 @@ namespace StarSalvager
             {
                 if (attachedBlock is ICustomRotate rotate)
                 {
-                    rotate.CustomRotate();
+                    rotate.CustomRotate(rot);
                     continue;
                 }
                 

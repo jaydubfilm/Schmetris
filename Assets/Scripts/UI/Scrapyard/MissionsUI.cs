@@ -26,9 +26,12 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitScrollView()
         {
+            if (MissionManager.MissionsCurrentData is null)
+                return;
+            
             foreach (var testMission in MissionManager.MissionsCurrentData.CurrentMissions)
             {
-                var temp = MissionUiElementScrollView.AddElement<MissionUIElement>(testMission,
+                var temp = MissionUiElementScrollView.AddElement(testMission,
                     $"{testMission.m_missionName}_UIElement");
 
                 temp.Init(testMission, mission =>
@@ -43,7 +46,7 @@ namespace StarSalvager.UI.Scrapyard
     }
     
     [System.Serializable]
-    public class MissionUIElementScrollView: UIElementContentScrollView<Mission>
+    public class MissionUIElementScrollView: UIElementContentScrollView<MissionUIElement, Mission>
     {}
 }
 
