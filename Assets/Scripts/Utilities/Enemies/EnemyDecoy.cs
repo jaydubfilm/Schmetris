@@ -90,12 +90,9 @@ namespace StarSalvager.Utilities.Enemies
         //ICanBeHit functions
         //============================================================================================================//
         
-        public void TryHitAt(Vector2 position, float damage)
+        public bool TryHitAt(Vector2 position, float damage)
         {
-            if (_enemy == null)
-                return;
-            
-            _enemy.TryHitAt(position, damage);
+            return _enemy != null && _enemy.TryHitAt(position, damage);
         }
         
 

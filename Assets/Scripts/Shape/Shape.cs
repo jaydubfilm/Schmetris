@@ -194,7 +194,7 @@ namespace StarSalvager
         //================================================================================================================//
 
         
-        public void TryHitAt(Vector2 position, float damage)
+        public bool TryHitAt(Vector2 position, float damage)
         {
             var closestAttachable = attachedBits.GetClosestAttachable(position);
 
@@ -204,10 +204,12 @@ namespace StarSalvager
                 closestHealth.ChangeHealth(-damage);
 
                 if (closestHealth.CurrentHealth > 0) 
-                    return;
+                    return true;
             }
             
             DestroyBit(closestAttachable);
+
+            return true;
         }
 
         //================================================================================================================//

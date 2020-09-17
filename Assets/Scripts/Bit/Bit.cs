@@ -138,9 +138,11 @@ namespace StarSalvager
         //ICanBeHit Functions
         //============================================================================================================//
         
-        public void TryHitAt(Vector2 position, float damage)
+        public bool TryHitAt(Vector2 position, float damage)
         {
             ChangeHealth(-damage);
+            
+            return true;
         }
 
         //Bit Functions
