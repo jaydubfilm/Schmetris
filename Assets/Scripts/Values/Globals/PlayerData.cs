@@ -103,6 +103,14 @@ namespace StarSalvager.Values
         public int Level;
         public int Gears;
 
+        [JsonIgnore]
+        public IReadOnlyDictionary<FACILITY_TYPE, int> facilityRanks => _facilityRanks;
+        [JsonProperty]
+        private Dictionary<FACILITY_TYPE, int> _facilityRanks = new Dictionary<FACILITY_TYPE, int>
+        {
+
+        };
+
         public string PlaythroughID = string.Empty;
 
         //============================================================================================================//
