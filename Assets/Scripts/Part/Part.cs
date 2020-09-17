@@ -27,7 +27,7 @@ namespace StarSalvager
 
         public float StartingHealth { get; private set; }
 
-        [ShowInInspector, ReadOnly, ProgressBar(0,"StartingHealth")]
+        [ShowInInspector, ReadOnly, ProgressBar(0, nameof(StartingHealth))]
         public float CurrentHealth { get; private set; }
 
         //Part Properties
@@ -61,6 +61,9 @@ namespace StarSalvager
             CurrentHealth = currentHealth;
 
             SetDestroyed(CurrentHealth <= 0f);
+            
+            if(CurrentHealth < StartingHealth)
+                UpdateDamage();
         }
 
         public void ChangeHealth(float amount)
@@ -77,6 +80,11 @@ namespace StarSalvager
                 return;
             }
 
+            UpdateDamage();
+        }
+
+        private void UpdateDamage()
+        {
             if (_damage == null)
             {
                 _damage = FactoryManager.Instance.GetFactory<DamageFactory>().CreateObject<Damage>();
