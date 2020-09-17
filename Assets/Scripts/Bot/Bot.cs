@@ -573,11 +573,19 @@ namespace StarSalvager
 
                     //----------------------------------------------------------------------------------------------------//
 
-                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint, true);
                     
-                    if (closestAttachable is EnemyAttachable)
+                    switch (closestAttachable)
+                    {
+                        case EnemyAttachable _:
+                        case Part part when part.Destroyed:
+                            return false;
+                    }
+
+                    var potentialCoordinate = closestAttachable.Coordinate + connectionDirection.ToVector2Int();
+                    if (attachedBlocks.Count(x => x.Coordinate == potentialCoordinate) > 1)
                         return false;
-                    
+
                     legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
                     //----------------------------------------------------------------------------------------------------//
@@ -669,7 +677,7 @@ namespace StarSalvager
         
         public bool CoordinateOccupied(Vector2Int coordinate)
         {
-            return _attachedBlocks.Any(x => x.Coordinate == coordinate);
+            return _attachedBlocks.Any(x => x.Coordinate == coordinate && !(x is Part part && part.Destroyed));
         }
 
         #endregion //Check For Legal Attach
@@ -1159,7 +1167,7 @@ namespace StarSalvager
             var coordinate = existingAttachable.Coordinate + direction.ToVector2Int();
 
             //Checks for attempts to add attachable to occupied location
-            if (attachedBlocks.Any(a => a.Coordinate == coordinate))
+            if (attachedBlocks.Any(a => a.Coordinate == coordinate && !(a is Part part && part.Destroyed)))
             {
                 var on = attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
                 Debug.LogError(

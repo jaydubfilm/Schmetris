@@ -228,27 +228,34 @@ namespace StarSalvager.AI
             //This would occur if this wasn't attempted to be detached,
             //meaning it was sitting in a legal position that didn't require it to be detached
             //FIXME This may be an issue with those attached to shapes that get detached?
-            if (_target is IRecycled recyclable && recyclable.IsRecycled)
-            {
-                var health = _target as IHealth;
-                
-                //Here I can assume that a Bit with no health was destroyed, and thus I can move into its position
-                if (health?.CurrentHealth <= 0)
-                {
-                    if (TryMoveToTargetPosition())
-                        return;
-                }
-                //If the Bit was recycled with a health above 0, I can assume that it was done because of a combo, 
-                //and the enemy should try and find a new target relative to its current position
-                else if (health?.CurrentHealth > 0)
-                {
-                    if(TryUpdateTarget())
-                        return;
-                }
+            //if (_target is IRecycled recyclable && recyclable.IsRecycled)
+            //{
+//
+            //}
 
-                _target = null;
-                _attachedBot.ForceDetach(this);
-                return;
+            switch (_target)
+            {
+                case IRecycled recyclable when recyclable.IsRecycled:
+                case Part part when part.Destroyed:
+                    var health = _target as IHealth;
+                
+                    //Here I can assume that a Bit with no health was destroyed, and thus I can move into its position
+                    if (health?.CurrentHealth <= 0)
+                    {
+                        if (TryMoveToTargetPosition())
+                            return;
+                    }
+                    //If the Bit was recycled with a health above 0, I can assume that it was done because of a combo, 
+                    //and the enemy should try and find a new target relative to its current position
+                    else if (health?.CurrentHealth > 0)
+                    {
+                        if(TryUpdateTarget())
+                            return;
+                    }
+
+                    _target = null;
+                    _attachedBot.ForceDetach(this);
+                    return;
             }
 
             //Here we're making sure that the target is still part of what we're attacking

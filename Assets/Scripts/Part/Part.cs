@@ -48,11 +48,9 @@ namespace StarSalvager
 
         public void SetAttached(bool isAttached)
         {
-            if (Destroyed)
-                return;
-            
             Attached = isAttached;
-            collider.usedByComposite = isAttached;
+
+            collider.usedByComposite = true;
         }
 
         public void SetupHealthValues(float startingHealth, float currentHealth)
@@ -85,6 +83,9 @@ namespace StarSalvager
 
         private void UpdateDamage()
         {
+            if (Destroyed)
+                return;
+            
             if (_damage == null)
             {
                 _damage = FactoryManager.Instance.GetFactory<DamageFactory>().CreateObject<Damage>();
