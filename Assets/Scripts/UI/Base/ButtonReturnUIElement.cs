@@ -12,7 +12,7 @@ namespace StarSalvager.UI
     [RequireComponent(typeof(Button))]
     public abstract class ButtonReturnUIElement<T, U> : ButtonUIElement<T> where T : IEquatable<T>
     {
-        public abstract void Init(T data, Action<U> OnPressed);
+        public abstract void Init(T data, Action<U> onPressedCallback);
 
         public sealed override void Init(T data, Action OnPressed)
         {

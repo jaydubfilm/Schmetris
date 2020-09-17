@@ -1,13 +1,13 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
+using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard
@@ -31,30 +31,11 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, BoxGroup("Resource UI")]
         private ResourceUIElementScrollView liquidResourceContentView;
 
-        //[SerializeField, BoxGroup("Resource UI"), Required]
-        //private Button fillBotButton;
-        
         [SerializeField, BoxGroup("Load List UI")]
         private LayoutElementScrollView layoutScrollView;
 
         //============================================================================================================//
 
-        /*[SerializeField, BoxGroup("View")]
-        private SliderText zoomSliderText;*/
-        /*[SerializeField, BoxGroup("View"), Required]
-        private Slider zoomSlider;*/
-
-        /*[SerializeField, Required, BoxGroup("View")]
-        private Button leftTurnButton;
-        [SerializeField, Required, BoxGroup("View")]
-        private Button rightTurnButton;*/
-
-        //============================================================================================================//
-
-        /*[SerializeField, Required, BoxGroup("Menu Buttons")]
-        private Button saveButton;
-        [SerializeField, Required, BoxGroup("Menu Buttons")]
-        private Button loadButton;*/
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button isUpgradingButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
@@ -65,6 +46,10 @@ namespace StarSalvager.UI.Scrapyard
         private Button saveLayoutButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button loadLayoutButton;
+        
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button repairButton;
+        private TMP_Text _repairButtonText;
 
         [SerializeField, Required, BoxGroup("Load Menu")]
         private GameObject loadMenu;
@@ -105,7 +90,7 @@ namespace StarSalvager.UI.Scrapyard
         private CameraController m_cameraController;
 
         //[FormerlySerializedAs("m_scrapyard")] [SerializeField]
-        private DroneDesigner droneDesigner
+        private DroneDesigner DroneDesigner
         {
             get
             {
@@ -120,9 +105,9 @@ namespace StarSalvager.UI.Scrapyard
         private ScrapyardLayout currentSelected;
 
         public bool IsPopupActive => loadMenu.activeSelf || saveMenu.activeSelf || Alert.Displayed;
-        private bool _currentlyOverwriting = false;
+        private bool _currentlyOverwriting;
 
-        private bool scrollViewsSetup = false;
+        private bool _scrollViewsSetup;
 
         //============================================================================================================//
 
@@ -130,31 +115,26 @@ namespace StarSalvager.UI.Scrapyard
 
         private void Start()
         {
-            /*zoomSliderText.Init();*/
-
-            /*zoomSlider.onValueChanged.AddListener(SetCameraZoom);
-            SetCameraZoom(zoomSlider.value);*/
-
             InitButtons();
 
             InitUiScrollView();
             UpdateResourceElements();
-            scrollViewsSetup = true;
+            _scrollViewsSetup = true;
 
             _currentlyOverwriting = false;
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
-            if (scrollViewsSetup)
+            if (_scrollViewsSetup)
                 RefreshScrollViews();
 
             PlayerData.OnValuesChanged += UpdateResourceElements;
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
-            droneDesigner.ClearUndoRedoStacks();
+            DroneDesigner?.ClearUndoRedoStacks();
             
             PlayerData.OnValuesChanged -= UpdateResourceElements;
         }
@@ -167,54 +147,38 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitButtons()
         {
-            //--------------------------------------------------------------------------------------------------------//
 
-            /*leftTurnButton.onClick.AddListener(() =>
+            _repairButtonText = repairButton.GetComponentInChildren<TMP_Text>();
+            
+            repairButton.onClick.AddListener(() =>
             {
-                mDroneDesigner.RotateBots(-1.0f);
+                DroneDesigner.RepairParts();
             });
-
-            rightTurnButton.onClick.AddListener(() =>
-            {
-                mDroneDesigner.RotateBots(1.0f);
-            });*/
-
-            //--------------------------------------------------------------------------------------------------------//
-
-            /*saveButton.onClick.AddListener(() =>
-            {
-                Debug.Log("Save Button Pressed");
-            });
-
-            loadButton.onClick.AddListener(() =>
-            {
-                Debug.Log("Load Button Pressed");
-            });*/
-
+            
             //--------------------------------------------------------------------------------------------------------//
 
             undoButton.onClick.AddListener(() =>
             {
-                droneDesigner.UndoStackPop();
+                DroneDesigner.UndoStackPop();
             });
 
             redoButton.onClick.AddListener(() =>
             {
-                droneDesigner.RedoStackPop();
+                DroneDesigner.RedoStackPop();
             });
 
             //--------------------------------------------------------------------------------------------------------//
 
             isUpgradingButton.onClick.AddListener(() =>
             {
-                droneDesigner.IsUpgrading = !droneDesigner.IsUpgrading;
+                DroneDesigner.IsUpgrading = !DroneDesigner.IsUpgrading;
             });
 
             //--------------------------------------------------------------------------------------------------------//
 
             saveLayoutButton.onClick.AddListener(() =>
             {
-                if (droneDesigner.IsFullyConnected())
+                if (DroneDesigner.IsFullyConnected())
                 {
                     saveMenu.SetActive(true);
                     bool isOverwrite = _currentlyOverwriting;
@@ -247,7 +211,7 @@ namespace StarSalvager.UI.Scrapyard
                 if (currentSelected == null)
                     return;
 
-                droneDesigner.LoadLayout(currentSelected.Name);
+                DroneDesigner.LoadLayout(currentSelected.Name);
                 loadMenu.SetActive(false);
                 partsWindow.SetActive(true);
                 _currentlyOverwriting = true;
@@ -272,7 +236,7 @@ namespace StarSalvager.UI.Scrapyard
 
             saveConfirm.onClick.AddListener(() =>
             {
-                droneDesigner.SaveLayout(saveNameInputField.text);
+                DroneDesigner.SaveLayout(saveNameInputField.text);
                 saveMenu.SetActive(false);
                 _currentlyOverwriting = true;
                 screenBlackImage.gameObject.SetActive(false);
@@ -292,7 +256,7 @@ namespace StarSalvager.UI.Scrapyard
 
             saveOverwrite.onClick.AddListener(() =>
             {
-                droneDesigner.SaveLayout(currentSelected.Name);
+                DroneDesigner.SaveLayout(currentSelected.Name);
                 saveMenu.SetActive(false);
                 _currentlyOverwriting = true;
                 screenBlackImage.gameObject.SetActive(false);
@@ -306,15 +270,6 @@ namespace StarSalvager.UI.Scrapyard
             });
 
             //--------------------------------------------------------------------------------------------------------//
-
-            /*fillBotButton.onClick.AddListener(() =>
-            {
-                
-            });*/
-
-
-            //--------------------------------------------------------------------------------------------------------//
-
 
         }
 
@@ -331,62 +286,16 @@ namespace StarSalvager.UI.Scrapyard
                 var partRemoteData = remotePartProfileScriptable.GetRemoteData((PART_TYPE)blockData.Type);
 
                 var element = partsScrollView.AddElement(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
-                element.Init(partRemoteData, PartPressed, blockData.Level);
+                element.Init(partRemoteData, BrickElementPressed, blockData.Level);
             }
         }
-
-        /*public void InitResourceScrollViews()
-        {
-            var resources = PlayerPersistentData.PlayerData.resources;
-
-            foreach (var resource in resources)
-            {
-                var data = new ResourceAmount
-                {
-                    //resourceType = CraftCost.TYPE.Bit,
-                    type = resource.Key,
-                    amount = resource.Value,
-                    capacity = 2500
-                };
-
-                var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
-                element.Init(data);
-            }
-
-            //liquidResourceContentView
-            var liquids = PlayerPersistentData.PlayerData.liquidResource;
-            var liquidsCapacity = PlayerPersistentData.PlayerData.liquidCapacity;
-            foreach (var liquid in liquids)
-            {
-                var bitType = liquid.Key;
-
-                switch (bitType)
-                {
-                    case BIT_TYPE.BLACK:
-                    case BIT_TYPE.BLUE:
-                    case BIT_TYPE.YELLOW:
-                    case BIT_TYPE.WHITE:
-                        continue;
-                }
-                
-                var data = new ResourceAmount
-                {
-                    amount = (int)liquid.Value,
-                    capacity = liquidsCapacity[bitType],
-                    type = bitType,
-                };
-
-                var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{liquid.Key}_UIElement");
-                element.Init(data);
-            }
-        }*/
 
         public void AddToPartScrollView(BlockData blockData)
         {
             var partRemoteData = remotePartProfileScriptable.GetRemoteData((PART_TYPE)blockData.Type);
 
             var element = partsScrollView.AddElement(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
-            element.Init(partRemoteData, PartPressed, blockData.Level);
+            element.Init(partRemoteData, BrickElementPressed, blockData.Level);
         }
 
         public void RefreshScrollViews()
@@ -443,7 +352,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void UpdateLoadListUiScrollViews()
         {
-            foreach (var layoutData in droneDesigner.ScrapyardLayouts)
+            foreach (var layoutData in DroneDesigner.ScrapyardLayouts)
             {
                 if (layoutScrollView.FindElement(layoutData))
                     continue;
@@ -455,18 +364,25 @@ namespace StarSalvager.UI.Scrapyard
         }
 
         #endregion //Scroll Views
-        
-        
 
         //============================================================================================================//
 
-        #region Other
-
-        /*private void SetCameraZoom(float value)
+        public void ShowRepairCost(int repairCost)
         {
-            m_cameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * value, Vector3.zero);
-            m_cameraController.CameraOffset(Vector3.zero, true);
-        }*/
+            var show = repairCost > 0;
+            
+            repairButton.gameObject.SetActive(show);
+
+            if (!show)
+                return;
+                
+            if(_repairButtonText != null)
+                _repairButtonText.text = $"Repair all {DroneDesigner.GetRepairCost()}";
+
+            repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] >= repairCost;
+        }
+
+        #region Other
 
         public void DisplayInsufficientResources()
         {
@@ -474,22 +390,33 @@ namespace StarSalvager.UI.Scrapyard
                 "You do not have enough resources to purchase this part!", "Okay", null);
         }
 
-        private void PartPressed((Enum remoteDataType, int level) tuple)
+        private void BrickElementPressed((Enum remoteDataType, int level) tuple)
         {
-            print("dak");
-            if (tuple.remoteDataType is PART_TYPE partType)
-            {
-                PartPressed((partType, tuple.level));
-            }
-        }
+            var (remoteDataType, level) = tuple;
 
-        private void PartPressed((PART_TYPE partType, int level) tuple)
-        {
-            droneDesigner.SelectedPartType = tuple.partType;
-            droneDesigner.SelectedPartLevel = tuple.level;
-            droneDesigner.SelectedPartRemoveFromStorage = true;
-            droneDesigner.SelectedPartReturnToStorageIfNotPlaced = false;
-            print("mozo");
+            string classType;
+            int type;
+            float health;
+            
+            switch (remoteDataType)
+            {
+                case PART_TYPE partType:
+                    classType = nameof(Part);
+                    type = (int) partType;
+                    health = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).levels[level].health;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(remoteDataType), remoteDataType, null);
+            }
+            
+            var blockData = new BlockData
+            {
+                ClassType = classType,
+                Type = type,
+                Health = health
+            };
+            
+            DroneDesigner.SelectPartFromStorage(blockData);
         }
 
         private void LayoutPressed(ScrapyardLayout botData)

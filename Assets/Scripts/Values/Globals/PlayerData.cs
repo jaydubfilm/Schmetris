@@ -22,7 +22,7 @@ namespace StarSalvager.Values
 
         //============================================================================================================//
 
-        //TODO: Add an add/subtract function for ResourceAmount
+        //TODO: Add an add/subtract function for ResourceAmount, and make this IReadOnlyDictionary<>
         [JsonIgnore]
         public Dictionary<BIT_TYPE, int> resources => _resources;
 
@@ -49,7 +49,7 @@ namespace StarSalvager.Values
         };
 
         [JsonIgnore]
-        public ReadOnlyDictionary<COMPONENT_TYPE, int> components => new ReadOnlyDictionary<COMPONENT_TYPE, int>(_components);
+        public IReadOnlyDictionary<COMPONENT_TYPE, int> components => _components;
         [JsonProperty]
         private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_TYPE, int>
         {
@@ -61,7 +61,7 @@ namespace StarSalvager.Values
         };
 
         [JsonIgnore]
-        public ReadOnlyDictionary<BIT_TYPE, float> liquidResource => new ReadOnlyDictionary<BIT_TYPE, float>(_liquidResource);
+        public IReadOnlyDictionary<BIT_TYPE, float> liquidResource => _liquidResource;
         [JsonProperty]
         //FIXME This needs to use some sort of capacity value
         private Dictionary<BIT_TYPE, float> _liquidResource = new Dictionary<BIT_TYPE, float>
@@ -75,7 +75,7 @@ namespace StarSalvager.Values
 
         //FIXME I think that this should not be so persistent (Shouldn't need to be saved data)
         [JsonIgnore]
-        public ReadOnlyDictionary<BIT_TYPE, int> liquidCapacity => new ReadOnlyDictionary<BIT_TYPE, int>(_liquidCapacity);
+        public IReadOnlyDictionary<BIT_TYPE, int> liquidCapacity => _liquidCapacity;
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _liquidCapacity = new Dictionary<BIT_TYPE, int>
         {
@@ -243,6 +243,13 @@ namespace StarSalvager.Values
             CostCalculations.AddResources(ref _resources, partType, level, isRecursive);
             OnValuesChanged?.Invoke();
         }
+        public void AddResources(BlockData blockData, bool isRecursive)
+        {
+            if (!blockData.ClassType.Equals(nameof(Part)))
+                return;
+            
+            AddResources((PART_TYPE) blockData.Type, blockData.Level, isRecursive);
+        }
 
         public void SubtractResources(Dictionary<BIT_TYPE, int> toSubtract)
         {
@@ -313,7 +320,7 @@ namespace StarSalvager.Values
         public bool CanAffordPart(PART_TYPE partType, int level, bool isRecursive)
         {
             Dictionary<BIT_TYPE, int> tempResourceDictionary = new Dictionary<BIT_TYPE, int>(resources);
-            Dictionary<COMPONENT_TYPE, int> tempComponentDictionary = new Dictionary<COMPONENT_TYPE, int>(components);
+            Dictionary<COMPONENT_TYPE, int> tempComponentDictionary = new Dictionary<COMPONENT_TYPE, int>(_components);
             List<BlockData> tempPartsInStorage = new List<BlockData>(partsInStorageBlockData);
             return CostCalculations.CanAffordPart(tempResourceDictionary, tempComponentDictionary, tempPartsInStorage, partType, level, isRecursive);
         }

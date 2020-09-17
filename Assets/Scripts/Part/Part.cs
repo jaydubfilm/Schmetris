@@ -17,7 +17,7 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
 
-        public bool CountAsConnectedToCore => true;
+        public bool CountAsConnectedToCore => !Destroyed;
         public bool CanDisconnect => false;
         public bool CanShift => false;
         public bool CountTowardsMagnetism => false;
@@ -37,11 +37,10 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public int level { get; private set; }
         
-        private Damage _damage;
-        
-        //============================================================================================================//
+        public bool Destroyed { get; private set; }
 
         
+        private Damage _damage;
 
 
         //IAttachable Functions
@@ -49,6 +48,9 @@ namespace StarSalvager
 
         public void SetAttached(bool isAttached)
         {
+            if (Destroyed)
+                return;
+            
             Attached = isAttached;
             collider.usedByComposite = isAttached;
         }
@@ -57,15 +59,21 @@ namespace StarSalvager
         {
             StartingHealth = startingHealth;
             CurrentHealth = currentHealth;
+
+            SetDestroyed(CurrentHealth <= 0f);
         }
 
         public void ChangeHealth(float amount)
         {
+            if (Destroyed)
+                return;
+            
             CurrentHealth += amount;
 
             if (CurrentHealth <= 0)
             {
-                Recycler.Recycle<Part>(this);
+                CurrentHealth = 0;
+                SetDestroyed(true);
                 return;
             }
 
@@ -86,6 +94,35 @@ namespace StarSalvager
             throw new System.NotImplementedException();
         }
 
+        private void SetDestroyed(bool isDestroyed)
+        {
+            Destroyed = isDestroyed;
+
+            //collider.enabled = !Destroyed;
+            
+            //TODO Need to update the sprite
+            if (!Destroyed)
+            {
+                renderer.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(Type).GetSprite(level);
+                return;
+            }
+
+            RecycleDamageEffect();
+            renderer.sprite = FactoryManager.Instance.PartsProfileData.GetDamageSprite(level);
+            
+        }
+
+        //ICustomRotateFunctions
+        //====================================================================================================================//
+        
+        public void CustomRotate(Quaternion rotation)
+        {
+            if (Type == PART_TYPE.TRIPLE_SHOT)
+                return;
+            
+            transform.localRotation = rotation;
+        }
+        
         //ISaveable Functions
         //============================================================================================================//
 
@@ -93,10 +130,11 @@ namespace StarSalvager
         {
             return new BlockData
             {
-                ClassType = GetType().Name,
+                ClassType = nameof(Part),
                 Coordinate = Coordinate,
                 Type = (int) Type,
-                Level = level
+                Level = level,
+                Health = CurrentHealth
             };
         }
 
@@ -105,6 +143,8 @@ namespace StarSalvager
             Coordinate = blockData.Coordinate;
             Type = (PART_TYPE) blockData.Type;
             level = blockData.Level;
+            CurrentHealth = blockData.Health;
+
         }
 
         //============================================================================================================//
@@ -114,6 +154,13 @@ namespace StarSalvager
         {
             SetColor(Color.white);
 
+            RecycleDamageEffect();
+            Destroyed = false;
+            //collider.enabled = true;
+        }
+
+        private void RecycleDamageEffect()
+        {
             if (!_damage) 
                 return;
             
@@ -121,12 +168,6 @@ namespace StarSalvager
             _damage = null;
         }
 
-        public void CustomRotate(Quaternion rotation)
-        {
-            if (Type == PART_TYPE.TRIPLE_SHOT)
-                return;
-            
-            transform.localRotation = rotation;
-        }
+
     }
 }

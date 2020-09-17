@@ -396,7 +396,7 @@ namespace StarSalvager
             IsWaveProgressing = true;
             EndWaveState = false;
                 
-            LiquidResourcesAttBeginningOfWave = new Dictionary<BIT_TYPE, float>(PlayerPersistentData.PlayerData.liquidResource);
+            LiquidResourcesAttBeginningOfWave = new Dictionary<BIT_TYPE, float>((IDictionary<BIT_TYPE, float>) PlayerPersistentData.PlayerData.liquidResource);
             
             SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
         }

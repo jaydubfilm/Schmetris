@@ -262,7 +262,8 @@ namespace StarSalvager
             CompositeCollider2D.enabled = true;
 
             BotPartsLogic.coreHeat = 0f;
-            
+
+            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
             //Add core component
             var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(
                 new BlockData
@@ -270,6 +271,7 @@ namespace StarSalvager
                     Type = (int)PART_TYPE.CORE,
                     Coordinate = Vector2Int.zero,
                     Level = 0,
+                    Health = startingHealth
                 });
 
             AttachNewBit(Vector2Int.zero, core, updateMissions: false);
@@ -478,25 +480,12 @@ namespace StarSalvager
                         case BIT_TYPE.RED:
                         case BIT_TYPE.YELLOW:
                             //TODO This needs to bounce off instead of being destroyed
-                            if (closestAttachable is EnemyAttachable)
+                            if (closestAttachable is EnemyAttachable ||
+                                closestAttachable is Part part && part.Destroyed)
                             {
-                                Vector2 directionBounce = (Vector2)bit.transform.position - collisionPoint;
-                                directionBounce.Normalize();
-                                if (directionBounce != Vector2.up)
-                                {
-                                    Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                                    downVelocity.Normalize();
-                                    directionBounce += downVelocity;
-                                    directionBounce.Normalize();
-                                }
+                                if (attachable is IObstacle obstacle)
+                                    obstacle.Bounce(collisionPoint);
 
-                                float rotation = 180.0f;
-                                if (directionBounce.x >= 0)
-                                {
-                                    rotation *= -1;
-                                }
-
-                                LevelManager.Instance.ObstacleManager.BounceObstacle(bit, directionBounce, rotation, true, true, true);
                                 return false;
                             }
 
@@ -556,25 +545,12 @@ namespace StarSalvager
 
                     //Check if its legal to attach (Within threshold of connection)
                     //TODO This needs to bounce off instead of being destroyed
-                    if (closestAttachable is EnemyAttachable)
+                    if (closestAttachable is EnemyAttachable ||
+                        closestAttachable is Part part && part.Destroyed)
                     {
-                        Vector2 directionBounce = (Vector2)component.transform.position - collisionPoint;
-                        directionBounce.Normalize();
-                        if (directionBounce != Vector2.up)
-                        {
-                            Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                            downVelocity.Normalize();
-                            directionBounce += downVelocity;
-                            directionBounce.Normalize();
-                        }
+                        if (attachable is IObstacle obstacle)
+                            obstacle.Bounce(collisionPoint);
 
-                        float rotation = 180.0f;
-                        if (directionBounce.x >= 0)
-                        {
-                            rotation *= -1;
-                        }
-
-                        LevelManager.Instance.ObstacleManager.BounceObstacle(component, directionBounce, rotation, true, true, true);
                         return false;
                     }
 
@@ -725,26 +701,12 @@ namespace StarSalvager
                     case BIT_TYPE.YELLOW:
                         
                         //TODO This needs to bounce off instead of being destroyed
-                        if (closestOnBot is EnemyAttachable)
+                        if (closestOnBot is EnemyAttachable ||
+                            closestOnBot is Part part && part.Destroyed)
                         {
-                            Vector2 directionBounce = (Vector2)shape.transform.position - collisionPoint;
-                            directionBounce.Normalize();
+                            if (closestOnBot is IObstacle obstacle)
+                                obstacle.Bounce(collisionPoint);
 
-                            if (directionBounce != Vector2.up)
-                            {
-                                Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                                downVelocity.Normalize();
-                                directionBounce += downVelocity;
-                                directionBounce.Normalize();
-                            }
-
-                            float rotation = 180.0f;
-                            if (directionBounce.x >= 0)
-                            {
-                                rotation *= -1;
-                            }
-
-                            LevelManager.Instance.ObstacleManager.BounceObstacle(shape, directionBounce, rotation, true, true, true);
                             return false;
                         }
                         
@@ -881,10 +843,10 @@ namespace StarSalvager
         /// </summary>
         /// <param name="hitPosition"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void TryBounceAt(Vector2 hitPosition)
+        public bool TryBounceAt(Vector2 hitPosition)
         {
             if(LevelManager.Instance.EndWaveState)
-                return;
+                return false;
             
             var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
 
@@ -892,15 +854,21 @@ namespace StarSalvager
             {
                 case EnemyAttachable _:
                     AsteroidDamageAt(closestAttachable);
-                    break;
+                    return false;
                 case Bit _:
+                    break;
                 case Component _:
-                case Part _:
-                    TryHitAt(closestAttachable, 10f);
+                    break;
+                case Part part:
+                    if (part.Destroyed) 
+                        return false;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(closestAttachable), closestAttachable, null);
             }
+            
+            TryHitAt(closestAttachable, 10f);
+            return true;
         }
 
         public void TryHitAt(Vector2 hitPosition, float damage)
@@ -928,77 +896,61 @@ namespace StarSalvager
             if (PROTO_GodMode && closestAttachable.Coordinate == Vector2Int.zero)
                 return;
 
+            if (!(closestAttachable is IHealth closestHealth))
+                return;
+            
+            //--------------------------------------------------------------------------------------------------------//
+
+            //Don't want to apply shields to the Enemy
+            if (!(closestAttachable is EnemyAttachable))
+                damage = BotPartsLogic.TryHitShield(closestAttachable.Coordinate, damage);
+
+            if (damage <= 0f)
+                return;
+
+            closestHealth.ChangeHealth(-Mathf.Abs(damage));
+
+            var attachableDestroyed = closestHealth.CurrentHealth <= 0f;
+
+            switch (withSound)
+            {
+                case true when closestAttachable is Bit:
+                    AudioController.PlaySound(attachableDestroyed ? SOUND.BIT_EXPLODE : SOUND.BIT_DAMAGE);
+                    break;
+                case true when closestAttachable is Part:
+                    AudioController.PlaySound(attachableDestroyed ? SOUND.PART_EXPLODE : SOUND.PART_DAMAGE);
+                    break;
+            }
+
+            if (!attachableDestroyed)
+                return;
+
+            //Things to do if the attachable is destroyed
+            //--------------------------------------------------------------------------------------------------------//
+
             switch (closestAttachable)
             {
-                
-                //FIXME Need to see how to fix this
-                case IHealth closestHealth:
-                {
-                    //Don't want to apply shields to the Enemy
-                    if(!(closestAttachable is EnemyAttachable))
-                        damage = BotPartsLogic.TryHitShield(closestAttachable.Coordinate, damage);
-
-                    if (damage <= 0f)
-                        return;
-                    
-                    closestHealth.ChangeHealth(-Mathf.Abs(damage));
-
-                    if (closestHealth.CurrentHealth > 0)
-                    {
-                        if (!withSound) 
-                            return;
-                        
-                        switch (closestAttachable)
-                        {
-                            case Bit _:
-                                AudioController.PlaySound(SOUND.BIT_DAMAGE);
-                                break;
-                            case Part _:
-                                AudioController.PlaySound(SOUND.PART_DAMAGE);
-                                break;
-                        }
-
-                        return;
-                    }
-
-                    if (withSound)
-                    {
-                        switch (closestAttachable)
-                        {
-                            case Bit _:
-                                AudioController.PlaySound(SOUND.BIT_EXPLODE);
-                                break;
-                            case Part _:
-                                AudioController.PlaySound(SOUND.PART_EXPLODE);
-                                break;
-                        }
-                    }
-                    
-
-                    //Things to do if the attachable is destroyed
-                    //------------------------------------------------------------------------------------------------//
-                
-                    if(closestAttachable.Coordinate == Vector2Int.zero)
+                case Part part:
+                    if (part.Type == PART_TYPE.CORE)
                         Destroy("Core Destroyed");
-
-                    RemoveAttachable(closestAttachable);
-                    
-                    //I dont want to disconnect parts if we destroyed the core
-                    if(closestAttachable.Coordinate != Vector2Int.zero)
-                        CheckForDisconnects();
-                    
-                    if(closestAttachable is Part)
+                    else
                         BotPartsLogic.UpdatePartsList();
-                    
-                    
-                    //------------------------------------------------------------------------------------------------//
                     break;
-                }
+                default:
+                    RemoveAttachable(closestAttachable);
+                    break;
             }
+
+
+
+            if (closestAttachable.Coordinate != Vector2Int.zero)
+                CheckForDisconnects();
+
+            //------------------------------------------------------------------------------------------------//
         }
 
-        
-        
+
+
         #endregion //TryHitAt
         
         #region Asteroid Collision

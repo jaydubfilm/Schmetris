@@ -1,6 +1,7 @@
 ﻿using StarSalvager.Cameras;
 using StarSalvager.Values;
 using System;
+using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
 namespace StarSalvager
@@ -8,35 +9,40 @@ namespace StarSalvager
     public class AttachableEditorToolBase : MonoBehaviour
     {
         private const int MAX_DISTANCE = 3;
+
+        //====================================================================================================================//
         
         public Material material;
-        public ScrapyardBot _scrapyardBot { get; protected set; } = null;
+        public ScrapyardBot _scrapyardBot { get; protected set; }
 
         [SerializeField]
         private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
-        public PART_TYPE? SelectedPartType = null;
-
         [NonSerialized]
-        public int SelectedPartLevel = 0;
+        public BlockData? SelectedBrick;
+        
         [NonSerialized]
         public Vector3? SelectedPartClickPosition;
         [NonSerialized]
         public Vector2Int? SelectedPartPreviousGridPosition = null;
         [NonSerialized]
-        public bool SelectedPartRemoveFromStorage = false;
+        protected bool SelectedPartRemoveFromStorage = false;
         [NonSerialized]
-        public bool SelectedPartReturnToStorageIfNotPlaced = false;
+        protected bool SelectedPartReturnToStorageIfNotPlaced = false;
 
-        [NonSerialized]
-        public bool selectedPartRemoveFromStorage = false;
-        [NonSerialized]
-        public bool selectedPartReturnToStorageIfNotPlaced = false;
+        //====================================================================================================================//
+
+        public void SelectPartFromStorage(BlockData? blockData, bool returnIfNotPlaced = false)
+        {
+            SelectedBrick = blockData;
+            SelectedPartRemoveFromStorage = blockData.HasValue;
+            SelectedPartReturnToStorageIfNotPlaced = returnIfNotPlaced;
+        }
 
         public void DrawGL(Camera camera)
         {
-            Vector2 m_anchorPoint = new Vector2(-Values.Constants.gridCellSize * 3.5f, -Values.Constants.gridCellSize * 3.5f);
+            Vector2 m_anchorPoint = new Vector2(-Constants.gridCellSize * 3.5f, -Constants.gridCellSize * 3.5f);
             //Draw debug lines to show the area of the grid
             for (int x = 0; x < 7; x++)
             {
@@ -44,12 +50,12 @@ namespace StarSalvager
                 {
                     Vector2 tempVector = new Vector2(x, y);
 
-                    DrawWithGL(material, m_anchorPoint + tempVector * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(x, y + 1) * Values.Constants.gridCellSize);
-                    DrawWithGL(material, m_anchorPoint + tempVector * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(x + 1, y) * Values.Constants.gridCellSize);
+                    DrawWithGL(material, m_anchorPoint + tempVector * Constants.gridCellSize, m_anchorPoint + new Vector2(x, y + 1) * Constants.gridCellSize);
+                    DrawWithGL(material, m_anchorPoint + tempVector * Constants.gridCellSize, m_anchorPoint + new Vector2(x + 1, y) * Constants.gridCellSize);
                 }
             }
-            DrawWithGL(material, m_anchorPoint + new Vector2(0, 7) * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(7, 7) * Values.Constants.gridCellSize);
-            DrawWithGL(material, m_anchorPoint + new Vector2(7, 0) * Values.Constants.gridCellSize, m_anchorPoint + new Vector2(7, 7) * Values.Constants.gridCellSize);
+            DrawWithGL(material, m_anchorPoint + new Vector2(0, 7) * Constants.gridCellSize, m_anchorPoint + new Vector2(7, 7) * Constants.gridCellSize);
+            DrawWithGL(material, m_anchorPoint + new Vector2(7, 0) * Constants.gridCellSize, m_anchorPoint + new Vector2(7, 7) * Constants.gridCellSize);
         }
 
         public void DrawWithGL(Material material, Vector2 startPoint, Vector2 endPoint)

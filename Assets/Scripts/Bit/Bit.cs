@@ -155,22 +155,7 @@ namespace StarSalvager
 
             if (bot.Rotating)
             {
-                float rotation = 180.0f;
-                if (bot.MostRecentRotate == ROTATION.CW)
-                {
-                    rotation *= -1;
-                }
-
-                Vector2 rotDirection = (Vector2)transform.position - hitPoint;
-                rotDirection.Normalize();
-                /*if (direction != Vector2.up)
-                {
-                    Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                    downVelocity.Normalize();
-                    direction += downVelocity;
-                    direction.Normalize();
-                }*/
-                LevelManager.Instance.ObstacleManager.BounceObstacle(this, rotDirection, rotation, true, true, true);
+                this.Bounce(hitPoint, bot.MostRecentRotate);
                 AudioController.PlaySound(SOUND.BIT_BOUNCE);
                 return;
             }

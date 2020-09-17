@@ -14,7 +14,7 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField]
         private Button favouriteButton;
 
-        public override void Init(Mission data, Action<Mission> OnPressed)
+        public override void Init(Mission data, Action<Mission> onPressedCallback)
         {
             this.data = data;
 
@@ -22,7 +22,7 @@ namespace StarSalvager.UI.Scrapyard
             
             button.onClick.AddListener(() =>
             {
-                OnPressed?.Invoke(data);
+                onPressedCallback?.Invoke(data);
             });
         }
     }

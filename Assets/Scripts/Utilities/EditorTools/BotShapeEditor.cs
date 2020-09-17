@@ -1,7 +1,7 @@
-﻿using StarSalvager.Factories;
+﻿using System;
+using StarSalvager.Factories;
 using UnityEngine;
 using StarSalvager.Utilities.Extensions;
-using StarSalvager.Cameras;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities;
 using System.Collections.Generic;
@@ -9,8 +9,6 @@ using System.Linq;
 using StarSalvager.UI;
 using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
-using Newtonsoft.Json;
-using System.IO;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Values;
 
@@ -18,7 +16,7 @@ namespace StarSalvager
 {
     public class BotShapeEditor : AttachableEditorToolBase, IReset, IInput
     {
-        private Shape _shape = null;
+        private Shape _shape;
 
         public bool EditingBot => _scrapyardBot != null;
         public bool EditingShape => _shape != null;
@@ -29,7 +27,7 @@ namespace StarSalvager
         public EditorBotShapeGeneratorData EditorBotShapeData => _mEditorBotShapeData ?? (_mEditorBotShapeData = Files.ImportBotShapeRemoteData());
         private EditorBotShapeGeneratorData _mEditorBotShapeData;
 
-        public BIT_TYPE? SelectedBitType = null;
+        //public BIT_TYPE? SelectedBitType = null;
 
         //============================================================================================================//
 
@@ -85,8 +83,6 @@ namespace StarSalvager
         public void RotateBots(float direction)
         {
             _scrapyardBot.Rotate(direction);
-
-            //TODO Rotate shape
         }
         
         //============================================================================================================//
@@ -103,40 +99,41 @@ namespace StarSalvager
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
 
-            if (_shape != null && !_shape.AttachedBits.Any(b => b.Coordinate == mouseCoordinate))
+            if (_shape != null && _shape.AttachedBits.All(b => b.Coordinate != mouseCoordinate))
             {
-                if (SelectedBitType is BIT_TYPE bitType)
+                if (SelectedBrick.Value.ClassType.Equals(nameof(Bit)))
                 {
-                    _shape.PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(bitType, SelectedPartLevel), mouseCoordinate);
+                    _shape.PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(SelectedBrick.Value), mouseCoordinate);
                 }
             }
 
-            if (_scrapyardBot != null)
+            if (_scrapyardBot == null)
+                return;
+            
+            if (_scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate) != null)
             {
-                if (_scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate) != null)
+                IAttachable attachable = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+                if (attachable != null && attachable is ScrapyardPart partAtCoordinates && partAtCoordinates.Type == PART_TYPE.CORE)
                 {
-                    IAttachable attachable = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
-                    if (attachable != null && attachable is ScrapyardPart partAtCoordinates && partAtCoordinates.Type == PART_TYPE.CORE)
-                    {
-                        FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level + 1, ref partAtCoordinates);
-                    }
+                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level + 1, ref partAtCoordinates);
                 }
-                else
-                {
-                    if (SelectedPartType == null && SelectedBitType == null)
-                    {
-                        return;
-                    }
+            }
+            else
+            {
+                if (!SelectedBrick.HasValue)
+                    return;
 
-                    if (SelectedPartType != null)
-                    {
-                        var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>((PART_TYPE)SelectedPartType, SelectedPartLevel);
+                switch (SelectedBrick.Value.ClassType)
+                {
+                    case nameof(Part):
+                        var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(SelectedBrick.Value);
                         _scrapyardBot.AttachNewBit(mouseCoordinate, attachable);
-                    }
-                    else if (SelectedBitType is BIT_TYPE bitType)
-                    {
-                        _scrapyardBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<ScrapyardBit>(bitType, SelectedPartLevel));
-                    }
+                        break;
+                    case nameof(Bit):
+                        _scrapyardBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<ScrapyardBit>(SelectedBrick.Value));
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(SelectedBrick.Value.ClassType), SelectedBrick.Value.ClassType, null);
                 }
             }
         }
@@ -232,20 +229,20 @@ namespace StarSalvager
 
         private void DeloadBot()
         {
-            if (_scrapyardBot != null)
-            {
-                Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBot.gameObject);
-                _scrapyardBot = null;
-            }
+            if (_scrapyardBot == null) 
+                return;
+            
+            Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBot.gameObject);
+            _scrapyardBot = null;
         }
 
         private void DeloadShape()
         {
-            if (_shape != null)
-            {
-                Recycling.Recycler.Recycle<Shape>(_shape.gameObject);
-                _shape = null;
-            }
+            if (_shape == null) 
+                return;
+            
+            Recycling.Recycler.Recycle<Shape>(_shape.gameObject);
+            _shape = null;
         }
 
         public bool CheckLegal()

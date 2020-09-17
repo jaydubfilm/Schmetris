@@ -17,13 +17,16 @@ namespace StarSalvager.Utilities.JsonDataTypes
         public int Type { get; set; }
         [ShowInInspector]
         public int Level { get; set; }
+        [ShowInInspector]
+        public float Health { get; set; }
 
-        public BlockData(string classType, Vector2Int coordinate, int type, int level)
+        public BlockData(string classType, Vector2Int coordinate, int type, int level, float health)
         {
             ClassType = classType;
             Coordinate = coordinate;
             Type = type;
             Level = level;
+            Health = health;
         }
 
         #region IEquatable

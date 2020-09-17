@@ -1,12 +1,10 @@
 ﻿using Sirenix.OdinInspector;
 using StarSalvager.Utilities.JsonDataTypes;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace StarSalvager
 {
-    public class ScrapyardPart : MonoBehaviour, IAttachable, ISaveable, IPart
+    public class ScrapyardPart : MonoBehaviour, IAttachable, ISaveable, IPart, IHealth
     {
         protected new SpriteRenderer renderer
         {
@@ -33,6 +31,13 @@ namespace StarSalvager
         }
         private Transform _transform;
 
+        //IHealth Properties
+        //====================================================================================================================//
+        
+        public float StartingHealth { get; private set; }
+        public float CurrentHealth { get; private set; }
+
+
         //IAttachable Properties
         //============================================================================================================//
         [ShowInInspector, ReadOnly]
@@ -40,7 +45,7 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
 
-        public bool CountAsConnectedToCore => true;
+        public bool CountAsConnectedToCore => !Destroyed;
         public bool CanDisconnect => false;
 
         [ShowInInspector, ReadOnly]
@@ -50,6 +55,8 @@ namespace StarSalvager
 
         //Part Properties
         //============================================================================================================//
+        public bool Destroyed => CurrentHealth <= 0f;
+
         [ShowInInspector, ReadOnly]
         public PART_TYPE Type { get; set; }
         [ShowInInspector, ReadOnly]
@@ -63,6 +70,20 @@ namespace StarSalvager
             Attached = isAttached;
         }
 
+        //IHealth Functions
+        //====================================================================================================================//
+        
+        public void SetupHealthValues(float startingHealth, float currentHealth)
+        {
+            StartingHealth = startingHealth;
+            CurrentHealth = currentHealth;
+        }
+
+        public void ChangeHealth(float amount)
+        {
+            throw new System.NotImplementedException();
+        }
+
         //ISaveable Functions
         //============================================================================================================//
 
@@ -73,7 +94,8 @@ namespace StarSalvager
                 ClassType = GetType().Name,
                 Coordinate = Coordinate,
                 Type = (int)Type,
-                Level = level
+                Level = level,
+                Health = CurrentHealth
             };
         }
 
@@ -82,6 +104,7 @@ namespace StarSalvager
             Coordinate = blockData.Coordinate;
             Type = (PART_TYPE)blockData.Type;
             level = blockData.Level;
+            CurrentHealth = blockData.Health;
         }
 
         //============================================================================================================//
@@ -95,5 +118,7 @@ namespace StarSalvager
         {
             level = newLevel;
         }
+
+
     }
 }

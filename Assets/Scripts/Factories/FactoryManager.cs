@@ -30,7 +30,7 @@ namespace StarSalvager.Factories
         public int ModularDataCount => m_sectorRemoteData.Count;
 
         //============================================================================================================//
-
+        public BitRemoteDataScriptableObject BitsRemoteData => bitRemoteData;
         public BitProfileScriptableObject BitProfileData => bitProfile as BitProfileScriptableObject;
         
         [SerializeField, Required, BoxGroup("Attachables/Bits")]
