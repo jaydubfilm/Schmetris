@@ -116,10 +116,10 @@ namespace StarSalvager.Values
         [JsonProperty]
         private Dictionary<FACILITY_TYPE, int> _facilityBlueprintRanks = new Dictionary<FACILITY_TYPE, int>
         {
-            {FACILITY_TYPE.FREEZER, 2},
-            {FACILITY_TYPE.REFINERY, 2},
-            {FACILITY_TYPE.STORAGE, 2},
-            {FACILITY_TYPE.WORKBENCH, 2}
+            {FACILITY_TYPE.FREEZER, 0},
+            {FACILITY_TYPE.REFINERY, 0},
+            {FACILITY_TYPE.STORAGE, 0},
+            {FACILITY_TYPE.WORKBENCH, 0}
         };
 
         public string PlaythroughID = string.Empty;
@@ -159,6 +159,12 @@ namespace StarSalvager.Values
                 {
                     PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
                     Toast.AddToast("Unlocked Blueprint!");
+                    levelUpLoot.RemoveAt(i);
+                }
+                if (levelUpLoot[i] is RDSValue<FacilityBlueprint> rdsValueFacilityBlueprint)
+                {
+                    PlayerPersistentData.PlayerData.UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
+                    Toast.AddToast("Unlocked Facility Blueprint!");
                     levelUpLoot.RemoveAt(i);
                 }
                 else if (levelUpLoot[i] is RDSValue<Vector2Int> rdsValueGears)
@@ -426,13 +432,26 @@ namespace StarSalvager.Values
 
         public void UnlockFacilityLevel(FACILITY_TYPE type, int level)
         {
-            if (_facilityRanks.ContainsKey(type))
+            if (_facilityRanks.ContainsKey(type) && _facilityRanks[type] < level)
             {
                 _facilityRanks[type] = level;
             }
             else
             {
                 _facilityRanks.Add(type, level);
+            }
+            OnValuesChanged?.Invoke();
+        }
+
+        public void UnlockFacilityBlueprintLevel(FacilityBlueprint facilityBlueprint)
+        {
+            if (_facilityBlueprintRanks.ContainsKey(facilityBlueprint.facilityType) && _facilityBlueprintRanks[facilityBlueprint.facilityType] < facilityBlueprint.level)
+            {
+                _facilityBlueprintRanks[facilityBlueprint.facilityType] = facilityBlueprint.level;
+            }
+            else
+            {
+                _facilityBlueprintRanks.Add(facilityBlueprint.facilityType, facilityBlueprint.level);
             }
             OnValuesChanged?.Invoke();
         }

@@ -15,7 +15,14 @@ MonoBehaviour:
   m_playerLevelRemoteData:
   - GearsToLevelUp: 500
     maxDrops: 0
-    RDSLevelUpLoot: []
+    RDSLevelUpLoot:
+    - rdsData: 3
+      type: 0
+      level: 0
+      probability: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
   - GearsToLevelUp: 1000
     maxDrops: 0
     RDSLevelUpLoot: []
