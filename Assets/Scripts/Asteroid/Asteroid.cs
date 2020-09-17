@@ -67,21 +67,20 @@ namespace StarSalvager
         {
             CurrentHealth += amount;
 
-            if (CurrentHealth <= 0)
-            {
-                Recycler.Recycle<Asteroid>(this);
+            if (CurrentHealth > 0) 
                 return;
-            }
+            
+            Recycler.Recycle<Asteroid>(this);
         }
 
         //ICanBeHit Functions
         //============================================================================================================//
         
-        public void TryHitAt(Vector2 position, float damage)
+        public bool TryHitAt(Vector2 position, float damage)
         {
             ChangeHealth(-damage);
 
-            print("SHOT ASTEROID");
+            return true;
         }
 
         //CollidableBase Functions

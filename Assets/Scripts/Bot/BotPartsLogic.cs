@@ -885,7 +885,7 @@ namespace StarSalvager
                 return;
 
             var copy = new Dictionary<Part, ShieldData>(_shields);
-            foreach (var data in copy.Where(data => data.Key.IsRecycled))
+            foreach (var data in copy.Where(data => data.Key.IsRecycled || data.Key.Destroyed))
             {
                 Recycler.Recycle<Shield>(data.Value.shield.gameObject);
                 _shields.Remove(data.Key);
@@ -898,7 +898,7 @@ namespace StarSalvager
                 return;
 
             var copy = new Dictionary<Part, FlashSprite>(_flashes);
-            foreach (var data in copy.Where(data => data.Key.IsRecycled))
+            foreach (var data in copy.Where(data => data.Key.IsRecycled || data.Key.Destroyed))
             {
                 _flashes.Remove(data.Key);
                 Recycler.Recycle<FlashSprite>(data.Value.gameObject);
@@ -911,9 +911,8 @@ namespace StarSalvager
                 return;
 
             var copy = new Dictionary<Part, float>(_bombTimers);
-            foreach (var data in copy.Where(data => data.Key.IsRecycled))
+            foreach (var data in copy.Where(data => data.Key.IsRecycled || data.Key.Destroyed))
             {
-               // Recycler.Recycle<FlashSprite>(data.Value.gameObject);
                _bombTimers.Remove(data.Key);
 
                var index = _smartWeapons.FindIndex(0, _smartWeapons.Count, x => x == data.Key);

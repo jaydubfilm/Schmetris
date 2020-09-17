@@ -412,7 +412,7 @@ namespace StarSalvager.AI
         //ICanBeHit functions
         //============================================================================================================//
 
-        public void TryHitAt(Vector2 position, float damage)
+        public bool TryHitAt(Vector2 position, float damage)
         {
             ChangeHealth(-damage);
             
@@ -426,7 +426,8 @@ namespace StarSalvager.AI
             {
                 //TODO Need to add the gears addition
             }
-            
+
+            return true;
         }
 
         //IHealth Functions
