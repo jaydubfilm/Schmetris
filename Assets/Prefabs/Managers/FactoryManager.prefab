@@ -88,3 +88,4 @@ MonoBehaviour:
   asteroidRemote: {fileID: 11400000, guid: 4fb1c416745d97f4e97ed047ec893eb2, type: 2}
   asteroidPrefab: {fileID: 4611369530616709383, guid: 7553853ad3e767d4a9b50f5a6102a7d5,
     type: 3}
+  facilityRemote: {fileID: 11400000, guid: 3707d8031afd382499acad94f3260a23, type: 2}

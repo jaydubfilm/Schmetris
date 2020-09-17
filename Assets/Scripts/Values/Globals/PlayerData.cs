@@ -111,6 +111,17 @@ namespace StarSalvager.Values
 
         };
 
+        [JsonIgnore]
+        public IReadOnlyDictionary<FACILITY_TYPE, int> facilityBlueprintRanks => _facilityBlueprintRanks;
+        [JsonProperty]
+        private Dictionary<FACILITY_TYPE, int> _facilityBlueprintRanks = new Dictionary<FACILITY_TYPE, int>
+        {
+            {FACILITY_TYPE.FREEZER, 2},
+            {FACILITY_TYPE.REFINERY, 2},
+            {FACILITY_TYPE.STORAGE, 2},
+            {FACILITY_TYPE.WORKBENCH, 2}
+        };
+
         public string PlaythroughID = string.Empty;
 
         //============================================================================================================//
@@ -277,6 +288,12 @@ namespace StarSalvager.Values
             OnValuesChanged?.Invoke();
         }
 
+        public void SubtractComponents(IEnumerable<CraftCost> cost)
+        {
+            CostCalculations.SubtractComponents(ref _components, cost);
+            OnValuesChanged?.Invoke();
+        }
+
         public void SubtractPartCosts(PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
         {
             CostCalculations.SubtractPartCosts(ref _resources, ref _components, partsInStorageBlockData, partType, level, isRecursive, costModifier);
@@ -315,14 +332,20 @@ namespace StarSalvager.Values
         //============================================================================================================//
 
 
-        public bool CanAffordCost(BIT_TYPE type, int amount)
+        public bool CanAffordBits(BIT_TYPE type, int amount)
         {
             return CostCalculations.CanAffordResource(resources, type, amount);
         }
-        public bool CanAffordCost(IEnumerable<CraftCost> levelCost)
+        public bool CanAffordBits(IEnumerable<CraftCost> levelCost)
         {
             Dictionary<BIT_TYPE, int> tempDictionary = new Dictionary<BIT_TYPE, int>(resources);
             return CostCalculations.CanAffordResources(tempDictionary, levelCost);
+        }
+
+        public bool CanAffordComponents(IEnumerable<CraftCost> levelCost)
+        {
+            Dictionary<COMPONENT_TYPE, int> tempDictionary = new Dictionary<COMPONENT_TYPE, int>(_components);
+            return CostCalculations.CanAffordComponents(tempDictionary, levelCost);
         }
 
         public bool CanAffordPart(PART_TYPE partType, int level, bool isRecursive)
@@ -399,6 +422,19 @@ namespace StarSalvager.Values
                     LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprint.name);
                 }
             }
+        }
+
+        public void UnlockFacilityLevel(FACILITY_TYPE type, int level)
+        {
+            if (_facilityRanks.ContainsKey(type))
+            {
+                _facilityRanks[type] = level;
+            }
+            else
+            {
+                _facilityRanks.Add(type, level);
+            }
+            OnValuesChanged?.Invoke();
         }
     }
 }

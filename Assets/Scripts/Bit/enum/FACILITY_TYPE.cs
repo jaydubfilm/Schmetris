@@ -8,6 +8,6 @@ namespace StarSalvager
         WORKBENCH,
         FREEZER,
         STORAGE,
-        REFINGERY
+        REFINERY
     }
 }
