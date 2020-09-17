@@ -14,6 +14,7 @@ namespace StarSalvager
             Bit,
             Component,
             Blueprint,
+            FacilityBlueprint,
             Gears
         }
 
@@ -97,6 +98,9 @@ namespace StarSalvager
                 case TYPE.Blueprint:
                     value = $"{(PART_TYPE)type}";
                     break;
+                case TYPE.FacilityBlueprint:
+                    value = $"{(FACILITY_TYPE)type}";
+                    break;
                 case TYPE.Gears:
                     value = "Gears";
                     break;
@@ -122,6 +126,9 @@ namespace StarSalvager
                     break;
                 case TYPE.Blueprint:
                     valueType = typeof(PART_TYPE);
+                    break;
+                case TYPE.FacilityBlueprint:
+                    valueType = typeof(FACILITY_TYPE);
                     break;
                 case TYPE.Gears:
                     return null;

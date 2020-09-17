@@ -121,6 +121,12 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
+        [SerializeField, Required, BoxGroup("Facilities")]
+        private FacilityRemoteDataScriptableObject facilityRemote;
+        public FacilityRemoteDataScriptableObject FacilityRemote => facilityRemote;
+
+        //============================================================================================================//
+
         private Dictionary<Type, FactoryBase> _factoryBases;
 
         //============================================================================================================//

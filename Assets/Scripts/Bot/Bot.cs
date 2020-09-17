@@ -871,24 +871,29 @@ namespace StarSalvager
             return true;
         }
 
-        public void TryHitAt(Vector2 hitPosition, float damage)
+        public bool TryHitAt(Vector2 hitPosition, float damage)
         {
             SessionDataProcessor.Instance.ReceivedDamage(damage);
             
             if(LevelManager.Instance.EndWaveState)
-                return;
+                return false;
             
             var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
 
-            // Enemies attached should not be hit by other enemy projectiles
-            if(closestAttachable is EnemyAttachable)
-                return;
+            switch (closestAttachable)
+            {
+                // Enemies attached should not be hit by other enemy projectiles
+                case EnemyAttachable _:
+                case Part part when part.Destroyed:
+                    return false;
+            }
 
             var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
             explosion.transform.position = hitPosition;
             
             TryHitAt(closestAttachable, damage);
 
+            return true;
         }
 
         public void TryHitAt(IAttachable closestAttachable, float damage, bool withSound = true)
