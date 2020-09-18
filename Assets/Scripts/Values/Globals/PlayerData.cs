@@ -445,12 +445,12 @@ namespace StarSalvager.Values
             OnValuesChanged?.Invoke();
         }
 
-        public void UnlockBlueprint(int partType, int level)
+        public void UnlockBlueprint(PART_TYPE partType, int level)
         {
             Blueprint blueprint = new Blueprint
             {
-                name = (PART_TYPE)partType + " " + level,
-                partType = (PART_TYPE)partType,
+                name = partType + " " + level,
+                partType = partType,
                 level = level
             };
             UnlockBlueprint(blueprint);
