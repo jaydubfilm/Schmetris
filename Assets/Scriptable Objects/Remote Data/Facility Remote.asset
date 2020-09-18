@@ -43,7 +43,7 @@ MonoBehaviour:
     displayDescription: Freezer description
     levels:
     - level: 0
-      increaseAmount: 0
+      increaseAmount: 100
       craftCost:
       - resourceType: 0
         type: 2
@@ -58,10 +58,10 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 2
     - level: 1
-      increaseAmount: 0
+      increaseAmount: 200
       craftCost: []
     - level: 2
-      increaseAmount: 0
+      increaseAmount: 300
       craftCost: []
   - type: 7
     displayName: Refinery

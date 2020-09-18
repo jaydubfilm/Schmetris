@@ -370,12 +370,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: df05b7231ba43c749b389e5e917a8fa3, type: 3}
---- !u!1 &818910213 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3004619673425335257, guid: c7ec62de764d52744a18dcfe800d84b9,
-    type: 3}
-  m_PrefabInstance: {fileID: 1351241348}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &908532079
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2334,13 +2328,13 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1351241350 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 644976433761179259, guid: c7ec62de764d52744a18dcfe800d84b9,
+  m_CorrespondingSourceObject: {fileID: 981852984840817455, guid: c7ec62de764d52744a18dcfe800d84b9,
     type: 3}
   m_PrefabInstance: {fileID: 1351241348}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1351241351 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 8433269335912893741, guid: c7ec62de764d52744a18dcfe800d84b9,
+  m_CorrespondingSourceObject: {fileID: 981852983553023968, guid: c7ec62de764d52744a18dcfe800d84b9,
     type: 3}
   m_PrefabInstance: {fileID: 1351241348}
   m_PrefabAsset: {fileID: 0}
@@ -2350,9 +2344,15 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1351241348}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1351241353 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 981852983506115296, guid: c7ec62de764d52744a18dcfe800d84b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1351241348}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1351241354 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 3572499684030988487, guid: c7ec62de764d52744a18dcfe800d84b9,
+  m_CorrespondingSourceObject: {fileID: 981852984113166668, guid: c7ec62de764d52744a18dcfe800d84b9,
     type: 3}
   m_PrefabInstance: {fileID: 1351241348}
   m_PrefabAsset: {fileID: 0}
@@ -2362,7 +2362,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1351241348}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1351241360}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 77f7466e1a63480498b8201b4b56bff8, type: 3}
@@ -2371,24 +2371,6 @@ MonoBehaviour:
 --- !u!1 &1351241358 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 981852984674917730, guid: c7ec62de764d52744a18dcfe800d84b9,
-    type: 3}
-  m_PrefabInstance: {fileID: 1351241348}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1351241360 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6931153149226468406, guid: c7ec62de764d52744a18dcfe800d84b9,
-    type: 3}
-  m_PrefabInstance: {fileID: 1351241348}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1351241361 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1929012723914984906, guid: c7ec62de764d52744a18dcfe800d84b9,
-    type: 3}
-  m_PrefabInstance: {fileID: 1351241348}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1351241362 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 178274916187381327, guid: c7ec62de764d52744a18dcfe800d84b9,
     type: 3}
   m_PrefabInstance: {fileID: 1351241348}
   m_PrefabAsset: {fileID: 0}
@@ -2533,12 +2515,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storageUI: {fileID: 1351241355}
   mDroneDesigner: {fileID: 405256048}
---- !u!1 &1774530287 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2263574497212772573, guid: c7ec62de764d52744a18dcfe800d84b9,
-    type: 3}
-  m_PrefabInstance: {fileID: 1351241348}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1869511139
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2646,18 +2622,6 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 1351241358}
-    ActiveGameObject: {fileID: 1351241358}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
     - {fileID: 1351241349}
     ActiveGameObject: {fileID: 1351241349}
     GUIDsList: []
@@ -2694,119 +2658,224 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 1351241349}
-    ActiveGameObject: {fileID: 1351241349}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1351241352}
-    ActiveGameObject: {fileID: 1351241352}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1351241349}
-    ActiveGameObject: {fileID: 1351241349}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1351241352}
-    ActiveGameObject: {fileID: 1351241352}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1351241349}
-    ActiveGameObject: {fileID: 1351241349}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1351241352}
-    ActiveGameObject: {fileID: 1351241352}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1351241349}
-    ActiveGameObject: {fileID: 1351241349}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 367988722}
-    ActiveGameObject: {fileID: 367988722}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 367988722}
-    ActiveGameObject: {fileID: 367988722}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1351241352}
-    - {fileID: 1351241351}
     - {fileID: 1351241354}
+    ActiveGameObject: {fileID: 1351241354}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 1351241350}
-    ActiveGameObject: {fileID: 1351241352}
+    ActiveGameObject: {fileID: 1351241350}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1351241354}
+    ActiveGameObject: {fileID: 1351241354}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1351241358}
+    ActiveGameObject: {fileID: 1351241358}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1351241349}
+    ActiveGameObject: {fileID: 1351241349}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 367988722}
+    ActiveGameObject: {fileID: 367988722}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1351241358}
+    ActiveGameObject: {fileID: 1351241358}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1351241354}
+    ActiveGameObject: {fileID: 1351241354}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1351241353}
+    ActiveGameObject: {fileID: 1351241353}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1351241351}
+    ActiveGameObject: {fileID: 1351241351}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1351241353}
+    ActiveGameObject: {fileID: 1351241353}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1351241351}
+    ActiveGameObject: {fileID: 1351241351}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1351241353}
+    ActiveGameObject: {fileID: 1351241353}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1351241354}
+    ActiveGameObject: {fileID: 1351241354}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1351241358}
+    ActiveGameObject: {fileID: 1351241358}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1351241349}
+    ActiveGameObject: {fileID: 1351241349}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 367988722}
+    ActiveGameObject: {fileID: 367988722}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1351241358}
+    ActiveGameObject: {fileID: 1351241358}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1351241349}
+    ActiveGameObject: {fileID: 1351241349}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -2829,104 +2898,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 1351241360}
-    ActiveGameObject: {fileID: 1351241360}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1774530287}
-    ActiveGameObject: {fileID: 1774530287}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1351241361}
-    ActiveGameObject: {fileID: 1351241361}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1774530287}
-    ActiveGameObject: {fileID: 1774530287}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1351241360}
-    ActiveGameObject: {fileID: 1351241360}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1774530287}
-    ActiveGameObject: {fileID: 1774530287}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 818910213}
-    ActiveGameObject: {fileID: 818910213}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1351241362}
-    ActiveGameObject: {fileID: 1351241362}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 818910213}
-    ActiveGameObject: {fileID: 818910213}
+    - {fileID: 1351241349}
+    ActiveGameObject: {fileID: 1351241349}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []

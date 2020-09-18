@@ -49,6 +49,9 @@ namespace StarSalvager.Values
             {BIT_TYPE.GREY, 5000},
         };
 
+        [JsonProperty]
+        private int _rationCapacity = 500;
+
         [JsonIgnore]
         public IReadOnlyDictionary<COMPONENT_TYPE, int> components => _components;
         [JsonProperty]
@@ -452,24 +455,30 @@ namespace StarSalvager.Values
                 _facilityRanks.Add(type, level);
             }
 
+            int increaseAmount = FactoryManager.Instance.FacilityRemote.GetRemoteData(type).levels[level].increaseAmount;
             switch (type)
             {
+                case FACILITY_TYPE.FREEZER:
+                    _rationCapacity += increaseAmount;
+                    break;
                 case FACILITY_TYPE.STORAGEELECTRICITY:
-                    _resourceCapacity[BIT_TYPE.YELLOW] += FactoryManager.Instance.FacilityRemote.GetRemoteData(type).levels[level].increaseAmount;
+                    _resourceCapacity[BIT_TYPE.YELLOW] += increaseAmount;
                     break;
                 case FACILITY_TYPE.STORAGEFUEL:
-                    _resourceCapacity[BIT_TYPE.RED] += FactoryManager.Instance.FacilityRemote.GetRemoteData(type).levels[level].increaseAmount;
+                    _resourceCapacity[BIT_TYPE.RED] += increaseAmount;
                     break;
                 case FACILITY_TYPE.STORAGEPLASMA:
-                    _resourceCapacity[BIT_TYPE.GREEN] += FactoryManager.Instance.FacilityRemote.GetRemoteData(type).levels[level].increaseAmount;
+                    _resourceCapacity[BIT_TYPE.GREEN] += increaseAmount;
                     break;
                 case FACILITY_TYPE.STORAGESCRAP:
-                    _resourceCapacity[BIT_TYPE.GREY] += FactoryManager.Instance.FacilityRemote.GetRemoteData(type).levels[level].increaseAmount;
+                    _resourceCapacity[BIT_TYPE.GREY] += increaseAmount;
                     break;
                 case FACILITY_TYPE.STORAGEWATER:
-                    _resourceCapacity[BIT_TYPE.BLUE] += FactoryManager.Instance.FacilityRemote.GetRemoteData(type).levels[level].increaseAmount;
+                    _resourceCapacity[BIT_TYPE.BLUE] += increaseAmount;
                     break;
             }
+
+            Debug.Log(_rationCapacity);
 
             OnValuesChanged?.Invoke();
         }
