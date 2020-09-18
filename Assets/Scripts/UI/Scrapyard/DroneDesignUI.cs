@@ -15,6 +15,9 @@ namespace StarSalvager.UI.Scrapyard
     public class DroneDesignUI : MonoBehaviour
     {
         private const int MAX_CAPACITY = 1500;
+
+        [SerializeField, Required] 
+        private TMP_Text flightDataText;
         
         [SerializeField, Required, BoxGroup("Part UI")]
         private GameObject partsWindow;
@@ -130,6 +133,7 @@ namespace StarSalvager.UI.Scrapyard
                 RefreshScrollViews();
 
             PlayerData.OnValuesChanged += UpdateResourceElements;
+            PlayerData.OnCapacitiesChanged += UpdateResourceElements;
         }
 
         private void OnDisable()
@@ -137,6 +141,7 @@ namespace StarSalvager.UI.Scrapyard
             DroneDesigner?.ClearUndoRedoStacks();
             
             PlayerData.OnValuesChanged -= UpdateResourceElements;
+            PlayerData.OnCapacitiesChanged -= UpdateResourceElements;
         }
 
         #endregion //Unity Functions
@@ -333,7 +338,7 @@ namespace StarSalvager.UI.Scrapyard
                 switch (bitType)
                 {
                     case BIT_TYPE.BLUE:
-                    case BIT_TYPE.YELLOW:
+                    //case BIT_TYPE.YELLOW:
                     case BIT_TYPE.WHITE:
                         continue;
                 }
@@ -344,10 +349,18 @@ namespace StarSalvager.UI.Scrapyard
                     capacity = liquidsCapacity[bitType],
                     type = bitType,
                 };
+                
+                if(bitType == BIT_TYPE.YELLOW)
+                    Console.WriteLine("");
 
                 var element = liquidResourceContentView.AddElement(data, $"{liquid.Key}_UIElement");
                 element.Init(data, true);
             }
+
+
+            UpdateFlightDataUI();
+
+
         }
 
         private void UpdateLoadListUiScrollViews()
@@ -361,6 +374,35 @@ namespace StarSalvager.UI.Scrapyard
                 element.Init(layoutData, LayoutPressed);
             }
             layoutScrollView.SetElementsActive(true);
+        }
+
+        private void UpdateFlightDataUI()
+        {
+            //--------------------------------------------------------------------------------------------------------//
+            if (_droneDesigner?._scrapyardBot is null)
+                return;
+            
+            var powerDraw = _droneDesigner._scrapyardBot.powerDraw;
+            var availablePower =
+                Mathf.Clamp(
+                    PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] +
+                    PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW], 0,
+                    PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.YELLOW]);
+
+            if (powerDraw == 0f)
+            {
+                flightDataText.text = $"Flight Data:\nPower Draw: {powerDraw:#.0} KW/s\nTotal Power: Infinite";
+            }
+            else
+            {
+                var powerTime = TimeSpan.FromSeconds(availablePower / powerDraw).ToString(@"mm\:ss");
+
+                flightDataText.text = $"Flight Data:\nPower Draw: {powerDraw:#.0} KW/s\nTotal Power: {powerTime}s";
+            }
+            
+
+
+            //--------------------------------------------------------------------------------------------------------//
         }
 
         #endregion //Scroll Views

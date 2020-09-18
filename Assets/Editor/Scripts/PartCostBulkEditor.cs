@@ -16,6 +16,15 @@ namespace StarSalvager.Editor
         [Serializable]
         struct PartCostData
         {
+            
+            [HideInInspector, HideInTables]
+            public PART_TYPE type;
+            [HideInInspector, HideInTables]
+            public int index;
+            [HideInInspector, HideInTables]
+            public int partLevel;
+            
+            
             [DisplayAsString, ShowInInspector, PropertyOrder(-1000)] 
             [TableColumnWidth(75, Resizable = true)]
             public string Name => $"{type}_{partLevel}";
@@ -25,12 +34,8 @@ namespace StarSalvager.Editor
             [TableColumnWidth(70, Resizable = false)]
             public float hp;
 
-            [HideInInspector, HideInTables]
-            public PART_TYPE type;
-            [HideInInspector, HideInTables]
-            public int index;
-            [HideInInspector, HideInTables]
-            public int partLevel;
+            [SuffixLabel("KW/sec", true)]
+            public float powerDraw;
             
             
             [TableColumnWidth(50, Resizable = false)]
@@ -89,6 +94,7 @@ namespace StarSalvager.Editor
                 var lvlData = list.partRemoteData[partCostData.index].levels[partCostData.partLevel];
 
                 lvlData.health = partCostData.hp;
+                lvlData.powerDraw = partCostData.powerDraw;
                 lvlData.unlockLevel = partCostData.unlock;
 
                 FillData(partCostData, ref lvlData);
@@ -147,6 +153,8 @@ namespace StarSalvager.Editor
                         
                         unlock = partRemoteData.levels[j].unlockLevel,
                         hp = partRemoteData.levels[j].health,
+                        
+                        powerDraw = partRemoteData.levels[j].powerDraw,
 
 
                         nut = components[COMPONENT_TYPE.NUT],

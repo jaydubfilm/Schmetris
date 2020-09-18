@@ -90,6 +90,12 @@ MonoBehaviour:
     - {fileID: 3106027871190466780, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
     - {fileID: -1867650483643960963, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
     - {fileID: 7805707442610895404, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+  - partType: 13
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: -5767696442325698636, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: -3025457301850425108, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
+    - {fileID: -95454058170728625, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
   damagedSprites:
   - {fileID: 8564895758720257271, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
   - {fileID: 6090780171333522907, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
