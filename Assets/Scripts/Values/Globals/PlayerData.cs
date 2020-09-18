@@ -112,7 +112,7 @@ namespace StarSalvager.Values
         [JsonProperty]
         private Dictionary<FACILITY_TYPE, int> _facilityRanks = new Dictionary<FACILITY_TYPE, int>
         {
-
+            {FACILITY_TYPE.REFINERY, 0}
         };
 
         [JsonIgnore]
@@ -121,7 +121,6 @@ namespace StarSalvager.Values
         private Dictionary<FACILITY_TYPE, int> _facilityBlueprintRanks = new Dictionary<FACILITY_TYPE, int>
         {
             {FACILITY_TYPE.FREEZER, 0},
-            {FACILITY_TYPE.REFINERY, 0},
             {FACILITY_TYPE.STORAGEELECTRICITY, 0},
             {FACILITY_TYPE.STORAGEFUEL, 0},
             {FACILITY_TYPE.STORAGEPLASMA, 0},
@@ -129,7 +128,8 @@ namespace StarSalvager.Values
             {FACILITY_TYPE.STORAGEWATER, 0},
             {FACILITY_TYPE.WORKBENCHCHIP, 0},
             {FACILITY_TYPE.WORKBENCHCOIL, 0},
-            {FACILITY_TYPE.WORKBENCHFUSOR, 0}
+            {FACILITY_TYPE.WORKBENCHFUSOR, 0},
+            {FACILITY_TYPE.REFINERY, 1}
         };
 
         public string PlaythroughID = string.Empty;
@@ -267,9 +267,9 @@ namespace StarSalvager.Values
 
         //============================================================================================================//
 
-        public void AddResources(Dictionary<BIT_TYPE, int> toAdd)
+        public void AddResources(Dictionary<BIT_TYPE, int> toAdd, float multiplier)
         {
-            CostCalculations.AddResources(ref _resources, toAdd);
+            CostCalculations.AddResources(ref _resources, toAdd, multiplier);
             OnValuesChanged?.Invoke();
         }
 

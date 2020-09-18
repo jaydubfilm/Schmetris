@@ -10,14 +10,14 @@ namespace StarSalvager.Utilities
 {
     public static class CostCalculations
     {
-        public static void AddResources(ref Dictionary<BIT_TYPE, int> resources, Dictionary<BIT_TYPE, int> toAdd)
+        public static void AddResources(ref Dictionary<BIT_TYPE, int> resources, Dictionary<BIT_TYPE, int> toAdd, float multiplier)
         {
             List<BIT_TYPE> keys = resources.Keys.ToList();
             foreach (BIT_TYPE key in keys)
             {
                 if (toAdd.ContainsKey(key))
                 {
-                    resources[key] += toAdd[key];
+                    resources[key] += (int)(toAdd[key] * multiplier);
                 }
             }
         }
