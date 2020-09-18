@@ -793,7 +793,6 @@ namespace StarSalvager
             {
                 int refineryRank = PlayerPersistentData.PlayerData.facilityRanks[FACILITY_TYPE.REFINERY];
                 float increaseAmount = FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.REFINERY).levels[refineryRank].increaseAmount;
-                Debug.Log(refineryRank + " --- " + increaseAmount);
                 refineryMultiplier = 1 + (increaseAmount / 100);
                 Debug.Log("REFINERY MULTIPLIER: " + refineryMultiplier);
             }
