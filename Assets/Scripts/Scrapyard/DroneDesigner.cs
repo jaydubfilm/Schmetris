@@ -9,15 +9,16 @@ using StarSalvager.UI;
 using StarSalvager.Utilities.SceneManagement;
 using UnityEngine.InputSystem;
 
-using Input = StarSalvager.Utilities.Inputs.Input;
 using Recycling;
-using Newtonsoft.Json;
 using StarSalvager.Utilities.JsonDataTypes;
 using System;
+using Sirenix.OdinInspector;
 using StarSalvager.UI.Scrapyard;
-using UnityEngine.Serialization;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.FileIO;
+
+using Input = StarSalvager.Utilities.Inputs.Input;
+
 
 namespace StarSalvager
 {
@@ -34,6 +35,7 @@ namespace StarSalvager
                 return _droneDesignUi;
             }
         }
+        [SerializeField, Required]
         private DroneDesignUI _droneDesignUi;
         [SerializeField]
         private GameObject floatingPartWarningPrefab;
