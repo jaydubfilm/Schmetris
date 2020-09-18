@@ -118,6 +118,9 @@ namespace StarSalvager.AI
         
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
+            if (Disabled)
+                return;
+            
             if (LevelManager.Instance.EndWaveState)
                 return;
             
