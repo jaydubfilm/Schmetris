@@ -185,11 +185,6 @@ namespace StarSalvager.Values
         public void SetResources(Dictionary<BIT_TYPE, int> values)
         {
             _resources = values;
-
-            foreach (var keyValue in _resources)
-            {
-                _resources[keyValue.Key] = Mathf.Min(keyValue.Value, _resourceCapacity[keyValue.Key]);
-            }
         }
 
         public void SetResources(BIT_TYPE type, int value)
@@ -270,11 +265,6 @@ namespace StarSalvager.Values
         public void AddResources(Dictionary<BIT_TYPE, int> toAdd)
         {
             CostCalculations.AddResources(ref _resources, toAdd);
-
-            foreach(var keyValue in _resources)
-            {
-                _resources[keyValue.Key] = Mathf.Min(keyValue.Value, _resourceCapacity[keyValue.Key]);
-            }
             OnValuesChanged?.Invoke();
         }
 
