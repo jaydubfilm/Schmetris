@@ -442,6 +442,45 @@ namespace StarSalvager.Values
                     LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprint.name);
                 }
             }
+            OnValuesChanged?.Invoke();
+        }
+
+        public void UnlockBlueprint(int partType, int level)
+        {
+            Blueprint blueprint = new Blueprint
+            {
+                name = (PART_TYPE)partType + " " + level,
+                partType = (PART_TYPE)partType,
+                level = level
+            };
+            UnlockBlueprint(blueprint);
+        }
+
+        public void UnlockAllBlueprints()
+        {
+            foreach (var partRemoteData in FactoryManager.Instance.PartsRemoteData.partRemoteData)
+            {
+                for (int i = 0; i < partRemoteData.levels.Count; i++)
+                {
+                    //TODO Add these back in when we're ready!
+                    switch (partRemoteData.partType)
+                    {
+                        //Still want to be able to upgrade the core, just don't want to buy new ones?
+                        case PART_TYPE.CORE when i == 0:
+                        case PART_TYPE.BOOST:
+                            continue;
+                    }
+
+                    Blueprint blueprint = new Blueprint
+                    {
+                        name = partRemoteData.partType + " " + i,
+                        partType = partRemoteData.partType,
+                        level = i
+                    };
+                    UnlockBlueprint(blueprint);
+                }
+            }
+            OnValuesChanged?.Invoke();
         }
 
         public void UnlockFacilityLevel(FACILITY_TYPE type, int level)
