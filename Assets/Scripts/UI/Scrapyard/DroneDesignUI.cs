@@ -103,6 +103,7 @@ namespace StarSalvager.UI.Scrapyard
                 return _droneDesigner;
             }
         }
+        [SerializeField, Required]
         private DroneDesigner _droneDesigner;
 
         private ScrapyardLayout currentSelected;
@@ -380,7 +381,10 @@ namespace StarSalvager.UI.Scrapyard
         {
             //--------------------------------------------------------------------------------------------------------//
             if (_droneDesigner?._scrapyardBot is null)
+            {
+                flightDataText.text = $"Flight Data:\nPower Draw: 0.0 KW/s\nTotal Power: Infinite";
                 return;
+            }
             
             var powerDraw = _droneDesigner._scrapyardBot.powerDraw;
             var availablePower =
@@ -391,13 +395,13 @@ namespace StarSalvager.UI.Scrapyard
 
             if (powerDraw == 0f)
             {
-                flightDataText.text = $"Flight Data:\nPower Draw: {powerDraw:#.0} KW/s\nTotal Power: Infinite";
+                flightDataText.text = $"Flight Data:\nPower Draw: {powerDraw:0.0} KW/s\nTotal Power: Infinite";
             }
             else
             {
                 var powerTime = TimeSpan.FromSeconds(availablePower / powerDraw).ToString(@"mm\:ss");
 
-                flightDataText.text = $"Flight Data:\nPower Draw: {powerDraw:#.0} KW/s\nTotal Power: {powerTime}s";
+                flightDataText.text = $"Flight Data:\nPower Draw: {powerDraw:0.0} KW/s\nTotal Power: {powerTime}s";
             }
             
 
