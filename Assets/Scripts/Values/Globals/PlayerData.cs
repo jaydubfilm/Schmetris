@@ -538,9 +538,12 @@ namespace StarSalvager.Values
 
         public void UnlockFacilityBlueprintLevel(FacilityBlueprint facilityBlueprint)
         {
-            if (_facilityBlueprintRanks.ContainsKey(facilityBlueprint.facilityType) && _facilityBlueprintRanks[facilityBlueprint.facilityType] < facilityBlueprint.level)
+            if (_facilityBlueprintRanks.ContainsKey(facilityBlueprint.facilityType))
             {
-                _facilityBlueprintRanks[facilityBlueprint.facilityType] = facilityBlueprint.level;
+                if (_facilityBlueprintRanks[facilityBlueprint.facilityType] < facilityBlueprint.level)
+                {
+                    _facilityBlueprintRanks[facilityBlueprint.facilityType] = facilityBlueprint.level;
+                }
             }
             else
             {
