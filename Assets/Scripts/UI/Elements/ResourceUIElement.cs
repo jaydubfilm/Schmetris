@@ -30,9 +30,10 @@ namespace StarSalvager.UI
 
             this.data = data;
 
-            amountSliderText.Init(showMaxValue);
-            amountSliderText.SetBounds(0f, data.capacity);
             amountSliderText.value = data.amount;
+            amountSliderText.SetBounds(0f, data.capacity);
+            amountSliderText.Init(showMaxValue);
+            
             
             resourceImage.sprite = _bitAttachableFactory.GetBitProfile((BIT_TYPE) data.type).refinedSprite;
 

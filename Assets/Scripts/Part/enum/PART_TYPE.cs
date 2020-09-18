@@ -18,6 +18,7 @@
         STORE_GREY,
         
         TRIPLE_SHOT,
+        STORE_YELLOW,
     } 
 }
 

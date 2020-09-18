@@ -43,8 +43,8 @@ namespace StarSalvager.Values
         private Dictionary<BIT_TYPE, int> _resourceCapacity = new Dictionary<BIT_TYPE, int>
         {
             {BIT_TYPE.RED, 5000},
-            {BIT_TYPE.BLUE, 300},
-            {BIT_TYPE.YELLOW, 300},
+            {BIT_TYPE.BLUE, 5000},
+            {BIT_TYPE.YELLOW, 5000},
             {BIT_TYPE.GREEN, 5000},
             {BIT_TYPE.GREY, 5000},
         };

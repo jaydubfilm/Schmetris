@@ -16,7 +16,7 @@ namespace StarSalvager.AI
 
         //====================================================================================================================//
 
-        [SerializeField, FoldoutGroup("$SelectionType"), ShowIf(nameof(SelectionType), SELECTION_TYPE.ASTEROID)]
+        [SerializeField, FoldoutGroup("$SelectionType"), ShowIf("SelectionType", SELECTION_TYPE.ASTEROID)]
         private ASTEROID_SIZE m_asteroidSize;
         [SerializeField, FoldoutGroup("$SelectionType"), Range(0, 1)]
         private float m_density;

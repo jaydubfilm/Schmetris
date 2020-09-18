@@ -25,7 +25,7 @@ namespace StarSalvager
         [SerializeField, ReadOnly, Space(10f), ShowInInspector]
         private List<IAttachable> _attachedBlocks;
 
-        private List<Part> _parts;
+        private List<ScrapyardPart> _parts;
 
         //============================================================================================================//
         public bool Rotating => _rotating;
@@ -176,8 +176,15 @@ namespace StarSalvager
             newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
             attachedBlocks.Add(newAttachable);
 
-            if (newAttachable is Part)
-                UpdatePartsList();
+            switch (newAttachable)
+            {
+                case Part _:
+                    throw new ArgumentOutOfRangeException(nameof(newAttachable), newAttachable, null);
+                case ScrapyardPart _:
+                    UpdatePartsList();
+                    break;
+            }
+                
         }
 
         #endregion //Attach Bits
@@ -194,19 +201,20 @@ namespace StarSalvager
             {
                 switch (attachable)
                 {
-                    case ScrapyardBit scrapyardBit:
-                        //TODO: Add click to sell bit functionality
-                        break;
+                    case ScrapyardBit _:
+                        throw new ArgumentOutOfRangeException(nameof(attachable), attachable, null);
                     case ScrapyardPart scrapyardPart:
                         PlayerPersistentData.PlayerData.AddResources(scrapyardPart.Type, scrapyardPart.level, true);
+                        UpdatePartsList();
                         break;
                 }
             }
 
-            if (attachable != null)
-            {
-                DestroyAttachable(attachable);
-            }
+            if (attachable is null)
+                return; 
+            
+            DestroyAttachable(attachable);
+            UpdatePartsList();
         }
 
         public void RemoveAllBits()
@@ -356,13 +364,15 @@ namespace StarSalvager
         [SerializeField, BoxGroup("Bot Part Data"), ReadOnly, Space(10f)]
         private int magnetCount;
 
+        public float powerDraw { get; private set; }
+
         /// <summary>
         /// Called when new Parts are added to the attachable List. Allows for a short list of parts to exist to ease call
         /// cost for updating the Part behaviour
         /// </summary>
         private void UpdatePartsList()
         {
-            _parts = attachedBlocks.OfType<Part>().ToList();
+            _parts = attachedBlocks.OfType<ScrapyardPart>().ToList();
 
             UpdatePartData();
         }
@@ -374,6 +384,7 @@ namespace StarSalvager
         {
             PlayerPersistentData.PlayerData.ClearLiquidCapacity();
             magnetCount = 0;
+            powerDraw = 0f;
             
             var capacities = new Dictionary<BIT_TYPE, int>
             {
@@ -390,6 +401,8 @@ namespace StarSalvager
 
                 
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type).levels[part.level];
+
+                powerDraw += partData.powerDraw;
                 
                 switch (part.Type)
                 { 
@@ -400,6 +413,7 @@ namespace StarSalvager
                             capacities[BIT_TYPE.RED] += value;
                             capacities[BIT_TYPE.GREEN] += value;
                             capacities[BIT_TYPE.GREY] += value;
+                            capacities[BIT_TYPE.YELLOW] += value;
                         }
                         
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
@@ -442,6 +456,12 @@ namespace StarSalvager
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.GREY] += value;
+                        }
+                        break;
+                    case PART_TYPE.STORE_YELLOW:
+                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        {
+                            capacities[BIT_TYPE.YELLOW] += value;
                         }
                         break;
                 }

@@ -75,7 +75,7 @@ namespace StarSalvager
         private GameUI _GameUI;
 
         //temp variables
-        float batteryDrainTimer = 0;
+        //float batteryDrainTimer = 0;
         float waterDrainTimer = 0;
 
         //==============================================================================================================//
@@ -291,6 +291,12 @@ namespace StarSalvager
                             capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
+                    case PART_TYPE.STORE_YELLOW:
+                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        {
+                            capacities[BIT_TYPE.YELLOW] += value;
+                        }
+                        break;
                     case PART_TYPE.BOMB:
                         if(_bombTimers == null)
                             _bombTimers = new Dictionary<Part, float>();
@@ -316,6 +322,10 @@ namespace StarSalvager
         /// </summary>
         public void PartsUpdateLoop()
         {
+            var powerValue = PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW];
+            var powerToRemove = 0f;
+            
+            
             //Be careful to not use return here
             foreach (var part in _parts)
             {
@@ -327,11 +337,14 @@ namespace StarSalvager
 
                 var levelData = partRemoteData.levels[part.level];
 
+                powerToRemove += levelData.powerDraw * Time.deltaTime;
+
                 //If there's nothing using these resources ignore
                 if(levelData.burnRate == 0f)
                     continue;
 
                 var resourceValue = GetValueToBurn(levelData, partRemoteData.burnType);
+                
 
                 //If we no longer have liquid to use, find a bit that could be refined
                 if (resourceValue <= 0f && useBurnRate)
@@ -374,6 +387,8 @@ namespace StarSalvager
                     if(_flashes != null && _flashes.ContainsKey(part))
                         GetAlertIcon(part).SetActive(false);
                 }
+                
+                
 
                 switch (part.Type)
                 {
@@ -626,20 +641,27 @@ namespace StarSalvager
                 PlayerPersistentData.PlayerData.SetLiquidResource(partRemoteData.burnType, resourceValue);
             }
 
-            batteryDrainTimer += Time.deltaTime / 2;
+            powerValue -= powerToRemove;
+            if (powerValue < 0)
+                powerValue = 0f;
+            
+            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, powerValue);
+            
+
+            //batteryDrainTimer += Time.deltaTime / 2;
             waterDrainTimer += Time.deltaTime / 4;
 
-            if (batteryDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] > 0)
+            /*if (batteryDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] > 0)
             {
                 batteryDrainTimer--;
                 PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] - 1);
-            }
+            }*/
             if (waterDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0)
             {
                 waterDrainTimer--;
                 PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] - 1);
             }
-            UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW]);
+            UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW]);
             UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE]);
         }
 

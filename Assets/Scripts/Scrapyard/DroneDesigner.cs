@@ -938,6 +938,10 @@ namespace StarSalvager
         {
             return _scrapyardBot.attachedBlocks.OfType<ScrapyardPart>().Any(p => p.Type == partType);
         }
+        public bool HasParts(params PART_TYPE[] partTypes)
+        {
+            return _scrapyardBot.attachedBlocks.OfType<ScrapyardPart>().Any(p => partTypes.Contains(p.Type));
+        }
 
         public void UpdateFloatingMarkers(bool showAvailable)
         {
