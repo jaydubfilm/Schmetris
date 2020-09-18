@@ -10,6 +10,7 @@ using UnityEngine;
 using StarSalvager.Missions;
 using UnityEngine.SceneManagement;
 using StarSalvager.Utilities.SceneManagement;
+using StarSalvager.Factories;
 
 namespace StarSalvager.Values
 {
@@ -47,6 +48,9 @@ namespace StarSalvager.Values
             {BIT_TYPE.GREEN, 5000},
             {BIT_TYPE.GREY, 5000},
         };
+
+        [JsonProperty]
+        private int _rationCapacity = 500;
 
         [JsonIgnore]
         public IReadOnlyDictionary<COMPONENT_TYPE, int> components => _components;
@@ -118,8 +122,14 @@ namespace StarSalvager.Values
         {
             {FACILITY_TYPE.FREEZER, 0},
             {FACILITY_TYPE.REFINERY, 0},
-            {FACILITY_TYPE.STORAGE, 0},
-            {FACILITY_TYPE.WORKBENCH, 0}
+            {FACILITY_TYPE.STORAGEELECTRICITY, 0},
+            {FACILITY_TYPE.STORAGEFUEL, 0},
+            {FACILITY_TYPE.STORAGEPLASMA, 0},
+            {FACILITY_TYPE.STORAGESCRAP, 0},
+            {FACILITY_TYPE.STORAGEWATER, 0},
+            {FACILITY_TYPE.WORKBENCHCHIP, 0},
+            {FACILITY_TYPE.WORKBENCHCOIL, 0},
+            {FACILITY_TYPE.WORKBENCHFUSOR, 0}
         };
 
         public string PlaythroughID = string.Empty;
@@ -263,6 +273,12 @@ namespace StarSalvager.Values
             OnValuesChanged?.Invoke();
         }
 
+        public void AddResource(BIT_TYPE type, int amount)
+        {
+            _resources[type] = Mathf.Min(_resources[type] + amount, _resourceCapacity[type]);
+            OnValuesChanged?.Invoke();
+        }
+
         public void AddResources(PART_TYPE partType, int level, bool isRecursive)
         {
             CostCalculations.AddResources(ref _resources, partType, level, isRecursive);
@@ -350,7 +366,19 @@ namespace StarSalvager.Values
 
         public bool CanAffordComponents(IEnumerable<CraftCost> levelCost)
         {
+            foreach (var craftCost in levelCost)
+            {
+                if ((craftCost.resourceType == CraftCost.TYPE.Component && craftCost.type == (int)COMPONENT_TYPE.CHIP && !facilityRanks.ContainsKey(FACILITY_TYPE.WORKBENCHCHIP)) ||
+                    (craftCost.resourceType == CraftCost.TYPE.Component && craftCost.type == (int)COMPONENT_TYPE.COIL && !facilityRanks.ContainsKey(FACILITY_TYPE.WORKBENCHCOIL)) ||
+                    (craftCost.resourceType == CraftCost.TYPE.Component && craftCost.type == (int)COMPONENT_TYPE.FUSOR && !facilityRanks.ContainsKey(FACILITY_TYPE.WORKBENCHFUSOR)))
+                {
+                    Debug.Log("MISSING FACILITY");
+                    return false;
+                }
+            }
+
             Dictionary<COMPONENT_TYPE, int> tempDictionary = new Dictionary<COMPONENT_TYPE, int>(_components);
+
             return CostCalculations.CanAffordComponents(tempDictionary, levelCost);
         }
 
@@ -428,6 +456,45 @@ namespace StarSalvager.Values
                     LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprint.name);
                 }
             }
+            OnValuesChanged?.Invoke();
+        }
+
+        public void UnlockBlueprint(PART_TYPE partType, int level)
+        {
+            Blueprint blueprint = new Blueprint
+            {
+                name = partType + " " + level,
+                partType = partType,
+                level = level
+            };
+            UnlockBlueprint(blueprint);
+        }
+
+        public void UnlockAllBlueprints()
+        {
+            foreach (var partRemoteData in FactoryManager.Instance.PartsRemoteData.partRemoteData)
+            {
+                for (int i = 0; i < partRemoteData.levels.Count; i++)
+                {
+                    //TODO Add these back in when we're ready!
+                    switch (partRemoteData.partType)
+                    {
+                        //Still want to be able to upgrade the core, just don't want to buy new ones?
+                        case PART_TYPE.CORE when i == 0:
+                        case PART_TYPE.BOOST:
+                            continue;
+                    }
+
+                    Blueprint blueprint = new Blueprint
+                    {
+                        name = partRemoteData.partType + " " + i,
+                        partType = partRemoteData.partType,
+                        level = i
+                    };
+                    UnlockBlueprint(blueprint);
+                }
+            }
+            OnValuesChanged?.Invoke();
         }
 
         public void UnlockFacilityLevel(FACILITY_TYPE type, int level)
@@ -440,6 +507,32 @@ namespace StarSalvager.Values
             {
                 _facilityRanks.Add(type, level);
             }
+
+            int increaseAmount = FactoryManager.Instance.FacilityRemote.GetRemoteData(type).levels[level].increaseAmount;
+            switch (type)
+            {
+                case FACILITY_TYPE.FREEZER:
+                    _rationCapacity += increaseAmount;
+                    break;
+                case FACILITY_TYPE.STORAGEELECTRICITY:
+                    _resourceCapacity[BIT_TYPE.YELLOW] += increaseAmount;
+                    break;
+                case FACILITY_TYPE.STORAGEFUEL:
+                    _resourceCapacity[BIT_TYPE.RED] += increaseAmount;
+                    break;
+                case FACILITY_TYPE.STORAGEPLASMA:
+                    _resourceCapacity[BIT_TYPE.GREEN] += increaseAmount;
+                    break;
+                case FACILITY_TYPE.STORAGESCRAP:
+                    _resourceCapacity[BIT_TYPE.GREY] += increaseAmount;
+                    break;
+                case FACILITY_TYPE.STORAGEWATER:
+                    _resourceCapacity[BIT_TYPE.BLUE] += increaseAmount;
+                    break;
+            }
+
+            Debug.Log(_rationCapacity);
+
             OnValuesChanged?.Invoke();
         }
 

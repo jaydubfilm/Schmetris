@@ -123,28 +123,7 @@ namespace StarSalvager.UI.Scrapyard
             //FIXME This needs to move to the Factory
             if (!Globals.DisableTestingFeatures)
             {
-                foreach (var partRemoteData in _remotePartProfileScriptable.partRemoteData)
-                {
-                    for (int i = 0; i < partRemoteData.levels.Count; i++)
-                    {
-                        //TODO Add these back in when we're ready!
-                        switch (partRemoteData.partType)
-                        {
-                            //Still want to be able to upgrade the core, just don't want to buy new ones?
-                            case PART_TYPE.CORE when i == 0:
-                            case PART_TYPE.BOOST:
-                                continue;
-                        }
-
-                        Blueprint blueprint = new Blueprint
-                        {
-                            name = partRemoteData.partType + " " + i,
-                            partType = partRemoteData.partType,
-                            level = i
-                        };
-                        PlayerPersistentData.PlayerData.UnlockBlueprint(blueprint);
-                    }
-                }
+                PlayerPersistentData.PlayerData.UnlockAllBlueprints();
             }
 
             foreach (var blueprint in PlayerPersistentData.PlayerData.unlockedBlueprints)

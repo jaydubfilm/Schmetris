@@ -14,32 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FacilityRemoteData:
   - type: 0
-    displayName: Workbench
-    displayDescription: Workbench description
-    levels:
-    - level: 0
-      craftCost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 150
-      - resourceType: 0
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 150
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 2
-    - level: 1
-      craftCost: []
-    - level: 2
-      craftCost: []
-  - type: 1
     displayName: Freezer
     displayDescription: Freezer description
     levels:
     - level: 0
+      increaseAmount: 100
       craftCost:
       - resourceType: 0
         type: 2
@@ -54,14 +33,17 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 2
     - level: 1
+      increaseAmount: 200
       craftCost: []
     - level: 2
+      increaseAmount: 300
       craftCost: []
-  - type: 2
-    displayName: Storage
-    displayDescription: Storage description
+  - type: 1
+    displayName: Barrel
+    displayDescription: Barrel description
     levels:
     - level: 0
+      increaseAmount: 500
       craftCost:
       - resourceType: 0
         type: 5
@@ -76,14 +58,44 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 2
     - level: 1
+      increaseAmount: 5000
       craftCost: []
-    - level: 2
-      craftCost: []
-  - type: 3
-    displayName: Refinery
-    displayDescription: Refinery description
+  - type: 2
+    displayName: Capacitor
+    displayDescription: Capacitor description
     levels:
     - level: 0
+      increaseAmount: 500
+      craftCost: []
+    - level: 1
+      increaseAmount: 5000
+      craftCost: []
+  - type: 3
+    displayName: Vat
+    displayDescription: Vat description
+    levels:
+    - level: 0
+      increaseAmount: 500
+      craftCost: []
+    - level: 1
+      increaseAmount: 5000
+      craftCost: []
+  - type: 4
+    displayName: Bin
+    displayDescription: Bin Description
+    levels:
+    - level: 0
+      increaseAmount: 500
+      craftCost: []
+    - level: 1
+      increaseAmount: 5000
+      craftCost: []
+  - type: 5
+    displayName: Reservoir
+    displayDescription: Reservoir description
+    levels:
+    - level: 0
+      increaseAmount: 500
       craftCost:
       - resourceType: 0
         type: 4
@@ -98,6 +110,51 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 2
     - level: 1
+      increaseAmount: 5000
+      craftCost: []
+  - type: 6
+    displayName: Chipworks
+    displayDescription: Chipworks description
+    levels:
+    - level: 0
+      increaseAmount: 0
+      craftCost:
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 150
+      - resourceType: 0
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 150
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+  - type: 7
+    displayName: Coilworks
+    displayDescription: Coilworks description
+    levels:
+    - level: 0
+      increaseAmount: 0
+      craftCost: []
+  - type: 8
+    displayName: Fusorworks
+    displayDescription: Fusorworks description
+    levels:
+    - level: 0
+      increaseAmount: 0
+      craftCost: []
+  - type: 9
+    displayName: Refinery
+    displayDescription: Refineryworks
+    levels:
+    - level: 0
+      increaseAmount: 0
+      craftCost: []
+    - level: 1
+      increaseAmount: 25
       craftCost: []
     - level: 2
+      increaseAmount: 50
       craftCost: []

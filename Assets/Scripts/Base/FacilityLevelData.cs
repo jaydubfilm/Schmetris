@@ -13,6 +13,7 @@ namespace StarSalvager
     public struct FacilityLevelData
     {
         public int level;
+        public int increaseAmount;
         public List<CraftCost> craftCost;
     }
 }

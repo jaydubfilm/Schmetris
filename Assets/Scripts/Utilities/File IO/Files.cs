@@ -166,7 +166,18 @@ namespace StarSalvager.Utilities.FileIO
                     data.AddSectorProgression(0, 0);
                 }
                 data.PlaythroughID = Guid.NewGuid().ToString();
-                
+
+                foreach (var blueprintData in Globals.BlueprintInitialData)
+                {
+                    Blueprint blueprint = new Blueprint
+                    {
+                        name = (PART_TYPE)blueprintData.type + " " + blueprintData.level,
+                        partType = (PART_TYPE)blueprintData.type,
+                        level = blueprintData.level
+                    };
+                    data.UnlockBlueprint(blueprint);
+                }
+
                 return data;
             }
 

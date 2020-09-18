@@ -270,15 +270,15 @@ namespace StarSalvager.Utilities
                         {
                             if (!PlayerPersistentData.PlayerData.resources.ContainsKey(value))
                                 continue;
-                                
-                            PlayerPersistentData.PlayerData.resources[value] += intAmount;
+
+                            PlayerPersistentData.PlayerData.AddResource(value, intAmount);
                         }
                         
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
-                        
-                        PlayerPersistentData.PlayerData.resources[bitType] += intAmount;
+
+                        PlayerPersistentData.PlayerData.AddResource(bitType, intAmount);
                     }
                     else
                     {
@@ -642,13 +642,13 @@ namespace StarSalvager.Utilities
                         {
                             if (!PlayerPersistentData.PlayerData.resources.ContainsKey(value))
                                 continue;
-                                
-                            PlayerPersistentData.PlayerData.resources[value] = intAmount;
+
+                            PlayerPersistentData.PlayerData.AddResource(value, intAmount);
                         }
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
-                        PlayerPersistentData.PlayerData.resources[bitType] = intAmount;
+                        PlayerPersistentData.PlayerData.AddResource(bitType, intAmount);
                     }
                     else
                     {
