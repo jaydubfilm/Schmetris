@@ -22,7 +22,9 @@ namespace StarSalvager.AI
         private float m_density;
 
         //====================================================================================================================//
-        
+
+
+#if UNITY_EDITOR
         protected override ValueDropdownList<SELECTION_TYPE> GetSelectionOptions()
         {
             var valueDropdownItems = new ValueDropdownList<SELECTION_TYPE>
@@ -35,6 +37,7 @@ namespace StarSalvager.AI
 
             return valueDropdownItems;
         }
+#endif
 
         //====================================================================================================================//
         

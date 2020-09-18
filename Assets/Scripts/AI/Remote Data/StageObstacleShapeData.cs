@@ -34,13 +34,13 @@ namespace StarSalvager.AI
 
         [SerializeField, FoldoutGroup("$SelectionType"), ValueDropdown("GetSelectionOptions")]
         protected SELECTION_TYPE m_selectionType;
-        [SerializeField, FoldoutGroup("$SelectionType"), ShowIf(nameof(SelectionType), 
-             SELECTION_TYPE.SHAPE), ValueDropdown(nameof(GetShapes)), 
+        [SerializeField, FoldoutGroup("$SelectionType"), ShowIf("SelectionType", 
+             SELECTION_TYPE.SHAPE), ValueDropdown("GetShapes"), 
          InfoBox("No Name Selected", InfoMessageType.Error, VisibleIf = "HasNoSelectedName")]
         private string m_shapeName;
-        [SerializeField, FoldoutGroup("$SelectionType"), ShowIf(nameof(SelectionType), SELECTION_TYPE.CATEGORY), ValueDropdown("GetCategories")]
+        [SerializeField, FoldoutGroup("$SelectionType"), ShowIf("SelectionType", SELECTION_TYPE.CATEGORY), ValueDropdown("GetCategories")]
         private string m_category;
-        [SerializeField, FoldoutGroup("$SelectionType"), HideIf(nameof(SelectionType), SELECTION_TYPE.BUMPER), ValueDropdown("EnemyTypes")]
+        [SerializeField, FoldoutGroup("$SelectionType"), HideIf("SelectionType", SELECTION_TYPE.BUMPER), ValueDropdown("EnemyTypes")]
         private int m_rotation;
 
         //====================================================================================================================//
