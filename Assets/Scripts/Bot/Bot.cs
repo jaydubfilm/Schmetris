@@ -573,11 +573,20 @@ namespace StarSalvager
 
                     //----------------------------------------------------------------------------------------------------//
 
-                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint, true);
                     
-                    if (closestAttachable is EnemyAttachable)
+                    switch (closestAttachable)
+                    {
+                        case EnemyAttachable _:
+                        case Part part when part.Destroyed:
+                            return false;
+                    }
+                    
+                    //FIXME This isn't sufficient to prevent multiple parasites using the same location
+                    var potentialCoordinate = closestAttachable.Coordinate + connectionDirection.ToVector2Int();
+                    if (attachedBlocks.Count(x => x.Coordinate == potentialCoordinate) > 1)
                         return false;
-                    
+
                     legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
                     //----------------------------------------------------------------------------------------------------//
@@ -669,7 +678,7 @@ namespace StarSalvager
         
         public bool CoordinateOccupied(Vector2Int coordinate)
         {
-            return _attachedBlocks.Any(x => x.Coordinate == coordinate);
+            return _attachedBlocks.Any(x => x.Coordinate == coordinate && !(x is Part part && part.Destroyed));
         }
 
         #endregion //Check For Legal Attach
@@ -1159,7 +1168,7 @@ namespace StarSalvager
             var coordinate = existingAttachable.Coordinate + direction.ToVector2Int();
 
             //Checks for attempts to add attachable to occupied location
-            if (attachedBlocks.Any(a => a.Coordinate == coordinate))
+            if (attachedBlocks.Any(a => a.Coordinate == coordinate && !(a is Part part && part.Destroyed)))
             {
                 var on = attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
                 Debug.LogError(
@@ -1698,6 +1707,9 @@ namespace StarSalvager
                     {
                         //TODO I think that I can combine both the While Loop and the Linq expression
                         nextCheck = inLine.FirstOrDefault(x => x.Coordinate == currentCoordinate + (dir * noShiftOffset));
+
+
+                        
                         if (nextCheck is null || nextCheck.CanShift) break;
 
                         noShiftOffset++;
@@ -1708,25 +1720,36 @@ namespace StarSalvager
                 }
                 else
                 {
+                    //FIXME This will work for parasites, but nothing else
+                    //Checks to see if there are things stacked on top of the destroyed part
+                    if (targetAttachable is Part part && part.Destroyed)
+                    {
+                        var stackedList = inLine
+                            .Where(x =>
+                            x.Coordinate == targetAttachable.Coordinate)
+                            .ToList();
+
+                        if (stackedList.Count > 1)
+                        {
+                            foreach (var stacked in stackedList.Where(stacked => stacked != targetAttachable))
+                            {
+                                switch (stacked)
+                                {
+                                    case EnemyAttachable _ when stacked.CanShift:
+                                        toShift.Add(new ShiftData(stacked, currentCoordinate));
+                                        break;
+                                    default:
+                                        throw new ArgumentOutOfRangeException(nameof(stacked), stacked, null);
+                                }
+                            }
+                        }
+                    }
+                    
                     currentCoordinate += dir;
                     continue;
                 }
 
                 toShift.Add(new ShiftData(targetAttachable, currentCoordinate));
-                
-                /*
-                if (check is Part part && part.Type == PART_TYPE.CORE)
-                    passedCore = true;*/
-                
-                /*if(check.CanShift)
-                    toShift.Add(check);
-                //If we've hit a part, then move onto the next position, we'll resolve the overlap later
-                else
-                {
-                    currentPos += dir;
-                    continue;
-                }*/
-                
             }
 
             if (toShift.Count == 0)

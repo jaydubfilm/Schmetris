@@ -367,19 +367,43 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
-        public void ShowRepairCost(int repairCost)
+        //FIXME This needs to be set up to better account for the weird things that come with Replacing destroyed parts
+        public void ShowRepairCost(int repairCost, int replacementCost)
         {
-            var show = repairCost > 0;
+            var totalCost = repairCost + replacementCost;
+            
+            
+            var show = totalCost > 0;
             
             repairButton.gameObject.SetActive(show);
 
             if (!show)
                 return;
-                
-            if(_repairButtonText != null)
-                _repairButtonText.text = $"Repair all {DroneDesigner.GetRepairCost()}";
 
-            repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] >= repairCost;
+            if (_repairButtonText == null)
+                return;
+            
+            var available = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN];
+
+            if (totalCost > available)
+            {
+                if (repairCost > 0)
+                {
+                    _repairButtonText.text = available < repairCost ? $"Repair {available}" : $"Repair all {repairCost}";
+                    repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] > 0;
+                }
+                else
+                {
+                    _repairButtonText.text = $"Repair all {replacementCost}";
+                    repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] >= replacementCost;
+                }
+
+                return;
+            }
+            
+
+            _repairButtonText.text = $"Repair all {totalCost}";
+            repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] >= totalCost;
         }
 
         #region Other

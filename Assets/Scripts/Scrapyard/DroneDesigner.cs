@@ -177,7 +177,7 @@ namespace StarSalvager
 
             UpdateFloatingMarkers(false);
             
-            droneDesignUi.ShowRepairCost(GetRepairCost());
+            droneDesignUi.ShowRepairCost(GetRepairCost(), GetReplacementCost());
         }
 
         public void Reset()
@@ -420,7 +420,7 @@ namespace StarSalvager
             
             
             UpdateFloatingMarkers(false);
-            droneDesignUi.ShowRepairCost(GetRepairCost());
+            droneDesignUi.ShowRepairCost(GetRepairCost(), GetReplacementCost());
         }
 
         private void OnRightMouseButton(InputAction.CallbackContext ctx)
@@ -463,7 +463,7 @@ namespace StarSalvager
             }
             
             UpdateFloatingMarkers(false);
-            droneDesignUi.ShowRepairCost(GetRepairCost());
+            droneDesignUi.ShowRepairCost(GetRepairCost(), GetReplacementCost());
         }
 
         private void OnRightMouseButtonUp()
@@ -821,15 +821,36 @@ namespace StarSalvager
             droneDesignUi.UpdateResourceElements();
         }
 
-        public int GetRepairCost()
+        public int GetTotalRepairCost()
+        {
+            return GetRepairCost() + GetReplacementCost();
+        }
+        
+        private int GetRepairCost()
         {
             if (_scrapyardBot == null)
                 return 0;
             
-            var damagedPartList = _scrapyardBot.attachedBlocks.OfType<ScrapyardPart>()
-                .Where(x => x.CurrentHealth < x.StartingHealth).ToList();
+            var repairCost = _scrapyardBot.attachedBlocks
+                .OfType<ScrapyardPart>()
+                .Where(x => !x.Destroyed)
+                .Where(x => x.CurrentHealth < x.StartingHealth)
+                .Sum(x => x.StartingHealth - x.CurrentHealth);
 
-            return Mathf.RoundToInt(damagedPartList.Sum(x => x.StartingHealth - x.CurrentHealth));
+            return Mathf.RoundToInt(repairCost);
+        }
+        
+        private int GetReplacementCost()
+        {
+            if (_scrapyardBot == null)
+                return 0;
+
+            var replacementCost = _scrapyardBot.attachedBlocks
+                .OfType<ScrapyardPart>()
+                .Where(x => x.Destroyed)
+                .Sum(x => x.StartingHealth);
+
+            return Mathf.RoundToInt(replacementCost);
         }
         
         public void RepairParts()
@@ -838,32 +859,61 @@ namespace StarSalvager
                 return;
 
             var damagedPartList = _scrapyardBot.attachedBlocks.OfType<ScrapyardPart>()
-                .Where(x => x.CurrentHealth < x.StartingHealth).ToList();
+                .Where(x => x.CurrentHealth < x.StartingHealth)
+                .OrderBy(x => x.StartingHealth - x.CurrentHealth)
+                .ToList();
 
-            var totalRepairCost = GetRepairCost();
+            //var totalRepairCost = GetRepairCost();
             var availableResources = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN];
 
-            if (totalRepairCost > availableResources)
+            if (availableResources <= 0f)
             {
-                Debug.LogError("Cannot Afford");
                 return;
             }
 
-            PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] -= totalRepairCost;
+            //TODO Order list by least to most damage
             foreach (var damagedPart in damagedPartList)
             {
                 if (!(damagedPart is IHealth partHealth))
                     continue;
+
+                var cost = Mathf.RoundToInt(damagedPart.StartingHealth - damagedPart.CurrentHealth);
                 
-                partHealth.SetupHealthValues(damagedPart.StartingHealth, damagedPart.StartingHealth);
+                //Require the full cost if repairinng from destruction
+                if (damagedPart.Destroyed)
+                {
+                    //No more money
+                    if (availableResources - cost < 0)
+                        break;
+                    
+                    availableResources -= cost;
+                
+                    partHealth.SetupHealthValues(damagedPart.StartingHealth, damagedPart.StartingHealth);
+                }
+                //Allow partial payment for partial recovery on damaged parts
+                else
+                {
+                    //No more money
+                    if (availableResources - cost < 0)
+                        cost = availableResources;
+
+                    if (cost == 0f)
+                        break;
+                    
+                    availableResources -= cost;
+                
+                    partHealth.ChangeHealth(cost);
+                }
+                
                 damagedPart.SetSprite(FactoryManager.Instance.PartsProfileData.GetProfile(damagedPart.Type)
                     .GetSprite(damagedPart.level));
             }
+            PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] = availableResources;
             
             SaveBlockData();
 
             droneDesignUi.UpdateResourceElements();
-            droneDesignUi.ShowRepairCost(0);
+            droneDesignUi.ShowRepairCost(GetRepairCost(), GetReplacementCost());
         }
 
         public void RotateBots(float direction)

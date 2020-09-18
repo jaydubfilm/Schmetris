@@ -18,28 +18,33 @@ MonoBehaviour:
   ScrapyardPrefab: {fileID: 2338614340111776972, guid: 0a401d43eaeb6c4499bc97ba6bc73dd0,
     type: 3}
   profiles:
-  - _name: Gadget
-    componentType: 0
+  - componentType: 0
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: -1898356965268507749, guid: 862bb916985978d4f88cee2b8cd29d02, type: 3}
-  - _name: Gizmo
-    componentType: 1
+    - {fileID: -2487213149547296452, guid: 88e96cd0612bcad45a5101c82d486bd1, type: 3}
+    - {fileID: 397230550333053264, guid: 88e96cd0612bcad45a5101c82d486bd1, type: 3}
+    - {fileID: -5336330388912243639, guid: 88e96cd0612bcad45a5101c82d486bd1, type: 3}
+  - componentType: 1
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: -6717742207735832342, guid: 862bb916985978d4f88cee2b8cd29d02, type: 3}
-  - _name: Thingy
-    componentType: 2
+    - {fileID: 47718487656555235, guid: 88e96cd0612bcad45a5101c82d486bd1, type: 3}
+    - {fileID: 7498853206353063428, guid: 88e96cd0612bcad45a5101c82d486bd1, type: 3}
+    - {fileID: 4926463582928117860, guid: 88e96cd0612bcad45a5101c82d486bd1, type: 3}
+  - componentType: 2
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: -7334970105483033355, guid: 862bb916985978d4f88cee2b8cd29d02, type: 3}
-  - _name: Dohickey
-    componentType: 3
+    - {fileID: -176688995576178974, guid: 88e96cd0612bcad45a5101c82d486bd1, type: 3}
+    - {fileID: -7573739408245623936, guid: 88e96cd0612bcad45a5101c82d486bd1, type: 3}
+    - {fileID: -6940395143444359971, guid: 88e96cd0612bcad45a5101c82d486bd1, type: 3}
+  - componentType: 3
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: -5369327748653213708, guid: 862bb916985978d4f88cee2b8cd29d02, type: 3}
-  - _name: Whatchamecallit
-    componentType: 4
+    - {fileID: -355839109136847714, guid: 88e96cd0612bcad45a5101c82d486bd1, type: 3}
+    - {fileID: 2790969775569125099, guid: 88e96cd0612bcad45a5101c82d486bd1, type: 3}
+    - {fileID: -4170488425021334916, guid: 88e96cd0612bcad45a5101c82d486bd1, type: 3}
+  - componentType: 4
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: -3996491502234559032, guid: 862bb916985978d4f88cee2b8cd29d02, type: 3}
+    - {fileID: -2610594276783821479, guid: 88e96cd0612bcad45a5101c82d486bd1, type: 3}
+    - {fileID: 75969050820580016, guid: 88e96cd0612bcad45a5101c82d486bd1, type: 3}
+    - {fileID: 5475245739288954895, guid: 88e96cd0612bcad45a5101c82d486bd1, type: 3}

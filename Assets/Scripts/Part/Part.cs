@@ -27,7 +27,7 @@ namespace StarSalvager
 
         public float StartingHealth { get; private set; }
 
-        [ShowInInspector, ReadOnly, ProgressBar(0,"StartingHealth")]
+        [ShowInInspector, ReadOnly, ProgressBar(0, nameof(StartingHealth))]
         public float CurrentHealth { get; private set; }
 
         //Part Properties
@@ -48,11 +48,9 @@ namespace StarSalvager
 
         public void SetAttached(bool isAttached)
         {
-            if (Destroyed)
-                return;
-            
             Attached = isAttached;
-            collider.usedByComposite = isAttached;
+
+            collider.usedByComposite = true;
         }
 
         public void SetupHealthValues(float startingHealth, float currentHealth)
@@ -61,6 +59,9 @@ namespace StarSalvager
             CurrentHealth = currentHealth;
 
             SetDestroyed(CurrentHealth <= 0f);
+            
+            if(CurrentHealth < StartingHealth)
+                UpdateDamage();
         }
 
         public void ChangeHealth(float amount)
@@ -77,6 +78,14 @@ namespace StarSalvager
                 return;
             }
 
+            UpdateDamage();
+        }
+
+        private void UpdateDamage()
+        {
+            if (Destroyed)
+                return;
+            
             if (_damage == null)
             {
                 _damage = FactoryManager.Instance.GetFactory<DamageFactory>().CreateObject<Damage>();
