@@ -786,7 +786,17 @@ namespace StarSalvager
             var enumerable = scrapyardBits as ScrapyardBit[] ?? scrapyardBits.ToArray();
             Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(enumerable);
 
-            PlayerPersistentData.PlayerData.AddResources(bits);
+            float refineryMultiplier = 1.0f;
+            if (PlayerPersistentData.PlayerData.facilityRanks.ContainsKey(FACILITY_TYPE.REFINERY))
+            {
+                int refineryRank = PlayerPersistentData.PlayerData.facilityRanks[FACILITY_TYPE.REFINERY];
+                float increaseAmount = FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.REFINERY).levels[refineryRank].increaseAmount;
+                Debug.Log(refineryRank + " --- " + increaseAmount);
+                refineryMultiplier = 1 + (increaseAmount / 100);
+                Debug.Log("REFINERY MULTIPLIER: " + refineryMultiplier);
+            }
+
+            PlayerPersistentData.PlayerData.AddResources(bits, refineryMultiplier);
 
 
             string resourcesGained = "";
@@ -801,7 +811,7 @@ namespace StarSalvager
                         continue;
 
                     BitRemoteData remoteData = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(resource.Key);
-                    int resourceAmount = numAtLevel * remoteData.levels[i].resources;
+                    int resourceAmount = (int)(numAtLevel * remoteData.levels[i].resources * refineryMultiplier);
                     resourcesGained += $"{numAtLevel} x {GetBitSprite(resource.Key, i)} = {resourceAmount} {_textSprites[resource.Key]} ";
                     numTotal -= numAtLevel;
                 }

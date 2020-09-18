@@ -96,13 +96,13 @@ namespace StarSalvager.UI.Scrapyard
                 bool containsFacilityKey = playerData.facilityRanks.ContainsKey(type);
                 bool containsFacilityBlueprintKey = playerData.facilityBlueprintRanks.ContainsKey(type);
 
-                /*if (!containsFacilityBlueprintKey)
+                if (!containsFacilityBlueprintKey)
                 {
                     continue;
-                }*/
+                }
 
-                //for (int i = 0; i <= playerData.facilityBlueprintRanks[type]; i++)
-                for (int i = 0; i < facilityRemoteData.levels.Count; i++)
+                for (int i = 0; i <= playerData.facilityBlueprintRanks[type]; i++)
+                //for (int i = 0; i < facilityRemoteData.levels.Count; i++)
                 {
                     if (containsFacilityKey && playerData.facilityRanks[type] >= i)
                     {
