@@ -9,7 +9,10 @@ public class IntroScene : MonoBehaviour, IReset
 {
     private int introSceneStage = 0;
 
+    public GameObject mainMenuWindow;
+
     public GameObject panel1;
+    public GameObject panelText1;
     public GameObject panel2;
 
     private void Awake()
@@ -35,13 +38,15 @@ public class IntroScene : MonoBehaviour, IReset
             if (introSceneStage == 0)
             {
                 introSceneStage++;
-                panel1.SetActive(false);
+                panelText1.SetActive(false);
                 panel2.SetActive(true);
             }
             else if (introSceneStage == 1)
             {
+                mainMenuWindow.SetActive(true);
                 gameObject.SetActive(false);
                 panel1.SetActive(true);
+                panelText1.SetActive(true);
                 panel2.SetActive(false);
                 introSceneStage = 0;
                 SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
@@ -50,6 +55,7 @@ public class IntroScene : MonoBehaviour, IReset
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            mainMenuWindow.SetActive(true);
             gameObject.SetActive(false);
             panel1.SetActive(true);
             panel2.SetActive(false);

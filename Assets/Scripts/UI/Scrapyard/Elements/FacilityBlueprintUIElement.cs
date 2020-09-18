@@ -12,6 +12,8 @@ namespace StarSalvager.UI.Scrapyard
     {
         public string name;
         public string description;
+        public FACILITY_TYPE facilityType;
+        public int level;
 
         public List<CraftCost> cost;
 
@@ -49,9 +51,10 @@ namespace StarSalvager.UI.Scrapyard
         
         private Action<TEST_FacilityBlueprint, bool> _onHoverCallback;
 
-        public void Init(TEST_FacilityBlueprint data, Action<TEST_FacilityBlueprint> OnCraftPressed, Action<TEST_FacilityBlueprint, bool> onHoverCallback)
+        public void Init(TEST_FacilityBlueprint data, Action<TEST_FacilityBlueprint> OnCraftPressed, Action<TEST_FacilityBlueprint, bool> onHoverCallback, bool craftButtonInteractable)
         {
             Init(data,OnCraftPressed);
+            craftButton.interactable = craftButtonInteractable;
 
             _onHoverCallback = onHoverCallback;
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
+using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Values;
 using TMPro;
@@ -39,70 +40,94 @@ namespace StarSalvager.UI.Scrapyard
         //====================================================================================================================//
 
         private void Start()
-        {
-            InitScrollViews();
-            
+        {            
             SetupDetailsWindow((TEST_FacilityItem) null, false);
+        }
+
+        //Unity Functions
+        //==============================================================================================================//
+
+        private void OnEnable()
+        {
+            PlayerData.OnValuesChanged += SetupScrollViews;
+
+            SetupScrollViews();
+        }
+
+        private void OnDisable()
+        {
+            PlayerData.OnValuesChanged -= SetupScrollViews;
         }
 
         //====================================================================================================================//
 
-        private static readonly TEST_FacilityItem[] TEST_FacilityItems =
-        {
-            new TEST_FacilityItem {name = "Facility 1", description = "Does Thing"},
-            new TEST_FacilityItem {name = "Facility 2", description = "Does Thing"},
-            new TEST_FacilityItem {name = "Facility 3", description = "Does Thing"},
-            new TEST_FacilityItem {name = "Facility 4", description = "Does Thing"},
-        };
-
-        private static readonly List<CraftCost> TEST_costs = new List<CraftCost>
-        {
-            new CraftCost
-            {
-                resourceType = CraftCost.TYPE.Bit,
-                type = (int) BIT_TYPE.BLUE,
-                amount = 100
-            },
-            new CraftCost
-            {
-                resourceType = CraftCost.TYPE.Bit,
-                type = (int) BIT_TYPE.RED,
-                amount = 100
-            },
-            new CraftCost
-            {
-                resourceType = CraftCost.TYPE.Component,
-                type = (int) COMPONENT_TYPE.NUT,
-                amount = 2
-            }
-        };
-
-        private static readonly TEST_FacilityBlueprint[] TEST_facilityBlueprints =
-        {
-            new TEST_FacilityBlueprint {name = "Facility 1", description = "Does Other Things", cost = TEST_costs},
-            new TEST_FacilityBlueprint {name = "Facility 2", description = "Does Other Things", cost = TEST_costs},
-            new TEST_FacilityBlueprint {name = "Facility 3", description = "Does Other Things", cost = TEST_costs},
-            new TEST_FacilityBlueprint {name = "Facility 4", description = "Does Other Things", cost = TEST_costs},
-        };
-
-        private void InitScrollViews()
+        private void SetupScrollViews()
         {
             //TODO Still need to setup the OnHover
-            foreach (var facilityItem in TEST_FacilityItems)
+            facilityItemUIElements.ClearElements();
+            foreach (var facilityRemoteData in FactoryManager.Instance.FacilityRemote.GetRemoteDatas())
             {
-                var element = facilityItemUIElements.AddElement(facilityItem, $"{facilityItem.name}_UIElement");
-                element.Init(facilityItem, SetupDetailsWindow);
+                PlayerData playerData = PlayerPersistentData.PlayerData;
+                FACILITY_TYPE type = facilityRemoteData.type;
+
+                if (!playerData.facilityRanks.ContainsKey(type))
+                {
+                    continue;
+                }
+
+                int level = playerData.facilityRanks[type];
+
+                TEST_FacilityItem newItem = new TEST_FacilityItem
+                {
+                    name = facilityRemoteData.displayName + " " + (facilityRemoteData.levels[level].level + 1),
+                    description = facilityRemoteData.displayDescription
+                };
+
+                var element = facilityItemUIElements.AddElement(newItem, $"{newItem.name}_UIElement");
+                element.Init(newItem, SetupDetailsWindow);
             }
 
-            foreach (var facilityBlueprint in TEST_facilityBlueprints)
+
+            facilityBlueprintUIElements.ClearElements();
+            foreach (var facilityRemoteData in FactoryManager.Instance.FacilityRemote.GetRemoteDatas())
             {
-                var element = facilityBlueprintUIElements.AddElement(facilityBlueprint);
-                element.Init(facilityBlueprint, null, SetupDetailsWindow);
+                PlayerData playerData = PlayerPersistentData.PlayerData;
+                FACILITY_TYPE type = facilityRemoteData.type;
+                bool containsFacilityKey = playerData.facilityRanks.ContainsKey(type);
+                bool containsFacilityBlueprintKey = playerData.facilityBlueprintRanks.ContainsKey(type);
+
+                if (!containsFacilityBlueprintKey)
+                {
+                    continue;
+                }
+
+                for (int i = 0; i <= playerData.facilityBlueprintRanks[type]; i++)
+                {
+                    if (containsFacilityKey && playerData.facilityRanks[type] >= i)
+                    {
+                        continue;
+                    }
+
+                    TEST_FacilityBlueprint newBlueprint = new TEST_FacilityBlueprint
+                    {
+                        name = facilityRemoteData.displayName + " " + (facilityRemoteData.levels[i].level + 1),
+                        description = facilityRemoteData.displayDescription,
+                        facilityType = type,
+                        level = i,
+                        cost = facilityRemoteData.levels[i].craftCost
+                    };
+
+                    bool craftButtonInteractable =
+                        (containsFacilityKey && i == playerData.facilityRanks[type] + 1) ||
+                        (!containsFacilityKey && i == 0);
+
+                    var element = facilityBlueprintUIElements.AddElement(newBlueprint);
+                    element.Init(newBlueprint, PurchaseBlueprint, SetupDetailsWindow, craftButtonInteractable);
+                }
             }
 
             SetupResourceScrollView();
             SetupComponentResourceScrollView();
-
         }
 
         private void SetupResourceScrollView()
@@ -143,6 +168,20 @@ namespace StarSalvager.UI.Scrapyard
 
         //====================================================================================================================//
         
+        private void PurchaseBlueprint([CanBeNull] TEST_FacilityBlueprint item)
+        {
+            PlayerData playerData = PlayerPersistentData.PlayerData;
+
+            if (!playerData.CanAffordBits(item.cost) || !playerData.CanAffordComponents(item.cost))
+            {
+                return;
+            }
+
+            playerData.SubtractResources(item.cost);
+            playerData.SubtractComponents(item.cost);
+            playerData.UnlockFacilityLevel(item.facilityType, item.level);
+        }
+
         private void SetupDetailsWindow([CanBeNull] TEST_FacilityItem item, bool active)
         {
             detailsWindow.SetActive(active);

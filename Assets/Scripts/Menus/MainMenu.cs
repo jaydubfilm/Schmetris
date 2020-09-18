@@ -206,6 +206,7 @@ namespace StarSalvager.UI
                     PlayerPersistentData.ResetPlayerData();
 
                     introSceneCanvas.SetActive(true);
+                    mainMenuWindow.SetActive(false);
 
                     //SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
                 }
