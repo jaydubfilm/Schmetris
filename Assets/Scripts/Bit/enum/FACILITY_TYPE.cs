@@ -7,7 +7,11 @@ namespace StarSalvager
     {
         WORKBENCH,
         FREEZER,
-        STORAGE,
+        STORAGEFUEL,
+        STORAGEWATER,
+        STORAGEPLASMA,
+        STORAGESCRAP,
+        STORAGEELECTRICITY,
         REFINERY
     }
 }

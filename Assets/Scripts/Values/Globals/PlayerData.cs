@@ -10,6 +10,7 @@ using UnityEngine;
 using StarSalvager.Missions;
 using UnityEngine.SceneManagement;
 using StarSalvager.Utilities.SceneManagement;
+using StarSalvager.Factories;
 
 namespace StarSalvager.Values
 {
@@ -118,7 +119,11 @@ namespace StarSalvager.Values
         {
             {FACILITY_TYPE.FREEZER, 0},
             {FACILITY_TYPE.REFINERY, 0},
-            {FACILITY_TYPE.STORAGE, 0},
+            {FACILITY_TYPE.STORAGEELECTRICITY, 0},
+            {FACILITY_TYPE.STORAGEFUEL, 0},
+            {FACILITY_TYPE.STORAGEPLASMA, 0},
+            {FACILITY_TYPE.STORAGESCRAP, 0},
+            {FACILITY_TYPE.STORAGEWATER, 0},
             {FACILITY_TYPE.WORKBENCH, 0}
         };
 
@@ -180,6 +185,11 @@ namespace StarSalvager.Values
         public void SetResources(Dictionary<BIT_TYPE, int> values)
         {
             _resources = values;
+
+            foreach (var keyValue in _resources)
+            {
+                _resources[keyValue.Key] = Mathf.Min(keyValue.Value, _resourceCapacity[keyValue.Key]);
+            }
         }
 
         public void SetResources(BIT_TYPE type, int value)
@@ -260,6 +270,17 @@ namespace StarSalvager.Values
         public void AddResources(Dictionary<BIT_TYPE, int> toAdd)
         {
             CostCalculations.AddResources(ref _resources, toAdd);
+
+            foreach(var keyValue in _resources)
+            {
+                _resources[keyValue.Key] = Mathf.Min(keyValue.Value, _resourceCapacity[keyValue.Key]);
+            }
+            OnValuesChanged?.Invoke();
+        }
+
+        public void AddResource(BIT_TYPE type, int amount)
+        {
+            _resources[type] = Mathf.Min(_resources[type] + amount, _resourceCapacity[type]);
             OnValuesChanged?.Invoke();
         }
 
@@ -440,6 +461,26 @@ namespace StarSalvager.Values
             {
                 _facilityRanks.Add(type, level);
             }
+
+            switch (type)
+            {
+                case FACILITY_TYPE.STORAGEELECTRICITY:
+                    _resourceCapacity[BIT_TYPE.YELLOW] += FactoryManager.Instance.FacilityRemote.GetRemoteData(type).levels[level].increaseAmount;
+                    break;
+                case FACILITY_TYPE.STORAGEFUEL:
+                    _resourceCapacity[BIT_TYPE.RED] += FactoryManager.Instance.FacilityRemote.GetRemoteData(type).levels[level].increaseAmount;
+                    break;
+                case FACILITY_TYPE.STORAGEPLASMA:
+                    _resourceCapacity[BIT_TYPE.GREEN] += FactoryManager.Instance.FacilityRemote.GetRemoteData(type).levels[level].increaseAmount;
+                    break;
+                case FACILITY_TYPE.STORAGESCRAP:
+                    _resourceCapacity[BIT_TYPE.GREY] += FactoryManager.Instance.FacilityRemote.GetRemoteData(type).levels[level].increaseAmount;
+                    break;
+                case FACILITY_TYPE.STORAGEWATER:
+                    _resourceCapacity[BIT_TYPE.BLUE] += FactoryManager.Instance.FacilityRemote.GetRemoteData(type).levels[level].increaseAmount;
+                    break;
+            }
+
             OnValuesChanged?.Invoke();
         }
 

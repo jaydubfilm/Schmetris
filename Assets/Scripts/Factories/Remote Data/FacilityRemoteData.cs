@@ -8,13 +8,13 @@ namespace StarSalvager.Factories.Data
     [Serializable]
     public class FacilityRemoteData
     {
-        [FoldoutGroup("$type")]
+        [FoldoutGroup("$displayName")]
         public FACILITY_TYPE type;
-        [FoldoutGroup("$type")]
+        [FoldoutGroup("$displayName")]
         public string displayName;
-        [FoldoutGroup("$type")]
+        [FoldoutGroup("$displayName")]
         public string displayDescription;
-        [FoldoutGroup("$type")]
+        [FoldoutGroup("$displayName")]
         public List<FacilityLevelData> levels;
     }
 }
