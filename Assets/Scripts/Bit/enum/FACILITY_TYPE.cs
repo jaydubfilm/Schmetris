@@ -5,13 +5,15 @@ namespace StarSalvager
     [Serializable]
     public enum FACILITY_TYPE : int
     {
-        WORKBENCH,
         FREEZER,
         STORAGEFUEL,
-        STORAGEWATER,
+        STORAGEELECTRICITY,
         STORAGEPLASMA,
         STORAGESCRAP,
-        STORAGEELECTRICITY,
+        STORAGEWATER,
+        WORKBENCHCHIP,
+        WORKBENCHCOIL,
+        WORKBENCHFUSOR,
         REFINERY
     }
 }

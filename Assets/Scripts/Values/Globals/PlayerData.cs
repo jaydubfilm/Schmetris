@@ -127,7 +127,9 @@ namespace StarSalvager.Values
             {FACILITY_TYPE.STORAGEPLASMA, 0},
             {FACILITY_TYPE.STORAGESCRAP, 0},
             {FACILITY_TYPE.STORAGEWATER, 0},
-            {FACILITY_TYPE.WORKBENCH, 0}
+            {FACILITY_TYPE.WORKBENCHCHIP, 0},
+            {FACILITY_TYPE.WORKBENCHCOIL, 0},
+            {FACILITY_TYPE.WORKBENCHFUSOR, 0}
         };
 
         public string PlaythroughID = string.Empty;
@@ -364,7 +366,19 @@ namespace StarSalvager.Values
 
         public bool CanAffordComponents(IEnumerable<CraftCost> levelCost)
         {
+            foreach (var craftCost in levelCost)
+            {
+                if ((craftCost.resourceType == CraftCost.TYPE.Component && craftCost.type == (int)COMPONENT_TYPE.CHIP && !facilityRanks.ContainsKey(FACILITY_TYPE.WORKBENCHCHIP)) ||
+                    (craftCost.resourceType == CraftCost.TYPE.Component && craftCost.type == (int)COMPONENT_TYPE.COIL && !facilityRanks.ContainsKey(FACILITY_TYPE.WORKBENCHCOIL)) ||
+                    (craftCost.resourceType == CraftCost.TYPE.Component && craftCost.type == (int)COMPONENT_TYPE.FUSOR && !facilityRanks.ContainsKey(FACILITY_TYPE.WORKBENCHFUSOR)))
+                {
+                    Debug.Log("MISSING FACILITY");
+                    return false;
+                }
+            }
+
             Dictionary<COMPONENT_TYPE, int> tempDictionary = new Dictionary<COMPONENT_TYPE, int>(_components);
+
             return CostCalculations.CanAffordComponents(tempDictionary, levelCost);
         }
 
