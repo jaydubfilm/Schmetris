@@ -14,6 +14,10 @@ namespace StarSalvager.Utilities.Inputs
 {
     public class InputManager : Singleton<InputManager>, IInput, IPausable
     {
+        private static List<IMoveOnInput> _moveOnInput;
+
+        //====================================================================================================================//
+        
         private Bot[] _bots;
         private ScrapyardBot[] _scrapyardBots;
 
@@ -22,21 +26,19 @@ namespace StarSalvager.Utilities.Inputs
         [ShowInInspector, ReadOnly]
         public bool LockSideMovement
         {
-            get => _LockSideMovement;
+            get => _lockSideMovement;
             set
             {
                 if (value)
                     TryApplyMove(0f);
                 
-                _LockSideMovement = value;
+                _lockSideMovement = value;
             } 
         }
 
-        private bool _LockSideMovement;
+        private bool _lockSideMovement;
 
 
-        [SerializeField, BoxGroup("DAS"), DisableInPlayMode]
-        private float DASTime = 0.15f;
         [SerializeField, BoxGroup("DAS"), ReadOnly]
         private float dasTimer;
         [SerializeField, BoxGroup("DAS"), ReadOnly]
@@ -48,12 +50,13 @@ namespace StarSalvager.Utilities.Inputs
         
         private Dictionary<InputAction, Action<InputAction.CallbackContext>> _inputMap;
 
+        [NonSerialized]
+        public float MostRecentSideMovement;
+
         //============================================================================================================//
 
         private void Start()
         {
-            Globals.DASTime = DASTime;
-
             Globals.OrientationChange += SetOrientation;
             RegisterPausable();
         }
@@ -86,16 +89,37 @@ namespace StarSalvager.Utilities.Inputs
 
         //============================================================================================================//
 
-        private static List<IMoveOnInput> moveOnInput;
+        
         
         public static void RegisterMoveOnInput(IMoveOnInput toAdd)
         {
-            if(moveOnInput == null)
-                moveOnInput = new List<IMoveOnInput>();
+            if(_moveOnInput == null)
+                _moveOnInput = new List<IMoveOnInput>();
             
-            moveOnInput.Add(toAdd);
+            _moveOnInput.Add(toAdd);
         }
+
+
+        public void ForceMove(DIRECTION direction)
+        {
+            dasTriggered = false;
+            dasTimer = 0f;
             
+            switch (direction)
+            {
+                case DIRECTION.LEFT:
+                    TryApplyMove(-1);
+                    break;
+                case DIRECTION.RIGHT:
+                    TryApplyMove(1);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+            
+            TryApplyMove(0);
+            
+        }
         
         //============================================================================================================//
 
@@ -232,7 +256,8 @@ namespace StarSalvager.Utilities.Inputs
                 return;
 
             var moveDirection = ctx.ReadValue<float>();
-            
+            MostRecentSideMovement = moveDirection;
+
             if (LockSideMovement)
             {
                 if (moveDirection != 0f)
@@ -281,7 +306,7 @@ namespace StarSalvager.Utilities.Inputs
                 previousInput = currentInput;
 
                 //Set the countdown timer to the intended value
-                dasTimer = DASTime;
+                dasTimer = Globals.DASTime;
                 
                 //Quickly move the relevant managers, then reset their input, so that they will pause until DAS is ready
                 Move(currentInput);
@@ -299,13 +324,16 @@ namespace StarSalvager.Utilities.Inputs
         /// <param name="value"></param>
         private void Move(float value)
         {
-            for (var i = moveOnInput.Count - 1; i >= 0; i--)
+            if (_moveOnInput == null)
+                return;
+            
+            for (var i = _moveOnInput.Count - 1; i >= 0; i--)
             {
-                var move = moveOnInput[i];
+                var move = _moveOnInput[i];
                 //Automatically unregister things that may have been deleted
                 if (move == null)
                 {
-                    moveOnInput.RemoveAt(i);
+                    _moveOnInput.RemoveAt(i);
                     continue;
                 }
                 

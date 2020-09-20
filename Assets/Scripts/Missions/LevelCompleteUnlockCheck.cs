@@ -23,7 +23,7 @@ namespace StarSalvager.Missions
             if (IsComplete)
                 return true;
             
-            if (MissionManager.recentCompletedSectorName == m_sectorNumber && MissionManager.recentCompletedWaveName == m_waveNumber)
+            if (MissionManager.RecentCompletedSectorName == m_sectorNumber && MissionManager.RecentCompletedWaveName == m_waveNumber)
             {
                 IsComplete = true;
                 return true;

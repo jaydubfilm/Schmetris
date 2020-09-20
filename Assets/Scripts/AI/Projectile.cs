@@ -11,24 +11,13 @@ namespace StarSalvager.AI
     public class Projectile : CollidableBase, ICustomRecycle
     {
         [NonSerialized]
-        public Vector3 m_travelDirectionNormalized = Vector3.zero;
-        public Vector3 m_enemyVelocityModifier = Vector3.zero;
+        private Vector3 _mTravelDirectionNormalized = Vector3.zero;
         [NonSerialized]
-        public ProjectileProfileData m_projectileData;
+        private Vector3 _mEnemyVelocityModifier = Vector3.zero;
+        [NonSerialized]
+        public ProjectileProfileData MProjectileData;
 
-        public float DamageAmount;
-
-        //============================================================================================================//
-
-        public void FlipSpriteX(bool state)
-        {
-            renderer.flipY = state;
-        }
-        
-        public void FlipSpriteY(bool state)
-        {
-            renderer.flipY = state;
-        }
+        private float _damageAmount;
         
         //============================================================================================================//
 
@@ -44,22 +33,48 @@ namespace StarSalvager.AI
                 return;
             }
 
-            transform.position += (m_enemyVelocityModifier + m_travelDirectionNormalized * m_projectileData.ProjectileSpeed) * Time.deltaTime;
+            transform.position += (_mEnemyVelocityModifier + _mTravelDirectionNormalized * MProjectileData.ProjectileSpeed) * Time.deltaTime;
         }
-
-        public void SetCollisionTag(string collisionTag)
+        
+        //============================================================================================================//
+        
+        public void Init(string collisionTag, float damage, Vector2 direction, Vector2 velocity)
         {
             CollisionTag = collisionTag;
+            _damageAmount = damage;
+            
+            _mTravelDirectionNormalized = direction;
+            _mEnemyVelocityModifier = velocity;
+
+            transform.up = direction;
         }
+        
+        //============================================================================================================//
 
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
-            if (gameObject.GetComponent<ICanBeHit>() is ICanBeHit iCanBeHit)
-            {
-                iCanBeHit.TryHitAt(transform.position, DamageAmount);
-            }
+            var canBeHit = gameObject.GetComponent<ICanBeHit>();
 
-            Recycler.Recycle<Projectile>(this);
+            if (canBeHit == null)
+                return;
+
+            if (!MProjectileData.CanHitAsteroids && canBeHit is Asteroid)
+                return;
+                
+            if(canBeHit.TryHitAt(transform.position, _damageAmount))
+                Recycler.Recycle<Projectile>(this);
+        }
+
+        //====================================================================================================================//
+        
+        public void FlipSpriteX(bool state)
+        {
+            renderer.flipY = state;
+        }
+        
+        public void FlipSpriteY(bool state)
+        {
+            renderer.flipY = state;
         }
         
         //============================================================================================================//

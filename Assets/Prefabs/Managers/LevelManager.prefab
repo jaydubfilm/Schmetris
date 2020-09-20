@@ -49,10 +49,15 @@ MonoBehaviour:
   generateRandomSeed: 1
   seed: 1234567890
   m_cameraController: {fileID: 0}
-  m_waveRemoteData:
-  - {fileID: 11400000, guid: 403d4142738a51d4fa2b512b880abcba, type: 2}
-  - {fileID: 11400000, guid: dc401c39749dcfd468b2d87574deb06c, type: 2}
-  m_pauseCanvas: {fileID: 0}
+  m_standardBufferZoneObstacleData: {fileID: 11400000, guid: 05371574dd867a64aa488e704f2e3a46,
+    type: 2}
+  m_playerlevelRemoteDataScriptableObject: {fileID: 11400000, guid: 9103b0c0575cb044991331f95006d802,
+    type: 2}
+  IsWaveProgressing: 1
+  EndWaveState: 0
+  MissionsCompletedDuringThisFlight: []
+  ResetFromDeath: 0
+  drawGrid: 1
 --- !u!114 &3152543544327253062
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,22 +5,37 @@ using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
+using TMPro;
 using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Component : CollidableBase, IComponent, IAttachable, ICustomRecycle, IHealth, ICanBeHit, IObstacle, ISaveable
+    public class Component : CollidableBase, IComponent, IAttachable, ICustomRecycle, IHealth, ICanBeHit, IObstacle, ISaveable, ICanCombo<COMPONENT_TYPE>
     {
         [SerializeField]
         private LayerMask collisionMask;
         
         private Damage _damage;
+
+        //private TextMeshPro _label;
+
+        //ICanCombo Properties
+        //====================================================================================================================//
+
+        public IAttachable iAttachable => this;
+
+        [ShowInInspector, ReadOnly]
+        public int level { get; private set; }
         
         //IObstacle Properties
         //============================================================================================================//
 
         public bool CanMove => !Attached;
-        
+
+        public bool IsRegistered { get; set; }
+
+        public bool IsMarkedOnGrid { get; set; }
+
         //IComponent Properties
         //============================================================================================================//
         public COMPONENT_TYPE Type { get; set; }
@@ -32,10 +47,11 @@ namespace StarSalvager
         public Vector2Int Coordinate { get; set; }
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
-        public bool CountAsConnected => true;
+        public bool CountAsConnectedToCore => true;
         public bool CanDisconnect => true;
         public bool CanShift => true;
-        
+        public bool CountTowardsMagnetism => true;
+
         //IHealth Properties
         //============================================================================================================//
         public float StartingHealth { get; private set; }
@@ -50,23 +66,7 @@ namespace StarSalvager
 
             if (bot.Rotating)
             {
-                float rotation = 180.0f;
-                if (bot.MostRecentRotate == ROTATION.CW)
-                {
-                    rotation *= -1;
-                }
-
-                Vector2 direction = (Vector2)transform.position - hitPoint;
-                direction.Normalize();
-                /*if (direction != Vector2.up)
-                {
-                    Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                    downVelocity.Normalize();
-                    direction += downVelocity;
-                    direction.Normalize();
-                }*/
-                
-                LevelManager.Instance.ObstacleManager.BounceObstacle(this, direction, rotation, true, true, true);
+                this.Bounce(hitPoint, bot.MostRecentRotate);
                 return;
             }
 
@@ -109,9 +109,40 @@ namespace StarSalvager
         //ICanBeHit Functions
         //============================================================================================================//
         
-        public void TryHitAt(Vector2 position, float damage)
+        public bool TryHitAt(Vector2 position, float damage)
         {
             ChangeHealth(-damage);
+
+            return true;
+        }
+
+        //ICanCombo Functions
+        //====================================================================================================================//
+        
+        public void IncreaseLevel(int amount = 1)
+        {
+            level += amount;
+            renderer.sortingOrder = level;
+            
+            //Sets the gameObject info (Sprite)
+            var bit = this;
+            FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().UpdateComponentData(Type, level, ref bit);
+
+            /*if (level == 0)
+            {
+                if (_label) _label.text = string.Empty;
+
+                return;
+            }
+
+            if (!_label)
+            {
+                _label = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<TextMeshPro>();
+                _label.transform.SetParent(transform, false);
+                _label.transform.localPosition = Vector3.zero;
+            }
+
+            _label.text = $"{level * 3}";*/
         }
         
         //IAttachableFunctions

@@ -138,8 +138,11 @@ namespace StarSalvager
 				// number of Always-drops.
 				// It is possible, that the remaining drops go below zero, in which case
 				// no other objects will be added to the result here.
-				int alwayscnt = mcontents.Count(e => e.rdsAlways && e.rdsEnabled);
-				int realdropcnt = rdsCount - alwayscnt;
+
+				//Making always count ones not take away from the max drops
+				//int alwayscnt = mcontents.Count(e => e.rdsAlways && e.rdsEnabled);
+				//int realdropcnt = rdsCount - alwayscnt;
+				int realdropcnt = rdsCount;
 
 				// Continue only, if there is a Count left to be processed
 				if (realdropcnt > 0)

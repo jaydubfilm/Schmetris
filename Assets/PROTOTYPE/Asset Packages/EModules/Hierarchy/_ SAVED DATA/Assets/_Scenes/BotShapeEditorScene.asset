@@ -21,15 +21,13 @@ MonoBehaviour:
   LOCALIDINFILE_Hash7_Fix2_0: []
   LOCALIDINFILE_Hash9: []
   LOCALIDINFILE_Hash_BookMarks:
-  - list: []
+  - list:
+    - activeObject:
+        i1: -1
+        i2: -1
+      list: []
   LOCALIDINFILE_Hash3:
   - activeObject:
-      i1: -993899739
-      i2: 1949387357
-    list:
-    - i1: -993899739
-      i2: 1949387357
-  - activeObject:
       i1: -1
       i2: -1
     list:
@@ -167,7 +165,17 @@ MonoBehaviour:
     list:
     - i1: -1
       i2: -1
-  LOCALIDINFILE_Hash4: []
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
+  LOCALIDINFILE_Hash4:
+  - activeObject:
+      i1: -1
+      i2: -1
+    list: []
   LOCALIDINFILE_m_Hash_IconImageKey: []
   HashFreezeHashKeys: []
   HashFreezeHashValues: 
@@ -511,7 +519,7 @@ MonoBehaviour:
   Hash9: []
   Hash10: []
   _enableRegistrator: 0
-  _saveInFolder: FOLDER
+  _saveInFolder: SCENE
   _mFavoritCategorySelected: 0
   m_GetHash_IconImageKey: []
   m_GetHash_IconImageValue: []

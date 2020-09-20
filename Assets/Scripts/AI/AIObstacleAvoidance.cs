@@ -21,7 +21,7 @@ namespace StarSalvager.AI
         {
             //Calculate the min and max grid positions of a Values.enemyGridScanRadius large box around the agent
             Vector2 force = new Vector2(0, 0);
-            Vector2Int agentGridPosition = LevelManager.Instance.WorldGrid.GetGridPositionOfVector(agentPosition);
+            Vector2Int agentGridPosition = LevelManager.Instance.WorldGrid.GetCoordinatesOfGridSquareAtLocalPosition(agentPosition);
             Vector2Int agentGridScanMinimum = new Vector2Int (
                 Math.Max(0, agentGridPosition.x - Constants.enemyGridScanRadius), 
                 Math.Max(0, agentGridPosition.y - Constants.enemyGridScanRadius));
@@ -34,7 +34,7 @@ namespace StarSalvager.AI
             {
                 for (int k = agentGridScanMinimum.y; k <= agentGridScanMaximum.y; k++)
                 {
-                    if (LevelManager.Instance.WorldGrid.GetGridSquareAtPosition(i, k).ObstacleInSquare)
+                    if (LevelManager.Instance.WorldGrid.GetGridSquareAtCoordinates(i, k).ObstacleInSquare)
                     {
                         Vector2 obstacleForce = GetForce(agentPosition, CalculateObstaclePositionChange(i, k));
                         force.x += obstacleForce.x;
@@ -45,7 +45,7 @@ namespace StarSalvager.AI
 
             if (!isAttachable)
             {
-                foreach (var attached in LevelManager.Instance.BotGameObject.attachedBlocks)
+                foreach (var attached in LevelManager.Instance.BotObject.attachedBlocks)
                 {
                     Vector2 obstacleForce = GetForce(agentPosition, attached.transform.position);
                     force.x += obstacleForce.x;
@@ -59,7 +59,7 @@ namespace StarSalvager.AI
         //Create a "reverse gravity" force for the agent from the obstacle, using a mass value and the distance between them
         private Vector2 GetForce(Vector2 agentPosition, Vector2 obstaclePosition)
         {
-            float magnitude = Constants.obstacleMass / Vector2.SqrMagnitude(obstaclePosition - agentPosition);
+            float magnitude = Globals.ObstacleMass / Vector2.SqrMagnitude(obstaclePosition - agentPosition);
             Vector2 direction = new Vector2(agentPosition.x - obstaclePosition.x, agentPosition.y - obstaclePosition.y);
             direction.Normalize();
             direction *= magnitude;
@@ -72,7 +72,7 @@ namespace StarSalvager.AI
         //It doesn't look like it was correct. Do a deep dive on the math to make sure it should be there
         private Vector2 CalculateObstaclePositionChange(int x, int y)
         {
-            return LevelManager.Instance.WorldGrid.GetCenterOfGridSquareInGridPosition(x, y) - m_obstaclePositionAdjuster * (Globals.AsteroidFallTimer / Globals.TimeForAsteroidToFallOneSquare);
+            return LevelManager.Instance.WorldGrid.GetLocalPositionOfCenterOfGridSquareAtCoordinates(x, y) - m_obstaclePositionAdjuster * (Globals.AsteroidFallTimer / Globals.TimeForAsteroidToFallOneSquare);
         }
     }
 }

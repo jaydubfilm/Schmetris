@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
-using StarSalvager.Values;
+using StarSalvager.Utilities.FileIO;
 using UnityEngine;
 
 namespace StarSalvager.Factories
@@ -14,12 +12,6 @@ namespace StarSalvager.Factories
     //Based on: https://www.dofactory.com/net/factory-method-design-pattern
     public class FactoryManager : Singleton<FactoryManager>
     {
-        [SerializeField]
-        public bool DisableTestingFeatures;
-
-        [SerializeField]
-        private float TimeForAsteroidToFallOneSquare;
-
         [SerializeField, Required, BoxGroup("Temporary")]
         private MissionRemoteDataScriptableObject missionRemoteData;
         public MissionRemoteDataScriptableObject MissionRemoteData => missionRemoteData;
@@ -27,18 +19,8 @@ namespace StarSalvager.Factories
         [SerializeField, Required, BoxGroup("Temporary")]
         private List<SectorModularData> m_sectorRemoteData;
         
-        public EditorBotShapeGeneratorData EditorBotShapeData
-        {
-            get
-            {
-                if (editorBotShapeData == null)
-                    editorBotShapeData = ImportBotShapeRemoteData();
-
-                return editorBotShapeData;
-            }
-        }
-        
-        private EditorBotShapeGeneratorData editorBotShapeData;
+        public EditorBotShapeGeneratorData EditorBotShapeData => _editorBotShapeData ?? (_editorBotShapeData = Files.ImportBotShapeRemoteData());
+        private EditorBotShapeGeneratorData _editorBotShapeData;
 
         public List<SectorRemoteDataScriptableObject> SectorRemoteData => m_sectorRemoteData[currentModularDataIndex].SectorData;
 
@@ -48,7 +30,9 @@ namespace StarSalvager.Factories
         public int ModularDataCount => m_sectorRemoteData.Count;
 
         //============================================================================================================//
-
+        public BitRemoteDataScriptableObject BitsRemoteData => bitRemoteData;
+        public BitProfileScriptableObject BitProfileData => bitProfile as BitProfileScriptableObject;
+        
         [SerializeField, Required, BoxGroup("Attachables/Bits")]
         private AttachableProfileScriptableObject bitProfile;
         
@@ -56,6 +40,8 @@ namespace StarSalvager.Factories
         private BitRemoteDataScriptableObject bitRemoteData;
         
         //============================================================================================================//
+        
+        public ComponentProfileScriptableObject ComponentProfile => componentProfile as ComponentProfileScriptableObject;
         
         [SerializeField, Required, BoxGroup("Attachables/Components")]
         private AttachableProfileScriptableObject componentProfile;
@@ -68,6 +54,7 @@ namespace StarSalvager.Factories
         //============================================================================================================//
 
         public RemotePartProfileScriptableObject PartsRemoteData => partRemoteData;
+        public PartProfileScriptableObject PartsProfileData => partProfile as PartProfileScriptableObject;
 
         [SerializeField, Required, BoxGroup("Attachables/Parts")] 
         private AttachableProfileScriptableObject partProfile;
@@ -114,17 +101,35 @@ namespace StarSalvager.Factories
         
         [SerializeField, Required, BoxGroup("Particles")]
         private GameObject explosionPrefab;
+        
+        [SerializeField, Required, BoxGroup("Particles")]
+        private GameObject labelPrefab;
+
+        [SerializeField, Required, BoxGroup("Particles")]
+        private GameObject floatingTextPrefab;
+
+        //============================================================================================================//
+
+        [SerializeField, Required, BoxGroup("Asteroid")]
+        private AsteroidProfileScriptableObject asteroidProfile;
+
+        [SerializeField, Required, BoxGroup("Asteroid")]
+        private AsteroidRemoteDataScriptableObject asteroidRemote;
+
+        [SerializeField, Required, BoxGroup("Asteroid")]
+        private GameObject asteroidPrefab;
+
+        //============================================================================================================//
+
+        [SerializeField, Required, BoxGroup("Facilities")]
+        private FacilityRemoteDataScriptableObject facilityRemote;
+        public FacilityRemoteDataScriptableObject FacilityRemote => facilityRemote;
 
         //============================================================================================================//
 
         private Dictionary<Type, FactoryBase> _factoryBases;
 
         //============================================================================================================//
-
-        public void Start()
-        {
-            Globals.TimeForAsteroidToFallOneSquare = TimeForAsteroidToFallOneSquare;
-        }
 
         public T GetFactory<T>() where T : FactoryBase
         {
@@ -155,6 +160,9 @@ namespace StarSalvager.Factories
                 case bool _ when type == typeof(BitAttachableFactory):
                     return new BitAttachableFactory(bitProfile, bitRemoteData) as T;
                 //----------------------------------------------------------------------------------------------------//
+                case bool _ when type == typeof(AsteroidFactory):
+                    return new AsteroidFactory(asteroidPrefab, asteroidProfile, asteroidRemote) as T;
+                //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(PartAttachableFactory):
                     return new PartAttachableFactory(partProfile, partRemoteData) as T;
                 //----------------------------------------------------------------------------------------------------//
@@ -180,7 +188,7 @@ namespace StarSalvager.Factories
                     return new DamageFactory(damageFactory) as T;
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(ParticleFactory):
-                    return new ParticleFactory(explosionPrefab) as T;
+                    return new ParticleFactory(explosionPrefab, labelPrefab, floatingTextPrefab) as T;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type.Name, null);
@@ -188,71 +196,6 @@ namespace StarSalvager.Factories
             }
         }
 
-        //============================================================================================================//
-
-        public string ExportBotShapeRemoteData(EditorBotShapeGeneratorData editorData)
-        {
-            if (editorData == null)
-                return string.Empty;
-
-            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
-#if !UNITY_EDITOR
-            System.IO.File.WriteAllText(Application.dataPath + "/BuildData/BotShapeEditorData.txt", export);
-#else
-            System.IO.File.WriteAllText(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt", export);
-#endif
-
-            return export;
-        }
-
-        public EditorBotShapeGeneratorData ImportBotShapeRemoteData()
-        {
-#if !UNITY_EDITOR
-            if (!File.Exists(Application.dataPath + "/BuildData/BotShapeEditorData.txt"))
-            {
-                return new EditorBotShapeGeneratorData();
-            }
-
-            var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText(Application.dataPath + "/BuildData/BotShapeEditorData.txt"));
-
-            return loaded;
-#else
-            if (!File.Exists(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"))
-                return new EditorBotShapeGeneratorData();
-
-            var loaded = JsonConvert.DeserializeObject<EditorBotShapeGeneratorData>(File.ReadAllText(Application.dataPath + "/RemoteData/AddToBuild/BotShapeEditorData.txt"));
-
-            return loaded;
-#endif
-        }
-        
-        public void ClearRemoteData()
-        {
-            var directory = new DirectoryInfo(Application.dataPath + "/RemoteData/");
-            
-            //FIXME This should be using persistent file names
-            var files = new List<FileInfo>();
-            files.AddRange(directory.GetFiles("*.player"));
-            files.AddRange(directory.GetFiles("*.mission"));
-            files.AddRange(directory.GetFiles("*.player.meta"));
-            files.AddRange(directory.GetFiles("*.mission.meta"));
-
-
-            foreach (var file in files)
-            {
-                if(file == null)
-                    continue;
-                
-                File.Delete(file.FullName);
-            }
-
-            if (Application.isPlaying)
-            {
-                PlayerPersistentData.ClearPlayerData();
-            }
-
-        }
-        
         //============================================================================================================//
 
     }

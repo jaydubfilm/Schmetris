@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using StarSalvager.AI;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.ScriptableObjects
@@ -8,6 +9,8 @@ namespace StarSalvager.ScriptableObjects
     public class SectorRemoteDataScriptableObject : ScriptableObject
     {
         public List<WaveRemoteDataScriptableObject> WaveRemoteData = new List<WaveRemoteDataScriptableObject>();
+
+        public int GridSizeX => Globals.GridSizeX;
 
         public WaveRemoteDataScriptableObject GetRemoteData(int waveNumber)
         {

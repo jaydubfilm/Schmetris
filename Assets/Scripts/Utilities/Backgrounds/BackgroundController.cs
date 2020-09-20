@@ -16,6 +16,9 @@ namespace StarSalvager.Utilities.Backgrounds
         private Transform _cameraTransform;
         private IBackground[] _backgrounds;
 
+        //[SerializeField]
+        private static bool IgnoreInput => Globals.CameraUseInputMotion;
+
         //Unity Functions
         //================================================================================================================//
                 
@@ -49,7 +52,7 @@ namespace StarSalvager.Utilities.Backgrounds
             
             foreach (var background in _backgrounds)
             {
-                background.UpdatePosition();
+                background.UpdatePosition(IgnoreInput);
             }
 
         }

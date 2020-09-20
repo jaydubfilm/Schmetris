@@ -7,6 +7,7 @@ using StarSalvager.Audio;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using UnityEngine;
@@ -269,15 +270,15 @@ namespace StarSalvager.Utilities
                         {
                             if (!PlayerPersistentData.PlayerData.resources.ContainsKey(value))
                                 continue;
-                                
-                            PlayerPersistentData.PlayerData.resources[value] += intAmount;
+
+                            PlayerPersistentData.PlayerData.AddResource(value, intAmount);
                         }
                         
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
-                        
-                        PlayerPersistentData.PlayerData.resources[bitType] += intAmount;
+
+                        PlayerPersistentData.PlayerData.AddResource(bitType, intAmount);
                     }
                     else
                     {
@@ -328,7 +329,7 @@ namespace StarSalvager.Utilities
                     
                     if (split[2].ToLower().Equals("all"))
                     {
-                        var componentData = new Dictionary<COMPONENT_TYPE, int>(PlayerPersistentData.PlayerData.components);
+                        var componentData = new Dictionary<COMPONENT_TYPE, int>((IDictionary<COMPONENT_TYPE, int>) PlayerPersistentData.PlayerData.components);
                         
                         foreach (COMPONENT_TYPE value in Enum.GetValues(typeof(COMPONENT_TYPE)))
                         {
@@ -366,8 +367,9 @@ namespace StarSalvager.Utilities
                     _consoleDisplay = string.Empty;
                     _cmds.Clear();
                     break;
+                case "remote data":
                 case "remotedata":
-                    FindObjectOfType<FactoryManager>().ClearRemoteData();
+                    Files.ClearRemoteData();
                     break;
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);
@@ -640,13 +642,13 @@ namespace StarSalvager.Utilities
                         {
                             if (!PlayerPersistentData.PlayerData.resources.ContainsKey(value))
                                 continue;
-                                
-                            PlayerPersistentData.PlayerData.resources[value] = intAmount;
+
+                            PlayerPersistentData.PlayerData.AddResource(value, intAmount);
                         }
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
-                        PlayerPersistentData.PlayerData.resources[bitType] = intAmount;
+                        PlayerPersistentData.PlayerData.AddResource(bitType, intAmount);
                     }
                     else
                     {
@@ -668,7 +670,7 @@ namespace StarSalvager.Utilities
                     
                     if (split[2].ToLower().Equals("all"))
                     {
-                        var componentData = new Dictionary<COMPONENT_TYPE, int>(PlayerPersistentData.PlayerData.components);
+                        var componentData = new Dictionary<COMPONENT_TYPE, int>((IDictionary<COMPONENT_TYPE, int>) PlayerPersistentData.PlayerData.components);
                         
                         foreach (COMPONENT_TYPE value in Enum.GetValues(typeof(COMPONENT_TYPE)))
                         {
@@ -721,7 +723,7 @@ namespace StarSalvager.Utilities
                     
                     if (split[2].ToLower().Equals("all"))
                     {
-                        var data = new Dictionary<BIT_TYPE, float>(PlayerPersistentData.PlayerData.liquidResource);
+                        var data = new Dictionary<BIT_TYPE, float>((IDictionary<BIT_TYPE, float>) PlayerPersistentData.PlayerData.liquidResource);
 
                         foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
                         {
@@ -943,7 +945,7 @@ namespace StarSalvager.Utilities
         {
             return dictionary.Aggregate("", (current, o) => current + $"[{o.Key}] => {o.Value}\n");
         }
-        private static string GetDictionaryAsString<U, T>(ReadOnlyDictionary<U, T> dictionary)
+        private static string GetDictionaryAsString<U, T>(IReadOnlyDictionary<U, T> dictionary)
         {
             return dictionary.Aggregate("", (current, o) => current + $"[{o.Key}] => {o.Value}\n");
         }

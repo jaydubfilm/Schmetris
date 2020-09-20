@@ -1,6 +1,7 @@
 ﻿using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace StarSalvager.Missions
 {
@@ -9,7 +10,7 @@ namespace StarSalvager.Missions
     {
         float m_flightLength;
         
-        public FlightLengthMission(float flightLength, string missionName, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded = 1.0f) : base(missionName, amountNeeded, missionUnlockData)
+        public FlightLengthMission(float flightLength, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded = 1.0f) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
         {
             MissionEventType = MISSION_EVENT_TYPE.FLIGHT_LENGTH;
             m_flightLength = flightLength;
@@ -24,6 +25,7 @@ namespace StarSalvager.Missions
         {
             if (flightLength >= m_flightLength)
             {
+                Debug.WriteLine(flightLength + " --- " + m_flightLength);
                 m_currentAmount += 1;
             }
         }
@@ -34,6 +36,7 @@ namespace StarSalvager.Missions
             {
                 ClassType = GetType().Name,
                 MissionName = m_missionName,
+                MissionDescription = m_missionDescription,
                 AmountNeeded = m_amountNeeded,
                 CurrentAmount = m_currentAmount,
                 MissionEventType = this.MissionEventType,

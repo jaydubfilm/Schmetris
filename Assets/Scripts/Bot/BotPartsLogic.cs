@@ -10,6 +10,7 @@ using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Values;
@@ -74,7 +75,7 @@ namespace StarSalvager
         private GameUI _GameUI;
 
         //temp variables
-        float batteryDrainTimer = 0;
+        //float batteryDrainTimer = 0;
         float waterDrainTimer = 0;
 
         //==============================================================================================================//
@@ -188,6 +189,10 @@ namespace StarSalvager
 
             foreach (var part in _parts)
             {
+                //Destroyed parts should not contribute to the stats of the bot anymore
+                if (part.Destroyed)
+                    continue;
+                
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                     .GetRemoteData(part.Type);
 
@@ -286,6 +291,12 @@ namespace StarSalvager
                             capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
+                    case PART_TYPE.STORE_YELLOW:
+                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        {
+                            capacities[BIT_TYPE.YELLOW] += value;
+                        }
+                        break;
                     case PART_TYPE.BOMB:
                         if(_bombTimers == null)
                             _bombTimers = new Dictionary<Part, float>();
@@ -311,19 +322,29 @@ namespace StarSalvager
         /// </summary>
         public void PartsUpdateLoop()
         {
+            var powerValue = PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW];
+            var powerToRemove = 0f;
+            
+            
             //Be careful to not use return here
             foreach (var part in _parts)
             {
+                if(part.Destroyed)
+                    continue;
+
                 PartRemoteData partRemoteData =
                     FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
 
                 var levelData = partRemoteData.levels[part.level];
+
+                powerToRemove += levelData.powerDraw * Time.deltaTime;
 
                 //If there's nothing using these resources ignore
                 if(levelData.burnRate == 0f)
                     continue;
 
                 var resourceValue = GetValueToBurn(levelData, partRemoteData.burnType);
+                
 
                 //If we no longer have liquid to use, find a bit that could be refined
                 if (resourceValue <= 0f && useBurnRate)
@@ -354,6 +375,7 @@ namespace StarSalvager
 
 
                         resourceValue = addAmount;
+                        SessionDataProcessor.Instance.LiquidProcessed(targetBit.Type, addAmount);
                         AudioController.PlaySound(SOUND.BIT_REFINED);
                     }
 
@@ -365,6 +387,8 @@ namespace StarSalvager
                     if(_flashes != null && _flashes.ContainsKey(part))
                         GetAlertIcon(part).SetActive(false);
                 }
+                
+                
 
                 switch (part.Type)
                 {
@@ -421,6 +445,7 @@ namespace StarSalvager
                         //FIXME I don't think using linq here, especially twice is the best option
                         //TODO This needs to fire every x Seconds
                         toRepair = bot.attachedBlocks.GetAttachablesAroundInRadius<Part>(part, radius)
+                            .Where(p => p.Destroyed == false)
                             .Where(p => p.CurrentHealth < p.StartingHealth)
                             .Select(x => new KeyValuePair<Part, float>(x, FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(x.Type).priority / (x.CurrentHealth / x.StartingHealth)))
                             .OrderByDescending(x => x.Value)
@@ -451,6 +476,7 @@ namespace StarSalvager
 
                         TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
                         break;
+                    case PART_TYPE.TRIPLE_SHOT:
                     case PART_TYPE.GUN:
 
 
@@ -505,17 +531,24 @@ namespace StarSalvager
                         //const string PROJECTILE_ID = "083be790-7a08-4f27-b506-e8e09a116bc8";
 
                         var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
+                        var damage = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Damage);
+
+                        var position = part.transform.position;
+                        var target = position + part.transform.up;
 
                         //TODO Might need to add something to change the projectile used for each gun piece
-                        var projectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
-                            .CreateObject<Projectile>(
+                        FactoryManager.Instance.GetFactory<ProjectileFactory>()
+                            .CreateObjects<Projectile>(
                                 projectileId,
-                                /*shootDirection*/Vector2.up,
-                                "Enemy");
+                                position,
+                                target,
+                                damage,
+                                "Enemy",
+                                true);
+                        
+                        /*projectile.transform.position = part.transform.position;
 
-                        projectile.transform.position = part.transform.position;
-
-                        LevelManager.Instance.ProjectileManager.AddProjectile(projectile);
+                        LevelManager.Instance.ProjectileManager.AddProjectile(projectile);*/
 
 
                         switch (part.level)
@@ -586,11 +619,11 @@ namespace StarSalvager
                         if (useBurnRate && resourceValue <= 0)
                         {
                             //FIXME I don't like that this is getting called so often
-                            GameUI.SetHasResource(index, false);
+                            //GameUI.SetHasResource(index, false);
                             break;
                         }
 
-                        GameUI.SetHasResource(index, true);
+                        //GameUI.SetHasResource(index, true);
 
 
                         levelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out cooldown);
@@ -601,26 +634,34 @@ namespace StarSalvager
                         GameUI.SetFill(index, 1f - _bombTimers[part] / cooldown);
 
                         break;
+                    
                 }
 
                 UpdateUI(partRemoteData.burnType, resourceValue);
                 PlayerPersistentData.PlayerData.SetLiquidResource(partRemoteData.burnType, resourceValue);
             }
 
-            batteryDrainTimer += Time.deltaTime / 2;
+            powerValue -= powerToRemove;
+            if (powerValue < 0)
+                powerValue = 0f;
+            
+            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, powerValue);
+            
+
+            //batteryDrainTimer += Time.deltaTime / 2;
             waterDrainTimer += Time.deltaTime / 4;
 
-            if (batteryDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] > 0)
+            /*if (batteryDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] > 0)
             {
                 batteryDrainTimer--;
                 PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] - 1);
-            }
+            }*/
             if (waterDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0)
             {
                 waterDrainTimer--;
                 PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] - 1);
             }
-            UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW]);
+            UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW]);
             UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE]);
         }
 
@@ -866,7 +907,7 @@ namespace StarSalvager
                 return;
 
             var copy = new Dictionary<Part, ShieldData>(_shields);
-            foreach (var data in copy.Where(data => data.Key.IsRecycled))
+            foreach (var data in copy.Where(data => data.Key.IsRecycled || data.Key.Destroyed))
             {
                 Recycler.Recycle<Shield>(data.Value.shield.gameObject);
                 _shields.Remove(data.Key);
@@ -879,7 +920,7 @@ namespace StarSalvager
                 return;
 
             var copy = new Dictionary<Part, FlashSprite>(_flashes);
-            foreach (var data in copy.Where(data => data.Key.IsRecycled))
+            foreach (var data in copy.Where(data => data.Key.IsRecycled || data.Key.Destroyed))
             {
                 _flashes.Remove(data.Key);
                 Recycler.Recycle<FlashSprite>(data.Value.gameObject);
@@ -892,9 +933,8 @@ namespace StarSalvager
                 return;
 
             var copy = new Dictionary<Part, float>(_bombTimers);
-            foreach (var data in copy.Where(data => data.Key.IsRecycled))
+            foreach (var data in copy.Where(data => data.Key.IsRecycled || data.Key.Destroyed))
             {
-               // Recycler.Recycle<FlashSprite>(data.Value.gameObject);
                _bombTimers.Remove(data.Key);
 
                var index = _smartWeapons.FindIndex(0, _smartWeapons.Count, x => x == data.Key);

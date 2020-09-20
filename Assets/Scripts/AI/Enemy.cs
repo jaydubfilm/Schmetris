@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Recycling;
 using UnityEngine;
 using StarSalvager.Factories;
@@ -9,13 +10,29 @@ using StarSalvager.Missions;
 using StarSalvager.Utilities;
 using System.Linq;
 using StarSalvager.Audio;
+using StarSalvager.Cameras;
+using StarSalvager.Utilities.Analytics;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
 {
     [RequireComponent(typeof(StateAnimator))]
-    public class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle
+    public class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle, ICanBeSeen
     {
-        public EnemyData m_enemyData;
+        public bool IsAttachable => m_enemyData.IsAttachable;
+        public bool IgnoreObstacleAvoidance => m_enemyData.IgnoreObstacleAvoidance;
+        public ENEMY_MOVETYPE MovementType => m_enemyData.MovementType;
+        public string EnemyName => m_enemyData.Name;
+
+        //ICanBeSeen Properties
+        //====================================================================================================================//
+        
+        public bool IsSeen { get; set; }
+        public float CameraCheckArea => 0.6f;
+        
+        //============================================================================================================//
+        
+        protected EnemyData m_enemyData;
 
         protected float m_fireTimer;
         private Vector3 m_spiralAttackDirection = Vector3.down;
@@ -30,6 +47,8 @@ namespace StarSalvager.AI
         private float horizontalFarRightX;
 
         protected Vector3 m_mostRecentMovementDirection = Vector3.zero;
+
+        public bool Disabled { get; protected set; }
 
         //IStateAnimation Properties 
         //============================================================================================================//
@@ -60,8 +79,9 @@ namespace StarSalvager.AI
             SetupPositions();
 
             m_horizontalMovementYLevel = transform.position.y;
-            horizontalFarLeftX = (-1 * Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen) / 3.5f;
-            horizontalFarRightX = (Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen) / 3.5f;
+            horizontalFarLeftX = -1 * Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
+            horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
+            
         }
 
         protected virtual void Update()
@@ -70,7 +90,7 @@ namespace StarSalvager.AI
             if (m_enemyData.AttackType == ENEMY_ATTACKTYPE.None)
                 return;
             
-            if(GameTimer.IsPaused || LevelManager.Instance.EndWaveState)
+            if(GameTimer.IsPaused || LevelManager.Instance.EndWaveState || Disabled)
                 return;
             
 
@@ -85,12 +105,16 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
-        public void Init()
+        public void Init(EnemyData enemyData)
         {
+            m_enemyData = enemyData;
+            
+            SetupHealthValues(m_enemyData.Health, m_enemyData.Health);
+            
             renderer.sprite = m_enemyData?.Sprite;
             StateAnimator.SetController(m_enemyData?.AnimationController);
             
-            AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
+            RegisterCanBeSeen();
         }
 
         private void SetupPositions()
@@ -99,7 +123,7 @@ namespace StarSalvager.AI
             {
                 for (float k = 0; k < m_enemyData.Dimensions.y; k++)
                 {
-                    m_positions.Add(new Vector3(i - (((float)m_enemyData.Dimensions.x - 1) / 2), k - (((float)m_enemyData.Dimensions.y - 1) / 2), 0));
+                    m_positions.Add(new Vector3(i - ((float)m_enemyData.Dimensions.x - 1) / 2, k - ((float)m_enemyData.Dimensions.y - 1) / 2, 0));
                 }
             }
         }
@@ -108,24 +132,61 @@ namespace StarSalvager.AI
         
         #region Firing
         
-        private void FireAttack()
+        protected virtual void FireAttack()
         {
             /*var distance = Vector3.Distance(transform.position, LevelManager.Instance.BotGameObject.transform.position);
             //TODO Determine if this fires at all times or just when bot is in range
             if (distance >= 100 * Constants.gridCellSize)
                 return;*/
 
-            Vector3 screenPoint = Camera.main.WorldToViewportPoint(transform.position);
-            bool onScreen = screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
-            if (!onScreen)
+            //Vector3 screenPoint = Camera.main.WorldToViewportPoint();
+            //bool onScreen = screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
+            if (!CameraController.IsPointInCameraRect(transform.position, 0.6f))
                 return;
+            
+            Vector3 playerLocation = LevelManager.Instance.BotObject != null
+                ? LevelManager.Instance.BotObject.transform.position
+                : Vector3.right * 50;
 
-            List<Vector2> fireLocations = GetFireDirection();
+            Vector2 targetLocation;
+            
+            switch (m_enemyData.AttackType)
+            {
+                case ENEMY_ATTACKTYPE.Forward:
+                    targetLocation = GetDestination();
+                    break;
+                case ENEMY_ATTACKTYPE.AtPlayer:
+                case ENEMY_ATTACKTYPE.AtPlayerCone:
+                case ENEMY_ATTACKTYPE.Random_Spray:
+                    targetLocation = playerLocation;
+                    break;
+                case ENEMY_ATTACKTYPE.Spiral:
+                case ENEMY_ATTACKTYPE.Down:
+                    targetLocation = Vector2.down;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(m_enemyData.AttackType), m_enemyData.AttackType, null);
+            }
+            
+            FactoryManager.Instance.GetFactory<ProjectileFactory>()
+                .CreateObjects<Projectile>(
+                    m_enemyData.ProjectileType, 
+                    transform.position,
+                    targetLocation,
+                    m_mostRecentMovementDirection * m_enemyData.MovementSpeed,
+                    m_enemyData.AttackDamage,
+                    "Player");
+
+            /*List<Vector2> fireLocations = GetFireDirection();
             foreach (Vector2 fireLocation in fireLocations)
             {
                 Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
-                    .CreateObject<Projectile>(m_enemyData.ProjectileType, fireLocation, "Player");
-                newProjectile.DamageAmount = m_enemyData.AttackDamage;
+                    .CreateObject<Projectile>(
+                        m_enemyData.ProjectileType, 
+                        fireLocation,
+                        m_enemyData.AttackDamage,
+                        "Player");
+
                 newProjectile.transform.parent = LevelManager.Instance.gameObject.transform;
                 newProjectile.transform.position = transform.position;
                 if (m_enemyData.AddVelocityToProjectiles)
@@ -134,17 +195,17 @@ namespace StarSalvager.AI
                 }
 
                 LevelManager.Instance.ProjectileManager.AddProjectile(newProjectile);
-            }
+            }*/
             
             AudioController.PlayEnemyFireSound(m_enemyData.EnemyType, 1f);
         }
 
         //Check what attack style this enemy uses, and use the appropriate method to get the firing location
-        private List<Vector2> GetFireDirection()
+        /*private List<Vector2> GetFireDirection()
         {
             //Firing styles are based on the player location. For now, hardcode this
-            Vector3 playerLocation = LevelManager.Instance.BotGameObject != null
-                ? LevelManager.Instance.BotGameObject.transform.position
+            Vector3 playerLocation = LevelManager.Instance.BotObject != null
+                ? LevelManager.Instance.BotObject.transform.position
                 : Vector3.right * 50;
 
             List<Vector2> fireDirections = new List<Vector2>();
@@ -160,7 +221,7 @@ namespace StarSalvager.AI
                 case ENEMY_ATTACKTYPE.AtPlayerCone:
                     //Rotate player position around enemy position slightly by a random angle to shoot somewhere in a cone around the player
                     fireDirections.Add(GetDestinationForRotatePositionAroundPivot(playerLocation, transform.position,
-                        Vector3.forward * UnityEngine.Random.Range(-m_enemyData.SpreadAngle,
+                        Vector3.forward * Random.Range(-m_enemyData.SpreadAngle,
                             m_enemyData.SpreadAngle)) - transform.position);
                     break;
                 case ENEMY_ATTACKTYPE.Down:
@@ -172,7 +233,7 @@ namespace StarSalvager.AI
                     {
                         fireDirections.Add(GetDestinationForRotatePositionAroundPivot(playerLocation,
                             transform.position,
-                            Vector3.forward * UnityEngine.Random.Range(-m_enemyData.SpreadAngle,
+                            Vector3.forward * Random.Range(-m_enemyData.SpreadAngle,
                                 m_enemyData.SpreadAngle)) - transform.position);
                     }
 
@@ -181,20 +242,22 @@ namespace StarSalvager.AI
                     //Consult spiral formula to get the angle to shoot the next shot at
                     fireDirections.Add(GetSpiralAttackDirection());
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(m_enemyData.AttackType), m_enemyData.AttackType, null);
             }
 
             return fireDirections;
         }
 
         //Get the location that enemy is firing at, then create the firing projectile from the factory
-        public Vector3 GetSpiralAttackDirection()
+        private Vector3 GetSpiralAttackDirection()
         {
             m_spiralAttackDirection =
                 GetDestinationForRotatePositionAroundPivot(m_spiralAttackDirection + transform.position,
                     transform.position, Vector3.forward * 30) - transform.position;
 
             return m_spiralAttackDirection;
-        }
+        }*/
         
         #endregion Firing
 
@@ -205,8 +268,8 @@ namespace StarSalvager.AI
         public Vector3 GetDestination()
         {
             //Movement styles are based on the player location. For now, hardcode this
-            Vector3 playerLocation = LevelManager.Instance.BotGameObject != null
-                ? LevelManager.Instance.BotGameObject.transform.position
+            Vector3 playerLocation = LevelManager.Instance.BotObject != null
+                ? LevelManager.Instance.BotObject.transform.position
                 : Vector3.right * 50;
 
             switch (m_enemyData.MovementType)
@@ -307,7 +370,7 @@ namespace StarSalvager.AI
         {
             Vector3 direction = point - pivot;
             direction = Quaternion.Euler(angles) * direction;
-            return (direction + pivot);
+            return direction + pivot;
         }
 
         //Rotate point around pivot by angles amount, while ensuring that the point is a certain distance away from the pivot. Used for the orbit calculations to keep them orbiting on the outside
@@ -318,7 +381,7 @@ namespace StarSalvager.AI
             direction.Normalize();
             direction *= distance;
             direction = Quaternion.Euler(angles) * direction;
-            return (direction + pivot);
+            return direction + pivot;
         }
 
         public void ProcessMovement(Vector3 direction)
@@ -349,7 +412,7 @@ namespace StarSalvager.AI
         //ICanBeHit functions
         //============================================================================================================//
 
-        public void TryHitAt(Vector2 position, float damage)
+        public bool TryHitAt(Vector2 position, float damage)
         {
             ChangeHealth(-damage);
             
@@ -358,7 +421,13 @@ namespace StarSalvager.AI
             
             if(CurrentHealth > 0)
                 AudioController.PlaySound(SOUND.ENEMY_IMPACT);
-            
+
+            if (CurrentHealth <= 0)
+            {
+                //TODO Need to add the gears addition
+            }
+
+            return true;
         }
 
         //IHealth Functions
@@ -377,20 +446,60 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0) 
                 return;
             
-            LevelManager.Instance.ObstacleManager.SpawnBitExplosion(transform.position, m_enemyData.rdsTable.rdsResult.ToList());
+            LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition);
             MissionManager.ProcessEnemyKilledMissionData(m_enemyData.EnemyType, 1);
-                
+            
+            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             AudioController.PlaySound(SOUND.ENEMY_DEATH);
-                
+
+            LevelManager.Instance.WaveEndSummaryData.numEnemiesKilled++;
+            if (LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled.ContainsKey(name))
+            {
+                LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled[name]++;
+            }
+            else
+            {
+                LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled.Add(name, 1);
+            }
+
             Recycler.Recycle<Enemy>(this);
         }
 
+        //ICanBeSeen Functions
         //============================================================================================================//
 
-        public void CustomRecycle(params object[] args)
+        public void RegisterCanBeSeen()
+        {
+            CameraController.RegisterCanBeSeen(this);
+        }
+
+        public void UnregisterCanBeSeen()
+        {
+            CameraController.UnRegisterCanBeSeen(this);
+        }
+
+        public void EnteredCamera()
+        {
+            AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
+        }
+
+        public void ExitedCamera()
         {
             AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
         }
+        //============================================================================================================//
+
+        public virtual void CustomRecycle(params object[] args)
+        {
+            Disabled = false;
+            AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
+            UnregisterCanBeSeen();
+        }
+
+
+        
+        //============================================================================================================//
+
     }
 }
  

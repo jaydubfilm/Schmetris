@@ -27,6 +27,20 @@ namespace StarSalvager
 
         public bool CanMove => true;
 
+        public bool IsRegistered
+        {
+            get { return m_isRegistered; }
+            set { m_isRegistered = value; }
+        }
+        private bool m_isRegistered = false;
+
+        public bool IsMarkedOnGrid
+        {
+            get { return m_isMarkedOnGrid; }
+            set { m_isMarkedOnGrid = value; }
+        }
+        private bool m_isMarkedOnGrid = false;
+
         //================================================================================================================//
 
         protected new Rigidbody2D rigidbody
@@ -180,9 +194,9 @@ namespace StarSalvager
         //================================================================================================================//
 
         
-        public void TryHitAt(Vector2 position, float damage)
+        public bool TryHitAt(Vector2 position, float damage)
         {
-            var closestAttachable = attachedBits.GetClosestAttachable(position) as Bit;
+            var closestAttachable = attachedBits.GetClosestAttachable(position);
 
             //FIXME Need to see how to fix this
             if (closestAttachable is IHealth closestHealth)
@@ -190,10 +204,12 @@ namespace StarSalvager
                 closestHealth.ChangeHealth(-damage);
 
                 if (closestHealth.CurrentHealth > 0) 
-                    return;
+                    return true;
             }
             
             DestroyBit(closestAttachable);
+
+            return true;
         }
 
         //================================================================================================================//
@@ -205,61 +221,11 @@ namespace StarSalvager
 
             if (bot.Rotating)
             {
-                if (attachedBits[0].Type == BIT_TYPE.BLACK)
-                {
-                    //Recycler.Recycle<Shape>(this);
-                    bot.Rotate(bot.MostRecentRotate.Invert());
-                    AudioController.PlaySound(SOUND.ASTEROID_BASH);
-                    bot.TryHitAt(hitPoint, 10);
-                    return;
-                }
+                this.Bounce(hitPoint, bot.MostRecentRotate);
 
-                float rotation = 180.0f;
-                if (bot.MostRecentRotate == ROTATION.CW)
-                {
-                    rotation *= -1;
-                }
-
-                /*bool breakIntoBits = false;
-                if (!breakIntoBits)
-                {*/
-                    Vector2 direction = (Vector2)transform.position - hitPoint;
-                    direction.Normalize();
-                    /*if (direction != Vector2.up)
-                    {
-                        Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                        downVelocity.Normalize();
-                        direction += downVelocity;
-                        direction.Normalize();
-                    }*/
-                    LevelManager.Instance.ObstacleManager.BounceObstacle(this, direction, rotation, true, true, true);
                     AudioController.PlaySound(SOUND.BIT_BOUNCE);
-                //}
-                /*else
-                {
-                    foreach (Bit bit in attachedBits)
-                    {
-                        Vector2 direction = (Vector2)bit.transform.position - hitPoint;
-                        direction.Normalize();
-                        /*if (direction != Vector2.up)
-                        {
-                            Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                            downVelocity.Normalize();
-                            direction += downVelocity;
-                            direction.Normalize();
-                        }#1#
-                        LevelManager.Instance.ObstacleManager.BounceObstacle(bit, direction, rotation, true, true, true);
-                    }
-                    Recycler.Recycle<Shape>(this, new
-                    {
-                        recycleBits = false
-                    });
-                }*/
-                return;
+                    return;
             }
-
-            //Debug.Break();
-
 
             if (!TryGetRayDirectionFromBot(Globals.MovingDirection, out var rayDirection))
                 return;

@@ -8,6 +8,7 @@ TagManager:
   - Moveable
   - DoNotCollideWithBullet
   - Enemy
+  - Asteroid
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - Bit
   - Projectile
   - Enemy
-  - 
+  - Asteroid
   - 
   - 
   - 

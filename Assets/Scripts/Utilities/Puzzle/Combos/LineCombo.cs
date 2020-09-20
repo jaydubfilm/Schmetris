@@ -17,9 +17,9 @@ namespace StarSalvager.Utilities.Puzzle.Combos
 
         }
 
-        public virtual bool TryGetCombo(Bit origin, List<Bit>[] directions, 
+        public virtual bool TryGetCombo(IAttachable origin, List<IAttachable>[] directions,
             (bool hasCombo, int horizontalCount, int verticalCount) lineData,
-            out (ComboRemoteData comboData, List<Bit> toMove) outData)
+            out (ComboRemoteData comboData, List<IAttachable> toMove) outData)
         {
             outData = (emptyCombo, null);
 
@@ -31,7 +31,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
             
             if (horizontalCount > verticalCount)
             {
-                outData.toMove = new List<Bit>{ origin };
+                outData.toMove = new List<IAttachable>{ origin };
                 outData.toMove.AddRange(directions[(int)DIRECTION.LEFT]);
                 outData.toMove.AddRange(directions[(int)DIRECTION.RIGHT]);
 
@@ -41,7 +41,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
             //else If Horizontal is less than vertical
             else if (horizontalCount < verticalCount)
             {
-                outData.toMove = new List<Bit>{ origin };
+                outData.toMove = new List<IAttachable>{ origin };
                 outData.toMove.AddRange(directions[(int)DIRECTION.UP]);
                 outData.toMove.AddRange(directions[(int)DIRECTION.DOWN]);
 
@@ -72,7 +72,5 @@ namespace StarSalvager.Utilities.Puzzle.Combos
             //--------------------------------------------------------------------------------------------------------//
         }
 
-        
     }
-
 }

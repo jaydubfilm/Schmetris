@@ -15,7 +15,10 @@
         STORE,
         STORE_RED,
         STORE_GREEN,
-        STORE_GREY
+        STORE_GREY,
+        
+        TRIPLE_SHOT,
+        STORE_YELLOW,
     } 
 }
 

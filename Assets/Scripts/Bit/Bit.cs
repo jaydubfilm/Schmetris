@@ -1,16 +1,19 @@
-﻿using Recycling;
+﻿using System;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
-    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate
+    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>
     {
         //IAttachable properties
         //============================================================================================================//
@@ -26,11 +29,15 @@ namespace StarSalvager
         public int RotateDirection => _rotateDirection;
         private int _rotateDirection = 1;
 
-        public bool CountAsConnected => true;
+        public bool CountAsConnectedToCore => true;
         public bool CanDisconnect => true;
 
         [ShowInInspector, ReadOnly]
         public bool CanShift => true;
+
+        public bool CountTowardsMagnetism => true;
+
+        public IAttachable iAttachable => this;
 
         //IHealth Properties
         //============================================================================================================//
@@ -42,6 +49,20 @@ namespace StarSalvager
         //IObstacle Properties
         //============================================================================================================//
         public bool CanMove => !Attached;
+
+        public bool IsRegistered
+        {
+            get { return m_isRegistered; }
+            set { m_isRegistered = value; }
+        }
+        private bool m_isRegistered = false;
+
+        public bool IsMarkedOnGrid
+        {
+            get { return m_isMarkedOnGrid; }
+            set { m_isMarkedOnGrid = value; }
+        }
+        private bool m_isMarkedOnGrid = false;
 
         //Bit Properties
         //============================================================================================================//
@@ -117,23 +138,15 @@ namespace StarSalvager
         //ICanBeHit Functions
         //============================================================================================================//
         
-        public void TryHitAt(Vector2 position, float damage)
+        public bool TryHitAt(Vector2 position, float damage)
         {
             ChangeHealth(-damage);
+            
+            return true;
         }
 
         //Bit Functions
         //============================================================================================================//
-
-        public void IncreaseLevel(int amount = 1)
-        {
-            level += amount;
-            renderer.sortingOrder = level;
-
-            //Sets the gameObject info (Sprite)
-            var bit = this;
-            FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
-        }
 
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
@@ -144,42 +157,13 @@ namespace StarSalvager
 
             if (bot.Rotating)
             {
-                if (Type == BIT_TYPE.BLACK)
-                {
-                    //Recycler.Recycle<Bit>(this);
-                    bot.Rotate(bot.MostRecentRotate.Invert());
-                    AudioController.PlaySound(SOUND.ASTEROID_BASH);
-                    bot.TryHitAt(hitPoint, 10);
-                    return;
-                }
-
-                float rotation = 180.0f;
-                if (bot.MostRecentRotate == ROTATION.CW)
-                {
-                    rotation *= -1;
-                }
-
-                Vector2 direction = (Vector2)transform.position - hitPoint;
-                direction.Normalize();
-                /*if (direction != Vector2.up)
-                {
-                    Vector2 downVelocity = Vector2.down * Constants.gridCellSize / Globals.AsteroidFallTimer;
-                    downVelocity.Normalize();
-                    direction += downVelocity;
-                    direction.Normalize();
-                }*/
-                LevelManager.Instance.ObstacleManager.BounceObstacle(this, direction, rotation, true, true, true);
+                this.Bounce(hitPoint, bot.MostRecentRotate);
                 AudioController.PlaySound(SOUND.BIT_BOUNCE);
                 return;
             }
 
-            if (Type == BIT_TYPE.BLACK)
-            {
-                bot.TryAddNewAttachable(this, DIRECTION.UP, hitPoint);
-                return;
-            }
-
             var dir = (hitPoint - (Vector2)transform.position).ToVector2Int();
+            var direction = dir.ToDirection();
 
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
             //return the direction to shoot the ray
@@ -213,6 +197,19 @@ namespace StarSalvager
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
             var inDirection = (-rayDirection).ToDirection();
             bot.TryAddNewAttachable(this, inDirection, hit.point);
+        }
+
+        //ICanCombo Functions
+        //====================================================================================================================//
+        
+        public void IncreaseLevel(int amount = 1)
+        {
+            level += amount;
+            renderer.sortingOrder = level;
+
+            //Sets the gameObject info (Sprite)
+            var bit = this;
+            FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
         }
 
         //ISaveable Functions

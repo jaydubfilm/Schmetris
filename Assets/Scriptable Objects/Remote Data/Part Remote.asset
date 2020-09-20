@@ -16,12 +16,15 @@ MonoBehaviour:
   - name: Core
     partType: 0
     canSell: 0
-    description: This is the core
+    description: The heart and soul of your bot.  The core contains a powerful electro-magnet
+      that attracts raw materials, as well as a limited storage capacity for refined
+      resources.  Protect it at all costs!
     priority: 200
     burnType: 4
     levels:
     - unlockLevel: 0
       health: 20
+      powerDraw: 0
       dataTest:
       - key: Magnet
         value: 8
@@ -33,6 +36,7 @@ MonoBehaviour:
       cost: []
     - unlockLevel: 0
       health: 50
+      powerDraw: 0
       dataTest:
       - key: Magnet
         value: 16
@@ -84,6 +88,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 0
       health: 100
+      powerDraw: 0
       dataTest:
       - key: Magnet
         value: 25
@@ -140,12 +145,14 @@ MonoBehaviour:
   - name: Magnet
     partType: 1
     canSell: 1
-    description: This is a magnet
+    description: Enhances the basic magnetism strength of your core, to allow the
+      collection of additional materials and components in the field.
     priority: 75
     burnType: 5
     levels:
     - unlockLevel: 0
       health: 80
+      powerDraw: 1
       dataTest:
       - key: Magnet
         value: 5
@@ -161,6 +168,7 @@ MonoBehaviour:
         amount: 50
     - unlockLevel: 0
       health: 100
+      powerDraw: 2
       dataTest:
       - key: Magnet
         value: 10
@@ -188,6 +196,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 0
       health: 120
+      powerDraw: 5
       dataTest:
       - key: Magnet
         value: 20
@@ -216,12 +225,13 @@ MonoBehaviour:
   - name: Repairer
     partType: 2
     canSell: 1
-    description: This is a Repairer
+    description: Uses plasma to repair damaged parts within range.
     priority: 50
     burnType: 2
     levels:
     - unlockLevel: 0
       health: 80
+      powerDraw: 1
       dataTest:
       - key: Heal
         value: 20
@@ -243,6 +253,7 @@ MonoBehaviour:
         amount: 3
     - unlockLevel: 0
       health: 90
+      powerDraw: 2
       dataTest:
       - key: Heal
         value: 25
@@ -276,6 +287,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 0
       health: 100
+      powerDraw: 5
       dataTest:
       - key: Heal
         value: 50
@@ -306,12 +318,14 @@ MonoBehaviour:
   - name: Armor
     partType: 3
     canSell: 1
-    description: This is armor
+    description: 'These forge-hardened titanium plates are the building blocks of
+      a great defense. '
     priority: 25
     burnType: 0
     levels:
     - unlockLevel: 0
       health: 150
+      powerDraw: 0
       dataTest: []
       burnRate: 0
       cost:
@@ -325,6 +339,7 @@ MonoBehaviour:
         amount: 2
     - unlockLevel: 0
       health: 300
+      powerDraw: 0
       dataTest: []
       burnRate: 0
       cost:
@@ -350,6 +365,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 0
       health: 500
+      powerDraw: 0
       dataTest: []
       burnRate: 0
       cost:
@@ -372,12 +388,14 @@ MonoBehaviour:
   - name: Gun
     partType: 4
     canSell: 1
-    description: This is a gun
+    description: This basic offensive weapon will fire on any enemy within range
+      and consumes scrap metal ammunition.
     priority: 75
     burnType: 3
     levels:
     - unlockLevel: 0
       health: 60
+      powerDraw: 1
       dataTest:
       - key: Damage
         value: 10
@@ -397,6 +415,7 @@ MonoBehaviour:
         amount: 150
     - unlockLevel: 0
       health: 80
+      powerDraw: 2
       dataTest:
       - key: Damage
         value: 20
@@ -428,6 +447,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 0
       health: 100
+      powerDraw: 5
       dataTest:
       - key: Damage
         value: 30
@@ -457,15 +477,86 @@ MonoBehaviour:
         type: 4
         partPrerequisiteLevel: 1
         amount: 1
+  - name: Triple Shot
+    partType: 12
+    canSell: 1
+    description: 
+    priority: 50
+    burnType: 3
+    levels:
+    - unlockLevel: 4
+      health: 100
+      powerDraw: 1
+      dataTest:
+      - key: Damage
+        value: 15
+      - key: Cooldown
+        value: 0.5
+      - key: Projectile
+        value: 00c01728-210c-4944-b1a3-0c3bf2183d42
+      burnRate: 0.5
+      cost:
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 200
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 400
+    - unlockLevel: 8
+      health: 120
+      powerDraw: 2
+      dataTest:
+      - key: Damage
+        value: 25
+      - key: Cooldown
+        value: 0.3
+      - key: Projectile
+        value: 00c01728-210c-4944-b1a3-0c3bf2183d42
+      burnRate: 0.5
+      cost:
+      - resourceType: 1
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 3000
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 7000
+    - unlockLevel: 0
+      health: 0
+      powerDraw: 5
+      dataTest: []
+      burnRate: 0
+      cost: []
   - name: Shield
     partType: 5
     canSell: 1
-    description: This is a shield
+    description: 'When fully charged, this hydrogen-powered shield absorbs damage
+      to all cells within its radius. '
     priority: 0
     burnType: 1
     levels:
     - unlockLevel: 4
       health: 100
+      powerDraw: 1
       dataTest:
       - key: Absorb
         value: .3
@@ -495,6 +586,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 6
       health: 100
+      powerDraw: 2
       dataTest:
       - key: Absorb
         value: .5
@@ -528,6 +620,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 8
       health: 120
+      powerDraw: 5
       dataTest:
       - key: Absorb
         value: .75
@@ -566,12 +659,14 @@ MonoBehaviour:
   - name: Bomb
     partType: 7
     canSell: 1
-    description: This is a bomb
+    description: 'This powerfu pilot-triggered weapon deals explosive damage to all
+      enemies on the screen. '
     priority: 50
     burnType: 4
     levels:
     - unlockLevel: 3
       health: 100
+      powerDraw: 1
       dataTest:
       - key: Cooldown
         value: 5
@@ -593,6 +688,7 @@ MonoBehaviour:
         amount: 3
     - unlockLevel: 8
       health: 150
+      powerDraw: 2
       dataTest:
       - key: Cooldown
         value: 10
@@ -623,12 +719,14 @@ MonoBehaviour:
   - name: Container
     partType: 8
     canSell: 1
-    description: This is a Container
+    description: This multi-purpose container provides extra on-board storage for
+      all resource types.
     priority: 50
     burnType: 0
     levels:
     - unlockLevel: 3
       health: 50
+      powerDraw: 5
       dataTest:
       - key: Capacity
         value: 50
@@ -648,6 +746,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 5
       health: 75
+      powerDraw: 0
       dataTest:
       - key: Capacity
         value: 100
@@ -671,6 +770,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 8
       health: 100
+      powerDraw: 0
       dataTest:
       - key: Capacity
         value: 200
@@ -699,12 +799,13 @@ MonoBehaviour:
   - name: Fuel Tank
     partType: 9
     canSell: 1
-    description: This is a fuel tank
+    description: Provides extra on-board fuel storage.
     priority: 50
     burnType: 0
     levels:
     - unlockLevel: 1
       health: 50
+      powerDraw: 0
       dataTest:
       - key: Capacity
         value: 100
@@ -720,6 +821,7 @@ MonoBehaviour:
         amount: 40
     - unlockLevel: 3
       health: 75
+      powerDraw: 0
       dataTest:
       - key: Capacity
         value: 200
@@ -747,6 +849,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 5
       health: 100
+      powerDraw: 0
       dataTest:
       - key: Capacity
         value: 500
@@ -779,12 +882,13 @@ MonoBehaviour:
   - name: Plasma Drum
     partType: 10
     canSell: 1
-    description: This is a plasma drum
+    description: Provides extra on-board plasma storage.
     priority: 50
     burnType: 0
     levels:
     - unlockLevel: 2
       health: 50
+      powerDraw: 0
       dataTest:
       - key: Capacity
         value: 100
@@ -804,6 +908,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 4
       health: 75
+      powerDraw: 0
       dataTest:
       - key: Capacity
         value: 200
@@ -831,6 +936,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 6
       health: 100
+      powerDraw: 0
       dataTest:
       - key: Capacity
         value: 500
@@ -859,12 +965,13 @@ MonoBehaviour:
   - name: Magazine
     partType: 11
     canSell: 1
-    description: This is a magazine
+    description: 'Provides extra on-board storage for refined scrap metal. '
     priority: 0
     burnType: 0
     levels:
     - unlockLevel: 2
       health: 50
+      powerDraw: 0
       dataTest:
       - key: Capacity
         value: 100
@@ -880,6 +987,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 4
       health: 75
+      powerDraw: 0
       dataTest:
       - key: Capacity
         value: 200
@@ -903,6 +1011,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 6
       health: 100
+      powerDraw: 0
       dataTest:
       - key: Capacity
         value: 500
@@ -924,3 +1033,34 @@ MonoBehaviour:
         type: 11
         partPrerequisiteLevel: 1
         amount: 1
+  - name: Battery
+    partType: 13
+    canSell: 1
+    description: 
+    priority: 100
+    burnType: 5
+    levels:
+    - unlockLevel: 3
+      health: 50
+      powerDraw: 0
+      dataTest:
+      - key: Capacity
+        value: 100
+      burnRate: 0
+      cost: []
+    - unlockLevel: 6
+      health: 75
+      powerDraw: 0
+      dataTest:
+      - key: Capacity
+        value: 200
+      burnRate: 0
+      cost: []
+    - unlockLevel: 9
+      health: 100
+      powerDraw: 0
+      dataTest:
+      - key: Capacity
+        value: 500
+      burnRate: 0
+      cost: []

@@ -62,9 +62,9 @@ namespace StarSalvager.Utilities.Extensions
             var blockDatas = new List<BlockData>();
             
             var attachables = new List<IAttachable>(bot.attachedBlocks);
-            var ignoreAttachables = bot.BitsPendingDetach == null
+            var ignoreAttachables = bot.PendingDetach == null
                 ? new List<IAttachable>()
-                : new List<IAttachable>(bot.BitsPendingDetach);
+                : new List<IAttachable>(bot.PendingDetach);
 
             foreach (var attachable in attachables.Where(attachable => !ignoreAttachables.Contains(attachable)))
             {
@@ -103,11 +103,11 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="bot"></param>
         /// <param name="target"></param>
         /// <param name="direction"></param>
-        /// <param name="bitList"></param>
-        public static void ComboCount(this Bot bot, Bit target, DIRECTION direction, ref List<Bit> bitList)
+        /// <param name="iCanCombos"></param>
+        public static void ComboCount<T>(this Bot bot, ICanCombo<T> target, DIRECTION direction, ref List<IAttachable> iCanCombos) where T: Enum
         {
             bot.attachedBlocks.ComboCountAlgorithm(target.Type, target.level, target.Coordinate, direction.ToVector2Int(),
-                ref bitList);
+                ref iCanCombos);
         }
 
     }

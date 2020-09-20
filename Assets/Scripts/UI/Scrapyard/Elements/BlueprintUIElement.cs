@@ -1,6 +1,4 @@
 ﻿using StarSalvager.Factories;
-using StarSalvager.Factories.Data;
-using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using Sirenix.OdinInspector;
 using StarSalvager.Values;
@@ -8,16 +6,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using StarSalvager.Utilities.Extensions;
 
 namespace StarSalvager.UI.Scrapyard
 {
-
-
-    public class BlueprintUIElement : UIElement<TEST_Blueprint>, IPointerEnterHandler, IPointerExitHandler
+    public class BlueprintUIElement : UIElement<Blueprint>, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
         private TMP_Text titleText;
-
 
         [SerializeField]
         private Image image;
@@ -27,7 +23,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private Image craftButtonImage;
 
-        private Action<TEST_Blueprint, bool, RectTransform> hoverCallback;
+        private Action<Blueprint, bool, RectTransform> hoverCallback;
         
         //============================================================================================================//
 
@@ -43,7 +39,7 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
-        public void Init(TEST_Blueprint data, Action<TEST_Blueprint> OnCraftPressed, Action<TEST_Blueprint, bool, RectTransform> OnHover)
+        public void Init(Blueprint data, Action<Blueprint> OnCraftPressed, Action<Blueprint, bool, RectTransform> OnHover)
         {
             Init(data);
 
@@ -62,12 +58,15 @@ namespace StarSalvager.UI.Scrapyard
             });
         }
 
-        public override void Init(TEST_Blueprint data)
+        public override void Init(Blueprint data)
         {
             this.data = data;
 
             titleText.text = data.name;
-            image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(data.partType).Sprites[data.level];
+            
+            //Only try and fill the image in the event its enabled
+            if(image.isActiveAndEnabled)
+                image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(data.partType).GetSprite(data.level);
         }
         
         //============================================================================================================//
@@ -93,32 +92,5 @@ namespace StarSalvager.UI.Scrapyard
         }
         
         //============================================================================================================//
-    }
-
-    public class TEST_Blueprint : IEquatable<TEST_Blueprint>
-    {
-        public string name;
-        public PART_TYPE partType;
-        public int level;
-
-        public bool Equals(TEST_Blueprint other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return name == other.name && partType.Equals(other.partType) && level == other.level;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((TEST_Blueprint) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return (name != null ? name.GetHashCode() : 0);
-        }
     }
 }

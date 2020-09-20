@@ -14,7 +14,17 @@ namespace StarSalvager.Utilities
         {
             SetupExceptionHandling();
         }
-        
+
+        private void OnDisable()
+        {
+            Application.logMessageReceived -= HandleException;
+        }
+
+        private void OnDestroy()
+        {
+            Application.logMessageReceived -= HandleException;
+        }
+
         //============================================================================================================//
 
 #if UNITY_EDITOR

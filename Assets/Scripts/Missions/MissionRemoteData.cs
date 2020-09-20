@@ -20,6 +20,9 @@ namespace StarSalvager.Missions
         public string MissionName;
 
         [SerializeField, FoldoutGroup("$MissionName")]
+        public string MissionDescription;
+
+        [SerializeField, FoldoutGroup("$MissionName")]
         public List<MissionUnlockCheckScriptable> MissionUnlockParameters;
 
         private bool LevelTypeMission => MissionType == MISSION_EVENT_TYPE.LEVEL_PROGRESS || MissionType == MISSION_EVENT_TYPE.CHAIN_WAVES;
@@ -99,9 +102,12 @@ namespace StarSalvager.Missions
             return missionUnlockData;
         }
 
+
+#if UNITY_EDITOR
         private IEnumerable GetEnemyTypes()
         {
             return Object.FindObjectOfType<FactoryManager>().EnemyProfile.GetEnemyTypes();
         }
+#endif
     }
 }

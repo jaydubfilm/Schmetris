@@ -13,7 +13,7 @@ namespace StarSalvager.Utilities.Backgrounds
         GameObject gameObject { get; }
 
         void Init(Transform cameraTransform, float zDepth);
-        void UpdatePosition();
+        void UpdatePosition(bool ignoreInput = false);
 
         void SetOrientation(ORIENTATION newOrientation);
     }

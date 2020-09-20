@@ -29,18 +29,18 @@ namespace StarSalvager
 
             for (int i = 0; i < numberWaves; i++)
             {
-                UniverseWaveButton button = GameObject.Instantiate(m_waveButtonPrefab);
+                UniverseWaveButton button = Instantiate(m_waveButtonPrefab);
                 button.transform.SetParent(transform);
                 m_waveButtons.Add(button);
                 button.WaveNumber = i;
-                button.Text.text = "Wave " + (i + 1);
+                button.Text.text = $"Wave {i + 1}";
                 button.Button.onClick.AddListener(() =>
                 {
                     SetActiveWaveButtons(false);
-                    Values.Globals.CurrentSector = SectorNumber;
-                    Values.Globals.CurrentWave = button.WaveNumber;
+                    Globals.CurrentSector = SectorNumber;
+                    Globals.CurrentWave = button.WaveNumber;
                     //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
-                    SceneLoader.ActivateScene(SceneLoader.ALEX_TEST_SCENE, SceneLoader.UNIVERSE_MAP);
+                    SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
                 });
                 button.transform.position = new Vector2
                     (transform.position.x + 80 * Mathf.Cos((((float)i / (float)numberWaves) * 360 - 90) * -1 * Mathf.Deg2Rad), 
@@ -56,7 +56,7 @@ namespace StarSalvager
             foreach (var button in m_waveButtons)
             {
                 button.gameObject.SetActive(active);
-                if (FactoryManager.Instance.DisableTestingFeatures)
+                if (Globals.DisableTestingFeatures && !Globals.AllowAccessToUnlockedLaterWaves)
                     button.Button.interactable = button.WaveNumber == 0 && PlayerPersistentData.PlayerData.CheckIfQualifies(SectorNumber, button.WaveNumber);
                 else
                     button.Button.interactable = PlayerPersistentData.PlayerData.CheckIfQualifies(SectorNumber, button.WaveNumber);

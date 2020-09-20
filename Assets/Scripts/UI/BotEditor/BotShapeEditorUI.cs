@@ -7,6 +7,7 @@ using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
@@ -33,6 +34,13 @@ namespace StarSalvager.UI
         private Button showCategoriesButton;
         [SerializeField, Required, BoxGroup("Part UI")]
         private TMP_Text partsLabel;
+
+        [SerializeField]
+        private ScrollRect scrollRect;
+        [SerializeField]
+        private RectTransform bitRect;
+        [SerializeField]
+        private RectTransform categoryRect;
 
         //============================================================================================================//
 
@@ -63,7 +71,7 @@ namespace StarSalvager.UI
         private Button leftTurnButton;
         [SerializeField, Required, BoxGroup("View")]
         private Button rightTurnButton;
-        
+
         //============================================================================================================//
 
         [SerializeField, Required, BoxGroup("Menu Buttons")]
@@ -148,12 +156,12 @@ namespace StarSalvager.UI
         public bool IsPopupActive => LoadMenu.activeSelf || SaveMenu.activeSelf || Alert.Displayed || NewCategoryMenu.activeSelf;
         private bool m_currentlyOverwriting = false;
 
-        
+
         private void Start()
         {
             m_cameraController = FindObjectOfType<CameraController>();
             m_botShapeEditor = FindObjectOfType<BotShapeEditor>();
-            
+
             zoomSliderText.Init();
 
             zoomSlider.onValueChanged.AddListener(SetCameraZoom);
@@ -256,7 +264,7 @@ namespace StarSalvager.UI
                 }
                 ScreenBlackImage.gameObject.SetActive(true);
             });
-            
+
             LoadButton.onClick.AddListener(() =>
             {
                 LoadMenu.SetActive(true);
@@ -391,8 +399,8 @@ namespace StarSalvager.UI
                     if (partRemoteData.partType == PART_TYPE.CORE)
                         continue;
 
-                    var element = partsScrollView.AddElement<BrickImageUIElement>(partRemoteData, $"{partRemoteData.partType}_{i}_UIElement", true);
-                    element.Init(partRemoteData, PartBitPressed, i);
+                    var element = partsScrollView.AddElement(partRemoteData, $"{partRemoteData.partType}_{i}_UIElement", true);
+                    element.Init(partRemoteData, OnBrickElementPressed, i);
                 }
             }
 
@@ -401,17 +409,17 @@ namespace StarSalvager.UI
             {
                 for (int i = 0; i < bitRemoteData.levels.Length; i++)
                 {
-                    var element = partsScrollView.AddElement<BrickImageUIElement>(bitRemoteData, $"{bitRemoteData.bitType}_{i}_UIElement", true);
-                    element.Init(bitRemoteData, PartBitPressed, i);
-                    var element2 = bitsScrollView.AddElement<BrickImageUIElement>(bitRemoteData, $"{bitRemoteData.bitType}_{i}_UIElement", true);
-                    element2.Init(bitRemoteData, PartBitPressed, i);
+                    var element = partsScrollView.AddElement(bitRemoteData, $"{bitRemoteData.bitType}_{i}_UIElement", true);
+                    element.Init(bitRemoteData, OnBrickElementPressed, i);
+                    var element2 = bitsScrollView.AddElement(bitRemoteData, $"{bitRemoteData.bitType}_{i}_UIElement", true);
+                    element2.Init(bitRemoteData, OnBrickElementPressed, i);
                 }
             }
 
-            BitRemoteData remoteData = new BitRemoteData();
+            /*BitRemoteData remoteData = new BitRemoteData();
             remoteData.bitType = BIT_TYPE.BLACK;
             var test = bitsScrollView.AddElement<BrickImageUIElement>(remoteData, $"{remoteData.bitType}_0_UIElement", true);
-            test.Init(remoteData, PartBitPressed, 0);
+            test.Init(remoteData, PartBitPressed, 0);*/
 
             UpdateCategoriesScrollViews();
             UpdateLoadListUiScrollViews();
@@ -426,7 +434,7 @@ namespace StarSalvager.UI
             //FIXME This needs to move to the Factory
             foreach (var category in m_botShapeEditor.EditorBotShapeData.m_categories)
             {
-                var element = categoriesScrollView.AddElement<CategoryToggleUIElement>(category, category);
+                var element = categoriesScrollView.AddElement(category, category);
                 element.Init(category, CategoryPressed);
             }
         }
@@ -435,19 +443,19 @@ namespace StarSalvager.UI
         {
             foreach (var botGeneratorData in m_botShapeEditor.EditorBotShapeData.m_editorBotGeneratorData)
             {
-                if (botLoadListScrollView.FindElement<BotLoadListUIElement>(botGeneratorData))
+                if (botLoadListScrollView.FindElement(botGeneratorData))
                     continue;
 
-                var element = botLoadListScrollView.AddElement<BotLoadListUIElement>(botGeneratorData, $"{botGeneratorData.Name}_UIElement");
+                var element = botLoadListScrollView.AddElement(botGeneratorData, $"{botGeneratorData.Name}_UIElement");
                 element.Init(botGeneratorData, BotShapePressed);
             }
 
             foreach (var shapeGeneratorData in m_botShapeEditor.EditorBotShapeData.m_editorShapeGeneratorData)
             {
-                if (shapeLoadListScrollView.FindElement<BotLoadListUIElement>(shapeGeneratorData))
+                if (shapeLoadListScrollView.FindElement(shapeGeneratorData))
                     continue;
 
-                var element = shapeLoadListScrollView.AddElement<BotLoadListUIElement>(shapeGeneratorData, $"{shapeGeneratorData.Name}_UIElement");
+                var element = shapeLoadListScrollView.AddElement(shapeGeneratorData, $"{shapeGeneratorData.Name}_UIElement");
                 element.Init(shapeGeneratorData, BotShapePressed);
             }
 
@@ -459,9 +467,9 @@ namespace StarSalvager.UI
             m_cameraController.SetOrthographicSize(Values.Constants.gridCellSize * Values.Globals.ColumnsOnScreen * value, Vector3.zero);
             m_cameraController.CameraOffset(Vector3.zero, true);
         }
-        
+
         //============================================================================================================//
-        
+
         public void SetPartsScrollActive(bool active)
         {
             partsScrollView.SetElementsActive(active);
@@ -474,6 +482,11 @@ namespace StarSalvager.UI
 
         public void SetBitsScrollActive(bool active)
         {
+            if (active)
+            {
+                scrollRect.content = bitRect;
+            }
+
             bitsScrollView.SetElementsActive(active);
             if (active)
             {
@@ -487,6 +500,11 @@ namespace StarSalvager.UI
 
         public void SetCategoriesScrollActive(bool active)
         {
+            if (active)
+            {
+                scrollRect.content = categoryRect;
+            }
+
             categoriesScrollView.SetElementsActive(active);
             if (active)
             {
@@ -534,30 +552,37 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        private void PartBitPressed((Enum remoteDataType, int level) tuple)
+        private void OnBrickElementPressed((Enum remoteDataType, int level) tuple)
         {
-            if (tuple.remoteDataType is PART_TYPE partType)
+            var (remoteDataType, level) = tuple;
+            
+            string classType;
+            int type;
+            float health;
+            
+            switch (remoteDataType)
             {
-                PartPressed((partType, tuple.level));
+                case PART_TYPE partType:
+                    type = (int) partType;
+                    classType = nameof(Part);
+                    health = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).levels[level].health;
+                    break;
+                case BIT_TYPE bitType:
+                    classType = nameof(Bit);
+                    type = (int) bitType;
+                    health = FactoryManager.Instance.BitsRemoteData.GetRemoteData(bitType).levels[level].health;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(remoteDataType), remoteDataType, null);
             }
-            else if (tuple.remoteDataType is BIT_TYPE bitType)
+            
+            m_botShapeEditor.SelectedBrick = new BlockData
             {
-                BitPressed((bitType, tuple.level));
-            }
-        }
-
-        private void PartPressed((PART_TYPE partType, int level) tuple)
-        {
-            m_botShapeEditor.SelectedPartType = tuple.partType;
-            m_botShapeEditor.SelectedBitType = null;
-            m_botShapeEditor.SelectedPartLevel = tuple.level;
-        }
-
-        private void BitPressed((BIT_TYPE bitType, int level) tuple)
-        {
-            m_botShapeEditor.SelectedBitType = tuple.bitType;
-            m_botShapeEditor.SelectedPartType = null;
-            m_botShapeEditor.SelectedPartLevel = tuple.level;
+                ClassType = classType,
+                Type = type,
+                Level = level,
+                Health = health
+            };
         }
 
         private void BotShapePressed(EditorGeneratorDataBase botData)
@@ -569,8 +594,7 @@ namespace StarSalvager.UI
 
         private void CategoryPressed(string categoryName, bool active)
         {
-            
+
         }
     }
 }
-

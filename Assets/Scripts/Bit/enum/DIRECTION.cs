@@ -12,6 +12,18 @@ namespace StarSalvager
         RIGHT,
         DOWN
     }
-    
+
+
+    public static class DirectionExtensions
+    {
+        public static DIRECTION ClampIntToDirection(this int value)
+        {
+            if (value <= 3)
+                return (DIRECTION) value;
+            
+            var diff = value - 4;
+            return (DIRECTION) diff;
+        }
+    }
 }
 

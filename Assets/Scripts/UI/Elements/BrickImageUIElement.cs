@@ -18,7 +18,7 @@ namespace StarSalvager.UI
         private static PartAttachableFactory _partAttachableFactory;
         private static BitAttachableFactory _bitAttachableFactory;
 
-        private int level = 0;
+        private int _level ;
 
         //============================================================================================================//
 
@@ -30,13 +30,13 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        public void Init(RemoteDataBase data, Action<(Enum, int)> OnPressed, int level)
+        public void Init(RemoteDataBase data, Action<(Enum, int)> onPressedCallback, int level)
         {
-            this.level = level;
-            Init(data, OnPressed);
+            _level = level;
+            Init(data, onPressedCallback);
         }
 
-        public override void Init(RemoteDataBase data, Action<(Enum, int)> OnPressed)
+        public override void Init(RemoteDataBase data, Action<(Enum, int)> onPressedCallback)
         {
             if (_partAttachableFactory == null)
                 _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
@@ -48,20 +48,20 @@ namespace StarSalvager.UI
 
             if (this.data is PartRemoteData partRemote)
             {
-                logoImage.sprite = _partAttachableFactory.GetProfileData(partRemote.partType).Sprites[level];
+                logoImage.sprite = _partAttachableFactory.GetProfileData(partRemote.partType).Sprites[_level];
 
                 button.onClick.AddListener(() =>
                 {
-                    OnPressed?.Invoke((partRemote.partType, level));
+                    onPressedCallback?.Invoke((partRemote.partType, _level));
                 });
             }
             else if (this.data is BitRemoteData bitRemote)
             {
-                logoImage.sprite = _bitAttachableFactory.GetBitProfile(bitRemote.bitType).Sprites[level];
+                logoImage.sprite = _bitAttachableFactory.GetBitProfile(bitRemote.bitType).Sprites[_level];
 
                 button.onClick.AddListener(() =>
                 {
-                    OnPressed?.Invoke((bitRemote.bitType, level));
+                    onPressedCallback?.Invoke((bitRemote.bitType, _level));
                 });
             }
             else

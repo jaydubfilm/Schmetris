@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e4c2553e2dd5d74a9907606f4b3247c, type: 3}
+  m_Name: Facility Remote
+  m_EditorClassIdentifier: 
+  FacilityRemoteData:
+  - type: 0
+    displayName: Freezer
+    displayDescription: Freezer description
+    levels:
+    - level: 0
+      increaseAmount: 100
+      craftCost:
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 150
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 150
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+    - level: 1
+      increaseAmount: 200
+      craftCost: []
+    - level: 2
+      increaseAmount: 300
+      craftCost: []
+  - type: 1
+    displayName: Barrel
+    displayDescription: Barrel description
+    levels:
+    - level: 0
+      increaseAmount: 500
+      craftCost:
+      - resourceType: 0
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 150
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 150
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2
+    - level: 1
+      increaseAmount: 5000
+      craftCost: []
+  - type: 2
+    displayName: Capacitor
+    displayDescription: Capacitor description
+    levels:
+    - level: 0
+      increaseAmount: 500
+      craftCost: []
+    - level: 1
+      increaseAmount: 5000
+      craftCost: []
+  - type: 3
+    displayName: Vat
+    displayDescription: Vat description
+    levels:
+    - level: 0
+      increaseAmount: 500
+      craftCost: []
+    - level: 1
+      increaseAmount: 5000
+      craftCost: []
+  - type: 4
+    displayName: Bin
+    displayDescription: Bin Description
+    levels:
+    - level: 0
+      increaseAmount: 500
+      craftCost: []
+    - level: 1
+      increaseAmount: 5000
+      craftCost: []
+  - type: 5
+    displayName: Reservoir
+    displayDescription: Reservoir description
+    levels:
+    - level: 0
+      increaseAmount: 500
+      craftCost:
+      - resourceType: 0
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 150
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 150
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 2
+    - level: 1
+      increaseAmount: 5000
+      craftCost: []
+  - type: 6
+    displayName: Chipworks
+    displayDescription: Chipworks description
+    levels:
+    - level: 0
+      increaseAmount: 0
+      craftCost:
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 150
+      - resourceType: 0
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 150
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+  - type: 7
+    displayName: Coilworks
+    displayDescription: Coilworks description
+    levels:
+    - level: 0
+      increaseAmount: 0
+      craftCost: []
+  - type: 8
+    displayName: Fusorworks
+    displayDescription: Fusorworks description
+    levels:
+    - level: 0
+      increaseAmount: 0
+      craftCost: []
+  - type: 9
+    displayName: Refinery
+    displayDescription: Refineryworks
+    levels:
+    - level: 0
+      increaseAmount: 0
+      craftCost: []
+    - level: 1
+      increaseAmount: 25
+      craftCost: []
+    - level: 2
+      increaseAmount: 50
+      craftCost: []

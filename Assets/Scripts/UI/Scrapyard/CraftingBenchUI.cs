@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
@@ -21,6 +22,9 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private GameObject costWindowObject;
+
+        private CanvasGroup costWindowCanvasGroup;
+        private VerticalLayoutGroup costWindowVerticalLayoutGroup;
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private CostUIElementScrollView costView;
@@ -54,7 +58,7 @@ namespace StarSalvager.UI.Scrapyard
         //[SerializeField, Required]
         private StorageUI storageUi;
 
-        private TEST_Blueprint currentSelected;
+        private Blueprint currentSelected;
 
         private bool scrollViewsSetup = false;
 
@@ -66,7 +70,9 @@ namespace StarSalvager.UI.Scrapyard
         {
             storageUi = FindObjectOfType<StorageUI>();
 
-            costWindowObject.SetActive(false);
+            //costWindowObject.SetActive(false);
+            costWindowVerticalLayoutGroup = costWindowObject.GetComponent<VerticalLayoutGroup>();
+            costWindowCanvasGroup = costWindowObject.GetComponent<CanvasGroup>();
 
             InitButtons();
 
@@ -80,8 +86,10 @@ namespace StarSalvager.UI.Scrapyard
             if (scrollViewsSetup)
                 RefreshScrollViews();
 
-            blueprintsContentScrollView.ClearElements<BlueprintUIElement>();
+            blueprintsContentScrollView.ClearElements();
             InitUIScrollView();
+            
+            costWindowObject.SetActive(false);
 
         }
 
@@ -113,35 +121,14 @@ namespace StarSalvager.UI.Scrapyard
         private void InitUIScrollView()
         {
             //FIXME This needs to move to the Factory
-            if (PlayerPersistentData.PlayerData.unlockedBlueprints.Count == 0)
+            if (!Globals.DisableTestingFeatures)
             {
-                foreach (var partRemoteData in _remotePartProfileScriptable.partRemoteData)
-                {
-                    for (int i = 0; i < partRemoteData.levels.Count; i++)
-                    {
-                        //TODO Add these back in when we're ready!
-                        switch (partRemoteData.partType)
-                        {
-                            //Still want to be able to upgrade the core, just don't want to buy new ones?
-                            case PART_TYPE.CORE when i == 0:
-                            case PART_TYPE.BOOST:
-                                continue;
-                        }
-
-                        TEST_Blueprint blueprint = new TEST_Blueprint
-                        {
-                            name = partRemoteData.partType + " " + i,
-                            partType = partRemoteData.partType,
-                            level = i
-                        };
-                        PlayerPersistentData.PlayerData.UnlockBlueprint(blueprint);
-                    }
-                }
+                PlayerPersistentData.PlayerData.UnlockAllBlueprints();
             }
 
             foreach (var blueprint in PlayerPersistentData.PlayerData.unlockedBlueprints)
             {
-                var temp = blueprintsContentScrollView.AddElement<BlueprintUIElement>(blueprint, $"{blueprint.name}_UIElement");
+                var temp = blueprintsContentScrollView.AddElement(blueprint, $"{blueprint.name}_UIElement");
                 temp.Init(blueprint, data =>
                 {
                     Debug.Log("Craft button pressed");
@@ -187,7 +174,7 @@ namespace StarSalvager.UI.Scrapyard
 
         public void RefreshScrollViews()
         {
-            blueprintsContentScrollView.ClearElements<BlueprintUIElement>();
+            blueprintsContentScrollView.ClearElements();
             InitUIScrollView();
             UpdateResources();
         }
@@ -239,13 +226,15 @@ namespace StarSalvager.UI.Scrapyard
 
         #region Other
 
-        private TEST_Blueprint lastBlueprint;
+        private Blueprint lastBlueprint;
 
-        private void SetupBlueprintCosts(TEST_Blueprint blueprint, bool showWindow, RectTransform buttonTransform)
+        private void SetupBlueprintCosts(Blueprint blueprint, bool showWindow, RectTransform buttonTransform)
         {
             costWindowObject.SetActive(showWindow);
 
-            
+
+            costWindowVerticalLayoutGroup.enabled = false;
+            costWindowCanvasGroup.alpha = 0;
 
             if (!showWindow)
             {
@@ -258,21 +247,36 @@ namespace StarSalvager.UI.Scrapyard
 
             lastBlueprint = blueprint;
 
-            var windowTransform = costWindowObject.transform as RectTransform;
-
-            windowTransform.position = buttonTransform.position/* +
-                                       Vector3.left *
-                                       (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f)*/;
-            
-            windowTransform.localPosition += Vector3.left * (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f);
-            
-
             UpdateCostUI();
+
+            //FIXME This is just a temp setup to ensure the functionality
+            StartCoroutine(ResizeRepositionCostWindowCoroutine(buttonTransform));
+
+            /*Canvas.ForceUpdateCanvases();
+            costWindowVerticalLayoutGroup.enabled = true;
+            
+            var windowTransform = costWindowObject.transform as RectTransform;
+            windowTransform.position = buttonTransform.position;
+            windowTransform.localPosition += Vector3.left * (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f);*/
+        }
+
+        private IEnumerator ResizeRepositionCostWindowCoroutine(RectTransform buttonTransform)
+        {
+            Canvas.ForceUpdateCanvases();
+            costWindowVerticalLayoutGroup.enabled = true;
+            
+            yield return new WaitForEndOfFrame();
+            
+            var windowTransform = costWindowObject.transform as RectTransform;
+            windowTransform.position = buttonTransform.position;
+            windowTransform.localPosition += Vector3.left * (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f);
+
+            costWindowCanvasGroup.alpha = 1;
         }
 
         private void UpdateCostUI()
         {
-            costView.ClearElements<CostUIElement>();
+            costView.ClearElements();
             
             var partProfileData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetProfileData(lastBlueprint.partType);
@@ -290,7 +294,7 @@ namespace StarSalvager.UI.Scrapyard
 
             foreach (var resource in resources)
             {
-                var element = costView.AddElement<CostUIElement>(resource, $"{resource.type}_UIElement");
+                var element = costView.AddElement(resource, $"{resource.type}_UIElement");
                 element.Init(resource);
             }
         }
@@ -310,6 +314,6 @@ namespace StarSalvager.UI.Scrapyard
     }
 
     [System.Serializable]
-    public class BlueprintUIElementScrollView: UIElementContentScrollView<TEST_Blueprint>
+    public class BlueprintUIElementScrollView: UIElementContentScrollView<BlueprintUIElement, Blueprint>
     {}
 }

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a9be2347e56e1c41ae0b415bc34e015, type: 3}
+  m_Name: Game Settings
+  m_EditorClassIdentifier: 
+  allowAccessToUnlockedLaterWaves: 1
+  disableTestingFeatures: 1
+  bitsPushThroughParts: 0
+  gridWidth: 300
+  timeForAsteroidToFallOneSquare: 0.25
+  DASTime: 0.15
+  gridHeightRelativeToScreen: 1.25
+  obstacleMass: 2
+  obstacleDensityReductionModifier: 5
+  botHorizontalSpeed: 30
+  missionReminderFrequency: 25
+  bonusShapeSpeed: 12
+  bonusShapeGearsRewards: 0a00000032000000640000002c010000b004000070170000
+  cameraUseInputMotion: 1
+  cameraSmoothing: 1
+  cameraOffsetBounds: 0.2
+  blueprintInitialData:
+  - type: 4
+    level: 0
+  - type: 0
+    level: 2
+  - type: 2
+    level: 2

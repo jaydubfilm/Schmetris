@@ -27,9 +27,6 @@ namespace StarSalvager.Factories.Data
         
         [SerializeField, FoldoutGroup("$GetEnemyType"), OnValueChanged("OnAnimationValueChanged")]
         private AnimationControllerScriptableObject m_enemyAnimationController;
-
-        [SerializeField, FoldoutGroup("$GetEnemyType")]
-        private ENEMY_ATTACKTYPE m_attackType;
         
         [SerializeField, FoldoutGroup("$GetEnemyType"), ValueDropdown("GetProjectileTypes")]
         private string m_projectileType;
@@ -52,19 +49,21 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$GetEnemyType")]
         private bool m_ignoreObstacleAvoidance;
 
-        [SerializeField, FoldoutGroup("$GetEnemyType")]
-        private bool m_addVelocityToProjectiles;
 
-        private bool showSpreadAngle => m_attackType == ENEMY_ATTACKTYPE.AtPlayerCone || m_attackType == ENEMY_ATTACKTYPE.Spray;
-        [SerializeField, FoldoutGroup("$GetEnemyType"), ShowIf("showSpreadAngle")]
-        private float m_spreadAngle;
 
-        [SerializeField, FoldoutGroup("$GetEnemyType"), ShowIf("m_attackType", ENEMY_ATTACKTYPE.Spray)]
-        private int m_sprayCount;
+        public string EnemyName
+        {
+            get
+            {
+#if UNITY_EDITOR
+                
+                return GetEnemyType();
+#else
+                return string.Empty;
 
-        
-
-        public string EnemyName => GetEnemyType();
+#endif
+            }
+        }
 
         public string EnemyID => m_enemyTypeID;
 
@@ -75,8 +74,6 @@ namespace StarSalvager.Factories.Data
         public ENEMY_MOVETYPE MovementType => m_movementType;
 
         public bool IsAttachable => m_isAttachable;
-
-        public ENEMY_ATTACKTYPE AttackType => m_attackType;
 
         public string ProjectileType => m_projectileType;
 
@@ -89,12 +86,6 @@ namespace StarSalvager.Factories.Data
         public float NumberCellsDescend => m_numberCellsDescend;
 
         public bool IgnoreObstacleAvoidance => m_ignoreObstacleAvoidance;
-
-        public bool AddVelocityToProjectiles => m_addVelocityToProjectiles;
-
-        public float SpreadAngle => m_spreadAngle;
-
-        public int SprayCount => m_sprayCount;
 
         #if UNITY_EDITOR
 

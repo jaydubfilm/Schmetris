@@ -2,7 +2,7 @@
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
-using StarSalvager.Utilities.Debugging;
+using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities.Enemies;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
@@ -10,51 +10,53 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class EnemyAttachable : Enemy, IAttachable, ICustomRecycle, ICustomRotate
+    public class EnemyAttachable : Enemy, IAttachable, ICustomRotate, IWasBumped
     {
         private static readonly int DEFAULT = Animator.StringToHash("Default");
         private static readonly int ATTACK  = Animator.StringToHash("Attack");
 
+        //IAttachable Properties
         //============================================================================================================//
         [ShowInInspector, ReadOnly]
         public Vector2Int Coordinate { get; set; }
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
 
-        public bool CountAsConnected => false;
+        public bool CountAsConnectedToCore => false;
         public bool CanDisconnect => true;
         public bool CanShift => true;
+        public bool CountTowardsMagnetism => false;
 
+        //EnemyAttachable Properties
+        //============================================================================================================//
+        
         [SerializeField]
         private LayerMask collisionMask;
-
-        //============================================================================================================//
-
+        
+        
         private EnemyDecoy _enemyDecoy;
 
-        private Bot attachedBot;
-        private IAttachable target;
-        private Vector2Int targetCoordinate;
-        //private Vector2Int targetDirection;
+        private Bot _attachedBot;
+        private IAttachable _target;
+        private Vector2Int _targetCoordinate;
+        
+        
 
-        //FIXME This needs to be removed
-        public GameObject TEST_TARGET;
+        //Unity Functions
+        //============================================================================================================//
 
         protected override void Update()
         {
-
             if (!Attached)
-            {
-                if(attachedBot != null )
-                    Debug.Break();
-                
                 return;
-            }
+
+            if (Disabled)
+                return;
 
             if (LevelManager.Instance.EndWaveState)
             {
-                target = null;
-                attachedBot.ForceDetach(this);
+                _target = null;
+                _attachedBot.ForceDetach(this);
                 return;
             }
 
@@ -66,10 +68,12 @@ namespace StarSalvager.AI
                 return;
 
             m_fireTimer -= 1 / m_enemyData.RateOfFire;
-
-            attachedBot.TryHitAt(target, m_enemyData.AttackDamage);
+            
+            FireAttack();
+            
         }
 
+        //IAttachable Functions
         //============================================================================================================//
 
         public void SetAttached(bool isAttached)
@@ -87,7 +91,7 @@ namespace StarSalvager.AI
                 if (_enemyDecoy == null)
                     _enemyDecoy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateEnemyDecoy();
                 
-                _enemyDecoy.Setup(this, attachedBot.Collider);
+                _enemyDecoy.Setup(this, _attachedBot.Collider);
 
                 return;
             }
@@ -102,14 +106,21 @@ namespace StarSalvager.AI
             collider.usedByComposite = false;
             StateAnimator.ChangeState(DEFAULT);
 
-            target = null;
-            attachedBot = null;
+            _target = null;
+            _attachedBot = null;
             transform.rotation = Quaternion.identity;
-            transform.parent = null;
+            
+            LevelManager.Instance.EnemyManager.ReParentEnemy(this);
         }
 
+        //Enemy Overrides
+        //====================================================================================================================//
+        
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
         {
+            if (Disabled)
+                return;
+            
             if (LevelManager.Instance.EndWaveState)
                 return;
             
@@ -147,15 +158,15 @@ namespace StarSalvager.AI
             //If nothing was hit, ray failed, thus no reason to continue
             if (hit.collider == null)
             {
-                Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.yellow, 1f);
-                SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);
+                /*Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.yellow, 1f);
+                SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);*/
                 return;
             }
 
-            Debug.DrawRay(hit.point, Vector2.up, Color.red);
-            Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.green);
+            /*Debug.DrawRay(hit.point, Vector2.up, Color.red);
+            Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.green);*/
 
-            attachedBot = bot;
+            _attachedBot = bot;
             
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
             var inDirection = (-rayDirection).ToDirection();
@@ -163,14 +174,20 @@ namespace StarSalvager.AI
 
             if (!attached)
             {
-                attachedBot = null;
+                _attachedBot = null;
                 return;
             }
 
             TryUpdateTarget();
         }
 
-        //============================================================================================================//
+        protected override void FireAttack()
+        {
+            if (!_attachedBot || !Attached)
+                return;
+            
+            _attachedBot.TryHitAt(_target, m_enemyData.AttackDamage);
+        }
 
         protected override bool TryGetRayDirectionFromBot(DIRECTION direction, out Vector2 rayDirection)
         {
@@ -203,40 +220,52 @@ namespace StarSalvager.AI
         //Attachable Enemy Movement when Attacking
         //============================================================================================================//
 
+        public void CheckUpdateTarget()
+        {
+            TryUpdateTarget();
+        }
+
         private void EnsureTargetValidity()
         {
             //If our target has been destroyed (Killed/Recycled) we want to move to its position
             //This would occur if this wasn't attempted to be detached,
             //meaning it was sitting in a legal position that didn't require it to be detached
             //FIXME This may be an issue with those attached to shapes that get detached?
-            if (target is IRecycled recyclable && recyclable.IsRecycled)
-            {
-                var health = target as IHealth;
-                
-                //Here I can assume that a Bit with no health was destroyed, and thus I can move into its position
-                if (health?.CurrentHealth <= 0)
-                {
-                    if (TryMoveToTargetPosition())
-                        return;
-                }
-                //If the Bit was recycled with a health above 0, I can assume that it was done because of a combo, 
-                //and the enemy should try and find a new target relative to its current position
-                else if (health?.CurrentHealth > 0)
-                {
-                    if(TryUpdateTarget())
-                        return;
-                }
+            //if (_target is IRecycled recyclable && recyclable.IsRecycled)
+            //{
+//
+            //}
 
-                target = null;
-                attachedBot.ForceDetach(this);
-                return;
+            switch (_target)
+            {
+                case IRecycled recyclable when recyclable.IsRecycled:
+                case Part part when part.Destroyed:
+                    var health = _target as IHealth;
+                
+                    //Here I can assume that a Bit with no health was destroyed, and thus I can move into its position
+                    if (health?.CurrentHealth <= 0)
+                    {
+                        if (TryMoveToTargetPosition())
+                            return;
+                    }
+                    //If the Bit was recycled with a health above 0, I can assume that it was done because of a combo, 
+                    //and the enemy should try and find a new target relative to its current position
+                    else if (health?.CurrentHealth > 0)
+                    {
+                        if(TryUpdateTarget())
+                            return;
+                    }
+
+                    _target = null;
+                    _attachedBot.ForceDetach(this);
+                    return;
             }
 
             //Here we're making sure that the target is still part of what we're attacking
-            if (target.transform.parent != transform.parent)
+            if (_target.transform.parent != transform.parent)
             {
-                target = null;
-                attachedBot.ForceDetach(this);
+                _target = null;
+                _attachedBot.ForceDetach(this);
                 return;
             }
             //TODO Need to account for bits that move due to combo solve
@@ -261,32 +290,29 @@ namespace StarSalvager.AI
                 attachedBot.ForceDetach(this);
                 return;
             }*/
-            
-            if (target is EnemyAttachable /*|| target.Attached == false*/)
-            {
-                TryUpdateTarget();
+
+            if (!(_target is EnemyAttachable)) 
                 return;
-            }
+
+            TryUpdateTarget();
         }
-
-
 
         private bool TryMoveToTargetPosition()
         {
-            if (target == null)
+            if (_target == null)
                 return false;
 
             //If the enemy didn't kill the bit, we shouldn't more to its position
             if (!DidIDestroyBit())
                 return false;
 
-            if (!attachedBot.CoordinateHasPathToCore(target.Coordinate))
+            if (!_attachedBot.CoordinateHasPathToCore(_target.Coordinate))
                 return false;
 
-            if (attachedBot.CoordinateOccupied(target.Coordinate))
+            if (_attachedBot.CoordinateOccupied(_target.Coordinate))
                 return false;
 
-            if (!attachedBot.TryAttachNewBit(target.Coordinate, this, false, true, false))
+            if (!_attachedBot.TryAttachNewBit(_target.Coordinate, this, false, true, false))
                 return false;
 
             if (!TryUpdateTarget())
@@ -297,33 +323,38 @@ namespace StarSalvager.AI
 
         private bool TryUpdateTarget()
         {
+            if (_attachedBot is null)
+            {
+                SetAttached(false);
+                return false;
+            }
+            
             //We set the max distance here because we want to ensure we're attacking something right next to us
-            target = attachedBot.GetClosestAttachable(Coordinate, 1f);
+            _target = _attachedBot.GetClosestAttachable(Coordinate, 1f);
 
-            if (target == null)
+            if (_target == null)
             {
                 SetAttached(false);
                 return false;
             }
 
-            TEST_TARGET = target.gameObject;
+            //TEST_TARGET = target.gameObject;
+            //Debug.Log($"{gameObject.name} has new target. TARGET : {TEST_TARGET.gameObject.name}", TEST_TARGET);
 
-            Debug.Log($"{gameObject.name} has new target. TARGET : {TEST_TARGET.gameObject.name}", TEST_TARGET);
-
-            RotateTowardsTarget(target);
+            RotateTowardsTarget(_target);
 
             return true;
         }
         
         private bool DidIDestroyBit()
         {
-            var health = target as IHealth;
-            var recyclable = target as IRecycled; 
+            var health = _target as IHealth;
+            var recyclable = _target as IRecycled; 
             
             if (health?.CurrentHealth > 0)
                 return false;
             
-            return target.Attached  || !recyclable.IsRecycled;
+            return _target.Attached  || !recyclable.IsRecycled;
         }
 
         //IHealth functions
@@ -340,7 +371,7 @@ namespace StarSalvager.AI
         //ICustomRotate functions
         //============================================================================================================//
 
-        public void CustomRotate()
+        public void CustomRotate(Quaternion _)
         {
             //We don't want to rotate the Attachable enemy because they need to face specific directions to
             //indicate their attack direction
@@ -348,7 +379,7 @@ namespace StarSalvager.AI
 
         private void RotateTowardsTarget(IAttachable Target)
         {
-            if (target == null)
+            if (_target == null)
                 return;
             
             var dir = (Target.Coordinate - Coordinate).ToDirection();
@@ -378,18 +409,41 @@ namespace StarSalvager.AI
             transform.rotation = Quaternion.Euler(AddRotation);
         }
 
+        //IWasBumped Functions
+        //====================================================================================================================//
+        
+        public void OnBumped()
+        {
+            if (!Attached || Disabled)
+                return;
+            
+            //IF I wanted to change targets after moving, meaning I stay attached, I would call this
+            //CheckUpdateTarget();
+            
+            //TODO Need to disable enemy after it was bumped
+            _target = null;
+            _attachedBot.ForceDetach(this);
+
+            StateAnimator.ChangeState(StateAnimator.DEFAULT);
+            StateAnimator.Pause();
+            Disabled = true;
+        }
+
         //ICustomRecycle functions
         //============================================================================================================//
 
-        public void CustomRecycle(params object[] args)
+        public override void CustomRecycle(params object[] args)
         {
+            base.CustomRecycle(args);
+            
             _enemyDecoy = null;
-            attachedBot = null;
-            target = null;
+            _attachedBot = null;
+            _target = null;
             SetAttached(false);
         }
 
         //============================================================================================================//
+
 
     }
 }

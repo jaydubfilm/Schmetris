@@ -20,7 +20,7 @@ namespace StarSalvager.Utilities
             {
                 Destroy(gameObject);
                 //throw new Exception($"An instance of {typeof(T)} already exists.");
-                Debug.Log($"An instance of {typeof(T)} already exists.");
+                Debug.LogWarning($"An instance of {typeof(T)} already exists.");
                 return;
             }
 

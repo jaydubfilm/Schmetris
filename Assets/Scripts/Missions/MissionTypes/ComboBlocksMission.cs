@@ -11,7 +11,7 @@ namespace StarSalvager.Missions
         public BIT_TYPE? m_comboType;
         public int m_comboLevel;
 
-        public ComboBlocksMission(BIT_TYPE? comboType, int comboLevel, string missionName, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, amountNeeded, missionUnlockData)
+        public ComboBlocksMission(BIT_TYPE? comboType, int comboLevel, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
         {
             MissionEventType = MISSION_EVENT_TYPE.COMBO_BLOCKS;
             m_comboType = comboType;
@@ -37,6 +37,7 @@ namespace StarSalvager.Missions
             {
                 ClassType = GetType().Name,
                 MissionName = m_missionName,
+                MissionDescription = m_missionDescription,
                 AmountNeeded = m_amountNeeded,
                 CurrentAmount = m_currentAmount,
                 MissionEventType = this.MissionEventType,

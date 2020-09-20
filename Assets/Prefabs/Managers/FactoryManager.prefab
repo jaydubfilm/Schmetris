@@ -43,8 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99d5f8cb99e5ee7488b354fe3cdae687, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DisableTestingFeatures: 0
-  TimeForAsteroidToFallOneSquare: 0.25
   missionRemoteData: {fileID: 11400000, guid: 7d456b233d9dde240ad75b09a9d76dd1, type: 2}
   m_sectorRemoteData:
   - SectorData:
@@ -52,8 +50,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: fa7eeddeec05148069b80871397ddc97, type: 2}
     - {fileID: 11400000, guid: a6a6e6b460f2e40ed9cb05243a91421a, type: 2}
     - {fileID: 11400000, guid: f61d6a84bcd5c4b95b9700d32306bb88, type: 2}
-  - SectorData:
-    - {fileID: 11400000, guid: 084d6bc594ad746bf84ae0d507a37aa5, type: 2}
   - SectorData:
     - {fileID: 11400000, guid: 7ac9df6299ec27246841800d65fc57ec, type: 2}
     - {fileID: 11400000, guid: 63cd5494bf32a7b4d9e634d59d26d498, type: 2}
@@ -84,3 +80,12 @@ MonoBehaviour:
     type: 3}
   explosionPrefab: {fileID: 238150696391007923, guid: 17239bb474ede86468099f6844d6a3b7,
     type: 3}
+  labelPrefab: {fileID: 9099319384489682599, guid: 8a229f5344f29bc42a484ccc31bdec75,
+    type: 3}
+  floatingTextPrefab: {fileID: 1209333815536603345, guid: 7431c86c30856054c909791de5d76629,
+    type: 3}
+  asteroidProfile: {fileID: 11400000, guid: 5b908c56fe99e9a44ac6683480de76a5, type: 2}
+  asteroidRemote: {fileID: 11400000, guid: 4fb1c416745d97f4e97ed047ec893eb2, type: 2}
+  asteroidPrefab: {fileID: 4611369530616709383, guid: 7553853ad3e767d4a9b50f5a6102a7d5,
+    type: 3}
+  facilityRemote: {fileID: 11400000, guid: 3707d8031afd382499acad94f3260a23, type: 2}

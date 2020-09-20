@@ -16,9 +16,9 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required]
         private TMP_Text dateText;
         
-        public void Init(SaveFileData data, Action<SaveFileData> OnPressed, Action<SaveFileData> OnDeletePressed, bool hideDateAndDelete = false)
+        public void Init(SaveFileData data, Action<SaveFileData> onPressedCallback, Action<SaveFileData> OnDeletePressed, bool hideDateAndDelete = false)
         {
-            Init(data, OnPressed);
+            Init(data, onPressedCallback);
             
             deleteButton.onClick.RemoveAllListeners();
             deleteButton.onClick.AddListener(() =>
@@ -40,8 +40,8 @@ namespace StarSalvager.UI.Scrapyard
         /// Use the Init which included the OnDeletePressed
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="OnPressed"></param>
-        public override void Init(SaveFileData data, Action<SaveFileData> OnPressed)
+        /// <param name="onPressedCallback"></param>
+        public override void Init(SaveFileData data, Action<SaveFileData> onPressedCallback)
         {
             this.data = data;
             
@@ -49,7 +49,7 @@ namespace StarSalvager.UI.Scrapyard
             
             button.onClick.AddListener(() =>
             {
-                OnPressed?.Invoke(this.data);
+                onPressedCallback?.Invoke(this.data);
             });
         }
     }

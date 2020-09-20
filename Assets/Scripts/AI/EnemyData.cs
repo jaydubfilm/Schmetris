@@ -48,6 +48,8 @@ namespace StarSalvager
         public bool AddVelocityToProjectiles { get; }
 
         public float SpreadAngle { get; }
+        
+        public int Gears { get; }
 
         public float SprayCount => m_sprayCount;
 
@@ -59,66 +61,84 @@ namespace StarSalvager
 
         public EnemyData(EnemyRemoteData enemyRemoteData, EnemyProfileData enemyProfileData)
         {
-            EnemyType = enemyRemoteData.EnemyID;
-            Name = enemyRemoteData.Name;
-            Health = enemyRemoteData.Health;
-            MovementSpeed = enemyRemoteData.MovementSpeed;
-            IsAttachable = enemyProfileData.IsAttachable;
-            AttackDamage = enemyRemoteData.AttackDamage;
-            RateOfFire = enemyRemoteData.RateOfFire;
-            MovementType = enemyProfileData.MovementType;
-            AttackType = enemyProfileData.AttackType;
-            IgnoreObstacleAvoidance = enemyProfileData.IgnoreObstacleAvoidance;
-            ProjectileType = enemyProfileData.ProjectileType;
-            Sprite = enemyProfileData.Sprite;
-            AnimationController = enemyProfileData.AnimationController;
-            OscillationsPerSecond = enemyProfileData.OscillationsPerSeconds;
-            OscillationAngleRange = enemyProfileData.OscillationAngleRange;
-            OrbitRadius = enemyProfileData.OrbitRadius;
-            NumberCellsDescend = enemyProfileData.NumberCellsDescend;
-            AddVelocityToProjectiles = enemyProfileData.AddVelocityToProjectiles;
-            SpreadAngle = enemyProfileData.SpreadAngle;
-            m_sprayCount = enemyProfileData.SprayCount;
-            Dimensions = enemyRemoteData.Dimensions;
+            ProjectileProfileData projectileProfileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(enemyProfileData.ProjectileType);
+
+            AttackType = projectileProfileData.AttackType;
+            AddVelocityToProjectiles = projectileProfileData.AddVelocityToProjectiles;
+            SpreadAngle = projectileProfileData.SpreadAngle;
+            m_sprayCount = projectileProfileData.SprayCount;
+
+            EnemyType                   = enemyRemoteData.EnemyID;
+            Name                        = enemyRemoteData.Name;
+            Health                      = enemyRemoteData.Health;
+            MovementSpeed               = enemyRemoteData.MovementSpeed;
+            IsAttachable                = enemyProfileData.IsAttachable;
+            AttackDamage                = enemyRemoteData.AttackDamage;
+            RateOfFire                  = enemyRemoteData.RateOfFire;
+            MovementType                = enemyProfileData.MovementType;
+            IgnoreObstacleAvoidance     = enemyProfileData.IgnoreObstacleAvoidance;
+            ProjectileType              = enemyProfileData.ProjectileType;
+            Sprite                      = enemyProfileData.Sprite;
+            AnimationController         = enemyProfileData.AnimationController;
+            OscillationsPerSecond       = enemyProfileData.OscillationsPerSeconds;
+            OscillationAngleRange       = enemyProfileData.OscillationAngleRange;
+            OrbitRadius                 = enemyProfileData.OrbitRadius;
+            NumberCellsDescend          = enemyProfileData.NumberCellsDescend;
+            Dimensions                  = enemyRemoteData.Dimensions;
 
 
-            rdsTable = new RDSTable();
-            rdsTable.rdsCount = enemyRemoteData.MaxDrops;
+            rdsTable = new RDSTable
+            {
+                rdsCount = enemyRemoteData.MaxDrops
+            };
             foreach (var rdsData in enemyRemoteData.rdsEnemyData)
             {
-                if (rdsData.rdsData == RDSEnemyData.TYPE.Bit)
+                if (rdsData.rdsData == RDSLootData.TYPE.Bit)
                 {
                     BlockData bitBlockData = new BlockData
                     {
-                        ClassType = "Bit",
+                        ClassType = nameof(Bit),
                         Type = rdsData.type,
                         Level = rdsData.level
                     };
-                    rdsTable.AddEntry(new RDSValue<BlockData>(bitBlockData, rdsData.probability, rdsData.isUniqueSpawn, rdsData.isAlwaysSpawn, true));
+                    rdsTable.AddEntry(new RDSValue<BlockData>(bitBlockData, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
                 }
-                else if (rdsData.rdsData == RDSEnemyData.TYPE.Component)
+                else if (rdsData.rdsData == RDSLootData.TYPE.Component)
                 {
                     BlockData componentBlockData = new BlockData
                     {
-                        ClassType = "Component",
+                        ClassType = nameof(Component),
                         Type = rdsData.type,
                     };
-                    rdsTable.AddEntry(new RDSValue<BlockData>(componentBlockData, rdsData.probability, rdsData.isUniqueSpawn, rdsData.isAlwaysSpawn, true));
+                    rdsTable.AddEntry(new RDSValue<BlockData>(componentBlockData, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
                 }
-                else if (rdsData.rdsData == RDSEnemyData.TYPE.Blueprint)
+                else if (rdsData.rdsData == RDSLootData.TYPE.Blueprint)
                 {
-                    TEST_Blueprint blueprintData = new TEST_Blueprint
+                    Blueprint blueprintData = new Blueprint
                     {
                         name = (PART_TYPE)rdsData.type + " " + rdsData.level,
                         partType = (PART_TYPE)rdsData.type,
                         level = rdsData.level
                     };
-                    rdsTable.AddEntry(new RDSValue<TEST_Blueprint>(blueprintData, rdsData.probability, rdsData.isUniqueSpawn, rdsData.isAlwaysSpawn, true));
+                    rdsTable.AddEntry(new RDSValue<Blueprint>(blueprintData, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
+                }
+                else if (rdsData.rdsData == RDSLootData.TYPE.FacilityBlueprint)
+                {
+                    FacilityBlueprint facilityBlueprintData = new FacilityBlueprint
+                    {
+                        facilityType = (FACILITY_TYPE)rdsData.type,
+                        level = rdsData.level
+                    };
+                    rdsTable.AddEntry(new RDSValue<FacilityBlueprint>(facilityBlueprintData, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
+                }
+                else if (rdsData.rdsData == RDSLootData.TYPE.Gears)
+                {
+                    rdsTable.AddEntry(new RDSValue<Vector2Int>(rdsData.GearDropRange, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
                 }
             }
         }
 
-        public EnemyData(string enemyType, string name, int health, float movementSpeed, bool isAttachable,
+        /*public EnemyData(string enemyType, string name, int health, float movementSpeed, bool isAttachable,
             float attackDamage, float attackSpeed, ENEMY_MOVETYPE movementType, ENEMY_ATTACKTYPE attackType,
             string projectileType, Sprite sprite, float oscillationsPerSecond, float oscillationAngleRange,
             float orbitRadius, float numberCellsDescend, bool addVelocityToProjectiles, float spreadAngle,
@@ -142,6 +162,6 @@ namespace StarSalvager
             AddVelocityToProjectiles = addVelocityToProjectiles;
             SpreadAngle = spreadAngle;
             m_sprayCount = sprayCount;
-        }
+        }*/
     }
 }
