@@ -15,31 +15,32 @@ namespace StarSalvager
             Component,
             Blueprint,
             FacilityBlueprint,
-            Gears
+            Gears,
+            Null
         }
 
         [FoldoutGroup("$Name"), EnumToggleButtons, LabelWidth(75), OnValueChanged("UpdateValue")]
         public TYPE rdsData;
 
-        [FoldoutGroup("$Name"), ValueDropdown("GetTypes"), HideIf("rdsData", TYPE.Gears)]
+        [FoldoutGroup("$Name"), ValueDropdown("GetTypes"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         public int type;
 
-        [FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Component), HideIf("rdsData", TYPE.Gears)]
+        [FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Component), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         public int level;
 
         [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears)]
         private int probability;
         public int Probability => probability;
 
-        [SerializeField, FoldoutGroup("$Name"), ShowIf("rdsData", TYPE.Gears)]
+        [SerializeField, FoldoutGroup("$Name"), ShowIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         private Vector2Int gearDropRange;
         public Vector2Int GearDropRange => gearDropRange;
 
-        [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears)]
+        [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         private bool isUniqueSpawn;
         public bool IsUniqueSpawn => isUniqueSpawn || rdsData == TYPE.Gears;
 
-        [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears)]
+        [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         private bool isAlwaysSpawn;
         public bool IsAlwaysSpawn => isAlwaysSpawn || rdsData == TYPE.Gears;
 
@@ -104,6 +105,9 @@ namespace StarSalvager
                 case TYPE.Gears:
                     value = "Gears";
                     break;
+                case TYPE.Null:
+                    value = "Null";
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -131,6 +135,7 @@ namespace StarSalvager
                     valueType = typeof(FACILITY_TYPE);
                     break;
                 case TYPE.Gears:
+                case TYPE.Null:
                     return null;
                 default:
                     throw new ArgumentOutOfRangeException();
