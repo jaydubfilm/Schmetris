@@ -12,6 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c59c6b39881711a4296e83fe97d9a858, type: 3}
   m_Name: Wave_Remote_PB1_4_4
   m_EditorClassIdentifier: 
+  BonusShapes:
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: BS_5Cell
+    m_rotation: -1
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: BS_5Cell
+    m_rotation: -1
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: BS_5Cell
+    m_rotation: -1
   StageRemoteData:
   - m_stageDuration: 30
     m_stageBlendPeriod: 5
@@ -28,63 +41,63 @@ MonoBehaviour:
     - m_selectionType: 2
       m_shapeName: BlackSingle
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 3
       m_density: 0.2
-      m_rotation: Random
     - m_selectionType: 2
       m_shapeName: Asteroid3.0
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 2
       m_density: 0.2
-      m_rotation: Random
     - m_selectionType: 2
       m_shapeName: Asteroid5.1
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 1
       m_density: 0.2
-      m_rotation: Random
     - m_selectionType: 2
       m_shapeName: 
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.2
-      m_rotation: Random
     - m_selectionType: 0
       m_shapeName: RedSingle
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.2
-      m_rotation: 
     - m_selectionType: 0
       m_shapeName: GreySingle
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.2
-      m_rotation: 
     - m_selectionType: 0
       m_shapeName: GreenSingle
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.2
-      m_rotation: 
     - m_selectionType: 0
       m_shapeName: BlueSingle
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.2
-      m_rotation: 
     - m_selectionType: 0
       m_shapeName: YellowSingle
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.2
-      m_rotation: 
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.3
-      m_rotation: 
     m_stageColumnGroupObstacleData: []
   - m_stageDuration: 30
     m_stageBlendPeriod: 5
@@ -101,63 +114,63 @@ MonoBehaviour:
     - m_selectionType: 2
       m_shapeName: BlackSingle
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 3
       m_density: 0.2
-      m_rotation: Random
     - m_selectionType: 2
       m_shapeName: Asteroid3.0
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 2
       m_density: 0.2
-      m_rotation: Random
     - m_selectionType: 2
       m_shapeName: Asteroid5.1
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 1
       m_density: 0.2
-      m_rotation: Random
     - m_selectionType: 2
       m_shapeName: 
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.2
-      m_rotation: Random
     - m_selectionType: 0
       m_shapeName: RedSingle
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.2
-      m_rotation: 
     - m_selectionType: 0
       m_shapeName: GreySingle
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.2
-      m_rotation: 
     - m_selectionType: 0
       m_shapeName: GreenSingle
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.2
-      m_rotation: 
     - m_selectionType: 0
       m_shapeName: BlueSingle
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.2
-      m_rotation: 
     - m_selectionType: 0
       m_shapeName: YellowSingle
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.2
-      m_rotation: 
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
+      m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.3
-      m_rotation: 
     m_stageColumnGroupObstacleData: []
   maxDrops: 0
   RDSEndOfWaveLoot: []
