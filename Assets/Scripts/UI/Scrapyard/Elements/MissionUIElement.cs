@@ -17,7 +17,17 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField]
         private Button favouriteButton;
 
-        public void Update()
+        public void OnEnable()
+        {
+            MissionsUI.CheckMissionUITrackingToggles += OnCheckMissionUITrackingToggles;
+        }
+
+        public void OnDisable()
+        {
+            MissionsUI.CheckMissionUITrackingToggles -= OnCheckMissionUITrackingToggles;
+        }
+
+        public void OnCheckMissionUITrackingToggles()
         {
             bool isTracked = PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Any(m => m.m_missionName == data.m_missionName);
 
