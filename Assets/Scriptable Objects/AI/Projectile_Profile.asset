@@ -107,7 +107,7 @@ MonoBehaviour:
     m_projectileSpeed: 10
     m_requiredRotate: 1
     m_attackType: 7
-    m_spreadAngle: 90
+    m_spreadAngle: 60
     m_sprayCount: 3
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
