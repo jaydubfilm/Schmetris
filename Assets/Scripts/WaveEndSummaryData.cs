@@ -13,8 +13,9 @@ public class WaveEndSummaryData
     public Dictionary<string, int> dictTotalEnemiesSpawned = new Dictionary<string, int>();
     public int numGearsGained = 0;
     public int numLevelsGained = 0;
-    public int numBlueprintsUnlocked = 0;
     public List<string> blueprintsUnlockedStrings = new List<string>();
+    public List<string> missionCompletedStrings = new List<string>();
+    public List<string> missionUnlockedStrings = new List<string>();
 
     public string GetWaveEndSummaryDataString()
     {
@@ -44,15 +45,49 @@ public class WaveEndSummaryData
             returnString += "Level ups: " + numLevelsGained + "\n";
         }
 
-        if (numBlueprintsUnlocked > 0)
+        if (blueprintsUnlockedStrings.Count > 0)
         {
-            returnString += "Blueprints Unlocked: " + "\n";
+            returnString += "Blueprints Unlocked: ";
             for (int i = 0; i < blueprintsUnlockedStrings.Count; i++)
             {
-                returnString += blueprintsUnlockedStrings[i] + "\n";
+                if (i > 0)
+                {
+                    returnString += ", ";
+                }
+                returnString += blueprintsUnlockedStrings[i];
             }
+            returnString += "\n";
         }
-        
+
+        if (missionCompletedStrings.Count > 0)
+        {
+            returnString += "Missions Completed: ";
+            for (int i = 0; i < missionCompletedStrings.Count; i++)
+            {
+                if (i > 0)
+                {
+                    returnString += ", ";
+                }
+                returnString += missionCompletedStrings[i];
+            }
+            returnString += "\n";
+        }
+
+        if (missionUnlockedStrings.Count > 0)
+        {
+            returnString += "Missions Unlocked: ";
+            for (int i = 0; i < missionUnlockedStrings.Count; i++)
+            {
+                if (i > 0)
+                {
+                    returnString += ", ";
+                }
+                returnString += missionUnlockedStrings[i];
+                Debug.Log(missionUnlockedStrings[i]);
+            }
+            returnString += "\n";
+        }
+
         return returnString;
     }
 }

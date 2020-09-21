@@ -284,6 +284,11 @@ namespace StarSalvager.Missions
             Toast.AddToast(missionName + " Successful!!!!", time: 3.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.End);
             LevelManager.Instance.MissionsCompletedDuringThisFlight.Add(missionName);
             RecentCompletedMissionName = missionName;
+            if (LevelManager.Instance.WaveEndSummaryData != null)
+            {
+                LevelManager.Instance.WaveEndSummaryData.missionCompletedStrings.Add(missionName);
+            }
+
             CheckUnlocks();
         }
 
@@ -302,6 +307,11 @@ namespace StarSalvager.Missions
                 if (mission.CheckUnlockParameters())
                 {
                     MissionsCurrentData.AddMission(mission);
+
+                    if (LevelManager.Instance.WaveEndSummaryData != null)
+                    {
+                        LevelManager.Instance.WaveEndSummaryData.missionUnlockedStrings.Add(mission.m_missionName);
+                    }
                 }
             }
         }

@@ -11,6 +11,8 @@ using StarSalvager.Missions;
 using UnityEngine.SceneManagement;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Factories;
+using StarSalvager.ScriptableObjects;
+using StarSalvager.Factories.Data;
 
 namespace StarSalvager.Values
 {
@@ -452,7 +454,6 @@ namespace StarSalvager.Values
 
                 if (LevelManager.Instance.WaveEndSummaryData != null)
                 {
-                    LevelManager.Instance.WaveEndSummaryData.numBlueprintsUnlocked++;
                     LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprint.name);
                 }
             }
@@ -499,6 +500,7 @@ namespace StarSalvager.Values
 
         public void UnlockFacilityLevel(FACILITY_TYPE type, int level)
         {
+            FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(type);
             if (_facilityRanks.ContainsKey(type) && _facilityRanks[type] < level)
             {
                 _facilityRanks[type] = level;
@@ -508,7 +510,7 @@ namespace StarSalvager.Values
                 _facilityRanks.Add(type, level);
             }
 
-            int increaseAmount = FactoryManager.Instance.FacilityRemote.GetRemoteData(type).levels[level].increaseAmount;
+            int increaseAmount = remoteData.levels[level].increaseAmount;
             switch (type)
             {
                 case FACILITY_TYPE.FREEZER:
@@ -538,16 +540,27 @@ namespace StarSalvager.Values
 
         public void UnlockFacilityBlueprintLevel(FacilityBlueprint facilityBlueprint)
         {
+            FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(facilityBlueprint.facilityType);
             if (_facilityBlueprintRanks.ContainsKey(facilityBlueprint.facilityType))
             {
                 if (_facilityBlueprintRanks[facilityBlueprint.facilityType] < facilityBlueprint.level)
                 {
                     _facilityBlueprintRanks[facilityBlueprint.facilityType] = facilityBlueprint.level;
+                    if (LevelManager.Instance.WaveEndSummaryData != null)
+                    {
+                        string blueprintUnlockString = remoteData.displayName + " " + facilityBlueprint.level;
+                        LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprintUnlockString);
+                    }
                 }
             }
             else
             {
                 _facilityBlueprintRanks.Add(facilityBlueprint.facilityType, facilityBlueprint.level);
+                if (LevelManager.Instance.WaveEndSummaryData != null)
+                {
+                    string blueprintUnlockString = remoteData.displayName + " " + facilityBlueprint.level;
+                    LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprintUnlockString);
+                }
             }
             OnValuesChanged?.Invoke();
         }
