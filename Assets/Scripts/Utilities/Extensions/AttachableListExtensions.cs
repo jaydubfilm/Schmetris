@@ -286,6 +286,45 @@ namespace StarSalvager.Utilities.Extensions
 
         //============================================================================================================//
 
+        /// <summary>
+        /// Finds the closest attachable based on the average center of the collection, and returns its coordinate
+        /// </summary>
+        /// <param name="blocks"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static Vector2Int GetCollectionCenterCoordinate<T>(this IEnumerable<T> blocks) where T: IAttachable
+        {
+            return blocks.GetCollectionCenterAttachable().Coordinate;
+        }
+        /// <summary>
+        /// Finds the closest attachable based on the average center of the collection, and returns its world position
+        /// </summary>
+        /// <param name="blocks"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static Vector2 GetCollectionCenterPosition<T>(this IEnumerable<T> blocks) where T: IAttachable
+        {
+            return blocks.GetCollectionCenterAttachable().transform.position;
+        }
+        /// <summary>
+        /// Finds the closest attachable based on the average center of the collection
+        /// </summary>
+        /// <param name="blocks"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T GetCollectionCenterAttachable<T>(this IEnumerable<T> blocks) where T: IAttachable
+        {
+            var blockList = blocks.ToList();
+            var averagePosition = blockList
+                .Aggregate(Vector3.zero, (current, block) => current + block.transform.position);
+
+            averagePosition /= blockList.Count;
+
+            var closest = blockList.GetClosestAttachable(averagePosition);
+
+            return closest;
+        }
+
         public static T GetClosestAttachable<T>(this List<T> blocks, Vector2 checkPosition, bool ignoreDestroyed = false) where T : IAttachable
         {
             if (blocks.Count == 1)
@@ -370,6 +409,16 @@ namespace StarSalvager.Utilities.Extensions
             //selected.SetColor(Color.magenta);
 
             return (T) selected;
+        }
+
+        public static IEnumerable<T> Find<T>(this IEnumerable<T> blocks, IEnumerable<Vector2Int> coordinates)
+            where T : IAttachable
+        {
+            return coordinates
+                .Select(coordinate => blocks
+                    .FirstOrDefault(x => x.Coordinate == coordinate))
+                .Where(found => found != null)
+                .ToArray();
         }
 
         //============================================================================================================//
