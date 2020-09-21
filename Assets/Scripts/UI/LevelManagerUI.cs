@@ -181,9 +181,12 @@ namespace StarSalvager.UI
 
         private void PlayMissionReminder()
         {
-            string missionReminderText = MissionManager.MissionsCurrentData.CurrentMissions[Random.Range(0, Mathf.Min(3, MissionManager.MissionsCurrentData.CurrentMissions.Count))].m_missionDescription;
-            scrollingMissionsText.text = missionReminderText;
-            m_isMissionReminderScrolling = true;
+            if (MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count > 0)
+            {
+                string missionReminderText = MissionManager.MissionsCurrentData.CurrentTrackedMissions[Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count)].m_missionDescription;
+                scrollingMissionsText.text = missionReminderText;
+                m_isMissionReminderScrolling = true;
+            }
         }
 
         //============================================================================================================//

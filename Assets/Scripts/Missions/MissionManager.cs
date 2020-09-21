@@ -71,7 +71,6 @@ namespace StarSalvager.Missions
                         Debug.Log("Mission " + resourceCollectedMission.m_missionName + " Complete!");
                         resourceCollectedMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(resourceCollectedMission);
-                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(resourceCollectedMission.m_missionName);
                     }
                 }
@@ -91,7 +90,6 @@ namespace StarSalvager.Missions
                         Debug.Log("Mission " + liquidResourceConvertedMission.m_missionName + " Complete!");
                         liquidResourceConvertedMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(liquidResourceConvertedMission);
-                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(liquidResourceConvertedMission.m_missionName);
                     }
                 }
@@ -111,7 +109,6 @@ namespace StarSalvager.Missions
                         Debug.Log("Mission " + enemyKilledMission.m_missionName + " Complete!");
                         enemyKilledMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(enemyKilledMission);
-                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(enemyKilledMission.m_missionName);
                     }
                 }
@@ -131,7 +128,6 @@ namespace StarSalvager.Missions
                         Debug.Log("Mission " + comboBlocksMission.m_missionName + " Complete!");
                         comboBlocksMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(comboBlocksMission);
-                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(comboBlocksMission.m_missionName);
                     }
                 }
@@ -151,7 +147,6 @@ namespace StarSalvager.Missions
                         Debug.Log("Mission " + levelProgressMission.m_missionName + " Complete!");
                         levelProgressMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(levelProgressMission);
-                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(levelProgressMission.m_missionName);
                     }
                 }
@@ -172,7 +167,6 @@ namespace StarSalvager.Missions
                         Debug.Log("Mission " + SectorsCompletedMission.m_missionName + " Complete!");
                         SectorsCompletedMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(SectorsCompletedMission);
-                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(SectorsCompletedMission.m_missionName);
                     }
                 }
@@ -192,7 +186,6 @@ namespace StarSalvager.Missions
                         Debug.Log("Mission " + flightLengthMission.m_missionName + " Complete!");
                         flightLengthMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(flightLengthMission);
-                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(flightLengthMission.m_missionName);
                     }
                 }
@@ -212,7 +205,6 @@ namespace StarSalvager.Missions
                         Debug.Log("Mission " + chainWavesMission.m_missionName + " Complete!");
                         chainWavesMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(chainWavesMission);
-                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(chainWavesMission.m_missionName);
                     }
                 }
@@ -232,7 +224,6 @@ namespace StarSalvager.Missions
                         Debug.Log("Mission " + craftPartMission.m_missionName + " Complete!");
                         craftPartMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(craftPartMission);
-                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(craftPartMission.m_missionName);
                     }
                 }
@@ -252,7 +243,6 @@ namespace StarSalvager.Missions
                         Debug.Log("Mission " + whiteBumperMission.m_missionName + " Complete!");
                         whiteBumperMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(whiteBumperMission);
-                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(whiteBumperMission.m_missionName);
                     }
                 }
@@ -272,7 +262,6 @@ namespace StarSalvager.Missions
                         Debug.Log("Mission " + asteroidCollisionMission.m_missionName + " Complete!");
                         asteroidCollisionMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(asteroidCollisionMission);
-                        MissionsCurrentData.CurrentMissions.RemoveAt(i);
                         ProcessMissionComplete(asteroidCollisionMission.m_missionName);
                     }
                 }
@@ -321,10 +310,7 @@ namespace StarSalvager.Missions
         private static void ResetMissionData()
         {
             MissionsCurrentData currentData = new MissionsCurrentData();
-            foreach (Mission mission in MissionsMasterData.GetMasterMissions())
-            {
-                currentData.NotStartedMissionData.Add(mission.ToMissionData());
-            }
+            currentData.ResetMissionData();
             PlayerPersistentData.PlayerData.missionsCurrentData = currentData;
         }
 

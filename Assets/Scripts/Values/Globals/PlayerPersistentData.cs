@@ -67,7 +67,9 @@ namespace StarSalvager.Values
         public static void CustomOnApplicationQuit()
         {
             if (CurrentSaveFile != string.Empty)
+            {
                 Files.ExportPlayerPersistentData(PlayerData, CurrentSaveFile);
+            }
 
             if (PlayerMetadata.CurrentSaveFile == null)
             {

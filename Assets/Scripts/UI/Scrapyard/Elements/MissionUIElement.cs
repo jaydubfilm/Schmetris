@@ -3,6 +3,9 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using StarSalvager;
+using StarSalvager.Values;
+using System.Linq;
 
 namespace StarSalvager.UI.Scrapyard
 {
@@ -13,6 +16,22 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField]
         private Button favouriteButton;
+
+        public void Update()
+        {
+            bool isTracked = PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Any(m => m.m_missionName == data.m_missionName);
+
+            if (isTracked)
+            {
+                button.image.color = Color.green;
+            }
+            else
+            {
+                button.image.color = Color.white;
+            }
+
+            favouriteButton.interactable = isTracked || PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Count < Globals.NumCurrentTrackedMissionMax;
+        }
 
         public override void Init(Mission data, Action<Mission> onPressedCallback)
         {

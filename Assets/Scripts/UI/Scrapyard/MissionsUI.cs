@@ -1,4 +1,6 @@
 ﻿using StarSalvager.Missions;
+using StarSalvager.Values;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -26,6 +28,8 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitScrollView()
         {
+            MissionUiElementScrollView.ClearElements();
+            
             if (MissionManager.MissionsCurrentData is null)
                 return;
             
@@ -41,7 +45,19 @@ namespace StarSalvager.UI.Scrapyard
                 }, 
                 mission =>
                 {
-                    Debug.Log("Track " + mission.m_missionName);
+                    if (!PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Any(m => m.m_missionName == currentMission.m_missionName))
+                    {
+                        if (PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Count < Globals.NumCurrentTrackedMissionMax)
+                        {
+                            Debug.Log("Track " + mission.m_missionName);
+                            PlayerPersistentData.PlayerData.missionsCurrentData.AddTrackedMissions(currentMission);
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("Untrack " + mission.m_missionName);
+                        PlayerPersistentData.PlayerData.missionsCurrentData.RemoveTrackedMission(currentMission);
+                    }
                 });
             }
         }

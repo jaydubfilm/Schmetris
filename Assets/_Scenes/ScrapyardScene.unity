@@ -2392,12 +2392,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77f7466e1a63480498b8201b4b56bff8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1351241358 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 981852984674917730, guid: c7ec62de764d52744a18dcfe800d84b9,
-    type: 3}
-  m_PrefabInstance: {fileID: 1351241348}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1412517823
 GameObject:
   m_ObjectHideFlags: 0
@@ -2539,6 +2533,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storageUI: {fileID: 1351241355}
   mDroneDesigner: {fileID: 405256048}
+--- !u!1 &1548636500 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3372106309163629179, guid: c7ec62de764d52744a18dcfe800d84b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1351241348}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1869511139
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2643,6 +2643,18 @@ MonoBehaviour:
   Hash1_Fix2_0: []
   Hash2: []
   Hash3:
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 1548636500}
+    ActiveGameObject: {fileID: 1548636500}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
   - FavParams: 0
     FavString: []
     list:
@@ -2917,18 +2929,6 @@ MonoBehaviour:
     list:
     - {fileID: 367988722}
     ActiveGameObject: {fileID: 367988722}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1351241358}
-    ActiveGameObject: {fileID: 1351241358}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []

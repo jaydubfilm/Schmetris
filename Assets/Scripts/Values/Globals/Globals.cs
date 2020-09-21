@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using StarSalvager.ScriptableObjects;
@@ -45,6 +46,8 @@ namespace StarSalvager.Values
         public static int GridSizeX => m_gameSettings.gridWidth;
         public static float BonusShapeDuration => m_gameSettings.bonusShapeSpeed;
         public static List<BlueprintInitialData> BlueprintInitialData => m_gameSettings.blueprintInitialData;
+
+        public static int NumCurrentTrackedMissionMax = 3;
 
         //Values set by Game Settings - do not set values here
         public static bool DisableTestingFeatures;
