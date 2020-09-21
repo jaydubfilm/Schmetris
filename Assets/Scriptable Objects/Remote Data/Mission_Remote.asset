@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_missionRemoteData:
   - MissionType: 1
-    MissionName: collect 200 greyscale
-    MissionDescription: Collect 200 greyscale
+    MissionName: Collect 200 grey
+    MissionDescription: Collect 200 grey resources
     MissionUnlockParameters: []
     AmountNeeded: 200
     AnyResourceType: 0
@@ -30,7 +30,7 @@ MonoBehaviour:
     ThroughPart: 0
     FlightLength: 0
   - MissionType: 10
-    MissionName: fly for 2 minutes
+    MissionName: Fly for 3 minutes
     MissionDescription: Fly for 2 minutes
     MissionUnlockParameters: []
     AmountNeeded: 0
@@ -46,7 +46,7 @@ MonoBehaviour:
     ThroughPart: 0
     FlightLength: 180
   - MissionType: 2
-    MissionName: Mission 3
+    MissionName: Combo blocks to level 2
     MissionDescription: Combo 1 set of blocks
     MissionUnlockParameters: []
     AmountNeeded: 1
@@ -62,11 +62,11 @@ MonoBehaviour:
     ThroughPart: 0
     FlightLength: 0
   - MissionType: 9
-    MissionName: complete Sector 1
+    MissionName: Complete Sector 1
     MissionDescription: Complete sector 1
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
-      SectorUnlockNumber: 2
+      SectorUnlockNumber: 1
       WaveUnlockNumber: 1
       MissionUnlockName: 
     AmountNeeded: 1
@@ -82,7 +82,7 @@ MonoBehaviour:
     ThroughPart: 0
     FlightLength: 0
   - MissionType: 4
-    MissionName: craft a magnet
+    MissionName: Craft a magnet
     MissionDescription: Craft a magnet
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
@@ -102,13 +102,13 @@ MonoBehaviour:
     ThroughPart: 0
     FlightLength: 0
   - MissionType: 8
-    MissionName: Mission 6
-    MissionDescription: Beat three waves in a row
+    MissionName: Chains 3 waves
+    MissionDescription: Beat three waves in a row without returning to the scrapyard
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
       WaveUnlockNumber: 0
-      MissionUnlockName: complete Sector 1
+      MissionUnlockName: Complete Sector 1
     AmountNeeded: 0
     AnyResourceType: 0
     ResourceType: 0
@@ -122,7 +122,7 @@ MonoBehaviour:
     ThroughPart: 0
     FlightLength: 0
   - MissionType: 5
-    MissionName: Mission 7
+    MissionName: Hit bumper
     MissionDescription: Move blocks with a white bumper
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
@@ -142,7 +142,7 @@ MonoBehaviour:
     ThroughPart: 0
     FlightLength: 0
   - MissionType: 0
-    MissionName: kill a parasite
+    MissionName: Kill a parasite
     MissionDescription: Kill a parasite
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
@@ -162,7 +162,7 @@ MonoBehaviour:
     ThroughPart: 0
     FlightLength: 0
   - MissionType: 0
-    MissionName: kill an invader
+    MissionName: Kill an invader
     MissionDescription: Kill an invader
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
@@ -182,13 +182,13 @@ MonoBehaviour:
     ThroughPart: 0
     FlightLength: 0
   - MissionType: 1
-    MissionName: Mission 11
+    MissionName: Collect 200 green
     MissionDescription: Collect 200 green resources
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
       WaveUnlockNumber: 0
-      MissionUnlockName: collect 200 greyscale
+      MissionUnlockName: Collect 200 grey
     AmountNeeded: 200
     AnyResourceType: 0
     ResourceType: 2
@@ -202,7 +202,7 @@ MonoBehaviour:
     ThroughPart: 0
     FlightLength: 0
   - MissionType: 2
-    MissionName: Mission 12
+    MissionName: Combo blocks to level 3
     MissionDescription: Combo a level two block set
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
@@ -222,17 +222,17 @@ MonoBehaviour:
     ThroughPart: 0
     FlightLength: 0
   - MissionType: 0
-    MissionName: Mission 13
+    MissionName: Kill five enemies
     MissionDescription: Kill five enemies
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
       WaveUnlockNumber: 0
-      MissionUnlockName: kill a parasite
+      MissionUnlockName: Kill a parasite
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
       WaveUnlockNumber: 0
-      MissionUnlockName: kill an invader
+      MissionUnlockName: Kill an invader
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 2
       WaveUnlockNumber: 1

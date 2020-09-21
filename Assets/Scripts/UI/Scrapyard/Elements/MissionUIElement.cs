@@ -45,7 +45,7 @@ namespace StarSalvager.UI.Scrapyard
             });
         }
 
-        public void Init(Mission data, Action<Mission> onPressedCallback, Action<Mission> onTrackPressedCallback)
+        public void Init(Mission data, Action<Mission> onPressedCallback, Action<Mission> onTrackPressedCallback, bool hideTrackButton = false)
         {
             Init(data, onPressedCallback);
 
@@ -53,6 +53,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 onTrackPressedCallback?.Invoke(data);
             });
+            favouriteButton.gameObject.SetActive(!hideTrackButton);
         }
     }
 }
