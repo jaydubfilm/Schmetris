@@ -29,7 +29,11 @@ namespace StarSalvager.Utilities.FileIO
         private static readonly string PARENT_DIRECTORY = Application.dataPath;
         #endif
 
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
         private static readonly string REMOTE_DIRECTORY = Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, REMOTE_PATH);
+#elif UNITY_STANDALONE_OSX
+        private static readonly string REMOTE_DIRECTORY = Path.Combine(new DirectoryInfo(Application.dataPath).FullName, REMOTE_PATH);
+#endif
 
         //Player Data Directory
         //====================================================================================================================//
@@ -273,8 +277,13 @@ namespace StarSalvager.Utilities.FileIO
 
             var fileName = Base64.Encode($"{playerID}_{sessionData.date:yyyyMMddHHmm}");
 
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
             var directory = Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "RemoteData",
                 "Sessions");
+            #elif UNITY_STANDALONE_OSX
+            var directory = Path.Combine(new DirectoryInfo(Application.dataPath).FullName, "RemoteData",
+                "Sessions");
+#endif
 
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
