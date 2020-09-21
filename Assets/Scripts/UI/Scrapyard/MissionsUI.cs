@@ -14,6 +14,9 @@ namespace StarSalvager.UI.Scrapyard
         private MissionUIElementScrollView MissionUiElementScrollView;
 
         [SerializeField]
+        private MissionUIElementScrollView MissionCompletedElementScrollView;
+
+        [SerializeField]
         private TMP_Text detailsText;
         
         //============================================================================================================//
@@ -29,7 +32,9 @@ namespace StarSalvager.UI.Scrapyard
         private void InitScrollView()
         {
             MissionUiElementScrollView.ClearElements();
-            
+            MissionCompletedElementScrollView.ClearElements();
+
+
             if (MissionManager.MissionsCurrentData is null)
                 return;
             
@@ -59,6 +64,18 @@ namespace StarSalvager.UI.Scrapyard
                         PlayerPersistentData.PlayerData.missionsCurrentData.RemoveTrackedMission(currentMission);
                     }
                 });
+            }
+
+            foreach (var completedMission in MissionManager.MissionsCurrentData.CompletedMissions)
+            {
+                var temp = MissionCompletedElementScrollView.AddElement(completedMission,
+                    $"{completedMission.m_missionName}_UIElement");
+
+                temp.Init(completedMission,
+                mission =>
+                {
+                    detailsText.text = mission.m_missionName;
+                }, null, true);
             }
         }
         
