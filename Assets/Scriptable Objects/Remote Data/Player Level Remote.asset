@@ -29,3 +29,9 @@ MonoBehaviour:
   - GearsToLevelUp: 2000
     maxDrops: 0
     RDSLevelUpLoot: []
+  - GearsToLevelUp: 5000
+    maxDrops: 0
+    RDSLevelUpLoot: []
+  - GearsToLevelUp: 10000
+    maxDrops: 0
+    RDSLevelUpLoot: []
