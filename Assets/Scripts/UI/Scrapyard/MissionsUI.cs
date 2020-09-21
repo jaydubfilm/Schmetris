@@ -29,14 +29,19 @@ namespace StarSalvager.UI.Scrapyard
             if (MissionManager.MissionsCurrentData is null)
                 return;
             
-            foreach (var testMission in MissionManager.MissionsCurrentData.CurrentMissions)
+            foreach (var currentMission in MissionManager.MissionsCurrentData.CurrentMissions)
             {
-                var temp = MissionUiElementScrollView.AddElement(testMission,
-                    $"{testMission.m_missionName}_UIElement");
+                var temp = MissionUiElementScrollView.AddElement(currentMission,
+                    $"{currentMission.m_missionName}_UIElement");
 
-                temp.Init(testMission, mission =>
+                temp.Init(currentMission, 
+                mission =>
                 {
                     detailsText.text = mission.m_missionName;
+                }, 
+                mission =>
+                {
+                    Debug.Log("Track " + mission.m_missionName);
                 });
             }
         }

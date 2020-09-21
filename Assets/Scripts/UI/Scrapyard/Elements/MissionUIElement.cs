@@ -25,6 +25,16 @@ namespace StarSalvager.UI.Scrapyard
                 onPressedCallback?.Invoke(data);
             });
         }
+
+        public void Init(Mission data, Action<Mission> onPressedCallback, Action<Mission> onTrackPressedCallback)
+        {
+            Init(data, onPressedCallback);
+
+            favouriteButton.onClick.AddListener(() =>
+            {
+                onTrackPressedCallback?.Invoke(data);
+            });
+        }
     }
 }
 
