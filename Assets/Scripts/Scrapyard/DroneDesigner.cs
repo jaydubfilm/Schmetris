@@ -16,7 +16,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.UI.Scrapyard;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.FileIO;
-
+using StarSalvager.Utilities.UI;
 using Input = StarSalvager.Utilities.Inputs.Input;
 
 
@@ -710,54 +710,13 @@ namespace StarSalvager
 
         #region Other
 
-        // TMP Sprites section
-        //============================================================================================================//
-
-        private readonly Dictionary<BIT_TYPE, string> _textSprites = new Dictionary<BIT_TYPE, string>
-        {
-            { BIT_TYPE.GREEN,  "<sprite=\"MaterIalIcons_SS_ver2\" name=\"MaterIalIcons_SS_ver2_4\">" },
-            { BIT_TYPE.GREY,   "<sprite=\"MaterIalIcons_SS_ver2\" name=\"MaterIalIcons_SS_ver2_3\">" },
-            { BIT_TYPE.RED,    "<sprite=\"MaterIalIcons_SS_ver2\" name=\"MaterIalIcons_SS_ver2_2\">" },
-            { BIT_TYPE.BLUE,   "<sprite=\"MaterIalIcons_SS_ver2\" name=\"MaterIalIcons_SS_ver2_1\">" },
-            { BIT_TYPE.YELLOW, "<sprite=\"MaterIalIcons_SS_ver2\" name=\"MaterIalIcons_SS_ver2_0\">" },
-        };
-
-        private static string GetBitSprite(BIT_TYPE type, int level)
-        {
-            int typeBase;
-            switch (type)
-            {
-                case BIT_TYPE.BLUE:
-                    typeBase = 0;
-                    break;
-                case BIT_TYPE.GREEN:
-                    typeBase = 3;
-                    break;
-                case BIT_TYPE.GREY:
-                    typeBase = 4;
-                    break;
-                case BIT_TYPE.RED:
-                    typeBase = 1;
-                    break;
-                case BIT_TYPE.YELLOW:
-                    typeBase = 2;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
-
-            int levelOffset = level * 5;
-
-            return $"<sprite=\"GamePieces_Atlas\" name=\"GamePieces_Atlas_{typeBase + levelOffset}\">";
-        }
-
         //============================================================================================================//
 
         private void SellBits()
         {
-            if (_scrapyardBot == null) 
+            if (_scrapyardBot == null)
                 return;
-            
+
             List<ScrapyardBit> listBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
             List<Component> listComponents = _scrapyardBot.attachedBlocks.OfType<Component>().ToList();
             if (listComponents.Count > 0)
@@ -768,10 +727,10 @@ namespace StarSalvager
                 foreach (var component in listComponents)
                 {
                     var amount = 1;
-                        
+
                     if (component.level > 0)
                         amount = component.level * 3;
-                        
+
                     PlayerPersistentData.PlayerData.AddComponent(component.Type, amount);
                 }
 
@@ -786,13 +745,15 @@ namespace StarSalvager
             var scrapyardBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>();
 
             var enumerable = scrapyardBits as ScrapyardBit[] ?? scrapyardBits.ToArray();
-            Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResources(enumerable);
+            Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
+                .GetTotalResources(enumerable);
 
             float refineryMultiplier = 1.0f;
             if (PlayerPersistentData.PlayerData.facilityRanks.ContainsKey(FACILITY_TYPE.REFINERY))
             {
                 int refineryRank = PlayerPersistentData.PlayerData.facilityRanks[FACILITY_TYPE.REFINERY];
-                float increaseAmount = FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.REFINERY).levels[refineryRank].increaseAmount;
+                float increaseAmount = FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.REFINERY)
+                    .levels[refineryRank].increaseAmount;
                 refineryMultiplier = 1 + (increaseAmount / 100);
                 Debug.Log("REFINERY MULTIPLIER: " + refineryMultiplier);
             }
@@ -811,14 +772,21 @@ namespace StarSalvager
                     if (numAtLevel == 0)
                         continue;
 
-                    BitRemoteData remoteData = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(resource.Key);
-                    int resourceAmount = (int)(numAtLevel * remoteData.levels[i].resources * refineryMultiplier);
-                    resourcesGained += $"{numAtLevel} x {GetBitSprite(resource.Key, i)} = {resourceAmount} {_textSprites[resource.Key]} ";
+                    BitRemoteData remoteData = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
+                        .GetBitRemoteData(resource.Key);
+                    
+                    int resourceAmount = (int) (numAtLevel * remoteData.levels[i].resources * refineryMultiplier);
+
+                    var spriteXML = TMP_SpriteMap.GetBitSprite(resource.Key, i);
+                    
+                    resourcesGained +=
+                        $"{numAtLevel} x {spriteXML} = {resourceAmount} {TMP_SpriteMap.MaterialIcons[resource.Key]} ";
                     numTotal -= numAtLevel;
                 }
 
                 resourcesGained += "\n";
             }
+
             Alert.ShowAlert("Resources Refined", resourcesGained, "Okay", null);
             Alert.SetLineHeight(90f);
 

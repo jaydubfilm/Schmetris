@@ -5,6 +5,7 @@ using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
@@ -435,12 +436,13 @@ namespace StarSalvager.UI.Scrapyard
             {
                 if (repairCost > 0)
                 {
-                    _repairButtonText.text = available < repairCost ? $"Repair {available}" : $"Repair all {repairCost}";
+                    _repairButtonText.text = available < repairCost ? $"Repair {available}" : $"Repair all {repairCost}" + 
+                        $" {TMP_SpriteMap.MaterialIcons[BIT_TYPE.GREEN]}";
                     repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] > 0;
                 }
                 else
                 {
-                    _repairButtonText.text = $"Repair all {replacementCost}";
+                    _repairButtonText.text = $"Repair all {replacementCost} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.GREEN]}";
                     repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] >= replacementCost;
                 }
 
@@ -448,7 +450,7 @@ namespace StarSalvager.UI.Scrapyard
             }
             
 
-            _repairButtonText.text = $"Repair all {totalCost}";
+            _repairButtonText.text = $"Repair all {totalCost} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.GREEN]}";
             repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] >= totalCost;
         }
 
