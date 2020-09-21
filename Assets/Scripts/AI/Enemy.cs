@@ -422,11 +422,6 @@ namespace StarSalvager.AI
             if(CurrentHealth > 0)
                 AudioController.PlaySound(SOUND.ENEMY_IMPACT);
 
-            if (CurrentHealth <= 0)
-            {
-                //TODO Need to add the gears addition
-            }
-
             return true;
         }
 
@@ -461,6 +456,8 @@ namespace StarSalvager.AI
             {
                 LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled.Add(name, 1);
             }
+
+            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
 
             Recycler.Recycle<Enemy>(this);
         }

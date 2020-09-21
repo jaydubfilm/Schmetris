@@ -220,7 +220,12 @@ namespace StarSalvager
         private void SpawnEnemy(string enemyType)
         {
             Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(enemyType);
-            m_enemies.Add(newEnemy);
+
+            if (!m_enemies.Contains(newEnemy))
+            {
+                print("TRYING TO ADD DUPLICATE ENEMY");
+                m_enemies.Add(newEnemy);
+            }
             newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
             newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.MovementType);
 
@@ -243,6 +248,14 @@ namespace StarSalvager
             m_enemies.Add(newEnemy);
             ReParentEnemy(newEnemy);
             newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.MovementType);
+        }
+
+        public void RemoveEnemy(Enemy newEnemy)
+        {
+            if (newEnemy == null)
+                return;
+
+            m_enemies.Remove(newEnemy);
         }
 
         public bool HasEnemiesRemaining()
