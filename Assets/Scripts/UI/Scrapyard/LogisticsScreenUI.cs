@@ -102,6 +102,7 @@ namespace StarSalvager.UI.Scrapyard
                 }
 
                 for (int i = 0; i <= playerData.facilityBlueprintRanks[type]; i++)
+                //for (int i = 0; i < facilityRemoteData.levels.Count; i++)
                 {
                     if (containsFacilityKey && playerData.facilityRanks[type] >= i)
                     {

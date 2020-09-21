@@ -15,6 +15,9 @@ namespace StarSalvager.UI.Scrapyard
     public class DroneDesignUI : MonoBehaviour
     {
         private const int MAX_CAPACITY = 1500;
+
+        [SerializeField, Required] 
+        private TMP_Text flightDataText;
         
         [SerializeField, Required, BoxGroup("Part UI")]
         private GameObject partsWindow;
@@ -100,6 +103,7 @@ namespace StarSalvager.UI.Scrapyard
                 return _droneDesigner;
             }
         }
+        [SerializeField, Required]
         private DroneDesigner _droneDesigner;
 
         private ScrapyardLayout currentSelected;
@@ -130,6 +134,7 @@ namespace StarSalvager.UI.Scrapyard
                 RefreshScrollViews();
 
             PlayerData.OnValuesChanged += UpdateResourceElements;
+            PlayerData.OnCapacitiesChanged += UpdateResourceElements;
         }
 
         private void OnDisable()
@@ -137,6 +142,7 @@ namespace StarSalvager.UI.Scrapyard
             DroneDesigner?.ClearUndoRedoStacks();
             
             PlayerData.OnValuesChanged -= UpdateResourceElements;
+            PlayerData.OnCapacitiesChanged -= UpdateResourceElements;
         }
 
         #endregion //Unity Functions
@@ -333,7 +339,7 @@ namespace StarSalvager.UI.Scrapyard
                 switch (bitType)
                 {
                     case BIT_TYPE.BLUE:
-                    case BIT_TYPE.YELLOW:
+                    //case BIT_TYPE.YELLOW:
                     case BIT_TYPE.WHITE:
                         continue;
                 }
@@ -344,10 +350,18 @@ namespace StarSalvager.UI.Scrapyard
                     capacity = liquidsCapacity[bitType],
                     type = bitType,
                 };
+                
+                if(bitType == BIT_TYPE.YELLOW)
+                    Console.WriteLine("");
 
                 var element = liquidResourceContentView.AddElement(data, $"{liquid.Key}_UIElement");
                 element.Init(data, true);
             }
+
+
+            UpdateFlightDataUI();
+
+
         }
 
         private void UpdateLoadListUiScrollViews()
@@ -363,23 +377,79 @@ namespace StarSalvager.UI.Scrapyard
             layoutScrollView.SetElementsActive(true);
         }
 
+        private void UpdateFlightDataUI()
+        {
+            //--------------------------------------------------------------------------------------------------------//
+            if (_droneDesigner?._scrapyardBot is null)
+            {
+                flightDataText.text = $"Flight Data:\nPower Draw: 0.0 KW/s\nTotal Power: Infinite";
+                return;
+            }
+            
+            var powerDraw = _droneDesigner._scrapyardBot.powerDraw;
+            var availablePower =
+                Mathf.Clamp(
+                    PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] +
+                    PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW], 0,
+                    PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.YELLOW]);
+
+            if (powerDraw == 0f)
+            {
+                flightDataText.text = $"Flight Data:\nPower Draw: {powerDraw:0.0} KW/s\nTotal Power: Infinite";
+            }
+            else
+            {
+                var powerTime = TimeSpan.FromSeconds(availablePower / powerDraw).ToString(@"mm\:ss");
+
+                flightDataText.text = $"Flight Data:\nPower Draw: {powerDraw:0.0} KW/s\nTotal Power: {powerTime}s";
+            }
+            
+
+
+            //--------------------------------------------------------------------------------------------------------//
+        }
+
         #endregion //Scroll Views
 
         //============================================================================================================//
 
-        public void ShowRepairCost(int repairCost)
+        //FIXME This needs to be set up to better account for the weird things that come with Replacing destroyed parts
+        public void ShowRepairCost(int repairCost, int replacementCost)
         {
-            var show = repairCost > 0;
+            var totalCost = repairCost + replacementCost;
+            
+            
+            var show = totalCost > 0;
             
             repairButton.gameObject.SetActive(show);
 
             if (!show)
                 return;
-                
-            if(_repairButtonText != null)
-                _repairButtonText.text = $"Repair all {DroneDesigner.GetRepairCost()}";
 
-            repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] >= repairCost;
+            if (_repairButtonText == null)
+                return;
+            
+            var available = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN];
+
+            if (totalCost > available)
+            {
+                if (repairCost > 0)
+                {
+                    _repairButtonText.text = available < repairCost ? $"Repair {available}" : $"Repair all {repairCost}";
+                    repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] > 0;
+                }
+                else
+                {
+                    _repairButtonText.text = $"Repair all {replacementCost}";
+                    repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] >= replacementCost;
+                }
+
+                return;
+            }
+            
+
+            _repairButtonText.text = $"Repair all {totalCost}";
+            repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] >= totalCost;
         }
 
         #region Other

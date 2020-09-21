@@ -31,21 +31,30 @@ namespace StarSalvager.Factories
             return _remoteData.GetRemoteData(type);
         }
         
+        public void UpdateComponentData(COMPONENT_TYPE componentType, int level, ref Component component)
+        {
+            var profile = factoryProfile.GetProfile(componentType);
+            var sprite = profile.GetSprite(level);
+            
+            component.SetSprite(sprite);
+        }
+        
         //============================================================================================================//
 
-        
+
         /// <summary>
         /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the GameObject
         /// </summary>
-        /// <param name="blockData"></param>
+        /// <param name="type"></param>
+        /// <param name="level"></param>
         /// <returns></returns>
-        public GameObject CreateGameObject(COMPONENT_TYPE type)
+        public GameObject CreateGameObject(COMPONENT_TYPE type, int level = 0)
         {
             var remote = _remoteData.GetRemoteData(type);
             var profile = factoryProfile.GetProfile(type);
 
             
-            var sprite = profile.GetSprite(0);
+            var sprite = profile.GetSprite(level);
 
             //--------------------------------------------------------------------------------------------------------//
             
@@ -79,15 +88,17 @@ namespace StarSalvager.Factories
 
             return temp.gameObject;
         }
+
         /// <summary>
         /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the T
         /// </summary>
-        /// <param name="blockData"></param>
+        /// <param name="type"></param>
+        /// <param name="level"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T CreateObject<T>(COMPONENT_TYPE type)
+        public T CreateObject<T>(COMPONENT_TYPE type, int level = 0)
         {
-            var temp = CreateGameObject(type);
+            var temp = CreateGameObject(type, level);
 
             return temp.GetComponent<T>();
 
@@ -143,7 +154,7 @@ namespace StarSalvager.Factories
             var remote = _remoteData.GetRemoteData(type);
             var profile = factoryProfile.GetProfile(type);
 
-            var sprite = profile.GetSprite(0);
+            var sprite = profile.GetSprite(blockData.Level);
 
             //--------------------------------------------------------------------------------------------------------//
             

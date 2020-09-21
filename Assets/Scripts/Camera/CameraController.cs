@@ -93,7 +93,6 @@ namespace StarSalvager.Cameras
                  transform.position.x < -Globals.CameraOffsetBounds))
             {
                 lerpValue = Mathf.Min(1.0f, lerpValue + Globals.CameraSmoothing * Time.deltaTime);
-                //print(lerpValue + " --- " + Mathf.SmoothStep(0.0f, 1.0f, lerpValue));
                 transform.position = Vector3.Lerp(beginningLerpPos, startPos, Mathf.SmoothStep(0.0f, 1.0f, lerpValue));
                 if (lerpValue == 1.0f)
                 {

@@ -255,6 +255,9 @@ namespace StarSalvager.Utilities.Inputs
             if (isPaused)
                 return;
 
+            if (LevelManager.Instance.BotDead)
+                return;
+
             var moveDirection = ctx.ReadValue<float>();
             MostRecentSideMovement = moveDirection;
 
@@ -326,7 +329,10 @@ namespace StarSalvager.Utilities.Inputs
         {
             if (_moveOnInput == null)
                 return;
-            
+
+            if (LevelManager.Instance.BotDead)
+                return;
+
             for (var i = _moveOnInput.Count - 1; i >= 0; i--)
             {
                 var move = _moveOnInput[i];
@@ -348,6 +354,9 @@ namespace StarSalvager.Utilities.Inputs
                 return;
             
             if (isPaused)
+                return;
+
+            if (LevelManager.Instance.BotDead)
                 return;
 
             var rot = ctx.ReadValue<float>();
@@ -391,6 +400,11 @@ namespace StarSalvager.Utilities.Inputs
             
             if(ctx.ReadValue<float>() == 1f)
                 GameTimer.SetPaused(!isPaused);
+        }
+
+        public void CancelMove()
+        {
+            Move(0);
         }
         
         #endregion //Inputs

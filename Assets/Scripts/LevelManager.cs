@@ -125,6 +125,7 @@ namespace StarSalvager
         public Dictionary<ENEMY_TYPE, int> EnemiesKilledInWave = new Dictionary<ENEMY_TYPE, int>();
         public List<string> MissionsCompletedDuringThisFlight = new List<string>();
         public bool ResetFromDeath = false;
+        public bool BotDead = false;
 
         //====================================================================================================================//
         
@@ -145,6 +146,9 @@ namespace StarSalvager
 
             Bot.OnBotDied += (deadBot, deathMethod) =>
             {
+                InputManager.Instance.CancelMove();
+                BotDead = true;
+
                 Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
                 foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
                 {
@@ -278,6 +282,7 @@ namespace StarSalvager
         
         public void Activate()
         {
+            BotDead = false;
             m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             m_waveEndSummaryData = new WaveEndSummaryData();
@@ -387,6 +392,7 @@ namespace StarSalvager
             ProjectileManager.Reset();
             MissionsCompletedDuringThisFlight.Clear();
             m_waveEndSummaryData = null;
+            BotDead = false;
         }
 
         //====================================================================================================================//

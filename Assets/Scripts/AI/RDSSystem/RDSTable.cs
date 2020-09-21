@@ -131,8 +131,12 @@ namespace StarSalvager
 				// Those objects are really added always, no matter what "Count"
 				// is set in the table! If there are 5 objects "always", those 5 will
 				// drop, even if the count says only 3.
+				int alwaysDrops = 0;
 				foreach (IRDSObject o in mcontents.Where(e => e.rdsAlways && e.rdsEnabled))
+				{
 					AddToResult(rv, o);
+					alwaysDrops++;
+				}
 
 				// Now calculate the real dropcount, this is the table's count minus the
 				// number of Always-drops.
@@ -142,7 +146,7 @@ namespace StarSalvager
 				//Making always count ones not take away from the max drops
 				//int alwayscnt = mcontents.Count(e => e.rdsAlways && e.rdsEnabled);
 				//int realdropcnt = rdsCount - alwayscnt;
-				int realdropcnt = rdsCount;
+				int realdropcnt = rdsCount - alwaysDrops;
 
 				// Continue only, if there is a Count left to be processed
 				if (realdropcnt > 0)

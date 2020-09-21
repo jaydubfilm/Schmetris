@@ -22,6 +22,9 @@ namespace StarSalvager
         
         public float health;
 
+        [SuffixLabel("/sec", true)]
+        public float powerDraw;
+
         //public int data;
 
         [ShowInInspector]

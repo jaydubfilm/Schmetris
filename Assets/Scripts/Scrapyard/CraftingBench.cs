@@ -28,17 +28,21 @@ namespace StarSalvager
                 return;
             }
             
-            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] == 0)
+            /*if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] == 0)
             {
                 Toast.AddToast("Not enough power to craft", time: 1.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
                 return;
-            }
+            }*/
 
+
+            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(blueprint.partType)
+                .levels[blueprint.level].health;
             BlockData blockData = new BlockData
             {
                 ClassType = nameof(Part),
                 Type = (int)blueprint.partType,
-                Level = blueprint.level
+                Level = blueprint.level,
+                Health = startingHealth
             };
 
             PlayerPersistentData.PlayerData.SubtractPartCosts(blueprint.partType, blueprint.level, false);

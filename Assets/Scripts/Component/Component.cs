@@ -17,7 +17,7 @@ namespace StarSalvager
         
         private Damage _damage;
 
-        private TextMeshPro _label;
+        //private TextMeshPro _label;
 
         //ICanCombo Properties
         //====================================================================================================================//
@@ -32,19 +32,9 @@ namespace StarSalvager
 
         public bool CanMove => !Attached;
 
-        public bool IsRegistered
-        {
-            get { return m_isRegistered; }
-            set { m_isRegistered = value; }
-        }
-        private bool m_isRegistered = false;
+        public bool IsRegistered { get; set; }
 
-        public bool IsMarkedOnGrid
-        {
-            get { return m_isMarkedOnGrid; }
-            set { m_isMarkedOnGrid = value; }
-        }
-        private bool m_isMarkedOnGrid = false;
+        public bool IsMarkedOnGrid { get; set; }
 
         //IComponent Properties
         //============================================================================================================//
@@ -133,8 +123,12 @@ namespace StarSalvager
         {
             level += amount;
             renderer.sortingOrder = level;
+            
+            //Sets the gameObject info (Sprite)
+            var bit = this;
+            FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().UpdateComponentData(Type, level, ref bit);
 
-            if (level == 0)
+            /*if (level == 0)
             {
                 if (_label) _label.text = string.Empty;
 
@@ -148,7 +142,7 @@ namespace StarSalvager
                 _label.transform.localPosition = Vector3.zero;
             }
 
-            _label.text = $"{level * 3}";
+            _label.text = $"{level * 3}";*/
         }
         
         //IAttachableFunctions

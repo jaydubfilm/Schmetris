@@ -156,7 +156,8 @@ namespace StarSalvager.UI.Scrapyard
         static readonly BIT_TYPE[] types = {
             BIT_TYPE.RED,
             BIT_TYPE.GREY,
-            BIT_TYPE.GREEN
+            BIT_TYPE.GREEN,
+            BIT_TYPE.YELLOW
         };
         private void TryFillBotResources()
         {
@@ -171,9 +172,10 @@ namespace StarSalvager.UI.Scrapyard
                         break;
                     case BIT_TYPE.GREY:
                         //TODO Check for a gun
-                        if(!_droneDesigner.HasPart(PART_TYPE.GUN))
+                        if(!_droneDesigner.HasParts(PART_TYPE.GUN, PART_TYPE.TRIPLE_SHOT))
                             continue;
                         break;
+                    case BIT_TYPE.YELLOW:
                     case BIT_TYPE.RED:
                         break;
                     default:

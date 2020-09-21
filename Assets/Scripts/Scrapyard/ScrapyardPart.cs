@@ -1,10 +1,12 @@
-﻿using Sirenix.OdinInspector;
+﻿using Recycling;
+using Sirenix.OdinInspector;
+using StarSalvager.Factories;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
 namespace StarSalvager
 {
-    public class ScrapyardPart : MonoBehaviour, IAttachable, ISaveable, IPart, IHealth
+    public class ScrapyardPart : MonoBehaviour, IAttachable, ISaveable, IPart, IHealth, ICustomRecycle
     {
         protected new SpriteRenderer renderer
         {
@@ -30,11 +32,14 @@ namespace StarSalvager
             }
         }
         private Transform _transform;
+        
+        private Damage _damage;
 
         //IHealth Properties
         //====================================================================================================================//
         
         public float StartingHealth { get; private set; }
+        [ShowInInspector, ReadOnly, ProgressBar(0, nameof(StartingHealth))]
         public float CurrentHealth { get; private set; }
 
 
@@ -77,11 +82,31 @@ namespace StarSalvager
         {
             StartingHealth = startingHealth;
             CurrentHealth = currentHealth;
+
+            if (startingHealth == currentHealth && _damage == null)
+                return;
+
+            if(!Destroyed)
+                UpdateDamage();
+        }
+
+        private void UpdateDamage()
+        {
+            if (_damage == null)
+            {
+                _damage = FactoryManager.Instance.GetFactory<DamageFactory>().CreateObject<Damage>();
+                _damage.transform.SetParent(transform, false);
+            }
+                
+            _damage.SetHealth(CurrentHealth/StartingHealth); 
         }
 
         public void ChangeHealth(float amount)
         {
-            throw new System.NotImplementedException();
+            CurrentHealth = Mathf.Clamp(CurrentHealth + amount, 0, StartingHealth);
+            
+            if(!Destroyed)
+                UpdateDamage();
         }
 
         //ISaveable Functions
@@ -119,6 +144,16 @@ namespace StarSalvager
             level = newLevel;
         }
 
-
+        //ICustomRecycle Functions
+        //====================================================================================================================//
+        
+        public void CustomRecycle(params object[] args)
+        {
+            if (!_damage) 
+                return;
+            
+            Recycler.Recycle<Damage>(_damage);
+            _damage = null;
+        }
     }
 }
