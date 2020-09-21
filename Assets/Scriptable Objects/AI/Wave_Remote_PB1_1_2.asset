@@ -22,7 +22,7 @@ MonoBehaviour:
     m_category: BS_2Cell
     m_rotation: -1
   StageRemoteData:
-  - m_stageDuration: 30
+  - m_stageDuration: 60
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
