@@ -50,13 +50,14 @@ namespace StarSalvager.UI.Scrapyard
                 }, 
                 mission =>
                 {
-                    if (!PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Any(m => m.m_missionName == currentMission.m_missionName))
+                    if (PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.All(m => m.m_missionName != currentMission.m_missionName))
                     {
-                        if (PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Count < Globals.NumCurrentTrackedMissionMax)
-                        {
-                            Debug.Log("Track " + mission.m_missionName);
-                            PlayerPersistentData.PlayerData.missionsCurrentData.AddTrackedMissions(currentMission);
-                        }
+                        if (PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Count >=
+                            Globals.NumCurrentTrackedMissionMax) 
+                            return;
+                        
+                        Debug.Log("Track " + mission.m_missionName);
+                        PlayerPersistentData.PlayerData.missionsCurrentData.AddTrackedMissions(currentMission);
                     }
                     else
                     {
@@ -75,7 +76,8 @@ namespace StarSalvager.UI.Scrapyard
                 mission =>
                 {
                     detailsText.text = mission.m_missionName;
-                }, null, true);
+                }, 
+                null);
             }
         }
         

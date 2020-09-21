@@ -45,15 +45,23 @@ namespace StarSalvager.UI.Scrapyard
             });
         }
 
-        public void Init(Mission data, Action<Mission> onPressedCallback, Action<Mission> onTrackPressedCallback, bool hideTrackButton = false)
+        public void Init(Mission data, Action<Mission> onPressedCallback, Action<Mission> onTrackPressedCallback)
         {
             Init(data, onPressedCallback);
 
+            var shouldTrack = onTrackPressedCallback != null;
+            
+            favouriteButton.gameObject.SetActive(shouldTrack);
+
+            if (!shouldTrack)
+                return;
+            
+            favouriteButton.onClick.RemoveAllListeners();
             favouriteButton.onClick.AddListener(() =>
             {
                 onTrackPressedCallback?.Invoke(data);
             });
-            favouriteButton.gameObject.SetActive(!hideTrackButton);
+            
         }
     }
 }
