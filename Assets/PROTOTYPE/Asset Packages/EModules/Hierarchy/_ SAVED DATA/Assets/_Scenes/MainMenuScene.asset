@@ -28,12 +28,6 @@ MonoBehaviour:
       list: []
   LOCALIDINFILE_Hash3:
   - activeObject:
-      i1: 403794180
-      i2: 0
-    list:
-    - i1: 403794180
-      i2: 0
-  - activeObject:
       i1: -1
       i2: -1
     list:
@@ -46,35 +40,17 @@ MonoBehaviour:
     - i1: -1
       i2: -1
   - activeObject:
-      i1: -96205052
-      i2: 1831848149
-    list:
-    - i1: -96205052
-      i2: 1831848149
-  - activeObject:
       i1: -1
       i2: -1
     list:
     - i1: -1
       i2: -1
   - activeObject:
-      i1: -96205052
-      i2: 1831848149
+      i1: -464838314
+      i2: 1866823308
     list:
-    - i1: -96205052
-      i2: 1831848149
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -96205052
-      i2: 1831848149
-    list:
-    - i1: -96205052
-      i2: 1831848149
+    - i1: -464838314
+      i2: 1866823308
   - activeObject:
       i1: -1
       i2: -1
@@ -148,11 +124,11 @@ MonoBehaviour:
     - i1: -1
       i2: -1
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -464838314
+      i2: 1866823308
     list:
-    - i1: -1
-      i2: -1
+    - i1: -464838314
+      i2: 1866823308
   - activeObject:
       i1: -1
       i2: -1
@@ -166,11 +142,35 @@ MonoBehaviour:
     - i1: -1
       i2: -1
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -1262517752
+      i2: 189985321
     list:
-    - i1: -1
-      i2: -1
+    - i1: -1262517752
+      i2: 189985321
+  - activeObject:
+      i1: -464838314
+      i2: 1866823308
+    list:
+    - i1: -464838314
+      i2: 1866823308
+  - activeObject:
+      i1: -1262517752
+      i2: 189985321
+    list:
+    - i1: -1262517752
+      i2: 189985321
+  - activeObject:
+      i1: -464838314
+      i2: 1866823308
+    list:
+    - i1: -464838314
+      i2: 1866823308
+  - activeObject:
+      i1: -1262517752
+      i2: 189985321
+    list:
+    - i1: -1262517752
+      i2: 189985321
   LOCALIDINFILE_Hash4:
   - activeObject:
       i1: -1
