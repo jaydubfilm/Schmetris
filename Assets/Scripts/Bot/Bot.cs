@@ -604,7 +604,6 @@ namespace StarSalvager
                 }
             }
 
-
             return true;
         }
 
@@ -2406,7 +2405,8 @@ namespace StarSalvager
             var magnetCount = BotPartsLogic.MagnetCount;
             var magnetAttachables = attachedBlocks.Where(x => x.CountTowardsMagnetism).ToList();
             
-            GameUi.SetCarryCapacity(magnetAttachables.Count / (float)magnetCount);
+            if(GameUi) 
+                GameUi.SetCarryCapacity(magnetAttachables.Count / (float)magnetCount);
             
             //Checks here if the total of attached blocks (Minus the Core) change
             if (magnetAttachables.Count <= magnetCount)

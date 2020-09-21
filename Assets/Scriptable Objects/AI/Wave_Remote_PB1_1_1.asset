@@ -13,13 +13,9 @@ MonoBehaviour:
   m_Name: Wave_Remote_PB1_1_1
   m_EditorClassIdentifier: 
   BonusShapes:
-  - m_selectionType: 0
+  - m_selectionType: 1
     m_shapeName: BlueDouble
-    m_category: 
-    m_rotation: -1
-  - m_selectionType: 0
-    m_shapeName: GreenDouble
-    m_category: 
+    m_category: BS_2Cell
     m_rotation: -1
   StageRemoteData:
   - m_stageDuration: 15
@@ -122,11 +118,11 @@ MonoBehaviour:
     m_stageColumnGroupObstacleData: []
   maxDrops: 3
   RDSEndOfWaveLoot:
-  - rdsData: 0
-    type: 1
+  - rdsData: 4
+    type: 0
     level: 1
     probability: 1
-    gearDropRange: {x: 0, y: 0}
+    gearDropRange: {x: 100, y: 100}
     isUniqueSpawn: 0
     isAlwaysSpawn: 0
   - rdsData: 3
@@ -138,7 +134,7 @@ MonoBehaviour:
     isAlwaysSpawn: 1
   - rdsData: 2
     type: 1
-    level: 1
+    level: 0
     probability: 0
     gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 1
