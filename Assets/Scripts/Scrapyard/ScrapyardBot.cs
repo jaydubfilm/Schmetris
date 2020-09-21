@@ -65,6 +65,7 @@ namespace StarSalvager
 
         public void InitBot()
         {
+            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
             //Add core component
             var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(
                 new BlockData
@@ -72,6 +73,7 @@ namespace StarSalvager
                     Type = (int)PART_TYPE.CORE,
                     Coordinate = Vector2Int.zero,
                     Level = 0,
+                    Health = startingHealth
                 });
 
             AttachNewBit(Vector2Int.zero, core);

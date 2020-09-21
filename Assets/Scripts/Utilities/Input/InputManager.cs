@@ -255,6 +255,9 @@ namespace StarSalvager.Utilities.Inputs
             if (isPaused)
                 return;
 
+            if (LevelManager.Instance.BotDead)
+                return;
+
             var moveDirection = ctx.ReadValue<float>();
             MostRecentSideMovement = moveDirection;
 
