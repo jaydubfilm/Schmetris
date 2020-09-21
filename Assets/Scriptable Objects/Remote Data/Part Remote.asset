@@ -152,7 +152,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 0
       health: 80
-      powerDraw: 1
+      powerDraw: 0
       dataTest:
       - key: Magnet
         value: 5
@@ -168,7 +168,7 @@ MonoBehaviour:
         amount: 50
     - unlockLevel: 0
       health: 100
-      powerDraw: 2
+      powerDraw: 0
       dataTest:
       - key: Magnet
         value: 10
@@ -196,7 +196,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 0
       health: 120
-      powerDraw: 5
+      powerDraw: 0
       dataTest:
       - key: Magnet
         value: 20
@@ -726,7 +726,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 3
       health: 50
-      powerDraw: 5
+      powerDraw: 0
       dataTest:
       - key: Capacity
         value: 50
