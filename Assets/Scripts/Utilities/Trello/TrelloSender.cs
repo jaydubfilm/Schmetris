@@ -15,8 +15,8 @@ namespace StarSalvager.Utilities.Trello
         private const string BOARD = "Salvager";
         private const string CATEGORY = "BUGS";
         
-        private readonly string KEY = Base64.Decode("OTEyODY3OGJhNjI2NDU3OGU2ZmYyYTMwYzg1NjBhYzM=");
-        private readonly string TOKEN = Base64.Decode("OGMxOGQyZTc4MzI2OGY2OGUxNzhhOGQyMGVhYzhhMzFlMGIwODcxZWUxOTk3MWQ4MDUyZGIzNjQ5YTJkMWU3Zg==");
+        private readonly string KEY = Base64.Decode("M2VjMGYzMDkxNTVmNmM5MTc2ZDA0NmU4NDFiZDM2ZjQ=");
+        private readonly string TOKEN = Base64.Decode("YTA1NjNkYTJhYjM3ODE4OTU5NmMyNDY4OTRhNTkxMzFlNTEzNWZlYTcxMWViZDI0MTgyN2Q5YTVjNzMwOTg4OA==");
 
         //====================================================================================================================//
 
@@ -168,8 +168,17 @@ namespace StarSalvager.Utilities.Trello
 
         private void SendReport()
         {
-            var title = summaryText.text;
-            var description = descriptionText.text;
+            var title = $"{summaryText.text} - {Application.platform}";
+            var description = string.Join("\n", new[]
+            {
+                descriptionText.text,
+                "\n",
+                "SYSTEM DETAILS:",
+                "====================",
+                $"Platform: {Application.platform}",
+                $"Scene: {UnityEngine.SceneManagement.SceneManager.GetActiveScene().name}"
+            });
+
             
             if (string.IsNullOrEmpty(title) && string.IsNullOrEmpty(description))
                 return;
