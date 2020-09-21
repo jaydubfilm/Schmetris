@@ -23,7 +23,7 @@ MonoBehaviour:
     m_rotation: -1
   - m_selectionType: 1
     m_shapeName: 
-    m_category: BS_5Cell
+    m_category: BS_4Cell
     m_rotation: -1
   StageRemoteData:
   - m_stageDuration: 50
@@ -179,4 +179,11 @@ MonoBehaviour:
       m_density: 0.3
     m_stageColumnGroupObstacleData: []
   maxDrops: 0
-  RDSEndOfWaveLoot: []
+  RDSEndOfWaveLoot:
+  - rdsData: 4
+    type: 0
+    level: 0
+    probability: 0
+    gearDropRange: {x: 2000, y: 2000}
+    isUniqueSpawn: 0
+    isAlwaysSpawn: 0
