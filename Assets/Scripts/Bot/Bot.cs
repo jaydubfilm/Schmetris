@@ -1829,7 +1829,9 @@ namespace StarSalvager
                 obstacleManager.MatchBonusShape(shape);
                 
                 //FIXME We'll need to double check the position here
-                FloatingText.Create($"+{gears}", shape.transform.position, Color.white);
+                FloatingText.Create($"+{gears}",
+                    attachedBlocks.Find(upgrading).GetCollectionCenterPosition(),
+                    Color.white);
 
 
                 //Check for Combos

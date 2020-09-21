@@ -138,11 +138,14 @@ namespace StarSalvager.Utilities
 
         public static void Create(string text, Vector3 position, Color color)
         {
-            FactoryManager.Instance?.GetFactory<ParticleFactory>().CreateObject<FloatingText>()
+            if (FactoryManager.Instance == null)
+                return;
+            
+            FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<FloatingText>()
                 .Init(text, position, color);
         }
 
-        //Unity Editor Functions
+        //Unity Editor Functionsi
         //====================================================================================================================//
 
 #if UNITY_EDITOR
