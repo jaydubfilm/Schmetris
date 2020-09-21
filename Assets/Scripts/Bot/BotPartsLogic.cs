@@ -189,8 +189,8 @@ namespace StarSalvager
 
             foreach (var part in _parts)
             {
-                //Destroyed parts should not contribute to the stats of the bot anymore
-                if (part.Destroyed)
+                //Destroyed or disabled parts should not contribute to the stats of the bot anymore
+                if (part.Destroyed || part.Disabled)
                     continue;
                 
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
@@ -312,6 +312,8 @@ namespace StarSalvager
 
             //Force update capacities, once new values determined
             PlayerPersistentData.PlayerData.SetCapacities(capacities);
+
+            bot.CheckHasMagnetOverage();
         }
 
         //============================================================================================================//
@@ -329,13 +331,21 @@ namespace StarSalvager
             //Be careful to not use return here
             foreach (var part in _parts)
             {
-                if(part.Destroyed)
+                if(part.Destroyed || part.Disabled)
                     continue;
 
                 PartRemoteData partRemoteData =
                     FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
 
                 var levelData = partRemoteData.levels[part.level];
+
+                //FIXME THis shouldn't happen often, though I may want to reconsider how this is being approached
+                if (powerValue == 0f && levelData.powerDraw > 0)
+                {
+                    part.Disabled = true;
+                    UpdatePartData();
+                    continue;
+                }
 
                 powerToRemove += levelData.powerDraw * Time.deltaTime;
 

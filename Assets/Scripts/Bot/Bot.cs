@@ -604,7 +604,6 @@ namespace StarSalvager
                 }
             }
 
-
             return true;
         }
 
