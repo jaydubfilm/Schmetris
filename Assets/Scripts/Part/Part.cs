@@ -39,6 +39,18 @@ namespace StarSalvager
         
         public bool Destroyed { get; private set; }
 
+        public bool Disabled
+        {
+            get => _disabled;
+            set
+            {
+                _disabled = value;
+                SetColor(value ? Color.gray : Color.white);
+            }
+        }
+
+        private bool _disabled;
+
         
         private Damage _damage;
 
