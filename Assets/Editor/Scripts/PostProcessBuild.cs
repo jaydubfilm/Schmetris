@@ -76,11 +76,7 @@ namespace StarSalvager.Editor
 
             if (!Directory.Exists(dataDirectory))
             {
-                var remoteDataPath = Path.Combine(pathToBuiltProject, "Contents", "RemoteData");
-                Directory.CreateDirectory(remoteDataPath);
-
                 buildDirectory = Directory.CreateDirectory(dataDirectory);
-
             }
 
             foreach (var file in files)

@@ -25,14 +25,16 @@ namespace StarSalvager.Utilities.FileIO
         
         #if UNITY_EDITOR
         private static readonly string PARENT_DIRECTORY = new DirectoryInfo(Application.dataPath).Parent.FullName;
-        #else
+        #elif UNITY_STANDALONE_WIN
         private static readonly string PARENT_DIRECTORY = Application.dataPath;
+        #elif UNITY_STANDALONE_OSX
+        private static readonly string PARENT_DIRECTORY = Application.persistentDataPath;
         #endif
 
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
         private static readonly string REMOTE_DIRECTORY = Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, REMOTE_PATH);
 #elif UNITY_STANDALONE_OSX
-        private static readonly string REMOTE_DIRECTORY = Path.Combine(new DirectoryInfo(Application.dataPath).FullName, REMOTE_PATH);
+        private static readonly string REMOTE_DIRECTORY = Path.Combine(new DirectoryInfo(Application.persistentDataPath).FullName, REMOTE_PATH);
 #endif
 
         //Player Data Directory
@@ -74,11 +76,11 @@ namespace StarSalvager.Utilities.FileIO
                 return string.Empty;
 
 #if UNITY_EDITOR
-            var path = Path.Combine(PARENT_DIRECTORY, REMOTE_PATH,
-                ADDTOBUILD_PATH, BOTSHAPEEDITOR_FILE);
-#else
+            var path = Path.Combine(REMOTE_DIRECTORY, ADDTOBUILD_PATH, BOTSHAPEEDITOR_FILE);
+#elif UNITY_STANDALONE_WIN
             var path = Path.Combine(PARENT_DIRECTORY, BUILDDATA_PATH, BOTSHAPEEDITOR_FILE);
-
+#elif UNITY_STANDALONE_OSX
+            var path = Path.Combine(Application.dataPath, BUILDDATA_PATH, BOTSHAPEEDITOR_FILE);
 #endif
             var jsonToExport = JsonConvert.SerializeObject(editorData, Formatting.None);
 
@@ -95,8 +97,10 @@ namespace StarSalvager.Utilities.FileIO
             
 #if UNITY_EDITOR
             var path = Path.Combine(REMOTE_DIRECTORY, ADDTOBUILD_PATH, BOTSHAPEEDITOR_FILE);
-#else
+#elif UNITY_STANDALONE_WIN
             var path = Path.Combine(PARENT_DIRECTORY, BUILDDATA_PATH, BOTSHAPEEDITOR_FILE);
+#elif UNITY_STANDALONE_OSX
+            var path = Path.Combine(Application.dataPath, BUILDDATA_PATH, BOTSHAPEEDITOR_FILE);
 #endif
             
             if (!File.Exists(path))
@@ -281,7 +285,7 @@ namespace StarSalvager.Utilities.FileIO
             var directory = Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "RemoteData",
                 "Sessions");
             #elif UNITY_STANDALONE_OSX
-            var directory = Path.Combine(new DirectoryInfo(Application.dataPath).FullName, "RemoteData",
+            var directory = Path.Combine(new DirectoryInfo(Application.persistentDataPath).FullName, "RemoteData",
                 "Sessions");
 #endif
 

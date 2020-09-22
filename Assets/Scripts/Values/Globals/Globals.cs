@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using StarSalvager.ScriptableObjects;
 using UnityEngine;
-using UnityEngine.Analytics;
-using UnityEngine.InputSystem.Interactions;
 using Object = UnityEngine.Object;
 
 namespace StarSalvager.Values
