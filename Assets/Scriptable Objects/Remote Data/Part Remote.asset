@@ -231,7 +231,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 0
       health: 80
-      powerDraw: 1
+      powerDraw: 0.2
       dataTest:
       - key: Heal
         value: 20
@@ -253,7 +253,7 @@ MonoBehaviour:
         amount: 3
     - unlockLevel: 0
       health: 90
-      powerDraw: 2
+      powerDraw: 0.4
       dataTest:
       - key: Heal
         value: 25
@@ -287,7 +287,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 0
       health: 100
-      powerDraw: 5
+      powerDraw: 1
       dataTest:
       - key: Heal
         value: 50
@@ -395,7 +395,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 0
       health: 60
-      powerDraw: 1
+      powerDraw: 0.2
       dataTest:
       - key: Damage
         value: 10
@@ -415,7 +415,7 @@ MonoBehaviour:
         amount: 150
     - unlockLevel: 0
       health: 80
-      powerDraw: 2
+      powerDraw: 0.4
       dataTest:
       - key: Damage
         value: 20
@@ -447,7 +447,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 0
       health: 100
-      powerDraw: 5
+      powerDraw: 1
       dataTest:
       - key: Damage
         value: 30
@@ -486,7 +486,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 4
       health: 100
-      powerDraw: 1
+      powerDraw: 0.2
       dataTest:
       - key: Damage
         value: 15
@@ -514,7 +514,7 @@ MonoBehaviour:
         amount: 400
     - unlockLevel: 8
       health: 120
-      powerDraw: 2
+      powerDraw: 0.4
       dataTest:
       - key: Damage
         value: 25
@@ -542,7 +542,7 @@ MonoBehaviour:
         amount: 7000
     - unlockLevel: 0
       health: 0
-      powerDraw: 5
+      powerDraw: 1
       dataTest: []
       burnRate: 0
       cost: []
@@ -556,7 +556,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 4
       health: 100
-      powerDraw: 1
+      powerDraw: 0.2
       dataTest:
       - key: Absorb
         value: .3
@@ -586,7 +586,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 6
       health: 100
-      powerDraw: 2
+      powerDraw: 0.4
       dataTest:
       - key: Absorb
         value: .5
@@ -620,7 +620,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 8
       health: 120
-      powerDraw: 5
+      powerDraw: 1
       dataTest:
       - key: Absorb
         value: .75
@@ -666,7 +666,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 3
       health: 100
-      powerDraw: 1
+      powerDraw: 0.2
       dataTest:
       - key: Cooldown
         value: 5
@@ -688,7 +688,7 @@ MonoBehaviour:
         amount: 3
     - unlockLevel: 8
       health: 150
-      powerDraw: 2
+      powerDraw: 0.4
       dataTest:
       - key: Cooldown
         value: 10

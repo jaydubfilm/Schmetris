@@ -24,10 +24,72 @@ MonoBehaviour:
   botHorizontalSpeed: 30
   missionReminderFrequency: 25
   bonusShapeSpeed: 22
-  bonusShapeGearsRewards: 0a00000032000000640000002c010000b004000070170000
+  bonusShapeGearsRewards:
+  - numCells: 2
+    numColours: 1
+    gearsValue: 50
+  - numCells: 2
+    numColours: 2
+    gearsValue: 100
+  - numCells: 2
+    numColours: 3
+    gearsValue: 150
+  - numCells: 2
+    numColours: 4
+    gearsValue: 200
+  - numCells: 2
+    numColours: 5
+    gearsValue: 250
+  - numCells: 3
+    numColours: 1
+    gearsValue: 100
+  - numCells: 3
+    numColours: 2
+    gearsValue: 200
+  - numCells: 3
+    numColours: 3
+    gearsValue: 300
+  - numCells: 3
+    numColours: 4
+    gearsValue: 400
+  - numCells: 3
+    numColours: 5
+    gearsValue: 500
+  - numCells: 4
+    numColours: 1
+    gearsValue: 150
+  - numCells: 4
+    numColours: 2
+    gearsValue: 300
+  - numCells: 4
+    numColours: 3
+    gearsValue: 450
+  - numCells: 4
+    numColours: 4
+    gearsValue: 600
+  - numCells: 4
+    numColours: 5
+    gearsValue: 750
+  - numCells: 5
+    numColours: 1
+    gearsValue: 200
+  - numCells: 5
+    numColours: 2
+    gearsValue: 400
+  - numCells: 5
+    numColours: 3
+    gearsValue: 600
+  - numCells: 5
+    numColours: 4
+    gearsValue: 800
+  - numCells: 5
+    numColours: 5
+    gearsValue: 1000
   cameraUseInputMotion: 1
   cameraSmoothing: 1
   cameraOffsetBounds: 0.2
+  numCurrentTrackedMissionMax: 3
+  onlyGetWaveLootOnce: 1
   blueprintInitialData:
   - type: 4
     level: 0

@@ -1821,7 +1821,16 @@ namespace StarSalvager
                     toUpgrade?.IncreaseLevel();
                 }
 
-                var gears = Globals.GetBonusShapeGearRewards(shape.AttachedBits.Count) * shape.AttachedBits.Count;
+                List<BIT_TYPE> numTypes = new List<BIT_TYPE>();
+                for (int i = 0; i < shape.AttachedBits.Count; i++)
+                {
+                    if (!numTypes.Contains(shape.AttachedBits[i].Type))
+                    {
+                        numTypes.Add(shape.AttachedBits[i].Type);
+                    }
+                }
+
+                var gears = Globals.GetBonusShapeGearRewards(shape.AttachedBits.Count, numTypes.Count);
                 
                 //Remove the Shape
                 PlayerPersistentData.PlayerData.ChangeGears(gears);
