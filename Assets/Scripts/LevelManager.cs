@@ -413,13 +413,16 @@ namespace StarSalvager
 
             //Unlock loot for completing wave
 
-            CurrentWaveData.ConfigureLootTable();
-            List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
-            DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize));
 
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
                 Toast.AddToast("Wave Complete!", time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
+                if (!Globals.OnlyGetWaveLootOnce || !PlayerPersistentData.PlayerData.CheckIfQualifies(Globals.CurrentSector, Globals.CurrentWave + 1))
+                {
+                    CurrentWaveData.ConfigureLootTable();
+                    List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
+                    DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize));
+                }
                 PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector, Globals.CurrentWave + 1);
                 MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
                 MissionManager.ProcessChainWavesMissionData(Globals.CurrentWave + 1);
@@ -433,6 +436,12 @@ namespace StarSalvager
             }
             else
             {
+                if (!Globals.OnlyGetWaveLootOnce || !PlayerPersistentData.PlayerData.CheckIfQualifies(Globals.CurrentSector + 1, Globals.CurrentWave))
+                {
+                    CurrentWaveData.ConfigureLootTable();
+                    List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
+                    DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize));
+                }
                 PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector + 1, 0);
                 MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
                 MissionManager.ProcessChainWavesMissionData(Globals.CurrentWave + 1);

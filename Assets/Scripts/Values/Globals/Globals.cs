@@ -47,7 +47,8 @@ namespace StarSalvager.Values
         public static float BonusShapeDuration => m_gameSettings.bonusShapeSpeed;
         public static List<BlueprintInitialData> BlueprintInitialData => m_gameSettings.blueprintInitialData;
 
-        public static int NumCurrentTrackedMissionMax = 3;
+        public static int NumCurrentTrackedMissionMax => m_gameSettings.numCurrentTrackedMissionMax;
+        public static bool OnlyGetWaveLootOnce => m_gameSettings.onlyGetWaveLootOnce;
 
         //Values set by Game Settings - do not set values here
         public static bool DisableTestingFeatures;

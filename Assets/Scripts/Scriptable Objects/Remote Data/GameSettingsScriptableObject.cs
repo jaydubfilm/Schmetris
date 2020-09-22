@@ -33,6 +33,9 @@ namespace StarSalvager.ScriptableObjects
         [ShowIf("cameraUseInputMotion", true)]
         public float cameraOffsetBounds = 0.5f;
 
+        public int numCurrentTrackedMissionMax = 3;
+        public bool onlyGetWaveLootOnce = true;
+
         public List<BlueprintInitialData> blueprintInitialData = new List<BlueprintInitialData>();
 
         public void SetupGameSettings()
