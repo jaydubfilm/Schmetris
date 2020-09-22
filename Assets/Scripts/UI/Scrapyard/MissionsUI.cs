@@ -1,5 +1,6 @@
 ﻿using StarSalvager.Missions;
 using StarSalvager.Values;
+using System;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -18,9 +19,11 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField]
         private TMP_Text detailsText;
-        
+
+        public static Action CheckMissionUITrackingToggles;
+
         //============================================================================================================//
-        
+
         // Start is called before the first frame update
         private void OnEnable()
         {
@@ -64,6 +67,7 @@ namespace StarSalvager.UI.Scrapyard
                         Debug.Log("Untrack " + mission.m_missionName);
                         PlayerPersistentData.PlayerData.missionsCurrentData.RemoveTrackedMission(currentMission);
                     }
+                    CheckMissionUITrackingToggles?.Invoke();
                 });
             }
 
@@ -79,6 +83,8 @@ namespace StarSalvager.UI.Scrapyard
                 }, 
                 null);
             }
+
+            CheckMissionUITrackingToggles?.Invoke();
         }
         
         //============================================================================================================//
