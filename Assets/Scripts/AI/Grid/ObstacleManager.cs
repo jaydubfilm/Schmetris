@@ -124,9 +124,11 @@ namespace StarSalvager
             if (m_bonusShapesSpawned < LevelManager.Instance.CurrentWaveData.BonusShapes.Count)
             {
                 m_bonusShapeTimer += Time.deltaTime;
+                print(m_bonusShapeTimer);
                 if (m_bonusShapeTimer >= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency)
                 {
                     m_bonusShapeTimer -= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency;
+                    print(m_bonusShapeTimer + " --- SPAWN");
                     StageObstacleShapeData bonusObstacleShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
                     SpawnBonusShape(bonusObstacleShapeData.SelectionType, bonusObstacleShapeData.ShapeName, bonusObstacleShapeData.Category, bonusObstacleShapeData.Rotation);
                     m_bonusShapesSpawned++;
@@ -846,7 +848,7 @@ namespace StarSalvager
         {
             int tryFlipSides = Random.Range(0, 2) * 2 - 1;
 
-            float screenOffset = Globals.ColumnsOnScreen * Constants.gridCellSize * 0.6f;
+            float screenOffset = Globals.ColumnsOnScreen * Constants.gridCellSize * 0.35f;
             //float height = Camera.main.orthographicSize * 0.5f;
             float height = Constants.gridCellSize * Random.Range(8.0f, 12.0f);
 
