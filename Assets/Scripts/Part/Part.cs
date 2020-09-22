@@ -177,6 +177,7 @@ namespace StarSalvager
 
             RecycleDamageEffect();
             Destroyed = false;
+            Disabled = false;
             //collider.enabled = true;
         }
 

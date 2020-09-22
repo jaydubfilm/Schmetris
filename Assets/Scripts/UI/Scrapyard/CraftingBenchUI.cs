@@ -33,6 +33,9 @@ namespace StarSalvager.UI.Scrapyard
         private TMP_Text itemNameText;
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private TMP_Text itemDescriptionText;
+        
+        [SerializeField, Required, FoldoutGroup("Cost Window")]
+        private TMP_Text itemPowerUsage;
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private Image itemIcon;
@@ -289,6 +292,12 @@ namespace StarSalvager.UI.Scrapyard
             
             itemNameText.text = partRemoteData.name;
             itemDescriptionText.text = partRemoteData.description;
+
+            var powerDraw = partRemoteData.levels[lastBlueprint.level].powerDraw;
+            itemPowerUsage.gameObject.SetActive(powerDraw > 0);
+
+            if(powerDraw > 0)
+                itemPowerUsage.text = $"Power: {powerDraw} Kw/s";
 
             var resources = partRemoteData.levels[lastBlueprint.level].cost;
 
