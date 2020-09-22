@@ -8,6 +8,7 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
 using System.Collections.Generic;
 using StarSalvager.Prototype;
+using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -297,7 +298,7 @@ namespace StarSalvager.UI.Scrapyard
             itemPowerUsage.gameObject.SetActive(powerDraw > 0);
 
             if(powerDraw > 0)
-                itemPowerUsage.text = $"Power: {powerDraw} Kw/s";
+                itemPowerUsage.text = $"Power: {powerDraw} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.YELLOW]}/s";
 
             var resources = partRemoteData.levels[lastBlueprint.level].cost;
 
