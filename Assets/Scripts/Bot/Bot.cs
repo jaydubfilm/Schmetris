@@ -1831,7 +1831,6 @@ namespace StarSalvager
                 }
 
                 var gears = Globals.GetBonusShapeGearRewards(shape.AttachedBits.Count, numTypes.Count);
-                print(gears);
                 
                 //Remove the Shape
                 PlayerPersistentData.PlayerData.ChangeGears(gears);

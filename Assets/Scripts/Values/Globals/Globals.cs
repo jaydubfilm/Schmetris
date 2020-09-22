@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Policy;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using StarSalvager.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Analytics;
+using UnityEngine.InputSystem.Interactions;
 using Object = UnityEngine.Object;
 
 namespace StarSalvager.Values
@@ -67,15 +69,15 @@ namespace StarSalvager.Values
 
         public static int GetBonusShapeGearRewards(int numCells, int numColours)
         {
-            numCells -= 2;
-            numColours--;
+            BonusShapeGearsValue bonusShapeValue = m_gameSettings.bonusShapeGearsRewards.FirstOrDefault(b => b.numCells == numCells && b.numColours == numColours);
 
-            if (numCells > 3)
-                numCells = 3;
-            if (numColours > 4)
-                numCells = 4;
+            if (bonusShapeValue != null)
+            {
+                return bonusShapeValue.gearsValue;
+            }
 
-            return m_gameSettings.bonusShapeGearsRewards[numCells, numColours];
+            Debug.Log("Missing value for bonus shape gears reward, calculating a filler value");
+            return numCells * numColours * 25;
         }
 
         public static void SetGameSettings(GameSettingsScriptableObject gameSettings)
