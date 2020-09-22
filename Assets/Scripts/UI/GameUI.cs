@@ -177,6 +177,8 @@ namespace StarSalvager.UI
         private TMP_Text levelText;
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private TMP_Text gearsText;
+        [SerializeField, Required, FoldoutGroup("BL Window")]
+        private Slider gearsSlider;
         
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderText fuelSlider;
@@ -431,8 +433,12 @@ namespace StarSalvager.UI
 
         public void SetPlayerGearsLevel(int playerLevel, int gears, int gearsRequired)
         {
-            levelText.text = $"{gears} lvl {playerLevel}";
-            gearsText.text = $"/{gearsRequired}";
+            gearsSlider.minValue = 0;
+            gearsSlider.maxValue = gearsRequired;
+            gearsSlider.value = gears;
+            
+            levelText.text = $"lvl {playerLevel}";
+            gearsText.text = $"{gears} / {gearsRequired}";
         }
 
         /*public void SetAllResourceSliderBounds(int min, int max)
