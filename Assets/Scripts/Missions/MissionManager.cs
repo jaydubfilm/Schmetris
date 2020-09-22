@@ -297,7 +297,7 @@ namespace StarSalvager.Missions
                 {
                     MissionsCurrentData.AddMission(mission);
 
-                    if (LevelManager.Instance.WaveEndSummaryData != null)
+                    if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
                     {
                         LevelManager.Instance.WaveEndSummaryData.missionUnlockedStrings.Add(mission.m_missionName);
                     }

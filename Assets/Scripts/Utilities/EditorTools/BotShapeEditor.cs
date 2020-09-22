@@ -332,6 +332,29 @@ namespace StarSalvager
         {
             if (_scrapyardBot != null)
             {
+                string playerPath = PlayerPersistentData.PlayerMetadata.GetPathMostRecentFile();
+
+                if (playerPath != string.Empty)
+                {
+                    PlayerPersistentData.PlayerMetadata.CurrentSaveFile = PlayerPersistentData.PlayerMetadata.SaveFiles.FirstOrDefault(s => s.FilePath == playerPath);
+                    PlayerPersistentData.SetCurrentSaveFile(playerPath);
+                    FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
+                }
+                else
+                {
+                    playerPath = Files.GetNextAvailableSaveSlot();
+
+                    if (playerPath != string.Empty)
+                    {
+                        PlayerPersistentData.SetCurrentSaveFile(playerPath);
+                        PlayerPersistentData.ResetPlayerData();
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+
                 PlayerPersistentData.PlayerData.SetCurrentBlockData(_scrapyardBot.attachedBlocks.GetBlockDatas());
             }
         }

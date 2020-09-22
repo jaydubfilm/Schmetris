@@ -522,8 +522,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
+    - {fileID: 8017945059504310356}
+    ActiveGameObject: {fileID: 8017945059504310356}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -534,8 +534,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
+    - {fileID: 8017945059504310356}
+    ActiveGameObject: {fileID: 8017945059504310356}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -546,8 +546,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
+    - {fileID: 8017945059504310356}
+    ActiveGameObject: {fileID: 8017945059504310356}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -558,8 +558,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
+    - {fileID: 8017945059504310356}
+    ActiveGameObject: {fileID: 8017945059504310356}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -570,8 +570,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
+    - {fileID: 8017945059504310356}
+    ActiveGameObject: {fileID: 8017945059504310356}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -582,8 +582,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
+    - {fileID: 8017945059504310356}
+    ActiveGameObject: {fileID: 8017945059504310356}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -3615,6 +3615,12 @@ PrefabInstance:
 --- !u!1 &8017945059504310355 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 708998763807863424, guid: ef8cd5dde79dff24381c55947014638c,
+    type: 3}
+  m_PrefabInstance: {fileID: 8017945059504310354}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8017945059504310356 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8017945059100664150, guid: ef8cd5dde79dff24381c55947014638c,
     type: 3}
   m_PrefabInstance: {fileID: 8017945059504310354}
   m_PrefabAsset: {fileID: 0}
