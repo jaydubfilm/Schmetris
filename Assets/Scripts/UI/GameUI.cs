@@ -421,21 +421,26 @@ namespace StarSalvager.UI
         //TODO I should look into the NotifyPropertyChanged for setting up this functionality
         private void UpdatePlayerGearsLevel()
         {
-            SetPlayerGearsLevel(PlayerPersistentData.PlayerData.Level, PlayerPersistentData.PlayerData.Gears, 999);
-        }
-        
-        public void SetPlayerGearsLevel(int playerLevel, int gears, int gearsRemaining)
-        {
-            levelText.text = $"{gears} lvl {playerLevel}";
-            gearsText.text = $"/{gearsRemaining}";
+            var playerData = PlayerPersistentData.PlayerData;
+            
+            var gearsRequired = LevelManager.Instance.PlayerlevelRemoteDataScriptableObject
+                .GetRemoteData(playerData.Level).GearsToLevelUp;
+
+            SetPlayerGearsLevel(playerData.Level, playerData.Gears, gearsRequired);
         }
 
-        public void SetAllResourceSliderBounds(int min, int max)
+        public void SetPlayerGearsLevel(int playerLevel, int gears, int gearsRequired)
+        {
+            levelText.text = $"{gears} lvl {playerLevel}";
+            gearsText.text = $"/{gearsRequired}";
+        }
+
+        /*public void SetAllResourceSliderBounds(int min, int max)
         {
             fuelSlider.SetBounds(min, max);
             repairSlider.SetBounds(min, max);
             ammoSlider.SetBounds(min, max);
-        }
+        }*/
 
         public void SetResourceSliderBounds(BIT_TYPE type, int min, int max)
         {

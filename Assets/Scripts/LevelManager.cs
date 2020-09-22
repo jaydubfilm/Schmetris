@@ -219,21 +219,24 @@ namespace StarSalvager
                         TransitionToNewWave();
                 }
 
-                //Displays the time in timespan & the fill value
-                var duration = CurrentWaveData.GetWaveDuration();
-                var timeLeft = duration - m_waveTimer;
-                GameUi.SetClockValue( timeLeft / duration);
-                GameUi.SetTimeString((int)timeLeft);
+                if (!EndWaveState)
+                {
+                    //Displays the time in timespan & the fill value
+                    var duration = CurrentWaveData.GetWaveDuration();
+                    var timeLeft = duration - m_waveTimer;
+                    GameUi.SetClockValue(timeLeft / duration);
+                    GameUi.SetTimeString((int) timeLeft);
+                }
             }
             else if (ObstacleManager.HasNoActiveObstacles)
             {
                 var botBlockData = BotObject.GetBlockDatas();
                 SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
                 SessionDataProcessor.Instance.EndActiveWave();
-                
-                
+
+
                 GameUi.SetClockValue(0f);
-                GameUi.SetTimeString("0:00");
+                GameUi.SetTimeString(0);
                 SavePlayerData();
                 GameTimer.SetPaused(true);
                 //Turn wave end summary data into string, post in alert, and clear wave end summary data
@@ -250,29 +253,33 @@ namespace StarSalvager
                 Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
                 foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
                 {
-                    tempDictionary.Add((int)resource.Key, resource.Value);
+                    tempDictionary.Add((int) resource.Key, resource.Value);
                 }
 
                 Dictionary<string, object> waveEndAnalyticsDictionary = new Dictionary<string, object>();
                 waveEndAnalyticsDictionary.Add("User ID", Globals.UserID);
                 waveEndAnalyticsDictionary.Add("Session ID", Globals.SessionID);
                 waveEndAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
-                waveEndAnalyticsDictionary.Add("Bot Layout", JsonConvert.SerializeObject(BotObject.GetBlockDatas(), Formatting.None));
-                waveEndAnalyticsDictionary.Add("Liquid Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None));
-                waveEndAnalyticsDictionary.Add("Enemies Killed", JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None));
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.WaveEnd, eventDataDictionary: waveEndAnalyticsDictionary);
+                waveEndAnalyticsDictionary.Add("Bot Layout",
+                    JsonConvert.SerializeObject(BotObject.GetBlockDatas(), Formatting.None));
+                waveEndAnalyticsDictionary.Add("Liquid Resource Current",
+                    JsonConvert.SerializeObject(tempDictionary, Formatting.None));
+                waveEndAnalyticsDictionary.Add("Enemies Killed",
+                    JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None));
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.WaveEnd,
+                    eventDataDictionary: waveEndAnalyticsDictionary);
 
                 EnemiesKilledInWave.Clear();
 
                 if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 0)
-                Alert.ShowAlert("Out of water", "Your scrapyard is out of water. You must return now.", "Ok", () =>
-                {
-                    IsWaveProgressing = true;
-                    SavePlayerData();
-                    m_levelManagerUI.ToggleBetweenWavesUIActive(false);
-                    ProcessScrapyardUsageBeginAnalytics();
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
-                });
+                    Alert.ShowAlert("Out of water", "Your scrapyard is out of water. You must return now.", "Ok", () =>
+                    {
+                        IsWaveProgressing = true;
+                        SavePlayerData();
+                        m_levelManagerUI.ToggleBetweenWavesUIActive(false);
+                        ProcessScrapyardUsageBeginAnalytics();
+                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                    });
             }
 
             ProjectileManager.UpdateForces();
