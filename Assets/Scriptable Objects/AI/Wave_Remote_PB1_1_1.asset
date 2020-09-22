@@ -17,6 +17,10 @@ MonoBehaviour:
     m_shapeName: BlueDouble
     m_category: BS_2Cell
     m_rotation: -1
+  - m_selectionType: 1
+    m_shapeName: BlueDouble
+    m_category: BS_2Cell
+    m_rotation: -1
   StageRemoteData:
   - m_stageDuration: 15
     m_stageBlendPeriod: 0
