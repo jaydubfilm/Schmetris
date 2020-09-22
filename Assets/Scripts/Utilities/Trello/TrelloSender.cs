@@ -168,14 +168,17 @@ namespace StarSalvager.Utilities.Trello
 
         private void SendReport()
         {
-            var title = $"{summaryText.text} - {Application.platform}";
+            var platform = Application.platform;
+            
+            var title = $"{summaryText.text} - {platform}";
             var description = string.Join("\n", new[]
             {
                 descriptionText.text,
                 "\n",
                 "SYSTEM DETAILS:",
                 "====================",
-                $"Platform: {Application.platform}",
+                $"Platform: {platform}",
+                $"Version: {Application.version}",
                 $"Scene: {UnityEngine.SceneManagement.SceneManager.GetActiveScene().name}"
             });
 
