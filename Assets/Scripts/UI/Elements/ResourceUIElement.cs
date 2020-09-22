@@ -1,9 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
-using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.UI;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,6 +18,9 @@ namespace StarSalvager.UI
 
         [SerializeField]
         private SliderText amountSliderText;
+        
+        [SerializeField, Required]
+        private Slider previewSlider;
 
         //============================================================================================================//
 
@@ -32,10 +33,13 @@ namespace StarSalvager.UI
 
             amountSliderText.value = data.amount;
             amountSliderText.SetBounds(0f, data.capacity);
-            amountSliderText.Init(showMaxValue);
+            amountSliderText.Init(showMaxValue, true);
+
+            previewSlider.minValue = 0f;
+            previewSlider.maxValue = data.capacity;
             
             
-            resourceImage.sprite = _bitAttachableFactory.GetBitProfile((BIT_TYPE) data.type).refinedSprite;
+            resourceImage.sprite = _bitAttachableFactory.GetBitProfile(data.type).refinedSprite;
 
         }
         
@@ -45,7 +49,54 @@ namespace StarSalvager.UI
 
         }
 
+        //====================================================================================================================//
 
+        public void PreviewChange(float changeAmount)
+        {
+            if (changeAmount == 0)
+            {
+                previewSlider.value = 0;
+                amountSliderText.value = data.amount;
+                return;
+            }
+            
+            var color = changeAmount > 0f ? Color.green : Color.red;
+            previewSlider.fillRect.gameObject.GetComponent<Image>().color = color;
+
+
+            if (changeAmount < 0f)
+            {
+                amountSliderText.value = data.amount + changeAmount;
+                previewSlider.value = data.amount;
+            }
+            else
+            {
+                previewSlider.value = data.amount + changeAmount;
+            }
+            
+        }
+
+#if UNITY_EDITOR
+
+        [Button, DisableInPrefabs, DisableInEditorMode, HorizontalGroup("Row1")]
+        private void PreviewNegativeChange()
+        {
+            PreviewChange(data.amount * 0.33f * -1f);
+        }
+        
+        [Button, DisableInPrefabs, DisableInEditorMode, HorizontalGroup("Row1")]
+        private void PreviewNoChange()
+        {
+            PreviewChange(0f);
+        }
+        
+        [Button, DisableInPrefabs, DisableInEditorMode, HorizontalGroup("Row1")]
+        private void PreviewPositiveChange()
+        {
+            PreviewChange(data.amount * 0.33f);
+        }
+        
+#endif
 
         //============================================================================================================//
     }

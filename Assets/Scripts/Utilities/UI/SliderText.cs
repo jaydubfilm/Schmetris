@@ -32,13 +32,15 @@ namespace StarSalvager.Utilities.UI
 
         public bool showMax;
 
-        public void Init(bool showMaxValue = false)
+        public void Init(bool showMaxValue = false, bool ignoreChanges = false)
         {
             showMax = showMaxValue;
             //Ensure that we have a nice clean slate
             _slider.onValueChanged.RemoveAllListeners();
             
-            _slider.onValueChanged.AddListener(ValueChanged);
+            if(!ignoreChanges)
+                _slider.onValueChanged.AddListener(ValueChanged);
+            
             sliderText.text = FormattedSliderText(format, _slider.value);
         }
 
