@@ -452,7 +452,7 @@ namespace StarSalvager.Values
             {
                 unlockedBlueprints.Add(blueprint);
 
-                if (LevelManager.Instance.WaveEndSummaryData != null)
+                if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
                 {
                     LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprint.name);
                 }
