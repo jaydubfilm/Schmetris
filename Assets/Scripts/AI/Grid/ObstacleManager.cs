@@ -124,11 +124,9 @@ namespace StarSalvager
             if (m_bonusShapesSpawned < LevelManager.Instance.CurrentWaveData.BonusShapes.Count)
             {
                 m_bonusShapeTimer += Time.deltaTime;
-                print(m_bonusShapeTimer);
                 if (m_bonusShapeTimer >= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency)
                 {
                     m_bonusShapeTimer -= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency;
-                    print(m_bonusShapeTimer + " --- SPAWN");
                     StageObstacleShapeData bonusObstacleShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
                     SpawnBonusShape(bonusObstacleShapeData.SelectionType, bonusObstacleShapeData.ShapeName, bonusObstacleShapeData.Category, bonusObstacleShapeData.Rotation);
                     m_bonusShapesSpawned++;
@@ -532,7 +530,7 @@ namespace StarSalvager
                     break;
             }
 
-            if (m_previousStageData == null || m_blendTimer > m_currentStageData.StageBlendPeriod)
+            if (m_previousStageData == null || m_currentStageData.StageBlendPeriod == 0 || m_blendTimer > m_currentStageData.StageBlendPeriod)
                 return;
 
             switch(m_previousStageData.StageType)
@@ -579,6 +577,7 @@ namespace StarSalvager
             foreach (StageObstacleData stageObstacleData in obstacleData)
             {
                 float spawnVariable = stageObstacleData.Density * spawningMultiplier * ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
+                
                 if (m_currentStageData.StageBlendPeriod > 0)
                 {
                     if (isPrevious)
@@ -589,6 +588,10 @@ namespace StarSalvager
                     {
                         spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
                     }
+                }
+                else if (isPrevious)
+                {
+                    return;
                 }
 
                 while (spawnVariable >= 1)
