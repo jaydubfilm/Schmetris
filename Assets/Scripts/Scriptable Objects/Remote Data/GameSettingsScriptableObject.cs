@@ -25,7 +25,10 @@ namespace StarSalvager.ScriptableObjects
         public float botHorizontalSpeed = 30.0f;
         public float missionReminderFrequency = 25.0f;
         public float bonusShapeSpeed = 12.0f;
-        public List<int> bonusShapeGearsRewards;
+
+        [BoxGroup("Labled table")]
+        [ShowInInspector, TableMatrix(HorizontalTitle = "Cell Count (Beginning at 2)", VerticalTitle = "Colour Count")]
+        public int[,] bonusShapeGearsRewards = new int[4, 5];
 
         public bool cameraUseInputMotion = true;
         [ShowIf("cameraUseInputMotion", true)]

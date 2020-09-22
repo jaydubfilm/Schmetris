@@ -65,11 +65,17 @@ namespace StarSalvager.Values
         }
         private static ORIENTATION _orientation;
 
-        public static int GetBonusShapeGearRewards(int i)
+        public static int GetBonusShapeGearRewards(int numCells, int numColours)
         {
-            if (i > 6)
-                i = 6;
-            return m_gameSettings.bonusShapeGearsRewards[i - 1];
+            numCells -= 2;
+            numColours--;
+
+            if (numCells > 3)
+                numCells = 3;
+            if (numColours > 4)
+                numCells = 4;
+
+            return m_gameSettings.bonusShapeGearsRewards[numCells, numColours];
         }
 
         public static void SetGameSettings(GameSettingsScriptableObject gameSettings)

@@ -28,6 +28,8 @@ MonoBehaviour:
   cameraUseInputMotion: 1
   cameraSmoothing: 1
   cameraOffsetBounds: 0.2
+  numCurrentTrackedMissionMax: 3
+  onlyGetWaveLootOnce: 1
   blueprintInitialData:
   - type: 4
     level: 0
