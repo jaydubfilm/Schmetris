@@ -22,7 +22,7 @@ MonoBehaviour:
     m_category: BS_2Cell
     m_rotation: -1
   StageRemoteData:
-  - m_stageDuration: 30
+  - m_stageDuration: 60
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
@@ -190,10 +190,10 @@ MonoBehaviour:
     m_stageColumnGroupObstacleData: []
   maxDrops: 0
   RDSEndOfWaveLoot:
-  - rdsData: 4
-    type: 0
+  - rdsData: 2
+    type: 12
     level: 0
-    probability: 0
+    probability: 1
     gearDropRange: {x: 200, y: 200}
-    isUniqueSpawn: 0
-    isAlwaysSpawn: 0
+    isUniqueSpawn: 1
+    isAlwaysSpawn: 1
