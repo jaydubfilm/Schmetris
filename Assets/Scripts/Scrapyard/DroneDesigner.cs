@@ -981,12 +981,7 @@ namespace StarSalvager
 
         public bool IsFullyConnected()
         {
-            if (_scrapyardBot != null && _scrapyardBot.CheckHasDisconnects())
-            {
-                return false;
-            }
-
-            return true;
+            return _scrapyardBot == null || !_scrapyardBot.CheckHasDisconnects();
         }
 
         public void ProcessScrapyardUsageEndAnalytics()

@@ -29,10 +29,23 @@ namespace StarSalvager.Utilities.Inputs
             get => _lockSideMovement;
             set
             {
-                if (value)
-                    TryApplyMove(0f);
+                //Only want to call this in the event that it's different
+                if (_lockSideMovement == value) 
+                    return;
                 
                 _lockSideMovement = value;
+                
+                if (value)
+                {
+                    TryApplyMove(0f);
+                }
+                else
+                {
+                    //Need to make sure that we reset the DasTimer otherwise it wont work!
+                    dasTimer = 0f;
+                    ProcessMovementInput(_currentMoveInput);
+                }
+
             } 
         }
 
@@ -52,6 +65,8 @@ namespace StarSalvager.Utilities.Inputs
 
         [NonSerialized]
         public float MostRecentSideMovement;
+
+        private float _currentMoveInput;
 
         //============================================================================================================//
 
@@ -249,6 +264,12 @@ namespace StarSalvager.Utilities.Inputs
 
         private void SideMovement(InputAction.CallbackContext ctx)
         {
+            _currentMoveInput = ctx.ReadValue<float>();
+            ProcessMovementInput(_currentMoveInput);
+        }
+
+        private void ProcessMovementInput(float moveDirection)
+        {
             if (Console.Open)
                 return;
             
@@ -258,7 +279,6 @@ namespace StarSalvager.Utilities.Inputs
             if (LevelManager.Instance.BotDead)
                 return;
 
-            var moveDirection = ctx.ReadValue<float>();
             MostRecentSideMovement = moveDirection;
 
             if (LockSideMovement)
@@ -266,7 +286,7 @@ namespace StarSalvager.Utilities.Inputs
                 if (moveDirection != 0f)
                 {
                     //TODO Sound to play if moving without fuel
-                    //AudioController.PlaySound(SOUND);
+                    //AudioController.PlaySound(SOUND.);
                 }
                 
                 
@@ -286,7 +306,6 @@ namespace StarSalvager.Utilities.Inputs
             //If the user has released the key, we can reset the DAS system
             dasTriggered = false;
             dasTimer = 0f;
-
         }
 
         /// <summary>

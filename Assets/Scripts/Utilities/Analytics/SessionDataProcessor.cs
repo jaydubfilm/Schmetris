@@ -7,9 +7,10 @@ using UnityEngine;
 
 namespace StarSalvager.Utilities.Analytics
 {
+    //TODO Need to implement the total Game-data for a player (A save file)
     public class SessionDataProcessor : Singleton<SessionDataProcessor>
     {
-        public static readonly Version VERSION = new Version(1,0,0,0);
+        public static readonly Version VERSION = new Version(1,1,0,0);
         private SessionData _currentSession;
         private int CurrentSession;
 

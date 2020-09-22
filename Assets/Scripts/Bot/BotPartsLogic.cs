@@ -347,7 +347,8 @@ namespace StarSalvager
                     continue;
                 }
 
-                powerToRemove += levelData.powerDraw * Time.deltaTime;
+                if(levelData.powerDraw > 0f)
+                    powerToRemove += levelData.powerDraw * Time.deltaTime;
 
                 //If there's nothing using these resources ignore
                 if(levelData.burnRate == 0f)
