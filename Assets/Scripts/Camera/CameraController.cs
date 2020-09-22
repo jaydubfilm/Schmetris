@@ -42,13 +42,18 @@ namespace StarSalvager.Cameras
             get
             {
                 if (_camera == null)
+                {
                     _camera = GetComponent<Camera>();
+                    
+                }
 
+                Camera = _camera;
                 return _camera;
             }
         }
 
         private Camera _camera;
+        public static Camera Camera;
 
         #endregion //Properties
 

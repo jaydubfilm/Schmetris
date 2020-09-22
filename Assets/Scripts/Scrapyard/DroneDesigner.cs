@@ -88,7 +88,7 @@ namespace StarSalvager
                 return;
             
             
-            Vector3 screenToWorldPosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+            Vector3 screenToWorldPosition = Cameras.CameraController.Camera.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
             if (isDragging || (SelectedPartClickPosition != null && Vector3.Distance(SelectedPartClickPosition.Value, screenToWorldPosition) > 0.5f))
             {
                 isDragging = true;
@@ -241,7 +241,7 @@ namespace StarSalvager
 
                         SelectedBrick = partAtCoordinates.ToBlockData();
                         
-                        SelectedPartClickPosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+                        SelectedPartClickPosition = Cameras.CameraController.Camera.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
                         SelectedPartPreviousGridPosition = mouseCoordinate;
                         SelectedPartRemoveFromStorage = false;
                         SelectedPartReturnToStorageIfNotPlaced = true;
@@ -280,7 +280,7 @@ namespace StarSalvager
             {
                 if (dismantleBin != null)
                 {
-                    Vector2 worldMousePosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+                    Vector2 worldMousePosition = Cameras.CameraController.Camera.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
 
                     //Dismantle part
                     if (Vector2.Distance(worldMousePosition, dismantleBin.transform.position) <= 3)
