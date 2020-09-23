@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.UI;
@@ -24,6 +25,13 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
+        private void OnDisable()
+        {
+            PreviewChange(0f);
+        }
+
+        //============================================================================================================//
+
         public void Init(ResourceAmount data, bool showMaxValue)
         {
             if (_bitAttachableFactory == null)
@@ -38,6 +46,8 @@ namespace StarSalvager.UI
             previewSlider.minValue = 0f;
             previewSlider.maxValue = data.capacity;
             
+            
+            previewSlider.gameObject.SetActive(data.amount != 0f);
             
             resourceImage.sprite = _bitAttachableFactory.GetBitProfile(data.type).refinedSprite;
 

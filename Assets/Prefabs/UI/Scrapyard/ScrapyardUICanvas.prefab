@@ -749,7 +749,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 492.3579, y: 219.05713}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4764642995990447077
 CanvasRenderer:
@@ -1430,7 +1430,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.000009536743}
-  m_SizeDelta: {x: -2.4867249, y: 0}
+  m_SizeDelta: {x: -2.4867249, y: 20}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5847174558947841976
 MonoBehaviour:
@@ -1795,6 +1795,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flightDataText: {fileID: 1736144150506717393}
+  launchButtonPointerEvents: {fileID: 4257856973971809728}
+  repairButtonPointerEvents: {fileID: 2173367558316055074}
   partsWindow: {fileID: 981852984674917730}
   remotePartProfileScriptable: {fileID: 11400000, guid: 9631580295037634aa09b50d158e6b05,
     type: 2}
@@ -1834,7 +1836,6 @@ MonoBehaviour:
   saveOverwrite: {fileID: 2588939490236825263}
   saveAsNew: {fileID: 6626591477518593716}
   screenBlackImage: {fileID: 2467265504768982576}
-  m_cameraController: {fileID: 0}
   _droneDesigner: {fileID: 0}
 --- !u!1 &812462798738681201
 GameObject:
@@ -3055,7 +3056,7 @@ MonoBehaviour:
   logisticsWindow: {fileID: 7476362451079644193}
   saveGameWindow: {fileID: 644976433761179259}
   workbenchButton: {fileID: 6847502167962281343}
-  mapButton: {fileID: 1161716598131072262}
+  launchButton: {fileID: 1161716598131072262}
   logisticsButton: {fileID: 1370393416204171953}
   missionsButton: {fileID: 2345067687863013792}
   menuButton: {fileID: 5771679228401925052}
@@ -4225,10 +4226,10 @@ RectTransform:
   m_Father: {fileID: 7669394704740255029}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 27.40503}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 246.17896, y: -173.97461}
+  m_SizeDelta: {x: 492.3579, y: 27.40503}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8152002473592468554
 CanvasRenderer:
@@ -5287,11 +5288,11 @@ RectTransform:
   m_Children:
   - {fileID: 9118693777906343778}
   m_Father: {fileID: 8701177518316465682}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 540, y: -59.39276}
+  m_AnchoredPosition: {x: 750, y: -59.39276}
   m_SizeDelta: {x: 210, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3676325231683601241
@@ -5877,10 +5878,10 @@ RectTransform:
   m_Father: {fileID: 7669394704740255029}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 150.2721}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 246.17896, y: 0}
+  m_SizeDelta: {x: 492.3579, y: 150.2721}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &8050581596164848731
 MonoBehaviour:
@@ -7491,7 +7492,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8701177518316465682
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7503,8 +7504,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4699698314956634971}
   - {fileID: 6922901603535000444}
+  - {fileID: 4699698314956634971}
   - {fileID: 9145903209441661555}
   - {fileID: 7288854631488869936}
   - {fileID: 5376402444225737391}
@@ -8085,7 +8086,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Map
+  m_text: Launch
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8154,7 +8155,7 @@ MonoBehaviour:
   m_margin: {x: 10, y: 10, z: 10, w: 10}
   m_textInfo:
     textComponent: {fileID: 2037651879412643142}
-    characterCount: 3
+    characterCount: 6
     spriteCount: 0
     spaceCount: 0
     wordCount: 1
@@ -8996,10 +8997,10 @@ RectTransform:
   m_Father: {fileID: 7669394704740255029}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 246.17896, y: -197.67712}
+  m_SizeDelta: {x: 466.0324, y: 11.38}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &2941869098092947876
 CanvasRenderer:
@@ -9743,7 +9744,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0.000034332275}
-  m_SizeDelta: {x: -2.4867249, y: 0}
+  m_SizeDelta: {x: -2.4867249, y: 10}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2450561989589625850
 MonoBehaviour:
@@ -14043,8 +14044,9 @@ GameObject:
   - component: {fileID: 7246763803748398805}
   - component: {fileID: 1161716598131072262}
   - component: {fileID: 2365799976661252634}
+  - component: {fileID: 4257856973971809728}
   m_Layer: 5
-  m_Name: MapButton
+  m_Name: LaunchButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14063,11 +14065,11 @@ RectTransform:
   m_Children:
   - {fileID: 4763690319389716712}
   m_Father: {fileID: 8701177518316465682}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 750, y: -59.39276}
+  m_AnchoredPosition: {x: 540, y: -59.39276}
   m_SizeDelta: {x: 210, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5395864227305535795
@@ -14170,6 +14172,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &4257856973971809728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7673490012283791912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5403823f9fa3945977e60483b71576, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7736558393130737761
 GameObject:
   m_ObjectHideFlags: 0
@@ -15320,6 +15334,7 @@ GameObject:
   - component: {fileID: 3829271503449627453}
   - component: {fileID: 3482729043926131998}
   - component: {fileID: 8026823354250400370}
+  - component: {fileID: 2173367558316055074}
   m_Layer: 5
   m_Name: RepairButton
   m_TagString: Untagged
@@ -15447,6 +15462,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &2173367558316055074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8204962631357371472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5403823f9fa3945977e60483b71576, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8222172864124006519
 GameObject:
   m_ObjectHideFlags: 0

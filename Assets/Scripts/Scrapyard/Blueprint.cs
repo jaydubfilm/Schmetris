@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager 
@@ -10,6 +12,11 @@ namespace StarSalvager
         public string name;
         public PART_TYPE partType;
         public int level;
+
+        [JsonIgnore]
+        public bool CanAfford => PlayerPersistentData.PlayerData.CanAffordPart(partType, level, false);
+
+        #region IEquatable
 
         public bool Equals(Blueprint other)
         {
@@ -30,5 +37,7 @@ namespace StarSalvager
         {
             return (name != null ? name.GetHashCode() : 0);
         }
+
+        #endregion //IEquatable
     }
 }

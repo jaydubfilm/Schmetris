@@ -24,8 +24,7 @@ namespace StarSalvager
 {
     public class DroneDesigner : AttachableEditorToolBase, IReset, IInput
     {
-        //[FormerlySerializedAs("scrapyardUI")] [SerializeField]
-        private DroneDesignUI droneDesignUi
+        private DroneDesignUI DroneDesignUi
         {
             get
             {
@@ -49,7 +48,7 @@ namespace StarSalvager
 
         private List<GameObject> _floatingPartWarnings;
         private List<GameObject> _availablePointMarkers;
-        private SpriteRenderer dismantleBin;
+        private SpriteRenderer _dismantleBin;
 
         private Stack<ScrapyardEditData> _toUndoStack;
         private Stack<ScrapyardEditData> _toRedoStack;
@@ -59,10 +58,10 @@ namespace StarSalvager
         public List<ScrapyardLayout> ScrapyardLayouts => _scrapyardLayouts;
         private List<ScrapyardLayout> _scrapyardLayouts;
 
-        private bool isStarted;
-        private bool isDragging;
+        private bool _isStarted;
+        private bool _isDragging;
 
-        private SpriteRenderer partDragImage;
+        private SpriteRenderer _partDragImage;
 
         //============================================================================================================//
 
@@ -78,21 +77,23 @@ namespace StarSalvager
             _scrapyardLayouts = Files.ImportLayoutData();
             _currentLayout = null;
             IsUpgrading = false;
+            
             InitInput();
-            isStarted = true;
+            
+            _isStarted = true;
         }
 
         private void Update()
         {
-            if (partDragImage == null || !partDragImage.gameObject.activeSelf) 
+            if (_partDragImage == null || !_partDragImage.gameObject.activeSelf) 
                 return;
             
             
             Vector3 screenToWorldPosition = Cameras.CameraController.Camera.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
-            if (isDragging || (SelectedPartClickPosition != null && Vector3.Distance(SelectedPartClickPosition.Value, screenToWorldPosition) > 0.5f))
+            if (_isDragging || (SelectedPartClickPosition != null && Vector3.Distance(SelectedPartClickPosition.Value, screenToWorldPosition) > 0.5f))
             {
-                isDragging = true;
-                partDragImage.transform.position = new Vector3(screenToWorldPosition.x, screenToWorldPosition.y, 0);
+                _isDragging = true;
+                _partDragImage.transform.position = new Vector3(screenToWorldPosition.x, screenToWorldPosition.y, 0);
             }
         }
 
@@ -170,16 +171,16 @@ namespace StarSalvager
                 Alert.ShowAlert("Water Restored", "You have resuscitated your thirsty crew.", "Phew!", null);
             }
 
-            if (dismantleBin == null)
+            if (_dismantleBin == null)
             {
-                dismantleBin = Instantiate(dismantleBinPrefab);
-                dismantleBin.transform.position = new Vector2(10, 10);
-                dismantleBin.transform.parent = transform;
+                _dismantleBin = Instantiate(dismantleBinPrefab);
+                _dismantleBin.transform.position = new Vector2(10, 10);
+                _dismantleBin.transform.parent = transform;
             }
 
             UpdateFloatingMarkers(false);
             
-            droneDesignUi.ShowRepairCost(GetRepairCost(), GetReplacementCost());
+            DroneDesignUi.ShowRepairCost(GetRepairCost(), GetReplacementCost());
         }
 
         public void Reset()
@@ -247,14 +248,14 @@ namespace StarSalvager
                         SelectedPartReturnToStorageIfNotPlaced = true;
                         SaveBlockData();
 
-                        if (partDragImage == null)
+                        if (_partDragImage == null)
                         {
-                            partDragImage = new GameObject().AddComponent<SpriteRenderer>();
-                            partDragImage.sortingOrder = 1;
+                            _partDragImage = new GameObject().AddComponent<SpriteRenderer>();
+                            _partDragImage.sortingOrder = 1;
                         }
-                        partDragImage.gameObject.SetActive(true);
-                        partDragImage.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(type).Sprites[level];
-                        partDragImage.transform.position = currentAttachablePosition;
+                        _partDragImage.gameObject.SetActive(true);
+                        _partDragImage.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(type).Sprites[level];
+                        _partDragImage.transform.position = currentAttachablePosition;
                     }
                 }
             }
@@ -263,10 +264,10 @@ namespace StarSalvager
 
         private void OnLeftMouseButtonUp()
         {
-            if (partDragImage != null)
-                partDragImage.gameObject.SetActive(false);
+            if (_partDragImage != null)
+                _partDragImage.gameObject.SetActive(false);
             
-            isDragging = false;
+            _isDragging = false;
 
             if (!SelectedBrick.HasValue || _scrapyardBot == null)
             {
@@ -278,12 +279,12 @@ namespace StarSalvager
             //Check if mouse coordinate is inside the editing grid
             if (!TryGetMouseCoordinate(out var mouseGridCoordinate))
             {
-                if (dismantleBin != null)
+                if (_dismantleBin != null)
                 {
                     Vector2 worldMousePosition = Cameras.CameraController.Camera.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
 
                     //Dismantle part
-                    if (Vector2.Distance(worldMousePosition, dismantleBin.transform.position) <= 3)
+                    if (Vector2.Distance(worldMousePosition, _dismantleBin.transform.position) <= 3)
                     {
                         var blockData = SelectedBrick.Value;
                         
@@ -332,7 +333,7 @@ namespace StarSalvager
                             PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
                         }
 
-                        droneDesignUi.RefreshScrollViews();
+                        DroneDesignUi.RefreshScrollViews();
                         _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
 
                         SelectedBrick = null;
@@ -386,7 +387,7 @@ namespace StarSalvager
                     _toRedoStack.Clear();
                 }
 
-                droneDesignUi.RefreshScrollViews();
+                DroneDesignUi.RefreshScrollViews();
                 _scrapyardBot.AttachNewBit(mouseGridCoordinate, attachable);
 
                 SelectedBrick = null;
@@ -409,7 +410,7 @@ namespace StarSalvager
                     PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
                 }
 
-                droneDesignUi.RefreshScrollViews();
+                DroneDesignUi.RefreshScrollViews();
                 _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
 
 
@@ -422,7 +423,7 @@ namespace StarSalvager
             
             
             UpdateFloatingMarkers(false);
-            droneDesignUi.ShowRepairCost(GetRepairCost(), GetReplacementCost());
+            DroneDesignUi.ShowRepairCost(GetRepairCost(), GetReplacementCost());
         }
 
         private void OnRightMouseButton(InputAction.CallbackContext ctx)
@@ -452,7 +453,7 @@ namespace StarSalvager
                 blockData.Coordinate = mouseCoordinate;
                 
                 PlayerPersistentData.PlayerData.AddPartToStorage(scrapPart.ToBlockData());
-                droneDesignUi.AddToPartScrollView(scrapPart.ToBlockData());
+                DroneDesignUi.AddToPartScrollView(scrapPart.ToBlockData());
                 _toUndoStack.Push(new ScrapyardEditData
                 {
                     EventType = SCRAPYARD_ACTION.UNEQUIP,
@@ -465,7 +466,7 @@ namespace StarSalvager
             }
             
             UpdateFloatingMarkers(false);
-            droneDesignUi.ShowRepairCost(GetRepairCost(), GetReplacementCost());
+            DroneDesignUi.ShowRepairCost(GetRepairCost(), GetReplacementCost());
         }
 
         private void OnRightMouseButtonUp()
@@ -522,7 +523,7 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(toUndo.EventType), toUndo.EventType, null);
             }
 
-            droneDesignUi.RefreshScrollViews();
+            DroneDesignUi.RefreshScrollViews();
             SaveBlockData();
 
             UpdateFloatingMarkers(false);
@@ -572,7 +573,7 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(toRedo.EventType), toRedo.EventType, null);
             }
 
-            droneDesignUi.RefreshScrollViews();
+            DroneDesignUi.RefreshScrollViews();
             SaveBlockData();
 
             UpdateFloatingMarkers(false);
@@ -581,7 +582,7 @@ namespace StarSalvager
 
         public void ClearUndoRedoStacks()
         {
-            if (!isStarted)
+            if (!_isStarted)
                 return;
 
             _toUndoStack.Clear();
@@ -681,8 +682,8 @@ namespace StarSalvager
             {
                 _scrapyardBot.AttachNewBit(attachable.Coordinate, attachable);
             }
-            droneDesignUi.UpdateResourceElements();
-            droneDesignUi.RefreshScrollViews();
+            DroneDesignUi.UpdateBotResourceElements();
+            DroneDesignUi.RefreshScrollViews();
             SaveBlockData();
         }
 
@@ -797,12 +798,21 @@ namespace StarSalvager
 
             SaveBlockData();
 
-            droneDesignUi.UpdateResourceElements();
+            DroneDesignUi.UpdateBotResourceElements();
         }
+
+        //Repair Calculations
+        //====================================================================================================================//
+        
+        #region Repair Calculations
 
         public int GetTotalRepairCost()
         {
             return GetRepairCost() + GetReplacementCost();
+        }
+        public Vector2Int GetRepairCostPair()
+        {
+            return new Vector2Int(GetRepairCost(), GetReplacementCost());
         }
         
         private int GetRepairCost()
@@ -891,10 +901,14 @@ namespace StarSalvager
             
             SaveBlockData();
 
-            droneDesignUi.UpdateResourceElements();
-            droneDesignUi.ShowRepairCost(GetRepairCost(), GetReplacementCost());
+            DroneDesignUi.UpdateBotResourceElements();
+            DroneDesignUi.ShowRepairCost(GetRepairCost(), GetReplacementCost());
         }
 
+        #endregion //Repair Calculations
+
+        //====================================================================================================================//
+        
         public void RotateBots(float direction)
         {
             if (_scrapyardBot != null)

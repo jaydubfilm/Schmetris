@@ -41,30 +41,18 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private Image itemIcon;
 
-        /*[SerializeField]
-        private Button craftButton;
-
-        [SerializeField]
-        private TMP_Text itemNameText;
-        [SerializeField]
-        private Image resultImage;*/
-
         [FormerlySerializedAs("blueprints")] [SerializeField]
         private BlueprintUIElementScrollView blueprintsContentScrollView;
-        /*[SerializeField]
-        private ResourceUIElementScrollView costContentView;
-        [SerializeField]
-        private ResourceUIElementScrollView resourceScrollView;*/
 
         [SerializeField, Required]
         private CraftingBench mCraftingBench;
 
-        //[SerializeField, Required]
-        private StorageUI storageUi;
+        private StorageUI _storageUi;
+        private DroneDesignUI _droneDesignUI;
 
-        private Blueprint currentSelected;
+        private Blueprint _currentSelected;
 
-        private bool scrollViewsSetup = false;
+        private bool _scrollViewsSetup;
 
         //============================================================================================================//
 
@@ -72,22 +60,19 @@ namespace StarSalvager.UI.Scrapyard
 
         private void Start()
         {
-            storageUi = FindObjectOfType<StorageUI>();
+            _storageUi = FindObjectOfType<StorageUI>();
+            _droneDesignUI = FindObjectOfType<DroneDesignUI>();
 
-            //costWindowObject.SetActive(false);
             costWindowVerticalLayoutGroup = costWindowObject.GetComponent<VerticalLayoutGroup>();
             costWindowCanvasGroup = costWindowObject.GetComponent<CanvasGroup>();
 
-            InitButtons();
-
             InitUIScrollView();
-            InitResourceScrollViews();
-            scrollViewsSetup = true;
+            _scrollViewsSetup = true;
         }
 
         private void OnEnable()
         {
-            if (scrollViewsSetup)
+            if (_scrollViewsSetup)
                 RefreshScrollViews();
 
             blueprintsContentScrollView.ClearElements();
@@ -99,24 +84,6 @@ namespace StarSalvager.UI.Scrapyard
 
 
         #endregion //Unity Functions
-
-        //============================================================================================================//
-
-        #region Init
-
-        private void InitButtons()
-        {
-            /*craftButton.onClick.AddListener(() =>
-            {
-                if (currentSelected == null)
-                    return;
-
-                mCraftingBench.CraftBlueprint(currentSelected);
-                UpdateResources();
-            });*/
-        }
-
-        #endregion //Init
 
         //============================================================================================================//
 
@@ -137,91 +104,16 @@ namespace StarSalvager.UI.Scrapyard
                 {
                     Debug.Log("Craft button pressed");
                     mCraftingBench.CraftBlueprint(data);
-                    storageUi.UpdateStorage();
+                    _storageUi.UpdateStorage();
 
-                }, SetupBlueprintCosts);
+                }, TryShowBlueprintCost);
             }
-        }
-
-        public void InitResourceScrollViews()
-        {
-            /*var resources = PlayerPersistentData.PlayerData.GetResources();
-
-            foreach (var resource in resources)
-            {
-                var data = new CraftCost
-                {
-                    resourceType = CraftCost.TYPE.Bit,
-                    type = (int)resource.Key,
-                    amount = resource.Value
-                };
-
-                var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{resource.Key}_UIElement");
-                element.Init(data);
-            }
-
-            var components = PlayerPersistentData.PlayerData.GetComponents();
-
-            foreach (var component in components)
-            {
-                var data = new CraftCost
-                {
-                    resourceType = CraftCost.TYPE.Component,
-                    type = (int)component.Key,
-                    amount = component.Value
-                };
-
-                var element = resourceScrollView.AddElement<ResourceUIElement>(data, $"{component.Key}_UIElement");
-                element.Init(data);
-            }*/
         }
 
         public void RefreshScrollViews()
         {
             blueprintsContentScrollView.ClearElements();
             InitUIScrollView();
-            UpdateResources();
-        }
-
-        public void UpdateResources()
-        {
-            /*var resources = PlayerPersistentData.PlayerData.GetResources();
-
-            foreach (var resource in resources)
-            {
-                var data = new CraftCost
-                {
-                    resourceType = CraftCost.TYPE.Bit,
-                    type = (int)resource.Key,
-                    amount = resource.Value
-                };
-
-                var element = resourceScrollView.FindElement<ResourceUIElement>(data);
-
-                if (element == null)
-                    continue;
-
-                element.Init(data);
-            }
-
-            var components = PlayerPersistentData.PlayerData.GetComponents();
-
-            foreach (var component in components)
-            {
-                var data = new CraftCost
-                {
-                    resourceType = CraftCost.TYPE.Component,
-                    type = (int)component.Key,
-                    amount = component.Value
-                };
-
-                var element = resourceScrollView.FindElement<ResourceUIElement>(data);
-
-                if (element == null)
-                    continue;
-
-                element.Init(data);
-            }*/
         }
 
         #endregion //Scroll Views
@@ -232,7 +124,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private Blueprint lastBlueprint;
 
-        private void SetupBlueprintCosts(Blueprint blueprint, bool showWindow, RectTransform buttonTransform)
+        private void TryShowBlueprintCost(Blueprint blueprint, bool showWindow, RectTransform buttonTransform)
         {
             costWindowObject.SetActive(showWindow);
 
@@ -240,6 +132,8 @@ namespace StarSalvager.UI.Scrapyard
             costWindowVerticalLayoutGroup.enabled = false;
             costWindowCanvasGroup.alpha = 0;
 
+            _droneDesignUI.PreviewCraftCost(showWindow, blueprint);
+            
             if (!showWindow)
             {
                 PlayerData.OnValuesChanged -= UpdateCostUI;
@@ -255,13 +149,6 @@ namespace StarSalvager.UI.Scrapyard
 
             //FIXME This is just a temp setup to ensure the functionality
             StartCoroutine(ResizeRepositionCostWindowCoroutine(buttonTransform));
-
-            /*Canvas.ForceUpdateCanvases();
-            costWindowVerticalLayoutGroup.enabled = true;
-            
-            var windowTransform = costWindowObject.transform as RectTransform;
-            windowTransform.position = buttonTransform.position;
-            windowTransform.localPosition += Vector3.left * (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f);*/
         }
 
         private IEnumerator ResizeRepositionCostWindowCoroutine(RectTransform buttonTransform)
@@ -308,15 +195,6 @@ namespace StarSalvager.UI.Scrapyard
                 element.Init(resource);
             }
         }
-
-        /*private void BlueprintPressed(TEST_Blueprint blueprint)
-        {
-            /*itemNameText.text = blueprint.name;
-            PartProfile partProfile = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(blueprint.remoteData.partType);
-            resultImage.sprite = partProfile.Sprites[blueprint.level];#1#
-            //SetupBlueprintCosts(blueprint);
-            //currentSelected = blueprint;
-        }*/
 
         #endregion //Other
 
