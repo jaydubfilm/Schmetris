@@ -181,3 +181,10 @@ MonoBehaviour:
     gearDropRange: {x: 3000, y: 3000}
     isUniqueSpawn: 0
     isAlwaysSpawn: 0
+  - rdsData: 2
+    type: 3
+    level: 2
+    probability: 0
+    gearDropRange: {x: 0, y: 0}
+    isUniqueSpawn: 1
+    isAlwaysSpawn: 1
