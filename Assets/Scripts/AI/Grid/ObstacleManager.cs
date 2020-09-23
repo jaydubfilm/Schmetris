@@ -35,18 +35,18 @@ namespace StarSalvager
         private float m_currentInput;
 
         //Variables to spawn obstacles throughout a stage
-        private StageRemoteData m_currentStageData = null;
-        private StageRemoteData m_previousStageData = null;
-        private float m_blendTimer = 0.0f;
+        private StageRemoteData m_currentStageData;
+        private StageRemoteData m_previousStageData;
+        private float m_blendTimer;
         private int m_nextStageToSpawn;
 
-        private float m_distanceHorizontal = 0.0f;
+        private float m_distanceHorizontal;
 
         public Transform WorldElementsRoot => m_worldElementsRoot;
         private Transform m_worldElementsRoot;
 
-        private float m_bonusShapeTimer = 0.0f;
-        private int m_bonusShapesSpawned = 0;
+        private float m_bonusShapeTimer;
+        private int m_bonusShapesSpawned;
 
         public bool HasActiveBonusShapes => m_bonusShapes != null && m_bonusShapes.Count > 0 && m_bonusShapes.Any(x =>
             CameraController.IsPointInCameraRect(x.transform.position, BONUS_SCREEN_AREA));
@@ -64,9 +64,6 @@ namespace StarSalvager
                     return false;
 
                 return !m_obstacles.Any(o => o != null && o.CanMove) && m_offGridMovingObstacles.Count == 0;
-
-                //m_obstacles.Any(o => o.CanMove) && 
-                //m_obstacles.FindAll(o => o.CanMove == true).Count == 0 && m_offGridMovingObstacles.Count == 0;
             }
         }
 
@@ -135,7 +132,7 @@ namespace StarSalvager
             }
 
             //Set the movement direction 
-            Globals.MovingDirection = Mathf.Abs(m_distanceHorizontal) <= 0.2f ? DIRECTION.NULL: m_distanceHorizontal.GetHorizontalDirection();
+            //Globals.MovingDirection = Mathf.Abs(m_distanceHorizontal) <= 0.2f ? DIRECTION.NULL: m_distanceHorizontal.GetHorizontalDirection();
         }
 
         //====================================================================================================================//
@@ -214,32 +211,7 @@ namespace StarSalvager
         {
             Vector3 amountShift = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
 
-            if (m_distanceHorizontal != 0)
-            {
-                int gridPositionXPrevious = (int)Mathf.Ceil(m_distanceHorizontal + (Constants.gridCellSize / 2) / Constants.gridCellSize);
-
-                if (m_distanceHorizontal > 0)
-                {
-                    float toMove = Mathf.Min(m_distanceHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
-                    m_distanceHorizontal -= toMove;
-
-                    if (m_worldElementsRoot.position.x > -0.5f * Constants.gridCellSize * Globals.GridSizeX)
-                    {
-                        m_worldElementsRoot.position += Vector3.left * toMove;
-                        LevelManager.Instance.CameraController.MoveCameraWithObstacles(Vector3.left * toMove);
-                    }
-                }
-                else if (m_distanceHorizontal < 0)
-                {
-                    float toMove = Mathf.Min(Mathf.Abs(m_distanceHorizontal), Globals.BotHorizontalSpeed * Time.deltaTime);
-                    m_distanceHorizontal += toMove;
-                    if (m_worldElementsRoot.position.x < 0.5f * Constants.gridCellSize * Globals.GridSizeX)
-                    {
-                        m_worldElementsRoot.position += Vector3.right * toMove;
-                        LevelManager.Instance.CameraController.MoveCameraWithObstacles(Vector3.right * toMove);
-                    }
-                }
-            }
+            TryMoveElements();
 
             for (int i = m_offGridMovingObstacles.Count - 1; i >= 0; i--)
             {
@@ -376,13 +348,10 @@ namespace StarSalvager
                             }
                             break;
                         case Shape shape:
-                            foreach (var attachedBit in shape.AttachedBits)
+                            foreach (var attachedBit in shape.AttachedBits.Where(attachedBit => m_obstacles.Contains(attachedBit)))
                             {
-                                if(m_obstacles.Contains(attachedBit))
-                                {
-                                    attachedBit.IsRegistered = false;
-                                    m_obstacles[m_obstacles.IndexOf(attachedBit)] = null;
-                                }
+                                attachedBit.IsRegistered = false;
+                                m_obstacles[m_obstacles.IndexOf(attachedBit)] = null;
                             }
                             Recycler.Recycle<Shape>(shape);
                             m_obstacles[i].IsRegistered = false;
@@ -412,6 +381,63 @@ namespace StarSalvager
                 Move(m_currentInput);
             }
         }
+
+        private void TryMoveElements()
+        {
+            var xPos = m_worldElementsRoot.position.x;
+            
+            float distHorizontal;
+            float direction;
+            Vector3 moveDirection;
+            bool canMove;
+            
+            switch (true)
+            {
+                //Move Left values
+                //----------------------------------------------------------------------------------------------------//
+                case bool _ when m_distanceHorizontal > 0:
+                    distHorizontal = m_distanceHorizontal;
+                    direction = -1f;
+                    canMove = xPos > -0.5f * Constants.gridCellSize * Globals.GridSizeX;
+                    moveDirection = Vector3.left;
+                    break;
+                
+                //Move Right Values
+                //----------------------------------------------------------------------------------------------------//
+                case bool _ when m_distanceHorizontal < 0:
+                    distHorizontal = Mathf.Abs(m_distanceHorizontal);
+                    direction = 1f;
+                    canMove = xPos < 0.5f * Constants.gridCellSize * Globals.GridSizeX;
+                    moveDirection = Vector3.right;
+                    
+                    break;
+                
+                //----------------------------------------------------------------------------------------------------//
+                default:
+                    MoveDelta = TEST_MOVEDELTA = 0f;
+                    return;
+            }
+            
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var toMove = Mathf.Min(distHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
+            MoveDelta = TEST_MOVEDELTA = toMove * direction;
+            
+            m_distanceHorizontal += toMove * direction;
+
+            if (!canMove)
+                return;
+            
+            m_worldElementsRoot.position += moveDirection * toMove;
+            
+            //--------------------------------------------------------------------------------------------------------//
+
+            //FIXME We cannot access the camera like this, it is not the responsibility of the ObstacleManager to move the camera
+            LevelManager.Instance.CameraController.MoveCameraWithObstacles(moveDirection * toMove);
+        }
+
+        [ShowInInspector, ReadOnly] public float MoveDelta;
+        public static float TEST_MOVEDELTA;
 
         //====================================================================================================================//
         

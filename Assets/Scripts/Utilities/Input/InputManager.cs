@@ -16,8 +16,11 @@ namespace StarSalvager.Utilities.Inputs
     {
         private static List<IMoveOnInput> _moveOnInput;
 
+        //Properties
         //====================================================================================================================//
-        
+
+        #region Properities
+
         private Bot[] _bots;
         private ScrapyardBot[] _scrapyardBots;
 
@@ -68,7 +71,12 @@ namespace StarSalvager.Utilities.Inputs
 
         private float _currentMoveInput;
 
+        #endregion //Properities
+
+        //Unity Functions
         //============================================================================================================//
+
+        #region Unity Functions
 
         private void Start()
         {
@@ -85,8 +93,6 @@ namespace StarSalvager.Utilities.Inputs
         {
             _bots = FindObjectsOfType<Bot>();
             _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
-            /*_scrapyard = FindObjectOfType<Scrapyard>();
-            _botShapeEditor = FindObjectOfType<BotShapeEditor>();*/
         } 
 
         private void OnDestroy()
@@ -102,9 +108,9 @@ namespace StarSalvager.Utilities.Inputs
             PlayerPersistentData.CustomOnApplicationQuit();
         }
 
-        //============================================================================================================//
+        #endregion //Unity Functions
 
-        
+        //============================================================================================================//
         
         public static void RegisterMoveOnInput(IMoveOnInput toAdd)
         {
@@ -136,9 +142,10 @@ namespace StarSalvager.Utilities.Inputs
             
         }
         
+        //IInput Functions
         //============================================================================================================//
 
-        #region Input Setup
+        #region IInput Functions
 
         public void InitInput()
         {
@@ -167,6 +174,25 @@ namespace StarSalvager.Utilities.Inputs
             //--------------------------------------------------------------------------------------------------------//
         }
         
+
+
+        public void DeInitInput()
+        {
+            if (_inputMap == null)
+                return;
+            
+            foreach (var func in _inputMap)
+            {
+                func.Key.Disable();
+                func.Key.performed -= func.Value;
+            }
+        }
+        
+        #endregion //Input Setup
+        
+        //============================================================================================================//
+
+        #region Inputs
         private void SetupInputs()
         {
             //Setup the unchanging inputs
@@ -210,25 +236,6 @@ namespace StarSalvager.Utilities.Inputs
                     throw new ArgumentOutOfRangeException();
             }
         }
-
-        public void DeInitInput()
-        {
-            if (_inputMap == null)
-                return;
-            
-            foreach (var func in _inputMap)
-            {
-                func.Key.Disable();
-                func.Key.performed -= func.Value;
-            }
-        }
-        
-        #endregion //Input Setup
-        
-        //============================================================================================================//
-
-        #region Inputs
-
         private void SmartAction1(InputAction.CallbackContext ctx)
         {
             TriggerSmartWeapon(ctx, 0);

@@ -11,7 +11,9 @@ namespace StarSalvager.Utilities.Backgrounds
     {
         private static readonly int MainTexture = Shader.PropertyToID("_MainTex");
         private static readonly int MainColor = Shader.PropertyToID("_Color");
-        
+
+        #region Properties
+
         [SerializeField, BoxGroup("Move Values")]
         private Vector2 moveSpeed = Vector2.zero;
         private Vector2 _moveAmount;
@@ -39,15 +41,15 @@ namespace StarSalvager.Utilities.Backgrounds
         private Texture Texture;
         [SerializeField, DisableInPlayMode, BoxGroup("Starting Values/Materials")]
         private Color color = Color.white;
+
+        #endregion //Properties
         
         //============================================================================================================//
         
-        private Material m_material;
         private new Renderer renderer => _renderer ? _renderer : _renderer = GetComponent<Renderer>();
         private Renderer _renderer;
 
-
-        //private float dasTimer;
+        private Material m_material;
         
         //============================================================================================================//
 
@@ -86,7 +88,7 @@ namespace StarSalvager.Utilities.Backgrounds
             enabled = false;
         }
         
-        public void UpdatePosition(bool ignoreInput = false)
+        public void UpdatePosition(float moveAmount, bool ignoreInput = false)
         {
             if (moveSpeed == Vector2.zero)
                 return;
@@ -94,10 +96,10 @@ namespace StarSalvager.Utilities.Backgrounds
 
             var horizontalMove = GameTimer.IsPaused || ignoreInput
                 ? Vector2.zero
-                : Vector2.right * (horizontalMoveSpeed * Globals.MovingDirection.GetHorizontalDirectionFloat());
+                : Vector2.right * (horizontalMoveSpeed * moveAmount);
             
-            
-            SetOffset((moveSpeed + horizontalMove) * Time.deltaTime);
+            //SetOffset((moveSpeed + horizontalMove) * Time.deltaTime);
+            SetOffset((horizontalMove / 75f) + (moveSpeed * Time.deltaTime));
         }
         
         //============================================================================================================//
@@ -115,10 +117,10 @@ namespace StarSalvager.Utilities.Backgrounds
             {
                 _moveAmount.x += _moveAmount.x < 0 ? 1f : -1f;
                 
-                if (Mathf.Abs(_moveAmount.x) > 0.1f)
+                /*if (Mathf.Abs(_moveAmount.x) > 0.1f)
                 {
                     System.Console.WriteLine("Test");
-                }
+                }*/
 
                 offset.x = startOffset.x + _moveAmount.x;
             }
@@ -127,10 +129,10 @@ namespace StarSalvager.Utilities.Backgrounds
             {
                 _moveAmount.y += _moveAmount.y < 0 ? 1f : -1f;
 
-                if (Mathf.Abs(_moveAmount.y) > 0.1f)
+                /*if (Mathf.Abs(_moveAmount.y) > 0.1f)
                 {
                     System.Console.WriteLine("Test");
-                }
+                }*/
 
                 offset.y = startOffset.y + _moveAmount.y;
             }

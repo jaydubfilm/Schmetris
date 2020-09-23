@@ -75,6 +75,7 @@ namespace StarSalvager.Cameras
             SetOrientation(Globals.Orientation);
         }
 
+
         private Vector3 tempPosition;
 
         //Smooth camera to center over bot
@@ -109,6 +110,9 @@ namespace StarSalvager.Cameras
             }
 
             tempPosition = transform.position;
+
+            previousPos = currentPos;
+            currentPos = transform.position;
         }
 
         private void LateUpdate()
@@ -127,6 +131,10 @@ namespace StarSalvager.Cameras
 
         #region Camera Rect
 
+        public static float TEST_CAMERA_DELTA => (currentPos - previousPos).magnitude * Time.deltaTime;
+        private static Vector3 currentPos, previousPos;
+
+        public static float CameraXOffset => _cameraXOffset;
         private static float _cameraXOffset;
         private static Rect _cameraRect;
         private static Vector2 center;
@@ -317,6 +325,8 @@ namespace StarSalvager.Cameras
         //IMoveOnInput functions
         //================================================================================================================//
 
+        #region IMoveOnInput
+
         public void RegisterMoveOnInput()
         {
             InputManager.RegisterMoveOnInput(this);
@@ -327,12 +337,14 @@ namespace StarSalvager.Cameras
             if (!Globals.CameraUseInputMotion)
                 return;
 
-            if (direction != 0)
-            {
-                beginningLerpPos = startPos;
-                lerpValue = 0.0f;
-            }
+            if (direction == 0) 
+                return;
+            
+            beginningLerpPos = startPos;
+            lerpValue = 0.0f;
         }
+
+        #endregion //IMoveOnInput
 
         //====================================================================================================================//
 
