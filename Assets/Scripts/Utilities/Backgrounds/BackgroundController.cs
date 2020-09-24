@@ -1,27 +1,33 @@
 ﻿using System;
 using Sirenix.OdinInspector;
+using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
+using StarSalvager.Utilities.Inputs;
 using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Backgrounds
 {
-    public class BackgroundController : MonoBehaviour, IPausable
+    public class BackgroundController : MonoBehaviour, IPausable, IMoveOnInput
     {
+        private static bool IgnoreInput => false;//Globals.CameraUseInputMotion;
+        
         public bool isPaused => GameTimer.IsPaused && !ignorePaused;
 
+        
+        public bool TEST_WorldMotion;
+        
         [SerializeField]
         private bool ignorePaused;
         
         private Transform _cameraTransform;
         private IBackground[] _backgrounds;
 
-        //[SerializeField]
-        private static bool IgnoreInput => Globals.CameraUseInputMotion;
-
         //Unity Functions
         //================================================================================================================//
-                
+
+        #region Unity Functions
+
         private void Start()
         {
             RegisterPausable();
@@ -38,6 +44,7 @@ namespace StarSalvager.Utilities.Backgrounds
             Globals.OrientationChange += SetOrientation;
             SetOrientation(Globals.Orientation);
         }
+        
         private void LateUpdate()
         {
             //If the Camera is off, we're using a different one
@@ -49,15 +56,38 @@ namespace StarSalvager.Utilities.Backgrounds
 
             if (isPaused)
                 return;
+
+            MoveBackgrounds();
+        }
+
+        #endregion //Unity Functions
+
+        //BackgroundController Functions
+        //================================================================================================================//
+
+        private void MoveBackgrounds()
+        {
+            float moveAmount;
+            switch (CameraController.CurrentState)
+            {
+                case CameraController.STATE.NONE:
+                    moveAmount = 0f;
+                    break;
+                case CameraController.STATE.RECENTER:
+                    moveAmount = CameraController.CAMERA_DELTA * InputManager.Instance.PreviousInput;
+                    break;
+                case CameraController.STATE.MOTION:
+                    moveAmount = -ObstacleManager.MOVE_DELTA;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(CameraController.CurrentState), CameraController.CurrentState, null);
+            }
             
             foreach (var background in _backgrounds)
             {
-                background.UpdatePosition(IgnoreInput);
+                background.UpdatePosition(moveAmount, IgnoreInput);
             }
-
         }
-
-        //================================================================================================================//
 
         private void FindCamera()
         {
@@ -95,23 +125,11 @@ namespace StarSalvager.Utilities.Backgrounds
                 background.gameObject.SetActive(state);
             }   
         }
-        
-        #if UNITY_EDITOR
 
-        [Button("Disable Backgrounds"), HorizontalGroup("BackgroundEditor")]
-        private void DisableBackgrounds()
-        {
-            SetActive(false);
-        }
-        
-        [Button("Enable Backgrounds"), HorizontalGroup("BackgroundEditor")]
-        private void EnableBackgrounds()
-        {
-            SetActive(true);
-        }
-        
-        #endif
+        //IPausable Functions
+        //====================================================================================================================//
 
+        #region IPausable
 
         public void RegisterPausable()
         {
@@ -125,6 +143,45 @@ namespace StarSalvager.Utilities.Backgrounds
         public void OnPause()
         {
         }
+
+        #endregion //IPausable
+
+        //IMoveOnInput Functions
+        //====================================================================================================================//
+        
+        public void RegisterMoveOnInput()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Move(float direction)
+        {
+            throw new NotImplementedException();
+        }
+
+        //====================================================================================================================//
+        
+        #region Unity Editor
+
+#if UNITY_EDITOR
+
+        [Button("Disable Backgrounds"), HorizontalGroup("BackgroundEditor")]
+        private void DisableBackgrounds()
+        {
+            SetActive(false);
+        }
+        
+        [Button("Enable Backgrounds"), HorizontalGroup("BackgroundEditor")]
+        private void EnableBackgrounds()
+        {
+            SetActive(true);
+        }
+        
+#endif
+
+        #endregion //Unity Editor
+
+
     }
 
 }

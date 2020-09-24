@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using StarSalvager.Cameras.Data;
+﻿using StarSalvager.Cameras.Data;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Backgrounds
@@ -13,7 +11,7 @@ namespace StarSalvager.Utilities.Backgrounds
         GameObject gameObject { get; }
 
         void Init(Transform cameraTransform, float zDepth);
-        void UpdatePosition(bool ignoreInput = false);
+        void UpdatePosition(float moveAmount, bool ignoreInput = false);
 
         void SetOrientation(ORIENTATION newOrientation);
     }

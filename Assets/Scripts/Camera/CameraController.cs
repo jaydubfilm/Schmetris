@@ -13,31 +13,41 @@ namespace StarSalvager.Cameras
     [DefaultExecutionOrder(-1000)]
     public class CameraController : MonoBehaviour, IMoveOnInput
     {
+        public enum STATE
+        {
+            NONE,
+            RECENTER,
+            MOTION
+        }
+        
         //============================================================================================================//
-
+        
+        
         #region Properties
 
-        private Vector3 startPos;
-        private Vector3 beginningLerpPos;
-        private float horzExtent;
-        private float lerpValue = 0.0f;
+        private Vector3 _startPos;
+        private Vector3 _beginningLerpPos;
+        
+        private float _lerpValue;
 
         //============================================================================================================//
 
-        protected new Transform transform
+        private new Transform transform
         {
             get
             {
-                if (m_transform == null)
-                    m_transform = gameObject.transform;
+                if (_mTransform == null)
+                    _mTransform = gameObject.transform;
 
-                return m_transform;
+                return _mTransform;
             }
         }
 
-        private Transform m_transform;
+        private Transform _mTransform;
 
-        protected new Camera camera
+        public static Camera Camera;
+
+        private new Camera camera
         {
             get
             {
@@ -51,9 +61,17 @@ namespace StarSalvager.Cameras
                 return _camera;
             }
         }
-
         private Camera _camera;
-        public static Camera Camera;
+
+        //Camera movement
+        //====================================================================================================================//
+        
+        public static float CAMERA_DELTA => (_current - _last).magnitude;
+        private static Vector2 _current, _last;
+        
+        public static STATE CurrentState { get; private set; }
+
+        private bool _atBounds;
 
         #endregion //Properties
 
@@ -75,6 +93,7 @@ namespace StarSalvager.Cameras
             SetOrientation(Globals.Orientation);
         }
 
+
         private Vector3 tempPosition;
 
         //Smooth camera to center over bot
@@ -83,32 +102,59 @@ namespace StarSalvager.Cameras
             if (!Globals.CameraUseInputMotion || gameObject.scene.name != SceneLoader.LEVEL)
                 return;
 
-            if (InputManager.Instance.MostRecentSideMovement == 0 && tempPosition == transform.position && lerpValue == 0.0f)
+            //--------------------------------------------------------------------------------------------------------//
+
+            if (InputManager.Instance.MostRecentSideMovement != 0)
             {
-                beginningLerpPos = transform.position;
+                CurrentState = _atBounds ? STATE.MOTION : STATE.NONE;
             }
-            else if (lerpValue == 0.0f)
+            else if (_beginningLerpPos != _startPos && InputManager.Instance.MostRecentSideMovement == 0)
             {
-                beginningLerpPos = startPos;
+                CurrentState = STATE.RECENTER;
+            }
+            else
+            {
+                CurrentState = STATE.NONE;
             }
 
-            if (beginningLerpPos != startPos &&
+            //--------------------------------------------------------------------------------------------------------//
+
+            if (InputManager.Instance.MostRecentSideMovement == 0 && tempPosition == transform.position &&
+                _lerpValue == 0.0f)
+            {
+                _beginningLerpPos = transform.position;
+            }
+            else if (_lerpValue == 0.0f)
+            {
+                _beginningLerpPos = _startPos;
+            }
+
+            if (_beginningLerpPos != _startPos &&
                 (InputManager.Instance.MostRecentSideMovement == 0 ||
                  transform.position.x > Globals.CameraOffsetBounds ||
                  transform.position.x < -Globals.CameraOffsetBounds))
             {
-                lerpValue = Mathf.Min(1.0f, lerpValue + Globals.CameraSmoothing * Time.deltaTime);
-                transform.position = Vector3.Lerp(beginningLerpPos, startPos, Mathf.SmoothStep(0.0f, 1.0f, lerpValue));
-                if (lerpValue == 1.0f)
+                _lerpValue = Mathf.Min(1.0f, _lerpValue + Globals.CameraSmoothing * Time.deltaTime);
+                transform.position = Vector3.Lerp(_beginningLerpPos, _startPos, Mathf.SmoothStep(0.0f, 1.0f, _lerpValue));
+                if (_lerpValue == 1.0f)
                 {
-                    transform.position = startPos;
-                    lerpValue = 0.0f;
+                    transform.position = _startPos;
+                    _lerpValue = 0.0f;
                 }
 
                 _cameraXOffset = transform.position.x;
+                
+                _last = _current;
+                _current = tempPosition;
+            }
+            else
+            {
+                _last = _current = Vector2.zero;
             }
 
             tempPosition = transform.position;
+
+
         }
 
         private void LateUpdate()
@@ -244,6 +290,7 @@ namespace StarSalvager.Cameras
 
         //================================================================================================================//
 
+        [Obsolete("This should not move using the ObstacleManager")]
         public void MoveCameraWithObstacles(Vector3 toMoveCamera)
         {
             if (!Globals.CameraUseInputMotion)
@@ -252,14 +299,22 @@ namespace StarSalvager.Cameras
             var newPosition = transform.position;
             newPosition += toMoveCamera;
 
-            if (newPosition.x > Globals.CameraOffsetBounds)
-            {
-                newPosition = new Vector3(Globals.CameraOffsetBounds, newPosition.y, newPosition.z);
-            }
-            else if (newPosition.x < -Globals.CameraOffsetBounds)
-            {
-                newPosition = new Vector3(-Globals.CameraOffsetBounds, newPosition.y, newPosition.z);
-            }
+            _atBounds = ClampX(Globals.CameraOffsetBounds, -Globals.CameraOffsetBounds, ref newPosition);
+
+            //if (newPosition.x > Globals.CameraOffsetBounds)
+            //{
+            //    newPosition = new Vector3(Globals.CameraOffsetBounds, newPosition.y, newPosition.z);
+            //    _atBounds = true;
+            //}
+            //else if (newPosition.x < -Globals.CameraOffsetBounds)
+            //{
+            //    newPosition = new Vector3(-Globals.CameraOffsetBounds, newPosition.y, newPosition.z);
+            //    _atBounds = true;
+            //}
+            //else
+            //{
+            //    _atBounds = false;
+            //}
 
             transform.position = newPosition;
 
@@ -273,10 +328,10 @@ namespace StarSalvager.Cameras
 
             CameraOffset(botPosition, false);
 
-            startPos = transform.position;
-            beginningLerpPos = transform.position;
+            _startPos = transform.position;
+            _beginningLerpPos = transform.position;
             //targetPos = startPos;
-            horzExtent = orthographicSize * Screen.width / Screen.height / 2;
+            //horzExtent = orthographicSize * Screen.width / Screen.height / 2;
 
             UpdateRect();
         }
@@ -312,10 +367,21 @@ namespace StarSalvager.Cameras
 
             UpdateRect();
         }
-        
+
+
+        private static bool ClampX(float min, float max, ref Vector3 value)
+        {
+            var clamped = value.x < min || value.x > max;
+
+            value.x = Mathf.Clamp(value.x, min, max);
+
+            return clamped;
+        }
 
         //IMoveOnInput functions
         //================================================================================================================//
+
+        #region IMoveOnInput
 
         public void RegisterMoveOnInput()
         {
@@ -327,12 +393,14 @@ namespace StarSalvager.Cameras
             if (!Globals.CameraUseInputMotion)
                 return;
 
-            if (direction != 0)
-            {
-                beginningLerpPos = startPos;
-                lerpValue = 0.0f;
-            }
+            if (direction == 0) 
+                return;
+            
+            _beginningLerpPos = _startPos;
+            _lerpValue = 0.0f;
         }
+
+        #endregion //IMoveOnInput
 
         //====================================================================================================================//
 
