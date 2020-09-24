@@ -66,10 +66,14 @@ namespace StarSalvager.Utilities.Inputs
         
         private Dictionary<InputAction, Action<InputAction.CallbackContext>> _inputMap;
 
-        [NonSerialized]
+        //[NonSerialized]
+        [ReadOnly]
         public float MostRecentSideMovement;
-
         private float _currentMoveInput;
+
+        public float PreviousInput => previousInput;
+
+        private float _currentMovement;
 
         #endregion //Properities
 
@@ -358,6 +362,8 @@ namespace StarSalvager.Utilities.Inputs
 
             if (LevelManager.Instance.BotDead)
                 return;
+
+            _currentMovement = value;
 
             for (var i = _moveOnInput.Count - 1; i >= 0; i--)
             {

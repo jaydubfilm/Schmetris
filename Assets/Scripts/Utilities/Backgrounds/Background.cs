@@ -16,6 +16,7 @@ namespace StarSalvager.Utilities.Backgrounds
 
         [SerializeField, BoxGroup("Move Values")]
         private Vector2 moveSpeed = Vector2.zero;
+        [SerializeField, ReadOnly]
         private Vector2 _moveAmount;
         
         [SerializeField, BoxGroup("Move Values")]

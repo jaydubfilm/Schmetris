@@ -44,6 +44,8 @@ namespace StarSalvager.Utilities.Backgrounds
             Globals.OrientationChange += SetOrientation;
             SetOrientation(Globals.Orientation);
         }
+        [SerializeField, ReadOnly]
+        float moveAmount;
         private void LateUpdate()
         {
             //If the Camera is off, we're using a different one
@@ -56,13 +58,25 @@ namespace StarSalvager.Utilities.Backgrounds
             if (isPaused)
                 return;
 
-            //var moveAmount = -(CameraController.CameraXOffset / Globals.BotHorizontalSpeed);
-            //var moveAmount = -(CameraController.CameraXOffset / Globals.CameraOffsetBounds);
-            var moveAmount = -ObstacleManager.TEST_MOVEDELTA;
+            
+            switch (CameraController.currentState)
+            {
+                case CameraController.STATE.NONE:
+                    moveAmount = 0f;
+                    break;
+                case CameraController.STATE.RECENTER:
+                    moveAmount = CameraController.TEST_CAMERA_DELTA * InputManager.Instance.PreviousInput;
+                    break;
+                case CameraController.STATE.MOTION:
+                    moveAmount = -ObstacleManager.TEST_MOVEDELTA;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(CameraController.currentState), CameraController.currentState, null);
+            }
             
             foreach (var background in _backgrounds)
             {
-                background.UpdatePosition(TEST_WorldMotion ? moveAmount : 0f, IgnoreInput);
+                background.UpdatePosition(moveAmount, IgnoreInput);
             }
 
         }

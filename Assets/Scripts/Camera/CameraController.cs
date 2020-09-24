@@ -19,8 +19,9 @@ namespace StarSalvager.Cameras
 
         private Vector3 startPos;
         private Vector3 beginningLerpPos;
-        private float horzExtent;
-        private float lerpValue = 0.0f;
+        //private float horzExtent;
+        
+        private float _lerpValue;
 
         //============================================================================================================//
 
@@ -58,6 +59,22 @@ namespace StarSalvager.Cameras
         #endregion //Properties
 
         //============================================================================================================//
+        
+        public enum STATE
+        {
+            NONE,
+            RECENTER,
+            MOTION
+        }
+
+        [ShowInInspector, ReadOnly]
+        public static float TEST_CAMERA_DELTA => (current - last).magnitude;
+        private static Vector2 current, last;
+        
+        [ShowInInspector, ReadOnly]
+        public static STATE currentState { get; private set; }
+
+        private bool atBounds;
 
         #region Unity Functions
 
@@ -84,11 +101,29 @@ namespace StarSalvager.Cameras
             if (!Globals.CameraUseInputMotion || gameObject.scene.name != SceneLoader.LEVEL)
                 return;
 
-            if (InputManager.Instance.MostRecentSideMovement == 0 && tempPosition == transform.position && lerpValue == 0.0f)
+            //--------------------------------------------------------------------------------------------------------//
+
+            if (InputManager.Instance.MostRecentSideMovement != 0)
+            {
+                currentState = atBounds ? STATE.MOTION : STATE.NONE;
+            }
+            else if (beginningLerpPos != startPos && InputManager.Instance.MostRecentSideMovement == 0)
+            {
+                currentState = STATE.RECENTER;
+            }
+            else
+            {
+                currentState = STATE.NONE;
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            if (InputManager.Instance.MostRecentSideMovement == 0 && tempPosition == transform.position &&
+                _lerpValue == 0.0f)
             {
                 beginningLerpPos = transform.position;
             }
-            else if (lerpValue == 0.0f)
+            else if (_lerpValue == 0.0f)
             {
                 beginningLerpPos = startPos;
             }
@@ -98,18 +133,27 @@ namespace StarSalvager.Cameras
                  transform.position.x > Globals.CameraOffsetBounds ||
                  transform.position.x < -Globals.CameraOffsetBounds))
             {
-                lerpValue = Mathf.Min(1.0f, lerpValue + Globals.CameraSmoothing * Time.deltaTime);
-                transform.position = Vector3.Lerp(beginningLerpPos, startPos, Mathf.SmoothStep(0.0f, 1.0f, lerpValue));
-                if (lerpValue == 1.0f)
+                _lerpValue = Mathf.Min(1.0f, _lerpValue + Globals.CameraSmoothing * Time.deltaTime);
+                transform.position = Vector3.Lerp(beginningLerpPos, startPos, Mathf.SmoothStep(0.0f, 1.0f, _lerpValue));
+                if (_lerpValue == 1.0f)
                 {
                     transform.position = startPos;
-                    lerpValue = 0.0f;
+                    _lerpValue = 0.0f;
                 }
 
                 _cameraXOffset = transform.position.x;
+                
+                last = current;
+                current = tempPosition;
+            }
+            else
+            {
+                last = current = Vector2.zero;
             }
 
             tempPosition = transform.position;
+
+
         }
 
         private void LateUpdate()
@@ -245,6 +289,7 @@ namespace StarSalvager.Cameras
 
         //================================================================================================================//
 
+        [Obsolete("This should not move using the ObstacleManager")]
         public void MoveCameraWithObstacles(Vector3 toMoveCamera)
         {
             if (!Globals.CameraUseInputMotion)
@@ -256,10 +301,16 @@ namespace StarSalvager.Cameras
             if (newPosition.x > Globals.CameraOffsetBounds)
             {
                 newPosition = new Vector3(Globals.CameraOffsetBounds, newPosition.y, newPosition.z);
+                atBounds = true;
             }
             else if (newPosition.x < -Globals.CameraOffsetBounds)
             {
                 newPosition = new Vector3(-Globals.CameraOffsetBounds, newPosition.y, newPosition.z);
+                atBounds = true;
+            }
+            else
+            {
+                atBounds = false;
             }
 
             transform.position = newPosition;
@@ -277,7 +328,7 @@ namespace StarSalvager.Cameras
             startPos = transform.position;
             beginningLerpPos = transform.position;
             //targetPos = startPos;
-            horzExtent = orthographicSize * Screen.width / Screen.height / 2;
+            //horzExtent = orthographicSize * Screen.width / Screen.height / 2;
 
             UpdateRect();
         }
@@ -334,7 +385,7 @@ namespace StarSalvager.Cameras
                 return;
             
             beginningLerpPos = startPos;
-            lerpValue = 0.0f;
+            _lerpValue = 0.0f;
         }
 
         #endregion //IMoveOnInput
