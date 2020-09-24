@@ -110,9 +110,6 @@ namespace StarSalvager.Cameras
             }
 
             tempPosition = transform.position;
-
-            previousPos = currentPos;
-            currentPos = transform.position;
         }
 
         private void LateUpdate()
@@ -131,10 +128,6 @@ namespace StarSalvager.Cameras
 
         #region Camera Rect
 
-        public static float TEST_CAMERA_DELTA => (currentPos - previousPos).magnitude * Time.deltaTime;
-        private static Vector3 currentPos, previousPos;
-
-        public static float CameraXOffset => _cameraXOffset;
         private static float _cameraXOffset;
         private static Rect _cameraRect;
         private static Vector2 center;

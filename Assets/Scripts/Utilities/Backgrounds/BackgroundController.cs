@@ -13,6 +13,9 @@ namespace StarSalvager.Utilities.Backgrounds
         private static bool IgnoreInput => false;//Globals.CameraUseInputMotion;
         
         public bool isPaused => GameTimer.IsPaused && !ignorePaused;
+
+        
+        public bool TEST_WorldMotion;
         
         [SerializeField]
         private bool ignorePaused;
@@ -57,11 +60,9 @@ namespace StarSalvager.Utilities.Backgrounds
             //var moveAmount = -(CameraController.CameraXOffset / Globals.CameraOffsetBounds);
             var moveAmount = -ObstacleManager.TEST_MOVEDELTA;
             
-            
-            System.Console.WriteLine(string.Empty);
             foreach (var background in _backgrounds)
             {
-                background.UpdatePosition(moveAmount, IgnoreInput);
+                background.UpdatePosition(TEST_WorldMotion ? moveAmount : 0f, IgnoreInput);
             }
 
         }
