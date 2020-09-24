@@ -120,15 +120,18 @@ namespace StarSalvager
 
             HandleObstacleMovement();
 
-            if (m_bonusShapesSpawned < LevelManager.Instance.CurrentWaveData.BonusShapes.Count)
+            if (!LevelManager.Instance.EndWaveState)
             {
-                m_bonusShapeTimer += Time.deltaTime;
-                if (m_bonusShapeTimer >= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency)
+                if (m_bonusShapesSpawned < LevelManager.Instance.CurrentWaveData.BonusShapes.Count)
                 {
-                    m_bonusShapeTimer -= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency;
-                    StageObstacleShapeData bonusObstacleShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
-                    SpawnBonusShape(bonusObstacleShapeData.SelectionType, bonusObstacleShapeData.ShapeName, bonusObstacleShapeData.Category, bonusObstacleShapeData.Rotation);
-                    m_bonusShapesSpawned++;
+                    m_bonusShapeTimer += Time.deltaTime;
+                    if (m_bonusShapeTimer >= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency)
+                    {
+                        m_bonusShapeTimer -= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency;
+                        StageObstacleShapeData bonusObstacleShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
+                        SpawnBonusShape(bonusObstacleShapeData.SelectionType, bonusObstacleShapeData.ShapeName, bonusObstacleShapeData.Category, bonusObstacleShapeData.Rotation);
+                        m_bonusShapesSpawned++;
+                    }
                 }
             }
 
@@ -442,7 +445,7 @@ namespace StarSalvager
         public void MoveToNewWave()
         {
             SetupStage(0);
-           
+            m_bonusShapesSpawned = 0;
         }
 
         private void SetupStage(int waveNumber)
