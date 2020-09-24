@@ -527,7 +527,7 @@ namespace StarSalvager.Values
                     break;
             }
 
-            Debug.Log(_rationCapacity);
+            //Debug.Log(_rationCapacity);
 
             OnValuesChanged?.Invoke();
         }
