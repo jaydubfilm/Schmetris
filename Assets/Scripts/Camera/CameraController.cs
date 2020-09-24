@@ -299,22 +299,22 @@ namespace StarSalvager.Cameras
             var newPosition = transform.position;
             newPosition += toMoveCamera;
 
-            _atBounds = ClampX(Globals.CameraOffsetBounds, -Globals.CameraOffsetBounds, ref newPosition);
+            //_atBounds = ClampX(Globals.CameraOffsetBounds, -Globals.CameraOffsetBounds, ref newPosition);
 
-            //if (newPosition.x > Globals.CameraOffsetBounds)
-            //{
-            //    newPosition = new Vector3(Globals.CameraOffsetBounds, newPosition.y, newPosition.z);
-            //    _atBounds = true;
-            //}
-            //else if (newPosition.x < -Globals.CameraOffsetBounds)
-            //{
-            //    newPosition = new Vector3(-Globals.CameraOffsetBounds, newPosition.y, newPosition.z);
-            //    _atBounds = true;
-            //}
-            //else
-            //{
-            //    _atBounds = false;
-            //}
+            if (newPosition.x > Globals.CameraOffsetBounds)
+            {
+                newPosition = new Vector3(Globals.CameraOffsetBounds, newPosition.y, newPosition.z);
+                _atBounds = true;
+            }
+            else if (newPosition.x < -Globals.CameraOffsetBounds)
+            {
+                newPosition = new Vector3(-Globals.CameraOffsetBounds, newPosition.y, newPosition.z);
+                _atBounds = true;
+            }
+            else
+            {
+                _atBounds = false;
+            }
 
             transform.position = newPosition;
 
