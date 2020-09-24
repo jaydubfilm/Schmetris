@@ -38,6 +38,7 @@ namespace StarSalvager.Utilities
         {
             string.Concat("add ", "currency ", "[BIT_TYPE | all] ", "[uint]").ToUpper(),
             string.Concat("add ", "component ", "[COMPONENT_TYPE | all] ", "[uint]").ToUpper(),
+            string.Concat("add ", "gears ", "[uint]").ToUpper(),
             string.Concat("add ", "liquid ", "[BIT_TYPE | all] ", "[float]").ToUpper(),
             string.Concat("add ", "storage ", "parts ", "[PART_TYPE] ", "[Amount:int]").ToUpper(),
             string.Concat("add ", "storage ", "components ", "[COMPONENT_TYPE] ", "[Amount:int]").ToUpper(),
@@ -245,84 +246,10 @@ namespace StarSalvager.Utilities
         private void ParseAddCommand(string[] split)
         {
             BIT_TYPE bitType;
+            int intAmount;
             
             switch (split[1].ToLower())
             {
-                case "currency":
-                    /*if (!Enum.TryParse(split[2], true, out bit))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[2]);
-                    }
-
-                    if (int.TryParse(split[3], out var intAmount))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[3]);
-                    }
-
-                    PlayerPersistentData.PlayerData.resources[bit] += intAmount;*/
-                    
-                    if (!int.TryParse(split[3], out var intAmount))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[3]);
-                        break;
-                    }
-                    
-                    if (split[2].ToLower().Equals("all"))
-                    {
-                        foreach (BIT_TYPE value in Enum.GetValues(typeof(BIT_TYPE)))
-                        {
-                            if (!PlayerPersistentData.PlayerData.resources.ContainsKey(value))
-                                continue;
-
-                            PlayerPersistentData.PlayerData.AddResource(value, intAmount);
-                        }
-                        
-                    }
-                    else if (Enum.TryParse(split[2], true, out bitType))
-                    {
-
-                        PlayerPersistentData.PlayerData.AddResource(bitType, intAmount);
-                    }
-                    else
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[2]);
-                        break;
-                    }
-                    
-                    PlayerData.OnValuesChanged?.Invoke();
-
-                    break;
-                case "liquid":
-                    if (!float.TryParse(split[3], out var floatAmount))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[3]);
-                        break;
-                    }
-                    
-                    if (split[2].ToLower().Equals("all"))
-                    {
-                        foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
-                        {
-                            if (!PlayerPersistentData.PlayerData.resources.ContainsKey(_bitType))
-                                continue;
-                                
-                            //I dont want to use AddLiquidResource() here because it would call the OnValuesChanged callback too much
-                            PlayerPersistentData.PlayerData.AddLiquidResource(_bitType, floatAmount);
-                        }
-                        
-                    }
-                    else if (Enum.TryParse(split[2], true, out bitType))
-                    {
-                        PlayerPersistentData.PlayerData.AddLiquidResource(bitType, floatAmount);
-                    }
-                    else
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[2]);
-                        break;
-                    }
-
-                    PlayerData.OnValuesChanged?.Invoke();
-                    break;
                 case "component":
                     if (!int.TryParse(split[3], out var compAmount))
                     {
@@ -354,6 +281,91 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                         break;
                     }
+                    PlayerData.OnValuesChanged?.Invoke();
+                    break;
+                case "currency":
+                    /*if (!Enum.TryParse(split[2], true, out bit))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                    }
+
+                    if (int.TryParse(split[3], out var intAmount))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[3]);
+                    }
+
+                    PlayerPersistentData.PlayerData.resources[bit] += intAmount;*/
+                    
+                    if (!int.TryParse(split[3], out intAmount))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[3]);
+                        break;
+                    }
+                    
+                    if (split[2].ToLower().Equals("all"))
+                    {
+                        foreach (BIT_TYPE value in Enum.GetValues(typeof(BIT_TYPE)))
+                        {
+                            if (!PlayerPersistentData.PlayerData.resources.ContainsKey(value))
+                                continue;
+
+                            PlayerPersistentData.PlayerData.AddResource(value, intAmount);
+                        }
+                        
+                    }
+                    else if (Enum.TryParse(split[2], true, out bitType))
+                    {
+
+                        PlayerPersistentData.PlayerData.AddResource(bitType, intAmount);
+                    }
+                    else
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
+                    }
+                    
+                    PlayerData.OnValuesChanged?.Invoke();
+
+                    break;
+                case "gears":
+                    if (!int.TryParse(split[2], out intAmount))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
+                    }
+                    
+                    PlayerPersistentData.PlayerData.ChangeGears(intAmount);
+                    
+                    break;
+                case "liquid":
+                    if (!float.TryParse(split[3], out var floatAmount))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[3]);
+                        break;
+                    }
+                    
+                    if (split[2].ToLower().Equals("all"))
+                    {
+                        foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+                        {
+                            if (!PlayerPersistentData.PlayerData.resources.ContainsKey(_bitType))
+                                continue;
+                                
+                            //I dont want to use AddLiquidResource() here because it would call the OnValuesChanged callback too much
+                            PlayerPersistentData.PlayerData.AddLiquidResource(_bitType, floatAmount);
+                        }
+                        
+                    }
+                    else if (Enum.TryParse(split[2], true, out bitType))
+                    {
+                        PlayerPersistentData.PlayerData.AddLiquidResource(bitType, floatAmount);
+                    }
+                    else
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
+                    }
+
                     PlayerData.OnValuesChanged?.Invoke();
                     break;
                 case "storage":
