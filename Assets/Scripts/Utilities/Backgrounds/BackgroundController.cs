@@ -44,8 +44,7 @@ namespace StarSalvager.Utilities.Backgrounds
             Globals.OrientationChange += SetOrientation;
             SetOrientation(Globals.Orientation);
         }
-        [SerializeField, ReadOnly]
-        float moveAmount;
+        
         private void LateUpdate()
         {
             //If the Camera is off, we're using a different one
@@ -58,33 +57,37 @@ namespace StarSalvager.Utilities.Backgrounds
             if (isPaused)
                 return;
 
-            
-            switch (CameraController.currentState)
-            {
-                case CameraController.STATE.NONE:
-                    moveAmount = 0f;
-                    break;
-                case CameraController.STATE.RECENTER:
-                    moveAmount = CameraController.TEST_CAMERA_DELTA * InputManager.Instance.PreviousInput;
-                    break;
-                case CameraController.STATE.MOTION:
-                    moveAmount = -ObstacleManager.TEST_MOVEDELTA;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(CameraController.currentState), CameraController.currentState, null);
-            }
-            
-            foreach (var background in _backgrounds)
-            {
-                background.UpdatePosition(moveAmount, IgnoreInput);
-            }
-
+            MoveBackgrounds();
         }
 
         #endregion //Unity Functions
 
         //BackgroundController Functions
         //================================================================================================================//
+
+        private void MoveBackgrounds()
+        {
+            float moveAmount;
+            switch (CameraController.CurrentState)
+            {
+                case CameraController.STATE.NONE:
+                    moveAmount = 0f;
+                    break;
+                case CameraController.STATE.RECENTER:
+                    moveAmount = CameraController.CAMERA_DELTA * InputManager.Instance.PreviousInput;
+                    break;
+                case CameraController.STATE.MOTION:
+                    moveAmount = -ObstacleManager.MOVE_DELTA;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(CameraController.CurrentState), CameraController.CurrentState, null);
+            }
+            
+            foreach (var background in _backgrounds)
+            {
+                background.UpdatePosition(moveAmount, IgnoreInput);
+            }
+        }
 
         private void FindCamera()
         {

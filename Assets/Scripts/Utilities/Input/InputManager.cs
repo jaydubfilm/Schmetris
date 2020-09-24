@@ -19,7 +19,7 @@ namespace StarSalvager.Utilities.Inputs
         //Properties
         //====================================================================================================================//
 
-        #region Properities
+        #region Properties
 
         private Bot[] _bots;
         private ScrapyardBot[] _scrapyardBots;
@@ -66,16 +66,12 @@ namespace StarSalvager.Utilities.Inputs
         
         private Dictionary<InputAction, Action<InputAction.CallbackContext>> _inputMap;
 
-        //[NonSerialized]
-        [ReadOnly]
-        public float MostRecentSideMovement;
+        public float MostRecentSideMovement { get; private set; }
         private float _currentMoveInput;
 
         public float PreviousInput => previousInput;
 
-        private float _currentMovement;
-
-        #endregion //Properities
+        #endregion //Properties
 
         //Unity Functions
         //============================================================================================================//
@@ -363,7 +359,7 @@ namespace StarSalvager.Utilities.Inputs
             if (LevelManager.Instance.BotDead)
                 return;
 
-            _currentMovement = value;
+            //_currentMovement = value;
 
             for (var i = _moveOnInput.Count - 1; i >= 0; i--)
             {

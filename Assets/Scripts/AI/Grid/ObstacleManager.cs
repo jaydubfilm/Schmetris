@@ -7,12 +7,10 @@ using StarSalvager.Factories;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
-using UnityEngine.UIElements;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.JsonDataTypes;
-using StarSalvager.UI.Scrapyard;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
 using StarSalvager.Cameras;
@@ -22,6 +20,8 @@ namespace StarSalvager
     public class ObstacleManager : MonoBehaviour, IReset, IPausable, IMoveOnInput
     {
         public static Action NewShapeOnScreen;
+        
+        public static float MOVE_DELTA { get; private set; }
 
         private const float BONUS_SCREEN_AREA = 0.5f;
         
@@ -410,19 +410,18 @@ namespace StarSalvager
                     direction = 1f;
                     canMove = xPos < 0.5f * Constants.gridCellSize * Globals.GridSizeX;
                     moveDirection = Vector3.right;
-                    
                     break;
                 
                 //----------------------------------------------------------------------------------------------------//
                 default:
-                    MoveDelta = TEST_MOVEDELTA = 0f;
+                    MOVE_DELTA = 0f;
                     return;
             }
             
             //--------------------------------------------------------------------------------------------------------//
             
             var toMove = Mathf.Min(distHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
-            MoveDelta = TEST_MOVEDELTA = toMove * direction;
+            MOVE_DELTA = toMove * direction;
             
             m_distanceHorizontal += toMove * direction;
 
@@ -436,9 +435,6 @@ namespace StarSalvager
             //FIXME We cannot access the camera like this, it is not the responsibility of the ObstacleManager to move the camera
             LevelManager.Instance.CameraController.MoveCameraWithObstacles(moveDirection * toMove);
         }
-
-        [ShowInInspector, ReadOnly] public float MoveDelta;
-        public static float TEST_MOVEDELTA;
 
         //====================================================================================================================//
         
@@ -922,7 +918,7 @@ namespace StarSalvager
             {
                 return;
             }
-
+     
             m_bonusShapes.Remove(shape);
             m_notFullyInGridShapes.Remove(shape);
             m_offGridMovingObstacles.Remove(m_offGridMovingObstacles.FirstOrDefault(s => s.Obstacle is Shape offGridShape && offGridShape == shape));

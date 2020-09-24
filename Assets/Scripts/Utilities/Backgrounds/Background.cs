@@ -117,11 +117,6 @@ namespace StarSalvager.Utilities.Backgrounds
             if (Mathf.Abs(_moveAmount.x) >= 1f)
             {
                 _moveAmount.x += _moveAmount.x < 0 ? 1f : -1f;
-                
-                /*if (Mathf.Abs(_moveAmount.x) > 0.1f)
-                {
-                    System.Console.WriteLine("Test");
-                }*/
 
                 offset.x = startOffset.x + _moveAmount.x;
             }
@@ -129,11 +124,6 @@ namespace StarSalvager.Utilities.Backgrounds
             if (Mathf.Abs(_moveAmount.y) >= 1f)
             {
                 _moveAmount.y += _moveAmount.y < 0 ? 1f : -1f;
-
-                /*if (Mathf.Abs(_moveAmount.y) > 0.1f)
-                {
-                    System.Console.WriteLine("Test");
-                }*/
 
                 offset.y = startOffset.y + _moveAmount.y;
             }
