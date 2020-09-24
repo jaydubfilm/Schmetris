@@ -20,6 +20,7 @@ namespace StarSalvager.Values
 
         //Values that change throughout gameplay - only set defaults here
         public static int ColumnsOnScreen = Constants.initialColumnsOnScreen;
+        //FIXME I no longer like how this is implemented
         public static DIRECTION MovingDirection = DIRECTION.NULL;
         public static int CurrentSector = 0;
         public static int CurrentWave = 0;
