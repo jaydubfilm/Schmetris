@@ -42,7 +42,7 @@ namespace StarSalvager
                 m_gridArray[i] = new GridSquare();
             }
 
-            float height = Camera.main.orthographicSize * 2.0f;
+            float height = CameraController.Camera.orthographicSize * 2.0f;
             float width = height * Screen.width / Screen.height;
             m_screenGridCellRange = new Vector2Int((int)(width / Constants.gridCellSize), (int)(height / Constants.gridCellSize));
             m_botGridPosition = GetCoordinatesOfGridSquareAtLocalPosition(LevelManager.Instance.BotObject.transform.position);

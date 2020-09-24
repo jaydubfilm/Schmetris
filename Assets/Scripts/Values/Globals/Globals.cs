@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using StarSalvager.ScriptableObjects;
 using UnityEngine;
-using UnityEngine.Analytics;
-using UnityEngine.InputSystem.Interactions;
 using Object = UnityEngine.Object;
 
 namespace StarSalvager.Values
@@ -101,11 +98,11 @@ namespace StarSalvager.Values
 
             if (Orientation == ORIENTATION.VERTICAL)
             {
-                GridSizeY = (int)((Camera.main.orthographicSize * GridHeightRelativeToScreen * 2) / Constants.gridCellSize);
+                GridSizeY = (int)((CameraController.Camera.orthographicSize * GridHeightRelativeToScreen * 2) / Constants.gridCellSize);
             }
             else
             {
-                GridSizeY = (int)((Camera.main.orthographicSize * GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Constants.gridCellSize);
+                GridSizeY = (int)((CameraController.Camera.orthographicSize * GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Constants.gridCellSize);
             }
         }
     }

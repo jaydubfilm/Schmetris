@@ -21,8 +21,6 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required]
         private Button craftButton;
 
-        private Image craftButtonImage;
-
         private Action<Blueprint, bool, RectTransform> hoverCallback;
         
         //============================================================================================================//
@@ -44,12 +42,14 @@ namespace StarSalvager.UI.Scrapyard
             Init(data);
 
             hoverCallback = OnHover;
-            craftButtonImage = craftButton.GetComponent<Image>();
+            //craftButtonImage = craftButton.GetComponent<Image>();
 
-            if (PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false))
+            craftButton.interactable = data.CanAfford;
+            
+            /*if (PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false))
                 craftButtonImage.color = craftButton.colors.normalColor;
             else
-                craftButton.GetComponent<Image>().color = craftButton.colors.disabledColor;
+                craftButton.GetComponent<Image>().color = craftButton.colors.disabledColor;*/
 
             craftButton.onClick.RemoveAllListeners();
             craftButton.onClick.AddListener(() =>
@@ -73,10 +73,11 @@ namespace StarSalvager.UI.Scrapyard
 
         private void UpdateUI()
         {
-            if (PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false))
+            craftButton.interactable = data.CanAfford;
+            /*if (PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false))
                 craftButtonImage.color = craftButton.colors.normalColor;
             else
-                craftButton.GetComponent<Image>().color = craftButton.colors.disabledColor;
+                craftButton.GetComponent<Image>().color = craftButton.colors.disabledColor;*/
         }
         
         //============================================================================================================//

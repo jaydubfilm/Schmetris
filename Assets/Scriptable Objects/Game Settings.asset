@@ -15,7 +15,7 @@ MonoBehaviour:
   allowAccessToUnlockedLaterWaves: 1
   disableTestingFeatures: 1
   bitsPushThroughParts: 0
-  gridWidth: 300
+  gridWidth: 100
   timeForAsteroidToFallOneSquare: 0.25
   DASTime: 0.15
   gridHeightRelativeToScreen: 1.25
@@ -93,7 +93,7 @@ MonoBehaviour:
   blueprintInitialData:
   - type: 4
     level: 0
-  - type: 0
-    level: 2
-  - type: 2
-    level: 2
+  - type: 9
+    level: 0
+  - type: 1
+    level: 0

@@ -47,6 +47,17 @@ namespace StarSalvager.UI
             return element;
         }
 
+
+        public U FindElement(Func<U, bool> predicate)
+        {
+            return Elements?.FirstOrDefault(predicate);
+        }
+        public U FindElement(Func<T, bool> predicate)
+        {
+            var data = Elements.Select(y => y.data).FirstOrDefault(predicate);
+            
+            return Elements?.FirstOrDefault(x => x.data.Equals(data));
+        }
         public U FindElement(T data)
         {
             return Elements?.FirstOrDefault(x => x.data.Equals(data));

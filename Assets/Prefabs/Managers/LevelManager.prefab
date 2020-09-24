@@ -57,6 +57,7 @@ MonoBehaviour:
   EndWaveState: 0
   MissionsCompletedDuringThisFlight: []
   ResetFromDeath: 0
+  BotDead: 0
   drawGrid: 1
 --- !u!114 &3152543544327253062
 MonoBehaviour:
@@ -94,3 +95,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ed4c6e1ccf6c1d4dbea6ca798312e24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  edgeSprite: {fileID: 4132611195971401793, guid: a28400b050cce54439829898e8516d58,
+    type: 3}
+  edgeSpriteColor: {r: 0.09781062, g: 0.13207549, b: 0.12023037, a: 1}
