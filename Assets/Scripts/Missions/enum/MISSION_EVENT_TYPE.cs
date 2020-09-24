@@ -4,6 +4,7 @@
     {
         ENEMY_KILLED,
         RESOURCE_COLLECTED,
+        COMPONENT_COLLECTED,
         COMBO_BLOCKS,
         LEVEL_PROGRESS,
         CRAFT_PART,

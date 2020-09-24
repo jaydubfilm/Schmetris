@@ -58,14 +58,14 @@ namespace StarSalvager.Missions
         }
 
         //Next functions receive information from outside the missionmanager when an event relevant to missions has occurred.
-        public static void ProcessResourceCollectedMissionData(BIT_TYPE resourceType, int amount)
+        public static void ProcessResourceCollectedMissionData(BIT_TYPE resourceType, int amount, bool isFromEnemyLoot)
         {
             //Debug.Log("Resource mission event");
             for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
             {
                 if (MissionsCurrentData.CurrentMissions[i] is ResourceCollectedMission resourceCollectedMission)
                 {
-                    resourceCollectedMission.ProcessMissionData(resourceType, amount);
+                    resourceCollectedMission.ProcessMissionData(resourceType, amount, isFromEnemyLoot);
                     if (resourceCollectedMission.MissionComplete())
                     {
                         Debug.Log("Mission " + resourceCollectedMission.m_missionName + " Complete!");
@@ -115,14 +115,14 @@ namespace StarSalvager.Missions
             }
         }
 
-        public static void ProcessComboBlocksMissionData(BIT_TYPE comboType, int comboLevel, int amount)
+        public static void ProcessComboBlocksMissionData(BIT_TYPE comboType, int comboLevel, int amount, bool isAdvancedCombo)
         {
             //Debug.Log("Combo Blocks mission event");
             for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
             {
                 if (MissionsCurrentData.CurrentMissions[i] is ComboBlocksMission comboBlocksMission)
                 {
-                    comboBlocksMission.ProcessMissionData(comboType, comboLevel, amount);
+                    comboBlocksMission.ProcessMissionData(comboType, comboLevel, amount, isAdvancedCombo);
                     if (comboBlocksMission.MissionComplete())
                     {
                         Debug.Log("Mission " + comboBlocksMission.m_missionName + " Complete!");
@@ -301,6 +301,25 @@ namespace StarSalvager.Missions
                         facilityUpgradeMission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(facilityUpgradeMission);
                         ProcessMissionComplete(facilityUpgradeMission.m_missionName);
+                    }
+                }
+            }
+        }
+
+        public static void ProcessComponentCollectedMissionData(COMPONENT_TYPE componentType, int amount)
+        {
+            //Debug.Log("Resource mission event");
+            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
+            {
+                if (MissionsCurrentData.CurrentMissions[i] is ComponentCollectedMission componentCollectedMission)
+                {
+                    componentCollectedMission.ProcessMissionData(componentType, amount);
+                    if (componentCollectedMission.MissionComplete())
+                    {
+                        Debug.Log("Mission " + componentCollectedMission.m_missionName + " Complete!");
+                        componentCollectedMission.MissionStatus = MISSION_STATUS.COMPLETED;
+                        MissionsCurrentData.CompleteMission(componentCollectedMission);
+                        ProcessMissionComplete(componentCollectedMission.m_missionName);
                     }
                 }
             }

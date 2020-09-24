@@ -41,8 +41,18 @@ namespace StarSalvager.Missions
         [SerializeField, FoldoutGroup("$MissionName"), ShowIf("ShowResourceType")]
         public BIT_TYPE ResourceType;
 
+        [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.COMPONENT_COLLECTED)]
+        public bool AnyComponentType;
+
+        private bool ShowComponentType => !AnyComponentType && MissionType == MISSION_EVENT_TYPE.COMPONENT_COLLECTED;
+        [SerializeField, FoldoutGroup("$MissionName"), ShowIf("ShowComponentType")]
+        public COMPONENT_TYPE ComponentType;
+
         [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.COMBO_BLOCKS)]
         public int ComboLevel;
+
+        [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.COMBO_BLOCKS)]
+        public bool IsAdvancedCombo;
 
         [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.ENEMY_KILLED)]
         public bool AnyEnemyType;
@@ -87,12 +97,23 @@ namespace StarSalvager.Missions
         [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.FLIGHT_LENGTH)]
         public float FlightLength;
 
+        [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.RESOURCE_COLLECTED)]
+        public bool IsFromEnemyLoot;
+
         public BIT_TYPE? ResourceValue()
         {
             if (AnyResourceType)
                 return null;
 
             return ResourceType;
+        }
+
+        public COMPONENT_TYPE? ComponentValue()
+        {
+            if (AnyComponentType)
+                return null;
+
+            return ComponentType;
         }
 
         public string EnemyValue()

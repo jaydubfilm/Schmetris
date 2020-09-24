@@ -1057,7 +1057,7 @@ namespace StarSalvager
             switch (newAttachable)
             {
                     case Bit bit:
-                        if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 1);
+                        if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 1, bit.IsFromEnemyLoot);
                         
                         if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
                         
@@ -1113,7 +1113,7 @@ namespace StarSalvager
                 case Bit bit:
                     if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
                     
-                    if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 1);
+                    if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 1, bit.IsFromEnemyLoot);
                     break;
                 case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
@@ -1199,7 +1199,7 @@ namespace StarSalvager
                     if (checkForCombo)
                         CheckForCombosAround<BIT_TYPE>(coordinate);
                     
-                    if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 1);
+                    if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 1, bit.IsFromEnemyLoot);
                     
                     break;
                 case Component _ when checkForCombo:
@@ -1922,8 +1922,11 @@ namespace StarSalvager
             //TODO Need to figure out the multi-combo scores
             foreach (var pendingCombo in pendingCombos)
             {
-                if(pendingCombo.ToMove[0] is Bit bit)
-                    MissionManager.ProcessComboBlocksMissionData(bit.Type, bit.level + 1, 1);
+                if (pendingCombo.ToMove[0] is Bit bit)
+                {
+                    bool isAdvancedCombo = pendingCombo.ComboData.type == Utilities.Puzzle.Data.COMBO.TEE || pendingCombo.ComboData.type == Utilities.Puzzle.Data.COMBO.ANGLE;
+                    MissionManager.ProcessComboBlocksMissionData(bit.Type, bit.level + 1, 1, isAdvancedCombo);
+                }
                 
                 SimpleComboSolver(pendingCombo);
             }
@@ -1946,8 +1949,11 @@ namespace StarSalvager
             //    AdvancedComboSolver(data.comboData, data.toMove);
             //}
             //else
-            if(iCanCombo is Bit bit)
-                MissionManager.ProcessComboBlocksMissionData(bit.Type, iCanCombo.level + 1, 1);
+            if (iCanCombo is Bit bit)
+            {
+                bool isAdvancedCombo = data.comboData.type == Utilities.Puzzle.Data.COMBO.TEE || data.comboData.type == Utilities.Puzzle.Data.COMBO.ANGLE;
+                MissionManager.ProcessComboBlocksMissionData(bit.Type, iCanCombo.level + 1, 1, isAdvancedCombo);
+            }
             
             SimpleComboSolver(data.comboData, data.toMove);
         }

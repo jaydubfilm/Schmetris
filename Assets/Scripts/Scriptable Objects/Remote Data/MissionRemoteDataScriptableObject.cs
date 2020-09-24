@@ -20,7 +20,7 @@ namespace StarSalvager.ScriptableObjects
             {
                 if (data.MissionType == MISSION_EVENT_TYPE.RESOURCE_COLLECTED)
                 {
-                    ResourceCollectedMission mission = new ResourceCollectedMission(data.ResourceValue(), data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
+                    ResourceCollectedMission mission = new ResourceCollectedMission(data.ResourceValue(), data.IsFromEnemyLoot, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
                     missions.Add(mission);
                 }
                 else if (data.MissionType == MISSION_EVENT_TYPE.ENEMY_KILLED)
@@ -30,7 +30,7 @@ namespace StarSalvager.ScriptableObjects
                 }
                 else if (data.MissionType == MISSION_EVENT_TYPE.COMBO_BLOCKS)
                 {
-                    ComboBlocksMission mission = new ComboBlocksMission(data.ResourceValue(), data.ComboLevel, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
+                    ComboBlocksMission mission = new ComboBlocksMission(data.ResourceValue(), data.ComboLevel, data.IsAdvancedCombo, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
                     missions.Add(mission);
                 }
                 else if (data.MissionType == MISSION_EVENT_TYPE.LEVEL_PROGRESS)
@@ -86,6 +86,11 @@ namespace StarSalvager.ScriptableObjects
                 else if (data.MissionType == MISSION_EVENT_TYPE.PLAYER_LEVEL)
                 {
                     PlayerLevelMission mission = new PlayerLevelMission(data.PlayerLevel, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
+                    missions.Add(mission);
+                }
+                else if (data.MissionType == MISSION_EVENT_TYPE.COMPONENT_COLLECTED)
+                {
+                    ComponentCollectedMission mission = new ComponentCollectedMission(data.ComponentValue(), data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
                     missions.Add(mission);
                 }
             }

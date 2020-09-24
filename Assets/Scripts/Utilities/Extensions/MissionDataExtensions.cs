@@ -18,7 +18,7 @@ namespace StarSalvager.Utilities.Extensions
                 switch (missionData.ClassType)
                 {
                     case "ResourceCollectedMission":
-                        missions.Add(new ResourceCollectedMission(missionData.ResourceType, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        missions.Add(new ResourceCollectedMission(missionData.ResourceType, missionData.IsFromEnemyLoot, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
                         break;
                     case "EnemyKilledMission":
                         missions.Add(new EnemyKilledMission(missionData.EnemyType, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
@@ -27,7 +27,7 @@ namespace StarSalvager.Utilities.Extensions
                         missions.Add(new LevelProgressMission(missionData.SectorNumber, missionData.WaveNumber, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
                         break;
                     case "ComboBlocksMission":
-                        missions.Add(new ComboBlocksMission(missionData.ResourceType, missionData.ComboLevel, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        missions.Add(new ComboBlocksMission(missionData.ResourceType, missionData.ComboLevel, missionData.IsAdvancedCombo, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
                         break;
                     case "CraftPartMission":
                         missions.Add(new CraftPartMission(missionData.PartType, missionData.PartLevel, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
@@ -58,6 +58,9 @@ namespace StarSalvager.Utilities.Extensions
                         break;
                     case "PlayerLevelMission":
                         missions.Add(new PlayerLevelMission(missionData.PlayerLevel, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        break;
+                    case "ComponentCollectedMission":
+                        missions.Add(new ComponentCollectedMission(missionData.ComponentType, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
                         break;
                 }
             }

@@ -32,5 +32,8 @@ namespace StarSalvager.Utilities.JsonDataTypes
         public bool OrphanBit;
         public bool HasCombos;
         public float FlightLength;
+        public bool IsFromEnemyLoot;
+        public bool IsAdvancedCombo;
+        public COMPONENT_TYPE? ComponentType;
     }
 }
