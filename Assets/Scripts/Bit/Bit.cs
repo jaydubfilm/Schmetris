@@ -76,6 +76,8 @@ namespace StarSalvager
 
         private Damage _damage;
 
+        public bool IsFromEnemyLoot;
+
         //IAttachable Functions
         //============================================================================================================//
 

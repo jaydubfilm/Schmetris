@@ -437,7 +437,7 @@ namespace StarSalvager
                 {
                     CurrentWaveData.ConfigureLootTable();
                     List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
-                    DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize));
+                    DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), false);
                 }
                 PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector, Globals.CurrentWave + 1);
                 MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
@@ -456,7 +456,7 @@ namespace StarSalvager
                 {
                     CurrentWaveData.ConfigureLootTable();
                     List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
-                    DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize));
+                    DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), false);
                 }
                 PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector + 1, 0);
                 MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
@@ -476,7 +476,7 @@ namespace StarSalvager
             }
         }
 
-        public void DropLoot(List<IRDSObject> loot, Vector3 position)
+        public void DropLoot(List<IRDSObject> loot, Vector3 position, bool isFromEnemyLoot)
         {
             for (int i = loot.Count - 1; i >= 0; i--)
             {
@@ -505,7 +505,7 @@ namespace StarSalvager
                 }
             }
 
-            ObstacleManager.SpawnObstacleExplosion(position, loot);
+            ObstacleManager.SpawnObstacleExplosion(position, loot, isFromEnemyLoot);
         }
 
         public void SavePlayerData()

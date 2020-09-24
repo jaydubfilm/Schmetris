@@ -9,12 +9,16 @@ namespace StarSalvager.Missions
     public class WhiteBumperMission : Mission
     {
         public bool m_throughPart;
+        public bool m_orphanBit;
+        public bool m_hasCombos;
         public PART_TYPE m_partType;
 
-        public WhiteBumperMission(bool throughPart, PART_TYPE partType, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+        public WhiteBumperMission(bool throughPart, bool orphanBit, bool hasCombos, PART_TYPE partType, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
         {
             MissionEventType = MISSION_EVENT_TYPE.WHITE_BUMPER;
             m_throughPart = throughPart;
+            m_orphanBit = orphanBit;
+            m_hasCombos = hasCombos;
             m_partType = partType;
         }
 
@@ -23,12 +27,24 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(bool throughPart, PART_TYPE partType, int amount)
+        public void ProcessMissionData(bool throughPart, bool orphanBit, bool hasCombos, PART_TYPE partType, int amount)
         {
-            if (!m_throughPart || throughPart && m_throughPart)
+            if (!throughPart && m_throughPart)
             {
-                m_currentAmount += amount;
+                return;
             }
+
+            if (!orphanBit && m_orphanBit)
+            {
+                return;
+            }
+
+            if (!hasCombos && m_hasCombos)
+            {
+                return;
+            }
+            
+            m_currentAmount += amount;
         }
 
         public override MissionData ToMissionData()
@@ -44,7 +60,9 @@ namespace StarSalvager.Missions
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
-                ThroughPart = m_throughPart
+                ThroughPart = m_throughPart,
+                OrphanBit = m_orphanBit,
+                HasCombos = m_hasCombos
             };
         }
     }

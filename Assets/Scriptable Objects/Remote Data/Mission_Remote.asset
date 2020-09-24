@@ -13,55 +13,89 @@ MonoBehaviour:
   m_Name: Mission_Remote
   m_EditorClassIdentifier: 
   m_missionRemoteData:
-  - MissionType: 1
-    MissionName: Collect 200 grey
-    MissionDescription: Collect 200 grey resources
+  - MissionID: 1e95753c-4321-47a3-9992-6e83534294c8
+    MissionType: 1
+    MissionName: Collect 20 grey
+    MissionDescription: Collect 20 grey resources
     MissionUnlockParameters: []
-    AmountNeeded: 200
+    AmountNeeded: 20
     AnyResourceType: 0
     ResourceType: 3
+    AnyComponentType: 0
+    ComponentType: 0
     ComboLevel: 0
+    IsAdvancedCombo: 0
     AnyEnemyType: 0
     EnemyType: 
     SectorNumber: 0
     WaveNumber: 0
+    BonusShapeNumber: 0
     PartType: 0
     PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
     ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
     FlightLength: 0
-  - MissionType: 10
+    IsFromEnemyLoot: 0
+  - MissionID: 842836bf-9aa3-4173-81b9-0a5663e5ab06
+    MissionType: 10
     MissionName: Fly for 3 minutes
     MissionDescription: Fly for 2 minutes
     MissionUnlockParameters: []
     AmountNeeded: 0
     AnyResourceType: 0
     ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
     ComboLevel: 0
+    IsAdvancedCombo: 0
     AnyEnemyType: 0
     EnemyType: 
     SectorNumber: 0
     WaveNumber: 0
+    BonusShapeNumber: 0
     PartType: 0
     PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
     ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
     FlightLength: 180
-  - MissionType: 2
+    IsFromEnemyLoot: 0
+  - MissionID: 3581e56a-ab74-40b1-9546-22f57c92efef
+    MissionType: 2
     MissionName: Combo blocks to level 2
     MissionDescription: Combo 1 set of blocks
     MissionUnlockParameters: []
     AmountNeeded: 1
     AnyResourceType: 1
     ResourceType: 0
-    ComboLevel: 1
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 2
+    IsAdvancedCombo: 0
     AnyEnemyType: 0
     EnemyType: 
     SectorNumber: 0
     WaveNumber: 0
+    BonusShapeNumber: 0
     PartType: 0
     PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
     ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
     FlightLength: 0
-  - MissionType: 9
+    IsFromEnemyLoot: 0
+  - MissionID: 4e8c6dfa-c577-4921-accf-5241b7ce46aa
+    MissionType: 9
     MissionName: Complete Sector 1
     MissionDescription: Complete sector 1
     MissionUnlockParameters:
@@ -72,16 +106,27 @@ MonoBehaviour:
     AmountNeeded: 1
     AnyResourceType: 0
     ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
     ComboLevel: 0
+    IsAdvancedCombo: 0
     AnyEnemyType: 0
     EnemyType: 
     SectorNumber: 0
     WaveNumber: 0
+    BonusShapeNumber: 0
     PartType: 0
     PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
     ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
     FlightLength: 0
-  - MissionType: 4
+    IsFromEnemyLoot: 0
+  - MissionID: 8bf13add-01f8-44bd-91a8-fd330d72a92c
+    MissionType: 4
     MissionName: Craft a magnet
     MissionDescription: Craft a magnet
     MissionUnlockParameters:
@@ -92,16 +137,27 @@ MonoBehaviour:
     AmountNeeded: 1
     AnyResourceType: 0
     ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
     ComboLevel: 0
+    IsAdvancedCombo: 0
     AnyEnemyType: 0
     EnemyType: 
     SectorNumber: 0
     WaveNumber: 0
+    BonusShapeNumber: 0
     PartType: 1
     PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
     ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
     FlightLength: 0
-  - MissionType: 8
+    IsFromEnemyLoot: 0
+  - MissionID: efa428ed-1428-452b-bf88-19bb333d1f02
+    MissionType: 8
     MissionName: Chains 3 waves
     MissionDescription: Beat three waves in a row without returning to the scrapyard
     MissionUnlockParameters:
@@ -112,16 +168,27 @@ MonoBehaviour:
     AmountNeeded: 0
     AnyResourceType: 0
     ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
     ComboLevel: 0
+    IsAdvancedCombo: 0
     AnyEnemyType: 0
     EnemyType: 
     SectorNumber: 0
     WaveNumber: 3
+    BonusShapeNumber: 0
     PartType: 0
     PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
     ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
     FlightLength: 0
-  - MissionType: 5
+    IsFromEnemyLoot: 0
+  - MissionID: e688fab8-d276-473e-a9e0-751a73ce6232
+    MissionType: 5
     MissionName: Hit bumper
     MissionDescription: Move blocks with a white bumper
     MissionUnlockParameters:
@@ -132,16 +199,27 @@ MonoBehaviour:
     AmountNeeded: 1
     AnyResourceType: 0
     ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
     ComboLevel: 0
+    IsAdvancedCombo: 0
     AnyEnemyType: 0
     EnemyType: 
     SectorNumber: 0
     WaveNumber: 0
+    BonusShapeNumber: 0
     PartType: 0
     PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
     ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
     FlightLength: 0
-  - MissionType: 0
+    IsFromEnemyLoot: 0
+  - MissionID: e906d702-a1ad-4533-b0d8-48e27a399b8c
+    MissionType: 0
     MissionName: Kill a parasite
     MissionDescription: Kill a parasite
     MissionUnlockParameters:
@@ -152,16 +230,27 @@ MonoBehaviour:
     AmountNeeded: 1
     AnyResourceType: 0
     ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
     ComboLevel: 0
+    IsAdvancedCombo: 0
     AnyEnemyType: 0
     EnemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
     SectorNumber: 0
     WaveNumber: 0
+    BonusShapeNumber: 0
     PartType: 0
     PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
     ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
     FlightLength: 0
-  - MissionType: 0
+    IsFromEnemyLoot: 0
+  - MissionID: add6ce90-b614-49b9-a4cb-2f33d45f5a05
+    MissionType: 0
     MissionName: Kill an invader
     MissionDescription: Kill an invader
     MissionUnlockParameters:
@@ -172,36 +261,89 @@ MonoBehaviour:
     AmountNeeded: 1
     AnyResourceType: 0
     ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
     ComboLevel: 0
+    IsAdvancedCombo: 0
     AnyEnemyType: 0
     EnemyType: 3363c379-70c7-47d1-8cc6-1ca650259a31
     SectorNumber: 0
     WaveNumber: 0
+    BonusShapeNumber: 0
     PartType: 0
     PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
     ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
     FlightLength: 0
-  - MissionType: 1
-    MissionName: Collect 200 green
-    MissionDescription: Collect 200 green resources
+    IsFromEnemyLoot: 0
+  - MissionID: ba172ac5-f96d-4e33-846e-b70df1c87e48
+    MissionType: 5
+    MissionName: Orphan a bit with a bumper
+    MissionDescription: Use a white bumper to knock a bit off your ship
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
       WaveUnlockNumber: 0
-      MissionUnlockName: Collect 200 grey
-    AmountNeeded: 200
+      MissionUnlockName: Hit bumper
+    AmountNeeded: 1
     AnyResourceType: 0
-    ResourceType: 2
+    ResourceType: 1
+    AnyComponentType: 0
+    ComponentType: 0
     ComboLevel: 0
+    IsAdvancedCombo: 0
     AnyEnemyType: 0
     EnemyType: 
     SectorNumber: 0
     WaveNumber: 0
+    BonusShapeNumber: 0
     PartType: 0
     PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
     ThroughPart: 0
+    OrphanBit: 1
+    HasCombos: 0
     FlightLength: 0
-  - MissionType: 2
+    IsFromEnemyLoot: 0
+  - MissionID: 4a1bd860-0a1f-4b77-befc-51ec54bba2a9
+    MissionType: 1
+    MissionName: Collect 20 green
+    MissionDescription: Collect 20 green resources
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      WaveUnlockNumber: 0
+      MissionUnlockName: 1e95753c-4321-47a3-9992-6e83534294c8
+    AmountNeeded: 200
+    AnyResourceType: 0
+    ResourceType: 2
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    BonusShapeNumber: 0
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+  - MissionID: d28c3c14-428b-42ee-ba04-c00c6bb3c305
+    MissionType: 2
     MissionName: Combo blocks to level 3
     MissionDescription: Combo a level two block set
     MissionUnlockParameters:
@@ -212,16 +354,27 @@ MonoBehaviour:
     AmountNeeded: 1
     AnyResourceType: 1
     ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
     ComboLevel: 2
+    IsAdvancedCombo: 0
     AnyEnemyType: 0
     EnemyType: 
     SectorNumber: 0
     WaveNumber: 0
+    BonusShapeNumber: 0
     PartType: 0
     PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
     ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
     FlightLength: 0
-  - MissionType: 0
+    IsFromEnemyLoot: 0
+  - MissionID: 10f9f0c0-418a-426c-80a3-6ab8d65756ec
+    MissionType: 0
     MissionName: Kill five enemies
     MissionDescription: Kill five enemies
     MissionUnlockParameters:
@@ -240,12 +393,316 @@ MonoBehaviour:
     AmountNeeded: 5
     AnyResourceType: 0
     ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
     ComboLevel: 0
+    IsAdvancedCombo: 0
     AnyEnemyType: 1
     EnemyType: 
     SectorNumber: 0
     WaveNumber: 0
+    BonusShapeNumber: 0
     PartType: 0
     PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
     ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
     FlightLength: 0
+    IsFromEnemyLoot: 0
+  - MissionID: e241f40c-3c04-45c6-bf34-24bca67b905c
+    MissionType: 5
+    MissionName: Bumper Combo
+    MissionDescription: Get a combo by using a white bumper
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      WaveUnlockNumber: 0
+      MissionUnlockName: Orphan a bit with a bumper
+    AmountNeeded: 1
+    AnyResourceType: 0
+    ResourceType: 1
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    BonusShapeNumber: 0
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 1
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+  - MissionID: 79a85ec5-cc96-48dd-862c-791919cba7b6
+    MissionType: 11
+    MissionName: Match a bonus shape
+    MissionDescription: Match a bonus shape
+    MissionUnlockParameters: []
+    AmountNeeded: 1
+    AnyResourceType: 0
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    BonusShapeNumber: 1
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+  - MissionID: 31ac2dfd-1985-4381-b9fc-dc5607acde00
+    MissionType: 11
+    MissionName: Match two bonus shapes in 1 wave
+    MissionDescription: Match two bonus shapes in 1 wave
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      WaveUnlockNumber: 0
+      MissionUnlockName: 79a85ec5-cc96-48dd-862c-791919cba7b6
+    AmountNeeded: 2
+    AnyResourceType: 0
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    BonusShapeNumber: 2
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+  - MissionID: 020d7507-b997-41d7-bbff-921f40e58e73
+    MissionType: 12
+    MissionName: Upgrade refinery
+    MissionDescription: Upgrade refinery to rank 2
+    MissionUnlockParameters: []
+    AmountNeeded: 0
+    AnyResourceType: 0
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    BonusShapeNumber: 0
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 9
+    FacilityLevel: 2
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+  - MissionID: 059e9fd0-6921-43c9-bc00-48dabdaacf49
+    MissionType: 13
+    MissionName: Reach Player Level 3
+    MissionDescription: Reach Player Level 3
+    MissionUnlockParameters: []
+    AmountNeeded: 0
+    AnyResourceType: 0
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    BonusShapeNumber: 0
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 3
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+  - MissionID: cd105b59-16c1-43f7-aa81-a017377384c6
+    MissionType: 4
+    MissionName: Craft Gun
+    MissionDescription: Craft Gun
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      WaveUnlockNumber: 0
+      MissionUnlockName: 8bf13add-01f8-44bd-91a8-fd330d72a92c
+    AmountNeeded: 1
+    AnyResourceType: 0
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    BonusShapeNumber: 0
+    PartType: 1
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+  - MissionID: 9862e9e3-312b-43e9-8fd4-4d5fcabf28a7
+    MissionType: 4
+    MissionName: Craft Armor
+    MissionDescription: Craft Armor
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      WaveUnlockNumber: 0
+      MissionUnlockName: cd105b59-16c1-43f7-aa81-a017377384c6
+    AmountNeeded: 1
+    AnyResourceType: 0
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    BonusShapeNumber: 0
+    PartType: 3
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+  - MissionID: 4a80b2b4-048c-4213-8bdd-991d1a826b7f
+    MissionType: 1
+    MissionName: Collect Bit from enemy loot
+    MissionDescription: Collect Bit from enemy loot
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      WaveUnlockNumber: 0
+      MissionUnlockName: e906d702-a1ad-4533-b0d8-48e27a399b8c
+    AmountNeeded: 1
+    AnyResourceType: 1
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    BonusShapeNumber: 0
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+  - MissionID: d3b8dc57-7502-4338-92cc-77b7afdacd5d
+    MissionType: 2
+    MissionName: Score Advanced Combo
+    MissionDescription: Score Advanced Combo
+    MissionUnlockParameters: []
+    AmountNeeded: 1
+    AnyResourceType: 1
+    ResourceType: 0
+    AnyComponentType: 1
+    ComponentType: 0
+    ComboLevel: 2
+    IsAdvancedCombo: 1
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    BonusShapeNumber: 0
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+  - MissionID: 14705326-865c-461f-bc6d-f12360f6d56e
+    MissionType: 2
+    MissionName: Advanced Combo
+    MissionDescription: Advanced Combo
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      WaveUnlockNumber: 0
+      MissionUnlockName: e241f40c-3c04-45c6-bf34-24bca67b905c
+    AmountNeeded: 1
+    AnyResourceType: 1
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 2
+    IsAdvancedCombo: 1
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    BonusShapeNumber: 0
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0

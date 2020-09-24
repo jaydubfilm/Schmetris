@@ -22,9 +22,18 @@ namespace StarSalvager.Utilities.JsonDataTypes
         public string EnemyType;
         public int SectorNumber;
         public int WaveNumber;
+        public int BonusShapeNumber;
         public PART_TYPE PartType;
+        public FACILITY_TYPE FacilityType;
         public int PartLevel;
+        public int FacilityLevel;
+        public int PlayerLevel;
         public bool ThroughPart;
+        public bool OrphanBit;
+        public bool HasCombos;
         public float FlightLength;
+        public bool IsFromEnemyLoot;
+        public bool IsAdvancedCombo;
+        public COMPONENT_TYPE? ComponentType;
     }
 }

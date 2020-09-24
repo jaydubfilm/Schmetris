@@ -18,7 +18,7 @@ using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.UI;
 using Input = StarSalvager.Utilities.Inputs.Input;
-
+using StarSalvager.Missions;
 
 namespace StarSalvager
 {
@@ -733,6 +733,7 @@ namespace StarSalvager
                         amount = component.level * 3;
 
                     PlayerPersistentData.PlayerData.AddComponent(component.Type, amount);
+                    MissionManager.ProcessComponentCollectedMissionData(component.Type, amount);
                 }
 
                 PlayerData.OnValuesChanged?.Invoke();

@@ -156,6 +156,7 @@ namespace StarSalvager.Values
                     LevelManager.Instance.WaveEndSummaryData.numLevelsGained++;
                 }
                 Level++;
+                MissionManager.ProcessPlayerLevelMission(Level);
             }
             
             OnValuesChanged?.Invoke();
@@ -509,6 +510,7 @@ namespace StarSalvager.Values
             {
                 _facilityRanks.Add(type, level);
             }
+            MissionManager.ProcessFacilityUpgradeMission(type, level);
 
             int increaseAmount = remoteData.levels[level].increaseAmount;
             switch (type)

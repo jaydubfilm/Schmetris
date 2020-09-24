@@ -5,16 +5,14 @@ using System.Collections.Generic;
 namespace StarSalvager.Missions
 {
     [System.Serializable]
-    public class ResourceCollectedMission : Mission
+    public class ComponentCollectedMission : Mission
     {
-        public BIT_TYPE? m_resourceType;
-        public bool m_isFromEnemyLoot;
+        public COMPONENT_TYPE? m_componentType;
 
-        public ResourceCollectedMission(BIT_TYPE? resourceType, bool isFromEnemyLoot, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+        public ComponentCollectedMission(COMPONENT_TYPE? componentType, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
         {
-            MissionEventType = MISSION_EVENT_TYPE.RESOURCE_COLLECTED;
-            m_resourceType = resourceType;
-            m_isFromEnemyLoot = isFromEnemyLoot;
+            MissionEventType = MISSION_EVENT_TYPE.COMPONENT_COLLECTED;
+            m_componentType = componentType;
         }
 
         public override bool MissionComplete()
@@ -22,14 +20,9 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(BIT_TYPE resourceType, int amount, bool isFromEnemyLoot)
+        public void ProcessMissionData(COMPONENT_TYPE componentType, int amount)
         {
-            if (!isFromEnemyLoot && m_isFromEnemyLoot)
-            {
-                return;
-            }
-            
-            if (m_resourceType == null || resourceType == m_resourceType)
+            if (m_componentType == null || componentType == m_componentType)
             {
                 m_currentAmount += amount;
             }
@@ -48,8 +41,7 @@ namespace StarSalvager.Missions
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
-                ResourceType = m_resourceType,
-                IsFromEnemyLoot = m_isFromEnemyLoot
+                ComponentType = m_componentType,
             };
         }
     }

@@ -14,6 +14,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
 using StarSalvager.Cameras;
+using StarSalvager.Missions;
 
 namespace StarSalvager
 {
@@ -641,7 +642,7 @@ namespace StarSalvager
             }
         }
 
-        public void SpawnObstacleExplosion(Vector2 startingLocation, List<IRDSObject> rdsObjects)
+        public void SpawnObstacleExplosion(Vector2 startingLocation, List<IRDSObject> rdsObjects, bool isFromEnemyLoot)
         {
             for (int i = rdsObjects.Count - 1; i >= 0; i--)
             {
@@ -667,6 +668,7 @@ namespace StarSalvager
                             Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>((BIT_TYPE)rdsValueBlockData.rdsValue.Type, rdsValueBlockData.rdsValue.Level);
                             AddObstacleToList(newBit);
                             PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[i], 0.5f);
+                            newBit.IsFromEnemyLoot = isFromEnemyLoot;
                             break;
                         case nameof(Asteroid):
                             Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroidRandom<Asteroid>();
@@ -924,6 +926,8 @@ namespace StarSalvager
             m_offGridMovingObstacles.Remove(m_offGridMovingObstacles.FirstOrDefault(s => s.Obstacle is Shape offGridShape && offGridShape == shape));
             Recycler.Recycle<Shape>(shape);
             LevelManager.Instance.WaveEndSummaryData.numBonusShapesMatched++;
+
+            MissionManager.ProcessChainBonusShapesMissionData(LevelManager.Instance.WaveEndSummaryData.numBonusShapesMatched);
         }
 
         #endregion //Bonus Shapes
