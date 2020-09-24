@@ -37,6 +37,8 @@ namespace StarSalvager.ScriptableObjects
         public bool onlyGetWaveLootOnce = true;
 
         public List<BlueprintInitialData> blueprintInitialData = new List<BlueprintInitialData>();
+        public List<FacilityInitialData> facilityInitialData = new List<FacilityInitialData>();
+        public List<FacilityInitialData> facilityInitialBlueprintData = new List<FacilityInitialData>();
 
         public void SetupGameSettings()
         {

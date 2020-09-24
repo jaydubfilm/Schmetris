@@ -112,27 +112,12 @@ namespace StarSalvager.Values
         [JsonIgnore]
         public IReadOnlyDictionary<FACILITY_TYPE, int> facilityRanks => _facilityRanks;
         [JsonProperty]
-        private Dictionary<FACILITY_TYPE, int> _facilityRanks = new Dictionary<FACILITY_TYPE, int>
-        {
-            {FACILITY_TYPE.REFINERY, 0}
-        };
+        private Dictionary<FACILITY_TYPE, int> _facilityRanks = new Dictionary<FACILITY_TYPE, int>();
 
         [JsonIgnore]
         public IReadOnlyDictionary<FACILITY_TYPE, int> facilityBlueprintRanks => _facilityBlueprintRanks;
         [JsonProperty]
-        private Dictionary<FACILITY_TYPE, int> _facilityBlueprintRanks = new Dictionary<FACILITY_TYPE, int>
-        {
-            {FACILITY_TYPE.FREEZER, 0},
-            {FACILITY_TYPE.STORAGEELECTRICITY, 0},
-            {FACILITY_TYPE.STORAGEFUEL, 0},
-            {FACILITY_TYPE.STORAGEPLASMA, 0},
-            {FACILITY_TYPE.STORAGESCRAP, 0},
-            {FACILITY_TYPE.STORAGEWATER, 0},
-            {FACILITY_TYPE.WORKBENCHCHIP, 0},
-            {FACILITY_TYPE.WORKBENCHCOIL, 0},
-            {FACILITY_TYPE.WORKBENCHFUSOR, 0},
-            {FACILITY_TYPE.REFINERY, 1}
-        };
+        private Dictionary<FACILITY_TYPE, int> _facilityBlueprintRanks = new Dictionary<FACILITY_TYPE, int>();
 
         public string PlaythroughID = string.Empty;
 
