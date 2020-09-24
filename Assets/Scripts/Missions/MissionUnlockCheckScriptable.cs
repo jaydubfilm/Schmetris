@@ -10,7 +10,7 @@ namespace StarSalvager.Missions
     [System.Serializable]
     public struct MissionUnlockCheckScriptable
     {
-        [SerializeField, FoldoutGroup("$MissionUnlockType"), ValueDropdown("MissionTypes")]
+        [SerializeField, FoldoutGroup("$MissionUnlockType"), ValueDropdown("GetMissionTypes")]
         public string MissionUnlockType;
 
         [SerializeField, FoldoutGroup("$MissionUnlockType"), ShowIf("MissionUnlockType", "Level Complete")]
@@ -25,7 +25,7 @@ namespace StarSalvager.Missions
         [NonSerialized]
         public bool IsCompleted;
 
-        private static IEnumerable<string> MissionTypes()
+        private static IEnumerable<string> GetMissionTypes()
         {
             List<string> missionTypes = new List<string>();
             missionTypes.Add("Level Complete");
@@ -34,17 +34,14 @@ namespace StarSalvager.Missions
             return missionTypes;
         }
 
-        private IEnumerable<string> GetMissionNames()
+        private IEnumerable GetMissionNames()
         {
-            var missionDatas = UnityEngine.Object.FindObjectOfType<FactoryManager>().MissionRemoteData.m_missionRemoteData;
-            List<string> missionNames = new List<string>();
-
-            foreach (var missionData in missionDatas)
+            ValueDropdownList<string> missionTypes = new ValueDropdownList<string>();
+            foreach (MissionRemoteData data in UnityEngine.Object.FindObjectOfType<FactoryManager>().MissionRemoteData.m_missionRemoteData)
             {
-                missionNames.Add(missionData.MissionName);
+                missionTypes.Add(data.MissionName, data.MissionID);
             }
-
-            return missionNames;
+            return missionTypes;
         }
     }
 }

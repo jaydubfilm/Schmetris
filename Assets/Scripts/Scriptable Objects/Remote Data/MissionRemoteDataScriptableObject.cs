@@ -45,7 +45,7 @@ namespace StarSalvager.ScriptableObjects
                 }
                 else if (data.MissionType == MISSION_EVENT_TYPE.WHITE_BUMPER)
                 {
-                    WhiteBumperMission mission = new WhiteBumperMission(data.ThroughPart, data.PartType, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
+                    WhiteBumperMission mission = new WhiteBumperMission(data.ThroughPart, data.OrphanBit, data.HasCombos, data.PartType, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
                     missions.Add(mission);
                 }
                 else if (data.MissionType == MISSION_EVENT_TYPE.ASTEROID_COLLISION)
@@ -71,6 +71,21 @@ namespace StarSalvager.ScriptableObjects
                 else if (data.MissionType == MISSION_EVENT_TYPE.FLIGHT_LENGTH)
                 {
                     FlightLengthMission mission = new FlightLengthMission(data.FlightLength, data.MissionName, data.MissionDescription, data.GetMissionUnlockData());
+                    missions.Add(mission);
+                }
+                else if (data.MissionType == MISSION_EVENT_TYPE.CHAIN_BONUS_SHAPES)
+                {
+                    ChainBonusShapesMission mission = new ChainBonusShapesMission(data.BonusShapeNumber, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
+                    missions.Add(mission);
+                }
+                else if (data.MissionType == MISSION_EVENT_TYPE.FACILITY_UPGRADE)
+                {
+                    FacilityUpgradeMission mission = new FacilityUpgradeMission(data.FacilityType, data.FacilityLevel, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
+                    missions.Add(mission);
+                }
+                else if (data.MissionType == MISSION_EVENT_TYPE.PLAYER_LEVEL)
+                {
+                    PlayerLevelMission mission = new PlayerLevelMission(data.PlayerLevel, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
                     missions.Add(mission);
                 }
             }

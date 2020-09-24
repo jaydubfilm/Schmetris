@@ -1057,8 +1057,7 @@ namespace StarSalvager
             switch (newAttachable)
             {
                     case Bit bit:
-                        if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 
-                            FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type).levels[bit.level].resources);
+                        if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 1);
                         
                         if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
                         
@@ -1114,8 +1113,7 @@ namespace StarSalvager
                 case Bit bit:
                     if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
                     
-                    if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 
-                        FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type).levels[bit.level].resources);
+                    if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 1);
                     break;
                 case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
@@ -1201,8 +1199,7 @@ namespace StarSalvager
                     if (checkForCombo)
                         CheckForCombosAround<BIT_TYPE>(coordinate);
                     
-                    if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 
-                        FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type).levels[bit.level].resources);
+                    if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 1);
                     
                     break;
                 case Component _ when checkForCombo:
@@ -1585,9 +1582,10 @@ namespace StarSalvager
         /// <summary>
         /// Function will review and detach any blocks that no longer have a connection to the core.
         /// </summary>
-        private void CheckForDisconnects()
+        private bool CheckForDisconnects()
         {
             var toSolve = new List<IAttachable>(attachedBlocks);
+            bool hasDetached = false;
             
             foreach (var attachable in toSolve)
             {
@@ -1598,6 +1596,8 @@ namespace StarSalvager
                 
                 if(hasPathToCore)
                     continue;
+
+                hasDetached = true;
 
                 var attachables = new List<IAttachable>();
                 attachedBlocks.GetAllAttachedDetachables(attachable, null, ref attachables);
@@ -1612,10 +1612,11 @@ namespace StarSalvager
                     DetachBit(attachables[0]);
                     continue;
                 }
-                
-                
+
                 DetachBits(attachables);
             }
+
+            return hasDetached;
         }
 
         /// <summary>
@@ -1754,7 +1755,8 @@ namespace StarSalvager
             if (toShift.Count == 0)
                 return false;
 
-            MissionManager.ProcessWhiteBumperMissionData(toShift.Count, passedCore);
+            bool hasDetached = false;
+            bool hasCombos = false;
             
             StartCoroutine(ShiftInDirectionCoroutine(toShift, 
                 TEST_MergeSpeed,
@@ -1768,7 +1770,7 @@ namespace StarSalvager
                 }
                 
                 //Checks for floaters
-                CheckForDisconnects();
+                hasDetached = CheckForDisconnects();
 
                 var comboCheckGroup = toShift.Select(x => x.Target).Where(x => attachedBlocks.Contains(x) && x is ICanCombo)
                     .OfType<ICanCombo>();
@@ -1776,14 +1778,16 @@ namespace StarSalvager
                 switch (attachable)
                 {
                     case Bit _:
-                        CheckForCombosAround<BIT_TYPE>(comboCheckGroup);
+                        hasCombos = CheckForCombosAround<BIT_TYPE>(comboCheckGroup);
                         break;
                     case Component _:
-                        CheckForCombosAround<COMPONENT_TYPE>(comboCheckGroup);
+                        hasCombos = CheckForCombosAround<COMPONENT_TYPE>(comboCheckGroup);
 
                         break;
                 }
-                
+
+                MissionManager.ProcessWhiteBumperMissionData(toShift.Count, passedCore, hasDetached, hasCombos);
+
             }));
 
 
@@ -1864,20 +1868,21 @@ namespace StarSalvager
             CheckForCombosAround(attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate && a is ICanCombo) as ICanCombo<T>);
         }
 
-        private void CheckForCombosAround<T>(IEnumerable<IAttachable> iAttachables) where T : Enum
+        private bool CheckForCombosAround<T>(IEnumerable<IAttachable> iAttachables) where T : Enum
         {
-            CheckForCombosAround(iAttachables.OfType <ICanCombo<T>>());
+            return CheckForCombosAround(iAttachables.OfType <ICanCombo<T>>());
         }
-        private void CheckForCombosAround<T>(IEnumerable<ICanCombo> iCanCombos) where T : Enum
+        private bool CheckForCombosAround<T>(IEnumerable<ICanCombo> iCanCombos) where T : Enum
         {
-            CheckForCombosAround(iCanCombos.OfType <ICanCombo<T>>());
+            return CheckForCombosAround(iCanCombos.OfType <ICanCombo<T>>());
         }
         
 
         
-        private void CheckForCombosAround<T>(IEnumerable<ICanCombo<T>> iCanCombos) where T: Enum
+        private bool CheckForCombosAround<T>(IEnumerable<ICanCombo<T>> iCanCombos) where T: Enum
         {
             List<PendingCombo> pendingCombos = null;
+            bool hasCombos = false;
             
             foreach (var iCanCombo in iCanCombos)
             {
@@ -1910,7 +1915,9 @@ namespace StarSalvager
             }
 
             if (pendingCombos == null || pendingCombos.Count == 0)
-                return;
+                return false;
+
+            hasCombos = true;
 
             //TODO Need to figure out the multi-combo scores
             foreach (var pendingCombo in pendingCombos)
@@ -1920,6 +1927,8 @@ namespace StarSalvager
                 
                 SimpleComboSolver(pendingCombo);
             }
+
+            return hasCombos;
         }
         private void CheckForCombosAround<T>(ICanCombo<T> iCanCombo) where T: Enum
         {

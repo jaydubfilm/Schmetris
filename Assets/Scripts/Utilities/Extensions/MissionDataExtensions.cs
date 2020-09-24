@@ -33,7 +33,7 @@ namespace StarSalvager.Utilities.Extensions
                         missions.Add(new CraftPartMission(missionData.PartType, missionData.PartLevel, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
                         break;
                     case "WhiteBumperMission":
-                        missions.Add(new WhiteBumperMission(missionData.ThroughPart, missionData.PartType, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        missions.Add(new WhiteBumperMission(missionData.ThroughPart, missionData.OrphanBit, missionData.HasCombos, missionData.PartType, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
                         break;
                     case "AsteroidCollisionMission":
                         missions.Add(new AsteroidCollisionMission(missionData.ResourceType, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
@@ -49,6 +49,15 @@ namespace StarSalvager.Utilities.Extensions
                         break;
                     case "FlightLengthMission":
                         missions.Add(new FlightLengthMission(missionData.FlightLength, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        break;
+                    case "ChainBonusShapesMission":
+                        missions.Add(new ChainBonusShapesMission(missionData.BonusShapeNumber, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        break;
+                    case "FacilityUpgradeMission":
+                        missions.Add(new FacilityUpgradeMission(missionData.FacilityType, missionData.FacilityLevel, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
+                        break;
+                    case "PlayerLevelMission":
+                        missions.Add(new PlayerLevelMission(missionData.PlayerLevel, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
                         break;
                 }
             }

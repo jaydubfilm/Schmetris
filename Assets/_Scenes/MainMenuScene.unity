@@ -183,8 +183,8 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
+    - {fileID: 8017945059504310356}
+    ActiveGameObject: {fileID: 8017945059504310356}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []

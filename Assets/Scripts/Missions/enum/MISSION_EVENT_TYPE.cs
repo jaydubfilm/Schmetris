@@ -12,6 +12,9 @@
         LIQUID_RESOURCE,
         CHAIN_WAVES,
         SECTORS_COMPLETED,
-        FLIGHT_LENGTH
+        FLIGHT_LENGTH,
+        CHAIN_BONUS_SHAPES,
+        FACILITY_UPGRADE,
+        PLAYER_LEVEL,
     }
 }

@@ -15,6 +15,7 @@ using StarSalvager.UI.Scrapyard;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
 using StarSalvager.Cameras;
+using StarSalvager.Missions;
 
 namespace StarSalvager
 {
@@ -879,6 +880,8 @@ namespace StarSalvager
             m_offGridMovingObstacles.Remove(m_offGridMovingObstacles.FirstOrDefault(s => s.Obstacle is Shape offGridShape && offGridShape == shape));
             Recycler.Recycle<Shape>(shape);
             LevelManager.Instance.WaveEndSummaryData.numBonusShapesMatched++;
+
+            MissionManager.ProcessChainBonusShapesMissionData(LevelManager.Instance.WaveEndSummaryData.numBonusShapesMatched);
         }
 
         //============================================================================================================//
