@@ -188,7 +188,7 @@ namespace StarSalvager.Utilities.FileIO
 
                 foreach (var facilityData in Globals.FacilityInitialData)
                 {
-                    data.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level);
+                    data.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
                 }
 
                 foreach (var facilityData in Globals.FacilityInitialBlueprintData)

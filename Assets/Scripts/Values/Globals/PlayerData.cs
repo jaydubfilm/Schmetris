@@ -158,17 +158,20 @@ namespace StarSalvager.Values
                     PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
                     Toast.AddToast("Unlocked Blueprint!");
                     levelUpLoot.RemoveAt(i);
+                    continue;
                 }
                 if (levelUpLoot[i] is RDSValue<FacilityBlueprint> rdsValueFacilityBlueprint)
                 {
                     PlayerPersistentData.PlayerData.UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
                     Toast.AddToast("Unlocked Facility Blueprint!");
                     levelUpLoot.RemoveAt(i);
+                    continue;
                 }
                 else if (levelUpLoot[i] is RDSValue<Vector2Int> rdsValueGears)
                 {
                     PlayerPersistentData.PlayerData.ChangeGears(UnityEngine.Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
                     levelUpLoot.RemoveAt(i);
+                    continue;
                 }
             }
         }
@@ -484,7 +487,7 @@ namespace StarSalvager.Values
             OnValuesChanged?.Invoke();
         }
 
-        public void UnlockFacilityLevel(FACILITY_TYPE type, int level)
+        public void UnlockFacilityLevel(FACILITY_TYPE type, int level, bool triggerMissionCheck = true)
         {
             FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(type);
             if (_facilityRanks.ContainsKey(type) && _facilityRanks[type] < level)
@@ -495,7 +498,11 @@ namespace StarSalvager.Values
             {
                 _facilityRanks.Add(type, level);
             }
-            MissionManager.ProcessFacilityUpgradeMission(type, level);
+
+            if (triggerMissionCheck)
+            {
+                MissionManager.ProcessFacilityUpgradeMission(type, level);
+            }
 
             int increaseAmount = remoteData.levels[level].increaseAmount;
             switch (type)
@@ -527,25 +534,30 @@ namespace StarSalvager.Values
 
         public void UnlockFacilityBlueprintLevel(FacilityBlueprint facilityBlueprint)
         {
-            FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(facilityBlueprint.facilityType);
-            if (_facilityBlueprintRanks.ContainsKey(facilityBlueprint.facilityType))
+            UnlockFacilityBlueprintLevel(facilityBlueprint.facilityType, facilityBlueprint.level);
+        }
+
+        public void UnlockFacilityBlueprintLevel(FACILITY_TYPE facilityType, int level)
+        {
+            FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(facilityType);
+            if (_facilityBlueprintRanks.ContainsKey(facilityType))
             {
-                if (_facilityBlueprintRanks[facilityBlueprint.facilityType] < facilityBlueprint.level)
+                if (_facilityBlueprintRanks[facilityType] < level)
                 {
-                    _facilityBlueprintRanks[facilityBlueprint.facilityType] = facilityBlueprint.level;
+                    _facilityBlueprintRanks[facilityType] = level;
                     if (LevelManager.Instance.WaveEndSummaryData != null)
                     {
-                        string blueprintUnlockString = remoteData.displayName + " " + facilityBlueprint.level;
+                        string blueprintUnlockString = remoteData.displayName + " " + level;
                         LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprintUnlockString);
                     }
                 }
             }
             else
             {
-                _facilityBlueprintRanks.Add(facilityBlueprint.facilityType, facilityBlueprint.level);
+                _facilityBlueprintRanks.Add(facilityType, level);
                 if (LevelManager.Instance.WaveEndSummaryData != null)
                 {
-                    string blueprintUnlockString = remoteData.displayName + " " + facilityBlueprint.level;
+                    string blueprintUnlockString = remoteData.displayName + " " + level;
                     LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprintUnlockString);
                 }
             }
