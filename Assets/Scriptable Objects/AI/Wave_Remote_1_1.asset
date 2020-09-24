@@ -38,12 +38,18 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.2
-    - m_selectionType: 1
-      m_shapeName: Small1
+    - m_selectionType: 0
+      m_shapeName: RedSingle
       m_category: Small
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.2
+      m_density: 0.4
+    - m_selectionType: 0
+      m_shapeName: GreySingle
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.4
     m_stageColumnGroupObstacleData: []
   maxDrops: 3
   RDSEndOfWaveLoot:
