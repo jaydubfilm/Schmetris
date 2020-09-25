@@ -23,7 +23,7 @@ namespace StarSalvager.Missions
 
         public void ProcessMissionData(string enemyType, int amount)
         {
-            if (m_enemyType == string.Empty || enemyType == m_enemyType)
+            if (m_enemyType == null || m_enemyType == string.Empty || enemyType == m_enemyType)
             {
                 m_currentAmount += amount;
             }

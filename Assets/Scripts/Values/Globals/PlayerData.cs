@@ -156,23 +156,31 @@ namespace StarSalvager.Values
             {
                 if (levelUpLoot[i] is RDSValue<Blueprint> rdsValueBlueprint)
                 {
-                    PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
+                    UnlockBlueprint(rdsValueBlueprint.rdsValue);
                     Toast.AddToast("Unlocked Blueprint!");
                     levelUpLoot.RemoveAt(i);
                     continue;
                 }
                 if (levelUpLoot[i] is RDSValue<FacilityBlueprint> rdsValueFacilityBlueprint)
                 {
-                    PlayerPersistentData.PlayerData.UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
+                    UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
                     Toast.AddToast("Unlocked Facility Blueprint!");
                     levelUpLoot.RemoveAt(i);
                     continue;
                 }
                 else if (levelUpLoot[i] is RDSValue<Vector2Int> rdsValueGears)
                 {
-                    PlayerPersistentData.PlayerData.ChangeGears(UnityEngine.Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
+                    ChangeGears(UnityEngine.Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
                     levelUpLoot.RemoveAt(i);
                     continue;
+                }
+                else if (levelUpLoot[i] is RDSValue<Bit> rdsValueBit)
+                {
+                    AddResource(rdsValueBit.rdsValue.Type, FactoryManager.Instance.BitsRemoteData.GetRemoteData(rdsValueBit.rdsValue.Type).levels[0].resources);
+                }
+                else if (levelUpLoot[i] is RDSValue<Component> rdsValueComponent)
+                {
+                    AddComponent(rdsValueComponent.rdsValue.Type, 1);
                 }
             }
         }

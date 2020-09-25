@@ -16,7 +16,7 @@ namespace StarSalvager.Missions
         {
             MissionEventType = MISSION_EVENT_TYPE.COMBO_BLOCKS;
             m_comboType = comboType;
-            m_comboLevel = comboLevel - 1;
+            m_comboLevel = comboLevel;
             m_isAdvancedCombo = isAdvancedCombo;
         }
 
@@ -32,7 +32,7 @@ namespace StarSalvager.Missions
                 return;
             }
             
-            if ((m_comboType == null || comboType == m_comboType) && m_comboLevel == comboLevel)
+            if ((!m_comboType.HasValue || comboType == m_comboType) && m_comboLevel == comboLevel)
             {
                 m_currentAmount += amount;
             }

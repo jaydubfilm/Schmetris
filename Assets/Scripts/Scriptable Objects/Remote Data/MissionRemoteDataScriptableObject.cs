@@ -12,6 +12,11 @@ namespace StarSalvager.ScriptableObjects
     {
         public List<MissionRemoteData> m_missionRemoteData = new List<MissionRemoteData>();
 
+        public MissionRemoteData GetRemoteData(string name)
+        {
+            return m_missionRemoteData.FirstOrDefault(m => m.MissionName == name);
+        }
+
         public List<Mission> GenerateMissionData()
         {
             List<Mission> missions = new List<Mission>();
