@@ -13,16 +13,12 @@ MonoBehaviour:
   m_Name: Wave_Remote_PB1_1_2
   m_EditorClassIdentifier: 
   BonusShapes:
-  - m_selectionType: 1
-    m_shapeName: 
+  - m_selectionType: 0
+    m_shapeName: BS_2.0.1
     m_category: BS_2Cell
     m_rotation: -1
-  - m_selectionType: 1
-    m_shapeName: 
-    m_category: BS_2Cell
-    m_rotation: -1
-  - m_selectionType: 1
-    m_shapeName: 
+  - m_selectionType: 0
+    m_shapeName: BS_2.0.9
     m_category: BS_2Cell
     m_rotation: -1
   StageRemoteData:
@@ -57,7 +53,7 @@ MonoBehaviour:
       m_category: Singles
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.2
+      m_density: 0.25
     - m_selectionType: 0
       m_shapeName: YellowSingle
       m_category: 
@@ -69,7 +65,7 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.2
+      m_density: 0.25
     m_stageColumnGroupObstacleData: []
   - m_stageDuration: 30
     m_stageBlendPeriod: 0
@@ -104,7 +100,7 @@ MonoBehaviour:
       m_category: Singles
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.2
+      m_density: 0.25
     - m_selectionType: 0
       m_shapeName: YellowSingle
       m_category: 
@@ -116,7 +112,7 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.2
+      m_density: 0.25
     m_stageColumnGroupObstacleData: []
   maxDrops: 0
   RDSEndOfWaveLoot:
