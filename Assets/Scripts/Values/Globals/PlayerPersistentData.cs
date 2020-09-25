@@ -40,6 +40,16 @@ namespace StarSalvager.Values
                 data.AddSectorProgression(0, 0);
             }
             data.PlaythroughID = Guid.NewGuid().ToString();
+            foreach (var facilityData in Globals.FacilityInitialData)
+            {
+                data.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
+            }
+
+            foreach (var facilityData in Globals.FacilityInitialBlueprintData)
+            {
+                data.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.level);
+            }
+
             PlayerData = data;
             MissionManager.LoadMissionData();
 
