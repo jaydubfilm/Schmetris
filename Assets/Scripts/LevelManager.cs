@@ -429,6 +429,7 @@ namespace StarSalvager
 
             //Unlock loot for completing wave
 
+            ObstacleManager.IncreaseSpeedAllOffGridMoving(3.0f);
 
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {

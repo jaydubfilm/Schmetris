@@ -220,7 +220,7 @@ namespace StarSalvager
 
             for (int i = m_offGridMovingObstacles.Count - 1; i >= 0; i--)
             {
-                m_offGridMovingObstacles[i].LerpTimer += Time.deltaTime / m_offGridMovingObstacles[i].LerpSpeed;
+                m_offGridMovingObstacles[i].LerpTimer += Time.deltaTime / m_offGridMovingObstacles[i].LerpSpeed * m_offGridMovingObstacles[i].SpeedUpModifier;
 
                 if (m_offGridMovingObstacles[i].LerpTimer >= 1)
                 {
@@ -438,6 +438,14 @@ namespace StarSalvager
 
             //FIXME We cannot access the camera like this, it is not the responsibility of the ObstacleManager to move the camera
             LevelManager.Instance.CameraController.MoveCameraWithObstacles(moveDirection * toMove);
+        }
+
+        public void IncreaseSpeedAllOffGridMoving(float speedModifier)
+        {
+            for (int i = 0; i < m_offGridMovingObstacles.Count; i++)
+            {
+                m_offGridMovingObstacles[i].SpeedUpModifier = speedModifier;
+            }
         }
 
         //====================================================================================================================//

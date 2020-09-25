@@ -18,6 +18,8 @@ namespace StarSalvager
 
         public bool isVisible;
 
+        public float SpeedUpModifier = 1.0f;
+
         public OffGridMovement(IObstacle obstacle, Vector3 startingPosition, Vector3 endPosition, float lerpSpeed, float spinSpeed, bool despawnOnEnd, bool spinning, bool parentToGrid)
         {
             Obstacle = obstacle;
