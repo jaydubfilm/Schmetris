@@ -95,7 +95,7 @@ MonoBehaviour:
     ResourceType: 0
     AnyComponentType: 0
     ComponentType: 0
-    ComboLevel: 2
+    ComboLevel: 1
     IsAdvancedCombo: 0
     AnyEnemyType: 0
     EnemyType: 
@@ -903,7 +903,7 @@ MonoBehaviour:
     ResourceType: 0
     AnyComponentType: 0
     ComponentType: 0
-    ComboLevel: 2
+    ComboLevel: 1
     IsAdvancedCombo: 1
     AnyEnemyType: 0
     EnemyType: 
