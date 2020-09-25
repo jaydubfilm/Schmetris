@@ -166,11 +166,37 @@ namespace StarSalvager
                     continue;
                 }
 
-                /*if (obstacle is IRecycled recycled && recycled.IsRecycled)
+                switch (obstacle)
                 {
-                    m_obstacles.RemoveAt(i);
+                    case Bit bit:
+                        Recycler.Recycle<Bit>(bit);
+                        break;
+                    case Asteroid asteroid:
+                        Recycler.Recycle<Asteroid>(asteroid);
+                        break;
+                    case Component component:
+                        Recycler.Recycle<Component>(component);
+                        break;
+                    case Shape shape:
+                        Recycler.Recycle<Shape>(shape, new
+                        {
+                            recycleBits = false
+                        });
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
+                }
+                RemoveObstacleFromList(obstacle);
+            }
+
+            for (int i = m_wallObstacles.Count - 1; i >= 0; i--)
+            {
+                var obstacle = m_wallObstacles[i];
+                if (obstacle == null)
+                {
+                    m_wallObstacles.RemoveAt(i);
                     continue;
-                }*/
+                }
 
                 switch (obstacle)
                 {
@@ -194,6 +220,7 @@ namespace StarSalvager
                 }
                 RemoveObstacleFromList(obstacle);
             }
+
             for (int i = m_notFullyInGridShapes.Count - 1; i >= 0; i--)
             {
                 Recycler.Recycle<Shape>(m_notFullyInGridShapes[i].gameObject, new
@@ -202,6 +229,7 @@ namespace StarSalvager
                 });
                 m_notFullyInGridShapes.RemoveAt(i);
             }
+
             for (int i = m_bonusShapes.Count - 1; i >= 0; i--)
             {
                 Recycler.Recycle<Shape>(m_bonusShapes[i].gameObject, new
@@ -210,6 +238,11 @@ namespace StarSalvager
                 });
                 m_bonusShapes.RemoveAt(i);
             }
+
+            m_bonusShapes.Clear();
+            m_offGridMovingObstacles.Clear();
+            m_bonusShapesSpawned = 0;
+            m_bonusShapeTimer = 0;
         }
 
         //====================================================================================================================//
