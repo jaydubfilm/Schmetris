@@ -16,12 +16,8 @@ MonoBehaviour:
   - MissionID: 1e95753c-4321-47a3-9992-6e83534294c8
     MissionType: 1
     MissionName: Collect 20 grey
-    MissionDescription: Attach 20 grey bits to your bot
-    MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
-      SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
-      MissionUnlockName: 
+    MissionDescription: Collect 20 grey resources
+    MissionUnlockParameters: []
     AmountNeeded: 20
     AnyResourceType: 0
     ResourceType: 3
@@ -45,14 +41,10 @@ MonoBehaviour:
     FlightLength: 0
     IsFromEnemyLoot: 0
   - MissionID: 842836bf-9aa3-4173-81b9-0a5663e5ab06
-    MissionType: 11
+    MissionType: 10
     MissionName: Fly for 3 minutes
-    MissionDescription: Fly for 3 minutes without returning to base
-    MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
-      SectorUnlockNumber: 1
-      WaveUnlockNumber: 1
-      MissionUnlockName: 
+    MissionDescription: Fly for 2 minutes
+    MissionUnlockParameters: []
     AmountNeeded: 0
     AnyResourceType: 0
     ResourceType: 0
@@ -76,9 +68,9 @@ MonoBehaviour:
     FlightLength: 180
     IsFromEnemyLoot: 0
   - MissionID: 3581e56a-ab74-40b1-9546-22f57c92efef
-    MissionType: 1
-    MissionName: match-3 bits
-    MissionDescription: arrange three matching bits in a row or column
+    MissionType: 2
+    MissionName: Combo blocks to level 2
+    MissionDescription: Combo 1 set of blocks
     MissionUnlockParameters: []
     AmountNeeded: 1
     AnyResourceType: 1
@@ -136,7 +128,7 @@ MonoBehaviour:
   - MissionID: 8bf13add-01f8-44bd-91a8-fd330d72a92c
     MissionType: 4
     MissionName: Craft a magnet
-    MissionDescription: Craft a magnet part at the workbench
+    MissionDescription: Craft a magnet
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 1
@@ -166,7 +158,7 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
   - MissionID: efa428ed-1428-452b-bf88-19bb333d1f02
     MissionType: 8
-    MissionName: 3 waves in a row
+    MissionName: Chains 3 waves
     MissionDescription: Beat three waves in a row without returning to the scrapyard
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
@@ -198,7 +190,7 @@ MonoBehaviour:
   - MissionID: e688fab8-d276-473e-a9e0-751a73ce6232
     MissionType: 5
     MissionName: Hit bumper
-    MissionDescription: Shift bits with a white energy bumper
+    MissionDescription: Move blocks with a white bumper
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 1
