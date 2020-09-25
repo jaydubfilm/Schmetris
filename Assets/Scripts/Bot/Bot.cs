@@ -1545,6 +1545,7 @@ namespace StarSalvager
             attachable.SetAttached(false);
             
             CompositeCollider2D.GenerateGeometry();
+            CheckForBonusShapeMatches();
         }
         
         public void DestroyAttachable(IAttachable attachable)
@@ -1713,12 +1714,16 @@ namespace StarSalvager
                     var noShiftOffset = 1;
                     do
                     {
+                        var coordinate = currentCoordinate + (dir * noShiftOffset);
                         //TODO I think that I can combine both the While Loop and the Linq expression
-                        nextCheck = inLine.FirstOrDefault(x => x.Coordinate == currentCoordinate + (dir * noShiftOffset));
+                        nextCheck = inLine.FirstOrDefault(x => x.Coordinate == coordinate);
 
 
                         
                         if (nextCheck is null || nextCheck.CanShift) break;
+
+                        if (!passedCore && coordinate == Vector2Int.zero)
+                            passedCore = true;
 
                         noShiftOffset++;
                         
@@ -1794,6 +1799,7 @@ namespace StarSalvager
                         break;
                 }
 
+                CheckForBonusShapeMatches();
                 MissionManager.ProcessWhiteBumperMissionData(toShift.Count, passedCore, hasDetached, hasCombos);
 
             }));
@@ -2081,7 +2087,8 @@ namespace StarSalvager
                             CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
                             break;
                     }
-
+                    
+                    CheckForBonusShapeMatches();
                     
                 }));
                 
