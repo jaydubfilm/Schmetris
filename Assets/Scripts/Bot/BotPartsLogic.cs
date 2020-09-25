@@ -46,6 +46,9 @@ namespace StarSalvager
 
         //==============================================================================================================//
 
+        [ShowInInspector, ReadOnly]
+        public bool CanSelfDestruct { get; private set; }
+
         private List<Part> _parts;
         private List<Part> _smartWeapons;
         private int maxSmartWeapons;
@@ -411,6 +414,10 @@ namespace StarSalvager
                         
                         if (resourceValue > 0f && useBurnRate)
                             resourceValue -= levelData.burnRate * Time.deltaTime;
+
+                        var outOfFuel = resourceValue <= 0f && useBurnRate;
+                        CanSelfDestruct = outOfFuel;
+                        
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)

@@ -84,6 +84,8 @@ MonoBehaviour:
     type: 3}
   floatingTextPrefab: {fileID: 1209333815536603345, guid: 7431c86c30856054c909791de5d76629,
     type: 3}
+  connectedSpritePrefab: {fileID: 5101111888088129152, guid: ba75da5685c6ae44b81167b34efb52d1,
+    type: 3}
   asteroidProfile: {fileID: 11400000, guid: 5b908c56fe99e9a44ac6683480de76a5, type: 2}
   asteroidRemote: {fileID: 11400000, guid: 4fb1c416745d97f4e97ed047ec893eb2, type: 2}
   asteroidPrefab: {fileID: 4611369530616709383, guid: 7553853ad3e767d4a9b50f5a6102a7d5,

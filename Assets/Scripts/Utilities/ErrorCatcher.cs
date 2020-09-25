@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace StarSalvager.Utilities
 {
-    public class ErrorCatcher : MonoBehaviour
+    public class ErrorCatcher : Singleton<ErrorCatcher>
     {
         public struct ErrorInfo
         {
@@ -23,6 +23,9 @@ namespace StarSalvager.Utilities
         public static List<ErrorInfo> LoggedErrors => _loggedErrors;
         private static List<ErrorInfo> _loggedErrors;
         
+        private static bool _isExceptionHandlingSetup;
+
+        
         //============================================================================================================//
 
         // Start is called before the first frame update
@@ -31,25 +34,14 @@ namespace StarSalvager.Utilities
             SetupExceptionHandling();
         }
 
-        private void OnDisable()
-        {
-            Application.logMessageReceived -= HandleException;
-        }
-
-        private void OnDestroy()
-        {
-            Application.logMessageReceived -= HandleException;
-        }
-
         //============================================================================================================//
 
-        static bool isExceptionHandlingSetup;
         private static void SetupExceptionHandling()
         {
-            if (isExceptionHandlingSetup) 
+            if (_isExceptionHandlingSetup) 
                 return;
             
-            isExceptionHandlingSetup = true;
+            _isExceptionHandlingSetup = true;
             Application.logMessageReceived += HandleException;
             _loggedErrors = new List<ErrorInfo>();
         }
