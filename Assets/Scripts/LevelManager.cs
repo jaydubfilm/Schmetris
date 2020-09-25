@@ -27,9 +27,6 @@ namespace StarSalvager
 {
     public class LevelManager : SceneSingleton<LevelManager>, IReset, IPausable
     {
-        public bool generateRandomSeed;
-        [DisableIf("$generateRandomSeed")] public int seed = 1234567890;
-
         private List<Bot> m_bots;
         public Bot BotObject => m_bots[0];
 
@@ -134,12 +131,6 @@ namespace StarSalvager
         {
             m_bots = new List<Bot>();
 
-            if (generateRandomSeed)
-            {
-                seed = Random.Range(int.MinValue, int.MaxValue);
-                Debug.Log($"Generated Seed {seed}");
-            }
-
             RegisterPausable();
             m_levelManagerUI = FindObjectOfType<LevelManagerUI>();
 
@@ -198,8 +189,6 @@ namespace StarSalvager
                 }
                 //Debug.LogError("Bot Died. Press 'R' to restart");
             };
-
-            Random.InitState(seed);
         }
 
         private void Update()
@@ -383,6 +372,9 @@ namespace StarSalvager
                 {"Bot Layout", JsonConvert.SerializeObject(BotObject.GetBlockDatas(), Formatting.None)}
             };
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.FlightBegin, eventDataDictionary: flightBeginAnalyticsDictionary);
+
+            Random.InitState(CurrentWaveData.WaveSeed);
+            Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
         }
 
         public void Reset()
@@ -451,6 +443,8 @@ namespace StarSalvager
                 m_waveTimer = 0;
                 GameUi.SetCurrentWaveText("Complete");
                 EnemyManager.SetEnemiesInert(true);
+                Random.InitState(CurrentWaveData.WaveSeed);
+                Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
             }
             else
             {

@@ -8,6 +8,8 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Wave Remote", menuName = "Star Salvager/Scriptable Objects/Wave Remote Data")]
     public class WaveRemoteDataScriptableObject : ScriptableObject
     {
+        public int WaveSeed;
+        
         public List<StageObstacleShapeData> BonusShapes = new List<StageObstacleShapeData>();
         
         public List<StageRemoteData> StageRemoteData = new List<StageRemoteData>();

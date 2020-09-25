@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c59c6b39881711a4296e83fe97d9a858, type: 3}
   m_Name: Wave_Remote_PB1_1_3
   m_EditorClassIdentifier: 
+  WaveSeed: 2
   BonusShapes:
   - m_selectionType: 1
     m_shapeName: 
