@@ -3,7 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 
-namespace StarSalvager.Utilities
+namespace StarSalvager.Utilities.Math
 {
     public static class Base64
     {

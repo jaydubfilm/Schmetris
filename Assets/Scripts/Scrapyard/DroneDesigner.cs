@@ -19,6 +19,7 @@ using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.UI;
 using Input = StarSalvager.Utilities.Inputs.Input;
 using StarSalvager.Missions;
+using StarSalvager.Utilities.Math;
 
 namespace StarSalvager
 {

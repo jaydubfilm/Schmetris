@@ -1,7 +1,7 @@
 ﻿using System;
 using Recycling;
-using StarSalvager.Utilities;
 using StarSalvager.Utilities.Animations;
+using StarSalvager.Utilities.Particles;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
