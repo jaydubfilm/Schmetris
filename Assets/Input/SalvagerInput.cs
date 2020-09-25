@@ -91,6 +91,14 @@ namespace StarSalvager.Utilities.Inputs
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""SelfDestruct"",
+                    ""type"": ""Button"",
+                    ""id"": ""150cf1b4-78f8-403a-9ef7-2a1abd64f2d8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
                 }
             ],
             ""bindings"": [
@@ -300,6 +308,17 @@ namespace StarSalvager.Utilities.Inputs
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""SmartAction4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""803bf317-1fe9-4d1b-a870-30a7d21cd71a"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelfDestruct"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -729,6 +748,7 @@ namespace StarSalvager.Utilities.Inputs
             m_Default_SmartAction2 = m_Default.FindAction("SmartAction2", throwIfNotFound: true);
             m_Default_SmartAction3 = m_Default.FindAction("SmartAction3", throwIfNotFound: true);
             m_Default_SmartAction4 = m_Default.FindAction("SmartAction4", throwIfNotFound: true);
+            m_Default_SelfDestruct = m_Default.FindAction("SelfDestruct", throwIfNotFound: true);
             // Vertical
             m_Vertical = asset.FindActionMap("Vertical", throwIfNotFound: true);
             m_Vertical_SideMovement = m_Vertical.FindAction("Side Movement", throwIfNotFound: true);
@@ -799,6 +819,7 @@ namespace StarSalvager.Utilities.Inputs
         private readonly InputAction m_Default_SmartAction2;
         private readonly InputAction m_Default_SmartAction3;
         private readonly InputAction m_Default_SmartAction4;
+        private readonly InputAction m_Default_SelfDestruct;
         public struct DefaultActions
         {
             private @SalvagerInput m_Wrapper;
@@ -812,6 +833,7 @@ namespace StarSalvager.Utilities.Inputs
             public InputAction @SmartAction2 => m_Wrapper.m_Default_SmartAction2;
             public InputAction @SmartAction3 => m_Wrapper.m_Default_SmartAction3;
             public InputAction @SmartAction4 => m_Wrapper.m_Default_SmartAction4;
+            public InputAction @SelfDestruct => m_Wrapper.m_Default_SelfDestruct;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -848,6 +870,9 @@ namespace StarSalvager.Utilities.Inputs
                     @SmartAction4.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction4;
                     @SmartAction4.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction4;
                     @SmartAction4.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction4;
+                    @SelfDestruct.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
+                    @SelfDestruct.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
+                    @SelfDestruct.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
                 }
                 m_Wrapper.m_DefaultActionsCallbackInterface = instance;
                 if (instance != null)
@@ -879,6 +904,9 @@ namespace StarSalvager.Utilities.Inputs
                     @SmartAction4.started += instance.OnSmartAction4;
                     @SmartAction4.performed += instance.OnSmartAction4;
                     @SmartAction4.canceled += instance.OnSmartAction4;
+                    @SelfDestruct.started += instance.OnSelfDestruct;
+                    @SelfDestruct.performed += instance.OnSelfDestruct;
+                    @SelfDestruct.canceled += instance.OnSelfDestruct;
                 }
             }
         }
@@ -1008,6 +1036,7 @@ namespace StarSalvager.Utilities.Inputs
             void OnSmartAction2(InputAction.CallbackContext context);
             void OnSmartAction3(InputAction.CallbackContext context);
             void OnSmartAction4(InputAction.CallbackContext context);
+            void OnSelfDestruct(InputAction.CallbackContext context);
         }
         public interface IVerticalActions
         {

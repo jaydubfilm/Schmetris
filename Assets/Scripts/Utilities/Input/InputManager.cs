@@ -218,6 +218,9 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     Input.Actions.Default.RightClick, RightClick
+                },
+                {
+                    Input.Actions.Default.SelfDestruct, SelfDestruct
                 }
             };
             
@@ -429,11 +432,18 @@ namespace StarSalvager.Utilities.Inputs
             if(ctx.ReadValue<float>() == 1f)
                 GameTimer.SetPaused(!isPaused);
         }
+        
+        private void SelfDestruct(InputAction.CallbackContext ctx)
+        {
+            _bots[0].TrySelfDestruct();
+        }
 
         public void CancelMove()
         {
             Move(0);
         }
+
+
         
         #endregion //Inputs
 

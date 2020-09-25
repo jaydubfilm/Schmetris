@@ -57,6 +57,8 @@ namespace StarSalvager.UI
         private TMP_Text pauseText;
 
         //============================================================================================================//
+        //FIXME I'll want something a little better implemented based on feedback
+        public static string overrideText { get; set; }
 
         private float m_missionReminderTimer = 0.0f;
         private bool m_isMissionReminderScrolling = false;
@@ -97,7 +99,7 @@ namespace StarSalvager.UI
                 m_isMissionReminderScrolling = false;
             }
             else if (m_isMissionReminderScrolling)
-                scrollingMissionsText.rectTransform.anchoredPosition += Vector2.left * Time.deltaTime * 200;
+                scrollingMissionsText.rectTransform.anchoredPosition += Vector2.left * (Time.deltaTime * 200);
         }
 
         //============================================================================================================//
@@ -181,12 +183,22 @@ namespace StarSalvager.UI
 
         private void PlayMissionReminder()
         {
-            if (MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count > 0)
+            if (MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count <= 0) 
+                return;
+            
+            string missionReminderText;
+            if(string.IsNullOrEmpty(overrideText))
+                missionReminderText = MissionManager.MissionsCurrentData
+                    .CurrentTrackedMissions[
+                        Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count)]
+                    .m_missionDescription;
+            else
             {
-                string missionReminderText = MissionManager.MissionsCurrentData.CurrentTrackedMissions[Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count)].m_missionDescription;
-                scrollingMissionsText.text = missionReminderText;
-                m_isMissionReminderScrolling = true;
+                missionReminderText = overrideText;
             }
+                
+            scrollingMissionsText.text = missionReminderText;
+            m_isMissionReminderScrolling = true;
         }
 
         //============================================================================================================//

@@ -347,6 +347,14 @@ namespace StarSalvager
 
         }
 
+        public void TrySelfDestruct()
+        {
+            if (!_botPartsLogic.CanSelfDestruct)
+                return;
+            
+            Destroy("Self Destruct");
+        }
+
         #endregion //Input Solver
 
         //============================================================================================================//
