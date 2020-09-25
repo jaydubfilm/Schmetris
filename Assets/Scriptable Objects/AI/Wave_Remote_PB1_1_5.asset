@@ -39,13 +39,13 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 3
-      m_density: 0.25
+      m_density: 0.2
     - m_selectionType: 1
       m_shapeName: GreySingle
       m_category: O_Doubles_2
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.25
+      m_density: 0.3
     - m_selectionType: 1
       m_shapeName: GreenSingle
       m_category: O_Triples
@@ -57,9 +57,9 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.3
+      m_density: 0.2
     m_stageColumnGroupObstacleData: []
-  - m_stageDuration: 45
+  - m_stageDuration: 30
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
@@ -76,13 +76,13 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 3
-      m_density: 0.25
+      m_density: 0.2
     - m_selectionType: 1
       m_shapeName: GreySingle
       m_category: O_Doubles_2
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.25
+      m_density: 0.3
     - m_selectionType: 1
       m_shapeName: GreenSingle
       m_category: O_Triples
@@ -94,7 +94,7 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.3
+      m_density: 0.2
     m_stageColumnGroupObstacleData: []
   maxDrops: 0
   RDSEndOfWaveLoot:

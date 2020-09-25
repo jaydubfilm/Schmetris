@@ -2432,10 +2432,15 @@ namespace StarSalvager
 
         #region Magnet Checks
 
+        public bool CheckHasMagnetOverage()
+        {
+            return CheckHasMagnetOverage(BotPartsLogic.currentMagnet);
+        }
+        
         /// <summary>
         /// Determines based on the total of magnet slots which pieces must be removed to fit within the expected capacity
         /// </summary>
-        public bool CheckHasMagnetOverage()
+        public bool CheckHasMagnetOverage(MAGNET type)
         {
             if (!BotPartsLogic.useMagnet)
                 return false;
@@ -2461,7 +2466,7 @@ namespace StarSalvager
             //float time;
             Action onDetach;
             
-            switch (BotPartsLogic.currentMagnet)
+            switch (type)
             {
                 //----------------------------------------------------------------------------------------------------//
                 case MAGNET.DEFAULT:
@@ -2620,17 +2625,28 @@ namespace StarSalvager
             {
                 attachables.Remove(bit);
             }
-                
+
+            var hasIssue = false;
             while (toRemoveCount > 0)
             {
                 var toRemove = FindFurthestRemovableBit(attachables, toDetach, ref debug);
-                    
-                if(toRemove == null)
-                    throw new Exception($"Unable to find alternative pieces\n{debug}");
+
+                if (toRemove == null)
+                {
+                    hasIssue = true;
+                    //throw new Exception($"Unable to find alternative pieces\n{debug}");
+                    toRemoveCount--;
+                    continue;
+                }
                     
                 toDetach.Add(toRemove);
                 attachables.Remove(toRemove);
                 toRemoveCount--;
+            }
+
+            if (hasIssue)
+            {
+                CheckHasMagnetOverage(MAGNET.DEFAULT);
             }
         }
         

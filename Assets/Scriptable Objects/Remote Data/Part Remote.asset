@@ -389,7 +389,7 @@ MonoBehaviour:
     partType: 4
     canSell: 1
     description: This basic offensive weapon will fire on any enemy within range
-      and consumes scrap metal ammunition.
+      and consumes scrap metal ammunition.  Aim leaves something to be desired.
     priority: 75
     burnType: 3
     levels:
@@ -480,7 +480,8 @@ MonoBehaviour:
   - name: Triple Shot
     partType: 12
     canSell: 1
-    description: 
+    description: This gun rotates with your bot and fires three projectiles in an
+      arc.  Very effective!
     priority: 50
     burnType: 3
     levels:
@@ -1036,7 +1037,7 @@ MonoBehaviour:
   - name: Battery
     partType: 13
     canSell: 1
-    description: 
+    description: Provides extra on-board storage for power.
     priority: 100
     burnType: 5
     levels:
