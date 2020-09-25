@@ -20,9 +20,9 @@ using StarSalvager.Utilities;
 using StarSalvager.Missions;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
+using StarSalvager.Utilities.Math;
+using StarSalvager.Utilities.Particles;
 using AudioController = StarSalvager.Audio.AudioController;
-using FloatingText = StarSalvager.Utilities.FloatingText;
-using Math = StarSalvager.Utilities.Math;
 
 namespace StarSalvager
 {
@@ -334,7 +334,7 @@ namespace StarSalvager
                 targetRotation = rigidbody.rotation + toRotate;
             }
 
-            targetRotation = Math.ClampAngle(targetRotation);
+            targetRotation = MathS.ClampAngle(targetRotation);
 
             foreach (var attachedBlock in attachedBlocks)
             {

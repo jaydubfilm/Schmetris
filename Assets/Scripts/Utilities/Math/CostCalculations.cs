@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace StarSalvager.Utilities
+namespace StarSalvager.Utilities.Math
 {
     public static class CostCalculations
     {

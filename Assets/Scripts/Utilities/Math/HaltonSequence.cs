@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace StarSalvager.Utilities
+namespace StarSalvager.Utilities.Math
 {
     public class HaltonSequence
     {
