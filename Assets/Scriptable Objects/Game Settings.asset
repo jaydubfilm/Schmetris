@@ -99,7 +99,5 @@ MonoBehaviour:
     level: 0
   facilityInitialData:
   - type: 9
-    level: 2
-  facilityInitialBlueprintData:
-  - type: 0
-    level: 2
+    level: 0
+  facilityInitialBlueprintData: []
