@@ -184,7 +184,7 @@ namespace DG
                 return null;
             }
 
-            TrelloCard card = trello.NewCard(title, description, listName);
+            TrelloCard card = trello.NewCard(title, description, listName, new string[0]);
             return StartCoroutine(SendReportRoutine(card, screenshots));
         }
 

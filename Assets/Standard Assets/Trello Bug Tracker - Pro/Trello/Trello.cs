@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using MiniJSON;
 
 namespace DG.TrelloAPI
@@ -11,6 +12,7 @@ namespace DG.TrelloAPI
         private string token;
         private string key;
         private List<object> boards;
+        private List<object> labels;
         private List<object> lists;
         private List<object> cards;
         private const string memberBaseUrl = "https://api.trello.com/1/members/me";
@@ -68,6 +70,8 @@ namespace DG.TrelloAPI
 
             boards = (List<object>)dict["boards"];
         }
+        
+
 
         /// <summary>
         /// Looks for the board in "boards" and if found sets it as the current board.
@@ -146,6 +150,37 @@ namespace DG.TrelloAPI
             var dict = Json.Deserialize(www.text) as Dictionary<string, object>;
             cards = (List<object>)dict["cards"];
         }
+        public IEnumerator PopulateLabelsRoutine()
+        {
+            var url = $"{boardBaseUrl}{currentBoardId}/labels?key={key}&token={token}";
+            boards = null;
+            WWW www = new WWW(url);
+
+            yield return www;
+            CheckWwwStatus("Connection to the Trello servers was not possible", www);
+
+            var dict = Json.Deserialize(www.text) as List<object>;
+
+            labels = dict;
+        }
+
+        public string[] GetLabels(IEnumerable<string> labelNames)
+        {
+            var outLabelIds = new List<string>();
+            var names = labelNames.ToList();
+
+            foreach (var labelObject in labels)
+            {
+                var label = (Dictionary<string, object>)labelObject;
+                
+                if(!names.Contains((string)label["name"]))
+                    continue;
+                
+                outLabelIds.Add((string)label["id"]);
+            }
+
+            return outLabelIds.ToArray();
+        }
 
         /// <summary>
         /// Makes a new Trello card object.
@@ -178,11 +213,12 @@ namespace DG.TrelloAPI
         /// <param name="description">Description of the card.</param>
         /// <param name="listName">Name of the trello list to which the card will belong.</param>
         /// <param name="newCardsOnTop">Should the card be placed on top of the List?</param>
-        public TrelloCard NewCard(string title, string description, string listName, bool newCardsOnTop = true)
+        public TrelloCard NewCard(string title, string description, string listName, string[] labels, bool newCardsOnTop = true)
         {
             var card = NewCard(listName);
             card.name = title;
             card.desc = description;
+            card.idLabels = labels;
             if (newCardsOnTop) card.pos = "top";
             return card;
         }
@@ -236,12 +272,14 @@ namespace DG.TrelloAPI
         /// <param name="card">the card to upload.</param>
         public IEnumerator UploadCardRoutine(TrelloCard card)
         {
+            var labels = string.Join(",", GetLabels(card.idLabels));
             WWWForm post = new WWWForm();
             post.AddField("name", card.name);
             post.AddField("desc", card.desc);
             post.AddField("pos", card.pos);
             post.AddField("due", card.due);
             post.AddField("idList", card.idList);
+            post.AddField("idLabels", labels);
 
             WWW www = new WWW(cardBaseUrl + "?" + "key=" + key + "&token=" + token, post);
             yield return www;

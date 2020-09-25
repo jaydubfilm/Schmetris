@@ -37,6 +37,26 @@ namespace StarSalvager.Utilities.FileIO
         private static readonly string REMOTE_DIRECTORY = Path.Combine(new DirectoryInfo(Application.persistentDataPath).FullName, REMOTE_PATH);
 #endif
 
+        public static string LOG_DIRECTORY
+        {
+            get
+            {
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+                var directory = Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "RemoteData",
+                    "Sessions");
+#elif UNITY_STANDALONE_OSX
+            var directory = Path.Combine(new DirectoryInfo(Application.persistentDataPath).FullName, "RemoteData",
+                "Sessions");
+#endif
+            
+                if (!Directory.Exists(directory))
+                    Directory.CreateDirectory(directory);
+            
+
+                return Path.Combine(directory, "error.log");
+            }
+        }
+
         //Player Data Directory
         //====================================================================================================================//
         
@@ -294,7 +314,7 @@ namespace StarSalvager.Utilities.FileIO
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
             var directory = Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "RemoteData",
                 "Sessions");
-            #elif UNITY_STANDALONE_OSX
+#elif UNITY_STANDALONE_OSX
             var directory = Path.Combine(new DirectoryInfo(Application.persistentDataPath).FullName, "RemoteData",
                 "Sessions");
 #endif
@@ -364,6 +384,25 @@ namespace StarSalvager.Utilities.FileIO
                 PlayerPersistentData.ClearPlayerData();
             }
 
+        }
+
+        //Create Log File
+        //====================================================================================================================//
+        public static FileInfo CreateLogFile()
+        {
+            return CreateLogFile(ErrorCatcher.LoggedErrors);
+        }
+        public static FileInfo CreateLogFile(List<ErrorCatcher.ErrorInfo> loggedErrors)
+        {
+            //We reverse them to ensure that the newest will be shown at the top
+            loggedErrors.Reverse();
+            var data = string.Join("\n", loggedErrors);
+
+            var path = LOG_DIRECTORY;
+            
+            File.WriteAllText(path, data);
+            
+            return new FileInfo(path);
         }
 
         //====================================================================================================================//

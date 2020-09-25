@@ -8,6 +8,7 @@
 		public string due = "null";
 		public string idList = "";
 		public string urlSource = "null";
+		public string[] idLabels = new string[0];
 		//public Texture2D image;
 
         public TrelloCard()
