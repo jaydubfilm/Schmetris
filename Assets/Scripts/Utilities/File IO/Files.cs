@@ -206,6 +206,16 @@ namespace StarSalvager.Utilities.FileIO
                     data.UnlockBlueprint(blueprint);
                 }
 
+                foreach (var facilityData in Globals.FacilityInitialData)
+                {
+                    data.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
+                }
+
+                foreach (var facilityData in Globals.FacilityInitialBlueprintData)
+                {
+                    data.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.level);
+                }
+
                 return data;
             }
 

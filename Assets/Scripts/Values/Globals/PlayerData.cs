@@ -112,27 +112,12 @@ namespace StarSalvager.Values
         [JsonIgnore]
         public IReadOnlyDictionary<FACILITY_TYPE, int> facilityRanks => _facilityRanks;
         [JsonProperty]
-        private Dictionary<FACILITY_TYPE, int> _facilityRanks = new Dictionary<FACILITY_TYPE, int>
-        {
-            {FACILITY_TYPE.REFINERY, 0}
-        };
+        private Dictionary<FACILITY_TYPE, int> _facilityRanks = new Dictionary<FACILITY_TYPE, int>();
 
         [JsonIgnore]
         public IReadOnlyDictionary<FACILITY_TYPE, int> facilityBlueprintRanks => _facilityBlueprintRanks;
         [JsonProperty]
-        private Dictionary<FACILITY_TYPE, int> _facilityBlueprintRanks = new Dictionary<FACILITY_TYPE, int>
-        {
-            {FACILITY_TYPE.FREEZER, 0},
-            {FACILITY_TYPE.STORAGEELECTRICITY, 0},
-            {FACILITY_TYPE.STORAGEFUEL, 0},
-            {FACILITY_TYPE.STORAGEPLASMA, 0},
-            {FACILITY_TYPE.STORAGESCRAP, 0},
-            {FACILITY_TYPE.STORAGEWATER, 0},
-            {FACILITY_TYPE.WORKBENCHCHIP, 0},
-            {FACILITY_TYPE.WORKBENCHCOIL, 0},
-            {FACILITY_TYPE.WORKBENCHFUSOR, 0},
-            {FACILITY_TYPE.REFINERY, 1}
-        };
+        private Dictionary<FACILITY_TYPE, int> _facilityBlueprintRanks = new Dictionary<FACILITY_TYPE, int>();
 
         public string PlaythroughID = string.Empty;
 
@@ -173,17 +158,20 @@ namespace StarSalvager.Values
                     PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
                     Toast.AddToast("Unlocked Blueprint!");
                     levelUpLoot.RemoveAt(i);
+                    continue;
                 }
                 if (levelUpLoot[i] is RDSValue<FacilityBlueprint> rdsValueFacilityBlueprint)
                 {
                     PlayerPersistentData.PlayerData.UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
                     Toast.AddToast("Unlocked Facility Blueprint!");
                     levelUpLoot.RemoveAt(i);
+                    continue;
                 }
                 else if (levelUpLoot[i] is RDSValue<Vector2Int> rdsValueGears)
                 {
                     PlayerPersistentData.PlayerData.ChangeGears(UnityEngine.Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
                     levelUpLoot.RemoveAt(i);
+                    continue;
                 }
             }
         }
@@ -499,7 +487,7 @@ namespace StarSalvager.Values
             OnValuesChanged?.Invoke();
         }
 
-        public void UnlockFacilityLevel(FACILITY_TYPE type, int level)
+        public void UnlockFacilityLevel(FACILITY_TYPE type, int level, bool triggerMissionCheck = true)
         {
             FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(type);
             if (_facilityRanks.ContainsKey(type) && _facilityRanks[type] < level)
@@ -510,7 +498,11 @@ namespace StarSalvager.Values
             {
                 _facilityRanks.Add(type, level);
             }
-            MissionManager.ProcessFacilityUpgradeMission(type, level);
+
+            if (triggerMissionCheck)
+            {
+                MissionManager.ProcessFacilityUpgradeMission(type, level);
+            }
 
             int increaseAmount = remoteData.levels[level].increaseAmount;
             switch (type)
@@ -535,32 +527,37 @@ namespace StarSalvager.Values
                     break;
             }
 
-            Debug.Log(_rationCapacity);
+            //Debug.Log(_rationCapacity);
 
             OnValuesChanged?.Invoke();
         }
 
         public void UnlockFacilityBlueprintLevel(FacilityBlueprint facilityBlueprint)
         {
-            FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(facilityBlueprint.facilityType);
-            if (_facilityBlueprintRanks.ContainsKey(facilityBlueprint.facilityType))
+            UnlockFacilityBlueprintLevel(facilityBlueprint.facilityType, facilityBlueprint.level);
+        }
+
+        public void UnlockFacilityBlueprintLevel(FACILITY_TYPE facilityType, int level)
+        {
+            FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(facilityType);
+            if (_facilityBlueprintRanks.ContainsKey(facilityType))
             {
-                if (_facilityBlueprintRanks[facilityBlueprint.facilityType] < facilityBlueprint.level)
+                if (_facilityBlueprintRanks[facilityType] < level)
                 {
-                    _facilityBlueprintRanks[facilityBlueprint.facilityType] = facilityBlueprint.level;
+                    _facilityBlueprintRanks[facilityType] = level;
                     if (LevelManager.Instance.WaveEndSummaryData != null)
                     {
-                        string blueprintUnlockString = remoteData.displayName + " " + facilityBlueprint.level;
+                        string blueprintUnlockString = remoteData.displayName + " " + level;
                         LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprintUnlockString);
                     }
                 }
             }
             else
             {
-                _facilityBlueprintRanks.Add(facilityBlueprint.facilityType, facilityBlueprint.level);
+                _facilityBlueprintRanks.Add(facilityType, level);
                 if (LevelManager.Instance.WaveEndSummaryData != null)
                 {
-                    string blueprintUnlockString = remoteData.displayName + " " + facilityBlueprint.level;
+                    string blueprintUnlockString = remoteData.displayName + " " + level;
                     LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprintUnlockString);
                 }
             }

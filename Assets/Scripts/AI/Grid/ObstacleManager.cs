@@ -122,15 +122,18 @@ namespace StarSalvager
 
             HandleObstacleMovement();
 
-            if (m_bonusShapesSpawned < LevelManager.Instance.CurrentWaveData.BonusShapes.Count)
+            if (!LevelManager.Instance.EndWaveState)
             {
-                m_bonusShapeTimer += Time.deltaTime;
-                if (m_bonusShapeTimer >= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency)
+                if (m_bonusShapesSpawned < LevelManager.Instance.CurrentWaveData.BonusShapes.Count)
                 {
-                    m_bonusShapeTimer -= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency;
-                    StageObstacleShapeData bonusObstacleShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
-                    SpawnBonusShape(bonusObstacleShapeData.SelectionType, bonusObstacleShapeData.ShapeName, bonusObstacleShapeData.Category, bonusObstacleShapeData.Rotation);
-                    m_bonusShapesSpawned++;
+                    m_bonusShapeTimer += Time.deltaTime;
+                    if (m_bonusShapeTimer >= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency)
+                    {
+                        m_bonusShapeTimer -= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency;
+                        StageObstacleShapeData bonusObstacleShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
+                        SpawnBonusShape(bonusObstacleShapeData.SelectionType, bonusObstacleShapeData.ShapeName, bonusObstacleShapeData.Category, bonusObstacleShapeData.Rotation);
+                        m_bonusShapesSpawned++;
+                    }
                 }
             }
 
@@ -219,7 +222,7 @@ namespace StarSalvager
 
             for (int i = m_offGridMovingObstacles.Count - 1; i >= 0; i--)
             {
-                m_offGridMovingObstacles[i].LerpTimer += Time.deltaTime / m_offGridMovingObstacles[i].LerpSpeed;
+                m_offGridMovingObstacles[i].LerpTimer += Time.deltaTime / m_offGridMovingObstacles[i].LerpSpeed * m_offGridMovingObstacles[i].SpeedUpModifier;
 
                 if (m_offGridMovingObstacles[i].LerpTimer >= 1)
                 {
@@ -439,12 +442,20 @@ namespace StarSalvager
             LevelManager.Instance.CameraController.MoveCameraWithObstacles(moveDirection * toMove);
         }
 
+        public void IncreaseSpeedAllOffGridMoving(float speedModifier)
+        {
+            for (int i = 0; i < m_offGridMovingObstacles.Count; i++)
+            {
+                m_offGridMovingObstacles[i].SpeedUpModifier = speedModifier;
+            }
+        }
+
         //====================================================================================================================//
         
         public void MoveToNewWave()
         {
             SetupStage(0);
-           
+            m_bonusShapesSpawned = 0;
         }
 
         private void SetupStage(int waveNumber)

@@ -223,7 +223,7 @@ namespace StarSalvager
 
             if (!m_enemies.Contains(newEnemy))
             {
-                print("TRYING TO ADD DUPLICATE ENEMY");
+                //print("TRYING TO ADD DUPLICATE ENEMY");
                 m_enemies.Add(newEnemy);
             }
             newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
