@@ -28,11 +28,11 @@ MonoBehaviour:
       list: []
   LOCALIDINFILE_Hash3:
   - activeObject:
-      i1: 661791289
-      i2: 1845069059
+      i1: -1
+      i2: -1
     list:
-    - i1: 661791289
-      i2: 1845069059
+    - i1: -1
+      i2: -1
   - activeObject:
       i1: -1
       i2: -1
@@ -40,11 +40,11 @@ MonoBehaviour:
     - i1: -1
       i2: -1
   - activeObject:
-      i1: 1350056042
-      i2: 0
+      i1: -1
+      i2: -1
     list:
-    - i1: 1350056042
-      i2: 0
+    - i1: -1
+      i2: -1
   - activeObject:
       i1: -1
       i2: -1
@@ -52,11 +52,11 @@ MonoBehaviour:
     - i1: -1
       i2: -1
   - activeObject:
-      i1: 1350056042
-      i2: 0
+      i1: -1
+      i2: -1
     list:
-    - i1: 1350056042
-      i2: 0
+    - i1: -1
+      i2: -1
   - activeObject:
       i1: -1
       i2: -1
