@@ -4,7 +4,7 @@ using StarSalvager.Factories;
 using TMPro;
 using UnityEngine;
 
-namespace StarSalvager.Utilities
+namespace StarSalvager.Utilities.Particles
 {
     [RequireComponent(typeof(TextMeshPro))]
     public class FloatingText : MonoBehaviour, IRecycled, ICustomRecycle

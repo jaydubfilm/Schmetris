@@ -19,6 +19,7 @@ using StarSalvager.Missions;
 using StarSalvager.Utilities.JsonDataTypes;
 using Newtonsoft.Json;
 using StarSalvager.Utilities.Analytics;
+using StarSalvager.Utilities.Particles;
 using Random = UnityEngine.Random;
 using UnityEngine.Analytics;
 

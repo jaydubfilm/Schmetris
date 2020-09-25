@@ -1,6 +1,6 @@
-﻿namespace StarSalvager.Utilities
+﻿namespace StarSalvager.Utilities.Math
 {
-    public static class Math
+    public static class MathS
     {
         public static float ClampAngle(float angle)
         {
