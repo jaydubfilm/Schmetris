@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -51,21 +52,21 @@ namespace StarSalvager.UI.Scrapyard
         
         private Action<TEST_FacilityBlueprint, bool> _onHoverCallback;
 
-        public void Init(TEST_FacilityBlueprint data, Action<TEST_FacilityBlueprint> onCraftPressed, Action<TEST_FacilityBlueprint, bool> onHoverCallback, bool craftButtonInteractable)
+        public void Init(TEST_FacilityBlueprint data,
+            Action<TEST_FacilityBlueprint> onCraftPressed,
+            Action<TEST_FacilityBlueprint, bool> onHoverCallback, bool craftButtonInteractable)
         {
             Init(data);
-            
-            craftButton.interactable = craftButtonInteractable;
+
+            craftButton.interactable = craftButtonInteractable && 
+                                       PlayerPersistentData.PlayerData.CanAffordFacilityBlueprint(data);
 
             _onHoverCallback = onHoverCallback;
-            
+
             craftButton.onClick.RemoveAllListeners();
-            craftButton.onClick.AddListener(() =>
-            {
-                onCraftPressed?.Invoke(this.data);
-            });
+            craftButton.onClick.AddListener(() => { onCraftPressed?.Invoke(this.data); });
         }
-        
+
         public override void Init(TEST_FacilityBlueprint data)
         {
             this.data = data;

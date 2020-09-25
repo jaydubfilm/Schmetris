@@ -353,6 +353,10 @@ namespace StarSalvager.Values
 
         //============================================================================================================//
 
+        public bool CanAffordFacilityBlueprint(TEST_FacilityBlueprint facilityBlueprint)
+        {
+            return CanAffordBits(facilityBlueprint.cost) && CanAffordComponents(facilityBlueprint.cost);
+        }
 
         public bool CanAffordBits(BIT_TYPE type, int amount)
         {
