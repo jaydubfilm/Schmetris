@@ -29,7 +29,7 @@ namespace StarSalvager.Missions
                 return;
             }
             
-            if (m_resourceType == null || resourceType == m_resourceType)
+            if (!m_resourceType.HasValue || resourceType == m_resourceType)
             {
                 m_currentAmount += amount;
             }

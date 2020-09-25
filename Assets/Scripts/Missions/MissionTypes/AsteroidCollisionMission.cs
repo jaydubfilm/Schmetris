@@ -22,7 +22,7 @@ namespace StarSalvager.Missions
 
         public void ProcessMissionData(BIT_TYPE? resourceType, int amount)
         {
-            if (m_resourceType == null || m_resourceType == resourceType)
+            if (!m_resourceType.HasValue || m_resourceType == resourceType)
             {
                 m_currentAmount += amount;
             }

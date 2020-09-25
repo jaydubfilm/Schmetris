@@ -22,7 +22,7 @@ namespace StarSalvager.Missions
 
         public void ProcessMissionData(COMPONENT_TYPE componentType, int amount)
         {
-            if (m_componentType == null || componentType == m_componentType)
+            if (!m_componentType.HasValue || componentType == m_componentType)
             {
                 m_currentAmount += amount;
             }
