@@ -172,9 +172,10 @@ namespace StarSalvager.UI.Scrapyard
         private void PurchaseBlueprint([CanBeNull] TEST_FacilityBlueprint item)
         {
             PlayerData playerData = PlayerPersistentData.PlayerData;
-
-            if (!playerData.CanAffordBits(item.cost) || !playerData.CanAffordComponents(item.cost))
+            
+            if (!playerData.CanAffordFacilityBlueprint(item))
             {
+                Debug.LogError($"Cannot afford {item.name}");
                 return;
             }
 
