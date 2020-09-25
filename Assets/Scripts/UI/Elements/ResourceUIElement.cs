@@ -47,7 +47,7 @@ namespace StarSalvager.UI
             previewSlider.maxValue = data.capacity;
             
             
-            previewSlider.gameObject.SetActive(data.amount != 0f);
+            
             
             resourceImage.sprite = _bitAttachableFactory.GetBitProfile(data.type).refinedSprite;
 
@@ -63,6 +63,8 @@ namespace StarSalvager.UI
 
         public void PreviewChange(float changeAmount)
         {
+            previewSlider.gameObject.SetActive(changeAmount != 0f);
+            
             if (changeAmount == 0)
             {
                 previewSlider.value = 0;

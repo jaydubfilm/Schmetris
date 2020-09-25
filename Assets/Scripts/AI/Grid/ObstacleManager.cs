@@ -49,11 +49,13 @@ namespace StarSalvager
         private float m_bonusShapeTimer;
         private int m_bonusShapesSpawned;
 
-        public bool HasActiveBonusShapes => m_bonusShapes != null && m_bonusShapes.Count > 0 && m_bonusShapes.Any(x =>
+        public bool HasActiveBonusShapes => m_bonusShapes != null && 
+                                            m_bonusShapes.Count > 0 && 
+                                            m_bonusShapes.Any(x =>
             CameraController.IsPointInCameraRect(x.transform.position, BONUS_SCREEN_AREA));
 
-        public List<Shape> ActiveBonusShapes => m_bonusShapes
-            .Where(x => CameraController.IsPointInCameraRect(x.transform.position, BONUS_SCREEN_AREA)).ToList();
+        public IEnumerable<Shape> ActiveBonusShapes => m_bonusShapes
+            .Where(x => CameraController.IsPointInCameraRect(x.transform.position, BONUS_SCREEN_AREA));
 
         public bool isPaused => GameTimer.IsPaused;
 

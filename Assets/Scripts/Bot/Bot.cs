@@ -1810,7 +1810,7 @@ namespace StarSalvager
             if (!obstacleManager.HasActiveBonusShapes)
                 return;
             
-            IReadOnlyList<Shape> shapesToCheck = obstacleManager.ActiveBonusShapes;
+            IEnumerable<Shape> shapesToCheck = obstacleManager.ActiveBonusShapes;
 
             foreach (var shape in shapesToCheck)
             {
