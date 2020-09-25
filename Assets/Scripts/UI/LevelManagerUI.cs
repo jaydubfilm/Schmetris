@@ -85,10 +85,12 @@ namespace StarSalvager.UI
 
             if (!isPaused)
             {
+                var div = string.IsNullOrEmpty(overrideText) ? 1f : 5f;
+                
                 m_missionReminderTimer += Time.deltaTime;
-                if (m_missionReminderTimer >= Globals.MissionReminderFrequency)
+                if (m_missionReminderTimer >= Globals.MissionReminderFrequency / div)
                 {
-                    m_missionReminderTimer -= Globals.MissionReminderFrequency;
+                    m_missionReminderTimer -= Globals.MissionReminderFrequency / div;
                     PlayMissionReminder();
                 }
             }
@@ -183,7 +185,7 @@ namespace StarSalvager.UI
 
         private void PlayMissionReminder()
         {
-            if (MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count <= 0) 
+            if (MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count <= 0 && string.IsNullOrEmpty(overrideText)) 
                 return;
             
             string missionReminderText;

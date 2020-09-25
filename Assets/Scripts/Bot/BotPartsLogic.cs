@@ -9,6 +9,7 @@ using StarSalvager.Audio;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Prototype;
+using StarSalvager.UI;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Extensions;
@@ -417,7 +418,7 @@ namespace StarSalvager
 
                         var outOfFuel = resourceValue <= 0f && useBurnRate;
                         CanSelfDestruct = outOfFuel;
-                        
+                        LevelManagerUI.overrideText = outOfFuel ? "Out of Fuel. 'D' to self destruct" : string.Empty;
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
