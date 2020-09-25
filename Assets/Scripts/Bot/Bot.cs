@@ -2455,6 +2455,7 @@ namespace StarSalvager
                     onDetach = () =>
                     {
                         DetachBits(attachablesToDetach, true);
+                        
                     };
                     break;
                 //----------------------------------------------------------------------------------------------------//
@@ -2487,6 +2488,12 @@ namespace StarSalvager
             PendingDetach.AddRange(attachablesToDetach);
             
             onDetach.Invoke();
+
+            var offset = Vector3.left * Constants.gridCellSize;
+            foreach (var attachable in attachablesToDetach)
+            {
+                ConnectedSpriteObject.Create(attachable.transform, offset);
+            }
             
             /*//Visually show that the bits will fall off by changing their color
             if (TEST_SetDetachColor)
