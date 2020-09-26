@@ -1253,6 +1253,14 @@ PrefabInstance:
       propertyPath: m_textInfo.pageCount
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5854433594701249038, guid: cc2bd3fa928cbe44cb24aee82ab8ebce,
+        type: 3}
+      propertyPath: m_text
+      value: "Captain - with all due respect to the mushroom...\r\n \r\nThe drone
+        wasn\u2019t built for this. Without armour and extra batteries it doesn't
+        stand a chance out there.  A few upgrades to the core should be our first
+        priority.\r\n"
+      objectReference: {fileID: 0}
     - target: {fileID: 5889788437483535417, guid: cc2bd3fa928cbe44cb24aee82ab8ebce,
         type: 3}
       propertyPath: m_textInfo.characterCount

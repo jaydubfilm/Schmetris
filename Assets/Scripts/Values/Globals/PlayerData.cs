@@ -33,9 +33,9 @@ namespace StarSalvager.Values
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _resources = new Dictionary<BIT_TYPE, int>
         {
-            {BIT_TYPE.RED, 200},
+            {BIT_TYPE.RED, 100},
             {BIT_TYPE.BLUE, 100},
-            {BIT_TYPE.YELLOW, 100},
+            {BIT_TYPE.YELLOW, 0},
             {BIT_TYPE.GREEN, 0},
             {BIT_TYPE.GREY, 0},
         };
@@ -45,11 +45,11 @@ namespace StarSalvager.Values
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _resourceCapacity = new Dictionary<BIT_TYPE, int>
         {
-            {BIT_TYPE.RED, 5000},
-            {BIT_TYPE.BLUE, 5000},
-            {BIT_TYPE.YELLOW, 5000},
-            {BIT_TYPE.GREEN, 5000},
-            {BIT_TYPE.GREY, 5000},
+            {BIT_TYPE.RED, 500},
+            {BIT_TYPE.BLUE, 500},
+            {BIT_TYPE.YELLOW, 500},
+            {BIT_TYPE.GREEN, 500},
+            {BIT_TYPE.GREY, 500},
         };
 
         [JsonProperty]
