@@ -23,16 +23,16 @@ MonoBehaviour:
     m_maxDrops: 3
     m_rdsEnemyData:
     - rdsData: 0
-      type: 0
-      level: 0
-      probability: 0
+      type: 3
+      level: 1
+      probability: 3
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
     - rdsData: 1
       type: 0
       level: 0
-      probability: 0
+      probability: 1
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -48,24 +48,24 @@ MonoBehaviour:
     - rdsData: 0
       type: 2
       level: 1
-      probability: 0
+      probability: 1
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+    - rdsData: 0
+      type: 2
+      level: 2
+      probability: 1
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
     - rdsData: 1
       type: 1
       level: 0
-      probability: 0
+      probability: 1
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-    - rdsData: 0
-      type: 2
-      level: 0
-      probability: 0
-      gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
+      isAlwaysSpawn: 1
   - m_enemyType: f3c96622-609f-498c-be89-8cc575e46fe0
     m_name: Ball Head
     m_health: 50
@@ -78,7 +78,7 @@ MonoBehaviour:
     - rdsData: 0
       type: 5
       level: 1
-      probability: 0
+      probability: 2
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -87,12 +87,12 @@ MonoBehaviour:
       level: 0
       probability: 0
       gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
+      isUniqueSpawn: 1
+      isAlwaysSpawn: 1
     - rdsData: 0
       type: 5
-      level: 0
-      probability: 0
+      level: 2
+      probability: 1
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -110,19 +110,19 @@ MonoBehaviour:
       level: 0
       probability: 0
       gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
+      isUniqueSpawn: 1
+      isAlwaysSpawn: 1
     - rdsData: 0
       type: 4
       level: 1
-      probability: 0
+      probability: 1
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
     - rdsData: 0
       type: 2
       level: 1
-      probability: 0
+      probability: 1
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -138,21 +138,21 @@ MonoBehaviour:
     - rdsData: 0
       type: 1
       level: 3
-      probability: 0
+      probability: 1
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
     - rdsData: 1
       type: 4
       level: 0
-      probability: 0
+      probability: 1
       gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
+      isUniqueSpawn: 1
       isAlwaysSpawn: 0
     - rdsData: 0
       type: 1
       level: 2
-      probability: 0
+      probability: 2
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -164,7 +164,14 @@ MonoBehaviour:
     m_rateOfFire: 1
     m_dimensions: {x: 1, y: 1}
     m_maxDrops: 0
-    m_rdsEnemyData: []
+    m_rdsEnemyData:
+    - rdsData: 0
+      type: 0
+      level: 0
+      probability: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
   - m_enemyType: 599761cf-c12a-45b0-bbab-918008384f28
     m_name: SuperParasite
     m_health: 0
