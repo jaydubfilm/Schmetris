@@ -27,7 +27,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 8
+        value: 6
       - key: Capacity
         value: 30
       - key: SMRTCapacity
@@ -39,7 +39,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 16
+        value: 8
       - key: Capacity
         value: 100
       - key: SMRTCapacity
@@ -91,7 +91,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 25
+        value: 10
       - key: Capacity
         value: 200
       - key: SMRTCapacity
@@ -155,7 +155,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 5
+        value: 2
       burnRate: 0
       cost:
       - resourceType: 0
@@ -171,7 +171,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 10
+        value: 5
       burnRate: 0.1
       cost:
       - resourceType: 0
@@ -199,7 +199,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 20
+        value: 8
       burnRate: 0.17
       cost:
       - resourceType: 0
