@@ -1,4 +1,5 @@
-﻿using StarSalvager.Utilities.JsonDataTypes;
+﻿using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,14 +19,25 @@ namespace StarSalvager.Missions
 
         public List<IMissionUnlockCheck> missionUnlockChecks;
 
-        public Mission(string missionName, string missionDescription, float amountNeeded, List<IMissionUnlockCheck> missionUnlockData)
+        public Mission(MissionRemoteData missionRemoteData)
         {
             m_currentAmount = 0;
-            m_missionName = missionName;
-            m_missionDescription = missionDescription;
-            m_amountNeeded = amountNeeded;
-            missionUnlockChecks = missionUnlockData;
+            m_missionName = missionRemoteData.MissionName;
+            m_missionDescription = missionRemoteData.MissionDescription;
+            m_amountNeeded = missionRemoteData.AmountNeeded;
+            missionUnlockChecks = missionRemoteData.GetMissionUnlockData();
         }
+
+        public Mission(MissionData missionData)
+        {
+            m_currentAmount = 0;
+            m_missionName = missionData.MissionName;
+            m_missionDescription = missionData.MissionDescription;
+            m_amountNeeded = missionData.AmountNeeded;
+            missionUnlockChecks = missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas();
+        }
+
+        public abstract void ProcessMissionData(MissionProgressEventData missionProgressEventData);
 
         public bool CheckUnlockParameters()
         {

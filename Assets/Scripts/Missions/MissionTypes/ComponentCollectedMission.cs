@@ -9,10 +9,16 @@ namespace StarSalvager.Missions
     {
         public COMPONENT_TYPE? m_componentType;
 
-        public ComponentCollectedMission(COMPONENT_TYPE? componentType, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+        public ComponentCollectedMission(MissionRemoteData missionRemoteData) : base(missionRemoteData)
         {
             MissionEventType = MISSION_EVENT_TYPE.COMPONENT_COLLECTED;
-            m_componentType = componentType;
+            m_componentType = missionRemoteData.ComponentValue();
+        }
+
+        public ComponentCollectedMission(MissionData missionData) : base(missionData)
+        {
+            MissionEventType = MISSION_EVENT_TYPE.COMPONENT_COLLECTED;
+            m_componentType = missionData.ComponentType;
         }
 
         public override bool MissionComplete()
@@ -20,8 +26,11 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(COMPONENT_TYPE componentType, int amount)
+        public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
         {
+            COMPONENT_TYPE componentType = missionProgressEventData.componentType;
+            int amount = missionProgressEventData.intAmount;
+
             if (!m_componentType.HasValue || componentType == m_componentType)
             {
                 m_currentAmount += amount;

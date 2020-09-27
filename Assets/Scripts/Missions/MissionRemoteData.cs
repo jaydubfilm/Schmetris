@@ -138,6 +138,11 @@ namespace StarSalvager.Missions
         {
             List<IMissionUnlockCheck> missionUnlockData = new List<IMissionUnlockCheck>();
 
+            if (MissionUnlockParameters == null)
+            {
+                return missionUnlockData;
+            }
+
             foreach (var missionUnlockParameters in MissionUnlockParameters)
             {
                 switch (missionUnlockParameters.MissionUnlockType)

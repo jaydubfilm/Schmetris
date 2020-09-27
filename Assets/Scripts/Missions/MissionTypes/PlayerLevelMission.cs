@@ -10,10 +10,16 @@ namespace StarSalvager.Missions
     {
         public int m_playerLevel;
 
-        public PlayerLevelMission(int playerLevel, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded = 1.0f) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+        public PlayerLevelMission(MissionRemoteData missionRemoteData) : base(missionRemoteData)
         {
             MissionEventType = MISSION_EVENT_TYPE.FACILITY_UPGRADE;
-            m_playerLevel = playerLevel;
+            m_playerLevel = missionRemoteData.PlayerLevel;
+        }
+
+        public PlayerLevelMission(MissionData missionData) : base(missionData)
+        {
+            MissionEventType = MISSION_EVENT_TYPE.FACILITY_UPGRADE;
+            m_playerLevel = missionData.Level;
         }
 
         public override bool MissionComplete()
@@ -21,8 +27,10 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(int level)
+        public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
         {
+            int level = missionProgressEventData.level;
+            
             if (level >= m_playerLevel)
             {
                 m_currentAmount += 1;
@@ -42,7 +50,7 @@ namespace StarSalvager.Missions
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
-                PlayerLevel = m_playerLevel
+                Level = m_playerLevel
             };
         }
     }

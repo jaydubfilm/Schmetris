@@ -973,7 +973,12 @@ namespace StarSalvager
             Recycler.Recycle<Shape>(shape);
             LevelManager.Instance.WaveEndSummaryData.numBonusShapesMatched++;
 
-            MissionManager.ProcessChainBonusShapesMissionData(LevelManager.Instance.WaveEndSummaryData.numBonusShapesMatched);
+            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+            {
+                intAmount = LevelManager.Instance.WaveEndSummaryData.numBonusShapesMatched
+            };
+
+            MissionManager.ProcessMissionData(typeof(ChainBonusShapesMission), missionProgressEventData);
         }
 
         #endregion //Bonus Shapes

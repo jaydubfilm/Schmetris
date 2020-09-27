@@ -705,7 +705,7 @@ MonoBehaviour:
     PartType: 0
     PartLevel: 0
     FacilityType: 9
-    FacilityLevel: 2
+    FacilityLevel: 1
     PlayerLevel: 0
     ThroughPart: 0
     OrphanBit: 0

@@ -11,11 +11,18 @@ namespace StarSalvager.Missions
         public int m_sectorNumber;
         public int m_waveNumber;
 
-        public LevelProgressMission(int sectorNumber, int waveNumber, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded = 1.0f) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+        public LevelProgressMission(MissionRemoteData missionRemoteData) : base(missionRemoteData)
         {
             MissionEventType = MISSION_EVENT_TYPE.LEVEL_PROGRESS;
-            m_sectorNumber = sectorNumber;
-            m_waveNumber = waveNumber;
+            m_sectorNumber = missionRemoteData.SectorNumber;
+            m_waveNumber = missionRemoteData.WaveNumber;
+        }
+
+        public LevelProgressMission(MissionData missionData) : base(missionData)
+        {
+            MissionEventType = MISSION_EVENT_TYPE.LEVEL_PROGRESS;
+            m_sectorNumber = missionData.SectorNumber;
+            m_waveNumber = missionData.WaveNumber;
         }
 
         public override bool MissionComplete()
@@ -23,8 +30,11 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(int sectorNumber, int waveNumber)
+        public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
         {
+            int sectorNumber = missionProgressEventData.sectorNumber;
+            int waveNumber = missionProgressEventData.waveNumber;
+            
             if (sectorNumber == m_sectorNumber && waveNumber == m_waveNumber)
             {
                 m_currentAmount += 1;

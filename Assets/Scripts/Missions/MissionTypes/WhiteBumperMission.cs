@@ -13,13 +13,22 @@ namespace StarSalvager.Missions
         public bool m_hasCombos;
         public PART_TYPE m_partType;
 
-        public WhiteBumperMission(bool throughPart, bool orphanBit, bool hasCombos, PART_TYPE partType, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+        public WhiteBumperMission(MissionRemoteData missionRemoteData) : base(missionRemoteData)
         {
             MissionEventType = MISSION_EVENT_TYPE.WHITE_BUMPER;
-            m_throughPart = throughPart;
-            m_orphanBit = orphanBit;
-            m_hasCombos = hasCombos;
-            m_partType = partType;
+            m_throughPart = missionRemoteData.ThroughPart;
+            m_orphanBit = missionRemoteData.OrphanBit;
+            m_hasCombos = missionRemoteData.HasCombos;
+            m_partType = missionRemoteData.PartType;
+        }
+
+        public WhiteBumperMission(MissionData missionData) : base(missionData)
+        {
+            MissionEventType = MISSION_EVENT_TYPE.WHITE_BUMPER;
+            m_throughPart = missionData.BumperShiftedThroughPart;
+            m_orphanBit = missionData.BumperOrphanedBits;
+            m_hasCombos = missionData.BumperCausedCombos;
+            m_partType = missionData.PartType;
         }
 
         public override bool MissionComplete()
@@ -27,8 +36,13 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(bool throughPart, bool orphanBit, bool hasCombos, PART_TYPE partType, int amount)
+        public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
         {
+            bool throughPart = missionProgressEventData.bumperShiftedThroughPart;
+            bool orphanBit = missionProgressEventData.bumperOrphanedBits;
+            bool hasCombos = missionProgressEventData.bumperCausedCombos;
+            int amount = missionProgressEventData.intAmount;
+            
             if (!throughPart && m_throughPart)
             {
                 return;
@@ -43,7 +57,7 @@ namespace StarSalvager.Missions
             {
                 return;
             }
-            
+
             m_currentAmount += amount;
         }
 
@@ -60,9 +74,9 @@ namespace StarSalvager.Missions
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
-                ThroughPart = m_throughPart,
-                OrphanBit = m_orphanBit,
-                HasCombos = m_hasCombos
+                BumperShiftedThroughPart = m_throughPart,
+                BumperOrphanedBits = m_orphanBit,
+                BumperCausedCombos = m_hasCombos
             };
         }
     }

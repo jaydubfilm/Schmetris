@@ -9,10 +9,16 @@ namespace StarSalvager.Missions
     {
         public BIT_TYPE? m_resourceType;
 
-        public LiquidResourceConvertedMission(BIT_TYPE? resourceType, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+        public LiquidResourceConvertedMission(MissionRemoteData missionRemoteData) : base(missionRemoteData)
         {
             MissionEventType = MISSION_EVENT_TYPE.LIQUID_RESOURCE;
-            m_resourceType = resourceType;
+            m_resourceType = missionRemoteData.ResourceValue();
+        }
+
+        public LiquidResourceConvertedMission(MissionData missionData) : base(missionData)
+        {
+            MissionEventType = MISSION_EVENT_TYPE.LIQUID_RESOURCE;
+            m_resourceType = missionData.BitType;
         }
 
         public override bool MissionComplete()
@@ -20,9 +26,12 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(BIT_TYPE resourceType, float amount)
+        public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
         {
-            if (!m_resourceType.HasValue || resourceType == m_resourceType)
+            BIT_TYPE bitType = missionProgressEventData.bitType.Value;
+            float amount = missionProgressEventData.floatAmount;
+
+            if (!m_resourceType.HasValue || bitType == m_resourceType)
             {
                 m_currentAmount += amount;
             }
@@ -41,7 +50,7 @@ namespace StarSalvager.Missions
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
-                ResourceType = m_resourceType
+                BitType = m_resourceType
             };
         }
     }

@@ -10,10 +10,16 @@ namespace StarSalvager.Missions
     {
         public int m_shapeNumber;
 
-        public ChainBonusShapesMission(int shapeNumber, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded = 1.0f) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+        public ChainBonusShapesMission(MissionRemoteData missionRemoteData) : base(missionRemoteData)
         {
             MissionEventType = MISSION_EVENT_TYPE.CHAIN_BONUS_SHAPES;
-            m_shapeNumber = shapeNumber;
+            m_shapeNumber = missionRemoteData.BonusShapeNumber;
+        }
+
+        public ChainBonusShapesMission(MissionData missionData) : base(missionData)
+        {
+            MissionEventType = MISSION_EVENT_TYPE.CHAIN_BONUS_SHAPES;
+            m_shapeNumber = missionData.IntAmount;
         }
 
         public override bool MissionComplete()
@@ -21,8 +27,10 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(int shapeNumber)
+        public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
         {
+            int shapeNumber = missionProgressEventData.intAmount;
+            
             if (shapeNumber == m_shapeNumber)
             {
                 m_currentAmount += 1;
@@ -42,7 +50,7 @@ namespace StarSalvager.Missions
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
-                BonusShapeNumber = m_shapeNumber
+                IntAmount = m_shapeNumber
             };
         }
     }

@@ -142,7 +142,12 @@ namespace StarSalvager.Values
                     LevelManager.Instance.WaveEndSummaryData.numLevelsGained++;
                 }
                 Level++;
-                MissionManager.ProcessPlayerLevelMission(Level);
+
+                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                {
+                    level = Level
+                };
+                MissionManager.ProcessMissionData(typeof(PlayerLevelMission), missionProgressEventData);
             }
             
             OnValuesChanged?.Invoke();
@@ -326,7 +331,12 @@ namespace StarSalvager.Values
 
         public void AddLiquidResource(BIT_TYPE type, float amount)
         {
-            MissionManager.ProcessLiquidResourceConvertedMission(type, amount);
+            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+            {
+                bitType = type,
+                floatAmount = amount
+            };
+            MissionManager.ProcessMissionData(typeof(LiquidResourceConvertedMission), missionProgressEventData);
             _liquidResource[type] = Mathf.Clamp(liquidResource[type] + Mathf.Abs(amount), 0, liquidCapacity[type]);
             OnValuesChanged?.Invoke();
         }
@@ -514,7 +524,13 @@ namespace StarSalvager.Values
 
             if (triggerMissionCheck)
             {
-                MissionManager.ProcessFacilityUpgradeMission(type, level);
+                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                {
+                    facilityType = type,
+                    level = level
+                };
+
+                MissionManager.ProcessMissionData(typeof(FacilityUpgradeMission), missionProgressEventData);
             }
 
             int increaseAmount = remoteData.levels[level].increaseAmount;

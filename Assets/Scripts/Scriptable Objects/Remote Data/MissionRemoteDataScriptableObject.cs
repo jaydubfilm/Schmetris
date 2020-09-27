@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using StarSalvager.AI;
 using StarSalvager.Missions;
+using System;
 
 namespace StarSalvager.ScriptableObjects
 {
@@ -21,9 +22,14 @@ namespace StarSalvager.ScriptableObjects
         {
             List<Mission> missions = new List<Mission>();
 
-            foreach (MissionRemoteData data in m_missionRemoteData)
+            foreach (MissionRemoteData missionData in m_missionRemoteData)
             {
-                if (data.MissionType == MISSION_EVENT_TYPE.RESOURCE_COLLECTED)
+                int i = MissionManager.MissionTypes.IndexOf(m => m.MissionEventType == missionData.MissionType);
+
+                Mission newMission = (Mission)Activator.CreateInstance(MissionManager.MissionTypes[i].GetType(), missionData);
+                missions.Add(newMission);
+
+                /*if (data.MissionType == MISSION_EVENT_TYPE.RESOURCE_COLLECTED)
                 {
                     ResourceCollectedMission mission = new ResourceCollectedMission(data.ResourceValue(), data.IsFromEnemyLoot, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
                     missions.Add(mission);
@@ -97,7 +103,7 @@ namespace StarSalvager.ScriptableObjects
                 {
                     ComponentCollectedMission mission = new ComponentCollectedMission(data.ComponentValue(), data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
                     missions.Add(mission);
-                }
+                }*/
             }
 
             return missions;

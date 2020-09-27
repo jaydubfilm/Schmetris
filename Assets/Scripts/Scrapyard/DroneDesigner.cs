@@ -734,7 +734,13 @@ namespace StarSalvager
                         amount = component.level * 3;
 
                     PlayerPersistentData.PlayerData.AddComponent(component.Type, amount);
-                    MissionManager.ProcessComponentCollectedMissionData(component.Type, amount);
+
+                    MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                    {
+                        componentType = component.Type,
+                        intAmount = amount
+                    };
+                    MissionManager.ProcessMissionData(typeof(ComponentCollectedMission), missionProgressEventData);
                 }
 
                 PlayerData.OnValuesChanged?.Invoke();

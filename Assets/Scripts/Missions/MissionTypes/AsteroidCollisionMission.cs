@@ -9,10 +9,16 @@ namespace StarSalvager.Missions
     {
         public BIT_TYPE? m_resourceType;
 
-        public AsteroidCollisionMission(BIT_TYPE? resourceType, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+        public AsteroidCollisionMission(MissionRemoteData missionRemoteData) : base(missionRemoteData)
         {
             MissionEventType = MISSION_EVENT_TYPE.ASTEROID_COLLISION;
-            m_resourceType = resourceType;
+            m_resourceType = missionRemoteData.ResourceValue();
+        }
+
+        public AsteroidCollisionMission(MissionData missionData) : base(missionData)
+        {
+            MissionEventType = MISSION_EVENT_TYPE.ASTEROID_COLLISION;
+            m_resourceType = missionData.BitType;
         }
 
         public override bool MissionComplete()
@@ -20,9 +26,11 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(BIT_TYPE? resourceType, int amount)
+        public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
         {
-            if (!m_resourceType.HasValue || m_resourceType == resourceType)
+            BIT_TYPE? bitType = missionProgressEventData.bitType;
+            int amount = missionProgressEventData.intAmount;
+            if (!m_resourceType.HasValue || m_resourceType == bitType)
             {
                 m_currentAmount += amount;
             }
@@ -41,7 +49,7 @@ namespace StarSalvager.Missions
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
-                ResourceType = m_resourceType
+                BitType = m_resourceType
             };
         }
     }
