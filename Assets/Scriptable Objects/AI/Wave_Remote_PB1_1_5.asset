@@ -103,13 +103,17 @@ MonoBehaviour:
     type: 0
     level: 0
     probability: 0
-    gearDropRange: {x: 400, y: 400}
+    isGearRange: 0
+    gearValue: 400
+    gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 0
     isAlwaysSpawn: 0
   - rdsData: 3
     type: 2
     level: 0
     probability: 0
+    isGearRange: 0
+    gearValue: 0
     gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 1
     isAlwaysSpawn: 1
@@ -117,6 +121,8 @@ MonoBehaviour:
     type: 11
     level: 0
     probability: 0
+    isGearRange: 0
+    gearValue: 0
     gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 1
     isAlwaysSpawn: 1
@@ -124,6 +130,8 @@ MonoBehaviour:
     type: 13
     level: 0
     probability: 0
+    isGearRange: 0
+    gearValue: 0
     gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 1
     isAlwaysSpawn: 1

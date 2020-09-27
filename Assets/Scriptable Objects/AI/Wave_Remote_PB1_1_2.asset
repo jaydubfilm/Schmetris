@@ -121,13 +121,17 @@ MonoBehaviour:
     type: 0
     level: 0
     probability: 0
-    gearDropRange: {x: 150, y: 150}
+    isGearRange: 0
+    gearValue: 150
+    gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 0
     isAlwaysSpawn: 0
   - rdsData: 2
     type: 4
     level: 1
     probability: 0
+    isGearRange: 0
+    gearValue: 0
     gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 1
     isAlwaysSpawn: 1

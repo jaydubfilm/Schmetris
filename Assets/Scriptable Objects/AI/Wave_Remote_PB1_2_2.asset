@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c59c6b39881711a4296e83fe97d9a858, type: 3}
   m_Name: Wave_Remote_PB1_2_2
   m_EditorClassIdentifier: 
+  WaveSeed: 0
   BonusShapes:
   - m_selectionType: 1
     m_shapeName: 
@@ -134,13 +135,17 @@ MonoBehaviour:
     type: 0
     level: 0
     probability: 0
-    gearDropRange: {x: 700, y: 700}
+    isGearRange: 0
+    gearValue: 700
+    gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 0
     isAlwaysSpawn: 0
   - rdsData: 2
     type: 12
     level: 0
     probability: 0
+    isGearRange: 0
+    gearValue: 0
     gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 1
     isAlwaysSpawn: 1

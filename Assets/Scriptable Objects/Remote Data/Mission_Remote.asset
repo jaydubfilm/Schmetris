@@ -46,7 +46,9 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
-      gearDropRange: {x: 10, y: 10}
+      isGearRange: 0
+      gearValue: 10
+      gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
   - MissionID: 842836bf-9aa3-4173-81b9-0a5663e5ab06
@@ -82,6 +84,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 15
       gearDropRange: {x: 15, y: 15}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -118,6 +122,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 15
       gearDropRange: {x: 15, y: 15}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -158,6 +164,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 25
       gearDropRange: {x: 25, y: 25}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -198,6 +206,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 15
       gearDropRange: {x: 15, y: 15}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -238,6 +248,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 50
       gearDropRange: {x: 50, y: 50}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -278,6 +290,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 50
       gearDropRange: {x: 50, y: 50}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -318,6 +332,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 100
       gearDropRange: {x: 100, y: 100}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -358,6 +374,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 200
       gearDropRange: {x: 200, y: 200}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -398,6 +416,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 100
       gearDropRange: {x: 100, y: 100}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -438,6 +458,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 150
       gearDropRange: {x: 150, y: 150}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -478,6 +500,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 500
       gearDropRange: {x: 500, y: 500}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -526,6 +550,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 300
       gearDropRange: {x: 300, y: 300}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -566,6 +592,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 200
       gearDropRange: {x: 200, y: 200}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -606,6 +634,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 200
       gearDropRange: {x: 200, y: 200}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -646,6 +676,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 250
       gearDropRange: {x: 250, y: 250}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -686,6 +718,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 250
       gearDropRange: {x: 250, y: 250}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -726,6 +760,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 300
       gearDropRange: {x: 300, y: 300}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -766,6 +802,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 300
       gearDropRange: {x: 300, y: 300}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -806,6 +844,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 350
       gearDropRange: {x: 350, y: 350}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -846,6 +886,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 350
       gearDropRange: {x: 350, y: 350}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -886,6 +928,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 200
       gearDropRange: {x: 200, y: 200}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -926,6 +970,8 @@ MonoBehaviour:
       type: 0
       level: 0
       probability: 0
+      isGearRange: 0
+      gearValue: 1000
       gearDropRange: {x: 1000, y: 1000}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0

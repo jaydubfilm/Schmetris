@@ -53,7 +53,14 @@ namespace StarSalvager.Utilities.Extensions
                 }
                 else if (rdsData.rdsData == RDSLootData.TYPE.Gears)
                 {
-                    rdsTable.AddEntry(new RDSValue<Vector2Int>(rdsData.GearDropRange, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
+                    if (rdsData.IsGearRange)
+                    {
+                        rdsTable.AddEntry(new RDSValue<Vector2Int>(rdsData.GearDropRange, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
+                    }
+                    else
+                    {
+                        rdsTable.AddEntry(new RDSValue<Vector2Int>(new Vector2Int(rdsData.GearValue, rdsData.GearValue), rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
+                    }
                 }
                 else if (rdsData.rdsData == RDSLootData.TYPE.Null)
                 {
