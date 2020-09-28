@@ -77,10 +77,13 @@ namespace StarSalvager.UI.Scrapyard
 
                 int level = playerData.facilityRanks[type];
 
+                string description = facilityRemoteData.displayDescription;
+                description = description.Replace("*", facilityRemoteData.levels[level].increaseAmount.ToString());
+
                 TEST_FacilityItem newItem = new TEST_FacilityItem
                 {
                     name = facilityRemoteData.displayName + " " + (facilityRemoteData.levels[level].level + 1),
-                    description = facilityRemoteData.displayDescription
+                    description = description
                 };
 
                 var element = facilityItemUIElements.AddElement(newItem, $"{newItem.name}_UIElement");
@@ -109,10 +112,13 @@ namespace StarSalvager.UI.Scrapyard
                         continue;
                     }
 
+                    string description = facilityRemoteData.displayDescription;
+                    description = description.Replace("*", facilityRemoteData.levels[i].increaseAmount.ToString());
+
                     TEST_FacilityBlueprint newBlueprint = new TEST_FacilityBlueprint
                     {
                         name = facilityRemoteData.displayName + " " + (facilityRemoteData.levels[i].level + 1),
-                        description = facilityRemoteData.displayDescription,
+                        description = description,
                         facilityType = type,
                         level = i,
                         cost = facilityRemoteData.levels[i].craftCost

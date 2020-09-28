@@ -15,7 +15,7 @@ MonoBehaviour:
   FacilityRemoteData:
   - type: 0
     displayName: Freezer
-    displayDescription: Freezer description
+    displayDescription: Freezer description *
     levels:
     - level: 0
       increaseAmount: 100
@@ -40,7 +40,7 @@ MonoBehaviour:
       craftCost: []
   - type: 1
     displayName: Barrel
-    displayDescription: Increases base fuel storage capacity.
+    displayDescription: Increases base fuel storage capacity by *
     levels:
     - level: 0
       increaseAmount: 0
@@ -93,7 +93,7 @@ MonoBehaviour:
         amount: 3
   - type: 2
     displayName: Capacitor
-    displayDescription: Increases base power storage capacity.
+    displayDescription: Increases base power storage capacity *
     levels:
     - level: 0
       increaseAmount: 0
@@ -142,7 +142,7 @@ MonoBehaviour:
         amount: 1000
   - type: 3
     displayName: Vat
-    displayDescription: Increase base plasma storage capacity
+    displayDescription: Increase base plasma storage capacity by *
     levels:
     - level: 0
       increaseAmount: 0
@@ -403,7 +403,7 @@ MonoBehaviour:
         amount: 5000
   - type: 9
     displayName: Refinery
-    displayDescription: Increases efficiency of raw material refining
+    displayDescription: Increases efficiency of raw material refining by *
     levels:
     - level: 0
       increaseAmount: 0
