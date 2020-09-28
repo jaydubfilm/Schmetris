@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
 using StarSalvager.Factories;
+using StarSalvager.Missions;
+using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities.Enemies;
 using StarSalvager.Utilities.Extensions;
@@ -364,8 +368,33 @@ namespace StarSalvager.AI
         {
             CurrentHealth += amount;
 
-            if(CurrentHealth <= 0)
-                Recycler.Recycle<EnemyAttachable>(this);
+            if (CurrentHealth > 0)
+                return;
+
+            LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
+
+            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+            {
+                enemyTypeString = m_enemyData.EnemyType,
+                intAmount = 1
+            };
+            MissionManager.ProcessMissionData(typeof(EnemyKilledMission), missionProgressEventData);
+
+            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
+            AudioController.PlaySound(SOUND.ENEMY_DEATH);
+
+            LevelManager.Instance.WaveEndSummaryData.numEnemiesKilled++;
+            if (LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled.ContainsKey(name))
+            {
+                LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled[name]++;
+            }
+            else
+            {
+                LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled.Add(name, 1);
+            }
+
+            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
+            Recycler.Recycle<EnemyAttachable>(this);
         }
 
         //ICustomRotate functions
