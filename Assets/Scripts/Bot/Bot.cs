@@ -349,6 +349,11 @@ namespace StarSalvager
 
         public void TrySelfDestruct()
         {
+            if (LevelManager.Instance != null && LevelManager.Instance.EndWaveState)
+            {
+                return;
+            }
+
             if (!_botPartsLogic.CanSelfDestruct)
                 return;
             

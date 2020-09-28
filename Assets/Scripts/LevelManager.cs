@@ -193,11 +193,11 @@ namespace StarSalvager
 
         private void Update()
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
+            /*if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
             {
                 WorldGrid.DrawDebugMarkedGridPoints();
                 Debug.Break();
-            }
+            }*/
 
             if (isPaused)
                 return;
@@ -445,6 +445,7 @@ namespace StarSalvager
                 }
                 PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector, Globals.CurrentWave + 1);
                 EndWaveState = true;
+                LevelManagerUI.overrideText = string.Empty;
                 Globals.CurrentWave++;
                 m_levelTimer += m_waveTimer;
                 m_waveTimer = 0;
