@@ -27,19 +27,9 @@ namespace StarSalvager
 
         public bool CanMove => true;
 
-        public bool IsRegistered
-        {
-            get { return m_isRegistered; }
-            set { m_isRegistered = value; }
-        }
-        private bool m_isRegistered = false;
+        public bool IsRegistered { get; set; } = false;
 
-        public bool IsMarkedOnGrid
-        {
-            get { return m_isMarkedOnGrid; }
-            set { m_isMarkedOnGrid = value; }
-        }
-        private bool m_isMarkedOnGrid = false;
+        public bool IsMarkedOnGrid { get; set; } = false;
 
         //================================================================================================================//
 
@@ -149,7 +139,7 @@ namespace StarSalvager
         }
         public void DestroyBit(Vector2Int coordinate, bool shouldRecycleIfEmpty = true)
         {
-            if (!attachedBits.Any(b => b.Coordinate == coordinate))
+            if (attachedBits.All(b => b.Coordinate != coordinate))
                 return;
 
             Bit bit = attachedBits.FirstOrDefault(b => b.Coordinate == coordinate);
@@ -171,13 +161,7 @@ namespace StarSalvager
             Recycler.Recycle<Shape>(this);
         }
 
-        public override void SetColor(Color color)
-        {
-            foreach (var bit in attachedBits)
-            {
-                bit.SetColor(color);
-            }
-        }
+
 
         public override void SetColliderActive(bool state)
         {
@@ -189,6 +173,25 @@ namespace StarSalvager
             }
 
             CompositeCollider.GenerateGeometry();
+        }
+
+        //Sprite Renderer Functions
+        //====================================================================================================================//
+        
+        public override void SetColor(Color color)
+        {
+            foreach (var bit in attachedBits)
+            {
+                bit.SetColor(color);
+            }
+        }
+
+        public override void SetSortingLayer(string sortingLayerName, int sortingOrder = 0)
+        {
+            foreach (var attachedBit in attachedBits)
+            {
+                attachedBit.SetSortingLayer(sortingLayerName, sortingOrder);
+            }
         }
         
         //================================================================================================================//

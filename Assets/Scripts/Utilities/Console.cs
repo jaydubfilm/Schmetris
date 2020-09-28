@@ -61,6 +61,7 @@ namespace StarSalvager.Utilities
             string.Concat("print ", "parts").ToUpper(),
             string.Concat("print ", "components").ToUpper(),
             "\n",
+            string.Concat("set ", "bitprofile ", "[index:uint]").ToUpper(),
             string.Concat("set ", "bot ", "magnet ", "[uint]").ToUpper(),
             string.Concat("set ", "bot ", "heat ", "[0.0 - 100.0]").ToUpper(),
             string.Concat("set ", "bot ", "health ", "[0.0 - 1.0]").ToUpper(),
@@ -429,7 +430,7 @@ namespace StarSalvager.Utilities
                     _consoleDisplay = string.Empty;
                     _cmds.Clear();
                     break;
-                case "remote data":
+                case "remote" when split.Length > 2 && split[2].ToLower().Equals("data"):
                 case "remotedata":
                     Files.ClearRemoteData();
                     break;
@@ -603,6 +604,7 @@ namespace StarSalvager.Utilities
 
         private void ParseSetCommand(string[] split)
         {
+            int intAmount;
             bool state;
             BIT_TYPE bitType;
             BotPartsLogic botPartsLogic;
@@ -610,6 +612,16 @@ namespace StarSalvager.Utilities
 
             switch (split[1].ToLower())
             {
+                case "bitprofile":
+                    if (!int.TryParse(split[2], out intAmount))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
+                    }
+                    
+                    FactoryManager.Instance?.ChangeBitProfile(intAmount);
+                    
+                    break;
                 case "bot":
                 {
                     switch (split[2].ToLower())
@@ -692,7 +704,7 @@ namespace StarSalvager.Utilities
                 case "currency":
 
 
-                    if (!int.TryParse(split[3], out var intAmount))
+                    if (!int.TryParse(split[3], out intAmount))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[3]);
                         break;

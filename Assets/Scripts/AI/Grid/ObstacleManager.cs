@@ -914,25 +914,28 @@ namespace StarSalvager
         
         #region Bonus Shapes
 
-        public void SpawnBonusShape(SELECTION_TYPE selectionType, string shapeName, string category, int numRotations)
+        private void SpawnBonusShape(SELECTION_TYPE selectionType, string shapeName, string category, int numRotations)
         {
+            IObstacle newObstacle;
             switch (selectionType)
             {
                 case SELECTION_TYPE.CATEGORY:
-                {
-                    IObstacle newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<IObstacle>(selectionType, category, numRotations);
-                    PlaceBonusShapeInLevel(newObstacle);
-                    return;
-                }
+                    newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<IObstacle>(selectionType, category, numRotations);
+                    break;
+                
                 case SELECTION_TYPE.SHAPE:
-                {
-                    IObstacle newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<IObstacle>(selectionType, shapeName, numRotations);
-                    PlaceBonusShapeInLevel(newObstacle);
-                    return;
-                }
+                    newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<IObstacle>(selectionType, shapeName, numRotations);
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException(nameof(selectionType), selectionType, null);
             }
+
+            if(newObstacle is CollidableBase collidableBase)
+                collidableBase.SetSortingLayer("Overlay", 100);
+            
+            
+            PlaceBonusShapeInLevel(newObstacle);
         }
 
         private void PlaceBonusShapeInLevel(IObstacle obstacle)
@@ -1000,6 +1003,8 @@ namespace StarSalvager
                     var temp = new GameObject($"EdgeSprite_{i}").AddComponent<SpriteRenderer>();
                     temp.sprite = edgeSprite;
                     temp.color = edgeSpriteColor;
+                    temp.sortingLayerName = "Overlay";
+                    temp.sortingOrder = 1000;
                     _edgeSprites[i] = temp;
                     
                     temp.transform.SetParent(WorldElementsRoot);
