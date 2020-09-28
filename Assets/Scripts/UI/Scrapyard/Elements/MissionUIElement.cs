@@ -3,20 +3,29 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using StarSalvager;
 using StarSalvager.Values;
 using System.Linq;
+using Sirenix.OdinInspector;
+using UnityEngine.EventSystems;
 
 namespace StarSalvager.UI.Scrapyard
 {
-    public class MissionUIElement : ButtonReturnUIElement<Mission, Mission>
+    public class MissionUIElement : UIElement<Mission>, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField]
+        [SerializeField, Required]
+        private Image elementImage;
+        
+        [SerializeField, Required]
         private TMP_Text title;
 
-        [SerializeField]
+        [SerializeField, Required]
         private Button favouriteButton;
 
+        private Action<Mission, bool> _onHoverCallback;
+
+        //Unity Functions
+        //====================================================================================================================//
+        
         public void OnEnable()
         {
             MissionsUI.CheckMissionUITrackingToggles += OnCheckMissionUITrackingToggles;
@@ -27,32 +36,27 @@ namespace StarSalvager.UI.Scrapyard
             MissionsUI.CheckMissionUITrackingToggles -= OnCheckMissionUITrackingToggles;
         }
 
+        //====================================================================================================================//
+        
         public void OnCheckMissionUITrackingToggles()
         {
             bool isTracked =
                 PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Any(m =>
                     m.m_missionName == data.m_missionName && !m.MissionComplete());
 
-            button.image.color = isTracked ? Color.green : Color.white;
+            elementImage.color = isTracked ? Color.green : Color.white;
 
             favouriteButton.interactable = isTracked || PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Count < Globals.NumCurrentTrackedMissionMax;
         }
 
-        public override void Init(Mission data, Action<Mission> onPressedCallback)
-        {
-            this.data = data;
+        //Init Functions
+        //====================================================================================================================//
 
-            title.text = data.m_missionName;
-            
-            button.onClick.AddListener(() =>
-            {
-                onPressedCallback?.Invoke(data);
-            });
-        }
-
-        public void Init(Mission data, Action<Mission> onPressedCallback, Action<Mission> onTrackPressedCallback)
+        public void Init(Mission data, Action<Mission, bool> onHoverCallback, Action<Mission> onTrackPressedCallback)
         {
-            Init(data, onPressedCallback);
+            Init(data);
+
+            _onHoverCallback = onHoverCallback;
 
             var shouldTrack = onTrackPressedCallback != null;
             
@@ -68,6 +72,34 @@ namespace StarSalvager.UI.Scrapyard
             });
             
         }
+        
+        public override void Init(Mission data)
+        {
+            this.data = data;
+
+            title.text = data.m_missionName;
+            
+            //button.onClick.AddListener(() =>
+            //{
+            //    onPressedCallback?.Invoke(data);
+            //});
+        }
+
+        //IPointer Events
+        //====================================================================================================================//
+        
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            _onHoverCallback?.Invoke(data, true);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            _onHoverCallback?.Invoke(null, false);
+        }
+
+        //====================================================================================================================//
+        
     }
 }
 

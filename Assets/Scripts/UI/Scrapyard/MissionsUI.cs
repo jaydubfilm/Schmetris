@@ -47,9 +47,9 @@ namespace StarSalvager.UI.Scrapyard
                     $"{currentMission.m_missionName}_UIElement");
 
                 temp.Init(currentMission, 
-                mission =>
+                (mission, hovered) =>
                 {
-                    detailsText.text = mission.m_missionName;
+                    detailsText.text = hovered ? mission.m_missionName : string.Empty;
                 }, 
                 mission =>
                 {
@@ -77,10 +77,10 @@ namespace StarSalvager.UI.Scrapyard
                     $"{completedMission.m_missionName}_UIElement");
 
                 temp.Init(completedMission,
-                mission =>
-                {
-                    detailsText.text = mission.m_missionName;
-                }, 
+                    (mission, hovered) =>
+                    {
+                        detailsText.text = hovered ? mission.m_missionName : string.Empty;
+                    }, 
                 null);
             }
 
