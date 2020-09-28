@@ -140,7 +140,7 @@ namespace StarSalvager.UI.Scrapyard
         private void SetupResourceScrollView()
         {
             var resources = PlayerPersistentData.PlayerData.resources;
-            var capacities = PlayerPersistentData.PlayerData.resourceCapacities;
+            var capacities = PlayerPersistentData.PlayerData.ResourceCapacities;
 
             foreach (var resource in resources)
             {

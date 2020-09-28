@@ -17,8 +17,6 @@ namespace StarSalvager.UI.Scrapyard
 {
     public class DroneDesignUI : MonoBehaviour
     {
-        private const int MAX_CAPACITY = 1500;
-
         [SerializeField, Required] 
         private TMP_Text flightDataText;
         
@@ -329,6 +327,7 @@ namespace StarSalvager.UI.Scrapyard
         public void UpdateBotResourceElements()
         {
             var resources = PlayerPersistentData.PlayerData.resources;
+            var resourceCapacities = PlayerPersistentData.PlayerData.ResourceCapacities;
 
             foreach (var resource in resources)
             {
@@ -337,7 +336,7 @@ namespace StarSalvager.UI.Scrapyard
                     //resourceType = CraftCost.TYPE.Bit,
                     type = resource.Key,
                     amount = resource.Value,
-                    capacity = MAX_CAPACITY
+                    capacity = resourceCapacities[resource.Key]
                 };
 
                 var element = resourceScrollView.AddElement(data, $"{resource.Key}_UIElement");

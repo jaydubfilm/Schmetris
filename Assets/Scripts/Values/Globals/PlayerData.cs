@@ -41,7 +41,7 @@ namespace StarSalvager.Values
         };
 
         [JsonIgnore]
-        public Dictionary<BIT_TYPE, int> resourceCapacities => _resourceCapacity;
+        public IReadOnlyDictionary<BIT_TYPE, int> ResourceCapacities => _resourceCapacity;
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _resourceCapacity = new Dictionary<BIT_TYPE, int>
         {
@@ -199,7 +199,7 @@ namespace StarSalvager.Values
 
         public void SetResources(BIT_TYPE type, int value)
         {
-            _resources[type] = Mathf.Min(value, _resourceCapacity[type]);
+            _resources[type] = Mathf.Min(value, ResourceCapacities[type]);
         }
 
         //============================================================================================================//
@@ -280,7 +280,7 @@ namespace StarSalvager.Values
 
         public void AddResource(BIT_TYPE type, int amount)
         {
-            _resources[type] = Mathf.Min(_resources[type] + amount, _resourceCapacity[type]);
+            _resources[type] = Mathf.Min(_resources[type] + amount, ResourceCapacities[type]);
             OnValuesChanged?.Invoke();
         }
 
@@ -557,7 +557,7 @@ namespace StarSalvager.Values
             }
 
             //Debug.Log(_rationCapacity);
-
+            OnCapacitiesChanged?.Invoke();
             OnValuesChanged?.Invoke();
         }
 

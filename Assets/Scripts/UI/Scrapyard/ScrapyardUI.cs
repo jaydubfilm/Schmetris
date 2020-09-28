@@ -70,6 +70,8 @@ namespace StarSalvager.UI.Scrapyard
         private void OnEnable()
         {
             CameraController.CameraOffset(Vector3.zero, true);
+            
+            workbenchButton.onClick?.Invoke();
         }
 
         //============================================================================================================//
