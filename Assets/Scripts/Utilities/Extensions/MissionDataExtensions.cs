@@ -15,7 +15,7 @@ namespace StarSalvager.Utilities.Extensions
 
             foreach (MissionData missionData in missionDatas)
             {
-                int i = MissionManager.MissionTypes.IndexOf(m => m.MissionEventType == missionData.MissionEventType);
+                int i = MissionManager.MissionTypes.FindLastIndex(m => m.MissionEventType == missionData.MissionEventType);
 
                 Mission newMission = (Mission)Activator.CreateInstance(MissionManager.MissionTypes[i].GetType(), missionData);
                 missions.Add(newMission);

@@ -12,13 +12,13 @@ namespace StarSalvager.Missions
 
         public PlayerLevelMission(MissionRemoteData missionRemoteData) : base(missionRemoteData)
         {
-            MissionEventType = MISSION_EVENT_TYPE.FACILITY_UPGRADE;
+            MissionEventType = MISSION_EVENT_TYPE.PLAYER_LEVEL;
             m_playerLevel = missionRemoteData.PlayerLevel;
         }
 
         public PlayerLevelMission(MissionData missionData) : base(missionData)
         {
-            MissionEventType = MISSION_EVENT_TYPE.FACILITY_UPGRADE;
+            MissionEventType = MISSION_EVENT_TYPE.PLAYER_LEVEL;
             m_playerLevel = missionData.Level;
         }
 
