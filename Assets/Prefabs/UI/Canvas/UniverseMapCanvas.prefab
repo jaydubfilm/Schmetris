@@ -566,6 +566,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_universeSectorButtonPrefab: {fileID: 2087305763259004599, guid: 1ed83d2c722e62b49bd492a5f966f8a6,
     type: 3}
+  m_scrollRect: {fileID: 5553311265099259242}
   m_scrollRectArea: {fileID: 5553311265975264999}
   swapUniverseButton: {fileID: 5086985976563327517}
   backButton: {fileID: 5553311264834851019}
@@ -736,7 +737,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Universe Map
+  m_text: Asteroid Field
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -805,7 +806,7 @@ MonoBehaviour:
   m_margin: {x: 175, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 5553311265534235360}
-    characterCount: 12
+    characterCount: 14
     spriteCount: 0
     spaceCount: 1
     wordCount: 2

@@ -14,6 +14,7 @@ namespace StarSalvager.UI
     {
         [SerializeField, Required] private UniverseMapButton m_universeSectorButtonPrefab;
 
+        [SerializeField, Required] private ScrollRect m_scrollRect;
         [SerializeField, Required] private RectTransform m_scrollRectArea;
 
         private List<UniverseMapButton> currentUniverseButtons = new List<UniverseMapButton>();
@@ -81,6 +82,11 @@ namespace StarSalvager.UI
 
             for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
             {
+                if (Globals.DisableTestingFeatures && !PlayerPersistentData.PlayerData.CheckIfQualifies(i, 0))
+                {
+                    continue;
+                }
+                
                 positionSequence.Increment();
 
                 var position = positionSequence.m_CurrentPos;
@@ -111,8 +117,14 @@ namespace StarSalvager.UI
             currentUniverseButtons.Clear();
 
             Rect rect = m_scrollRectArea.rect;
+            RectTransform centerOn = null;
             for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
             {
+                if (Globals.DisableTestingFeatures && !PlayerPersistentData.PlayerData.CheckIfQualifies(i, 0))
+                {
+                    continue;
+                }
+
                 UniverseMapButton button = Instantiate(m_universeSectorButtonPrefab);
                 button.SetupWaveButtons(FactoryManager.Instance.SectorRemoteData[i].GetNumberOfWaves());
                 button.transform.SetParent(m_scrollRectArea.transform);
@@ -122,7 +134,24 @@ namespace StarSalvager.UI
                 button.Button.onClick.AddListener(() => { button.SetActiveWaveButtons(!button.ButtonsActive); });
                 button.SetActiveWaveButtons(true);
                 currentUniverseButtons.Add(button);
+                centerOn = button.GetComponent<RectTransform>();
             }
+
+            if (centerOn != null)
+            {
+                CenterToItem(centerOn);
+            }
+        }
+
+        public void CenterToItem(RectTransform obj)
+        {
+            float normalizePositionX = ((m_scrollRectArea.rect.width / 2) + obj.anchoredPosition.x);
+            float normalizePositionY = ((m_scrollRectArea.rect.height / 2) + obj.anchoredPosition.y);
+            //normalizePosition += (float)obj.transform.GetSiblingIndex() / (float)m_scrollRect.content.transform.childCount;
+            //normalizePosition /= 1000f;
+            //normalizePosition = Mathf.Clamp01(1 - normalizePosition);
+            m_scrollRect.horizontalNormalizedPosition = Mathf.Clamp01(normalizePositionX / m_scrollRectArea.rect.width);
+            m_scrollRect.verticalNormalizedPosition = Mathf.Clamp01(normalizePositionY / m_scrollRectArea.rect.height);
         }
 
         //============================================================================================================//
