@@ -668,7 +668,7 @@ namespace StarSalvager
             
 
             //batteryDrainTimer += Time.deltaTime / 2;
-            waterDrainTimer += Time.deltaTime / 4;
+            waterDrainTimer += Time.deltaTime * Constants.waterDrainRate;
 
             /*if (batteryDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] > 0)
             {

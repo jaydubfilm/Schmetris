@@ -281,7 +281,7 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
-        
+
         public void Activate()
         {
             BotDead = false;
@@ -301,7 +301,7 @@ namespace StarSalvager
             }
             BotObject.transform.parent = null;
             SceneManager.MoveGameObjectToScene(BotObject.gameObject, gameObject.scene);
-            
+
             SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
 
             MissionsCompletedDuringThisFlight.Clear();
@@ -376,6 +376,15 @@ namespace StarSalvager
 
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
+
+            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] < LevelManager.Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate)
+            {
+                GameTimer.SetPaused(true);
+                Alert.ShowAlert("Almost out of water", "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.", "Ok", () =>
+                {
+                    GameTimer.SetPaused(false);
+                });
+            }
         }
 
         public void Reset()
@@ -411,11 +420,21 @@ namespace StarSalvager
         {
             IsWaveProgressing = true;
             EndWaveState = false;
-                
-            LiquidResourcesAttBeginningOfWave = new Dictionary<BIT_TYPE, float>((IDictionary<BIT_TYPE, float>) PlayerPersistentData.PlayerData.liquidResource);
-            
+
+            LiquidResourcesAttBeginningOfWave = new Dictionary<BIT_TYPE, float>((IDictionary<BIT_TYPE, float>)PlayerPersistentData.PlayerData.liquidResource);
+
             SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
+
+            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] < LevelManager.Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate)
+            {
+                GameTimer.SetPaused(true);
+                Alert.ShowAlert("Almost out of water", "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.", "Ok", () =>
+                {
+                    GameTimer.SetPaused(false);
+                });
+            }
         }
+
         
         private void TransitionToNewWave()
         {
