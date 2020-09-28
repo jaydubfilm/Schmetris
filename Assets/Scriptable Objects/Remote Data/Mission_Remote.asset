@@ -53,8 +53,8 @@ MonoBehaviour:
       isAlwaysSpawn: 0
   - MissionID: 842836bf-9aa3-4173-81b9-0a5663e5ab06
     MissionType: 11
-    MissionName: Fly for 3 minutes
-    MissionDescription: Fly for 2 minutes
+    MissionName: Fly for 90 seconds
+    MissionDescription: Fly for 90 seconds without returning to base.
     MissionUnlockParameters: []
     AmountNeeded: 0
     AnyResourceType: 0
