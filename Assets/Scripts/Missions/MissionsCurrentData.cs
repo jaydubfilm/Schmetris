@@ -96,6 +96,7 @@ namespace StarSalvager.Missions
 
                 if (CurrentTrackedMissions.Find(m => m.m_missionName == mission.m_missionName) != null)
                 {
+                    CurrentTrackedMissions.RemoveAll(m => m.m_missionName == mission.m_missionName);
                     CurrentTrackedMissionData.RemoveAll(m => m.MissionName == mission.m_missionName);
                 }
             }

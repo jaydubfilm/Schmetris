@@ -279,7 +279,7 @@ namespace StarSalvager
 
         public Vector2 GetLocalPositionOfRandomGridSquareInGridRegion(int scanRadius, Vector2 gridRegion, bool inRandomYLevel)
         {
-            int numTries = 10;
+            int numTries = 50;
             for (int i = 0; i < numTries; i++)
             {
                 Vector2Int randomTop = GetCoordinatesOfRandomGridSquareInGridRegion(gridRegion, inRandomYLevel);
@@ -311,6 +311,11 @@ namespace StarSalvager
                     return GetLocalPositionOfCenterOfGridSquareAtCoordinates(randomTop);
                 }
             }
+
+            /*if (gridRegion.y >= 0.05f && gridRegion.x <= 0.95)
+            {
+                Debug.Log("Fail to find in scan " + scanRadius + " --- " + gridRegion);
+            }*/
 
             return GetLocalPositionOfRandomGridSquareInGridRegion(scanRadius - 1, gridRegion, inRandomYLevel);
         }

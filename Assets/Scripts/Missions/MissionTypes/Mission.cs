@@ -24,7 +24,7 @@ namespace StarSalvager.Missions
             m_currentAmount = 0;
             m_missionName = missionRemoteData.MissionName;
             m_missionDescription = missionRemoteData.MissionDescription;
-            m_amountNeeded = missionRemoteData.AmountNeeded;
+            m_amountNeeded = Mathf.Max(1, missionRemoteData.AmountNeeded);
             missionUnlockChecks = missionRemoteData.GetMissionUnlockData();
         }
 
