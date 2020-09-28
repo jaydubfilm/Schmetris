@@ -387,7 +387,7 @@ namespace StarSalvager.UI
             SetResourceSliderBounds(BIT_TYPE.GREEN, 0, playerData.liquidCapacity[BIT_TYPE.GREEN]);
             SetResourceSliderBounds(BIT_TYPE.GREY, 0, playerData.liquidCapacity[BIT_TYPE.GREY]);
 
-            SetResourceSliderBounds(BIT_TYPE.BLUE, 0, 300);
+            SetResourceSliderBounds(BIT_TYPE.BLUE, 0, playerData.ResourceCapacities[BIT_TYPE.BLUE]);
             SetResourceSliderBounds(BIT_TYPE.YELLOW, 0, playerData.liquidCapacity[BIT_TYPE.YELLOW]);
 
             SetFuelValue(playerData.liquidResource[BIT_TYPE.RED]);
