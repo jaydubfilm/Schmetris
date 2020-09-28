@@ -9,10 +9,10 @@ namespace StarSalvager
     [Serializable]
     public class FacilityInitialData
     {
-        [FoldoutGroup("$Name"), ValueDropdown("GetTypes")]
+        [FoldoutGroup("$GetHeaderValue"), ValueDropdown("GetTypes")]
         public int type;
 
-        [FoldoutGroup("$Name")]
+        [FoldoutGroup("$GetHeaderValue")]
         public int level;
 
         //This only compares Type and not all individual properties
@@ -75,6 +75,11 @@ namespace StarSalvager
             }
 
             return types;
+        }
+
+        private string GetHeaderValue()
+        {
+            return ((FACILITY_TYPE)type).ToString();
         }
 
         private void UpdateValue()
