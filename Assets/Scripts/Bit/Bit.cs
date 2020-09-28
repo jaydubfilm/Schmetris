@@ -243,7 +243,7 @@ namespace StarSalvager
             transform.rotation = Quaternion.identity;
             SetRotating(false);
 
-            renderer.sortingOrder = 0;
+            SetSortingLayer("Default");
 
             if (_damage)
             {

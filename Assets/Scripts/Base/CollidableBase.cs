@@ -116,6 +116,12 @@ namespace StarSalvager
             collider.enabled = state;
         }
         
+        public virtual void SetSortingLayer(string sortingLayerName, int sortingOrder = 0)
+        {
+           renderer.sortingLayerName = sortingLayerName;
+           renderer.sortingOrder = sortingOrder;
+        }
+        
         //============================================================================================================//
         
         protected virtual bool TryGetRayDirectionFromBot(DIRECTION direction, out Vector2 rayDirection)
