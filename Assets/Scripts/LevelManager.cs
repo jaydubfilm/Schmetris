@@ -269,6 +269,7 @@ namespace StarSalvager
                     Alert.ShowAlert("Out of water", "Your scrapyard is out of water. You must return now.", "Ok", () =>
                     {
                         IsWaveProgressing = true;
+                        EndWaveState = false;
                         SavePlayerData();
                         m_levelManagerUI.ToggleBetweenWavesUIActive(false);
                         ProcessScrapyardUsageBeginAnalytics();
