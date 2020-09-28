@@ -717,12 +717,12 @@ namespace StarSalvager.Utilities
                             if (!PlayerPersistentData.PlayerData.resources.ContainsKey(value))
                                 continue;
 
-                            PlayerPersistentData.PlayerData.AddResource(value, intAmount);
+                            PlayerPersistentData.PlayerData.SetResources(value, intAmount);
                         }
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
-                        PlayerPersistentData.PlayerData.AddResource(bitType, intAmount);
+                        PlayerPersistentData.PlayerData.SetResources(bitType, intAmount);
                     }
                     else
                     {
