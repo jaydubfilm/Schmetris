@@ -33,6 +33,16 @@ namespace StarSalvager
         public int Probability => probability;
 
         [SerializeField, FoldoutGroup("$Name"), ShowIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
+        private bool isGearRange;
+        public bool IsGearRange => isGearRange;
+
+        bool showGearValue => rdsData == TYPE.Gears && isGearRange == false;
+        [SerializeField, FoldoutGroup("$Name"), ShowIf("showGearValue"), HideIf("rdsData", TYPE.Null)]
+        private int gearValue;
+        public int GearValue => gearValue;
+
+        bool showGearRange => rdsData == TYPE.Gears && isGearRange == true;
+        [SerializeField, FoldoutGroup("$Name"), ShowIf("showGearRange"), HideIf("rdsData", TYPE.Null)]
         private Vector2Int gearDropRange;
         public Vector2Int GearDropRange => gearDropRange;
 

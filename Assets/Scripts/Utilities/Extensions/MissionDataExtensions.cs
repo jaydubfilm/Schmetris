@@ -15,7 +15,12 @@ namespace StarSalvager.Utilities.Extensions
 
             foreach (MissionData missionData in missionDatas)
             {
-                switch (missionData.ClassType)
+                int i = MissionManager.MissionTypes.IndexOf(m => m.MissionEventType == missionData.MissionEventType);
+
+                Mission newMission = (Mission)Activator.CreateInstance(MissionManager.MissionTypes[i].GetType(), missionData);
+                missions.Add(newMission);
+
+                /*switch (missionData.ClassType)
                 {
                     case "ResourceCollectedMission":
                         missions.Add(new ResourceCollectedMission(missionData.ResourceType, missionData.IsFromEnemyLoot, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
@@ -62,7 +67,7 @@ namespace StarSalvager.Utilities.Extensions
                     case "ComponentCollectedMission":
                         missions.Add(new ComponentCollectedMission(missionData.ComponentType, missionData.MissionName, missionData.MissionDescription, missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas(), missionData.AmountNeeded));
                         break;
-                }
+                }*/
             }
 
             return missions;

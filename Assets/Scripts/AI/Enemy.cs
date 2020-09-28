@@ -442,7 +442,13 @@ namespace StarSalvager.AI
                 return;
             
             LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
-            MissionManager.ProcessEnemyKilledMissionData(m_enemyData.EnemyType, 1);
+
+            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+            {
+                enemyTypeString = m_enemyData.EnemyType,
+                intAmount = 1
+            };
+            MissionManager.ProcessMissionData(typeof(EnemyKilledMission), missionProgressEventData);
             
             SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             AudioController.PlaySound(SOUND.ENEMY_DEATH);

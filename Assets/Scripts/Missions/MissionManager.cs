@@ -2,6 +2,8 @@
 using StarSalvager.Values;
 using StarSalvager.Utilities.FileIO;
 using UnityEngine;
+using System;
+using Boo.Lang;
 
 namespace StarSalvager.Missions
 {
@@ -12,6 +14,42 @@ namespace StarSalvager.Missions
         public static string RecentCompletedMissionName = "";
         public static int RecentCompletedSectorName;
         public static int RecentCompletedWaveName;
+
+        private static bool HasInit;
+        public static List<Mission> MissionTypes 
+        { get
+            {
+                if (!HasInit)
+                {
+                    Init();
+                }
+                return m_missionTypes;
+            } 
+        }
+        private static List<Mission> m_missionTypes;
+
+        public static void Init()
+        {
+            m_missionTypes = new List<Mission>();
+
+            m_missionTypes.Add(new AsteroidCollisionMission(new MissionRemoteData()));
+            m_missionTypes.Add(new ResourceCollectedMission(new MissionRemoteData()));
+            m_missionTypes.Add(new EnemyKilledMission(new MissionRemoteData()));
+            m_missionTypes.Add(new LevelProgressMission(new MissionRemoteData()));
+            m_missionTypes.Add(new ComboBlocksMission(new MissionRemoteData()));
+            m_missionTypes.Add(new CraftPartMission(new MissionRemoteData()));
+            m_missionTypes.Add(new WhiteBumperMission(new MissionRemoteData()));
+            m_missionTypes.Add(new ChainWavesMission(new MissionRemoteData()));
+            m_missionTypes.Add(new LiquidResourceConvertedMission(new MissionRemoteData()));
+            m_missionTypes.Add(new SectorsCompletedMission(new MissionRemoteData()));
+            m_missionTypes.Add(new FlightLengthMission(new MissionRemoteData()));
+            m_missionTypes.Add(new ChainBonusShapesMission(new MissionRemoteData()));
+            m_missionTypes.Add(new FacilityUpgradeMission(new MissionRemoteData()));
+            m_missionTypes.Add(new PlayerLevelMission(new MissionRemoteData()));
+            m_missionTypes.Add(new ComponentCollectedMission(new MissionRemoteData()));
+
+            HasInit = true;
+        }
 
         public static MissionsMasterData MissionsMasterData
         {
@@ -57,288 +95,21 @@ namespace StarSalvager.Missions
             MissionsCurrentData.AddMission(MissionsMasterData.GetMasterMissions().Find(m => m.m_missionName == missionName));
         }
 
-        //Next functions receive information from outside the missionmanager when an event relevant to missions has occurred.
-        public static void ProcessResourceCollectedMissionData(BIT_TYPE resourceType, int amount, bool isFromEnemyLoot)
+        public static void ProcessMissionData(Type missionType, MissionProgressEventData missionProgressEventData)
         {
-            //Debug.Log("Resource mission event");
             for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
             {
-                if (MissionsCurrentData.CurrentMissions[i] is ResourceCollectedMission resourceCollectedMission)
-                {
-                    resourceCollectedMission.ProcessMissionData(resourceType, amount, isFromEnemyLoot);
-                    if (resourceCollectedMission.MissionComplete())
-                    {
-                        Debug.Log("Mission " + resourceCollectedMission.m_missionName + " Complete!");
-                        resourceCollectedMission.MissionStatus = MISSION_STATUS.COMPLETED;
-                        MissionsCurrentData.CompleteMission(resourceCollectedMission);
-                        ProcessMissionComplete(resourceCollectedMission.m_missionName);
-                    }
-                }
-            }
-        }
+                Mission mission = MissionsCurrentData.CurrentMissions[i];
 
-        public static void ProcessLiquidResourceConvertedMission(BIT_TYPE resourceType, float amount)
-        {
-            //Debug.Log("Resource mission event");
-            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
-            {
-                if (MissionsCurrentData.CurrentMissions[i] is LiquidResourceConvertedMission liquidResourceConvertedMission)
+                if (mission.GetType() == missionType)
                 {
-                    liquidResourceConvertedMission.ProcessMissionData(resourceType, amount);
-                    if (liquidResourceConvertedMission.MissionComplete())
+                    mission.ProcessMissionData(missionProgressEventData);
+                    if (mission.MissionComplete())
                     {
-                        Debug.Log("Mission " + liquidResourceConvertedMission.m_missionName + " Complete!");
-                        liquidResourceConvertedMission.MissionStatus = MISSION_STATUS.COMPLETED;
-                        MissionsCurrentData.CompleteMission(liquidResourceConvertedMission);
-                        ProcessMissionComplete(liquidResourceConvertedMission.m_missionName);
-                    }
-                }
-            }
-        }
-
-        public static void ProcessEnemyKilledMissionData(string enemyType, int amount)
-        {
-            //Debug.Log("Enemy killed mission event");
-            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
-            {
-                if (MissionsCurrentData.CurrentMissions[i] is EnemyKilledMission enemyKilledMission)
-                {
-                    enemyKilledMission.ProcessMissionData(enemyType, amount);
-                    if (enemyKilledMission.MissionComplete())
-                    {
-                        Debug.Log("Mission " + enemyKilledMission.m_missionName + " Complete!");
-                        enemyKilledMission.MissionStatus = MISSION_STATUS.COMPLETED;
-                        MissionsCurrentData.CompleteMission(enemyKilledMission);
-                        ProcessMissionComplete(enemyKilledMission.m_missionName);
-                    }
-                }
-            }
-        }
-
-        public static void ProcessComboBlocksMissionData(BIT_TYPE comboType, int comboLevel, int amount, bool isAdvancedCombo)
-        {
-            //Debug.Log("Combo Blocks mission event");
-            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
-            {
-                if (MissionsCurrentData.CurrentMissions[i] is ComboBlocksMission comboBlocksMission)
-                {
-                    comboBlocksMission.ProcessMissionData(comboType, comboLevel, amount, isAdvancedCombo);
-                    if (comboBlocksMission.MissionComplete())
-                    {
-                        Debug.Log("Mission " + comboBlocksMission.m_missionName + " Complete!");
-                        comboBlocksMission.MissionStatus = MISSION_STATUS.COMPLETED;
-                        MissionsCurrentData.CompleteMission(comboBlocksMission);
-                        ProcessMissionComplete(comboBlocksMission.m_missionName);
-                    }
-                }
-            }
-        }
-
-        public static void ProcessLevelProgressMissionData(int sectorNumber, int waveNumber)
-        {
-            //Debug.Log("Level Progress mission event");
-            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
-            {
-                if (MissionsCurrentData.CurrentMissions[i] is LevelProgressMission levelProgressMission)
-                {
-                    levelProgressMission.ProcessMissionData(sectorNumber, waveNumber);
-                    if (levelProgressMission.MissionComplete())
-                    {
-                        Debug.Log("Mission " + levelProgressMission.m_missionName + " Complete!");
-                        levelProgressMission.MissionStatus = MISSION_STATUS.COMPLETED;
-                        MissionsCurrentData.CompleteMission(levelProgressMission);
-                        ProcessMissionComplete(levelProgressMission.m_missionName);
-                    }
-                }
-            }
-            ProcessWaveComplete(sectorNumber, waveNumber);
-        }
-
-        public static void ProcessSectorCompletedMissionData(int sectorNumber)
-        {
-            //Debug.Log("Level Progress mission event");
-            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
-            {
-                if (MissionsCurrentData.CurrentMissions[i] is SectorsCompletedMission SectorsCompletedMission)
-                {
-                    SectorsCompletedMission.ProcessMissionData(sectorNumber);
-                    if (SectorsCompletedMission.MissionComplete())
-                    {
-                        Debug.Log("Mission " + SectorsCompletedMission.m_missionName + " Complete!");
-                        SectorsCompletedMission.MissionStatus = MISSION_STATUS.COMPLETED;
-                        MissionsCurrentData.CompleteMission(SectorsCompletedMission);
-                        ProcessMissionComplete(SectorsCompletedMission.m_missionName);
-                    }
-                }
-            }
-        }
-
-        public static void ProcessFlightLengthMissionData(float flightLength)
-        {
-            //Debug.Log("Level Progress mission event");
-            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
-            {
-                if (MissionsCurrentData.CurrentMissions[i] is FlightLengthMission flightLengthMission)
-                {
-                    flightLengthMission.ProcessMissionData(flightLength);
-                    if (flightLengthMission.MissionComplete())
-                    {
-                        Debug.Log("Mission " + flightLengthMission.m_missionName + " Complete!");
-                        flightLengthMission.MissionStatus = MISSION_STATUS.COMPLETED;
-                        MissionsCurrentData.CompleteMission(flightLengthMission);
-                        ProcessMissionComplete(flightLengthMission.m_missionName);
-                    }
-                }
-            }
-        }
-
-        public static void ProcessChainWavesMissionData(int waveNumber)
-        {
-            //Debug.Log("Chain Waves mission event");
-            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
-            {
-                if (MissionsCurrentData.CurrentMissions[i] is ChainWavesMission chainWavesMission)
-                {
-                    chainWavesMission.ProcessMissionData(waveNumber);
-                    if (chainWavesMission.MissionComplete())
-                    {
-                        Debug.Log("Mission " + chainWavesMission.m_missionName + " Complete!");
-                        chainWavesMission.MissionStatus = MISSION_STATUS.COMPLETED;
-                        MissionsCurrentData.CompleteMission(chainWavesMission);
-                        ProcessMissionComplete(chainWavesMission.m_missionName);
-                    }
-                }
-            }
-        }
-
-        public static void ProcessCraftPartMissionData(PART_TYPE partType, int level)
-        {
-            //Debug.Log("Craft part mission event");
-            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
-            {
-                if (MissionsCurrentData.CurrentMissions[i] is CraftPartMission craftPartMission)
-                {
-                    craftPartMission.ProcessMissionData(partType, level);
-                    if (craftPartMission.MissionComplete())
-                    {
-                        Debug.Log("Mission " + craftPartMission.m_missionName + " Complete!");
-                        craftPartMission.MissionStatus = MISSION_STATUS.COMPLETED;
-                        MissionsCurrentData.CompleteMission(craftPartMission);
-                        ProcessMissionComplete(craftPartMission.m_missionName);
-                    }
-                }
-            }
-        }
-
-        public static void ProcessWhiteBumperMissionData(int bitsShifted, bool shiftedThroughCenter, bool orphanedBit, bool hasCombos)
-        {
-            //Debug.Log("White Bumper mission event");
-            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
-            {
-                if (MissionsCurrentData.CurrentMissions[i] is WhiteBumperMission whiteBumperMission)
-                {
-                    whiteBumperMission.ProcessMissionData(shiftedThroughCenter, orphanedBit, hasCombos, PART_TYPE.CORE, bitsShifted);
-                    if (whiteBumperMission.MissionComplete())
-                    {
-                        Debug.Log("Mission " + whiteBumperMission.m_missionName + " Complete!");
-                        whiteBumperMission.MissionStatus = MISSION_STATUS.COMPLETED;
-                        MissionsCurrentData.CompleteMission(whiteBumperMission);
-                        ProcessMissionComplete(whiteBumperMission.m_missionName);
-                    }
-                }
-            }
-        }
-
-        public static void ProcessAsteroidCollisionMissionData(BIT_TYPE? bitType, int amount)
-        {
-            //Debug.Log("Asteroid collision mission event");
-            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
-            {
-                if (MissionsCurrentData.CurrentMissions[i] is AsteroidCollisionMission asteroidCollisionMission)
-                {
-                    asteroidCollisionMission.ProcessMissionData(bitType, amount);
-                    if (asteroidCollisionMission.MissionComplete())
-                    {
-                        Debug.Log("Mission " + asteroidCollisionMission.m_missionName + " Complete!");
-                        asteroidCollisionMission.MissionStatus = MISSION_STATUS.COMPLETED;
-                        MissionsCurrentData.CompleteMission(asteroidCollisionMission);
-                        ProcessMissionComplete(asteroidCollisionMission.m_missionName);
-                    }
-                }
-            }
-        }
-
-        public static void ProcessChainBonusShapesMissionData(int numBonusShapesInWave)
-        {
-            //Debug.Log("Chain Waves mission event");
-            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
-            {
-                if (MissionsCurrentData.CurrentMissions[i] is ChainBonusShapesMission chainBonusShapesMission)
-                {
-                    chainBonusShapesMission.ProcessMissionData(numBonusShapesInWave);
-                    if (chainBonusShapesMission.MissionComplete())
-                    {
-                        Debug.Log("Mission " + chainBonusShapesMission.m_missionName + " Complete!");
-                        chainBonusShapesMission.MissionStatus = MISSION_STATUS.COMPLETED;
-                        MissionsCurrentData.CompleteMission(chainBonusShapesMission);
-                        ProcessMissionComplete(chainBonusShapesMission.m_missionName);
-                    }
-                }
-            }
-        }
-
-        public static void ProcessFacilityUpgradeMission(FACILITY_TYPE facilityType, int facilityLevel)
-        {
-            //Debug.Log("Chain Waves mission event");
-            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
-            {
-                if (MissionsCurrentData.CurrentMissions[i] is FacilityUpgradeMission facilityUpgradeMission)
-                {
-                    facilityUpgradeMission.ProcessMissionData(facilityType, facilityLevel);
-                    if (facilityUpgradeMission.MissionComplete())
-                    {
-                        Debug.Log("Mission " + facilityUpgradeMission.m_missionName + " Complete!");
-                        facilityUpgradeMission.MissionStatus = MISSION_STATUS.COMPLETED;
-                        MissionsCurrentData.CompleteMission(facilityUpgradeMission);
-                        ProcessMissionComplete(facilityUpgradeMission.m_missionName);
-                    }
-                }
-            }
-        }
-
-        public static void ProcessComponentCollectedMissionData(COMPONENT_TYPE componentType, int amount)
-        {
-            //Debug.Log("Resource mission event");
-            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
-            {
-                if (MissionsCurrentData.CurrentMissions[i] is ComponentCollectedMission componentCollectedMission)
-                {
-                    componentCollectedMission.ProcessMissionData(componentType, amount);
-                    if (componentCollectedMission.MissionComplete())
-                    {
-                        Debug.Log("Mission " + componentCollectedMission.m_missionName + " Complete!");
-                        componentCollectedMission.MissionStatus = MISSION_STATUS.COMPLETED;
-                        MissionsCurrentData.CompleteMission(componentCollectedMission);
-                        ProcessMissionComplete(componentCollectedMission.m_missionName);
-                    }
-                }
-            }
-        }
-
-        public static void ProcessPlayerLevelMission(int playerLevel)
-        {
-            //Debug.Log("Chain Waves mission event");
-            for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
-            {
-                if (MissionsCurrentData.CurrentMissions[i] is PlayerLevelMission facilityUpgradeMission)
-                {
-                    facilityUpgradeMission.ProcessMissionData(playerLevel);
-                    if (facilityUpgradeMission.MissionComplete())
-                    {
-                        Debug.Log("Mission " + facilityUpgradeMission.m_missionName + " Complete!");
-                        facilityUpgradeMission.MissionStatus = MISSION_STATUS.COMPLETED;
-                        MissionsCurrentData.CompleteMission(facilityUpgradeMission);
-                        ProcessMissionComplete(facilityUpgradeMission.m_missionName);
+                        Debug.Log("Mission " + mission.m_missionName + " Complete!");
+                        mission.MissionStatus = MISSION_STATUS.COMPLETED;
+                        MissionsCurrentData.CompleteMission(mission);
+                        ProcessMissionComplete(mission.m_missionName);
                     }
                 }
             }

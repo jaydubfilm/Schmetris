@@ -46,7 +46,13 @@ namespace StarSalvager
             };
 
             PlayerPersistentData.PlayerData.SubtractPartCosts(blueprint.partType, blueprint.level, false);
-            MissionManager.ProcessCraftPartMissionData(blueprint.partType, blueprint.level);
+
+            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+            {
+                partType = blueprint.partType,
+                level = blueprint.level
+            };
+            MissionManager.ProcessMissionData(typeof(CraftPartMission), missionProgressEventData);
 
             if (blueprint.partType == PART_TYPE.CORE)
             {

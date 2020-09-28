@@ -27,9 +27,6 @@ namespace StarSalvager
 {
     public class LevelManager : SceneSingleton<LevelManager>, IReset, IPausable
     {
-        public bool generateRandomSeed;
-        [DisableIf("$generateRandomSeed")] public int seed = 1234567890;
-
         private List<Bot> m_bots;
         public Bot BotObject => m_bots[0];
 
@@ -134,12 +131,6 @@ namespace StarSalvager
         {
             m_bots = new List<Bot>();
 
-            if (generateRandomSeed)
-            {
-                seed = Random.Range(int.MinValue, int.MaxValue);
-                Debug.Log($"Generated Seed {seed}");
-            }
-
             RegisterPausable();
             m_levelManagerUI = FindObjectOfType<LevelManagerUI>();
 
@@ -198,8 +189,6 @@ namespace StarSalvager
                 }
                 //Debug.LogError("Bot Died. Press 'R' to restart");
             };
-
-            Random.InitState(seed);
         }
 
         private void Update()
@@ -383,6 +372,9 @@ namespace StarSalvager
                 {"Bot Layout", JsonConvert.SerializeObject(BotObject.GetBlockDatas(), Formatting.None)}
             };
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.FlightBegin, eventDataDictionary: flightBeginAnalyticsDictionary);
+
+            Random.InitState(CurrentWaveData.WaveSeed);
+            Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
         }
 
         public void Reset()
@@ -432,6 +424,16 @@ namespace StarSalvager
 
             ObstacleManager.IncreaseSpeedAllOffGridMoving(3.0f);
 
+            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+            {
+                sectorNumber = Globals.CurrentSector + 1,
+                waveNumber = Globals.CurrentWave + 1,
+                floatAmount = m_levelTimer
+            };
+            MissionManager.ProcessMissionData(typeof(LevelProgressMission), missionProgressEventData);
+            MissionManager.ProcessMissionData(typeof(ChainWavesMission), missionProgressEventData);
+            MissionManager.ProcessMissionData(typeof(FlightLengthMission), missionProgressEventData);
+
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
                 Toast.AddToast("Wave Complete!", time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
@@ -442,15 +444,14 @@ namespace StarSalvager
                     DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), false);
                 }
                 PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector, Globals.CurrentWave + 1);
-                MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
-                MissionManager.ProcessChainWavesMissionData(Globals.CurrentWave + 1);
-                MissionManager.ProcessFlightLengthMissionData(m_levelTimer);
                 EndWaveState = true;
                 Globals.CurrentWave++;
                 m_levelTimer += m_waveTimer;
                 m_waveTimer = 0;
                 GameUi.SetCurrentWaveText("Complete");
                 EnemyManager.SetEnemiesInert(true);
+                Random.InitState(CurrentWaveData.WaveSeed);
+                Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
             }
             else
             {
@@ -461,10 +462,7 @@ namespace StarSalvager
                     DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), false);
                 }
                 PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector + 1, 0);
-                MissionManager.ProcessLevelProgressMissionData(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
-                MissionManager.ProcessChainWavesMissionData(Globals.CurrentWave + 1);
-                MissionManager.ProcessSectorCompletedMissionData(Globals.CurrentSector + 1);
-                MissionManager.ProcessFlightLengthMissionData(m_levelTimer);
+                MissionManager.ProcessMissionData(typeof(SectorsCompletedMission), new MissionProgressEventData());
                 ProcessLevelCompleteAnalytics();
                 ProcessScrapyardUsageBeginAnalytics();
                 Globals.CurrentWave = 0;

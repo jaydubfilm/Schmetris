@@ -1004,19 +1004,41 @@ namespace StarSalvager
             var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
             explosion.transform.position = attachable.transform.position;
 
+            MissionProgressEventData missionProgressEventData;
+
             switch (attachable)
             {
                 case Bit bit:
-                    MissionManager.ProcessAsteroidCollisionMissionData(bit.Type, 1);
+                    missionProgressEventData = new MissionProgressEventData
+                    {
+                        bitType = bit.Type,
+                        intAmount = 1
+                    };
+                    MissionManager.ProcessMissionData(typeof(AsteroidCollisionMission), missionProgressEventData);
                     break;
                 case Component _:
-                    MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
+                    missionProgressEventData = new MissionProgressEventData
+                    {
+                        bitType = null,
+                        intAmount = 1
+                    };
+                    MissionManager.ProcessMissionData(typeof(AsteroidCollisionMission), missionProgressEventData);
                     break;
                 case Part _:
-                    MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
+                    missionProgressEventData = new MissionProgressEventData
+                    {
+                        bitType = null,
+                        intAmount = 1
+                    };
+                    MissionManager.ProcessMissionData(typeof(AsteroidCollisionMission), missionProgressEventData);
                     break;
                 case EnemyAttachable enemyAttachable:
-                    MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
+                    missionProgressEventData = new MissionProgressEventData
+                    {
+                        bitType = null,
+                        intAmount = 1
+                    };
+                    MissionManager.ProcessMissionData(typeof(AsteroidCollisionMission), missionProgressEventData);
                     enemyAttachable.SetAttached(false);
                     return;
             }
@@ -1064,30 +1086,40 @@ namespace StarSalvager
             
             switch (newAttachable)
             {
-                    case Bit bit:
-                        if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 1, bit.IsFromEnemyLoot);
-                        
-                        if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
-                        
-                        break;
-                    case Component _ when checkForCombo:
-                        CheckForCombosAround<COMPONENT_TYPE>(coordinate);
-                        break;
-                    case Part _:
-                        BotPartsLogic.UpdatePartsList();
-                        break;
-
-                    //This can NEVER happen as Shape is not IAttachable
-                    /*case Shape shape:
-                        if (updateMissions)
+                case Bit bit:
+                    if (updateMissions)
+                    {
+                        MissionProgressEventData missionProgressEventData = new MissionProgressEventData
                         {
-                            foreach (var attachedBit in shape.AttachedBits)
-                            {
-                                MissionManager.ProcessResourceCollectedMissionData(attachedBit.Type,
-                                    FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(attachedBit.Type).levels[attachedBit.level].resources);
-                            }
+                            bitType = bit.Type,
+                            intAmount = 1,
+                            bitDroppedFromEnemyLoot = bit.IsFromEnemyLoot
+                        };
+                        
+                        MissionManager.ProcessMissionData(typeof(ResourceCollectedMission), missionProgressEventData);
+                    }
+                        
+                    if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
+                        
+                    break;
+                case Component _ when checkForCombo:
+                    CheckForCombosAround<COMPONENT_TYPE>(coordinate);
+                    break;
+                case Part _:
+                    BotPartsLogic.UpdatePartsList();
+                    break;
+
+                //This can NEVER happen as Shape is not IAttachable
+                /*case Shape shape:
+                    if (updateMissions)
+                    {
+                        foreach (var attachedBit in shape.AttachedBits)
+                        {
+                            MissionManager.ProcessResourceCollectedMissionData(attachedBit.Type,
+                                FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(attachedBit.Type).levels[attachedBit.level].resources);
                         }
-                        break;*/
+                    }
+                    break;*/
             }
             
             if(newAttachable.CountTowardsMagnetism)
@@ -1119,9 +1151,19 @@ namespace StarSalvager
             switch (newAttachable)
             {
                 case Bit bit:
+                    if (updateMissions)
+                    {
+                        MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                        {
+                            bitType = bit.Type,
+                            intAmount = 1,
+                            bitDroppedFromEnemyLoot = bit.IsFromEnemyLoot
+                        };
+
+                        MissionManager.ProcessMissionData(typeof(ResourceCollectedMission), missionProgressEventData);
+                    }
+
                     if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
-                    
-                    if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 1, bit.IsFromEnemyLoot);
                     break;
                 case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
@@ -1204,11 +1246,20 @@ namespace StarSalvager
             switch (newAttachable)
             {
                 case Bit bit:
+                    if (updateMissions)
+                    {
+                        MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                        {
+                            bitType = bit.Type,
+                            intAmount = 1,
+                            bitDroppedFromEnemyLoot = bit.IsFromEnemyLoot
+                        };
+
+                        MissionManager.ProcessMissionData(typeof(ResourceCollectedMission), missionProgressEventData);
+                    }
+
                     if (checkForCombo)
                         CheckForCombosAround<BIT_TYPE>(coordinate);
-                    
-                    if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 1, bit.IsFromEnemyLoot);
-                    
                     break;
                 case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
@@ -1800,7 +1851,15 @@ namespace StarSalvager
                 }
 
                 CheckForBonusShapeMatches();
-                MissionManager.ProcessWhiteBumperMissionData(toShift.Count, passedCore, hasDetached, hasCombos);
+                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                {
+                    intAmount = toShift.Count,
+                    bumperShiftedThroughPart = passedCore,
+                    bumperOrphanedBits = hasDetached,
+                    bumperCausedCombos = hasCombos
+                };
+
+                MissionManager.ProcessMissionData(typeof(WhiteBumperMission), missionProgressEventData);
 
             }));
 
@@ -1939,7 +1998,14 @@ namespace StarSalvager
                 if (pendingCombo.ToMove[0] is Bit bit)
                 {
                     bool isAdvancedCombo = pendingCombo.ComboData.type == Utilities.Puzzle.Data.COMBO.TEE || pendingCombo.ComboData.type == Utilities.Puzzle.Data.COMBO.ANGLE;
-                    MissionManager.ProcessComboBlocksMissionData(bit.Type, bit.level + 1, 1, isAdvancedCombo);
+                    MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                    {
+                        bitType = bit.Type,
+                        intAmount = 1,
+                        level = bit.level,
+                        comboIsAdvancedCombo = isAdvancedCombo
+                    };
+                    MissionManager.ProcessMissionData(typeof(ComboBlocksMission), missionProgressEventData);
                 }
                 
                 SimpleComboSolver(pendingCombo);
@@ -1966,7 +2032,14 @@ namespace StarSalvager
             if (iCanCombo is Bit bit)
             {
                 bool isAdvancedCombo = data.comboData.type == Utilities.Puzzle.Data.COMBO.TEE || data.comboData.type == Utilities.Puzzle.Data.COMBO.ANGLE;
-                MissionManager.ProcessComboBlocksMissionData(bit.Type, iCanCombo.level + 1, 1, isAdvancedCombo);
+                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                {
+                    bitType = bit.Type,
+                    intAmount = 1,
+                    level = iCanCombo.level + 1,
+                    comboIsAdvancedCombo = isAdvancedCombo
+                };
+                MissionManager.ProcessMissionData(typeof(ComboBlocksMission), missionProgressEventData);
             }
             
             SimpleComboSolver(data.comboData, data.toMove);

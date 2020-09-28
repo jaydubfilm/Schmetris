@@ -12,12 +12,20 @@ namespace StarSalvager.Missions
         public int m_comboLevel;
         public bool m_isAdvancedCombo;
 
-        public ComboBlocksMission(BIT_TYPE? comboType, int comboLevel, bool isAdvancedCombo, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+        public ComboBlocksMission(MissionRemoteData missionRemoteData) : base(missionRemoteData)
         {
             MissionEventType = MISSION_EVENT_TYPE.COMBO_BLOCKS;
-            m_comboType = comboType;
-            m_comboLevel = comboLevel;
-            m_isAdvancedCombo = isAdvancedCombo;
+            m_comboType = missionRemoteData.ResourceValue();
+            m_comboLevel = missionRemoteData.ComboLevel;
+            m_isAdvancedCombo = missionRemoteData.IsAdvancedCombo;
+        }
+
+        public ComboBlocksMission(MissionData missionData) : base(missionData)
+        {
+            MissionEventType = MISSION_EVENT_TYPE.COMBO_BLOCKS;
+            m_comboType = missionData.BitType;
+            m_comboLevel = missionData.Level;
+            m_isAdvancedCombo = missionData.ComboIsAdvancedCombo;
         }
 
         public override bool MissionComplete()
@@ -25,14 +33,19 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(BIT_TYPE comboType, int comboLevel, int amount, bool isAdvancedCombo)
+        public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
         {
+            BIT_TYPE bitType = missionProgressEventData.bitType.Value;
+            int amount = missionProgressEventData.intAmount;
+            int level = missionProgressEventData.level;
+            bool isAdvancedCombo = missionProgressEventData.comboIsAdvancedCombo;
+
             if (!isAdvancedCombo && m_isAdvancedCombo)
             {
                 return;
             }
-            
-            if ((!m_comboType.HasValue || comboType == m_comboType) && m_comboLevel == comboLevel)
+
+            if ((!m_comboType.HasValue || bitType == m_comboType) && m_comboLevel == level)
             {
                 m_currentAmount += amount;
             }
@@ -51,9 +64,9 @@ namespace StarSalvager.Missions
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
-                ResourceType = m_comboType,
-                ComboLevel = m_comboLevel,
-                IsAdvancedCombo = m_isAdvancedCombo
+                BitType = m_comboType,
+                Level = m_comboLevel,
+                ComboIsAdvancedCombo = m_isAdvancedCombo
             };
         }
     }

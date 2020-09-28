@@ -7,7 +7,12 @@ namespace StarSalvager.Missions
     [System.Serializable]
     public class SectorsCompletedMission : Mission
     {
-        public SectorsCompletedMission(string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+        public SectorsCompletedMission(MissionRemoteData missionRemoteData) : base(missionRemoteData)
+        {
+            MissionEventType = MISSION_EVENT_TYPE.SECTORS_COMPLETED;
+        }
+
+        public SectorsCompletedMission(MissionData missionData) : base(missionData)
         {
             MissionEventType = MISSION_EVENT_TYPE.SECTORS_COMPLETED;
         }
@@ -17,7 +22,7 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(int sectorNumber)
+        public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
         {
             m_currentAmount += 1;
         }

@@ -33,9 +33,9 @@ namespace StarSalvager.Values
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _resources = new Dictionary<BIT_TYPE, int>
         {
-            {BIT_TYPE.RED, 200},
-            {BIT_TYPE.BLUE, 100},
-            {BIT_TYPE.YELLOW, 100},
+            {BIT_TYPE.RED, 100},
+            {BIT_TYPE.BLUE, 50},
+            {BIT_TYPE.YELLOW, 0},
             {BIT_TYPE.GREEN, 0},
             {BIT_TYPE.GREY, 0},
         };
@@ -45,11 +45,11 @@ namespace StarSalvager.Values
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _resourceCapacity = new Dictionary<BIT_TYPE, int>
         {
-            {BIT_TYPE.RED, 5000},
-            {BIT_TYPE.BLUE, 5000},
-            {BIT_TYPE.YELLOW, 5000},
-            {BIT_TYPE.GREEN, 5000},
-            {BIT_TYPE.GREY, 5000},
+            {BIT_TYPE.RED, 200},
+            {BIT_TYPE.BLUE, 200},
+            {BIT_TYPE.YELLOW, 200},
+            {BIT_TYPE.GREEN, 200},
+            {BIT_TYPE.GREY, 200},
         };
 
         [JsonProperty]
@@ -142,7 +142,12 @@ namespace StarSalvager.Values
                     LevelManager.Instance.WaveEndSummaryData.numLevelsGained++;
                 }
                 Level++;
-                MissionManager.ProcessPlayerLevelMission(Level);
+
+                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                {
+                    level = Level
+                };
+                MissionManager.ProcessMissionData(typeof(PlayerLevelMission), missionProgressEventData);
             }
             
             OnValuesChanged?.Invoke();
@@ -326,7 +331,12 @@ namespace StarSalvager.Values
 
         public void AddLiquidResource(BIT_TYPE type, float amount)
         {
-            MissionManager.ProcessLiquidResourceConvertedMission(type, amount);
+            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+            {
+                bitType = type,
+                floatAmount = amount
+            };
+            MissionManager.ProcessMissionData(typeof(LiquidResourceConvertedMission), missionProgressEventData);
             _liquidResource[type] = Mathf.Clamp(liquidResource[type] + Mathf.Abs(amount), 0, liquidCapacity[type]);
             OnValuesChanged?.Invoke();
         }
@@ -514,7 +524,13 @@ namespace StarSalvager.Values
 
             if (triggerMissionCheck)
             {
-                MissionManager.ProcessFacilityUpgradeMission(type, level);
+                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                {
+                    facilityType = type,
+                    level = level
+                };
+
+                MissionManager.ProcessMissionData(typeof(FacilityUpgradeMission), missionProgressEventData);
             }
 
             int increaseAmount = remoteData.levels[level].increaseAmount;

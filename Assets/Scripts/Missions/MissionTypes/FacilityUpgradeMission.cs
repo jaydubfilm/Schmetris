@@ -11,11 +11,18 @@ namespace StarSalvager.Missions
         public FACILITY_TYPE m_facilityType;
         public int m_facilityLevel;
 
-        public FacilityUpgradeMission(FACILITY_TYPE facilityType, int facilitylevel, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded = 1.0f) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+        public FacilityUpgradeMission(MissionRemoteData missionRemoteData) : base(missionRemoteData)
         {
             MissionEventType = MISSION_EVENT_TYPE.FACILITY_UPGRADE;
-            m_facilityType = facilityType;
-            m_facilityLevel = facilitylevel - 1;
+            m_facilityType = missionRemoteData.FacilityType;
+            m_facilityLevel = missionRemoteData.FacilityLevel;
+        }
+
+        public FacilityUpgradeMission(MissionData missionData) : base(missionData)
+        {
+            MissionEventType = MISSION_EVENT_TYPE.FACILITY_UPGRADE;
+            m_facilityType = missionData.FacilityType;
+            m_facilityLevel = missionData.Level;
         }
 
         public override bool MissionComplete()
@@ -23,9 +30,12 @@ namespace StarSalvager.Missions
             return m_currentAmount >= m_amountNeeded;
         }
 
-        public void ProcessMissionData(FACILITY_TYPE facilityType, int facilityLevel)
+        public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
         {
-            if (facilityType == m_facilityType && facilityLevel >= m_facilityLevel)
+            FACILITY_TYPE facilityType = missionProgressEventData.facilityType;
+            int level = missionProgressEventData.level;
+            
+            if (facilityType == m_facilityType && level >= m_facilityLevel)
             {
                 m_currentAmount += 1;
             }
@@ -45,7 +55,7 @@ namespace StarSalvager.Missions
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
                 FacilityType = m_facilityType,
-                FacilityLevel = m_facilityLevel
+                Level = m_facilityLevel
             };
         }
     }

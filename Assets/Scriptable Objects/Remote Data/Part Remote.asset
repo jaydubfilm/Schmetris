@@ -27,9 +27,9 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 8
+        value: 6
       - key: Capacity
-        value: 50
+        value: 30
       - key: SMRTCapacity
         value: 2
       burnRate: 1
@@ -39,9 +39,9 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 16
+        value: 8
       - key: Capacity
-        value: 200
+        value: 100
       - key: SMRTCapacity
         value: 3
       burnRate: 2
@@ -91,9 +91,9 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 25
+        value: 10
       - key: Capacity
-        value: 500
+        value: 200
       - key: SMRTCapacity
         value: 4
       burnRate: 3
@@ -155,7 +155,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 5
+        value: 2
       burnRate: 0
       cost:
       - resourceType: 0
@@ -171,7 +171,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 10
+        value: 5
       burnRate: 0.1
       cost:
       - resourceType: 0
@@ -199,7 +199,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 20
+        value: 8
       burnRate: 0.17
       cost:
       - resourceType: 0
@@ -730,7 +730,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 50
+        value: 10
       burnRate: 0
       cost:
       - resourceType: 0
@@ -750,7 +750,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 100
+        value: 20
       burnRate: 0
       cost:
       - resourceType: 0
@@ -774,7 +774,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 200
+        value: 30
       burnRate: 0
       cost:
       - resourceType: 0
@@ -809,7 +809,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 100
+        value: 20
       burnRate: 0
       cost:
       - resourceType: 0
@@ -825,7 +825,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 200
+        value: 30
       burnRate: 0
       cost:
       - resourceType: 0
@@ -853,7 +853,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 500
+        value: 50
       burnRate: 0
       cost:
       - resourceType: 0
@@ -892,7 +892,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 100
+        value: 20
       burnRate: 0
       cost:
       - resourceType: 0
@@ -912,7 +912,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 200
+        value: 30
       burnRate: 0
       cost:
       - resourceType: 0
@@ -940,7 +940,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 500
+        value: 50
       burnRate: 0
       cost:
       - resourceType: 0
@@ -975,7 +975,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 100
+        value: 20
       burnRate: 0
       cost:
       - resourceType: 0
@@ -991,7 +991,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 200
+        value: 30
       burnRate: 0
       cost:
       - resourceType: 0
@@ -1015,7 +1015,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 500
+        value: 50
       burnRate: 0
       cost:
       - resourceType: 0
@@ -1046,7 +1046,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 100
+        value: 20
       burnRate: 0
       cost: []
     - unlockLevel: 6
@@ -1054,7 +1054,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 200
+        value: 30
       burnRate: 0
       cost: []
     - unlockLevel: 9
@@ -1062,6 +1062,6 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 500
+        value: 50
       burnRate: 0
       cost: []
