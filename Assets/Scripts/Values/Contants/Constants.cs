@@ -7,7 +7,7 @@ namespace StarSalvager.Values
     public static class Constants
     {
         public const float gridCellSize = 1.28f;
-        public const int enemyGridScanRadius = 4;
+        public const int enemyGridScanRadius = 3;
         public const int initialColumnsOnScreen = 51;
     }
 }
