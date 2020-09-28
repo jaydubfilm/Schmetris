@@ -21,6 +21,8 @@ namespace StarSalvager.Factories
 
         [SerializeField, Required, BoxGroup("Temporary")]
         private BitProfileScriptableObject[] _bitProfileScriptableObjects;
+        [SerializeField, Required, BoxGroup("Temporary")]
+        private PartProfileScriptableObject[] _partProfileScriptableObjects;
         
         public EditorBotShapeGeneratorData EditorBotShapeData => _editorBotShapeData ?? (_editorBotShapeData = Files.ImportBotShapeRemoteData());
         private EditorBotShapeGeneratorData _editorBotShapeData;
@@ -59,7 +61,7 @@ namespace StarSalvager.Factories
         public RemotePartProfileScriptableObject PartsRemoteData => partRemoteData;
         public PartProfileScriptableObject PartsProfileData => partProfile as PartProfileScriptableObject;
 
-        [SerializeField, Required, BoxGroup("Attachables/Parts")] 
+        //[SerializeField, Required, BoxGroup("Attachables/Parts")] 
         private AttachableProfileScriptableObject partProfile;
         
         [SerializeField, Required, BoxGroup("Attachables/Parts")] 
@@ -140,6 +142,7 @@ namespace StarSalvager.Factories
         private void Start()
         {
             ChangeBitProfile(0);
+            ChangePartProfile(0);
         }
 
         public void ChangeBitProfile(int index)
@@ -152,6 +155,17 @@ namespace StarSalvager.Factories
 
             //Force update the BitFactory to use new sprite sheet
             _factoryBases[type] = CreateFactory<BitAttachableFactory>();
+        }
+        public void ChangePartProfile(int index)
+        {
+            partProfile = _partProfileScriptableObjects[index];
+            var type = typeof(PartAttachableFactory);
+            
+            if (_factoryBases == null || !_factoryBases.ContainsKey(type))
+                return;
+
+            //Force update the BitFactory to use new sprite sheet
+            _factoryBases[type] = CreateFactory<PartAttachableFactory>();
         }
 
         //====================================================================================================================//
