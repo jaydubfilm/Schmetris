@@ -987,6 +987,9 @@ namespace StarSalvager
 
             //------------------------------------------------------------------------------------------------//
 
+            if (closestAttachable is Part part && part.Destroyed)
+                return false;
+            
             //TODO Need to add animation/effects here 
             //Destroy both this and collided Bit
             //Recycler.Recycle<Bit>(attachable.gameObject);
