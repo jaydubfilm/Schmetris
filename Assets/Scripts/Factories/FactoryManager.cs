@@ -18,6 +18,9 @@ namespace StarSalvager.Factories
 
         [SerializeField, Required, BoxGroup("Temporary")]
         private List<SectorModularData> m_sectorRemoteData;
+
+        [SerializeField, Required, BoxGroup("Temporary")]
+        private BitProfileScriptableObject[] _bitProfileScriptableObjects;
         
         public EditorBotShapeGeneratorData EditorBotShapeData => _editorBotShapeData ?? (_editorBotShapeData = Files.ImportBotShapeRemoteData());
         private EditorBotShapeGeneratorData _editorBotShapeData;
@@ -33,7 +36,7 @@ namespace StarSalvager.Factories
         public BitRemoteDataScriptableObject BitsRemoteData => bitRemoteData;
         public BitProfileScriptableObject BitProfileData => bitProfile as BitProfileScriptableObject;
         
-        [SerializeField, Required, BoxGroup("Attachables/Bits")]
+        //[SerializeField, Required, BoxGroup("Attachables/Bits")]
         private AttachableProfileScriptableObject bitProfile;
         
         [SerializeField, Required, BoxGroup("Attachables/Bits")]
@@ -134,6 +137,25 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
+        private void Start()
+        {
+            ChangeBitProfile(0);
+        }
+
+        public void ChangeBitProfile(int index)
+        {
+            bitProfile = _bitProfileScriptableObjects[index];
+            var type = typeof(BitAttachableFactory);
+            
+            if (_factoryBases == null || !_factoryBases.ContainsKey(type))
+                return;
+
+            //Force update the BitFactory to use new sprite sheet
+            _factoryBases[type] = CreateFactory<BitAttachableFactory>();
+        }
+
+        //====================================================================================================================//
+        
         public T GetFactory<T>() where T : FactoryBase
         {
             var type = typeof(T);
