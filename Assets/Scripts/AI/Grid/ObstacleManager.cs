@@ -149,6 +149,7 @@ namespace StarSalvager
             //Spawn enemies from wave 0
             SetupStage(0);
 
+            WorldElementsRoot.transform.position = Vector3.zero;
             if (m_currentStageData.StageType == STAGE_TYPE.STANDARD)
             {
                 LevelManager.Instance.StandardBufferZoneObstacleData.PrespawnWalls(m_currentStageData, false, this);
@@ -223,19 +224,13 @@ namespace StarSalvager
 
             for (int i = m_notFullyInGridShapes.Count - 1; i >= 0; i--)
             {
-                Recycler.Recycle<Shape>(m_notFullyInGridShapes[i].gameObject, new
-                {
-                    recycleBits = false
-                });
+                Recycler.Recycle<Shape>(m_notFullyInGridShapes[i].gameObject);
                 m_notFullyInGridShapes.RemoveAt(i);
             }
 
             for (int i = m_bonusShapes.Count - 1; i >= 0; i--)
             {
-                Recycler.Recycle<Shape>(m_bonusShapes[i].gameObject, new
-                {
-                    recycleBits = false
-                });
+                Recycler.Recycle<Shape>(m_bonusShapes[i].gameObject);
                 m_bonusShapes.RemoveAt(i);
             }
 
