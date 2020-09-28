@@ -24,7 +24,7 @@ namespace StarSalvager.ScriptableObjects
 
             foreach (MissionRemoteData missionData in m_missionRemoteData)
             {
-                int i = MissionManager.MissionTypes.IndexOf(m => m.MissionEventType == missionData.MissionType);
+                int i = MissionManager.MissionTypes.FindIndex(m => m.MissionEventType == missionData.MissionType);
 
                 Mission newMission = (Mission)Activator.CreateInstance(MissionManager.MissionTypes[i].GetType(), missionData);
                 missions.Add(newMission);

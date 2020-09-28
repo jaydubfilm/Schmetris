@@ -3,7 +3,7 @@ using StarSalvager.Values;
 using StarSalvager.Utilities.FileIO;
 using UnityEngine;
 using System;
-using Boo.Lang;
+using System.Collections.Generic;
 
 namespace StarSalvager.Missions
 {
@@ -30,23 +30,25 @@ namespace StarSalvager.Missions
 
         public static void Init()
         {
-            m_missionTypes = new List<Mission>();
+            m_missionTypes = new List<Mission>
+            {
+                new AsteroidCollisionMission(new MissionRemoteData()),
+                new ResourceCollectedMission(new MissionRemoteData()),
+                new EnemyKilledMission(new MissionRemoteData()),
+                new LevelProgressMission(new MissionRemoteData()),
+                new ComboBlocksMission(new MissionRemoteData()),
+                new CraftPartMission(new MissionRemoteData()),
+                new WhiteBumperMission(new MissionRemoteData()),
+                new ChainWavesMission(new MissionRemoteData()),
+                new LiquidResourceConvertedMission(new MissionRemoteData()),
+                new SectorsCompletedMission(new MissionRemoteData()),
+                new FlightLengthMission(new MissionRemoteData()),
+                new ChainBonusShapesMission(new MissionRemoteData()),
+                new FacilityUpgradeMission(new MissionRemoteData()),
+                new PlayerLevelMission(new MissionRemoteData()),
+                new ComponentCollectedMission(new MissionRemoteData())
+            };
 
-            m_missionTypes.Add(new AsteroidCollisionMission(new MissionRemoteData()));
-            m_missionTypes.Add(new ResourceCollectedMission(new MissionRemoteData()));
-            m_missionTypes.Add(new EnemyKilledMission(new MissionRemoteData()));
-            m_missionTypes.Add(new LevelProgressMission(new MissionRemoteData()));
-            m_missionTypes.Add(new ComboBlocksMission(new MissionRemoteData()));
-            m_missionTypes.Add(new CraftPartMission(new MissionRemoteData()));
-            m_missionTypes.Add(new WhiteBumperMission(new MissionRemoteData()));
-            m_missionTypes.Add(new ChainWavesMission(new MissionRemoteData()));
-            m_missionTypes.Add(new LiquidResourceConvertedMission(new MissionRemoteData()));
-            m_missionTypes.Add(new SectorsCompletedMission(new MissionRemoteData()));
-            m_missionTypes.Add(new FlightLengthMission(new MissionRemoteData()));
-            m_missionTypes.Add(new ChainBonusShapesMission(new MissionRemoteData()));
-            m_missionTypes.Add(new FacilityUpgradeMission(new MissionRemoteData()));
-            m_missionTypes.Add(new PlayerLevelMission(new MissionRemoteData()));
-            m_missionTypes.Add(new ComponentCollectedMission(new MissionRemoteData()));
 
             HasInit = true;
         }
