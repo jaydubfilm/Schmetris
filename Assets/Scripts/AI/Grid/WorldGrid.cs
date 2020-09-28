@@ -312,10 +312,10 @@ namespace StarSalvager
                 }
             }
 
-            if (gridRegion.y >= 0.05f && gridRegion.x <= 0.95)
+            /*if (gridRegion.y >= 0.05f && gridRegion.x <= 0.95)
             {
                 Debug.Log("Fail to find in scan " + scanRadius + " --- " + gridRegion);
-            }
+            }*/
 
             return GetLocalPositionOfRandomGridSquareInGridRegion(scanRadius - 1, gridRegion, inRandomYLevel);
         }
