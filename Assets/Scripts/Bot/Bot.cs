@@ -394,13 +394,19 @@ namespace StarSalvager
             if (remainingDegrees > 1f)
                 return;
             
-            rotate = false;
-
-            _rotating = false;
-
+            //Ensures that the Attachables are correctly rotated
+            //NOTE: This is a strict order-of-operations as changing will cause rotations to be incorrect
+            //--------------------------------------------------------------------------------------------------------//
             //Force set the rotation to the target, in case the bot is not exactly on target
             rigidbody.rotation = targetRotation;
             targetRotation = 0f;
+            
+            
+            TryRotateBits();
+            rotate = false;
+            _rotating = false;
+            
+            //--------------------------------------------------------------------------------------------------------//
             
             //Should only be called after the rotation finishes
             CheckForBonusShapeMatches();
@@ -430,9 +436,9 @@ namespace StarSalvager
                 
             foreach (var attachedBlock in attachedBlocks)
             {
-                if (attachedBlock is ICustomRotate rotate)
+                if (attachedBlock is ICustomRotate customRotate)
                 {
-                    rotate.CustomRotate(rot);
+                    customRotate.CustomRotate(rot);
                     continue;
                 }
                 
