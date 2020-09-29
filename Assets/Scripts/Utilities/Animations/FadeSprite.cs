@@ -1,21 +1,19 @@
-﻿using Recycling;
+﻿using System;
+using Recycling;
 using StarSalvager.Factories;
 using UnityEngine;
 
-
-namespace StarSalvager.Utilities
+namespace StarSalvager.Utilities.Animations
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    public class FlashSprite : MonoBehaviour, IRecycled, ICustomRecycle
+    public class FadeSprite : MonoBehaviour, IRecycled, ICustomRecycle
     {
         [SerializeField]
-        private float onTime;
-        [SerializeField]
-        private float offTime;
+        private float cycleTime;
 
         private float _timer;
-        private bool _isOn;
-        
+
+        private Color _color, _clearColor;
         
         public bool IsRecycled { get; set; }
 
@@ -54,19 +52,10 @@ namespace StarSalvager.Utilities
         {
             if (!_active)
                 return;
-            
-            if (_timer >= (_isOn ? onTime : offTime))
-            {
-                _isOn = !_isOn;
-                renderer.enabled = _isOn;
-                
-                _timer = 0f;
-            }
-            else
-            {
-                _timer += Time.deltaTime;
-            }
-            
+
+            _timer = Mathf.PingPong(Time.time, cycleTime);
+
+            renderer.color = Color.Lerp(_color, _clearColor, _timer / cycleTime);
             //This doesn't need to happen anymore because the icon is no longer part of the flashing
             ////Force the rotation to remain as default
             //transform.rotation = Quaternion.identity;
@@ -76,7 +65,10 @@ namespace StarSalvager.Utilities
 
         public void SetColor(Color color)
         {
-            renderer.color = color;
+            _clearColor = _color = color;
+            _clearColor.a = 0f;
+            
+            renderer.color = _color;
         }
         
         //============================================================================================================//
@@ -97,24 +89,25 @@ namespace StarSalvager.Utilities
         public void CustomRecycle(params object[] args)
         {
             SetColor(Color.white);
+            _timer = 0f;
         }
 
         //====================================================================================================================//
         
-        public static FlashSprite Create(Transform parent, Vector3 localPosition, Color color, bool startActive = true)
+        public static FadeSprite Create(Transform parent, Vector3 localPosition, Color color, bool startActive = true)
         {
-            var flashSprite = FactoryManager.Instance.GetFactory<BotFactory>().CreateAlertIcon();
-            flashSprite.transform.SetParent(parent);
-            flashSprite.transform.localPosition = localPosition;
+            var fadeSprite = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<FadeSprite>();
+            fadeSprite.transform.SetParent(parent);
+            fadeSprite.transform.localPosition = localPosition;
 
-            flashSprite.SetColor(color);
-            flashSprite.SetActive(startActive);
+            fadeSprite.SetColor(color);
+            fadeSprite.SetActive(startActive);
 
-            return flashSprite;
+            return fadeSprite;
+
         }
 
         //====================================================================================================================//
-        
     }
-}
 
+}

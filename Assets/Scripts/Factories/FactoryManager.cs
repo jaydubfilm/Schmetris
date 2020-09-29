@@ -115,6 +115,8 @@ namespace StarSalvager.Factories
         
         [SerializeField, Required, BoxGroup("Particles")]
         private GameObject connectedSpritePrefab;
+        [SerializeField, Required, BoxGroup("Particles")]
+        private GameObject fadeSpritePrefab;
 
         //============================================================================================================//
 
@@ -227,7 +229,7 @@ namespace StarSalvager.Factories
                     return new DamageFactory(damageFactory) as T;
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(ParticleFactory):
-                    return new ParticleFactory(explosionPrefab, labelPrefab, floatingTextPrefab, connectedSpritePrefab) as T;
+                    return new ParticleFactory(explosionPrefab, labelPrefab, floatingTextPrefab, connectedSpritePrefab, fadeSpritePrefab) as T;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type.Name, null);

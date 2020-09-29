@@ -4,6 +4,8 @@ using System.Linq;
 using Recycling;
 using StarSalvager;
 using StarSalvager.Audio;
+using StarSalvager.Utilities;
+using StarSalvager.Utilities.Animations;
 using StarSalvager.Values;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
@@ -117,6 +119,34 @@ namespace StarSalvager
         public void GenerateGeometry()
         {
             CompositeCollider.GenerateGeometry();
+        }
+
+        //====================================================================================================================//
+        private FadeSprite[] _fadeSprites;
+        
+        public void FlashBits()
+        {
+            if (_fadeSprites != null && _fadeSprites.Length > 0)
+            {
+                //TODO Recycle any existing elements
+                foreach (var flashSprite in _fadeSprites)
+                {
+                    Recycler.Recycle<FadeSprite>(flashSprite);
+                }
+            }
+
+            _fadeSprites = new FadeSprite[attachedBits.Count];
+
+            for (var i = 0; i < attachedBits.Count; i++)
+            {
+                var flashSprite = FadeSprite.Create(
+                    transform,
+                    (Vector2) attachedBits[i].Coordinate * Constants.gridCellSize,
+                    Color.white);
+
+                _fadeSprites[i] = flashSprite;
+            }
+            
         }
 
         //================================================================================================================//
@@ -295,6 +325,18 @@ namespace StarSalvager
 
         public void CustomRecycle(params object[] args)
         {
+            if (_fadeSprites != null)
+            {
+                foreach (var fadeSprite in _fadeSprites)
+                {
+                    Recycler.Recycle<FadeSprite>(fadeSprite);
+                }
+
+                _fadeSprites = null;
+            }
+
+            
+            
             //by Default, I want to assume I'll be recycling the bits.
             var recycleBits = true;
 
