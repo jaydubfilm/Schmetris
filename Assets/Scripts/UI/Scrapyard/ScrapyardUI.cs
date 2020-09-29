@@ -176,7 +176,7 @@ namespace StarSalvager.UI.Scrapyard
                         break;
                     case BIT_TYPE.GREY:
                         //TODO Check for a gun
-                        if(!_droneDesigner.HasParts(PART_TYPE.GUN, PART_TYPE.TRIPLE_SHOT))
+                        if(!_droneDesigner.HasParts(PART_TYPE.GUN, PART_TYPE.TRIPLESHOT))
                             continue;
                         break;
                     case BIT_TYPE.YELLOW:
