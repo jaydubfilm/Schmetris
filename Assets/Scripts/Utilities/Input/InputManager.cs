@@ -45,7 +45,7 @@ namespace StarSalvager.Utilities.Inputs
                 else
                 {
                     //Need to make sure that we reset the DasTimer otherwise it wont work!
-                    dasTimer = 0f;
+                    dasMovementTimer = 0f;
                     ProcessMovementInput(_currentMoveInput);
                 }
 
@@ -56,20 +56,32 @@ namespace StarSalvager.Utilities.Inputs
 
 
         [SerializeField, BoxGroup("DAS"), ReadOnly]
-        private float dasTimer;
+        private float dasMovementTimer;
         [SerializeField, BoxGroup("DAS"), ReadOnly]
-        private bool dasTriggered;
+        private bool dasMovementTriggered;
         [SerializeField, BoxGroup("DAS"), ReadOnly]
-        private float previousInput;
+        private float previousMovementInput;
         [SerializeField, BoxGroup("DAS"), ReadOnly]
-        private float currentInput;
-        
+        private float currentMovementInput;
+
+        [SerializeField, BoxGroup("DAS"), ReadOnly]
+        private float dasRotateTimer;
+        [SerializeField, BoxGroup("DAS"), ReadOnly]
+        private bool dasRotateTriggered;
+        [SerializeField, BoxGroup("DAS"), ReadOnly]
+        private float previousRotateInput;
+        [SerializeField, BoxGroup("DAS"), ReadOnly]
+        private float currentRotateInput;
+
         private Dictionary<InputAction, Action<InputAction.CallbackContext>> _inputMap;
 
         public float MostRecentSideMovement { get; private set; }
         private float _currentMoveInput;
 
-        public float PreviousInput => previousInput;
+        public float MostRecentRotateMovement { get; private set; }
+        private float _currentRotateInput;
+
+        public float PreviousInput => previousMovementInput;
 
         #endregion //Properties
 
@@ -86,7 +98,8 @@ namespace StarSalvager.Utilities.Inputs
 
         private void Update()
         {
-            DasChecks();
+            DasChecksMovement();
+            DasChecksRotate();
         }
 
         private void OnEnable()
@@ -123,8 +136,8 @@ namespace StarSalvager.Utilities.Inputs
 
         public void ForceMove(DIRECTION direction)
         {
-            dasTriggered = false;
-            dasTimer = 0f;
+            dasMovementTriggered = false;
+            dasMovementTimer = 0f;
             
             switch (direction)
             {
@@ -229,11 +242,11 @@ namespace StarSalvager.Utilities.Inputs
             {
                 case ORIENTATION.VERTICAL:
                     _inputMap.Add(Input.Actions.Default.SideMovement, SideMovement);
-                    _inputMap.Add(Input.Actions.Default.Rotate, Rotate);
+                    _inputMap.Add(Input.Actions.Default.Rotate, RotateMovement);
                     break;
                 case ORIENTATION.HORIZONTAL:
                     _inputMap.Add(Input.Actions.Vertical.SideMovement, SideMovement);
-                    _inputMap.Add(Input.Actions.Vertical.Rotate, Rotate);
+                    _inputMap.Add(Input.Actions.Vertical.Rotate, RotateMovement);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -314,8 +327,8 @@ namespace StarSalvager.Utilities.Inputs
                 return;
             
             //If the user has released the key, we can reset the DAS system
-            dasTriggered = false;
-            dasTimer = 0f;
+            dasMovementTriggered = false;
+            dasMovementTimer = 0f;
         }
 
         /// <summary>
@@ -325,29 +338,29 @@ namespace StarSalvager.Utilities.Inputs
         private void TryApplyMove(float moveDirection)
         {
             
-            currentInput = moveDirection;
+            currentMovementInput = moveDirection;
             
             //If we're trying to move, set things up for the DAS movement
-            if (!dasTriggered)
+            if (!dasMovementTriggered)
             {
                 //If the timer is still counting down
-                if (dasTimer > 0f)
+                if (dasMovementTimer > 0f)
                     return;
             
                 //If this is the first time its pressed, set the press directions
-                previousInput = currentInput;
+                previousMovementInput = currentMovementInput;
 
                 //Set the countdown timer to the intended value
-                dasTimer = Globals.DASTime;
+                dasMovementTimer = Globals.DASTime;
                 
                 //Quickly move the relevant managers, then reset their input, so that they will pause until DAS is ready
-                Move(currentInput);
+                Move(currentMovementInput);
                 Move(0);
                 return;
             }
             
             //If the DAS has triggered already, go ahead and update the relevant managers
-            Move(currentInput);
+            Move(currentMovementInput);
         }
 
         /// <summary>
@@ -379,29 +392,88 @@ namespace StarSalvager.Utilities.Inputs
 
         }
 
-        private void Rotate(InputAction.CallbackContext ctx)
+        private void RotateMovement(InputAction.CallbackContext ctx)
+        {
+            _currentRotateInput = ctx.ReadValue<float>();
+            ProcessRotateInput(_currentRotateInput);
+        }
+
+        private void ProcessRotateInput(float rotateDirection)
         {
             if (Console.Open)
                 return;
-            
+
             if (isPaused)
                 return;
 
             if (LevelManager.Instance.BotDead)
                 return;
 
-            var rot = ctx.ReadValue<float>();
+            MostRecentRotateMovement = rotateDirection;
+
+            TryApplyRotate(rotateDirection);
+
+            //This check needs to happen after TryApplyRotate as it could cause the Rotate to never trigger
+            if (rotateDirection != 0f)
+                return;
+
+            //If the user has released the key, we can reset the DAS system
+            dasRotateTriggered = false;
+            dasRotateTimer = 0f;
+        }
+
+        /// <summary>
+        /// Considers DAS values when passing the input information to Move
+        /// </summary>
+        /// <param name="rotateDirection"></param>
+        private void TryApplyRotate(float rotateDirection)
+        {
+            currentRotateInput = rotateDirection;
+
+            //If we're trying to move, set things up for the DAS movement
+            if (!dasRotateTriggered)
+            {
+                //If the timer is still counting down
+                if (dasRotateTimer > 0f)
+                    return;
+
+                //If this is the first time its pressed, set the press directions
+                previousRotateInput = currentRotateInput;
+
+                //Set the countdown timer to the intended value
+                dasRotateTimer = Globals.DASTime * 3;
+
+                //Quickly move the relevant managers, then reset their input, so that they will pause until DAS is ready
+                Rotate(currentRotateInput);
+                return;
+            }
+
+            //If the DAS has triggered already, go ahead and update the relevant managers
+            dasRotateTimer = Globals.DASTime * 1.5f;
+            Rotate(currentRotateInput);
+        }
+
+        /// <summary>
+        /// Applies the move value to relevant Managers
+        /// </summary>
+        /// <param name="value"></param>
+        private void Rotate(float value)
+        {
+            if (LevelManager.Instance.BotDead)
+                return;
+
+            Debug.Log("ROTATE " + value);
 
             foreach (var bot in _bots)
             {
-                bot.Rotate(rot);
+                bot.Rotate(value);
             }
 
             foreach (var scrapyardBot in _scrapyardBots)
             {
-                scrapyardBot.Rotate(rot);
+                scrapyardBot.Rotate(value);
             }
-            
+
             AudioController.PlaySound(SOUND.BOT_ROTATE);
         }
 
@@ -457,31 +529,56 @@ namespace StarSalvager.Utilities.Inputs
         
         //============================================================================================================//
         
-        private void DasChecks()
+        private void DasChecksMovement()
         {
             //If the user is no longer pressing a direction, these checks do not matter
-            if (currentInput == 0f)
+            if (currentMovementInput == 0f)
                 return;
             
             //If we've already triggered the DAS, don't bother with following checks
-            if (dasTriggered)
+            if (dasMovementTriggered)
                 return;
 
             //If timer hasn't reached zero, continue counting down
-            if (dasTimer > 0f)
+            if (dasMovementTimer > 0f)
             {
-                dasTimer -= Time.deltaTime;
+                dasMovementTimer -= Time.deltaTime;
                 return;
             }
 
-            dasTriggered = true;
-            dasTimer = 0f;
+            dasMovementTriggered = true;
+            dasMovementTimer = 0f;
             
             //If the User is still pressing the same input, go ahead and try and reapply it
-            if(currentInput == previousInput)
-                TryApplyMove(currentInput);
+            if(currentMovementInput == previousMovementInput)
+                TryApplyMove(currentMovementInput);
         }
-        
+
+        private void DasChecksRotate()
+        {
+            //If the user is no longer pressing a direction, these checks do not matter
+            if (currentRotateInput == 0f)
+                return;
+
+            //If we've already triggered the DAS, don't bother with following checks
+            //if (dasRotateTriggered)
+            //    return;
+
+            //If timer hasn't reached zero, continue counting down
+            if (dasRotateTimer > 0f)
+            {
+                dasRotateTimer -= Time.deltaTime;
+                return;
+            }
+
+            dasRotateTriggered = true;
+            dasRotateTimer = 0f;
+
+            //If the User is still pressing the same input, go ahead and try and reapply it
+            if (currentRotateInput == previousRotateInput)
+                TryApplyRotate(currentRotateInput);
+        }
+
         //IPausable Functions
         //============================================================================================================//
 
@@ -498,6 +595,7 @@ namespace StarSalvager.Utilities.Inputs
         public void OnPause()
         {
             Move(0);
+            Rotate(0);
         }
 
         //============================================================================================================//
