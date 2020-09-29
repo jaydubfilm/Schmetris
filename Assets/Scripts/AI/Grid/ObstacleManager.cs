@@ -934,6 +934,9 @@ namespace StarSalvager
             if(newObstacle is CollidableBase collidableBase)
                 collidableBase.SetSortingLayer("Overlay", 100);
             
+            if(newObstacle is Shape shape)
+                shape.FlashBits();
+            
             
             PlaceBonusShapeInLevel(newObstacle);
         }

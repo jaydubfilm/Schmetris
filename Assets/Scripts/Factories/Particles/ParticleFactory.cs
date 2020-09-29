@@ -14,15 +14,17 @@ namespace StarSalvager.Factories
         private readonly GameObject _labelPrefab;
         private readonly GameObject _floatingTextPrefab;
         private readonly GameObject _connectedSpritePrefab;
+        private readonly GameObject _fadeSpritePrefab;
         
         //============================================================================================================//
 
-        public ParticleFactory(GameObject explosionPrefab, GameObject labelPrefab, GameObject floatingTextPrefab, GameObject connectedSpritePrefab)
+        public ParticleFactory(GameObject explosionPrefab, GameObject labelPrefab, GameObject floatingTextPrefab, GameObject connectedSpritePrefab, GameObject fadeSpritePrefab)
         {
             _explosionPrefab = explosionPrefab;
             _labelPrefab = labelPrefab;
             _floatingTextPrefab = floatingTextPrefab;
             _connectedSpritePrefab = connectedSpritePrefab;
+            _fadeSpritePrefab = fadeSpritePrefab;
         }
         
         //============================================================================================================//
@@ -51,6 +53,9 @@ namespace StarSalvager.Factories
                     break;
                 case bool _ when type == typeof(ConnectedSpriteObject):
                     gameObject = CreateConnectedSprite();
+                    break;
+                case bool _ when type == typeof(FadeSprite):
+                    gameObject = CreateFadeSprite();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -95,6 +100,15 @@ namespace StarSalvager.Factories
             if (!Recycler.TryGrab<ConnectedSpriteObject>(out GameObject gameObject))
             {
                 gameObject = Object.Instantiate(_connectedSpritePrefab);
+            }
+
+            return gameObject;
+        }
+        private GameObject CreateFadeSprite()
+        {
+            if (!Recycler.TryGrab<FadeSprite>(out GameObject gameObject))
+            {
+                gameObject = Object.Instantiate(_fadeSpritePrefab);
             }
 
             return gameObject;
