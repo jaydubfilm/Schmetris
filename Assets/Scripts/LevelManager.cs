@@ -451,7 +451,7 @@ namespace StarSalvager
             {
                 sectorNumber = Globals.CurrentSector + 1,
                 waveNumber = Globals.CurrentWave + 1,
-                floatAmount = m_levelTimer
+                floatAmount = m_levelTimer + m_waveTimer
             };
             MissionManager.ProcessMissionData(typeof(LevelProgressMission), missionProgressEventData);
             MissionManager.ProcessMissionData(typeof(ChainWavesMission), missionProgressEventData);
