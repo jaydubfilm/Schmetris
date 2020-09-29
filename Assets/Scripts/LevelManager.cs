@@ -236,7 +236,7 @@ namespace StarSalvager
                 SavePlayerData();
                 GameTimer.SetPaused(true);
                 //Turn wave end summary data into string, post in alert, and clear wave end summary data
-                Alert.ShowAlert("Wave End Data", m_waveEndSummaryData.GetWaveEndSummaryDataString(), "Continue", null);
+                Alert.ShowAlert(WaveEndSummaryData.waveEndTitle, m_waveEndSummaryData.GetWaveEndSummaryDataString(), "Continue", null);
 
                 m_waveEndSummaryData = new WaveEndSummaryData();
                 m_levelManagerUI.ToggleBetweenWavesUIActive(true);
@@ -456,6 +456,8 @@ namespace StarSalvager
             MissionManager.ProcessMissionData(typeof(LevelProgressMission), missionProgressEventData);
             MissionManager.ProcessMissionData(typeof(ChainWavesMission), missionProgressEventData);
             MissionManager.ProcessMissionData(typeof(FlightLengthMission), missionProgressEventData);
+
+            WaveEndSummaryData.waveEndTitle = "Wave " + (Globals.CurrentWave + 1) + " Sector " + (Globals.CurrentSector + 1) + " Complete";
 
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {

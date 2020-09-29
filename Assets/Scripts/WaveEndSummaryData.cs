@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class WaveEndSummaryData
 {
+    public string waveEndTitle = string.Empty;
     public int numBonusShapesMatched = 0;
     public int numTotalBonusShapesSpawned = 0;
     public int numEnemiesKilled = 0;
