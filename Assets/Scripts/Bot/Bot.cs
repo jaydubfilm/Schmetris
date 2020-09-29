@@ -989,6 +989,9 @@ namespace StarSalvager
         
         public bool TryAsteroidDamageAt(Vector2 collisionPoint)
         {
+            if(LevelManager.Instance.EndWaveState)
+                return false;
+            
             var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
             //------------------------------------------------------------------------------------------------//
