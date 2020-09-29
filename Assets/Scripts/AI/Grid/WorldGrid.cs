@@ -360,13 +360,13 @@ namespace StarSalvager
                 }
             }
 
-            if (scanRadius > 1)
+            if (scanRadius > 0)
             {
                 return GetLocalPositionOfRandomGridSquareInGridRegion(scanRadius - 1, gridRegion, findUnoccupied, inRandomYLevel);
             }
             else
             {
-                //Debug.Log("COULDNT FIND AVAILABLE POSITION --- " + gridRegion);
+                throw new Exception("Couldn't find position to spawn. Possible overlap occurring");
                 return GetLocalPositionOfCenterOfGridSquareAtCoordinates(new Vector2Int(randomGridRegion[0], m_gridSizeY - 1));
             }
         }
