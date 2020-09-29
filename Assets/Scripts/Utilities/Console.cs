@@ -71,6 +71,7 @@ namespace StarSalvager.Utilities
             string.Concat("set ", "godmode ", "[bool]").ToUpper(),
             string.Concat("set ", "liquid ", "[BIT_TYPE | all] ", "[float]").ToUpper(),
             string.Concat("set ", "orientation ", "[Horizontal | Vertical]").ToUpper(),
+            string.Concat("set ", "partprofile ", "[index:uint]").ToUpper(),
             string.Concat("set ", "paused ", "[bool]").ToUpper(),
             string.Concat("set ", "timescale ", "[0.0 - 2.0]").ToUpper(),
             string.Concat("set ", "volume ", "[0.0 - 1.0]").ToUpper(),
@@ -79,6 +80,8 @@ namespace StarSalvager.Utilities
             string.Concat("spawn ", "part ", "[PART_TYPE] ",  "(x,y) ", "[uint]").ToUpper(),
             string.Concat("spawn ", "component ", "[COMPONENT_TYPE] ",  "(x,y)").ToUpper(),
             string.Concat("spawn ", "enemy ", "[enemy_name : use _ instead of space]").ToUpper(),
+            "\n",
+            string.Concat("unlock ", "sectorwave ", "[sector : int] ", "[wave : int]").ToUpper(),
             "\n",
             "T0",
             "T1",
@@ -210,6 +213,9 @@ namespace StarSalvager.Utilities
                     break;
                 case "spawn":
                     ParseSpawnCommand(split);
+                    break;
+                case "unlock":
+                    ParseUnlockCmd(split);
                     break;
                 case "t0":
                     Time.timeScale = 0;
@@ -717,12 +723,12 @@ namespace StarSalvager.Utilities
                             if (!PlayerPersistentData.PlayerData.resources.ContainsKey(value))
                                 continue;
 
-                            PlayerPersistentData.PlayerData.AddResource(value, intAmount);
+                            PlayerPersistentData.PlayerData.SetResources(value, intAmount);
                         }
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
-                        PlayerPersistentData.PlayerData.AddResource(bitType, intAmount);
+                        PlayerPersistentData.PlayerData.SetResources(bitType, intAmount);
                     }
                     else
                     {
@@ -838,6 +844,16 @@ namespace StarSalvager.Utilities
                             break;
                     }
 
+                    break;
+                case "partprofile":
+                    if (!int.TryParse(split[2], out intAmount))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
+                    }
+                    
+                    FactoryManager.Instance?.ChangePartProfile(intAmount);
+                    
                     break;
                 case "paused":
                     if (!TryParseBool(split[2], out state))
@@ -1004,6 +1020,31 @@ namespace StarSalvager.Utilities
                     _consoleDisplay += UnrecognizeCommand(split[1]);
                     break;
             }
+        }
+
+        private void ParseUnlockCmd(string[] split)
+        {
+            switch (split[1].ToLower())
+            {
+                case "sectorwave":
+                    if (!int.TryParse(split[2], out var sector))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[3]);
+                        break;
+                    }
+                    if (!int.TryParse(split[3], out var wave))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[3]);
+                        break;
+                    }
+                    
+                    PlayerPersistentData.PlayerData.AddSectorProgression(sector, wave);
+                    break;
+                default:
+                    _consoleDisplay += UnrecognizeCommand(split[1]);
+                    break;
+            }
+            
         }
 
         private string GetHelpString()
