@@ -13,12 +13,12 @@
         BOMB,
         
         STORE,
-        STORE_RED,
-        STORE_GREEN,
-        STORE_GREY,
+        STORERED,
+        STOREGREEN,
+        STOREGREY,
         
-        TRIPLE_SHOT,
-        STORE_YELLOW,
+        TRIPLESHOT,
+        STOREYELLOW,
     } 
 }
 

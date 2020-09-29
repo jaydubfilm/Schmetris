@@ -442,25 +442,25 @@ namespace StarSalvager
                             capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_RED:
+                    case PART_TYPE.STORERED:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.RED] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_GREEN:
+                    case PART_TYPE.STOREGREEN:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.GREEN] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_GREY:
+                    case PART_TYPE.STOREGREY:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_YELLOW:
+                    case PART_TYPE.STOREYELLOW:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.YELLOW] += value;

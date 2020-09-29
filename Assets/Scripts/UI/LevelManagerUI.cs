@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Missions;
@@ -8,11 +9,15 @@ using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Console = StarSalvager.Utilities.Console;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
 {
     public class LevelManagerUI : MonoBehaviour, IPausable
     {
+        private const float SCROLL_SPEED = 0.05f;
+        
         public bool isPaused => GameTimer.IsPaused;
         
         [SerializeField, Required]
@@ -58,14 +63,39 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
         //FIXME I'll want something a little better implemented based on feedback
-        public static string overrideText { get; set; }
+        public static string OverrideText
+        {
+            get => _overrideText;
+            set
+            {
+                //FIXME Once this is confirmed, it should be better established
+                if (string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(_overrideText))
+                {
+                    var levelManagerUI = FindObjectOfType<LevelManagerUI>();
+
+                    var canvasWidth = levelManagerUI.m_canvasRect.rect.width / 2;
+                    var scrollingWidth = levelManagerUI.scrollingMissionsText.rectTransform.rect.width / 2;
+                    
+                    levelManagerUI.scrollingMissionsText.rectTransform.anchoredPosition = Vector3.right * (canvasWidth + scrollingWidth);
+                    levelManagerUI.m_isMissionReminderScrolling = false;
+                }
+
+                _overrideText = value;
+            } 
+        }
+        private static string _overrideText;
 
         private float m_missionReminderTimer = 0.0f;
         private bool m_isMissionReminderScrolling = false;
 
+        private Vector3 _startScrollPosition, _endScrollPosition;
+        private float _scrollPosition;
+
         private LevelManager m_levelManager;
         private RectTransform m_canvasRect;
 
+        //====================================================================================================================//
+        
         // Start is called before the first frame update
         private void Start()
         {
@@ -74,34 +104,25 @@ namespace StarSalvager.UI
             InitButtons();
 
             m_canvasRect = GetComponent<RectTransform>();
-            scrollingMissionsText.rectTransform.anchoredPosition = Vector3.right * ((m_canvasRect.rect.width / 2) + (scrollingMissionsText.rectTransform.rect.width / 2));
+            InitScrollPositions();
+            
+        }
+
+        private void OnEnable()
+        {
+            pauseWindowScrapyardButton.gameObject.SetActive(!Globals.DisableTestingFeatures);
+            InitScrollPositions();
         }
 
         private void Update()
         {
-            //betweenWavesContinueButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0;
-
-            pauseWindowScrapyardButton.gameObject.SetActive(!Globals.DisableTestingFeatures);
-
-            if (!isPaused)
-            {
-                var div = string.IsNullOrEmpty(overrideText) ? 1f : 5f;
-                
-                m_missionReminderTimer += Time.deltaTime;
-                if (m_missionReminderTimer >= Globals.MissionReminderFrequency / div)
-                {
-                    m_missionReminderTimer -= Globals.MissionReminderFrequency / div;
-                    PlayMissionReminder();
-                }
-            }
-
-            if (scrollingMissionsText.rectTransform.anchoredPosition.x < (-1 * ((m_canvasRect.rect.width / 2) + (scrollingMissionsText.rectTransform.rect.width / 2))))
-            {
-                scrollingMissionsText.rectTransform.anchoredPosition = Vector3.right * ((m_canvasRect.rect.width / 2) + (scrollingMissionsText.rectTransform.rect.width / 2));
-                m_isMissionReminderScrolling = false;
-            }
-            else if (m_isMissionReminderScrolling)
-                scrollingMissionsText.rectTransform.anchoredPosition += Vector2.left * (Time.deltaTime * 200);
+            if (isPaused)
+                return;
+            
+            if(m_isMissionReminderScrolling)
+                MoveMissionReminder();
+            else
+                CheckShowMissionReminder();
         }
 
         //============================================================================================================//
@@ -164,7 +185,82 @@ namespace StarSalvager.UI
             ToggleDeathUIActive(false, string.Empty);
         }
 
+        private void InitScrollPositions()
+        {
+            if (!m_canvasRect)
+                return;
+            
+            var canvasWidth = m_canvasRect.rect.width / 2;
+            var scrollMissionWidth = scrollingMissionsText.rectTransform.rect.width / 2;
+            
+            _startScrollPosition = Vector3.right * (canvasWidth + scrollMissionWidth);
+            _endScrollPosition = Vector3.left * (canvasWidth + scrollMissionWidth);
+            
+            SetPosition(0f);
+        }
+
         //============================================================================================================//
+
+        private void CheckShowMissionReminder()
+        {
+            if (m_missionReminderTimer > 0)
+            {
+                m_missionReminderTimer -= Time.deltaTime;
+                return;
+            }
+            
+            PlayMissionReminder();
+        }
+        
+        private void MoveMissionReminder()
+        {
+            if (_scrollPosition >= 1f)
+            {
+                SetPosition(_scrollPosition = 0f);
+                m_isMissionReminderScrolling = false;
+                return;
+            }
+            
+            _scrollPosition += Time.deltaTime * SCROLL_SPEED;
+            SetPosition(_scrollPosition);
+        }
+        
+        private void PlayMissionReminder()
+        {
+            if(MissionManager.MissionsCurrentData == null || MissionManager.MissionsCurrentData.CurrentTrackedMissions == null)
+                return;
+            
+            
+            if (MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count <= 0 && string.IsNullOrEmpty(OverrideText)) 
+                return;
+            
+            string missionReminderText;
+            if(string.IsNullOrEmpty(OverrideText))
+                missionReminderText = MissionManager.MissionsCurrentData
+                    .CurrentTrackedMissions[
+                        Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count)]
+                    .m_missionDescription;
+            else
+            {
+                missionReminderText = OverrideText;
+            }
+
+            var multiplier = string.IsNullOrEmpty(OverrideText) ? 1f : 0.2f;
+            m_missionReminderTimer = Globals.MissionReminderFrequency * multiplier;
+            
+            scrollingMissionsText.text = missionReminderText;
+            m_isMissionReminderScrolling = true;
+        }
+        
+        private void SetPosition(float normalizedT)
+        {
+            scrollingMissionsText.rectTransform.anchoredPosition =
+                Vector3.Lerp(_startScrollPosition, _endScrollPosition, normalizedT);
+        }
+        
+        
+        //====================================================================================================================//
+        
 
         public void UpdateLivesText()
         {
@@ -183,25 +279,7 @@ namespace StarSalvager.UI
             deathText.text = description;
         }
 
-        private void PlayMissionReminder()
-        {
-            if (MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count <= 0 && string.IsNullOrEmpty(overrideText)) 
-                return;
-            
-            string missionReminderText;
-            if(string.IsNullOrEmpty(overrideText))
-                missionReminderText = MissionManager.MissionsCurrentData
-                    .CurrentTrackedMissions[
-                        Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count)]
-                    .m_missionDescription;
-            else
-            {
-                missionReminderText = overrideText;
-            }
-                
-            scrollingMissionsText.text = missionReminderText;
-            m_isMissionReminderScrolling = true;
-        }
+
 
         //============================================================================================================//
         

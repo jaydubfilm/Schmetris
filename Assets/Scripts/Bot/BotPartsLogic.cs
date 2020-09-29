@@ -277,25 +277,25 @@ namespace StarSalvager
                             capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_RED:
+                    case PART_TYPE.STORERED:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.RED] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_GREEN:
+                    case PART_TYPE.STOREGREEN:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.GREEN] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_GREY:
+                    case PART_TYPE.STOREGREY:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_YELLOW:
+                    case PART_TYPE.STOREYELLOW:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.YELLOW] += value;
@@ -418,7 +418,7 @@ namespace StarSalvager
 
                         var outOfFuel = resourceValue <= 0f && useBurnRate;
                         CanSelfDestruct = outOfFuel;
-                        LevelManagerUI.overrideText = outOfFuel ? "Out of Fuel. 'D' to self destruct" : string.Empty;
+                        LevelManagerUI.OverrideText = outOfFuel ? "Out of Fuel. 'D' to self destruct" : string.Empty;
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
@@ -495,7 +495,7 @@ namespace StarSalvager
 
                         TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
                         break;
-                    case PART_TYPE.TRIPLE_SHOT:
+                    case PART_TYPE.TRIPLESHOT:
                     case PART_TYPE.GUN:
 
 

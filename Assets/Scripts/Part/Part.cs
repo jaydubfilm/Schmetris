@@ -138,7 +138,7 @@ namespace StarSalvager
         
         public void CustomRotate(Quaternion rotation)
         {
-            if (Type == PART_TYPE.TRIPLE_SHOT)
+            if (Type == PART_TYPE.TRIPLESHOT)
                 return;
             
             transform.localRotation = rotation;

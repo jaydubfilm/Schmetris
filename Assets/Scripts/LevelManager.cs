@@ -457,7 +457,7 @@ namespace StarSalvager
             MissionManager.ProcessMissionData(typeof(ChainWavesMission), missionProgressEventData);
             MissionManager.ProcessMissionData(typeof(FlightLengthMission), missionProgressEventData);
 
-            WaveEndSummaryData.waveEndTitle = "Wave " + (Globals.CurrentWave + 1) + " Sector " + (Globals.CurrentSector + 1) + " Complete";
+            WaveEndSummaryData.waveEndTitle = $"Sector {Globals.CurrentSector + 1} Wave {Globals.CurrentWave + 1}";//"Wave " + (Globals.CurrentWave + 1) + " Sector " +  + " Complete";
 
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
@@ -470,7 +470,7 @@ namespace StarSalvager
                 }
                 PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector, Globals.CurrentWave + 1);
                 EndWaveState = true;
-                LevelManagerUI.overrideText = string.Empty;
+                LevelManagerUI.OverrideText = string.Empty;
                 Globals.CurrentWave++;
                 m_levelTimer += m_waveTimer;
                 m_waveTimer = 0;
