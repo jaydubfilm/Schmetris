@@ -462,8 +462,6 @@ namespace StarSalvager.Utilities.Inputs
             if (LevelManager.Instance.BotDead)
                 return;
 
-            Debug.Log("ROTATE " + value);
-
             foreach (var bot in _bots)
             {
                 bot.Rotate(value);

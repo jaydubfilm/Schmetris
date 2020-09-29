@@ -155,7 +155,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 2
+        value: 3
       burnRate: 0
       cost:
       - resourceType: 0
@@ -165,7 +165,7 @@ MonoBehaviour:
       - resourceType: 0
         type: 5
         partPrerequisiteLevel: 0
-        amount: 50
+        amount: 20
     - unlockLevel: 0
       health: 100
       powerDraw: 0
@@ -181,7 +181,7 @@ MonoBehaviour:
       - resourceType: 0
         type: 5
         partPrerequisiteLevel: 0
-        amount: 300
+        amount: 100
       - resourceType: 2
         type: 1
         partPrerequisiteLevel: 0
@@ -209,7 +209,7 @@ MonoBehaviour:
       - resourceType: 0
         type: 5
         partPrerequisiteLevel: 0
-        amount: 2500
+        amount: 1200
       - resourceType: 2
         type: 1
         partPrerequisiteLevel: 1

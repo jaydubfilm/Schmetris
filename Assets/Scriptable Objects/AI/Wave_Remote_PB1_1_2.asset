@@ -73,7 +73,7 @@ MonoBehaviour:
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
     - m_enemyType: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
-      m_enemyCount: 6
+      m_enemyCount: 3
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
@@ -83,19 +83,19 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 3
-      m_density: 0.2
+      m_density: 0.18
     - m_selectionType: 2
       m_shapeName: Asteroid3.0
       m_category: 
       m_rotation: 0
       m_asteroidSize: 2
-      m_density: 0.2
+      m_density: 0.15
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.25
+      m_density: 0.18
     - m_selectionType: 0
       m_shapeName: RedSingle
       m_category: Singles

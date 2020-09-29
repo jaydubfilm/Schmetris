@@ -21,6 +21,8 @@ namespace StarSalvager
         private int m_gridSizeX;
         private int m_gridSizeY;
 
+        private Dictionary<Vector2, List<int>> randomPositionFindingLists;
+
         //============================================================================================================//
 
         #region Setup
@@ -46,6 +48,8 @@ namespace StarSalvager
             float width = height * Screen.width / Screen.height;
             m_screenGridCellRange = new Vector2Int((int)(width / Constants.gridCellSize), (int)(height / Constants.gridCellSize));
             m_botGridPosition = GetCoordinatesOfGridSquareAtLocalPosition(LevelManager.Instance.BotObject.transform.position);
+            randomPositionFindingLists = new Dictionary<Vector2, List<int>>();
+            randomPositionFindingLists.Clear();
         }
 
         public void MoveObstacleMarkersDownwardOnGrid(List<IObstacle> obstacles, StageRemoteData stageData)
@@ -123,6 +127,11 @@ namespace StarSalvager
                 gridPosition.x -= m_gridSizeX;
             else if (gridPosition.x < 0)
                 gridPosition.x += m_gridSizeX;
+
+            if (gridPosition.y >= m_gridSizeY)
+            {
+                gridPosition.y = m_gridSizeY - 1;
+            }
 
             if (gridPosition.y < 0)
             {
@@ -277,20 +286,59 @@ namespace StarSalvager
             }
         }
 
-        public Vector2 GetLocalPositionOfRandomGridSquareInGridRegion(int scanRadius, Vector2 gridRegion, bool inRandomYLevel)
+        public Vector2 GetLocalPositionOfRandomGridSquareInGridRegion(int scanRadius, Vector2 gridRegion, bool findUnoccupied, bool inRandomYLevel)
         {
-            int numTries = 10;
-            for (int i = 0; i < numTries; i++)
+            if (!randomPositionFindingLists.ContainsKey(gridRegion))
             {
-                Vector2Int randomTop = GetCoordinatesOfRandomGridSquareInGridRegion(gridRegion, inRandomYLevel);
-                //Vector2Int randomTop = GetRandomTopGridSquareGridPosition(gridRegion) + (Vector2Int.right * m_positionsShiftedHorizontally);
+                randomPositionFindingLists.Add(gridRegion, new List<int>());
+
+                int beginIndex = (int)(m_gridSizeX * (double)gridRegion.x);
+                int endIndex = (int)(m_gridSizeX * (double)gridRegion.y);
+
+                for (int i = beginIndex; i <= endIndex && i < m_gridSizeX; i++)
+                {
+                    randomPositionFindingLists[gridRegion].Add(i);
+                }
+            }
+
+            List<int> randomGridRegion = randomPositionFindingLists[gridRegion];
+
+            for (int i = 0; i < randomGridRegion.Count; i++)
+            {
+                int temp = randomGridRegion[i];
+                int randomIndex = UnityEngine.Random.Range(i, randomGridRegion.Count);
+                randomGridRegion[i] = randomGridRegion[randomIndex];
+                randomGridRegion[randomIndex] = temp;
+            }
+
+            if (!findUnoccupied)
+            {
+                if (inRandomYLevel)
+                {
+                    return GetLocalPositionOfCenterOfGridSquareAtCoordinates(new Vector2Int(randomGridRegion[0], UnityEngine.Random.Range(0, m_gridSizeY)));
+                }
+                else
+                {
+                    return GetLocalPositionOfCenterOfGridSquareAtCoordinates(new Vector2Int(randomGridRegion[0], m_gridSizeY - 1));
+                }
+            }
+
+            for (int i = 0; i < randomGridRegion.Count; i++)
+            {
+                Vector2Int topPosition = new Vector2Int(randomGridRegion[i], m_gridSizeY - 1);
+
+                if (inRandomYLevel)
+                {
+                    topPosition.y = UnityEngine.Random.Range(0, m_gridSizeY);
+                }
+
                 bool isFreeSpace = true;
                 Vector2Int obstacleGridScanMinimum = new Vector2Int(
-                    Math.Max(0, randomTop.x - scanRadius),
-                    Math.Max(0, randomTop.y - scanRadius));
+                    Math.Max(0, topPosition.x - scanRadius),
+                    Math.Max(0, topPosition.y - scanRadius));
                 Vector2Int obstacleGridScanMaximum = new Vector2Int(
-                    Math.Min(m_gridSizeX - 1, randomTop.x + scanRadius),
-                    Math.Min(m_gridSizeY - 1, randomTop.y + scanRadius));
+                    Math.Min(m_gridSizeX - 1, topPosition.x + scanRadius),
+                    Math.Min(m_gridSizeY - 1, topPosition.y + scanRadius));
                 //Check each position in the box for whether an obstacle is there
                 for (int j = obstacleGridScanMinimum.x; j <= obstacleGridScanMaximum.x; j++)
                 {
@@ -308,16 +356,19 @@ namespace StarSalvager
 
                 if (isFreeSpace)
                 {
-                    return GetLocalPositionOfCenterOfGridSquareAtCoordinates(randomTop);
+                    return GetLocalPositionOfCenterOfGridSquareAtCoordinates(topPosition);
                 }
             }
 
-            /*if (gridRegion.y >= 0.05f && gridRegion.x <= 0.95)
+            if (scanRadius > 0)
             {
-                Debug.Log("Fail to find in scan " + scanRadius + " --- " + gridRegion);
-            }*/
-
-            return GetLocalPositionOfRandomGridSquareInGridRegion(scanRadius - 1, gridRegion, inRandomYLevel);
+                return GetLocalPositionOfRandomGridSquareInGridRegion(scanRadius - 1, gridRegion, findUnoccupied, inRandomYLevel);
+            }
+            else
+            {
+                throw new Exception("Couldn't find position to spawn. Possible overlap occurring");
+                return GetLocalPositionOfCenterOfGridSquareAtCoordinates(new Vector2Int(randomGridRegion[0], m_gridSizeY - 1));
+            }
         }
 
         public Vector2Int[] SelectBitExplosionPositions(Vector2 startingLocation, int numBits, int verticalExplosionRange, int horizontalExplosionRange)

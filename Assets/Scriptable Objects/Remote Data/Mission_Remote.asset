@@ -172,7 +172,7 @@ MonoBehaviour:
   - MissionID: 8bf13add-01f8-44bd-91a8-fd330d72a92c
     MissionType: 5
     MissionName: Craft a magnet
-    MissionDescription: Craft a magnet
+    MissionDescription: Craft a magnet to collect more bits!
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 1
@@ -600,11 +600,12 @@ MonoBehaviour:
   - MissionID: 79a85ec5-cc96-48dd-862c-791919cba7b6
     MissionType: 12
     MissionName: Match a bonus shape
-    MissionDescription: Match a bonus shape
+    MissionDescription: Duplicate the pattern and rotation of a passing bonus shape
+      to upgrade your cells!
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 1
-      WaveUnlockNumber: 3
+      WaveUnlockNumber: 1
       MissionUnlockName: 
     AmountNeeded: 1
     AnyResourceType: 0
