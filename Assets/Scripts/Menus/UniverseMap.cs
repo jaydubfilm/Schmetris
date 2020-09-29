@@ -143,15 +143,14 @@ namespace StarSalvager.UI
             }
         }
 
+        //TODO: ashulman, figure out if/why this works
         public void CenterToItem(RectTransform obj)
         {
-            float normalizePositionX = ((m_scrollRectArea.rect.width / 2) + obj.anchoredPosition.x);
-            float normalizePositionY = ((m_scrollRectArea.rect.height / 2) + obj.anchoredPosition.y);
-            //normalizePosition += (float)obj.transform.GetSiblingIndex() / (float)m_scrollRect.content.transform.childCount;
-            //normalizePosition /= 1000f;
-            //normalizePosition = Mathf.Clamp01(1 - normalizePosition);
-            m_scrollRect.horizontalNormalizedPosition = Mathf.Clamp01(normalizePositionX / m_scrollRectArea.rect.width);
-            m_scrollRect.verticalNormalizedPosition = Mathf.Clamp01(normalizePositionY / m_scrollRectArea.rect.height);
+            float normalizePositionX = ((m_scrollRectArea.rect.width / 2) + (obj.anchoredPosition.x * 2));
+            float normalizePositionY = ((m_scrollRectArea.rect.height / 2) + (obj.anchoredPosition.y * 2));
+
+            m_scrollRect.horizontalNormalizedPosition = normalizePositionX / m_scrollRectArea.rect.width;
+            m_scrollRect.verticalNormalizedPosition = normalizePositionY / m_scrollRectArea.rect.height;
         }
 
         //============================================================================================================//

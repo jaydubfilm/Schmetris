@@ -120,6 +120,7 @@ namespace StarSalvager
         private GameUI _gameUi;
 
         public Dictionary<BIT_TYPE, float> LiquidResourcesAttBeginningOfWave = new Dictionary<BIT_TYPE, float>();
+        public int WaterAtBeginningOfWave;
         public Dictionary<ENEMY_TYPE, int> EnemiesKilledInWave = new Dictionary<ENEMY_TYPE, int>();
         public List<string> MissionsCompletedDuringThisFlight = new List<string>();
         public bool ResetFromDeath = false;
@@ -235,7 +236,7 @@ namespace StarSalvager
                 SavePlayerData();
                 GameTimer.SetPaused(true);
                 //Turn wave end summary data into string, post in alert, and clear wave end summary data
-                Alert.ShowAlert("Wave End Data", m_waveEndSummaryData.GetWaveEndSummaryDataString(), "Continue", null);
+                Alert.ShowAlert(WaveEndSummaryData.waveEndTitle, m_waveEndSummaryData.GetWaveEndSummaryDataString(), "Continue", null);
 
                 m_waveEndSummaryData = new WaveEndSummaryData();
                 m_levelManagerUI.ToggleBetweenWavesUIActive(true);
@@ -314,6 +315,7 @@ namespace StarSalvager
                     PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
                 }
                 LiquidResourcesAttBeginningOfWave.Clear();
+                PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, WaterAtBeginningOfWave);
                 ResetFromDeath = false;
             }
 
@@ -321,6 +323,7 @@ namespace StarSalvager
             {
                 LiquidResourcesAttBeginningOfWave.Add(resource.Key, resource.Value);
             }
+            WaterAtBeginningOfWave = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE];
 
             //FIXME We shouldn't be using Camera.main
             InputManager.Instance.InitInput();
@@ -448,11 +451,13 @@ namespace StarSalvager
             {
                 sectorNumber = Globals.CurrentSector + 1,
                 waveNumber = Globals.CurrentWave + 1,
-                floatAmount = m_levelTimer
+                floatAmount = m_levelTimer + m_waveTimer
             };
             MissionManager.ProcessMissionData(typeof(LevelProgressMission), missionProgressEventData);
             MissionManager.ProcessMissionData(typeof(ChainWavesMission), missionProgressEventData);
             MissionManager.ProcessMissionData(typeof(FlightLengthMission), missionProgressEventData);
+
+            WaveEndSummaryData.waveEndTitle = "Wave " + (Globals.CurrentWave + 1) + " Sector " + (Globals.CurrentSector + 1) + " Complete";
 
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
