@@ -286,7 +286,7 @@ namespace StarSalvager
             }
         }
 
-        public Vector2 GetLocalPositionOfRandomGridSquareInGridRegion(int scanRadius, Vector2 gridRegion, bool findUnoccupied, bool inRandomYLevel)
+        public Vector2 GetLocalPositionOfRandomGridSquareInGridRegion(int scanRadius, int minScanRadius, Vector2 gridRegion, bool findUnoccupied, bool inRandomYLevel)
         {
             if (!randomPositionFindingLists.ContainsKey(gridRegion))
             {
@@ -360,13 +360,13 @@ namespace StarSalvager
                 }
             }
 
-            if (scanRadius > 0)
+            if (scanRadius > minScanRadius)
             {
-                return GetLocalPositionOfRandomGridSquareInGridRegion(scanRadius - 1, gridRegion, findUnoccupied, inRandomYLevel);
+                return GetLocalPositionOfRandomGridSquareInGridRegion(scanRadius - 1, minScanRadius, gridRegion, findUnoccupied, inRandomYLevel);
             }
             else
             {
-                throw new Exception("Couldn't find position to spawn. Possible overlap occurring");
+                throw new Exception("Couldn't find position to spawn. Possible overlap occurring in grid region " + (double)gridRegion.x + ", " + (double)gridRegion.y);
                 return GetLocalPositionOfCenterOfGridSquareAtCoordinates(new Vector2Int(randomGridRegion[0], m_gridSizeY - 1));
             }
         }

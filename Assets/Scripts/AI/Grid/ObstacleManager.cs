@@ -222,6 +222,34 @@ namespace StarSalvager
                 RemoveObstacleFromList(obstacle);
             }
 
+            /*for (int i = m_offGridMovingObstacles.Count - 1; i >= 0; i--)
+            {
+                var obstacle = m_offGridMovingObstacles[i];
+                if (obstacle == null)
+                {
+                    m_offGridMovingObstacles.RemoveAt(i);
+                    continue;
+                }
+
+                switch (obstacle.Obstacle)
+                {
+                    case Bit bit:
+                        Recycler.Recycle<Bit>(bit);
+                        break;
+                    case Asteroid asteroid:
+                        Recycler.Recycle<Asteroid>(asteroid);
+                        break;
+                    case Component component:
+                        Recycler.Recycle<Component>(component);
+                        break;
+                    case Shape shape:
+                        Recycler.Recycle<Shape>(shape);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
+                }
+            }*/
+
             for (int i = m_notFullyInGridShapes.Count - 1; i >= 0; i--)
             {
                 Recycler.Recycle<Shape>(m_notFullyInGridShapes[i].gameObject);
@@ -831,8 +859,19 @@ namespace StarSalvager
 
         private void PlaceMovableOnGrid(IObstacle movable, Vector2 gridRegion, bool inRandomYLevel, int radius = 0)
         {
-            bool findUnoccupied = !(gridRegion.y <= 0.05 || gridRegion.x >= 0.95);
-            Vector2 position = LevelManager.Instance.WorldGrid.GetLocalPositionOfRandomGridSquareInGridRegion(Constants.gridPositionSpacing, gridRegion, findUnoccupied, inRandomYLevel);
+            bool findUnoccupied = !(gridRegion.y <= 0.15 || gridRegion.x >= 0.85);
+
+            int minScanRadius;
+
+            if (movable is Bit)
+            {
+                minScanRadius = 0;
+            }
+            else
+            {
+                minScanRadius = 1;
+            }
+            Vector2 position = LevelManager.Instance.WorldGrid.GetLocalPositionOfRandomGridSquareInGridRegion(Constants.gridPositionSpacing, minScanRadius, gridRegion, findUnoccupied, inRandomYLevel);
             movable.transform.parent = m_worldElementsRoot;
             movable.transform.localPosition = position;
             switch (movable)
