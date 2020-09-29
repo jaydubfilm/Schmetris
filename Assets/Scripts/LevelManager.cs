@@ -120,6 +120,7 @@ namespace StarSalvager
         private GameUI _gameUi;
 
         public Dictionary<BIT_TYPE, float> LiquidResourcesAttBeginningOfWave = new Dictionary<BIT_TYPE, float>();
+        public int WaterAtBeginningOfWave;
         public Dictionary<ENEMY_TYPE, int> EnemiesKilledInWave = new Dictionary<ENEMY_TYPE, int>();
         public List<string> MissionsCompletedDuringThisFlight = new List<string>();
         public bool ResetFromDeath = false;
@@ -314,6 +315,7 @@ namespace StarSalvager
                     PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
                 }
                 LiquidResourcesAttBeginningOfWave.Clear();
+                PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, WaterAtBeginningOfWave);
                 ResetFromDeath = false;
             }
 
@@ -321,6 +323,7 @@ namespace StarSalvager
             {
                 LiquidResourcesAttBeginningOfWave.Add(resource.Key, resource.Value);
             }
+            WaterAtBeginningOfWave = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE];
 
             //FIXME We shouldn't be using Camera.main
             InputManager.Instance.InitInput();

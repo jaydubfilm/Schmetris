@@ -297,6 +297,13 @@ namespace StarSalvager.Values
             AddResources((PART_TYPE) blockData.Type, blockData.Level, isRecursive);
         }
 
+        public void SubtractResources(BIT_TYPE type, int amount)
+        {
+            Dictionary<BIT_TYPE, int> resources = new Dictionary<BIT_TYPE, int>();
+            resources.Add(type, amount);
+            SubtractResources(resources);
+        }
+
         public void SubtractResources(Dictionary<BIT_TYPE, int> toSubtract)
         {
             CostCalculations.SubtractResources(ref _resources, toSubtract);
