@@ -177,13 +177,15 @@ namespace StarSalvager
             }
             
             BotPartsLogic.PartsUpdateLoop();
+        }
 
-            if (_needToCheckMagnet)
-            {
-                AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
-                _needToCheckMagnet = false;
-            }
-        
+        private void LateUpdate()
+        {
+            if (!_needToCheckMagnet) 
+                return;
+            
+            AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+            _needToCheckMagnet = false;
         }
 
         private void FixedUpdate()
