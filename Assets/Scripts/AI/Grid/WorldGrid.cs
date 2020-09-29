@@ -371,49 +371,6 @@ namespace StarSalvager
             }
         }
 
-        public Vector2 GetLocalPositionOfRandomGridSquareInGridRegionArchived(int scanRadius, Vector2 gridRegion, bool inRandomYLevel)
-        {
-            int numTries = 10;
-            for (int i = 0; i < numTries; i++)
-            {
-                Vector2Int randomTop = GetCoordinatesOfRandomGridSquareInGridRegion(gridRegion, inRandomYLevel);
-                //Vector2Int randomTop = GetRandomTopGridSquareGridPosition(gridRegion) + (Vector2Int.right * m_positionsShiftedHorizontally);
-                bool isFreeSpace = true;
-                Vector2Int obstacleGridScanMinimum = new Vector2Int(
-                    Math.Max(0, randomTop.x - scanRadius),
-                    Math.Max(0, randomTop.y - scanRadius));
-                Vector2Int obstacleGridScanMaximum = new Vector2Int(
-                    Math.Min(m_gridSizeX - 1, randomTop.x + scanRadius),
-                    Math.Min(m_gridSizeY - 1, randomTop.y + scanRadius));
-                //Check each position in the box for whether an obstacle is there
-                for (int j = obstacleGridScanMinimum.x; j <= obstacleGridScanMaximum.x; j++)
-                {
-                    for (int k = obstacleGridScanMinimum.y; k <= obstacleGridScanMaximum.y; k++)
-                    {
-                        if (LevelManager.Instance.WorldGrid.GetGridSquareAtCoordinates(j, k).ObstacleInSquare)
-                        {
-                            isFreeSpace = false;
-                            break;
-                        }
-                    }
-                    if (!isFreeSpace)
-                        break;
-                }
-
-                if (isFreeSpace)
-                {
-                    return GetLocalPositionOfCenterOfGridSquareAtCoordinates(randomTop);
-                }
-            }
-
-            /*if (gridRegion.y >= 0.05f && gridRegion.x <= 0.95)
-            {
-                Debug.Log("Fail to find in scan " + scanRadius + " --- " + gridRegion);
-            }*/
-
-            return GetLocalPositionOfRandomGridSquareInGridRegionArchived(scanRadius - 1, gridRegion, inRandomYLevel);
-        }
-
         public Vector2Int[] SelectBitExplosionPositions(Vector2 startingLocation, int numBits, int verticalExplosionRange, int horizontalExplosionRange)
         {
             Vector2Int[] bitExplosionPositions = new Vector2Int[numBits];
