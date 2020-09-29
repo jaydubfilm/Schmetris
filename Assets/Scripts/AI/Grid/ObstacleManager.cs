@@ -831,7 +831,8 @@ namespace StarSalvager
 
         private void PlaceMovableOnGrid(IObstacle movable, Vector2 gridRegion, bool inRandomYLevel, int radius = 0)
         {
-            Vector2 position = LevelManager.Instance.WorldGrid.GetLocalPositionOfRandomGridSquareInGridRegion(Constants.enemyGridScanRadius, gridRegion, inRandomYLevel);
+            bool findUnoccupied = !(gridRegion.y <= 0.05 || gridRegion.x >= 0.95);
+            Vector2 position = LevelManager.Instance.WorldGrid.GetLocalPositionOfRandomGridSquareInGridRegion(Constants.gridPositionSpacing, gridRegion, findUnoccupied, inRandomYLevel);
             movable.transform.parent = m_worldElementsRoot;
             movable.transform.localPosition = position;
             switch (movable)
