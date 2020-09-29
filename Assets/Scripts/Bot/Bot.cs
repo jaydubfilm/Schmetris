@@ -93,7 +93,7 @@ namespace StarSalvager
         private bool _rotating;
         private float targetRotation;
 
-        
+        private bool _needToCheckMagnet;
 
         //============================================================================================================//
 
@@ -178,14 +178,12 @@ namespace StarSalvager
             
             BotPartsLogic.PartsUpdateLoop();
 
-            /*if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] <= 0)
+            if (_needToCheckMagnet)
             {
-                Destroy("Ran out of power");
+                AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+                _needToCheckMagnet = false;
             }
-            if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] <= 0)
-            {
-                Destroy("Ran out of water");
-            }*/
+        
         }
 
         private void FixedUpdate()
@@ -786,7 +784,8 @@ namespace StarSalvager
                         
                         CheckForCombosAround(bitsToAdd);
 
-                        AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+                        _needToCheckMagnet = true;
+                        //AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
                         
                         CompositeCollider2D.GenerateGeometry();
 
@@ -989,6 +988,9 @@ namespace StarSalvager
         
         public bool TryAsteroidDamageAt(Vector2 collisionPoint)
         {
+            if(LevelManager.Instance.EndWaveState)
+                return false;
+            
             var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
             //------------------------------------------------------------------------------------------------//
@@ -1135,9 +1137,9 @@ namespace StarSalvager
                     }
                     break;*/
             }
-            
-            if(newAttachable.CountTowardsMagnetism)
-                AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+
+            if (newAttachable.CountTowardsMagnetism)
+                _needToCheckMagnet = true;//AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
 
             if(updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
@@ -1189,9 +1191,10 @@ namespace StarSalvager
 
             if (newAttachable.CountTowardsMagnetism && checkMagnet)
             {
-                var check = CheckHasMagnetOverage();
-                if(playSound)
-                    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+                _needToCheckMagnet = true;
+                //var check = CheckHasMagnetOverage();
+                //if(playSound)
+                //    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
             }
 
             /*if (updateMissions)
@@ -1285,9 +1288,10 @@ namespace StarSalvager
             
             if (newAttachable.CountTowardsMagnetism && checkMagnet)
             {
-                var check = CheckHasMagnetOverage();
-                if(playSound)
-                    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+                _needToCheckMagnet = true;
+                //var check = CheckHasMagnetOverage();
+                //if(playSound)
+                //    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
             }
 
 
@@ -1408,9 +1412,10 @@ namespace StarSalvager
             
             if (newAttachable.CountTowardsMagnetism && checkMagnet)
             {
-                var check = CheckHasMagnetOverage();
-                if(playSound)
-                    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+                _needToCheckMagnet = true;
+                //var check = CheckHasMagnetOverage();
+                //if(playSound)
+                //    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
             }
 
             /*if (checkForCombo)
@@ -1458,9 +1463,10 @@ namespace StarSalvager
             
             if (newAttachable.CountTowardsMagnetism && checkMagnet)
             {
-                var check = CheckHasMagnetOverage();
-                if(playSound)
-                    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+                _needToCheckMagnet = true;
+                //var check = CheckHasMagnetOverage();
+                //if(playSound)
+                //    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
             }
             
             if(updateColliderGeometry)
@@ -1648,6 +1654,11 @@ namespace StarSalvager
         }
         
         #endregion //Detach Bits
+
+        public void MarkAttachablePendingRemoval(IAttachable attachable)
+        {
+            attachedBlocks.Remove(attachable);
+        }
 
         //============================================================================================================//
         
@@ -2519,7 +2530,12 @@ namespace StarSalvager
 
         #region Magnet Checks
 
-        public bool CheckHasMagnetOverage()
+        public void ForceCheckMagnets()
+        {
+            _needToCheckMagnet = true;
+        }
+
+        private bool CheckHasMagnetOverage()
         {
             return CheckHasMagnetOverage(BotPartsLogic.currentMagnet);
         }
@@ -2527,7 +2543,7 @@ namespace StarSalvager
         /// <summary>
         /// Determines based on the total of magnet slots which pieces must be removed to fit within the expected capacity
         /// </summary>
-        public bool CheckHasMagnetOverage(MAGNET type)
+        private bool CheckHasMagnetOverage(MAGNET type)
         {
             if (!BotPartsLogic.useMagnet)
                 return false;

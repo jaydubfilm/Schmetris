@@ -38,27 +38,27 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 1
-      m_density: 0.3
+      m_density: 0.25
     - m_selectionType: 2
       m_shapeName: 
       m_category: 
       m_rotation: -1
       m_asteroidSize: 0
-      m_density: 0.2
+      m_density: 0.15
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.25
+      m_density: 0.2
     - m_selectionType: 1
       m_shapeName: RedDouble
       m_category: Doubles
       m_rotation: -1
       m_asteroidSize: 0
-      m_density: 0.4
-    - m_selectionType: 1
-      m_shapeName: GreyDouble
+      m_density: 0.35
+    - m_selectionType: 0
+      m_shapeName: GreenSingle
       m_category: Singles
       m_rotation: -1
       m_asteroidSize: 0
@@ -79,25 +79,25 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 1
-      m_density: 0.3
+      m_density: 0.25
     - m_selectionType: 2
       m_shapeName: 
       m_category: 
       m_rotation: -1
       m_asteroidSize: 0
-      m_density: 0.2
+      m_density: 0.15
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.25
+      m_density: 0.2
     - m_selectionType: 1
       m_shapeName: RedDouble
       m_category: Doubles
       m_rotation: -1
       m_asteroidSize: 0
-      m_density: 0.4
+      m_density: 0.35
     - m_selectionType: 1
       m_shapeName: GreyDouble
       m_category: Singles
@@ -111,6 +111,8 @@ MonoBehaviour:
     type: 4
     level: 0
     probability: 0
+    isGearRange: 0
+    gearValue: 0
     gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 1
     isAlwaysSpawn: 1
@@ -118,6 +120,8 @@ MonoBehaviour:
     type: 7
     level: 0
     probability: 0
+    isGearRange: 0
+    gearValue: 0
     gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 1
     isAlwaysSpawn: 1
