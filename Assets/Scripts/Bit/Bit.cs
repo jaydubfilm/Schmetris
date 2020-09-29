@@ -50,19 +50,9 @@ namespace StarSalvager
         //============================================================================================================//
         public bool CanMove => !Attached;
 
-        public bool IsRegistered
-        {
-            get { return m_isRegistered; }
-            set { m_isRegistered = value; }
-        }
-        private bool m_isRegistered = false;
+        public bool IsRegistered { get; set; } = false;
 
-        public bool IsMarkedOnGrid
-        {
-            get { return m_isMarkedOnGrid; }
-            set { m_isMarkedOnGrid = value; }
-        }
-        private bool m_isMarkedOnGrid = false;
+        public bool IsMarkedOnGrid { get; set; } = false;
 
         //Bit Properties
         //============================================================================================================//

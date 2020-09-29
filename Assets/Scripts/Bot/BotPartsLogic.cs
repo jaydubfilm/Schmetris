@@ -317,7 +317,7 @@ namespace StarSalvager
             //Force update capacities, once new values determined
             PlayerPersistentData.PlayerData.SetCapacities(capacities);
 
-            bot.CheckHasMagnetOverage();
+            bot.ForceCheckMagnets();
         }
 
         //============================================================================================================//
@@ -380,6 +380,9 @@ namespace StarSalvager
 
                         PlayerPersistentData.PlayerData.AddLiquidResource(partRemoteData.burnType, addAmount);
 
+                        //If we want to process a bit, we want to remove it from the attached list while its processed
+                        bot.MarkAttachablePendingRemoval(targetBit);
+                        
                         //TODO May want to play around with the order of operations here
                         StartCoroutine(RefineBitCoroutine(targetBit, 1.6f,
                             () =>
@@ -997,7 +1000,7 @@ namespace StarSalvager
         [SerializeField]
         private AnimationCurve moveSpeedCurve = new AnimationCurve();
 
-        private IEnumerator RefineBitCoroutine(Bit bit, float speed, Action OnFinishedCallback)
+        private IEnumerator RefineBitCoroutine(Bit bit, float speed, Action onFinishedCallback)
         {
             var bitStartPosition = bit.transform.position;
             var endPosition = bot.transform.position;
@@ -1019,7 +1022,7 @@ namespace StarSalvager
                 yield return null;
             }
 
-            OnFinishedCallback?.Invoke();
+            onFinishedCallback?.Invoke();
             bit.transform.localScale = Vector3.one;
 
 
