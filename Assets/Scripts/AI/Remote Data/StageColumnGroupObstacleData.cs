@@ -18,6 +18,11 @@ namespace StarSalvager.AI
         [SerializeField]
         public bool m_isBlendZone;
 
+        [SerializeField]
+        public bool m_allowOverlap;
+        [SerializeField]
+        public bool m_forceSpawn;
+
         [SerializeField, HideIf("IsBlendZone")]
         public List<StageObstacleData> m_stageObstacleData;
 
