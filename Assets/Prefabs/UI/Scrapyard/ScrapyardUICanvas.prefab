@@ -15471,7 +15471,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 293568756267335494}
   m_HandleRect: {fileID: 721652340515547965}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -16015,6 +16015,7 @@ MonoBehaviour:
     contentTransform: {fileID: 2153168851881239143}
     contentPrefab: {fileID: 6254017122103255255, guid: 98ec5a33d6194554c8ad6dc1aa2e2e5a,
       type: 3}
+  detailsTitleText: {fileID: 8314049863487220375}
   detailsText: {fileID: 1000330412837870365}
 --- !u!222 &3107750462499447800
 CanvasRenderer:
