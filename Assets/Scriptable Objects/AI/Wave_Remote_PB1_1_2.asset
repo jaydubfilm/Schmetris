@@ -127,7 +127,7 @@ MonoBehaviour:
     isUniqueSpawn: 0
     isAlwaysSpawn: 0
   - rdsData: 2
-    type: 4
+    type: 0
     level: 1
     probability: 0
     isGearRange: 0
