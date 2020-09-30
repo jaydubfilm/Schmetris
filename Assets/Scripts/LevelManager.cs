@@ -194,11 +194,11 @@ namespace StarSalvager
 
         private void Update()
         {
-            /*if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
             {
                 WorldGrid.DrawDebugMarkedGridPoints();
                 Debug.Break();
-            }*/
+            }
 
             if (isPaused)
                 return;
@@ -312,7 +312,14 @@ namespace StarSalvager
                 print("Reset liquid resources to before death state");
                 foreach (var resource in LiquidResourcesAttBeginningOfWave)
                 {
-                    PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
+                    if (resource.Key == BIT_TYPE.RED)
+                    {
+                        PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, Mathf.Max(30, resource.Value));
+                    }
+                    else
+                    {
+                        PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
+                    }
                 }
                 LiquidResourcesAttBeginningOfWave.Clear();
                 PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, WaterAtBeginningOfWave);

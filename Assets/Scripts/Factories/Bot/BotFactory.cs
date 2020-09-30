@@ -32,7 +32,7 @@ namespace StarSalvager.Factories
 
         public FlashSprite CreateAlertIcon()
         {
-            var outData = !Recycler.TryGrab<FlashSprite>(out FlashSprite shield) ? Object.Instantiate(alertIconPrefab).GetComponent<FlashSprite>() : shield;
+            var outData = !Recycler.TryGrab<FlashSprite>(out FlashSprite flashSprite) ? Object.Instantiate(alertIconPrefab).GetComponent<FlashSprite>() : flashSprite;
             return outData;
         }
         

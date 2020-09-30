@@ -2,6 +2,7 @@
 using StarSalvager.Values;
 using System;
 using System.Linq;
+using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 
@@ -17,6 +18,8 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField]
         private MissionUIElementScrollView MissionCompletedElementScrollView;
 
+        [SerializeField]
+        private TMP_Text detailsTitleText;
         [SerializeField]
         private TMP_Text detailsText;
 
@@ -47,10 +50,7 @@ namespace StarSalvager.UI.Scrapyard
                     $"{currentMission.m_missionName}_UIElement");
 
                 temp.Init(currentMission, 
-                (mission, hovered) =>
-                {
-                    detailsText.text = hovered ? mission.m_missionName : string.Empty;
-                }, 
+                    OnHoveredChange, 
                 mission =>
                 {
                     if (PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.All(m => m.m_missionName != currentMission.m_missionName))
@@ -77,14 +77,17 @@ namespace StarSalvager.UI.Scrapyard
                     $"{completedMission.m_missionName}_UIElement");
 
                 temp.Init(completedMission,
-                    (mission, hovered) =>
-                    {
-                        detailsText.text = hovered ? mission.m_missionName : string.Empty;
-                    }, 
+                    OnHoveredChange, 
                 null);
             }
 
             CheckMissionUITrackingToggles?.Invoke();
+        }
+
+        private void OnHoveredChange([CanBeNull] Mission mission, bool isHovered)
+        {
+            detailsTitleText.text = isHovered ? $"Details - {mission.m_missionName}" : "Details";
+            detailsText.text = isHovered ? mission.m_missionDescription : string.Empty;
         }
         
         //============================================================================================================//
