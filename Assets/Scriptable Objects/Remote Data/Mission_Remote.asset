@@ -604,8 +604,8 @@ MonoBehaviour:
       to upgrade your cells!
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
-      SectorUnlockNumber: 1
-      WaveUnlockNumber: 1
+      SectorUnlockNumber: 0
+      WaveUnlockNumber: 0
       MissionUnlockName: 
     AmountNeeded: 1
     AnyResourceType: 0
