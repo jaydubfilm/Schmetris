@@ -32,7 +32,6 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
         public bool CountAsConnectedToCore => true;
-        public bool CanDisconnect => true;
         public bool CanShift => true;
         public bool CountTowardsMagnetism => true;
 

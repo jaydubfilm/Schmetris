@@ -14,7 +14,7 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class EnemyAttachable : Enemy, IAttachable, ICustomRotate, IWasBumped
+    public class EnemyAttachable : Enemy, IAttachable, ICustomRotate, IWasBumped, ICanDetach
     {
         private static readonly int DEFAULT = Animator.StringToHash("Default");
         private static readonly int ATTACK  = Animator.StringToHash("Attack");
@@ -27,10 +27,10 @@ namespace StarSalvager.AI
         public bool Attached { get; set; }
 
         public bool CountAsConnectedToCore => false;
-        public bool CanDisconnect => true;
         public bool CanShift => true;
         public bool CountTowardsMagnetism => false;
 
+        public int AttachPriority => 10000;
         //EnemyAttachable Properties
         //============================================================================================================//
         

@@ -18,7 +18,6 @@ namespace StarSalvager
         public bool Attached { get; set; }
 
         public bool CountAsConnectedToCore => !Destroyed;
-        public bool CanDisconnect => false;
         public bool CanShift => false;
         public bool CountTowardsMagnetism => false;
 
