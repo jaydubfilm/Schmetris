@@ -655,7 +655,7 @@ MonoBehaviour:
   - Music: 2
     _clip: {fileID: 8300000, guid: 02c3dea1c8327964ea3646af4eb36c31, type: 3}
   EnemyEffects:
-  - enemyID: 3363c379-70c7-47d1-8cc6-1ca650259a31
+  - enemyID: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
     moveSound:
       clip: {fileID: 8300000, guid: c42fa33ccff9e3446a2b596dc5b933e8, type: 3}
       maxChannels: 2
