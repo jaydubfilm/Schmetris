@@ -94,7 +94,7 @@ namespace StarSalvager.Missions
 
         public static void AddMissionCurrent(string missionName)
         {
-            MissionsCurrentData.AddMission(MissionsMasterData.GetMasterMissions().Find(m => m.m_missionName == missionName));
+            MissionsCurrentData.AddMission(MissionsMasterData.GetMasterMissions().Find(m => m.missionName == missionName));
         }
 
         public static void ProcessMissionData(Type missionType, MissionProgressEventData missionProgressEventData)
@@ -108,10 +108,10 @@ namespace StarSalvager.Missions
                     mission.ProcessMissionData(missionProgressEventData);
                     if (mission.MissionComplete())
                     {
-                        Debug.Log("Mission " + mission.m_missionName + " Complete!");
+                        Debug.Log("Mission " + mission.missionName + " Complete!");
                         mission.MissionStatus = MISSION_STATUS.COMPLETED;
                         MissionsCurrentData.CompleteMission(mission);
-                        ProcessMissionComplete(mission.m_missionName);
+                        ProcessMissionComplete(mission.missionName);
                     }
                 }
             }
@@ -148,7 +148,7 @@ namespace StarSalvager.Missions
 
                     if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
                     {
-                        LevelManager.Instance.WaveEndSummaryData.missionUnlockedStrings.Add(mission.m_missionName);
+                        LevelManager.Instance.WaveEndSummaryData.missionUnlockedStrings.Add(mission.missionName);
                     }
                 }
             }

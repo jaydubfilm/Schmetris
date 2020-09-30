@@ -467,13 +467,14 @@ namespace StarSalvager.Values
 
         public void UnlockBlueprint(Blueprint blueprint)
         {
-            if (!unlockedBlueprints.Any(b => b.name == blueprint.name))
+            if (unlockedBlueprints.All(b => b.name != blueprint.name))
             {
                 unlockedBlueprints.Add(blueprint);
-
+                
+                //FIXME This may benefit from the use of a callback instead of a direct call
                 if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
                 {
-                    LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprint.name);
+                    LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprint.DisplayString);
                 }
             }
             OnValuesChanged?.Invoke();
@@ -576,14 +577,17 @@ namespace StarSalvager.Values
         public void UnlockFacilityBlueprintLevel(FACILITY_TYPE facilityType, int level)
         {
             FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(facilityType);
+            string blueprintUnlockString = $"{remoteData.displayName} lvl {level + 1}";
+            
             if (_facilityBlueprintRanks.ContainsKey(facilityType))
             {
                 if (_facilityBlueprintRanks[facilityType] < level)
                 {
                     _facilityBlueprintRanks[facilityType] = level;
+                    
+                    //FIXME This may benefit from the use of a callback instead of a direct call
                     if (LevelManager.Instance.WaveEndSummaryData != null)
                     {
-                        string blueprintUnlockString = remoteData.displayName + " " + level;
                         LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprintUnlockString);
                     }
                 }
@@ -591,9 +595,9 @@ namespace StarSalvager.Values
             else
             {
                 _facilityBlueprintRanks.Add(facilityType, level);
+                //FIXME This may benefit from the use of a callback instead of a direct call
                 if (LevelManager.Instance.WaveEndSummaryData != null)
                 {
-                    string blueprintUnlockString = remoteData.displayName + " " + level;
                     LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprintUnlockString);
                 }
             }

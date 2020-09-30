@@ -180,13 +180,15 @@ namespace StarSalvager
                 }
                 else
                 {
-                    Alert.ShowAlert("GAME OVER", "Ran out of lives. Click to return to main menu.", "Ok", () =>
-                    {
-                        Globals.CurrentWave = 0;
-                        GameTimer.SetPaused(false);
-                        PlayerPersistentData.PlayerData.numLives = 3;
-                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
-                    });
+                    m_levelManagerUI.ShowSummaryScreen("GAME OVER", 
+                        "Ran out of lives. Click to return to main menu.",
+                        () =>
+                        {
+                            Globals.CurrentWave = 0;
+                            GameTimer.SetPaused(false);
+                            PlayerPersistentData.PlayerData.numLives = 3;
+                            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                        });
                 }
                 //Debug.LogError("Bot Died. Press 'R' to restart");
             };
@@ -236,7 +238,10 @@ namespace StarSalvager
                 SavePlayerData();
                 GameTimer.SetPaused(true);
                 //Turn wave end summary data into string, post in alert, and clear wave end summary data
-                Alert.ShowAlert(WaveEndSummaryData.waveEndTitle, m_waveEndSummaryData.GetWaveEndSummaryDataString(), "Continue", null);
+                m_levelManagerUI.ShowSummaryScreen(WaveEndSummaryData.waveEndTitle,
+                    m_waveEndSummaryData.GetWaveEndSummaryDataString(),
+                    null, 
+                    "Continue");
 
                 m_waveEndSummaryData = new WaveEndSummaryData();
                 m_levelManagerUI.ToggleBetweenWavesUIActive(true);
@@ -267,18 +272,22 @@ namespace StarSalvager
                 EnemiesKilledInWave.Clear();
 
                 if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 0)
-                    Alert.ShowAlert("Out of water", "Your scrapyard is out of water. You must return now.", "Ok", () =>
-                    {
-                        IsWaveProgressing = true;
-                        EndWaveState = false;
-                        SavePlayerData();
-                        m_levelManagerUI.ToggleBetweenWavesUIActive(false);
-                        ProcessScrapyardUsageBeginAnalytics();
-                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
-                    });
-            }
+                {
+                    m_levelManagerUI.ShowSummaryScreen("Out of water",
+                        "Your scrapyard is out of water. You must return now.", () =>
+                        {
+                            IsWaveProgressing = true;
+                            EndWaveState = false;
+                            SavePlayerData();
+                            m_levelManagerUI.ToggleBetweenWavesUIActive(false);
+                            ProcessScrapyardUsageBeginAnalytics();
+                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                        });
+                }
 
-            ProjectileManager.UpdateForces();
+
+                ProjectileManager.UpdateForces();
+            }
         }
 
         //====================================================================================================================//
@@ -354,7 +363,11 @@ namespace StarSalvager
             if (PlayerPersistentData.PlayerData.firstFlight)
             {
                 PlayerPersistentData.PlayerData.firstFlight = false;
-                Toast.AddToast("Controls: AD or Left/Right arrows for left/right movement, WS or Up/Down arrows to rotate. Escape to pause.", time: 6.0f, verticalLayout: Toast.Layout.End, horizontalLayout: Toast.Layout.Middle);
+                Toast.AddToast(
+                    "<b>Move: AD or Left/Right\nRotate: WS or Up/Down</b>",
+                    time: 10.0f,
+                    verticalLayout: Toast.Layout.End,
+                    horizontalLayout: Toast.Layout.Middle);
             }
 
             Dictionary<int, float> tempResourceDictionary = new Dictionary<int, float>();
@@ -387,13 +400,14 @@ namespace StarSalvager
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
 
-            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] < LevelManager.Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate)
+            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <
+                Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate)
             {
                 GameTimer.SetPaused(true);
-                Alert.ShowAlert("Almost out of water", "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.", "Ok", () =>
-                {
-                    GameTimer.SetPaused(false);
-                });
+                m_levelManagerUI.ShowSummaryScreen("Almost out of water",
+                    "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.",
+                    () => { GameTimer.SetPaused(false); }
+                );
             }
         }
 
@@ -435,13 +449,13 @@ namespace StarSalvager
 
             SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
 
-            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] < LevelManager.Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate)
+            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <
+                Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate)
             {
                 GameTimer.SetPaused(true);
-                Alert.ShowAlert("Almost out of water", "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.", "Ok", () =>
-                {
-                    GameTimer.SetPaused(false);
-                });
+                m_levelManagerUI.ShowSummaryScreen("Almost out of water",
+                    "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.",
+                    () => { GameTimer.SetPaused(false); });
             }
         }
 
@@ -501,11 +515,13 @@ namespace StarSalvager
                 Globals.CurrentWave = 0;
                 Globals.SectorComplete = true;
                 GameTimer.SetPaused(true);
-                Alert.ShowAlert("Sector Completed", "You beat the last wave of the sector. Return to base!", "Ok", () =>
-                {
-                    GameTimer.SetPaused(false);
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
-                });
+
+                m_levelManagerUI.ShowSummaryScreen("Sector Completed",
+                    "You beat the last wave of the sector. Return to base!", () =>
+                    {
+                        GameTimer.SetPaused(false);
+                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                    });
             }
         }
 

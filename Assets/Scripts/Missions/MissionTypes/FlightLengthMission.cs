@@ -24,7 +24,7 @@ namespace StarSalvager.Missions
 
         public override bool MissionComplete()
         {
-            return m_currentAmount >= m_amountNeeded;
+            return currentAmount >= amountNeeded;
         }
 
         public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
@@ -34,7 +34,7 @@ namespace StarSalvager.Missions
             if (amount >= m_flightLength)
             {
                 Debug.WriteLine(amount + " --- " + m_flightLength);
-                m_currentAmount += 1;
+                currentAmount += 1;
             }
         }
 
@@ -43,10 +43,10 @@ namespace StarSalvager.Missions
             return new MissionData
             {
                 ClassType = GetType().Name,
-                MissionName = m_missionName,
-                MissionDescription = m_missionDescription,
-                AmountNeeded = m_amountNeeded,
-                CurrentAmount = m_currentAmount,
+                MissionName = missionName,
+                MissionDescription = missionDescription,
+                AmountNeeded = amountNeeded,
+                CurrentAmount = currentAmount,
                 MissionEventType = this.MissionEventType,
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),

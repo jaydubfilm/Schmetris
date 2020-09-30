@@ -180,6 +180,9 @@ namespace StarSalvager.UI.Scrapyard
                             continue;
                         break;
                     case BIT_TYPE.YELLOW:
+                        if(_droneDesigner._scrapyardBot.powerDraw <= 0)
+                            continue;
+                        break;
                     case BIT_TYPE.RED:
                         break;
                     default:

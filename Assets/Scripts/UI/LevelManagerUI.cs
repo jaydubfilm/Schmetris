@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using StarSalvager.Factories;
 using StarSalvager.Missions;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
@@ -239,7 +237,7 @@ namespace StarSalvager.UI
                 missionReminderText = MissionManager.MissionsCurrentData
                     .CurrentTrackedMissions[
                         Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count)]
-                    .m_missionDescription;
+                    .missionName;
             else
             {
                 missionReminderText = OverrideText;
@@ -277,6 +275,11 @@ namespace StarSalvager.UI
             m_deathUI.SetActive(active);
 
             deathText.text = description;
+        }
+
+        public void ShowSummaryScreen(string titleText, string summaryText, Action onConfirmedCallback, string buttonText = "Ok")
+        {
+            Alert.ShowAlert(titleText, summaryText, buttonText, onConfirmedCallback);
         }
 
 

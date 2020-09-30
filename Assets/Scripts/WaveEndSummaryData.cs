@@ -1,7 +1,4 @@
-﻿using StarSalvager;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 public class WaveEndSummaryData
 {
@@ -20,35 +17,47 @@ public class WaveEndSummaryData
 
     public string GetWaveEndSummaryDataString()
     {
-        string returnString = string.Empty;
+        var outStringList = new List<string>
+        {
+            $"<b>Bonus Shapes Matched:</b> {numBonusShapesMatched}/{numTotalBonusShapesSpawned}",
+            $"<b>Gears Gained:</b> {numGearsGained}",
+        };
+        //string returnString = string.Empty;
 
-        returnString += "Bonus Shapes Matched: " + numBonusShapesMatched + "/" + numTotalBonusShapesSpawned + "\n";
-        returnString += "Gears Gained: " + numGearsGained + "\n";
+        //returnString += "Bonus Shapes Matched: " + numBonusShapesMatched + "/" + numTotalBonusShapesSpawned + "\n";
+        //returnString += "Gears Gained: " + numGearsGained + "\n";
 
         if (numTotalEnemiesSpawned > 0)
         {
-            returnString += "Enemies Killed: " + "\n";
-            foreach (KeyValuePair<string, int> value in dictTotalEnemiesSpawned)
+            outStringList.Add("<b>Enemies Killed:</b> ");
+            //returnString += "Enemies Killed: " + "\n";
+            foreach (var keyValuePair in dictTotalEnemiesSpawned)
             {
-                if (dictEnemiesKilled.ContainsKey(value.Key))
-                {
-                    returnString += value.Key + " Killed: " + dictEnemiesKilled[value.Key] + "/" + value.Value + "\n";
-                }
-                else
-                {
-                    returnString += value.Key + " Killed: " + "0/" + value.Value + "\n";
-                }
+                //out default value for int should be 0
+                dictEnemiesKilled.TryGetValue(keyValuePair.Key, out var amount);
+
+                outStringList.Add($"\t{keyValuePair.Key}: {amount}/{keyValuePair.Value}");
+                
+                //if (dictEnemiesKilled.ContainsKey(value.Key))
+                //{
+                //    returnString += value.Key + " Killed: " + dictEnemiesKilled[value.Key] + "/" + value.Value + "\n";
+                //}
+                //else
+                //{
+                //    returnString += value.Key + " Killed: " + "0/" + value.Value + "\n";
+                //}
             }
         }
 
         if (numLevelsGained > 0)
         {
-            returnString += "Level ups: " + numLevelsGained + "\n";
+            outStringList.Add($"<b>Level ups:</b> {numLevelsGained}");
         }
 
         if (blueprintsUnlockedStrings.Count > 0)
         {
-            returnString += "Blueprints Unlocked: ";
+            outStringList.Add($"<b>Blueprints Unlocked:</b> {string.Join(", ", blueprintsUnlockedStrings)}");
+            /*returnString += "Blueprints Unlocked: ";
             for (int i = 0; i < blueprintsUnlockedStrings.Count; i++)
             {
                 if (i > 0)
@@ -57,12 +66,13 @@ public class WaveEndSummaryData
                 }
                 returnString += blueprintsUnlockedStrings[i];
             }
-            returnString += "\n";
+            returnString += "\n";*/
         }
 
         if (missionCompletedStrings.Count > 0)
         {
-            returnString += "Missions Completed: ";
+            outStringList.Add($"<b>Missions Completed:</b> {string.Join(", ", missionCompletedStrings)}");
+            /*returnString += "Missions Completed: ";
             for (int i = 0; i < missionCompletedStrings.Count; i++)
             {
                 if (i > 0)
@@ -71,12 +81,13 @@ public class WaveEndSummaryData
                 }
                 returnString += missionCompletedStrings[i];
             }
-            returnString += "\n";
+            returnString += "\n";*/
         }
 
         if (missionUnlockedStrings.Count > 0)
         {
-            returnString += "Missions Unlocked: ";
+            outStringList.Add($"<b>Missions Unlocked:</b> {string.Join(", ", missionUnlockedStrings)}");
+            /*returnString += "Missions Unlocked: ";
             for (int i = 0; i < missionUnlockedStrings.Count; i++)
             {
                 if (i > 0)
@@ -86,9 +97,9 @@ public class WaveEndSummaryData
                 returnString += missionUnlockedStrings[i];
                 Debug.Log(missionUnlockedStrings[i]);
             }
-            returnString += "\n";
+            returnString += "\n";*/
         }
 
-        return returnString;
+        return string.Join("\n", outStringList);
     }
 }
