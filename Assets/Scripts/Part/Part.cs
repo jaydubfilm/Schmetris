@@ -111,7 +111,12 @@ namespace StarSalvager
 
         protected override void OnCollide(GameObject gObj, Vector2 hitPoint)
         {
-            throw new System.NotImplementedException();
+            //FIXME Need to find the cause of parts not despawning correctly
+            if (IsRecycled)
+                return;
+            
+            Recycler.Recycle<Part>(this);
+
         }
 
         private void SetDestroyed(bool isDestroyed)

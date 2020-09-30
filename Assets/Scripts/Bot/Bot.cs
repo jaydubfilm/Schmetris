@@ -1375,7 +1375,7 @@ namespace StarSalvager
                     //We need to make sure that the piece wont be floating
                     if (!attachedBlocks.HasPathToCore(check))
                         continue;
-                    Debug.Log($"Found available location for {newAttachable.gameObject.name}\n{coordinate} + ({directions[i]} * {dist}) = {check}");
+                    //Debug.Log($"Found available location for {newAttachable.gameObject.name}\n{coordinate} + ({directions[i]} * {dist}) = {check}");
                     AttachNewBit(check, newAttachable, checkForCombo, updateColliderGeometry, updateMissions);
                     return;
                 }
