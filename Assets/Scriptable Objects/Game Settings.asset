@@ -22,7 +22,7 @@ MonoBehaviour:
   obstacleMass: 2
   obstacleDensityReductionModifier: 5
   botHorizontalSpeed: 30
-  missionReminderFrequency: 25
+  missionReminderFrequency: 1
   bonusShapeSpeed: 22
   bonusShapeGearsRewards:
   - numCells: 2
