@@ -1058,7 +1058,7 @@ namespace StarSalvager
         
         private void CreateEdgeSprites()
         {
-            const int X_SCALE = 60;
+            const int X_SCALE = 45;
             //TODO Create the sprite Objects
             if (_edgeSprites == null || _edgeSprites.Length == 0)
             {
@@ -1099,7 +1099,7 @@ namespace StarSalvager
                 var trans = _edgeSprites[i].transform;
                 var xPos = xOffset + orthoSize - X_SCALE / 2f;
 
-                var yPos = gridSize.y / 2f;
+                var yPos = gridSize.y / 3f;
                 trans.localPosition = new Vector3
                 {
                     x = xPos * (isLeft ? -1f : 1f),

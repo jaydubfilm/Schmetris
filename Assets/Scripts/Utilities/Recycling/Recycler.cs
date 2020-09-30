@@ -83,9 +83,14 @@ namespace Recycling
 			
 			var recycled = gameObject.GetComponent<IRecycled>();
 
+
+
 			if (!(recycled is null) && recycled.IsRecycled)
 			{
+#if UNITY_EDITOR
 				Debug.Log($"{gameObject.name} is already recycled");
+#endif
+
 				return;
 			}
 			
