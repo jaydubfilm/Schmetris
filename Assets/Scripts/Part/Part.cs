@@ -111,11 +111,15 @@ namespace StarSalvager
 
         protected override void OnCollide(GameObject gObj, Vector2 hitPoint)
         {
+#if !UNITY_EDITOR
             //FIXME Need to find the cause of parts not despawning correctly
             if (IsRecycled)
                 return;
             
             Recycler.Recycle<Part>(this);
+#else
+            throw new Exception("PARTS SHOULD NOT COLLIDE");
+#endif
 
         }
 
