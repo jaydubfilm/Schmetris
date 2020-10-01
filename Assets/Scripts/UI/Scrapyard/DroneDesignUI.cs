@@ -172,6 +172,7 @@ namespace StarSalvager.UI.Scrapyard
             repairButton.onClick.AddListener(() =>
             {
                 DroneDesigner.RepairParts();
+                PreviewRepairCost(false);
             });
             
             //--------------------------------------------------------------------------------------------------------//
@@ -455,6 +456,9 @@ namespace StarSalvager.UI.Scrapyard
                             continue;
                         break;
                     case BIT_TYPE.YELLOW:
+                        if(_droneDesigner._scrapyardBot.powerDraw <= 0)
+                            continue;
+                        break;
                     case BIT_TYPE.RED:
                         break;
                     default:
@@ -615,13 +619,13 @@ namespace StarSalvager.UI.Scrapyard
 
             var available = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN];
 
-            if (totalCost <= available) 
+            if (totalCost <= available || available == 0) 
                 return totalCost;
             
             
             if (repairCost > 0)
             {
-                return available < repairCost ? available : repairCost;
+                return available < repairCost? available : repairCost;
             }
                 
             return replacementCost;

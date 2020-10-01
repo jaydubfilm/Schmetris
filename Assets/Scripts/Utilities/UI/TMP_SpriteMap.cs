@@ -21,7 +21,7 @@ namespace StarSalvager.Utilities.UI
         //Game Pieces
         //====================================================================================================================//
         
-        private const string GAME_PIECES = "GamePieces_Atlas";
+        private const string GAME_PIECES = "GamePieces_Atlas_ver4";
 
         internal static string GetBitSprite(BIT_TYPE type, int level)
         {

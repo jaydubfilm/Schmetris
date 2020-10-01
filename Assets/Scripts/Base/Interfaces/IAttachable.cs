@@ -10,8 +10,10 @@ namespace StarSalvager
 
         bool Attached { get; set; }
         bool CountAsConnectedToCore { get; }
-        bool CanDisconnect { get; }
+        //bool CanDisconnect { get; }
         bool CanShift { get; }
+
+        
 
         bool CountTowardsMagnetism { get; }
 

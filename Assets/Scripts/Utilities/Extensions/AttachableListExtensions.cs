@@ -685,7 +685,7 @@ namespace StarSalvager.Utilities.Extensions
         public static void GetAllAttachedDetachables<T>(this List<T> attachables, T current, IAttachable[] toIgnore,
             ref List<T> outAttachables) where T : IAttachable
         {
-            var attachablesAround = attachables.GetAttachablesAround(current);
+            var attachablesAround = attachables.GetAttachablesAround(current).OfType<ICanDetach>();
 
             outAttachables.Add(current);
 
@@ -693,11 +693,11 @@ namespace StarSalvager.Utilities.Extensions
             {
                 var attachable = (T) attachable1;
 
-                if (attachable == null)
-                    continue;
+                //if (attachable == null)
+                //    continue;
 
-                if (!attachable.CanDisconnect)
-                    continue;
+                //if (!attachable.CanDisconnect)
+                //    continue;
 
                 if (toIgnore != null && toIgnore.Contains(attachable))
                     continue;

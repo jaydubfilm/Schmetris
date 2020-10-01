@@ -1,19 +1,23 @@
 ﻿using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace StarSalvager.Missions
 {
-    [System.Serializable]
+    [Serializable]
     public abstract class Mission : IEquatable<Mission>
     {
-        public string m_missionName;
-        public string m_missionDescription;
-        public float m_amountNeeded;
-        public float m_currentAmount;
+        [FormerlySerializedAs("m_missionName")] 
+        public string missionName;
+        [FormerlySerializedAs("m_missionDescription")] 
+        public string missionDescription;
+        [FormerlySerializedAs("m_amountNeeded")] 
+        public float amountNeeded;
+        [FormerlySerializedAs("m_currentAmount")] 
+        public float currentAmount;
         public MISSION_EVENT_TYPE MissionEventType { get; protected set; }
         public MISSION_STATUS MissionStatus;
 
@@ -21,19 +25,19 @@ namespace StarSalvager.Missions
 
         public Mission(MissionRemoteData missionRemoteData)
         {
-            m_currentAmount = 0;
-            m_missionName = missionRemoteData.MissionName;
-            m_missionDescription = missionRemoteData.MissionDescription;
-            m_amountNeeded = Mathf.Max(1, missionRemoteData.AmountNeeded);
+            currentAmount = 0;
+            missionName = missionRemoteData.MissionName;
+            missionDescription = missionRemoteData.MissionDescription;
+            amountNeeded = Mathf.Max(1, missionRemoteData.AmountNeeded);
             missionUnlockChecks = missionRemoteData.GetMissionUnlockData();
         }
 
         public Mission(MissionData missionData)
         {
-            m_currentAmount = 0;
-            m_missionName = missionData.MissionName;
-            m_missionDescription = missionData.MissionDescription;
-            m_amountNeeded = missionData.AmountNeeded;
+            currentAmount = 0;
+            missionName = missionData.MissionName;
+            missionDescription = missionData.MissionDescription;
+            amountNeeded = missionData.AmountNeeded;
             missionUnlockChecks = missionData.MissionUnlockChecks.ImportMissionUnlockParametersDatas();
         }
 
@@ -45,9 +49,10 @@ namespace StarSalvager.Missions
 
             if (missionUnlockChecks == null)
             {
-                Debug.Log(m_missionName);
+                Debug.Log(missionName);
                 return true;
             }
+            //FIXME This has a lot of redundant/unreachable code. This needs to be cleaned up
             foreach (var unlockCheck in missionUnlockChecks)
             {
                 if (unlockCheck.CheckUnlockParameters())
@@ -75,18 +80,20 @@ namespace StarSalvager.Missions
 
         public float GetMissionProgress()
         {
-            return (float)m_currentAmount / (float)m_amountNeeded;
+            return currentAmount / amountNeeded;
         }
 
         public abstract bool MissionComplete();
 
         public abstract MissionData ToMissionData();
 
+        #region IEquatable
+
         public bool Equals(Mission other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return m_missionName == other.m_missionName;
+            return missionName == other.missionName;
         }
 
         public override bool Equals(object obj)
@@ -99,7 +106,9 @@ namespace StarSalvager.Missions
 
         public override int GetHashCode()
         {
-            return (m_missionName != null ? m_missionName.GetHashCode() : 0);
+            return (missionName != null ? missionName.GetHashCode() : 0);
         }
+
+        #endregion //IEquatable
     }
 }

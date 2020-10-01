@@ -13,7 +13,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
-    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>
+    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>, ICanDetach
     {
         //IAttachable properties
         //============================================================================================================//
@@ -34,6 +34,8 @@ namespace StarSalvager
 
         [ShowInInspector, ReadOnly]
         public bool CanShift => true;
+
+        public int AttachPriority => level;
 
         public bool CountTowardsMagnetism => true;
 

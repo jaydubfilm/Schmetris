@@ -968,6 +968,10 @@ namespace StarSalvager
 
         public void ClearList()
         {
+            CheckIfShieldShouldRecycle();
+            CheckIfFlashIconShouldRecycle();
+            CheckIfBombsShouldRecycle();
+            
             _parts.Clear();
         }
         

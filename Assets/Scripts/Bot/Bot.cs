@@ -1375,7 +1375,7 @@ namespace StarSalvager
                     //We need to make sure that the piece wont be floating
                     if (!attachedBlocks.HasPathToCore(check))
                         continue;
-                    Debug.Log($"Found available location for {newAttachable.gameObject.name}\n{coordinate} + ({directions[i]} * {dist}) = {check}");
+                    //Debug.Log($"Found available location for {newAttachable.gameObject.name}\n{coordinate} + ({directions[i]} * {dist}) = {check}");
                     AttachNewBit(check, newAttachable, checkForCombo, updateColliderGeometry, updateMissions);
                     return;
                 }
@@ -2793,38 +2793,46 @@ namespace StarSalvager
         }*/
 
         //TODO This will likely need to move to the attachable List extensions
-        private IAttachable FindLowestAttachable(List<IAttachable> attachables, ICollection<IAttachable> toIgnore)
+        private IAttachable FindLowestAttachable(IReadOnlyCollection<IAttachable> attachables, ICollection<IAttachable> toIgnore)
         {
             //I Want the last Bit to be the fallback/default, if I can't find anything
             IAttachable selectedAttachable = null;
-            var lowestLevel = 999;
+            //var lowestLevel = 999;
             //The lowest Y coordinate
             var lowestCoordinate = 999;
+            var lowestPriority = 9999;
 
             foreach (var attachable in attachables)
             {
                 if (toIgnore.Contains(attachable))
                     continue;
-
-                if (!(attachable is ILevel HasLevel))
-                {
-                    continue;
-                }
                 
-                if(HasLevel.level > lowestLevel)
+                if(!(attachable is ICanDetach detach))
                     continue;
+                
+                if(detach.AttachPriority > lowestPriority)
+                    continue;
+                
+                //if (!(attachable is ILevel HasLevel))
+                //{
+                //    continue;
+                //}
+                //
+                //if(HasLevel.level > lowestLevel)
+                //    continue;
 
                 //Checks if the piece is higher, and if it is, that the level is not higher than the currently selected Bit
                 //This ensures that even if the lowest Bit is of high level, the lowest will always be selected
-                if (attachable.Coordinate.y > lowestCoordinate && !(HasLevel.level < lowestLevel))
+                if (attachable.Coordinate.y > lowestCoordinate && !(detach.AttachPriority < lowestPriority))
                         continue;
 
                 if (RemovalCausesDisconnects(new List<IAttachable>(/*toIgnore*/) {attachable}, out _))
                     continue;
 
                 selectedAttachable = attachable;
-                lowestLevel = HasLevel.level;
+                //lowestLevel = HasLevel.level;
                 lowestCoordinate = attachable.Coordinate.y;
+                lowestPriority = detach.AttachPriority;
 
             }
 
@@ -2837,13 +2845,19 @@ namespace StarSalvager
                 if (toIgnore.Contains(attachable))
                     continue;
                 
-                if (!(attachable is ILevel HasLevel))
-                {
+                if(!(attachable is ICanDetach detach))
                     continue;
-                }
-            
-                if(HasLevel.level > lowestLevel)
+                
+                if(detach.AttachPriority > lowestPriority)
                     continue;
+                
+                //if (!(attachable is ILevel hasLevel))
+                //{
+                //    continue;
+                //}
+            //
+                //if(hasLevel.level > lowestLevel)
+                //    continue;
 
                 //Checks if the piece is higher, and if it is, that the level is not higher than the currently selected Bit
                 //This ensures that even if the lowest Bit is of high level, the lowest will always be selected
@@ -2854,8 +2868,9 @@ namespace StarSalvager
                     continue;
 
                 selectedAttachable = attachable;
-                lowestLevel = HasLevel.level;
+                //lowestLevel = hasLevel.level;
                 lowestCoordinate = attachable.Coordinate.y;
+                lowestPriority = detach.AttachPriority;
 
             }
 

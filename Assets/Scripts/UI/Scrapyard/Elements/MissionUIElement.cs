@@ -42,7 +42,7 @@ namespace StarSalvager.UI.Scrapyard
         {
             bool isTracked =
                 PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Any(m =>
-                    m.m_missionName == data.m_missionName && !m.MissionComplete());
+                    m.missionName == data.missionName && !m.MissionComplete());
 
             elementImage.color = isTracked ? Color.green : Color.white;
 
@@ -77,7 +77,7 @@ namespace StarSalvager.UI.Scrapyard
         {
             this.data = data;
 
-            title.text = data.m_missionName;
+            title.text = data.missionName;
             
             //button.onClick.AddListener(() =>
             //{

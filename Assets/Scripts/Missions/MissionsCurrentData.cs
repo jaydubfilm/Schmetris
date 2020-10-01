@@ -44,13 +44,13 @@ namespace StarSalvager.Missions
 
         public void AddMission(Mission mission)
         {
-            if (NotStartedMissions.Find(m => m.m_missionName == mission.m_missionName) != null)
+            if (NotStartedMissions.Find(m => m.missionName == mission.missionName) != null)
             {
-                NotStartedMissions.RemoveAll(m => m.m_missionName == mission.m_missionName);
+                NotStartedMissions.RemoveAll(m => m.missionName == mission.missionName);
                 CurrentMissions.Add(mission);
 
-                MissionData missionData = NotStartedMissionData.Find(m => m.MissionName == mission.m_missionName);
-                NotStartedMissionData.RemoveAll(m => m.MissionName == mission.m_missionName);
+                MissionData missionData = NotStartedMissionData.Find(m => m.MissionName == mission.missionName);
+                NotStartedMissionData.RemoveAll(m => m.MissionName == mission.missionName);
                 CurrentMissionData.Add(missionData);
 
                 if (CurrentTrackedMissions.Count < Globals.NumCurrentTrackedMissionMax)
@@ -62,11 +62,11 @@ namespace StarSalvager.Missions
 
         public void AddTrackedMissions(Mission mission)
         {
-            if (!CurrentTrackedMissions.Any(m => m.m_missionName == mission.m_missionName))
+            if (!CurrentTrackedMissions.Any(m => m.missionName == mission.missionName))
             {
                 if (CurrentTrackedMissions.Count < Globals.NumCurrentTrackedMissionMax)
                 {
-                    MissionData missionData = CurrentMissionData.Find(m => m.MissionName == mission.m_missionName);
+                    MissionData missionData = CurrentMissionData.Find(m => m.MissionName == mission.missionName);
                     CurrentTrackedMissions.Add(mission);
                     CurrentTrackedMissionData.Add(missionData);
                 }
@@ -75,36 +75,36 @@ namespace StarSalvager.Missions
 
         public void RemoveTrackedMission(Mission mission)
         {
-            if (CurrentTrackedMissions.Any(m => m.m_missionName == mission.m_missionName))
+            if (CurrentTrackedMissions.Any(m => m.missionName == mission.missionName))
             {
-                CurrentTrackedMissions.RemoveAll(m => m.m_missionName == mission.m_missionName);
-                CurrentTrackedMissionData.RemoveAll(m => m.MissionName == mission.m_missionName);
+                CurrentTrackedMissions.RemoveAll(m => m.missionName == mission.missionName);
+                CurrentTrackedMissionData.RemoveAll(m => m.MissionName == mission.missionName);
             }
         }
 
         public void CompleteMission(Mission mission)
         {
-            if (CurrentMissions.Find(m => m.m_missionName == mission.m_missionName) != null)
+            if (CurrentMissions.Find(m => m.missionName == mission.missionName) != null)
             {
                 DropMissionLoot(mission);
-                CurrentMissions.RemoveAll(m => m.m_missionName == mission.m_missionName);
+                CurrentMissions.RemoveAll(m => m.missionName == mission.missionName);
                 CompletedMissions.Add(mission);
 
-                MissionData missionData = CurrentMissionData.Find(m => m.MissionName == mission.m_missionName);
-                CurrentMissionData.RemoveAll(m => m.MissionName == mission.m_missionName);
+                MissionData missionData = CurrentMissionData.Find(m => m.MissionName == mission.missionName);
+                CurrentMissionData.RemoveAll(m => m.MissionName == mission.missionName);
                 CompletedMissionData.Add(missionData);
 
-                if (CurrentTrackedMissions.Find(m => m.m_missionName == mission.m_missionName) != null)
+                if (CurrentTrackedMissions.Find(m => m.missionName == mission.missionName) != null)
                 {
-                    CurrentTrackedMissions.RemoveAll(m => m.m_missionName == mission.m_missionName);
-                    CurrentTrackedMissionData.RemoveAll(m => m.MissionName == mission.m_missionName);
+                    CurrentTrackedMissions.RemoveAll(m => m.missionName == mission.missionName);
+                    CurrentTrackedMissionData.RemoveAll(m => m.MissionName == mission.missionName);
                 }
             }
         }
 
         private void DropMissionLoot(Mission mission)
         {
-            MissionRemoteData missionRemoteData = FactoryManager.Instance.MissionRemoteData.GetRemoteData(mission.m_missionName);
+            MissionRemoteData missionRemoteData = FactoryManager.Instance.MissionRemoteData.GetRemoteData(mission.missionName);
             PlayerData player = PlayerPersistentData.PlayerData;
 
             missionRemoteData.ConfigureLootTable();

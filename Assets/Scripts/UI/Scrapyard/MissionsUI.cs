@@ -47,24 +47,24 @@ namespace StarSalvager.UI.Scrapyard
             foreach (var currentMission in MissionManager.MissionsCurrentData.CurrentMissions)
             {
                 var temp = MissionUiElementScrollView.AddElement(currentMission,
-                    $"{currentMission.m_missionName}_UIElement");
+                    $"{currentMission.missionName}_UIElement");
 
                 temp.Init(currentMission, 
                     OnHoveredChange, 
                 mission =>
                 {
-                    if (PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.All(m => m.m_missionName != currentMission.m_missionName))
+                    if (PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.All(m => m.missionName != currentMission.missionName))
                     {
                         if (PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Count >=
                             Globals.NumCurrentTrackedMissionMax) 
                             return;
                         
-                        Debug.Log("Track " + mission.m_missionName);
+                        Debug.Log("Track " + mission.missionName);
                         PlayerPersistentData.PlayerData.missionsCurrentData.AddTrackedMissions(currentMission);
                     }
                     else
                     {
-                        Debug.Log("Untrack " + mission.m_missionName);
+                        Debug.Log("Untrack " + mission.missionName);
                         PlayerPersistentData.PlayerData.missionsCurrentData.RemoveTrackedMission(currentMission);
                     }
                     CheckMissionUITrackingToggles?.Invoke();
@@ -74,7 +74,7 @@ namespace StarSalvager.UI.Scrapyard
             foreach (var completedMission in MissionManager.MissionsCurrentData.CompletedMissions)
             {
                 var temp = MissionCompletedElementScrollView.AddElement(completedMission,
-                    $"{completedMission.m_missionName}_UIElement");
+                    $"{completedMission.missionName}_UIElement");
 
                 temp.Init(completedMission,
                     OnHoveredChange, 
@@ -86,8 +86,8 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnHoveredChange([CanBeNull] Mission mission, bool isHovered)
         {
-            detailsTitleText.text = isHovered ? $"Details - {mission.m_missionName}" : "Details";
-            detailsText.text = isHovered ? mission.m_missionDescription : string.Empty;
+            detailsTitleText.text = isHovered ? $"Details - {mission.missionName}" : "Details";
+            detailsText.text = isHovered ? mission.missionDescription : string.Empty;
         }
         
         //============================================================================================================//
