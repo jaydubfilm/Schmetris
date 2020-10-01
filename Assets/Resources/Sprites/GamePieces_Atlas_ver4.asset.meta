@@ -1,6 +1,17 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
+<<<<<<< HEAD:Assets/Resources/Sprites/GamePieces_Atlas_ver4.asset.meta
 guid: b7740240693a95e42b662089d632d307
 NativeFormatImporter:
+=======
+guid: 6d9ce10c886ab38408e3193878d21b43
+folderAsset: yes
+DefaultImporter:
+>>>>>>> Salvager-Master:Assets/Sprites.meta
+=======
+guid: b7740240693a95e42b662089d632d307
+NativeFormatImporter:
+>>>>>>> Salvager-Master
   externalObjects: {}
   mainObjectFileID: 0
   userData: 

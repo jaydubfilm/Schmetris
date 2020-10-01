@@ -411,7 +411,10 @@ namespace StarSalvager
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
+                        var outOfFuel = resourceValue <= 0f && useBurnRate;
+                        GameUI.ShowAbortWindow(outOfFuel);
 
+                        
                         //Determines if the player can move with no available fuel
                         //NOTE: This needs to happen before the subtraction of resources to prevent premature force-stop
                         InputManager.Instance.LockSideMovement = resourceValue <= 0f;
@@ -419,9 +422,9 @@ namespace StarSalvager
                         if (resourceValue > 0f && useBurnRate)
                             resourceValue -= levelData.burnRate * Time.deltaTime;
 
-                        var outOfFuel = resourceValue <= 0f && useBurnRate;
+                        
                         CanSelfDestruct = outOfFuel;
-                        LevelManagerUI.OverrideText = outOfFuel ? "Out of Fuel. 'D' to self destruct" : string.Empty;
+                        //LevelManagerUI.OverrideText = outOfFuel ? "Out of Fuel. 'D' to self destruct" : string.Empty;
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)

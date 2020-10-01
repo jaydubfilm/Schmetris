@@ -87,7 +87,7 @@ namespace StarSalvager.UI.Scrapyard
         private void OnHoveredChange([CanBeNull] Mission mission, bool isHovered)
         {
             detailsTitleText.text = isHovered ? $"Details - {mission.missionName}" : "Details";
-            detailsText.text = isHovered ? mission.missionDescription : string.Empty;
+            detailsText.text = isHovered ? mission.missionDescription + mission.GetMissionProgressString() : string.Empty;
         }
         
         //============================================================================================================//

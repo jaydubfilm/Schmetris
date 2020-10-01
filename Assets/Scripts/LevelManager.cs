@@ -52,11 +52,13 @@ namespace StarSalvager
         public bool IsWaveProgressing = true;
 
         private float m_levelTimer = 0;
+        public float LevelTimer => m_levelTimer + m_waveTimer;
 
         private int m_currentStage;
         public int CurrentStage => m_currentStage;
 
         public bool EndWaveState = false;
+        public bool EndSectorState = false;
 
         private LevelManagerUI m_levelManagerUI;
 
@@ -121,6 +123,7 @@ namespace StarSalvager
 
         public Dictionary<BIT_TYPE, float> LiquidResourcesAttBeginningOfWave = new Dictionary<BIT_TYPE, float>();
         public int WaterAtBeginningOfWave;
+        public int NumWavesInRow;
         public Dictionary<ENEMY_TYPE, int> EnemiesKilledInWave = new Dictionary<ENEMY_TYPE, int>();
         public List<string> MissionsCompletedDuringThisFlight = new List<string>();
         public bool ResetFromDeath = false;
@@ -187,6 +190,7 @@ namespace StarSalvager
                             Globals.CurrentWave = 0;
                             GameTimer.SetPaused(false);
                             PlayerPersistentData.PlayerData.numLives = 3;
+                            PlayerPersistentData.SaveAutosaveFiles();
                             SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
                         });
                 }
@@ -214,7 +218,7 @@ namespace StarSalvager
                 if (!CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage))
                 {
                     if (m_currentStage == currentStage + 1)
-                        TransitionToNewWave();
+                        TransitionToEndWaveState();
                 }
 
                 if (!EndWaveState)
@@ -237,14 +241,35 @@ namespace StarSalvager
                 GameUi.SetTimeString(0);
                 SavePlayerData();
                 GameTimer.SetPaused(true);
-                //Turn wave end summary data into string, post in alert, and clear wave end summary data
-                m_levelManagerUI.ShowSummaryScreen(WaveEndSummaryData.waveEndTitle,
-                    m_waveEndSummaryData.GetWaveEndSummaryDataString(),
-                    null, 
-                    "Continue");
+
+                if (EndSectorState)
+                {
+                    m_levelManagerUI.ShowSummaryScreen("Sector Completed",
+                        "You beat the last wave of the sector. Return to base!", () =>
+                        {
+                            GameTimer.SetPaused(false);
+                            EndWaveState = false;
+                            EndSectorState = false;
+                            PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector + 1, 0);
+                            MissionManager.ProcessMissionData(typeof(SectorsCompletedMission), new MissionProgressEventData());
+                            ProcessLevelCompleteAnalytics();
+                            ProcessScrapyardUsageBeginAnalytics();
+                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                        });
+                }
+                else
+                {
+                    //Turn wave end summary data into string, post in alert, and clear wave end summary data
+                    m_levelManagerUI.ShowSummaryScreen(WaveEndSummaryData.waveEndTitle,
+                        m_waveEndSummaryData.GetWaveEndSummaryDataString(),
+                        () =>
+                        {
+                            m_levelManagerUI.ToggleBetweenWavesUIActive(true);
+                        },
+                        "Continue");
+                }
 
                 m_waveEndSummaryData = new WaveEndSummaryData();
-                m_levelManagerUI.ToggleBetweenWavesUIActive(true);
                 ObstacleManager.MoveToNewWave();
                 EnemyManager.MoveToNewWave();
                 EnemyManager.SetEnemiesInert(false);
@@ -254,7 +279,7 @@ namespace StarSalvager
                 Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
                 foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
                 {
-                    tempDictionary.Add((int) resource.Key, resource.Value);
+                    tempDictionary.Add((int)resource.Key, resource.Value);
                 }
 
                 Dictionary<string, object> waveEndAnalyticsDictionary = new Dictionary<string, object>
@@ -285,7 +310,6 @@ namespace StarSalvager
                         });
                 }
 
-
                 ProjectileManager.UpdateForces();
             }
         }
@@ -298,6 +322,7 @@ namespace StarSalvager
             m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             m_waveEndSummaryData = new WaveEndSummaryData();
+            NumWavesInRow = 0;
 
             BotObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
             if (PlayerPersistentData.PlayerData.GetCurrentBlockData().Count == 0)
@@ -440,7 +465,7 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        public void ContinueToNextWave()
+        public void BeginNextWave()
         {
             IsWaveProgressing = true;
             EndWaveState = false;
@@ -460,19 +485,21 @@ namespace StarSalvager
         }
 
         
-        private void TransitionToNewWave()
+        private void TransitionToEndWaveState()
         {
             SavePlayerData();
 
             //Unlock loot for completing wave
 
             ObstacleManager.IncreaseSpeedAllOffGridMoving(3.0f);
+            NumWavesInRow++;
 
             MissionProgressEventData missionProgressEventData = new MissionProgressEventData
             {
                 sectorNumber = Globals.CurrentSector + 1,
                 waveNumber = Globals.CurrentWave + 1,
-                floatAmount = m_levelTimer + m_waveTimer
+                intAmount = NumWavesInRow,
+                floatAmount = LevelTimer
             };
             MissionManager.ProcessMissionData(typeof(LevelProgressMission), missionProgressEventData);
             MissionManager.ProcessMissionData(typeof(ChainWavesMission), missionProgressEventData);
@@ -480,49 +507,39 @@ namespace StarSalvager
 
             WaveEndSummaryData.waveEndTitle = $"Sector {Globals.CurrentSector + 1} Wave {Globals.CurrentWave + 1}";//"Wave " + (Globals.CurrentWave + 1) + " Sector " +  + " Complete";
 
+            int progressionSector = Globals.CurrentSector;
+            string endWaveMessage;
+            
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
-                Toast.AddToast("Wave Complete!", time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
-                if (!Globals.OnlyGetWaveLootOnce || !PlayerPersistentData.PlayerData.CheckIfQualifies(Globals.CurrentSector, Globals.CurrentWave + 1))
-                {
-                    CurrentWaveData.ConfigureLootTable();
-                    List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
-                    DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), false);
-                }
-                PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector, Globals.CurrentWave + 1);
-                EndWaveState = true;
-                LevelManagerUI.OverrideText = string.Empty;
                 Globals.CurrentWave++;
-                m_levelTimer += m_waveTimer;
-                m_waveTimer = 0;
-                GameUi.SetCurrentWaveText("Complete");
-                EnemyManager.SetEnemiesInert(true);
-                Random.InitState(CurrentWaveData.WaveSeed);
-                Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
+                endWaveMessage = "Wave Complete!";
             }
             else
             {
-                if (!Globals.OnlyGetWaveLootOnce || !PlayerPersistentData.PlayerData.CheckIfQualifies(Globals.CurrentSector + 1, Globals.CurrentWave))
-                {
-                    CurrentWaveData.ConfigureLootTable();
-                    List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
-                    DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), false);
-                }
-                PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector + 1, 0);
-                MissionManager.ProcessMissionData(typeof(SectorsCompletedMission), new MissionProgressEventData());
-                ProcessLevelCompleteAnalytics();
-                ProcessScrapyardUsageBeginAnalytics();
                 Globals.CurrentWave = 0;
-                Globals.SectorComplete = true;
-                GameTimer.SetPaused(true);
-
-                m_levelManagerUI.ShowSummaryScreen("Sector Completed",
-                    "You beat the last wave of the sector. Return to base!", () =>
-                    {
-                        GameTimer.SetPaused(false);
-                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
-                    });
+                progressionSector++;
+                EndSectorState = true;
+                endWaveMessage = "Sector Complete!";
             }
+
+            Toast.AddToast(endWaveMessage, time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
+            if (!Globals.OnlyGetWaveLootOnce || !PlayerPersistentData.PlayerData.CheckIfQualifies(progressionSector, Globals.CurrentWave))
+            {
+                CurrentWaveData.ConfigureLootTable();
+                List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
+                DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), false);
+            }
+            PlayerPersistentData.PlayerData.AddSectorProgression(progressionSector, Globals.CurrentWave);
+            EndWaveState = true;
+            LevelManagerUI.OverrideText = string.Empty;
+            m_levelTimer += m_waveTimer;
+            m_waveTimer = 0;
+            GameUi.SetCurrentWaveText("Complete");
+            EnemyManager.SetEnemiesInert(true);
+
+            Random.InitState(CurrentWaveData.WaveSeed);
+            Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
         }
 
         public void DropLoot(List<IRDSObject> loot, Vector3 position, bool isFromEnemyLoot)

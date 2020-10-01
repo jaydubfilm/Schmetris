@@ -36,6 +36,7 @@ namespace StarSalvager
         public bool CanShift => true;
 
         public int AttachPriority => level;
+        public bool PendingDetach { get; set; }
 
         public bool CountTowardsMagnetism => true;
 
@@ -77,6 +78,8 @@ namespace StarSalvager
         {
             Attached = isAttached;
             collider.usedByComposite = isAttached;
+
+            if (!isAttached) PendingDetach = false;
         }
 
         //IRotate Functions
@@ -236,6 +239,8 @@ namespace StarSalvager
             SetRotating(false);
 
             SetSortingLayer("Default");
+
+            PendingDetach = false;
 
             if (_damage)
             {

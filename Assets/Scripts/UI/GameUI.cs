@@ -170,6 +170,13 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("TL Window")]
         private Image clockImage;
 
+        //Bottom Window
+        //====================================================================================================================//
+        [SerializeField, Required, FoldoutGroup("B Window")]
+        private GameObject abortWindow;
+        [SerializeField, Required, FoldoutGroup("B Window")]
+        private Button abortButton;
+
         //Bottom Left Window
         //============================================================================================================//
 
@@ -254,11 +261,8 @@ namespace StarSalvager.UI
             InitSliderText();
 
             vignetteImage.gameObject.SetActive(useVignette);
-
             
             InitValues();
-
-            
 
             glowImages = new[]
             {
@@ -328,6 +332,7 @@ namespace StarSalvager.UI
 
         private void InitValues()
         {
+            
             InitSmartWeaponUI();
             ResetIcons();
 
@@ -345,6 +350,7 @@ namespace StarSalvager.UI
             SetTimeString("0:00");
             
             SetPlayerGearsLevel(0,0, 0);
+            ShowAbortWindow(false);
         }
 
         private void InitSliderText()
@@ -382,6 +388,8 @@ namespace StarSalvager.UI
 
             if (playerData == null)
                 return;
+            
+            ShowAbortWindow(false);
 
             SetResourceSliderBounds(BIT_TYPE.RED, 0, playerData.liquidCapacity[BIT_TYPE.RED]);
             SetResourceSliderBounds(BIT_TYPE.GREEN, 0, playerData.liquidCapacity[BIT_TYPE.GREEN]);
@@ -416,6 +424,37 @@ namespace StarSalvager.UI
         public void SetCarryCapacity(float value)
         {
             carryCapacitySlider.value = value;
+        }
+        
+        //============================================================================================================//
+
+        private bool _abortWindowShown = true;
+        public void ShowAbortWindow(bool shown)
+        {
+            //Prevent repeated calls
+            if (_abortWindowShown == shown)
+                return;
+
+            _abortWindowShown = shown;
+            
+            if (!shown)
+            {
+                abortButton.onClick.RemoveAllListeners();
+                abortWindow.SetActive(false);
+                return;
+            }
+            
+            abortButton.onClick.AddListener(() =>
+            {
+                LevelManager.Instance.BotObject.TrySelfDestruct();
+                
+                //If the bot was able to be killed, hide this window
+                if(LevelManager.Instance.BotObject.Destroyed)
+                    ShowAbortWindow(false);
+
+            });
+            
+            abortWindow.SetActive(true);
         }
 
         //============================================================================================================//

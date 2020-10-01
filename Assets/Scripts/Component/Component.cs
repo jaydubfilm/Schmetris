@@ -52,6 +52,7 @@ namespace StarSalvager
 
         //public bool CanDisconnect => true;
         public int AttachPriority => (10 + (int) Type) * level;
+        public bool PendingDetach { get; set; }
         public bool CountTowardsMagnetism => true;
 
         //IHealth Properties
@@ -154,6 +155,8 @@ namespace StarSalvager
         {
             Attached = isAttached;
             collider.usedByComposite = isAttached;
+            
+            if (!isAttached) PendingDetach = false;
 
             //if (!isAttached)
             //{
@@ -214,7 +217,8 @@ namespace StarSalvager
         public virtual void CustomRecycle(params object[] args)
         {
             SetAttached(false);
-
+            PendingDetach = false;
+            
             if (_damage)
             {
                 Recycler.Recycle<Damage>(_damage);

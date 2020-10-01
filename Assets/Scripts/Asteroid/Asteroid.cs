@@ -6,6 +6,7 @@ using StarSalvager.Utilities.Inputs;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using StarSalvager.AI;
+using StarSalvager.Values;
 
 namespace StarSalvager
 {
@@ -93,7 +94,7 @@ namespace StarSalvager
                     //Recycler.Recycle<Asteroid>(this);
                     bot.Rotate(bot.MostRecentRotate.Invert());
                     AudioController.PlaySound(SOUND.ASTEROID_BASH);
-                    bot.TryHitAt(hitPoint, 10);
+                    bot.TryHitAt(hitPoint, Globals.AsteroidDamage);
                     return;
                 }
 

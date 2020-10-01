@@ -232,9 +232,9 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     Input.Actions.Default.RightClick, RightClick
                 },
-                {
-                    Input.Actions.Default.SelfDestruct, SelfDestruct
-                }
+                //{
+                //    Input.Actions.Default.SelfDestruct, SelfDestruct
+                //}
             };
             
             //Here we setup the inputs dependent on the orientation
@@ -283,7 +283,10 @@ namespace StarSalvager.Utilities.Inputs
             _bots[0].BotPartsLogic.TryTriggerSmartWeapon(index);
         }
         
+        //Movement
         //============================================================================================================//
+
+        #region Movement
 
         private void SideMovement(InputAction.CallbackContext ctx)
         {
@@ -392,6 +395,13 @@ namespace StarSalvager.Utilities.Inputs
 
         }
 
+        #endregion //Movement
+
+        //Rotation
+        //====================================================================================================================//
+
+        #region Rotation
+
         private void RotateMovement(InputAction.CallbackContext ctx)
         {
             _currentRotateInput = ctx.ReadValue<float>();
@@ -441,14 +451,15 @@ namespace StarSalvager.Utilities.Inputs
                 previousRotateInput = currentRotateInput;
 
                 //Set the countdown timer to the intended value
-                dasRotateTimer = Globals.DASTime * 3;
+                dasRotateTimer = Globals.DASTime * 3f;
 
                 //Quickly move the relevant managers, then reset their input, so that they will pause until DAS is ready
                 Rotate(currentRotateInput);
+                Rotate(0);
                 return;
             }
 
-            //If the DAS has triggered already, go ahead and update the relevant managers
+            ////If the DAS has triggered already, go ahead and update the relevant managers
             dasRotateTimer = Globals.DASTime * 1.5f;
             Rotate(currentRotateInput);
         }
@@ -467,13 +478,19 @@ namespace StarSalvager.Utilities.Inputs
                 bot.Rotate(value);
             }
 
-            foreach (var scrapyardBot in _scrapyardBots)
+            /*foreach (var scrapyardBot in _scrapyardBots)
             {
                 scrapyardBot.Rotate(value);
-            }
+            }*/
 
-            AudioController.PlaySound(SOUND.BOT_ROTATE);
+            
         }
+
+        #endregion //Rotation
+
+
+        //====================================================================================================================//
+        
 
         private void LeftClick(InputAction.CallbackContext ctx)
         {
@@ -503,10 +520,13 @@ namespace StarSalvager.Utilities.Inputs
                 GameTimer.SetPaused(!isPaused);
         }
         
-        private void SelfDestruct(InputAction.CallbackContext ctx)
-        {
-            _bots[0].TrySelfDestruct();
-        }
+        //private void SelfDestruct(InputAction.CallbackContext ctx)
+        //{
+        //    _bots[0].TrySelfDestruct();
+        //}
+
+        //====================================================================================================================//
+        
 
         public void CancelMove()
         {
@@ -557,7 +577,8 @@ namespace StarSalvager.Utilities.Inputs
             //If the user is no longer pressing a direction, these checks do not matter
             if (currentRotateInput == 0f)
                 return;
-
+            
+            //Commented out because a delay is required for rotate DAS to function correctly
             //If we've already triggered the DAS, don't bother with following checks
             //if (dasRotateTriggered)
             //    return;
@@ -593,6 +614,8 @@ namespace StarSalvager.Utilities.Inputs
         public void OnPause()
         {
             Move(0);
+
+            currentRotateInput = MostRecentRotateMovement = 0;
             Rotate(0);
         }
 
