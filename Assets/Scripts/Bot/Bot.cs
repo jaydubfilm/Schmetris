@@ -899,7 +899,7 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(closestAttachable), closestAttachable, null);
             }
             
-            TryHitAt(closestAttachable, 10f);
+            TryHitAt(closestAttachable, AsteroidDamage);
             return true;
         }
 
