@@ -45,6 +45,7 @@ namespace StarSalvager.UI
 
         private void InitButtons()
         {
+#if UNITY_EDITOR
             swapUniverseButton.onClick.AddListener(() =>
             {
                 if (FactoryManager.Instance.currentModularDataIndex == FactoryManager.Instance.ModularDataCount - 1)
@@ -59,7 +60,9 @@ namespace StarSalvager.UI
 
                 InitUniverseMapTemp();
             });
-            
+#else
+            swapUniverseButton.gameObject.SetActive(false);
+#endif
             backButton.onClick.AddListener(() => SceneLoader.LoadPreviousScene());
         }
 
