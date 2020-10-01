@@ -44,6 +44,7 @@ namespace StarSalvager.Values
         public static float CameraSmoothing => m_gameSettings.cameraSmoothing;
         public static float CameraOffsetBounds => Constants.gridCellSize * Globals.ColumnsOnScreen * m_gameSettings.cameraOffsetBounds / 2;
         public static int GridSizeX => m_gameSettings.gridWidth;
+        public static float AsteroidDamage => m_gameSettings.asteroidDamage;
         public static float BonusShapeDuration => m_gameSettings.bonusShapeSpeed;
         public static List<BlueprintInitialData> BlueprintInitialData => m_gameSettings.blueprintInitialData;
         public static List<FacilityInitialData> FacilityInitialData => m_gameSettings.facilityInitialData;
