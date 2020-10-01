@@ -85,6 +85,11 @@ namespace StarSalvager.Missions
 
         public virtual string GetMissionProgressString()
         {
+            if (currentAmount == 0 && amountNeeded == 1)
+            {
+                return "";
+            }
+            
             return $" ({ + currentAmount}/{ + amountNeeded})";
         }
 
