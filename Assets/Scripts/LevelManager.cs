@@ -52,6 +52,7 @@ namespace StarSalvager
         public bool IsWaveProgressing = true;
 
         private float m_levelTimer = 0;
+        public float LevelTimer => m_levelTimer + m_waveTimer;
 
         private int m_currentStage;
         public int CurrentStage => m_currentStage;
@@ -121,6 +122,7 @@ namespace StarSalvager
 
         public Dictionary<BIT_TYPE, float> LiquidResourcesAttBeginningOfWave = new Dictionary<BIT_TYPE, float>();
         public int WaterAtBeginningOfWave;
+        public int NumWavesInRow;
         public Dictionary<ENEMY_TYPE, int> EnemiesKilledInWave = new Dictionary<ENEMY_TYPE, int>();
         public List<string> MissionsCompletedDuringThisFlight = new List<string>();
         public bool ResetFromDeath = false;
@@ -299,6 +301,7 @@ namespace StarSalvager
             m_worldGrid = null;
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             m_waveEndSummaryData = new WaveEndSummaryData();
+            NumWavesInRow = 0;
 
             BotObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
             if (PlayerPersistentData.PlayerData.GetCurrentBlockData().Count == 0)
@@ -468,12 +471,14 @@ namespace StarSalvager
             //Unlock loot for completing wave
 
             ObstacleManager.IncreaseSpeedAllOffGridMoving(3.0f);
+            NumWavesInRow++;
 
             MissionProgressEventData missionProgressEventData = new MissionProgressEventData
             {
                 sectorNumber = Globals.CurrentSector + 1,
                 waveNumber = Globals.CurrentWave + 1,
-                floatAmount = m_levelTimer + m_waveTimer
+                intAmount = NumWavesInRow,
+                floatAmount = LevelTimer
             };
             MissionManager.ProcessMissionData(typeof(LevelProgressMission), missionProgressEventData);
             MissionManager.ProcessMissionData(typeof(ChainWavesMission), missionProgressEventData);

@@ -234,11 +234,14 @@ namespace StarSalvager.UI
                 return;
             
             string missionReminderText;
-            if(string.IsNullOrEmpty(OverrideText))
-                missionReminderText = MissionManager.MissionsCurrentData
+            if (string.IsNullOrEmpty(OverrideText))
+            {
+                Mission curMission = MissionManager.MissionsCurrentData
                     .CurrentTrackedMissions[
-                        Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count)]
-                    .missionName;
+                        Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count)];
+
+                missionReminderText = curMission.missionName + curMission.GetMissionProgressString();
+            }
             else
             {
                 missionReminderText = OverrideText;
