@@ -421,7 +421,8 @@ namespace StarSalvager
 
                         var outOfFuel = resourceValue <= 0f && useBurnRate;
                         CanSelfDestruct = outOfFuel;
-                        LevelManagerUI.OverrideText = outOfFuel ? "Out of Fuel. 'D' to self destruct" : string.Empty;
+                        //LevelManagerUI.OverrideText = outOfFuel ? "Out of Fuel. 'D' to self destruct" : string.Empty;
+                        GameUI.ShowAbortWindow(outOfFuel);
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
