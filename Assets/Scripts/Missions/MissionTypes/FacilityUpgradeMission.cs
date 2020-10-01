@@ -41,6 +41,11 @@ namespace StarSalvager.Missions
             }
         }
 
+        public override string GetMissionProgressString()
+        {
+            return "";
+        }
+
         public override MissionData ToMissionData()
         {
             return new MissionData

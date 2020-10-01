@@ -29,12 +29,23 @@ namespace StarSalvager.Missions
 
         public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
         {
-            int waveNumber = missionProgressEventData.waveNumber;
+            int wavesInRow = missionProgressEventData.intAmount;
             
-            if (waveNumber == m_waveNumber)
+            if (wavesInRow == m_waveNumber)
             {
                 currentAmount += 1;
             }
+        }
+
+        public override string GetMissionProgressString()
+        {
+            int curAmount = 0;
+            if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
+            {
+                curAmount = LevelManager.Instance.NumWavesInRow;
+            }
+
+            return $" ({ +curAmount}/{ +amountNeeded})";
         }
 
         public override MissionData ToMissionData()
