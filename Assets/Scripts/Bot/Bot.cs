@@ -302,13 +302,17 @@ namespace StarSalvager
 
         public void Rotate(float direction)
         {
-            if (Input.GetKey(KeyCode.LeftAlt))
+            if (GameTimer.IsPaused) 
                 return;
             
             if (direction < 0)
                 Rotate(ROTATION.CCW);
             else if (direction > 0)
                 Rotate(ROTATION.CW);
+            else
+                return;
+            
+            AudioController.PlaySound(SOUND.BOT_ROTATE);
         }
         
         /// <summary>
@@ -731,7 +735,7 @@ namespace StarSalvager
                         if (closestOnBot is EnemyAttachable ||
                             closestOnBot is Part part && part.Destroyed)
                         {
-                            if (closestOnBot is IObstacle obstacle)
+                            if (shape is IObstacle obstacle)
                                 obstacle.Bounce(collisionPoint);
 
                             return false;
