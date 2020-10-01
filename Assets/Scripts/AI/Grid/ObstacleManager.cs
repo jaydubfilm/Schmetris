@@ -870,7 +870,7 @@ namespace StarSalvager
                 minScanRadius = 1;
             }
             Vector2? positionNullable = LevelManager.Instance.WorldGrid.GetLocalPositionOfRandomGridSquareInGridRegion(Constants.gridPositionSpacing, minScanRadius, gridRegion, allowOverlap, forceSpawn, inRandomYLevel);
-            if (positionNullable.Value == null)
+            if (!positionNullable.HasValue)
             {
                 switch (movable)
                 {
