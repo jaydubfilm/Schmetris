@@ -232,9 +232,9 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     Input.Actions.Default.RightClick, RightClick
                 },
-                {
-                    Input.Actions.Default.SelfDestruct, SelfDestruct
-                }
+                //{
+                //    Input.Actions.Default.SelfDestruct, SelfDestruct
+                //}
             };
             
             //Here we setup the inputs dependent on the orientation
@@ -503,10 +503,10 @@ namespace StarSalvager.Utilities.Inputs
                 GameTimer.SetPaused(!isPaused);
         }
         
-        private void SelfDestruct(InputAction.CallbackContext ctx)
-        {
-            _bots[0].TrySelfDestruct();
-        }
+        //private void SelfDestruct(InputAction.CallbackContext ctx)
+        //{
+        //    _bots[0].TrySelfDestruct();
+        //}
 
         public void CancelMove()
         {

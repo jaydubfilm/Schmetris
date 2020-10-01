@@ -76,14 +76,6 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
-                },
-                {
-                    "name": "SelfDestruct",
-                    "type": "Button",
-                    "id": "150cf1b4-78f8-403a-9ef7-2a1abd64f2d8",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press(behavior=2)"
                 }
             ],
             "bindings": [
@@ -326,17 +318,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "SmartAction4",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "803bf317-1fe9-4d1b-a870-30a7d21cd71a",
-                    "path": "<Keyboard>/d",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SelfDestruct",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
