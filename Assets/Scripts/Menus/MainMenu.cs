@@ -135,8 +135,8 @@ namespace StarSalvager.UI
 
         private void Update()
         {
-            continueButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0;
-            loadGameButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0;
+            continueButton.interactable = PlayerPersistentData.PlayerMetadata.CurrentSaveFile.HasValue;
+            loadGameButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0 && PlayerPersistentData.PlayerMetadata.SaveFiles.Any(s => s.FilePath != Files.AUTOSAVE_PATH);
 
             m_toggleOrientationButton.gameObject.SetActive(!Globals.DisableTestingFeatures);
             m_cameraZoomScaler.gameObject.SetActive(!Globals.DisableTestingFeatures);
@@ -165,13 +165,17 @@ namespace StarSalvager.UI
 
             continueButton.onClick.AddListener(() =>
             {
-                string playerPath = PlayerPersistentData.PlayerMetadata.GetPathMostRecentFile();
+                if (!PlayerPersistentData.PlayerMetadata.CurrentSaveFile.HasValue)
+                {
+                    return;
+                }
+                
+                string playerPath = PlayerPersistentData.PlayerMetadata.CurrentSaveFile.Value.FilePath;
 
                 if (playerPath != string.Empty)
                 {
                     print("LOADING FILE " + playerPath);
 
-                    PlayerPersistentData.PlayerMetadata.CurrentSaveFile = PlayerPersistentData.PlayerMetadata.SaveFiles.FirstOrDefault(s => s.FilePath == playerPath);
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU);

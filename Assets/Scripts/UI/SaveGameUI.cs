@@ -78,15 +78,16 @@ namespace StarSalvager.UI.Scrapyard
             
             foreach (var saveFile in PlayerPersistentData.PlayerMetadata.SaveFiles)
             {
-                //This should already be implied since the files are loaded from that directory
-                //if (saveFile.FilePath == PlayerPersistentData.autosaveDataPath)
-                //    continue;
+                if (saveFile.FilePath == Files.AUTOSAVE_PATH)
+                {
+                    continue;
+                }
 
                 var element = SaveGameContentScrollView.AddElement(saveFile, $"{saveFile.Name}_UIElement");
                 element.Init(saveFile, SaveFilePressed, DeleteSaveFilePressed);
             }
 
-            if (!IsLoadMode && PlayerPersistentData.PlayerMetadata.SaveFiles.Count < 6)
+            if (!IsLoadMode && (SaveGameContentScrollView.Elements == null || SaveGameContentScrollView.Elements.Count < 6))
             {
                 SaveFileData emptyFile = new SaveFileData
                 {

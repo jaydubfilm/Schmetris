@@ -187,6 +187,7 @@ namespace StarSalvager
                             Globals.CurrentWave = 0;
                             GameTimer.SetPaused(false);
                             PlayerPersistentData.PlayerData.numLives = 3;
+                            PlayerPersistentData.SaveAutosaveFiles();
                             SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
                         });
                 }

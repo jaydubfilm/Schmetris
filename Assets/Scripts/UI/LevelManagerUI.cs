@@ -156,6 +156,7 @@ namespace StarSalvager.UI
             pauseWindowMainMenuButton.onClick.AddListener(() =>
             {
                 m_levelManager.IsWaveProgressing = true;
+                PlayerPersistentData.SaveAutosaveFiles();
                 SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
             });
 
