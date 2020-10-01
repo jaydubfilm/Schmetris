@@ -870,7 +870,7 @@ namespace StarSalvager
                 minScanRadius = 1;
             }
             Vector2? positionNullable = LevelManager.Instance.WorldGrid.GetLocalPositionOfRandomGridSquareInGridRegion(Constants.gridPositionSpacing, minScanRadius, gridRegion, allowOverlap, forceSpawn, inRandomYLevel);
-            if (positionNullable.Value == null)
+            if (!positionNullable.HasValue)
             {
                 switch (movable)
                 {
@@ -891,33 +891,31 @@ namespace StarSalvager
                 }
                 return;
             }
-            else
+
+            Vector2 position = positionNullable.Value;
+            movable.transform.parent = m_worldElementsRoot;
+            movable.transform.localPosition = position;
+            switch (movable)
             {
-                Vector2 position = positionNullable.Value;
-                movable.transform.parent = m_worldElementsRoot;
-                movable.transform.localPosition = position;
-                switch (movable)
-                {
-                    case Bit _:
-                    case Asteroid _:
-                    case Component _:
-                        LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
-                        break;
-                    case Shape shape:
-                        foreach (Bit bit in shape.AttachedBits)
+                case Bit _:
+                case Asteroid _:
+                case Component _:
+                    LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
+                    break;
+                case Shape shape:
+                    foreach (Bit bit in shape.AttachedBits)
+                    {
+                        Vector2Int gridPosition = LevelManager.Instance.WorldGrid.GetCoordinatesOfGridSquareAtLocalPosition
+                            ((Vector2)bit.transform.localPosition + position);
+                        if (gridPosition.y < Values.Globals.GridSizeY)
                         {
-                            Vector2Int gridPosition = LevelManager.Instance.WorldGrid.GetCoordinatesOfGridSquareAtLocalPosition
-                                ((Vector2)bit.transform.localPosition + position);
-                            if (gridPosition.y < Values.Globals.GridSizeY)
-                            {
-                                LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition((Vector2)bit.transform.localPosition + position, 0, true);
-                            }
+                            LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition((Vector2)bit.transform.localPosition + position, 0, true);
                         }
-                        m_notFullyInGridShapes.Add(shape);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(movable), movable, null);
-                }
+                    }
+                    m_notFullyInGridShapes.Add(shape);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(movable), movable, null);
             }
         }
 
@@ -1058,7 +1056,7 @@ namespace StarSalvager
         
         private void CreateEdgeSprites()
         {
-            const int X_SCALE = 60;
+            const int X_SCALE = 45;
             //TODO Create the sprite Objects
             if (_edgeSprites == null || _edgeSprites.Length == 0)
             {
@@ -1099,7 +1097,7 @@ namespace StarSalvager
                 var trans = _edgeSprites[i].transform;
                 var xPos = xOffset + orthoSize - X_SCALE / 2f;
 
-                var yPos = gridSize.y / 2f;
+                var yPos = gridSize.y / 3f;
                 trans.localPosition = new Vector3
                 {
                     x = xPos * (isLeft ? -1f : 1f),

@@ -275,6 +275,12 @@ namespace StarSalvager.Values
         public void AddResources(Dictionary<BIT_TYPE, int> toAdd, float multiplier)
         {
             CostCalculations.AddResources(ref _resources, toAdd, multiplier);
+
+            foreach (var bitType in toAdd.Select(keyValuePair => keyValuePair.Key))
+            {
+                _resources[bitType] = Mathf.Min(_resources[bitType], ResourceCapacities[bitType]);
+            }
+            
             OnValuesChanged?.Invoke();
         }
 

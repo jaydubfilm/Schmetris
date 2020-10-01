@@ -37,6 +37,17 @@ namespace StarSalvager.Missions
             }
         }
 
+        public override string GetMissionProgressString()
+        {
+            int curAmount = 0;
+            if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
+            {
+                curAmount = LevelManager.Instance.WaveEndSummaryData.numBonusShapesMatched;
+            }
+            
+            return $" ({ +curAmount}/{ +m_shapeNumber})";
+        }
+
         public override MissionData ToMissionData()
         {
             return new MissionData

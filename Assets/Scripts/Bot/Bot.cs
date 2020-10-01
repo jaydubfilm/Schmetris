@@ -76,9 +76,6 @@ namespace StarSalvager
         
         /*private List<Part> _parts;*/
 
-        public List<IAttachable> PendingDetach { get; private set; }
-
-
         //============================================================================================================//
 
         public bool Destroyed => _isDestroyed;
@@ -302,13 +299,17 @@ namespace StarSalvager
 
         public void Rotate(float direction)
         {
-            if (Input.GetKey(KeyCode.LeftAlt))
+            if (GameTimer.IsPaused) 
                 return;
             
             if (direction < 0)
                 Rotate(ROTATION.CCW);
             else if (direction > 0)
                 Rotate(ROTATION.CW);
+            else
+                return;
+            
+            AudioController.PlaySound(SOUND.BOT_ROTATE);
         }
         
         /// <summary>
@@ -731,7 +732,7 @@ namespace StarSalvager
                         if (closestOnBot is EnemyAttachable ||
                             closestOnBot is Part part && part.Destroyed)
                         {
-                            if (closestOnBot is IObstacle obstacle)
+                            if (shape is IObstacle obstacle)
                                 obstacle.Bounce(collisionPoint);
 
                             return false;
@@ -895,7 +896,7 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(closestAttachable), closestAttachable, null);
             }
             
-            TryHitAt(closestAttachable, 10f);
+            TryHitAt(closestAttachable, Globals.AsteroidDamage);
             return true;
         }
 
@@ -1375,7 +1376,7 @@ namespace StarSalvager
                     //We need to make sure that the piece wont be floating
                     if (!attachedBlocks.HasPathToCore(check))
                         continue;
-                    Debug.Log($"Found available location for {newAttachable.gameObject.name}\n{coordinate} + ({directions[i]} * {dist}) = {check}");
+                    //Debug.Log($"Found available location for {newAttachable.gameObject.name}\n{coordinate} + ({directions[i]} * {dist}) = {check}");
                     AttachNewBit(check, newAttachable, checkForCombo, updateColliderGeometry, updateMissions);
                     return;
                 }
@@ -1494,7 +1495,7 @@ namespace StarSalvager
             
             foreach (var attachable in detachingBits)
             {
-                PendingDetach?.Remove(attachable);
+                //PendingDetach?.Remove(attachable);
                 attachedBlocks.Remove(attachable);
             }
             
@@ -1558,6 +1559,8 @@ namespace StarSalvager
             
             foreach (var iAttachable in others)
             {
+                
+
                 iAttachable.SetAttached(false);
             }
 
@@ -1660,6 +1663,8 @@ namespace StarSalvager
         public void MarkAttachablePendingRemoval(IAttachable attachable)
         {
             attachedBlocks.Remove(attachable);
+
+            CheckForDisconnects();
         }
 
         //============================================================================================================//
@@ -2607,10 +2612,15 @@ namespace StarSalvager
                 //----------------------------------------------------------------------------------------------------//
             }
 
-            if (PendingDetach == null)
-                PendingDetach = new List<IAttachable>();
-            
-            PendingDetach.AddRange(attachablesToDetach);
+            //if (PendingDetach == null)
+            //    PendingDetach = new List<IAttachable>();
+            //
+            //PendingDetach.AddRange(attachablesToDetach);
+
+            foreach (var iCanDetach in attachablesToDetach.OfType<ICanDetach>())
+            {
+                iCanDetach.PendingDetach = true;
+            }
             
             onDetach.Invoke();
 
@@ -2793,38 +2803,46 @@ namespace StarSalvager
         }*/
 
         //TODO This will likely need to move to the attachable List extensions
-        private IAttachable FindLowestAttachable(List<IAttachable> attachables, ICollection<IAttachable> toIgnore)
+        private IAttachable FindLowestAttachable(IReadOnlyCollection<IAttachable> attachables, ICollection<IAttachable> toIgnore)
         {
             //I Want the last Bit to be the fallback/default, if I can't find anything
             IAttachable selectedAttachable = null;
-            var lowestLevel = 999;
+            //var lowestLevel = 999;
             //The lowest Y coordinate
             var lowestCoordinate = 999;
+            var lowestPriority = 9999;
 
             foreach (var attachable in attachables)
             {
                 if (toIgnore.Contains(attachable))
                     continue;
-
-                if (!(attachable is ILevel HasLevel))
-                {
-                    continue;
-                }
                 
-                if(HasLevel.level > lowestLevel)
+                if(!(attachable is ICanDetach detach))
                     continue;
+                
+                if(detach.AttachPriority > lowestPriority)
+                    continue;
+                
+                //if (!(attachable is ILevel HasLevel))
+                //{
+                //    continue;
+                //}
+                //
+                //if(HasLevel.level > lowestLevel)
+                //    continue;
 
                 //Checks if the piece is higher, and if it is, that the level is not higher than the currently selected Bit
                 //This ensures that even if the lowest Bit is of high level, the lowest will always be selected
-                if (attachable.Coordinate.y > lowestCoordinate && !(HasLevel.level < lowestLevel))
+                if (attachable.Coordinate.y > lowestCoordinate && !(detach.AttachPriority < lowestPriority))
                         continue;
 
                 if (RemovalCausesDisconnects(new List<IAttachable>(/*toIgnore*/) {attachable}, out _))
                     continue;
 
                 selectedAttachable = attachable;
-                lowestLevel = HasLevel.level;
+                //lowestLevel = HasLevel.level;
                 lowestCoordinate = attachable.Coordinate.y;
+                lowestPriority = detach.AttachPriority;
 
             }
 
@@ -2837,13 +2855,19 @@ namespace StarSalvager
                 if (toIgnore.Contains(attachable))
                     continue;
                 
-                if (!(attachable is ILevel HasLevel))
-                {
+                if(!(attachable is ICanDetach detach))
                     continue;
-                }
-            
-                if(HasLevel.level > lowestLevel)
+                
+                if(detach.AttachPriority > lowestPriority)
                     continue;
+                
+                //if (!(attachable is ILevel hasLevel))
+                //{
+                //    continue;
+                //}
+            //
+                //if(hasLevel.level > lowestLevel)
+                //    continue;
 
                 //Checks if the piece is higher, and if it is, that the level is not higher than the currently selected Bit
                 //This ensures that even if the lowest Bit is of high level, the lowest will always be selected
@@ -2854,8 +2878,9 @@ namespace StarSalvager
                     continue;
 
                 selectedAttachable = attachable;
-                lowestLevel = HasLevel.level;
+                //lowestLevel = hasLevel.level;
                 lowestCoordinate = attachable.Coordinate.y;
+                lowestPriority = detach.AttachPriority;
 
             }
 
@@ -3247,7 +3272,6 @@ namespace StarSalvager
             }
             
             attachedBlocks.Clear();
-            PendingDetach?.Clear();
             BotPartsLogic.ClearList();
             //_parts.Clear();
             

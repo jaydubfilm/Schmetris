@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6370289713113476722}
   - component: {fileID: 7407110014094752809}
   m_Layer: 9
-  m_Name: BitTest
+  m_Name: Bit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,6 +48,7 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 256
+  IsFromEnemyLoot: 0
 --- !u!212 &6370289713113476722
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -116,12 +117,12 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.28, y: 1.28}
+    oldSize: {x: 1, y: 1}
     newSize: {x: 1.28, y: 1.28}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.28, y: 1.2800001}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0

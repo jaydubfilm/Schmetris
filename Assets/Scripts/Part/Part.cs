@@ -18,7 +18,6 @@ namespace StarSalvager
         public bool Attached { get; set; }
 
         public bool CountAsConnectedToCore => !Destroyed;
-        public bool CanDisconnect => false;
         public bool CanShift => false;
         public bool CountTowardsMagnetism => false;
 
@@ -112,7 +111,16 @@ namespace StarSalvager
 
         protected override void OnCollide(GameObject gObj, Vector2 hitPoint)
         {
-            throw new System.NotImplementedException();
+#if !UNITY_EDITOR
+            //FIXME Need to find the cause of parts not despawning correctly
+            if (IsRecycled)
+                return;
+            
+            Recycler.Recycle<Part>(this);
+#else
+            throw new Exception("PARTS SHOULD NOT COLLIDE");
+#endif
+
         }
 
         private void SetDestroyed(bool isDestroyed)

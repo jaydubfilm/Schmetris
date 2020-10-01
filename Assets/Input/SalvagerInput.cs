@@ -91,14 +91,6 @@ namespace StarSalvager.Utilities.Inputs
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
-                },
-                {
-                    ""name"": ""SelfDestruct"",
-                    ""type"": ""Button"",
-                    ""id"": ""150cf1b4-78f8-403a-9ef7-2a1abd64f2d8"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Press(behavior=2)""
                 }
             ],
             ""bindings"": [
@@ -235,6 +227,39 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": true
                 },
                 {
+                    ""name"": ""QE"",
+                    ""id"": ""1fe65e1d-b67d-47b2-b5db-b54fcd94f16b"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""b77fe2df-4e32-4470-8ad8-2cdedc0a91c2"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""a4e4de8b-2849-486b-9562-491a4c388b73"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
                     ""name"": """",
                     ""id"": ""119459ad-6f1f-40d8-b072-93af4aee8a25"",
                     ""path"": ""<Mouse>/leftButton"",
@@ -308,17 +333,6 @@ namespace StarSalvager.Utilities.Inputs
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""SmartAction4"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""803bf317-1fe9-4d1b-a870-30a7d21cd71a"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelfDestruct"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -471,6 +485,39 @@ namespace StarSalvager.Utilities.Inputs
                     ""name"": ""positive"",
                     ""id"": ""c83bb1e2-0f94-42a4-a0ad-c988dbce3c8f"",
                     ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""QE"",
+                    ""id"": ""e247cd25-1e4b-4cb1-b0ba-71df9c795f9a"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""3d5cabb3-e37d-41d8-ac80-a81d7741b07c"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""a8ff038d-9854-4b2f-8de0-3b60fe027223"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -748,7 +795,6 @@ namespace StarSalvager.Utilities.Inputs
             m_Default_SmartAction2 = m_Default.FindAction("SmartAction2", throwIfNotFound: true);
             m_Default_SmartAction3 = m_Default.FindAction("SmartAction3", throwIfNotFound: true);
             m_Default_SmartAction4 = m_Default.FindAction("SmartAction4", throwIfNotFound: true);
-            m_Default_SelfDestruct = m_Default.FindAction("SelfDestruct", throwIfNotFound: true);
             // Vertical
             m_Vertical = asset.FindActionMap("Vertical", throwIfNotFound: true);
             m_Vertical_SideMovement = m_Vertical.FindAction("Side Movement", throwIfNotFound: true);
@@ -819,7 +865,6 @@ namespace StarSalvager.Utilities.Inputs
         private readonly InputAction m_Default_SmartAction2;
         private readonly InputAction m_Default_SmartAction3;
         private readonly InputAction m_Default_SmartAction4;
-        private readonly InputAction m_Default_SelfDestruct;
         public struct DefaultActions
         {
             private @SalvagerInput m_Wrapper;
@@ -833,7 +878,6 @@ namespace StarSalvager.Utilities.Inputs
             public InputAction @SmartAction2 => m_Wrapper.m_Default_SmartAction2;
             public InputAction @SmartAction3 => m_Wrapper.m_Default_SmartAction3;
             public InputAction @SmartAction4 => m_Wrapper.m_Default_SmartAction4;
-            public InputAction @SelfDestruct => m_Wrapper.m_Default_SelfDestruct;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -870,9 +914,6 @@ namespace StarSalvager.Utilities.Inputs
                     @SmartAction4.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction4;
                     @SmartAction4.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction4;
                     @SmartAction4.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction4;
-                    @SelfDestruct.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
-                    @SelfDestruct.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
-                    @SelfDestruct.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
                 }
                 m_Wrapper.m_DefaultActionsCallbackInterface = instance;
                 if (instance != null)
@@ -904,9 +945,6 @@ namespace StarSalvager.Utilities.Inputs
                     @SmartAction4.started += instance.OnSmartAction4;
                     @SmartAction4.performed += instance.OnSmartAction4;
                     @SmartAction4.canceled += instance.OnSmartAction4;
-                    @SelfDestruct.started += instance.OnSelfDestruct;
-                    @SelfDestruct.performed += instance.OnSelfDestruct;
-                    @SelfDestruct.canceled += instance.OnSelfDestruct;
                 }
             }
         }
@@ -1036,7 +1074,6 @@ namespace StarSalvager.Utilities.Inputs
             void OnSmartAction2(InputAction.CallbackContext context);
             void OnSmartAction3(InputAction.CallbackContext context);
             void OnSmartAction4(InputAction.CallbackContext context);
-            void OnSelfDestruct(InputAction.CallbackContext context);
         }
         public interface IVerticalActions
         {

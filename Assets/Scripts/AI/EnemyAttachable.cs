@@ -14,7 +14,7 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class EnemyAttachable : Enemy, IAttachable, ICustomRotate, IWasBumped
+    public class EnemyAttachable : Enemy, IAttachable, ICustomRotate, IWasBumped, ICanDetach
     {
         private static readonly int DEFAULT = Animator.StringToHash("Default");
         private static readonly int ATTACK  = Animator.StringToHash("Attack");
@@ -27,10 +27,12 @@ namespace StarSalvager.AI
         public bool Attached { get; set; }
 
         public bool CountAsConnectedToCore => false;
-        public bool CanDisconnect => true;
         public bool CanShift => true;
         public bool CountTowardsMagnetism => false;
 
+        public int AttachPriority => 10000;
+
+        public bool PendingDetach { get; set; }
         //EnemyAttachable Properties
         //============================================================================================================//
         
@@ -82,6 +84,8 @@ namespace StarSalvager.AI
 
         public void SetAttached(bool isAttached)
         {
+            if (!isAttached) PendingDetach = false;
+            
             //I can't assume that it will always be attached/Detached,as we need to ensure that the move is legal before setting all the values   
             
             //If the bot is telling us to detach, first we need to make sure we can't take the position of our old target
@@ -371,6 +375,7 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0)
                 return;
 
+            transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot;
             LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
 
             MissionProgressEventData missionProgressEventData = new MissionProgressEventData
@@ -468,6 +473,7 @@ namespace StarSalvager.AI
             _enemyDecoy = null;
             _attachedBot = null;
             _target = null;
+            PendingDetach = false;
             SetAttached(false);
         }
 

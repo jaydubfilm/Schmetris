@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Component : CollidableBase, IComponent, IAttachable, ICustomRecycle, IHealth, ICanBeHit, IObstacle, ISaveable, ICanCombo<COMPONENT_TYPE>
+    public class Component : CollidableBase, IComponent, IAttachable, ICustomRecycle, IHealth, ICanBeHit, IObstacle, ISaveable, ICanCombo<COMPONENT_TYPE>, ICanDetach
     {
         [SerializeField]
         private LayerMask collisionMask;
@@ -48,8 +48,11 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
         public bool CountAsConnectedToCore => true;
-        public bool CanDisconnect => true;
-        public bool CanShift => true;
+        public bool CanShift { get; }
+
+        //public bool CanDisconnect => true;
+        public int AttachPriority => (10 + (int) Type) * level;
+        public bool PendingDetach { get; set; }
         public bool CountTowardsMagnetism => true;
 
         //IHealth Properties
@@ -152,11 +155,13 @@ namespace StarSalvager
         {
             Attached = isAttached;
             collider.usedByComposite = isAttached;
+            
+            if (!isAttached) PendingDetach = false;
 
-            if (!isAttached)
-            {
-                transform.SetParent(null);
-            }
+            //if (!isAttached)
+            //{
+            //    transform.SetParent(null);
+            //}
         }
         
         //IHealth Functions
@@ -212,7 +217,8 @@ namespace StarSalvager
         public virtual void CustomRecycle(params object[] args)
         {
             SetAttached(false);
-
+            PendingDetach = false;
+            
             if (_damage)
             {
                 Recycler.Recycle<Damage>(_damage);

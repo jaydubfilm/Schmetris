@@ -12,7 +12,7 @@ namespace StarSalvager.Utilities
     public static class GameTimer
     {
         public static bool IsPaused => m_paused;
-        private static bool m_paused = false;
+        private static bool m_paused;
 
         private static List<IPausable> m_IPausables = new List<IPausable>();
 
@@ -53,7 +53,7 @@ namespace StarSalvager.Utilities
             Dictionary<string, object> applicationQuitAnalyticsDictionary = new Dictionary<string, object>();
             applicationQuitAnalyticsDictionary.Add("User ID", Globals.UserID);
             applicationQuitAnalyticsDictionary.Add("Session ID", Globals.SessionID);
-            applicationQuitAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
+            //applicationQuitAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
             applicationQuitAnalyticsDictionary.Add("Total Playtime", timePlayed.TotalSeconds);
             applicationQuitAnalyticsDictionary.Add("End Time", DateTime.Now.ToString());
 
