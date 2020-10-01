@@ -132,7 +132,7 @@ namespace StarSalvager.UI
                 GameTimer.SetPaused(false);
                 ToggleBetweenWavesUIActive(false);
 
-                m_levelManager.ContinueToNextWave();
+                m_levelManager.BeginNextWave();
             });
 
             betweenWavesScrapyardButton.onClick.AddListener(() =>
