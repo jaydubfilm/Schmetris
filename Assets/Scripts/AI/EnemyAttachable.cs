@@ -371,6 +371,7 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0)
                 return;
 
+            transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot;
             LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
 
             MissionProgressEventData missionProgressEventData = new MissionProgressEventData
