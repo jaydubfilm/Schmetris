@@ -105,8 +105,14 @@ namespace StarSalvager.UI.Scrapyard
 
             menuButton.onClick.AddListener(() =>
             {
-                PlayerPersistentData.SaveAutosaveFiles();
-                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
+                Alert.ShowAlert("Return to Main Menu", "Are you sure you want to return to main menu?", "Yes", "No", b =>
+                {
+                    if (b)
+                    {
+                        PlayerPersistentData.SaveAutosaveFiles();
+                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
+                    }
+                });
             });
             saveGameButton.onClick.AddListener(() =>
             {
