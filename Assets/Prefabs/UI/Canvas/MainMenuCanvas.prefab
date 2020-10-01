@@ -8671,6 +8671,7 @@ MonoBehaviour:
   mainMenuWindow: {fileID: 708998763807863424}
   newGameButton: {fileID: 8017945057484899893}
   continueButton: {fileID: 8164898956091662725}
+  continueButtonText: {fileID: 7494182034669379439}
   loadGameButton: {fileID: 3556641002605392549}
   optionsButton: {fileID: 4135927736905888877}
   quitButton: {fileID: 8245440069433229977}

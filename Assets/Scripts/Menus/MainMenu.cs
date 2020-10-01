@@ -16,6 +16,7 @@ using System.Linq;
 using StarSalvager.Audio;
 using System.Collections.Generic;
 using StarSalvager.Utilities.FileIO;
+using TMPro;
 
 namespace StarSalvager.UI
 {
@@ -47,6 +48,8 @@ namespace StarSalvager.UI
         private Button newGameButton;
         [SerializeField, Required, FoldoutGroup("Main Menu")]
         private Button continueButton;
+        [SerializeField, Required, FoldoutGroup("Main Menu")]
+        private TMP_Text continueButtonText;
         [SerializeField, Required, FoldoutGroup("Main Menu")]
         private Button loadGameButton;
         [SerializeField, Required, FoldoutGroup("Main Menu")]
@@ -178,6 +181,8 @@ namespace StarSalvager.UI
 
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
+
+                    continueButtonText.text = "Resume";
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU);
                 }
             });
@@ -209,6 +214,7 @@ namespace StarSalvager.UI
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     PlayerPersistentData.ResetPlayerData();
 
+                    continueButtonText.text = "Resume";
                     introSceneCanvas.SetActive(true);
                     mainMenuWindow.SetActive(false);
 
