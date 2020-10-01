@@ -302,13 +302,17 @@ namespace StarSalvager
 
         public void Rotate(float direction)
         {
-            if (Input.GetKey(KeyCode.LeftAlt))
+            if (GameTimer.IsPaused) 
                 return;
             
             if (direction < 0)
                 Rotate(ROTATION.CCW);
             else if (direction > 0)
                 Rotate(ROTATION.CW);
+            else
+                return;
+            
+            AudioController.PlaySound(SOUND.BOT_ROTATE);
         }
         
         /// <summary>

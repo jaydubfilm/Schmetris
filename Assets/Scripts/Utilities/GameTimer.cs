@@ -12,7 +12,7 @@ namespace StarSalvager.Utilities
     public static class GameTimer
     {
         public static bool IsPaused => m_paused;
-        private static bool m_paused = false;
+        private static bool m_paused;
 
         private static List<IPausable> m_IPausables = new List<IPausable>();
 

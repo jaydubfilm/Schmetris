@@ -891,33 +891,31 @@ namespace StarSalvager
                 }
                 return;
             }
-            else
+
+            Vector2 position = positionNullable.Value;
+            movable.transform.parent = m_worldElementsRoot;
+            movable.transform.localPosition = position;
+            switch (movable)
             {
-                Vector2 position = positionNullable.Value;
-                movable.transform.parent = m_worldElementsRoot;
-                movable.transform.localPosition = position;
-                switch (movable)
-                {
-                    case Bit _:
-                    case Asteroid _:
-                    case Component _:
-                        LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
-                        break;
-                    case Shape shape:
-                        foreach (Bit bit in shape.AttachedBits)
+                case Bit _:
+                case Asteroid _:
+                case Component _:
+                    LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
+                    break;
+                case Shape shape:
+                    foreach (Bit bit in shape.AttachedBits)
+                    {
+                        Vector2Int gridPosition = LevelManager.Instance.WorldGrid.GetCoordinatesOfGridSquareAtLocalPosition
+                            ((Vector2)bit.transform.localPosition + position);
+                        if (gridPosition.y < Values.Globals.GridSizeY)
                         {
-                            Vector2Int gridPosition = LevelManager.Instance.WorldGrid.GetCoordinatesOfGridSquareAtLocalPosition
-                                ((Vector2)bit.transform.localPosition + position);
-                            if (gridPosition.y < Values.Globals.GridSizeY)
-                            {
-                                LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition((Vector2)bit.transform.localPosition + position, 0, true);
-                            }
+                            LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition((Vector2)bit.transform.localPosition + position, 0, true);
                         }
-                        m_notFullyInGridShapes.Add(shape);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(movable), movable, null);
-                }
+                    }
+                    m_notFullyInGridShapes.Add(shape);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(movable), movable, null);
             }
         }
 
