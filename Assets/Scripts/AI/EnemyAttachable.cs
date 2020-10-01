@@ -31,6 +31,8 @@ namespace StarSalvager.AI
         public bool CountTowardsMagnetism => false;
 
         public int AttachPriority => 10000;
+
+        public bool PendingDetach { get; set; }
         //EnemyAttachable Properties
         //============================================================================================================//
         
@@ -82,6 +84,8 @@ namespace StarSalvager.AI
 
         public void SetAttached(bool isAttached)
         {
+            if (!isAttached) PendingDetach = false;
+            
             //I can't assume that it will always be attached/Detached,as we need to ensure that the move is legal before setting all the values   
             
             //If the bot is telling us to detach, first we need to make sure we can't take the position of our old target
@@ -469,6 +473,7 @@ namespace StarSalvager.AI
             _enemyDecoy = null;
             _attachedBot = null;
             _target = null;
+            PendingDetach = false;
             SetAttached(false);
         }
 
