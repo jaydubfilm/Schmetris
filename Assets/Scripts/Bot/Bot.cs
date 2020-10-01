@@ -76,9 +76,6 @@ namespace StarSalvager
         
         /*private List<Part> _parts;*/
 
-        public List<IAttachable> PendingDetach { get; private set; }
-
-
         //============================================================================================================//
 
         public bool Destroyed => _isDestroyed;
@@ -1498,7 +1495,7 @@ namespace StarSalvager
             
             foreach (var attachable in detachingBits)
             {
-                PendingDetach?.Remove(attachable);
+                //PendingDetach?.Remove(attachable);
                 attachedBlocks.Remove(attachable);
             }
             
@@ -1562,6 +1559,8 @@ namespace StarSalvager
             
             foreach (var iAttachable in others)
             {
+                
+
                 iAttachable.SetAttached(false);
             }
 
@@ -1664,6 +1663,8 @@ namespace StarSalvager
         public void MarkAttachablePendingRemoval(IAttachable attachable)
         {
             attachedBlocks.Remove(attachable);
+
+            CheckForDisconnects();
         }
 
         //============================================================================================================//
@@ -2611,10 +2612,15 @@ namespace StarSalvager
                 //----------------------------------------------------------------------------------------------------//
             }
 
-            if (PendingDetach == null)
-                PendingDetach = new List<IAttachable>();
-            
-            PendingDetach.AddRange(attachablesToDetach);
+            //if (PendingDetach == null)
+            //    PendingDetach = new List<IAttachable>();
+            //
+            //PendingDetach.AddRange(attachablesToDetach);
+
+            foreach (var iCanDetach in attachablesToDetach.OfType<ICanDetach>())
+            {
+                iCanDetach.PendingDetach = true;
+            }
             
             onDetach.Invoke();
 
@@ -3266,7 +3272,6 @@ namespace StarSalvager
             }
             
             attachedBlocks.Clear();
-            PendingDetach?.Clear();
             BotPartsLogic.ClearList();
             //_parts.Clear();
             
