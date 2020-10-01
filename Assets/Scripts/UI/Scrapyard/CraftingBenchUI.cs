@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
-using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
-using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
-using System.Collections.Generic;
-using StarSalvager.Prototype;
 using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
@@ -16,6 +11,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard
 {
+    //TODO Need to test the scroll sensitivity on the blueprint scrollview on other platforms. Works well for windows at 32.5
     public class CraftingBenchUI : MonoBehaviour
     {
         [SerializeField, Required]
@@ -27,6 +23,9 @@ namespace StarSalvager.UI.Scrapyard
         private CanvasGroup costWindowCanvasGroup;
         private VerticalLayoutGroup costWindowVerticalLayoutGroup;
 
+        [SerializeField, Required, FoldoutGroup("Cost Window")]
+        private RectTransform windowParent;
+        
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private CostUIElementScrollView costView;
 
@@ -78,7 +77,10 @@ namespace StarSalvager.UI.Scrapyard
             blueprintsContentScrollView.ClearElements();
             InitUIScrollView();
             
+            
             costWindowObject.SetActive(false);
+            costWindowObject.transform.SetParent(windowParent);
+            costWindowObject.transform.SetAsLastSibling();
 
         }
 
@@ -153,14 +155,36 @@ namespace StarSalvager.UI.Scrapyard
 
         private IEnumerator ResizeRepositionCostWindowCoroutine(RectTransform buttonTransform)
         {
+            //TODO Should also reposition the window relative to the screen bounds to always keep in window
             Canvas.ForceUpdateCanvases();
             costWindowVerticalLayoutGroup.enabled = true;
             
             yield return new WaitForEndOfFrame();
             
-            var windowTransform = costWindowObject.transform as RectTransform;
+            var windowTransform = (RectTransform)costWindowObject.transform;
             windowTransform.position = buttonTransform.position;
-            windowTransform.localPosition += Vector3.left * (buttonTransform.sizeDelta.x / 2f + windowTransform.sizeDelta.x / 2f);
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            var pos = windowTransform.localPosition;
+            var sizeDelta = windowTransform.sizeDelta;
+            var yDelta = sizeDelta.y / 2;
+            var yBoundAbs = Screen.height / 2;
+
+            if (pos.y + yDelta > yBoundAbs)
+            {
+                pos.y = yBoundAbs - yDelta;
+                windowTransform.localPosition = pos;
+            }
+            else if (pos.y - yDelta < -yBoundAbs)
+            {
+                pos.y = -yBoundAbs + yDelta;
+                windowTransform.localPosition = pos;
+            }
+            
+            //--------------------------------------------------------------------------------------------------------//
+
+            windowTransform.localPosition += Vector3.left * (buttonTransform.sizeDelta.x / 2f +  sizeDelta.x/ 2f);
 
             costWindowCanvasGroup.alpha = 1;
         }
