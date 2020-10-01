@@ -45,7 +45,7 @@ namespace StarSalvager.Missions
                 curAmount = LevelManager.Instance.WaveEndSummaryData.numBonusShapesMatched;
             }
             
-            return $" ({ +curAmount}/{ +amountNeeded})";
+            return $" ({ +curAmount}/{ +m_shapeNumber})";
         }
 
         public override MissionData ToMissionData()

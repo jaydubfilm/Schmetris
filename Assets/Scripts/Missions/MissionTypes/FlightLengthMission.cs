@@ -46,7 +46,7 @@ namespace StarSalvager.Missions
                 curAmount = (int)LevelManager.Instance.LevelTimer;
             }
 
-            return $" ({ +curAmount}/{ +amountNeeded})";
+            return $" ({ +curAmount}/{ +m_flightLength})";
         }
 
         public override MissionData ToMissionData()

@@ -45,7 +45,7 @@ namespace StarSalvager.Missions
                 curAmount = LevelManager.Instance.NumWavesInRow;
             }
 
-            return $" ({ +curAmount}/{ +amountNeeded})";
+            return $" ({ +curAmount}/{ +m_waveNumber})";
         }
 
         public override MissionData ToMissionData()
