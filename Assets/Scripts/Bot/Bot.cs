@@ -735,7 +735,7 @@ namespace StarSalvager
                         if (closestOnBot is EnemyAttachable ||
                             closestOnBot is Part part && part.Destroyed)
                         {
-                            if (closestOnBot is IObstacle obstacle)
+                            if (shape is IObstacle obstacle)
                                 obstacle.Bounce(collisionPoint);
 
                             return false;
