@@ -323,9 +323,36 @@ namespace StarSalvager.Audio
 
         private void PlayWaveMusic(int index)
         {
-            gameMusicAudioSource.Stop();
-            gameMusicAudioSource.clip = TEST_waveMusic[index];
-            gameMusicAudioSource.Play();
+            StartCoroutine(TEST_MusicFadeCoroutine(1f, () =>
+            {
+                gameMusicAudioSource.Stop();
+                gameMusicAudioSource.clip = TEST_waveMusic[index];
+                gameMusicAudioSource.Play();
+            }));
+        }
+
+        private IEnumerator TEST_MusicFadeCoroutine(float fadeTime, Action onMutedCallback)
+        {
+            var t = 0f;
+            var startVolume = gameMusicAudioSource.volume;
+            
+
+            while (t / fadeTime < 1f)
+            {
+                gameMusicAudioSource.volume = Mathf.Lerp(startVolume, 0f, t / fadeTime);
+                t += Time.deltaTime;
+                yield return null;
+            }
+            
+            onMutedCallback?.Invoke();
+            t = 0f;
+            
+            while (t / fadeTime < 1f)
+            {
+                gameMusicAudioSource.volume = Mathf.Lerp(0f, startVolume, t / fadeTime);
+                t += Time.deltaTime;
+                yield return null;
+            }
         }
         
         //Looping Sounds
