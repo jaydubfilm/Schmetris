@@ -33,8 +33,12 @@ namespace StarSalvager.Audio
         private AudioSource sfxAudioSource;
         //[SerializeField, Required, FoldoutGroup("Audio Sources")]
         //private AudioSource sfxAudioSourcePitched;
+        [FormerlySerializedAs("musicAudioSource")] [SerializeField, Required, FoldoutGroup("Audio Sources")]
+        private AudioSource menuMusicAudioSource;
         [SerializeField, Required, FoldoutGroup("Audio Sources")]
-        private AudioSource musicAudioSource;
+        private AudioSource gameMusicAudioSource;
+        [SerializeField, Required, FoldoutGroup("Audio Sources")]
+        private AudioSource scrapMusicAudioSource;
         
         //Audio Mixers
         //============================================================================================================//
@@ -66,6 +70,9 @@ namespace StarSalvager.Audio
 
         [SerializeField, FoldoutGroup("Music")]
         private float musicFadeTime;
+        
+        [SerializeField, FoldoutGroup("Music")]
+        private AudioClip[] TEST_waveMusic;
         
         [SerializeField, FoldoutGroup("Music"), PropertySpace(SpaceBefore = 10f)]
         [TableList(DrawScrollView = true, MaxScrollViewHeight = 300, AlwaysExpanded = true, HideToolbar = true)]
@@ -141,6 +148,14 @@ namespace StarSalvager.Audio
                 return;
             
             Instance.PlayMusicLoop(music);
+        }
+
+        public static void PlayTESTWaveMusic(int index)
+        {
+            if (Instance == null)
+                return;
+
+            Instance.PlayWaveMusic(index);
         }
 
         /// <summary>
@@ -304,6 +319,13 @@ namespace StarSalvager.Audio
             //musicAudioSource.clip = clip;
             //musicAudioSource.loop = true;
             //musicAudioSource.Play();
+        }
+
+        private void PlayWaveMusic(int index)
+        {
+            gameMusicAudioSource.Stop();
+            gameMusicAudioSource.clip = TEST_waveMusic[index];
+            gameMusicAudioSource.Play();
         }
         
         //Looping Sounds

@@ -170,7 +170,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -3744267728233227293, guid: 90dae2fcc970a4040a2747a22f65a8d6,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: 442c5dbdb4c60534d89ae775b1005597, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -560,7 +560,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sfxAudioSource: {fileID: 6446213061416002318}
-  musicAudioSource: {fileID: 6446213061020250975}
+  menuMusicAudioSource: {fileID: 6446213061020250975}
+  gameMusicAudioSource: {fileID: 658477470384711844}
+  scrapMusicAudioSource: {fileID: 2042588639445682093}
   masterMixer: {fileID: 24100000, guid: a2e153dc1c5ab37498cbd00d93cc5ddd, type: 2}
   musicMixer: {fileID: 24100000, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}
   sfxAudioMixerGroup: {fileID: 7001779846859700073, guid: a2e153dc1c5ab37498cbd00d93cc5ddd,
@@ -647,6 +649,12 @@ MonoBehaviour:
   - {fileID: -8389569066866548857, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}
   - {fileID: -8638311823700195328, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}
   musicFadeTime: 2
+  TEST_waveMusic:
+  - {fileID: 8300000, guid: 4c08c8dac756e9c4d826e05ea2ed02fd, type: 3}
+  - {fileID: 8300000, guid: ed62ead058512ea499cafbe6ce1e57f1, type: 3}
+  - {fileID: 8300000, guid: ff9e60798107e5b4494c34d3fd645939, type: 3}
+  - {fileID: 8300000, guid: a26b8b5009dbd704d930fe12891c384d, type: 3}
+  - {fileID: 8300000, guid: d8178e2f45108694eb7284b4a2ff52cf, type: 3}
   musicClips:
   - Music: 0
     _clip: {fileID: 8300000, guid: f6e8c984e95b252469b96b4711a36167, type: 3}
