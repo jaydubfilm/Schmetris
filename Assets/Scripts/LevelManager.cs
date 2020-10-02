@@ -153,21 +153,20 @@ namespace StarSalvager
 
                 Dictionary<string, object> botDiedAnalyticsDictionary = new Dictionary<string, object>
                 {
-                    {"User ID", Globals.UserID},
-                    {"Session ID", Globals.SessionID},
-                    {"Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID},
-                    {"Death Cause", deathMethod},
-                    {"CurrentSector", Globals.CurrentSector},
-                    {"CurrentWave", Globals.CurrentWave},
-                    {"Level Time", m_levelTimer + m_waveTimer},
-                    {"Liquid Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None)},
-                    {"Enemies Killed", JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None)},
+                    //{"User ID", Globals.UserID},
+                    //{"Session ID", Globals.SessionID},
+                    //{"Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID},
+                    {AnalyticsManager.DeathCause, deathMethod},
+                    {AnalyticsManager.CurrentSector, Globals.CurrentSector},
+                    {AnalyticsManager.CurrentWave, Globals.CurrentWave},
+                    {AnalyticsManager.LevelTime, m_levelTimer + m_waveTimer},
+                    //{"Liquid Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None)},
+                    /*{"Enemies Killed", JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None)},
                     {
                         "Missions Completed",
                         JsonConvert.SerializeObject(MissionsCompletedDuringThisFlight, Formatting.None)
-                    }
+                    }*/
                 };
-                //botDiedAnalyticsDictionary.Add("CurrentStage", m_currentStage);
                 AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied, eventDataDictionary: botDiedAnalyticsDictionary);
                 
                 SessionDataProcessor.Instance.PlayerKilled();
@@ -284,12 +283,19 @@ namespace StarSalvager
 
                 Dictionary<string, object> waveEndAnalyticsDictionary = new Dictionary<string, object>
                 {
-                    {"User ID", Globals.UserID},
-                    {"Session ID", Globals.SessionID},
-                    {"Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID},
-                    {"Bot Layout", JsonConvert.SerializeObject(BotObject.GetBlockDatas(), Formatting.None)},
-                    {"Liquid Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None)},
-                    {"Enemies Killed", JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None)}
+                    //{"User ID", Globals.UserID},
+                    //{"Session ID", Globals.SessionID},
+                    //{"Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID},
+                    //{"Bot Layout", JsonConvert.SerializeObject(BotObject.GetBlockDatas(), Formatting.None)},
+                    //{"Liquid Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None)},
+                    //{"Enemies Killed", JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None)}
+
+
+
+                    //ADD BELOW
+                    //Gears gained this wave, as an int
+                    //Enemies killed this wave, as an int
+                    //Enemies killed this wave, as a percentage between 0 and 1 of the total enemies in wave
                 };
                 AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.WaveEnd,
                     eventDataDictionary: waveEndAnalyticsDictionary);
@@ -409,16 +415,16 @@ namespace StarSalvager
 
             Dictionary<string, object> flightBeginAnalyticsDictionary = new Dictionary<string, object>
             {
-                {"User ID", Globals.UserID},
-                {"Session ID", Globals.SessionID},
-                {"Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID},
-                {"Stored Resources", JsonConvert.SerializeObject(tempResourceDictionary, Formatting.None)},
+                //{"User ID", Globals.UserID},
+                //{"Session ID", Globals.SessionID},
+                //{"Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID},
+                /*{"Stored Resources", JsonConvert.SerializeObject(tempResourceDictionary, Formatting.None)},
                 {
                     "Stored Parts", JsonConvert.SerializeObject(PlayerPersistentData.PlayerData.partsInStorageBlockData,
                         Formatting.None)
-                },
-                {"Stored Components", JsonConvert.SerializeObject(tempComponentDictionary, Formatting.None)},
-                {"Bot Layout", JsonConvert.SerializeObject(BotObject.GetBlockDatas(), Formatting.None)}
+                },*/
+                //{"Stored Components", JsonConvert.SerializeObject(tempComponentDictionary, Formatting.None)},
+                //{"Bot Layout", JsonConvert.SerializeObject(BotObject.GetBlockDatas(), Formatting.None)}
             };
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.FlightBegin, eventDataDictionary: flightBeginAnalyticsDictionary);
 
