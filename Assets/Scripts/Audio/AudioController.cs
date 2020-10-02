@@ -33,8 +33,12 @@ namespace StarSalvager.Audio
         private AudioSource sfxAudioSource;
         //[SerializeField, Required, FoldoutGroup("Audio Sources")]
         //private AudioSource sfxAudioSourcePitched;
+        [FormerlySerializedAs("musicAudioSource")] [SerializeField, Required, FoldoutGroup("Audio Sources")]
+        private AudioSource menuMusicAudioSource;
         [SerializeField, Required, FoldoutGroup("Audio Sources")]
-        private AudioSource musicAudioSource;
+        private AudioSource gameMusicAudioSource;
+        [SerializeField, Required, FoldoutGroup("Audio Sources")]
+        private AudioSource scrapMusicAudioSource;
         
         //Audio Mixers
         //============================================================================================================//
@@ -66,6 +70,9 @@ namespace StarSalvager.Audio
 
         [SerializeField, FoldoutGroup("Music")]
         private float musicFadeTime;
+        
+        [SerializeField, FoldoutGroup("Music")]
+        private AudioClip[] TEST_waveMusic;
         
         [SerializeField, FoldoutGroup("Music"), PropertySpace(SpaceBefore = 10f)]
         [TableList(DrawScrollView = true, MaxScrollViewHeight = 300, AlwaysExpanded = true, HideToolbar = true)]
@@ -141,6 +148,14 @@ namespace StarSalvager.Audio
                 return;
             
             Instance.PlayMusicLoop(music);
+        }
+
+        public static void PlayTESTWaveMusic(int index, bool forceChange = false)
+        {
+            if (Instance == null)
+                return;
+
+            Instance.PlayWaveMusic(index, forceChange);
         }
 
         /// <summary>
@@ -304,6 +319,48 @@ namespace StarSalvager.Audio
             //musicAudioSource.clip = clip;
             //musicAudioSource.loop = true;
             //musicAudioSource.Play();
+        }
+
+        private void PlayWaveMusic(int index, bool forceChange)
+        {
+            void Play()
+            {
+                gameMusicAudioSource.Stop();
+                gameMusicAudioSource.clip = TEST_waveMusic[index];
+                gameMusicAudioSource.Play();
+            }
+            
+            if (forceChange)
+            {
+                Play();
+                return;
+            }
+            
+            StartCoroutine(TEST_MusicFadeCoroutine(1f, Play));
+        }
+
+        private IEnumerator TEST_MusicFadeCoroutine(float fadeTime, Action onMutedCallback)
+        {
+            var t = 0f;
+            var startVolume = gameMusicAudioSource.volume;
+            
+
+            while (t / fadeTime < 1f)
+            {
+                gameMusicAudioSource.volume = Mathf.Lerp(startVolume, 0f, t / fadeTime);
+                t += Time.deltaTime;
+                yield return null;
+            }
+            
+            onMutedCallback?.Invoke();
+            t = 0f;
+            
+            while (t / fadeTime < 1f)
+            {
+                gameMusicAudioSource.volume = Mathf.Lerp(0f, startVolume, t / fadeTime);
+                t += Time.deltaTime;
+                yield return null;
+            }
         }
         
         //Looping Sounds
