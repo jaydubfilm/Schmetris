@@ -31,6 +31,12 @@ namespace StarSalvager.UI
             LOAD,
             OPTION
         }
+
+        private enum MENUSTATE
+        {
+            MAINMENU,
+            GAMEMENU
+        }
         
         //============================================================================================================//
         
@@ -103,6 +109,8 @@ namespace StarSalvager.UI
 
         [SerializeField, Required]
         private GameObject introSceneCanvas;
+
+        private MENUSTATE menuState = MENUSTATE.MAINMENU;
         
         #endregion //Menu Windows
         
@@ -112,6 +120,18 @@ namespace StarSalvager.UI
         private void Start()
         {
             StartCoroutine(Init());
+        }
+
+        private void OnEnable()
+        {
+            if (menuState == MENUSTATE.MAINMENU)
+            {
+                continueButtonText.text = "Continue";
+            }
+            else if (menuState == MENUSTATE.GAMEMENU)
+            {
+                continueButtonText.text = "Resume";
+            }
         }
 
         private IEnumerator Init()
@@ -164,7 +184,23 @@ namespace StarSalvager.UI
             //Main Menu Buttons
             //--------------------------------------------------------------------------------------------------------//
 
-            newGameButton.onClick.AddListener(() => OpenMenu(MENU.NEW));
+            newGameButton.onClick.AddListener(() =>
+            {
+                if (menuState == MENUSTATE.MAINMENU)
+                {
+                    OpenMenu(MENU.NEW);
+                }
+                else
+                {
+                    Alert.ShowAlert("New Game", "Starting a new game may override your autosave data. Are you sure you want to continue?", "Yes", "No", (b) =>
+                    {
+                        if (b)
+                        {
+                            OpenMenu(MENU.NEW);
+                        }
+                    });
+                }
+            });
 
             continueButton.onClick.AddListener(() =>
             {
@@ -182,7 +218,7 @@ namespace StarSalvager.UI
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
 
-                    continueButtonText.text = "Resume";
+                    menuState = MENUSTATE.GAMEMENU;
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU);
                 }
             });
@@ -193,11 +229,17 @@ namespace StarSalvager.UI
             
             quitButton.onClick.AddListener(() =>
             {
-                #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-                #else
-                Application.Quit();
-                #endif
+                Alert.ShowAlert("Quit", "Are you sure you want to quit?", "Yes", "No", (b) =>
+                {
+                    if (b)
+                    {
+#if UNITY_EDITOR
+                        UnityEditor.EditorApplication.isPlaying = false;
+#else
+                        Application.Quit();
+#endif
+                    }
+                });
             });
             
             //New Game Buttons
@@ -214,7 +256,7 @@ namespace StarSalvager.UI
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     PlayerPersistentData.ResetPlayerData();
 
-                    continueButtonText.text = "Resume";
+                    menuState = MENUSTATE.GAMEMENU;
                     introSceneCanvas.SetActive(true);
                     mainMenuWindow.SetActive(false);
 
