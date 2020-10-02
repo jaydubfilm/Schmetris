@@ -12,6 +12,8 @@ namespace StarSalvager.Utilities
         public static string TotalPlaytime = "Total Playtime";
         public static string DeathCause = "Death Cause";
         public static string GearsGained = "Gears Gained";
+        public static string EnemiesKilled = "Enemies Killed";
+        public static string EnemiesKilledPercentage = "Enemies Killed Percentage";
         public static string CurrentSector = "Current Sector";
         public static string CurrentWave = "Current Wave";
         public static string LevelTime = "Level Time";

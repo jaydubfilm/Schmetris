@@ -268,6 +268,15 @@ namespace StarSalvager
                         "Continue");
                 }
 
+                Dictionary<string, object> waveEndAnalyticsDictionary = new Dictionary<string, object>
+                {
+                    {AnalyticsManager.GearsGained, WaveEndSummaryData.numGearsGained },
+                    {AnalyticsManager.EnemiesKilled, WaveEndSummaryData.numEnemiesKilled },
+                    {AnalyticsManager.EnemiesKilledPercentage, (float)WaveEndSummaryData.numEnemiesKilled / (float)WaveEndSummaryData.numTotalEnemiesSpawned }
+                };
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.WaveEnd,
+                    eventDataDictionary: waveEndAnalyticsDictionary);
+
                 m_waveEndSummaryData = new WaveEndSummaryData();
                 ObstacleManager.MoveToNewWave();
                 EnemyManager.MoveToNewWave();
@@ -280,25 +289,6 @@ namespace StarSalvager
                 {
                     tempDictionary.Add((int)resource.Key, resource.Value);
                 }
-
-                Dictionary<string, object> waveEndAnalyticsDictionary = new Dictionary<string, object>
-                {
-                    //{"User ID", Globals.UserID},
-                    //{"Session ID", Globals.SessionID},
-                    //{"Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID},
-                    //{"Bot Layout", JsonConvert.SerializeObject(BotObject.GetBlockDatas(), Formatting.None)},
-                    //{"Liquid Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None)},
-                    //{"Enemies Killed", JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None)}
-
-
-
-                    //ADD BELOW
-                    //Gears gained this wave, as an int
-                    //Enemies killed this wave, as an int
-                    //Enemies killed this wave, as a percentage between 0 and 1 of the total enemies in wave
-                };
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.WaveEnd,
-                    eventDataDictionary: waveEndAnalyticsDictionary);
 
                 EnemiesKilledInWave.Clear();
 
