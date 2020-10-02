@@ -43,11 +43,13 @@ namespace StarSalvager.UI
         [SerializeField]
         private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
-        
+
         //============================================================================================================//
 
         #region Menu Windows
-        
+
+        [SerializeField, Required, FoldoutGroup("Main Menu")]
+        private TMP_Text headerText;
         [SerializeField, Required, FoldoutGroup("Main Menu")]
         private GameObject mainMenuWindow;
         [SerializeField, Required, FoldoutGroup("Main Menu")]
@@ -127,10 +129,12 @@ namespace StarSalvager.UI
             if (menuState == MENUSTATE.MAINMENU)
             {
                 continueButtonText.text = "Continue";
+                headerText.text = "Star Salvager\nMain Menu";
             }
             else if (menuState == MENUSTATE.GAMEMENU)
             {
                 continueButtonText.text = "Resume";
+                headerText.text = "Star Salvager\nGame Menu";
             }
         }
 
