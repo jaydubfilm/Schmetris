@@ -1559,7 +1559,15 @@ namespace StarSalvager
             
             foreach (var iAttachable in others)
             {
-                
+                switch(iAttachable)
+                {
+                    case Component component:
+                        if (LevelManager.Instance != null)
+                            LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(component);
+                        break;
+                    default:
+                        break;
+                }
 
                 iAttachable.SetAttached(false);
             }
