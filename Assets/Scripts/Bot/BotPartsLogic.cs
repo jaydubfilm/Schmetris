@@ -395,6 +395,7 @@ namespace StarSalvager
                         resourceValue = addAmount;
                         SessionDataProcessor.Instance.LiquidProcessed(targetBit.Type, addAmount);
                         AudioController.PlaySound(SOUND.BIT_REFINED);
+                        bot.ForceCheckMagnets();
                     }
 
                 }

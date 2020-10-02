@@ -449,7 +449,7 @@ namespace StarSalvager
                 if (m_bots == null)
                     continue;
 
-                Recycling.Recycler.Recycle<Bot>(m_bots[i].gameObject);
+                Recycling.Recycler.Recycle<Bot>(m_bots[i]);
                 m_bots.RemoveAt(i);
             }
 

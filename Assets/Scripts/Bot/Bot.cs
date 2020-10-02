@@ -1500,7 +1500,7 @@ namespace StarSalvager
             }
             
             var bits = detachingBits.OfType<Bit>().ToList();
-            var others = detachingBits.Where(x => !(x is Bit)).ToList();
+            var others = detachingBits.Where(x => !(x is Bit) && x is ICanDetach).ToList();
 
             //Function should make a shape out of all attached bits, any floaters would remain individual
             while (bits.Count > 0)
@@ -1534,7 +1534,7 @@ namespace StarSalvager
                     bit.SetAttached(false);
                     bit.SetColor(Color.white);
                     bit.SetColliderActive(false);
-                    bit.transform.parent = null;
+                    //bit.transform.parent = null;
                     bit.transform.rotation = Quaternion.identity;
 
                     if (LevelManager.Instance != null)
@@ -1615,6 +1615,9 @@ namespace StarSalvager
         
         private void DetachBit(IAttachable attachable)
         {
+            if (!(attachable is ICanDetach))
+                return;
+            
             attachable.transform.parent = null;
 
             if (LevelManager.Instance != null && attachable is IObstacle obstacle)
@@ -1684,7 +1687,7 @@ namespace StarSalvager
         /// </summary>
         private bool CheckForDisconnects()
         {
-            var toSolve = new List<IAttachable>(attachedBlocks);
+            var toSolve = new List<IAttachable>(attachedBlocks).Where(x => x is ICanDetach);
             bool hasDetached = false;
             
             foreach (var attachable in toSolve)
@@ -2971,8 +2974,6 @@ namespace StarSalvager
             //Prepare Bits to be moved
             //--------------------------------------------------------------------------------------------------------//
             
-            
-            
             foreach (var bit in movingAttachables)
             {
                 //We need to disable the collider otherwise they can collide while moving
@@ -3200,24 +3201,17 @@ namespace StarSalvager
 
                 foreach (var attachable in toDestroy)
                 {
-                    /*switch (attachable)
+                    switch (attachable)
                     {
                         case Bit _:
-                            Recycler.Recycle<Bit>(attachable.gameObject);
-                            break;
                         case Component _:
-                            Recycler.Recycle<Component>(attachable.gameObject);
+                            attachable.gameObject.SetActive(false);
+
                             break;
-                        case Part _:
-                            Recycler.Recycle<Part>(attachable.gameObject);
+                        case Part part:
+                            part.ChangeHealth(-10000);
                             break;
-                        case EnemyAttachable _:
-                            Recycler.Recycle<EnemyAttachable>(attachable.gameObject);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }*/
-                    attachable.gameObject.SetActive(false);
+                    }
                 }
 
                 yield return new WaitForSeconds(0.35f);
