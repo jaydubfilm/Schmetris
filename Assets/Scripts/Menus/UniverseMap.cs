@@ -34,6 +34,11 @@ namespace StarSalvager.UI
         public void Activate()
         {
             InitUniverseMapTemp();
+
+            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 35)
+            {
+                Alert.ShowAlert("Water Shortage", "You are running low on water at the base. Be sure to look for some more!", "Ok", null);
+            }
         }
 
         public void Reset()
