@@ -302,10 +302,20 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="blocks"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static Vector2 GetCollectionCenterPosition<T>(this IEnumerable<T> blocks) where T: IAttachable
+        public static Vector2 GetCollectionCenterCoordinateWorldPosition<T>(this IEnumerable<T> blocks) where T: IAttachable
         {
             return blocks.GetCollectionCenterAttachable().transform.position;
         }
+
+        public static Vector2 GetCollectionCenterPosition<T>(this IEnumerable<T> blocks) where T : IAttachable
+        {
+            var attachables = blocks.ToList();
+            var averagePosition = attachables
+                .Aggregate(Vector3.zero, (current, block) => current + block.transform.position) / attachables.Count;
+
+            return averagePosition;
+        }
+
         /// <summary>
         /// Finds the closest attachable based on the average center of the collection
         /// </summary>
@@ -315,8 +325,7 @@ namespace StarSalvager.Utilities.Extensions
         public static T GetCollectionCenterAttachable<T>(this IEnumerable<T> blocks) where T: IAttachable
         {
             var blockList = blocks.ToList();
-            var averagePosition = blockList
-                .Aggregate(Vector3.zero, (current, block) => current + block.transform.position);
+            var averagePosition = blockList.GetCollectionCenterPosition();
 
             averagePosition /= blockList.Count;
 

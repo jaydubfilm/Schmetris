@@ -1485,17 +1485,12 @@ namespace StarSalvager
             DetachBit(attachable);
         }
         
-        private void DetachBits(IReadOnlyCollection<IAttachable> detachingBits, bool delayedCollider = false)
+        private void DetachBits(IReadOnlyCollection<IAttachable> detachingBits, bool delayedCollider = false, bool isMagnetDetach = false)
         {
-            //if (attachables.Count == 1)
-            //{
-            //    DetachBit(attachables.FirstOrDefault(), delayedCollider);
-            //    return;
-            //}
+            Vector3 leftOffset = Vector3.left * Constants.gridCellSize;
             
             foreach (var attachable in detachingBits)
             {
-                //PendingDetach?.Remove(attachable);
                 attachedBlocks.Remove(attachable);
             }
             
@@ -1519,12 +1514,23 @@ namespace StarSalvager
                     
                     if (delayedCollider)
                     {
-                        shape.SetColliderActive(false);
-                        this.DelayedCall(1f, () =>
-                        {
-                            shape.SetColor(Color.white);
-                            shape.SetColliderActive(true);
-                        });
+                        shape.DisableColliderTillLeaves(_compositeCollider2D);
+                    }
+
+                    if (isMagnetDetach)
+                    {
+                        //TODO use shapeBits to create a single magnet thing
+                        var shapeCenter = (Vector3) shapeBits.GetCollectionCenterPosition() - shape.transform.position;
+                        var left = shape.AttachedBits
+                            .Select(x => x.Coordinate.x)
+                            .OrderByDescending(x => x)
+                            .FirstOrDefault() * Vector3.left;
+                        
+                        ConnectedSpriteObject.Create(shape.transform, shapeCenter + left + leftOffset);
+                        //foreach (var attachable in attachablesToDetach)
+                        //{
+                        //    ConnectedSpriteObject.Create(attachable.transform, leftOffset);
+                        //}
                     }
                 }
                 else
@@ -1533,28 +1539,23 @@ namespace StarSalvager
                     
                     bit.SetAttached(false);
                     bit.SetColor(Color.white);
-                    bit.SetColliderActive(false);
-                    //bit.transform.parent = null;
+                    
                     bit.transform.rotation = Quaternion.identity;
 
                     if (LevelManager.Instance != null)
                         LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(bit);
 
                     bits.RemoveAt(0);
+                    
+                    if(delayedCollider)
+                        bit.DisableColliderTillLeaves(_compositeCollider2D);
+                    
+                    if (isMagnetDetach)
+                    {
+                        ConnectedSpriteObject.Create(bit.transform, leftOffset);
+                    }
                 }
             }
-            
-
-            //FIXME THis seems to be troublesome. Bits that are not attached, still are part of the same shape. 
-            //var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bits);
-            //foreach (var bit in bits)
-            //{
-            //    bit.SetAttached(false);
-            //    bit.SetColor(Color.white);
-            //    bit.SetColliderActive(false);
-            //    bit.transform.parent = null;
-            //    bit.transform.rotation = Quaternion.identity;
-            //}
 
             
             foreach (var iAttachable in others)
@@ -1565,24 +1566,15 @@ namespace StarSalvager
                         if (LevelManager.Instance != null)
                             LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(component);
                         break;
-                    default:
-                        break;
                 }
 
                 iAttachable.SetAttached(false);
+                
+                if (isMagnetDetach)
+                {
+                    ConnectedSpriteObject.Create(iAttachable.transform, leftOffset);
+                }
             }
-
-            //FIXME THis seems to be troublesome. Bits that are not attached, still are part of the same shape. 
-            //if (delayedCollider)
-            //{
-            //    shape.SetColliderActive(false);
-//
-            //    this.DelayedCall(1f, () =>
-            //    {
-            //        shape.SetColor(Color.white);
-            //        shape.SetColliderActive(true);
-            //    });
-            //}
 
             CheckForDisconnects();
             
@@ -1958,7 +1950,7 @@ namespace StarSalvager
                 
                 //FIXME We'll need to double check the position here
                 FloatingText.Create($"+{gears}",
-                    attachedBlocks.Find(upgrading).GetCollectionCenterPosition(),
+                    attachedBlocks.Find(upgrading).GetCollectionCenterCoordinateWorldPosition(),
                     Color.white);
 
 
@@ -2595,7 +2587,7 @@ namespace StarSalvager
                     //time = 1f;
                     onDetach = () =>
                     {
-                        DetachBits(attachablesToDetach, true);
+                        DetachBits(attachablesToDetach, true, true);
                         
                     };
                     break;
@@ -2605,7 +2597,7 @@ namespace StarSalvager
                     //time = 0f;
                     onDetach = () =>
                     {
-                        DetachBits(attachablesToDetach, true);
+                        DetachBits(attachablesToDetach, true, true);
                     };
                     break;
                 //----------------------------------------------------------------------------------------------------//
@@ -2614,7 +2606,7 @@ namespace StarSalvager
                     //time = 1f;
                     onDetach = () =>
                     {
-                        DetachBits(attachablesToDetach, true);
+                        DetachBits(attachablesToDetach, true, true);
                     };
                     break;
                 //----------------------------------------------------------------------------------------------------//
@@ -2635,11 +2627,11 @@ namespace StarSalvager
             
             onDetach.Invoke();
 
-            var offset = Vector3.left * Constants.gridCellSize;
+            /*var offset = Vector3.left * Constants.gridCellSize;
             foreach (var attachable in attachablesToDetach)
             {
                 ConnectedSpriteObject.Create(attachable.transform, offset);
-            }
+            }*/
             
             /*//Visually show that the bits will fall off by changing their color
             if (TEST_SetDetachColor)

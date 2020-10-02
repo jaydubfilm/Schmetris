@@ -20,8 +20,9 @@ namespace StarSalvager.Utilities.Particles
         [ShowInInspector, ReadOnly]
         protected Vector3 _offset;
         protected Transform _connectedTransform;
-        
-        protected new Transform transform;
+
+        protected new Transform transform => _transform ? _transform : _transform = gameObject.transform;
+        private Transform _transform;
 
         protected bool _isReady;
 
@@ -30,7 +31,6 @@ namespace StarSalvager.Utilities.Particles
         // Start is called before the first frame update
         protected virtual void Start()
         {
-            transform = gameObject.transform;
             _startLifetime = lifeTime;
         }
 
@@ -49,7 +49,9 @@ namespace StarSalvager.Utilities.Particles
         {
             _offset = offset;
             _connectedTransform = connectedTransform ? connectedTransform : throw new NullReferenceException();
-
+            
+            transform.position = _offset + _connectedTransform.position;
+            
             _isReady = true;
         }
         
@@ -60,6 +62,8 @@ namespace StarSalvager.Utilities.Particles
         {
             _connectedTransform = null;
             _isReady = false;
+            _offset = Vector3.zero;
+            
             lifeTime = _startLifetime;
         }
 

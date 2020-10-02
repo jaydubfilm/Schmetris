@@ -20,7 +20,6 @@ namespace StarSalvager.Utilities.Particles
         protected override void Start()
         {
             base.Start();
-
             _startFadeTime = fadeTime;
             
             _renderers = new Dictionary<SpriteRenderer, Color>();
@@ -72,6 +71,14 @@ namespace StarSalvager.Utilities.Particles
         }
 
         //====================================================================================================================//
+
+        public override void Init(Transform connectedTransform, Vector3 offset)
+        {
+            base.Init(connectedTransform, offset);
+        }
+
+        //====================================================================================================================//
+        
         public override void CustomRecycle(params object[] args)
         {
             base.CustomRecycle(args);
