@@ -18,6 +18,7 @@ using UnityEngine.SceneManagement;
 using StarSalvager.Missions;
 using StarSalvager.Utilities.JsonDataTypes;
 using Newtonsoft.Json;
+using StarSalvager.Audio;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Particles;
 using Random = UnityEngine.Random;
@@ -344,6 +345,7 @@ namespace StarSalvager
             SceneManager.MoveGameObjectToScene(BotObject.gameObject, gameObject.scene);
 
             SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
+            AudioController.PlayTESTWaveMusic(Globals.CurrentWave, true);
 
             MissionsCompletedDuringThisFlight.Clear();
 
@@ -479,6 +481,7 @@ namespace StarSalvager
             LiquidResourcesAttBeginningOfWave = new Dictionary<BIT_TYPE, float>((IDictionary<BIT_TYPE, float>)PlayerPersistentData.PlayerData.liquidResource);
 
             SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
+            AudioController.PlayTESTWaveMusic(Globals.CurrentWave);
 
             if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <
                 Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate)

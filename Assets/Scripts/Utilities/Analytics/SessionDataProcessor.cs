@@ -69,7 +69,7 @@ namespace StarSalvager.Utilities.Analytics
             var botAtStart = new List<BlockData>(initialBot);
             _currentWave = new WaveData(botAtStart, sector, wave);
             
-            AudioController.PlayTESTWaveMusic(wave);
+            
         }
 
         public void EndActiveWave()

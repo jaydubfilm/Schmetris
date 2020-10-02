@@ -150,12 +150,12 @@ namespace StarSalvager.Audio
             Instance.PlayMusicLoop(music);
         }
 
-        public static void PlayTESTWaveMusic(int index)
+        public static void PlayTESTWaveMusic(int index, bool forceChange = false)
         {
             if (Instance == null)
                 return;
 
-            Instance.PlayWaveMusic(index);
+            Instance.PlayWaveMusic(index, forceChange);
         }
 
         /// <summary>
@@ -321,14 +321,22 @@ namespace StarSalvager.Audio
             //musicAudioSource.Play();
         }
 
-        private void PlayWaveMusic(int index)
+        private void PlayWaveMusic(int index, bool forceChange)
         {
-            StartCoroutine(TEST_MusicFadeCoroutine(1f, () =>
+            void Play()
             {
                 gameMusicAudioSource.Stop();
                 gameMusicAudioSource.clip = TEST_waveMusic[index];
                 gameMusicAudioSource.Play();
-            }));
+            }
+            
+            if (forceChange)
+            {
+                Play();
+                return;
+            }
+            
+            StartCoroutine(TEST_MusicFadeCoroutine(1f, Play));
         }
 
         private IEnumerator TEST_MusicFadeCoroutine(float fadeTime, Action onMutedCallback)
