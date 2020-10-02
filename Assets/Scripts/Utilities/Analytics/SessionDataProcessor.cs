@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using StarSalvager.Audio;
 using StarSalvager.Utilities.Analytics.Data;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -67,6 +68,8 @@ namespace StarSalvager.Utilities.Analytics
 
             var botAtStart = new List<BlockData>(initialBot);
             _currentWave = new WaveData(botAtStart, sector, wave);
+            
+            
         }
 
         public void EndActiveWave()

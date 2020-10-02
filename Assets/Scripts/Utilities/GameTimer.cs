@@ -51,12 +51,11 @@ namespace StarSalvager.Utilities
             TimeSpan timePlayed = currentTime - startingTime;
 
             Dictionary<string, object> applicationQuitAnalyticsDictionary = new Dictionary<string, object>();
-            applicationQuitAnalyticsDictionary.Add("User ID", Globals.UserID);
-            applicationQuitAnalyticsDictionary.Add("Session ID", Globals.SessionID);
+            //applicationQuitAnalyticsDictionary.Add("User ID", Globals.UserID);
+            //applicationQuitAnalyticsDictionary.Add("Session ID", Globals.SessionID);
             //applicationQuitAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
-            applicationQuitAnalyticsDictionary.Add("Total Playtime", timePlayed.TotalSeconds);
-            applicationQuitAnalyticsDictionary.Add("End Time", DateTime.Now.ToString());
-
+            applicationQuitAnalyticsDictionary.Add(AnalyticsManager.TotalPlaytime, timePlayed.TotalSeconds);
+            //applicationQuitAnalyticsDictionary.Add("End Time", DateTime.Now.ToString());
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ApplicationQuit, eventDataDictionary: applicationQuitAnalyticsDictionary);
         }
     }

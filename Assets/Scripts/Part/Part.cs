@@ -14,8 +14,12 @@ namespace StarSalvager
         //============================================================================================================//
         [ShowInInspector, ReadOnly]
         public Vector2Int Coordinate { get; set; }
-        [ShowInInspector, ReadOnly]
-        public bool Attached { get; set; }
+
+        public bool Attached
+        {
+            get => true;
+            set { }
+        }
 
         public bool CountAsConnectedToCore => !Destroyed;
         public bool CanShift => false;
@@ -53,15 +57,19 @@ namespace StarSalvager
         
         private Damage _damage;
 
+        //Unity Functions
+        //====================================================================================================================//
+        
+        private void Start()
+        {
+            collider.usedByComposite = true;
+        }
 
         //IAttachable Functions
         //============================================================================================================//
 
         public void SetAttached(bool isAttached)
         {
-            Attached = isAttached;
-
-            collider.usedByComposite = true;
         }
 
         public void SetupHealthValues(float startingHealth, float currentHealth)
@@ -186,6 +194,7 @@ namespace StarSalvager
             RecycleDamageEffect();
             Destroyed = false;
             Disabled = false;
+            SetColliderActive(true);
             //collider.enabled = true;
         }
 

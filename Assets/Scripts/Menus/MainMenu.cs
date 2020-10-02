@@ -31,17 +31,25 @@ namespace StarSalvager.UI
             LOAD,
             OPTION
         }
+
+        private enum MENUSTATE
+        {
+            MAINMENU,
+            GAMEMENU
+        }
         
         //============================================================================================================//
         
         [SerializeField]
         private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
-        
+
         //============================================================================================================//
 
         #region Menu Windows
-        
+
+        [SerializeField, Required, FoldoutGroup("Main Menu")]
+        private TMP_Text headerText;
         [SerializeField, Required, FoldoutGroup("Main Menu")]
         private GameObject mainMenuWindow;
         [SerializeField, Required, FoldoutGroup("Main Menu")]
@@ -103,6 +111,8 @@ namespace StarSalvager.UI
 
         [SerializeField, Required]
         private GameObject introSceneCanvas;
+
+        private MENUSTATE menuState = MENUSTATE.MAINMENU;
         
         #endregion //Menu Windows
         
@@ -114,16 +124,30 @@ namespace StarSalvager.UI
             StartCoroutine(Init());
         }
 
+        private void OnEnable()
+        {
+            if (menuState == MENUSTATE.MAINMENU)
+            {
+                continueButtonText.text = "Continue";
+                headerText.text = "Star Salvager\nMain Menu";
+            }
+            else if (menuState == MENUSTATE.GAMEMENU)
+            {
+                continueButtonText.text = "Resume";
+                headerText.text = "Star Salvager\nGame Menu";
+            }
+        }
+
         private IEnumerator Init()
         {
             while (!SceneLoader.IsReady)
                 yield return null;
 
             Dictionary<string, object> applicationOpenAnalyticsDictionary = new Dictionary<string, object>();
-            applicationOpenAnalyticsDictionary.Add("User ID", Globals.UserID);
-            applicationOpenAnalyticsDictionary.Add("Session ID", Globals.SessionID);
-            applicationOpenAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
-            applicationOpenAnalyticsDictionary.Add("Start Time", DateTime.Now.ToString());
+            //applicationOpenAnalyticsDictionary.Add("User ID", Globals.UserID);
+            //applicationOpenAnalyticsDictionary.Add("Session ID", Globals.SessionID);
+            //applicationOpenAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
+            //applicationOpenAnalyticsDictionary.Add("Start Time", DateTime.Now.ToString());
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ApplicationOpen, eventDataDictionary: applicationOpenAnalyticsDictionary);
 
             InitButtons();
@@ -164,7 +188,23 @@ namespace StarSalvager.UI
             //Main Menu Buttons
             //--------------------------------------------------------------------------------------------------------//
 
-            newGameButton.onClick.AddListener(() => OpenMenu(MENU.NEW));
+            newGameButton.onClick.AddListener(() =>
+            {
+                if (menuState == MENUSTATE.MAINMENU)
+                {
+                    OpenMenu(MENU.NEW);
+                }
+                else
+                {
+                    Alert.ShowAlert("New Game", "Starting a new game may override your autosave data. Are you sure you want to continue?", "Yes", "No", (b) =>
+                    {
+                        if (b)
+                        {
+                            OpenMenu(MENU.NEW);
+                        }
+                    });
+                }
+            });
 
             continueButton.onClick.AddListener(() =>
             {
@@ -182,7 +222,7 @@ namespace StarSalvager.UI
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
 
-                    continueButtonText.text = "Resume";
+                    menuState = MENUSTATE.GAMEMENU;
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU);
                 }
             });
@@ -193,11 +233,17 @@ namespace StarSalvager.UI
             
             quitButton.onClick.AddListener(() =>
             {
-                #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-                #else
-                Application.Quit();
-                #endif
+                Alert.ShowAlert("Quit", "Are you sure you want to quit?", "Yes", "No", (b) =>
+                {
+                    if (b)
+                    {
+#if UNITY_EDITOR
+                        UnityEditor.EditorApplication.isPlaying = false;
+#else
+                        Application.Quit();
+#endif
+                    }
+                });
             });
             
             //New Game Buttons
@@ -214,7 +260,7 @@ namespace StarSalvager.UI
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     PlayerPersistentData.ResetPlayerData();
 
-                    continueButtonText.text = "Resume";
+                    menuState = MENUSTATE.GAMEMENU;
                     introSceneCanvas.SetActive(true);
                     mainMenuWindow.SetActive(false);
 
