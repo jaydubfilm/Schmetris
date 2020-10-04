@@ -18,6 +18,11 @@ namespace StarSalvager.Factories
 
         [SerializeField, Required, BoxGroup("Temporary")]
         private List<SectorModularData> m_sectorRemoteData;
+
+        [SerializeField, Required, BoxGroup("Temporary")]
+        private BitProfileScriptableObject[] _bitProfileScriptableObjects;
+        [SerializeField, Required, BoxGroup("Temporary")]
+        private PartProfileScriptableObject[] _partProfileScriptableObjects;
         
         public EditorBotShapeGeneratorData EditorBotShapeData => _editorBotShapeData ?? (_editorBotShapeData = Files.ImportBotShapeRemoteData());
         private EditorBotShapeGeneratorData _editorBotShapeData;
@@ -33,7 +38,7 @@ namespace StarSalvager.Factories
         public BitRemoteDataScriptableObject BitsRemoteData => bitRemoteData;
         public BitProfileScriptableObject BitProfileData => bitProfile as BitProfileScriptableObject;
         
-        [SerializeField, Required, BoxGroup("Attachables/Bits")]
+        //[SerializeField, Required, BoxGroup("Attachables/Bits")]
         private AttachableProfileScriptableObject bitProfile;
         
         [SerializeField, Required, BoxGroup("Attachables/Bits")]
@@ -56,7 +61,7 @@ namespace StarSalvager.Factories
         public RemotePartProfileScriptableObject PartsRemoteData => partRemoteData;
         public PartProfileScriptableObject PartsProfileData => partProfile as PartProfileScriptableObject;
 
-        [SerializeField, Required, BoxGroup("Attachables/Parts")] 
+        //[SerializeField, Required, BoxGroup("Attachables/Parts")] 
         private AttachableProfileScriptableObject partProfile;
         
         [SerializeField, Required, BoxGroup("Attachables/Parts")] 
@@ -107,6 +112,11 @@ namespace StarSalvager.Factories
 
         [SerializeField, Required, BoxGroup("Particles")]
         private GameObject floatingTextPrefab;
+        
+        [SerializeField, Required, BoxGroup("Particles")]
+        private GameObject connectedSpritePrefab;
+        [SerializeField, Required, BoxGroup("Particles")]
+        private GameObject fadeSpritePrefab;
 
         //============================================================================================================//
 
@@ -131,6 +141,37 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
+        private void Start()
+        {
+            ChangeBitProfile(0);
+            ChangePartProfile(0);
+        }
+
+        public void ChangeBitProfile(int index)
+        {
+            bitProfile = _bitProfileScriptableObjects[index];
+            var type = typeof(BitAttachableFactory);
+            
+            if (_factoryBases == null || !_factoryBases.ContainsKey(type))
+                return;
+
+            //Force update the BitFactory to use new sprite sheet
+            _factoryBases[type] = CreateFactory<BitAttachableFactory>();
+        }
+        public void ChangePartProfile(int index)
+        {
+            partProfile = _partProfileScriptableObjects[index];
+            var type = typeof(PartAttachableFactory);
+            
+            if (_factoryBases == null || !_factoryBases.ContainsKey(type))
+                return;
+
+            //Force update the BitFactory to use new sprite sheet
+            _factoryBases[type] = CreateFactory<PartAttachableFactory>();
+        }
+
+        //====================================================================================================================//
+        
         public T GetFactory<T>() where T : FactoryBase
         {
             var type = typeof(T);
@@ -188,7 +229,7 @@ namespace StarSalvager.Factories
                     return new DamageFactory(damageFactory) as T;
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(ParticleFactory):
-                    return new ParticleFactory(explosionPrefab, labelPrefab, floatingTextPrefab) as T;
+                    return new ParticleFactory(explosionPrefab, labelPrefab, floatingTextPrefab, connectedSpritePrefab, fadeSpritePrefab) as T;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type.Name, null);

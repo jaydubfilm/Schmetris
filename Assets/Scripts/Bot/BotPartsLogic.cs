@@ -9,6 +9,7 @@ using StarSalvager.Audio;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Prototype;
+using StarSalvager.UI;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Extensions;
@@ -45,6 +46,9 @@ namespace StarSalvager
         public Bot bot;
 
         //==============================================================================================================//
+
+        [ShowInInspector, ReadOnly]
+        public bool CanSelfDestruct { get; private set; }
 
         private List<Part> _parts;
         private List<Part> _smartWeapons;
@@ -189,8 +193,8 @@ namespace StarSalvager
 
             foreach (var part in _parts)
             {
-                //Destroyed parts should not contribute to the stats of the bot anymore
-                if (part.Destroyed)
+                //Destroyed or disabled parts should not contribute to the stats of the bot anymore
+                if (part.Destroyed || part.Disabled)
                     continue;
                 
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
@@ -273,25 +277,25 @@ namespace StarSalvager
                             capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_RED:
+                    case PART_TYPE.STORERED:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.RED] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_GREEN:
+                    case PART_TYPE.STOREGREEN:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.GREEN] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_GREY:
+                    case PART_TYPE.STOREGREY:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_YELLOW:
+                    case PART_TYPE.STOREYELLOW:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.YELLOW] += value;
@@ -312,6 +316,8 @@ namespace StarSalvager
 
             //Force update capacities, once new values determined
             PlayerPersistentData.PlayerData.SetCapacities(capacities);
+
+            bot.ForceCheckMagnets();
         }
 
         //============================================================================================================//
@@ -329,7 +335,7 @@ namespace StarSalvager
             //Be careful to not use return here
             foreach (var part in _parts)
             {
-                if(part.Destroyed)
+                if(part.Destroyed || part.Disabled)
                     continue;
 
                 PartRemoteData partRemoteData =
@@ -337,7 +343,16 @@ namespace StarSalvager
 
                 var levelData = partRemoteData.levels[part.level];
 
-                powerToRemove += levelData.powerDraw * Time.deltaTime;
+                //FIXME THis shouldn't happen often, though I may want to reconsider how this is being approached
+                if (powerValue == 0f && levelData.powerDraw > 0)
+                {
+                    part.Disabled = true;
+                    UpdatePartData();
+                    continue;
+                }
+
+                if(levelData.powerDraw > 0f)
+                    powerToRemove += levelData.powerDraw * Time.deltaTime;
 
                 //If there's nothing using these resources ignore
                 if(levelData.burnRate == 0f)
@@ -365,6 +380,9 @@ namespace StarSalvager
 
                         PlayerPersistentData.PlayerData.AddLiquidResource(partRemoteData.burnType, addAmount);
 
+                        //If we want to process a bit, we want to remove it from the attached list while its processed
+                        bot.MarkAttachablePendingRemoval(targetBit);
+                        
                         //TODO May want to play around with the order of operations here
                         StartCoroutine(RefineBitCoroutine(targetBit, 1.6f,
                             () =>
@@ -377,6 +395,7 @@ namespace StarSalvager
                         resourceValue = addAmount;
                         SessionDataProcessor.Instance.LiquidProcessed(targetBit.Type, addAmount);
                         AudioController.PlaySound(SOUND.BIT_REFINED);
+                        bot.ForceCheckMagnets();
                     }
 
                 }
@@ -393,13 +412,20 @@ namespace StarSalvager
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
+                        var outOfFuel = resourceValue <= 0f && useBurnRate;
+                        GameUI.ShowAbortWindow(outOfFuel);
 
+                        
                         //Determines if the player can move with no available fuel
                         //NOTE: This needs to happen before the subtraction of resources to prevent premature force-stop
                         InputManager.Instance.LockSideMovement = resourceValue <= 0f;
                         
                         if (resourceValue > 0f && useBurnRate)
                             resourceValue -= levelData.burnRate * Time.deltaTime;
+
+                        
+                        CanSelfDestruct = outOfFuel;
+                        //LevelManagerUI.OverrideText = outOfFuel ? "Out of Fuel. 'D' to self destruct" : string.Empty;
 
                         //TODO Need to check on Heating values for the core
                         if (coreHeat <= 0)
@@ -476,7 +502,7 @@ namespace StarSalvager
 
                         TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
                         break;
-                    case PART_TYPE.TRIPLE_SHOT:
+                    case PART_TYPE.TRIPLESHOT:
                     case PART_TYPE.GUN:
 
 
@@ -649,7 +675,7 @@ namespace StarSalvager
             
 
             //batteryDrainTimer += Time.deltaTime / 2;
-            waterDrainTimer += Time.deltaTime / 4;
+            waterDrainTimer += Time.deltaTime * Constants.waterDrainRate;
 
             /*if (batteryDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] > 0)
             {
@@ -810,7 +836,7 @@ namespace StarSalvager
                 UpdateUI(f.Key, f.Value);
             }
 
-            UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW]);
+            //UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.li[BIT_TYPE.YELLOW]);
             UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE]);
         }
 
@@ -850,15 +876,16 @@ namespace StarSalvager
                 return _flashes[part];
 
 
-            var flash = FactoryManager.Instance.GetFactory<BotFactory>().CreateAlertIcon();//Instantiate(flashSpritePrefab).GetComponent<FlashSprite>();
+            /*var flash = FactoryManager.Instance.GetFactory<BotFactory>().CreateAlertIcon();//Instantiate(flashSpritePrefab).GetComponent<FlashSprite>();
             flash.transform.SetParent(part.transform, false);
             flash.transform.localPosition = Vector3.zero;
 
-
+            flash.SetColor(bitColor);*/
+            
             var burnType = FactoryManager.Instance.PartsRemoteData.GetRemoteData(part.Type).burnType;
             var bitColor = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitProfile(burnType).color;
-
-            flash.SetColor(bitColor);
+            
+            var flash = FlashSprite.Create(part.transform, Vector3.zero, bitColor);
 
             _flashes.Add(part, flash);
 
@@ -945,6 +972,10 @@ namespace StarSalvager
 
         public void ClearList()
         {
+            CheckIfShieldShouldRecycle();
+            CheckIfFlashIconShouldRecycle();
+            CheckIfBombsShouldRecycle();
+            
             _parts.Clear();
         }
         
@@ -978,7 +1009,7 @@ namespace StarSalvager
         [SerializeField]
         private AnimationCurve moveSpeedCurve = new AnimationCurve();
 
-        private IEnumerator RefineBitCoroutine(Bit bit, float speed, Action OnFinishedCallback)
+        private IEnumerator RefineBitCoroutine(Bit bit, float speed, Action onFinishedCallback)
         {
             var bitStartPosition = bit.transform.position;
             var endPosition = bot.transform.position;
@@ -1000,7 +1031,7 @@ namespace StarSalvager
                 yield return null;
             }
 
-            OnFinishedCallback?.Invoke();
+            onFinishedCallback?.Invoke();
             bit.transform.localScale = Vector3.one;
 
 

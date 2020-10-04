@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
@@ -7,9 +8,10 @@ using UnityEngine;
 
 namespace StarSalvager.Prototype
 {
+    [Obsolete]
     public class PROTO_MagTester : MonoBehaviour
     {
-        private PartAttachableFactory pFact =>
+        /*private PartAttachableFactory pFact =>
             _pFact ?? (_pFact = FactoryManager.Instance.GetFactory<PartAttachableFactory>());
         private PartAttachableFactory _pFact;
         
@@ -48,7 +50,7 @@ namespace StarSalvager.Prototype
         private void TestMagnet()
         {
             testingBot.CheckHasMagnetOverage();
-        }
+        }*/
         
     }
 }

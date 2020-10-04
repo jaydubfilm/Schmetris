@@ -4,6 +4,7 @@ using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using System.Collections.Generic;
+using StarSalvager.Utilities.Math;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,7 @@ namespace StarSalvager.UI
     {
         [SerializeField, Required] private UniverseMapButton m_universeSectorButtonPrefab;
 
+        [SerializeField, Required] private ScrollRect m_scrollRect;
         [SerializeField, Required] private RectTransform m_scrollRectArea;
 
         private List<UniverseMapButton> currentUniverseButtons = new List<UniverseMapButton>();
@@ -32,6 +34,11 @@ namespace StarSalvager.UI
         public void Activate()
         {
             InitUniverseMapTemp();
+
+            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 35)
+            {
+                Alert.ShowAlert("Water Shortage", "You are running low on water at the base. Be sure to look for some more!", "Ok", null);
+            }
         }
 
         public void Reset()
@@ -43,6 +50,7 @@ namespace StarSalvager.UI
 
         private void InitButtons()
         {
+#if UNITY_EDITOR
             swapUniverseButton.onClick.AddListener(() =>
             {
                 if (FactoryManager.Instance.currentModularDataIndex == FactoryManager.Instance.ModularDataCount - 1)
@@ -57,7 +65,9 @@ namespace StarSalvager.UI
 
                 InitUniverseMapTemp();
             });
-            
+#else
+            swapUniverseButton.gameObject.SetActive(false);
+#endif
             backButton.onClick.AddListener(() => SceneLoader.LoadPreviousScene());
         }
 
@@ -80,6 +90,11 @@ namespace StarSalvager.UI
 
             for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
             {
+                if (Globals.DisableTestingFeatures && !PlayerPersistentData.PlayerData.CheckIfQualifies(i, 0))
+                {
+                    continue;
+                }
+                
                 positionSequence.Increment();
 
                 var position = positionSequence.m_CurrentPos;
@@ -110,8 +125,14 @@ namespace StarSalvager.UI
             currentUniverseButtons.Clear();
 
             Rect rect = m_scrollRectArea.rect;
+            RectTransform centerOn = null;
             for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
             {
+                if (Globals.DisableTestingFeatures && !PlayerPersistentData.PlayerData.CheckIfQualifies(i, 0))
+                {
+                    continue;
+                }
+
                 UniverseMapButton button = Instantiate(m_universeSectorButtonPrefab);
                 button.SetupWaveButtons(FactoryManager.Instance.SectorRemoteData[i].GetNumberOfWaves());
                 button.transform.SetParent(m_scrollRectArea.transform);
@@ -121,7 +142,23 @@ namespace StarSalvager.UI
                 button.Button.onClick.AddListener(() => { button.SetActiveWaveButtons(!button.ButtonsActive); });
                 button.SetActiveWaveButtons(true);
                 currentUniverseButtons.Add(button);
+                centerOn = button.GetComponent<RectTransform>();
             }
+
+            if (centerOn != null)
+            {
+                CenterToItem(centerOn);
+            }
+        }
+
+        //TODO: ashulman, figure out if/why this works
+        public void CenterToItem(RectTransform obj)
+        {
+            float normalizePositionX = ((m_scrollRectArea.rect.width / 2) + (obj.anchoredPosition.x * 2));
+            float normalizePositionY = ((m_scrollRectArea.rect.height / 2) + (obj.anchoredPosition.y * 2));
+
+            m_scrollRect.horizontalNormalizedPosition = normalizePositionX / m_scrollRectArea.rect.width;
+            m_scrollRect.verticalNormalizedPosition = normalizePositionY / m_scrollRectArea.rect.height;
         }
 
         //============================================================================================================//

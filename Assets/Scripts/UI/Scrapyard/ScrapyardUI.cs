@@ -4,6 +4,7 @@ using StarSalvager.Cameras;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard
@@ -28,8 +29,9 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button workbenchButton;
+        [FormerlySerializedAs("mapButton")] 
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
-        private Button mapButton;
+        private Button launchButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button logisticsButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
@@ -68,6 +70,8 @@ namespace StarSalvager.UI.Scrapyard
         private void OnEnable()
         {
             CameraController.CameraOffset(Vector3.zero, true);
+            
+            workbenchButton.onClick?.Invoke();
         }
 
         //============================================================================================================//
@@ -77,7 +81,7 @@ namespace StarSalvager.UI.Scrapyard
             //Launch Window Buttons
             //--------------------------------------------------------------------------------------------------------//
             
-            mapButton.onClick.AddListener(Launch);
+            launchButton.onClick.AddListener(Launch);
             
             //Navigation Buttons
             //--------------------------------------------------------------------------------------------------------//
@@ -101,6 +105,7 @@ namespace StarSalvager.UI.Scrapyard
 
             menuButton.onClick.AddListener(() =>
             {
+                PlayerPersistentData.SaveAutosaveFiles();
                 SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
             });
             saveGameButton.onClick.AddListener(() =>
@@ -119,8 +124,6 @@ namespace StarSalvager.UI.Scrapyard
             //--------------------------------------------------------------------------------------------------------//
 
         }
-        
-        
 
         //Launch Window Functions
         //============================================================================================================//
@@ -153,14 +156,16 @@ namespace StarSalvager.UI.Scrapyard
             
         }
         
-        static readonly BIT_TYPE[] types = {
-            BIT_TYPE.RED,
-            BIT_TYPE.GREY,
-            BIT_TYPE.GREEN,
-            BIT_TYPE.YELLOW
-        };
+        
         private void TryFillBotResources()
         {
+            BIT_TYPE[] types = {
+                BIT_TYPE.RED,
+                BIT_TYPE.GREY,
+                BIT_TYPE.GREEN,
+                BIT_TYPE.YELLOW
+            };
+            
             foreach (var bitType in types)
             {
                 switch (bitType)
@@ -172,10 +177,13 @@ namespace StarSalvager.UI.Scrapyard
                         break;
                     case BIT_TYPE.GREY:
                         //TODO Check for a gun
-                        if(!_droneDesigner.HasParts(PART_TYPE.GUN, PART_TYPE.TRIPLE_SHOT))
+                        if(!_droneDesigner.HasParts(PART_TYPE.GUN, PART_TYPE.TRIPLESHOT))
                             continue;
                         break;
                     case BIT_TYPE.YELLOW:
+                        if(_droneDesigner._scrapyardBot.powerDraw <= 0)
+                            continue;
+                        break;
                     case BIT_TYPE.RED:
                         break;
                     default:
@@ -205,45 +213,8 @@ namespace StarSalvager.UI.Scrapyard
             }
         }
         
-        //Menu Functions
         //============================================================================================================//
 
-        /*private void ShowMenu(MENU menu)
-        {
-            
-            viewDroneWindow.SetActive(false);
-            droneDesignWindow.SetActive(false);
-            craftingWindow.SetActive(false);
-            storageWindow.SetActive(false);
-            missionsWindow.SetActive(false);
-            
-            CameraController.CameraOffset(Vector3.zero, menu == MENU.DESIGN);
-            //FIXME This should be happening within the DroneDesigner
-            _droneDesigner.selectedPartType = null;
-            
-            switch (menu)
-            {
-                case MENU.LAUNCH:
-                    viewDroneWindow.SetActive(true);
-                    break;
-                case MENU.DESIGN:
-                    droneDesignWindow.SetActive(true);
-                    break;
-                case MENU.CRAFT:
-                    craftingWindow.SetActive(true);
-                    break;
-                case MENU.STORAGE:
-                    storageWindow.SetActive(true);
-                    break;
-                case MENU.MISSION:
-                    missionsWindow.SetActive(true);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(menu), menu, null);
-            }
-        }*/
-        
-        //============================================================================================================//
     } 
 }
 

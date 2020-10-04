@@ -17,7 +17,8 @@ namespace StarSalvager
 
         [SerializeField]
         private CameraController m_cameraController;
-        public CameraController CameraController => m_cameraController;
+
+        protected CameraController CameraController => m_cameraController;
 
         [NonSerialized]
         public BlockData? SelectedBrick;
@@ -79,10 +80,10 @@ namespace StarSalvager
                 
             mouseCoordinate = Vector2Int.zero;
 
-            if (Camera.main is null)
+            if (CameraController.Camera is null)
                 return false;
             
-            Vector2 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 worldMousePosition = CameraController.Camera.ScreenToWorldPoint(Input.mousePosition);
 
             var tempMouseCoord = new Vector2Int(
                 Mathf.RoundToInt(worldMousePosition.x / Constants.gridCellSize),

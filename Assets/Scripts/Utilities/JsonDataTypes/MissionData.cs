@@ -17,14 +17,23 @@ namespace StarSalvager.Utilities.JsonDataTypes
         public MISSION_STATUS MissionStatus;
         public List<MissionUnlockCheckData> MissionUnlockChecks;
 
-        public BIT_TYPE? ResourceType;
-        public int ComboLevel;
-        public string EnemyType;
+        public BIT_TYPE? BitType;
+        public PART_TYPE PartType;
+        public COMPONENT_TYPE? ComponentType;
+        public FACILITY_TYPE FacilityType;
+        public string EnemyTypeString;
+
+        public int Level;
+        public int IntAmount;
+        public float FloatAmount;
+
         public int SectorNumber;
         public int WaveNumber;
-        public PART_TYPE PartType;
-        public int PartLevel;
-        public bool ThroughPart;
-        public float FlightLength;
+
+        public bool BitDroppedFromEnemyLoot;
+        public bool ComboIsAdvancedCombo;
+        public bool BumperShiftedThroughPart;
+        public bool BumperOrphanedBits;
+        public bool BumperCausedCombos;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Recycling;
+using StarSalvager.Factories;
 using UnityEngine;
 
 
@@ -97,6 +98,23 @@ namespace StarSalvager.Utilities
         {
             SetColor(Color.white);
         }
+
+        //====================================================================================================================//
+        
+        public static FlashSprite Create(Transform parent, Vector3 localPosition, Color color, bool startActive = true)
+        {
+            var flashSprite = FactoryManager.Instance.GetFactory<BotFactory>().CreateAlertIcon();
+            flashSprite.transform.SetParent(parent);
+            flashSprite.transform.localPosition = localPosition;
+
+            flashSprite.SetColor(color);
+            flashSprite.SetActive(startActive);
+
+            return flashSprite;
+        }
+
+        //====================================================================================================================//
+        
     }
 }
 

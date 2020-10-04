@@ -54,13 +54,20 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 7ac9df6299ec27246841800d65fc57ec, type: 2}
     - {fileID: 11400000, guid: 63cd5494bf32a7b4d9e634d59d26d498, type: 2}
     - {fileID: 11400000, guid: a717bd6db04690d488c33a7ed054e8f2, type: 2}
+  _bitProfileScriptableObjects:
+  - {fileID: 11400000, guid: 30d05195f0c0d17489f40a71c8b0f9c2, type: 2}
+  - {fileID: 11400000, guid: 4e25ba9f05bd611498b4f23794170b54, type: 2}
+  - {fileID: 11400000, guid: cd2de67c40dea6c4eb283ef849dd71c4, type: 2}
+  - {fileID: 11400000, guid: c93cea887a41dc946af61b6c8f9b7a1a, type: 2}
+  - {fileID: 11400000, guid: e28447dfb0dfb5443a8105eb274b5052, type: 2}
+  _partProfileScriptableObjects:
+  - {fileID: 11400000, guid: 7d66a1c3ee1addb46aafb73e393bb79c, type: 2}
+  - {fileID: 11400000, guid: 28796210cc4cf3941a27c703d726f7bd, type: 2}
   currentModularDataIndex: 0
-  bitProfile: {fileID: 11400000, guid: e28447dfb0dfb5443a8105eb274b5052, type: 2}
   bitRemoteData: {fileID: 11400000, guid: 284ddcd54ebc2154ab2a6da6644407e6, type: 2}
   componentProfile: {fileID: 11400000, guid: 0162e5c6fcd936548b93c28b633aa41e, type: 2}
   componentRemoteData: {fileID: 11400000, guid: 523cb1ee8ef6f2f42b0810f1cbbb34e3,
     type: 2}
-  partProfile: {fileID: 11400000, guid: 28796210cc4cf3941a27c703d726f7bd, type: 2}
   partRemoteData: {fileID: 11400000, guid: 9631580295037634aa09b50d158e6b05, type: 2}
   shapePrefab: {fileID: 3556400771574459110, guid: 4cdd28f9004e4354b98be3c83792613a,
     type: 3}
@@ -83,6 +90,10 @@ MonoBehaviour:
   labelPrefab: {fileID: 9099319384489682599, guid: 8a229f5344f29bc42a484ccc31bdec75,
     type: 3}
   floatingTextPrefab: {fileID: 1209333815536603345, guid: 7431c86c30856054c909791de5d76629,
+    type: 3}
+  connectedSpritePrefab: {fileID: 5101111888088129152, guid: ba75da5685c6ae44b81167b34efb52d1,
+    type: 3}
+  fadeSpritePrefab: {fileID: 2815963387748468045, guid: c8cdc129b907c3c41938631740bde5cc,
     type: 3}
   asteroidProfile: {fileID: 11400000, guid: 5b908c56fe99e9a44ac6683480de76a5, type: 2}
   asteroidRemote: {fileID: 11400000, guid: 4fb1c416745d97f4e97ed047ec893eb2, type: 2}

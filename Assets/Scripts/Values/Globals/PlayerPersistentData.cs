@@ -3,6 +3,7 @@ using StarSalvager.Missions;
 using StarSalvager.Utilities.Saving;
 using System;
 using StarSalvager.Utilities.FileIO;
+using System.Linq;
 
 namespace StarSalvager.Values
 {
@@ -40,6 +41,16 @@ namespace StarSalvager.Values
                 data.AddSectorProgression(0, 0);
             }
             data.PlaythroughID = Guid.NewGuid().ToString();
+            foreach (var facilityData in Globals.FacilityInitialData)
+            {
+                data.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
+            }
+
+            foreach (var facilityData in Globals.FacilityInitialBlueprintData)
+            {
+                data.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.level);
+            }
+
             PlayerData = data;
             MissionManager.LoadMissionData();
 
@@ -62,26 +73,35 @@ namespace StarSalvager.Values
             PlayerData = null;
         }
 
+        public static void SaveAutosaveFiles()
+        {
+            if (PlayerData == null)
+            {
+                return;
+            }
+            
+            Files.ExportPlayerPersistentData(PlayerData, Files.AUTOSAVE_PATH);
+
+            PlayerMetadata.SaveFiles.RemoveAll(s => s.FilePath == Files.AUTOSAVE_PATH);
+            SaveFileData autoSaveFile = new SaveFileData
+            {
+                Name = DateTime.Now.ToString(),
+                Date = DateTime.Now,
+                FilePath = Files.AUTOSAVE_PATH
+            };
+            PlayerMetadata.SaveFiles.Add(autoSaveFile);
+            PlayerMetadata.CurrentSaveFile = autoSaveFile;
+
+            Files.ExportPlayerPersistentMetadata(PlayerMetadata);
+
+            ClearPlayerData();
+        }
+
         //====================================================================================================================//
 
         public static void CustomOnApplicationQuit()
         {
-            if (CurrentSaveFile != string.Empty)
-                Files.ExportPlayerPersistentData(PlayerData, CurrentSaveFile);
-
-            if (PlayerMetadata.CurrentSaveFile == null)
-            {
-                SaveFileData newSaveFile = new SaveFileData
-                {
-                    Name = DateTime.Now.ToString(),
-                    Date = DateTime.Now,
-                    FilePath = CurrentSaveFile
-                };
-
-                PlayerMetadata.SaveFiles.Add(newSaveFile);
-            }
-
-            Files.ExportPlayerPersistentMetadata(PlayerMetadata);
+            SaveAutosaveFiles();
         }
 
         //====================================================================================================================//

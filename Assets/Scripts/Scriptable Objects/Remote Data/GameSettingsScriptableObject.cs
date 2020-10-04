@@ -25,7 +25,8 @@ namespace StarSalvager.ScriptableObjects
         public float botHorizontalSpeed = 30.0f;
         public float missionReminderFrequency = 25.0f;
         public float bonusShapeSpeed = 12.0f;
-        public List<int> bonusShapeGearsRewards;
+        public float asteroidDamage = 10.0f;
+        public List<BonusShapeGearsValue> bonusShapeGearsRewards;
 
         public bool cameraUseInputMotion = true;
         [ShowIf("cameraUseInputMotion", true)]
@@ -33,7 +34,12 @@ namespace StarSalvager.ScriptableObjects
         [ShowIf("cameraUseInputMotion", true)]
         public float cameraOffsetBounds = 0.5f;
 
+        public int numCurrentTrackedMissionMax = 3;
+        public bool onlyGetWaveLootOnce = true;
+
         public List<BlueprintInitialData> blueprintInitialData = new List<BlueprintInitialData>();
+        public List<FacilityInitialData> facilityInitialData = new List<FacilityInitialData>();
+        public List<FacilityInitialData> facilityInitialBlueprintData = new List<FacilityInitialData>();
 
         public void SetupGameSettings()
         {

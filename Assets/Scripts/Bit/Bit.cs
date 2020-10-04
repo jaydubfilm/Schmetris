@@ -13,7 +13,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
-    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>
+    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>, ICanDetach
     {
         //IAttachable properties
         //============================================================================================================//
@@ -35,6 +35,9 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public bool CanShift => true;
 
+        public int AttachPriority => level;
+        public bool PendingDetach { get; set; }
+
         public bool CountTowardsMagnetism => true;
 
         public IAttachable iAttachable => this;
@@ -50,19 +53,9 @@ namespace StarSalvager
         //============================================================================================================//
         public bool CanMove => !Attached;
 
-        public bool IsRegistered
-        {
-            get { return m_isRegistered; }
-            set { m_isRegistered = value; }
-        }
-        private bool m_isRegistered = false;
+        public bool IsRegistered { get; set; } = false;
 
-        public bool IsMarkedOnGrid
-        {
-            get { return m_isMarkedOnGrid; }
-            set { m_isMarkedOnGrid = value; }
-        }
-        private bool m_isMarkedOnGrid = false;
+        public bool IsMarkedOnGrid { get; set; } = false;
 
         //Bit Properties
         //============================================================================================================//
@@ -76,6 +69,8 @@ namespace StarSalvager
 
         private Damage _damage;
 
+        public bool IsFromEnemyLoot;
+
         //IAttachable Functions
         //============================================================================================================//
 
@@ -83,6 +78,8 @@ namespace StarSalvager
         {
             Attached = isAttached;
             collider.usedByComposite = isAttached;
+
+            if (!isAttached) PendingDetach = false;
         }
 
         //IRotate Functions
@@ -241,7 +238,9 @@ namespace StarSalvager
             transform.rotation = Quaternion.identity;
             SetRotating(false);
 
-            renderer.sortingOrder = 0;
+            SetSortingLayer("Default");
+
+            PendingDetach = false;
 
             if (_damage)
             {

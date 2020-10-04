@@ -67,6 +67,14 @@ namespace StarSalvager
         
         //============================================================================================================//
 
+        private Collider2D waitCollider;
+        public void DisableColliderTillLeaves(Collider2D collider)
+        {
+            useCollision = false;
+            //SetColliderActive(false);
+            waitCollider = collider;
+        }
+
         private void OnCollisionEnter2D(Collision2D other)
         {
             if (!useCollision)
@@ -98,7 +106,20 @@ namespace StarSalvager
             
             OnCollide(other.gameObject, point);
         }
-        
+
+        private void OnCollisionExit2D(Collision2D other)
+        {
+            if (waitCollider == null)
+                return;
+
+            if (other.collider != waitCollider)
+                return;
+
+            useCollision = true;
+            waitCollider = null;
+
+        }
+
         //============================================================================================================//
 
         public void SetSprite(Sprite sprite)
@@ -114,6 +135,12 @@ namespace StarSalvager
         public virtual void SetColliderActive(bool state)
         {
             collider.enabled = state;
+        }
+        
+        public virtual void SetSortingLayer(string sortingLayerName, int sortingOrder = 0)
+        {
+           renderer.sortingLayerName = sortingLayerName;
+           renderer.sortingOrder = sortingOrder;
         }
         
         //============================================================================================================//

@@ -9,25 +9,49 @@ namespace StarSalvager.Missions
     public class FlightLengthMission : Mission
     {
         float m_flightLength;
-        
-        public FlightLengthMission(float flightLength, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded = 1.0f) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+
+        public FlightLengthMission(MissionRemoteData missionRemoteData) : base(missionRemoteData)
         {
             MissionEventType = MISSION_EVENT_TYPE.FLIGHT_LENGTH;
-            m_flightLength = flightLength;
+            m_flightLength = missionRemoteData.FlightLength;
+        }
+
+        public FlightLengthMission(MissionData missionData) : base(missionData)
+        {
+            MissionEventType = MISSION_EVENT_TYPE.FLIGHT_LENGTH;
+            m_flightLength = missionData.FloatAmount;
         }
 
         public override bool MissionComplete()
         {
-            return m_currentAmount >= m_amountNeeded;
+            return currentAmount >= amountNeeded;
         }
 
-        public void ProcessMissionData(float flightLength)
+        public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
         {
-            if (flightLength >= m_flightLength)
+            float amount = missionProgressEventData.floatAmount;
+            
+            if (amount >= m_flightLength)
             {
-                Debug.WriteLine(flightLength + " --- " + m_flightLength);
-                m_currentAmount += 1;
+                Debug.WriteLine(amount + " --- " + m_flightLength);
+                currentAmount += 1;
             }
+        }
+
+        public override string GetMissionProgressString()
+        {
+            if (MissionComplete())
+            {
+                return "";
+            }
+
+            int curAmount = 0;
+            if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
+            {
+                curAmount = (int)LevelManager.Instance.LevelTimer;
+            }
+
+            return $" ({ +curAmount}/{ +m_flightLength})";
         }
 
         public override MissionData ToMissionData()
@@ -35,15 +59,15 @@ namespace StarSalvager.Missions
             return new MissionData
             {
                 ClassType = GetType().Name,
-                MissionName = m_missionName,
-                MissionDescription = m_missionDescription,
-                AmountNeeded = m_amountNeeded,
-                CurrentAmount = m_currentAmount,
+                MissionName = missionName,
+                MissionDescription = missionDescription,
+                AmountNeeded = amountNeeded,
+                CurrentAmount = currentAmount,
                 MissionEventType = this.MissionEventType,
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
-                FlightLength = m_flightLength
+                FloatAmount = m_flightLength
             };
         }
     }

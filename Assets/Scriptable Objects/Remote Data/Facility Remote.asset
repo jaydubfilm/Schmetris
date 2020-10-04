@@ -15,7 +15,7 @@ MonoBehaviour:
   FacilityRemoteData:
   - type: 0
     displayName: Freezer
-    displayDescription: Freezer description
+    displayDescription: Freezer description *
     levels:
     - level: 0
       increaseAmount: 100
@@ -40,121 +40,425 @@ MonoBehaviour:
       craftCost: []
   - type: 1
     displayName: Barrel
-    displayDescription: Barrel description
+    displayDescription: Increases base fuel storage capacity by *
     levels:
     - level: 0
-      increaseAmount: 500
+      increaseAmount: 0
+      craftCost: []
+    - level: 1
+      increaseAmount: 200
       craftCost:
       - resourceType: 0
         type: 5
         partPrerequisiteLevel: 0
+        amount: 100
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 250
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 250
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 1
+    - level: 2
+      increaseAmount: 400
+      craftCost:
+      - resourceType: 0
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 400
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1000
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 1000
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 3
+  - type: 2
+    displayName: Capacitor
+    displayDescription: Increases base power storage capacity *
+    levels:
+    - level: 0
+      increaseAmount: 0
+      craftCost: []
+    - level: 1
+      increaseAmount: 200
+      craftCost:
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 0
+        partPrerequisiteLevel: 0
         amount: 150
+      - resourceType: 0
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 150
+      - resourceType: 0
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 1000
+    - level: 2
+      increaseAmount: 400
+      craftCost:
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2000
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 2000
+      - resourceType: 0
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 1000
+  - type: 3
+    displayName: Vat
+    displayDescription: Increase base plasma storage capacity by *
+    levels:
+    - level: 0
+      increaseAmount: 0
+      craftCost: []
+    - level: 1
+      increaseAmount: 200
+      craftCost:
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 250
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 250
+      - resourceType: 0
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 100
+    - level: 2
+      increaseAmount: 400
+      craftCost:
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 3
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 3
+      - resourceType: 0
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 1000
+      - resourceType: 0
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 1000
+      - resourceType: 0
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 400
+  - type: 4
+    displayName: Bin
+    displayDescription: Increases base scrap metal storage
+    levels:
+    - level: 0
+      increaseAmount: 0
+      craftCost: []
+    - level: 1
+      increaseAmount: 200
+      craftCost:
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 250
+      - resourceType: 0
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 250
+      - resourceType: 0
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 100
+    - level: 2
+      increaseAmount: 400
+      craftCost:
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 1000
+      - resourceType: 0
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 1000
+      - resourceType: 0
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 400
+  - type: 5
+    displayName: Reservoir
+    displayDescription: Increases base water storage
+    levels:
+    - level: 0
+      increaseAmount: 0
+      craftCost: []
+    - level: 1
+      increaseAmount: 200
+      craftCost:
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 1
       - resourceType: 0
         type: 1
         partPrerequisiteLevel: 0
         amount: 150
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 2
-    - level: 1
-      increaseAmount: 5000
-      craftCost: []
-  - type: 2
-    displayName: Capacitor
-    displayDescription: Capacitor description
-    levels:
-    - level: 0
-      increaseAmount: 500
-      craftCost: []
-    - level: 1
-      increaseAmount: 5000
-      craftCost: []
-  - type: 3
-    displayName: Vat
-    displayDescription: Vat description
-    levels:
-    - level: 0
-      increaseAmount: 500
-      craftCost: []
-    - level: 1
-      increaseAmount: 5000
-      craftCost: []
-  - type: 4
-    displayName: Bin
-    displayDescription: Bin Description
-    levels:
-    - level: 0
-      increaseAmount: 500
-      craftCost: []
-    - level: 1
-      increaseAmount: 5000
-      craftCost: []
-  - type: 5
-    displayName: Reservoir
-    displayDescription: Reservoir description
-    levels:
-    - level: 0
-      increaseAmount: 500
-      craftCost:
       - resourceType: 0
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 150
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 150
-      - resourceType: 1
         type: 3
         partPrerequisiteLevel: 0
-        amount: 2
-    - level: 1
-      increaseAmount: 5000
-      craftCost: []
-  - type: 6
-    displayName: Chipworks
-    displayDescription: Chipworks description
+        amount: 150
+      - resourceType: 0
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 100
+    - level: 2
+      increaseAmount: 400
+      craftCost:
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 500
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 500
+      - resourceType: 0
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 200
+  - type: 7
+    displayName: Coilworks
+    displayDescription: Upgrades workbench to craft parts which require coil components
     levels:
     - level: 0
       increaseAmount: 0
       craftCost:
       - resourceType: 0
-        type: 1
+        type: 2
         partPrerequisiteLevel: 0
         amount: 150
       - resourceType: 0
-        type: 4
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 300
+      - resourceType: 0
+        type: 5
         partPrerequisiteLevel: 0
         amount: 150
       - resourceType: 1
         type: 0
         partPrerequisiteLevel: 0
-        amount: 2
-  - type: 7
-    displayName: Coilworks
-    displayDescription: Coilworks description
+        amount: 4
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 1
+  - type: 6
+    displayName: Chipworks
+    displayDescription: Upgrades workbench to craft parts which require chip components
     levels:
     - level: 0
       increaseAmount: 0
-      craftCost: []
+      craftCost:
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 1000
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 3000
+      - resourceType: 0
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 1000
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 3
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 3
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 3
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1
   - type: 8
     displayName: Fusorworks
-    displayDescription: Fusorworks description
+    displayDescription: Upgrades workbench to be able to craft parts using fusor
+      components
     levels:
     - level: 0
       increaseAmount: 0
-      craftCost: []
+      craftCost:
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 5000
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 10000
+      - resourceType: 0
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 5000
   - type: 9
     displayName: Refinery
-    displayDescription: Refineryworks
+    displayDescription: Increases efficiency of raw material refining by *
     levels:
     - level: 0
       increaseAmount: 0
       craftCost: []
     - level: 1
-      increaseAmount: 25
-      craftCost: []
-    - level: 2
       increaseAmount: 50
-      craftCost: []
+      craftCost:
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 1000
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1000
+      - resourceType: 0
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 400
+    - level: 2
+      increaseAmount: 100
+      craftCost:
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 3
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 3
+      - resourceType: 1
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 0
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 7500
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 7500
+      - resourceType: 0
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 5000

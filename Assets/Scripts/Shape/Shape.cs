@@ -4,6 +4,8 @@ using System.Linq;
 using Recycling;
 using StarSalvager;
 using StarSalvager.Audio;
+using StarSalvager.Utilities;
+using StarSalvager.Utilities.Animations;
 using StarSalvager.Values;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
@@ -27,19 +29,9 @@ namespace StarSalvager
 
         public bool CanMove => true;
 
-        public bool IsRegistered
-        {
-            get { return m_isRegistered; }
-            set { m_isRegistered = value; }
-        }
-        private bool m_isRegistered = false;
+        public bool IsRegistered { get; set; } = false;
 
-        public bool IsMarkedOnGrid
-        {
-            get { return m_isMarkedOnGrid; }
-            set { m_isMarkedOnGrid = value; }
-        }
-        private bool m_isMarkedOnGrid = false;
+        public bool IsMarkedOnGrid { get; set; } = false;
 
         //================================================================================================================//
 
@@ -129,6 +121,34 @@ namespace StarSalvager
             CompositeCollider.GenerateGeometry();
         }
 
+        //====================================================================================================================//
+        private FadeSprite[] _fadeSprites;
+        
+        public void FlashBits()
+        {
+            if (_fadeSprites != null && _fadeSprites.Length > 0)
+            {
+                //TODO Recycle any existing elements
+                foreach (var flashSprite in _fadeSprites)
+                {
+                    Recycler.Recycle<FadeSprite>(flashSprite);
+                }
+            }
+
+            _fadeSprites = new FadeSprite[attachedBits.Count];
+
+            for (var i = 0; i < attachedBits.Count; i++)
+            {
+                var flashSprite = FadeSprite.Create(
+                    transform,
+                    (Vector2) attachedBits[i].Coordinate * Constants.gridCellSize,
+                    Color.white);
+
+                _fadeSprites[i] = flashSprite;
+            }
+            
+        }
+
         //================================================================================================================//
 
         //TODO Determine if we need to ensure the validity of the shape after removing a piece
@@ -149,7 +169,7 @@ namespace StarSalvager
         }
         public void DestroyBit(Vector2Int coordinate, bool shouldRecycleIfEmpty = true)
         {
-            if (!attachedBits.Any(b => b.Coordinate == coordinate))
+            if (attachedBits.All(b => b.Coordinate != coordinate))
                 return;
 
             Bit bit = attachedBits.FirstOrDefault(b => b.Coordinate == coordinate);
@@ -171,13 +191,7 @@ namespace StarSalvager
             Recycler.Recycle<Shape>(this);
         }
 
-        public override void SetColor(Color color)
-        {
-            foreach (var bit in attachedBits)
-            {
-                bit.SetColor(color);
-            }
-        }
+
 
         public override void SetColliderActive(bool state)
         {
@@ -189,6 +203,25 @@ namespace StarSalvager
             }
 
             CompositeCollider.GenerateGeometry();
+        }
+
+        //Sprite Renderer Functions
+        //====================================================================================================================//
+        
+        public override void SetColor(Color color)
+        {
+            foreach (var bit in attachedBits)
+            {
+                bit.SetColor(color);
+            }
+        }
+
+        public override void SetSortingLayer(string sortingLayerName, int sortingOrder = 0)
+        {
+            foreach (var attachedBit in attachedBits)
+            {
+                attachedBit.SetSortingLayer(sortingLayerName, sortingOrder);
+            }
         }
         
         //================================================================================================================//
@@ -292,6 +325,18 @@ namespace StarSalvager
 
         public void CustomRecycle(params object[] args)
         {
+            if (_fadeSprites != null)
+            {
+                foreach (var fadeSprite in _fadeSprites)
+                {
+                    Recycler.Recycle<FadeSprite>(fadeSprite);
+                }
+
+                _fadeSprites = null;
+            }
+
+            
+            
             //by Default, I want to assume I'll be recycling the bits.
             var recycleBits = true;
 

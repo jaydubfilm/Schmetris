@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using StarSalvager.AI;
 using StarSalvager.Missions;
+using System;
 
 namespace StarSalvager.ScriptableObjects
 {
@@ -12,15 +13,25 @@ namespace StarSalvager.ScriptableObjects
     {
         public List<MissionRemoteData> m_missionRemoteData = new List<MissionRemoteData>();
 
+        public MissionRemoteData GetRemoteData(string name)
+        {
+            return m_missionRemoteData.FirstOrDefault(m => m.MissionName == name);
+        }
+
         public List<Mission> GenerateMissionData()
         {
             List<Mission> missions = new List<Mission>();
 
-            foreach (MissionRemoteData data in m_missionRemoteData)
+            foreach (MissionRemoteData missionData in m_missionRemoteData)
             {
-                if (data.MissionType == MISSION_EVENT_TYPE.RESOURCE_COLLECTED)
+                int i = MissionManager.MissionTypes.FindIndex(m => m.MissionEventType == missionData.MissionType);
+
+                Mission newMission = (Mission)Activator.CreateInstance(MissionManager.MissionTypes[i].GetType(), missionData);
+                missions.Add(newMission);
+
+                /*if (data.MissionType == MISSION_EVENT_TYPE.RESOURCE_COLLECTED)
                 {
-                    ResourceCollectedMission mission = new ResourceCollectedMission(data.ResourceValue(), data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
+                    ResourceCollectedMission mission = new ResourceCollectedMission(data.ResourceValue(), data.IsFromEnemyLoot, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
                     missions.Add(mission);
                 }
                 else if (data.MissionType == MISSION_EVENT_TYPE.ENEMY_KILLED)
@@ -30,7 +41,7 @@ namespace StarSalvager.ScriptableObjects
                 }
                 else if (data.MissionType == MISSION_EVENT_TYPE.COMBO_BLOCKS)
                 {
-                    ComboBlocksMission mission = new ComboBlocksMission(data.ResourceValue(), data.ComboLevel, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
+                    ComboBlocksMission mission = new ComboBlocksMission(data.ResourceValue(), data.ComboLevel, data.IsAdvancedCombo, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
                     missions.Add(mission);
                 }
                 else if (data.MissionType == MISSION_EVENT_TYPE.LEVEL_PROGRESS)
@@ -45,7 +56,7 @@ namespace StarSalvager.ScriptableObjects
                 }
                 else if (data.MissionType == MISSION_EVENT_TYPE.WHITE_BUMPER)
                 {
-                    WhiteBumperMission mission = new WhiteBumperMission(data.ThroughPart, data.PartType, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
+                    WhiteBumperMission mission = new WhiteBumperMission(data.ThroughPart, data.OrphanBit, data.HasCombos, data.PartType, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
                     missions.Add(mission);
                 }
                 else if (data.MissionType == MISSION_EVENT_TYPE.ASTEROID_COLLISION)
@@ -73,6 +84,26 @@ namespace StarSalvager.ScriptableObjects
                     FlightLengthMission mission = new FlightLengthMission(data.FlightLength, data.MissionName, data.MissionDescription, data.GetMissionUnlockData());
                     missions.Add(mission);
                 }
+                else if (data.MissionType == MISSION_EVENT_TYPE.CHAIN_BONUS_SHAPES)
+                {
+                    ChainBonusShapesMission mission = new ChainBonusShapesMission(data.BonusShapeNumber, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
+                    missions.Add(mission);
+                }
+                else if (data.MissionType == MISSION_EVENT_TYPE.FACILITY_UPGRADE)
+                {
+                    FacilityUpgradeMission mission = new FacilityUpgradeMission(data.FacilityType, data.FacilityLevel, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
+                    missions.Add(mission);
+                }
+                else if (data.MissionType == MISSION_EVENT_TYPE.PLAYER_LEVEL)
+                {
+                    PlayerLevelMission mission = new PlayerLevelMission(data.PlayerLevel, data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
+                    missions.Add(mission);
+                }
+                else if (data.MissionType == MISSION_EVENT_TYPE.COMPONENT_COLLECTED)
+                {
+                    ComponentCollectedMission mission = new ComponentCollectedMission(data.ComponentValue(), data.MissionName, data.MissionDescription, data.GetMissionUnlockData(), data.AmountNeeded);
+                    missions.Add(mission);
+                }*/
             }
 
             return missions;

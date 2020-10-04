@@ -7,6 +7,7 @@ using StarSalvager.Factories;
 using StarSalvager.Missions;
 using StarSalvager.Utilities.Analytics.Data;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Utilities.Math;
 using StarSalvager.Values;
 using UnityEngine;
 
@@ -25,11 +26,37 @@ namespace StarSalvager.Utilities.FileIO
         
         #if UNITY_EDITOR
         private static readonly string PARENT_DIRECTORY = new DirectoryInfo(Application.dataPath).Parent.FullName;
-        #else
+        #elif UNITY_STANDALONE_WIN
         private static readonly string PARENT_DIRECTORY = Application.dataPath;
+        #elif UNITY_STANDALONE_OSX
+        private static readonly string PARENT_DIRECTORY = Application.persistentDataPath;
         #endif
 
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
         private static readonly string REMOTE_DIRECTORY = Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, REMOTE_PATH);
+#elif UNITY_STANDALONE_OSX
+        private static readonly string REMOTE_DIRECTORY = Path.Combine(new DirectoryInfo(Application.persistentDataPath).FullName, REMOTE_PATH);
+#endif
+
+        public static string LOG_DIRECTORY
+        {
+            get
+            {
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+                var directory = Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "RemoteData",
+                    "Sessions");
+#elif UNITY_STANDALONE_OSX
+            var directory = Path.Combine(new DirectoryInfo(Application.persistentDataPath).FullName, "RemoteData",
+                "Sessions");
+#endif
+            
+                if (!Directory.Exists(directory))
+                    Directory.CreateDirectory(directory);
+            
+
+                return Path.Combine(directory, "error.log");
+            }
+        }
 
         //Player Data Directory
         //====================================================================================================================//
@@ -70,11 +97,11 @@ namespace StarSalvager.Utilities.FileIO
                 return string.Empty;
 
 #if UNITY_EDITOR
-            var path = Path.Combine(PARENT_DIRECTORY, REMOTE_PATH,
-                ADDTOBUILD_PATH, BOTSHAPEEDITOR_FILE);
-#else
+            var path = Path.Combine(REMOTE_DIRECTORY, ADDTOBUILD_PATH, BOTSHAPEEDITOR_FILE);
+#elif UNITY_STANDALONE_WIN
             var path = Path.Combine(PARENT_DIRECTORY, BUILDDATA_PATH, BOTSHAPEEDITOR_FILE);
-
+#elif UNITY_STANDALONE_OSX
+            var path = Path.Combine(Application.dataPath, BUILDDATA_PATH, BOTSHAPEEDITOR_FILE);
 #endif
             var jsonToExport = JsonConvert.SerializeObject(editorData, Formatting.None);
 
@@ -91,8 +118,10 @@ namespace StarSalvager.Utilities.FileIO
             
 #if UNITY_EDITOR
             var path = Path.Combine(REMOTE_DIRECTORY, ADDTOBUILD_PATH, BOTSHAPEEDITOR_FILE);
-#else
+#elif UNITY_STANDALONE_WIN
             var path = Path.Combine(PARENT_DIRECTORY, BUILDDATA_PATH, BOTSHAPEEDITOR_FILE);
+#elif UNITY_STANDALONE_OSX
+            var path = Path.Combine(Application.dataPath, BUILDDATA_PATH, BOTSHAPEEDITOR_FILE);
 #endif
             
             if (!File.Exists(path))
@@ -176,6 +205,16 @@ namespace StarSalvager.Utilities.FileIO
                         level = blueprintData.level
                     };
                     data.UnlockBlueprint(blueprint);
+                }
+
+                foreach (var facilityData in Globals.FacilityInitialData)
+                {
+                    data.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
+                }
+
+                foreach (var facilityData in Globals.FacilityInitialBlueprintData)
+                {
+                    data.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.level);
                 }
 
                 return data;
@@ -273,8 +312,13 @@ namespace StarSalvager.Utilities.FileIO
 
             var fileName = Base64.Encode($"{playerID}_{sessionData.date:yyyyMMddHHmm}");
 
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
             var directory = Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "RemoteData",
                 "Sessions");
+#elif UNITY_STANDALONE_OSX
+            var directory = Path.Combine(new DirectoryInfo(Application.persistentDataPath).FullName, "RemoteData",
+                "Sessions");
+#endif
 
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
@@ -341,6 +385,25 @@ namespace StarSalvager.Utilities.FileIO
                 PlayerPersistentData.ClearPlayerData();
             }
 
+        }
+
+        //Create Log File
+        //====================================================================================================================//
+        public static FileInfo CreateLogFile()
+        {
+            return CreateLogFile(ErrorCatcher.LoggedErrors);
+        }
+        public static FileInfo CreateLogFile(List<ErrorCatcher.ErrorInfo> loggedErrors)
+        {
+            //We reverse them to ensure that the newest will be shown at the top
+            loggedErrors.Reverse();
+            var data = string.Join("\n", loggedErrors);
+
+            var path = LOG_DIRECTORY;
+            
+            File.WriteAllText(path, data);
+            
+            return new FileInfo(path);
         }
 
         //====================================================================================================================//

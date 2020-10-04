@@ -69,12 +69,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bot: {fileID: 2681746267895581274}
   useMagnet: 1
-  currentMagnet: 2
+  currentMagnet: 0
   useBurnRate: 1
   coreHeat: 0
   coolSpeed: 20
   coolDelay: 1
-  coolTimer: 0
   refineScaleCurve:
     serializedVersion: 2
     m_Curve:

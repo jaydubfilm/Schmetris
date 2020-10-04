@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using StarSalvager.Factories;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager 
@@ -10,6 +13,20 @@ namespace StarSalvager
         public string name;
         public PART_TYPE partType;
         public int level;
+
+        [JsonIgnore]
+        public bool CanAfford => PlayerPersistentData.PlayerData.CanAffordPart(partType, level, false);
+
+        [JsonIgnore]
+        public string DisplayString => $"{GetDisplayName()} lvl {level + 1}";
+
+        private string GetDisplayName()
+        {
+            var factoryManager = FactoryManager.Instance;
+            return factoryManager is null ? string.Empty : factoryManager.PartsRemoteData.GetRemoteData(partType).name;
+        }
+
+        #region IEquatable
 
         public bool Equals(Blueprint other)
         {
@@ -30,5 +47,7 @@ namespace StarSalvager
         {
             return (name != null ? name.GetHashCode() : 0);
         }
+
+        #endregion //IEquatable
     }
 }

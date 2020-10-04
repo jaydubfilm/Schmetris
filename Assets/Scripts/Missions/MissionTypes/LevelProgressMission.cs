@@ -11,24 +11,39 @@ namespace StarSalvager.Missions
         public int m_sectorNumber;
         public int m_waveNumber;
 
-        public LevelProgressMission(int sectorNumber, int waveNumber, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded = 1.0f) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+        public LevelProgressMission(MissionRemoteData missionRemoteData) : base(missionRemoteData)
         {
             MissionEventType = MISSION_EVENT_TYPE.LEVEL_PROGRESS;
-            m_sectorNumber = sectorNumber;
-            m_waveNumber = waveNumber;
+            m_sectorNumber = missionRemoteData.SectorNumber;
+            m_waveNumber = missionRemoteData.WaveNumber;
+        }
+
+        public LevelProgressMission(MissionData missionData) : base(missionData)
+        {
+            MissionEventType = MISSION_EVENT_TYPE.LEVEL_PROGRESS;
+            m_sectorNumber = missionData.SectorNumber;
+            m_waveNumber = missionData.WaveNumber;
         }
 
         public override bool MissionComplete()
         {
-            return m_currentAmount >= m_amountNeeded;
+            return currentAmount >= amountNeeded;
         }
 
-        public void ProcessMissionData(int sectorNumber, int waveNumber)
+        public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
         {
+            int sectorNumber = missionProgressEventData.sectorNumber;
+            int waveNumber = missionProgressEventData.waveNumber;
+            
             if (sectorNumber == m_sectorNumber && waveNumber == m_waveNumber)
             {
-                m_currentAmount += 1;
+                currentAmount += 1;
             }
+        }
+
+        public override string GetMissionProgressString()
+        {
+            return "";
         }
 
         public override MissionData ToMissionData()
@@ -36,10 +51,10 @@ namespace StarSalvager.Missions
             return new MissionData
             {
                 ClassType = GetType().Name,
-                MissionName = m_missionName,
-                MissionDescription = m_missionDescription,
-                AmountNeeded = m_amountNeeded,
-                CurrentAmount = m_currentAmount,
+                MissionName = missionName,
+                MissionDescription = missionDescription,
+                AmountNeeded = amountNeeded,
+                CurrentAmount = currentAmount,
                 MissionEventType = this.MissionEventType,
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),

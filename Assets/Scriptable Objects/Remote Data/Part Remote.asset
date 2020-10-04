@@ -29,7 +29,7 @@ MonoBehaviour:
       - key: Magnet
         value: 8
       - key: Capacity
-        value: 50
+        value: 30
       - key: SMRTCapacity
         value: 2
       burnRate: 1
@@ -39,9 +39,9 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 16
+        value: 10
       - key: Capacity
-        value: 200
+        value: 100
       - key: SMRTCapacity
         value: 3
       burnRate: 2
@@ -91,9 +91,9 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 25
+        value: 10
       - key: Capacity
-        value: 500
+        value: 200
       - key: SMRTCapacity
         value: 4
       burnRate: 3
@@ -152,10 +152,10 @@ MonoBehaviour:
     levels:
     - unlockLevel: 0
       health: 80
-      powerDraw: 1
+      powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 5
+        value: 3
       burnRate: 0
       cost:
       - resourceType: 0
@@ -165,13 +165,13 @@ MonoBehaviour:
       - resourceType: 0
         type: 5
         partPrerequisiteLevel: 0
-        amount: 50
+        amount: 20
     - unlockLevel: 0
       health: 100
-      powerDraw: 2
+      powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 10
+        value: 5
       burnRate: 0.1
       cost:
       - resourceType: 0
@@ -181,7 +181,7 @@ MonoBehaviour:
       - resourceType: 0
         type: 5
         partPrerequisiteLevel: 0
-        amount: 300
+        amount: 100
       - resourceType: 2
         type: 1
         partPrerequisiteLevel: 0
@@ -196,10 +196,10 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 0
       health: 120
-      powerDraw: 5
+      powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 20
+        value: 8
       burnRate: 0.17
       cost:
       - resourceType: 0
@@ -209,7 +209,7 @@ MonoBehaviour:
       - resourceType: 0
         type: 5
         partPrerequisiteLevel: 0
-        amount: 2500
+        amount: 1200
       - resourceType: 2
         type: 1
         partPrerequisiteLevel: 1
@@ -231,7 +231,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 0
       health: 80
-      powerDraw: 1
+      powerDraw: 0.2
       dataTest:
       - key: Heal
         value: 20
@@ -253,7 +253,7 @@ MonoBehaviour:
         amount: 3
     - unlockLevel: 0
       health: 90
-      powerDraw: 2
+      powerDraw: 0.4
       dataTest:
       - key: Heal
         value: 25
@@ -287,7 +287,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 0
       health: 100
-      powerDraw: 5
+      powerDraw: 1
       dataTest:
       - key: Heal
         value: 50
@@ -389,13 +389,13 @@ MonoBehaviour:
     partType: 4
     canSell: 1
     description: This basic offensive weapon will fire on any enemy within range
-      and consumes scrap metal ammunition.
+      and consumes scrap metal ammunition.  Aim leaves something to be desired.
     priority: 75
     burnType: 3
     levels:
     - unlockLevel: 0
       health: 60
-      powerDraw: 1
+      powerDraw: 0.2
       dataTest:
       - key: Damage
         value: 10
@@ -415,7 +415,7 @@ MonoBehaviour:
         amount: 150
     - unlockLevel: 0
       health: 80
-      powerDraw: 2
+      powerDraw: 0.4
       dataTest:
       - key: Damage
         value: 20
@@ -447,7 +447,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 0
       health: 100
-      powerDraw: 5
+      powerDraw: 1
       dataTest:
       - key: Damage
         value: 30
@@ -480,13 +480,14 @@ MonoBehaviour:
   - name: Triple Shot
     partType: 12
     canSell: 1
-    description: 
+    description: This gun rotates with your bot and fires three projectiles in an
+      arc.  Very effective!
     priority: 50
     burnType: 3
     levels:
     - unlockLevel: 4
       health: 100
-      powerDraw: 1
+      powerDraw: 0.2
       dataTest:
       - key: Damage
         value: 15
@@ -514,7 +515,7 @@ MonoBehaviour:
         amount: 400
     - unlockLevel: 8
       health: 120
-      powerDraw: 2
+      powerDraw: 0.4
       dataTest:
       - key: Damage
         value: 25
@@ -542,7 +543,7 @@ MonoBehaviour:
         amount: 7000
     - unlockLevel: 0
       health: 0
-      powerDraw: 5
+      powerDraw: 1
       dataTest: []
       burnRate: 0
       cost: []
@@ -556,7 +557,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 4
       health: 100
-      powerDraw: 1
+      powerDraw: 0.2
       dataTest:
       - key: Absorb
         value: .3
@@ -586,7 +587,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 6
       health: 100
-      powerDraw: 2
+      powerDraw: 0.4
       dataTest:
       - key: Absorb
         value: .5
@@ -620,7 +621,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 8
       health: 120
-      powerDraw: 5
+      powerDraw: 1
       dataTest:
       - key: Absorb
         value: .75
@@ -666,7 +667,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 3
       health: 100
-      powerDraw: 1
+      powerDraw: 0.2
       dataTest:
       - key: Cooldown
         value: 5
@@ -688,7 +689,7 @@ MonoBehaviour:
         amount: 3
     - unlockLevel: 8
       health: 150
-      powerDraw: 2
+      powerDraw: 0.4
       dataTest:
       - key: Cooldown
         value: 10
@@ -726,10 +727,10 @@ MonoBehaviour:
     levels:
     - unlockLevel: 3
       health: 50
-      powerDraw: 5
+      powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 50
+        value: 10
       burnRate: 0
       cost:
       - resourceType: 0
@@ -749,7 +750,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 100
+        value: 20
       burnRate: 0
       cost:
       - resourceType: 0
@@ -773,7 +774,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 200
+        value: 30
       burnRate: 0
       cost:
       - resourceType: 0
@@ -808,7 +809,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 100
+        value: 20
       burnRate: 0
       cost:
       - resourceType: 0
@@ -824,7 +825,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 200
+        value: 30
       burnRate: 0
       cost:
       - resourceType: 0
@@ -852,7 +853,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 500
+        value: 50
       burnRate: 0
       cost:
       - resourceType: 0
@@ -891,7 +892,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 100
+        value: 20
       burnRate: 0
       cost:
       - resourceType: 0
@@ -911,7 +912,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 200
+        value: 30
       burnRate: 0
       cost:
       - resourceType: 0
@@ -939,7 +940,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 500
+        value: 50
       burnRate: 0
       cost:
       - resourceType: 0
@@ -974,7 +975,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 100
+        value: 20
       burnRate: 0
       cost:
       - resourceType: 0
@@ -990,7 +991,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 200
+        value: 30
       burnRate: 0
       cost:
       - resourceType: 0
@@ -1014,7 +1015,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 500
+        value: 50
       burnRate: 0
       cost:
       - resourceType: 0
@@ -1036,7 +1037,7 @@ MonoBehaviour:
   - name: Battery
     partType: 13
     canSell: 1
-    description: 
+    description: Provides extra on-board storage for power.
     priority: 100
     burnType: 5
     levels:
@@ -1045,7 +1046,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 100
+        value: 20
       burnRate: 0
       cost: []
     - unlockLevel: 6
@@ -1053,7 +1054,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 200
+        value: 30
       burnRate: 0
       cost: []
     - unlockLevel: 9
@@ -1061,6 +1062,6 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Capacity
-        value: 500
+        value: 50
       burnRate: 0
       cost: []

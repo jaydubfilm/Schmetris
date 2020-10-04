@@ -20,9 +20,9 @@ using StarSalvager.Utilities;
 using StarSalvager.Missions;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
+using StarSalvager.Utilities.Math;
+using StarSalvager.Utilities.Particles;
 using AudioController = StarSalvager.Audio.AudioController;
-using FloatingText = StarSalvager.Utilities.FloatingText;
-using Math = StarSalvager.Utilities.Math;
 
 namespace StarSalvager
 {
@@ -76,9 +76,6 @@ namespace StarSalvager
         
         /*private List<Part> _parts;*/
 
-        public List<IAttachable> PendingDetach { get; private set; }
-
-
         //============================================================================================================//
 
         public bool Destroyed => _isDestroyed;
@@ -93,7 +90,7 @@ namespace StarSalvager
         private bool _rotating;
         private float targetRotation;
 
-        
+        private bool _needToCheckMagnet;
 
         //============================================================================================================//
 
@@ -177,15 +174,15 @@ namespace StarSalvager
             }
             
             BotPartsLogic.PartsUpdateLoop();
+        }
 
-            /*if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] <= 0)
-            {
-                Destroy("Ran out of power");
-            }
-            if (PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.BLUE] <= 0)
-            {
-                Destroy("Ran out of water");
-            }*/
+        private void LateUpdate()
+        {
+            if (!_needToCheckMagnet) 
+                return;
+            
+            AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+            _needToCheckMagnet = false;
         }
 
         private void FixedUpdate()
@@ -302,13 +299,17 @@ namespace StarSalvager
 
         public void Rotate(float direction)
         {
-            if (Input.GetKey(KeyCode.LeftAlt))
+            if (GameTimer.IsPaused) 
                 return;
             
             if (direction < 0)
                 Rotate(ROTATION.CCW);
             else if (direction > 0)
                 Rotate(ROTATION.CW);
+            else
+                return;
+            
+            AudioController.PlaySound(SOUND.BOT_ROTATE);
         }
         
         /// <summary>
@@ -334,7 +335,7 @@ namespace StarSalvager
                 targetRotation = rigidbody.rotation + toRotate;
             }
 
-            targetRotation = Math.ClampAngle(targetRotation);
+            targetRotation = MathS.ClampAngle(targetRotation);
 
             foreach (var attachedBlock in attachedBlocks)
             {
@@ -345,6 +346,19 @@ namespace StarSalvager
 
             
 
+        }
+
+        public void TrySelfDestruct()
+        {
+            if (LevelManager.Instance != null && LevelManager.Instance.EndWaveState)
+            {
+                return;
+            }
+
+            if (!_botPartsLogic.CanSelfDestruct)
+                return;
+            
+            Destroy("Self Destruct");
         }
 
         #endregion //Input Solver
@@ -381,13 +395,19 @@ namespace StarSalvager
             if (remainingDegrees > 1f)
                 return;
             
-            rotate = false;
-
-            _rotating = false;
-
+            //Ensures that the Attachables are correctly rotated
+            //NOTE: This is a strict order-of-operations as changing will cause rotations to be incorrect
+            //--------------------------------------------------------------------------------------------------------//
             //Force set the rotation to the target, in case the bot is not exactly on target
             rigidbody.rotation = targetRotation;
             targetRotation = 0f;
+            
+            
+            TryRotateBits();
+            rotate = false;
+            _rotating = false;
+            
+            //--------------------------------------------------------------------------------------------------------//
             
             //Should only be called after the rotation finishes
             CheckForBonusShapeMatches();
@@ -417,9 +437,9 @@ namespace StarSalvager
                 
             foreach (var attachedBlock in attachedBlocks)
             {
-                if (attachedBlock is ICustomRotate rotate)
+                if (attachedBlock is ICustomRotate customRotate)
                 {
-                    rotate.CustomRotate(rot);
+                    customRotate.CustomRotate(rot);
                     continue;
                 }
                 
@@ -604,7 +624,6 @@ namespace StarSalvager
                 }
             }
 
-
             return true;
         }
 
@@ -713,7 +732,7 @@ namespace StarSalvager
                         if (closestOnBot is EnemyAttachable ||
                             closestOnBot is Part part && part.Destroyed)
                         {
-                            if (closestOnBot is IObstacle obstacle)
+                            if (shape is IObstacle obstacle)
                                 obstacle.Bounce(collisionPoint);
 
                             return false;
@@ -768,7 +787,8 @@ namespace StarSalvager
                         
                         CheckForCombosAround(bitsToAdd);
 
-                        AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+                        _needToCheckMagnet = true;
+                        //AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
                         
                         CompositeCollider2D.GenerateGeometry();
 
@@ -876,7 +896,7 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(closestAttachable), closestAttachable, null);
             }
             
-            TryHitAt(closestAttachable, 10f);
+            TryHitAt(closestAttachable, Globals.AsteroidDamage);
             return true;
         }
 
@@ -971,10 +991,16 @@ namespace StarSalvager
         
         public bool TryAsteroidDamageAt(Vector2 collisionPoint)
         {
+            if(LevelManager.Instance.EndWaveState)
+                return false;
+            
             var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
             //------------------------------------------------------------------------------------------------//
 
+            if (closestAttachable is Part part && part.Destroyed)
+                return false;
+            
             //TODO Need to add animation/effects here 
             //Destroy both this and collided Bit
             //Recycler.Recycle<Bit>(attachable.gameObject);
@@ -997,19 +1023,41 @@ namespace StarSalvager
             var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
             explosion.transform.position = attachable.transform.position;
 
+            MissionProgressEventData missionProgressEventData;
+
             switch (attachable)
             {
                 case Bit bit:
-                    MissionManager.ProcessAsteroidCollisionMissionData(bit.Type, 1);
+                    missionProgressEventData = new MissionProgressEventData
+                    {
+                        bitType = bit.Type,
+                        intAmount = 1
+                    };
+                    MissionManager.ProcessMissionData(typeof(AsteroidCollisionMission), missionProgressEventData);
                     break;
                 case Component _:
-                    MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
+                    missionProgressEventData = new MissionProgressEventData
+                    {
+                        bitType = null,
+                        intAmount = 1
+                    };
+                    MissionManager.ProcessMissionData(typeof(AsteroidCollisionMission), missionProgressEventData);
                     break;
                 case Part _:
-                    MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
+                    missionProgressEventData = new MissionProgressEventData
+                    {
+                        bitType = null,
+                        intAmount = 1
+                    };
+                    MissionManager.ProcessMissionData(typeof(AsteroidCollisionMission), missionProgressEventData);
                     break;
                 case EnemyAttachable enemyAttachable:
-                    MissionManager.ProcessAsteroidCollisionMissionData(null, 1);
+                    missionProgressEventData = new MissionProgressEventData
+                    {
+                        bitType = null,
+                        intAmount = 1
+                    };
+                    MissionManager.ProcessMissionData(typeof(AsteroidCollisionMission), missionProgressEventData);
                     enemyAttachable.SetAttached(false);
                     return;
             }
@@ -1057,35 +1105,44 @@ namespace StarSalvager
             
             switch (newAttachable)
             {
-                    case Bit bit:
-                        if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 
-                            FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type).levels[bit.level].resources);
-                        
-                        if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
-                        
-                        break;
-                    case Component _ when checkForCombo:
-                        CheckForCombosAround<COMPONENT_TYPE>(coordinate);
-                        break;
-                    case Part _:
-                        BotPartsLogic.UpdatePartsList();
-                        break;
-
-                    //This can NEVER happen as Shape is not IAttachable
-                    /*case Shape shape:
-                        if (updateMissions)
+                case Bit bit:
+                    if (updateMissions)
+                    {
+                        MissionProgressEventData missionProgressEventData = new MissionProgressEventData
                         {
-                            foreach (var attachedBit in shape.AttachedBits)
-                            {
-                                MissionManager.ProcessResourceCollectedMissionData(attachedBit.Type,
-                                    FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(attachedBit.Type).levels[attachedBit.level].resources);
-                            }
+                            bitType = bit.Type,
+                            intAmount = 1,
+                            bitDroppedFromEnemyLoot = bit.IsFromEnemyLoot
+                        };
+                        
+                        MissionManager.ProcessMissionData(typeof(ResourceCollectedMission), missionProgressEventData);
+                    }
+                        
+                    if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
+                        
+                    break;
+                case Component _ when checkForCombo:
+                    CheckForCombosAround<COMPONENT_TYPE>(coordinate);
+                    break;
+                case Part _:
+                    BotPartsLogic.UpdatePartsList();
+                    break;
+
+                //This can NEVER happen as Shape is not IAttachable
+                /*case Shape shape:
+                    if (updateMissions)
+                    {
+                        foreach (var attachedBit in shape.AttachedBits)
+                        {
+                            MissionManager.ProcessResourceCollectedMissionData(attachedBit.Type,
+                                FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(attachedBit.Type).levels[attachedBit.level].resources);
                         }
-                        break;*/
+                    }
+                    break;*/
             }
-            
-            if(newAttachable.CountTowardsMagnetism)
-                AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+
+            if (newAttachable.CountTowardsMagnetism)
+                _needToCheckMagnet = true;//AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
 
             if(updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
@@ -1113,10 +1170,19 @@ namespace StarSalvager
             switch (newAttachable)
             {
                 case Bit bit:
+                    if (updateMissions)
+                    {
+                        MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                        {
+                            bitType = bit.Type,
+                            intAmount = 1,
+                            bitDroppedFromEnemyLoot = bit.IsFromEnemyLoot
+                        };
+
+                        MissionManager.ProcessMissionData(typeof(ResourceCollectedMission), missionProgressEventData);
+                    }
+
                     if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
-                    
-                    if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 
-                        FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type).levels[bit.level].resources);
                     break;
                 case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
@@ -1128,9 +1194,10 @@ namespace StarSalvager
 
             if (newAttachable.CountTowardsMagnetism && checkMagnet)
             {
-                var check = CheckHasMagnetOverage();
-                if(playSound)
-                    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+                _needToCheckMagnet = true;
+                //var check = CheckHasMagnetOverage();
+                //if(playSound)
+                //    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
             }
 
             /*if (updateMissions)
@@ -1199,12 +1266,20 @@ namespace StarSalvager
             switch (newAttachable)
             {
                 case Bit bit:
+                    if (updateMissions)
+                    {
+                        MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                        {
+                            bitType = bit.Type,
+                            intAmount = 1,
+                            bitDroppedFromEnemyLoot = bit.IsFromEnemyLoot
+                        };
+
+                        MissionManager.ProcessMissionData(typeof(ResourceCollectedMission), missionProgressEventData);
+                    }
+
                     if (checkForCombo)
                         CheckForCombosAround<BIT_TYPE>(coordinate);
-                    
-                    if(updateMissions) MissionManager.ProcessResourceCollectedMissionData(bit.Type, 
-                        FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type).levels[bit.level].resources);
-                    
                     break;
                 case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
@@ -1216,9 +1291,10 @@ namespace StarSalvager
             
             if (newAttachable.CountTowardsMagnetism && checkMagnet)
             {
-                var check = CheckHasMagnetOverage();
-                if(playSound)
-                    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+                _needToCheckMagnet = true;
+                //var check = CheckHasMagnetOverage();
+                //if(playSound)
+                //    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
             }
 
 
@@ -1300,7 +1376,7 @@ namespace StarSalvager
                     //We need to make sure that the piece wont be floating
                     if (!attachedBlocks.HasPathToCore(check))
                         continue;
-                    Debug.Log($"Found available location for {newAttachable.gameObject.name}\n{coordinate} + ({directions[i]} * {dist}) = {check}");
+                    //Debug.Log($"Found available location for {newAttachable.gameObject.name}\n{coordinate} + ({directions[i]} * {dist}) = {check}");
                     AttachNewBit(check, newAttachable, checkForCombo, updateColliderGeometry, updateMissions);
                     return;
                 }
@@ -1339,9 +1415,10 @@ namespace StarSalvager
             
             if (newAttachable.CountTowardsMagnetism && checkMagnet)
             {
-                var check = CheckHasMagnetOverage();
-                if(playSound)
-                    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+                _needToCheckMagnet = true;
+                //var check = CheckHasMagnetOverage();
+                //if(playSound)
+                //    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
             }
 
             /*if (checkForCombo)
@@ -1389,9 +1466,10 @@ namespace StarSalvager
             
             if (newAttachable.CountTowardsMagnetism && checkMagnet)
             {
-                var check = CheckHasMagnetOverage();
-                if(playSound)
-                    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+                _needToCheckMagnet = true;
+                //var check = CheckHasMagnetOverage();
+                //if(playSound)
+                //    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
             }
             
             if(updateColliderGeometry)
@@ -1407,22 +1485,17 @@ namespace StarSalvager
             DetachBit(attachable);
         }
         
-        private void DetachBits(IReadOnlyCollection<IAttachable> detachingBits, bool delayedCollider = false)
+        private void DetachBits(IReadOnlyCollection<IAttachable> detachingBits, bool delayedCollider = false, bool isMagnetDetach = false)
         {
-            //if (attachables.Count == 1)
-            //{
-            //    DetachBit(attachables.FirstOrDefault(), delayedCollider);
-            //    return;
-            //}
+            Vector3 leftOffset = Vector3.left * Constants.gridCellSize;
             
             foreach (var attachable in detachingBits)
             {
-                PendingDetach?.Remove(attachable);
                 attachedBlocks.Remove(attachable);
             }
             
             var bits = detachingBits.OfType<Bit>().ToList();
-            var others = detachingBits.Where(x => !(x is Bit)).ToList();
+            var others = detachingBits.Where(x => !(x is Bit) && x is ICanDetach).ToList();
 
             //Function should make a shape out of all attached bits, any floaters would remain individual
             while (bits.Count > 0)
@@ -1441,12 +1514,23 @@ namespace StarSalvager
                     
                     if (delayedCollider)
                     {
-                        shape.SetColliderActive(false);
-                        this.DelayedCall(1f, () =>
-                        {
-                            shape.SetColor(Color.white);
-                            shape.SetColliderActive(true);
-                        });
+                        shape.DisableColliderTillLeaves(_compositeCollider2D);
+                    }
+
+                    if (isMagnetDetach)
+                    {
+                        //TODO use shapeBits to create a single magnet thing
+                        var shapeCenter = (Vector3) shapeBits.GetCollectionCenterPosition() - shape.transform.position;
+                        var left = shape.AttachedBits
+                            .Select(x => x.Coordinate.x)
+                            .OrderByDescending(x => x)
+                            .FirstOrDefault() * Vector3.left;
+                        
+                        ConnectedSpriteObject.Create(shape.transform, shapeCenter + left + leftOffset);
+                        //foreach (var attachable in attachablesToDetach)
+                        //{
+                        //    ConnectedSpriteObject.Create(attachable.transform, leftOffset);
+                        //}
                     }
                 }
                 else
@@ -1455,46 +1539,42 @@ namespace StarSalvager
                     
                     bit.SetAttached(false);
                     bit.SetColor(Color.white);
-                    bit.SetColliderActive(false);
-                    bit.transform.parent = null;
+                    
                     bit.transform.rotation = Quaternion.identity;
 
                     if (LevelManager.Instance != null)
                         LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(bit);
 
                     bits.RemoveAt(0);
+                    
+                    if(delayedCollider)
+                        bit.DisableColliderTillLeaves(_compositeCollider2D);
+                    
+                    if (isMagnetDetach)
+                    {
+                        ConnectedSpriteObject.Create(bit.transform, leftOffset);
+                    }
                 }
             }
-            
-
-            //FIXME THis seems to be troublesome. Bits that are not attached, still are part of the same shape. 
-            //var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(bits);
-            //foreach (var bit in bits)
-            //{
-            //    bit.SetAttached(false);
-            //    bit.SetColor(Color.white);
-            //    bit.SetColliderActive(false);
-            //    bit.transform.parent = null;
-            //    bit.transform.rotation = Quaternion.identity;
-            //}
 
             
             foreach (var iAttachable in others)
             {
-                iAttachable.SetAttached(false);
-            }
+                switch(iAttachable)
+                {
+                    case Component component:
+                        if (LevelManager.Instance != null)
+                            LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(component);
+                        break;
+                }
 
-            //FIXME THis seems to be troublesome. Bits that are not attached, still are part of the same shape. 
-            //if (delayedCollider)
-            //{
-            //    shape.SetColliderActive(false);
-//
-            //    this.DelayedCall(1f, () =>
-            //    {
-            //        shape.SetColor(Color.white);
-            //        shape.SetColliderActive(true);
-            //    });
-            //}
+                iAttachable.SetAttached(false);
+                
+                if (isMagnetDetach)
+                {
+                    ConnectedSpriteObject.Create(iAttachable.transform, leftOffset);
+                }
+            }
 
             CheckForDisconnects();
             
@@ -1527,6 +1607,9 @@ namespace StarSalvager
         
         private void DetachBit(IAttachable attachable)
         {
+            if (!(attachable is ICanDetach))
+                return;
+            
             attachable.transform.parent = null;
 
             if (LevelManager.Instance != null && attachable is IObstacle obstacle)
@@ -1541,6 +1624,7 @@ namespace StarSalvager
             attachable.SetAttached(false);
             
             CompositeCollider2D.GenerateGeometry();
+            CheckForBonusShapeMatches();
         }
         
         public void DestroyAttachable(IAttachable attachable)
@@ -1579,6 +1663,13 @@ namespace StarSalvager
         
         #endregion //Detach Bits
 
+        public void MarkAttachablePendingRemoval(IAttachable attachable)
+        {
+            attachedBlocks.Remove(attachable);
+
+            CheckForDisconnects();
+        }
+
         //============================================================================================================//
         
         #region Check for New Disconnects
@@ -1586,9 +1677,10 @@ namespace StarSalvager
         /// <summary>
         /// Function will review and detach any blocks that no longer have a connection to the core.
         /// </summary>
-        private void CheckForDisconnects()
+        private bool CheckForDisconnects()
         {
-            var toSolve = new List<IAttachable>(attachedBlocks);
+            var toSolve = new List<IAttachable>(attachedBlocks).Where(x => x is ICanDetach);
+            bool hasDetached = false;
             
             foreach (var attachable in toSolve)
             {
@@ -1599,6 +1691,8 @@ namespace StarSalvager
                 
                 if(hasPathToCore)
                     continue;
+
+                hasDetached = true;
 
                 var attachables = new List<IAttachable>();
                 attachedBlocks.GetAllAttachedDetachables(attachable, null, ref attachables);
@@ -1613,10 +1707,11 @@ namespace StarSalvager
                     DetachBit(attachables[0]);
                     continue;
                 }
-                
-                
+
                 DetachBits(attachables);
             }
+
+            return hasDetached;
         }
 
         /// <summary>
@@ -1705,12 +1800,16 @@ namespace StarSalvager
                     var noShiftOffset = 1;
                     do
                     {
+                        var coordinate = currentCoordinate + (dir * noShiftOffset);
                         //TODO I think that I can combine both the While Loop and the Linq expression
-                        nextCheck = inLine.FirstOrDefault(x => x.Coordinate == currentCoordinate + (dir * noShiftOffset));
+                        nextCheck = inLine.FirstOrDefault(x => x.Coordinate == coordinate);
 
 
                         
                         if (nextCheck is null || nextCheck.CanShift) break;
+
+                        if (!passedCore && coordinate == Vector2Int.zero)
+                            passedCore = true;
 
                         noShiftOffset++;
                         
@@ -1755,7 +1854,8 @@ namespace StarSalvager
             if (toShift.Count == 0)
                 return false;
 
-            MissionManager.ProcessWhiteBumperMissionData(toShift.Count, passedCore);
+            bool hasDetached = false;
+            bool hasCombos = false;
             
             StartCoroutine(ShiftInDirectionCoroutine(toShift, 
                 TEST_MergeSpeed,
@@ -1769,7 +1869,7 @@ namespace StarSalvager
                 }
                 
                 //Checks for floaters
-                CheckForDisconnects();
+                hasDetached = CheckForDisconnects();
 
                 var comboCheckGroup = toShift.Select(x => x.Target).Where(x => attachedBlocks.Contains(x) && x is ICanCombo)
                     .OfType<ICanCombo>();
@@ -1777,14 +1877,25 @@ namespace StarSalvager
                 switch (attachable)
                 {
                     case Bit _:
-                        CheckForCombosAround<BIT_TYPE>(comboCheckGroup);
+                        hasCombos = CheckForCombosAround<BIT_TYPE>(comboCheckGroup);
                         break;
                     case Component _:
-                        CheckForCombosAround<COMPONENT_TYPE>(comboCheckGroup);
+                        hasCombos = CheckForCombosAround<COMPONENT_TYPE>(comboCheckGroup);
 
                         break;
                 }
-                
+
+                CheckForBonusShapeMatches();
+                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                {
+                    intAmount = toShift.Count,
+                    bumperShiftedThroughPart = passedCore,
+                    bumperOrphanedBits = hasDetached,
+                    bumperCausedCombos = hasCombos
+                };
+
+                MissionManager.ProcessMissionData(typeof(WhiteBumperMission), missionProgressEventData);
+
             }));
 
 
@@ -1807,7 +1918,7 @@ namespace StarSalvager
             if (!obstacleManager.HasActiveBonusShapes)
                 return;
             
-            IReadOnlyList<Shape> shapesToCheck = obstacleManager.ActiveBonusShapes;
+            IEnumerable<Shape> shapesToCheck = obstacleManager.ActiveBonusShapes;
 
             foreach (var shape in shapesToCheck)
             {
@@ -1822,14 +1933,25 @@ namespace StarSalvager
                     toUpgrade?.IncreaseLevel();
                 }
 
-                var gears = Globals.GetBonusShapeGearRewards(shape.AttachedBits.Count) * shape.AttachedBits.Count;
+                List<BIT_TYPE> numTypes = new List<BIT_TYPE>();
+                for (int i = 0; i < shape.AttachedBits.Count; i++)
+                {
+                    if (!numTypes.Contains(shape.AttachedBits[i].Type))
+                    {
+                        numTypes.Add(shape.AttachedBits[i].Type);
+                    }
+                }
+
+                var gears = Globals.GetBonusShapeGearRewards(shape.AttachedBits.Count, numTypes.Count);
                 
                 //Remove the Shape
                 PlayerPersistentData.PlayerData.ChangeGears(gears);
                 obstacleManager.MatchBonusShape(shape);
                 
                 //FIXME We'll need to double check the position here
-                FloatingText.Create($"+{gears}", shape.transform.position, Color.white);
+                FloatingText.Create($"+{gears}",
+                    attachedBlocks.Find(upgrading).GetCollectionCenterCoordinateWorldPosition(),
+                    Color.white);
 
 
                 //Check for Combos
@@ -1854,20 +1976,21 @@ namespace StarSalvager
             CheckForCombosAround(attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate && a is ICanCombo) as ICanCombo<T>);
         }
 
-        private void CheckForCombosAround<T>(IEnumerable<IAttachable> iAttachables) where T : Enum
+        private bool CheckForCombosAround<T>(IEnumerable<IAttachable> iAttachables) where T : Enum
         {
-            CheckForCombosAround(iAttachables.OfType <ICanCombo<T>>());
+            return CheckForCombosAround(iAttachables.OfType <ICanCombo<T>>());
         }
-        private void CheckForCombosAround<T>(IEnumerable<ICanCombo> iCanCombos) where T : Enum
+        private bool CheckForCombosAround<T>(IEnumerable<ICanCombo> iCanCombos) where T : Enum
         {
-            CheckForCombosAround(iCanCombos.OfType <ICanCombo<T>>());
+            return CheckForCombosAround(iCanCombos.OfType <ICanCombo<T>>());
         }
         
 
         
-        private void CheckForCombosAround<T>(IEnumerable<ICanCombo<T>> iCanCombos) where T: Enum
+        private bool CheckForCombosAround<T>(IEnumerable<ICanCombo<T>> iCanCombos) where T: Enum
         {
             List<PendingCombo> pendingCombos = null;
+            bool hasCombos = false;
             
             foreach (var iCanCombo in iCanCombos)
             {
@@ -1900,16 +2023,30 @@ namespace StarSalvager
             }
 
             if (pendingCombos == null || pendingCombos.Count == 0)
-                return;
+                return false;
+
+            hasCombos = true;
 
             //TODO Need to figure out the multi-combo scores
             foreach (var pendingCombo in pendingCombos)
             {
-                if(pendingCombo.ToMove[0] is Bit bit)
-                    MissionManager.ProcessComboBlocksMissionData(bit.Type, bit.level + 1, 1);
+                if (pendingCombo.ToMove[0] is Bit bit)
+                {
+                    bool isAdvancedCombo = pendingCombo.ComboData.type == Utilities.Puzzle.Data.COMBO.TEE || pendingCombo.ComboData.type == Utilities.Puzzle.Data.COMBO.ANGLE;
+                    MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                    {
+                        bitType = bit.Type,
+                        intAmount = 1,
+                        level = bit.level,
+                        comboIsAdvancedCombo = isAdvancedCombo
+                    };
+                    MissionManager.ProcessMissionData(typeof(ComboBlocksMission), missionProgressEventData);
+                }
                 
                 SimpleComboSolver(pendingCombo);
             }
+
+            return hasCombos;
         }
         private void CheckForCombosAround<T>(ICanCombo<T> iCanCombo) where T: Enum
         {
@@ -1927,8 +2064,18 @@ namespace StarSalvager
             //    AdvancedComboSolver(data.comboData, data.toMove);
             //}
             //else
-            if(iCanCombo is Bit bit)
-                MissionManager.ProcessComboBlocksMissionData(bit.Type, iCanCombo.level + 1, 1);
+            if (iCanCombo is Bit bit)
+            {
+                bool isAdvancedCombo = data.comboData.type == Utilities.Puzzle.Data.COMBO.TEE || data.comboData.type == Utilities.Puzzle.Data.COMBO.ANGLE;
+                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                {
+                    bitType = bit.Type,
+                    intAmount = 1,
+                    level = iCanCombo.level + 1,
+                    comboIsAdvancedCombo = isAdvancedCombo
+                };
+                MissionManager.ProcessMissionData(typeof(ComboBlocksMission), missionProgressEventData);
+            }
             
             SimpleComboSolver(data.comboData, data.toMove);
         }
@@ -2048,7 +2195,8 @@ namespace StarSalvager
                             CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
                             break;
                     }
-
+                    
+                    CheckForBonusShapeMatches();
                     
                 }));
                 
@@ -2392,10 +2540,20 @@ namespace StarSalvager
 
         #region Magnet Checks
 
+        public void ForceCheckMagnets()
+        {
+            _needToCheckMagnet = true;
+        }
+
+        private bool CheckHasMagnetOverage()
+        {
+            return CheckHasMagnetOverage(BotPartsLogic.currentMagnet);
+        }
+        
         /// <summary>
         /// Determines based on the total of magnet slots which pieces must be removed to fit within the expected capacity
         /// </summary>
-        public bool CheckHasMagnetOverage()
+        private bool CheckHasMagnetOverage(MAGNET type)
         {
             if (!BotPartsLogic.useMagnet)
                 return false;
@@ -2404,7 +2562,8 @@ namespace StarSalvager
             var magnetCount = BotPartsLogic.MagnetCount;
             var magnetAttachables = attachedBlocks.Where(x => x.CountTowardsMagnetism).ToList();
             
-            GameUi.SetCarryCapacity(magnetAttachables.Count / (float)magnetCount);
+            if(GameUi) 
+                GameUi.SetCarryCapacity(magnetAttachables.Count / (float)magnetCount);
             
             //Checks here if the total of attached blocks (Minus the Core) change
             if (magnetAttachables.Count <= magnetCount)
@@ -2420,7 +2579,7 @@ namespace StarSalvager
             //float time;
             Action onDetach;
             
-            switch (BotPartsLogic.currentMagnet)
+            switch (type)
             {
                 //----------------------------------------------------------------------------------------------------//
                 case MAGNET.DEFAULT:
@@ -2428,7 +2587,8 @@ namespace StarSalvager
                     //time = 1f;
                     onDetach = () =>
                     {
-                        DetachBits(attachablesToDetach, true);
+                        DetachBits(attachablesToDetach, true, true);
+                        
                     };
                     break;
                 //----------------------------------------------------------------------------------------------------//
@@ -2437,7 +2597,7 @@ namespace StarSalvager
                     //time = 0f;
                     onDetach = () =>
                     {
-                        DetachBits(attachablesToDetach, true);
+                        DetachBits(attachablesToDetach, true, true);
                     };
                     break;
                 //----------------------------------------------------------------------------------------------------//
@@ -2446,7 +2606,7 @@ namespace StarSalvager
                     //time = 1f;
                     onDetach = () =>
                     {
-                        DetachBits(attachablesToDetach, true);
+                        DetachBits(attachablesToDetach, true, true);
                     };
                     break;
                 //----------------------------------------------------------------------------------------------------//
@@ -2455,12 +2615,23 @@ namespace StarSalvager
                 //----------------------------------------------------------------------------------------------------//
             }
 
-            if (PendingDetach == null)
-                PendingDetach = new List<IAttachable>();
-            
-            PendingDetach.AddRange(attachablesToDetach);
+            //if (PendingDetach == null)
+            //    PendingDetach = new List<IAttachable>();
+            //
+            //PendingDetach.AddRange(attachablesToDetach);
+
+            foreach (var iCanDetach in attachablesToDetach.OfType<ICanDetach>())
+            {
+                iCanDetach.PendingDetach = true;
+            }
             
             onDetach.Invoke();
+
+            /*var offset = Vector3.left * Constants.gridCellSize;
+            foreach (var attachable in attachablesToDetach)
+            {
+                ConnectedSpriteObject.Create(attachable.transform, offset);
+            }*/
             
             /*//Visually show that the bits will fall off by changing their color
             if (TEST_SetDetachColor)
@@ -2572,17 +2743,28 @@ namespace StarSalvager
             {
                 attachables.Remove(bit);
             }
-                
+
+            var hasIssue = false;
             while (toRemoveCount > 0)
             {
                 var toRemove = FindFurthestRemovableBit(attachables, toDetach, ref debug);
-                    
-                if(toRemove == null)
-                    throw new Exception($"Unable to find alternative pieces\n{debug}");
+
+                if (toRemove == null)
+                {
+                    hasIssue = true;
+                    //throw new Exception($"Unable to find alternative pieces\n{debug}");
+                    toRemoveCount--;
+                    continue;
+                }
                     
                 toDetach.Add(toRemove);
                 attachables.Remove(toRemove);
                 toRemoveCount--;
+            }
+
+            if (hasIssue)
+            {
+                CheckHasMagnetOverage(MAGNET.DEFAULT);
             }
         }
         
@@ -2624,38 +2806,46 @@ namespace StarSalvager
         }*/
 
         //TODO This will likely need to move to the attachable List extensions
-        private IAttachable FindLowestAttachable(List<IAttachable> attachables, ICollection<IAttachable> toIgnore)
+        private IAttachable FindLowestAttachable(IReadOnlyCollection<IAttachable> attachables, ICollection<IAttachable> toIgnore)
         {
             //I Want the last Bit to be the fallback/default, if I can't find anything
             IAttachable selectedAttachable = null;
-            var lowestLevel = 999;
+            //var lowestLevel = 999;
             //The lowest Y coordinate
             var lowestCoordinate = 999;
+            var lowestPriority = 9999;
 
             foreach (var attachable in attachables)
             {
                 if (toIgnore.Contains(attachable))
                     continue;
-
-                if (!(attachable is ILevel HasLevel))
-                {
-                    continue;
-                }
                 
-                if(HasLevel.level > lowestLevel)
+                if(!(attachable is ICanDetach detach))
                     continue;
+                
+                if(detach.AttachPriority > lowestPriority)
+                    continue;
+                
+                //if (!(attachable is ILevel HasLevel))
+                //{
+                //    continue;
+                //}
+                //
+                //if(HasLevel.level > lowestLevel)
+                //    continue;
 
                 //Checks if the piece is higher, and if it is, that the level is not higher than the currently selected Bit
                 //This ensures that even if the lowest Bit is of high level, the lowest will always be selected
-                if (attachable.Coordinate.y > lowestCoordinate && !(HasLevel.level < lowestLevel))
+                if (attachable.Coordinate.y > lowestCoordinate && !(detach.AttachPriority < lowestPriority))
                         continue;
 
                 if (RemovalCausesDisconnects(new List<IAttachable>(/*toIgnore*/) {attachable}, out _))
                     continue;
 
                 selectedAttachable = attachable;
-                lowestLevel = HasLevel.level;
+                //lowestLevel = HasLevel.level;
                 lowestCoordinate = attachable.Coordinate.y;
+                lowestPriority = detach.AttachPriority;
 
             }
 
@@ -2668,13 +2858,19 @@ namespace StarSalvager
                 if (toIgnore.Contains(attachable))
                     continue;
                 
-                if (!(attachable is ILevel HasLevel))
-                {
+                if(!(attachable is ICanDetach detach))
                     continue;
-                }
-            
-                if(HasLevel.level > lowestLevel)
+                
+                if(detach.AttachPriority > lowestPriority)
                     continue;
+                
+                //if (!(attachable is ILevel hasLevel))
+                //{
+                //    continue;
+                //}
+            //
+                //if(hasLevel.level > lowestLevel)
+                //    continue;
 
                 //Checks if the piece is higher, and if it is, that the level is not higher than the currently selected Bit
                 //This ensures that even if the lowest Bit is of high level, the lowest will always be selected
@@ -2685,8 +2881,9 @@ namespace StarSalvager
                     continue;
 
                 selectedAttachable = attachable;
-                lowestLevel = HasLevel.level;
+                //lowestLevel = hasLevel.level;
                 lowestCoordinate = attachable.Coordinate.y;
+                lowestPriority = detach.AttachPriority;
 
             }
 
@@ -2743,6 +2940,7 @@ namespace StarSalvager
             
             _isDestroyed = true;
             CompositeCollider2D.enabled = false;
+            GameUi.ShowAbortWindow(false);
 
             StartCoroutine(DestroyCoroutine(deathMethod));
         }
@@ -2768,8 +2966,6 @@ namespace StarSalvager
         {
             //Prepare Bits to be moved
             //--------------------------------------------------------------------------------------------------------//
-            
-            
             
             foreach (var bit in movingAttachables)
             {
@@ -2998,24 +3194,17 @@ namespace StarSalvager
 
                 foreach (var attachable in toDestroy)
                 {
-                    /*switch (attachable)
+                    switch (attachable)
                     {
                         case Bit _:
-                            Recycler.Recycle<Bit>(attachable.gameObject);
-                            break;
                         case Component _:
-                            Recycler.Recycle<Component>(attachable.gameObject);
+                            attachable.gameObject.SetActive(false);
+
                             break;
-                        case Part _:
-                            Recycler.Recycle<Part>(attachable.gameObject);
+                        case Part part:
+                            part.ChangeHealth(-10000);
                             break;
-                        case EnemyAttachable _:
-                            Recycler.Recycle<EnemyAttachable>(attachable.gameObject);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }*/
-                    attachable.gameObject.SetActive(false);
+                    }
                 }
 
                 yield return new WaitForSeconds(0.35f);
@@ -3078,7 +3267,6 @@ namespace StarSalvager
             }
             
             attachedBlocks.Clear();
-            PendingDetach?.Clear();
             BotPartsLogic.ClearList();
             //_parts.Clear();
             

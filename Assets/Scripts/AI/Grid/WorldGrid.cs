@@ -21,6 +21,8 @@ namespace StarSalvager
         private int m_gridSizeX;
         private int m_gridSizeY;
 
+        private Dictionary<Vector2, List<int>> randomPositionFindingLists;
+
         //============================================================================================================//
 
         #region Setup
@@ -42,45 +44,79 @@ namespace StarSalvager
                 m_gridArray[i] = new GridSquare();
             }
 
-            float height = Camera.main.orthographicSize * 2.0f;
+            float height = CameraController.Camera.orthographicSize * 2.0f;
             float width = height * Screen.width / Screen.height;
             m_screenGridCellRange = new Vector2Int((int)(width / Constants.gridCellSize), (int)(height / Constants.gridCellSize));
             m_botGridPosition = GetCoordinatesOfGridSquareAtLocalPosition(LevelManager.Instance.BotObject.transform.position);
+            randomPositionFindingLists = new Dictionary<Vector2, List<int>>();
+            randomPositionFindingLists.Clear();
         }
 
         public void MoveObstacleMarkersDownwardOnGrid(List<IObstacle> obstacles, StageRemoteData stageData)
         {
+            /*for (int i = 0; i < m_gridSizeX; i++)
+            {
+                GridSquare topRowSquare = GetGridSquareAtCoordinates(new Vector2Int(i, m_gridSizeY - 1));
+                SetObstacleInGridSquare(topRowSquare, 0, false);
+            }*/
+
             for (int i = 0; i < obstacles.Count; i++)
             {
                 if (obstacles[i] == null)
                     continue;
-                
+
 
                 //TODO: Consider whether this should be using screen padding
-                bool onScreen = CameraController.IsPointInCameraRect(obstacles[i].transform.position);
+                /*bool onScreen = CameraController.IsPointInCameraRect(obstacles[i].transform.position);
 
                 if (!onScreen && !obstacles[i].IsMarkedOnGrid)
                 {
                     continue;
-                }
+                }*/
 
-                Vector2Int gridCoordinatesAbove = GetCoordinatesOfGridSquareAtLocalPosition(obstacles[i].transform.localPosition + (Vector3.up * Constants.gridCellSize));
-                GridSquare gridSquareAbove = GetGridSquareAtCoordinates(gridCoordinatesAbove);
-                int radiusMarkAround = gridSquareAbove.RadiusMarkAround;
-                SetObstacleInGridSquare(gridSquareAbove, 0, false);
-                SetObstacleInSquaresAroundCoordinates(gridCoordinatesAbove.x, gridCoordinatesAbove.y, radiusMarkAround, false);
-
-                if (!onScreen)
+                if (obstacles[i] is Shape shape)
                 {
-                    obstacles[i].IsMarkedOnGrid = false;
-                    continue;
-                }
+                    for (int k = 0; k < shape.AttachedBits.Count; k++)
+                    {
+                        Vector2Int gridCoordinatesAbove = GetCoordinatesOfGridSquareAtLocalPosition(obstacles[i].transform.localPosition + shape.AttachedBits[k].transform.localPosition + (Vector3.up * Constants.gridCellSize));
+                        GridSquare gridSquareAbove = GetGridSquareAtCoordinates(gridCoordinatesAbove);
+                        int radiusMarkAround = gridSquareAbove.RadiusMarkAround;
+                        SetObstacleInGridSquare(gridSquareAbove, 0, false);
+                        SetObstacleInSquaresAroundCoordinates(gridCoordinatesAbove.x, gridCoordinatesAbove.y, radiusMarkAround, false);
 
-                Vector2Int gridCoordinates = GetCoordinatesOfGridSquareAtLocalPosition(obstacles[i].transform.localPosition);
-                GridSquare gridSquare = GetGridSquareAtCoordinates(gridCoordinates);
-                SetObstacleInGridSquare(gridSquare, radiusMarkAround, true);
-                SetObstacleInSquaresAroundCoordinates(gridCoordinates.x, gridCoordinates.y, radiusMarkAround, true);
-                obstacles[i].IsMarkedOnGrid = true;
+                        /*if (!onScreen)
+                        {
+                            obstacles[i].IsMarkedOnGrid = false;
+                            continue;
+                        }*/
+
+                        Vector2Int gridCoordinates = GetCoordinatesOfGridSquareAtLocalPosition(obstacles[i].transform.localPosition + shape.AttachedBits[k].transform.localPosition);
+                        GridSquare gridSquare = GetGridSquareAtCoordinates(gridCoordinates);
+                        SetObstacleInGridSquare(gridSquare, radiusMarkAround, true);
+                        SetObstacleInSquaresAroundCoordinates(gridCoordinates.x, gridCoordinates.y, radiusMarkAround, true);
+                    }
+                    obstacles[i].IsMarkedOnGrid = true;
+                }
+                else
+                {
+                    Vector2Int gridCoordinatesAbove = GetCoordinatesOfGridSquareAtLocalPosition(obstacles[i].transform.localPosition + (Vector3.up * Constants.gridCellSize));
+                    GridSquare gridSquareAbove = GetGridSquareAtCoordinates(gridCoordinatesAbove);
+                    int radiusMarkAround = gridSquareAbove.RadiusMarkAround;
+                    SetObstacleInGridSquare(gridSquareAbove, 0, false);
+                    SetObstacleInSquaresAroundCoordinates(gridCoordinatesAbove.x, gridCoordinatesAbove.y, radiusMarkAround, false);
+
+                    /*if (!onScreen)
+                    {
+                        obstacles[i].IsMarkedOnGrid = false;
+                        continue;
+                    }*/
+
+                    Vector2Int gridCoordinates = GetCoordinatesOfGridSquareAtLocalPosition(obstacles[i].transform.localPosition);
+                    GridSquare gridSquare = GetGridSquareAtCoordinates(gridCoordinates);
+                    SetObstacleInGridSquare(gridSquare, radiusMarkAround, true);
+                    SetObstacleInSquaresAroundCoordinates(gridCoordinates.x, gridCoordinates.y, radiusMarkAround, true);
+                    obstacles[i].IsMarkedOnGrid = true;
+                }
             }
         }
 
@@ -123,6 +159,11 @@ namespace StarSalvager
                 gridPosition.x -= m_gridSizeX;
             else if (gridPosition.x < 0)
                 gridPosition.x += m_gridSizeX;
+
+            if (gridPosition.y >= m_gridSizeY)
+            {
+                gridPosition.y = m_gridSizeY - 1;
+            }
 
             if (gridPosition.y < 0)
             {
@@ -277,20 +318,59 @@ namespace StarSalvager
             }
         }
 
-        public Vector2 GetLocalPositionOfRandomGridSquareInGridRegion(int scanRadius, Vector2 gridRegion, bool inRandomYLevel)
+        public Vector2? GetLocalPositionOfRandomGridSquareInGridRegion(int scanRadius, int minScanRadius, Vector2 gridRegion, bool allowOverlap, bool forceSpawn, bool inRandomYLevel)
         {
-            int numTries = 10;
-            for (int i = 0; i < numTries; i++)
+            if (!randomPositionFindingLists.ContainsKey(gridRegion))
             {
-                Vector2Int randomTop = GetCoordinatesOfRandomGridSquareInGridRegion(gridRegion, inRandomYLevel);
-                //Vector2Int randomTop = GetRandomTopGridSquareGridPosition(gridRegion) + (Vector2Int.right * m_positionsShiftedHorizontally);
+                randomPositionFindingLists.Add(gridRegion, new List<int>());
+
+                int beginIndex = (int)(m_gridSizeX * (double)gridRegion.x);
+                int endIndex = (int)(m_gridSizeX * (double)gridRegion.y);
+
+                for (int i = beginIndex; i <= endIndex && i < m_gridSizeX; i++)
+                {
+                    randomPositionFindingLists[gridRegion].Add(i);
+                }
+            }
+
+            List<int> randomGridRegion = randomPositionFindingLists[gridRegion];
+
+            for (int i = 0; i < randomGridRegion.Count; i++)
+            {
+                int temp = randomGridRegion[i];
+                int randomIndex = UnityEngine.Random.Range(i, randomGridRegion.Count);
+                randomGridRegion[i] = randomGridRegion[randomIndex];
+                randomGridRegion[randomIndex] = temp;
+            }
+
+            if (allowOverlap)
+            {
+                if (inRandomYLevel)
+                {
+                    return GetLocalPositionOfCenterOfGridSquareAtCoordinates(new Vector2Int(randomGridRegion[0], UnityEngine.Random.Range(0, m_gridSizeY)));
+                }
+                else
+                {
+                    return GetLocalPositionOfCenterOfGridSquareAtCoordinates(new Vector2Int(randomGridRegion[0], m_gridSizeY - 1));
+                }
+            }
+
+            for (int i = 0; i < randomGridRegion.Count; i++)
+            {
+                Vector2Int topPosition = new Vector2Int(randomGridRegion[i], m_gridSizeY - 1);
+
+                if (inRandomYLevel)
+                {
+                    topPosition.y = UnityEngine.Random.Range(0, m_gridSizeY);
+                }
+
                 bool isFreeSpace = true;
                 Vector2Int obstacleGridScanMinimum = new Vector2Int(
-                    Math.Max(0, randomTop.x - scanRadius),
-                    Math.Max(0, randomTop.y - scanRadius));
+                    Math.Max(0, topPosition.x - scanRadius),
+                    Math.Max(0, topPosition.y - scanRadius));
                 Vector2Int obstacleGridScanMaximum = new Vector2Int(
-                    Math.Min(m_gridSizeX - 1, randomTop.x + scanRadius),
-                    Math.Min(m_gridSizeY - 1, randomTop.y + scanRadius));
+                    Math.Min(m_gridSizeX - 1, topPosition.x + scanRadius),
+                    Math.Min(m_gridSizeY - 1, topPosition.y + scanRadius));
                 //Check each position in the box for whether an obstacle is there
                 for (int j = obstacleGridScanMinimum.x; j <= obstacleGridScanMaximum.x; j++)
                 {
@@ -308,11 +388,26 @@ namespace StarSalvager
 
                 if (isFreeSpace)
                 {
-                    return GetLocalPositionOfCenterOfGridSquareAtCoordinates(randomTop);
+                    return GetLocalPositionOfCenterOfGridSquareAtCoordinates(topPosition);
                 }
             }
 
-            return GetLocalPositionOfRandomGridSquareInGridRegion(scanRadius - 1, gridRegion, inRandomYLevel);
+            if (scanRadius > minScanRadius)
+            {
+                return GetLocalPositionOfRandomGridSquareInGridRegion(scanRadius - 1, minScanRadius, gridRegion, allowOverlap, forceSpawn, inRandomYLevel);
+            }
+            else
+            {
+                if (forceSpawn)
+                {
+                    throw new Exception("Couldn't find position to spawn. Possible overlap occurring in grid region " + allowOverlap + (double)gridRegion.x + ", " + (double)gridRegion.y);
+                    return GetLocalPositionOfCenterOfGridSquareAtCoordinates(new Vector2Int(randomGridRegion[0], m_gridSizeY - 1));
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
 
         public Vector2Int[] SelectBitExplosionPositions(Vector2 startingLocation, int numBits, int verticalExplosionRange, int horizontalExplosionRange)

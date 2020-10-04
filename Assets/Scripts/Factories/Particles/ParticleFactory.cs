@@ -1,7 +1,7 @@
 ﻿using System;
 using Recycling;
-using StarSalvager.Utilities;
 using StarSalvager.Utilities.Animations;
+using StarSalvager.Utilities.Particles;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -13,14 +13,18 @@ namespace StarSalvager.Factories
         private readonly GameObject _explosionPrefab;
         private readonly GameObject _labelPrefab;
         private readonly GameObject _floatingTextPrefab;
+        private readonly GameObject _connectedSpritePrefab;
+        private readonly GameObject _fadeSpritePrefab;
         
         //============================================================================================================//
 
-        public ParticleFactory(GameObject explosionPrefab, GameObject labelPrefab, GameObject floatingTextPrefab)
+        public ParticleFactory(GameObject explosionPrefab, GameObject labelPrefab, GameObject floatingTextPrefab, GameObject connectedSpritePrefab, GameObject fadeSpritePrefab)
         {
             _explosionPrefab = explosionPrefab;
             _labelPrefab = labelPrefab;
             _floatingTextPrefab = floatingTextPrefab;
+            _connectedSpritePrefab = connectedSpritePrefab;
+            _fadeSpritePrefab = fadeSpritePrefab;
         }
         
         //============================================================================================================//
@@ -46,6 +50,12 @@ namespace StarSalvager.Factories
                     break;
                 case bool _ when type == typeof(FloatingText):
                     gameObject = CreateFloatingText();
+                    break;
+                case bool _ when type == typeof(ConnectedSpriteObject):
+                    gameObject = CreateConnectedSprite();
+                    break;
+                case bool _ when type == typeof(FadeSprite):
+                    gameObject = CreateFadeSprite();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -81,6 +91,24 @@ namespace StarSalvager.Factories
             if (!Recycler.TryGrab<FloatingText>(out GameObject gameObject))
             {
                 gameObject = Object.Instantiate(_floatingTextPrefab);
+            }
+
+            return gameObject;
+        }
+        private GameObject CreateConnectedSprite()
+        {
+            if (!Recycler.TryGrab<ConnectedSpriteObject>(out GameObject gameObject))
+            {
+                gameObject = Object.Instantiate(_connectedSpritePrefab);
+            }
+
+            return gameObject;
+        }
+        private GameObject CreateFadeSprite()
+        {
+            if (!Recycler.TryGrab<FadeSprite>(out GameObject gameObject))
+            {
+                gameObject = Object.Instantiate(_fadeSpritePrefab);
             }
 
             return gameObject;

@@ -65,6 +65,7 @@ namespace StarSalvager
 
         public void InitBot()
         {
+            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
             //Add core component
             var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(
                 new BlockData
@@ -72,6 +73,7 @@ namespace StarSalvager
                     Type = (int)PART_TYPE.CORE,
                     Coordinate = Vector2Int.zero,
                     Level = 0,
+                    Health = startingHealth
                 });
 
             AttachNewBit(Vector2Int.zero, core);
@@ -440,25 +442,25 @@ namespace StarSalvager
                             capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_RED:
+                    case PART_TYPE.STORERED:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.RED] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_GREEN:
+                    case PART_TYPE.STOREGREEN:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.GREEN] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_GREY:
+                    case PART_TYPE.STOREGREY:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.GREY] += value;
                         }
                         break;
-                    case PART_TYPE.STORE_YELLOW:
+                    case PART_TYPE.STOREYELLOW:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             capacities[BIT_TYPE.YELLOW] += value;

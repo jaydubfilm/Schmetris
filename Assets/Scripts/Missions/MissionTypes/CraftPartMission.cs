@@ -11,23 +11,33 @@ namespace StarSalvager.Missions
         public PART_TYPE m_partType;
         public int m_partLevel;
 
-        public CraftPartMission(PART_TYPE partType, int partLevel, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+        public CraftPartMission(MissionRemoteData missionRemoteData) : base(missionRemoteData)
         {
             MissionEventType = MISSION_EVENT_TYPE.CRAFT_PART;
-            m_partType = partType;
-            m_partLevel = partLevel;
+            m_partType = missionRemoteData.PartType;
+            m_partLevel = missionRemoteData.PartLevel;
+        }
+
+        public CraftPartMission(MissionData missionData) : base(missionData)
+        {
+            MissionEventType = MISSION_EVENT_TYPE.CRAFT_PART;
+            m_partType = missionData.PartType;
+            m_partLevel = missionData.Level;
         }
 
         public override bool MissionComplete()
         {
-            return m_currentAmount >= m_amountNeeded;
+            return currentAmount >= amountNeeded;
         }
 
-        public void ProcessMissionData(PART_TYPE partType, int partLevel)
+        public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
         {
-            if (partType == m_partType && partLevel == m_partLevel)
+            PART_TYPE partType = missionProgressEventData.partType;
+            int level = missionProgressEventData.level;
+
+            if (partType == m_partType && level == m_partLevel)
             {
-                m_currentAmount += 1;
+                currentAmount += 1;
             }
         }
 
@@ -36,16 +46,16 @@ namespace StarSalvager.Missions
             return new MissionData
             {
                 ClassType = GetType().Name,
-                MissionName = m_missionName,
-                MissionDescription = m_missionDescription,
-                AmountNeeded = m_amountNeeded,
-                CurrentAmount = m_currentAmount,
+                MissionName = missionName,
+                MissionDescription = missionDescription,
+                AmountNeeded = amountNeeded,
+                CurrentAmount = currentAmount,
                 MissionEventType = this.MissionEventType,
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
                 PartType = m_partType,
-                PartLevel = m_partLevel
+                Level = m_partLevel
             };
         }
     }

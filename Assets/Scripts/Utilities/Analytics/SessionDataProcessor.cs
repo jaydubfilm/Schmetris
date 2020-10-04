@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using StarSalvager.Audio;
 using StarSalvager.Utilities.Analytics.Data;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -7,9 +8,10 @@ using UnityEngine;
 
 namespace StarSalvager.Utilities.Analytics
 {
+    //TODO Need to implement the total Game-data for a player (A save file)
     public class SessionDataProcessor : Singleton<SessionDataProcessor>
     {
-        public static readonly Version VERSION = new Version(1,0,0,0);
+        public static readonly Version VERSION = new Version(1,1,0,0);
         private SessionData _currentSession;
         private int CurrentSession;
 
@@ -66,6 +68,8 @@ namespace StarSalvager.Utilities.Analytics
 
             var botAtStart = new List<BlockData>(initialBot);
             _currentWave = new WaveData(botAtStart, sector, wave);
+            
+            
         }
 
         public void EndActiveWave()

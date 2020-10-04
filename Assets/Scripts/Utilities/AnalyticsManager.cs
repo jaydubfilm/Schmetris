@@ -6,9 +6,18 @@ using UnityEngine.Analytics;
 namespace StarSalvager.Utilities
 {
     //TODO: Investigate whether specific achievements should be recorded as custom Analytic events, or whether data tracking for achievements is handled by whatever achievement system is used.
-    
+
     public static class AnalyticsManager
     {
+        public static string TotalPlaytime = "Total Playtime";
+        public static string DeathCause = "Death Cause";
+        public static string GearsGained = "Gears Gained";
+        public static string EnemiesKilled = "Enemies Killed";
+        public static string EnemiesKilledPercentage = "Enemies Killed Percentage";
+        public static string CurrentSector = "Current Sector";
+        public static string CurrentWave = "Current Wave";
+        public static string LevelTime = "Level Time";
+
         public enum AnalyticsEventType
         {
             GameOver,

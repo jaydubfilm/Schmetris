@@ -11,6 +11,9 @@ using StarSalvager.Missions;
 using UnityEngine.SceneManagement;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Factories;
+using StarSalvager.ScriptableObjects;
+using StarSalvager.Factories.Data;
+using StarSalvager.Utilities.Math;
 
 namespace StarSalvager.Values
 {
@@ -30,23 +33,23 @@ namespace StarSalvager.Values
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _resources = new Dictionary<BIT_TYPE, int>
         {
-            {BIT_TYPE.RED, 0},
-            {BIT_TYPE.BLUE, 100},
-            {BIT_TYPE.YELLOW, 100},
+            {BIT_TYPE.RED, 100},
+            {BIT_TYPE.BLUE, 75},
+            {BIT_TYPE.YELLOW, 0},
             {BIT_TYPE.GREEN, 0},
             {BIT_TYPE.GREY, 0},
         };
 
         [JsonIgnore]
-        public Dictionary<BIT_TYPE, int> resourceCapacities => _resourceCapacity;
+        public IReadOnlyDictionary<BIT_TYPE, int> ResourceCapacities => _resourceCapacity;
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _resourceCapacity = new Dictionary<BIT_TYPE, int>
         {
-            {BIT_TYPE.RED, 5000},
-            {BIT_TYPE.BLUE, 5000},
-            {BIT_TYPE.YELLOW, 5000},
-            {BIT_TYPE.GREEN, 5000},
-            {BIT_TYPE.GREY, 5000},
+            {BIT_TYPE.RED, 200},
+            {BIT_TYPE.BLUE, 200},
+            {BIT_TYPE.YELLOW, 200},
+            {BIT_TYPE.GREEN, 200},
+            {BIT_TYPE.GREY, 200},
         };
 
         [JsonProperty]
@@ -110,27 +113,12 @@ namespace StarSalvager.Values
         [JsonIgnore]
         public IReadOnlyDictionary<FACILITY_TYPE, int> facilityRanks => _facilityRanks;
         [JsonProperty]
-        private Dictionary<FACILITY_TYPE, int> _facilityRanks = new Dictionary<FACILITY_TYPE, int>
-        {
-            {FACILITY_TYPE.REFINERY, 0}
-        };
+        private Dictionary<FACILITY_TYPE, int> _facilityRanks = new Dictionary<FACILITY_TYPE, int>();
 
         [JsonIgnore]
         public IReadOnlyDictionary<FACILITY_TYPE, int> facilityBlueprintRanks => _facilityBlueprintRanks;
         [JsonProperty]
-        private Dictionary<FACILITY_TYPE, int> _facilityBlueprintRanks = new Dictionary<FACILITY_TYPE, int>
-        {
-            {FACILITY_TYPE.FREEZER, 0},
-            {FACILITY_TYPE.STORAGEELECTRICITY, 0},
-            {FACILITY_TYPE.STORAGEFUEL, 0},
-            {FACILITY_TYPE.STORAGEPLASMA, 0},
-            {FACILITY_TYPE.STORAGESCRAP, 0},
-            {FACILITY_TYPE.STORAGEWATER, 0},
-            {FACILITY_TYPE.WORKBENCHCHIP, 0},
-            {FACILITY_TYPE.WORKBENCHCOIL, 0},
-            {FACILITY_TYPE.WORKBENCHFUSOR, 0},
-            {FACILITY_TYPE.REFINERY, 1}
-        };
+        private Dictionary<FACILITY_TYPE, int> _facilityBlueprintRanks = new Dictionary<FACILITY_TYPE, int>();
 
         public string PlaythroughID = string.Empty;
 
@@ -154,6 +142,12 @@ namespace StarSalvager.Values
                     LevelManager.Instance.WaveEndSummaryData.numLevelsGained++;
                 }
                 Level++;
+
+                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                {
+                    level = Level
+                };
+                MissionManager.ProcessMissionData(typeof(PlayerLevelMission), missionProgressEventData);
             }
             
             OnValuesChanged?.Invoke();
@@ -167,20 +161,31 @@ namespace StarSalvager.Values
             {
                 if (levelUpLoot[i] is RDSValue<Blueprint> rdsValueBlueprint)
                 {
-                    PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
+                    UnlockBlueprint(rdsValueBlueprint.rdsValue);
                     Toast.AddToast("Unlocked Blueprint!");
                     levelUpLoot.RemoveAt(i);
+                    continue;
                 }
                 if (levelUpLoot[i] is RDSValue<FacilityBlueprint> rdsValueFacilityBlueprint)
                 {
-                    PlayerPersistentData.PlayerData.UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
+                    UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
                     Toast.AddToast("Unlocked Facility Blueprint!");
                     levelUpLoot.RemoveAt(i);
+                    continue;
                 }
                 else if (levelUpLoot[i] is RDSValue<Vector2Int> rdsValueGears)
                 {
-                    PlayerPersistentData.PlayerData.ChangeGears(UnityEngine.Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
+                    ChangeGears(UnityEngine.Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
                     levelUpLoot.RemoveAt(i);
+                    continue;
+                }
+                else if (levelUpLoot[i] is RDSValue<Bit> rdsValueBit)
+                {
+                    AddResource(rdsValueBit.rdsValue.Type, FactoryManager.Instance.BitsRemoteData.GetRemoteData(rdsValueBit.rdsValue.Type).levels[0].resources);
+                }
+                else if (levelUpLoot[i] is RDSValue<Component> rdsValueComponent)
+                {
+                    AddComponent(rdsValueComponent.rdsValue.Type, 1);
                 }
             }
         }
@@ -194,7 +199,7 @@ namespace StarSalvager.Values
 
         public void SetResources(BIT_TYPE type, int value)
         {
-            _resources[type] = Mathf.Min(value, _resourceCapacity[type]);
+            _resources[type] = Mathf.Min(value, ResourceCapacities[type]);
         }
 
         //============================================================================================================//
@@ -270,12 +275,18 @@ namespace StarSalvager.Values
         public void AddResources(Dictionary<BIT_TYPE, int> toAdd, float multiplier)
         {
             CostCalculations.AddResources(ref _resources, toAdd, multiplier);
+
+            foreach (var bitType in toAdd.Select(keyValuePair => keyValuePair.Key))
+            {
+                _resources[bitType] = Mathf.Min(_resources[bitType], ResourceCapacities[bitType]);
+            }
+            
             OnValuesChanged?.Invoke();
         }
 
         public void AddResource(BIT_TYPE type, int amount)
         {
-            _resources[type] = Mathf.Min(_resources[type] + amount, _resourceCapacity[type]);
+            _resources[type] = Mathf.Min(_resources[type] + amount, ResourceCapacities[type]);
             OnValuesChanged?.Invoke();
         }
 
@@ -290,6 +301,13 @@ namespace StarSalvager.Values
                 return;
             
             AddResources((PART_TYPE) blockData.Type, blockData.Level, isRecursive);
+        }
+
+        public void SubtractResources(BIT_TYPE type, int amount)
+        {
+            Dictionary<BIT_TYPE, int> resources = new Dictionary<BIT_TYPE, int>();
+            resources.Add(type, amount);
+            SubtractResources(resources);
         }
 
         public void SubtractResources(Dictionary<BIT_TYPE, int> toSubtract)
@@ -326,7 +344,12 @@ namespace StarSalvager.Values
 
         public void AddLiquidResource(BIT_TYPE type, float amount)
         {
-            MissionManager.ProcessLiquidResourceConvertedMission(type, amount);
+            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+            {
+                bitType = type,
+                floatAmount = amount
+            };
+            MissionManager.ProcessMissionData(typeof(LiquidResourceConvertedMission), missionProgressEventData);
             _liquidResource[type] = Mathf.Clamp(liquidResource[type] + Mathf.Abs(amount), 0, liquidCapacity[type]);
             OnValuesChanged?.Invoke();
         }
@@ -353,6 +376,10 @@ namespace StarSalvager.Values
 
         //============================================================================================================//
 
+        public bool CanAffordFacilityBlueprint(TEST_FacilityBlueprint facilityBlueprint)
+        {
+            return CanAffordBits(facilityBlueprint.cost) && CanAffordComponents(facilityBlueprint.cost);
+        }
 
         public bool CanAffordBits(BIT_TYPE type, int amount)
         {
@@ -446,14 +473,14 @@ namespace StarSalvager.Values
 
         public void UnlockBlueprint(Blueprint blueprint)
         {
-            if (!unlockedBlueprints.Any(b => b.name == blueprint.name))
+            if (unlockedBlueprints.All(b => b.name != blueprint.name))
             {
                 unlockedBlueprints.Add(blueprint);
-
-                if (LevelManager.Instance.WaveEndSummaryData != null)
+                
+                //FIXME This may benefit from the use of a callback instead of a direct call
+                if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
                 {
-                    LevelManager.Instance.WaveEndSummaryData.numBlueprintsUnlocked++;
-                    LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprint.name);
+                    LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprint.DisplayString);
                 }
             }
             OnValuesChanged?.Invoke();
@@ -497,8 +524,9 @@ namespace StarSalvager.Values
             OnValuesChanged?.Invoke();
         }
 
-        public void UnlockFacilityLevel(FACILITY_TYPE type, int level)
+        public void UnlockFacilityLevel(FACILITY_TYPE type, int level, bool triggerMissionCheck = true)
         {
+            FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(type);
             if (_facilityRanks.ContainsKey(type) && _facilityRanks[type] < level)
             {
                 _facilityRanks[type] = level;
@@ -508,7 +536,18 @@ namespace StarSalvager.Values
                 _facilityRanks.Add(type, level);
             }
 
-            int increaseAmount = FactoryManager.Instance.FacilityRemote.GetRemoteData(type).levels[level].increaseAmount;
+            if (triggerMissionCheck)
+            {
+                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                {
+                    facilityType = type,
+                    level = level
+                };
+
+                MissionManager.ProcessMissionData(typeof(FacilityUpgradeMission), missionProgressEventData);
+            }
+
+            int increaseAmount = remoteData.levels[level].increaseAmount;
             switch (type)
             {
                 case FACILITY_TYPE.FREEZER:
@@ -531,23 +570,42 @@ namespace StarSalvager.Values
                     break;
             }
 
-            Debug.Log(_rationCapacity);
-
+            //Debug.Log(_rationCapacity);
+            OnCapacitiesChanged?.Invoke();
             OnValuesChanged?.Invoke();
         }
 
         public void UnlockFacilityBlueprintLevel(FacilityBlueprint facilityBlueprint)
         {
-            if (_facilityBlueprintRanks.ContainsKey(facilityBlueprint.facilityType))
+            UnlockFacilityBlueprintLevel(facilityBlueprint.facilityType, facilityBlueprint.level);
+        }
+
+        public void UnlockFacilityBlueprintLevel(FACILITY_TYPE facilityType, int level)
+        {
+            FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(facilityType);
+            string blueprintUnlockString = $"{remoteData.displayName} lvl {level + 1}";
+            
+            if (_facilityBlueprintRanks.ContainsKey(facilityType))
             {
-                if (_facilityBlueprintRanks[facilityBlueprint.facilityType] < facilityBlueprint.level)
+                if (_facilityBlueprintRanks[facilityType] < level)
                 {
-                    _facilityBlueprintRanks[facilityBlueprint.facilityType] = facilityBlueprint.level;
+                    _facilityBlueprintRanks[facilityType] = level;
+                    
+                    //FIXME This may benefit from the use of a callback instead of a direct call
+                    if (LevelManager.Instance.WaveEndSummaryData != null)
+                    {
+                        LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprintUnlockString);
+                    }
                 }
             }
             else
             {
-                _facilityBlueprintRanks.Add(facilityBlueprint.facilityType, facilityBlueprint.level);
+                _facilityBlueprintRanks.Add(facilityType, level);
+                //FIXME This may benefit from the use of a callback instead of a direct call
+                if (LevelManager.Instance.WaveEndSummaryData != null)
+                {
+                    LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprintUnlockString);
+                }
             }
             OnValuesChanged?.Invoke();
         }

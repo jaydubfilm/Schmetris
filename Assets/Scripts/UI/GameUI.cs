@@ -170,6 +170,13 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("TL Window")]
         private Image clockImage;
 
+        //Bottom Window
+        //====================================================================================================================//
+        [SerializeField, Required, FoldoutGroup("B Window")]
+        private GameObject abortWindow;
+        [SerializeField, Required, FoldoutGroup("B Window")]
+        private Button abortButton;
+
         //Bottom Left Window
         //============================================================================================================//
 
@@ -177,6 +184,8 @@ namespace StarSalvager.UI
         private TMP_Text levelText;
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private TMP_Text gearsText;
+        [SerializeField, Required, FoldoutGroup("BL Window")]
+        private Slider gearsSlider;
         
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderText fuelSlider;
@@ -252,11 +261,8 @@ namespace StarSalvager.UI
             InitSliderText();
 
             vignetteImage.gameObject.SetActive(useVignette);
-
             
             InitValues();
-
-            
 
             glowImages = new[]
             {
@@ -326,6 +332,7 @@ namespace StarSalvager.UI
 
         private void InitValues()
         {
+            
             InitSmartWeaponUI();
             ResetIcons();
 
@@ -343,6 +350,7 @@ namespace StarSalvager.UI
             SetTimeString("0:00");
             
             SetPlayerGearsLevel(0,0, 0);
+            ShowAbortWindow(false);
         }
 
         private void InitSliderText()
@@ -380,13 +388,15 @@ namespace StarSalvager.UI
 
             if (playerData == null)
                 return;
+            
+            ShowAbortWindow(false);
 
             SetResourceSliderBounds(BIT_TYPE.RED, 0, playerData.liquidCapacity[BIT_TYPE.RED]);
             SetResourceSliderBounds(BIT_TYPE.GREEN, 0, playerData.liquidCapacity[BIT_TYPE.GREEN]);
             SetResourceSliderBounds(BIT_TYPE.GREY, 0, playerData.liquidCapacity[BIT_TYPE.GREY]);
 
-            SetResourceSliderBounds(BIT_TYPE.BLUE, 0, 300);
-            SetResourceSliderBounds(BIT_TYPE.YELLOW, 0, 300);
+            SetResourceSliderBounds(BIT_TYPE.BLUE, 0, playerData.ResourceCapacities[BIT_TYPE.BLUE]);
+            SetResourceSliderBounds(BIT_TYPE.YELLOW, 0, playerData.liquidCapacity[BIT_TYPE.YELLOW]);
 
             SetFuelValue(playerData.liquidResource[BIT_TYPE.RED]);
             SetRepairValue(playerData.liquidResource[BIT_TYPE.GREEN]);
@@ -415,27 +425,67 @@ namespace StarSalvager.UI
         {
             carryCapacitySlider.value = value;
         }
+        
+        //============================================================================================================//
+
+        private bool _abortWindowShown = true;
+        public void ShowAbortWindow(bool shown)
+        {
+            //Prevent repeated calls
+            if (_abortWindowShown == shown)
+                return;
+
+            _abortWindowShown = shown;
+            
+            if (!shown)
+            {
+                abortButton.onClick.RemoveAllListeners();
+                abortWindow.SetActive(false);
+                return;
+            }
+            
+            abortButton.onClick.AddListener(() =>
+            {
+                LevelManager.Instance.BotObject.TrySelfDestruct();
+                
+                //If the bot was able to be killed, hide this window
+                if(LevelManager.Instance.BotObject.Destroyed)
+                    ShowAbortWindow(false);
+
+            });
+            
+            abortWindow.SetActive(true);
+        }
 
         //============================================================================================================//
 
         //TODO I should look into the NotifyPropertyChanged for setting up this functionality
         private void UpdatePlayerGearsLevel()
         {
-            SetPlayerGearsLevel(PlayerPersistentData.PlayerData.Level, PlayerPersistentData.PlayerData.Gears, 999);
-        }
-        
-        public void SetPlayerGearsLevel(int playerLevel, int gears, int gearsRemaining)
-        {
-            levelText.text = $"{gears} lvl {playerLevel}";
-            gearsText.text = $"/{gearsRemaining}";
+            var playerData = PlayerPersistentData.PlayerData;
+            
+            var gearsRequired = LevelManager.Instance.PlayerlevelRemoteDataScriptableObject
+                .GetRemoteData(playerData.Level).GearsToLevelUp;
+
+            SetPlayerGearsLevel(playerData.Level, playerData.Gears, gearsRequired);
         }
 
-        public void SetAllResourceSliderBounds(int min, int max)
+        public void SetPlayerGearsLevel(int playerLevel, int gears, int gearsRequired)
+        {
+            gearsSlider.minValue = 0;
+            gearsSlider.maxValue = gearsRequired;
+            gearsSlider.value = gears;
+            
+            levelText.text = $"lvl {playerLevel}";
+            gearsText.text = $"{gears} / {gearsRequired}";
+        }
+
+        /*public void SetAllResourceSliderBounds(int min, int max)
         {
             fuelSlider.SetBounds(min, max);
             repairSlider.SetBounds(min, max);
             ammoSlider.SetBounds(min, max);
-        }
+        }*/
 
         public void SetResourceSliderBounds(BIT_TYPE type, int min, int max)
         {

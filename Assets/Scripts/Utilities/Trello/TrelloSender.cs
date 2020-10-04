@@ -3,7 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.TrelloAPI;
 using DG.Util;
+using Sirenix.OdinInspector;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.FileIO;
+using StarSalvager.Utilities.Math;
+using StarSalvager.Utilities.SceneManagement;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,9 +18,10 @@ namespace StarSalvager.Utilities.Trello
     {
         private const string BOARD = "Salvager";
         private const string CATEGORY = "BUGS";
+        private readonly string[] LABELS = { "Bug" };
         
-        private readonly string KEY = Base64.Decode("OTEyODY3OGJhNjI2NDU3OGU2ZmYyYTMwYzg1NjBhYzM=");
-        private readonly string TOKEN = Base64.Decode("OGMxOGQyZTc4MzI2OGY2OGUxNzhhOGQyMGVhYzhhMzFlMGIwODcxZWUxOTk3MWQ4MDUyZGIzNjQ5YTJkMWU3Zg==");
+        private readonly string KEY = Base64.Decode("M2VjMGYzMDkxNTVmNmM5MTc2ZDA0NmU4NDFiZDM2ZjQ=");
+        private readonly string TOKEN = Base64.Decode("YTA1NjNkYTJhYjM3ODE4OTU5NmMyNDY4OTRhNTkxMzFlNTEzNWZlYTcxMWViZDI0MTgyN2Q5YTVjNzMwOTg4OA==");
 
         //====================================================================================================================//
 
@@ -27,15 +32,17 @@ namespace StarSalvager.Utilities.Trello
         [SerializeField]
         private KeyCode openWindowKey = KeyCode.F12;
 
-        [SerializeField]
+        [SerializeField, Required]
         private TMP_InputField summaryText;
-        [SerializeField]
+        [SerializeField, Required]
         private TMP_InputField descriptionText;
-        [SerializeField]
+        [SerializeField, Required]
+        private TMP_InputField nameText;
+        [SerializeField, Required]
         private Button submitButton;
-        [SerializeField]
+        [SerializeField, Required]
         private Button cancelButton;
-        [SerializeField]
+        [SerializeField, Required]
         private RawImage rawImage;
 
         private Texture2D _screenshot;
@@ -45,52 +52,6 @@ namespace StarSalvager.Utilities.Trello
         private DG.TrelloAPI.Trello trello;
 
         //====================================================================================================================//
-
-        // Platform dependent Log Path
-        private string logPath
-        {
-            get
-            {
-
-#if UNITY_STANDALONE_WIN
-                var absolutePath = "%USERPROFILE%/AppData/LocalLow/" + Application.companyName + "/" + Application.productName + "/output_log.txt";
-                var filePath = System.Environment.ExpandEnvironmentVariables(absolutePath);
-                return filePath;
-                //Old windows log path
-                //return System.Diagnostics.Process.GetCurrentProcess().ProcessName + "_Data/output_log.txt";
-
-#elif UNITY_STANDALONE_LINUX
-                return "~/.config/unity3d/" + Application.companyName + "/" + Application.productName + "/Player.log";
-
-#elif UNITY_STANDALONE_OSX
-                return "~/Library/Logs/Unity/Player.log";
-#else
-                return "";
-#endif
-            }
-        }
-        // Platform dependent Log Path copy
-        private string logPathCopy
-        {
-            get
-            {
-#if UNITY_STANDALONE_WIN
-                var absolutePath = "%USERPROFILE%/AppData/LocalLow/" + Application.companyName + "/" + Application.productName + "/output_logCopy.txt";
-                var filePath = System.Environment.ExpandEnvironmentVariables(absolutePath);
-                return filePath;
-                //Old windows log path
-                //return System.Diagnostics.Process.GetCurrentProcess().ProcessName + "_Data/output_log2.txt";
-
-#elif UNITY_STANDALONE_LINUX
-                return "~/.config/unity3d/" + Application.companyName + "/" + Application.productName + "/PlayerCopy.log";
-
-#elif UNITY_STANDALONE_OSX
-               return "~/Library/Logs/Unity/PlayerCopy.log";
-#else
-                return "";
-#endif
-            }
-        }
 
         //====================================================================================================================//
         
@@ -115,8 +76,10 @@ namespace StarSalvager.Utilities.Trello
             trello = new DG.TrelloAPI.Trello(KEY, TOKEN);
             
             // gets the boards of the current user
-            yield return trello.PopulateBoardsRoutine(); 
+            yield return trello.PopulateBoardsRoutine();
             trello.SetCurrentBoard(BOARD);
+            yield return trello.PopulateLabelsRoutine(); 
+            
             
             // gets the lists on the current board
             yield return trello.PopulateListsRoutine();
@@ -156,6 +119,8 @@ namespace StarSalvager.Utilities.Trello
                 
                 summaryText.text = string.Empty;
                 descriptionText.text = string.Empty;
+
+                Files.CreateLogFile();
                 
                 bugWindowObject.SetActive(true);
                 
@@ -168,13 +133,28 @@ namespace StarSalvager.Utilities.Trello
 
         private void SendReport()
         {
-            var title = summaryText.text;
-            var description = descriptionText.text;
+            var platform = Application.isEditor ? "Editor" : Application.platform.ToString();
+            
+            var title = $"{summaryText.text} - {platform}";
+            var description = string.Join("\n", new[]
+            {
+                $"Submitted by: {nameText.text}\n",
+                descriptionText.text,
+                "\n",
+                "SYSTEM DETAILS:",
+                "====================",
+                $"Platform: {platform}",
+                $"Version: {Application.version}",
+                $"Scene: {SceneLoader.CurrentScene}"
+            });
+
             
             if (string.IsNullOrEmpty(title) && string.IsNullOrEmpty(description))
                 return;
             
-            TrelloCard card = trello.NewCard(title, description, CATEGORY);
+            
+            
+            TrelloCard card = trello.NewCard(title, description, CATEGORY, LABELS);
             StartCoroutine(SendReportCoroutine(card, _screenshot, 
                 () =>
                 {
@@ -249,17 +229,13 @@ namespace StarSalvager.Utilities.Trello
 
             yield return trello.SetUpAttachmentInCardRoutine(cardID, "ScreenShot.png", screenshot);
 
-#if UNITY_STANDALONE
             // We make sure the log exists before trying to retrieve it.
-            if (System.IO.File.Exists(logPath))
+            if (System.IO.File.Exists(Files.LOG_DIRECTORY))
             {
-                // We make a copy of the log since the original is being used by Unity.
-                System.IO.File.Copy(logPath, logPathCopy, true);
 
                 // We attach the Unity log file to the card.
-                yield return trello.SetUpAttachmentInCardFromFileRoutine(cardID, "output_log.txt", logPathCopy);
+                yield return trello.SetUpAttachmentInCardFromFileRoutine(cardID, "error_log.txt", Files.LOG_DIRECTORY);
             }
-#endif
 
             // Wait for one extra second to let the player read that his issue is being processed
             yield return new WaitForSeconds(1);

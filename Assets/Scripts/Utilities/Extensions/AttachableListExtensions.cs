@@ -286,6 +286,54 @@ namespace StarSalvager.Utilities.Extensions
 
         //============================================================================================================//
 
+        /// <summary>
+        /// Finds the closest attachable based on the average center of the collection, and returns its coordinate
+        /// </summary>
+        /// <param name="blocks"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static Vector2Int GetCollectionCenterCoordinate<T>(this IEnumerable<T> blocks) where T: IAttachable
+        {
+            return blocks.GetCollectionCenterAttachable().Coordinate;
+        }
+        /// <summary>
+        /// Finds the closest attachable based on the average center of the collection, and returns its world position
+        /// </summary>
+        /// <param name="blocks"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static Vector2 GetCollectionCenterCoordinateWorldPosition<T>(this IEnumerable<T> blocks) where T: IAttachable
+        {
+            return blocks.GetCollectionCenterAttachable().transform.position;
+        }
+
+        public static Vector2 GetCollectionCenterPosition<T>(this IEnumerable<T> blocks) where T : IAttachable
+        {
+            var attachables = blocks.ToList();
+            var averagePosition = attachables
+                .Aggregate(Vector3.zero, (current, block) => current + block.transform.position) / attachables.Count;
+
+            return averagePosition;
+        }
+
+        /// <summary>
+        /// Finds the closest attachable based on the average center of the collection
+        /// </summary>
+        /// <param name="blocks"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T GetCollectionCenterAttachable<T>(this IEnumerable<T> blocks) where T: IAttachable
+        {
+            var blockList = blocks.ToList();
+            var averagePosition = blockList.GetCollectionCenterPosition();
+
+            averagePosition /= blockList.Count;
+
+            var closest = blockList.GetClosestAttachable(averagePosition);
+
+            return closest;
+        }
+
         public static T GetClosestAttachable<T>(this List<T> blocks, Vector2 checkPosition, bool ignoreDestroyed = false) where T : IAttachable
         {
             if (blocks.Count == 1)
@@ -370,6 +418,16 @@ namespace StarSalvager.Utilities.Extensions
             //selected.SetColor(Color.magenta);
 
             return (T) selected;
+        }
+
+        public static IEnumerable<T> Find<T>(this IEnumerable<T> blocks, IEnumerable<Vector2Int> coordinates)
+            where T : IAttachable
+        {
+            return coordinates
+                .Select(coordinate => blocks
+                    .FirstOrDefault(x => x.Coordinate == coordinate))
+                .Where(found => found != null)
+                .ToArray();
         }
 
         //============================================================================================================//
@@ -636,7 +694,7 @@ namespace StarSalvager.Utilities.Extensions
         public static void GetAllAttachedDetachables<T>(this List<T> attachables, T current, IAttachable[] toIgnore,
             ref List<T> outAttachables) where T : IAttachable
         {
-            var attachablesAround = attachables.GetAttachablesAround(current);
+            var attachablesAround = attachables.GetAttachablesAround(current).OfType<ICanDetach>();
 
             outAttachables.Add(current);
 
@@ -644,11 +702,11 @@ namespace StarSalvager.Utilities.Extensions
             {
                 var attachable = (T) attachable1;
 
-                if (attachable == null)
-                    continue;
+                //if (attachable == null)
+                //    continue;
 
-                if (!attachable.CanDisconnect)
-                    continue;
+                //if (!attachable.CanDisconnect)
+                //    continue;
 
                 if (toIgnore != null && toIgnore.Contains(attachable))
                     continue;

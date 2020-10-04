@@ -8,23 +8,41 @@ namespace StarSalvager.Missions
     public class ResourceCollectedMission : Mission
     {
         public BIT_TYPE? m_resourceType;
+        public bool m_isFromEnemyLoot;
 
-        public ResourceCollectedMission(BIT_TYPE? resourceType, string missionName, string missionDescription, List<IMissionUnlockCheck> missionUnlockData, float amountNeeded) : base(missionName, missionDescription, amountNeeded, missionUnlockData)
+        public ResourceCollectedMission(MissionRemoteData missionRemoteData) : base(missionRemoteData)
         {
             MissionEventType = MISSION_EVENT_TYPE.RESOURCE_COLLECTED;
-            m_resourceType = resourceType;
+            m_resourceType = missionRemoteData.ResourceValue();
+            m_isFromEnemyLoot = missionRemoteData.IsFromEnemyLoot;
+        }
+
+        public ResourceCollectedMission(MissionData missionData) : base(missionData)
+        {
+            MissionEventType = MISSION_EVENT_TYPE.RESOURCE_COLLECTED;
+            m_resourceType = missionData.BitType;
+            m_isFromEnemyLoot = missionData.BitDroppedFromEnemyLoot;
         }
 
         public override bool MissionComplete()
         {
-            return m_currentAmount >= m_amountNeeded;
+            return currentAmount >= amountNeeded;
         }
 
-        public void ProcessMissionData(BIT_TYPE resourceType, int amount)
+        public override void ProcessMissionData(MissionProgressEventData missionProgressEventData)
         {
-            if (m_resourceType == null || resourceType == m_resourceType)
+            BIT_TYPE bitType = missionProgressEventData.bitType.Value;
+            int amount = missionProgressEventData.intAmount;
+            bool fromEnemyLoot = missionProgressEventData.bitDroppedFromEnemyLoot;
+
+            if (!fromEnemyLoot && m_isFromEnemyLoot)
             {
-                m_currentAmount += amount;
+                return;
+            }
+
+            if (!m_resourceType.HasValue || bitType == m_resourceType)
+            {
+                currentAmount += amount;
             }
         }
 
@@ -33,15 +51,16 @@ namespace StarSalvager.Missions
             return new MissionData
             {
                 ClassType = GetType().Name,
-                MissionName = m_missionName,
-                MissionDescription = m_missionDescription,
-                AmountNeeded = m_amountNeeded,
-                CurrentAmount = m_currentAmount,
+                MissionName = missionName,
+                MissionDescription = missionDescription,
+                AmountNeeded = amountNeeded,
+                CurrentAmount = currentAmount,
                 MissionEventType = this.MissionEventType,
                 MissionStatus = this.MissionStatus,
                 MissionUnlockChecks = missionUnlockChecks.ExportMissionUnlockParametersDatas(),
 
-                ResourceType = m_resourceType
+                BitType = m_resourceType,
+                BitDroppedFromEnemyLoot = m_isFromEnemyLoot
             };
         }
     }

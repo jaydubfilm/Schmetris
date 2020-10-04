@@ -14,11 +14,14 @@ namespace StarSalvager
         //============================================================================================================//
         [ShowInInspector, ReadOnly]
         public Vector2Int Coordinate { get; set; }
-        [ShowInInspector, ReadOnly]
-        public bool Attached { get; set; }
+
+        public bool Attached
+        {
+            get => true;
+            set { }
+        }
 
         public bool CountAsConnectedToCore => !Destroyed;
-        public bool CanDisconnect => false;
         public bool CanShift => false;
         public bool CountTowardsMagnetism => false;
 
@@ -39,18 +42,34 @@ namespace StarSalvager
         
         public bool Destroyed { get; private set; }
 
+        public bool Disabled
+        {
+            get => _disabled;
+            set
+            {
+                _disabled = value;
+                SetColor(value ? Color.gray : Color.white);
+            }
+        }
+
+        private bool _disabled;
+
         
         private Damage _damage;
 
+        //Unity Functions
+        //====================================================================================================================//
+        
+        private void Start()
+        {
+            collider.usedByComposite = true;
+        }
 
         //IAttachable Functions
         //============================================================================================================//
 
         public void SetAttached(bool isAttached)
         {
-            Attached = isAttached;
-
-            collider.usedByComposite = true;
         }
 
         public void SetupHealthValues(float startingHealth, float currentHealth)
@@ -100,7 +119,16 @@ namespace StarSalvager
 
         protected override void OnCollide(GameObject gObj, Vector2 hitPoint)
         {
-            throw new System.NotImplementedException();
+#if !UNITY_EDITOR
+            //FIXME Need to find the cause of parts not despawning correctly
+            if (IsRecycled)
+                return;
+            
+            Recycler.Recycle<Part>(this);
+#else
+            throw new Exception("PARTS SHOULD NOT COLLIDE");
+#endif
+
         }
 
         private void SetDestroyed(bool isDestroyed)
@@ -126,7 +154,7 @@ namespace StarSalvager
         
         public void CustomRotate(Quaternion rotation)
         {
-            if (Type == PART_TYPE.TRIPLE_SHOT)
+            if (Type == PART_TYPE.TRIPLESHOT)
                 return;
             
             transform.localRotation = rotation;
@@ -165,6 +193,8 @@ namespace StarSalvager
 
             RecycleDamageEffect();
             Destroyed = false;
+            Disabled = false;
+            SetColliderActive(true);
             //collider.enabled = true;
         }
 

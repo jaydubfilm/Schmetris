@@ -422,11 +422,6 @@ namespace StarSalvager.AI
             if(CurrentHealth > 0)
                 AudioController.PlaySound(SOUND.ENEMY_IMPACT);
 
-            if (CurrentHealth <= 0)
-            {
-                //TODO Need to add the gears addition
-            }
-
             return true;
         }
 
@@ -446,8 +441,14 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0) 
                 return;
             
-            LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition);
-            MissionManager.ProcessEnemyKilledMissionData(m_enemyData.EnemyType, 1);
+            LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
+
+            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+            {
+                enemyTypeString = m_enemyData.EnemyType,
+                intAmount = 1
+            };
+            MissionManager.ProcessMissionData(typeof(EnemyKilledMission), missionProgressEventData);
             
             SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             AudioController.PlaySound(SOUND.ENEMY_DEATH);
@@ -461,6 +462,8 @@ namespace StarSalvager.AI
             {
                 LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled.Add(name, 1);
             }
+
+            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
 
             Recycler.Recycle<Enemy>(this);
         }

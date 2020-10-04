@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
 using StarSalvager.Factories;
+using StarSalvager.Missions;
+using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities.Enemies;
 using StarSalvager.Utilities.Extensions;
@@ -10,7 +14,7 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class EnemyAttachable : Enemy, IAttachable, ICustomRotate, IWasBumped
+    public class EnemyAttachable : Enemy, IAttachable, ICustomRotate, IWasBumped, ICanDetach
     {
         private static readonly int DEFAULT = Animator.StringToHash("Default");
         private static readonly int ATTACK  = Animator.StringToHash("Attack");
@@ -23,10 +27,12 @@ namespace StarSalvager.AI
         public bool Attached { get; set; }
 
         public bool CountAsConnectedToCore => false;
-        public bool CanDisconnect => true;
         public bool CanShift => true;
         public bool CountTowardsMagnetism => false;
 
+        public int AttachPriority => 10000;
+
+        public bool PendingDetach { get; set; }
         //EnemyAttachable Properties
         //============================================================================================================//
         
@@ -78,6 +84,8 @@ namespace StarSalvager.AI
 
         public void SetAttached(bool isAttached)
         {
+            if (!isAttached) PendingDetach = false;
+            
             //I can't assume that it will always be attached/Detached,as we need to ensure that the move is legal before setting all the values   
             
             //If the bot is telling us to detach, first we need to make sure we can't take the position of our old target
@@ -364,8 +372,34 @@ namespace StarSalvager.AI
         {
             CurrentHealth += amount;
 
-            if(CurrentHealth <= 0)
-                Recycler.Recycle<EnemyAttachable>(this);
+            if (CurrentHealth > 0)
+                return;
+
+            transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot;
+            LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
+
+            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+            {
+                enemyTypeString = m_enemyData.EnemyType,
+                intAmount = 1
+            };
+            MissionManager.ProcessMissionData(typeof(EnemyKilledMission), missionProgressEventData);
+
+            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
+            AudioController.PlaySound(SOUND.ENEMY_DEATH);
+
+            LevelManager.Instance.WaveEndSummaryData.numEnemiesKilled++;
+            if (LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled.ContainsKey(name))
+            {
+                LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled[name]++;
+            }
+            else
+            {
+                LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled.Add(name, 1);
+            }
+
+            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
+            Recycler.Recycle<EnemyAttachable>(this);
         }
 
         //ICustomRotate functions
@@ -439,6 +473,7 @@ namespace StarSalvager.AI
             _enemyDecoy = null;
             _attachedBot = null;
             _target = null;
+            PendingDetach = false;
             SetAttached(false);
         }
 

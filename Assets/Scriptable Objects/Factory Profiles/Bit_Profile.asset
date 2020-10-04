@@ -41,11 +41,11 @@ MonoBehaviour:
       type: 3}
     color: {r: 0, g: 0.9620137, b: 1, a: 1}
     _sprites:
-    - {fileID: -8514385636999581845, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: -618847849747352779, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: -4840117911343792882, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: 2266824876372297547, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: -6215204947640358880, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
+    - {fileID: 3632734899768784805, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: -3226113158332314513, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: -1563371901469433043, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: -4482822552716023180, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: -7487077107979040308, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
   - _name: Greenium
     bitType: 2
     _animation: {fileID: 0}
@@ -53,11 +53,11 @@ MonoBehaviour:
       type: 3}
     color: {r: 0.45882353, g: 1, b: 0, a: 1}
     _sprites:
-    - {fileID: -6161259436901414085, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: 4506392866621588529, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: -3975435423606984815, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: -926696593093476754, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: -8839679278349389429, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
+    - {fileID: 5899238608914896348, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: 7048927860441324205, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: -3535277661015436081, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: 2257751844052718686, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: 2098535411943596216, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
   - _name: Greyscale
     bitType: 3
     _animation: {fileID: 0}
@@ -65,11 +65,11 @@ MonoBehaviour:
       type: 3}
     color: {r: 0.8871865, g: 0, b: 1, a: 1}
     _sprites:
-    - {fileID: 1736096550313455905, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: -688108067688933224, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: -3111059232487226078, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: -5369655550167194192, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: 735716413810080038, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
+    - {fileID: 3868536227145377234, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: 6874235702986370390, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: 2475385748892378594, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: -6760141275443748339, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: -4508470532679583030, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
   - _name: Reddite
     bitType: 4
     _animation: {fileID: 0}
@@ -77,11 +77,11 @@ MonoBehaviour:
       type: 3}
     color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
     _sprites:
-    - {fileID: 6739058760269082282, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: -5276132800298026356, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: -3035819442081963128, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: 8970460568069357009, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: -8524953210740602698, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
+    - {fileID: 8242013304778420797, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: -8172940296013616880, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: -2691416828303197921, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: -4691697242150342625, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: 1733167718916934088, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
   - _name: Yelletron
     bitType: 5
     _animation: {fileID: 0}
@@ -89,11 +89,11 @@ MonoBehaviour:
       type: 3}
     color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
     _sprites:
-    - {fileID: 4716637630643698772, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: 3248370160481311221, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: 7735771930633845006, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: 264868522187067096, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: 2609712489949756906, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
+    - {fileID: -4094995256812412132, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: 6841090643720838132, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: -5901803849182799880, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: 7294406637635995284, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
+    - {fileID: 3184129395276493588, guid: 625dbd97b250f0b4c897f54b03fc6fe8, type: 3}
   - _name: Energy
     bitType: 6
     _animation: {fileID: 11400000, guid: fafe4dfee868e4949adf56733d997636, type: 2}
@@ -101,57 +101,3 @@ MonoBehaviour:
     color: {r: 0, g: 0, b: 0, a: 0}
     _sprites:
     - {fileID: 21300000, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
-  asteroidProfiles:
-  - size: 0
-    dimensions: {x: 1, y: 1}
-    _sprites:
-    - {fileID: 4740646371163351874, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: 7934934674122444120, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: 2397403726639049774, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: 1790308607095180760, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: -4095796660550586790, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: 6763511925473580942, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: 8674705024569528562, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: -6498644324137305759, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: -958652295336994860, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-  - size: 1
-    dimensions: {x: 2, y: 2}
-    _sprites:
-    - {fileID: -5879238874074108907, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: -2025138536200787235, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: -8079408450588852037, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: -4608251391778202509, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-  - size: 2
-    dimensions: {x: 3, y: 3}
-    _sprites:
-    - {fileID: 3623618048574350569, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: 7674548632909628920, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: 6901109441678843779, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-  - size: 3
-    dimensions: {x: 4, y: 4}
-    _sprites:
-    - {fileID: -9179598121594932568, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: -2483701044952898396, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: -1850979172351868509, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-  - size: 1
-    dimensions: {x: 1, y: 2}
-    _sprites:
-    - {fileID: 8063439932728523541, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-  - size: 1
-    dimensions: {x: 2, y: 1}
-    _sprites:
-    - {fileID: -7924957166409073024, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-  - size: 2
-    dimensions: {x: 2, y: 3}
-    _sprites:
-    - {fileID: -5423605793893429019, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: 1624234699885402242, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-    - {fileID: 470038388237685300, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-  - size: 2
-    dimensions: {x: 3, y: 2}
-    _sprites:
-    - {fileID: -5826600065143060685, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
-  - size: 3
-    dimensions: {x: 4, y: 2}
-    _sprites:
-    - {fileID: -9041514455604289002, guid: 6805d750135d8f2489f25887cc37b437, type: 3}

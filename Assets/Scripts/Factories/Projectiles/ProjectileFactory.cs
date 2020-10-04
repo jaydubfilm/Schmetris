@@ -68,7 +68,8 @@ namespace StarSalvager.Factories
                 if (shouldFlipSprite && projectileProfile.RequiresRotation)
                     projectile.FlipSpriteY(true);
 
-                projectileTransform.SetParent(LevelManager.Instance.transform);
+                LevelManager.Instance.ObstacleManager.AddTransformToRoot(projectileTransform);
+                //projectileTransform.SetParent(LevelManager.Instance.transform);
                 projectileTransform.transform.position = fromPosition;
 
                 projectile.Init(collisionTag, damage, travelDirection.normalized,

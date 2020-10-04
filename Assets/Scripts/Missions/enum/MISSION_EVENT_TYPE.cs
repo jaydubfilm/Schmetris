@@ -4,6 +4,7 @@
     {
         ENEMY_KILLED,
         RESOURCE_COLLECTED,
+        COMPONENT_COLLECTED,
         COMBO_BLOCKS,
         LEVEL_PROGRESS,
         CRAFT_PART,
@@ -12,6 +13,9 @@
         LIQUID_RESOURCE,
         CHAIN_WAVES,
         SECTORS_COMPLETED,
-        FLIGHT_LENGTH
+        FLIGHT_LENGTH,
+        CHAIN_BONUS_SHAPES,
+        FACILITY_UPGRADE,
+        PLAYER_LEVEL,
     }
 }

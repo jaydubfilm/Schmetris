@@ -11,6 +11,9 @@ namespace StarSalvager
         public FACILITY_TYPE facilityType;
         public int level;
 
+
+        #region IEquatable
+
         public bool Equals(FacilityBlueprint other)
         {
             if (ReferenceEquals(null, other)) return false;
@@ -30,5 +33,7 @@ namespace StarSalvager
         {
             return (name != null ? name.GetHashCode() : 0);
         }
+
+        #endregion //IEquatable
     }
 }
