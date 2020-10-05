@@ -537,6 +537,7 @@ namespace StarSalvager
             m_levelTimer += m_waveTimer;
             m_waveTimer = 0;
             GameUi.SetCurrentWaveText("Complete");
+            GameUi.ShowAbortWindow(false);
             EnemyManager.SetEnemiesInert(true);
 
             Random.InitState(CurrentWaveData.WaveSeed);
