@@ -56,9 +56,6 @@ namespace StarSalvager
 
         //====================================================================================================================//
         
-        [SerializeField, BoxGroup("PROTOTYPE")]
-        public float TEST_RotSpeed;
-        
         [SerializeField, Range(0.5f, 10f), BoxGroup("PROTOTYPE")]
         public float TEST_MergeSpeed = 2f;
         
@@ -143,6 +140,9 @@ namespace StarSalvager
         }
         private GameUI _gameUi;
 
+        private float previousDirection;
+        private bool isContinuousRotation;
+
         //============================================================================================================//
 
         #region Unity Functions
@@ -189,12 +189,14 @@ namespace StarSalvager
         {
             if(Destroyed)
                 return;
-            
+
             /*if (Moving)
                 MoveBot();*/
 
             if (Rotating)
+            {
                 RotateBot();
+            }
         }
 
         private void OnEnable()
@@ -290,9 +292,9 @@ namespace StarSalvager
         }
 
 
-        
+
         #endregion // Init Bot 
-        
+
         //============================================================================================================//
 
         #region Input Solver
@@ -301,13 +303,23 @@ namespace StarSalvager
         {
             if (GameTimer.IsPaused) 
                 return;
-            
+
+            if (previousDirection == direction && direction != 0)
+            {
+                isContinuousRotation = true;
+            }
+
+            previousDirection = direction;
+
             if (direction < 0)
                 Rotate(ROTATION.CCW);
             else if (direction > 0)
                 Rotate(ROTATION.CW);
             else
+            {
+                isContinuousRotation = false;
                 return;
+            }
             
             AudioController.PlaySound(SOUND.BOT_ROTATE);
         }
@@ -374,7 +386,16 @@ namespace StarSalvager
             var rotation = rigidbody.rotation;
 
             //Rotates towards the target rotation.
-            rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, TEST_RotSpeed * Time.fixedDeltaTime);
+            float rotationAmount;
+            if (isContinuousRotation)
+            {
+                rotationAmount = Globals.BotContinuousRotationSpeed;
+            }
+            else
+            {
+                rotationAmount = Globals.BotRotationSpeed;
+            }
+            rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, rotationAmount * Time.fixedDeltaTime);
             rigidbody.rotation = rotation;
             
             //FIXME Remove this when ready
@@ -1563,6 +1584,10 @@ namespace StarSalvager
                 switch(iAttachable)
                 {
                     case Component component:
+                        
+                        if(delayedCollider)
+                            component.DisableColliderTillLeaves(_compositeCollider2D);
+                        
                         if (LevelManager.Instance != null)
                             LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(component);
                         break;

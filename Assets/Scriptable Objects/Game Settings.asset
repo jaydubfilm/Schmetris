@@ -22,8 +22,11 @@ MonoBehaviour:
   obstacleMass: 2
   obstacleDensityReductionModifier: 5
   botHorizontalSpeed: 30
+  botRotationSpeed: 500
+  botContinuousRotationSpeed: 700
   missionReminderFrequency: 1
   bonusShapeSpeed: 22
+  asteroidDamage: 10
   bonusShapeGearsRewards:
   - numCells: 2
     numColours: 1

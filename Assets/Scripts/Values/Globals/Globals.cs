@@ -39,6 +39,8 @@ namespace StarSalvager.Values
         public static float ObstacleMass => m_gameSettings.obstacleMass;
         public static float ObstacleDensityReductionModifier => m_gameSettings.obstacleDensityReductionModifier;
         public static float BotHorizontalSpeed => m_gameSettings.botHorizontalSpeed;
+        public static float BotRotationSpeed => m_gameSettings.botRotationSpeed;
+        public static float BotContinuousRotationSpeed => m_gameSettings.botContinuousRotationSpeed;
         public static float MissionReminderFrequency => m_gameSettings.missionReminderFrequency;
         public static bool CameraUseInputMotion => m_gameSettings.cameraUseInputMotion;
         public static float CameraSmoothing => m_gameSettings.cameraSmoothing;
