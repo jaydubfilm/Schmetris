@@ -451,7 +451,7 @@ namespace StarSalvager.Utilities.Inputs
                 previousRotateInput = currentRotateInput;
 
                 //Set the countdown timer to the intended value
-                dasRotateTimer = Globals.DASTime * 3f;
+                //dasRotateTimer = Globals.DASTime * 3f;
 
                 //Quickly move the relevant managers, then reset their input, so that they will pause until DAS is ready
                 Rotate(currentRotateInput);

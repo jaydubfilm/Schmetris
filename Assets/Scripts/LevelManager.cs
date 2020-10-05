@@ -127,7 +127,7 @@ namespace StarSalvager
         public int NumWavesInRow;
         public Dictionary<ENEMY_TYPE, int> EnemiesKilledInWave = new Dictionary<ENEMY_TYPE, int>();
         public List<string> MissionsCompletedDuringThisFlight = new List<string>();
-        public bool ResetFromDeath = false;
+        public bool RecoverFromDeath = false;
         public bool BotDead = false;
 
         //====================================================================================================================//
@@ -163,23 +163,30 @@ namespace StarSalvager
                 SessionDataProcessor.Instance.PlayerKilled();
                 SessionDataProcessor.Instance.EndActiveWave();
 
-                PlayerPersistentData.PlayerData.numLives--;
-                if (PlayerPersistentData.PlayerData.numLives > 0)
+                if (!RecoverFromDeath)
                 {
                     IsWaveProgressing = false;
-                    m_levelManagerUI.UpdateLivesText();
-                    m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
-                    ResetFromDeath = true;
+                    RecoverFromDeath = true;
+
+                    Alert.ShowAlert("Bot wrecked",
+                        "Your bot has been wrecked. Deploy your recovery bot to rescue it.", "Ok", 
+                        () =>
+                        {
+                            RecoverFromDeath = true;
+                            IsWaveProgressing = true;
+                            RestartLevel();
+                        });
+
+                    //m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
                 }
                 else
                 {
                     m_levelManagerUI.ShowSummaryScreen("GAME OVER", 
-                        "Ran out of lives. Click to return to main menu.",
+                        "You failed to recover your bot. Click to return to main menu.",
                         () =>
                         {
                             Globals.CurrentWave = 0;
                             GameTimer.SetPaused(false);
-                            PlayerPersistentData.PlayerData.numLives = 3;
                             PlayerPersistentData.SaveAutosaveFiles();
                             SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
                         });
@@ -296,6 +303,7 @@ namespace StarSalvager
                 }
 
                 ProjectileManager.UpdateForces();
+                RecoverFromDeath = false;
             }
         }
 
@@ -310,27 +318,39 @@ namespace StarSalvager
             NumWavesInRow = 0;
 
             BotObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
-            if (PlayerPersistentData.PlayerData.GetCurrentBlockData().Count == 0)
+
+            List<BlockData> botDataToLoad;
+            if (RecoverFromDeath)
+            {
+                botDataToLoad = PlayerPersistentData.PlayerData.GetRecoveryDroneBlockData();
+            }
+            else
+            {
+                botDataToLoad = PlayerPersistentData.PlayerData.GetCurrentBlockData();
+            }
+
+            if (botDataToLoad.Count == 0)
             {
                 BotObject.InitBot();
             }
             else
             {
-                print("Load from data");
-                BotObject.InitBot(PlayerPersistentData.PlayerData.GetCurrentBlockData().ImportBlockDatas(false));
+                BotObject.InitBot(botDataToLoad.ImportBlockDatas(false));
             }
-            BotObject.transform.parent = null;
-            SceneManager.MoveGameObjectToScene(BotObject.gameObject, gameObject.scene);
 
-            SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
-            AudioController.PlayTESTWaveMusic(Globals.CurrentWave, true);
-
-            MissionsCompletedDuringThisFlight.Clear();
-
-            if (ResetFromDeath)
+            if (RecoverFromDeath)
             {
                 print("Reset liquid resources to before death state");
-                foreach (var resource in LiquidResourcesAttBeginningOfWave)
+                foreach (var resource in PlayerPersistentData.PlayerData.recoveryDroneLiquidResource)
+                {
+                    PlayerPersistentData.PlayerData.SetLiquidResource
+                        (resource.Key, Mathf.Min(PlayerPersistentData.PlayerData.recoveryDroneLiquidResource[resource.Key], 
+                        PlayerPersistentData.PlayerData.liquidCapacity[resource.Key]));
+
+                    //PlayerPersistentData.PlayerData.SetR
+                }
+
+                /*foreach (var resource in LiquidResourcesAttBeginningOfWave)
                 {
                     if (resource.Key == BIT_TYPE.RED)
                     {
@@ -340,11 +360,18 @@ namespace StarSalvager
                     {
                         PlayerPersistentData.PlayerData.SetLiquidResource(resource.Key, resource.Value);
                     }
-                }
+                }*/
                 LiquidResourcesAttBeginningOfWave.Clear();
                 PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, WaterAtBeginningOfWave);
-                ResetFromDeath = false;
             }
+
+            BotObject.transform.parent = null;
+            SceneManager.MoveGameObjectToScene(BotObject.gameObject, gameObject.scene);
+
+            SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
+            AudioController.PlayTESTWaveMusic(Globals.CurrentWave, true);
+
+            MissionsCompletedDuringThisFlight.Clear();
 
             foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
             {
@@ -367,7 +394,6 @@ namespace StarSalvager
             WorldGrid.SetupGrid();
             ProjectileManager.Activate();
 
-            m_levelManagerUI.UpdateLivesText();
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
             GameTimer.SetPaused(false);
 
@@ -425,7 +451,7 @@ namespace StarSalvager
                 m_bots.RemoveAt(i);
             }
 
-            if (!ResetFromDeath)
+            if (!RecoverFromDeath)
             {
                 LiquidResourcesAttBeginningOfWave.Clear();
             }
