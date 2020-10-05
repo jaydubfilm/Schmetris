@@ -460,7 +460,15 @@ namespace StarSalvager.Utilities.Inputs
             }
 
             ////If the DAS has triggered already, go ahead and update the relevant managers
-            dasRotateTimer = Globals.DASTime * 1.5f;
+            //dasRotateTimer = Globals.DASTime * 1.2f;
+            foreach (var bot in _bots)
+            {
+                if (bot.Rotating)
+                {
+                    return;
+                }
+            }
+
             Rotate(currentRotateInput);
         }
 
