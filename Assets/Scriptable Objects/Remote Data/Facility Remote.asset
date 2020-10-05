@@ -46,28 +46,28 @@ MonoBehaviour:
       increaseAmount: 0
       craftCost: []
     - level: 1
-      increaseAmount: 200
+      increaseAmount: 150
       craftCost:
       - resourceType: 0
         type: 5
         partPrerequisiteLevel: 0
-        amount: 100
+        amount: 50
       - resourceType: 0
         type: 1
         partPrerequisiteLevel: 0
-        amount: 250
+        amount: 120
       - resourceType: 0
         type: 3
         partPrerequisiteLevel: 0
-        amount: 250
+        amount: 120
       - resourceType: 1
         type: 0
         partPrerequisiteLevel: 0
-        amount: 2
+        amount: 1
       - resourceType: 1
         type: 1
         partPrerequisiteLevel: 0
-        amount: 1
+        amount: 0
     - level: 2
       increaseAmount: 400
       craftCost:
