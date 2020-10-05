@@ -20,6 +20,7 @@ MonoBehaviour:
       type: 3}
     m_projectileType: Basic Projectile
     m_projectileSpeed: 10
+    m_projectileRange: 0
     m_requiredRotate: 1
     m_attackType: 0
     m_spreadAngle: 0
@@ -30,6 +31,7 @@ MonoBehaviour:
     m_sprite: {fileID: 21300012, guid: a6d1b10b2671f96418d37196aacabe1b, type: 3}
     m_projectileType: Better Projectile
     m_projectileSpeed: 10
+    m_projectileRange: 0
     m_requiredRotate: 0
     m_attackType: 0
     m_spreadAngle: 0
@@ -40,6 +42,7 @@ MonoBehaviour:
     m_sprite: {fileID: 21300014, guid: e7495963a94ea8c4d875690bf0db95e4, type: 3}
     m_projectileType: Best Projectile
     m_projectileSpeed: 15
+    m_projectileRange: 0
     m_requiredRotate: 0
     m_attackType: 0
     m_spreadAngle: 0
@@ -51,6 +54,7 @@ MonoBehaviour:
       type: 3}
     m_projectileType: Fly Needle
     m_projectileSpeed: 14
+    m_projectileRange: 0
     m_requiredRotate: 0
     m_attackType: 3
     m_spreadAngle: 0
@@ -61,6 +65,7 @@ MonoBehaviour:
     m_sprite: {fileID: 21300002, guid: e05867bf595405c46a8ee4ae392e9180, type: 3}
     m_projectileType: Ballhead Blast
     m_projectileSpeed: 6
+    m_projectileRange: 0
     m_requiredRotate: 0
     m_attackType: 1
     m_spreadAngle: 0
@@ -72,6 +77,7 @@ MonoBehaviour:
       type: 3}
     m_projectileType: Mosquito Zap
     m_projectileSpeed: 18
+    m_projectileRange: 0
     m_requiredRotate: 0
     m_attackType: 1
     m_spreadAngle: 0
@@ -83,6 +89,7 @@ MonoBehaviour:
       type: 3}
     m_projectileType: Squid Ball
     m_projectileSpeed: 12
+    m_projectileRange: 0
     m_requiredRotate: 0
     m_attackType: 4
     m_spreadAngle: 45
@@ -94,6 +101,7 @@ MonoBehaviour:
       type: 3}
     m_projectileType: Gun Bullet
     m_projectileSpeed: 12
+    m_projectileRange: 0
     m_requiredRotate: 0
     m_attackType: 0
     m_spreadAngle: 0
@@ -105,6 +113,7 @@ MonoBehaviour:
       type: 3}
     m_projectileType: Triple
     m_projectileSpeed: 10
+    m_projectileRange: 0
     m_requiredRotate: 1
     m_attackType: 7
     m_spreadAngle: 60

@@ -14,6 +14,8 @@ namespace StarSalvager.Factories.Data
         public Sprite Sprite => m_sprite;
 
         public float ProjectileSpeed => m_projectileSpeed;
+        
+        public float ProjectileRange => m_projectileRange;
 
         public bool RequiresRotation => m_requiredRotate;
 
@@ -49,6 +51,10 @@ namespace StarSalvager.Factories.Data
 
         [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
         private float m_projectileSpeed;
+        [SerializeField, VerticalGroup("$ProjectileType/row2/right"), 
+         InfoBox("A value of 0 means that the projectile will continue until offscreen"), 
+         SuffixLabel("units", true)]
+        private float m_projectileRange;
 
         [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
         private bool m_requiredRotate;
