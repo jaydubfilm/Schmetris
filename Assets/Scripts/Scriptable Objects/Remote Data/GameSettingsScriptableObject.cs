@@ -23,6 +23,8 @@ namespace StarSalvager.ScriptableObjects
         public float obstacleMass = 2.0f;
         public float obstacleDensityReductionModifier = 5.0f;
         public float botHorizontalSpeed = 30.0f;
+        public float botRotationSpeed = 500.0f;
+        public float botContinuousRotationSpeed = 700.0f;
         public float missionReminderFrequency = 25.0f;
         public float bonusShapeSpeed = 12.0f;
         public float asteroidDamage = 10.0f;
