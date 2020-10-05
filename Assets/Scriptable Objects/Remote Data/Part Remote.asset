@@ -398,7 +398,7 @@ MonoBehaviour:
       powerDraw: 0.2
       dataTest:
       - key: Damage
-        value: 10
+        value: 6
       - key: Cooldown
         value: .5
       - key: Projectile
@@ -408,11 +408,11 @@ MonoBehaviour:
       - resourceType: 0
         type: 2
         partPrerequisiteLevel: 0
-        amount: 50
+        amount: 20
       - resourceType: 0
         type: 3
         partPrerequisiteLevel: 0
-        amount: 150
+        amount: 90
     - unlockLevel: 0
       health: 80
       powerDraw: 0.4
