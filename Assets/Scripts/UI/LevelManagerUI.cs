@@ -262,12 +262,6 @@ namespace StarSalvager.UI
         
         
         //====================================================================================================================//
-        
-
-        public void UpdateLivesText()
-        {
-            livesText.text = "Lives: " + PlayerPersistentData.PlayerData.numLives;
-        }
 
         public void ToggleBetweenWavesUIActive(bool active)
         {

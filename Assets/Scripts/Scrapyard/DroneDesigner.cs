@@ -164,7 +164,6 @@ namespace StarSalvager
             {
                 Alert.ShowAlert("Game Over", "Your crew has died of thirst - Game Over. thx!", "Main Menu", () =>
                 {
-                    PlayerPersistentData.PlayerData.numLives = 3;
                     PlayerPersistentData.SaveAutosaveFiles();
                     SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
                 });
