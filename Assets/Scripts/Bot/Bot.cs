@@ -1563,6 +1563,10 @@ namespace StarSalvager
                 switch(iAttachable)
                 {
                     case Component component:
+                        
+                        if(delayedCollider)
+                            component.DisableColliderTillLeaves(_compositeCollider2D);
+                        
                         if (LevelManager.Instance != null)
                             LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(component);
                         break;
