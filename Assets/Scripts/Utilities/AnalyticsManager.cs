@@ -12,14 +12,25 @@ namespace StarSalvager.Utilities
         public static string TotalPlaytime = "Total Playtime";
         public static string DeathCause = "Death Cause";
         public static string GearsGained = "Gears Gained";
+        public static string LevelsGained = "Levels Gained";
         public static string EnemiesKilled = "Enemies Killed";
         public static string EnemiesKilledPercentage = "Enemies Killed Percentage";
-        public static string CurrentSector = "Current Sector";
-        public static string CurrentWave = "Current Wave";
+        public static string BonusShapesMatched = "Bonus Shapes Matched";
+        public static string BonusShapesMatchedPercentage = "Bonus Shapes Matched Percentage";
+        public static string BlueprintsUnlocked = "Blueprints Unlocked";
+        public static string MissionsCompleted = "Missions Completed";
+        public static string MissionsUnlocked = "Missions Unlocked";
         public static string LevelTime = "Level Time";
 
         public enum AnalyticsEventType
         {
+            ApplicationOpen,
+            ApplicationQuit,
+            LevelStart,
+            LevelComplete,
+            LevelLost,
+
+
             GameOver,
             FirstInteraction,
             TutorialStart,
@@ -28,16 +39,9 @@ namespace StarSalvager.Utilities
             TutorialSkip,
             MissionUnlock,
             MissionComplete,
-
             GameStart,
-            LevelStart,
-            LevelComplete,
-            LevelLost,
             ScrapyardUsageBegin,
             ScrapyardUsageEnd,
-
-            ApplicationOpen,
-            ApplicationQuit,
             BotDied,
             FlightBegin,
             WaveEnd

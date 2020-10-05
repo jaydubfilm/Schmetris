@@ -14,6 +14,8 @@ public class WaveEndSummaryData
     public List<string> blueprintsUnlockedStrings = new List<string>();
     public List<string> missionCompletedStrings = new List<string>();
     public List<string> missionUnlockedStrings = new List<string>();
+    public int completedSector;
+    public int completedWave;
 
     public string GetWaveEndSummaryDataString()
     {

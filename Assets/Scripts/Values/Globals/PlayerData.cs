@@ -45,11 +45,11 @@ namespace StarSalvager.Values
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _resourceCapacity = new Dictionary<BIT_TYPE, int>
         {
-            {BIT_TYPE.RED, 200},
-            {BIT_TYPE.BLUE, 200},
-            {BIT_TYPE.YELLOW, 200},
-            {BIT_TYPE.GREEN, 200},
-            {BIT_TYPE.GREY, 200},
+            {BIT_TYPE.RED, 300},
+            {BIT_TYPE.BLUE, 300},
+            {BIT_TYPE.YELLOW, 300},
+            {BIT_TYPE.GREEN, 300},
+            {BIT_TYPE.GREY, 300},
         };
 
         [JsonProperty]

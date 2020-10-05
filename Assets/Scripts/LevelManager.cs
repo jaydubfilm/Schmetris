@@ -152,23 +152,13 @@ namespace StarSalvager
                     tempDictionary.Add((int)resource.Key, resource.Value);
                 }
 
-                Dictionary<string, object> botDiedAnalyticsDictionary = new Dictionary<string, object>
+                Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>
                 {
-                    //{"User ID", Globals.UserID},
-                    //{"Session ID", Globals.SessionID},
-                    //{"Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID},
                     {AnalyticsManager.DeathCause, deathMethod},
-                    {AnalyticsManager.CurrentSector, Globals.CurrentSector},
-                    {AnalyticsManager.CurrentWave, Globals.CurrentWave},
                     {AnalyticsManager.LevelTime, m_levelTimer + m_waveTimer},
-                    //{"Liquid Resource Current", JsonConvert.SerializeObject(tempDictionary, Formatting.None)},
-                    /*{"Enemies Killed", JsonConvert.SerializeObject(EnemiesKilledInWave, Formatting.None)},
-                    {
-                        "Missions Completed",
-                        JsonConvert.SerializeObject(MissionsCompletedDuringThisFlight, Formatting.None)
-                    }*/
                 };
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.BotDied, eventDataDictionary: botDiedAnalyticsDictionary);
+                string levelLostString = Globals.CurrentSector + "." + Globals.CurrentWave;
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelLost, eventDataDictionary: levelLostAnalyticsDictionary, eventDataParameter: levelLostString);
                 
                 SessionDataProcessor.Instance.PlayerKilled();
                 SessionDataProcessor.Instance.EndActiveWave();
@@ -269,14 +259,32 @@ namespace StarSalvager
                         "Continue");
                 }
 
-                Dictionary<string, object> waveEndAnalyticsDictionary = new Dictionary<string, object>
+                float enemiesKilledPercentage = 0.0f;
+                if (WaveEndSummaryData.numTotalEnemiesSpawned > 0)
+                {
+                    enemiesKilledPercentage = (float)WaveEndSummaryData.numEnemiesKilled / (float)WaveEndSummaryData.numTotalEnemiesSpawned;
+                }
+                float bonusShapesPercentage = 0.0f;
+                if (WaveEndSummaryData.numTotalBonusShapesSpawned > 0)
+                {
+                    bonusShapesPercentage = (float)WaveEndSummaryData.numBonusShapesMatched / (float)WaveEndSummaryData.numTotalBonusShapesSpawned;
+                }
+
+                Dictionary<string, object> levelCompleteAnalyticsDictionary = new Dictionary<string, object>
                 {
                     {AnalyticsManager.GearsGained, WaveEndSummaryData.numGearsGained },
+                    {AnalyticsManager.LevelsGained, WaveEndSummaryData.numLevelsGained },
                     {AnalyticsManager.EnemiesKilled, WaveEndSummaryData.numEnemiesKilled },
-                    {AnalyticsManager.EnemiesKilledPercentage, (float)WaveEndSummaryData.numEnemiesKilled / (float)WaveEndSummaryData.numTotalEnemiesSpawned }
+                    {AnalyticsManager.EnemiesKilledPercentage, enemiesKilledPercentage },
+                    {AnalyticsManager.BonusShapesMatched, WaveEndSummaryData.numBonusShapesMatched },
+                    {AnalyticsManager.BonusShapesMatchedPercentage, bonusShapesPercentage },
+                    {AnalyticsManager.BlueprintsUnlocked, WaveEndSummaryData.blueprintsUnlockedStrings.Count },
+                    {AnalyticsManager.MissionsCompleted, WaveEndSummaryData.missionCompletedStrings.Count },
+                    {AnalyticsManager.MissionsUnlocked, WaveEndSummaryData.missionUnlockedStrings.Count }
                 };
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.WaveEnd,
-                    eventDataDictionary: waveEndAnalyticsDictionary);
+                string levelCompleteString = WaveEndSummaryData.completedSector + "." + WaveEndSummaryData.completedWave;
+                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete,
+                    eventDataDictionary: levelCompleteAnalyticsDictionary, eventDataParameter: levelCompleteString);
 
                 m_waveEndSummaryData = new WaveEndSummaryData();
                 ObstacleManager.MoveToNewWave();
@@ -405,20 +413,12 @@ namespace StarSalvager
                 tempComponentDictionary.Add((int)component.Key, component.Value);
             }
 
-            Dictionary<string, object> flightBeginAnalyticsDictionary = new Dictionary<string, object>
+            Dictionary<string, object> levelStartAnalyticsDictionary = new Dictionary<string, object>
             {
-                //{"User ID", Globals.UserID},
-                //{"Session ID", Globals.SessionID},
-                //{"Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID},
-                /*{"Stored Resources", JsonConvert.SerializeObject(tempResourceDictionary, Formatting.None)},
-                {
-                    "Stored Parts", JsonConvert.SerializeObject(PlayerPersistentData.PlayerData.partsInStorageBlockData,
-                        Formatting.None)
-                },*/
-                //{"Stored Components", JsonConvert.SerializeObject(tempComponentDictionary, Formatting.None)},
-                //{"Bot Layout", JsonConvert.SerializeObject(BotObject.GetBlockDatas(), Formatting.None)}
+
             };
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.FlightBegin, eventDataDictionary: flightBeginAnalyticsDictionary);
+            string levelStartString = Globals.CurrentSector + "." + Globals.CurrentWave;
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataDictionary: levelStartAnalyticsDictionary, eventDataParameter: levelStartString);
 
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
@@ -504,6 +504,8 @@ namespace StarSalvager
             MissionManager.ProcessMissionData(typeof(ChainWavesMission), missionProgressEventData);
             MissionManager.ProcessMissionData(typeof(FlightLengthMission), missionProgressEventData);
 
+            WaveEndSummaryData.completedSector = Globals.CurrentSector;
+            WaveEndSummaryData.completedWave = Globals.CurrentWave;
             WaveEndSummaryData.waveEndTitle = $"Sector {Globals.CurrentSector + 1} Wave {Globals.CurrentWave + 1}";//"Wave " + (Globals.CurrentWave + 1) + " Sector " +  + " Complete";
 
             int progressionSector = Globals.CurrentSector;
