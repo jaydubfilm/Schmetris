@@ -48,7 +48,7 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
         public bool CountAsConnectedToCore => true;
-        public bool CanShift { get; }
+        public bool CanShift => true;
 
         //public bool CanDisconnect => true;
         public int AttachPriority => (10 + (int) Type) * level;
