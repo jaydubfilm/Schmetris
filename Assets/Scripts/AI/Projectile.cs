@@ -18,6 +18,9 @@ namespace StarSalvager.AI
         public ProjectileProfileData MProjectileData;
 
         private float _damageAmount;
+
+        private bool _hasRange;
+        private float _lifeTime;
         
         //============================================================================================================//
 
@@ -26,6 +29,10 @@ namespace StarSalvager.AI
         {
             if(GameTimer.IsPaused)
                 return;
+
+            if (_hasRange)
+                CheckLifeTime();
+            
 
             if (!CameraController.IsPointInCameraRect(transform.position))
             {
@@ -47,6 +54,25 @@ namespace StarSalvager.AI
             _mEnemyVelocityModifier = velocity;
 
             transform.up = direction;
+            
+            if (MProjectileData.ProjectileRange > 0)
+            {
+                _hasRange = true;
+                
+                //Calculates the time it will take to travel the distance
+                _lifeTime = MProjectileData.ProjectileRange / MProjectileData.ProjectileSpeed;
+            }
+        }
+
+        private void CheckLifeTime()
+        {
+            if (_lifeTime > 0f)
+            {
+                _lifeTime -= Time.deltaTime;
+                return;
+            }
+
+            Recycler.Recycle<Projectile>(this);
         }
         
         //============================================================================================================//
@@ -81,6 +107,9 @@ namespace StarSalvager.AI
         
         public void CustomRecycle(params object[] args)
         {
+            _hasRange = false;
+            _lifeTime = 0f;
+            
             renderer.flipX = renderer.flipY = false;
         }
     }
