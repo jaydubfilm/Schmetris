@@ -60,6 +60,8 @@ namespace StarSalvager.UI.Scrapyard
         
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button repairButton;
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button toggleBotsButton;
         private TMP_Text _repairButtonText;
 
         [SerializeField, Required, BoxGroup("Load Menu")]
@@ -291,6 +293,10 @@ namespace StarSalvager.UI.Scrapyard
 
             //--------------------------------------------------------------------------------------------------------//
 
+            toggleBotsButton.onClick.AddListener(() =>
+            {
+                DroneDesigner.ToggleDrones();
+            });
         }
 
         #endregion //Init

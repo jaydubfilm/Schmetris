@@ -61,6 +61,7 @@ namespace StarSalvager
 
         private bool _isStarted;
         private bool _isDragging;
+        private bool _isEditingRecoveryDrone;
 
         private SpriteRenderer _partDragImage;
 
@@ -200,6 +201,7 @@ namespace StarSalvager
             SelectedPartReturnToStorageIfNotPlaced = false;
 
             Camera.onPostRender -= DrawGL;
+            _isEditingRecoveryDrone = false;
 
             if (_scrapyardBot != null)
             {
@@ -701,7 +703,14 @@ namespace StarSalvager
         {
             if (_scrapyardBot != null)
             {
-                PlayerPersistentData.PlayerData.SetCurrentBlockData(_scrapyardBot.attachedBlocks.GetBlockDatas());
+                if (_isEditingRecoveryDrone)
+                {
+                    PlayerPersistentData.PlayerData.SetRecoveryDroneBlockData(_scrapyardBot.attachedBlocks.GetBlockDatas());
+                }
+                else
+                {
+                    PlayerPersistentData.PlayerData.SetCurrentBlockData(_scrapyardBot.attachedBlocks.GetBlockDatas());
+                }
             }
         }
 
@@ -712,6 +721,44 @@ namespace StarSalvager
         //============================================================================================================//
 
         #region Other
+
+        public void ToggleDrones()
+        {
+            SaveBlockData();
+
+            if (_scrapyardBot != null)
+            {
+                Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBot.gameObject);
+                _scrapyardBot = null;
+            }
+
+            _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
+
+            List<BlockData> currentBlockData;
+
+            if (_isEditingRecoveryDrone)
+            {
+                _isEditingRecoveryDrone = false;
+                currentBlockData = PlayerPersistentData.PlayerData.GetCurrentBlockData();
+            }
+            else
+            {
+                _isEditingRecoveryDrone = true;
+                currentBlockData = PlayerPersistentData.PlayerData.GetRecoveryDroneBlockData();
+            }
+
+            //Checks to make sure there is a core on the bot
+            if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
+            {
+                _scrapyardBot.InitBot();
+            }
+            else
+            {
+                var importedData = currentBlockData.ImportBlockDatas(true);
+                _scrapyardBot.InitBot(importedData);
+            }
+
+        }
 
         //============================================================================================================//
 

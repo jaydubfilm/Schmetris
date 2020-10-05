@@ -94,6 +94,7 @@ namespace StarSalvager.Values
         };
 
         public List<BlockData> currentBlockData = new List<BlockData>();
+        public List<BlockData> recoveryDroneBlockData = new List<BlockData>();
         public List<BlockData> partsInStorageBlockData = new List<BlockData>();
 
         public List<Blueprint> unlockedBlueprints = new List<Blueprint>();
@@ -446,6 +447,17 @@ namespace StarSalvager.Values
         {
             currentBlockData.Clear();
             currentBlockData.AddRange(blockData);
+        }
+
+        public List<BlockData> GetRecoveryDroneBlockData()
+        {
+            return recoveryDroneBlockData;
+        }
+
+        public void SetRecoveryDroneBlockData(List<BlockData> blockData)
+        {
+            recoveryDroneBlockData.Clear();
+            recoveryDroneBlockData.AddRange(blockData);
         }
 
         public List<BlockData> GetCurrentPartsInStorage()
