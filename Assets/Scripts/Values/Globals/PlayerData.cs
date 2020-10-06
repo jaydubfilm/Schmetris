@@ -80,6 +80,19 @@ namespace StarSalvager.Values
             {BIT_TYPE.GREY, 0},
         };
 
+        [JsonIgnore]
+        public IReadOnlyDictionary<BIT_TYPE, float> recoveryDroneLiquidResource => _recoveryDroneLiquidResource;
+        [JsonProperty]
+        //FIXME This needs to use some sort of capacity value
+        private Dictionary<BIT_TYPE, float> _recoveryDroneLiquidResource = new Dictionary<BIT_TYPE, float>
+        {
+            {BIT_TYPE.RED, 15},
+            {BIT_TYPE.BLUE, 15},
+            {BIT_TYPE.YELLOW, 15},
+            {BIT_TYPE.GREEN, 15},
+            {BIT_TYPE.GREY, 15},
+        };
+
         //FIXME I think that this should not be so persistent (Shouldn't need to be saved data)
         [JsonIgnore]
         public IReadOnlyDictionary<BIT_TYPE, int> liquidCapacity => _liquidCapacity;
@@ -105,7 +118,6 @@ namespace StarSalvager.Values
 
         public int currentModularSectorIndex = 0;
 
-        public int numLives = 3;
         public bool firstFlight = true;
 
         public int Level;
@@ -358,6 +370,24 @@ namespace StarSalvager.Values
         public void SubtractLiquidResource(BIT_TYPE type, float amount)
         {
             _liquidResource[type] = Mathf.Clamp(liquidResource[type] - Mathf.Abs(amount), 0, liquidCapacity[type]);
+            OnValuesChanged?.Invoke();
+        }
+
+        public void AddRecoveryDroneLiquidResource(BIT_TYPE type, float amount)
+        {
+            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+            {
+                bitType = type,
+                floatAmount = amount
+            };
+            MissionManager.ProcessMissionData(typeof(LiquidResourceConvertedMission), missionProgressEventData);
+            _recoveryDroneLiquidResource[type] = Mathf.Clamp(liquidResource[type] + Mathf.Abs(amount), 0, liquidCapacity[type]);
+            OnValuesChanged?.Invoke();
+        }
+
+        public void SubtractRecoveryDroneLiquidResource(BIT_TYPE type, float amount)
+        {
+            _recoveryDroneLiquidResource[type] = Mathf.Clamp(liquidResource[type] - Mathf.Abs(amount), 0, liquidCapacity[type]);
             OnValuesChanged?.Invoke();
         }
 
