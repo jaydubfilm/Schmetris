@@ -146,7 +146,7 @@ namespace StarSalvager.UI.Scrapyard
             PlayerData.OnCapacitiesChanged += UpdateBotResourceElements;
 
             //TODO May want to setup some sort of Init function to merge these two setups
-            launchButtonPointerEvents.PointerEntered += PreviewFillBothBotsResources;
+            //launchButtonPointerEvents.PointerEntered += PreviewFillBothBotsResources;
             repairButtonPointerEvents.PointerEntered += PreviewRepairCost;
         }
 
@@ -158,7 +158,7 @@ namespace StarSalvager.UI.Scrapyard
             PlayerData.OnCapacitiesChanged -= UpdateBotResourceElements;
             
             
-            launchButtonPointerEvents.PointerEntered -= PreviewFillBothBotsResources;
+            //launchButtonPointerEvents.PointerEntered -= PreviewFillBothBotsResources;
             repairButtonPointerEvents.PointerEntered -= PreviewRepairCost;
         }
 
