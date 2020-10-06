@@ -453,15 +453,9 @@ namespace StarSalvager.AI
             SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             AudioController.PlaySound(SOUND.ENEMY_DEATH);
 
-            LevelManager.Instance.WaveEndSummaryData.numEnemiesKilled++;
-            if (LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled.ContainsKey(name))
-            {
-                LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled[name]++;
-            }
-            else
-            {
-                LevelManager.Instance.WaveEndSummaryData.dictEnemiesKilled.Add(name, 1);
-            }
+            LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
+            
+            
 
             LevelManager.Instance.EnemyManager.RemoveEnemy(this);
 

@@ -142,7 +142,7 @@ namespace StarSalvager.Values
             Gears += amount;
             if (LevelManager.Instance.WaveEndSummaryData != null)
             {
-                LevelManager.Instance.WaveEndSummaryData.numGearsGained += amount;
+                LevelManager.Instance.WaveEndSummaryData.NumGearsGained += amount;
             }
 
             int gearsToLevelUp = LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).GearsToLevelUp;
@@ -152,7 +152,7 @@ namespace StarSalvager.Values
                 DropLevelLoot();
                 if (LevelManager.Instance.WaveEndSummaryData != null)
                 {
-                    LevelManager.Instance.WaveEndSummaryData.numLevelsGained++;
+                    LevelManager.Instance.WaveEndSummaryData.NumLevelsGained++;
                 }
                 Level++;
 
@@ -522,7 +522,7 @@ namespace StarSalvager.Values
                 //FIXME This may benefit from the use of a callback instead of a direct call
                 if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
                 {
-                    LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprint.DisplayString);
+                    LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprint.DisplayString);
                 }
             }
             OnValuesChanged?.Invoke();
@@ -636,7 +636,7 @@ namespace StarSalvager.Values
                     //FIXME This may benefit from the use of a callback instead of a direct call
                     if (LevelManager.Instance.WaveEndSummaryData != null)
                     {
-                        LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprintUnlockString);
+                        LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprintUnlockString);
                     }
                 }
             }
@@ -646,7 +646,7 @@ namespace StarSalvager.Values
                 //FIXME This may benefit from the use of a callback instead of a direct call
                 if (LevelManager.Instance.WaveEndSummaryData != null)
                 {
-                    LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprintUnlockString);
+                    LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprintUnlockString);
                 }
             }
             OnValuesChanged?.Invoke();

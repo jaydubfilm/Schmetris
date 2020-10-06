@@ -13,6 +13,9 @@ namespace StarSalvager.UI
         
         [SerializeField, Required]
         private GameObject windowObject;
+
+        [SerializeField, Required, BoxGroup("Toggles")]
+        private Toggle dontShowAgainToggle;
         
         [SerializeField, Required, BoxGroup("Text")]
         private TMP_Text titleText;
@@ -30,6 +33,8 @@ namespace StarSalvager.UI
         [SerializeField, Required, BoxGroup("Buttons")]
         private Button neutralButton;
         private TMP_Text _neutralButtonText;
+        
+        
 
         //============================================================================================================//
         
@@ -45,29 +50,32 @@ namespace StarSalvager.UI
         
         //============================================================================================================//
 
-        public static void ShowAlert(string Title, string Body, string neutralText, Action OnPressedCallback)
+        public static void ShowAlert(string Title, string Body, string neutralText, Action OnPressedCallback, string dontShowAgainCode = "")
         {
             SetLineHeight(0);
-            Instance.Show(Title, Body, neutralText, OnPressedCallback);
+            Instance.Show(Title, Body, neutralText, OnPressedCallback,dontShowAgainCode);
         }
 
         public static void ShowAlert(string Title, string Body, string confirmText, string cancelText,
-            Action<bool> OnConfirmedCallback)
+            Action<bool> OnConfirmedCallback, string dontShowAgainCode = "")
         {
             SetLineHeight(0);
-            Instance.Show(Title, Body, confirmText, cancelText, OnConfirmedCallback);
+            Instance.Show(Title, Body, confirmText, cancelText, OnConfirmedCallback, dontShowAgainCode);
         }
 
         public static void ShowAlert(string Title, string Body, string confirmText, string cancelText,
-            string neutralText, Action<bool> OnConfirmedCallback, Action OnNeutralCallback)
+            string neutralText, Action<bool> OnConfirmedCallback, Action OnNeutralCallback, string dontShowAgainCode = "")
         {
             SetLineHeight(0);
-            Instance.Show(Title, Body, confirmText, cancelText,neutralText, OnConfirmedCallback, OnNeutralCallback);
+            Instance.Show(Title, Body, confirmText, cancelText,neutralText, OnConfirmedCallback, OnNeutralCallback, dontShowAgainCode);
         }
+        
+        
         //============================================================================================================//
 
-        private void Show(string Title, string Body, string neutralText, Action OnPressedCallback)
+        private void Show(string Title, string Body, string neutralText, Action OnPressedCallback, string dontShowAgainCode)
         {
+            CheckDontShowAgain(dontShowAgainCode);
             SetActive(true);
             
             titleText.text = Title;
@@ -87,8 +95,9 @@ namespace StarSalvager.UI
             });
         }
         
-        private void Show(string Title, string Body, string confirmText, string cancelText, Action<bool> OnConfirmedCallback)
+        private void Show(string Title, string Body, string confirmText, string cancelText, Action<bool> OnConfirmedCallback, string dontShowAgainCode)
         {
+            CheckDontShowAgain(dontShowAgainCode);
             SetActive(true);
             
             titleText.text = Title;
@@ -117,9 +126,11 @@ namespace StarSalvager.UI
             });
         }
         
-        private void Show(string Title, string Body, string confirmText, string cancelText, string neutralText, Action<bool> OnConfirmedCallback, Action OnNeutralCallback)
+        private void Show(string Title, string Body, string confirmText, string cancelText, string neutralText, Action<bool> OnConfirmedCallback, Action OnNeutralCallback, string dontShowAgainCode)
         {
+            CheckDontShowAgain(dontShowAgainCode);
             SetActive(true);
+            
             
             titleText.text = Title;
             bodyText.text = Body;
@@ -161,6 +172,19 @@ namespace StarSalvager.UI
         public static void SetLineHeight(float lineHeight)
         {
             Instance.bodyText.lineSpacing = lineHeight;
+        }
+
+        private void CheckDontShowAgain(string dontShowAgainCode)
+        {
+            if (string.IsNullOrEmpty(dontShowAgainCode))
+            {
+                dontShowAgainToggle.gameObject.SetActive(false);
+                return;
+            }
+            
+            //TODO Check for the code
+
+            dontShowAgainToggle.gameObject.SetActive(true);
         }
         
         //============================================================================================================//

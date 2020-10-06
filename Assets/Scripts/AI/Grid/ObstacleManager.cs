@@ -1019,7 +1019,7 @@ namespace StarSalvager
 
             PlaceMovableOffGrid(obstacle, startingPosition, endPosition, Globals.BonusShapeDuration, despawnOnEnd: true, parentToGrid: false);
             m_bonusShapes.Add((Shape)obstacle);
-            LevelManager.Instance.WaveEndSummaryData.numTotalBonusShapesSpawned++;
+            LevelManager.Instance.WaveEndSummaryData.NumTotalBonusShapesSpawned++;
         }
 
         public void MatchBonusShape(Shape shape)
@@ -1033,11 +1033,11 @@ namespace StarSalvager
             m_notFullyInGridShapes.Remove(shape);
             m_offGridMovingObstacles.Remove(m_offGridMovingObstacles.FirstOrDefault(s => s.Obstacle is Shape offGridShape && offGridShape == shape));
             Recycler.Recycle<Shape>(shape);
-            LevelManager.Instance.WaveEndSummaryData.numBonusShapesMatched++;
+            LevelManager.Instance.WaveEndSummaryData.NumBonusShapesMatched++;
 
             MissionProgressEventData missionProgressEventData = new MissionProgressEventData
             {
-                intAmount = LevelManager.Instance.WaveEndSummaryData.numBonusShapesMatched
+                intAmount = LevelManager.Instance.WaveEndSummaryData.NumBonusShapesMatched
             };
 
             MissionManager.ProcessMissionData(typeof(ChainBonusShapesMission), missionProgressEventData);
