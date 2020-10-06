@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
+using StarSalvager.Factories;
+using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using UnityEngine;
@@ -143,7 +147,8 @@ namespace StarSalvager.UI.Scrapyard
             }
 
             //TODO Need to decide if this should happen at arrival or at launch
-            TryFillBotResources();
+            TryFillBotResources(true);
+            TryFillBotResources(false);
             
             _droneDesigner.ProcessScrapyardUsageEndAnalytics();
             
@@ -157,7 +162,7 @@ namespace StarSalvager.UI.Scrapyard
         }
         
         
-        private void TryFillBotResources()
+        private void TryFillBotResources(bool isRecoveryDrone)
         {
             BIT_TYPE[] types = {
                 BIT_TYPE.RED,
@@ -165,6 +170,16 @@ namespace StarSalvager.UI.Scrapyard
                 BIT_TYPE.GREEN,
                 BIT_TYPE.YELLOW
             };
+
+            List<BlockData> botData;
+            if (isRecoveryDrone)
+            {
+                botData = PlayerPersistentData.PlayerData.recoveryDroneBlockData;
+            }
+            else
+            {
+                botData = PlayerPersistentData.PlayerData.currentBlockData;
+            }
             
             foreach (var bitType in types)
             {
@@ -172,27 +187,49 @@ namespace StarSalvager.UI.Scrapyard
                 {
                     case BIT_TYPE.GREEN:
                         //TODO Check for repair
-                        if(!_droneDesigner.HasPart(PART_TYPE.REPAIR))
+                        if(!botData.Any(b => b.Type == (int)PART_TYPE.REPAIR))
                             continue;
                         break;
                     case BIT_TYPE.GREY:
                         //TODO Check for a gun
-                        if(!_droneDesigner.HasParts(PART_TYPE.GUN, PART_TYPE.TRIPLESHOT))
+                        if (!botData.Any(b => b.Type == (int)PART_TYPE.GUN || b.Type == (int)PART_TYPE.TRIPLESHOT))
                             continue;
                         break;
                     case BIT_TYPE.YELLOW:
-                        if(_droneDesigner._scrapyardBot.powerDraw <= 0)
-                            continue;
+                        for (int i = 0; i < botData.Count; i++)
+                        {
+                            var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)botData[i].Type).levels[botData[i].Level];
+                            if (partData.powerDraw > 0)
+                            {
+                                continue;
+                            }
+                        }
                         break;
                     case BIT_TYPE.RED:
                         break;
                     default:
                         continue;
                 }
-                
-                
-                var currentAmount = PlayerPersistentData.PlayerData.liquidResource[bitType];
-                var currentCapacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
+
+
+                float currentAmount;
+                if (isRecoveryDrone)
+                {
+                    currentAmount = PlayerPersistentData.PlayerData.recoveryDroneLiquidResource[bitType];
+                }
+                else
+                {
+                    currentAmount = PlayerPersistentData.PlayerData.liquidResource[bitType];
+                }
+                float currentCapacity;
+                if (isRecoveryDrone)
+                {
+                    currentCapacity = PlayerPersistentData.PlayerData.recoveryDroneLiquidCapacity[bitType];
+                }
+                else
+                {
+                    currentCapacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
+                }
 
                 var fillRemaining = currentCapacity - currentAmount;
 
@@ -209,7 +246,7 @@ namespace StarSalvager.UI.Scrapyard
                 var movingAmount = Mathf.RoundToInt(Mathf.Min(availableResources, fillRemaining));
 
                 PlayerPersistentData.PlayerData.resources[bitType] -= movingAmount;
-                PlayerPersistentData.PlayerData.AddLiquidResource(bitType, movingAmount);
+                PlayerPersistentData.PlayerData.AddLiquidResource(bitType, movingAmount, isRecoveryDrone);
             }
         }
         

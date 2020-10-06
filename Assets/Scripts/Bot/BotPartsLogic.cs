@@ -158,7 +158,7 @@ namespace StarSalvager
                 MagnetCount = _magnetOverride;
             }
 
-            PlayerPersistentData.PlayerData.ClearLiquidCapacity();
+            PlayerPersistentData.PlayerData.ClearLiquidCapacity(bot.IsRecoveryDrone);
             var capacities = new Dictionary<BIT_TYPE, int>
             {
                 {BIT_TYPE.RED, 0},
@@ -315,7 +315,7 @@ namespace StarSalvager
             }
 
             //Force update capacities, once new values determined
-            PlayerPersistentData.PlayerData.SetCapacities(capacities);
+            PlayerPersistentData.PlayerData.SetCapacities(capacities, bot.IsRecoveryDrone);
 
             bot.ForceCheckMagnets();
         }
@@ -378,7 +378,7 @@ namespace StarSalvager
                             .GetFactory<BitAttachableFactory>().GetBitRemoteData(targetBit.Type).levels[targetBit.level]
                             .resources;
 
-                        PlayerPersistentData.PlayerData.AddLiquidResource(partRemoteData.burnType, addAmount);
+                        PlayerPersistentData.PlayerData.AddLiquidResource(partRemoteData.burnType, addAmount, bot.IsRecoveryDrone);
 
                         //If we want to process a bit, we want to remove it from the attached list while its processed
                         bot.MarkAttachablePendingRemoval(targetBit);
@@ -664,14 +664,15 @@ namespace StarSalvager
                 }
 
                 UpdateUI(partRemoteData.burnType, resourceValue);
-                PlayerPersistentData.PlayerData.SetLiquidResource(partRemoteData.burnType, resourceValue);
+
+                PlayerPersistentData.PlayerData.SetLiquidResource(partRemoteData.burnType, resourceValue, bot.IsRecoveryDrone);
             }
 
             powerValue -= powerToRemove;
             if (powerValue < 0)
                 powerValue = 0f;
             
-            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, powerValue);
+            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, powerValue, bot.IsRecoveryDrone);
             
 
             //batteryDrainTimer += Time.deltaTime / 2;
@@ -831,7 +832,17 @@ namespace StarSalvager
 
         private void ForceUpdateResourceUI()
         {
-            foreach (var f in PlayerPersistentData.PlayerData.liquidResource)
+            IReadOnlyDictionary<BIT_TYPE, float> liquidResource;
+            if (bot.IsRecoveryDrone)
+            {
+                liquidResource = PlayerPersistentData.PlayerData.recoveryDroneLiquidResource;
+            }
+            else
+            {
+                liquidResource = PlayerPersistentData.PlayerData.liquidResource;
+            }
+
+            foreach (var f in liquidResource)
             {
                 UpdateUI(f.Key, f.Value);
             }
@@ -918,11 +929,20 @@ namespace StarSalvager
             if (!useBurnRate)
                 return default;
 
-            var value = partLevelData.burnRate == 0
-                ? default
-                : PlayerPersistentData.PlayerData.liquidResource[type];
-
-            return  value;
+            if (bot.IsRecoveryDrone)
+            {
+                var value = partLevelData.burnRate == 0
+                    ? default
+                    : PlayerPersistentData.PlayerData.recoveryDroneLiquidResource[type];
+                return value;
+            }
+            else
+            {
+                var value = partLevelData.burnRate == 0
+                    ? default
+                    : PlayerPersistentData.PlayerData.liquidResource[type];
+                return value;
+            }
         }
 
         //Checking for recycled extras

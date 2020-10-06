@@ -61,6 +61,8 @@ namespace StarSalvager
 
         private bool _isStarted;
         private bool _isDragging;
+
+        public bool IsEditingRecoveryDrone => _isEditingRecoveryDrone;
         private bool _isEditingRecoveryDrone;
 
         private SpriteRenderer _partDragImage;
@@ -147,12 +149,12 @@ namespace StarSalvager
             //Checks to make sure there is a core on the bot
             if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
             {
-                _scrapyardBot.InitBot();
+                _scrapyardBot.InitBot(_isEditingRecoveryDrone);
             }
             else
             {
                 var importedData = currentBlockData.ImportBlockDatas(true);
-                _scrapyardBot.InitBot(importedData);
+                _scrapyardBot.InitBot(importedData, _isEditingRecoveryDrone);
             }
 
             bool outOfWaterOnReturn = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 0;
@@ -749,12 +751,12 @@ namespace StarSalvager
             //Checks to make sure there is a core on the bot
             if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
             {
-                _scrapyardBot.InitBot();
+                _scrapyardBot.InitBot(_isEditingRecoveryDrone);
             }
             else
             {
                 var importedData = currentBlockData.ImportBlockDatas(true);
-                _scrapyardBot.InitBot(importedData);
+                _scrapyardBot.InitBot(importedData, _isEditingRecoveryDrone);
             }
 
         }
@@ -976,6 +978,7 @@ namespace StarSalvager
         {
             return _scrapyardBot.attachedBlocks.OfType<ScrapyardPart>().Any(p => p.Type == partType);
         }
+
         public bool HasParts(params PART_TYPE[] partTypes)
         {
             return _scrapyardBot.attachedBlocks.OfType<ScrapyardPart>().Any(p => partTypes.Contains(p.Type));

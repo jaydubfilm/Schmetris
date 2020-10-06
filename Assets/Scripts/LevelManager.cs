@@ -244,10 +244,18 @@ namespace StarSalvager
 
                 if (RecoverFromDeath)
                 {
-                    foreach (var resource in LiquidResourcesCachedOnDeath)
+                    /*var values = Enum.GetValues(typeof(BIT_TYPE));
+                    foreach (BIT_TYPE bitType in values)
                     {
-                        PlayerPersistentData.PlayerData.AddResource(resource.Key, (int)resource.Value);
-                    }
+                        if (bitType == BIT_TYPE.WHITE)
+                        {
+                            continue;
+                        }
+
+                        //PlayerPersistentData.PlayerData.AddLiquidResource(bitType, PlayerPersistentData.PlayerData.liquidResource[bitType]);
+                        //PlayerPersistentData.PlayerData.SetLiquidResource(bitType, 0);
+                        //PlayerPersistentData.PlayerData.SetLiquidResource(bitType, LiquidResourcesCachedOnDeath[bitType]);
+                    }*/
                     m_levelManagerUI.ShowSummaryScreen("Bot Recovered",
                         "You have recovered your wrecked bot. Return to base!", () =>
                         {
@@ -372,24 +380,29 @@ namespace StarSalvager
 
             if (botDataToLoad.Count == 0)
             {
-                BotObject.InitBot();
+                BotObject.InitBot(RecoverFromDeath);
             }
             else
             {
-                BotObject.InitBot(botDataToLoad.ImportBlockDatas(false));
+                BotObject.InitBot(botDataToLoad.ImportBlockDatas(false), RecoverFromDeath);
             }
 
             if (RecoverFromDeath)
             {
-                var values = Enum.GetValues(typeof(BIT_TYPE));
+                /*var values = Enum.GetValues(typeof(BIT_TYPE));
                 foreach (BIT_TYPE bitType in values)
                 {
+                    if (bitType == BIT_TYPE.WHITE)
+                    {
+                        continue;
+                    }
+                    
                     PlayerPersistentData.PlayerData.SetLiquidResource
                         (bitType, Mathf.Min(PlayerPersistentData.PlayerData.recoveryDroneLiquidResource[bitType], 
                         PlayerPersistentData.PlayerData.liquidCapacity[bitType]));
 
                     PlayerPersistentData.PlayerData.SubtractRecoveryDroneLiquidResource(bitType, PlayerPersistentData.PlayerData.liquidResource[bitType]);
-                }
+                }*/
 
                 PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, WaterAtBeginningOfWave);
             }
