@@ -33,6 +33,9 @@ namespace StarSalvager
         private bool _rotating;
         private float targetRotation;
 
+        public bool IsRecoveryDrone => _isRecoveryDrone;
+        private bool _isRecoveryDrone;
+
         //============================================================================================================//
 
         private new Rigidbody2D rigidbody
@@ -63,8 +66,9 @@ namespace StarSalvager
 
         #region Init Bot 
 
-        public void InitBot()
+        public void InitBot(bool isRecoveryDrone)
         {
+            _isRecoveryDrone = isRecoveryDrone;
             var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
             //Add core component
             var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(
@@ -79,8 +83,9 @@ namespace StarSalvager
             AttachNewBit(Vector2Int.zero, core);
         }
 
-        public void InitBot(IEnumerable<IAttachable> botAttachables)
+        public void InitBot(IEnumerable<IAttachable> botAttachables, bool isRecoveryDrone)
         {
+            _isRecoveryDrone = isRecoveryDrone;
             foreach (var attachable in botAttachables)
             {
                 AttachNewBit(attachable.Coordinate, attachable);
@@ -384,7 +389,7 @@ namespace StarSalvager
         /// </summary>
         private void UpdatePartData()
         {
-            PlayerPersistentData.PlayerData.ClearLiquidCapacity();
+            PlayerPersistentData.PlayerData.ClearLiquidCapacity(_isRecoveryDrone);
             magnetCount = 0;
             powerDraw = 0f;
             
@@ -470,7 +475,7 @@ namespace StarSalvager
             }
 
             //Force only updating once I know all capacities
-            PlayerPersistentData.PlayerData.SetCapacities(capacities);
+            PlayerPersistentData.PlayerData.SetCapacities(capacities, _isRecoveryDrone);
         }
 
         #endregion //Parts

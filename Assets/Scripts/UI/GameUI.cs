@@ -391,16 +391,29 @@ namespace StarSalvager.UI
             
             ShowAbortWindow(false);
 
-            SetResourceSliderBounds(BIT_TYPE.RED, 0, playerData.liquidCapacity[BIT_TYPE.RED]);
-            SetResourceSliderBounds(BIT_TYPE.GREEN, 0, playerData.liquidCapacity[BIT_TYPE.GREEN]);
-            SetResourceSliderBounds(BIT_TYPE.GREY, 0, playerData.liquidCapacity[BIT_TYPE.GREY]);
+            IReadOnlyDictionary<BIT_TYPE, float> liquidResource;
+            IReadOnlyDictionary<BIT_TYPE, int> capacities;
+            if (LevelManager.Instance != null && LevelManager.Instance.RecoverFromDeath)
+            {
+                liquidResource = playerData.recoveryDroneLiquidResource;
+                capacities = playerData.recoveryDroneLiquidCapacity;
+            }
+            else
+            {
+                liquidResource = playerData.liquidResource;
+                capacities = playerData.liquidCapacity;
+            }
+
+            SetResourceSliderBounds(BIT_TYPE.RED, 0, capacities[BIT_TYPE.RED]);
+            SetResourceSliderBounds(BIT_TYPE.GREEN, 0, capacities[BIT_TYPE.GREEN]);
+            SetResourceSliderBounds(BIT_TYPE.GREY, 0, capacities[BIT_TYPE.GREY]);
 
             SetResourceSliderBounds(BIT_TYPE.BLUE, 0, playerData.ResourceCapacities[BIT_TYPE.BLUE]);
-            SetResourceSliderBounds(BIT_TYPE.YELLOW, 0, playerData.liquidCapacity[BIT_TYPE.YELLOW]);
+            SetResourceSliderBounds(BIT_TYPE.YELLOW, 0, capacities[BIT_TYPE.YELLOW]);
 
-            SetFuelValue(playerData.liquidResource[BIT_TYPE.RED]);
-            SetRepairValue(playerData.liquidResource[BIT_TYPE.GREEN]);
-            SetAmmoValue(playerData.liquidResource[BIT_TYPE.GREY]);
+            SetFuelValue(liquidResource[BIT_TYPE.RED]);
+            SetRepairValue(liquidResource[BIT_TYPE.GREEN]);
+            SetAmmoValue(liquidResource[BIT_TYPE.GREY]);
 
             SetPlayerGearsLevel(playerData.Level, playerData.Gears, 999);
         }

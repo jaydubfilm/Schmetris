@@ -146,7 +146,7 @@ namespace StarSalvager.UI.Scrapyard
             PlayerData.OnCapacitiesChanged += UpdateBotResourceElements;
 
             //TODO May want to setup some sort of Init function to merge these two setups
-            launchButtonPointerEvents.PointerEntered += PreviewFillBotResources;
+            launchButtonPointerEvents.PointerEntered += PreviewFillBothBotsResources;
             repairButtonPointerEvents.PointerEntered += PreviewRepairCost;
         }
 
@@ -158,7 +158,7 @@ namespace StarSalvager.UI.Scrapyard
             PlayerData.OnCapacitiesChanged -= UpdateBotResourceElements;
             
             
-            launchButtonPointerEvents.PointerEntered -= PreviewFillBotResources;
+            launchButtonPointerEvents.PointerEntered -= PreviewFillBothBotsResources;
             repairButtonPointerEvents.PointerEntered -= PreviewRepairCost;
         }
 
@@ -298,6 +298,7 @@ namespace StarSalvager.UI.Scrapyard
             toggleBotsButton.onClick.AddListener(() =>
             {
                 DroneDesigner.ToggleDrones();
+                UpdateBotResourceElements();
             });
         }
 
@@ -353,8 +354,19 @@ namespace StarSalvager.UI.Scrapyard
             }
 
             //liquidResourceContentView
-            var liquids = PlayerPersistentData.PlayerData.liquidResource;
-            var liquidsCapacity = PlayerPersistentData.PlayerData.liquidCapacity;
+            IReadOnlyDictionary<BIT_TYPE, float> liquids;
+            IReadOnlyDictionary<BIT_TYPE, int> liquidsCapacity;
+            if (_droneDesigner.IsEditingRecoveryDrone)
+            {
+                liquids = PlayerPersistentData.PlayerData.recoveryDroneLiquidResource;
+                liquidsCapacity = PlayerPersistentData.PlayerData.recoveryDroneLiquidCapacity;
+            }
+            else
+            {
+                liquids = PlayerPersistentData.PlayerData.liquidResource;
+                liquidsCapacity = PlayerPersistentData.PlayerData.liquidCapacity;
+            }
+
             foreach (var liquid in liquids)
             {
                 var bitType = liquid.Key;
@@ -440,7 +452,20 @@ namespace StarSalvager.UI.Scrapyard
 
         #region Preview Costs
 
-        private void PreviewFillBotResources(bool showPreview)
+        private void PreviewFillBothBotsResources(bool showPreview)
+        {
+            Dictionary<ResourceUIElement, float> resourceScrollViewPreviewAmounts = new Dictionary<ResourceUIElement, float>();
+
+            resourceScrollViewPreviewAmounts = PreviewFillBotResources(showPreview, false, resourceScrollViewPreviewAmounts);
+            resourceScrollViewPreviewAmounts = PreviewFillBotResources(showPreview, true, resourceScrollViewPreviewAmounts);
+
+            foreach (var keyValue in resourceScrollViewPreviewAmounts)
+            {
+                keyValue.Key.PreviewChange(-keyValue.Value);
+            }
+        }
+
+        private Dictionary<ResourceUIElement, float> PreviewFillBotResources(bool showPreview, bool isRecoveryDrone, Dictionary<ResourceUIElement, float> resourceScrollViewPreviewAmounts)
         {
             BIT_TYPE[] types = {
                 BIT_TYPE.RED,
@@ -448,45 +473,77 @@ namespace StarSalvager.UI.Scrapyard
                 BIT_TYPE.GREEN,
                 BIT_TYPE.YELLOW
             };
-            
+
+            List<BlockData> botData;
+            if (isRecoveryDrone)
+            {
+                botData = PlayerPersistentData.PlayerData.recoveryDroneBlockData;
+            }
+            else
+            {
+                botData = PlayerPersistentData.PlayerData.currentBlockData;
+            }
+
             foreach (var bitType in types)
             {
-                switch (bitType)
+                /*switch (bitType)
                 {
                     case BIT_TYPE.GREEN:
                         //TODO Check for repair
-                        if(!_droneDesigner.HasPart(PART_TYPE.REPAIR))
+                        if (!botData.Any(b => b.Type == (int)PART_TYPE.REPAIR))
                             continue;
                         break;
                     case BIT_TYPE.GREY:
                         //TODO Check for a gun
-                        if(!_droneDesigner.HasParts(PART_TYPE.GUN, PART_TYPE.TRIPLESHOT))
+                        if (!botData.Any(b => b.Type == (int)PART_TYPE.GUN || b.Type == (int)PART_TYPE.TRIPLESHOT))
                             continue;
                         break;
                     case BIT_TYPE.YELLOW:
-                        if(_droneDesigner._scrapyardBot.powerDraw <= 0)
-                            continue;
+                        for (int i = 0; i < botData.Count; i++)
+                        {
+                            var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)botData[i].Type).levels[botData[i].Level];
+                            if (partData.powerDraw > 0)
+                            {
+                                continue;
+                            }
+                        }
                         break;
                     case BIT_TYPE.RED:
                         break;
                     default:
                         continue;
-                }
+                }*/
 
                 var botLiquidElement = liquidResourceContentView.FindElement(x => x.type == bitType);
-                var storageLiquidElement = resourceScrollView.FindElement(x => x.type == bitType);
+                var storageResourceElement = resourceScrollView.FindElement(x => x.type == bitType);
                 
 
                 if (!showPreview)
                 {
                     botLiquidElement.PreviewChange(0);
-                    storageLiquidElement.PreviewChange(0);
+                    storageResourceElement.PreviewChange(0);
                     continue;
                 }
-                
-                
-                var currentAmount = PlayerPersistentData.PlayerData.liquidResource[bitType];
-                var currentCapacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
+
+
+                float currentAmount;
+                if (isRecoveryDrone)
+                {
+                    currentAmount = PlayerPersistentData.PlayerData.recoveryDroneLiquidResource[bitType];
+                }
+                else
+                {
+                    currentAmount = PlayerPersistentData.PlayerData.liquidResource[bitType];
+                }
+                float currentCapacity;
+                if (isRecoveryDrone)
+                {
+                    currentCapacity = PlayerPersistentData.PlayerData.recoveryDroneLiquidCapacity[bitType];
+                }
+                else
+                {
+                    currentCapacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
+                }
 
                 var fillRemaining = currentCapacity - currentAmount;
 
@@ -502,9 +559,23 @@ namespace StarSalvager.UI.Scrapyard
 
                 var movingAmount = Mathf.RoundToInt(Mathf.Min(availableResources, fillRemaining));
 
-                botLiquidElement.PreviewChange(movingAmount);
-                storageLiquidElement.PreviewChange(-movingAmount);
+                if (isRecoveryDrone == _droneDesigner.IsEditingRecoveryDrone)
+                {
+                    botLiquidElement.PreviewChange(movingAmount);
+                }
+
+                if (resourceScrollViewPreviewAmounts.ContainsKey(storageResourceElement))
+                {
+                    resourceScrollViewPreviewAmounts[storageResourceElement] += movingAmount;
+                }
+                else
+                {
+                    resourceScrollViewPreviewAmounts.Add(storageResourceElement, movingAmount);
+                }
+                //storageResourceElement.PreviewChange(-movingAmount);
             }
+
+            return resourceScrollViewPreviewAmounts;
         }
 
         private void PreviewRepairCost(bool showPreview)
