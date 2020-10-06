@@ -14,6 +14,8 @@ namespace StarSalvager.UI.Scrapyard
         //============================================================================================================//
 
         [SerializeField, Required]
+        private GameObject shipInteriorWindow;
+        [SerializeField, Required]
         private GameObject missionsWindow;
         
         [SerializeField, Required]
@@ -38,6 +40,8 @@ namespace StarSalvager.UI.Scrapyard
         private Button missionsButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button menuButton;
+        [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
+        private Button backButton;
 
         //====================================================================================================================//
         
@@ -59,9 +63,9 @@ namespace StarSalvager.UI.Scrapyard
             _droneDesigner = FindObjectOfType<DroneDesigner>();
             
             InitButtons();
-            
-                        
-            workbenchWindow.SetActive(true);
+
+            shipInteriorWindow.SetActive(true);    
+            workbenchWindow.SetActive(false);
             saveGameWindow.SetActive(false);
             logisticsWindow.SetActive(false);
             missionsWindow.SetActive(false);
@@ -71,7 +75,8 @@ namespace StarSalvager.UI.Scrapyard
         {
             CameraController.CameraOffset(Vector3.zero, true);
             
-            workbenchButton.onClick?.Invoke();
+            backButton.onClick?.Invoke();
+            
         }
 
         //============================================================================================================//
@@ -88,6 +93,9 @@ namespace StarSalvager.UI.Scrapyard
 
             workbenchButton.onClick.AddListener(() =>
             {
+                backButton.gameObject.SetActive(true);
+                
+                shipInteriorWindow.SetActive(false);  
                 workbenchWindow.SetActive(true);
                 saveGameWindow.SetActive(false);
                 logisticsWindow.SetActive(false);
@@ -97,6 +105,9 @@ namespace StarSalvager.UI.Scrapyard
             
             missionsButton.onClick.AddListener(() =>
             {
+                backButton.gameObject.SetActive(true);
+                
+                shipInteriorWindow.SetActive(false); 
                 workbenchWindow.SetActive(false);
                 saveGameWindow.SetActive(false);
                 logisticsWindow.SetActive(false);
@@ -115,9 +126,23 @@ namespace StarSalvager.UI.Scrapyard
             
             logisticsButton.onClick.AddListener(() =>
             {
+                backButton.gameObject.SetActive(true);
+                
+                shipInteriorWindow.SetActive(false); 
                 workbenchWindow.SetActive(false);
                 saveGameWindow.SetActive(false);
                 logisticsWindow.SetActive(true);
+                missionsWindow.SetActive(false);
+            });
+            
+            backButton.onClick.AddListener(() =>
+            {
+                backButton.gameObject.SetActive(false);
+                
+                shipInteriorWindow.SetActive(true); 
+                workbenchWindow.SetActive(false);
+                saveGameWindow.SetActive(false);
+                logisticsWindow.SetActive(false);
                 missionsWindow.SetActive(false);
             });
 
