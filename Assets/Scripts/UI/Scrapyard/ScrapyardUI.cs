@@ -81,7 +81,7 @@ namespace StarSalvager.UI.Scrapyard
             //Launch Window Buttons
             //--------------------------------------------------------------------------------------------------------//
             
-            launchButton.onClick.AddListener(Launch);
+            launchButton.onClick.AddListener(TryLaunch);
             
             //Navigation Buttons
             //--------------------------------------------------------------------------------------------------------//
@@ -128,7 +128,7 @@ namespace StarSalvager.UI.Scrapyard
         //Launch Window Functions
         //============================================================================================================//
         
-        private void Launch()
+        private void TryLaunch()
         {
             if (!_droneDesigner.IsFullyConnected())
             {
@@ -142,6 +142,30 @@ namespace StarSalvager.UI.Scrapyard
                 return;
             }
 
+            //Checks to see if we need to display a window
+            if (PlayerPersistentData.PlayerData.partsInStorageBlockData.Count > 0)
+            {
+                Alert.ShowAlert("Warning!", 
+                    "You have unused parts left in storage, are you sure you want to launch?",
+                    "Launch!", 
+                    "Back", 
+                    state =>
+                    {
+                        if(state) Launch();
+                        
+                    }, 
+                    "PartsStorage");
+                
+                return;
+            }
+
+            
+
+            Launch();
+        }
+
+        private void Launch()
+        {
             //TODO Need to decide if this should happen at arrival or at launch
             TryFillBotResources();
             
@@ -153,7 +177,6 @@ namespace StarSalvager.UI.Scrapyard
             }
             
             SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
-            
         }
         
         

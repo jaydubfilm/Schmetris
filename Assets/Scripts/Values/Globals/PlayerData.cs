@@ -135,6 +135,11 @@ namespace StarSalvager.Values
 
         public string PlaythroughID = string.Empty;
 
+        [JsonIgnore]
+        public IReadOnlyList<string> DontShowAgainKeys => _dontShowAgainKeys;
+        [JsonProperty] 
+        private List<string> _dontShowAgainKeys = new List<string>();
+
         //============================================================================================================//
 
         public void ChangeGears(int amount)
@@ -468,6 +473,16 @@ namespace StarSalvager.Values
 
         //============================================================================================================//
 
+        //DontShowAgain Tracking Functions
+        //====================================================================================================================//
+
+        public void AddDontShowAgainKey(string key)
+        {
+            _dontShowAgainKeys.Add(key);
+        }
+
+        //====================================================================================================================//
+        
         public List<BlockData> GetCurrentBlockData()
         {
             return currentBlockData;
