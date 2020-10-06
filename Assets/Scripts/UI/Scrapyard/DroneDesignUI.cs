@@ -61,6 +61,8 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button repairButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private FadeUIImage repairButtonGlow;
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button toggleBotsButton;
         private TMP_Text _repairButtonText;
 
@@ -574,6 +576,7 @@ namespace StarSalvager.UI.Scrapyard
             
             _repairButtonText.text = $"Repair {finalRepairCost} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.GREEN]}";
             repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] >= finalRepairCost;
+            repairButtonGlow.SetActive(repairButton.interactable);
             
             /*var totalCost = repairCost + replacementCost;
             
