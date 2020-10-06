@@ -222,7 +222,7 @@ namespace StarSalvager.UI
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
 
-                    menuState = MENUSTATE.GAMEMENU;
+                    //menuState = MENUSTATE.GAMEMENU;
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU);
                 }
             });
@@ -260,7 +260,7 @@ namespace StarSalvager.UI
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
                     PlayerPersistentData.ResetPlayerData();
 
-                    menuState = MENUSTATE.GAMEMENU;
+                    //menuState = MENUSTATE.GAMEMENU;
                     introSceneCanvas.SetActive(true);
                     mainMenuWindow.SetActive(false);
 
