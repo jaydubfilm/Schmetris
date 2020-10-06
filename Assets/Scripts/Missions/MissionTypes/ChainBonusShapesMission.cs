@@ -47,7 +47,7 @@ namespace StarSalvager.Missions
             int curAmount = 0;
             if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
             {
-                curAmount = LevelManager.Instance.WaveEndSummaryData.numBonusShapesMatched;
+                curAmount = LevelManager.Instance.WaveEndSummaryData.NumBonusShapesMatched;
             }
 
             if (curAmount == 0 && amountNeeded == 1)

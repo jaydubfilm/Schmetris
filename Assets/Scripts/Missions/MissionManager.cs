@@ -124,7 +124,7 @@ namespace StarSalvager.Missions
             RecentCompletedMissionName = missionName;
             if (LevelManager.Instance.WaveEndSummaryData != null)
             {
-                LevelManager.Instance.WaveEndSummaryData.missionCompletedStrings.Add(missionName);
+                LevelManager.Instance.WaveEndSummaryData.AddCompletedMission(missionName);
             }
 
             CheckUnlocks();
@@ -148,7 +148,7 @@ namespace StarSalvager.Missions
 
                     if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
                     {
-                        LevelManager.Instance.WaveEndSummaryData.missionUnlockedStrings.Add(mission.missionName);
+                        LevelManager.Instance.WaveEndSummaryData.AddUnlockedMission(mission.missionName);
                     }
                 }
             }

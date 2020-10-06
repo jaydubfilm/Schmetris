@@ -406,8 +406,9 @@ namespace StarSalvager
                     if(_flashes != null && _flashes.ContainsKey(part))
                         GetAlertIcon(part).SetActive(false);
                 }
-                
-                
+
+                //Used to measure total consumption of parts over time
+                float resoucesConsumed = 0f;
 
                 switch (part.Type)
                 {
@@ -419,9 +420,12 @@ namespace StarSalvager
                         //Determines if the player can move with no available fuel
                         //NOTE: This needs to happen before the subtraction of resources to prevent premature force-stop
                         InputManager.Instance.LockSideMovement = resourceValue <= 0f;
-                        
+
                         if (resourceValue > 0f && useBurnRate)
-                            resourceValue -= levelData.burnRate * Time.deltaTime;
+                        {
+                            resoucesConsumed = levelData.burnRate * Time.deltaTime;
+                            resourceValue -= resoucesConsumed;
+                        }
 
                         
                         CanSelfDestruct = outOfFuel;
@@ -488,8 +492,8 @@ namespace StarSalvager
                                 break;
                         }
 
-                        
-                        resourceValue -= levelData.burnRate * Time.deltaTime;
+                        resoucesConsumed = levelData.burnRate * Time.deltaTime;
+                        resourceValue -= resoucesConsumed;
 
                         var repairAmount = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Heal);
 
@@ -547,8 +551,12 @@ namespace StarSalvager
                                 AudioController.PlaySound(SOUND.GUN_CLICK);
                                 break;
                             }
-                            if(resourceValue > 0)
-                                resourceValue -= levelData.burnRate;
+
+                            if (resourceValue > 0)
+                            {
+                                resoucesConsumed = levelData.burnRate;
+                                resourceValue -= resoucesConsumed;
+                            }
                         }
 
                         //Create projectile
@@ -609,8 +617,10 @@ namespace StarSalvager
                             //TODO Shield has countdown before it can begin recharging
                             if (data.timer >= data.waitTime)
                             {
+                                resoucesConsumed = levelData.burnRate * Time.deltaTime;
+                                
                                 //TODO Shield only use resources when recharging
-                                resourceValue -= levelData.burnRate * Time.deltaTime;
+                                resourceValue -= resoucesConsumed;
                                 _shields[part].currentHp += levelData.burnRate * Time.deltaTime;
                                 
                                 TryPlaySound(part, SOUND.SHIELD_RECHARGE, true);
@@ -654,7 +664,8 @@ namespace StarSalvager
 
                         levelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out cooldown);
 
-                        resourceValue -= Time.deltaTime;
+                        resoucesConsumed = Time.deltaTime;
+                        resourceValue -= resoucesConsumed;
 
                         _bombTimers[part] -= Time.deltaTime;
                         GameUI.SetFill(index, 1f - _bombTimers[part] / cooldown);
@@ -666,6 +677,9 @@ namespace StarSalvager
                 UpdateUI(partRemoteData.burnType, resourceValue);
 
                 PlayerPersistentData.PlayerData.SetLiquidResource(partRemoteData.burnType, resourceValue, bot.IsRecoveryDrone);
+
+                if(resoucesConsumed > 0)
+                    LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(partRemoteData.burnType, resoucesConsumed);
             }
 
             powerValue -= powerToRemove;
@@ -690,6 +704,8 @@ namespace StarSalvager
             }
             UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW]);
             UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE]);
+            
+            
         }
 
         //============================================================================================================//

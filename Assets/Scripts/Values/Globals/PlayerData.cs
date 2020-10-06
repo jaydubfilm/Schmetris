@@ -148,6 +148,11 @@ namespace StarSalvager.Values
 
         public string PlaythroughID = string.Empty;
 
+        [JsonIgnore]
+        public IReadOnlyList<string> DontShowAgainKeys => _dontShowAgainKeys;
+        [JsonProperty] 
+        private List<string> _dontShowAgainKeys = new List<string>();
+
         //============================================================================================================//
 
         public void ChangeGears(int amount)
@@ -155,7 +160,7 @@ namespace StarSalvager.Values
             Gears += amount;
             if (LevelManager.Instance.WaveEndSummaryData != null)
             {
-                LevelManager.Instance.WaveEndSummaryData.numGearsGained += amount;
+                LevelManager.Instance.WaveEndSummaryData.NumGearsGained += amount;
             }
 
             int gearsToLevelUp = LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).GearsToLevelUp;
@@ -165,7 +170,7 @@ namespace StarSalvager.Values
                 DropLevelLoot();
                 if (LevelManager.Instance.WaveEndSummaryData != null)
                 {
-                    LevelManager.Instance.WaveEndSummaryData.numLevelsGained++;
+                    LevelManager.Instance.WaveEndSummaryData.NumLevelsGained++;
                 }
                 Level++;
 
@@ -519,6 +524,16 @@ namespace StarSalvager.Values
 
         //============================================================================================================//
 
+        //DontShowAgain Tracking Functions
+        //====================================================================================================================//
+
+        public void AddDontShowAgainKey(string key)
+        {
+            _dontShowAgainKeys.Add(key);
+        }
+
+        //====================================================================================================================//
+        
         public List<BlockData> GetCurrentBlockData()
         {
             return currentBlockData;
@@ -573,7 +588,7 @@ namespace StarSalvager.Values
                 //FIXME This may benefit from the use of a callback instead of a direct call
                 if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
                 {
-                    LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprint.DisplayString);
+                    LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprint.DisplayString);
                 }
             }
             OnValuesChanged?.Invoke();
@@ -687,7 +702,7 @@ namespace StarSalvager.Values
                     //FIXME This may benefit from the use of a callback instead of a direct call
                     if (LevelManager.Instance.WaveEndSummaryData != null)
                     {
-                        LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprintUnlockString);
+                        LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprintUnlockString);
                     }
                 }
             }
@@ -697,7 +712,7 @@ namespace StarSalvager.Values
                 //FIXME This may benefit from the use of a callback instead of a direct call
                 if (LevelManager.Instance.WaveEndSummaryData != null)
                 {
-                    LevelManager.Instance.WaveEndSummaryData.blueprintsUnlockedStrings.Add(blueprintUnlockString);
+                    LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprintUnlockString);
                 }
             }
             OnValuesChanged?.Invoke();
