@@ -12,7 +12,7 @@ namespace StarSalvager.Utilities.UI
 
         private Color _color, _clearColor;
 
-        private bool _active;
+        private bool _active = true;
 
         //============================================================================================================//
 

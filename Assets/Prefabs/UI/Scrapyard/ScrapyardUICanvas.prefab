@@ -1822,7 +1822,7 @@ MonoBehaviour:
   saveLayoutButton: {fileID: 7155991213679563419}
   loadLayoutButton: {fileID: 3555107843965283696}
   repairButton: {fileID: 3482729043926131998}
-  repairButtonGlow: {fileID: 0}
+  repairButtonGlow: {fileID: 2461940204855172626}
   toggleBotsButton: {fileID: 6972056318155447954}
   loadMenu: {fileID: 1184839939629708797}
   loadConfirm: {fileID: 6880312715060775492}
@@ -9142,7 +9142,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 246.17896, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &2941869098092947876
