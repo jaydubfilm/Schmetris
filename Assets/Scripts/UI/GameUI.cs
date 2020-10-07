@@ -5,51 +5,13 @@ using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
     public class GameUI : MonoBehaviour
     {
-        /*[Serializable, Obsolete]
-        public struct SmartWeapon
-        {
-            public Image image;
-            public Image NoResourceIcon;
-
-            public TMP_Text keyText;
-
-            public void Reset()
-            {
-                SetFill(1f);
-                SetHasResource(true);
-                SetActive(false);
-            }
-
-            public void SetActive(bool state)
-            {
-                image.gameObject.SetActive(state);
-            }
-
-            public void SetHasResource(bool hasResource)
-            {
-                //Doesn't matter if the thing isn't showing
-                if (!image.gameObject.activeInHierarchy)
-                    return;
-
-                //Prevent constantly setting the below values
-                if (NoResourceIcon.gameObject.activeInHierarchy == !hasResource)
-                    return;
-
-                image.color = hasResource ? Color.white : Color.gray;
-                NoResourceIcon.gameObject.SetActive(!hasResource);
-            }
-
-            public void SetFill(float fillValue)
-            {
-                image.fillAmount = fillValue;
-            }
-        }*/
         [Serializable]
         public struct SmartWeaponV2
         {
@@ -63,31 +25,9 @@ namespace StarSalvager.UI
             public Image fillImage;
 
             public Sprite[] sprites;
-            
-            /*[Required] 
-            public Image noResourceIcon;*/
-            /*[Required, FoldoutGroup("$NAME")] 
-            public TMP_Text keyText;*/
 
 #if UNITY_EDITOR
             private string NAME => buttonObject ? buttonObject.gameObject.name : "Null";
-            /*[SerializeField, HorizontalGroup("$NAME/Row1")]
-            private Color color;
-
-            [Button, HorizontalGroup("$NAME/Row1")]
-            private void SetColors()
-            {
-                var images = new List<Image>(buttonObject.GetComponentsInChildren<Image>())
-                {
-                    buttonObject.targetGraphic as Image
-                };
-
-                foreach (var image in images)
-                {
-                    image.color = color;
-                }
-                
-            }*/
 #endif
 
             public void Reset()
@@ -101,30 +41,6 @@ namespace StarSalvager.UI
             {
                 buttonObject.gameObject.SetActive(state);
             }
-            
-            /*//FIXME I'll need to prevent constant setting here
-            public void SetHasResource(bool hasResource)
-            {
-                //Doesn't matter if the thing isn't showing
-                if (!buttonObject.gameObject.activeInHierarchy)
-                    return;
-
-                /#1#/Prevent constantly setting the below values
-                if (buttonObject.image.sprite == _sprites[2])
-                    return;#1#
-
-                //If the resource is full & we have resources, set the sprite to glow
-                if (fillImage.fillAmount >= 1f && hasResource)
-                    buttonImage.sprite = sprites[1];
-                else
-                {
-                    buttonImage.sprite = hasResource ? sprites[1] : sprites[2];
-                }
-                    
-                
-                //fillImage.color = hasResource ? Color.white : Color.gray;
-                //noResourceIcon.gameObject.SetActive(!hasResource);
-            }*/
 
             public void SetFill(float fillValue)
             {
@@ -176,6 +92,9 @@ namespace StarSalvager.UI
         private GameObject abortWindow;
         [SerializeField, Required, FoldoutGroup("B Window")]
         private Button abortButton;
+        [FormerlySerializedAs("recoveryDronBanner")] [SerializeField, Required, FoldoutGroup("B Window")]
+        private GameObject recoveryDroneBanner;
+        
 
         //Bottom Left Window
         //============================================================================================================//
@@ -351,6 +270,8 @@ namespace StarSalvager.UI
             
             SetPlayerGearsLevel(0,0, 0);
             ShowAbortWindow(false);
+
+            ShowRecoveryBanner(false);
         }
 
         private void InitSliderText()
@@ -665,6 +586,14 @@ namespace StarSalvager.UI
         }
 
         //============================================================================================================//
+
+        public void ShowRecoveryBanner(bool shown)
+        {
+            recoveryDroneBanner.SetActive(shown);
+        }
+        
+        //====================================================================================================================//
+        
 
 
         private static void CheckActivateGlow(SliderText slider, Behaviour glowSlider)

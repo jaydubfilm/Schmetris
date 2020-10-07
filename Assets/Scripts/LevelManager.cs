@@ -172,11 +172,13 @@ namespace StarSalvager
                     RecoverFromDeath = true;
 
                     Alert.ShowAlert("Bot wrecked",
-                        "Your bot has been wrecked. Deploy your recovery bot to rescue it.", "Ok", 
+                        "Your bot has been wrecked. Deploy your recovery bot to rescue it.", 
+                        "Deploy", 
                         () =>
                         {
                             RecoverFromDeath = true;
                             IsWaveProgressing = true;
+                            GameUi.ShowRecoveryBanner(true);
                             RestartLevel();
                         });
 
@@ -259,6 +261,7 @@ namespace StarSalvager
                     m_levelManagerUI.ShowSummaryScreen("Bot Recovered",
                         "You have recovered your wrecked bot. Return to base!", () =>
                         {
+                            GameUi.ShowRecoveryBanner(false);
                             GameTimer.SetPaused(false);
                             EndWaveState = false;
                             EndSectorState = false;
