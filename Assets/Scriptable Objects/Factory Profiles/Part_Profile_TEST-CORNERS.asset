@@ -96,6 +96,11 @@ MonoBehaviour:
     - {fileID: 1389927180037635429, guid: 73b7c16003b98714ca98a495da0d2bed, type: 3}
     - {fileID: -7473885232195336538, guid: 73b7c16003b98714ca98a495da0d2bed, type: 3}
     - {fileID: 1807682374994618482, guid: 73b7c16003b98714ca98a495da0d2bed, type: 3}
+  - partType: 14
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: -5092879141632876641, guid: 73b7c16003b98714ca98a495da0d2bed, type: 3}
+    - {fileID: 124931409832635128, guid: 73b7c16003b98714ca98a495da0d2bed, type: 3}
   damagedSprites:
   - {fileID: 8564895758720257271, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
   - {fileID: 6090780171333522907, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}

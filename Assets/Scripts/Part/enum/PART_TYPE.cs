@@ -19,6 +19,7 @@
         
         TRIPLESHOT,
         STOREYELLOW,
+        MISSILE,
     } 
 }
 

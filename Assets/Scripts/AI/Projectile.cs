@@ -10,29 +10,27 @@ namespace StarSalvager.AI
     //TODO: Handle proper setting of the collision tag
     public class Projectile : CollidableBase, ICustomRecycle
     {
-        [NonSerialized]
-        private Vector3 _mTravelDirectionNormalized = Vector3.zero;
-        [NonSerialized]
-        private Vector3 _mEnemyVelocityModifier = Vector3.zero;
-        [NonSerialized]
-        public ProjectileProfileData MProjectileData;
+        private Vector3 TravelDirectionNormalized { get; set; }
+        private Vector3 EnemyVelocityModifier { get; set; }
+        private ProjectileProfileData ProjectileData { get; set; }
 
         private float _damageAmount;
 
         private bool _hasRange;
         private float _lifeTime;
-        
+        private CollidableBase _target;
+
         //============================================================================================================//
 
         // Update is called once per frame
         private void Update()
         {
-            if(GameTimer.IsPaused)
+            if (GameTimer.IsPaused)
                 return;
 
             if (_hasRange)
                 CheckLifeTime();
-            
+
 
             if (!CameraController.IsPointInCameraRect(transform.position))
             {
@@ -40,27 +38,32 @@ namespace StarSalvager.AI
                 return;
             }
 
-            transform.position += (_mEnemyVelocityModifier + _mTravelDirectionNormalized * MProjectileData.ProjectileSpeed) * Time.deltaTime;
+            ApplyMovement();
         }
-        
+
         //============================================================================================================//
-        
-        public void Init(string collisionTag, float damage, Vector2 direction, Vector2 velocity)
+
+        public virtual void Init(ProjectileProfileData profileData, CollidableBase target, string collisionTag, float damage,
+            Vector2 direction, Vector2 velocity)
         {
+            ProjectileData = profileData;
+
+            _target = target;
+
             CollisionTag = collisionTag;
             _damageAmount = damage;
-            
-            _mTravelDirectionNormalized = direction;
-            _mEnemyVelocityModifier = velocity;
+
+            TravelDirectionNormalized = direction;
+            EnemyVelocityModifier = velocity;
 
             transform.up = direction;
-            
-            if (MProjectileData.ProjectileRange > 0)
+
+            if (ProjectileData.ProjectileRange > 0)
             {
                 _hasRange = true;
-                
+
                 //Calculates the time it will take to travel the distance
-                _lifeTime = MProjectileData.ProjectileRange / MProjectileData.ProjectileSpeed;
+                _lifeTime = ProjectileData.ProjectileRange / ProjectileData.ProjectileSpeed;
             }
         }
 
@@ -74,7 +77,61 @@ namespace StarSalvager.AI
 
             Recycler.Recycle<Projectile>(this);
         }
-        
+
+        private void ApplyMovement()
+        {
+            var newPosition = transform.position;
+
+            switch (ProjectileData.AttackType)
+            {
+                //----------------------------------------------------------------------------------------------------//
+
+                case ENEMY_ATTACKTYPE.Forward:
+                case ENEMY_ATTACKTYPE.AtPlayer:
+                case ENEMY_ATTACKTYPE.AtPlayerCone:
+                case ENEMY_ATTACKTYPE.Down:
+                case ENEMY_ATTACKTYPE.Random_Spray:
+                case ENEMY_ATTACKTYPE.Spiral:
+                case ENEMY_ATTACKTYPE.Fixed_Spray:
+                    newPosition +=
+                        (EnemyVelocityModifier + TravelDirectionNormalized * ProjectileData.ProjectileSpeed) *
+                        Time.deltaTime;
+                    break;
+
+                //----------------------------------------------------------------------------------------------------//
+
+                case ENEMY_ATTACKTYPE.Heat_Seeking:
+
+                    if (_target != null)
+                    {
+                        if (_target is IRecycled iRecycled && !iRecycled.IsRecycled)
+                        {
+                            
+                            var up = transform.up;
+                            var direction = (_target.transform.position - transform.position).normalized;
+                            var rotation = Vector3.Cross(up, direction).z;
+                    
+                            transform.rotation *= Quaternion.Euler(Vector3.forward * (rotation * 5f));
+                        }
+                        else
+                        {
+                            _target = null;
+                        }
+                    }
+
+                    newPosition += transform.up.normalized * (ProjectileData.ProjectileSpeed * Time.deltaTime);
+                    break;
+
+                //----------------------------------------------------------------------------------------------------//
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(ProjectileData.AttackType), ProjectileData.AttackType,
+                        null);
+            }
+
+            transform.position = newPosition;
+        }
+
         //============================================================================================================//
 
         protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
@@ -84,32 +141,34 @@ namespace StarSalvager.AI
             if (canBeHit == null)
                 return;
 
-            if (!MProjectileData.CanHitAsteroids && canBeHit is Asteroid)
+            if (!ProjectileData.CanHitAsteroids && canBeHit is Asteroid)
                 return;
-                
-            if(canBeHit.TryHitAt(transform.position, _damageAmount))
+
+            if (canBeHit.TryHitAt(transform.position, _damageAmount))
                 Recycler.Recycle<Projectile>(this);
         }
 
         //====================================================================================================================//
-        
+
         public void FlipSpriteX(bool state)
         {
             renderer.flipY = state;
         }
-        
+
         public void FlipSpriteY(bool state)
         {
             renderer.flipY = state;
         }
-        
+
         //============================================================================================================//
-        
+
         public void CustomRecycle(params object[] args)
         {
+            transform.rotation = Quaternion.identity;
+            _target = null;
             _hasRange = false;
             _lifeTime = 0f;
-            
+
             renderer.flipX = renderer.flipY = false;
         }
     }

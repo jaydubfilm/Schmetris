@@ -506,10 +506,9 @@ namespace StarSalvager
 
                         TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
                         break;
+                    case PART_TYPE.MISSILE:
                     case PART_TYPE.TRIPLESHOT:
                     case PART_TYPE.GUN:
-
-
 
                         //TODO Need to determine if the shoot type is looking for enemies or not
                         //--------------------------------------------------------------------------------------------//
@@ -559,7 +558,22 @@ namespace StarSalvager
                             }
                         }
 
-                        //Create projectile
+                        switch (part.Type)
+                        {
+                            case PART_TYPE.GUN:
+                            case PART_TYPE.TRIPLESHOT:
+                                var target = part.transform.position + part.transform.up;
+                                CreateProjectile(part, levelData, target);
+                                break;
+                            case PART_TYPE.MISSILE:
+                                CreateProjectile(part, levelData, enemy);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                        
+
+                        /*//Create projectile
                         //--------------------------------------------------------------------------------------------//
 
                         //const string PROJECTILE_ID = "083be790-7a08-4f27-b506-e8e09a116bc8";
@@ -579,10 +593,6 @@ namespace StarSalvager
                                 damage,
                                 "Enemy",
                                 true);
-                        
-                        /*projectile.transform.position = part.transform.position;
-
-                        LevelManager.Instance.ProjectileManager.AddProjectile(projectile);*/
 
 
                         switch (part.level)
@@ -593,7 +603,7 @@ namespace StarSalvager
                             case 1 :
                                 AudioController.PlaySound(SOUND.GUNLVL2_FIRE);
                                 break;
-                        }
+                        }*/
 
                         //--------------------------------------------------------------------------------------------//
 
@@ -662,13 +672,13 @@ namespace StarSalvager
                         //GameUI.SetHasResource(index, true);
 
 
-                        levelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out cooldown);
+                        levelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float shieldCooldown);
 
                         resoucesConsumed = Time.deltaTime;
                         resourceValue -= resoucesConsumed;
 
                         _bombTimers[part] -= Time.deltaTime;
-                        GameUI.SetFill(index, 1f - _bombTimers[part] / cooldown);
+                        GameUI.SetFill(index, 1f - _bombTimers[part] / shieldCooldown);
 
                         break;
                     
@@ -707,6 +717,48 @@ namespace StarSalvager
             
             
         }
+
+
+        //====================================================================================================================//
+
+        #region Weapons
+
+        private static void CreateProjectile(in Part part, PartLevelData levelData, in Enemy enemy)
+        {
+            var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
+            var damage = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Damage);
+
+            var position = part.transform.position;
+
+            //TODO Might need to add something to change the projectile used for each gun piece
+            FactoryManager.Instance.GetFactory<ProjectileFactory>()
+                .CreateObjects<Projectile>(
+                    projectileId,
+                    position,
+                    enemy,
+                    damage,
+                    "Enemy",
+                    true);
+        }
+        private static void CreateProjectile(in Part part, PartLevelData levelData, Vector2 targetPosition)
+        {
+            var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
+            var damage = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Damage);
+
+            var position = part.transform.position;
+
+            //TODO Might need to add something to change the projectile used for each gun piece
+            FactoryManager.Instance.GetFactory<ProjectileFactory>()
+                .CreateObjects<Projectile>(
+                    projectileId,
+                    position,
+                    targetPosition,
+                    damage,
+                    "Enemy",
+                    true);
+        }
+
+        #endregion //Weapons
 
         //============================================================================================================//
 

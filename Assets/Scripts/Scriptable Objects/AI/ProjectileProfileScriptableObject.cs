@@ -3,7 +3,6 @@ using StarSalvager.Factories.Data;
 using UnityEngine;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using StarSalvager.AI;
 
 namespace StarSalvager.ScriptableObjects
 {
