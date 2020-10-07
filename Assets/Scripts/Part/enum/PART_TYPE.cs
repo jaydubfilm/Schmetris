@@ -20,6 +20,7 @@
         TRIPLESHOT,
         STOREYELLOW,
         MISSILE,
+        SNIPER,
     } 
 }
 
