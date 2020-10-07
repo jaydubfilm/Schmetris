@@ -30,7 +30,19 @@ namespace StarSalvager.UI.Scrapyard
         
         [SerializeField, Required]
         private GameObject saveGameWindow;
-        
+
+        [SerializeField, Required, FoldoutGroup("Settings Menu")]
+        private GameObject settingsWindow;
+        [SerializeField, Required, FoldoutGroup("Settings Menu")]
+        private Button resumeGameButton;
+        [SerializeField, Required, FoldoutGroup("Settings Menu")]
+        private Button saveGameButton;
+        [SerializeField, Required, FoldoutGroup("Settings Menu")]
+        private Button loadGameButton;
+        [SerializeField, Required, FoldoutGroup("Settings Menu")]
+        private Button settingsButton;
+        [SerializeField, Required, FoldoutGroup("Settings Menu")]
+        private Button quitGameButton;
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
@@ -49,14 +61,21 @@ namespace StarSalvager.UI.Scrapyard
 
         //====================================================================================================================//
         
-        [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
-        private Button saveGameButton;
-
-        //============================================================================================================//
         [SerializeField]
         private CameraController CameraController;
         
         private DroneDesigner _droneDesigner;
+
+        private GameObject[] _windows;
+        private enum Window
+        {
+            ShipInterior = 0,
+            Workbench,
+            Logistics,
+            Missions,
+            Settings,
+            SaveGame,
+        }
         
         //============================================================================================================//
 
@@ -66,13 +85,18 @@ namespace StarSalvager.UI.Scrapyard
         {
             _droneDesigner = FindObjectOfType<DroneDesigner>();
             
+            _windows = new[]
+            {
+                shipInteriorWindow,
+                workbenchWindow,
+                logisticsWindow,
+                missionsWindow,
+                settingsWindow,
+                saveGameWindow
+            };
+            
             InitButtons();
-
-            shipInteriorWindow.SetActive(true);    
-            workbenchWindow.SetActive(false);
-            saveGameWindow.SetActive(false);
-            logisticsWindow.SetActive(false);
-            missionsWindow.SetActive(false);
+            InitSettingsButtons();
         }
 
         private void OnEnable()
@@ -99,59 +123,80 @@ namespace StarSalvager.UI.Scrapyard
             {
                 backButton.gameObject.SetActive(true);
                 
-                shipInteriorWindow.SetActive(false);  
-                workbenchWindow.SetActive(true);
-                saveGameWindow.SetActive(false);
-                logisticsWindow.SetActive(false);
-                missionsWindow.SetActive(false);
+                SetWindowActive(Window.Workbench);
             });
-            
             
             missionsButton.onClick.AddListener(() =>
             {
                 backButton.gameObject.SetActive(true);
-                
-                shipInteriorWindow.SetActive(false); 
-                workbenchWindow.SetActive(false);
-                saveGameWindow.SetActive(false);
-                logisticsWindow.SetActive(false);
-                missionsWindow.SetActive(true);
-            });
 
-            menuButton.onClick.AddListener(() =>
-            {
-                PlayerPersistentData.SaveAutosaveFiles();
-                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
-            });
-            saveGameButton.onClick.AddListener(() =>
-            {
-                saveGameWindow.SetActive(true);
+                SetWindowActive(Window.Missions);
             });
             
             logisticsButton.onClick.AddListener(() =>
             {
                 backButton.gameObject.SetActive(true);
                 
-                shipInteriorWindow.SetActive(false); 
-                workbenchWindow.SetActive(false);
-                saveGameWindow.SetActive(false);
-                logisticsWindow.SetActive(true);
-                missionsWindow.SetActive(false);
+                SetWindowActive(Window.Logistics);
             });
+            
+            menuButton.onClick.AddListener(() =>
+            {
+                _windows[(int)Window.Settings].SetActive(true);
+            });
+
             
             backButton.onClick.AddListener(() =>
             {
                 backButton.gameObject.SetActive(false);
                 
-                shipInteriorWindow.SetActive(true); 
-                workbenchWindow.SetActive(false);
-                saveGameWindow.SetActive(false);
-                logisticsWindow.SetActive(false);
-                missionsWindow.SetActive(false);
+                SetWindowActive(Window.ShipInterior);
             });
 
             //--------------------------------------------------------------------------------------------------------//
 
+        }
+
+        private void InitSettingsButtons()
+        {
+            resumeGameButton.onClick.AddListener(() =>
+            {
+                _windows[(int)Window.Settings].SetActive(false);
+            });
+            
+            loadGameButton.onClick.AddListener(() =>
+            {
+                throw new NotImplementedException();
+            });
+            settingsButton.onClick.AddListener(() =>
+            {
+                throw new NotImplementedException();
+            });
+            
+            quitGameButton.onClick.AddListener(() =>
+            {
+                Alert.ShowAlert("Quitting",
+                    "Are you sure you want to save & quit?",
+                    "Desktop",
+                    "Main Menu",
+                    "Cancel",
+                    quit =>
+                    {
+                        PlayerPersistentData.SaveAutosaveFiles();
+
+                        if (!quit)
+                        {
+                            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
+                            return;
+                        }
+#if UNITY_EDITOR
+                        UnityEditor.EditorApplication.isPlaying = false;
+#else
+                        Application.Quit();
+#endif
+                    },
+                    null);
+            });
         }
 
         //Launch Window Functions
@@ -299,6 +344,18 @@ namespace StarSalvager.UI.Scrapyard
         }
         
         //============================================================================================================//
+        private void SetWindowActive(Window window)
+        {
+            SetWindowActive((int)window);
+        }
+
+        private void SetWindowActive(int index)
+        {
+            for (var i = 0; i < _windows.Length; i++)
+            {
+                _windows[i].SetActive(i == index);
+            }
+        }
 
     } 
 }
