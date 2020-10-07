@@ -11,6 +11,7 @@ using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard
@@ -20,10 +21,12 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required] 
         private TMP_Text flightDataText;
         
-        [SerializeField, Required]
-        private PointerEvents launchButtonPointerEvents;
+        //[SerializeField, Required]
+        //private PointerEvents launchButtonPointerEvents;
         [SerializeField, Required]
         private PointerEvents repairButtonPointerEvents;
+        [SerializeField, Required]
+        private GameObject recoveryDroneBannerObject;
 
         //====================================================================================================================//
         
@@ -135,6 +138,8 @@ namespace StarSalvager.UI.Scrapyard
             _scrollViewsSetup = true;
 
             _currentlyOverwriting = false;
+
+            recoveryDroneBannerObject.SetActive(DroneDesigner.IsEditingRecoveryDrone);
         }
 
         private void OnEnable()
@@ -297,8 +302,12 @@ namespace StarSalvager.UI.Scrapyard
 
             toggleBotsButton.onClick.AddListener(() =>
             {
+                
                 DroneDesigner.ToggleDrones();
                 UpdateBotResourceElements();
+                
+                recoveryDroneBannerObject.SetActive(DroneDesigner.IsEditingRecoveryDrone);
+
             });
         }
 
