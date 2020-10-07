@@ -40,6 +40,7 @@ namespace StarSalvager.Factories
             return Recycler.TryGrab(out T newObject) ? newObject : CreateGameObject().GetComponent<T>();
         }
 
+        //Static Target position functions
         //============================================================================================================//
 
         //TODO: Add setting the collisionTag for the projectile
@@ -61,7 +62,53 @@ namespace StarSalvager.Factories
                 var projectile = CreateObject<Projectile>();
                 var projectileTransform = projectile.transform;
 
-                projectile.MProjectileData = projectileProfile;
+                projectile.SetSprite(projectileProfile.Sprite);
+
+                if (shouldFlipSprite && projectileProfile.RequiresRotation)
+                    projectile.FlipSpriteY(true);
+
+                LevelManager.Instance.ObstacleManager.AddTransformToRoot(projectileTransform);
+                //projectileTransform.SetParent(LevelManager.Instance.transform);
+                projectileTransform.transform.position = fromPosition;
+
+                projectile.Init(projectileProfile,
+                    null,
+                    collisionTag,
+                    damage,
+                    travelDirection.normalized,
+                    projectileProfile.AddVelocityToProjectiles ? currentVelocity : Vector2.zero);
+
+
+                LevelManager.Instance.ProjectileManager.AddProjectile(projectile);
+
+
+                projectiles.Add(projectile.GetComponent<T>());
+            }
+
+            return projectiles.ToArray();
+        }
+
+        //Moving Target position Functions
+        //====================================================================================================================//
+        
+        //TODO: Add setting the collisionTag for the projectile
+        public T[] CreateObjects<T>(string projectileType, Vector2 fromPosition, CollidableBase target, float damage, string collisionTag, bool shouldFlipSprite = false)
+        {
+            return CreateObjects<T>(projectileType, fromPosition, target, Vector2.zero, damage, collisionTag, shouldFlipSprite);
+        }
+        
+        public T[] CreateObjects<T>(string projectileType, Vector2 fromPosition, CollidableBase target,
+            Vector2 currentVelocity, float damage, string collisionTag, bool shouldFlipSprite = false)
+        {
+            var projectiles = new List<T>();
+            var projectileProfile = m_projectileProfile.GetProjectileProfileData(projectileType);
+
+            var travelDirections = GetFireDirections(projectileProfile, fromPosition, target.transform.position);
+
+            foreach (var travelDirection in travelDirections)
+            {
+                var projectile = CreateObject<Projectile>();
+                var projectileTransform = projectile.transform;
 
                 projectile.SetSprite(projectileProfile.Sprite);
 
@@ -72,7 +119,11 @@ namespace StarSalvager.Factories
                 //projectileTransform.SetParent(LevelManager.Instance.transform);
                 projectileTransform.transform.position = fromPosition;
 
-                projectile.Init(collisionTag, damage, travelDirection.normalized,
+                projectile.Init(projectileProfile,
+                    target,
+                    collisionTag,
+                    damage,
+                    travelDirection.normalized,
                     projectileProfile.AddVelocityToProjectiles ? currentVelocity : Vector2.zero);
 
 
@@ -101,6 +152,7 @@ namespace StarSalvager.Factories
                 //----------------------------------------------------------------------------------------------------//
                 case ENEMY_ATTACKTYPE.Forward:
                 case ENEMY_ATTACKTYPE.AtPlayer:
+                case ENEMY_ATTACKTYPE.Heat_Seeking:
                     fireDirections.Add(targetPosition - fromPosition);
                     break;
                 //----------------------------------------------------------------------------------------------------//
