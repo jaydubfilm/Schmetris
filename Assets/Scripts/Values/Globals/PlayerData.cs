@@ -86,11 +86,11 @@ namespace StarSalvager.Values
         //FIXME This needs to use some sort of capacity value
         private Dictionary<BIT_TYPE, float> _recoveryDroneLiquidResource = new Dictionary<BIT_TYPE, float>
         {
-            {BIT_TYPE.RED, 15},
-            {BIT_TYPE.BLUE, 15},
-            {BIT_TYPE.YELLOW, 15},
-            {BIT_TYPE.GREEN, 15},
-            {BIT_TYPE.GREY, 15},
+            {BIT_TYPE.RED, 10},
+            {BIT_TYPE.BLUE, 0},
+            {BIT_TYPE.YELLOW, 0},
+            {BIT_TYPE.GREEN, 0},
+            {BIT_TYPE.GREY, 0},
         };
 
         //FIXME I think that this should not be so persistent (Shouldn't need to be saved data)
@@ -98,6 +98,19 @@ namespace StarSalvager.Values
         public IReadOnlyDictionary<BIT_TYPE, int> liquidCapacity => _liquidCapacity;
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _liquidCapacity = new Dictionary<BIT_TYPE, int>
+        {
+            {BIT_TYPE.RED, 0},
+            {BIT_TYPE.BLUE, 0},
+            {BIT_TYPE.YELLOW, 0},
+            {BIT_TYPE.GREEN, 0},
+            {BIT_TYPE.GREY, 0},
+        };
+
+        //FIXME I think that this should not be so persistent (Shouldn't need to be saved data)
+        [JsonIgnore]
+        public IReadOnlyDictionary<BIT_TYPE, int> recoveryDroneLiquidCapacity => _recoveryDroneLiquidCapacity;
+        [JsonProperty]
+        private Dictionary<BIT_TYPE, int> _recoveryDroneLiquidCapacity = new Dictionary<BIT_TYPE, int>
         {
             {BIT_TYPE.RED, 0},
             {BIT_TYPE.BLUE, 0},
@@ -134,6 +147,11 @@ namespace StarSalvager.Values
         private Dictionary<FACILITY_TYPE, int> _facilityBlueprintRanks = new Dictionary<FACILITY_TYPE, int>();
 
         public string PlaythroughID = string.Empty;
+
+        [JsonIgnore]
+        public IReadOnlyList<string> DontShowAgainKeys => _dontShowAgainKeys;
+        [JsonProperty] 
+        private List<string> _dontShowAgainKeys = new List<string>();
 
         //============================================================================================================//
 
@@ -217,19 +235,32 @@ namespace StarSalvager.Values
 
         //============================================================================================================//
 
-        public void SetLiquidResource(BIT_TYPE type, float value)
+        public void SetLiquidResource(BIT_TYPE type, float value, bool isRecoveryDrone)
         {
-            _liquidResource[type] = Mathf.Clamp(value, 0f, _liquidCapacity[type]);
-            //_liquidResource[type] = value;
+            if (isRecoveryDrone)
+            {
+                _recoveryDroneLiquidResource[type] = Mathf.Clamp(value, 0f, _recoveryDroneLiquidCapacity[type]);
+            }
+            else
+            {
+                _liquidResource[type] = Mathf.Clamp(value, 0f, _liquidCapacity[type]);
+            }
 
             OnValuesChanged?.Invoke();
         }
 
-        public void SetLiquidResource(Dictionary<BIT_TYPE, float> liquidValues)
+        public void SetLiquidResource(Dictionary<BIT_TYPE, float> liquidValues, bool isRecoveryDrone)
         {
             foreach (var value in liquidValues)
             {
-              _liquidResource[value.Key] = Mathf.Clamp(value.Value, 0f, _liquidCapacity[value.Key]);
+                if (isRecoveryDrone)
+                {
+                    _recoveryDroneLiquidResource[value.Key] = Mathf.Clamp(value.Value, 0f, _recoveryDroneLiquidCapacity[value.Key]);
+                }
+                else
+                {
+                    _liquidResource[value.Key] = Mathf.Clamp(value.Value, 0f, _liquidCapacity[value.Key]);
+                }
             }
 
             OnValuesChanged?.Invoke();
@@ -256,31 +287,60 @@ namespace StarSalvager.Values
 
         //============================================================================================================//
 
-        public void SetCapacity(BIT_TYPE type, int amount)
+        public void SetCapacity(BIT_TYPE type, int amount, bool isRecoveryDrone)
         {
-            _liquidCapacity[type] = amount;
+            if (isRecoveryDrone)
+            {
+                _recoveryDroneLiquidCapacity[type] = amount;
+            }
+            else
+            {
+                _liquidCapacity[type] = amount;
+            }
             OnCapacitiesChanged?.Invoke();
         }
-        public void SetCapacities(Dictionary<BIT_TYPE, int> capacities)
+
+        public void SetCapacities(Dictionary<BIT_TYPE, int> capacities, bool isRecoveryDrone)
         {
             foreach (var capacity in capacities)
             {
-                _liquidCapacity[capacity.Key] = capacity.Value;
+                if (isRecoveryDrone)
+                {
+                    _recoveryDroneLiquidCapacity[capacity.Key] = capacity.Value;
+                }
+                else
+                {
+                    _liquidCapacity[capacity.Key] = capacity.Value;
+                }
             }
 
             OnCapacitiesChanged?.Invoke();
         }
 
-        public void ClearLiquidCapacity()
+        public void ClearLiquidCapacity(bool isRecoveryDrone)
         {
-            _liquidCapacity = new Dictionary<BIT_TYPE, int>
+            if (isRecoveryDrone)
             {
-                {BIT_TYPE.RED, 0},
-                {BIT_TYPE.BLUE, 0},
-                {BIT_TYPE.YELLOW, 0},
-                {BIT_TYPE.GREEN, 0},
-                {BIT_TYPE.GREY, 0},
-            };
+                _recoveryDroneLiquidCapacity = new Dictionary<BIT_TYPE, int>
+                {
+                    {BIT_TYPE.RED, 0},
+                    {BIT_TYPE.BLUE, 0},
+                    {BIT_TYPE.YELLOW, 0},
+                    {BIT_TYPE.GREEN, 0},
+                    {BIT_TYPE.GREY, 0},
+                };
+            }
+            else
+            {
+                _liquidCapacity = new Dictionary<BIT_TYPE, int>
+                {
+                    {BIT_TYPE.RED, 0},
+                    {BIT_TYPE.BLUE, 0},
+                    {BIT_TYPE.YELLOW, 0},
+                    {BIT_TYPE.GREEN, 0},
+                    {BIT_TYPE.GREY, 0},
+                };
+            }
         }
 
         //============================================================================================================//
@@ -355,7 +415,7 @@ namespace StarSalvager.Values
 
         //============================================================================================================//
 
-        public void AddLiquidResource(BIT_TYPE type, float amount)
+        public void AddLiquidResource(BIT_TYPE type, float amount, bool isRecoveryDrone)
         {
             MissionProgressEventData missionProgressEventData = new MissionProgressEventData
             {
@@ -363,31 +423,27 @@ namespace StarSalvager.Values
                 floatAmount = amount
             };
             MissionManager.ProcessMissionData(typeof(LiquidResourceConvertedMission), missionProgressEventData);
-            _liquidResource[type] = Mathf.Clamp(liquidResource[type] + Mathf.Abs(amount), 0, liquidCapacity[type]);
-            OnValuesChanged?.Invoke();
-        }
-
-        public void SubtractLiquidResource(BIT_TYPE type, float amount)
-        {
-            _liquidResource[type] = Mathf.Clamp(liquidResource[type] - Mathf.Abs(amount), 0, liquidCapacity[type]);
-            OnValuesChanged?.Invoke();
-        }
-
-        public void AddRecoveryDroneLiquidResource(BIT_TYPE type, float amount)
-        {
-            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+            if (isRecoveryDrone)
             {
-                bitType = type,
-                floatAmount = amount
-            };
-            MissionManager.ProcessMissionData(typeof(LiquidResourceConvertedMission), missionProgressEventData);
-            _recoveryDroneLiquidResource[type] = Mathf.Clamp(liquidResource[type] + Mathf.Abs(amount), 0, liquidCapacity[type]);
+                _recoveryDroneLiquidResource[type] = Mathf.Clamp(recoveryDroneLiquidResource[type] + Mathf.Abs(amount), 0, recoveryDroneLiquidCapacity[type]);
+            }
+            else
+            {
+                _liquidResource[type] = Mathf.Clamp(liquidResource[type] + Mathf.Abs(amount), 0, liquidCapacity[type]);
+            }
             OnValuesChanged?.Invoke();
         }
 
-        public void SubtractRecoveryDroneLiquidResource(BIT_TYPE type, float amount)
+        public void SubtractLiquidResource(BIT_TYPE type, float amount, bool isRecoveryDrone)
         {
-            _recoveryDroneLiquidResource[type] = Mathf.Clamp(liquidResource[type] - Mathf.Abs(amount), 0, liquidCapacity[type]);
+            if (isRecoveryDrone)
+            {
+                _recoveryDroneLiquidResource[type] = Mathf.Clamp(recoveryDroneLiquidResource[type] - Mathf.Abs(amount), 0, recoveryDroneLiquidCapacity[type]);
+            }
+            else
+            {
+                _liquidResource[type] = Mathf.Clamp(liquidResource[type] - Mathf.Abs(amount), 0, liquidCapacity[type]);
+            }
             OnValuesChanged?.Invoke();
         }
 
@@ -468,6 +524,16 @@ namespace StarSalvager.Values
 
         //============================================================================================================//
 
+        //DontShowAgain Tracking Functions
+        //====================================================================================================================//
+
+        public void AddDontShowAgainKey(string key)
+        {
+            _dontShowAgainKeys.Add(key);
+        }
+
+        //====================================================================================================================//
+        
         public List<BlockData> GetCurrentBlockData()
         {
             return currentBlockData;

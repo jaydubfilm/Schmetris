@@ -357,15 +357,16 @@ namespace StarSalvager.Utilities
                         {
                             if (!PlayerPersistentData.PlayerData.resources.ContainsKey(_bitType))
                                 continue;
-                                
+
                             //I dont want to use AddLiquidResource() here because it would call the OnValuesChanged callback too much
-                            PlayerPersistentData.PlayerData.AddLiquidResource(_bitType, floatAmount);
+
+                            PlayerPersistentData.PlayerData.AddLiquidResource(_bitType, floatAmount, false);
                         }
                         
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
-                        PlayerPersistentData.PlayerData.AddLiquidResource(bitType, floatAmount);
+                        PlayerPersistentData.PlayerData.AddLiquidResource(bitType, floatAmount, false);
                     }
                     else
                     {
@@ -813,7 +814,7 @@ namespace StarSalvager.Utilities
                             data[_bitType] = floatAmount;
                         }
 
-                        PlayerPersistentData.PlayerData.SetLiquidResource(data);
+                        PlayerPersistentData.PlayerData.SetLiquidResource(data, false);
                         
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
@@ -821,7 +822,7 @@ namespace StarSalvager.Utilities
                         if (!PlayerPersistentData.PlayerData.liquidResource.ContainsKey(bitType))
                             break;
                         
-                        PlayerPersistentData.PlayerData.SetLiquidResource(bitType, floatAmount);
+                        PlayerPersistentData.PlayerData.SetLiquidResource(bitType, floatAmount, false);
                     }
                     else
                     {

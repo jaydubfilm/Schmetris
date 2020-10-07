@@ -89,6 +89,9 @@ namespace StarSalvager
 
         private bool _needToCheckMagnet;
 
+        public bool IsRecoveryDrone => _isRecoveryDrone;
+        private bool _isRecoveryDrone;
+
         //============================================================================================================//
 
         public BotPartsLogic BotPartsLogic
@@ -255,8 +258,10 @@ namespace StarSalvager
 
         #region Init Bot 
 
-        public void InitBot()
+        public void InitBot(bool isRecoveryDrone)
         {
+            _isRecoveryDrone = isRecoveryDrone;
+            
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
 
@@ -278,8 +283,10 @@ namespace StarSalvager
             ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
         }
         
-        public void InitBot(IEnumerable<IAttachable> botAttachables)
+        public void InitBot(IEnumerable<IAttachable> botAttachables, bool isRecoveryDrone)
         {
+            _isRecoveryDrone = isRecoveryDrone;
+
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
             
