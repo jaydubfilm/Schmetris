@@ -537,6 +537,8 @@ namespace StarSalvager
 
             int progressionSector = Globals.CurrentSector;
             string endWaveMessage;
+
+            PlayerPersistentData.PlayerData.ReduceLevelResourceModifier(Globals.CurrentSector, Globals.CurrentWave);
             
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {

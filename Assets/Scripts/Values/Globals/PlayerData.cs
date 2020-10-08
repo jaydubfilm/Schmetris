@@ -127,6 +127,8 @@ namespace StarSalvager.Values
 
         public Dictionary<int, int> maxSectorProgression = new Dictionary<int, int>();
 
+        public List<SectorWaveModifier> levelResourceModifier = new List<SectorWaveModifier>();
+
         public MissionsCurrentData missionsCurrentData = null;
 
         public int currentModularSectorIndex = 0;
@@ -520,6 +522,47 @@ namespace StarSalvager.Values
                 return true;
 
             return false;
+        }
+
+        public float GetLevelResourceModifier(int sector, int wave)
+        {
+            int index = levelResourceModifier.FindIndex(s => s.Sector == sector && s.Wave == wave);
+
+            if (index == -1)
+            {
+                levelResourceModifier.Add(new SectorWaveModifier
+                {
+                    Sector = sector,
+                    Wave = wave,
+                    Modifier = 1.0f
+                });
+                index = levelResourceModifier.FindIndex(s => s.Sector == sector && s.Wave == wave);
+            }
+
+            return levelResourceModifier[index].Modifier;
+        }
+
+        public void ReduceLevelResourceModifier(int sector, int wave)
+        {
+            int index = levelResourceModifier.FindIndex(s => s.Sector == sector && s.Wave == wave);
+            float previousModifier;
+
+            if (index >= 0)
+            {
+                previousModifier = levelResourceModifier[index].Modifier;
+                levelResourceModifier.RemoveAt(index);
+            }
+            else
+            {
+                previousModifier = 1.0f;
+            }
+
+            levelResourceModifier.Add(new SectorWaveModifier
+            {
+                Sector = sector,
+                Wave = wave,
+                Modifier = previousModifier * Globals.LevelResourceDropReductionAmount
+            });
         }
 
         //============================================================================================================//

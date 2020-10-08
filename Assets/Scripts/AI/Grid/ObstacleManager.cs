@@ -91,7 +91,7 @@ namespace StarSalvager
             m_offGridMovingObstacles = new List<OffGridMovement>();
 
             Asteroids = new List<Asteroid>();
-            
+
             RegisterPausable();
             m_worldElementsRoot = new GameObject("WorldElementRoot").transform;
             SceneManager.MoveGameObjectToScene(m_worldElementsRoot.gameObject, gameObject.scene);
@@ -283,7 +283,7 @@ namespace StarSalvager
             m_offGridMovingObstacles.Clear();
             m_bonusShapesSpawned = 0;
             m_bonusShapeTimer = 0;
-            
+
             Asteroids.Clear();
         }
 
@@ -756,8 +756,13 @@ namespace StarSalvager
         {
             foreach (StageObstacleData stageObstacleData in obstacleData)
             {
-                float spawnVariable = stageObstacleData.Density * spawningMultiplier *
-                                      ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
+                float spawnVariable = stageObstacleData.Density * spawningMultiplier * ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
+
+                if (stageObstacleData.SelectionType == SELECTION_TYPE.CATEGORY || stageObstacleData.SelectionType == SELECTION_TYPE.SHAPE)
+                {
+                    float modifier = PlayerPersistentData.PlayerData.GetLevelResourceModifier(Globals.CurrentSector, Globals.CurrentWave);
+                    spawnVariable *= modifier;
+                }
 
                 if (m_currentStageData.StageBlendPeriod > 0)
                 {
@@ -853,7 +858,7 @@ namespace StarSalvager
             IObstacle obstacle;
             int radiusAround = 0;
 
-            
+
             switch (selectionType)
             {
                 case SELECTION_TYPE.CATEGORY:
@@ -928,7 +933,7 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(selectionType), selectionType, null);
             }
 
-            
+
             PlaceMovableOnGrid(obstacle, gridRegion, allowOverlap, forceSpawn, inRandomYLevel, radiusAround);
         }
 
@@ -941,9 +946,9 @@ namespace StarSalvager
         private void AddObstacleToList(IObstacle movable)
         {
             //TODO: Find a more elegant solution for this if statement. This is catching the scenario where a bit is recycled and reused in the same frame, before it can be removed by the update loop, resulting in it being in the list twice.
-            if (movable.IsRegistered) 
+            if (movable.IsRegistered)
                 return;
-            
+
             m_obstacles.Add(movable);
             movable.IsRegistered = true;
         }
@@ -1203,7 +1208,7 @@ namespace StarSalvager
             var orthoSize = CameraController.Camera.orthographicSize;
 
 
-            //TODO Place on either side of the 
+            //TODO Place on either side of the
             for (var i = 0; i < 2; i++)
             {
                 var isLeft = i == 0;
