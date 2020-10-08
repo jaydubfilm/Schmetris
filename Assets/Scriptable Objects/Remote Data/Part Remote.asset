@@ -1195,3 +1195,74 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 6500
+  - name: Blaster
+    partType: 16
+    canSell: 1
+    description: 
+    priority: 0
+    burnType: 2
+    levels:
+    - unlockLevel: 5
+      health: 100
+      powerDraw: 0
+      dataTest:
+      - key: Damage
+        value: 300
+      - key: Cooldown
+        value: 3
+      - key: Projectile
+        value: 5591628b-3b62-4bea-b915-78c355070c11
+      burnRate: 0.2
+      cost:
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 500
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 500
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 200
+    - unlockLevel: 7
+      health: 120
+      powerDraw: 0
+      dataTest:
+      - key: Damage
+        value: 400
+      - key: Cooldown
+        value: 2
+      - key: Projectile
+        value: 5591628b-3b62-4bea-b915-78c355070c11
+      burnRate: 0.3
+      cost:
+      - resourceType: 1
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2000
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 2000
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 1000
