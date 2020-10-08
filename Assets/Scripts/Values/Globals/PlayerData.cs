@@ -674,6 +674,14 @@ namespace StarSalvager.Values
             }
             OnValuesChanged?.Invoke();
         }
+        
+        public bool CheckHasFacility(FACILITY_TYPE type, int level = 0)
+        {
+            if (_facilityRanks.TryGetValue(type, out var rank))
+                return rank >= level;
+
+            return false;
+        }
 
         public void UnlockFacilityLevel(FACILITY_TYPE type, int level, bool triggerMissionCheck = true)
         {
