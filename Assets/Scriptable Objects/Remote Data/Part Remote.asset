@@ -1065,3 +1065,133 @@ MonoBehaviour:
         value: 50
       burnRate: 0
       cost: []
+  - name: Missile
+    partType: 14
+    canSell: 1
+    description: 
+    priority: 50
+    burnType: 3
+    levels:
+    - unlockLevel: 5
+      health: 100
+      powerDraw: 0
+      dataTest:
+      - key: Damage
+        value: 50
+      - key: Cooldown
+        value: 1
+      - key: Projectile
+        value: b352a285-3a9e-4b4e-86a0-9418fbad3f29
+      burnRate: 0.2
+      cost:
+      - resourceType: 0
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 200
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 500
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 500
+    - unlockLevel: 9
+      health: 120
+      powerDraw: 0
+      dataTest:
+      - key: Damage
+        value: 80
+      - key: Cooldown
+        value: 1
+      - key: Projectile
+        value: b352a285-3a9e-4b4e-86a0-9418fbad3f29
+      burnRate: 0.4
+      cost:
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 6
+      - resourceType: 1
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 0
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 5000
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 10000
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 10000
+  - name: Sniper
+    partType: 15
+    canSell: 1
+    description: 
+    priority: 50
+    burnType: 3
+    levels:
+    - unlockLevel: 4
+      health: 100
+      powerDraw: 0
+      dataTest:
+      - key: Damage
+        value: 100
+      - key: Cooldown
+        value: 2
+      - key: Probability
+        value: 0.75
+      burnRate: 0.1
+      cost:
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 200
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 400
+    - unlockLevel: 8
+      health: 120
+      powerDraw: 0
+      dataTest:
+      - key: Damage
+        value: 200
+      - key: Cooldown
+        value: 2
+      - key: Probability
+        value: 0.75
+      burnRate: 0.1
+      cost:
+      - resourceType: 1
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 3500
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 6500

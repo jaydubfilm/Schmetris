@@ -15,16 +15,19 @@ namespace StarSalvager.Factories
         private readonly GameObject _floatingTextPrefab;
         private readonly GameObject _connectedSpritePrefab;
         private readonly GameObject _fadeSpritePrefab;
+        private readonly GameObject _shrinkLinePrefab;
         
         //============================================================================================================//
 
-        public ParticleFactory(GameObject explosionPrefab, GameObject labelPrefab, GameObject floatingTextPrefab, GameObject connectedSpritePrefab, GameObject fadeSpritePrefab)
+        public ParticleFactory(GameObject explosionPrefab, GameObject labelPrefab, GameObject floatingTextPrefab, GameObject connectedSpritePrefab, GameObject fadeSpritePrefab, GameObject shrinkLinePrefab)
         {
             _explosionPrefab = explosionPrefab;
             _labelPrefab = labelPrefab;
             _floatingTextPrefab = floatingTextPrefab;
             _connectedSpritePrefab = connectedSpritePrefab;
             _fadeSpritePrefab = fadeSpritePrefab;
+
+            _shrinkLinePrefab = shrinkLinePrefab;
         }
         
         //============================================================================================================//
@@ -56,6 +59,9 @@ namespace StarSalvager.Factories
                     break;
                 case bool _ when type == typeof(FadeSprite):
                     gameObject = CreateFadeSprite();
+                    break;
+                case bool _ when type == typeof(LineShrink):
+                    gameObject = CreateLineShrink();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -109,6 +115,16 @@ namespace StarSalvager.Factories
             if (!Recycler.TryGrab<FadeSprite>(out GameObject gameObject))
             {
                 gameObject = Object.Instantiate(_fadeSpritePrefab);
+            }
+
+            return gameObject;
+        }
+        
+        private GameObject CreateLineShrink()
+        {
+            if (!Recycler.TryGrab<LineShrink>(out GameObject gameObject))
+            {
+                gameObject = Object.Instantiate(_shrinkLinePrefab);
             }
 
             return gameObject;
