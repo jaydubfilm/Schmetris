@@ -572,7 +572,7 @@ namespace StarSalvager
                                 CreateProjectile(part, levelData, enemy);
                                 break;
                             case PART_TYPE.SNIPER:
-                                var direction = (enemy.transform.position + (Vector3)Random.insideUnitCircle - part.transform.position).normalized;
+                                var direction = (enemy.transform.position + ((Vector3)Random.insideUnitCircle * 3) - part.transform.position).normalized;
 
                                 var lineShrink = FactoryManager.Instance.GetFactory<ParticleFactory>()
                                     .CreateObject<LineShrink>();
