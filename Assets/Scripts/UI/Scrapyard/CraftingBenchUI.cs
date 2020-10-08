@@ -241,13 +241,13 @@ namespace StarSalvager.UI.Scrapyard
 
         #endregion //Other
 
-        private bool CheckIfMissingFacility(IEnumerable<CraftCost> resources, out string missingText)
+        private static bool CheckIfMissingFacility(IEnumerable<CraftCost> resources, out string missingText)
         { 
             var facilities = new Dictionary<COMPONENT_TYPE, FACILITY_TYPE>
             {
                 [COMPONENT_TYPE.COIL] = FACILITY_TYPE.WORKBENCHCOIL,
                 [COMPONENT_TYPE.CHIP] = FACILITY_TYPE.WORKBENCHCHIP,
-                [COMPONENT_TYPE.FUSOR] = FACILITY_TYPE.WORKBENCHFUSOR,
+                [COMPONENT_TYPE.FUSOR] = FACILITY_TYPE.WORKBENCHFUSOR
             };
             
             missingText = string.Empty;
