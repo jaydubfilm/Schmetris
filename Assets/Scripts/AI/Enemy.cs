@@ -412,12 +412,12 @@ namespace StarSalvager.AI
         //ICanBeHit functions
         //============================================================================================================//
 
-        public bool TryHitAt(Vector2 position, float damage)
+        public bool TryHitAt(Vector2 worldPosition, float damage)
         {
             ChangeHealth(-damage);
             
             var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
-            explosion.transform.position = position;
+            explosion.transform.position = worldPosition;
             
             if(CurrentHealth > 0)
                 AudioController.PlaySound(SOUND.ENEMY_IMPACT);

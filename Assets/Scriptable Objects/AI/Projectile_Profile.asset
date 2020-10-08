@@ -120,3 +120,15 @@ MonoBehaviour:
     m_sprayCount: 3
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+  - m_projectileTypeID: b352a285-3a9e-4b4e-86a0-9418fbad3f29
+    m_sprite: {fileID: -3311313229851740455, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
+      type: 3}
+    m_projectileType: Missile
+    m_projectileSpeed: 10
+    m_projectileRange: 0
+    m_requiredRotate: 0
+    m_attackType: 8
+    m_spreadAngle: 0
+    m_sprayCount: 0
+    m_canHitAsteroids: 0
+    m_addVelocityToProjectiles: 0
