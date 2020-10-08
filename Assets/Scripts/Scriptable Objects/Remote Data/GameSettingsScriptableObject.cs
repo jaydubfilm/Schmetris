@@ -27,6 +27,7 @@ namespace StarSalvager.ScriptableObjects
         public float botContinuousRotationSpeed = 700.0f;
         public float missionReminderFrequency = 25.0f;
         public float bonusShapeSpeed = 12.0f;
+        public float levelResourceDropReductionAmount = 0.5f;
         public float asteroidDamage = 10.0f;
         public List<BonusShapeGearsValue> bonusShapeGearsRewards;
 
