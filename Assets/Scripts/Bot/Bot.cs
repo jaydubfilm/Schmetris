@@ -1308,6 +1308,10 @@ namespace StarSalvager
 
                     if (checkForCombo)
                         CheckForCombosAround<BIT_TYPE>(coordinate);
+
+                    if(existingAttachable is Part part)
+                        TryAutoProcessBit(bit, part);
+
                     break;
                 case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
@@ -1354,6 +1358,15 @@ namespace StarSalvager
 
             if (updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
+        }
+
+        private void TryAutoProcessBit(Bit bit, IPart part)
+        {
+            if (part.Type != PART_TYPE.REFINER || bit.Type == BIT_TYPE.YELLOW)
+                return;
+            
+            BotPartsLogic.ProcessBit(bit);
+            CheckForDisconnects();
         }
 
         //FIXME Ensure that I have a version of this function without the desiredDirection, and one that accounts for corners

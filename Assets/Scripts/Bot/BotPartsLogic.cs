@@ -382,7 +382,8 @@ namespace StarSalvager
                     }
                     else
                     {
-                        var addAmount = FactoryManager.Instance
+                        resourceValue = ProcessBit(targetBit);
+                        /*var addAmount = FactoryManager.Instance
                             .GetFactory<BitAttachableFactory>().GetBitRemoteData(targetBit.Type).levels[targetBit.level]
                             .resources;
 
@@ -403,7 +404,7 @@ namespace StarSalvager
                         resourceValue = addAmount;
                         SessionDataProcessor.Instance.LiquidProcessed(targetBit.Type, addAmount);
                         AudioController.PlaySound(SOUND.BIT_REFINED);
-                        bot.ForceCheckMagnets();
+                        bot.ForceCheckMagnets();*/
                     }
 
                 }
@@ -1042,6 +1043,40 @@ namespace StarSalvager
 
         //Find Bits/Values to burn
         //============================================================================================================//
+
+        public int ProcessBit(Bit targetBit)
+        {
+            var bitType = targetBit.Type;
+            var amountProcessed = FactoryManager.Instance
+                .GetFactory<BitAttachableFactory>().GetBitRemoteData(bitType).levels[targetBit.level]
+                .resources;
+
+            var current = PlayerPersistentData.PlayerData.liquidResource[bitType];
+            var capacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
+
+            //We wont add any if its already full!
+            if (current >= capacity)
+                return 0;
+
+            PlayerPersistentData.PlayerData.AddLiquidResource(targetBit.Type, amountProcessed, bot.IsRecoveryDrone);
+
+            //If we want to process a bit, we want to remove it from the attached list while its processed
+            bot.MarkAttachablePendingRemoval(targetBit);
+                        
+            //TODO May want to play around with the order of operations here
+            StartCoroutine(RefineBitCoroutine(targetBit, 1.6f,
+                () =>
+                {
+                    bot.DestroyAttachable<Bit>(targetBit);
+                }));
+
+
+            SessionDataProcessor.Instance.LiquidProcessed(targetBit.Type, amountProcessed);
+            AudioController.PlaySound(SOUND.BIT_REFINED);
+            bot.ForceCheckMagnets();
+
+            return amountProcessed;
+        }
 
         private Bit GetFurthestBitToBurn(PartLevelData partLevelData, BIT_TYPE type)
         {

@@ -924,6 +924,8 @@ namespace StarSalvager
 
                     switch (asteroidSize)
                     {
+                        case ASTEROID_SIZE.Bit:
+                            break;
                         case ASTEROID_SIZE.Small:
                         case ASTEROID_SIZE.Medium:
                         case ASTEROID_SIZE.Large:

@@ -1266,3 +1266,28 @@ MonoBehaviour:
         type: 1
         partPrerequisiteLevel: 0
         amount: 1000
+  - name: Auto-Refiner
+    partType: 17
+    canSell: 1
+    description: 
+    priority: 0
+    burnType: 0
+    levels:
+    - unlockLevel: 0
+      health: 80
+      powerDraw: 0
+      dataTest: []
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 100
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 100
