@@ -192,6 +192,7 @@ namespace StarSalvager
                         {
                             RecoverFromDeath = true;
                             IsWaveProgressing = true;
+                            GameUi.ShowRecoveryBanner(true);
                             RestartLevel();
                         });
 
