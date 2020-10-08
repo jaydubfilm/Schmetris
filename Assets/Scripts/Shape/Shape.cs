@@ -227,9 +227,9 @@ namespace StarSalvager
         //================================================================================================================//
 
         
-        public bool TryHitAt(Vector2 position, float damage)
+        public bool TryHitAt(Vector2 worldPosition, float damage)
         {
-            var closestAttachable = attachedBits.GetClosestAttachable(position);
+            var closestAttachable = attachedBits.GetClosestAttachable(worldPosition);
 
             //FIXME Need to see how to fix this
             if (closestAttachable is IHealth closestHealth)

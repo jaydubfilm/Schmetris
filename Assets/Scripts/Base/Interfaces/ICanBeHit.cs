@@ -4,7 +4,7 @@ namespace StarSalvager
 {
     public interface ICanBeHit
     {
-        bool TryHitAt(Vector2 position, float damage);
+        bool TryHitAt(Vector2 worldPosition, float damage);
     }
 }
 

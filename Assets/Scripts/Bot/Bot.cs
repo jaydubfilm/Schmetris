@@ -928,14 +928,14 @@ namespace StarSalvager
             return true;
         }
 
-        public bool TryHitAt(Vector2 hitPosition, float damage)
+        public bool TryHitAt(Vector2 worldPosition, float damage)
         {
             SessionDataProcessor.Instance.ReceivedDamage(damage);
             
             if(LevelManager.Instance.EndWaveState)
                 return false;
             
-            var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
+            var closestAttachable = attachedBlocks.GetClosestAttachable(worldPosition);
 
             switch (closestAttachable)
             {
@@ -946,7 +946,7 @@ namespace StarSalvager
             }
 
             var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
-            explosion.transform.position = hitPosition;
+            explosion.transform.position = worldPosition;
             
             TryHitAt(closestAttachable, damage);
 
