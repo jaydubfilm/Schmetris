@@ -9,11 +9,15 @@ using StarSalvager.AI;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Animations;
 using StarSalvager.Values;
+using StarSalvager.Factories.Data;
+using System.Linq;
 
 namespace StarSalvager
 {
     public class Asteroid : CollidableBase, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate
     {
+        public RDSTable rdsTable { get; set; }
+
         public float Radius { get; private set; }
         //IRotate properties
         //============================================================================================================//
@@ -67,9 +71,13 @@ namespace StarSalvager
 
             if (CurrentHealth > 0) 
                 return;
-            
+
             //TODO Need to spawn loot
-            //LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
+
+            if (rdsTable != null)
+            {
+                LevelManager.Instance.DropLoot(rdsTable.rdsResult.ToList(), transform.localPosition, true);
+            }
             
             Recycler.Recycle<Asteroid>(this);
         }

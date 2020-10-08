@@ -588,7 +588,7 @@ namespace StarSalvager
                 }
                 scrapyardBot.transform.parent = m_obstacleManager.WorldElementsRoot;
                 scrapyardBot.transform.position = m_bots[0].transform.position + (Vector3.up * Globals.GridSizeY * Constants.gridCellSize);
-                ObstacleManager.AddObstacleToList(scrapyardBot);
+                ObstacleManager.RecoveredBotFalling = scrapyardBot.gameObject;
             }
         }
 

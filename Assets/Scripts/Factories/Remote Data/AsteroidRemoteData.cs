@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
+using UnityEngine;
 
 namespace StarSalvager.Factories.Data
 {
@@ -12,6 +14,16 @@ namespace StarSalvager.Factories.Data
 
         [FoldoutGroup("$asteroidSize")]
         public float health;
+
+        [SerializeField, FoldoutGroup("$asteroidSize")]
+        private int m_maxDrops;
+
+        [SerializeField, FoldoutGroup("$asteroidSize"), LabelText("Loot Drops")]
+        private List<RDSLootData> m_rdsAsteroidData;
+
+        public int MaxDrops => m_maxDrops;
+
+        public List<RDSLootData> rdsAsteroidData => m_rdsAsteroidData;
 
         #region IEquatable
 
