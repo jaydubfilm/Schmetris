@@ -199,6 +199,9 @@ namespace StarSalvager
                             recycleBits = false
                         });
                         break;
+                    case ScrapyardBot bot:
+                        Recycler.Recycle<ScrapyardBot>(bot);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                 }
@@ -231,6 +234,9 @@ namespace StarSalvager
                         {
                             recycleBits = false
                         });
+                        break;
+                    case ScrapyardBot bot:
+                        Recycler.Recycle<ScrapyardBot>(bot);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
@@ -450,6 +456,11 @@ namespace StarSalvager
 
                             Recycler.Recycle<Shape>(shape);
                             m_obstacles[i].IsRegistered = false;
+                            m_obstacles[i] = null;
+                            break;
+                        case ScrapyardBot bot:
+                            bot.IsRegistered = false;
+                            Recycler.Recycle<ScrapyardBot>(bot);
                             m_obstacles[i] = null;
                             break;
                         default:
@@ -943,7 +954,7 @@ namespace StarSalvager
             AddObstacleToList(movable);
         }
 
-        private void AddObstacleToList(IObstacle movable)
+        public void AddObstacleToList(IObstacle movable)
         {
             //TODO: Find a more elegant solution for this if statement. This is catching the scenario where a bit is recycled and reused in the same frame, before it can be removed by the update loop, resulting in it being in the list twice.
             if (movable.IsRegistered)
@@ -989,6 +1000,9 @@ namespace StarSalvager
                         break;
                     case Shape shape:
                         Recycler.Recycle<Shape>(shape);
+                        break;
+                    case ScrapyardBot bot:
+                        Recycler.Recycle<ScrapyardBot>(bot);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(movable), movable, null);
@@ -1070,7 +1084,6 @@ namespace StarSalvager
             PlaceMovableOffGrid(obstacle, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning,
                 arc, parentToGrid);
         }
-
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector3 startingPosition, Vector3 endPosition,
             float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false,
             bool parentToGrid = true)

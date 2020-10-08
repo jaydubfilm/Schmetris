@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class ScrapyardBot : MonoBehaviour, ICustomRecycle
+    public class ScrapyardBot : MonoBehaviour, ICustomRecycle, IObstacle
     {
         [SerializeField, BoxGroup("PROTOTYPE")]
         public float TEST_RotSpeed;
@@ -26,6 +26,19 @@ namespace StarSalvager
         private List<IAttachable> _attachedBlocks;
 
         private List<ScrapyardPart> _parts;
+
+        //IObstacle Properties
+        //============================================================================================================//
+        public bool CanMove => true;
+
+        public bool IsRegistered { get; set; } = false;
+
+        public bool IsMarkedOnGrid { get; set; } = false;
+
+        public void SetColliderActive(bool state)
+        {
+
+        }
 
         //============================================================================================================//
         public bool Rotating => _rotating;
