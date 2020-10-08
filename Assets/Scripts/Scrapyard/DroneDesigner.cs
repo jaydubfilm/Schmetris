@@ -166,7 +166,7 @@ namespace StarSalvager
             {
                 Alert.ShowAlert("Game Over", "Your crew has died of thirst - Game Over. thx!", "Main Menu", () =>
                 {
-                    PlayerPersistentData.SaveAutosaveFiles();
+                    PlayerPersistentData.ClearPlayerData();
                     SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
                 });
             }
@@ -759,6 +759,7 @@ namespace StarSalvager
                 _scrapyardBot.InitBot(importedData, _isEditingRecoveryDrone);
             }
 
+            UpdateFloatingMarkers(false);
         }
 
         //============================================================================================================//
@@ -768,8 +769,28 @@ namespace StarSalvager
             if (_scrapyardBot == null)
                 return;
 
+            List<BlockData> recoveryBotBlockData = PlayerPersistentData.PlayerData.recoveryDroneBlockData;
+
             List<ScrapyardBit> listBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
             List<Component> listComponents = _scrapyardBot.attachedBlocks.OfType<Component>().ToList();
+
+            for (int i = recoveryBotBlockData.Count - 1; i >= 0; i--)
+            {
+                if (recoveryBotBlockData[i].ClassType == "Bit")
+                {
+                    listBits.Add(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<ScrapyardBit>(recoveryBotBlockData[i]));
+                    recoveryBotBlockData.RemoveAt(i);
+                    continue;
+                }
+                
+                if (recoveryBotBlockData[i].ClassType == "Component")
+                {
+                    listComponents.Add(FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().CreateObject<Component>((COMPONENT_TYPE)recoveryBotBlockData[i].Type, recoveryBotBlockData[i].Level));
+                    recoveryBotBlockData.RemoveAt(i);
+                    continue;
+                }
+            }
+
             if (listComponents.Count > 0)
             {
                 _scrapyardBot.RemoveAllComponents();
@@ -800,9 +821,10 @@ namespace StarSalvager
             if (listBits.Count == 0)
                 return;
 
-            var scrapyardBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>();
+            //var scrapyardBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>();
 
-            var enumerable = scrapyardBits as ScrapyardBit[] ?? scrapyardBits.ToArray();
+
+            var enumerable = listBits.ToArray();
             Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
                 .GetTotalResources(enumerable);
 

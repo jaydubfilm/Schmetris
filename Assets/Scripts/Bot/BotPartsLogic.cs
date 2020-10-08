@@ -118,12 +118,15 @@ namespace StarSalvager
         private Dictionary<Part, FlashSprite> _flashes;
         private Dictionary<Part, float> _bombTimers;
 
+        private Dictionary<Part, Asteroid> _asteroidTargets;
+
         //Unity Functions
         //==============================================================================================================//
 
         private void OnEnable()
         {
             PlayerData.OnValuesChanged += ForceUpdateResourceUI;
+            
         }
 
         private void OnDisable()
@@ -154,6 +157,8 @@ namespace StarSalvager
         /// </summary>
         private void UpdatePartData()
         {
+            
+            
             if (_magnetOverride > 0)
             {
                 MagnetCount = _magnetOverride;
@@ -329,6 +334,8 @@ namespace StarSalvager
         /// </summary>
         public void PartsUpdateLoop()
         {
+            float cooldown;
+
             var powerValue = PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW];
             var powerToRemove = 0f;
             
@@ -507,6 +514,76 @@ namespace StarSalvager
 
                         TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
                         break;
+                    case PART_TYPE.BLASTER:
+                        
+                        //--------------------------------------------------------------------------------------------//
+                        if (_projectileTimers == null)
+                            _projectileTimers = new Dictionary<Part, float>();
+
+                        if (!_projectileTimers.ContainsKey(part))
+                            _projectileTimers.Add(part, 0f);
+
+                        //Cooldown
+                        //--------------------------------------------------------------------------------------------//
+
+                        cooldown = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Cooldown);
+
+                        if (_projectileTimers[part] < cooldown)
+                        {
+                            _projectileTimers[part] += Time.deltaTime;
+                            break;
+                        }
+
+                        _projectileTimers[part] = 0f;
+
+                        //Check if we have a target before removing resources
+                        //--------------------------------------------------------------------------------------------//
+
+                        if (_asteroidTargets.IsNullOrEmpty())
+                        {
+                            _asteroidTargets = new Dictionary<Part, Asteroid>();
+                        }
+
+                        if (!_asteroidTargets.TryGetValue(part, out var asteroid) || asteroid.IsRecycled)
+                        {
+                            //TODO Find closest asteroids
+                            asteroid = LevelManager.Instance.ObstacleManager.Asteroids.FindClosestObstacleInRange(
+                                    transform.position, 10);
+                            
+                            if (asteroid == null)
+                                break;
+                        }
+                        
+                        
+                        //TODO Determine if this fires at all times or just when there are active enemies in range
+                        
+
+
+                        //Use resources
+                        //--------------------------------------------------------------------------------------------//
+
+                        if (useBurnRate)
+                        {
+                            if (resourceValue <= 0f)
+                            {
+                                AudioController.PlaySound(SOUND.GUN_CLICK);
+                                break;
+                            }
+
+                            if (resourceValue > 0)
+                            {
+                                resoucesConsumed = levelData.burnRate;
+                                resourceValue -= resoucesConsumed;
+                            }
+                        }
+
+                        //--------------------------------------------------------------------------------------------//
+                        
+                        //TODO Create projectile shooting at new target
+
+                        CreateProjectile(part, levelData, asteroid.transform.position, "Asteroid");
+
+                        break;
                     case PART_TYPE.SNIPER:
                     case PART_TYPE.MISSILE:
                     case PART_TYPE.TRIPLESHOT:
@@ -523,7 +600,7 @@ namespace StarSalvager
                         //TODO This needs to fire every x Seconds
                         //--------------------------------------------------------------------------------------------//
 
-                        var cooldown = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Cooldown);
+                        cooldown = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Cooldown);
 
                         if (_projectileTimers[part] < cooldown)
                         {
@@ -572,7 +649,7 @@ namespace StarSalvager
                                 CreateProjectile(part, levelData, enemy);
                                 break;
                             case PART_TYPE.SNIPER:
-                                var direction = (enemy.transform.position + (Vector3)Random.insideUnitCircle - part.transform.position).normalized;
+                                var direction = (enemy.transform.position + ((Vector3)Random.insideUnitCircle * 3) - part.transform.position).normalized;
 
                                 var lineShrink = FactoryManager.Instance.GetFactory<ParticleFactory>()
                                     .CreateObject<LineShrink>();
@@ -596,39 +673,6 @@ namespace StarSalvager
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
-                        
-
-                        /*//Create projectile
-                        //--------------------------------------------------------------------------------------------//
-
-                        //const string PROJECTILE_ID = "083be790-7a08-4f27-b506-e8e09a116bc8";
-
-                        var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
-                        var damage = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Damage);
-
-                        var position = part.transform.position;
-                        var target = position + part.transform.up;
-
-                        //TODO Might need to add something to change the projectile used for each gun piece
-                        FactoryManager.Instance.GetFactory<ProjectileFactory>()
-                            .CreateObjects<Projectile>(
-                                projectileId,
-                                position,
-                                target,
-                                damage,
-                                "Enemy",
-                                true);
-
-
-                        switch (part.level)
-                        {
-                            case 0:
-                                AudioController.PlaySound(SOUND.GUNLVL1_FIRE);
-                                break;
-                            case 1 :
-                                AudioController.PlaySound(SOUND.GUNLVL2_FIRE);
-                                break;
-                        }*/
 
                         //--------------------------------------------------------------------------------------------//
 
