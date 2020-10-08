@@ -814,6 +814,7 @@ namespace StarSalvager.Utilities
                             data[_bitType] = floatAmount;
                         }
 
+                        PlayerPersistentData.PlayerData.SetLiquidResource(data, true);
                         PlayerPersistentData.PlayerData.SetLiquidResource(data, false);
                         
                     }
@@ -822,6 +823,7 @@ namespace StarSalvager.Utilities
                         if (!PlayerPersistentData.PlayerData.liquidResource.ContainsKey(bitType))
                             break;
                         
+                        PlayerPersistentData.PlayerData.SetLiquidResource(bitType, floatAmount, true);
                         PlayerPersistentData.PlayerData.SetLiquidResource(bitType, floatAmount, false);
                     }
                     else
