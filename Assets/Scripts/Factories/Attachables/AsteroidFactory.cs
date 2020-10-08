@@ -58,6 +58,8 @@ namespace StarSalvager.Factories
             var health = remote.health;
             temp.SetupHealthValues(health, health);
 
+            temp.SetRadius(Mathf.Max(sprite.bounds.size.x / 2, sprite.bounds.size.y / 2));
+
             return temp.GetComponent<T>();
         }
 

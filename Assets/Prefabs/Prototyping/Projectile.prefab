@@ -46,8 +46,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1860abdd12e66344493c59943f261611, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_enemyVelocityModifier: {x: 0, y: 0, z: 0}
-  DamageAmount: 0
 --- !u!212 &7094775417863101147
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -122,7 +120,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.28, y: 1.28}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!50 &1395375395690052034
 Rigidbody2D:
