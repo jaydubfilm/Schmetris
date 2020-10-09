@@ -2045,6 +2045,7 @@ namespace StarSalvager
             List<PendingCombo> pendingCombos = null;
             bool hasCombos = false;
             
+            
             foreach (var iCanCombo in iCanCombos)
             {
                 if (iCanCombo == null)
@@ -2077,6 +2078,8 @@ namespace StarSalvager
 
             if (pendingCombos == null || pendingCombos.Count == 0)
                 return false;
+            
+            var comboFactory = FactoryManager.Instance.GetFactory<ComboFactory>();
 
             hasCombos = true;
 
@@ -2095,8 +2098,9 @@ namespace StarSalvager
                     };
                     MissionManager.ProcessMissionData(typeof(ComboBlocksMission), missionProgressEventData);
                 }
-                
-                SimpleComboSolver(pendingCombo);
+
+                var multiplier = comboFactory.GetGearMultiplier(pendingCombos.Count, pendingCombo.ToMove.Count);
+                SimpleComboSolver(pendingCombo, multiplier);
             }
 
             return hasCombos;
@@ -2130,16 +2134,17 @@ namespace StarSalvager
                 MissionManager.ProcessMissionData(typeof(ComboBlocksMission), missionProgressEventData);
             }
             
-            SimpleComboSolver(data.comboData, data.toMove);
+            var multiplier = FactoryManager.Instance.GetFactory<ComboFactory>().GetGearMultiplier(1, data.toMove.Count);
+            SimpleComboSolver(data.comboData, data.toMove, multiplier);
         }
 
         //============================================================================================================//
         
         #region Combo Solvers
 
-        private void SimpleComboSolver(PendingCombo pendingCombo)
+        private void SimpleComboSolver(PendingCombo pendingCombo, float gearMultiplier)
         {
-            SimpleComboSolver(pendingCombo.ComboData, pendingCombo.ToMove);
+            SimpleComboSolver(pendingCombo.ComboData, pendingCombo.ToMove, gearMultiplier);
         }
 
         /// <summary>
@@ -2147,7 +2152,7 @@ namespace StarSalvager
         /// </summary>
         /// <param name="comboAttachables"></param>
         /// <exception cref="Exception"></exception>
-        private void SimpleComboSolver(ComboRemoteData comboData, IReadOnlyCollection<IAttachable> comboAttachables)
+        private void SimpleComboSolver(ComboRemoteData comboData, IReadOnlyCollection<IAttachable> comboAttachables, float gearMultiplier)
         {
             IAttachable closestToCore = null;
             var shortest = 999f;
@@ -2233,8 +2238,9 @@ namespace StarSalvager
                 TEST_MergeSpeed,
                 () =>
                 {
+                    var gearsToAdd = Mathf.RoundToInt(comboData.points * gearMultiplier);
                     //Waits till after combo finishes combining to add the points 
-                    PlayerPersistentData.PlayerData.ChangeGears(comboData.points);
+                    PlayerPersistentData.PlayerData.ChangeGears(gearsToAdd);
                     
                     FloatingText.Create($"+{comboData.points}", closestToCore.transform.position, Color.white);
 
