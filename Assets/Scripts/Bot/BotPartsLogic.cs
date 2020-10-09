@@ -753,8 +753,13 @@ namespace StarSalvager
                         break;
                     
                 }
+                
+                
 
                 UpdateUI(partRemoteData.burnType, resourceValue);
+                
+                if(bot.PROTO_GodMode)
+                    continue;
 
                 PlayerPersistentData.PlayerData.SetLiquidResource(partRemoteData.burnType, resourceValue, bot.IsRecoveryDrone);
 
@@ -762,26 +767,26 @@ namespace StarSalvager
                     LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(partRemoteData.burnType, resoucesConsumed);
             }
 
-            powerValue -= powerToRemove;
-            if (powerValue < 0)
-                powerValue = 0f;
+            if (!bot.PROTO_GodMode)
+            {
+                powerValue -= powerToRemove;
+                if (powerValue < 0)
+                    powerValue = 0f;
             
-            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, powerValue, bot.IsRecoveryDrone);
+                PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, powerValue, bot.IsRecoveryDrone);
             
 
-            //batteryDrainTimer += Time.deltaTime / 2;
-            waterDrainTimer += Time.deltaTime * Constants.waterDrainRate;
+                //batteryDrainTimer += Time.deltaTime / 2;
+                waterDrainTimer += Time.deltaTime * Constants.waterDrainRate;
 
-            /*if (batteryDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] > 0)
-            {
-                batteryDrainTimer--;
-                PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] - 1);
-            }*/
-            if (waterDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0)
-            {
-                waterDrainTimer--;
-                PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] - 1);
+                if (waterDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0)
+                {
+                    waterDrainTimer--;
+                    PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] - 1);
+                }
             }
+
+
             UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW]);
             UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE]);
             

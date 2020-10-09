@@ -689,6 +689,11 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
+
+        public void ForceSetTimeRemaining(float timeLeft)
+        {
+            m_waveTimer = CurrentWaveData.GetWaveDuration() - timeLeft;
+        }
         
         #if UNITY_EDITOR
 
