@@ -71,6 +71,38 @@ namespace StarSalvager.ScriptableObjects
 
             return waveDuration;
         }
+
+        public (Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits) GetWaveSummaryData()
+        {
+            var enemies = new Dictionary<string, int>();
+            var bits = new Dictionary<BIT_TYPE, float>
+            {
+                [BIT_TYPE.RED] = 0.5f,
+                [BIT_TYPE.GREY] = 0.3f,
+                [BIT_TYPE.BLUE] = 0.1f,
+                [BIT_TYPE.GREEN] = 0.1f,
+            };
+            foreach (var stageRemoteData in StageRemoteData)
+            {
+                foreach (var enemyData in stageRemoteData.StageEnemyData)
+                {
+                    var enemyType = enemyData.EnemyType;
+                    
+                    if(!enemies.ContainsKey(enemyType))
+                        enemies.Add(enemyType, 0);
+
+                    enemies[enemyType] += enemyData.EnemyCount;
+                }
+                
+                /*foreach (var obstacleData in stageRemoteData.StageObstacleData)
+                {
+                    //TODO Need to get the shape data here, to determine what is in the wave
+                    //obstacleData.
+                }*/
+            }
+
+            return (enemies, bits);
+        }
     }
 }
 

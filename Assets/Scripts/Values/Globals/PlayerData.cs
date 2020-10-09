@@ -527,7 +527,10 @@ namespace StarSalvager.Values
 
             return false;
         }
-
+        public bool CheckIfCompleted(int sector, int waveAt)
+        {
+            return maxSectorProgression.ContainsKey(sector) && maxSectorProgression[sector] > waveAt;
+        }
         public float GetLevelResourceModifier(int sector, int wave)
         {
             int index = levelResourceModifier.FindIndex(s => s.Sector == sector && s.Wave == wave);
