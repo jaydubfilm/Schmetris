@@ -3,13 +3,15 @@ using System.Linq;
 using StarSalvager.AI;
 using StarSalvager.Factories.Data;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace StarSalvager.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "Asteroid Remote", menuName = "Star Salvager/Scriptable Objects/Asteroid Remote Data")]
     public class AsteroidRemoteDataScriptableObject : ScriptableObject
     {
-        public List<AsteroidRemoteData> BitRemoteData = new List<AsteroidRemoteData>();
+        [FormerlySerializedAs("BitRemoteData")] 
+        public List<AsteroidRemoteData> asteroidRemoteData = new List<AsteroidRemoteData>();
 
         private Dictionary<ASTEROID_SIZE, AsteroidRemoteData> data;
 
@@ -22,7 +24,7 @@ namespace StarSalvager.ScriptableObjects
 
             if (!data.ContainsKey(size))
             {
-                data.Add(size, BitRemoteData
+                data.Add(size, asteroidRemoteData
                         .FirstOrDefault(p => p.asteroidSize == size));
             }
 

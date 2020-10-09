@@ -24,6 +24,7 @@ MonoBehaviour:
     m_rdsEnemyData:
     - rdsData: 0
       type: 3
+      amount: 0
       level: 1
       probability: 3
       isGearRange: 0
@@ -32,14 +33,15 @@ MonoBehaviour:
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
     - rdsData: 1
-      type: 0
+      type: 4
+      amount: 100
       level: 0
       probability: 1
       isGearRange: 0
       gearValue: 0
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
-      isAlwaysSpawn: 0
+      isAlwaysSpawn: 1
   - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
     m_name: Parasite
     m_health: 20
@@ -51,6 +53,7 @@ MonoBehaviour:
     m_rdsEnemyData:
     - rdsData: 0
       type: 2
+      amount: 0
       level: 1
       probability: 1
       isGearRange: 0
@@ -60,6 +63,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 0
       type: 2
+      amount: 0
       level: 2
       probability: 1
       isGearRange: 0
@@ -69,6 +73,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 1
       type: 1
+      amount: 0
       level: 0
       probability: 1
       isGearRange: 0
@@ -87,6 +92,7 @@ MonoBehaviour:
     m_rdsEnemyData:
     - rdsData: 0
       type: 5
+      amount: 0
       level: 1
       probability: 2
       isGearRange: 0
@@ -96,6 +102,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 1
       type: 2
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -105,6 +112,7 @@ MonoBehaviour:
       isAlwaysSpawn: 1
     - rdsData: 0
       type: 5
+      amount: 0
       level: 2
       probability: 1
       isGearRange: 0
@@ -123,6 +131,7 @@ MonoBehaviour:
     m_rdsEnemyData:
     - rdsData: 1
       type: 3
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -132,6 +141,7 @@ MonoBehaviour:
       isAlwaysSpawn: 1
     - rdsData: 0
       type: 4
+      amount: 0
       level: 1
       probability: 1
       isGearRange: 0
@@ -141,6 +151,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 0
       type: 2
+      amount: 0
       level: 1
       probability: 1
       isGearRange: 0
@@ -159,6 +170,7 @@ MonoBehaviour:
     m_rdsEnemyData:
     - rdsData: 0
       type: 1
+      amount: 0
       level: 3
       probability: 1
       isGearRange: 0
@@ -168,6 +180,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 1
       type: 4
+      amount: 0
       level: 0
       probability: 1
       isGearRange: 0
@@ -177,6 +190,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 0
       type: 1
+      amount: 0
       level: 2
       probability: 2
       isGearRange: 0
@@ -195,6 +209,7 @@ MonoBehaviour:
     m_rdsEnemyData:
     - rdsData: 0
       type: 3
+      amount: 0
       level: 2
       probability: 4
       isGearRange: 0
@@ -204,6 +219,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 0
       type: 5
+      amount: 0
       level: 2
       probability: 1
       isGearRange: 0
@@ -213,6 +229,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 0
       type: 3
+      amount: 0
       level: 3
       probability: 2
       isGearRange: 0
@@ -222,6 +239,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 1
       type: 0
+      amount: 0
       level: 0
       probability: 3
       isGearRange: 0
@@ -231,6 +249,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 1
       type: 2
+      amount: 0
       level: 0
       probability: 1
       isGearRange: 0
@@ -249,6 +268,7 @@ MonoBehaviour:
     m_rdsEnemyData:
     - rdsData: 0
       type: 2
+      amount: 0
       level: 2
       probability: 4
       isGearRange: 0
@@ -258,6 +278,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 0
       type: 3
+      amount: 0
       level: 2
       probability: 1
       isGearRange: 0
@@ -267,6 +288,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 0
       type: 2
+      amount: 0
       level: 3
       probability: 2
       isGearRange: 0
@@ -276,6 +298,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 1
       type: 1
+      amount: 0
       level: 0
       probability: 3
       isGearRange: 0
@@ -285,6 +308,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 1
       type: 0
+      amount: 0
       level: 0
       probability: 2
       isGearRange: 0
@@ -303,6 +327,7 @@ MonoBehaviour:
     m_rdsEnemyData:
     - rdsData: 0
       type: 5
+      amount: 0
       level: 2
       probability: 4
       isGearRange: 0
@@ -312,6 +337,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 0
       type: 4
+      amount: 0
       level: 2
       probability: 1
       isGearRange: 0
@@ -321,6 +347,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 0
       type: 5
+      amount: 0
       level: 3
       probability: 2
       isGearRange: 0
@@ -330,6 +357,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 1
       type: 2
+      amount: 0
       level: 0
       probability: 3
       isGearRange: 0
@@ -339,6 +367,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 1
       type: 3
+      amount: 0
       level: 0
       probability: 1
       isGearRange: 0
@@ -357,6 +386,7 @@ MonoBehaviour:
     m_rdsEnemyData:
     - rdsData: 0
       type: 4
+      amount: 0
       level: 2
       probability: 4
       isGearRange: 0
@@ -366,6 +396,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 0
       type: 2
+      amount: 0
       level: 2
       probability: 1
       isGearRange: 0
@@ -375,6 +406,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 0
       type: 4
+      amount: 0
       level: 3
       probability: 2
       isGearRange: 0
@@ -384,6 +416,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 1
       type: 3
+      amount: 0
       level: 0
       probability: 2
       isGearRange: 0
@@ -393,6 +426,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 1
       type: 1
+      amount: 0
       level: 0
       probability: 2
       isGearRange: 0
@@ -411,6 +445,7 @@ MonoBehaviour:
     m_rdsEnemyData:
     - rdsData: 0
       type: 1
+      amount: 0
       level: 2
       probability: 4
       isGearRange: 0
@@ -420,6 +455,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 0
       type: 1
+      amount: 0
       level: 3
       probability: 2
       isGearRange: 0
@@ -429,6 +465,7 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 1
       type: 4
+      amount: 0
       level: 0
       probability: 1
       isGearRange: 0
@@ -438,6 +475,7 @@ MonoBehaviour:
       isAlwaysSpawn: 1
     - rdsData: 1
       type: 2
+      amount: 0
       level: 0
       probability: 2
       isGearRange: 0

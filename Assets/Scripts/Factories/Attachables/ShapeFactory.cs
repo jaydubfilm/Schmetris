@@ -131,11 +131,6 @@ namespace StarSalvager.Factories
                     return bitFactory.CreateObject<T>((BIT_TYPE)shapeData.BlockData[0].Type, shapeData.BlockData[0].Level);
                 }
 
-                if (totalBits == 1 && typeof(T) == typeof(IObstacle))
-                {
-                    return bitFactory.CreateObject<T>((BIT_TYPE)shapeData.BlockData[0].Type, shapeData.BlockData[0].Level);
-                }
-
                 var shape = CreateObject<Shape>();
                 for (var i = 0; i < totalBits; i++)
                 {

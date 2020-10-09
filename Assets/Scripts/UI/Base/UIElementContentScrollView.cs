@@ -20,6 +20,7 @@ namespace StarSalvager.UI
 
         public List<U> Elements { get; private set; }
 
+        
         //TODO: find a better method then the compareNames for the current cases using this comparison (botshapeeditorui)
         public U AddElement(T data, string gameObjectName = "", bool compareNames = false, bool allowDuplicate = false)
         {

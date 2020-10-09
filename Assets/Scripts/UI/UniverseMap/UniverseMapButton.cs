@@ -1,10 +1,12 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
+using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +15,8 @@ namespace StarSalvager
 {
     public class UniverseMapButton : MonoBehaviour
     {
+        private Action<bool, int, int, RectTransform> _onHoveredCallback;
+        
         public Button Button;
         public TMP_Text Text;
         public int SectorNumber;
@@ -23,28 +27,38 @@ namespace StarSalvager
 
         private List<UniverseWaveButton> m_waveButtons;
 
-        public void SetupWaveButtons(int numberWaves)
+        public void SetupWaveButtons(int numberWaves, Action<bool, int, int, RectTransform> onHoveredCallback)
         {
+            _onHoveredCallback = onHoveredCallback;
+            
             m_waveButtons = new List<UniverseWaveButton>();
 
             for (int i = 0; i < numberWaves; i++)
             {
-                UniverseWaveButton button = Instantiate(m_waveButtonPrefab);
-                button.transform.SetParent(transform);
-                m_waveButtons.Add(button);
-                button.WaveNumber = i;
-                button.Text.text = $"Wave {i + 1}";
-                button.Button.onClick.AddListener(() =>
+                var waveNumber = i;
+                var waveButton = Instantiate(m_waveButtonPrefab, transform, true);
+                m_waveButtons.Add(waveButton);
+                waveButton.WaveNumber = i;
+                waveButton.Text.text = $"Wave {waveNumber + 1}";
+                waveButton.Button.onClick.AddListener(() =>
                 {
                     SetActiveWaveButtons(false);
                     Globals.CurrentSector = SectorNumber;
-                    Globals.CurrentWave = button.WaveNumber;
+                    Globals.CurrentWave = waveButton.WaveNumber;
                     //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataParameter: Values.Globals.CurrentSector);
                     SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
                 });
-                button.transform.position = new Vector2
+                waveButton.transform.position = new Vector2
                     (transform.position.x + 80 * Mathf.Cos((((float)i / (float)numberWaves) * 360 - 90) * -1 * Mathf.Deg2Rad), 
                     transform.position.y + 80 * Mathf.Sin((((float)i / (float)numberWaves) * 360 - 90) * -1 * Mathf.Deg2Rad));
+
+                waveButton.GetComponent<PointerEvents>().PointerEntered += hovered =>
+                {
+                    if(hovered)
+                        _onHoveredCallback?.Invoke(true, SectorNumber, waveNumber, waveButton.transform as RectTransform);
+                    else
+                        _onHoveredCallback?.Invoke(false, -1, -1, null);
+                };
             }
             SetActiveWaveButtons(false);
 
@@ -71,5 +85,6 @@ namespace StarSalvager
             }
             ButtonsActive = active;
         }
+        
     }
 }
