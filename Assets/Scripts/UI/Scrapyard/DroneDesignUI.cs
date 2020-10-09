@@ -53,6 +53,10 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button isUpgradingButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button rotateLeftButton;
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button rotateRightButton;
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button undoButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button redoButton;
@@ -183,8 +187,18 @@ namespace StarSalvager.UI.Scrapyard
                 DroneDesigner.RepairParts();
                 PreviewRepairCost(false);
             });
-            
+
             //--------------------------------------------------------------------------------------------------------//
+
+            rotateLeftButton.onClick.AddListener(() =>
+            {
+                DroneDesigner.RotateBots(-1.0f);
+            });
+
+            rotateRightButton.onClick.AddListener(() =>
+            {
+                DroneDesigner.RotateBots(1.0f);
+            });
 
             undoButton.onClick.AddListener(() =>
             {
