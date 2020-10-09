@@ -103,6 +103,14 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, BoxGroup("Save Menu")]
         private Button saveAsNew;
 
+        [SerializeField, Required, BoxGroup("Save Menu/Testing")]
+        private Slider m_cameraZoomScaler;
+        [SerializeField, Required, BoxGroup("Save Menu/Testing")]
+        private SliderText _zoomSliderText;
+
+        [SerializeField]
+        private CameraController CameraController;
+
         [SerializeField, Required, BoxGroup("UI Visuals")]
         private Image screenBlackImage;
 
@@ -323,6 +331,15 @@ namespace StarSalvager.UI.Scrapyard
                 recoveryDroneBannerObject.SetActive(DroneDesigner.IsEditingRecoveryDrone);
 
             });
+
+            m_cameraZoomScaler.onValueChanged.AddListener(ScaleCamera);
+
+        }
+
+        private void ScaleCamera(float value)
+        {
+            Globals.ScaleCamera(value);
+            CameraController.CameraOffset(Vector3.zero, true);
         }
 
         #endregion //Init
