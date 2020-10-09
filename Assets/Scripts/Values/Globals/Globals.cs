@@ -55,6 +55,7 @@ namespace StarSalvager.Values
 
         public static int NumCurrentTrackedMissionMax => m_gameSettings.numCurrentTrackedMissionMax;
         public static bool OnlyGetWaveLootOnce => m_gameSettings.onlyGetWaveLootOnce;
+        public static bool RecoveryOfDroneLocksHorizontalMovement => m_gameSettings.recoveryOfDroneLocksHorizontalMovement;
 
         //Values set by Game Settings - do not set values here
         public static bool DisableTestingFeatures;
