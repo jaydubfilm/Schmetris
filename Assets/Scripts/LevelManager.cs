@@ -192,6 +192,7 @@ namespace StarSalvager
                         {
                             RecoverFromDeath = true;
                             IsWaveProgressing = true;
+                            GameUi.ShowRecoveryBanner(true);
                             RestartLevel();
                         });
 
@@ -245,7 +246,11 @@ namespace StarSalvager
                     GameUi.SetTimeString((int) timeLeft);
                 }
             }
-            else if (ObstacleManager.HasNoActiveObstacles)
+            else if (ObstacleManager.HasNoActiveObstacles 
+                || (ObstacleManager.RecoveredBotFalling != null 
+                    //&& Camera.main.ScreenToWorldPoint(Screen.width / 2, Screen.height / 2, 0).y < 
+                    //&& Camera.main.rect.Contains(Camera.main.WorldToScreenPoint(ObstacleManager.transform.position)) 
+                    && Camera.main.WorldToScreenPoint(ObstacleManager.RecoveredBotFalling.transform.position).y <= Screen.height / 2))
             {
                 var botBlockData = BotObject.GetBlockDatas();
                 SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
@@ -586,9 +591,12 @@ namespace StarSalvager
                     var importedData = currentBlockData.ImportBlockDatas(true);
                     scrapyardBot.InitBot(importedData, scrapyardBot);
                 }
-                scrapyardBot.transform.parent = m_obstacleManager.WorldElementsRoot;
+                if (!Globals.RecoveryOfDroneLocksHorizontalMovement)
+                {
+                    scrapyardBot.transform.parent = m_obstacleManager.WorldElementsRoot;
+                }
                 scrapyardBot.transform.position = m_bots[0].transform.position + (Vector3.up * Globals.GridSizeY * Constants.gridCellSize);
-                ObstacleManager.AddObstacleToList(scrapyardBot);
+                ObstacleManager.RecoveredBotFalling = scrapyardBot.gameObject;
             }
         }
 

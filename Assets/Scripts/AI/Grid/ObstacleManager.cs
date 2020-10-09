@@ -34,6 +34,7 @@ namespace StarSalvager
         private List<Shape> m_bonusShapes;
         private List<Shape> m_notFullyInGridShapes;
         private List<OffGridMovement> m_offGridMovingObstacles;
+        public GameObject RecoveredBotFalling = null;
 
         public List<Asteroid> Asteroids { get; private set; }
 
@@ -199,9 +200,6 @@ namespace StarSalvager
                             recycleBits = false
                         });
                         break;
-                    case ScrapyardBot bot:
-                        Recycler.Recycle<ScrapyardBot>(bot);
-                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                 }
@@ -234,9 +232,6 @@ namespace StarSalvager
                         {
                             recycleBits = false
                         });
-                        break;
-                    case ScrapyardBot bot:
-                        Recycler.Recycle<ScrapyardBot>(bot);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
@@ -283,6 +278,12 @@ namespace StarSalvager
             {
                 Recycler.Recycle<Shape>(m_bonusShapes[i].gameObject);
                 m_bonusShapes.RemoveAt(i);
+            }
+
+            if (RecoveredBotFalling != null)
+            {
+                GameObject.Destroy(RecoveredBotFalling);
+                RecoveredBotFalling = null;
             }
 
             m_bonusShapes.Clear();
@@ -458,11 +459,6 @@ namespace StarSalvager
                             m_obstacles[i].IsRegistered = false;
                             m_obstacles[i] = null;
                             break;
-                        case ScrapyardBot bot:
-                            bot.IsRegistered = false;
-                            Recycler.Recycle<ScrapyardBot>(bot);
-                            m_obstacles[i] = null;
-                            break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                     }
@@ -478,6 +474,14 @@ namespace StarSalvager
                     rotate.transform.localRotation *=
                         Quaternion.Euler(0.0f, 0.0f, Time.deltaTime * 15.0f * rotate.RotateDirection);
                 }
+            }
+
+            if (RecoveredBotFalling != null)
+            {
+                var pos = RecoveredBotFalling.transform.localPosition;
+                pos -= amountShift;
+
+                RecoveredBotFalling.transform.localPosition = pos;
             }
 
             if (Mathf.Abs(m_distanceHorizontal) > 0.2f)
@@ -1002,9 +1006,6 @@ namespace StarSalvager
                         break;
                     case Shape shape:
                         Recycler.Recycle<Shape>(shape);
-                        break;
-                    case ScrapyardBot bot:
-                        Recycler.Recycle<ScrapyardBot>(bot);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(movable), movable, null);

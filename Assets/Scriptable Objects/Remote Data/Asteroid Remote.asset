@@ -15,9 +15,17 @@ MonoBehaviour:
   BitRemoteData:
   - asteroidSize: 0
     health: 15
+    m_maxDrops: 0
+    m_rdsAsteroidData: []
   - asteroidSize: 1
     health: 30
+    m_maxDrops: 0
+    m_rdsAsteroidData: []
   - asteroidSize: 2
     health: 60
+    m_maxDrops: 0
+    m_rdsAsteroidData: []
   - asteroidSize: 3
     health: 90
+    m_maxDrops: 0
+    m_rdsAsteroidData: []
