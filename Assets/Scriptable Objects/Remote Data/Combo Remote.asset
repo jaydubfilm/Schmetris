@@ -31,3 +31,52 @@ MonoBehaviour:
   - type: 5
     points: 175
     addLevels: 2
+  SimultaneousComboData:
+  - combos: 2
+    bits: 3
+    multiplier: 1.5
+  - combos: 2
+    bits: 4
+    multiplier: 2
+  - combos: 2
+    bits: 5
+    multiplier: 2.5
+  - combos: 2
+    bits: 6
+    multiplier: 3
+  - combos: 3
+    bits: 3
+    multiplier: 2
+  - combos: 3
+    bits: 4
+    multiplier: 2.5
+  - combos: 3
+    bits: 5
+    multiplier: 3
+  - combos: 3
+    bits: 6
+    multiplier: 3.5
+  - combos: 4
+    bits: 3
+    multiplier: 2.5
+  - combos: 4
+    bits: 4
+    multiplier: 3
+  - combos: 4
+    bits: 5
+    multiplier: 3.5
+  - combos: 4
+    bits: 6
+    multiplier: 4
+  - combos: 5
+    bits: 3
+    multiplier: 3
+  - combos: 5
+    bits: 4
+    multiplier: 3.5
+  - combos: 5
+    bits: 5
+    multiplier: 4
+  - combos: 5
+    bits: 6
+    multiplier: 4.5
