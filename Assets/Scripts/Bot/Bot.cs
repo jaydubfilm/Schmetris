@@ -55,7 +55,8 @@ namespace StarSalvager
         public bool isPaused => GameTimer.IsPaused;
 
         //====================================================================================================================//
-        
+        [SerializeField, BoxGroup("PROTOTYPE")]
+        private bool PROTO_autoRefineFuel = true;
         [SerializeField, Range(0.5f, 10f), BoxGroup("PROTOTYPE")]
         public float TEST_MergeSpeed = 2f;
         
@@ -1360,10 +1361,17 @@ namespace StarSalvager
                 CompositeCollider2D.GenerateGeometry();
         }
 
+
         private void TryAutoProcessBit(Bit bit, IPart part)
         {
-            if (part.Type != PART_TYPE.REFINER || bit.Type == BIT_TYPE.YELLOW)
-                return;
+            switch (part.Type)
+            {
+                case PART_TYPE.CORE when PROTO_autoRefineFuel && bit.Type == BIT_TYPE.RED:
+                case PART_TYPE.REFINER when bit.Type != BIT_TYPE.YELLOW:
+                    break;
+                default:
+                    return;
+            }
             
             BotPartsLogic.ProcessBit(bit);
             CheckForDisconnects();
