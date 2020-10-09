@@ -53,6 +53,10 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button isUpgradingButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button rotateLeftButton;
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button rotateRightButton;
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button undoButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button redoButton;
@@ -98,6 +102,14 @@ namespace StarSalvager.UI.Scrapyard
         private Button saveOverwrite;
         [SerializeField, Required, BoxGroup("Save Menu")]
         private Button saveAsNew;
+
+        [SerializeField, Required, BoxGroup("Save Menu/Testing")]
+        private Slider m_cameraZoomScaler;
+        [SerializeField, Required, BoxGroup("Save Menu/Testing")]
+        private SliderText _zoomSliderText;
+
+        [SerializeField]
+        private CameraController CameraController;
 
         [SerializeField, Required, BoxGroup("UI Visuals")]
         private Image screenBlackImage;
@@ -183,8 +195,18 @@ namespace StarSalvager.UI.Scrapyard
                 DroneDesigner.RepairParts();
                 PreviewRepairCost(false);
             });
-            
+
             //--------------------------------------------------------------------------------------------------------//
+
+            rotateLeftButton.onClick.AddListener(() =>
+            {
+                DroneDesigner.RotateBots(-1.0f);
+            });
+
+            rotateRightButton.onClick.AddListener(() =>
+            {
+                DroneDesigner.RotateBots(1.0f);
+            });
 
             undoButton.onClick.AddListener(() =>
             {
@@ -309,6 +331,15 @@ namespace StarSalvager.UI.Scrapyard
                 recoveryDroneBannerObject.SetActive(DroneDesigner.IsEditingRecoveryDrone);
 
             });
+
+            m_cameraZoomScaler.onValueChanged.AddListener(ScaleCamera);
+
+        }
+
+        private void ScaleCamera(float value)
+        {
+            Globals.ScaleCamera(value);
+            CameraController.CameraOffset(Vector3.zero, true);
         }
 
         #endregion //Init
