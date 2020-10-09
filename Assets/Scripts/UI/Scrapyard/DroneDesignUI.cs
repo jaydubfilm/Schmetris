@@ -136,6 +136,8 @@ namespace StarSalvager.UI.Scrapyard
 
         private bool _scrollViewsSetup;
 
+        float cameraScaleOnEnter;
+
         //Unity Functions
         //============================================================================================================//
 
@@ -156,6 +158,8 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnEnable()
         {
+            cameraScaleOnEnter = m_cameraZoomScaler.value;
+
             if (_scrollViewsSetup)
                 RefreshScrollViews();
 
@@ -169,6 +173,8 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnDisable()
         {
+            m_cameraZoomScaler.value = cameraScaleOnEnter;
+
             DroneDesigner?.ClearUndoRedoStacks();
             
             PlayerData.OnValuesChanged -= UpdateBotResourceElements;
