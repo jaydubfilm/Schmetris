@@ -606,6 +606,10 @@ namespace StarSalvager
             {
                 switch (loot[i])
                 {
+                    case RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined:
+                        PlayerPersistentData.PlayerData.AddResource(rdsValueResourceRefined.rdsValue.Item1, rdsValueResourceRefined.rdsValue.Item2);
+                        loot.RemoveAt(i);
+                        break;
                     case RDSValue<Blueprint> rdsValueBlueprint:
                         PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
                         Toast.AddToast("Unlocked Blueprint!");

@@ -15,17 +15,57 @@ MonoBehaviour:
   BitRemoteData:
   - asteroidSize: 0
     health: 15
-    m_maxDrops: 0
-    m_rdsAsteroidData: []
+    m_maxDrops: 3
+    m_rdsAsteroidData:
+    - rdsData: 0
+      type: 1
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
   - asteroidSize: 1
     health: 30
-    m_maxDrops: 0
-    m_rdsAsteroidData: []
+    m_maxDrops: 3
+    m_rdsAsteroidData:
+    - rdsData: 2
+      type: 0
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
   - asteroidSize: 2
     health: 60
-    m_maxDrops: 0
-    m_rdsAsteroidData: []
+    m_maxDrops: 3
+    m_rdsAsteroidData:
+    - rdsData: 2
+      type: 1
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
   - asteroidSize: 3
     health: 90
-    m_maxDrops: 0
-    m_rdsAsteroidData: []
+    m_maxDrops: 3
+    m_rdsAsteroidData:
+    - rdsData: 2
+      type: 2
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0

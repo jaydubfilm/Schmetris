@@ -216,6 +216,10 @@ namespace StarSalvager.Values
                 {
                     AddResource(rdsValueBit.rdsValue.Type, FactoryManager.Instance.BitsRemoteData.GetRemoteData(rdsValueBit.rdsValue.Type).levels[0].resources);
                 }
+                else if (levelUpLoot[i] is RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined)
+                {
+                    AddResource(rdsValueResourceRefined.rdsValue.Item1, rdsValueResourceRefined.rdsValue.Item2);
+                }
                 else if (levelUpLoot[i] is RDSValue<Component> rdsValueComponent)
                 {
                     AddComponent(rdsValueComponent.rdsValue.Type, 1);

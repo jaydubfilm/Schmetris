@@ -861,7 +861,20 @@ namespace StarSalvager
                             AddObstacleToList(newComponent);
                             PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;
+                        default:
+                            Debug.LogError(rdsValueBlockData.rdsValue.ClassType + " in SpawnBitExplosion and not handled");
+                            break;
                     }
+                }
+                else if (rdsObjects[i] is RDSValue<ASTEROID_SIZE> rdsValueAsteroidSize)
+                {
+                    Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(rdsValueAsteroidSize.rdsValue);
+                    AddObstacleToList(newAsteroid);
+                    PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
+                }
+                else
+                {
+                    Debug.LogError(rdsObjects[i].ToString() + " in SpawnBitExplosion and not handled");
                 }
             }
         }

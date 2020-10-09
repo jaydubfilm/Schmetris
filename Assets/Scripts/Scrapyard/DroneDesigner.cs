@@ -870,6 +870,17 @@ namespace StarSalvager
             Alert.ShowAlert("Resources Refined", resourcesGained, "Okay", null);
             Alert.SetLineHeight(90f);
 
+            
+            for (int i = listBits.Count - 1; i >= 0; i--)
+            {
+                if (_scrapyardBot.attachedBlocks.Contains(listBits[i]))
+                {
+                    continue;
+                }
+
+                Recycler.Recycle<ScrapyardBit>(listBits[i]);
+                listBits.RemoveAt(i);
+            }
 
             _scrapyardBot.RemoveAllBits();
 
