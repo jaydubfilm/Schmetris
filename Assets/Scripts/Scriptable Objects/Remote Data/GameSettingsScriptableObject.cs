@@ -27,6 +27,8 @@ namespace StarSalvager.ScriptableObjects
         public float botContinuousRotationSpeed = 700.0f;
         public float missionReminderFrequency = 25.0f;
         public float bonusShapeSpeed = 12.0f;
+        [Range(0,1f)]
+        public float levelResourceDropReductionAmount = 0.5f;
         public float asteroidDamage = 10.0f;
         public List<BonusShapeGearsValue> bonusShapeGearsRewards;
 
@@ -38,6 +40,7 @@ namespace StarSalvager.ScriptableObjects
 
         public int numCurrentTrackedMissionMax = 3;
         public bool onlyGetWaveLootOnce = true;
+        public bool recoveryOfDroneLocksHorizontalMovement = true;
 
         public List<BlueprintInitialData> blueprintInitialData = new List<BlueprintInitialData>();
         public List<FacilityInitialData> facilityInitialData = new List<FacilityInitialData>();

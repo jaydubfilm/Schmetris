@@ -1,4 +1,5 @@
-﻿using StarSalvager.Utilities.JsonDataTypes;
+﻿using StarSalvager.AI;
+using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,6 +23,14 @@ namespace StarSalvager.Utilities.Extensions
                         Level = rdsData.level
                     };
                     rdsTable.AddEntry(new RDSValue<BlockData>(bitBlockData, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
+                }
+                else if (rdsData.rdsData == RDSLootData.TYPE.ResourcesRefined)
+                {
+                    rdsTable.AddEntry(new RDSValue<(BIT_TYPE, int)>(((BIT_TYPE)rdsData.type, rdsData.amount), rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
+                }
+                else if (rdsData.rdsData == RDSLootData.TYPE.Asteroid)
+                {
+                    rdsTable.AddEntry(new RDSValue<ASTEROID_SIZE>((ASTEROID_SIZE)rdsData.type, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
                 }
                 else if (rdsData.rdsData == RDSLootData.TYPE.Component)
                 {

@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using StarSalvager.AI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace StarSalvager
         public enum TYPE
         {
             Bit,
+            ResourcesRefined,
+            Asteroid,
             Component,
             Blueprint,
             FacilityBlueprint,
@@ -25,7 +28,10 @@ namespace StarSalvager
         [FoldoutGroup("$Name"), ValueDropdown("GetTypes"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         public int type;
 
-        [FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Component), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
+        [FoldoutGroup("$Name"), ShowIf("rdsData", TYPE.ResourcesRefined)]
+        public int amount;
+
+        [FoldoutGroup("$Name"), HideIf("rdsData", TYPE.ResourcesRefined), HideIf("rdsData", TYPE.Asteroid), HideIf("rdsData", TYPE.Component), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         public int level;
 
         [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears)]
@@ -101,7 +107,11 @@ namespace StarSalvager
             switch (rdsData)
             {
                 case TYPE.Bit:
+                case TYPE.ResourcesRefined:
                     value = $"{(BIT_TYPE)type}";
+                    break;
+                case TYPE.Asteroid:
+                    value = $"{(ASTEROID_SIZE)type}";
                     break;
                 case TYPE.Component:
                     value = $"{(COMPONENT_TYPE)type}";
@@ -133,7 +143,11 @@ namespace StarSalvager
             switch (rdsData)
             {
                 case TYPE.Bit:
+                case TYPE.ResourcesRefined:
                     valueType = typeof(BIT_TYPE);
+                    break;
+                case TYPE.Asteroid:
+                    valueType = typeof(ASTEROID_SIZE);
                     break;
                 case TYPE.Component:
                     valueType = typeof(COMPONENT_TYPE);

@@ -7,6 +7,7 @@
         RELOCATE,
         DISMANTLE_FROM_STORAGE,
         DISMANTLE_FROM_BOT,
+        ROTATE,
 
 
         PURCHASE,

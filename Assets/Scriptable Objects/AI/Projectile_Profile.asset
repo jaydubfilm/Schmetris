@@ -132,3 +132,15 @@ MonoBehaviour:
     m_sprayCount: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+  - m_projectileTypeID: 5591628b-3b62-4bea-b915-78c355070c11
+    m_sprite: {fileID: -7191923045049933382, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
+      type: 3}
+    m_projectileType: Blaster
+    m_projectileSpeed: 10
+    m_projectileRange: 0
+    m_requiredRotate: 1
+    m_attackType: 0
+    m_spreadAngle: 0
+    m_sprayCount: 0
+    m_canHitAsteroids: 1
+    m_addVelocityToProjectiles: 0

@@ -6,12 +6,19 @@ using StarSalvager.Utilities.Inputs;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using StarSalvager.AI;
+using StarSalvager.Factories;
+using StarSalvager.Utilities.Animations;
 using StarSalvager.Values;
+using StarSalvager.Factories.Data;
+using System.Linq;
 
 namespace StarSalvager
 {
     public class Asteroid : CollidableBase, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate
     {
+        public RDSTable rdsTable { get; set; }
+
+        public float Radius { get; private set; }
         //IRotate properties
         //============================================================================================================//
 
@@ -31,7 +38,7 @@ namespace StarSalvager
         //============================================================================================================//
         public bool CanMove => true;
 
-        public bool IsRegistered { get; set; } = false;
+        public bool IsRegistered { get; set; }
 
         public bool IsMarkedOnGrid { get; set; } = false;
 
@@ -64,6 +71,13 @@ namespace StarSalvager
 
             if (CurrentHealth > 0) 
                 return;
+
+            //TODO Need to spawn loot
+
+            if (rdsTable != null)
+            {
+                LevelManager.Instance.DropLoot(rdsTable.rdsResult.ToList(), transform.localPosition, true);
+            }
             
             Recycler.Recycle<Asteroid>(this);
         }
@@ -74,6 +88,10 @@ namespace StarSalvager
         public bool TryHitAt(Vector2 worldPosition, float damage)
         {
             ChangeHealth(-damage);
+            
+            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
+            LevelManager.Instance.ObstacleManager.AddToRoot(explosion);
+            explosion.transform.position = worldPosition;
 
             return true;
         }
@@ -130,14 +148,36 @@ namespace StarSalvager
             }
         }
 
+        //Asteroid Functions
         //============================================================================================================//
 
-        public virtual void CustomRecycle(params object[] args)
+        public void SetRadius(float radius)
+        {
+            Radius = radius;
+        }
+        
+        //ICustomRecycle Function
+        //====================================================================================================================//
+        
+        public void CustomRecycle(params object[] args)
         {
             transform.rotation = Quaternion.identity;
             SetRotating(false);
 
             renderer.sortingOrder = 0;
+            Radius = 0f;
         }
+
+        #region UNITY_EDITOR
+
+        private void OnDrawGizmosSelected()
+        {
+            if (transform == null)
+                return;
+            
+            Gizmos.DrawWireSphere(transform.position, Radius);
+        }
+
+        #endregion //UNITY_EDITOR
     }
 }

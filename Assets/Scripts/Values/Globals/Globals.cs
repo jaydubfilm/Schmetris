@@ -48,12 +48,14 @@ namespace StarSalvager.Values
         public static int GridSizeX => m_gameSettings.gridWidth;
         public static float AsteroidDamage => m_gameSettings.asteroidDamage;
         public static float BonusShapeDuration => m_gameSettings.bonusShapeSpeed;
+        public static float LevelResourceDropReductionAmount => m_gameSettings.levelResourceDropReductionAmount;
         public static List<BlueprintInitialData> BlueprintInitialData => m_gameSettings.blueprintInitialData;
         public static List<FacilityInitialData> FacilityInitialData => m_gameSettings.facilityInitialData;
         public static List<FacilityInitialData> FacilityInitialBlueprintData => m_gameSettings.facilityInitialBlueprintData;
 
         public static int NumCurrentTrackedMissionMax => m_gameSettings.numCurrentTrackedMissionMax;
         public static bool OnlyGetWaveLootOnce => m_gameSettings.onlyGetWaveLootOnce;
+        public static bool RecoveryOfDroneLocksHorizontalMovement => m_gameSettings.recoveryOfDroneLocksHorizontalMovement;
 
         //Values set by Game Settings - do not set values here
         public static bool DisableTestingFeatures;

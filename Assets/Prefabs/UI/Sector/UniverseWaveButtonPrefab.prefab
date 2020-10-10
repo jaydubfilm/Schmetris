@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3709217926895160074}
   - component: {fileID: 5230761989540967402}
   - component: {fileID: 3207485403831440294}
+  - component: {fileID: 1847286368927858154}
   m_Layer: 5
   m_Name: UniverseWaveButtonPrefab
   m_TagString: Untagged
@@ -135,6 +136,18 @@ MonoBehaviour:
   Button: {fileID: 5230761989540967402}
   Text: {fileID: 6688209369143517100}
   WaveNumber: 0
+--- !u!114 &1847286368927858154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1480548312144581132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5403823f9fa3945977e60483b71576, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3341919564395523198
 GameObject:
   m_ObjectHideFlags: 0

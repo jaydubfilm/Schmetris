@@ -1,7 +1,10 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.ScriptableObjects;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
 using StarSalvager.Utilities.UI;
 using TMPro;
@@ -14,8 +17,7 @@ namespace StarSalvager.UI.Scrapyard
     //TODO Need to test the scroll sensitivity on the blueprint scrollview on other platforms. Works well for windows at 32.5
     public class CraftingBenchUI : MonoBehaviour
     {
-        [SerializeField, Required]
-        private RemotePartProfileScriptableObject _remotePartProfileScriptable;
+        [SerializeField, Required] private RemotePartProfileScriptableObject _remotePartProfileScriptable;
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private GameObject costWindowObject;
@@ -25,26 +27,32 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private RectTransform windowParent;
-        
+
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private CostUIElementScrollView costView;
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private TMP_Text itemNameText;
+
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private TMP_Text itemDescriptionText;
-        
+
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private TMP_Text itemPowerUsage;
 
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private Image itemIcon;
 
+        [SerializeField, Required, FoldoutGroup("Cost Window")]
+        private GameObject missingBannerObject;
+
+        [SerializeField, Required, FoldoutGroup("Cost Window")]
+        private TMP_Text missingFacilityText;
+
         [FormerlySerializedAs("blueprints")] [SerializeField]
         private BlueprintUIElementScrollView blueprintsContentScrollView;
 
-        [SerializeField, Required]
-        private CraftingBench mCraftingBench;
+        [SerializeField, Required] private CraftingBench mCraftingBench;
 
         private StorageUI _storageUi;
         private DroneDesignUI _droneDesignUI;
@@ -76,8 +84,8 @@ namespace StarSalvager.UI.Scrapyard
 
             blueprintsContentScrollView.ClearElements();
             InitUIScrollView();
-            
-            
+
+
             costWindowObject.SetActive(false);
             costWindowObject.transform.SetParent(windowParent);
             costWindowObject.transform.SetAsLastSibling();
@@ -135,7 +143,7 @@ namespace StarSalvager.UI.Scrapyard
             costWindowCanvasGroup.alpha = 0;
 
             _droneDesignUI.PreviewCraftCost(showWindow, blueprint);
-            
+
             if (!showWindow)
             {
                 PlayerData.OnValuesChanged -= UpdateCostUI;
@@ -158,10 +166,10 @@ namespace StarSalvager.UI.Scrapyard
             //TODO Should also reposition the window relative to the screen bounds to always keep in window
             Canvas.ForceUpdateCanvases();
             costWindowVerticalLayoutGroup.enabled = true;
-            
+
             yield return new WaitForEndOfFrame();
-            
-            var windowTransform = (RectTransform)costWindowObject.transform;
+
+            var windowTransform = (RectTransform) costWindowObject.transform;
             windowTransform.position = buttonTransform.position;
 
             //--------------------------------------------------------------------------------------------------------//
@@ -181,37 +189,48 @@ namespace StarSalvager.UI.Scrapyard
                 pos.y = -yBoundAbs + yDelta;
                 windowTransform.localPosition = pos;
             }
-            
+
             //--------------------------------------------------------------------------------------------------------//
 
-            windowTransform.localPosition += Vector3.left * (buttonTransform.sizeDelta.x / 2f +  sizeDelta.x/ 2f);
+            windowTransform.localPosition += Vector3.left * (buttonTransform.sizeDelta.x / 2f + sizeDelta.x / 2f);
 
             costWindowCanvasGroup.alpha = 1;
         }
 
         private void UpdateCostUI()
         {
+
             costView.ClearElements();
-            
+
             var partProfileData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetProfileData(lastBlueprint.partType);
-            
+
             itemIcon.sprite = partProfileData.Sprites[lastBlueprint.level];
 
 
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(lastBlueprint.partType);
-            
+
             itemNameText.text = partRemoteData.name;
             itemDescriptionText.text = partRemoteData.description;
 
             var powerDraw = partRemoteData.levels[lastBlueprint.level].powerDraw;
             itemPowerUsage.gameObject.SetActive(powerDraw > 0);
 
-            if(powerDraw > 0)
+            if (powerDraw > 0)
                 itemPowerUsage.text = $"Power: {powerDraw} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.YELLOW]}/s";
 
             var resources = partRemoteData.levels[lastBlueprint.level].cost;
+
+
+            var hasIssue = CheckIfMissingFacility(resources, out var missingText);
+
+            costView.SetActive(!hasIssue);
+            missingBannerObject.SetActive(hasIssue);
+            missingFacilityText.text = missingText;
+
+            if (hasIssue)
+                return;
 
             foreach (var resource in resources)
             {
@@ -221,6 +240,39 @@ namespace StarSalvager.UI.Scrapyard
         }
 
         #endregion //Other
+
+        private static bool CheckIfMissingFacility(IEnumerable<CraftCost> resources, out string missingText)
+        { 
+            var facilities = new Dictionary<COMPONENT_TYPE, FACILITY_TYPE>
+            {
+                [COMPONENT_TYPE.COIL] = FACILITY_TYPE.WORKBENCHCOIL,
+                [COMPONENT_TYPE.CHIP] = FACILITY_TYPE.WORKBENCHCHIP,
+                [COMPONENT_TYPE.FUSOR] = FACILITY_TYPE.WORKBENCHFUSOR
+            };
+            
+            missingText = string.Empty;
+
+            var condensed = resources.Where(x => x.resourceType == CraftCost.TYPE.Component).ToArray();
+
+            if (condensed.IsNullOrEmpty())
+                return false;
+
+            var playerData = PlayerPersistentData.PlayerData;
+
+            foreach (var facility in from kvp in facilities
+                let type = (int) kvp.Key
+                let facility = kvp.Value
+                where condensed.Any(x => x.type == type) && !playerData.CheckHasFacility(facility)
+                select facility)
+            {
+                missingText =
+                    $"Missing {FactoryManager.Instance.FacilityRemote.GetRemoteData(facility).displayName}";
+
+                return true;
+            }
+
+            return false;
+        }
 
         //============================================================================================================//
     }

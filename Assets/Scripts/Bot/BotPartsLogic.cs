@@ -118,12 +118,15 @@ namespace StarSalvager
         private Dictionary<Part, FlashSprite> _flashes;
         private Dictionary<Part, float> _bombTimers;
 
+        private Dictionary<Part, Asteroid> _asteroidTargets;
+
         //Unity Functions
         //==============================================================================================================//
 
         private void OnEnable()
         {
             PlayerData.OnValuesChanged += ForceUpdateResourceUI;
+            
         }
 
         private void OnDisable()
@@ -154,6 +157,8 @@ namespace StarSalvager
         /// </summary>
         private void UpdatePartData()
         {
+            
+            
             if (_magnetOverride > 0)
             {
                 MagnetCount = _magnetOverride;
@@ -329,6 +334,8 @@ namespace StarSalvager
         /// </summary>
         public void PartsUpdateLoop()
         {
+            float cooldown;
+
             var powerValue = PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW];
             var powerToRemove = 0f;
             
@@ -375,7 +382,8 @@ namespace StarSalvager
                     }
                     else
                     {
-                        var addAmount = FactoryManager.Instance
+                        resourceValue = ProcessBit(targetBit);
+                        /*var addAmount = FactoryManager.Instance
                             .GetFactory<BitAttachableFactory>().GetBitRemoteData(targetBit.Type).levels[targetBit.level]
                             .resources;
 
@@ -396,7 +404,7 @@ namespace StarSalvager
                         resourceValue = addAmount;
                         SessionDataProcessor.Instance.LiquidProcessed(targetBit.Type, addAmount);
                         AudioController.PlaySound(SOUND.BIT_REFINED);
-                        bot.ForceCheckMagnets();
+                        bot.ForceCheckMagnets();*/
                     }
 
                 }
@@ -507,6 +515,76 @@ namespace StarSalvager
 
                         TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
                         break;
+                    case PART_TYPE.BLASTER:
+                        
+                        //--------------------------------------------------------------------------------------------//
+                        if (_projectileTimers == null)
+                            _projectileTimers = new Dictionary<Part, float>();
+
+                        if (!_projectileTimers.ContainsKey(part))
+                            _projectileTimers.Add(part, 0f);
+
+                        //Cooldown
+                        //--------------------------------------------------------------------------------------------//
+
+                        cooldown = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Cooldown);
+
+                        if (_projectileTimers[part] < cooldown)
+                        {
+                            _projectileTimers[part] += Time.deltaTime;
+                            break;
+                        }
+
+                        _projectileTimers[part] = 0f;
+
+                        //Check if we have a target before removing resources
+                        //--------------------------------------------------------------------------------------------//
+
+                        if (_asteroidTargets.IsNullOrEmpty())
+                        {
+                            _asteroidTargets = new Dictionary<Part, Asteroid>();
+                        }
+
+                        if (!_asteroidTargets.TryGetValue(part, out var asteroid) || asteroid.IsRecycled)
+                        {
+                            //TODO Find closest asteroids
+                            asteroid = LevelManager.Instance.ObstacleManager.Asteroids.FindClosestObstacleInRange(
+                                    transform.position, 10);
+                            
+                            if (asteroid == null)
+                                break;
+                        }
+                        
+                        
+                        //TODO Determine if this fires at all times or just when there are active enemies in range
+                        
+
+
+                        //Use resources
+                        //--------------------------------------------------------------------------------------------//
+
+                        if (useBurnRate)
+                        {
+                            if (resourceValue <= 0f)
+                            {
+                                AudioController.PlaySound(SOUND.GUN_CLICK);
+                                break;
+                            }
+
+                            if (resourceValue > 0)
+                            {
+                                resoucesConsumed = levelData.burnRate;
+                                resourceValue -= resoucesConsumed;
+                            }
+                        }
+
+                        //--------------------------------------------------------------------------------------------//
+                        
+                        //TODO Create projectile shooting at new target
+
+                        CreateProjectile(part, levelData, asteroid.transform.position, "Asteroid");
+
+                        break;
                     case PART_TYPE.SNIPER:
                     case PART_TYPE.MISSILE:
                     case PART_TYPE.TRIPLESHOT:
@@ -523,7 +601,7 @@ namespace StarSalvager
                         //TODO This needs to fire every x Seconds
                         //--------------------------------------------------------------------------------------------//
 
-                        var cooldown = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Cooldown);
+                        cooldown = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Cooldown);
 
                         if (_projectileTimers[part] < cooldown)
                         {
@@ -572,7 +650,7 @@ namespace StarSalvager
                                 CreateProjectile(part, levelData, enemy);
                                 break;
                             case PART_TYPE.SNIPER:
-                                var direction = (enemy.transform.position + (Vector3)Random.insideUnitCircle - part.transform.position).normalized;
+                                var direction = (enemy.transform.position + ((Vector3)Random.insideUnitCircle * 3) - part.transform.position).normalized;
 
                                 var lineShrink = FactoryManager.Instance.GetFactory<ParticleFactory>()
                                     .CreateObject<LineShrink>();
@@ -596,39 +674,6 @@ namespace StarSalvager
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
-                        
-
-                        /*//Create projectile
-                        //--------------------------------------------------------------------------------------------//
-
-                        //const string PROJECTILE_ID = "083be790-7a08-4f27-b506-e8e09a116bc8";
-
-                        var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
-                        var damage = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Damage);
-
-                        var position = part.transform.position;
-                        var target = position + part.transform.up;
-
-                        //TODO Might need to add something to change the projectile used for each gun piece
-                        FactoryManager.Instance.GetFactory<ProjectileFactory>()
-                            .CreateObjects<Projectile>(
-                                projectileId,
-                                position,
-                                target,
-                                damage,
-                                "Enemy",
-                                true);
-
-
-                        switch (part.level)
-                        {
-                            case 0:
-                                AudioController.PlaySound(SOUND.GUNLVL1_FIRE);
-                                break;
-                            case 1 :
-                                AudioController.PlaySound(SOUND.GUNLVL2_FIRE);
-                                break;
-                        }*/
 
                         //--------------------------------------------------------------------------------------------//
 
@@ -708,8 +753,13 @@ namespace StarSalvager
                         break;
                     
                 }
+                
+                
 
                 UpdateUI(partRemoteData.burnType, resourceValue);
+                
+                if(bot.PROTO_GodMode)
+                    continue;
 
                 PlayerPersistentData.PlayerData.SetLiquidResource(partRemoteData.burnType, resourceValue, bot.IsRecoveryDrone);
 
@@ -717,26 +767,26 @@ namespace StarSalvager
                     LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(partRemoteData.burnType, resoucesConsumed);
             }
 
-            powerValue -= powerToRemove;
-            if (powerValue < 0)
-                powerValue = 0f;
+            if (!bot.PROTO_GodMode)
+            {
+                powerValue -= powerToRemove;
+                if (powerValue < 0)
+                    powerValue = 0f;
             
-            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, powerValue, bot.IsRecoveryDrone);
+                PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, powerValue, bot.IsRecoveryDrone);
             
 
-            //batteryDrainTimer += Time.deltaTime / 2;
-            waterDrainTimer += Time.deltaTime * Constants.waterDrainRate;
+                //batteryDrainTimer += Time.deltaTime / 2;
+                waterDrainTimer += Time.deltaTime * Constants.waterDrainRate;
 
-            /*if (batteryDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] > 0)
-            {
-                batteryDrainTimer--;
-                PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] - 1);
-            }*/
-            if (waterDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0)
-            {
-                waterDrainTimer--;
-                PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] - 1);
+                if (waterDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0)
+                {
+                    waterDrainTimer--;
+                    PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] - 1);
+                }
             }
+
+
             UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW]);
             UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE]);
             
@@ -998,6 +1048,40 @@ namespace StarSalvager
 
         //Find Bits/Values to burn
         //============================================================================================================//
+
+        public int ProcessBit(Bit targetBit)
+        {
+            var bitType = targetBit.Type;
+            var amountProcessed = FactoryManager.Instance
+                .GetFactory<BitAttachableFactory>().GetBitRemoteData(bitType).levels[targetBit.level]
+                .resources;
+
+            var current = PlayerPersistentData.PlayerData.liquidResource[bitType];
+            var capacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
+
+            //We wont add any if its already full!
+            if (current >= capacity)
+                return 0;
+
+            PlayerPersistentData.PlayerData.AddLiquidResource(targetBit.Type, amountProcessed, bot.IsRecoveryDrone);
+
+            //If we want to process a bit, we want to remove it from the attached list while its processed
+            bot.MarkAttachablePendingRemoval(targetBit);
+                        
+            //TODO May want to play around with the order of operations here
+            StartCoroutine(RefineBitCoroutine(targetBit, 1.6f,
+                () =>
+                {
+                    bot.DestroyAttachable<Bit>(targetBit);
+                }));
+
+
+            SessionDataProcessor.Instance.LiquidProcessed(targetBit.Type, amountProcessed);
+            AudioController.PlaySound(SOUND.BIT_REFINED);
+            bot.ForceCheckMagnets();
+
+            return amountProcessed;
+        }
 
         private Bit GetFurthestBitToBurn(PartLevelData partLevelData, BIT_TYPE type)
         {

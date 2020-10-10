@@ -166,7 +166,8 @@ namespace StarSalvager
             {
                 Alert.ShowAlert("Game Over", "Your crew has died of thirst - Game Over. thx!", "Main Menu", () =>
                 {
-                    PlayerPersistentData.SaveAutosaveFiles();
+                    PlayerPersistentData.ClearPlayerData();
+                    PlayerPersistentData.PlayerMetadata.CurrentSaveFile = null;
                     SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
                 });
             }
@@ -523,6 +524,9 @@ namespace StarSalvager
                     PlayerPersistentData.PlayerData.SubtractPartCosts(partType, undoBlockData.Level, true);
                     _scrapyardBot.AttachNewBit(undoBlockData.Coordinate, attachable);
                     break;
+                case SCRAPYARD_ACTION.ROTATE:
+                    RotateBots(-toUndo.Value, false);
+                    break;
                 default:
                     //Debug.LogError("Unhandled undo/redo stack case");
                     throw new ArgumentOutOfRangeException(nameof(toUndo.EventType), toUndo.EventType, null);
@@ -572,6 +576,9 @@ namespace StarSalvager
                 case SCRAPYARD_ACTION.DISMANTLE_FROM_BOT:
                     PlayerPersistentData.PlayerData.AddResources(partType, redoBlockData.Level, true);
                     _scrapyardBot.TryRemoveAttachableAt(redoBlockData.Coordinate, false);
+                    break;
+                case SCRAPYARD_ACTION.ROTATE:
+                    RotateBots(toRedo.Value, false);
                     break;
                 default:
                     //Debug.LogError("Unhandled undo/redo stack case");
@@ -759,6 +766,7 @@ namespace StarSalvager
                 _scrapyardBot.InitBot(importedData, _isEditingRecoveryDrone);
             }
 
+            UpdateFloatingMarkers(false);
         }
 
         //============================================================================================================//
@@ -768,8 +776,28 @@ namespace StarSalvager
             if (_scrapyardBot == null)
                 return;
 
+            List<BlockData> recoveryBotBlockData = PlayerPersistentData.PlayerData.recoveryDroneBlockData;
+
             List<ScrapyardBit> listBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
             List<Component> listComponents = _scrapyardBot.attachedBlocks.OfType<Component>().ToList();
+
+            for (int i = recoveryBotBlockData.Count - 1; i >= 0; i--)
+            {
+                if (recoveryBotBlockData[i].ClassType == "Bit")
+                {
+                    listBits.Add(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<ScrapyardBit>(recoveryBotBlockData[i]));
+                    recoveryBotBlockData.RemoveAt(i);
+                    continue;
+                }
+                
+                if (recoveryBotBlockData[i].ClassType == "Component")
+                {
+                    listComponents.Add(FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().CreateObject<Component>((COMPONENT_TYPE)recoveryBotBlockData[i].Type, recoveryBotBlockData[i].Level));
+                    recoveryBotBlockData.RemoveAt(i);
+                    continue;
+                }
+            }
+
             if (listComponents.Count > 0)
             {
                 _scrapyardBot.RemoveAllComponents();
@@ -800,9 +828,10 @@ namespace StarSalvager
             if (listBits.Count == 0)
                 return;
 
-            var scrapyardBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>();
+            //var scrapyardBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>();
 
-            var enumerable = scrapyardBits as ScrapyardBit[] ?? scrapyardBits.ToArray();
+
+            var enumerable = listBits.ToArray();
             Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
                 .GetTotalResources(enumerable);
 
@@ -848,6 +877,17 @@ namespace StarSalvager
             Alert.ShowAlert("Resources Refined", resourcesGained, "Okay", null);
             Alert.SetLineHeight(90f);
 
+            
+            for (int i = listBits.Count - 1; i >= 0; i--)
+            {
+                if (_scrapyardBot.attachedBlocks.Contains(listBits[i]))
+                {
+                    continue;
+                }
+
+                Recycler.Recycle<ScrapyardBit>(listBits[i]);
+                listBits.RemoveAt(i);
+            }
 
             _scrapyardBot.RemoveAllBits();
 
@@ -966,11 +1006,19 @@ namespace StarSalvager
 
         //====================================================================================================================//
         
-        public void RotateBots(float direction)
+        public void RotateBots(float direction, bool pushToUndoStack = true)
         {
             if (_scrapyardBot != null)
             {
                 _scrapyardBot.Rotate(direction);
+                if (pushToUndoStack)
+                {
+                    _toUndoStack.Push(new ScrapyardEditData
+                    {
+                        EventType = SCRAPYARD_ACTION.ROTATE,
+                        Value = direction
+                    });
+                }
             }
         }
 

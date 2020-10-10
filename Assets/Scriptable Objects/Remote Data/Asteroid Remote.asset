@@ -12,12 +12,100 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f863108e41f0c3940bd941ad8afd0c03, type: 3}
   m_Name: Asteroid Remote
   m_EditorClassIdentifier: 
-  BitRemoteData:
+  asteroidRemoteData:
   - asteroidSize: 0
     health: 15
+    m_maxDrops: 3
+    m_rdsAsteroidData:
+    - rdsData: 0
+      type: 1
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
   - asteroidSize: 1
     health: 30
+    m_maxDrops: 2
+    m_rdsAsteroidData:
+    - rdsData: 2
+      type: 0
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+    - rdsData: 7
+      type: 0
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
   - asteroidSize: 2
     health: 60
+    m_maxDrops: 3
+    m_rdsAsteroidData:
+    - rdsData: 2
+      type: 0
+      amount: 0
+      level: 0
+      probability: 2
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+    - rdsData: 7
+      type: 0
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
   - asteroidSize: 3
     health: 90
+    m_maxDrops: 2
+    m_rdsAsteroidData:
+    - rdsData: 2
+      type: 0
+      amount: 0
+      level: 0
+      probability: 4
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+    - rdsData: 2
+      type: 1
+      amount: 0
+      level: 0
+      probability: 2
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+    - rdsData: 7
+      type: 0
+      amount: 0
+      level: 0
+      probability: 3
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0

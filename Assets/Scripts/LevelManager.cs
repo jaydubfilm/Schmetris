@@ -146,6 +146,20 @@ namespace StarSalvager
                 LiquidResourcesCachedOnDeath = new Dictionary<BIT_TYPE, float>((IDictionary<BIT_TYPE, float>)PlayerPersistentData.PlayerData.liquidResource);
 
                 InputManager.Instance.CancelMove();
+
+                if (!RecoverFromDeath)
+                {
+                    foreach (Bot bot in m_bots)
+                    {
+                        IAttachable attachable = bot.attachedBlocks.First(a => a.Coordinate == Vector2.zero);
+                        if (attachable is Part core)
+                        {
+
+                            core.SetupHealthValues(core.StartingHealth, core.StartingHealth / 2);
+                        }
+                    }
+                }
+
                 SavePlayerData();
                 BotDead = true;
 
@@ -192,7 +206,8 @@ namespace StarSalvager
                         {
                             Globals.CurrentWave = 0;
                             GameTimer.SetPaused(false);
-                            PlayerPersistentData.SaveAutosaveFiles();
+                            PlayerPersistentData.ClearPlayerData();
+                            PlayerPersistentData.PlayerMetadata.CurrentSaveFile = null;
                             SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
                         });
                 }
@@ -232,7 +247,11 @@ namespace StarSalvager
                     GameUi.SetTimeString((int) timeLeft);
                 }
             }
-            else if (ObstacleManager.HasNoActiveObstacles)
+            else if (ObstacleManager.HasNoActiveObstacles 
+                || (ObstacleManager.RecoveredBotFalling != null 
+                    //&& Camera.main.ScreenToWorldPoint(Screen.width / 2, Screen.height / 2, 0).y < 
+                    //&& Camera.main.rect.Contains(Camera.main.WorldToScreenPoint(ObstacleManager.transform.position)) 
+                    && Camera.main.WorldToScreenPoint(ObstacleManager.RecoveredBotFalling.transform.position).y <= Screen.height / 2))
             {
                 var botBlockData = BotObject.GetBlockDatas();
                 SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
@@ -246,18 +265,6 @@ namespace StarSalvager
 
                 if (RecoverFromDeath)
                 {
-                    /*var values = Enum.GetValues(typeof(BIT_TYPE));
-                    foreach (BIT_TYPE bitType in values)
-                    {
-                        if (bitType == BIT_TYPE.WHITE)
-                        {
-                            continue;
-                        }
-
-                        //PlayerPersistentData.PlayerData.AddLiquidResource(bitType, PlayerPersistentData.PlayerData.liquidResource[bitType]);
-                        //PlayerPersistentData.PlayerData.SetLiquidResource(bitType, 0);
-                        //PlayerPersistentData.PlayerData.SetLiquidResource(bitType, LiquidResourcesCachedOnDeath[bitType]);
-                    }*/
                     m_levelManagerUI.ShowSummaryScreen("Bot Recovered",
                         "You have recovered your wrecked bot. Return to base!", () =>
                         {
@@ -270,8 +277,7 @@ namespace StarSalvager
                             SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
                         });
                 }
-
-                if (EndSectorState)
+                else if (EndSectorState)
                 {
                     m_levelManagerUI.ShowSummaryScreen("Sector Completed",
                         "You beat the last wave of the sector. Return to base!", () =>
@@ -537,6 +543,8 @@ namespace StarSalvager
 
             int progressionSector = Globals.CurrentSector;
             string endWaveMessage;
+
+            PlayerPersistentData.PlayerData.ReduceLevelResourceModifier(Globals.CurrentSector, Globals.CurrentWave);
             
             if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
@@ -569,6 +577,28 @@ namespace StarSalvager
 
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
+
+            if (RecoverFromDeath)
+            {
+                ScrapyardBot scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
+                var currentBlockData = PlayerPersistentData.PlayerData.GetCurrentBlockData();
+                //Checks to make sure there is a core on the bot
+                if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
+                {
+                    scrapyardBot.InitBot(false);
+                }
+                else
+                {
+                    var importedData = currentBlockData.ImportBlockDatas(true);
+                    scrapyardBot.InitBot(importedData, scrapyardBot);
+                }
+                if (!Globals.RecoveryOfDroneLocksHorizontalMovement)
+                {
+                    scrapyardBot.transform.parent = m_obstacleManager.WorldElementsRoot;
+                }
+                scrapyardBot.transform.position = m_bots[0].transform.position + (Vector3.up * Globals.GridSizeY * Constants.gridCellSize);
+                ObstacleManager.RecoveredBotFalling = scrapyardBot.gameObject;
+            }
         }
 
         public void DropLoot(List<IRDSObject> loot, Vector3 position, bool isFromEnemyLoot)
@@ -577,6 +607,10 @@ namespace StarSalvager
             {
                 switch (loot[i])
                 {
+                    case RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined:
+                        PlayerPersistentData.PlayerData.AddResource(rdsValueResourceRefined.rdsValue.Item1, rdsValueResourceRefined.rdsValue.Item2);
+                        loot.RemoveAt(i);
+                        break;
                     case RDSValue<Blueprint> rdsValueBlueprint:
                         PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
                         Toast.AddToast("Unlocked Blueprint!");
@@ -668,6 +702,11 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
+
+        public void ForceSetTimeRemaining(float timeLeft)
+        {
+            m_waveTimer = CurrentWaveData.GetWaveDuration() - timeLeft;
+        }
         
         #if UNITY_EDITOR
 

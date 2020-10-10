@@ -388,8 +388,8 @@ MonoBehaviour:
   - name: Gun
     partType: 4
     canSell: 1
-    description: This basic offensive weapon will fire on any enemy within range
-      and consumes scrap metal ammunition.  Aim leaves something to be desired.
+    description: This basic offensive weapon will fire on any enemy within range and
+      consumes scrap metal ammunition.  Aim leaves something to be desired.
     priority: 75
     burnType: 3
     levels:
@@ -1191,3 +1191,162 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 6500
+  - name: Sniper
+    partType: 15
+    canSell: 1
+    description: 
+    priority: 50
+    burnType: 3
+    levels:
+    - unlockLevel: 4
+      health: 100
+      powerDraw: 0
+      dataTest:
+      - key: Damage
+        value: 100
+      - key: Cooldown
+        value: 2
+      - key: Probability
+        value: 0.75
+      burnRate: 0.1
+      cost:
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 200
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 400
+    - unlockLevel: 8
+      health: 120
+      powerDraw: 0
+      dataTest:
+      - key: Damage
+        value: 200
+      - key: Cooldown
+        value: 2
+      - key: Probability
+        value: 0.75
+      burnRate: 0.1
+      cost:
+      - resourceType: 1
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 3500
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 6500
+  - name: Blaster
+    partType: 16
+    canSell: 1
+    description: 
+    priority: 0
+    burnType: 2
+    levels:
+    - unlockLevel: 5
+      health: 100
+      powerDraw: 0
+      dataTest:
+      - key: Damage
+        value: 300
+      - key: Cooldown
+        value: 3
+      - key: Projectile
+        value: 5591628b-3b62-4bea-b915-78c355070c11
+      burnRate: 0.2
+      cost:
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 500
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 500
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 200
+    - unlockLevel: 7
+      health: 120
+      powerDraw: 0
+      dataTest:
+      - key: Damage
+        value: 400
+      - key: Cooldown
+        value: 2
+      - key: Projectile
+        value: 5591628b-3b62-4bea-b915-78c355070c11
+      burnRate: 0.3
+      cost:
+      - resourceType: 1
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2000
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 2000
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 1000
+  - name: Auto-Refiner
+    partType: 17
+    canSell: 1
+    description: 
+    priority: 0
+    burnType: 0
+    levels:
+    - unlockLevel: 0
+      health: 80
+      powerDraw: 0
+      dataTest: []
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 100
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 100

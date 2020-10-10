@@ -21,6 +21,8 @@
         STOREYELLOW,
         MISSILE,
         SNIPER,
+        BLASTER,
+        REFINER
     } 
 }
 

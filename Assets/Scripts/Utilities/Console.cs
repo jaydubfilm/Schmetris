@@ -73,7 +73,9 @@ namespace StarSalvager.Utilities
             string.Concat("set ", "orientation ", "[Horizontal | Vertical]").ToUpper(),
             string.Concat("set ", "partprofile ", "[index:uint]").ToUpper(),
             string.Concat("set ", "paused ", "[bool]").ToUpper(),
+            string.Concat("set ", "testing ", "[bool]").ToUpper(),
             string.Concat("set ", "timescale ", "[0.0 - 2.0]").ToUpper(),
+            string.Concat("set ", "timeleft ", "[float]").ToUpper(),
             string.Concat("set ", "volume ", "[0.0 - 1.0]").ToUpper(),
             "\n",
             string.Concat("spawn ", "bit ", "[BIT_TYPE] ",  "(x,y) ", "[uint]").ToUpper(),
@@ -814,6 +816,7 @@ namespace StarSalvager.Utilities
                             data[_bitType] = floatAmount;
                         }
 
+                        PlayerPersistentData.PlayerData.SetLiquidResource(data, true);
                         PlayerPersistentData.PlayerData.SetLiquidResource(data, false);
                         
                     }
@@ -822,6 +825,7 @@ namespace StarSalvager.Utilities
                         if (!PlayerPersistentData.PlayerData.liquidResource.ContainsKey(bitType))
                             break;
                         
+                        PlayerPersistentData.PlayerData.SetLiquidResource(bitType, floatAmount, true);
                         PlayerPersistentData.PlayerData.SetLiquidResource(bitType, floatAmount, false);
                     }
                     else
@@ -864,6 +868,24 @@ namespace StarSalvager.Utilities
                     }
 
                     GameTimer.SetPaused(state);
+                    break;
+                case "timeleft":
+                    if (!float.TryParse(split[2], out var timeLeft))
+                    {
+                        _consoleDisplay +=UnrecognizeCommand(split[2]);
+                        break;
+                    }
+                    
+                    LevelManager.Instance.ForceSetTimeRemaining(timeLeft);
+                    break;
+                case "testing":
+                    if (!TryParseBool(split[2], out state))
+                    {
+                        _consoleDisplay +=UnrecognizeCommand(split[2]);
+                        break;
+                    }
+
+                    Globals.DisableTestingFeatures = state;
                     break;
                 case "timescale":
                     if (!float.TryParse(split[2], out var scale))
