@@ -1077,7 +1077,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Damage
-        value: 50
+        value: 5
       - key: Cooldown
         value: 1
       - key: Projectile
@@ -1101,7 +1101,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Damage
-        value: 80
+        value: 10
       - key: Cooldown
         value: 1
       - key: Projectile
@@ -1144,9 +1144,9 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Damage
-        value: 100
+        value: 50
       - key: Cooldown
-        value: 2
+        value: 3
       burnRate: 0.1
       cost:
       - resourceType: 1
@@ -1170,9 +1170,9 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Damage
-        value: 200
+        value: 100
       - key: Cooldown
-        value: 2
+        value: 3
       burnRate: 0.1
       cost:
       - resourceType: 1
