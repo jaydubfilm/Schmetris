@@ -70,22 +70,4 @@ MonoBehaviour:
       m_density: 0.25
     m_stageColumnGroupObstacleData: []
   maxDrops: 0
-  RDSEndOfWaveLoot:
-  - rdsData: 4
-    type: 0
-    level: 0
-    probability: 0
-    isGearRange: 0
-    gearValue: 900
-    gearDropRange: {x: 0, y: 0}
-    isUniqueSpawn: 0
-    isAlwaysSpawn: 0
-  - rdsData: 2
-    type: 10
-    level: 1
-    probability: 0
-    isGearRange: 0
-    gearValue: 0
-    gearDropRange: {x: 0, y: 0}
-    isUniqueSpawn: 1
-    isAlwaysSpawn: 1
+  RDSEndOfWaveLoot: []
