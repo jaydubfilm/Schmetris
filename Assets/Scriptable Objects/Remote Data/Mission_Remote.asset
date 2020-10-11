@@ -42,8 +42,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -80,8 +81,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 0
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -118,8 +120,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -160,8 +163,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -202,8 +206,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -244,8 +249,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -286,8 +292,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -328,8 +335,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -370,8 +378,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -412,8 +421,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -454,8 +464,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -496,8 +507,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -546,8 +558,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -588,8 +601,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -631,8 +645,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -673,8 +688,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -715,8 +731,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -757,8 +774,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -799,8 +817,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -841,8 +860,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -883,8 +903,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 1
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -925,8 +946,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
@@ -968,8 +990,9 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 4
+    - rdsData: 6
       type: 0
+      amount: 0
       level: 0
       probability: 0
       isGearRange: 0
