@@ -31,33 +31,42 @@ namespace StarSalvager
         [FoldoutGroup("$Name"), ShowIf("rdsData", TYPE.ResourcesRefined)]
         public int amount;
 
-        [FoldoutGroup("$Name"), HideIf("rdsData", TYPE.ResourcesRefined), HideIf("rdsData", TYPE.Asteroid), HideIf("rdsData", TYPE.Component), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
+        [FoldoutGroup("$Name"), HideIf("rdsData", TYPE.ResourcesRefined), HideIf("rdsData", TYPE.Asteroid),
+         HideIf("rdsData", TYPE.Component), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         public int level;
 
         [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears)]
         private int probability;
+
         public int Probability => probability;
 
         [SerializeField, FoldoutGroup("$Name"), ShowIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         private bool isGearRange;
+
         public bool IsGearRange => isGearRange;
 
         bool showGearValue => rdsData == TYPE.Gears && isGearRange == false;
+
         [SerializeField, FoldoutGroup("$Name"), ShowIf("showGearValue"), HideIf("rdsData", TYPE.Null)]
         private int gearValue;
+
         public int GearValue => gearValue;
 
         bool showGearRange => rdsData == TYPE.Gears && isGearRange == true;
+
         [SerializeField, FoldoutGroup("$Name"), ShowIf("showGearRange"), HideIf("rdsData", TYPE.Null)]
         private Vector2Int gearDropRange;
+
         public Vector2Int GearDropRange => gearDropRange;
 
         [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         private bool isUniqueSpawn;
+
         public bool IsUniqueSpawn => isUniqueSpawn || rdsData == TYPE.Gears;
 
         [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         private bool isAlwaysSpawn;
+
         public bool IsAlwaysSpawn => isAlwaysSpawn || rdsData == TYPE.Gears;
 
         //This only compares Type and not all individual properties
@@ -108,19 +117,19 @@ namespace StarSalvager
             {
                 case TYPE.Bit:
                 case TYPE.ResourcesRefined:
-                    value = $"{(BIT_TYPE)type}";
+                    value = $"{(BIT_TYPE) type}";
                     break;
                 case TYPE.Asteroid:
-                    value = $"{(ASTEROID_SIZE)type}";
+                    value = $"{(ASTEROID_SIZE) type}";
                     break;
                 case TYPE.Component:
-                    value = $"{(COMPONENT_TYPE)type}";
+                    value = $"{(COMPONENT_TYPE) type}";
                     break;
                 case TYPE.Blueprint:
-                    value = $"{(PART_TYPE)type}";
+                    value = $"{(PART_TYPE) type}";
                     break;
                 case TYPE.FacilityBlueprint:
-                    value = $"{(FACILITY_TYPE)type}";
+                    value = $"{(FACILITY_TYPE) type}";
                     break;
                 case TYPE.Gears:
                     value = "Gears";
@@ -167,10 +176,10 @@ namespace StarSalvager
 
             foreach (var value in Enum.GetValues(valueType))
             {
-                if (rdsData == TYPE.ResourcesRefined && (BIT_TYPE)value == BIT_TYPE.WHITE)
+                if (rdsData == TYPE.ResourcesRefined && (BIT_TYPE) value == BIT_TYPE.WHITE)
                     continue;
 
-                types.Add($"{value}", (int)value);
+                types.Add($"{value}", (int) value);
             }
 
             return types;
