@@ -227,6 +227,8 @@ namespace StarSalvager.Utilities.FileIO
         
         public static string ExportPlayerPersistentData(PlayerData editorData, string saveSlot)
         {
+            editorData.SaveData();
+            
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
             File.WriteAllText(saveSlot, export);
 
