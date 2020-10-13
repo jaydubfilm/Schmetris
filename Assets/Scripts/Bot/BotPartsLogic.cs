@@ -1053,14 +1053,16 @@ namespace StarSalvager
         {
             var bitType = targetBit.Type;
             var amountProcessed = FactoryManager.Instance
-                .GetFactory<BitAttachableFactory>().GetBitRemoteData(bitType).levels[targetBit.level]
+                .GetFactory<BitAttachableFactory>()
+                .GetBitRemoteData(bitType)
+                .levels[targetBit.level]
                 .resources;
 
             var current = PlayerPersistentData.PlayerData.liquidResource[bitType];
             var capacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
 
             //We wont add any if its already full!
-            if (current >= capacity)
+            if (current + amountProcessed >= capacity)
                 return 0;
 
             PlayerPersistentData.PlayerData.AddLiquidResource(targetBit.Type, amountProcessed, bot.IsRecoveryDrone);
