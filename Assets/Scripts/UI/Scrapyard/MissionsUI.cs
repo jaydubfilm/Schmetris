@@ -3,6 +3,7 @@ using StarSalvager.Values;
 using System;
 using System.Linq;
 using JetBrains.Annotations;
+using StarSalvager.Factories;
 using TMPro;
 using UnityEngine;
 
@@ -11,17 +12,13 @@ namespace StarSalvager.UI.Scrapyard
     public class MissionsUI : MonoBehaviour
     {
         //============================================================================================================//
-        
-        [SerializeField]
-        private MissionUIElementScrollView MissionUiElementScrollView;
 
-        [SerializeField]
-        private MissionUIElementScrollView MissionCompletedElementScrollView;
+        [SerializeField] private MissionUIElementScrollView MissionUiElementScrollView;
 
-        [SerializeField]
-        private TMP_Text detailsTitleText;
-        [SerializeField]
-        private TMP_Text detailsText;
+        [SerializeField] private MissionUIElementScrollView MissionCompletedElementScrollView;
+
+        [SerializeField] private TMP_Text detailsTitleText;
+        [SerializeField] private TMP_Text detailsText;
 
         public static Action CheckMissionUITrackingToggles;
 
@@ -32,7 +29,7 @@ namespace StarSalvager.UI.Scrapyard
         {
             InitScrollView();
         }
-        
+
         //============================================================================================================//
 
         private void InitScrollView()
@@ -43,32 +40,34 @@ namespace StarSalvager.UI.Scrapyard
 
             if (MissionManager.MissionsCurrentData is null)
                 return;
-            
+
             foreach (var currentMission in MissionManager.MissionsCurrentData.CurrentMissions)
             {
                 var temp = MissionUiElementScrollView.AddElement(currentMission,
                     $"{currentMission.missionName}_UIElement");
 
-                temp.Init(currentMission, 
-                    OnHoveredChange, 
-                mission =>
-                {
-                    if (PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.All(m => m.missionName != currentMission.missionName))
+                temp.Init(currentMission,
+                    OnHoveredChange,
+                    mission =>
                     {
-                        if (PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Count >=
-                            Globals.NumCurrentTrackedMissionMax) 
-                            return;
-                        
-                        Debug.Log("Track " + mission.missionName);
-                        PlayerPersistentData.PlayerData.missionsCurrentData.AddTrackedMissions(currentMission);
-                    }
-                    else
-                    {
-                        Debug.Log("Untrack " + mission.missionName);
-                        PlayerPersistentData.PlayerData.missionsCurrentData.RemoveTrackedMission(currentMission);
-                    }
-                    CheckMissionUITrackingToggles?.Invoke();
-                });
+                        if (PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.All(m =>
+                            m.missionName != currentMission.missionName))
+                        {
+                            if (PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Count >=
+                                Globals.NumCurrentTrackedMissionMax)
+                                return;
+
+                            Debug.Log("Track " + mission.missionName);
+                            PlayerPersistentData.PlayerData.missionsCurrentData.AddTrackedMissions(currentMission);
+                        }
+                        else
+                        {
+                            Debug.Log("Untrack " + mission.missionName);
+                            PlayerPersistentData.PlayerData.missionsCurrentData.RemoveTrackedMission(currentMission);
+                        }
+
+                        CheckMissionUITrackingToggles?.Invoke();
+                    });
             }
 
             foreach (var completedMission in MissionManager.MissionsCurrentData.CompletedMissions)
@@ -77,8 +76,8 @@ namespace StarSalvager.UI.Scrapyard
                     $"{completedMission.missionName}_UIElement");
 
                 temp.Init(completedMission,
-                    OnHoveredChange, 
-                null);
+                    OnHoveredChange,
+                    null);
             }
 
             CheckMissionUITrackingToggles?.Invoke();
@@ -87,13 +86,15 @@ namespace StarSalvager.UI.Scrapyard
         private void OnHoveredChange([CanBeNull] Mission mission, bool isHovered)
         {
             detailsTitleText.text = isHovered ? $"Details - {mission.missionName}" : "Details";
-            detailsText.text = isHovered ? mission.missionDescription + mission.GetMissionProgressString() : string.Empty;
+            detailsText.text = isHovered
+                ? $"{mission.missionDescription} {mission.GetMissionProgressString()}\n{mission.GetMissionRewardsString()}"
+                : string.Empty;
         }
-        
+
         //============================================================================================================//
 
     }
-    
+
     [System.Serializable]
     public class MissionUIElementScrollView: UIElementContentScrollView<MissionUIElement, Mission>
     {}
