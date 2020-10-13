@@ -240,7 +240,7 @@ namespace StarSalvager.UI
                 outList.Add(new SpriteTitle
                 {
                     Sprite = bitProfile.GetProfile(kvp.Key).GetSprite(0),
-                    Title = $"{kvp.Value * 100f}%"
+                    Title = $"{Mathf.RoundToInt(kvp.Value * 100f)}%"
                 });
             }
 
