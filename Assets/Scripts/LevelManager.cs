@@ -130,6 +130,8 @@ namespace StarSalvager
         public bool RecoverFromDeath = false;
         public bool BotDead = false;
 
+        private float botMoveOffScreenSpeed = 0.0f;
+
         //====================================================================================================================//
         
         private void Start()
@@ -226,6 +228,15 @@ namespace StarSalvager
 
             if (isPaused)
                 return;
+
+            for (int i = 0; i < m_bots.Count; i++)
+            {
+                if (m_bots[i].transform.position.y < Constants.gridCellSize * 5)
+                {
+                    float newY = Vector3.Lerp(m_bots[i].transform.position, Vector3.up * 5 * Constants.gridCellSize, Time.deltaTime * 3).y;
+                    m_bots[i].transform.position = new Vector3(m_bots[i].transform.position.x, newY, m_bots[i].transform.position.z);
+                }
+            }
 
             if (!EndWaveState)
             {
@@ -343,6 +354,17 @@ namespace StarSalvager
 
                 ProjectileManager.UpdateForces();
                 RecoverFromDeath = false;
+            }
+            else
+            {
+                if (botMoveOffScreenSpeed < 10)
+                {
+                    botMoveOffScreenSpeed += Time.deltaTime * 5;
+                }
+                foreach (var bot in m_bots)
+                {
+                    bot.transform.position += Vector3.up * botMoveOffScreenSpeed * Time.deltaTime;
+                }
             }
         }
 
@@ -515,6 +537,14 @@ namespace StarSalvager
                     "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.",
                     () => { GameTimer.SetPaused(false); });
             }
+
+            for (int i = 0; i < m_bots.Count; i++)
+            {
+                m_bots[i].SetColliderActive(true);
+                m_bots[i].transform.position = Vector3.down * 5;
+            }
+
+            botMoveOffScreenSpeed = 0;
         }
 
         
@@ -599,6 +629,11 @@ namespace StarSalvager
                 }
                 scrapyardBot.transform.position = m_bots[0].transform.position + (Vector3.up * Globals.GridSizeY * Constants.gridCellSize);
                 ObstacleManager.RecoveredBotFalling = scrapyardBot.gameObject;
+            }
+
+            for (int i = 0; i < m_bots.Count; i++)
+            {
+                m_bots[i].SetColliderActive(false);
             }
         }
 
