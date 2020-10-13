@@ -39,7 +39,9 @@ namespace StarSalvager.UI
         private TMP_Text windowTitle;
         [SerializeField, FoldoutGroup("Hover Window")]
         private SpriteTitleContentScrolView waveDataScrollView;
-        
+
+        [SerializeField]
+        private List<Button> universeMapButtons;
 
         //============================================================================================================//
 
@@ -52,7 +54,30 @@ namespace StarSalvager.UI
 
         public void Activate()
         {
-            InitUniverseMapTemp();
+            //InitUniverseMapTemp();
+            CenterToItem(universeMapButtons[0].GetComponent<RectTransform>());
+
+            foreach (var connection in PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertNodeTreeIntoConnections())
+            {
+                GameObject newLineRenderer = new GameObject();
+                newLineRenderer.AddComponent<LineRenderer>();
+
+                LineRenderer lineRenderer = newLineRenderer.GetComponent<LineRenderer>();
+                lineRenderer.gameObject.transform.parent = m_scrollRect.transform;
+                lineRenderer.sortingOrder = 1;
+                lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+                lineRenderer.material.color = Color.red;
+                lineRenderer.startWidth = 10;
+                lineRenderer.endWidth = 10;
+                lineRenderer.useWorldSpace = true;
+                lineRenderer.positionCount = 2;
+                lineRenderer.startColor = Color.red;
+                lineRenderer.endColor = Color.yellow;
+                Debug.Log(connection);
+                lineRenderer.SetPosition(0, universeMapButtons[connection.x].transform.position);
+                lineRenderer.SetPosition(1, universeMapButtons[connection.y].transform.position);
+
+            }
 
             if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 35)
             {

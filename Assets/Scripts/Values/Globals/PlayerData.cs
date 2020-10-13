@@ -160,11 +160,34 @@ namespace StarSalvager.Values
         [JsonProperty]
         private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>
         {
-            new Vector2Int(1, 0),
             new Vector2Int(2, 0),
-            new Vector2Int(2, 1),
-            new Vector2Int(4, 2),
-            new Vector2Int(3, 1)
+            new Vector2Int(1, 2),
+            new Vector2Int(4, 0),
+            new Vector2Int(3, 4),
+            new Vector2Int(5, 4),
+            new Vector2Int(6, 2),
+            new Vector2Int(7, 2),
+            new Vector2Int(8, 3),
+            new Vector2Int(10, 4),
+            new Vector2Int(9, 10),
+            new Vector2Int(11, 6),
+            new Vector2Int(12, 11),
+            new Vector2Int(13, 8),
+            new Vector2Int(15, 9),
+            new Vector2Int(14, 15),
+            new Vector2Int(14, 15),
+            new Vector2Int(16, 11),
+            new Vector2Int(17, 13),
+            new Vector2Int(18, 17),
+            new Vector2Int(19, 14),
+            new Vector2Int(20, 19),
+            new Vector2Int(21, 16),
+            new Vector2Int(22, 16),
+            new Vector2Int(23, 17),
+            new Vector2Int(24, 18),
+            new Vector2Int(25, 20),
+            new Vector2Int(26, 22),
+            new Vector2Int(26, 24),
         };
 
         //============================================================================================================//
