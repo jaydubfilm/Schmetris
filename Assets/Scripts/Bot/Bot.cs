@@ -2242,7 +2242,7 @@ namespace StarSalvager
                     //Waits till after combo finishes combining to add the points 
                     PlayerPersistentData.PlayerData.ChangeGears(gearsToAdd);
                     
-                    FloatingText.Create($"+{comboData.points}", closestToCore.transform.position, Color.white);
+                    FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
 
                     //We need to update the positions and level before we move them in case we interact with bits while they're moving
                     switch (iCanCombo)
