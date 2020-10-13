@@ -211,7 +211,7 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        private List<EditorShapeGeneratorData> GetCategoryData(string category)
+        public List<EditorShapeGeneratorData> GetCategoryData(string category)
         {
             if (!customShapeCategoryData.ContainsKey(category))
                 UpdateCatgeoryData(category);
@@ -219,7 +219,7 @@ namespace StarSalvager.Factories
             return customShapeCategoryData[category];
         }
 
-        private EditorShapeGeneratorData GetRandomInCategory(string category)
+        public EditorShapeGeneratorData GetRandomInCategory(string category)
         {
             List<EditorShapeGeneratorData> categoryData = GetCategoryData(category);
             return categoryData[Random.Range(0, categoryData.Count)];
@@ -230,7 +230,7 @@ namespace StarSalvager.Factories
             customShapeCategoryData.Add(category, customShapeData.FindAll(s => s.Categories.Contains(category)));
         }
 
-        private EditorShapeGeneratorData GetByName(string name)
+        public EditorShapeGeneratorData GetByName(string name)
         {
             return customShapeData.Find(s => s.Name == name);
         }

@@ -86,7 +86,7 @@ namespace StarSalvager.Values
         //FIXME This needs to use some sort of capacity value
         private Dictionary<BIT_TYPE, float> _recoveryDroneLiquidResource = new Dictionary<BIT_TYPE, float>
         {
-            {BIT_TYPE.RED, 10},
+            {BIT_TYPE.RED, 30},
             {BIT_TYPE.BLUE, 0},
             {BIT_TYPE.YELLOW, 0},
             {BIT_TYPE.GREEN, 0},

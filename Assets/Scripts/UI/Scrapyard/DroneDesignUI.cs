@@ -344,7 +344,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void ScaleCamera(float value)
         {
-            Globals.ScaleCamera(value);
+            Globals.ScaleCamera(m_cameraZoomScaler.maxValue + m_cameraZoomScaler.minValue - value);
             CameraController.CameraOffset(Vector3.zero, true);
         }
 

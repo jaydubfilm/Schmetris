@@ -167,6 +167,9 @@ namespace StarSalvager
 
             foreach (var value in Enum.GetValues(valueType))
             {
+                if (rdsData == TYPE.ResourcesRefined && (BIT_TYPE)value == BIT_TYPE.WHITE)
+                    continue;
+
                 types.Add($"{value}", (int)value);
             }
 

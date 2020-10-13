@@ -301,6 +301,11 @@ namespace StarSalvager
             Vector3 amountShift = Vector3.up *
                                   ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
 
+            if (LevelManager.Instance.EndWaveState)
+            {
+                amountShift *= 3;
+            }
+
             TryMoveElements();
 
             for (int i = m_offGridMovingObstacles.Count - 1; i >= 0; i--)
