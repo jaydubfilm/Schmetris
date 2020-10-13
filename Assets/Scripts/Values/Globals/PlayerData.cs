@@ -792,5 +792,10 @@ namespace StarSalvager.Values
             }
             OnValuesChanged?.Invoke();
         }
+
+        public void SaveData()
+        {
+            LevelRingConnectionsJson = LevelRingNodeTree.ConvertNodeTreeIntoConnections();
+        }
     }
 }
