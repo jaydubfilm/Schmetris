@@ -408,9 +408,15 @@ namespace StarSalvager.Utilities.FileIO
 
         //====================================================================================================================//
 
-        public static void DeleteFile(string path)
+        public static bool TryDeleteFile(string path)
         {
-            File.Delete(path);
+            if (Directory.Exists(path))
+            {
+                File.Delete(path);
+                return true;
+            }
+
+            return false;
         }
         
         private static T ImportJsonData<T>(string path)

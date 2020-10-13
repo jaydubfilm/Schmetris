@@ -209,6 +209,11 @@ namespace StarSalvager.Utilities.Math
         {
             foreach (CraftCost resource in costs)
             {
+                if ((BIT_TYPE)resource.type == BIT_TYPE.WHITE)
+                {
+                    Debug.LogError("Found a white bit cost in a resource check");
+                }
+                
                 if (resource.resourceType != CraftCost.TYPE.Bit)
                     continue;
 
