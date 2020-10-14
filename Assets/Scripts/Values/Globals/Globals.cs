@@ -18,7 +18,7 @@ namespace StarSalvager.Values
         public static string SessionID = string.Empty;
 
 
-        public static bool usingTutorial;
+        public static bool UsingTutorial = true;
         
         //Values that change throughout gameplay - only set defaults here
         public static int ColumnsOnScreen = Constants.initialColumnsOnScreen;

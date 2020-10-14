@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 8387037267609636311}
   - component: {fileID: 8218587930837309253}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: BodyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 5496071647238992256}
   - component: {fileID: 9046780174744859635}
   m_Layer: 5
-  m_Name: Text (TMP) (1)
+  m_Name: AnyKeyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -603,9 +603,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tutorialSteps:
   - title: Intro Step
-    useWaitTime: 0
-    waitTime: 0
-    text: 
+    useWaitTime: 1
+    waitTime: 5
+    text: This is a test
   - title: Movement
     useWaitTime: 0
     waitTime: 0
@@ -662,5 +662,8 @@ MonoBehaviour:
     useWaitTime: 0
     waitTime: 0
     text: 
+  debug: 0
   text: {fileID: 8218587930837309253}
-  image: {fileID: 789488161612667206}
+  fillImage: {fileID: 789488161612667206}
+  pressAnyKeyText: {fileID: 9046780174744859635}
+  characterObject: {fileID: 0}

@@ -113,7 +113,7 @@ namespace StarSalvager
             get
             {
                 if (_tutorialManager == null)
-                    _tutorialManager = FindObjectOfType<TutorialManager>();
+                    _tutorialManager = m_levelManagerUI.GetComponentInChildren<TutorialManager>(true);
 
                 return _tutorialManager;
             }
@@ -131,7 +131,7 @@ namespace StarSalvager
             get
             {
                 if (!_gameUi)
-                    _gameUi = FindObjectOfType<GameUI>();
+                    _gameUi = m_levelManagerUI.GetComponentInChildren<GameUI>(true);
 
                 return _gameUi;
             }
@@ -176,6 +176,9 @@ namespace StarSalvager
                 return;
 
             CheckBotPositions();
+            
+            if (Globals.UsingTutorial)
+                return;
 
             if (!EndWaveState)
             {
@@ -227,11 +230,11 @@ namespace StarSalvager
                 m_waveTimer += Time.deltaTime;
 
             int currentStage = m_currentStage;
-            if (!CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage))
-            {
-                if (m_currentStage == currentStage + 1)
-                    TransitionToEndWaveState();
-            }
+            if (CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage))
+                return;
+            
+            if (m_currentStage == currentStage + 1)
+                TransitionToEndWaveState();
         }
 
         private void ProcessEndOfStage()
@@ -361,10 +364,19 @@ namespace StarSalvager
 
         private void InitLevel()
         {
+            AudioController.PlayTESTWaveMusic(Globals.CurrentWave, true);
+            
+            //--------------------------------------------------------------------------------------------------------//
+            
+            MissionsCompletedDuringThisFlight.Clear();
+            
             BotDead = false;
             m_worldGrid = null;
             m_waveEndSummaryData = new WaveEndSummaryData();
             NumWavesInRow = 0;
+            
+            //Setup Bot
+            //--------------------------------------------------------------------------------------------------------//
             
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             BotObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
@@ -381,23 +393,27 @@ namespace StarSalvager
             {
                 BotObject.InitBot(botDataToLoad.ImportBlockDatas(false), RecoverFromDeath);
             }
+            
+            BotObject.transform.parent = null;
+            SceneManager.MoveGameObjectToScene(BotObject.gameObject, gameObject.scene);
+            
+            
+            //Post Bot Setup
+            //--------------------------------------------------------------------------------------------------------//
 
+            InputManager.Instance.InitInput();
+
+            WaterAtBeginningOfWave = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE];
+
+            
             if (RecoverFromDeath)
             {
                 PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, WaterAtBeginningOfWave);
             }
 
-            BotObject.transform.parent = null;
-            SceneManager.MoveGameObjectToScene(BotObject.gameObject, gameObject.scene);
-
             SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
-            AudioController.PlayTESTWaveMusic(Globals.CurrentWave, true);
 
-            MissionsCompletedDuringThisFlight.Clear();
-
-            WaterAtBeginningOfWave = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE];
             
-            InputManager.Instance.InitInput();
             CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, BotObject.transform.position);
             if (Globals.Orientation == ORIENTATION.VERTICAL)
             {
@@ -407,13 +423,21 @@ namespace StarSalvager
             {
                 Globals.GridSizeY = (int)((CameraController.Camera.orthographicSize * Globals.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Constants.gridCellSize);
             }
+            
+            
             WorldGrid.SetupGrid();
             ProjectileManager.Activate();
 
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
             GameTimer.SetPaused(false);
 
-            if (PlayerPersistentData.PlayerData.firstFlight)
+            if (Globals.UsingTutorial)
+            {
+                TutorialManager.SetupTutorial();
+                return;
+            }
+
+            /*if (PlayerPersistentData.PlayerData.firstFlight)
             {
                 PlayerPersistentData.PlayerData.firstFlight = false;
                 Toast.AddToast(
@@ -421,7 +445,7 @@ namespace StarSalvager
                     time: 10.0f,
                     verticalLayout: Toast.Layout.End,
                     horizontalLayout: Toast.Layout.Middle);
-            }
+            }*/
 
             SetupLevelAnalytics();
 
@@ -763,7 +787,7 @@ namespace StarSalvager
 
         public void Activate()
         {
-            TutorialManager?.gameObject.SetActive(Globals.usingTutorial);
+            TutorialManager.gameObject.SetActive(Globals.UsingTutorial);
             
             InitLevel();
         }
@@ -787,7 +811,7 @@ namespace StarSalvager
 
         public void OnResume()
         {
-            GameUi?.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
+            GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
         }
 
         public void OnPause()

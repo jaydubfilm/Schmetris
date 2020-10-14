@@ -52,8 +52,10 @@ namespace StarSalvager.Tutorial
             /* [13] */new TutorialStepData {title = "Fuel-1"},
             /* [14] */new TutorialStepData {title = "Fuel-2"},
         };
-        
 
+
+        [SerializeField]
+        private bool debug;
         
         [SerializeField, BoxGroup("Tutorial UI")]
         private TMP_Text text;
@@ -76,6 +78,7 @@ namespace StarSalvager.Tutorial
         private InputManager _inputManager;
 
         private bool _isReady;
+        private MonoBehaviour mono;
 
         //Unity Functions
         //====================================================================================================================//
@@ -93,6 +96,7 @@ namespace StarSalvager.Tutorial
 
         public void SetupTutorial()
         {
+            mono = LevelManager.Instance;
             InitInput();
             
             _tutorialStepCoroutines = new List<IEnumerator>
@@ -107,7 +111,7 @@ namespace StarSalvager.Tutorial
                 EndStepCoroutine()
             };
             
-            StartCoroutine(MainTutorialCoroutine());
+            mono.StartCoroutine(MainTutorialCoroutine());
 
             _readyForInput = true;
             _isReady = true;
@@ -129,7 +133,7 @@ namespace StarSalvager.Tutorial
         {
             foreach (var stepCoroutine in _tutorialStepCoroutines)
             {
-                yield return StartCoroutine(stepCoroutine);
+                yield return mono.StartCoroutine(stepCoroutine);
             }
             
             
@@ -140,11 +144,11 @@ namespace StarSalvager.Tutorial
             var bot = LevelManager.Instance.BotObject;
             bot.PROTO_GodMode = true;
             
-            yield return StartCoroutine(WaitStep(tutorialSteps[0], true));
+            yield return mono.StartCoroutine(WaitStep(tutorialSteps[0], true));
         }
         private IEnumerator MoveStepCoroutine()
         {
-            yield return StartCoroutine(WaitStep(tutorialSteps[1], false));
+            yield return mono.StartCoroutine(WaitStep(tutorialSteps[1], false));
             
             //TODO Need to wait for the movement of the Bot Left/Right
             bool left, right;
@@ -163,7 +167,7 @@ namespace StarSalvager.Tutorial
         }
         private IEnumerator RotateStepCoroutine()
         {
-            yield return StartCoroutine(WaitStep(tutorialSteps[2], false));
+            yield return mono.StartCoroutine(WaitStep(tutorialSteps[2], false));
             
             bool left, right;
             left = right = false;
@@ -181,7 +185,7 @@ namespace StarSalvager.Tutorial
         }
         private IEnumerator StartFallingBitsCoroutine()
         {
-            yield return StartCoroutine(WaitStep(tutorialSteps[3], true));
+            yield return mono.StartCoroutine(WaitStep(tutorialSteps[3], true));
         }
         private IEnumerator BotCollectionsCoroutine()
         {
@@ -214,12 +218,12 @@ namespace StarSalvager.Tutorial
             if (magnet)
             {
                 //TODO Create Magnet First Path
-                yield return StartCoroutine(MagnetFirstCoroutine());
+                yield return mono.StartCoroutine(MagnetFirstCoroutine());
             }
             else if (combo)
             {
                 //TODO Create Combo First Path
-                yield return StartCoroutine(ComboFirstCoroutine());
+                yield return mono.StartCoroutine(ComboFirstCoroutine());
             }
             else
             {
@@ -231,7 +235,7 @@ namespace StarSalvager.Tutorial
         private IEnumerator ComboFirstCoroutine()
         {
             //tutorialSteps[4]
-            yield return StartCoroutine(PauseWaitTimerStep(tutorialSteps[4], true));
+            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialSteps[4], true));
             
             SetText(tutorialSteps[6]);
 
@@ -249,12 +253,12 @@ namespace StarSalvager.Tutorial
             
             bot.OnFullMagnet -= SetMagnet;
             
-            yield return StartCoroutine(PauseWaitTimerStep(tutorialSteps[7], true));
+            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialSteps[7], true));
         }
         private IEnumerator MagnetFirstCoroutine()
         {
             //tutorialSteps[5]
-            yield return StartCoroutine(PauseWaitTimerStep(tutorialSteps[5], true));
+            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialSteps[5], true));
             
             SetText(tutorialSteps[8]);
 
@@ -272,7 +276,7 @@ namespace StarSalvager.Tutorial
             
             bot.OnCombo -= SetCombo;
             
-            yield return StartCoroutine(PauseWaitTimerStep(tutorialSteps[9], true));
+            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialSteps[9], true));
         }
 
         private IEnumerator PulsarStepCoroutine()
@@ -293,7 +297,7 @@ namespace StarSalvager.Tutorial
             
             bot.OnBitShift -= SetBump;
 
-            yield return StartCoroutine(WaitStep(tutorialSteps[11], false));
+            yield return mono.StartCoroutine(WaitStep(tutorialSteps[11], false));
         }
         
         private IEnumerator FuelStepCoroutine()
@@ -312,7 +316,7 @@ namespace StarSalvager.Tutorial
             
             yield return new WaitUntil(() => playerData[BIT_TYPE.RED] > 0f);
 
-            yield return StartCoroutine(WaitStep(tutorialSteps[13], false));
+            yield return mono.StartCoroutine(WaitStep(tutorialSteps[13], false));
             
             SetText(tutorialSteps[12]);
 
@@ -321,6 +325,8 @@ namespace StarSalvager.Tutorial
         private IEnumerator EndStepCoroutine()
         {
             yield return new WaitForSeconds(5f);
+
+            Globals.UsingTutorial = false;
         }
         
         //Generic Tutorial Steps
@@ -330,19 +336,25 @@ namespace StarSalvager.Tutorial
         {
             Time.timeScale = 0f;
 
-            yield return StartCoroutine(WaitStep(tutorialStepData, waitAnyKey));
+            yield return mono.StartCoroutine(WaitStep(tutorialStepData, waitAnyKey));
             
             Time.timeScale = 1f;
         }
         
         private IEnumerator WaitStep(TutorialStepData tutorialStepData, bool waitAnyKey)
         {
+            fillImage.gameObject.SetActive(tutorialStepData.useWaitTime);
+            pressAnyKeyText.gameObject.SetActive(!tutorialStepData.useWaitTime);
+            
             SetText(tutorialStepData);
 
             if (tutorialStepData.useWaitTime)
             {
                 _readyForInput = false;
+                
                 yield return new WaitTimeImage(tutorialStepData.waitTime, fillImage);
+
+                pressAnyKeyText.gameObject.SetActive(true);
             } 
             
             if(waitAnyKey)
@@ -396,7 +408,7 @@ namespace StarSalvager.Tutorial
                     return true;
                 
                 _tutorialManager._keyPressed = false;
-                Debug.Log("Any Key Pressed");
+                if(_tutorialManager.debug) Debug.Log("Any Key Pressed");
                 return false;
             }
 
@@ -406,8 +418,10 @@ namespace StarSalvager.Tutorial
 
             public WaitForAnyKey(TutorialManager tutorialManager)
             {
-                Debug.Log("Waiting for Any Key");
                 _tutorialManager = tutorialManager;
+                
+                if(_tutorialManager.debug) Debug.Log("Waiting for Any Key");
+
             }
         }
         private sealed class WaitTimeSlider : IEnumerator
