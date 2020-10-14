@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Utilities.Inputs;
+using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -16,7 +18,8 @@ namespace StarSalvager.Tutorial
         [Serializable]
         public struct TutorialStepData
         {
-            [FoldoutGroup("$title")]
+            //[FoldoutGroup("$title", false), DisplayAsString]
+            [HideInInspector]
             public string title;
             [HorizontalGroup("$title/UseWait"), ToggleLeft, LabelWidth(50f)]
             public bool useWaitTime;
@@ -26,87 +29,328 @@ namespace StarSalvager.Tutorial
             public string text;
         }
 
-        [SerializeField]
-        private List<TutorialStepData> tutorialStepDatas;
+        [SerializeField, ListDrawerSettings(HideAddButton = true, HideRemoveButton = true)]
+        private List<TutorialStepData> tutorialSteps = new List<TutorialStepData>
+        {
+            /* [0] */new TutorialStepData {title = "Intro Step"},
+            /* [1] */new TutorialStepData {title = "Movement"},
+            /* [2] */new TutorialStepData {title = "Rotate"},
+            /* [3] */new TutorialStepData {title = "Falling Bits"},
+            /* [4] */new TutorialStepData {title = "Combo"},
+            /* [5] */new TutorialStepData {title = "Magnet"},
+
+            /* [6] */new TutorialStepData {title = "Combo-magnet-1"},
+            /* [7] */new TutorialStepData {title = "Combo-magnet-2"},
+
+            /* [8] */new TutorialStepData {title = "Magnet-combo-1"},
+            /* [9] */new TutorialStepData {title = "Magnet-combo-2"},
+
+            /* [10] */new TutorialStepData {title = "Pulsar"},
+            /* [11] */new TutorialStepData {title = "Pulsar-1"},
+
+            /* [12] */new TutorialStepData {title = "Fuel"},
+            /* [13] */new TutorialStepData {title = "Fuel-1"},
+            /* [14] */new TutorialStepData {title = "Fuel-2"},
+        };
         
 
-        [SerializeField]
+        
+        [SerializeField, BoxGroup("Tutorial UI")]
         private TMP_Text text;
-        [SerializeField]
-        private Slider slider;
-        [SerializeField]
-        private Image image;
+         [FormerlySerializedAs("image")] [SerializeField, BoxGroup("Tutorial UI")]
+        private Image fillImage;
+
+        [SerializeField, BoxGroup("Tutorial UI")]
+        private TMP_Text pressAnyKeyText;
+
+        [SerializeField, BoxGroup("Tutorial UI")]
+        private GameObject characterObject;
         
         private bool _readyForInput;
         private bool _keyPressed;
-p
+
+        private float _currentMoveDirection;
+
         private List<IEnumerator> _tutorialStepCoroutines;
+
+        private InputManager _inputManager;
+
+        private bool _isReady;
 
         //Unity Functions
         //====================================================================================================================//
-        
-        // Start is called before the first frame update
-        private void Start()
-        {
-            InitInput();
-
-            SetupTutorial();
-        }
 
         private void OnDisable()
         {
+            if (!_isReady)
+                return;
+            
             DeInitInput();
         }
 
         //Tutorial Functions
         //====================================================================================================================//
 
-        private void SetupTutorial()
+        public void SetupTutorial()
         {
+            InitInput();
+            
             _tutorialStepCoroutines = new List<IEnumerator>
             {
-                //Step1Coroutine(),
-                //Step2Coroutine(),
-                //Step3Coroutine(),
+                IntroStepCoroutine(),
+                MoveStepCoroutine(),
+                RotateStepCoroutine(),
+                StartFallingBitsCoroutine(),
+                BotCollectionsCoroutine(),
+                PulsarStepCoroutine(),
+                FuelStepCoroutine(),
+                EndStepCoroutine()
             };
             
             StartCoroutine(MainTutorialCoroutine());
 
+            _readyForInput = true;
+            _isReady = true;
         }
 
+        private void SetText(TutorialStepData tutorialStepData)
+        {
+            SetText(tutorialStepData.text);
+        }
+        
+        private void SetText(string text)
+        {
+            this.text.text = text;
+        }
+
+        //Tutorial Steps
+        //====================================================================================================================//
         private IEnumerator MainTutorialCoroutine()
         {
             foreach (var stepCoroutine in _tutorialStepCoroutines)
             {
                 yield return StartCoroutine(stepCoroutine);
             }
+            
+            
+        }
+        
+        private IEnumerator IntroStepCoroutine()
+        {
+            var bot = LevelManager.Instance.BotObject;
+            bot.PROTO_GodMode = true;
+            
+            yield return StartCoroutine(WaitStep(tutorialSteps[0], true));
+        }
+        private IEnumerator MoveStepCoroutine()
+        {
+            yield return StartCoroutine(WaitStep(tutorialSteps[1], false));
+            
+            //TODO Need to wait for the movement of the Bot Left/Right
+            bool left, right;
+            left = right = false;
+
+            while (!left && !right)
+            {
+                if (_inputManager.CurrentMoveInput < 0)
+                    left = true;
+                
+                if (_inputManager.CurrentMoveInput > 0)
+                    right = true;
+                
+                yield return null;
+            }
+        }
+        private IEnumerator RotateStepCoroutine()
+        {
+            yield return StartCoroutine(WaitStep(tutorialSteps[2], false));
+            
+            bool left, right;
+            left = right = false;
+
+            while (!left && !right)
+            {
+                if (_inputManager.CurrentRotateInput < 0)
+                    left = true;
+                
+                if (_inputManager.CurrentRotateInput > 0)
+                    right = true;
+                
+                yield return null;
+            }
+        }
+        private IEnumerator StartFallingBitsCoroutine()
+        {
+            yield return StartCoroutine(WaitStep(tutorialSteps[3], true));
+        }
+        private IEnumerator BotCollectionsCoroutine()
+        {
+            bool magnet, combo;
+            magnet = combo = false;
+            
+            void SetMagnet()
+            {
+                magnet = true;
+            }
+            void SetCombo()
+            {
+                combo = true;
+            }
+            
+            SetText(tutorialSteps[3]);
+            
+            var bot = LevelManager.Instance.BotObject;
+            bot.OnFullMagnet += SetMagnet;
+            bot.OnCombo += SetCombo;
+
+            while (!magnet && !combo)
+            {
+                yield return null;
+            }
+            
+            bot.OnFullMagnet -= SetMagnet;
+            bot.OnCombo -= SetCombo;
+
+            if (magnet)
+            {
+                //TODO Create Magnet First Path
+                yield return StartCoroutine(MagnetFirstCoroutine());
+            }
+            else if (combo)
+            {
+                //TODO Create Combo First Path
+                yield return StartCoroutine(ComboFirstCoroutine());
+            }
+            else
+            {
+                throw new Exception("Should not reach here");
+            }
+
+        }
+        
+        private IEnumerator ComboFirstCoroutine()
+        {
+            //tutorialSteps[4]
+            yield return StartCoroutine(PauseWaitTimerStep(tutorialSteps[4], true));
+            
+            SetText(tutorialSteps[6]);
+
+            bool magnet = false;
+            var bot = LevelManager.Instance.BotObject;
+
+            void SetMagnet()
+            {
+                magnet = true;
+            }
+
+            bot.OnFullMagnet += SetMagnet;
+
+            yield return new WaitUntil(() => magnet);
+            
+            bot.OnFullMagnet -= SetMagnet;
+            
+            yield return StartCoroutine(PauseWaitTimerStep(tutorialSteps[7], true));
+        }
+        private IEnumerator MagnetFirstCoroutine()
+        {
+            //tutorialSteps[5]
+            yield return StartCoroutine(PauseWaitTimerStep(tutorialSteps[5], true));
+            
+            SetText(tutorialSteps[8]);
+
+            bool combo = false;
+            var bot = LevelManager.Instance.BotObject;
+
+            void SetCombo()
+            {
+                combo = true;
+            }
+
+            bot.OnCombo += SetCombo;
+
+            yield return new WaitUntil(() => combo);
+            
+            bot.OnCombo -= SetCombo;
+            
+            yield return StartCoroutine(PauseWaitTimerStep(tutorialSteps[9], true));
         }
 
+        private IEnumerator PulsarStepCoroutine()
+        {
+            SetText(tutorialSteps[10]);
+            var bot = LevelManager.Instance.BotObject;
+            
+            bool bump = false;
+
+            void SetBump()
+            {
+                bump = true;
+            }
+
+            bot.OnBitShift += SetBump;
+
+            yield return new WaitUntil(() => bump);
+            
+            bot.OnBitShift -= SetBump;
+
+            yield return StartCoroutine(WaitStep(tutorialSteps[11], false));
+        }
+        
+        private IEnumerator FuelStepCoroutine()
+        {
+            //TODO Set the bot able to use its fuel
+            var bot = LevelManager.Instance.BotObject;
+            bot.PROTO_GodMode = false;
+            
+            var playerData = PlayerPersistentData.PlayerData.liquidResource;
+            
+            yield return new WaitUntil(() => playerData[BIT_TYPE.RED] <= 0f);
+            
+            SetText(tutorialSteps[12]);
+            
+            //TODO Set the wave to spawn all reds
+            
+            yield return new WaitUntil(() => playerData[BIT_TYPE.RED] > 0f);
+
+            yield return StartCoroutine(WaitStep(tutorialSteps[13], false));
+            
+            SetText(tutorialSteps[12]);
+
+        }
+
+        private IEnumerator EndStepCoroutine()
+        {
+            yield return new WaitForSeconds(5f);
+        }
+        
         //Generic Tutorial Steps
         //====================================================================================================================//
 
-        private IEnumerator WaitAnyKeyStep(TutorialStepData tutorialStepData)
+        private IEnumerator PauseWaitTimerStep(TutorialStepData tutorialStepData, bool waitAnyKey)
         {
-            text.text = tutorialStepData.text;
-            yield return new WaitForAnyKey(this);
-        }
-        private IEnumerator WaitTimeSliderStep(TutorialStepData tutorialStepData)
-        {
-            text.text = tutorialStepData.text;
+            Time.timeScale = 0f;
+
+            yield return StartCoroutine(WaitStep(tutorialStepData, waitAnyKey));
             
-            yield return new WaitTimeSlider(tutorialStepData.waitTime, slider);
-            
-            yield return new WaitForAnyKey(this);
+            Time.timeScale = 1f;
         }
         
-        private IEnumerator WaitTimeImageStep(TutorialStepData tutorialStepData)
+        private IEnumerator WaitStep(TutorialStepData tutorialStepData, bool waitAnyKey)
         {
-            text.text = tutorialStepData.text;
+            SetText(tutorialStepData);
+
+            if (tutorialStepData.useWaitTime)
+            {
+                _readyForInput = false;
+                yield return new WaitTimeImage(tutorialStepData.waitTime, fillImage);
+            } 
             
-            yield return new WaitTimeImage(tutorialStepData.waitTime, image);
+            if(waitAnyKey)
+                yield return new WaitForAnyKey(this);
             
-            yield return new WaitForAnyKey(this);
+            _readyForInput = true;
         }
+
 
         //IInput Functions
         //====================================================================================================================//
@@ -115,6 +359,8 @@ p
         
         public void InitInput()
         {
+            _inputManager = InputManager.Instance;
+            
             Input.Actions.Default.Any.Enable();
             Input.Actions.Default.Any.performed += AnyKeyPressed;
         }
@@ -137,7 +383,9 @@ p
 
         //Utility Coroutines
         //====================================================================================================================//
-        
+
+        #region Utility IEnumerators
+
         private sealed class WaitForAnyKey : IEnumerator
         {
             private readonly TutorialManager _tutorialManager;
@@ -173,7 +421,7 @@ p
                 if (_timePast >= _startTime)
                     return false;
                 
-                _timePast += Time.deltaTime;
+                _timePast += Time.unscaledDeltaTime;
                 _slider.value = _timePast / _startTime;
                 
                 return true;
@@ -201,7 +449,7 @@ p
                 if (_timePast >= _startTime)
                     return false;
                 
-                _timePast += Time.deltaTime;
+                _timePast += Time.unscaledDeltaTime;
                 _image.fillAmount = _timePast / _startTime;
                 
                 return true;
@@ -218,6 +466,9 @@ p
                 _image = image;
             }
         }
+
+        #endregion //Utility IEnumerators
+
         //====================================================================================================================//
         
     }

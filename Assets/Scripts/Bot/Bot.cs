@@ -43,6 +43,10 @@ namespace StarSalvager
         
         public static Action<Bot, string> OnBotDied;
 
+        public Action OnCombo;
+        public Action OnFullMagnet;
+        public Action OnBitShift;
+
         [BoxGroup("Smoke Particles")]
         public ParticleSystem TEST_ParticleSystem;
         [BoxGroup("Smoke Particles")]
@@ -184,8 +188,13 @@ namespace StarSalvager
         {
             if (!_needToCheckMagnet) 
                 return;
+
+            var hasOverage = CheckHasMagnetOverage(); 
             
-            AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+            if(hasOverage)
+                OnFullMagnet?.Invoke();
+            
+            AudioController.PlaySound(hasOverage ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
             _needToCheckMagnet = false;
         }
 
@@ -562,6 +571,9 @@ namespace StarSalvager
                             var shift = TryShift(connectionDirection.Reflected(), closestAttachable);
                             AudioController.PlaySound(shift ? SOUND.BUMPER_BONK_SHIFT : SOUND.BUMPER_BONK_NOSHIFT);
                             SessionDataProcessor.Instance.HitBumper();
+                            
+                            if(shift)
+                                OnBitShift?.Invoke();
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(bit.Type), bit.Type, null);
@@ -2257,6 +2269,7 @@ namespace StarSalvager
                     
                     CheckForBonusShapeMatches();
                     
+                    OnCombo?.Invoke();
                 }));
                 
             

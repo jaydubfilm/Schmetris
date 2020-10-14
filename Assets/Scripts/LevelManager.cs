@@ -1,5 +1,4 @@
-﻿using System;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using StarSalvager.AI;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
@@ -17,17 +16,22 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using StarSalvager.Missions;
 using StarSalvager.Utilities.JsonDataTypes;
-using Newtonsoft.Json;
+using Recycling;
 using StarSalvager.Audio;
+using StarSalvager.Tutorial;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Particles;
 using Random = UnityEngine.Random;
-using UnityEngine.Analytics;
 
 namespace StarSalvager
 {
     public class LevelManager : SceneSingleton<LevelManager>, IReset, IPausable
     {
+        //Properties
+        //====================================================================================================================//
+
+        #region Properties
+
         private List<Bot> m_bots;
         public Bot BotObject => m_bots[0];
 
@@ -35,7 +39,7 @@ namespace StarSalvager
         private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
-        public SectorRemoteDataScriptableObject CurrentSector => FactoryManager.Instance.SectorRemoteData[Values.Globals.CurrentSector];
+        public SectorRemoteDataScriptableObject CurrentSector => FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector];
 
         public WaveRemoteDataScriptableObject CurrentWaveData => CurrentSector.GetRemoteData(Globals.CurrentWave);
 
@@ -103,6 +107,18 @@ namespace StarSalvager
             }
         }
         private ObstacleManager m_obstacleManager;
+        
+        public TutorialManager TutorialManager
+        {
+            get
+            {
+                if (_tutorialManager == null)
+                    _tutorialManager = FindObjectOfType<TutorialManager>();
+
+                return _tutorialManager;
+            }
+        }
+        private TutorialManager _tutorialManager;
 
         public ProjectileManager ProjectileManager => m_projectileManager ?? (m_projectileManager = new ProjectileManager());
         private ProjectileManager m_projectileManager;
@@ -132,90 +148,20 @@ namespace StarSalvager
 
         private float botMoveOffScreenSpeed = 0.0f;
 
+        #endregion //Properties
+
+        //Unity Functions
         //====================================================================================================================//
         
         private void Start()
         {
-            m_bots = new List<Bot>();
-
             RegisterPausable();
+            
+            m_bots = new List<Bot>();
+            
             m_levelManagerUI = FindObjectOfType<LevelManagerUI>();
 
-            GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
-
-            Bot.OnBotDied += (deadBot, deathMethod) =>
-            {
-                LiquidResourcesCachedOnDeath = new Dictionary<BIT_TYPE, float>((IDictionary<BIT_TYPE, float>)PlayerPersistentData.PlayerData.liquidResource);
-
-                InputManager.Instance.CancelMove();
-
-                if (!RecoverFromDeath)
-                {
-                    foreach (Bot bot in m_bots)
-                    {
-                        IAttachable attachable = bot.attachedBlocks.First(a => a.Coordinate == Vector2.zero);
-                        if (attachable is Part core)
-                        {
-
-                            core.SetupHealthValues(core.StartingHealth, core.StartingHealth / 2);
-                        }
-                    }
-                }
-
-                SavePlayerData();
-                BotDead = true;
-
-                Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
-                foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
-                {
-                    tempDictionary.Add((int)resource.Key, resource.Value);
-                }
-
-                Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>
-                {
-                    {AnalyticsManager.DeathCause, deathMethod},
-                    {AnalyticsManager.LevelTime, m_levelTimer + m_waveTimer},
-                };
-                string levelLostString = Globals.CurrentSector + "." + Globals.CurrentWave;
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelLost, eventDataDictionary: levelLostAnalyticsDictionary, eventDataParameter: levelLostString);
-                
-                SessionDataProcessor.Instance.PlayerKilled();
-                SessionDataProcessor.Instance.EndActiveWave();
-
-                if (!RecoverFromDeath)
-                {
-                    IsWaveProgressing = false;
-                    RecoverFromDeath = true;
-
-                    Alert.ShowAlert("Bot wrecked",
-                        "Your bot has been wrecked. Deploy your recovery bot to rescue it.", 
-                        "Deploy", 
-                        () =>
-                        {
-                            RecoverFromDeath = true;
-                            IsWaveProgressing = true;
-                            GameUi.ShowRecoveryBanner(true);
-                            RestartLevel();
-                        });
-
-                    //m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
-                }
-                else
-                {
-                    m_levelManagerUI.ShowSummaryScreen("GAME OVER", 
-                        "You failed to recover your bot. Click to return to main menu.",
-                        () =>
-                        {
-                            GameUi.ShowRecoveryBanner(false);
-                            Globals.CurrentWave = 0;
-                            GameTimer.SetPaused(false);
-                            PlayerPersistentData.ClearPlayerData();
-                            PlayerPersistentData.PlayerMetadata.CurrentSaveFile = null;
-                            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
-                        });
-                }
-                //Debug.LogError("Bot Died. Press 'R' to restart");
-            };
+            Bot.OnBotDied += OnBotDied;
         }
 
         private void Update()
@@ -229,166 +175,203 @@ namespace StarSalvager
             if (isPaused)
                 return;
 
-            for (int i = 0; i < m_bots.Count; i++)
-            {
-                if (m_bots[i].transform.position.y < Constants.gridCellSize * 5)
-                {
-                    float newY = Vector3.Lerp(m_bots[i].transform.position, Vector3.up * 5 * Constants.gridCellSize, Time.deltaTime * 3).y;
-                    m_bots[i].transform.position = new Vector3(m_bots[i].transform.position.x, newY, m_bots[i].transform.position.z);
-                }
-            }
+            CheckBotPositions();
 
             if (!EndWaveState)
             {
-                if (IsWaveProgressing)
-                    m_waveTimer += Time.deltaTime;
-
-                int currentStage = m_currentStage;
-                if (!CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage))
-                {
-                    if (m_currentStage == currentStage + 1)
-                        TransitionToEndWaveState();
-                }
-
-                if (!EndWaveState)
-                {
-                    //Displays the time in timespan & the fill value
-                    var duration = CurrentWaveData.GetWaveDuration();
-                    var timeLeft = duration - m_waveTimer;
-                    GameUi.SetClockValue(timeLeft / duration);
-                    GameUi.SetTimeString((int) timeLeft);
-                }
+                ProgressStage();
             }
-            else if (ObstacleManager.HasNoActiveObstacles 
-                || (ObstacleManager.RecoveredBotFalling != null 
-                    //&& Camera.main.ScreenToWorldPoint(Screen.width / 2, Screen.height / 2, 0).y < 
-                    //&& Camera.main.rect.Contains(Camera.main.WorldToScreenPoint(ObstacleManager.transform.position)) 
-                    && Camera.main.WorldToScreenPoint(ObstacleManager.RecoveredBotFalling.transform.position).y <= Screen.height / 2))
+            else if (ObstacleManager.HasNoActiveObstacles || (ObstacleManager.RecoveredBotFalling != null && !BotIsInPosition()))
             {
-                var botBlockData = BotObject.GetBlockDatas();
-                SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
-                SessionDataProcessor.Instance.EndActiveWave();
-
-
-                GameUi.SetClockValue(0f);
-                GameUi.SetTimeString(0);
-                SavePlayerData();
-                GameTimer.SetPaused(true);
-
-                if (RecoverFromDeath)
-                {
-                    m_levelManagerUI.ShowSummaryScreen("Bot Recovered",
-                        "You have recovered your wrecked bot. Return to base!", () =>
-                        {
-                            GameUi.ShowRecoveryBanner(false);
-                            GameTimer.SetPaused(false);
-                            EndWaveState = false;
-                            EndSectorState = false;
-                            ProcessLevelCompleteAnalytics();
-                            ProcessScrapyardUsageBeginAnalytics();
-                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
-                        });
-                }
-                else if (EndSectorState)
-                {
-                    m_levelManagerUI.ShowSummaryScreen("Sector Completed",
-                        "You beat the last wave of the sector. Return to base!", () =>
-                        {
-                            GameTimer.SetPaused(false);
-                            EndWaveState = false;
-                            EndSectorState = false;
-                            PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector + 1, 0);
-                            MissionManager.ProcessMissionData(typeof(SectorsCompletedMission), new MissionProgressEventData());
-                            ProcessLevelCompleteAnalytics();
-                            ProcessScrapyardUsageBeginAnalytics();
-                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
-                        });
-                }
-                else
-                {
-                    //Turn wave end summary data into string, post in alert, and clear wave end summary data
-                    m_levelManagerUI.ShowSummaryScreen(WaveEndSummaryData.WaveEndTitle,
-                        m_waveEndSummaryData.GetWaveEndSummaryDataString(),
-                        () =>
-                        {
-                            m_levelManagerUI.ToggleBetweenWavesUIActive(true);
-                        },
-                        "Continue");
-                }
-
-                
-
-                Dictionary<string, object> levelCompleteAnalyticsDictionary = WaveEndSummaryData.GetWaveEndSummaryAnalytics();
-                string levelCompleteString = WaveEndSummaryData.CompletedSector + "." + WaveEndSummaryData.CompletedWave;
-                AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete,
-                    eventDataDictionary: levelCompleteAnalyticsDictionary, eventDataParameter: levelCompleteString);
-
-                m_waveEndSummaryData = new WaveEndSummaryData();
-                ObstacleManager.MoveToNewWave();
-                EnemyManager.MoveToNewWave();
-                EnemyManager.SetEnemiesInert(false);
-                EnemyManager.RecycleAllEnemies();
-                CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
-
-                Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
-                foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
-                {
-                    tempDictionary.Add((int)resource.Key, resource.Value);
-                }
-
-                EnemiesKilledInWave.Clear();
-
-                if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 0)
-                {
-                    m_levelManagerUI.ShowSummaryScreen("Out of water",
-                        "Your scrapyard is out of water. You must return now.", () =>
-                        {
-                            IsWaveProgressing = true;
-                            EndWaveState = false;
-                            SavePlayerData();
-                            m_levelManagerUI.ToggleBetweenWavesUIActive(false);
-                            ProcessScrapyardUsageBeginAnalytics();
-                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
-                        });
-                }
-
-                ProjectileManager.UpdateForces();
-                RecoverFromDeath = false;
+                ProcessEndOfStage();
             }
             else
             {
-                if (botMoveOffScreenSpeed < 10)
-                {
-                    botMoveOffScreenSpeed += Time.deltaTime * 5;
-                }
-                foreach (var bot in m_bots)
-                {
-                    bot.transform.position += Vector3.up * botMoveOffScreenSpeed * Time.deltaTime;
-                }
+                MoveBotOffScreen();
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (!EndWaveState) 
+                return;
+            
+            UpdateUIClock();
+        }
+
+        //LevelManager Update Functions
+        //====================================================================================================================//
+
+        //FIXME Does this need to be happening every frame?
+        private void CheckBotPositions()
+        {
+            foreach (var bot in m_bots)
+            {
+                var pos = bot.transform.position;
+                
+                if (pos.y >= Constants.gridCellSize * 5)
+                    continue;
+                
+                var newY = Mathf.Lerp(pos.y, 5 * Constants.gridCellSize, Time.deltaTime * 3);
+                pos.y = newY;
+                
+                bot.transform.position = pos;
+            }
+        }
+
+        //====================================================================================================================//
+        
+        private void ProgressStage()
+        {
+            if (IsWaveProgressing)
+                m_waveTimer += Time.deltaTime;
+
+            int currentStage = m_currentStage;
+            if (!CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage))
+            {
+                if (m_currentStage == currentStage + 1)
+                    TransitionToEndWaveState();
+            }
+        }
+
+        private void ProcessEndOfStage()
+        {
+            var botBlockData = BotObject.GetBlockDatas();
+            SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
+            SessionDataProcessor.Instance.EndActiveWave();
+
+            GameUi.SetClockValue(0f);
+            GameUi.SetTimeString(0);
+            SavePlayerData();
+            GameTimer.SetPaused(true);
+
+            if (RecoverFromDeath)
+            {
+                m_levelManagerUI.ShowSummaryScreen("Bot Recovered",
+                    "You have recovered your wrecked bot. Return to base!", () =>
+                    {
+                        GameUi.ShowRecoveryBanner(false);
+                        GameTimer.SetPaused(false);
+                        EndWaveState = false;
+                        EndSectorState = false;
+                        ProcessLevelCompleteAnalytics();
+                        ProcessScrapyardUsageBeginAnalytics();
+                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                    });
+            }
+            else if (EndSectorState)
+            {
+                m_levelManagerUI.ShowSummaryScreen("Sector Completed",
+                    "You beat the last wave of the sector. Return to base!", () =>
+                    {
+                        GameTimer.SetPaused(false);
+                        EndWaveState = false;
+                        EndSectorState = false;
+                        PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector + 1, 0);
+                        MissionManager.ProcessMissionData(typeof(SectorsCompletedMission),
+                            new MissionProgressEventData());
+                        ProcessLevelCompleteAnalytics();
+                        ProcessScrapyardUsageBeginAnalytics();
+                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                    });
+            }
+            else
+            {
+                //Turn wave end summary data into string, post in alert, and clear wave end summary data
+                m_levelManagerUI.ShowSummaryScreen(WaveEndSummaryData.WaveEndTitle,
+                    m_waveEndSummaryData.GetWaveEndSummaryDataString(),
+                    () => { m_levelManagerUI.ToggleBetweenWavesUIActive(true); },
+                    "Continue");
+            }
+
+
+
+            Dictionary<string, object> levelCompleteAnalyticsDictionary =
+                WaveEndSummaryData.GetWaveEndSummaryAnalytics();
+            string levelCompleteString = $"{WaveEndSummaryData.CompletedSector}.{WaveEndSummaryData.CompletedWave}";
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete,
+                eventDataDictionary: levelCompleteAnalyticsDictionary, eventDataParameter: levelCompleteString);
+
+            m_waveEndSummaryData = new WaveEndSummaryData();
+            ObstacleManager.MoveToNewWave();
+            EnemyManager.MoveToNewWave();
+            EnemyManager.SetEnemiesInert(false);
+            EnemyManager.RecycleAllEnemies();
+            CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
+
+            Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
+            foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
+            {
+                tempDictionary.Add((int) resource.Key, resource.Value);
+            }
+
+            EnemiesKilledInWave.Clear();
+
+            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 0)
+            {
+                m_levelManagerUI.ShowSummaryScreen("Out of water",
+                    "Your scrapyard is out of water. You must return now.", () =>
+                    {
+                        IsWaveProgressing = true;
+                        EndWaveState = false;
+                        SavePlayerData();
+                        m_levelManagerUI.ToggleBetweenWavesUIActive(false);
+                        ProcessScrapyardUsageBeginAnalytics();
+                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                    });
+            }
+
+            ProjectileManager.UpdateForces();
+            RecoverFromDeath = false;
+        }
+
+        private void MoveBotOffScreen()
+        {
+            if (botMoveOffScreenSpeed < 10)
+            {
+                botMoveOffScreenSpeed += Time.deltaTime * 5;
+            }
+            foreach (var bot in m_bots)
+            {
+                bot.transform.position += Vector3.up * (botMoveOffScreenSpeed * Time.deltaTime);
             }
         }
 
         //====================================================================================================================//
 
-        public void Activate()
+        private void UpdateUIClock()
+        {
+            //Displays the time in timespan & the fill value
+            var duration = CurrentWaveData.GetWaveDuration();
+            var timeLeft = duration - m_waveTimer;
+            
+            GameUi.SetClockValue(timeLeft / duration);
+            GameUi.SetTimeString((int) timeLeft);
+        }
+
+        private bool BotIsInPosition()
+        {
+            var yPos = CameraController.Camera.WorldToScreenPoint(ObstacleManager.RecoveredBotFalling.transform.position).y;
+
+            return yPos > Screen.height / 2f;
+        }
+
+        //LevelManager Functions
+        //====================================================================================================================//
+
+        private void InitLevel()
         {
             BotDead = false;
             m_worldGrid = null;
-            m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             m_waveEndSummaryData = new WaveEndSummaryData();
             NumWavesInRow = 0;
-
+            
+            m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             BotObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
 
-            List<BlockData> botDataToLoad;
-            if (RecoverFromDeath)
-            {
-                botDataToLoad = PlayerPersistentData.PlayerData.GetRecoveryDroneBlockData();
-            }
-            else
-            {
-                botDataToLoad = PlayerPersistentData.PlayerData.GetCurrentBlockData();
-            }
+            var botDataToLoad = RecoverFromDeath
+                ? PlayerPersistentData.PlayerData.GetRecoveryDroneBlockData()
+                : PlayerPersistentData.PlayerData.GetCurrentBlockData();
 
             if (botDataToLoad.Count == 0)
             {
@@ -401,21 +384,6 @@ namespace StarSalvager
 
             if (RecoverFromDeath)
             {
-                /*var values = Enum.GetValues(typeof(BIT_TYPE));
-                foreach (BIT_TYPE bitType in values)
-                {
-                    if (bitType == BIT_TYPE.WHITE)
-                    {
-                        continue;
-                    }
-                    
-                    PlayerPersistentData.PlayerData.SetLiquidResource
-                        (bitType, Mathf.Min(PlayerPersistentData.PlayerData.recoveryDroneLiquidResource[bitType], 
-                        PlayerPersistentData.PlayerData.liquidCapacity[bitType]));
-
-                    PlayerPersistentData.PlayerData.SubtractRecoveryDroneLiquidResource(bitType, PlayerPersistentData.PlayerData.liquidResource[bitType]);
-                }*/
-
                 PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, WaterAtBeginningOfWave);
             }
 
@@ -428,18 +396,16 @@ namespace StarSalvager
             MissionsCompletedDuringThisFlight.Clear();
 
             WaterAtBeginningOfWave = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE];
-
-            //FIXME We shouldn't be using Camera.main
+            
             InputManager.Instance.InitInput();
             CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, BotObject.transform.position);
-            //Globals.GridSizeX = CurrentSector.GridSizeX;
             if (Globals.Orientation == ORIENTATION.VERTICAL)
             {
-                Globals.GridSizeY = (int)((CameraController.Camera.orthographicSize * Globals.GridHeightRelativeToScreen * 2) / Values.Constants.gridCellSize);
+                Globals.GridSizeY = (int)((CameraController.Camera.orthographicSize * Globals.GridHeightRelativeToScreen * 2) / Constants.gridCellSize);
             }
             else
             {
-                Globals.GridSizeY = (int)((CameraController.Camera.orthographicSize * Globals.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Values.Constants.gridCellSize);
+                Globals.GridSizeY = (int)((CameraController.Camera.orthographicSize * Globals.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Constants.gridCellSize);
             }
             WorldGrid.SetupGrid();
             ProjectileManager.Activate();
@@ -457,6 +423,45 @@ namespace StarSalvager
                     horizontalLayout: Toast.Layout.Middle);
             }
 
+            SetupLevelAnalytics();
+
+            Random.InitState(CurrentWaveData.WaveSeed);
+            Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
+
+            CheckPlayerWater();
+        }
+
+        private void CleanLevel()
+        {
+            for (int i = m_bots.Count - 1; i >= 0; i--)
+            {
+                if (m_bots == null)
+                    continue;
+
+                Recycler.Recycle<Bot>(m_bots[i]);
+                m_bots.RemoveAt(i);
+            }
+
+            if (!RecoverFromDeath)
+            {
+                LiquidResourcesCachedOnDeath.Clear();
+            }
+
+            ObstacleManager.WorldElementsRoot.transform.position = Vector3.zero;
+
+            m_waveEndSummaryData = null;
+            BotDead = false;
+            m_waveTimer = 0;
+            m_levelTimer = 0;
+            
+            
+            CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
+            ProjectileManager.Reset();
+            MissionsCompletedDuringThisFlight.Clear();
+        }
+
+        private void SetupLevelAnalytics()
+        {
             Dictionary<int, float> tempResourceDictionary = new Dictionary<int, float>();
             foreach (var resource in PlayerPersistentData.PlayerData.resources)
             {
@@ -475,50 +480,25 @@ namespace StarSalvager
             };
             string levelStartString = Globals.CurrentSector + "." + Globals.CurrentWave;
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataDictionary: levelStartAnalyticsDictionary, eventDataParameter: levelStartString);
-
-            Random.InitState(CurrentWaveData.WaveSeed);
-            Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
-
-            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <
-                Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate)
-            {
-                GameTimer.SetPaused(true);
-                m_levelManagerUI.ShowSummaryScreen("Almost out of water",
-                    "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.",
-                    () => { GameTimer.SetPaused(false); }
-                );
-            }
         }
 
-        public void Reset()
+        private void CheckPlayerWater()
         {
-            for (int i = m_bots.Count - 1; i >= 0; i--)
-            {
-                if (m_bots == null)
-                    continue;
+            var amount = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE];
+            var required = Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate;
 
-                Recycling.Recycler.Recycle<Bot>(m_bots[i]);
-                m_bots.RemoveAt(i);
-            }
-
-            if (!RecoverFromDeath)
-            {
-                LiquidResourcesCachedOnDeath.Clear();
-            }
-
-            ObstacleManager.WorldElementsRoot.transform.position = Vector3.zero;
-
-            m_waveTimer = 0;
-            m_levelTimer = 0;
-            CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
-            ProjectileManager.Reset();
-            MissionsCompletedDuringThisFlight.Clear();
-            m_waveEndSummaryData = null;
-            BotDead = false;
+            if (amount >= required)
+                return;
+            
+            GameTimer.SetPaused(true);
+            m_levelManagerUI.ShowSummaryScreen("Almost out of water",
+                "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.",
+                () => { GameTimer.SetPaused(false); }
+            );
         }
-
-        //====================================================================================================================//
-
+        
+        //============================================================================================================//
+        
         public void BeginNextWave()
         {
             IsWaveProgressing = true;
@@ -546,7 +526,6 @@ namespace StarSalvager
 
             botMoveOffScreenSpeed = 0;
         }
-
         
         private void TransitionToEndWaveState()
         {
@@ -637,6 +616,7 @@ namespace StarSalvager
             }
         }
 
+        //FIXME Does this need to be in the LevelManager?
         public void DropLoot(List<IRDSObject> loot, Vector3 position, bool isFromEnemyLoot)
         {
             for (int i = loot.Count - 1; i >= 0; i--)
@@ -700,7 +680,105 @@ namespace StarSalvager
             SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.LEVEL);
         }
 
+        private void OnBotDied(Bot _, string deathMethod)
+        {
+            LiquidResourcesCachedOnDeath =
+                new Dictionary<BIT_TYPE, float>(
+                    (IDictionary<BIT_TYPE, float>) PlayerPersistentData.PlayerData.liquidResource);
+
+            InputManager.Instance.CancelMove();
+
+            if (!RecoverFromDeath)
+            {
+                foreach (Bot bot in m_bots)
+                {
+                    IAttachable attachable = bot.attachedBlocks.First(a => a.Coordinate == Vector2.zero);
+                    if (attachable is Part core)
+                    {
+
+                        core.SetupHealthValues(core.StartingHealth, core.StartingHealth / 2);
+                    }
+                }
+            }
+
+            SavePlayerData();
+            BotDead = true;
+
+            Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
+            foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
+            {
+                tempDictionary.Add((int) resource.Key, resource.Value);
+            }
+
+            Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>
+            {
+                {AnalyticsManager.DeathCause, deathMethod},
+                {AnalyticsManager.LevelTime, m_levelTimer + m_waveTimer},
+            };
+            string levelLostString = Globals.CurrentSector + "." + Globals.CurrentWave;
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelLost,
+                eventDataDictionary: levelLostAnalyticsDictionary, eventDataParameter: levelLostString);
+
+            SessionDataProcessor.Instance.PlayerKilled();
+            SessionDataProcessor.Instance.EndActiveWave();
+
+            if (!RecoverFromDeath)
+            {
+                IsWaveProgressing = false;
+                RecoverFromDeath = true;
+
+                Alert.ShowAlert("Bot wrecked",
+                    "Your bot has been wrecked. Deploy your recovery bot to rescue it.",
+                    "Deploy",
+                    () =>
+                    {
+                        RecoverFromDeath = true;
+                        IsWaveProgressing = true;
+                        GameUi.ShowRecoveryBanner(true);
+                        RestartLevel();
+                    });
+
+                //m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
+            }
+            else
+            {
+                m_levelManagerUI.ShowSummaryScreen("GAME OVER",
+                    "You failed to recover your bot. Click to return to main menu.",
+                    () =>
+                    {
+                        GameUi.ShowRecoveryBanner(false);
+                        Globals.CurrentWave = 0;
+                        GameTimer.SetPaused(false);
+                        PlayerPersistentData.ClearPlayerData();
+                        PlayerPersistentData.PlayerMetadata.CurrentSaveFile = null;
+                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                    });
+            }
+        }
+
+        //IReset Functions
+        //====================================================================================================================//
+
+        #region IReset Functions
+
+        public void Activate()
+        {
+            TutorialManager?.gameObject.SetActive(Globals.usingTutorial);
+            
+            InitLevel();
+        }
+
+        public void Reset()
+        {
+            CleanLevel();
+        }
+
+        #endregion //IReset Functions
+
+        //IPausable Functions
         //============================================================================================================//
+
+        #region IPausable
 
         public void RegisterPausable()
         {
@@ -709,7 +787,7 @@ namespace StarSalvager
 
         public void OnResume()
         {
-            GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
+            GameUi?.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
         }
 
         public void OnPause()
@@ -717,13 +795,18 @@ namespace StarSalvager
 
         }
 
+        #endregion //IPausable
+
+        //Analytics Functions
         //============================================================================================================//
+
+        #region Analytics Functions
 
         public void ProcessScrapyardUsageBeginAnalytics()
         {
             Dictionary<string, object> scrapyardUsageBeginAnalyticsDictionary = new Dictionary<string, object>
             {
-                {"Sector Number", Values.Globals.CurrentSector}
+                {"Sector Number", Globals.CurrentSector}
             };
             //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageBegin, scrapyardUsageBeginAnalyticsDictionary);
         }
@@ -737,14 +820,21 @@ namespace StarSalvager
             //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete, levelCompleteAnalyticsDictionary, Values.Globals.CurrentSector);
         }
 
+        #endregion //Analytics Functions
+
         //====================================================================================================================//
 
         public void ForceSetTimeRemaining(float timeLeft)
         {
             m_waveTimer = CurrentWaveData.GetWaveDuration() - timeLeft;
         }
-        
-        #if UNITY_EDITOR
+
+        //Unity Editor
+        //====================================================================================================================//
+
+        #region Unity Editor
+
+#if UNITY_EDITOR
 
         [SerializeField]
         private bool drawGrid = true;
@@ -758,7 +848,11 @@ namespace StarSalvager
             WorldGrid?.OnDrawGizmos();
         }
 
-        #endif
+#endif
 
+        #endregion //Unity Editor
+
+        //====================================================================================================================//
+        
     }
 }

@@ -76,9 +76,13 @@ namespace StarSalvager.Utilities.Inputs
         private Dictionary<InputAction, Action<InputAction.CallbackContext>> _inputMap;
 
         public float MostRecentSideMovement { get; private set; }
+
+        public float CurrentMoveInput => _currentMoveInput;
         private float _currentMoveInput;
 
         public float MostRecentRotateMovement { get; private set; }
+
+        public float CurrentRotateInput => _currentRotateInput;
         private float _currentRotateInput;
 
         public float PreviousInput => previousMovementInput;
