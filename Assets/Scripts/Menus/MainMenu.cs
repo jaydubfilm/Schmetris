@@ -305,7 +305,20 @@ namespace StarSalvager.UI
             tutorialButton.onClick.AddListener(() =>
             {
                 Globals.UsingTutorial = true;
-                
+
+                string playerPath = Files.GetNextAvailableSaveSlot();
+
+                if (playerPath != string.Empty)
+                {
+                    PlayerPersistentData.SetCurrentSaveFile(playerPath);
+                    PlayerPersistentData.ResetPlayerData();
+                }
+                else
+                {
+                    Toast.AddToast("No empty save slots! Load an existing game or delete a save file to proceed.",
+                        time: 3.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
+                }
+
                 SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.MAIN_MENU);
             });
 

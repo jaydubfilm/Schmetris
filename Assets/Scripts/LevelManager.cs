@@ -176,9 +176,25 @@ namespace StarSalvager
                 return;
 
             CheckBotPositions();
-            
+
             if (Globals.UsingTutorial)
+            {
+                if (UnityEngine.Input.GetKeyDown(KeyCode.R))
+                {
+                    SetStage(1);
+                }
+
+                if (UnityEngine.Input.GetKeyDown(KeyCode.G))
+                {
+                    SetStage(0);
+                }
+
+                if (UnityEngine.Input.GetKeyDown(KeyCode.T))
+                {
+                    SetStage(2);
+                }
                 return;
+            }
 
             if (!EndWaveState)
             {
@@ -231,8 +247,41 @@ namespace StarSalvager
 
             int currentStage = m_currentStage;
             if (CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage))
+            {
+                Debug.Log("SETUP STAGE " + m_currentStage);
+                ObstacleManager.SetupStage(m_currentStage);
                 return;
+            }
             
+            if (m_currentStage == currentStage + 1)
+                TransitionToEndWaveState();
+        }
+
+        private void SetStage(int stage)
+        {
+            if (stage >= CurrentWaveData.StageRemoteData.Count)
+            {
+                Debug.LogError("Tried to set stage that does not exist in this wave");
+                return;
+            }
+            
+            float waveTimer = 0;
+
+            for (int i = 0; i < stage; i++)
+            {
+                waveTimer += CurrentWaveData.StageRemoteData[i].StageDuration;
+            }
+
+            m_waveTimer = waveTimer;
+
+            int currentStage = m_currentStage;
+            if (CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage))
+            {
+                Debug.Log("SETUP STAGE " + m_currentStage);
+                ObstacleManager.SetupStage(m_currentStage);
+                return;
+            }
+
             if (m_currentStage == currentStage + 1)
                 TransitionToEndWaveState();
         }
