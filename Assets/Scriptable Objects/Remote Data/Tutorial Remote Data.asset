@@ -21,11 +21,11 @@ MonoBehaviour:
   - title: Movement
     useWaitTime: 0
     waitTime: 0
-    text: This is your drone. Move it left and right using < and >
+    text: This is your drone. Move it left and right using #LEFT and #RIGHT
   - title: Rotate
     useWaitTime: 0
     waitTime: 0
-    text: 
+    text: Rotate using #UP and #DOWN
   - title: Falling Bits
     useWaitTime: 0
     waitTime: 0

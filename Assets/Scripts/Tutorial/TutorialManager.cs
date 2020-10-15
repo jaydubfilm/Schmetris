@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Tutorial.Data;
 using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
@@ -113,7 +114,18 @@ namespace StarSalvager.Tutorial
         
         private void SetText(string text)
         {
+            CheckForSpriteReplacements(ref text);
+            
             this.text.text = text;
+        }
+
+        //FIXME This is gross...
+        private static void CheckForSpriteReplacements(ref string text)
+        {
+            text = text.Replace("#LEFT", TMP_SpriteMap.GetInputSprite("left"));
+            text = text.Replace("#RIGHT", TMP_SpriteMap.GetInputSprite("right"));
+            text = text.Replace("#UP", TMP_SpriteMap.GetInputSprite("up"));
+            text = text.Replace("#DOWN", TMP_SpriteMap.GetInputSprite("down"));
         }
 
         //Tutorial Steps
@@ -143,7 +155,7 @@ namespace StarSalvager.Tutorial
             bool left, right;
             left = right = false;
 
-            while (!left && !right)
+            while (!left || !right)
             {
                 if (_inputManager.CurrentMoveInput < 0)
                     left = true;
@@ -161,7 +173,7 @@ namespace StarSalvager.Tutorial
             bool left, right;
             left = right = false;
 
-            while (!left && !right)
+            while (!left || !right)
             {
                 if (_inputManager.CurrentRotateInput < 0)
                     left = true;
