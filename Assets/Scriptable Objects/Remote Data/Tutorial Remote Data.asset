@@ -14,13 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tutorialSteps:
   - title: Intro Step
-    useWaitTime: 0
-    waitTime: 0
-    text: 
+    useWaitTime: 1
+    waitTime: 5
+    text: Cryosleep, am I right? No time to let your brain-fog wear off, this time
+      Captain. We gotta get you in the air. Let's hit the training Simulator.
   - title: Movement
     useWaitTime: 0
     waitTime: 0
-    text: 
+    text: This is your drone. Move it left and right using < and >
   - title: Rotate
     useWaitTime: 0
     waitTime: 0
