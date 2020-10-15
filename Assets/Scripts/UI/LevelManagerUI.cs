@@ -226,6 +226,9 @@ namespace StarSalvager.UI
         
         private void PlayMissionReminder()
         {
+            if (Globals.UsingTutorial)
+                return;
+            
             if(MissionManager.MissionsCurrentData == null || MissionManager.MissionsCurrentData.CurrentTrackedMissions == null)
                 return;
             
