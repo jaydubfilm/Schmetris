@@ -63,13 +63,13 @@ namespace StarSalvager.UI
                 newLineRenderer.AddComponent<LineRenderer>();
 
                 LineRenderer lineRenderer = newLineRenderer.GetComponent<LineRenderer>();
-                lineRenderer.gameObject.transform.parent = m_scrollRect.transform;
+                lineRenderer.gameObject.transform.parent = m_scrollRectArea.transform;
                 lineRenderer.sortingOrder = 1;
                 lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
                 lineRenderer.material.color = Color.red;
                 lineRenderer.startWidth = 10;
                 lineRenderer.endWidth = 10;
-                lineRenderer.useWorldSpace = true;
+                lineRenderer.useWorldSpace = false;
                 lineRenderer.positionCount = 2;
                 lineRenderer.startColor = Color.red;
                 lineRenderer.endColor = Color.yellow;

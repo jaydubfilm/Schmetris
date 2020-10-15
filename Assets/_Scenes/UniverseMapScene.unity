@@ -785,6 +785,18 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 5553311264832995491}
+    ActiveGameObject: {fileID: 5553311264832995491}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 5553311264832995493}
     ActiveGameObject: {fileID: 5553311264832995493}
     GUIDsList: []
@@ -1039,18 +1051,6 @@ MonoBehaviour:
     list:
     - {fileID: 1465471317}
     ActiveGameObject: {fileID: 1465471317}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 424801580}
-    ActiveGameObject: {fileID: 424801580}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -1324,11 +1324,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 822663222}
-    - target: {fileID: 5553311265099259240, guid: 5fa5efeeb6e73504aadc932fc08af0eb,
-        type: 3}
-      propertyPath: m_RenderMode
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5553311265099259243, guid: 5fa5efeeb6e73504aadc932fc08af0eb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1433,26 +1428,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5553311265099259243, guid: 5fa5efeeb6e73504aadc932fc08af0eb,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5553311265099259243, guid: 5fa5efeeb6e73504aadc932fc08af0eb,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5553311265099259243, guid: 5fa5efeeb6e73504aadc932fc08af0eb,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5553311265534235361, guid: 5fa5efeeb6e73504aadc932fc08af0eb,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -87.51123
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5fa5efeeb6e73504aadc932fc08af0eb, type: 3}
