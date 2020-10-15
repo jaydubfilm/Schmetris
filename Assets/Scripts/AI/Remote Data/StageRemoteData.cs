@@ -32,7 +32,7 @@ namespace StarSalvager.AI
         [SerializeField, ShowIf("m_stageType", STAGE_TYPE.CUSTOM)]
         private List<StageColumnGroupObstacleData> m_stageColumnGroupObstacleData;
 
-        public float StageDuration => m_stageDuration;
+        public float StageDuration => Mathf.Max(1.0f, m_stageDuration);
         public float StageBlendPeriod => m_stageBlendPeriod;
         public bool WaitUntilAllEnemiesDefeatedToBegin => m_waitUntilAllEnemiesDefeatedToBegin;
         public STAGE_TYPE StageType => m_stageType;

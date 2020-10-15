@@ -601,9 +601,8 @@ namespace StarSalvager
             }
 
             SetBotBelowScreen();
-            SetBotEnterScreen(true);
-
             SetBotZoomOffScreen(false);
+            SetBotEnterScreen(true);
         }
         
         private void TransitionToEndWaveState()
