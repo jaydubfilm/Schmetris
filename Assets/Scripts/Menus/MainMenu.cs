@@ -308,7 +308,6 @@ namespace StarSalvager.UI
                 
                 SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.MAIN_MENU);
             });
-            tutorialButton.interactable = false;
 
             ngBackButton.onClick.AddListener(() => OpenMenu(MENU.MAIN));
 
