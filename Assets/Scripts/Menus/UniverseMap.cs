@@ -54,10 +54,10 @@ namespace StarSalvager.UI
 
         public void Activate()
         {
-            //InitUniverseMapTemp();
+            InitUniverseMapTemp();
             CenterToItem(universeMapButtons[0].GetComponent<RectTransform>());
 
-            foreach (var connection in PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertNodeTreeIntoConnections())
+            /*foreach (var connection in PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertNodeTreeIntoConnections())
             {
                 GameObject newLineRenderer = new GameObject();
                 newLineRenderer.AddComponent<LineRenderer>();
@@ -77,6 +77,11 @@ namespace StarSalvager.UI
                 lineRenderer.SetPosition(0, universeMapButtons[connection.x].transform.position);
                 lineRenderer.SetPosition(1, universeMapButtons[connection.y].transform.position);
 
+            }*/
+
+            foreach (var button in universeMapButtons)
+            {
+                button.gameObject.SetActive(false);
             }
 
             if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 35)

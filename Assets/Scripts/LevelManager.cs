@@ -248,8 +248,10 @@ namespace StarSalvager
             int currentStage = m_currentStage;
             if (CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage))
             {
-                Debug.Log("SETUP STAGE " + m_currentStage);
-                ObstacleManager.SetupStage(m_currentStage);
+                if (currentStage != m_currentStage)
+                {
+                    ObstacleManager.SetupStage(m_currentStage);
+                }
                 return;
             }
             
@@ -277,8 +279,10 @@ namespace StarSalvager
             int currentStage = m_currentStage;
             if (CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage))
             {
-                Debug.Log("SETUP STAGE " + m_currentStage);
-                ObstacleManager.SetupStage(m_currentStage);
+                if (currentStage != m_currentStage)
+                {
+                    ObstacleManager.SetupStage(m_currentStage);
+                }
                 return;
             }
 
