@@ -603,6 +603,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tutorialRemoteData: {fileID: 11400000, guid: a0da7f634ee422f49b1ceb79a0704d40, type: 2}
   debug: 0
+  window: {fileID: 2483223972408373739}
   text: {fileID: 8218587930837309253}
   fillImage: {fileID: 789488161612667206}
   pressAnyKeyText: {fileID: 9046780174744859635}
