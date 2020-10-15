@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Tutorial.Data;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Values;
 using TMPro;
@@ -15,43 +16,31 @@ namespace StarSalvager.Tutorial
 {
     public class TutorialManager : MonoBehaviour, IInput
     {
-        [Serializable]
-        public struct TutorialStepData
-        {
-            //[FoldoutGroup("$title", false), DisplayAsString]
-            [HideInInspector]
-            public string title;
-            [HorizontalGroup("$title/UseWait"), ToggleLeft, LabelWidth(50f)]
-            public bool useWaitTime;
-            [HorizontalGroup("$title/UseWait"), EnableIf("useWaitTime"), HideLabel, SuffixLabel("Seconds", true)]
-            public float waitTime;
-            [TextArea,FoldoutGroup("$title")]
-            public string text;
-        }
-
-        [SerializeField, ListDrawerSettings(HideAddButton = true, HideRemoveButton = true)]
+        [SerializeField, Required]
+        private TutorialDataScriptableObject tutorialRemoteData;
+        /*[SerializeField, ListDrawerSettings(HideAddButton = true, HideRemoveButton = true)]
         private List<TutorialStepData> tutorialSteps = new List<TutorialStepData>
         {
-            /* [0] */new TutorialStepData {title = "Intro Step"},
-            /* [1] */new TutorialStepData {title = "Movement"},
-            /* [2] */new TutorialStepData {title = "Rotate"},
-            /* [3] */new TutorialStepData {title = "Falling Bits"},
-            /* [4] */new TutorialStepData {title = "Combo"},
-            /* [5] */new TutorialStepData {title = "Magnet"},
+            /* [0] #1#new TutorialStepData {title = "Intro Step"},
+            /* [1] #1#new TutorialStepData {title = "Movement"},
+            /* [2] #1#new TutorialStepData {title = "Rotate"},
+            /* [3] #1#new TutorialStepData {title = "Falling Bits"},
+            /* [4] #1#new TutorialStepData {title = "Combo"},
+            /* [5] #1#new TutorialStepData {title = "Magnet"},
 
-            /* [6] */new TutorialStepData {title = "Combo-magnet-1"},
-            /* [7] */new TutorialStepData {title = "Combo-magnet-2"},
+            /* [6] #1#new TutorialStepData {title = "Combo-magnet-1"},
+            /* [7] #1#new TutorialStepData {title = "Combo-magnet-2"},
 
-            /* [8] */new TutorialStepData {title = "Magnet-combo-1"},
-            /* [9] */new TutorialStepData {title = "Magnet-combo-2"},
+            /* [8] #1#new TutorialStepData {title = "Magnet-combo-1"},
+            /* [9] #1#new TutorialStepData {title = "Magnet-combo-2"},
 
-            /* [10] */new TutorialStepData {title = "Pulsar"},
-            /* [11] */new TutorialStepData {title = "Pulsar-1"},
+            /* [10] #1#new TutorialStepData {title = "Pulsar"},
+            /* [11] #1#new TutorialStepData {title = "Pulsar-1"},
 
-            /* [12] */new TutorialStepData {title = "Fuel"},
-            /* [13] */new TutorialStepData {title = "Fuel-1"},
-            /* [14] */new TutorialStepData {title = "Fuel-2"},
-        };
+            /* [12] #1#new TutorialStepData {title = "Fuel"},
+            /* [13] #1#new TutorialStepData {title = "Fuel-1"},
+            /* [14] #1#new TutorialStepData {title = "Fuel-2"},
+        };*/
 
 
         [SerializeField]
@@ -144,11 +133,11 @@ namespace StarSalvager.Tutorial
             var bot = LevelManager.Instance.BotObject;
             bot.PROTO_GodMode = true;
             
-            yield return mono.StartCoroutine(WaitStep(tutorialSteps[0], true));
+            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[0], true));
         }
         private IEnumerator MoveStepCoroutine()
         {
-            yield return mono.StartCoroutine(WaitStep(tutorialSteps[1], false));
+            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[1], false));
             
             //TODO Need to wait for the movement of the Bot Left/Right
             bool left, right;
@@ -167,7 +156,7 @@ namespace StarSalvager.Tutorial
         }
         private IEnumerator RotateStepCoroutine()
         {
-            yield return mono.StartCoroutine(WaitStep(tutorialSteps[2], false));
+            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[2], false));
             
             bool left, right;
             left = right = false;
@@ -185,7 +174,7 @@ namespace StarSalvager.Tutorial
         }
         private IEnumerator StartFallingBitsCoroutine()
         {
-            yield return mono.StartCoroutine(WaitStep(tutorialSteps[3], true));
+            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[3], true));
         }
         private IEnumerator BotCollectionsCoroutine()
         {
@@ -201,7 +190,7 @@ namespace StarSalvager.Tutorial
                 combo = true;
             }
             
-            SetText(tutorialSteps[3]);
+            SetText(tutorialRemoteData[3]);
             
             var bot = LevelManager.Instance.BotObject;
             bot.OnFullMagnet += SetMagnet;
@@ -235,9 +224,9 @@ namespace StarSalvager.Tutorial
         private IEnumerator ComboFirstCoroutine()
         {
             //tutorialSteps[4]
-            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialSteps[4], true));
+            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialRemoteData[4], true));
             
-            SetText(tutorialSteps[6]);
+            SetText(tutorialRemoteData[6]);
 
             bool magnet = false;
             var bot = LevelManager.Instance.BotObject;
@@ -253,14 +242,14 @@ namespace StarSalvager.Tutorial
             
             bot.OnFullMagnet -= SetMagnet;
             
-            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialSteps[7], true));
+            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialRemoteData[7], true));
         }
         private IEnumerator MagnetFirstCoroutine()
         {
             //tutorialSteps[5]
-            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialSteps[5], true));
+            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialRemoteData[5], true));
             
-            SetText(tutorialSteps[8]);
+            SetText(tutorialRemoteData[8]);
 
             bool combo = false;
             var bot = LevelManager.Instance.BotObject;
@@ -276,12 +265,12 @@ namespace StarSalvager.Tutorial
             
             bot.OnCombo -= SetCombo;
             
-            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialSteps[9], true));
+            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialRemoteData[9], true));
         }
 
         private IEnumerator PulsarStepCoroutine()
         {
-            SetText(tutorialSteps[10]);
+            SetText(tutorialRemoteData[10]);
             var bot = LevelManager.Instance.BotObject;
             
             bool bump = false;
@@ -297,7 +286,7 @@ namespace StarSalvager.Tutorial
             
             bot.OnBitShift -= SetBump;
 
-            yield return mono.StartCoroutine(WaitStep(tutorialSteps[11], false));
+            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[11], false));
         }
         
         private IEnumerator FuelStepCoroutine()
@@ -310,15 +299,15 @@ namespace StarSalvager.Tutorial
             
             yield return new WaitUntil(() => playerData[BIT_TYPE.RED] <= 0f);
             
-            SetText(tutorialSteps[12]);
+            SetText(tutorialRemoteData[12]);
             
             //TODO Set the wave to spawn all reds
             
             yield return new WaitUntil(() => playerData[BIT_TYPE.RED] > 0f);
 
-            yield return mono.StartCoroutine(WaitStep(tutorialSteps[13], false));
+            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[13], false));
             
-            SetText(tutorialSteps[12]);
+            SetText(tutorialRemoteData[14]);
 
         }
 

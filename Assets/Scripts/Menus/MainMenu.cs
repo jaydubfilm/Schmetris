@@ -37,11 +37,10 @@ namespace StarSalvager.UI
             MAINMENU,
             GAMEMENU
         }
-        
+
         //============================================================================================================//
-        
-        [SerializeField]
-        private CameraController m_cameraController;
+
+        [SerializeField] private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
         //============================================================================================================//
@@ -50,41 +49,53 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("Main Menu")]
         private TMP_Text headerText;
+
         [SerializeField, Required, FoldoutGroup("Main Menu")]
         private GameObject mainMenuWindow;
+
         [SerializeField, Required, FoldoutGroup("Main Menu")]
         private Button newGameButton;
+
         [SerializeField, Required, FoldoutGroup("Main Menu")]
         private Button continueButton;
+
         [SerializeField, Required, FoldoutGroup("Main Menu")]
         private TMP_Text continueButtonText;
+
         [SerializeField, Required, FoldoutGroup("Main Menu")]
         private Button loadGameButton;
+
         [SerializeField, Required, FoldoutGroup("Main Menu")]
         private Button optionsButton;
+
         [SerializeField, Required, FoldoutGroup("Main Menu")]
         private Button quitButton;
-        
+
         [SerializeField, Required, BoxGroup("Main Menu/Testing", Order = -1000)]
         private Button m_toggleOrientationButton;
+
         [SerializeField, Required, BoxGroup("Main Menu/Testing")]
         private Slider m_cameraZoomScaler;
+
         [SerializeField, Required, BoxGroup("Main Menu/Testing")]
         private SliderText _zoomSliderText;
-        
+
         //============================================================================================================//
-        
+
         [SerializeField, Required, FoldoutGroup("New Game Menu")]
         private GameObject newGameWindow;
+
         [SerializeField, Required, FoldoutGroup("New Game Menu")]
         private Button startGameButton;
+
         [SerializeField, Required, FoldoutGroup("New Game Menu")]
         private Button tutorialButton;
+
         [SerializeField, Required, FoldoutGroup("New Game Menu")]
         private Button ngBackButton;
-        
+
         //============================================================================================================//
-        
+
         [SerializeField, Required, FoldoutGroup("Load Game Menu")]
         private GameObject loadGameWindow;
         /*[SerializeField, Required, FoldoutGroup("Load Game Menu")]
@@ -100,24 +111,27 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("Options Menu")]
         private GameObject optionsWindow;
+
         [SerializeField, Required, FoldoutGroup("Options Menu")]
         private Slider musicSlider;
+
         [SerializeField, Required, FoldoutGroup("Options Menu")]
         private Slider sfxSlider;
+
         [SerializeField, Required, FoldoutGroup("Options Menu")]
         private Button oBackButton;
+
         [SerializeField, Required, FoldoutGroup("Options Menu")]
         private Toggle testingFeaturesToggle;
 
-        [SerializeField, Required]
-        private GameObject introSceneCanvas;
+        [SerializeField, Required] private GameObject introSceneCanvas;
 
         private MENUSTATE menuState = MENUSTATE.MAINMENU;
-        
+
         #endregion //Menu Windows
-        
+
         //============================================================================================================//
-        
+
         // Start is called before the first frame update
         private void Start()
         {
@@ -140,15 +154,22 @@ namespace StarSalvager.UI
 
         private IEnumerator Init()
         {
+            newGameButton.interactable = false;
+            continueButton.interactable = false;
+            loadGameButton.interactable = false;
+
             while (!SceneLoader.IsReady)
                 yield return null;
+            
+            newGameButton.interactable = true;
 
             Dictionary<string, object> applicationOpenAnalyticsDictionary = new Dictionary<string, object>();
             //applicationOpenAnalyticsDictionary.Add("User ID", Globals.UserID);
             //applicationOpenAnalyticsDictionary.Add("Session ID", Globals.SessionID);
             //applicationOpenAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
             //applicationOpenAnalyticsDictionary.Add("Start Time", DateTime.Now.ToString());
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ApplicationOpen, eventDataDictionary: applicationOpenAnalyticsDictionary);
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ApplicationOpen,
+                eventDataDictionary: applicationOpenAnalyticsDictionary);
 
             InitButtons();
 
@@ -162,8 +183,13 @@ namespace StarSalvager.UI
 
         private void Update()
         {
+            if (!SceneLoader.IsReady)
+                return;
+
             continueButton.interactable = PlayerPersistentData.PlayerMetadata.CurrentSaveFile.HasValue;
-            loadGameButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0 && PlayerPersistentData.PlayerMetadata.SaveFiles.Any(s => s.FilePath != Files.AUTOSAVE_PATH);
+            loadGameButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0 &&
+                                          PlayerPersistentData.PlayerMetadata.SaveFiles.Any(s =>
+                                              s.FilePath != Files.AUTOSAVE_PATH);
 
             m_toggleOrientationButton.gameObject.SetActive(!Globals.DisableTestingFeatures);
             m_cameraZoomScaler.gameObject.SetActive(!Globals.DisableTestingFeatures);
@@ -196,13 +222,15 @@ namespace StarSalvager.UI
                 }
                 else
                 {
-                    Alert.ShowAlert("New Game", "Starting a new game may override your autosave data. Are you sure you want to continue?", "Yes", "No", (b) =>
-                    {
-                        if (b)
+                    Alert.ShowAlert("New Game",
+                        "Starting a new game may override your autosave data. Are you sure you want to continue?",
+                        "Yes", "No", (b) =>
                         {
-                            OpenMenu(MENU.NEW);
-                        }
-                    });
+                            if (b)
+                            {
+                                OpenMenu(MENU.NEW);
+                            }
+                        });
                 }
             });
 
@@ -212,7 +240,7 @@ namespace StarSalvager.UI
                 {
                     return;
                 }
-                
+
                 string playerPath = PlayerPersistentData.PlayerMetadata.CurrentSaveFile.Value.FilePath;
 
                 if (playerPath != string.Empty)
@@ -220,7 +248,8 @@ namespace StarSalvager.UI
                     print("LOADING FILE " + playerPath);
 
                     PlayerPersistentData.SetCurrentSaveFile(playerPath);
-                    FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
+                    FactoryManager.Instance.currentModularDataIndex =
+                        PlayerPersistentData.PlayerData.currentModularSectorIndex;
 
                     //menuState = MENUSTATE.GAMEMENU;
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU);
@@ -228,9 +257,9 @@ namespace StarSalvager.UI
             });
 
             loadGameButton.onClick.AddListener(() => loadGameWindow.SetActive(true));
-            
+
             optionsButton.onClick.AddListener(() => OpenMenu(MENU.OPTION));
-            
+
             quitButton.onClick.AddListener(() =>
             {
                 Alert.ShowAlert("Quit", "Are you sure you want to quit?", "Yes", "No", (b) =>
@@ -245,10 +274,10 @@ namespace StarSalvager.UI
                     }
                 });
             });
-            
+
             //New Game Buttons
             //--------------------------------------------------------------------------------------------------------//
-            
+
             startGameButton.onClick.AddListener(() =>
             {
                 OpenMenu(MENU.MAIN);
@@ -268,68 +297,75 @@ namespace StarSalvager.UI
                 }
                 else
                 {
-                    Toast.AddToast("No empty save slots! Load an existing game or delete a save file to proceed.", time: 3.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
+                    Toast.AddToast("No empty save slots! Load an existing game or delete a save file to proceed.",
+                        time: 3.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
                 }
             });
-            
-            tutorialButton.onClick.AddListener(() => throw new NotImplementedException());
+
+            tutorialButton.onClick.AddListener(() =>
+            {
+                Globals.UsingTutorial = true;
+                
+                SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.MAIN_MENU);
+            });
             tutorialButton.interactable = false;
-            
+
             ngBackButton.onClick.AddListener(() => OpenMenu(MENU.MAIN));
 
             //Load Game Buttons
             //--------------------------------------------------------------------------------------------------------//
 
             //FIXME This will likely need to be scalable
-           /* slot1Button.onClick.AddListener(() =>
-            {
-                OpenMenu(MENU.MAIN);
-                PlayerPersistentData.SetCurrentSaveFile(0);
-                MissionManager.SetCurrentSaveFile();
-                PlayerPersistentData.IsNewFile = false;
-                SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
-            });
+            /* slot1Button.onClick.AddListener(() =>
+             {
+                 OpenMenu(MENU.MAIN);
+                 PlayerPersistentData.SetCurrentSaveFile(0);
+                 MissionManager.SetCurrentSaveFile();
+                 PlayerPersistentData.IsNewFile = false;
+                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+             });
+ 
+             slot2Button.onClick.AddListener(() =>
+             {
+                 OpenMenu(MENU.MAIN);
+                 PlayerPersistentData.SetCurrentSaveFile(1);
+                 MissionManager.SetCurrentSaveFile();
+                 PlayerPersistentData.IsNewFile = false;
+                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+             });
+             //slot2Button.interactable = false;
+             
+             slot3Button.onClick.AddListener(() =>
+             {
+                 OpenMenu(MENU.MAIN);
+                 PlayerPersistentData.SetCurrentSaveFile(2);
+                 MissionManager.SetCurrentSaveFile();
+                 PlayerPersistentData.IsNewFile = false;
+                 SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
+             });
+             //slot3Button.interactable = false;
+ 
+             lgBackButton.onClick.AddListener(() => OpenMenu(MENU.MAIN));*/
 
-            slot2Button.onClick.AddListener(() =>
-            {
-                OpenMenu(MENU.MAIN);
-                PlayerPersistentData.SetCurrentSaveFile(1);
-                MissionManager.SetCurrentSaveFile();
-                PlayerPersistentData.IsNewFile = false;
-                SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
-            });
-            //slot2Button.interactable = false;
-            
-            slot3Button.onClick.AddListener(() =>
-            {
-                OpenMenu(MENU.MAIN);
-                PlayerPersistentData.SetCurrentSaveFile(2);
-                MissionManager.SetCurrentSaveFile();
-                PlayerPersistentData.IsNewFile = false;
-                SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
-            });
-            //slot3Button.interactable = false;
-
-            lgBackButton.onClick.AddListener(() => OpenMenu(MENU.MAIN));*/
-            
             //Options Buttons
             //--------------------------------------------------------------------------------------------------------//
 
             musicSlider.onValueChanged.AddListener(AudioController.SetMusicVolume);
             sfxSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);
-            
+
             oBackButton.onClick.AddListener(() => OpenMenu(MENU.MAIN));
 
-            testingFeaturesToggle.onValueChanged.AddListener(delegate {
+            testingFeaturesToggle.onValueChanged.AddListener(delegate
+            {
                 Globals.DisableTestingFeatures = !testingFeaturesToggle.isOn;
             });
-            
+
             //--------------------------------------------------------------------------------------------------------//
 
 
 
         }
-        
+
         //============================================================================================================//
 
         private void OpenMenu(MENU menu)
@@ -337,7 +373,7 @@ namespace StarSalvager.UI
             mainMenuWindow.SetActive(false);
             newGameWindow.SetActive(false);
             optionsWindow.SetActive(false);
-            
+
             switch (menu)
             {
                 case MENU.MAIN:
@@ -353,8 +389,8 @@ namespace StarSalvager.UI
                     throw new ArgumentOutOfRangeException(nameof(menu), menu, null);
             }
         }
-        
-        
+
+
         //============================================================================================================//
 
         /*private void ScaleCamera(float cameraZoomScalerValue)
@@ -376,17 +412,17 @@ namespace StarSalvager.UI
                 Globals.GridSizeY = (int)((Camera.main.orthographicSize * Constants.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Constants.gridCellSize);
             }
         }*/
-        
+
         //============================================================================================================//
-        
-        #if UNITY_EDITOR
-        
+
+#if UNITY_EDITOR
+
         [Button("Clear Remote Data"), DisableInPlayMode]
         private void ClearRemoteData()
         {
             Files.ClearRemoteData();
         }
-        
-        #endif
+
+#endif
     }
 }

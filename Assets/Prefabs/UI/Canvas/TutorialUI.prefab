@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4947140366602694961}
   - component: {fileID: 3244320713149270305}
   m_Layer: 5
-  m_Name: Image
+  m_Name: TextWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -267,8 +267,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -236, y: 35.999992}
-  m_SizeDelta: {x: 1294.6206, y: 1070.7661}
+  m_AnchoredPosition: {x: -198, y: 40}
+  m_SizeDelta: {x: 625.08545, y: 1070.7661}
   m_Pivot: {x: 0.2595691, y: 0.12703641}
 --- !u!222 &916354241836806607
 CanvasRenderer:
@@ -489,7 +489,7 @@ GameObject:
   - component: {fileID: 8358553756537581858}
   - component: {fileID: 789488161612667206}
   m_Layer: 5
-  m_Name: Image
+  m_Name: FillImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -601,67 +601,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e689b9c4fb0ef4a84beb4734b7f4b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tutorialSteps:
-  - title: Intro Step
-    useWaitTime: 1
-    waitTime: 5
-    text: This is a test
-  - title: Movement
-    useWaitTime: 0
-    waitTime: 0
-    text: 
-  - title: Rotate
-    useWaitTime: 0
-    waitTime: 0
-    text: 
-  - title: Falling Bits
-    useWaitTime: 0
-    waitTime: 0
-    text: 
-  - title: Combo
-    useWaitTime: 0
-    waitTime: 0
-    text: 
-  - title: Magnet
-    useWaitTime: 0
-    waitTime: 0
-    text: 
-  - title: Combo-magnet-1
-    useWaitTime: 0
-    waitTime: 0
-    text: 
-  - title: Combo-magnet-2
-    useWaitTime: 0
-    waitTime: 0
-    text: 
-  - title: Magnet-combo-1
-    useWaitTime: 0
-    waitTime: 0
-    text: 
-  - title: Magnet-combo-2
-    useWaitTime: 0
-    waitTime: 0
-    text: 
-  - title: Pulsar
-    useWaitTime: 0
-    waitTime: 0
-    text: 
-  - title: Pulsar-1
-    useWaitTime: 0
-    waitTime: 0
-    text: 
-  - title: Fuel
-    useWaitTime: 0
-    waitTime: 0
-    text: 
-  - title: Fuel-1
-    useWaitTime: 0
-    waitTime: 0
-    text: 
-  - title: Fuel-2
-    useWaitTime: 0
-    waitTime: 0
-    text: 
+  tutorialRemoteData: {fileID: 11400000, guid: a0da7f634ee422f49b1ceb79a0704d40, type: 2}
   debug: 0
   text: {fileID: 8218587930837309253}
   fillImage: {fileID: 789488161612667206}
