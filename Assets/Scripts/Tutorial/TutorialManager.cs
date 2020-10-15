@@ -86,6 +86,8 @@ namespace StarSalvager.Tutorial
 
         public void SetupTutorial()
         {
+            
+            
             mono = LevelManager.Instance;
             InitInput();
             
@@ -149,9 +151,11 @@ namespace StarSalvager.Tutorial
         }
         private IEnumerator MoveStepCoroutine()
         {
+            //TODO Need to have the bot fly in
+            
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[1], false));
             
-            //TODO Need to wait for the movement of the Bot Left/Right
+            //Wait for the movement of the Bot Left/Right
             bool left, right;
             left = right = false;
 
@@ -186,6 +190,9 @@ namespace StarSalvager.Tutorial
         }
         private IEnumerator StartFallingBitsCoroutine()
         {
+            //TODO Change to the stage [1]
+            //LevelManager.Instance.SetStage();
+            
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[3], true));
         }
         private IEnumerator BotCollectionsCoroutine()
@@ -203,6 +210,7 @@ namespace StarSalvager.Tutorial
             }
             
             SetText(tutorialRemoteData[3]);
+            pressAnyKeyText.gameObject.SetActive(false);
             
             var bot = LevelManager.Instance.BotObject;
             bot.OnFullMagnet += SetMagnet;
@@ -239,6 +247,7 @@ namespace StarSalvager.Tutorial
             yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialRemoteData[4], true));
             
             SetText(tutorialRemoteData[6]);
+            pressAnyKeyText.gameObject.SetActive(false);
 
             bool magnet = false;
             var bot = LevelManager.Instance.BotObject;
@@ -262,6 +271,7 @@ namespace StarSalvager.Tutorial
             yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialRemoteData[5], true));
             
             SetText(tutorialRemoteData[8]);
+            pressAnyKeyText.gameObject.SetActive(false);
 
             bool combo = false;
             var bot = LevelManager.Instance.BotObject;
@@ -283,6 +293,8 @@ namespace StarSalvager.Tutorial
         private IEnumerator PulsarStepCoroutine()
         {
             SetText(tutorialRemoteData[10]);
+            pressAnyKeyText.gameObject.SetActive(false);
+            
             var bot = LevelManager.Instance.BotObject;
             
             bool bump = false;
@@ -312,6 +324,7 @@ namespace StarSalvager.Tutorial
             yield return new WaitUntil(() => playerData[BIT_TYPE.RED] <= 0f);
             
             SetText(tutorialRemoteData[12]);
+            pressAnyKeyText.gameObject.SetActive(false);
             
             //TODO Set the wave to spawn all reds
             
@@ -320,6 +333,7 @@ namespace StarSalvager.Tutorial
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[13], false));
             
             SetText(tutorialRemoteData[14]);
+            pressAnyKeyText.gameObject.SetActive(false);
 
         }
 

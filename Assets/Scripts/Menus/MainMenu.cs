@@ -305,6 +305,8 @@ namespace StarSalvager.UI
             tutorialButton.onClick.AddListener(() =>
             {
                 Globals.UsingTutorial = true;
+                Globals.CurrentSector = 4;
+                Globals.CurrentWave = 0;
 
                 string playerPath = Files.GetNextAvailableSaveSlot();
 
