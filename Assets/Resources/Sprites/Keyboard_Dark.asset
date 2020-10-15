@@ -71,8 +71,8 @@ MonoBehaviour:
     m_Metrics:
       m_Width: 76
       m_Height: 72
-      m_HorizontalBearingX: -38
-      m_HorizontalBearingY: 36
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
       m_HorizontalAdvance: 76
     m_GlyphRect:
       m_X: 13
@@ -87,8 +87,8 @@ MonoBehaviour:
     m_Metrics:
       m_Width: 76
       m_Height: 72
-      m_HorizontalBearingX: -38
-      m_HorizontalBearingY: 36
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
       m_HorizontalAdvance: 76
     m_GlyphRect:
       m_X: 115
@@ -103,8 +103,8 @@ MonoBehaviour:
     m_Metrics:
       m_Width: 76
       m_Height: 72
-      m_HorizontalBearingX: -38
-      m_HorizontalBearingY: 36
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
       m_HorizontalAdvance: 76
     m_GlyphRect:
       m_X: 217
@@ -119,8 +119,8 @@ MonoBehaviour:
     m_Metrics:
       m_Width: 76
       m_Height: 72
-      m_HorizontalBearingX: -38
-      m_HorizontalBearingY: 36
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
       m_HorizontalAdvance: 76
     m_GlyphRect:
       m_X: 13
@@ -135,8 +135,8 @@ MonoBehaviour:
     m_Metrics:
       m_Width: 76
       m_Height: 72
-      m_HorizontalBearingX: -38
-      m_HorizontalBearingY: 36
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
       m_HorizontalAdvance: 76
     m_GlyphRect:
       m_X: 115
@@ -151,8 +151,8 @@ MonoBehaviour:
     m_Metrics:
       m_Width: 76
       m_Height: 72
-      m_HorizontalBearingX: -38
-      m_HorizontalBearingY: 36
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
       m_HorizontalAdvance: 76
     m_GlyphRect:
       m_X: 217
@@ -167,8 +167,8 @@ MonoBehaviour:
     m_Metrics:
       m_Width: 76
       m_Height: 72
-      m_HorizontalBearingX: -38
-      m_HorizontalBearingY: 36
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
       m_HorizontalAdvance: 76
     m_GlyphRect:
       m_X: 13
@@ -183,8 +183,8 @@ MonoBehaviour:
     m_Metrics:
       m_Width: 76
       m_Height: 72
-      m_HorizontalBearingX: -38
-      m_HorizontalBearingY: 36
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
       m_HorizontalAdvance: 76
     m_GlyphRect:
       m_X: 115

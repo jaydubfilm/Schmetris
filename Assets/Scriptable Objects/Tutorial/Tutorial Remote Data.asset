@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a622df0b4d187f4bbe5eea1567e32eb, type: 3}
+  m_Name: Tutorial Remote Data
+  m_EditorClassIdentifier: 
+  tutorialSteps:
+  - title: Intro Step
+    useWaitTime: 1
+    waitTime: 5
+    text: Cryosleep, am I right? No time to let your brain-fog wear off, this time
+      Captain. We gotta get you in the air. Let's hit the training Simulator.
+  - title: Movement
+    useWaitTime: 0
+    waitTime: 0
+    text: This is your drone. Move it left and right using #LEFT and #RIGHT
+  - title: Rotate
+    useWaitTime: 0
+    waitTime: 0
+    text: Rotate using #UP and #DOWN
+  - title: Falling Bits
+    useWaitTime: 0
+    waitTime: 0
+    text: Those funky looking coloured shapes are the salvage we need. Collect as
+      many as you can.
+  - title: Combo
+    useWaitTime: 0
+    waitTime: 0
+    text: Nice! You upgraded some salvage by matching three bits in a row. The upgraded
+      bit contains more material and takes up less space. Win-win!
+  - title: Magnet
+    useWaitTime: 0
+    waitTime: 0
+    text: Nice! You maxed out your magnetism! Right now your core can only carry
+      6 bits at a time. With the right upgrades we could increase this limit, but
+      there are other ways to save space.
+  - title: Combo-magnet-1
+    useWaitTime: 0
+    waitTime: 0
+    text: Try to max out your magnetism
+  - title: Combo-magnet-2
+    useWaitTime: 0
+    waitTime: 0
+    text: Good job! Right now your core can only carry 6 bits at a time. With the
+      right upgrades we could increase this limit.
+  - title: Magnet-combo-1
+    useWaitTime: 0
+    waitTime: 0
+    text: Try Matching three bits of the same colour
+  - title: Magnet-combo-2
+    useWaitTime: 0
+    waitTime: 0
+    text: Good Job! You upgraded some salvage by matching three bitrs in row. The
+      upgraded bit contains more material and takes up less space. Win-win!
+  - title: Pulsar
+    useWaitTime: 0
+    waitTime: 0
+    text: See? Just like riding a bicycle. DOn't be agraid of those pulsars. Smash
+      into them and move your bits around
+  - title: Pulsar-1
+    useWaitTime: 1
+    waitTime: 8
+    text: Beautiful! Pulsars are a great way to rearrange your bits or get rid of
+      bits you don't want.
+  - title: Fuel
+    useWaitTime: 0
+    waitTime: 0
+    text: Uh-oh - Out of fuel! How did I fail to manage that resource? Better hope
+      some red bits are in our path
+  - title: Fuel-1
+    useWaitTime: 1
+    waitTime: 6
+    text: Phew! Fuel bits are automatically refined by your ship's core when you
+      need it.
+  - title: Fuel-2
+    useWaitTime: 0
+    waitTime: 0
+    text: The other resources are important too, blah blah blah -  you're ready for
+      the real thing. Lets do this!!
