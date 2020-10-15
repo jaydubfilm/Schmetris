@@ -26,6 +26,7 @@ MonoBehaviour:
   botContinuousRotationSpeed: 700
   missionReminderFrequency: 1
   bonusShapeSpeed: 22
+  levelResourceDropReductionAmount: 0.149
   asteroidDamage: 10
   bonusShapeGearsRewards:
   - numCells: 2
