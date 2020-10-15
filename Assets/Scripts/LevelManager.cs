@@ -146,6 +146,9 @@ namespace StarSalvager
         public bool RecoverFromDeath = false;
         public bool BotDead = false;
 
+        private bool m_botEnterScreen = false;
+        private bool m_botZoomOffScreen = false;
+
         private float botMoveOffScreenSpeed = 0.0f;
 
         #endregion //Properties
@@ -166,11 +169,11 @@ namespace StarSalvager
 
         private void Update()
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
+            /*if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
             {
                 WorldGrid.DrawDebugMarkedGridPoints();
                 Debug.Break();
-            }
+            }*/
 
             if (isPaused)
                 return;
@@ -179,20 +182,6 @@ namespace StarSalvager
 
             if (Globals.UsingTutorial)
             {
-                if (UnityEngine.Input.GetKeyDown(KeyCode.R))
-                {
-                    SetStage(1);
-                }
-
-                if (UnityEngine.Input.GetKeyDown(KeyCode.G))
-                {
-                    SetStage(0);
-                }
-
-                if (UnityEngine.Input.GetKeyDown(KeyCode.T))
-                {
-                    SetStage(2);
-                }
                 return;
             }
 
@@ -206,7 +195,7 @@ namespace StarSalvager
             }
             else
             {
-                MoveBotOffScreen();
+                SetBotZoomOffScreen(true);
             }
         }
 
@@ -227,14 +216,25 @@ namespace StarSalvager
             foreach (var bot in m_bots)
             {
                 var pos = bot.transform.position;
-                
-                if (pos.y >= Constants.gridCellSize * 5)
+
+                if (!m_botEnterScreen)
                     continue;
+
+                if (pos.y >= Constants.gridCellSize * 5)
+                {
+                    SetBotEnterScreen(false);
+                    continue;
+                }
                 
                 var newY = Mathf.Lerp(pos.y, 5 * Constants.gridCellSize, Time.deltaTime * 3);
                 pos.y = newY;
                 
                 bot.transform.position = pos;
+            }
+
+            if (m_botZoomOffScreen)
+            {
+                MoveBotOffScreen();
             }
         }
 
@@ -598,10 +598,12 @@ namespace StarSalvager
             for (int i = 0; i < m_bots.Count; i++)
             {
                 m_bots[i].SetColliderActive(true);
-                m_bots[i].transform.position = Vector3.down * 5;
             }
 
-            botMoveOffScreenSpeed = 0;
+            SetBotBelowScreen();
+            SetBotEnterScreen(true);
+
+            SetBotZoomOffScreen(false);
         }
         
         private void TransitionToEndWaveState()
@@ -690,6 +692,29 @@ namespace StarSalvager
             for (int i = 0; i < m_bots.Count; i++)
             {
                 m_bots[i].SetColliderActive(false);
+            }
+        }
+
+        public void SetBotBelowScreen()
+        {
+            for (int i = 0; i < m_bots.Count; i++)
+            {
+                m_bots[i].transform.position = Vector3.down * 5;
+            }
+        }
+
+        public void SetBotEnterScreen(bool value)
+        {
+            m_botEnterScreen = value;
+        }
+
+        public void SetBotZoomOffScreen(bool value)
+        {
+            m_botZoomOffScreen = value;
+
+            if (!value)
+            {
+                botMoveOffScreenSpeed = 0;
             }
         }
 

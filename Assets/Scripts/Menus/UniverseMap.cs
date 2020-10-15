@@ -11,6 +11,7 @@ using StarSalvager.Utilities.Math;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Sirenix.Utilities;
 
 namespace StarSalvager.UI
 {
@@ -57,10 +58,45 @@ namespace StarSalvager.UI
             InitUniverseMapTemp();
             CenterToItem(universeMapButtons[0].GetComponent<RectTransform>());
 
-            /*foreach (var connection in PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertNodeTreeIntoConnections())
+            foreach (var connection in PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertNodeTreeIntoConnections())
             {
-                GameObject newLineRenderer = new GameObject();
-                newLineRenderer.AddComponent<LineRenderer>();
+                GameObject newLine = new GameObject();
+
+                newLine.transform.parent = m_scrollRectArea.transform;
+                newLine.AddComponent<Image>();
+
+                Image newLineImage = newLine.GetComponent<Image>();
+
+                //newLineImage.sprite
+                newLineImage.transform.position = (universeMapButtons[connection.x].transform.position + universeMapButtons[connection.y].transform.position) / 2;
+
+                RectTransform newLineRectTransform = newLine.GetComponent<RectTransform>();
+                newLineRectTransform.sizeDelta = new Vector2(Vector2.Distance(universeMapButtons[connection.x].transform.position, universeMapButtons[connection.y].transform.position), 5);
+
+                newLineRectTransform.transform.right = (universeMapButtons[connection.x].transform.position - universeMapButtons[connection.y].transform.position).normalized;
+
+                //Vector3 normalized = (universeMapButtons[connection.x].transform.position - universeMapButtons[connection.y].transform.position).normalized;
+                /*Debug.DrawLine(universeMapButtons[connection.x].transform.position, universeMapButtons[connection.y].transform.position, Color.white, 10.0f);
+                float zAngle = Vector3.Cross(Vector3.up, normalized).z;
+                Debug.Log(Vector3.Cross(Vector3.up, normalized));
+                Debug.Log(zAngle);
+                newLineRectTransform.transform.Rotate(0, 0, zAngle);*/
+
+                //break;
+
+                //Debug.Log(Vector3.Cross(Vector3.up, normalized).z * Mathf.Rad2Deg);
+
+                //Vector3 lookAt = newLine.transform.position + Vector3.Cross(Vector3.up, normalized);
+
+                //find the vector pointing from our position to the target
+                //var dir = (universeMapButtons[connection.x].transform.position - newLineImage.transform.position).normalized;
+
+
+                //newLine.transform.LookAt(lookAt);
+                //create the rotation to look at the target
+                /*newLineRenderer.AddComponent<LineRenderer>();
+
+
 
                 LineRenderer lineRenderer = newLineRenderer.GetComponent<LineRenderer>();
                 lineRenderer.gameObject.transform.parent = m_scrollRectArea.transform;
@@ -75,13 +111,7 @@ namespace StarSalvager.UI
                 lineRenderer.endColor = Color.yellow;
                 Debug.Log(connection);
                 lineRenderer.SetPosition(0, universeMapButtons[connection.x].transform.position);
-                lineRenderer.SetPosition(1, universeMapButtons[connection.y].transform.position);
-
-            }*/
-
-            foreach (var button in universeMapButtons)
-            {
-                button.gameObject.SetActive(false);
+                lineRenderer.SetPosition(1, universeMapButtons[connection.y].transform.position);*/
             }
 
             if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 35)
