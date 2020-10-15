@@ -382,7 +382,8 @@ namespace StarSalvager
                     }
                     else
                     {
-                        var addAmount = FactoryManager.Instance
+                        resourceValue = ProcessBit(targetBit);
+                        /*var addAmount = FactoryManager.Instance
                             .GetFactory<BitAttachableFactory>().GetBitRemoteData(targetBit.Type).levels[targetBit.level]
                             .resources;
 
@@ -403,7 +404,7 @@ namespace StarSalvager
                         resourceValue = addAmount;
                         SessionDataProcessor.Instance.LiquidProcessed(targetBit.Type, addAmount);
                         AudioController.PlaySound(SOUND.BIT_REFINED);
-                        bot.ForceCheckMagnets();
+                        bot.ForceCheckMagnets();*/
                     }
 
                 }
@@ -752,8 +753,13 @@ namespace StarSalvager
                         break;
                     
                 }
+                
+                
 
                 UpdateUI(partRemoteData.burnType, resourceValue);
+                
+                if(bot.PROTO_GodMode)
+                    continue;
 
                 PlayerPersistentData.PlayerData.SetLiquidResource(partRemoteData.burnType, resourceValue, bot.IsRecoveryDrone);
 
@@ -761,26 +767,26 @@ namespace StarSalvager
                     LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(partRemoteData.burnType, resoucesConsumed);
             }
 
-            powerValue -= powerToRemove;
-            if (powerValue < 0)
-                powerValue = 0f;
+            if (!bot.PROTO_GodMode)
+            {
+                powerValue -= powerToRemove;
+                if (powerValue < 0)
+                    powerValue = 0f;
             
-            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, powerValue, bot.IsRecoveryDrone);
+                PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.YELLOW, powerValue, bot.IsRecoveryDrone);
             
 
-            //batteryDrainTimer += Time.deltaTime / 2;
-            waterDrainTimer += Time.deltaTime * Constants.waterDrainRate;
+                //batteryDrainTimer += Time.deltaTime / 2;
+                waterDrainTimer += Time.deltaTime * Constants.waterDrainRate;
 
-            /*if (batteryDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] > 0)
-            {
-                batteryDrainTimer--;
-                PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] - 1);
-            }*/
-            if (waterDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0)
-            {
-                waterDrainTimer--;
-                PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] - 1);
+                if (waterDrainTimer >= 1 && PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] > 0)
+                {
+                    waterDrainTimer--;
+                    PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] - 1);
+                }
             }
+
+
             UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW]);
             UpdateUI(BIT_TYPE.BLUE, PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE]);
             
@@ -1042,6 +1048,42 @@ namespace StarSalvager
 
         //Find Bits/Values to burn
         //============================================================================================================//
+
+        public int ProcessBit(Bit targetBit)
+        {
+            var bitType = targetBit.Type;
+            var amountProcessed = FactoryManager.Instance
+                .GetFactory<BitAttachableFactory>()
+                .GetBitRemoteData(bitType)
+                .levels[targetBit.level]
+                .resources;
+
+            var current = PlayerPersistentData.PlayerData.liquidResource[bitType];
+            var capacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
+
+            //We wont add any if its already full!
+            if (current + amountProcessed >= capacity)
+                return 0;
+
+            PlayerPersistentData.PlayerData.AddLiquidResource(targetBit.Type, amountProcessed, bot.IsRecoveryDrone);
+
+            //If we want to process a bit, we want to remove it from the attached list while its processed
+            bot.MarkAttachablePendingRemoval(targetBit);
+                        
+            //TODO May want to play around with the order of operations here
+            StartCoroutine(RefineBitCoroutine(targetBit, 1.6f,
+                () =>
+                {
+                    bot.DestroyAttachable<Bit>(targetBit);
+                }));
+
+
+            SessionDataProcessor.Instance.LiquidProcessed(targetBit.Type, amountProcessed);
+            AudioController.PlaySound(SOUND.BIT_REFINED);
+            bot.ForceCheckMagnets();
+
+            return amountProcessed;
+        }
 
         private Bit GetFurthestBitToBurn(PartLevelData partLevelData, BIT_TYPE type)
         {

@@ -86,7 +86,7 @@ namespace StarSalvager.Values
         //FIXME This needs to use some sort of capacity value
         private Dictionary<BIT_TYPE, float> _recoveryDroneLiquidResource = new Dictionary<BIT_TYPE, float>
         {
-            {BIT_TYPE.RED, 10},
+            {BIT_TYPE.RED, 30},
             {BIT_TYPE.BLUE, 0},
             {BIT_TYPE.YELLOW, 0},
             {BIT_TYPE.GREEN, 0},
@@ -155,7 +155,24 @@ namespace StarSalvager.Values
         [JsonProperty] 
         private List<string> _dontShowAgainKeys = new List<string>();
 
+        [JsonIgnore]
+        public LevelRingNodeTree LevelRingNodeTree = new LevelRingNodeTree();
+        [JsonProperty]
+        private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>
+        {
+            new Vector2Int(1, 0),
+            new Vector2Int(2, 0),
+            new Vector2Int(2, 1),
+            new Vector2Int(4, 2),
+            new Vector2Int(3, 1)
+        };
+
         //============================================================================================================//
+
+        public PlayerData()
+        {
+            LevelRingNodeTree.ReadInNodeConnectionData(LevelRingConnectionsJson);
+        }
 
         public void ChangeGears(int amount)
         {
@@ -215,6 +232,10 @@ namespace StarSalvager.Values
                 else if (levelUpLoot[i] is RDSValue<Bit> rdsValueBit)
                 {
                     AddResource(rdsValueBit.rdsValue.Type, FactoryManager.Instance.BitsRemoteData.GetRemoteData(rdsValueBit.rdsValue.Type).levels[0].resources);
+                }
+                else if (levelUpLoot[i] is RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined)
+                {
+                    AddResource(rdsValueResourceRefined.rdsValue.Item1, rdsValueResourceRefined.rdsValue.Item2);
                 }
                 else if (levelUpLoot[i] is RDSValue<Component> rdsValueComponent)
                 {
@@ -523,7 +544,10 @@ namespace StarSalvager.Values
 
             return false;
         }
-
+        public bool CheckIfCompleted(int sector, int waveAt)
+        {
+            return maxSectorProgression.ContainsKey(sector) && maxSectorProgression[sector] > waveAt;
+        }
         public float GetLevelResourceModifier(int sector, int wave)
         {
             int index = levelResourceModifier.FindIndex(s => s.Sector == sector && s.Wave == wave);
@@ -767,6 +791,11 @@ namespace StarSalvager.Values
                 }
             }
             OnValuesChanged?.Invoke();
+        }
+
+        public void SaveData()
+        {
+            LevelRingConnectionsJson = LevelRingNodeTree.ConvertNodeTreeIntoConnections();
         }
     }
 }

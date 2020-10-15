@@ -20,8 +20,12 @@ MonoBehaviour:
   LOCALIDINFILE_Hash5_Fix2_0: []
   LOCALIDINFILE_Hash7_Fix2_0: []
   LOCALIDINFILE_Hash9: []
+<<<<<<< HEAD
   LOCALIDINFILE_Hash_BookMarks:
   - list: []
+=======
+  LOCALIDINFILE_Hash_BookMarks: []
+>>>>>>> 0cd38657fc963aeff8ffca6f56235bfe874f463b
   LOCALIDINFILE_Hash3: []
   LOCALIDINFILE_Hash4: []
   LOCALIDINFILE_m_Hash_IconImageKey: []
@@ -36,6 +40,7 @@ MonoBehaviour:
     SKIP_COLOR: 0
     NO_EXPAND_ITEMS: 0
     name: Default
+<<<<<<< HEAD
     array:
     - FavParams: 0
       FavString: []
@@ -50,6 +55,11 @@ MonoBehaviour:
       CashedBool: 0
     FavParams: 0
     InstanceID: -589302561
+=======
+    array: []
+    FavParams: 0
+    InstanceID: 303027050
+>>>>>>> 0cd38657fc963aeff8ffca6f56235bfe874f463b
     Hierarchy_ScrollY: 0
     Window_ScrollY: 0
     ColabsedItems: 
@@ -58,6 +68,7 @@ MonoBehaviour:
   Hash1_Fix2_0: []
   Hash2: []
   Hash3: []
+<<<<<<< HEAD
   Hash4:
   - FavParams: 0
     FavString: []
@@ -70,6 +81,9 @@ MonoBehaviour:
     InstanceID: -849090526
     wasInit: 0
     CashedBool: 0
+=======
+  Hash4: []
+>>>>>>> 0cd38657fc963aeff8ffca6f56235bfe874f463b
   Hash5: []
   Hash5_Fix2_0: []
   Hash6: []

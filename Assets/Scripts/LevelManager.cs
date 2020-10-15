@@ -130,6 +130,8 @@ namespace StarSalvager
         public bool RecoverFromDeath = false;
         public bool BotDead = false;
 
+        private float botMoveOffScreenSpeed = 0.0f;
+
         //====================================================================================================================//
         
         private void Start()
@@ -192,6 +194,7 @@ namespace StarSalvager
                         {
                             RecoverFromDeath = true;
                             IsWaveProgressing = true;
+                            GameUi.ShowRecoveryBanner(true);
                             RestartLevel();
                         });
 
@@ -203,9 +206,11 @@ namespace StarSalvager
                         "You failed to recover your bot. Click to return to main menu.",
                         () =>
                         {
+                            GameUi.ShowRecoveryBanner(false);
                             Globals.CurrentWave = 0;
                             GameTimer.SetPaused(false);
                             PlayerPersistentData.ClearPlayerData();
+                            PlayerPersistentData.PlayerMetadata.CurrentSaveFile = null;
                             SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
                         });
                 }
@@ -223,6 +228,15 @@ namespace StarSalvager
 
             if (isPaused)
                 return;
+
+            for (int i = 0; i < m_bots.Count; i++)
+            {
+                if (m_bots[i].transform.position.y < Constants.gridCellSize * 5)
+                {
+                    float newY = Vector3.Lerp(m_bots[i].transform.position, Vector3.up * 5 * Constants.gridCellSize, Time.deltaTime * 3).y;
+                    m_bots[i].transform.position = new Vector3(m_bots[i].transform.position.x, newY, m_bots[i].transform.position.z);
+                }
+            }
 
             if (!EndWaveState)
             {
@@ -245,7 +259,11 @@ namespace StarSalvager
                     GameUi.SetTimeString((int) timeLeft);
                 }
             }
-            else if (ObstacleManager.HasNoActiveObstacles)
+            else if (ObstacleManager.HasNoActiveObstacles 
+                || (ObstacleManager.RecoveredBotFalling != null 
+                    //&& Camera.main.ScreenToWorldPoint(Screen.width / 2, Screen.height / 2, 0).y < 
+                    //&& Camera.main.rect.Contains(Camera.main.WorldToScreenPoint(ObstacleManager.transform.position)) 
+                    && Camera.main.WorldToScreenPoint(ObstacleManager.RecoveredBotFalling.transform.position).y <= Screen.height / 2))
             {
                 var botBlockData = BotObject.GetBlockDatas();
                 SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
@@ -336,6 +354,17 @@ namespace StarSalvager
 
                 ProjectileManager.UpdateForces();
                 RecoverFromDeath = false;
+            }
+            else
+            {
+                if (botMoveOffScreenSpeed < 10)
+                {
+                    botMoveOffScreenSpeed += Time.deltaTime * 5;
+                }
+                foreach (var bot in m_bots)
+                {
+                    bot.transform.position += Vector3.up * botMoveOffScreenSpeed * Time.deltaTime;
+                }
             }
         }
 
@@ -508,6 +537,14 @@ namespace StarSalvager
                     "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.",
                     () => { GameTimer.SetPaused(false); });
             }
+
+            for (int i = 0; i < m_bots.Count; i++)
+            {
+                m_bots[i].SetColliderActive(true);
+                m_bots[i].transform.position = Vector3.down * 5;
+            }
+
+            botMoveOffScreenSpeed = 0;
         }
 
         
@@ -586,9 +623,17 @@ namespace StarSalvager
                     var importedData = currentBlockData.ImportBlockDatas(true);
                     scrapyardBot.InitBot(importedData, scrapyardBot);
                 }
-                scrapyardBot.transform.parent = m_obstacleManager.WorldElementsRoot;
+                if (!Globals.RecoveryOfDroneLocksHorizontalMovement)
+                {
+                    scrapyardBot.transform.parent = m_obstacleManager.WorldElementsRoot;
+                }
                 scrapyardBot.transform.position = m_bots[0].transform.position + (Vector3.up * Globals.GridSizeY * Constants.gridCellSize);
-                ObstacleManager.AddObstacleToList(scrapyardBot);
+                ObstacleManager.RecoveredBotFalling = scrapyardBot.gameObject;
+            }
+
+            for (int i = 0; i < m_bots.Count; i++)
+            {
+                m_bots[i].SetColliderActive(false);
             }
         }
 
@@ -598,6 +643,10 @@ namespace StarSalvager
             {
                 switch (loot[i])
                 {
+                    case RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined:
+                        PlayerPersistentData.PlayerData.AddResource(rdsValueResourceRefined.rdsValue.Item1, rdsValueResourceRefined.rdsValue.Item2);
+                        loot.RemoveAt(i);
+                        break;
                     case RDSValue<Blueprint> rdsValueBlueprint:
                         PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
                         Toast.AddToast("Unlocked Blueprint!");
@@ -689,6 +738,11 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
+
+        public void ForceSetTimeRemaining(float timeLeft)
+        {
+            m_waveTimer = CurrentWaveData.GetWaveDuration() - timeLeft;
+        }
         
         #if UNITY_EDITOR
 

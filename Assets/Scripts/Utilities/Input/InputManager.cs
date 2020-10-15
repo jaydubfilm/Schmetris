@@ -378,6 +378,9 @@ namespace StarSalvager.Utilities.Inputs
             if (LevelManager.Instance.BotDead)
                 return;
 
+            if (value != 0 && LevelManager.Instance.EndWaveState)
+                return;
+
             //_currentMovement = value;
 
             for (var i = _moveOnInput.Count - 1; i >= 0; i--)
@@ -417,6 +420,9 @@ namespace StarSalvager.Utilities.Inputs
                 return;
 
             if (LevelManager.Instance.BotDead)
+                return;
+
+            if (rotateDirection != 0 && LevelManager.Instance.EndWaveState)
                 return;
 
             MostRecentRotateMovement = rotateDirection;

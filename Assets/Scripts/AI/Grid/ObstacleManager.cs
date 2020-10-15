@@ -34,6 +34,7 @@ namespace StarSalvager
         private List<Shape> m_bonusShapes;
         private List<Shape> m_notFullyInGridShapes;
         private List<OffGridMovement> m_offGridMovingObstacles;
+        public GameObject RecoveredBotFalling = null;
 
         public List<Asteroid> Asteroids { get; private set; }
 
@@ -199,9 +200,6 @@ namespace StarSalvager
                             recycleBits = false
                         });
                         break;
-                    case ScrapyardBot bot:
-                        Recycler.Recycle<ScrapyardBot>(bot);
-                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                 }
@@ -234,9 +232,6 @@ namespace StarSalvager
                         {
                             recycleBits = false
                         });
-                        break;
-                    case ScrapyardBot bot:
-                        Recycler.Recycle<ScrapyardBot>(bot);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
@@ -285,6 +280,12 @@ namespace StarSalvager
                 m_bonusShapes.RemoveAt(i);
             }
 
+            if (RecoveredBotFalling != null)
+            {
+                GameObject.Destroy(RecoveredBotFalling);
+                RecoveredBotFalling = null;
+            }
+
             m_bonusShapes.Clear();
             m_offGridMovingObstacles.Clear();
             m_bonusShapesSpawned = 0;
@@ -299,6 +300,11 @@ namespace StarSalvager
         {
             Vector3 amountShift = Vector3.up *
                                   ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
+
+            if (LevelManager.Instance.EndWaveState)
+            {
+                amountShift *= 3;
+            }
 
             TryMoveElements();
 
@@ -458,11 +464,6 @@ namespace StarSalvager
                             m_obstacles[i].IsRegistered = false;
                             m_obstacles[i] = null;
                             break;
-                        case ScrapyardBot bot:
-                            bot.IsRegistered = false;
-                            Recycler.Recycle<ScrapyardBot>(bot);
-                            m_obstacles[i] = null;
-                            break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                     }
@@ -478,6 +479,14 @@ namespace StarSalvager
                     rotate.transform.localRotation *=
                         Quaternion.Euler(0.0f, 0.0f, Time.deltaTime * 15.0f * rotate.RotateDirection);
                 }
+            }
+
+            if (RecoveredBotFalling != null)
+            {
+                var pos = RecoveredBotFalling.transform.localPosition;
+                pos -= amountShift;
+
+                RecoveredBotFalling.transform.localPosition = pos;
             }
 
             if (Mathf.Abs(m_distanceHorizontal) > 0.2f)
@@ -857,7 +866,20 @@ namespace StarSalvager
                             AddObstacleToList(newComponent);
                             PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;
+                        default:
+                            Debug.LogError(rdsValueBlockData.rdsValue.ClassType + " in SpawnBitExplosion and not handled");
+                            break;
                     }
+                }
+                else if (rdsObjects[i] is RDSValue<ASTEROID_SIZE> rdsValueAsteroidSize)
+                {
+                    Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(rdsValueAsteroidSize.rdsValue);
+                    AddObstacleToList(newAsteroid);
+                    PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
+                }
+                else
+                {
+                    Debug.LogError(rdsObjects[i].ToString() + " in SpawnBitExplosion and not handled");
                 }
             }
         }
@@ -920,6 +942,8 @@ namespace StarSalvager
 
                     switch (asteroidSize)
                     {
+                        case ASTEROID_SIZE.Bit:
+                            break;
                         case ASTEROID_SIZE.Small:
                         case ASTEROID_SIZE.Medium:
                         case ASTEROID_SIZE.Large:
@@ -1000,9 +1024,6 @@ namespace StarSalvager
                         break;
                     case Shape shape:
                         Recycler.Recycle<Shape>(shape);
-                        break;
-                    case ScrapyardBot bot:
-                        Recycler.Recycle<ScrapyardBot>(bot);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(movable), movable, null);

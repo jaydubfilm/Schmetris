@@ -165,6 +165,8 @@ namespace StarSalvager.Missions
             rdsTable.SetupRDSTable(maxDrops, RDSLoot);
         }
 
+        public string RewardDisplayString => RDSLoot.AsDisplayString();
+
 
 #if UNITY_EDITOR
         private IEnumerable GetEnemyTypes()

@@ -110,6 +110,17 @@ namespace StarSalvager.Utilities.Extensions
                 ref iCanCombos);
         }
 
+
+        //====================================================================================================================//
+
+        public static void SetColliderActive(this Bot bot, bool state)
+        {
+            foreach (var collidableBase in bot.attachedBlocks.OfType<CollidableBase>())
+            {
+                collidableBase.SetColliderActive(state);
+            }
+        }
+
     }
 }
 

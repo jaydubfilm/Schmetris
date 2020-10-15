@@ -1,7 +1,10 @@
 ﻿using StarSalvager.AI;
+using StarSalvager.Factories;
+using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace StarSalvager.ScriptableObjects
@@ -70,6 +73,80 @@ namespace StarSalvager.ScriptableObjects
             }
 
             return waveDuration;
+        }
+
+        public (Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits) GetWaveSummaryData()
+        {
+            var enemies = new Dictionary<string, int>();
+            var bits = new Dictionary<BIT_TYPE, float>();
+            foreach (var stageRemoteData in StageRemoteData)
+            {
+                foreach (var enemyData in stageRemoteData.StageEnemyData)
+                {
+                    var enemyType = enemyData.EnemyType;
+                    
+                    if(!enemies.ContainsKey(enemyType))
+                        enemies.Add(enemyType, 0);
+
+                    enemies[enemyType] += enemyData.EnemyCount;
+                }
+                
+                foreach (var obstacleData in stageRemoteData.StageObstacleData)
+                {
+                    //TODO Need to get the shape data here, to determine what is in the wave
+                    switch(obstacleData.SelectionType)
+                    {
+                        case SELECTION_TYPE.ASTEROID:
+                        case SELECTION_TYPE.BUMPER:
+                            continue;
+                        case SELECTION_TYPE.SHAPE:
+                            List<BlockData> shapeBlockData = FactoryManager.Instance.GetFactory<ShapeFactory>().GetByName(obstacleData.ShapeName).BlockData;
+                            foreach (var blockData in shapeBlockData)
+                            {
+                                BIT_TYPE bitType = (BIT_TYPE)blockData.Type;
+                                if (!bits.ContainsKey(bitType))
+                                {
+                                    bits.Add(bitType, 0.0f);
+                                }
+
+                                bits[bitType] += 1.0f * obstacleData.Density * stageRemoteData.StageDuration;
+                            }
+
+                            break;
+                        case SELECTION_TYPE.CATEGORY:
+                            List<EditorShapeGeneratorData> shapesInCategory = FactoryManager.Instance.GetFactory<ShapeFactory>().GetCategoryData(obstacleData.Category);
+                            int numShapesInCategory = shapesInCategory.Count;
+                            foreach (var shapeInCategory in shapesInCategory)
+                            {
+                                foreach (var blockData in shapeInCategory.BlockData)
+                                {
+                                    BIT_TYPE bitType = (BIT_TYPE)blockData.Type;
+                                    if (!bits.ContainsKey(bitType))
+                                    {
+                                        bits.Add(bitType, 0.0f);
+                                    }
+
+                                    bits[bitType] += (1.0f * obstacleData.Density * stageRemoteData.StageDuration) / numShapesInCategory;
+                                }
+                            }
+
+                            break;
+                    }
+                }
+            }
+
+            float totalValueBits = 0.0f;
+            foreach (var keyValuePair in bits)
+            {
+                totalValueBits += keyValuePair.Value;
+            }
+
+            foreach (var key in bits.Keys.ToList())
+            {
+                bits[key] *= (1.0f / totalValueBits);
+            }
+
+            return (enemies, bits);
         }
     }
 }

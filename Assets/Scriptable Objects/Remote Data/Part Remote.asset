@@ -388,8 +388,8 @@ MonoBehaviour:
   - name: Gun
     partType: 4
     canSell: 1
-    description: This basic offensive weapon will fire on any enemy within range
-      and consumes scrap metal ammunition.  Aim leaves something to be desired.
+    description: This basic offensive weapon will fire on any enemy within range and
+      consumes scrap metal ammunition.  Aim leaves something to be desired.
     priority: 75
     burnType: 3
     levels:
@@ -1077,7 +1077,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Damage
-        value: 50
+        value: 5
       - key: Cooldown
         value: 1
       - key: Projectile
@@ -1101,7 +1101,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Damage
-        value: 80
+        value: 10
       - key: Cooldown
         value: 1
       - key: Projectile
@@ -1132,6 +1132,65 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 10000
+  - name: Sniper
+    partType: 15
+    canSell: 1
+    description: 
+    priority: 50
+    burnType: 3
+    levels:
+    - unlockLevel: 4
+      health: 100
+      powerDraw: 0
+      dataTest:
+      - key: Damage
+        value: 50
+      - key: Cooldown
+        value: 3
+      burnRate: 0.1
+      cost:
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 4
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 200
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 400
+    - unlockLevel: 8
+      health: 120
+      powerDraw: 0
+      dataTest:
+      - key: Damage
+        value: 100
+      - key: Cooldown
+        value: 3
+      burnRate: 0.1
+      cost:
+      - resourceType: 1
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 3500
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 6500
   - name: Sniper
     partType: 15
     canSell: 1
@@ -1266,3 +1325,28 @@ MonoBehaviour:
         type: 1
         partPrerequisiteLevel: 0
         amount: 1000
+  - name: Auto-Refiner
+    partType: 17
+    canSell: 1
+    description: 
+    priority: 0
+    burnType: 0
+    levels:
+    - unlockLevel: 0
+      health: 80
+      powerDraw: 0
+      dataTest: []
+      burnRate: 0
+      cost:
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 100
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 100

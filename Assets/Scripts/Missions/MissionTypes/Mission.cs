@@ -2,6 +2,7 @@
 using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using System.Collections.Generic;
+using StarSalvager.Factories;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -96,6 +97,11 @@ namespace StarSalvager.Missions
             }
             
             return $" ({ + currentAmount}/{ + amountNeeded})";
+        }
+
+        public string GetMissionRewardsString()
+        {
+            return FactoryManager.Instance.MissionRemoteData.GetRemoteData(missionName).RewardDisplayString;
         }
 
         public abstract bool MissionComplete();

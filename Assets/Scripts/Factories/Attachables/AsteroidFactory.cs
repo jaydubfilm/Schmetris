@@ -60,6 +60,9 @@ namespace StarSalvager.Factories
 
             temp.SetRadius(Mathf.Max(sprite.bounds.size.x / 2, sprite.bounds.size.y / 2));
 
+            temp.rdsTable = new RDSTable();
+            temp.rdsTable.SetupRDSTable(remote.MaxDrops, remote.rdsAsteroidData);
+
             return temp.GetComponent<T>();
         }
 

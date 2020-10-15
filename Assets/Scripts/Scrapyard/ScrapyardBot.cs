@@ -10,10 +10,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using StarSalvager.Utilities.Math;
 
 namespace StarSalvager
 {
-    public class ScrapyardBot : MonoBehaviour, ICustomRecycle, IObstacle
+    public class ScrapyardBot : MonoBehaviour, ICustomRecycle
     {
         [SerializeField, BoxGroup("PROTOTYPE")]
         public float TEST_RotSpeed;
@@ -26,19 +27,6 @@ namespace StarSalvager
         private List<IAttachable> _attachedBlocks;
 
         private List<ScrapyardPart> _parts;
-
-        //IObstacle Properties
-        //============================================================================================================//
-        public bool CanMove => true;
-
-        public bool IsRegistered { get; set; } = false;
-
-        public bool IsMarkedOnGrid { get; set; } = false;
-
-        public void SetColliderActive(bool state)
-        {
-
-        }
 
         //============================================================================================================//
         public bool Rotating => _rotating;
@@ -132,6 +120,8 @@ namespace StarSalvager
         {
             float toRotate = rotation.ToAngle();
 
+            //TODO Need to do the angle clamps here to prevent TargetRotation from going over bounds
+
             //If we're already rotating, we need to add the direction to the target
             if (Rotating)
             {
@@ -142,12 +132,16 @@ namespace StarSalvager
                 targetRotation = rigidbody.rotation + toRotate;
             }
 
+            targetRotation = MathS.ClampAngle(targetRotation);
+
             foreach (var attachedBlock in attachedBlocks)
             {
                 attachedBlock.RotateCoordinate(rotation);
             }
 
             _rotating = true;
+
+
 
         }
 
@@ -157,27 +151,81 @@ namespace StarSalvager
 
         #region Movement
 
+        private bool rotate;
+
         private void RotateBot()
         {
             var rotation = rigidbody.rotation;
 
             //Rotates towards the target rotation.
-            //rotation = Quaternion.RotateTowards(rotation, targetRotation, TEST_RotSpeed * Time.deltaTime);
-            rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, TEST_RotSpeed * Time.fixedDeltaTime);
+            float rotationAmount;
+            rotationAmount = Globals.BotRotationSpeed;
+            rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, rotationAmount * Time.fixedDeltaTime);
             rigidbody.rotation = rotation;
 
             //Here we check how close to the final rotation we are.
             var remainingDegrees = Mathf.Abs(Mathf.DeltaAngle(rotation, targetRotation));
 
+            //TODO Here we'll need to rotate the sprites & Coordinates after a certain threshold is met for that rotation
+
+            if (remainingDegrees > 10f)
+                return;
+
+            TryRotateBits();
+
+
             //If we're within 1deg we will count it as complete, otherwise continue to rotate.
             if (remainingDegrees > 1f)
                 return;
 
-            _rotating = false;
-
+            //Ensures that the Attachables are correctly rotated
+            //NOTE: This is a strict order-of-operations as changing will cause rotations to be incorrect
+            //--------------------------------------------------------------------------------------------------------//
             //Force set the rotation to the target, in case the bot is not exactly on target
             rigidbody.rotation = targetRotation;
             targetRotation = 0f;
+
+
+            TryRotateBits();
+            rotate = false;
+            _rotating = false;
+        }
+
+        private void TryRotateBits()
+        {
+            if (rotate)
+                return;
+
+            var check = (int)targetRotation;
+            float deg;
+            if (check == 180)
+            {
+                deg = 180;
+            }
+            else if (check == 0f || check == 360)
+            {
+                deg = 0;
+            }
+            else
+            {
+                deg = targetRotation + 180;
+            }
+
+            var rot = Quaternion.Euler(0, 0, deg);
+
+            foreach (var attachedBlock in attachedBlocks)
+            {
+                if (attachedBlock is ICustomRotate customRotate)
+                {
+                    customRotate.CustomRotate(rot);
+                    continue;
+                }
+
+                //attachedBlock.RotateSprite(MostRecentRotate);
+                attachedBlock.transform.localRotation = rot;
+            }
+
+            rotate = true;
         }
 
         #endregion //Movement

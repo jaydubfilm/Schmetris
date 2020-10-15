@@ -181,8 +181,9 @@ MonoBehaviour:
     m_stageColumnGroupObstacleData: []
   maxDrops: 0
   RDSEndOfWaveLoot:
-  - rdsData: 4
+  - rdsData: 6
     type: 0
+    amount: 0
     level: 0
     probability: 0
     isGearRange: 0
@@ -190,8 +191,9 @@ MonoBehaviour:
     gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 0
     isAlwaysSpawn: 0
-  - rdsData: 3
+  - rdsData: 5
     type: 3
+    amount: 0
     level: 1
     probability: 0
     isGearRange: 0
@@ -199,8 +201,9 @@ MonoBehaviour:
     gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 1
     isAlwaysSpawn: 1
-  - rdsData: 2
+  - rdsData: 4
     type: 11
+    amount: 0
     level: 2
     probability: 0
     isGearRange: 0
@@ -208,9 +211,10 @@ MonoBehaviour:
     gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 1
     isAlwaysSpawn: 1
-  - rdsData: 2
+  - rdsData: 4
     type: 13
-    level: 1
+    amount: 0
+    level: 2
     probability: 0
     isGearRange: 0
     gearValue: 0

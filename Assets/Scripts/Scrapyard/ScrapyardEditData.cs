@@ -11,6 +11,7 @@ namespace StarSalvager
         public Vector2Int Destination;
 
         public BlockData BlockData;
+        public float Value;
 
         /*public Vector2Int Coordinate;
 

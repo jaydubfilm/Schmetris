@@ -15,6 +15,11 @@ namespace StarSalvager.Utilities.Math
             List<BIT_TYPE> keys = resources.Keys.ToList();
             foreach (BIT_TYPE key in keys)
             {
+                if (!resources.ContainsKey(key))
+                {
+                    resources.Add(key, 0);
+                }
+
                 if (toAdd.ContainsKey(key))
                 {
                     resources[key] += (int)(toAdd[key] * multiplier);
@@ -30,7 +35,12 @@ namespace StarSalvager.Utilities.Math
             {
                 if (resource.resourceType != CraftCost.TYPE.Bit)
                     continue;
-                
+
+                if (!resources.ContainsKey((BIT_TYPE)resource.type))
+                {
+                    resources.Add((BIT_TYPE)resource.type, 0); 
+                }
+
                 resources[(BIT_TYPE)resource.type] += resource.amount;
             }
 
@@ -199,8 +209,16 @@ namespace StarSalvager.Utilities.Math
         {
             foreach (CraftCost resource in costs)
             {
+                if ((BIT_TYPE)resource.type == BIT_TYPE.WHITE)
+                {
+                    Debug.LogError("Found a white bit cost in a resource check");
+                }
+                
                 if (resource.resourceType != CraftCost.TYPE.Bit)
                     continue;
+
+                if (!resources.ContainsKey((BIT_TYPE)resource.type))
+                    return false;
                 
                 if (resources[(BIT_TYPE)resource.type] < resource.amount)
                     return false;
