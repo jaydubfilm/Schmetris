@@ -48,6 +48,8 @@ namespace StarSalvager.Tutorial
         private bool debug;
         
         [SerializeField, BoxGroup("Tutorial UI")]
+        private GameObject window;
+        [SerializeField, BoxGroup("Tutorial UI")]
         private TMP_Text text;
          [FormerlySerializedAs("image")] [SerializeField, BoxGroup("Tutorial UI")]
         private Image fillImage;
@@ -86,7 +88,7 @@ namespace StarSalvager.Tutorial
 
         public void SetupTutorial()
         {
-            
+            SetDialogWindowActive(false);
             
             mono = LevelManager.Instance;
             InitInput();
@@ -121,6 +123,12 @@ namespace StarSalvager.Tutorial
             this.text.text = text;
         }
 
+        private void SetDialogWindowActive(bool visible)
+        {
+            window.SetActive(visible);
+            characterObject.SetActive(visible);
+        }
+
         //FIXME This is gross...
         private static void CheckForSpriteReplacements(ref string text)
         {
@@ -146,6 +154,8 @@ namespace StarSalvager.Tutorial
         {
             var bot = LevelManager.Instance.BotObject;
             bot.PROTO_GodMode = true;
+
+            SetDialogWindowActive(true);
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[0], true));
         }
@@ -190,8 +200,7 @@ namespace StarSalvager.Tutorial
         }
         private IEnumerator StartFallingBitsCoroutine()
         {
-            //TODO Change to the stage [1]
-            //LevelManager.Instance.SetStage();
+            LevelManager.Instance.SetStage(1);
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[3], true));
         }
@@ -282,6 +291,8 @@ namespace StarSalvager.Tutorial
             }
 
             bot.OnCombo += SetCombo;
+            
+            LevelManager.Instance.SetStage(2);
 
             yield return new WaitUntil(() => combo);
             
@@ -292,6 +303,8 @@ namespace StarSalvager.Tutorial
 
         private IEnumerator PulsarStepCoroutine()
         {
+            LevelManager.Instance.SetStage(3);
+            
             SetText(tutorialRemoteData[10]);
             pressAnyKeyText.gameObject.SetActive(false);
             
@@ -319,9 +332,15 @@ namespace StarSalvager.Tutorial
             var bot = LevelManager.Instance.BotObject;
             bot.PROTO_GodMode = false;
             
+            LevelManager.Instance.SetStage(0);
+            
+            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.RED, 6f, bot.IsRecoveryDrone);
+            
             var playerData = PlayerPersistentData.PlayerData.liquidResource;
             
             yield return new WaitUntil(() => playerData[BIT_TYPE.RED] <= 0f);
+            
+            LevelManager.Instance.SetStage(4);
             
             SetText(tutorialRemoteData[12]);
             pressAnyKeyText.gameObject.SetActive(false);
@@ -329,6 +348,9 @@ namespace StarSalvager.Tutorial
             //TODO Set the wave to spawn all reds
             
             yield return new WaitUntil(() => playerData[BIT_TYPE.RED] > 0f);
+            
+            bot.PROTO_GodMode = true;
+            LevelManager.Instance.SetStage(3);
 
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[13], false));
             
@@ -339,6 +361,9 @@ namespace StarSalvager.Tutorial
 
         private IEnumerator EndStepCoroutine()
         {
+            SetDialogWindowActive(false);
+            //TODO Bot needs to fly away
+
             yield return new WaitForSeconds(5f);
 
             Globals.UsingTutorial = false;

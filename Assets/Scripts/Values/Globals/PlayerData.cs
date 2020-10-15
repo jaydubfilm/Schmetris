@@ -281,6 +281,8 @@ namespace StarSalvager.Values
 
         //============================================================================================================//
 
+        
+        
         public void SetLiquidResource(BIT_TYPE type, float value, bool isRecoveryDrone)
         {
             if (isRecoveryDrone)

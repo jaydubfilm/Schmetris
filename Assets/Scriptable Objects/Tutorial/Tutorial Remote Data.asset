@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a622df0b4d187f4bbe5eea1567e32eb, type: 3}
   m_Name: Tutorial Remote Data
   m_EditorClassIdentifier: 
+  SectorRemoteData: {fileID: 11400000, guid: ac596de1af6b6c54883d5b2fd72b5140, type: 2}
   tutorialSteps:
   - title: Intro Step
     useWaitTime: 1

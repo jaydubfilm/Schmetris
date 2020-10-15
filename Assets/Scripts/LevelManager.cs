@@ -212,7 +212,7 @@ namespace StarSalvager
 
         private void LateUpdate()
         {
-            if (!EndWaveState) 
+            if (EndWaveState) 
                 return;
             
             UpdateUIClock();
@@ -259,7 +259,7 @@ namespace StarSalvager
                 TransitionToEndWaveState();
         }
 
-        private void SetStage(int stage)
+        public void SetStage(int stage)
         {
             if (stage >= CurrentWaveData.StageRemoteData.Count)
             {
