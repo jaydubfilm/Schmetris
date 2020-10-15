@@ -374,7 +374,8 @@ namespace StarSalvager.Tutorial
             yield return new WaitForSeconds(1f);
 
             Globals.UsingTutorial = false;
-            LevelManager.Instance.SetBotBelowScreen();
+            LevelManager.Instance.SetBotZoomOffScreen(false);
+            LevelManager.Instance.BotObject.PROTO_GodMode = false;
 
             SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
         }

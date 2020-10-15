@@ -308,7 +308,8 @@ namespace StarSalvager.UI
                 Globals.CurrentSector = 4;
                 Globals.CurrentWave = 0;
 
-                string playerPath = Files.GetNextAvailableSaveSlot();
+                
+                /*string playerPath = Files.GetNextAvailableSaveSlot();
 
                 if (playerPath != string.Empty)
                 {
@@ -319,7 +320,7 @@ namespace StarSalvager.UI
                 {
                     Toast.AddToast("No empty save slots! Load an existing game or delete a save file to proceed.",
                         time: 3.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
-                }
+                }*/
 
                 SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.MAIN_MENU);
             });
