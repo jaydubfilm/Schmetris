@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using StarSalvager.Factories;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,7 +36,7 @@ public class LevelRingNodeTree
         return startingPoint.ConvertNodeTreeIntoConnections();
     }
 
-    private LevelRingNode TryFindNode(int index)
+    public LevelRingNode TryFindNode(int index)
     {
         return startingPoint.TryFindNode(index);
     }
@@ -43,5 +44,17 @@ public class LevelRingNodeTree
     private bool TryAddNodeToTree(LevelRingNode newNode, int index)
     {
         return startingPoint.TryAddNode(newNode, index);
+    }
+
+    public int ConvertSectorWaveToNodeIndex(int sector, int wave)
+    {
+        int curIndex = 1;
+        for (int i = 0; i < sector - 1; i++)
+        {
+            curIndex += FactoryManager.Instance.SectorRemoteData[i].GetNumberOfWaves();
+        }
+        curIndex += wave;
+
+        return curIndex;
     }
 }

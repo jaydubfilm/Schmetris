@@ -191,7 +191,7 @@ namespace StarSalvager
             }
             else if (ObstacleManager.HasNoActiveObstacles || (ObstacleManager.RecoveredBotFalling != null && !BotIsInPosition()))
             {
-                ProcessEndOfStage();
+                ProcessEndOfWave();
             }
             else
             {
@@ -290,7 +290,7 @@ namespace StarSalvager
                 TransitionToEndWaveState();
         }
 
-        private void ProcessEndOfStage()
+        private void ProcessEndOfWave()
         {
             var botBlockData = BotObject.GetBlockDatas();
             SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
@@ -633,8 +633,9 @@ namespace StarSalvager
             string endWaveMessage;
 
             PlayerPersistentData.PlayerData.ReduceLevelResourceModifier(Globals.CurrentSector, Globals.CurrentWave);
-            
-            if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
+
+            endWaveMessage = "Wave Complete!";
+            /*if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
             {
                 Globals.CurrentWave++;
                 endWaveMessage = "Wave Complete!";
@@ -645,7 +646,7 @@ namespace StarSalvager
                 progressionSector++;
                 EndSectorState = true;
                 endWaveMessage = "Sector Complete!";
-            }
+            }*/
 
             Toast.AddToast(endWaveMessage, time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
             if (!Globals.OnlyGetWaveLootOnce || !PlayerPersistentData.PlayerData.CheckIfQualifies(progressionSector, Globals.CurrentWave))

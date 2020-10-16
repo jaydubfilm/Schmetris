@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Missions;
 using StarSalvager.Utilities;
@@ -129,10 +130,30 @@ namespace StarSalvager.UI
         {
             betweenWavesContinueButton.onClick.AddListener(() =>
             {
+                /*int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+                Debug.Log("CURRENT INDEX: " + curIndex);
+
+                LevelRingNode curNode = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(curIndex);
+                if (curNode == null)
+                {
+                    Debug.LogError("CUR NODE = NULL, ERROR");
+                    return;
+                }
+
+                List<LevelRingNode> childNodeOptions = curNode.childNodes;
+
                 GameTimer.SetPaused(false);
                 ToggleBetweenWavesUIActive(false);
 
-                m_levelManager.BeginNextWave();
+                m_levelManager.BeginNextWave();*/
+
+                Globals.IsBetweenWavesInUniverseMap = true;
+
+                m_levelManager.IsWaveProgressing = true;
+                m_levelManager.ProcessScrapyardUsageBeginAnalytics();
+                ToggleBetweenWavesUIActive(false);
+                LevelManager.Instance.EndWaveState = false;
+                SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
             });
 
             betweenWavesScrapyardButton.onClick.AddListener(() =>
