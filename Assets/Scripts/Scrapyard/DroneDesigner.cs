@@ -339,8 +339,8 @@ namespace StarSalvager
                             PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
                         }
 
-                        DroneDesignUi.RefreshScrollViews();
                         _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
+                        DroneDesignUi.RefreshScrollViews();
 
                         SelectedBrick = null;
                         SelectedPartClickPosition = null;
@@ -364,6 +364,8 @@ namespace StarSalvager
                 var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(SelectedBrick.Value);
 
                 var blockData = SelectedBrick.Value;
+                
+                _scrapyardBot.AttachNewBit(mouseGridCoordinate, attachable);
                 
                 //Check if part should be removed from storage
                 //TODO Should be checking if the player does in-fact have the part in their storage
@@ -393,8 +395,8 @@ namespace StarSalvager
                     _toRedoStack.Clear();
                 }
 
+                
                 DroneDesignUi.RefreshScrollViews();
-                _scrapyardBot.AttachNewBit(mouseGridCoordinate, attachable);
 
                 SelectedBrick = null;
                 SelectedPartClickPosition = null;
@@ -416,8 +418,9 @@ namespace StarSalvager
                     PlayerPersistentData.PlayerData.RemovePartFromStorage(attachable.ToBlockData());
                 }
 
-                DroneDesignUi.RefreshScrollViews();
                 _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
+
+                DroneDesignUi.RefreshScrollViews();
 
 
                 SelectedBrick = null;
@@ -457,6 +460,8 @@ namespace StarSalvager
             {
                 var blockData = scrapPart.ToBlockData();
                 blockData.Coordinate = mouseCoordinate;
+                _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
+
                 
                 PlayerPersistentData.PlayerData.AddPartToStorage(scrapPart.ToBlockData());
                 DroneDesignUi.AddToPartScrollView(scrapPart.ToBlockData());
@@ -467,7 +472,6 @@ namespace StarSalvager
                 });
                 _toRedoStack.Clear();
 
-                _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
                 SaveBlockData();
             }
             
@@ -477,7 +481,6 @@ namespace StarSalvager
 
         private void OnRightMouseButtonUp()
         {
-
         }
 
         #endregion //User Input

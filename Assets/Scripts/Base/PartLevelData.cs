@@ -85,6 +85,7 @@ namespace StarSalvager
             Projectile,
             SMRTCapacity,
             Probability,
+            PartCapacity,
         }
         public static readonly string[] TestList = 
         {
@@ -99,7 +100,8 @@ namespace StarSalvager
             "Cooldown",
             "Projectile",
             "SMRTCapacity",
-            "Probability"
+            "Probability",
+            "PartCapacity"
         };
 
         [ValueDropdown(nameof(TestList)), HorizontalGroup("row1", Width = 120), HideLabel]
@@ -124,6 +126,7 @@ namespace StarSalvager
                 case TEST_KEYS.Capacity:
                 case TEST_KEYS.Magnet:
                 case TEST_KEYS.SMRTCapacity:
+                case TEST_KEYS.PartCapacity:
                     return int.Parse(value);
                 
                 case TEST_KEYS.Heal:
@@ -187,6 +190,7 @@ namespace StarSalvager
                 case TEST_KEYS.Radius:
                 case TEST_KEYS.Capacity:
                 case TEST_KEYS.Magnet:
+                case TEST_KEYS.PartCapacity:
                     return $"{_out} should be of type int";
                 
                 case TEST_KEYS.Heal:
@@ -195,6 +199,7 @@ namespace StarSalvager
                 case TEST_KEYS.Time:
                 case TEST_KEYS.Damage:
                 case TEST_KEYS.Cooldown:
+                case TEST_KEYS.Probability:
                     return $"{_out} should be of type float";
                 
                 case TEST_KEYS.Projectile:

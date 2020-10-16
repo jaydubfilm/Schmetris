@@ -471,6 +471,9 @@ namespace StarSalvager.UI.Scrapyard
                 return;
             }
             
+            var partCapacity = _droneDesigner._scrapyardBot.PartCapacity;
+
+            
             var powerDraw = _droneDesigner._scrapyardBot.powerDraw;
             var availablePower =
                 Mathf.Clamp(
@@ -478,16 +481,11 @@ namespace StarSalvager.UI.Scrapyard
                     PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW], 0,
                     PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.YELLOW]);
 
-            if (powerDraw == 0f)
-            {
-                flightDataText.text = $"Flight Data:\nPower Draw: {powerDraw:0.0} KW/s\nTotal Power: Infinite";
-            }
-            else
-            {
-                var powerTime = TimeSpan.FromSeconds(availablePower / powerDraw).ToString(@"mm\:ss");
+            string powerTime = "infinite";
+            if(powerDraw > 0)
+                powerTime = TimeSpan.FromSeconds(availablePower / powerDraw).ToString(@"mm\:ss") + "s";
 
-                flightDataText.text = $"Flight Data:\nPower Draw: {powerDraw:0.0} KW/s\nTotal Power: {powerTime}s";
-            }
+            flightDataText.text = $"Flight Data:\nParts: {partCapacity}\nPower Draw: {powerDraw:0.0} KW/s\nTotal Power: {powerTime}";
             
         }
 

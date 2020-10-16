@@ -32,6 +32,8 @@ MonoBehaviour:
         value: 30
       - key: SMRTCapacity
         value: 2
+      - key: PartCapacity
+        value: 3
       burnRate: 1
       cost: []
     - unlockLevel: 0
@@ -44,6 +46,8 @@ MonoBehaviour:
         value: 100
       - key: SMRTCapacity
         value: 3
+      - key: PartCapacity
+        value: 6
       burnRate: 2
       cost:
       - resourceType: 0
@@ -96,6 +100,8 @@ MonoBehaviour:
         value: 200
       - key: SMRTCapacity
         value: 4
+      - key: PartCapacity
+        value: 10
       burnRate: 3
       cost:
       - resourceType: 0
