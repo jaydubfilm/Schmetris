@@ -318,6 +318,12 @@ namespace StarSalvager
                         //GameUI.ShowBombIcon(true);
                         _bombTimers.Add(part, 0f);
                         break;
+                    
+                    case PART_TYPE.BOOSTDEFENCE:
+                        
+                        
+                        
+                        break;
                 }
             }
 
@@ -1185,12 +1191,18 @@ namespace StarSalvager
             if (boosts.IsNullOrEmpty())
                 return 1f;
 
-            var beside = boosts.GetAttachablesAround(fromPart).OfType<Part>().Where(x => boosts.Contains(x)).ToList();
-            
+            //FIXME Need to think of a way to get the corners for the boosts
+            var beside = boosts
+                .GetAttachablesAround(fromPart)
+                .OfType<Part>()
+                .Where(x => boosts.Contains(x))
+                .ToList();
+
             if (beside.IsNullOrEmpty())
                 return 1f;
-            
-            PartRemoteData partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(boostPart);
+
+            PartRemoteData partRemoteData =
+                FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(boostPart);
 
             var maxBoost = 1f;
             foreach (var levelData in beside.Select(part => partRemoteData.levels[part.level]))

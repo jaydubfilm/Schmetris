@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities;
@@ -7,12 +6,9 @@ using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using System.Collections.Generic;
 using StarSalvager.Utilities.Extensions;
-using StarSalvager.Utilities.Math;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Sirenix.Utilities;
-using Sirenix.OdinInspector.Editor;
 using System.Linq;
 
 namespace StarSalvager.UI
