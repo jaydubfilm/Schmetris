@@ -297,6 +297,12 @@ namespace StarSalvager
             SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
             SessionDataProcessor.Instance.EndActiveWave();
 
+            int curNodeIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+            if (!PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Contains(curNodeIndex))
+            {
+                PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Add(curNodeIndex);
+            }
+
             GameUi.SetClockValue(0f);
             GameUi.SetTimeString(0);
             SavePlayerData();

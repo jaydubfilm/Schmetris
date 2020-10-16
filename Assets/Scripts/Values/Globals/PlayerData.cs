@@ -157,7 +157,7 @@ namespace StarSalvager.Values
 
         [JsonIgnore]
         public LevelRingNodeTree LevelRingNodeTree = new LevelRingNodeTree();
-        [JsonProperty]
+        [JsonIgnore]
         private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>
         {
             new Vector2Int(2, 0),
@@ -188,6 +188,24 @@ namespace StarSalvager.Values
             new Vector2Int(25, 20),
             new Vector2Int(26, 22),
             new Vector2Int(26, 24),
+        };
+
+        [JsonIgnore]
+        public List<int> ShortcutNodes = new List<int>()
+        {
+            4,
+            6,
+            8,
+            15,
+            16,
+            17,
+            19,
+            24,
+        };
+
+        public List<int> PlayerPreviouslyCompletedNodes = new List<int>()
+        {
+            0
         };
 
         //============================================================================================================//

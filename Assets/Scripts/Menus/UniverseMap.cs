@@ -82,21 +82,33 @@ namespace StarSalvager.UI
             }
             else
             {
-                int curIndex = 0;
-
-                List<LevelRingNode> childNodesAccessible = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(curIndex).childNodes;
-
                 for (int i = 0; i < universeMapButtons.Count; i++)
                 {
-                    if (childNodesAccessible.Any(n => n.nodeIndex == i))
+                    universeMapButtons[i].Button.interactable = false;
+                }
+                
+                for (int i = 0; i < PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Count; i++)
+                {
+                    int nodeIndex = PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes[i];
+                    
+                    List<LevelRingNode> childNodesAccessible = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(nodeIndex).childNodes;
+
+                    for (int k = 0; k < universeMapButtons.Count; k++)
                     {
-                        universeMapButtons[i].Button.interactable = true;
-                        DrawConnection(curIndex, i);
+                        if (childNodesAccessible.Any(n => n.nodeIndex == k))
+                        {
+                            if (nodeIndex == 0)
+                            {
+                                universeMapButtons[k].Button.interactable = true;
+                            }
+                            DrawConnection(nodeIndex, k);
+                        }
                     }
-                    else
+
+                    if (PlayerPersistentData.PlayerData.ShortcutNodes.Contains(nodeIndex))
                     {
-                        universeMapButtons[i].Button.interactable = false;
-                    }
+                        universeMapButtons[nodeIndex].Button.interactable = true;
+                    }    
                 }
             }
 
