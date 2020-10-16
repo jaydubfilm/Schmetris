@@ -130,23 +130,6 @@ namespace StarSalvager.UI
         {
             betweenWavesContinueButton.onClick.AddListener(() =>
             {
-                /*int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
-                Debug.Log("CURRENT INDEX: " + curIndex);
-
-                LevelRingNode curNode = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(curIndex);
-                if (curNode == null)
-                {
-                    Debug.LogError("CUR NODE = NULL, ERROR");
-                    return;
-                }
-
-                List<LevelRingNode> childNodeOptions = curNode.childNodes;
-
-                GameTimer.SetPaused(false);
-                ToggleBetweenWavesUIActive(false);
-
-                m_levelManager.BeginNextWave();*/
-
                 Globals.IsBetweenWavesInUniverseMap = true;
 
                 m_levelManager.IsWaveProgressing = true;
@@ -289,6 +272,11 @@ namespace StarSalvager.UI
 
         public void ToggleBetweenWavesUIActive(bool active)
         {
+            int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+
+            List<LevelRingNode> childNodesAccessible = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(curIndex).childNodes;
+            betweenWavesContinueButton.gameObject.SetActive(childNodesAccessible.Count > 0);
+
             m_betweenWavesUI.SetActive(active);
         }
 

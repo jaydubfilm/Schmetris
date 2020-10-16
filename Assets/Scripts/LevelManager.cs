@@ -531,8 +531,10 @@ namespace StarSalvager
             BotDead = false;
             m_waveTimer = 0;
             m_levelTimer = 0;
-            
-            
+
+            SetBotEnterScreen(false);
+            SetBotZoomOffScreen(false);
+
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
             ProjectileManager.Reset();
             MissionsCompletedDuringThisFlight.Clear();

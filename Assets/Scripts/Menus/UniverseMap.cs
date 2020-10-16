@@ -59,6 +59,7 @@ namespace StarSalvager.UI
         {
             CenterToItem(universeMapButtons[0].GetComponent<RectTransform>());
 
+            backButton.gameObject.SetActive(!Globals.IsBetweenWavesInUniverseMap);
             if (Globals.IsBetweenWavesInUniverseMap)
             {
                 int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
@@ -70,6 +71,27 @@ namespace StarSalvager.UI
                     if (childNodesAccessible.Any(n => n.nodeIndex == i))
                     {
                         universeMapButtons[i].Button.interactable = true;
+                        DrawConnection(curIndex, i);
+                    }
+                    else
+                    {
+                        universeMapButtons[i].Button.interactable = false;
+                    }
+                }
+                Globals.IsBetweenWavesInUniverseMap = false;
+            }
+            else
+            {
+                int curIndex = 0;
+
+                List<LevelRingNode> childNodesAccessible = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(curIndex).childNodes;
+
+                for (int i = 0; i < universeMapButtons.Count; i++)
+                {
+                    if (childNodesAccessible.Any(n => n.nodeIndex == i))
+                    {
+                        universeMapButtons[i].Button.interactable = true;
+                        DrawConnection(curIndex, i);
                     }
                     else
                     {
@@ -78,24 +100,10 @@ namespace StarSalvager.UI
                 }
             }
 
-            foreach (var connection in PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertNodeTreeIntoConnections())
+            /*foreach (var connection in PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertNodeTreeIntoConnections())
             {
-                GameObject newLine = new GameObject();
-
-                newLine.transform.parent = m_scrollRectArea.transform;
-                newLine.transform.SetAsFirstSibling();
-                newLine.AddComponent<Image>();
-
-                Image newLineImage = newLine.GetComponent<Image>();
-
-                newLineImage.transform.position = (universeMapButtons[connection.x].transform.position + universeMapButtons[connection.y].transform.position) / 2;
-
-                RectTransform newLineRectTransform = newLine.GetComponent<RectTransform>();
-                newLineRectTransform.sizeDelta = new Vector2(Vector2.Distance(universeMapButtons[connection.x].transform.position, universeMapButtons[connection.y].transform.position), 5);
-                newLineRectTransform.transform.right = (universeMapButtons[connection.x].transform.position - universeMapButtons[connection.y].transform.position).normalized;
-
-                connectionLines.Add(newLineImage);
-            }
+                DrawConnection(connection.x, connection.y);
+            }*/
 
             if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 35)
             {
@@ -113,6 +121,25 @@ namespace StarSalvager.UI
         }
 
         //============================================================================================================//
+
+        private void DrawConnection(int connectionStart, int connectionEnd)
+        {
+            GameObject newLine = new GameObject();
+
+            newLine.transform.parent = m_scrollRectArea.transform;
+            newLine.transform.SetAsFirstSibling();
+            newLine.AddComponent<Image>();
+
+            Image newLineImage = newLine.GetComponent<Image>();
+
+            newLineImage.transform.position = (universeMapButtons[connectionStart].transform.position + universeMapButtons[connectionEnd].transform.position) / 2;
+
+            RectTransform newLineRectTransform = newLine.GetComponent<RectTransform>();
+            newLineRectTransform.sizeDelta = new Vector2(Vector2.Distance(universeMapButtons[connectionStart].transform.position, universeMapButtons[connectionEnd].transform.position), 5);
+            newLineRectTransform.transform.right = (universeMapButtons[connectionStart].transform.position - universeMapButtons[connectionEnd].transform.position).normalized;
+
+            connectionLines.Add(newLineImage);
+        }
 
         private void InitButtons()
         {
