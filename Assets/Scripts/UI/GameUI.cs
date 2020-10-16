@@ -378,6 +378,16 @@ namespace StarSalvager.UI
                 return;
             }
             
+            abortWindow.SetActive(true);
+
+            if (Globals.UsingTutorial)
+            {
+                abortButton.gameObject.SetActive(false);
+                return;
+            }
+
+            abortButton.gameObject.SetActive(true);
+            
             abortButton.onClick.AddListener(() =>
             {
                 LevelManager.Instance.BotObject.TrySelfDestruct();
@@ -387,8 +397,6 @@ namespace StarSalvager.UI
                     ShowAbortWindow(false);
 
             });
-            
-            abortWindow.SetActive(true);
         }
 
         //============================================================================================================//

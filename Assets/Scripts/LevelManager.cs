@@ -126,7 +126,7 @@ namespace StarSalvager
         public WaveEndSummaryData WaveEndSummaryData => m_waveEndSummaryData;
         private WaveEndSummaryData m_waveEndSummaryData;
 
-        private GameUI GameUi
+        public GameUI GameUi
         {
             get
             {
@@ -163,6 +163,7 @@ namespace StarSalvager
             m_bots = new List<Bot>();
             
             m_levelManagerUI = FindObjectOfType<LevelManagerUI>();
+            _gameUi = m_levelManagerUI.GetComponentInChildren<GameUI>(true);
 
             Bot.OnBotDied += OnBotDied;
         }

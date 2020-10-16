@@ -10,17 +10,10 @@ namespace StarSalvager.UI.Scrapyard
 {
     public class StorageUIElement : ButtonReturnUIElement<TEST_Storage, TEST_Storage>, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
+        private static ScrapyardBot _scrapyardBot;
+
+        
         [SerializeField] private Image itemImage;
-        
-        
-        /*public override void Init(TEST_Storage data)
-        {
-            this.data = data;
-
-            itemImage.sprite = data.sprite;
-
-        }*/
-        
         private RectTransform _canvasTr;
         private RectTransform partDragImageTransform;
         
@@ -28,13 +21,18 @@ namespace StarSalvager.UI.Scrapyard
         
         public override void Init(TEST_Storage data, Action<TEST_Storage> onPressedCallback)
         {
+            if (!_scrapyardBot)
+                _scrapyardBot = FindObjectOfType<ScrapyardBot>();
+            
             this.data = data;
 
             itemImage.sprite = data.sprite;
 
             //Only want to be able to select parts
-            button.interactable = data.blockData.ClassType == nameof(Part) || data.blockData.ClassType == nameof(ScrapyardPart);
-
+            button.interactable =
+                (data.blockData.ClassType == nameof(Part) || data.blockData.ClassType == nameof(ScrapyardPart)) &&
+                !_scrapyardBot.AtPartCapacity;
+            
             if (!button.interactable)
                 return;
             
@@ -81,6 +79,9 @@ namespace StarSalvager.UI.Scrapyard
         
         public void OnDrag(PointerEventData eventData)
         {
+            if (!button.interactable)
+                return;
+            
             if (partDragImageTransform == null)
                 return;
 

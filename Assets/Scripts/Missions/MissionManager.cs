@@ -99,6 +99,10 @@ namespace StarSalvager.Missions
 
         public static void ProcessMissionData(Type missionType, MissionProgressEventData missionProgressEventData)
         {
+            //Dont want to process our missions during the tutorial
+            if (Globals.UsingTutorial)
+                return;
+            
             for (int i = MissionsCurrentData.CurrentMissions.Count - 1; i >= 0; i--)
             {
                 Mission mission = MissionsCurrentData.CurrentMissions[i];

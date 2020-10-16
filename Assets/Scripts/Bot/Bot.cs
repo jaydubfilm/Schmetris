@@ -189,12 +189,9 @@ namespace StarSalvager
             if (!_needToCheckMagnet) 
                 return;
 
-            var hasOverage = CheckHasMagnetOverage(); 
+            if(IsMagnetFull()) OnFullMagnet?.Invoke();
             
-            if(hasOverage)
-                OnFullMagnet?.Invoke();
-            
-            AudioController.PlaySound(hasOverage ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+            AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
             _needToCheckMagnet = false;
         }
 
@@ -2722,6 +2719,18 @@ namespace StarSalvager
 
             return true;
         }
+
+        private bool IsMagnetFull()
+        {
+            var magnetCount = BotPartsLogic.MagnetCount;
+            var magnetAttachables = attachedBlocks.Where(x => x.CountTowardsMagnetism).ToList();
+            
+            if(GameUi) 
+                GameUi.SetCarryCapacity(magnetAttachables.Count / (float)magnetCount);
+            
+            return magnetAttachables.Count == magnetCount;
+        }
+        
 
         private void DefaultMagnetCheck(List<IAttachable> attachables, out List<IAttachable> toDetach, in int toRemoveCount)
         {

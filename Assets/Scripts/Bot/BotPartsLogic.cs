@@ -1062,7 +1062,7 @@ namespace StarSalvager
             var capacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
 
             //We wont add any if its already full!
-            if (current + amountProcessed >= capacity)
+            if (current + amountProcessed > capacity)
                 return 0;
 
             PlayerPersistentData.PlayerData.AddLiquidResource(targetBit.Type, amountProcessed, bot.IsRecoveryDrone);

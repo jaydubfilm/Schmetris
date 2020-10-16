@@ -83,13 +83,13 @@ MonoBehaviour:
         m_category: 
         m_rotation: 0
         m_asteroidSize: 0
-        m_density: 0.25
+        m_density: 0.4
       - m_selectionType: 0
         m_shapeName: YellowSingle
         m_category: 
         m_rotation: 0
         m_asteroidSize: 0
-        m_density: 0.25
+        m_density: 0.4
   - m_stageDuration: 0
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
@@ -116,25 +116,25 @@ MonoBehaviour:
         m_category: 
         m_rotation: 0
         m_asteroidSize: 0
-        m_density: 0.2
+        m_density: 0.25
       - m_selectionType: 0
         m_shapeName: GreySingle
         m_category: 
         m_rotation: 0
         m_asteroidSize: 0
-        m_density: 0.2
+        m_density: 0.25
       - m_selectionType: 0
         m_shapeName: YellowSingle
         m_category: 
         m_rotation: 0
         m_asteroidSize: 0
-        m_density: 0.2
+        m_density: 0.25
       - m_selectionType: 3
         m_shapeName: 
         m_category: 
         m_rotation: 0
         m_asteroidSize: 0
-        m_density: 0.2
+        m_density: 0.35
   - m_stageDuration: 0
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
@@ -145,10 +145,10 @@ MonoBehaviour:
     m_stageObstacleData: []
     m_stageColumnGroupObstacleData:
     - m_columnGroupMinimum: 0
-      m_columnGroupMaximum: 0
+      m_columnGroupMaximum: 1
       m_isBlendZone: 0
       m_allowOverlap: 0
-      m_forceSpawn: 0
+      m_forceSpawn: 1
       m_stageObstacleData:
       - m_selectionType: 0
         m_shapeName: RedSingle

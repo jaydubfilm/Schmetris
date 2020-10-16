@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Tutorial.Data;
+using StarSalvager.UI;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
@@ -19,30 +22,6 @@ namespace StarSalvager.Tutorial
     {
         [SerializeField, Required]
         private TutorialDataScriptableObject tutorialRemoteData;
-        /*[SerializeField, ListDrawerSettings(HideAddButton = true, HideRemoveButton = true)]
-        private List<TutorialStepData> tutorialSteps = new List<TutorialStepData>
-        {
-            /* [0] #1#new TutorialStepData {title = "Intro Step"},
-            /* [1] #1#new TutorialStepData {title = "Movement"},
-            /* [2] #1#new TutorialStepData {title = "Rotate"},
-            /* [3] #1#new TutorialStepData {title = "Falling Bits"},
-            /* [4] #1#new TutorialStepData {title = "Combo"},
-            /* [5] #1#new TutorialStepData {title = "Magnet"},
-
-            /* [6] #1#new TutorialStepData {title = "Combo-magnet-1"},
-            /* [7] #1#new TutorialStepData {title = "Combo-magnet-2"},
-
-            /* [8] #1#new TutorialStepData {title = "Magnet-combo-1"},
-            /* [9] #1#new TutorialStepData {title = "Magnet-combo-2"},
-
-            /* [10] #1#new TutorialStepData {title = "Pulsar"},
-            /* [11] #1#new TutorialStepData {title = "Pulsar-1"},
-
-            /* [12] #1#new TutorialStepData {title = "Fuel"},
-            /* [13] #1#new TutorialStepData {title = "Fuel-1"},
-            /* [14] #1#new TutorialStepData {title = "Fuel-2"},
-        };*/
-
 
         [SerializeField]
         private bool debug;
@@ -53,12 +32,23 @@ namespace StarSalvager.Tutorial
         private TMP_Text text;
          [FormerlySerializedAs("image")] [SerializeField, BoxGroup("Tutorial UI")]
         private Image fillImage;
+        [SerializeField, BoxGroup("Tutorial UI")]
+        private GameObject pauseImage;
+        
 
         [SerializeField, BoxGroup("Tutorial UI")]
         private TMP_Text pressAnyKeyText;
 
         [SerializeField, BoxGroup("Tutorial UI")]
         private GameObject characterObject;
+        
+        [SerializeField, BoxGroup("Tutorial UI")]
+        private Image fadeImage;
+
+        [SerializeField, BoxGroup("Tutorial UI")]
+        private AnimationCurve slideCurve;
+        [SerializeField, BoxGroup("Tutorial UI")]
+        private AnimationCurve scaleCurve;
         
         private bool _readyForInput;
         private bool _keyPressed;
@@ -88,7 +78,9 @@ namespace StarSalvager.Tutorial
 
         public void SetupTutorial()
         {
-            SetDialogWindowActive(false);
+            //SetDialogWindowActive(false);
+            pauseImage.SetActive(false);
+            InitPositions();
             
             mono = LevelManager.Instance;
             InitInput();
@@ -104,29 +96,31 @@ namespace StarSalvager.Tutorial
                 FuelStepCoroutine(),
                 EndStepCoroutine()
             };
+
+            LevelManager.Instance.SetBotBelowScreen();
             
             mono.StartCoroutine(MainTutorialCoroutine());
 
+            
+            LevelManager.Instance.GameUi.SetCurrentWaveText("Training Simulator");
+            
             _readyForInput = true;
             _isReady = true;
         }
 
-        private void SetText(TutorialStepData tutorialStepData)
+        private void SetText(TutorialStepData tutorialStepData, bool hideAnyKey = false, bool hideFillImage = false)
         {
-            SetText(tutorialStepData.text);
+            SetText(tutorialStepData.text, hideAnyKey, hideFillImage);
         }
         
-        private void SetText(string text)
+        private void SetText(string text, bool hideAnyKey, bool hideFillImage)
         {
             CheckForSpriteReplacements(ref text);
             
+            if(hideAnyKey) pressAnyKeyText.gameObject.SetActive(false);
+            if(hideFillImage) fillImage.gameObject.SetActive(false);
+            
             this.text.text = text;
-        }
-
-        private void SetDialogWindowActive(bool visible)
-        {
-            window.SetActive(visible);
-            characterObject.SetActive(visible);
         }
 
         //FIXME This is gross...
@@ -154,14 +148,17 @@ namespace StarSalvager.Tutorial
         {
             var bot = LevelManager.Instance.BotObject;
             bot.PROTO_GodMode = true;
-
-            SetDialogWindowActive(true);
+            
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(true));
+            yield return mono.StartCoroutine(ShowDialogWindowCoroutine(true));
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[0], true));
         }
         private IEnumerator MoveStepCoroutine()
         {
             //TODO Need to have the bot fly in
+
+            LevelManager.Instance.SetBotEnterScreen(true);
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[1], false));
             
@@ -218,9 +215,8 @@ namespace StarSalvager.Tutorial
                 combo = true;
             }
             
-            SetText(tutorialRemoteData[3]);
-            pressAnyKeyText.gameObject.SetActive(false);
-            
+            SetText(tutorialRemoteData[3], true, true);
+
             var bot = LevelManager.Instance.BotObject;
             bot.OnFullMagnet += SetMagnet;
             bot.OnCombo += SetCombo;
@@ -249,14 +245,12 @@ namespace StarSalvager.Tutorial
             }
 
         }
-        
         private IEnumerator ComboFirstCoroutine()
         {
             //tutorialSteps[4]
             yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialRemoteData[4], true));
             
-            SetText(tutorialRemoteData[6]);
-            pressAnyKeyText.gameObject.SetActive(false);
+            SetText(tutorialRemoteData[6], true, true);
 
             bool magnet = false;
             var bot = LevelManager.Instance.BotObject;
@@ -279,8 +273,7 @@ namespace StarSalvager.Tutorial
             //tutorialSteps[5]
             yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialRemoteData[5], true));
             
-            SetText(tutorialRemoteData[8]);
-            pressAnyKeyText.gameObject.SetActive(false);
+            SetText(tutorialRemoteData[8], true, true);
 
             bool combo = false;
             var bot = LevelManager.Instance.BotObject;
@@ -300,14 +293,12 @@ namespace StarSalvager.Tutorial
             
             yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialRemoteData[9], true));
         }
-
         private IEnumerator PulsarStepCoroutine()
         {
             LevelManager.Instance.SetStage(3);
             
-            SetText(tutorialRemoteData[10]);
-            pressAnyKeyText.gameObject.SetActive(false);
-            
+            SetText(tutorialRemoteData[10], true, true);
+
             var bot = LevelManager.Instance.BotObject;
             
             bool bump = false;
@@ -322,19 +313,18 @@ namespace StarSalvager.Tutorial
             yield return new WaitUntil(() => bump);
             
             bot.OnBitShift -= SetBump;
+            
+            bot.PROTO_GodMode = false;
+            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.RED, 6f, bot.IsRecoveryDrone);
 
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[11], false));
         }
-        
         private IEnumerator FuelStepCoroutine()
         {
             //TODO Set the bot able to use its fuel
             var bot = LevelManager.Instance.BotObject;
-            bot.PROTO_GodMode = false;
             
             LevelManager.Instance.SetStage(0);
-            
-            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.RED, 6f, bot.IsRecoveryDrone);
             
             var playerData = PlayerPersistentData.PlayerData.liquidResource;
             
@@ -342,9 +332,8 @@ namespace StarSalvager.Tutorial
             
             LevelManager.Instance.SetStage(4);
             
-            SetText(tutorialRemoteData[12]);
-            pressAnyKeyText.gameObject.SetActive(false);
-            
+            SetText(tutorialRemoteData[12], true, true);
+
             //TODO Set the wave to spawn all reds
             
             yield return new WaitUntil(() => playerData[BIT_TYPE.RED] > 0f);
@@ -354,19 +343,41 @@ namespace StarSalvager.Tutorial
 
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[13], false));
             
-            SetText(tutorialRemoteData[14]);
+            SetText(tutorialRemoteData[14], true, true);
             pressAnyKeyText.gameObject.SetActive(false);
 
         }
-
         private IEnumerator EndStepCoroutine()
         {
-            SetDialogWindowActive(false);
-            //TODO Bot needs to fly away
-
             yield return new WaitForSeconds(5f);
+            
+            LevelManager.Instance.BotObject.SetColliderActive(false);
+            
+            //TODO Bot needs to fly away
+            LevelManager.Instance.SetBotZoomOffScreen(true);
+            
+            yield return mono.StartCoroutine(ShowDialogWindowCoroutine(false));
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(false));
+
+            yield return new WaitForSeconds(4f);
+
+            float t = 0f;
+            while (t < 1f)
+            {
+                fadeImage.color = Color.Lerp(Color.clear, Color.black, t);
+
+                t += Time.deltaTime;
+                
+                yield return null;
+            }
+            
+            yield return new WaitForSeconds(1f);
 
             Globals.UsingTutorial = false;
+            LevelManager.Instance.SetBotZoomOffScreen(false);
+            LevelManager.Instance.BotObject.PROTO_GodMode = false;
+
+            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
         }
         
         //Generic Tutorial Steps
@@ -374,33 +385,75 @@ namespace StarSalvager.Tutorial
 
         private IEnumerator PauseWaitTimerStep(TutorialStepData tutorialStepData, bool waitAnyKey)
         {
+            pauseImage.SetActive(true);
             Time.timeScale = 0f;
 
             yield return mono.StartCoroutine(WaitStep(tutorialStepData, waitAnyKey));
             
             Time.timeScale = 1f;
+            
+            pauseImage.SetActive(false);
         }
         
         private IEnumerator WaitStep(TutorialStepData tutorialStepData, bool waitAnyKey)
         {
             fillImage.gameObject.SetActive(tutorialStepData.useWaitTime);
-            pressAnyKeyText.gameObject.SetActive(!tutorialStepData.useWaitTime);
             
             SetText(tutorialStepData);
 
             if (tutorialStepData.useWaitTime)
             {
+                pressAnyKeyText.gameObject.SetActive(false);
+                
                 _readyForInput = false;
                 
                 yield return new WaitTimeImage(tutorialStepData.waitTime, fillImage);
+                
+                fillImage.gameObject.SetActive(false);
 
-                pressAnyKeyText.gameObject.SetActive(true);
+                pressAnyKeyText.gameObject.SetActive(waitAnyKey);
             } 
+            
+            pressAnyKeyText.gameObject.SetActive(waitAnyKey);
             
             if(waitAnyKey)
                 yield return new WaitForAnyKey(this);
             
             _readyForInput = true;
+        }
+
+        private IEnumerator SlideCharacterCoroutine(bool moveOnScreen)
+        {
+            var rectTransform = (RectTransform)characterObject.transform;
+            var size = rectTransform.sizeDelta;
+
+            var startPosition = moveOnScreen ? Vector2.right * size.x : Vector2.left * (size.x / 2);
+            var endPosition = moveOnScreen ? Vector2.left * (size.x / 2) : Vector2.right * size.x;
+
+            yield return mono.StartCoroutine(SlideInAnchorCoroutine(rectTransform,
+                startPosition,
+                endPosition));
+        }
+
+        private IEnumerator ShowDialogWindowCoroutine(bool show)
+        {
+            var rectTransform = (RectTransform)window.transform;
+
+            var startScale = show ? Vector3.zero : Vector3.one;
+            var endScale = show ? Vector3.one : Vector3.zero;
+
+            yield return mono.StartCoroutine(LerpScaleCoroutine(rectTransform, startScale, endScale, 0.5f));
+        }
+
+        private void InitPositions()
+        {
+            var characterRectTransform = (RectTransform)characterObject.transform;
+            var size = characterRectTransform.sizeDelta;
+            characterRectTransform.anchoredPosition = Vector2.right * size.x;
+            
+            var rectTransform = (RectTransform)window.transform;
+            rectTransform.localScale = Vector3.zero;
+            
         }
 
 
@@ -437,6 +490,39 @@ namespace StarSalvager.Tutorial
         //====================================================================================================================//
 
         #region Utility IEnumerators
+
+        private IEnumerator SlideInAnchorCoroutine(RectTransform rectTransform, Vector2 startPosition,
+            Vector2 endPosition, float time = 1f)
+        {
+            float t = 0;
+            while (t / time < 1f)
+            {
+
+                rectTransform.anchoredPosition =
+                    Vector2.Lerp(startPosition, endPosition, slideCurve.Evaluate(t / time));
+
+                t += Time.deltaTime;
+
+                yield return null;
+            }
+
+        }
+
+        private IEnumerator LerpScaleCoroutine(RectTransform rectTransform, Vector2 startScale, Vector2 endScale,
+            float time = 1f)
+        {
+            float t = 0;
+            while (t / time < 1f)
+            {
+
+                rectTransform.localScale = Vector2.Lerp(startScale, endScale, scaleCurve.Evaluate(t / time));
+
+                t += Time.deltaTime;
+
+                yield return null;
+            }
+
+        }
 
         private sealed class WaitForAnyKey : IEnumerator
         {

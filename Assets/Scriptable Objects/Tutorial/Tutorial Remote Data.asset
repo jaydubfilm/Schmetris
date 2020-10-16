@@ -33,13 +33,13 @@ MonoBehaviour:
     text: Those funky looking coloured shapes are the salvage we need. Collect as
       many as you can.
   - title: Combo
-    useWaitTime: 0
-    waitTime: 0
+    useWaitTime: 1
+    waitTime: 4
     text: Nice! You upgraded some salvage by matching three bits in a row. The upgraded
       bit contains more material and takes up less space. Win-win!
   - title: Magnet
-    useWaitTime: 0
-    waitTime: 0
+    useWaitTime: 1
+    waitTime: 4
     text: Nice! You maxed out your magnetism! Right now your core can only carry
       6 bits at a time. With the right upgrades we could increase this limit, but
       there are other ways to save space.
@@ -48,8 +48,8 @@ MonoBehaviour:
     waitTime: 0
     text: Try to max out your magnetism
   - title: Combo-magnet-2
-    useWaitTime: 0
-    waitTime: 0
+    useWaitTime: 1
+    waitTime: 4
     text: Good job! Right now your core can only carry 6 bits at a time. With the
       right upgrades we could increase this limit.
   - title: Magnet-combo-1
@@ -57,14 +57,14 @@ MonoBehaviour:
     waitTime: 0
     text: Try Matching three bits of the same colour
   - title: Magnet-combo-2
-    useWaitTime: 0
-    waitTime: 0
+    useWaitTime: 1
+    waitTime: 4
     text: Good Job! You upgraded some salvage by matching three bitrs in row. The
       upgraded bit contains more material and takes up less space. Win-win!
   - title: Pulsar
     useWaitTime: 0
     waitTime: 0
-    text: See? Just like riding a bicycle. DOn't be agraid of those pulsars. Smash
+    text: See? Just like riding a bicycle. Don't be afraid of those pulsars. Smash
       into them and move your bits around
   - title: Pulsar-1
     useWaitTime: 1
