@@ -70,7 +70,7 @@ namespace StarSalvager.Values
 
         public static void ClearPlayerData()
         {
-            PlayerData = null;
+            PlayerData = new PlayerData();
         }
 
         public static void SaveAutosaveFiles()

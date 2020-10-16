@@ -18,6 +18,8 @@ namespace StarSalvager.Values
         public static string SessionID = string.Empty;
 
 
+        public static bool UsingTutorial;
+        
         //Values that change throughout gameplay - only set defaults here
         public static int ColumnsOnScreen = Constants.initialColumnsOnScreen;
         //FIXME I no longer like how this is implemented
@@ -27,6 +29,7 @@ namespace StarSalvager.Values
         public static bool SectorComplete = false;
         public static Action<ORIENTATION> OrientationChange;
         public static int GridSizeY;
+        public static bool IsBetweenWavesInUniverseMap = false;
 
 
         private static GameSettingsScriptableObject m_gameSettings = null;

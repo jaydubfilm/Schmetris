@@ -1,0 +1,232 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84a92b25f83d49b9bc132d206b370281, type: 3}
+  m_Name: Keyboard_Dark
+  m_EditorClassIdentifier: 
+  hashCode: 778775886
+  material: {fileID: 378789721442529700}
+  materialHashCode: 0
+  m_Version: 1.1.0
+  spriteSheet: {fileID: 2800000, guid: 4f9996ed307588a428790835e07b2bb2, type: 3}
+  m_SpriteCharacterTable:
+  - m_ElementType: 2
+    m_Unicode: 0
+    m_GlyphIndex: 0
+    m_Scale: 1
+    m_Name: Keyboard_Dark_a
+    m_HashCode: 1978384656
+  - m_ElementType: 2
+    m_Unicode: 0
+    m_GlyphIndex: 1
+    m_Scale: 1
+    m_Name: Keyboard_Dark_downArrow
+    m_HashCode: 1861314170
+  - m_ElementType: 2
+    m_Unicode: 0
+    m_GlyphIndex: 2
+    m_Scale: 1
+    m_Name: Keyboard_Dark_upArrow
+    m_HashCode: -694691251
+  - m_ElementType: 2
+    m_Unicode: 0
+    m_GlyphIndex: 3
+    m_Scale: 1
+    m_Name: Keyboard_Dark_leftArrow
+    m_HashCode: 981843507
+  - m_ElementType: 2
+    m_Unicode: 0
+    m_GlyphIndex: 4
+    m_Scale: 1
+    m_Name: Keyboard_Dark_rightArrow
+    m_HashCode: -722402584
+  - m_ElementType: 2
+    m_Unicode: 0
+    m_GlyphIndex: 5
+    m_Scale: 1
+    m_Name: Keyboard_Dark_d
+    m_HashCode: 1978384661
+  - m_ElementType: 2
+    m_Unicode: 0
+    m_GlyphIndex: 6
+    m_Scale: 1
+    m_Name: Keyboard_Dark_s
+    m_HashCode: 1978384642
+  - m_ElementType: 2
+    m_Unicode: 0
+    m_GlyphIndex: 7
+    m_Scale: 1
+    m_Name: Keyboard_Dark_w
+    m_HashCode: 1978384646
+  m_SpriteGlyphTable:
+  - m_Index: 0
+    m_Metrics:
+      m_Width: 76
+      m_Height: 72
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
+      m_HorizontalAdvance: 76
+    m_GlyphRect:
+      m_X: 13
+      m_Y: 219
+      m_Width: 76
+      m_Height: 72
+    m_Scale: 1
+    m_AtlasIndex: 0
+    sprite: {fileID: -6399572432415860274, guid: 4f9996ed307588a428790835e07b2bb2,
+      type: 3}
+  - m_Index: 1
+    m_Metrics:
+      m_Width: 76
+      m_Height: 72
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
+      m_HorizontalAdvance: 76
+    m_GlyphRect:
+      m_X: 115
+      m_Y: 219
+      m_Width: 76
+      m_Height: 72
+    m_Scale: 1
+    m_AtlasIndex: 0
+    sprite: {fileID: 6318125244290940542, guid: 4f9996ed307588a428790835e07b2bb2,
+      type: 3}
+  - m_Index: 2
+    m_Metrics:
+      m_Width: 76
+      m_Height: 72
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
+      m_HorizontalAdvance: 76
+    m_GlyphRect:
+      m_X: 217
+      m_Y: 219
+      m_Width: 76
+      m_Height: 72
+    m_Scale: 1
+    m_AtlasIndex: 0
+    sprite: {fileID: 1937803013285432299, guid: 4f9996ed307588a428790835e07b2bb2,
+      type: 3}
+  - m_Index: 3
+    m_Metrics:
+      m_Width: 76
+      m_Height: 72
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
+      m_HorizontalAdvance: 76
+    m_GlyphRect:
+      m_X: 13
+      m_Y: 117
+      m_Width: 76
+      m_Height: 72
+    m_Scale: 1
+    m_AtlasIndex: 0
+    sprite: {fileID: 2261662136944301071, guid: 4f9996ed307588a428790835e07b2bb2,
+      type: 3}
+  - m_Index: 4
+    m_Metrics:
+      m_Width: 76
+      m_Height: 72
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
+      m_HorizontalAdvance: 76
+    m_GlyphRect:
+      m_X: 115
+      m_Y: 117
+      m_Width: 76
+      m_Height: 72
+    m_Scale: 1
+    m_AtlasIndex: 0
+    sprite: {fileID: 6096164203501943147, guid: 4f9996ed307588a428790835e07b2bb2,
+      type: 3}
+  - m_Index: 5
+    m_Metrics:
+      m_Width: 76
+      m_Height: 72
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
+      m_HorizontalAdvance: 76
+    m_GlyphRect:
+      m_X: 217
+      m_Y: 117
+      m_Width: 76
+      m_Height: 72
+    m_Scale: 1
+    m_AtlasIndex: 0
+    sprite: {fileID: 8660024976828775359, guid: 4f9996ed307588a428790835e07b2bb2,
+      type: 3}
+  - m_Index: 6
+    m_Metrics:
+      m_Width: 76
+      m_Height: 72
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
+      m_HorizontalAdvance: 76
+    m_GlyphRect:
+      m_X: 13
+      m_Y: 15
+      m_Width: 76
+      m_Height: 72
+    m_Scale: 1
+    m_AtlasIndex: 0
+    sprite: {fileID: -8222939420138050856, guid: 4f9996ed307588a428790835e07b2bb2,
+      type: 3}
+  - m_Index: 7
+    m_Metrics:
+      m_Width: 76
+      m_Height: 72
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 55
+      m_HorizontalAdvance: 76
+    m_GlyphRect:
+      m_X: 115
+      m_Y: 15
+      m_Width: 76
+      m_Height: 72
+    m_Scale: 1
+    m_AtlasIndex: 0
+    sprite: {fileID: 192726348397276724, guid: 4f9996ed307588a428790835e07b2bb2, type: 3}
+  spriteInfoList: []
+  fallbackSpriteAssets: []
+--- !u!21 &378789721442529700
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: TextMeshPro/Sprite
+  m_Shader: {fileID: 4800000, guid: cf81c85f95fe47e1a27f6ae460cf182c, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 4f9996ed307588a428790835e07b2bb2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _UseUIAlphaClip: 0
+    m_Colors:
+    - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}

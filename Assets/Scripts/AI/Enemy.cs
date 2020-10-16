@@ -50,6 +50,9 @@ namespace StarSalvager.AI
 
         public bool Disabled { get; protected set; }
 
+        public bool Frozen => FreezeTime > 0f;
+        private float FreezeTime { get; set; }
+
         //IStateAnimation Properties 
         //============================================================================================================//
 
@@ -89,11 +92,16 @@ namespace StarSalvager.AI
             //Count down fire timer. If ready to fire, call fireAttack()
             if (m_enemyData.AttackType == ENEMY_ATTACKTYPE.None)
                 return;
+
+            if (FreezeTime > 0)
+            {
+                FreezeTime -= Time.deltaTime;
+                return;
+            }
             
             if(GameTimer.IsPaused || LevelManager.Instance.EndWaveState || Disabled)
                 return;
             
-
             m_fireTimer += Time.deltaTime;
 
             if (m_fireTimer < 1 / m_enemyData.RateOfFire)
@@ -126,6 +134,11 @@ namespace StarSalvager.AI
                     m_positions.Add(new Vector3(i - ((float)m_enemyData.Dimensions.x - 1) / 2, k - ((float)m_enemyData.Dimensions.y - 1) / 2, 0));
                 }
             }
+        }
+
+        public void SetFrozen(float time)
+        {
+            FreezeTime = time;
         }
 
         //============================================================================================================//
@@ -175,6 +188,7 @@ namespace StarSalvager.AI
                     targetLocation,
                     m_mostRecentMovementDirection * m_enemyData.MovementSpeed,
                     m_enemyData.AttackDamage,
+                    1f,
                     "Player");
 
             /*List<Vector2> fireLocations = GetFireDirection();
@@ -488,6 +502,7 @@ namespace StarSalvager.AI
 
         public virtual void CustomRecycle(params object[] args)
         {
+            FreezeTime = 0f;
             Disabled = false;
             AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
             UnregisterCanBeSeen();

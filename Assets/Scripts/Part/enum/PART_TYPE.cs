@@ -9,7 +9,7 @@
         GUN,
         
         SHIELD,
-        BOOST,
+        FREEZE,
         BOMB,
         
         STORE,
@@ -22,7 +22,25 @@
         MISSILE,
         SNIPER,
         BLASTER,
-        REFINER
+        REFINER,
+        SPIKES,
+        LASER,
+        GRENADE,
+        CATAPULT,
+        LIGHTNING,
+        
+        BOOSTRANGE,
+        BOOSTRATE,
+        BOOSTDAMAGE,
+        BOOSTDEFENCE,
+        
+        STACKER,
+        CLOAK,
+        SONAR,
+        DECOY,
+        RETRACTOR,
+        HOOVER,
+
     } 
 }
 

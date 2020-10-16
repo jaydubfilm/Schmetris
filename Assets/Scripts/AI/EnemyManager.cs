@@ -129,7 +129,7 @@ namespace StarSalvager
 
                 //TODO: This process shouldn't be straight summing and averaging the different forces on different parts. 
                 //We should be selecting for the strongest forces and using those in any given direction, otherwise, the strong forces on one position can be dampened by the weaker on others.
-                if (m_enemiesInert || m_enemies[i].Disabled)
+                if (m_enemiesInert || m_enemies[i].Disabled || m_enemies[i].Frozen)
                 {
                     m_enemies[i].transform.position -= fallAmount;
                     continue;
@@ -349,6 +349,28 @@ namespace StarSalvager
             }
 
             return closestEnemy;
+        }
+        
+        public List<Enemy> GetEnemiesInRange(Vector2 position, float range)
+        {
+            var outList = new List<Enemy>();
+            foreach (var enemy in m_enemies)
+            {
+                if (enemy.IsRecycled)
+                    continue;
+                
+                if (!CameraController.IsPointInCameraRect(enemy.transform.position))
+                    continue;
+                
+                var dist = Vector2.Distance(position, enemy.transform.position);
+                
+                if(dist > range)
+                    continue;
+
+                outList.Add(enemy);
+            }
+
+            return outList;
         }
 
         public void SetEnemiesInert(bool inert)

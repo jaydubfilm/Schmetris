@@ -567,13 +567,13 @@ namespace StarSalvager
             m_bonusShapesSpawned = 0;
         }
 
-        private void SetupStage(int waveNumber)
+        public void SetupStage(int stageNumber)
         {
-            if (waveNumber > 0)
-                m_previousStageData = LevelManager.Instance.CurrentWaveData.GetRemoteData(waveNumber - 1);
+            if (stageNumber > 0)
+                m_previousStageData = LevelManager.Instance.CurrentWaveData.GetRemoteData(stageNumber - 1);
 
-            m_currentStageData = LevelManager.Instance.CurrentWaveData.GetRemoteData(waveNumber);
-            m_nextStageToSpawn = waveNumber + 1;
+            m_currentStageData = LevelManager.Instance.CurrentWaveData.GetRemoteData(stageNumber);
+            m_nextStageToSpawn = stageNumber + 1;
             m_blendTimer = 0;
 
             CreateEdgeSprites();

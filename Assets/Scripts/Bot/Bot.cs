@@ -43,6 +43,10 @@ namespace StarSalvager
         
         public static Action<Bot, string> OnBotDied;
 
+        public Action OnCombo;
+        public Action OnFullMagnet;
+        public Action OnBitShift;
+
         [BoxGroup("Smoke Particles")]
         public ParticleSystem TEST_ParticleSystem;
         [BoxGroup("Smoke Particles")]
@@ -184,6 +188,8 @@ namespace StarSalvager
         {
             if (!_needToCheckMagnet) 
                 return;
+
+            if(IsMagnetFull()) OnFullMagnet?.Invoke();
             
             AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
             _needToCheckMagnet = false;
@@ -562,6 +568,9 @@ namespace StarSalvager
                             var shift = TryShift(connectionDirection.Reflected(), closestAttachable);
                             AudioController.PlaySound(shift ? SOUND.BUMPER_BONK_SHIFT : SOUND.BUMPER_BONK_NOSHIFT);
                             SessionDataProcessor.Instance.HitBumper();
+                            
+                            if(shift)
+                                OnBitShift?.Invoke();
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(bit.Type), bit.Type, null);
@@ -2257,6 +2266,7 @@ namespace StarSalvager
                     
                     CheckForBonusShapeMatches();
                     
+                    OnCombo?.Invoke();
                 }));
                 
             
@@ -2709,6 +2719,18 @@ namespace StarSalvager
 
             return true;
         }
+
+        private bool IsMagnetFull()
+        {
+            var magnetCount = BotPartsLogic.MagnetCount;
+            var magnetAttachables = attachedBlocks.Where(x => x.CountTowardsMagnetism).ToList();
+            
+            if(GameUi) 
+                GameUi.SetCarryCapacity(magnetAttachables.Count / (float)magnetCount);
+            
+            return magnetAttachables.Count == magnetCount;
+        }
+        
 
         private void DefaultMagnetCheck(List<IAttachable> attachables, out List<IAttachable> toDetach, in int toRemoveCount)
         {

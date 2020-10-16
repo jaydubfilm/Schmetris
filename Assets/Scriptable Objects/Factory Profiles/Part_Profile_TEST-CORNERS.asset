@@ -21,9 +21,9 @@ MonoBehaviour:
   - partType: 0
     _animation: {fileID: 0}
     _sprites:
-    - {fileID: 4059738842222387008, guid: 73b7c16003b98714ca98a495da0d2bed, type: 3}
-    - {fileID: -7089990038974304980, guid: 73b7c16003b98714ca98a495da0d2bed, type: 3}
-    - {fileID: -8320167590208903051, guid: 73b7c16003b98714ca98a495da0d2bed, type: 3}
+    - {fileID: 21300000, guid: e8bf330377bea854689aa3b88ce321e9, type: 3}
+    - {fileID: 21300000, guid: 843811fb07ab1584e97dc00691b05b1e, type: 3}
+    - {fileID: 21300000, guid: f27cdc66a92cddc409494b6005898db3, type: 3}
   - partType: 1
     _animation: {fileID: 0}
     _sprites:
@@ -112,6 +112,36 @@ MonoBehaviour:
     - {fileID: 6586186104735683285, guid: 73b7c16003b98714ca98a495da0d2bed, type: 3}
     - {fileID: -6864193789411940371, guid: 73b7c16003b98714ca98a495da0d2bed, type: 3}
   - partType: 17
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: 21300000, guid: afd9ef09316bdb445825c64c11bcd851, type: 3}
+    - {fileID: 21300000, guid: d6becc35e668194458c7e68ab76570bf, type: 3}
+    - {fileID: 21300000, guid: f29b33ce2f61b5a4ebbe1a8543fb4f69, type: 3}
+  - partType: 23
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: 21300000, guid: 2897c309d4fec844fb378777c9ab53b2, type: 3}
+    - {fileID: 21300000, guid: afd0b36030363d041b9a087c28bb757f, type: 3}
+    - {fileID: 21300000, guid: 30730ede8d5f3be45b070f0c5594422c, type: 3}
+  - partType: 24
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: 21300000, guid: 7e36e05923597464fb708569e47b2dd7, type: 3}
+    - {fileID: 21300000, guid: 578c52dd01180de45916d0f0355b3850, type: 3}
+    - {fileID: 21300000, guid: e7ca630299d33274ba61bb231cca1365, type: 3}
+  - partType: 25
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: 21300000, guid: b40fb9e9e837ef949971b3047d0e8afe, type: 3}
+    - {fileID: 21300000, guid: 2eb188e78c2fa7f42bc399f5c9926cb7, type: 3}
+    - {fileID: 21300000, guid: 75300ef4d70e3c24fb00d15e4234e418, type: 3}
+  - partType: 26
+    _animation: {fileID: 0}
+    _sprites:
+    - {fileID: 21300000, guid: da85e31a7d0240a4b862f9760a4aec96, type: 3}
+    - {fileID: 21300000, guid: 8dc2dcf907c75b84fa2eca2fd7351f18, type: 3}
+    - {fileID: 21300000, guid: 53b26ab1dc9069b49a4ee91ea04bf5e0, type: 3}
+  - partType: 6
     _animation: {fileID: 0}
     _sprites:
     - {fileID: -7433627698002936791, guid: 73b7c16003b98714ca98a495da0d2bed, type: 3}

@@ -7,20 +7,21 @@ namespace StarSalvager.Utilities.UI
     {
         //Material Icons
         //====================================================================================================================//
-        
+
         private const string MATERIAL_ICONS = "MaterIalIcons_SS_ver2";
+
         internal static readonly Dictionary<BIT_TYPE, string> MaterialIcons = new Dictionary<BIT_TYPE, string>
         {
-            { BIT_TYPE.GREEN,  $"<sprite=\"{MATERIAL_ICONS}\" name=\"{MATERIAL_ICONS}_4\">" },
-            { BIT_TYPE.GREY,   $"<sprite=\"{MATERIAL_ICONS}\" name=\"{MATERIAL_ICONS}_3\">" },
-            { BIT_TYPE.RED,    $"<sprite=\"{MATERIAL_ICONS}\" name=\"{MATERIAL_ICONS}_2\">" },
-            { BIT_TYPE.BLUE,   $"<sprite=\"{MATERIAL_ICONS}\" name=\"{MATERIAL_ICONS}_1\">" },
-            { BIT_TYPE.YELLOW, $"<sprite=\"{MATERIAL_ICONS}\" name=\"{MATERIAL_ICONS}_0\">" },
+            {BIT_TYPE.GREEN, $"<sprite=\"{MATERIAL_ICONS}\" name=\"{MATERIAL_ICONS}_4\">"},
+            {BIT_TYPE.GREY, $"<sprite=\"{MATERIAL_ICONS}\" name=\"{MATERIAL_ICONS}_3\">"},
+            {BIT_TYPE.RED, $"<sprite=\"{MATERIAL_ICONS}\" name=\"{MATERIAL_ICONS}_2\">"},
+            {BIT_TYPE.BLUE, $"<sprite=\"{MATERIAL_ICONS}\" name=\"{MATERIAL_ICONS}_1\">"},
+            {BIT_TYPE.YELLOW, $"<sprite=\"{MATERIAL_ICONS}\" name=\"{MATERIAL_ICONS}_0\">"},
         };
 
         //Game Pieces
         //====================================================================================================================//
-        
+
         private const string GAME_PIECES = "GamePieces_Atlas_ver4";
 
         internal static string GetBitSprite(BIT_TYPE type, int level)
@@ -52,8 +53,48 @@ namespace StarSalvager.Utilities.UI
             return $"<sprite=\"{GAME_PIECES}\" name=\"{GAME_PIECES}_{typeBase + levelOffset}\">";
         }
 
+        //Inputs
         //====================================================================================================================//
-        
+
+        private const string KEYBOARD_LIGHT = "Keryboard_Light";
+        private const string KEYBOARD_DARK = "Keyboard_Dark";
+
+        private const string SWITCH = "Switch";
+
+        //TODO Need to consider the orientation
+        internal static string GetInputSprite(string control, bool isLight = true)
+        {
+            var spriteSheet = isLight ? KEYBOARD_LIGHT : KEYBOARD_DARK;
+            string controlSprite = string.Empty;
+#if UNITY_STANDALONE
+
+            switch (control)
+            {
+                case "up":
+                    controlSprite = "upArrow";
+                    break;
+                case "right":
+                    controlSprite = "rightArrow";
+                    break;
+                case "down":
+                    controlSprite = "downArrow";
+                    break;
+                case "left":
+                    controlSprite = "leftArrow";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(control), control, null);
+            }
+#else
+                        throw new NotImplementedException();
+
+
+#endif
+
+
+            return $"<sprite=\"{spriteSheet}\" name=\"{spriteSheet}_{controlSprite}\">";
+        }
+
     }
 
 }

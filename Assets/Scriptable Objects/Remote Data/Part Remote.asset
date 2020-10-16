@@ -32,6 +32,8 @@ MonoBehaviour:
         value: 30
       - key: SMRTCapacity
         value: 2
+      - key: PartCapacity
+        value: 3
       burnRate: 1
       cost: []
     - unlockLevel: 0
@@ -44,6 +46,8 @@ MonoBehaviour:
         value: 100
       - key: SMRTCapacity
         value: 3
+      - key: PartCapacity
+        value: 6
       burnRate: 2
       cost:
       - resourceType: 0
@@ -96,6 +100,8 @@ MonoBehaviour:
         value: 200
       - key: SMRTCapacity
         value: 4
+      - key: PartCapacity
+        value: 10
       burnRate: 3
       cost:
       - resourceType: 0
@@ -1350,3 +1356,302 @@ MonoBehaviour:
         type: 1
         partPrerequisiteLevel: 0
         amount: 100
+  - name: Range Boost
+    partType: 23
+    canSell: 1
+    description: 
+    priority: 50
+    burnType: 2
+    levels:
+    - unlockLevel: 3
+      health: 100
+      powerDraw: 0.5
+      dataTest:
+      - key: Multiplier
+        value: 1.25
+      burnRate: 0
+      cost:
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 150
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 50
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 50
+    - unlockLevel: 6
+      health: 100
+      powerDraw: 0.5
+      dataTest:
+      - key: Multiplier
+        value: 1.5
+      burnRate: 0
+      cost:
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 1000
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 500
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 500
+  - name: Overclock
+    partType: 24
+    canSell: 1
+    description: 
+    priority: 50
+    burnType: 5
+    levels:
+    - unlockLevel: 3
+      health: 100
+      powerDraw: 0.5
+      dataTest:
+      - key: Multiplier
+        value: 1.5
+      burnRate: 0
+      cost:
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 50
+      - resourceType: 0
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 150
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 50
+    - unlockLevel: 6
+      health: 100
+      powerDraw: 0.5
+      dataTest:
+      - key: Multiplier
+        value: 2.0
+      burnRate: 0
+      cost:
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 500
+      - resourceType: 0
+        type: 5
+        partPrerequisiteLevel: 0
+        amount: 1000
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 500
+  - name: Offense
+    partType: 25
+    canSell: 1
+    description: 
+    priority: 50
+    burnType: 4
+    levels:
+    - unlockLevel: 3
+      health: 100
+      powerDraw: 0.5
+      dataTest:
+      - key: Multiplier
+        value: 1.5
+      burnRate: 0
+      cost:
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 0
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 250
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 100
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 100
+    - unlockLevel: 6
+      health: 100
+      powerDraw: 0.5
+      dataTest:
+      - key: Multiplier
+        value: 1.5
+      burnRate: 0
+      cost:
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 0
+        type: 4
+        partPrerequisiteLevel: 0
+        amount: 2500
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 750
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 750
+  - name: Defense
+    partType: 26
+    canSell: 1
+    description: 
+    priority: 50
+    burnType: 1
+    levels:
+    - unlockLevel: 4
+      health: 100
+      powerDraw: 0.5
+      dataTest:
+      - key: Absorb
+        value: 50
+      burnRate: 0
+      cost:
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 3
+      - resourceType: 1
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 250
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 100
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 100
+    - unlockLevel: 7
+      health: 100
+      powerDraw: 0.5
+      dataTest:
+      - key: Absorb
+        value: 100
+      burnRate: 0
+      cost:
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 2500
+      - resourceType: 0
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 750
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 750
+  - name: Freeze
+    partType: 6
+    canSell: 1
+    description: 
+    priority: 50
+    burnType: 1
+    levels:
+    - unlockLevel: 3
+      health: 100
+      powerDraw: 0
+      dataTest:
+      - key: Radius
+        value: 10
+      - key: Time
+        value: 10
+      - key: Cooldown
+        value: 5
+      burnRate: 5
+      cost:
+      - resourceType: 1
+        type: 0
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 1
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 2
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 150
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 150
+    - unlockLevel: 7
+      health: 150
+      powerDraw: 0
+      dataTest:
+      - key: Radius
+        value: 15
+      - key: Time
+        value: 15
+      - key: Cooldown
+        value: 9
+      burnRate: 10
+      cost:
+      - resourceType: 1
+        type: 3
+        partPrerequisiteLevel: 0
+        amount: 1
+      - resourceType: 0
+        type: 2
+        partPrerequisiteLevel: 0
+        amount: 1500
+      - resourceType: 0
+        type: 1
+        partPrerequisiteLevel: 0
+        amount: 1500

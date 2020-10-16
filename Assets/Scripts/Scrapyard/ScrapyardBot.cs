@@ -434,6 +434,11 @@ namespace StarSalvager
 
         public float powerDraw { get; private set; }
 
+        private int maxParts { get; set; }
+
+        public bool AtPartCapacity => _parts.Count >= maxParts + 1;
+        public string PartCapacity => $"{_parts.Count - 1 }/{maxParts }";
+
         /// <summary>
         /// Called when new Parts are added to the attachable List. Allows for a short list of parts to exist to ease call
         /// cost for updating the Part behaviour
@@ -452,6 +457,7 @@ namespace StarSalvager
         {
             PlayerPersistentData.PlayerData.ClearLiquidCapacity(_isRecoveryDrone);
             magnetCount = 0;
+            maxParts = 0;
             powerDraw = 0f;
             
             var capacities = new Dictionary<BIT_TYPE, int>
@@ -487,6 +493,11 @@ namespace StarSalvager
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
                         {
                             magnetCount += value;
+                        }
+
+                        if (partData.TryGetValue(DataTest.TEST_KEYS.PartCapacity, out int intValue))
+                        {
+                            maxParts = intValue;
                         }
                         break;
                     case PART_TYPE.MAGNET: 
