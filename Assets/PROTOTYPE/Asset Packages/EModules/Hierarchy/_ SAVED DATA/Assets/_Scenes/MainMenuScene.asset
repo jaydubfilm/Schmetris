@@ -20,13 +20,69 @@ MonoBehaviour:
   LOCALIDINFILE_Hash5_Fix2_0: []
   LOCALIDINFILE_Hash7_Fix2_0: []
   LOCALIDINFILE_Hash9: []
-<<<<<<< HEAD
   LOCALIDINFILE_Hash_BookMarks:
   - list: []
-=======
-  LOCALIDINFILE_Hash_BookMarks: []
->>>>>>> 0cd38657fc963aeff8ffca6f56235bfe874f463b
-  LOCALIDINFILE_Hash3: []
+  LOCALIDINFILE_Hash3:
+  - activeObject:
+      i1: 1933588733
+      i2: 0
+    list:
+    - i1: 1933588733
+      i2: 0
+  - activeObject:
+      i1: 1350056042
+      i2: 0
+    list:
+    - i1: 1350056042
+      i2: 0
+  - activeObject:
+      i1: 93580469
+      i2: 0
+    list:
+    - i1: 93580469
+      i2: 0
+  - activeObject:
+      i1: 93580469
+      i2: 0
+    list:
+    - i1: 93580469
+      i2: 0
+  - activeObject:
+      i1: 1300151916
+      i2: 0
+    list:
+    - i1: 1300151916
+      i2: 0
+  - activeObject:
+      i1: 93580469
+      i2: 0
+    list:
+    - i1: 93580469
+      i2: 0
+  - activeObject:
+      i1: 1300151916
+      i2: 0
+    list:
+    - i1: 1300151916
+      i2: 0
+  - activeObject:
+      i1: 93580469
+      i2: 0
+    list:
+    - i1: 93580469
+      i2: 0
+  - activeObject:
+      i1: -464838314
+      i2: 1866823308
+    list:
+    - i1: -464838314
+      i2: 1866823308
+  - activeObject:
+      i1: 1933588733
+      i2: 0
+    list:
+    - i1: 1933588733
+      i2: 0
   LOCALIDINFILE_Hash4: []
   LOCALIDINFILE_m_Hash_IconImageKey: []
   HashFreezeHashKeys: []
@@ -40,7 +96,6 @@ MonoBehaviour:
     SKIP_COLOR: 0
     NO_EXPAND_ITEMS: 0
     name: Default
-<<<<<<< HEAD
     array:
     - FavParams: 0
       FavString: []
@@ -50,16 +105,11 @@ MonoBehaviour:
       GUIDsActiveGameObject: 
       PATHsList: []
       PATHsActiveGameObject: 
-      InstanceID: -849090526
+      InstanceID: 1178759981
       wasInit: 0
       CashedBool: 0
     FavParams: 0
     InstanceID: -589302561
-=======
-    array: []
-    FavParams: 0
-    InstanceID: 303027050
->>>>>>> 0cd38657fc963aeff8ffca6f56235bfe874f463b
     Hierarchy_ScrollY: 0
     Window_ScrollY: 0
     ColabsedItems: 
@@ -67,8 +117,127 @@ MonoBehaviour:
   Hash1: []
   Hash1_Fix2_0: []
   Hash2: []
-  Hash3: []
-<<<<<<< HEAD
+  Hash3:
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
   Hash4:
   - FavParams: 0
     FavString: []
@@ -78,12 +247,9 @@ MonoBehaviour:
     GUIDsActiveGameObject: 
     PATHsList: []
     PATHsActiveGameObject: 
-    InstanceID: -849090526
+    InstanceID: 1178759981
     wasInit: 0
     CashedBool: 0
-=======
-  Hash4: []
->>>>>>> 0cd38657fc963aeff8ffca6f56235bfe874f463b
   Hash5: []
   Hash5_Fix2_0: []
   Hash6: []
