@@ -378,6 +378,8 @@ namespace StarSalvager.Tutorial
             LevelManager.Instance.BotObject.PROTO_GodMode = false;
 
             SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+
+            fadeImage.color = Color.clear;
         }
         
         //Generic Tutorial Steps
