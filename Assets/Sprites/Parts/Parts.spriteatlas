@@ -1,0 +1,114 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Parts
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 1024
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 2
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 1
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 6759b68e19179d544892935a6215a210, type: 3}
+    - {fileID: 102900000, guid: 8de7c078e1f416146ad973aea9f1ce9e, type: 3}
+    - {fileID: 102900000, guid: 9c726d3c328d7af4fbebffc9c0b38c96, type: 3}
+    - {fileID: 102900000, guid: 6d23ecb8a6f99cb468079461afe4e565, type: 3}
+    - {fileID: 102900000, guid: 002e12f00754c404b83d1965e899531c, type: 3}
+    - {fileID: 102900000, guid: 59f7eb6fdad74634da9f8b8c12ded90e, type: 3}
+    - {fileID: 102900000, guid: fd9cbffb9364d804580a933743ef7ee9, type: 3}
+    - {fileID: 102900000, guid: d1abbaf478a9cfa41a6b6b79f08a247a, type: 3}
+    - {fileID: 102900000, guid: d00f09b97a5f5a848ae53fe9444ce142, type: 3}
+    totalSpriteSurfaceArea: 442368
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: afd0b36030363d041b9a087c28bb757f, type: 3}
+  - {fileID: 21300000, guid: 53b26ab1dc9069b49a4ee91ea04bf5e0, type: 3}
+  - {fileID: 21300000, guid: 3d923ce11637bf94ea722ea323b43eec, type: 3}
+  - {fileID: 21300000, guid: e7ca630299d33274ba61bb231cca1365, type: 3}
+  - {fileID: 21300000, guid: e8bf330377bea854689aa3b88ce321e9, type: 3}
+  - {fileID: 21300000, guid: 485dff4305fd0da4c91382202ed5579e, type: 3}
+  - {fileID: 21300000, guid: 75300ef4d70e3c24fb00d15e4234e418, type: 3}
+  - {fileID: 21300000, guid: d6becc35e668194458c7e68ab76570bf, type: 3}
+  - {fileID: 21300000, guid: 4aacf1b5046c9d74f81b97434ce8d27e, type: 3}
+  - {fileID: 21300000, guid: f27cdc66a92cddc409494b6005898db3, type: 3}
+  - {fileID: 21300000, guid: da58ecc6d413fcd48b655cb8bbebba4d, type: 3}
+  - {fileID: 21300000, guid: 2eb188e78c2fa7f42bc399f5c9926cb7, type: 3}
+  - {fileID: 21300000, guid: 6c4c5bf73bc32aa45881c24f74b75bd7, type: 3}
+  - {fileID: 21300000, guid: c8d8caf80e05997469d3dfbddb7fe3f1, type: 3}
+  - {fileID: 21300000, guid: 2897c309d4fec844fb378777c9ab53b2, type: 3}
+  - {fileID: 21300000, guid: afd9ef09316bdb445825c64c11bcd851, type: 3}
+  - {fileID: 21300000, guid: 7e36e05923597464fb708569e47b2dd7, type: 3}
+  - {fileID: 21300000, guid: b40fb9e9e837ef949971b3047d0e8afe, type: 3}
+  - {fileID: 21300000, guid: b1916de9ae79d444bb94da5f90791757, type: 3}
+  - {fileID: 21300000, guid: 8dc2dcf907c75b84fa2eca2fd7351f18, type: 3}
+  - {fileID: 21300000, guid: da85e31a7d0240a4b862f9760a4aec96, type: 3}
+  - {fileID: 21300000, guid: 843811fb07ab1584e97dc00691b05b1e, type: 3}
+  - {fileID: 21300000, guid: 2e2bb69d9de6c9d4a9af7278b3530bcc, type: 3}
+  - {fileID: 21300000, guid: 578c52dd01180de45916d0f0355b3850, type: 3}
+  - {fileID: 21300000, guid: f29b33ce2f61b5a4ebbe1a8543fb4f69, type: 3}
+  - {fileID: 21300000, guid: 30730ede8d5f3be45b070f0c5594422c, type: 3}
+  - {fileID: 21300000, guid: 5a4f808fa0c3bc4409cc8c37fbb5c192, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - part_BOOSTRANGE_2_v1
+  - part_BOOSTDEFENCE_3_v1
+  - part_SPIKES_2_v1
+  - part_BOOSTRATE_3_v1
+  - part_CORE_1_v1
+  - part_STACKER_3_v1
+  - part_BOOSTDAMAGE_3_v1
+  - part_REFINER_2_v1
+  - part_SPIKES_1_v1
+  - part_CORE_3_v1
+  - part_RECOVERY_3_v1
+  - part_BOOSTDAMAGE_2_v1
+  - part_RECOVERY_2_v1
+  - part_RECOVERY_1_v1
+  - part_BOOSTRANGE_1_v1
+  - part_REFINER_1_v1
+  - part_BOOSTRATE_1_v1
+  - part_BOOSTDAMAGE_1_v1
+  - part_SPIKES_3_v1
+  - part_BOOSTDEFENCE_2_v1
+  - part_BOOSTDEFENCE_1_v1
+  - part_CORE_2_v1
+  - part_STACKER_1_v1
+  - part_BOOSTRATE_2_v1
+  - part_REFINER_3_v1
+  - part_BOOSTRANGE_3_v1
+  - part_STACKER_2_v1
+  m_Tag: Parts
+  m_IsVariant: 0

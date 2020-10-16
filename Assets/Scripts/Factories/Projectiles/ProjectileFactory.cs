@@ -44,13 +44,13 @@ namespace StarSalvager.Factories
         //============================================================================================================//
 
         //TODO: Add setting the collisionTag for the projectile
-        public T[] CreateObjects<T>(string projectileType, Vector2 fromPosition, Vector2 targetPosition, float damage, string collisionTag, bool shouldFlipSprite = false)
+        public T[] CreateObjects<T>(string projectileType, Vector2 fromPosition, Vector2 targetPosition, float damage, float rangeBoost, string collisionTag, bool shouldFlipSprite = false)
         {
-            return CreateObjects<T>(projectileType, fromPosition, targetPosition, Vector2.zero, damage, collisionTag, shouldFlipSprite);
+            return CreateObjects<T>(projectileType, fromPosition, targetPosition, Vector2.zero, damage, rangeBoost, collisionTag, shouldFlipSprite);
         }
         
         public T[] CreateObjects<T>(string projectileType, Vector2 fromPosition, Vector2 targetPosition,
-            Vector2 currentVelocity, float damage, string collisionTag, bool shouldFlipSprite = false)
+            Vector2 currentVelocity, float damage, float rangeBoost, string collisionTag, bool shouldFlipSprite = false)
         {
             var projectiles = new List<T>();
             var projectileProfile = m_projectileProfile.GetProjectileProfileData(projectileType);
@@ -75,6 +75,7 @@ namespace StarSalvager.Factories
                     null,
                     collisionTag,
                     damage,
+                    rangeBoost,
                     travelDirection.normalized,
                     projectileProfile.AddVelocityToProjectiles ? currentVelocity : Vector2.zero);
 
@@ -92,13 +93,13 @@ namespace StarSalvager.Factories
         //====================================================================================================================//
         
         //TODO: Add setting the collisionTag for the projectile
-        public T[] CreateObjects<T>(string projectileType, Vector2 fromPosition, CollidableBase target, float damage, string collisionTag, bool shouldFlipSprite = false)
+        public T[] CreateObjects<T>(string projectileType, Vector2 fromPosition, CollidableBase target, float damage, float rangeBoost, string collisionTag, bool shouldFlipSprite = false)
         {
-            return CreateObjects<T>(projectileType, fromPosition, target, Vector2.zero, damage, collisionTag, shouldFlipSprite);
+            return CreateObjects<T>(projectileType, fromPosition, target, Vector2.zero, damage,rangeBoost, collisionTag, shouldFlipSprite);
         }
         
         public T[] CreateObjects<T>(string projectileType, Vector2 fromPosition, CollidableBase target,
-            Vector2 currentVelocity, float damage, string collisionTag, bool shouldFlipSprite = false)
+            Vector2 currentVelocity, float damage,float rangeBoost, string collisionTag, bool shouldFlipSprite = false)
         {
             var projectiles = new List<T>();
             var projectileProfile = m_projectileProfile.GetProjectileProfileData(projectileType);
@@ -123,6 +124,7 @@ namespace StarSalvager.Factories
                     target,
                     collisionTag,
                     damage,
+                    rangeBoost,
                     travelDirection.normalized,
                     projectileProfile.AddVelocityToProjectiles ? currentVelocity : Vector2.zero);
 

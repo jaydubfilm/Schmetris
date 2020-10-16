@@ -12,27 +12,24 @@ namespace StarSalvager
     [Serializable]
     public struct PartLevelData
     {
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         [JsonIgnore]
         public string Name =>
             $"Health: {health} - Data: {dataTest.Length} - Burn Rate: {(burnRate == 0f ? "None" : $"{burnRate}/s")} - lvl req: {unlockLevel}";
-        #endif
+#endif
 
         public int unlockLevel;
-        
+
         public float health;
 
-        [SuffixLabel("/sec", true)]
-        public float powerDraw;
+        [SuffixLabel("/sec", true)] public float powerDraw;
 
         //public int data;
 
-        [ShowInInspector]
-        public DataTest[] dataTest;
+        [ShowInInspector] public DataTest[] dataTest;
 
-        [SuffixLabel("/sec", true)]
-        public float burnRate;
-        
+        [SuffixLabel("/sec", true)] public float burnRate;
+
         public List<CraftCost> cost;
 
         public T GetDataValue<T>(DataTest.TEST_KEYS key)
@@ -52,14 +49,14 @@ namespace StarSalvager
         public bool TryGetValue<T>(DataTest.TEST_KEYS key, out T value)
         {
             value = default;
-            
+
             var keyString = DataTest.TestList[(int) key];
             var dataValue = dataTest.FirstOrDefault(d => d.key.Equals(keyString));
 
             if (dataValue.Equals(null))
                 return false;
-            
-            if (!(dataValue.GetValue() is T i)) 
+
+            if (!(dataValue.GetValue() is T i))
                 return false;
 
             value = i;
@@ -69,7 +66,7 @@ namespace StarSalvager
     }
 
     [Serializable]
-    public struct DataTest: IEquatable<DataTest>
+    public struct DataTest : IEquatable<DataTest>
     {
         public enum TEST_KEYS
         {
@@ -86,8 +83,10 @@ namespace StarSalvager
             SMRTCapacity,
             Probability,
             PartCapacity,
+            Multiplier
         }
-        public static readonly string[] TestList = 
+
+        public static readonly string[] TestList =
         {
             "Magnet",
             "Capacity",
@@ -101,7 +100,8 @@ namespace StarSalvager
             "Projectile",
             "SMRTCapacity",
             "Probability",
-            "PartCapacity"
+            "PartCapacity",
+            "Multiplier"
         };
 
         [ValueDropdown(nameof(TestList)), HorizontalGroup("row1", Width = 120), HideLabel]
@@ -119,7 +119,7 @@ namespace StarSalvager
 
             if (string.IsNullOrEmpty(value))
                 return default;
-                
+
             switch (_out)
             {
                 case TEST_KEYS.Radius:
@@ -128,7 +128,7 @@ namespace StarSalvager
                 case TEST_KEYS.SMRTCapacity:
                 case TEST_KEYS.PartCapacity:
                     return int.Parse(value);
-                
+
                 case TEST_KEYS.Heal:
                 case TEST_KEYS.Absorb:
                 case TEST_KEYS.Boost:
@@ -136,8 +136,9 @@ namespace StarSalvager
                 case TEST_KEYS.Damage:
                 case TEST_KEYS.Cooldown:
                 case TEST_KEYS.Probability:
+                case TEST_KEYS.Multiplier:
                     return float.Parse(value);
-                
+
                 case TEST_KEYS.Projectile:
                     return value;
                 default:
@@ -163,8 +164,8 @@ namespace StarSalvager
                 return ((key != null ? key.GetHashCode() : 0) * 397) ^ value.GetHashCode();
             }*/
         }
-        
-        #if UNITY_EDITOR
+
+#if UNITY_EDITOR
 
         private bool IsWrongType()
         {
@@ -192,7 +193,7 @@ namespace StarSalvager
                 case TEST_KEYS.Magnet:
                 case TEST_KEYS.PartCapacity:
                     return $"{_out} should be of type int";
-                
+
                 case TEST_KEYS.Heal:
                 case TEST_KEYS.Absorb:
                 case TEST_KEYS.Boost:
@@ -200,16 +201,17 @@ namespace StarSalvager
                 case TEST_KEYS.Damage:
                 case TEST_KEYS.Cooldown:
                 case TEST_KEYS.Probability:
+                case TEST_KEYS.Multiplier:
                     return $"{_out} should be of type float";
-                
+
                 case TEST_KEYS.Projectile:
                     return $"{_out} should be of type string";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(key), _out, null);
             }
         }
-        
-        #endif
+
+#endif
 
     }
 }

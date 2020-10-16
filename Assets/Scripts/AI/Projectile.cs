@@ -43,7 +43,11 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
-        public virtual void Init(ProjectileProfileData profileData, CollidableBase target, string collisionTag, float damage,
+        public virtual void Init(ProjectileProfileData profileData, 
+            CollidableBase target, 
+            string collisionTag,
+            float damage,
+            float rangeBoost,
             Vector2 direction, Vector2 velocity)
         {
             ProjectileData = profileData;
@@ -63,7 +67,7 @@ namespace StarSalvager.AI
                 _hasRange = true;
 
                 //Calculates the time it will take to travel the distance
-                _lifeTime = ProjectileData.ProjectileRange / ProjectileData.ProjectileSpeed;
+                _lifeTime = ProjectileData.ProjectileRange * rangeBoost / ProjectileData.ProjectileSpeed;
             }
         }
 

@@ -144,7 +144,7 @@ namespace StarSalvager
         public void UpdatePartsList()
         {
             _parts = bot.attachedBlocks.OfType<Part>().ToList();
-            _smartWeapons = _parts.Where(p => p.Type == PART_TYPE.BOMB).ToList();
+            _smartWeapons = _parts.Where(p => p.Type == PART_TYPE.BOMB || p.Type == PART_TYPE.FREEZE).ToList();
 
             //TODO Need to update the UI here for the amount of smart weapons able to be used
 
@@ -307,6 +307,7 @@ namespace StarSalvager
                             capacities[BIT_TYPE.YELLOW] += value;
                         }
                         break;
+                    case PART_TYPE.FREEZE:
                     case PART_TYPE.BOMB:
                         if(_bombTimers == null)
                             _bombTimers = new Dictionary<Part, float>();
@@ -505,6 +506,7 @@ namespace StarSalvager
                         resourceValue -= resoucesConsumed;
 
                         var repairAmount = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Heal);
+                        repairAmount *= GetBoostValue(PART_TYPE.BOOSTRATE, part);
 
                         //FIXME This will need some sort of time cooldown
                         //AudioController.PlaySound(SOUND.REPAIRER_PULSE);
@@ -528,7 +530,8 @@ namespace StarSalvager
                         //--------------------------------------------------------------------------------------------//
 
                         cooldown = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Cooldown);
-
+                        cooldown /= GetBoostValue(PART_TYPE.BOOSTRATE, part);
+                        
                         if (_projectileTimers[part] < cooldown)
                         {
                             _projectileTimers[part] += Time.deltaTime;
@@ -601,7 +604,9 @@ namespace StarSalvager
                         //TODO This needs to fire every x Seconds
                         //--------------------------------------------------------------------------------------------//
 
+                        //FIXME This now might more sense to count down instead of counting up
                         cooldown = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Cooldown);
+                        cooldown /= GetBoostValue(PART_TYPE.BOOSTRATE, part);
 
                         if (_projectileTimers[part] < cooldown)
                         {
@@ -721,6 +726,7 @@ namespace StarSalvager
                         shield.SetAlpha(0.5f * (data.currentHp / fakeHealth));
 
                         break;
+                    case PART_TYPE.FREEZE:
                     case PART_TYPE.BOMB:
 
                         //TODO This still needs to account for multiple bombs
@@ -742,16 +748,15 @@ namespace StarSalvager
                         //GameUI.SetHasResource(index, true);
 
 
-                        levelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float shieldCooldown);
+                        levelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float bombCooldown);
 
                         resoucesConsumed = Time.deltaTime;
                         resourceValue -= resoucesConsumed;
 
                         _bombTimers[part] -= Time.deltaTime;
-                        GameUI.SetFill(index, 1f - _bombTimers[part] / shieldCooldown);
+                        GameUI.SetFill(index, 1f - _bombTimers[part] / bombCooldown);
 
                         break;
-                    
                 }
                 
                 
@@ -798,10 +803,13 @@ namespace StarSalvager
 
         #region Weapons
 
-        private static void CreateProjectile(in Part part, PartLevelData levelData, in Enemy enemy, string collisionTag = "Enemy")
+        private void CreateProjectile(in Part part, PartLevelData levelData, in Enemy enemy, string collisionTag = "Enemy")
         {
             var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
             var damage = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Damage);
+            damage *= GetBoostValue(PART_TYPE.BOOSTDAMAGE, part);
+
+            var rangeBoost = GetBoostValue(PART_TYPE.BOOSTRANGE, part);
 
             var position = part.transform.position;
 
@@ -812,13 +820,18 @@ namespace StarSalvager
                     position,
                     enemy,
                     damage,
+                    rangeBoost,
                     collisionTag,
                     true);
         }
-        private static void CreateProjectile(in Part part, PartLevelData levelData, Vector2 targetPosition, string collisionTag = "Enemy")
+        private void CreateProjectile(in Part part, PartLevelData levelData, Vector2 targetPosition, string collisionTag = "Enemy")
         {
             var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
+
             var damage = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Damage);
+            damage *= GetBoostValue(PART_TYPE.BOOSTDAMAGE, part);
+            
+            var rangeBoost = GetBoostValue(PART_TYPE.BOOSTRANGE, part);
 
             var position = part.transform.position;
 
@@ -829,6 +842,7 @@ namespace StarSalvager
                     position,
                     targetPosition,
                     damage,
+                    rangeBoost,
                     collisionTag,
                     true);
         }
@@ -860,6 +874,9 @@ namespace StarSalvager
             {
                 case PART_TYPE.BOMB:
                     TriggerBomb(part);
+                    break;
+                case PART_TYPE.FREEZE:
+                    TriggerFreeze(part);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _smartWeapons[index].Type, null);
@@ -893,6 +910,42 @@ namespace StarSalvager
             if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Damage, out float damage))
             {
                 EnemyManager.DamageAllEnemies(damage);
+            }
+
+            AudioController.PlaySound(SOUND.BOMB_BLAST);
+        }
+        
+        private void TriggerFreeze(Part part)
+        {
+            if (_bombTimers == null || _bombTimers.Count == 0)
+                return;
+
+            //If the bomb is still recharging, we tell the player that its unavailable
+            if (_bombTimers[part] > 0f)
+            {
+                AudioController.PlaySound(SOUND.BOMB_CLICK);
+                return;
+            }
+
+            var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                .GetRemoteData(part.Type);
+
+            var partLevelData = partData.levels[part.level];
+
+            //Set the cooldown time
+            if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float cooldown))
+            {
+                _bombTimers[part] = cooldown;
+            }
+
+            partLevelData.TryGetValue(DataTest.TEST_KEYS.Radius, out int radius);
+            partLevelData.TryGetValue(DataTest.TEST_KEYS.Time, out float freezeTime);
+
+            var enemies = EnemyManager.GetEnemiesInRange(part.transform.position, radius);
+
+            foreach (var enemy in enemies)
+            {
+                enemy.SetFrozen(freezeTime);
             }
 
             AudioController.PlaySound(SOUND.BOMB_BLAST);
@@ -1122,6 +1175,34 @@ namespace StarSalvager
                     : PlayerPersistentData.PlayerData.liquidResource[type];
                 return value;
             }
+        }
+
+        //FIXME This is very efficient for finding the parts
+        private float GetBoostValue(PART_TYPE boostPart, Part fromPart)
+        {
+            var boosts = _parts.Where(x => x.Type == boostPart).ToList();
+
+            if (boosts.IsNullOrEmpty())
+                return 1f;
+
+            var beside = boosts.GetAttachablesAround(fromPart).OfType<Part>().Where(x => boosts.Contains(x)).ToList();
+            
+            if (beside.IsNullOrEmpty())
+                return 1f;
+            
+            PartRemoteData partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(boostPart);
+
+            var maxBoost = 1f;
+            foreach (var levelData in beside.Select(part => partRemoteData.levels[part.level]))
+            {
+                if (!levelData.TryGetValue(DataTest.TEST_KEYS.Multiplier, out float mult))
+                    continue;
+
+                if (mult > maxBoost)
+                    maxBoost = mult;
+            }
+
+            return maxBoost;
         }
 
         //Checking for recycled extras
