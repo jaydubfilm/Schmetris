@@ -12,6 +12,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.Utilities;
+using Sirenix.OdinInspector.Editor;
+using System.Linq;
 
 namespace StarSalvager.UI
 {
@@ -21,8 +23,6 @@ namespace StarSalvager.UI
 
         [SerializeField, Required] private ScrollRect m_scrollRect;
         [SerializeField, Required] private RectTransform m_scrollRectArea;
-
-        private List<UniverseMapButton> currentUniverseButtons = new List<UniverseMapButton>();
 
         [SerializeField, Required]
         private Button swapUniverseButton;
@@ -42,7 +42,9 @@ namespace StarSalvager.UI
         private SpriteTitleContentScrolView waveDataScrollView;
 
         [SerializeField]
-        private List<Button> universeMapButtons;
+        private List<UniverseMapButton> universeMapButtons;
+
+        private List<Image> connectionLines = new List<Image>();
 
         //============================================================================================================//
 
@@ -55,64 +57,65 @@ namespace StarSalvager.UI
 
         public void Activate()
         {
-            InitUniverseMapTemp();
             CenterToItem(universeMapButtons[0].GetComponent<RectTransform>());
 
-            foreach (var connection in PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertNodeTreeIntoConnections())
+            backButton.gameObject.SetActive(!Globals.IsBetweenWavesInUniverseMap);
+            if (Globals.IsBetweenWavesInUniverseMap)
             {
-                GameObject newLine = new GameObject();
+                int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
 
-                newLine.transform.parent = m_scrollRectArea.transform;
-                newLine.AddComponent<Image>();
-
-                Image newLineImage = newLine.GetComponent<Image>();
-
-                //newLineImage.sprite
-                newLineImage.transform.position = (universeMapButtons[connection.x].transform.position + universeMapButtons[connection.y].transform.position) / 2;
-
-                RectTransform newLineRectTransform = newLine.GetComponent<RectTransform>();
-                newLineRectTransform.sizeDelta = new Vector2(Vector2.Distance(universeMapButtons[connection.x].transform.position, universeMapButtons[connection.y].transform.position), 5);
-
-                newLineRectTransform.transform.right = (universeMapButtons[connection.x].transform.position - universeMapButtons[connection.y].transform.position).normalized;
-
-                //Vector3 normalized = (universeMapButtons[connection.x].transform.position - universeMapButtons[connection.y].transform.position).normalized;
-                /*Debug.DrawLine(universeMapButtons[connection.x].transform.position, universeMapButtons[connection.y].transform.position, Color.white, 10.0f);
-                float zAngle = Vector3.Cross(Vector3.up, normalized).z;
-                Debug.Log(Vector3.Cross(Vector3.up, normalized));
-                Debug.Log(zAngle);
-                newLineRectTransform.transform.Rotate(0, 0, zAngle);*/
-
-                //break;
-
-                //Debug.Log(Vector3.Cross(Vector3.up, normalized).z * Mathf.Rad2Deg);
-
-                //Vector3 lookAt = newLine.transform.position + Vector3.Cross(Vector3.up, normalized);
-
-                //find the vector pointing from our position to the target
-                //var dir = (universeMapButtons[connection.x].transform.position - newLineImage.transform.position).normalized;
-
-
-                //newLine.transform.LookAt(lookAt);
-                //create the rotation to look at the target
-                /*newLineRenderer.AddComponent<LineRenderer>();
-
-
-
-                LineRenderer lineRenderer = newLineRenderer.GetComponent<LineRenderer>();
-                lineRenderer.gameObject.transform.parent = m_scrollRectArea.transform;
-                lineRenderer.sortingOrder = 1;
-                lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-                lineRenderer.material.color = Color.red;
-                lineRenderer.startWidth = 10;
-                lineRenderer.endWidth = 10;
-                lineRenderer.useWorldSpace = false;
-                lineRenderer.positionCount = 2;
-                lineRenderer.startColor = Color.red;
-                lineRenderer.endColor = Color.yellow;
-                Debug.Log(connection);
-                lineRenderer.SetPosition(0, universeMapButtons[connection.x].transform.position);
-                lineRenderer.SetPosition(1, universeMapButtons[connection.y].transform.position);*/
+                List<LevelRingNode> childNodesAccessible = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(curIndex).childNodes;
+                
+                for (int i = 0; i < universeMapButtons.Count; i++)
+                {
+                    if (childNodesAccessible.Any(n => n.nodeIndex == i))
+                    {
+                        universeMapButtons[i].Button.interactable = true;
+                        DrawConnection(curIndex, i);
+                    }
+                    else
+                    {
+                        universeMapButtons[i].Button.interactable = false;
+                    }
+                }
+                Globals.IsBetweenWavesInUniverseMap = false;
             }
+            else
+            {
+                for (int i = 0; i < universeMapButtons.Count; i++)
+                {
+                    universeMapButtons[i].Button.interactable = false;
+                }
+                
+                for (int i = 0; i < PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Count; i++)
+                {
+                    int nodeIndex = PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes[i];
+                    
+                    List<LevelRingNode> childNodesAccessible = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(nodeIndex).childNodes;
+
+                    for (int k = 0; k < universeMapButtons.Count; k++)
+                    {
+                        if (childNodesAccessible.Any(n => n.nodeIndex == k))
+                        {
+                            if (nodeIndex == 0)
+                            {
+                                universeMapButtons[k].Button.interactable = true;
+                            }
+                            DrawConnection(nodeIndex, k);
+                        }
+                    }
+
+                    if (PlayerPersistentData.PlayerData.ShortcutNodes.Contains(nodeIndex))
+                    {
+                        universeMapButtons[nodeIndex].Button.interactable = true;
+                    }    
+                }
+            }
+
+            /*foreach (var connection in PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertNodeTreeIntoConnections())
+            {
+                DrawConnection(connection.x, connection.y);
+            }*/
 
             if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 35)
             {
@@ -122,10 +125,33 @@ namespace StarSalvager.UI
 
         public void Reset()
         {
-            
+            for (int i = connectionLines.Count - 1; i >= 0; i--)
+            {
+                Destroy(connectionLines[i].gameObject);
+            }
+            connectionLines.Clear();
         }
 
         //============================================================================================================//
+
+        private void DrawConnection(int connectionStart, int connectionEnd)
+        {
+            GameObject newLine = new GameObject();
+
+            newLine.transform.parent = m_scrollRectArea.transform;
+            newLine.transform.SetAsFirstSibling();
+            newLine.AddComponent<Image>();
+
+            Image newLineImage = newLine.GetComponent<Image>();
+
+            newLineImage.transform.position = (universeMapButtons[connectionStart].transform.position + universeMapButtons[connectionEnd].transform.position) / 2;
+
+            RectTransform newLineRectTransform = newLine.GetComponent<RectTransform>();
+            newLineRectTransform.sizeDelta = new Vector2(Vector2.Distance(universeMapButtons[connectionStart].transform.position, universeMapButtons[connectionEnd].transform.position), 5);
+            newLineRectTransform.transform.right = (universeMapButtons[connectionStart].transform.position - universeMapButtons[connectionEnd].transform.position).normalized;
+
+            connectionLines.Add(newLineImage);
+        }
 
         private void InitButtons()
         {
@@ -141,94 +167,45 @@ namespace StarSalvager.UI
                     FactoryManager.Instance.currentModularDataIndex++;
                 }
                 PlayerPersistentData.PlayerData.currentModularSectorIndex = FactoryManager.Instance.currentModularDataIndex;
-
-                InitUniverseMapTemp();
             });
 #else
             swapUniverseButton.gameObject.SetActive(false);
 #endif
             backButton.onClick.AddListener(() => SceneLoader.LoadPreviousScene());
+
+            int curSector = 0;
+            int curWave = 0;
+            for (int i = 0; i < universeMapButtons.Count; i++)
+            {
+                if (i == 0)
+                {
+                    universeMapButtons[i].Text.text = "Home Base";
+                    continue;
+                }
+
+                universeMapButtons[i].SectorNumber = curSector;
+                universeMapButtons[i].WaveNumber = curWave;
+                universeMapButtons[i].Text.text = (curSector + 1) + "." + (curWave + 1);
+                universeMapButtons[i].SetupHoveredCallback(WaveHovered);
+                int numWavesInSector = FactoryManager.Instance.SectorRemoteData[curSector].GetNumberOfWaves();
+                if (curWave + 1 >= numWavesInSector)
+                {
+                    curSector++;
+                    curWave = 0;
+                    if (FactoryManager.Instance.SectorRemoteData.Count == curSector)
+                    {
+                        Debug.Log("SECTOR NOT EXIST " + i);
+                        break;
+                    }
+                }
+                else
+                {
+                    curWave++;
+                }
+            }
         }
 
         //============================================================================================================//
-
-        private void InitUniverseMap()
-        {
-            foreach (var button in currentUniverseButtons)
-            {
-                GameObject.Destroy(button.gameObject);
-            }
-            currentUniverseButtons.Clear();
-
-            HaltonSequence positionSequence = new HaltonSequence();
-
-            Rect rect = m_scrollRectArea.rect;
-
-            Vector2 size = new Vector2(rect.xMax - rect.xMin, rect.yMax - rect.yMin);
-            positionSequence.Reset();
-
-            for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
-            {
-                if (Globals.DisableTestingFeatures && !PlayerPersistentData.PlayerData.CheckIfQualifies(i, 0))
-                {
-                    continue;
-                }
-                
-                positionSequence.Increment();
-
-                var position = positionSequence.m_CurrentPos;
-
-                position.x -= 0.5f;
-                position.y -= 0.5f;
-                position.z = 0.0f;
-                position.x *= size.x;
-                position.y *= size.y;
-
-                UniverseMapButton button = Instantiate(m_universeSectorButtonPrefab);
-                button.SetupWaveButtons(FactoryManager.Instance.SectorRemoteData[i].GetNumberOfWaves(), null);
-                button.transform.SetParent(m_scrollRectArea.transform);
-                button.transform.localPosition = position;
-                button.Text.text = $"Sector {i + 1}";
-                button.SectorNumber = i;
-                button.Button.onClick.AddListener(() => { button.SetActiveWaveButtons(!button.ButtonsActive); });
-                currentUniverseButtons.Add(button);
-            }
-        }
-
-        private void InitUniverseMapTemp()
-        {
-            foreach (var button in currentUniverseButtons)
-            {
-                GameObject.Destroy(button.gameObject);
-            }
-            currentUniverseButtons.Clear();
-
-            Rect rect = m_scrollRectArea.rect;
-            RectTransform centerOn = null;
-            for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
-            {
-                if (Globals.DisableTestingFeatures && !PlayerPersistentData.PlayerData.CheckIfQualifies(i, 0))
-                {
-                    continue;
-                }
-
-                UniverseMapButton sectorButton = Instantiate(m_universeSectorButtonPrefab);
-                sectorButton.SetupWaveButtons(FactoryManager.Instance.SectorRemoteData[i].GetNumberOfWaves(), WaveHovered);
-                sectorButton.transform.SetParent(m_scrollRectArea.transform);
-                sectorButton.transform.localPosition = rect.center + Vector2.right * 500 * i;
-                sectorButton.Text.text = $"Sector {i + 1}";
-                sectorButton.SectorNumber = i;
-                sectorButton.Button.onClick.AddListener(() => { sectorButton.SetActiveWaveButtons(!sectorButton.ButtonsActive); });
-                sectorButton.SetActiveWaveButtons(true);
-                currentUniverseButtons.Add(sectorButton);
-                centerOn = sectorButton.GetComponent<RectTransform>();
-            }
-
-            if (centerOn != null)
-            {
-                CenterToItem(centerOn);
-            }
-        }
 
         //TODO: ashulman, figure out if/why this works
         public void CenterToItem(RectTransform obj)
@@ -250,7 +227,8 @@ namespace StarSalvager.UI
                 return;
 
             //See if wave is unlocked
-            var unlocked = PlayerPersistentData.PlayerData.CheckIfCompleted(sector, wave);
+            int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(sector, wave);
+            var unlocked = PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Contains(curIndex);
             
             missingDataObject.SetActive(!unlocked);
             waveDataScrollView.SetActive(unlocked);
