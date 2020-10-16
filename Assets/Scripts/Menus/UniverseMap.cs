@@ -227,7 +227,8 @@ namespace StarSalvager.UI
                 return;
 
             //See if wave is unlocked
-            var unlocked = PlayerPersistentData.PlayerData.CheckIfCompleted(sector, wave);
+            int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(sector, wave);
+            var unlocked = PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Contains(curIndex);
             
             missingDataObject.SetActive(!unlocked);
             waveDataScrollView.SetActive(unlocked);
