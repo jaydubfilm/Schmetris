@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cc5c2049d02f584a8444aeb0496d336, type: 3}
+  m_Name: Sprite Atlas Settings
+  m_EditorClassIdentifier: 
+  partsAtlas: {fileID: 4343727234628468602, guid: c6b1f3574e2a26946b439c059a4ce990,
+    type: 2}
+  bitsAtlas: {fileID: 4343727234628468602, guid: de03a866da54c1c49a15d8674ef42fd7,
+    type: 2}
+  partSpritePath: D:/Repos/A Game Studios/Schmetris/Assets/Sprites/Parts
+  bitSpritePath: D:/Repos/A Game Studios/Schmetris/Assets/Sprites/Bits
