@@ -26,7 +26,7 @@ MonoBehaviour:
   botContinuousRotationSpeed: 700
   missionReminderFrequency: 1
   bonusShapeSpeed: 22
-  levelResourceDropReductionAmount: 0.149
+  levelResourceDropReductionAmount: 0.854
   asteroidDamage: 10
   bonusShapeGearsRewards:
   - numCells: 2
@@ -94,6 +94,7 @@ MonoBehaviour:
   cameraOffsetBounds: 0.2
   numCurrentTrackedMissionMax: 3
   onlyGetWaveLootOnce: 1
+  recoveryOfDroneLocksHorizontalMovement: 1
   blueprintInitialData:
   - type: 4
     level: 0
