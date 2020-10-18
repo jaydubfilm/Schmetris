@@ -179,7 +179,31 @@ namespace StarSalvager
                 if (rdsData == TYPE.ResourcesRefined && (BIT_TYPE) value == BIT_TYPE.WHITE)
                     continue;
 
-                types.Add($"{value}", (int) value);
+                if (rdsData == TYPE.ResourcesRefined)
+                {
+                    switch (value)
+                    {
+                        case BIT_TYPE.BLUE:
+                            types.Add($"Water", (int)value);
+                            break;
+                        case BIT_TYPE.RED:
+                            types.Add($"Fuel", (int)value);
+                            break;
+                        case BIT_TYPE.YELLOW:
+                            types.Add($"Power", (int)value);
+                            break;
+                        case BIT_TYPE.GREEN:
+                            types.Add($"Plasma", (int)value);
+                            break;
+                        case BIT_TYPE.GREY:
+                            types.Add($"Scrap", (int)value);
+                            break;
+                    }
+                }
+                else
+                {
+                    types.Add($"{value}", (int)value);
+                }
             }
 
             return types;
