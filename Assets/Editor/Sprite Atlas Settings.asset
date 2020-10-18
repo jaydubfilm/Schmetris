@@ -18,3 +18,32 @@ MonoBehaviour:
     type: 2}
   partSpritePath: D:/Repos/A Game Studios/Schmetris/Assets/Sprites/Parts
   bitSpritePath: D:/Repos/A Game Studios/Schmetris/Assets/Sprites/Bits
+  PartPaths:
+  - Type: 0
+    path: D:\Repos\A Game Studios\Schmetris\Assets\Sprites\Parts\CORE\v1
+  - Type: 17
+    path: D:\Repos\A Game Studios\Schmetris\Assets\Sprites\Parts\REFINER\v1
+  - Type: 18
+    path: D:\Repos\A Game Studios\Schmetris\Assets\Sprites\Parts\SPIKES\v1
+  - Type: 23
+    path: D:\Repos\A Game Studios\Schmetris\Assets\Sprites\Parts\BOOSTRANGE\v1
+  - Type: 24
+    path: D:\Repos\A Game Studios\Schmetris\Assets\Sprites\Parts\BOOSTRATE\v1
+  - Type: 25
+    path: D:\Repos\A Game Studios\Schmetris\Assets\Sprites\Parts\BOOSTDAMAGE\v1
+  - Type: 26
+    path: D:\Repos\A Game Studios\Schmetris\Assets\Sprites\Parts\BOOSTDEFENCE\v1
+  - Type: 27
+    path: D:\Repos\A Game Studios\Schmetris\Assets\Sprites\Parts\STACKER\v1
+  BitPaths:
+  - Type: 1
+    path: D:\Repos\A Game Studios\Schmetris\Assets\Sprites\Bits\BLUE\v1
+  - Type: 2
+    path: D:\Repos\A Game Studios\Schmetris\Assets\Sprites\Bits\GREEN\v1
+  - Type: 3
+    path: D:\Repos\A Game Studios\Schmetris\Assets\Sprites\Bits\GREY\v1
+  - Type: 4
+    path: D:\Repos\A Game Studios\Schmetris\Assets\Sprites\Bits\RED\v1
+  - Type: 5
+    path: D:\Repos\A Game Studios\Schmetris\Assets\Sprites\Bits\YELLOW\v1
+  ComponentPaths: []

@@ -61,7 +61,7 @@ namespace StarSalvager.Utilities
             string.Concat("print ", "parts").ToUpper(),
             string.Concat("print ", "components").ToUpper(),
             "\n",
-            string.Concat("set ", "bitprofile ", "[index:uint]").ToUpper(),
+            //string.Concat("set ", "bitprofile ", "[index:uint]").ToUpper(),
             string.Concat("set ", "bot ", "magnet ", "[uint]").ToUpper(),
             string.Concat("set ", "bot ", "heat ", "[0.0 - 100.0]").ToUpper(),
             string.Concat("set ", "bot ", "health ", "[0.0 - 1.0]").ToUpper(),
@@ -71,7 +71,7 @@ namespace StarSalvager.Utilities
             string.Concat("set ", "godmode ", "[bool]").ToUpper(),
             string.Concat("set ", "liquid ", "[BIT_TYPE | all] ", "[float]").ToUpper(),
             string.Concat("set ", "orientation ", "[Horizontal | Vertical]").ToUpper(),
-            string.Concat("set ", "partprofile ", "[index:uint]").ToUpper(),
+            //string.Concat("set ", "partprofile ", "[index:uint]").ToUpper(),
             string.Concat("set ", "paused ", "[bool]").ToUpper(),
             string.Concat("set ", "testing ", "[bool]").ToUpper(),
             string.Concat("set ", "timescale ", "[0.0 - 2.0]").ToUpper(),
@@ -621,16 +621,16 @@ namespace StarSalvager.Utilities
 
             switch (split[1].ToLower())
             {
-                case "bitprofile":
+                /*case "bitprofile":
                     if (!int.TryParse(split[2], out intAmount))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                         break;
                     }
                     
-                    FactoryManager.Instance?.ChangeBitProfile(intAmount);
+                    //FactoryManager.Instance?.ChangeBitProfile(intAmount);
                     
-                    break;
+                    break;*/
                 case "bot":
                 {
                     switch (split[2].ToLower())
@@ -850,16 +850,16 @@ namespace StarSalvager.Utilities
                     }
 
                     break;
-                case "partprofile":
+                /*case "partprofile":
                     if (!int.TryParse(split[2], out intAmount))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                         break;
                     }
                     
-                    FactoryManager.Instance?.ChangePartProfile(intAmount);
+                    //FactoryManager.Instance?.ChangePartProfile(intAmount);
                     
-                    break;
+                    break;*/
                 case "paused":
                     if (!TryParseBool(split[2], out state))
                     {
