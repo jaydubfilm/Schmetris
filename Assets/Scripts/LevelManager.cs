@@ -536,7 +536,11 @@ namespace StarSalvager
             m_waveEndSummaryData = null;
             BotDead = false;
             m_waveTimer = 0;
-            m_levelTimer = 0;
+
+            if (!Globals.IsBetweenWavesInUniverseMap)
+            {
+                m_levelTimer = 0;
+            }
 
             SetBotEnterScreen(false);
             SetBotZoomOffScreen(false);
