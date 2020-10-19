@@ -135,6 +135,7 @@ namespace StarSalvager.Values
 
         public int Level;
         public int Gears;
+        public int GearsTotal;
 
         [JsonIgnore]
         public IReadOnlyDictionary<FACILITY_TYPE, int> facilityRanks => _facilityRanks;
@@ -216,6 +217,7 @@ namespace StarSalvager.Values
         public void ChangeGears(int amount)
         {
             Gears += amount;
+            GearsTotal += amount;
             if (LevelManager.Instance.WaveEndSummaryData != null)
             {
                 LevelManager.Instance.WaveEndSummaryData.NumGearsGained += amount;

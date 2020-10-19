@@ -55,14 +55,13 @@ namespace StarSalvager.UI
 
         public void Activate()
         {
-            CenterToItem(universeMapButtons[0].GetComponent<RectTransform>());
-
             backButton.gameObject.SetActive(!Globals.IsBetweenWavesInUniverseMap);
             betweenWavesScrapyardButton.gameObject.SetActive(Globals.IsBetweenWavesInUniverseMap);
 
             if (Globals.IsBetweenWavesInUniverseMap)
             {
                 int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+                CenterToItem(universeMapButtons[curIndex].GetComponent<RectTransform>());
 
                 for (int i = 0; i < PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Count; i++)
                 {
@@ -101,6 +100,7 @@ namespace StarSalvager.UI
             }
             else
             {
+                CenterToItem(universeMapButtons[0].GetComponent<RectTransform>());
                 for (int i = 0; i < universeMapButtons.Count; i++)
                 {
                     universeMapButtons[i].Button.interactable = false;
@@ -181,8 +181,7 @@ namespace StarSalvager.UI
 
         private void InitButtons()
         {
-#if UNITY_EDITOR
-            swapUniverseButton.onClick.AddListener(() =>
+            /*swapUniverseButton.onClick.AddListener(() =>
             {
                 if (FactoryManager.Instance.currentModularDataIndex == FactoryManager.Instance.ModularDataCount - 1)
                 {
@@ -193,10 +192,8 @@ namespace StarSalvager.UI
                     FactoryManager.Instance.currentModularDataIndex++;
                 }
                 PlayerPersistentData.PlayerData.currentModularSectorIndex = FactoryManager.Instance.currentModularDataIndex;
-            });
-#else
+            });*/
             swapUniverseButton.gameObject.SetActive(false);
-#endif
             backButton.onClick.AddListener(() => SceneLoader.LoadPreviousScene());
 
             betweenWavesScrapyardButton.onClick.AddListener(() =>
