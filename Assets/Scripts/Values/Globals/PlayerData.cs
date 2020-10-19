@@ -125,8 +125,6 @@ namespace StarSalvager.Values
 
         public List<Blueprint> unlockedBlueprints = new List<Blueprint>();
 
-        public Dictionary<int, int> maxSectorProgression = new Dictionary<int, int>();
-
         public List<SectorWaveModifier> levelResourceModifier = new List<SectorWaveModifier>();
 
         public MissionsCurrentData missionsCurrentData = null;
@@ -227,7 +225,7 @@ namespace StarSalvager.Values
             if (Gears >= gearsToLevelUp)
             {
                 Gears -= gearsToLevelUp;
-                DropLevelLoot();
+                DropLevelupLoot();
                 if (LevelManager.Instance.WaveEndSummaryData != null)
                 {
                     LevelManager.Instance.WaveEndSummaryData.NumLevelsGained++;
@@ -244,7 +242,7 @@ namespace StarSalvager.Values
             OnValuesChanged?.Invoke();
         }
 
-        private void DropLevelLoot()
+        private void DropLevelupLoot()
         {
             LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).ConfigureLootTable();
             List<IRDSObject> levelUpLoot = LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).rdsTable.rdsResult.ToList();
@@ -593,25 +591,23 @@ namespace StarSalvager.Values
 
         //============================================================================================================//
 
-        public void AddSectorProgression(int sector, int waveAt)
+        public bool CheckIfCompleted(int sector, int waveAt)
         {
-            if (maxSectorProgression.ContainsKey(sector))
-                maxSectorProgression[sector] = Mathf.Max(maxSectorProgression[sector], waveAt);
-            else
-                maxSectorProgression.Add(sector, waveAt);
-        }
+            for (int i = 0; i < PlayerPreviouslyCompletedNodes.Count; i++)
+            {
+                (int, int) curSectorWaveTuple = LevelRingNodeTree.ConvertNodeIndexIntoSectorWave(PlayerPreviouslyCompletedNodes[i]);
 
-        public bool CheckIfQualifies(int sector, int waveAt)
-        {
-            if (maxSectorProgression.ContainsKey(sector) && maxSectorProgression[sector] >= waveAt)
-                return true;
+                if (curSectorWaveTuple.Item1 == sector && curSectorWaveTuple.Item2 == waveAt)
+                {
+                    return true;
+                }
+            }
 
             return false;
         }
-        public bool CheckIfCompleted(int sector, int waveAt)
-        {
-            return maxSectorProgression.ContainsKey(sector) && maxSectorProgression[sector] > waveAt;
-        }
+
+        //============================================================================================================//
+
         public float GetLevelResourceModifier(int sector, int wave)
         {
             int index = levelResourceModifier.FindIndex(s => s.Sector == sector && s.Wave == wave);

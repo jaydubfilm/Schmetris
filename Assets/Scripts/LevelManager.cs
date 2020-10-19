@@ -297,12 +297,6 @@ namespace StarSalvager
             SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
             SessionDataProcessor.Instance.EndActiveWave();
 
-            int curNodeIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
-            if (!PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Contains(curNodeIndex))
-            {
-                PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Add(curNodeIndex);
-            }
-
             GameUi.SetClockValue(0f);
             GameUi.SetTimeString(0);
             SavePlayerData();
@@ -330,7 +324,6 @@ namespace StarSalvager
                         GameTimer.SetPaused(false);
                         EndWaveState = false;
                         EndSectorState = false;
-                        PlayerPersistentData.PlayerData.AddSectorProgression(Globals.CurrentSector + 1, 0);
                         MissionManager.ProcessMissionData(typeof(SectorsCompletedMission),
                             new MissionProgressEventData());
                         ProcessLevelCompleteAnalytics();
@@ -648,27 +641,21 @@ namespace StarSalvager
             PlayerPersistentData.PlayerData.ReduceLevelResourceModifier(Globals.CurrentSector, Globals.CurrentWave);
 
             endWaveMessage = "Wave Complete!";
-            /*if (Globals.CurrentWave < CurrentSector.WaveRemoteData.Count - 1)
-            {
-                Globals.CurrentWave++;
-                endWaveMessage = "Wave Complete!";
-            }
-            else
-            {
-                Globals.CurrentWave = 0;
-                progressionSector++;
-                EndSectorState = true;
-                endWaveMessage = "Sector Complete!";
-            }*/
 
             Toast.AddToast(endWaveMessage, time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
-            if (!Globals.OnlyGetWaveLootOnce || !PlayerPersistentData.PlayerData.CheckIfQualifies(progressionSector, Globals.CurrentWave))
+            if (!Globals.OnlyGetWaveLootOnce || !PlayerPersistentData.PlayerData.CheckIfCompleted(progressionSector, Globals.CurrentWave))
             {
                 CurrentWaveData.ConfigureLootTable();
                 List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
                 DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), false);
             }
-            PlayerPersistentData.PlayerData.AddSectorProgression(progressionSector, Globals.CurrentWave);
+
+            int curNodeIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+            if (!PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Contains(curNodeIndex))
+            {
+                PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Add(curNodeIndex);
+            }
+
             EndWaveState = true;
             LevelManagerUI.OverrideText = string.Empty;
             m_levelTimer += m_waveTimer;

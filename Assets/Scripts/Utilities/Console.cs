@@ -1060,8 +1060,8 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += UnrecognizeCommand(split[3]);
                         break;
                     }
-                    
-                    PlayerPersistentData.PlayerData.AddSectorProgression(sector, wave);
+
+                    PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Add(PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(sector, wave));
                     break;
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);

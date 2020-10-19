@@ -60,20 +60,39 @@ namespace StarSalvager.UI
             {
                 int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
 
-                List<LevelRingNode> childNodesAccessible = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(curIndex).childNodes;
-                
-                for (int i = 0; i < universeMapButtons.Count; i++)
+                for (int i = 0; i < PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Count; i++)
                 {
-                    if (childNodesAccessible.Any(n => n.nodeIndex == i))
+                    int nodeIndex = PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes[i];
+
+                    List<LevelRingNode> childNodesAccessible = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(nodeIndex).childNodes;
+
+                    if (nodeIndex == curIndex)
                     {
-                        universeMapButtons[i].Button.interactable = true;
-                        DrawConnection(curIndex, i);
+                        for (int k = 0; k < universeMapButtons.Count; k++)
+                        {
+                            if (childNodesAccessible.Any(n => n.nodeIndex == k))
+                            {
+                                universeMapButtons[k].Button.interactable = true;
+                                DrawConnection(curIndex, k, false);
+                            }
+                            else
+                            {
+                                universeMapButtons[k].Button.interactable = false;
+                            }
+                        }
                     }
                     else
                     {
-                        universeMapButtons[i].Button.interactable = false;
+                        for (int k = 0; k < universeMapButtons.Count; k++)
+                        {
+                            if (childNodesAccessible.Any(n => n.nodeIndex == k))
+                            {
+                                DrawConnection(nodeIndex, k, true);
+                            }
+                        }
                     }
                 }
+
                 Globals.IsBetweenWavesInUniverseMap = false;
             }
             else
@@ -89,6 +108,8 @@ namespace StarSalvager.UI
                     
                     List<LevelRingNode> childNodesAccessible = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(nodeIndex).childNodes;
 
+                    bool isShortcut = PlayerPersistentData.PlayerData.ShortcutNodes.Contains(nodeIndex);
+
                     for (int k = 0; k < universeMapButtons.Count; k++)
                     {
                         if (childNodesAccessible.Any(n => n.nodeIndex == k))
@@ -97,11 +118,11 @@ namespace StarSalvager.UI
                             {
                                 universeMapButtons[k].Button.interactable = true;
                             }
-                            DrawConnection(nodeIndex, k);
+                            DrawConnection(nodeIndex, k, !(nodeIndex == 0 || isShortcut));
                         }
                     }
 
-                    if (PlayerPersistentData.PlayerData.ShortcutNodes.Contains(nodeIndex))
+                    if (isShortcut)
                     {
                         universeMapButtons[nodeIndex].Button.interactable = true;
                     }    
@@ -130,7 +151,7 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        private void DrawConnection(int connectionStart, int connectionEnd)
+        private void DrawConnection(int connectionStart, int connectionEnd, bool setRed)
         {
             GameObject newLine = new GameObject();
 
@@ -139,6 +160,11 @@ namespace StarSalvager.UI
             newLine.AddComponent<Image>();
 
             Image newLineImage = newLine.GetComponent<Image>();
+
+            if (setRed)
+            {
+                newLineImage.color = Color.red;
+            }
 
             newLineImage.transform.position = (universeMapButtons[connectionStart].transform.position + universeMapButtons[connectionEnd].transform.position) / 2;
 

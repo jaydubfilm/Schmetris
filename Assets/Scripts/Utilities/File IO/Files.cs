@@ -183,17 +183,6 @@ namespace StarSalvager.Utilities.FileIO
             if (!File.Exists(saveSlot))
             {
                 PlayerData data = new PlayerData();
-                if (!Globals.DisableTestingFeatures)
-                {
-                    for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
-                    {
-                        data.AddSectorProgression(i, 0);
-                    }
-                }
-                else
-                {
-                    data.AddSectorProgression(0, 0);
-                }
                 data.PlaythroughID = Guid.NewGuid().ToString();
 
                 foreach (var blueprintData in Globals.BlueprintInitialData)

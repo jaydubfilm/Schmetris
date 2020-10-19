@@ -57,4 +57,30 @@ public class LevelRingNodeTree
 
         return curIndex;
     }
+
+    public (int, int) ConvertNodeIndexIntoSectorWave(int nodeIndex)
+    {
+        if (nodeIndex == 0)
+        {
+            return (-1, -1);
+        }
+        
+        int curSector = 0;
+        int curWave = 0;
+
+        for (int i = 1; i < nodeIndex; i++)
+        {
+            if (curWave + 1 < FactoryManager.Instance.SectorRemoteData[curSector].GetNumberOfWaves())
+            {
+                curWave++;
+            }
+            else
+            {
+                curSector++;
+                curWave = 0;
+            }
+        }
+
+        return (curSector, curWave);
+    }
 }

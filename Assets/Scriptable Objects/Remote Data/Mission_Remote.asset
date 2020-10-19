@@ -421,14 +421,14 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 6
+    - rdsData: 0
       type: 0
       amount: 0
       level: 0
       probability: 0
       isGearRange: 0
-      gearValue: 100
-      gearDropRange: {x: 100, y: 100}
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
   - MissionID: 4a1bd860-0a1f-4b77-befc-51ec54bba2a9

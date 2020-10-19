@@ -29,17 +29,6 @@ namespace StarSalvager.Values
         public static void ResetPlayerData()
         {
             PlayerData data = new PlayerData();
-            if (!Globals.DisableTestingFeatures)
-            {
-                for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
-                {
-                    data.AddSectorProgression(i, 0);
-                }
-            }
-            else
-            {
-                data.AddSectorProgression(0, 0);
-            }
             data.PlaythroughID = Guid.NewGuid().ToString();
             foreach (var facilityData in Globals.FacilityInitialData)
             {
