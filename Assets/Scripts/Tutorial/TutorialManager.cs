@@ -199,7 +199,9 @@ namespace StarSalvager.Tutorial
         {
             LevelManager.Instance.SetStage(1);
             
-            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[3], true));
+            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[15], false));
+            
+            
         }
         private IEnumerator BotCollectionsCoroutine()
         {
@@ -214,6 +216,8 @@ namespace StarSalvager.Tutorial
             {
                 combo = true;
             }
+            
+            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[3], true));
             
             SetText(tutorialRemoteData[3], true, true);
 
