@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Bit_Atlas
+  m_Name: Bits
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -42,7 +42,7 @@ SpriteAtlas:
       enableTightPacking: 0
     variantMultiplier: 1
     packables:
-    - {fileID: 102900000, guid: 546639ceaf903074ab4a671cb2060031, type: 3}
+    - {fileID: 102900000, guid: 556d350fd9252be418b962432914d8ab, type: 3}
     totalSpriteSurfaceArea: 422500
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
@@ -98,5 +98,5 @@ SpriteAtlas:
   - bit_YELLOW_1_v1
   - bit_YELLOW_3_v1
   - bit_GREEN_4_v1
-  m_Tag: Bit_Atlas
+  m_Tag: Bits
   m_IsVariant: 0

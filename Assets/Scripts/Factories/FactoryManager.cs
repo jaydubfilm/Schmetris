@@ -19,10 +19,10 @@ namespace StarSalvager.Factories
         [SerializeField, Required, BoxGroup("Temporary")]
         private List<SectorModularData> m_sectorRemoteData;
 
-        [SerializeField, Required, BoxGroup("Temporary")]
-        private BitProfileScriptableObject[] _bitProfileScriptableObjects;
-        [SerializeField, Required, BoxGroup("Temporary")]
-        private PartProfileScriptableObject[] _partProfileScriptableObjects;
+        //[SerializeField, Required, BoxGroup("Temporary")]
+        //private BitProfileScriptableObject[] _bitProfileScriptableObjects;
+        //[SerializeField, Required, BoxGroup("Temporary")]
+        //private PartProfileScriptableObject[] _partProfileScriptableObjects;
         
         public EditorBotShapeGeneratorData EditorBotShapeData => _editorBotShapeData ?? (_editorBotShapeData = Files.ImportBotShapeRemoteData());
         private EditorBotShapeGeneratorData _editorBotShapeData;
@@ -38,7 +38,7 @@ namespace StarSalvager.Factories
         public BitRemoteDataScriptableObject BitsRemoteData => bitRemoteData;
         public BitProfileScriptableObject BitProfileData => bitProfile as BitProfileScriptableObject;
         
-        //[SerializeField, Required, BoxGroup("Attachables/Bits")]
+        [SerializeField, Required, BoxGroup("Attachables/Bits")]
         private AttachableProfileScriptableObject bitProfile;
         
         [SerializeField, Required, BoxGroup("Attachables/Bits")]
@@ -61,7 +61,7 @@ namespace StarSalvager.Factories
         public RemotePartProfileScriptableObject PartsRemoteData => partRemoteData;
         public PartProfileScriptableObject PartsProfileData => partProfile as PartProfileScriptableObject;
 
-        //[SerializeField, Required, BoxGroup("Attachables/Parts")] 
+        [SerializeField, Required, BoxGroup("Attachables/Parts")] 
         private AttachableProfileScriptableObject partProfile;
         
         [SerializeField, Required, BoxGroup("Attachables/Parts")] 
@@ -145,7 +145,7 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        private void Start()
+        /*private void Start()
         {
             ChangeBitProfile(0);
             ChangePartProfile(0);
@@ -172,7 +172,7 @@ namespace StarSalvager.Factories
 
             //Force update the BitFactory to use new sprite sheet
             _factoryBases[type] = CreateFactory<PartAttachableFactory>();
-        }
+        }*/
 
         //====================================================================================================================//
         

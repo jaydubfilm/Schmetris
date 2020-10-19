@@ -1117,8 +1117,11 @@ namespace StarSalvager
                 .levels[targetBit.level]
                 .resources;
 
-            var current = PlayerPersistentData.PlayerData.liquidResource[bitType];
-            var capacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
+            var (current, capacity) =
+                PlayerPersistentData.PlayerData.GetCurrentAndCapacity(bitType, bot.IsRecoveryDrone);
+
+            /*var current = PlayerPersistentData.PlayerData.liquidResource[bitType];
+            var capacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];*/
 
             //We wont add any if its already full!
             if (current + amountProcessed > capacity)
