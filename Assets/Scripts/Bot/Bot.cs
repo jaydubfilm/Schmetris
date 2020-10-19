@@ -1376,7 +1376,7 @@ namespace StarSalvager
             switch (part.Type)
             {
                 case PART_TYPE.CORE when PROTO_autoRefineFuel && bit.Type == BIT_TYPE.RED:
-                case PART_TYPE.REFINER when bit.Type != BIT_TYPE.YELLOW:
+                case PART_TYPE.REFINER when !part.Disabled:
                     break;
                 default:
                     return;

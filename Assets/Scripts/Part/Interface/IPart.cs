@@ -1,13 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace StarSalvager
+﻿namespace StarSalvager
 {
     public interface IPart: ILevel
     {
         bool Destroyed { get;}
+        bool Disabled { get; }
         PART_TYPE Type { get; set; }
+
+        
     }
 }
 
