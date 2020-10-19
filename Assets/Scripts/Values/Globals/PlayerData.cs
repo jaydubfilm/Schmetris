@@ -423,6 +423,27 @@ namespace StarSalvager.Values
             OnValuesChanged?.Invoke();
         }
 
+        public Dictionary<BIT_TYPE, int> AddResourcesReturnWasted(Dictionary<BIT_TYPE, int> toAdd, float multiplier)
+        {
+            CostCalculations.AddResources(ref _resources, toAdd, multiplier);
+
+            Dictionary<BIT_TYPE, int> wastedResources = new Dictionary<BIT_TYPE, int>();
+
+            foreach (var bitType in toAdd.Select(keyValuePair => keyValuePair.Key))
+            {
+                if (ResourceCapacities[bitType] < _resources[bitType])
+                {
+                    wastedResources.Add(bitType, _resources[bitType] - ResourceCapacities[bitType]);
+                }
+                
+                _resources[bitType] = Mathf.Min(_resources[bitType], ResourceCapacities[bitType]);
+            }
+
+            OnValuesChanged?.Invoke();
+
+            return wastedResources;
+        }
+
         public void AddResource(BIT_TYPE type, int amount)
         {
             _resources[type] = Mathf.Min(_resources[type] + amount, ResourceCapacities[type]);

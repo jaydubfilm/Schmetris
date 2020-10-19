@@ -848,7 +848,7 @@ namespace StarSalvager
                 Debug.Log("REFINERY MULTIPLIER: " + refineryMultiplier);
             }
 
-            PlayerPersistentData.PlayerData.AddResources(bits, refineryMultiplier);
+            Dictionary<BIT_TYPE, int> wastedResources = PlayerPersistentData.PlayerData.AddResourcesReturnWasted(bits, refineryMultiplier);
 
 
             string resourcesGained = "";
@@ -875,6 +875,11 @@ namespace StarSalvager
                 }
 
                 resourcesGained += "\n";
+            }
+
+            foreach (var resource in wastedResources)
+            {
+                resourcesGained += $"{resource.Value} {TMP_SpriteMap.MaterialIcons[resource.Key]} jettisoned due to lack of storage\n";
             }
 
             Alert.ShowAlert("Resources Refined", resourcesGained, "Okay", null);

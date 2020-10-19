@@ -15,10 +15,10 @@ MonoBehaviour:
   SectorRemoteData: {fileID: 11400000, guid: ac596de1af6b6c54883d5b2fd72b5140, type: 2}
   tutorialSteps:
   - title: Intro Step
-    useWaitTime: 1
-    waitTime: 5
-    text: Cryosleep, am I right? No time to let your brain-fog wear off, this time
-      Captain. We gotta get you in the air. Let's hit the training Simulator.
+    useWaitTime: 0
+    waitTime: 2
+    text: Cryosleep, am I right? No time to let your brain-fog wear off, Captain.
+      We gotta get you in the air. Let's hit the training Simulator.
   - title: Movement
     useWaitTime: 0
     waitTime: 0
@@ -40,18 +40,18 @@ MonoBehaviour:
   - title: Magnet
     useWaitTime: 1
     waitTime: 4
-    text: Nice! You maxed out your magnetism! Right now your core can only carry
+    text: Oops! You maxed out your magnetism! Right now your core can only carry
       6 bits at a time. With the right upgrades we could increase this limit, but
       there are other ways to save space.
   - title: Combo-magnet-1
     useWaitTime: 0
     waitTime: 0
-    text: Try to max out your magnetism
+    text: Collect as many bits as you can.
   - title: Combo-magnet-2
     useWaitTime: 1
     waitTime: 4
-    text: Good job! Right now your core can only carry 6 bits at a time. With the
-      right upgrades we could increase this limit.
+    text: Oops!  You maxed out your magnetism!  Right now your core can only carry
+      6 bits at a time. With the right upgrades we could increase this limit.
   - title: Magnet-combo-1
     useWaitTime: 0
     waitTime: 0
@@ -64,25 +64,24 @@ MonoBehaviour:
   - title: Pulsar
     useWaitTime: 0
     waitTime: 0
-    text: See? Just like riding a bicycle. Don't be afraid of those pulsars. Smash
-      into them and move your bits around
+    text: Don't be afraid of those pulsars. Bump into them and move your bits around
   - title: Pulsar-1
     useWaitTime: 1
     waitTime: 8
-    text: Beautiful! Pulsars are a great way to rearrange your bits or get rid of
-      bits you don't want.
+    text: It's all coming back to you! Pulsars are a great way to rearrange your
+      bits or get rid of bits you don't want.
   - title: Fuel
     useWaitTime: 0
     waitTime: 0
     text: Uh-oh - Out of fuel! How did I fail to manage that resource? Better hope
-      some red bits are in our path
+      we find a red bit or two.
   - title: Fuel-1
     useWaitTime: 1
     waitTime: 6
-    text: Phew! Fuel bits are automatically refined by your ship's core when you
-      need it.
+    text: What are the chances? Fuel bits are automatically refined by your ship's
+      core when you need it.
   - title: Fuel-2
     useWaitTime: 0
     waitTime: 0
-    text: The other resources are important too, blah blah blah -  you're ready for
-      the real thing. Lets do this!!
+    text: The other colourd bits need to be taken back to base before they can be
+      refined... and - blah blah blah - too much tutorialing - not enough salvaging!
