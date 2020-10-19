@@ -20,13 +20,13 @@ MonoBehaviour:
     - health: 10
       resources: 10
     - health: 20
-      resources: 30
+      resources: 50
     - health: 30
-      resources: 90
+      resources: 200
     - health: 40
-      resources: 270
+      resources: 750
     - health: 50
-      resources: 810
+      resources: 2500
   - name: Greenium
     refinedName: 
     bitType: 2
@@ -34,13 +34,13 @@ MonoBehaviour:
     - health: 10
       resources: 10
     - health: 20
-      resources: 30
+      resources: 50
     - health: 30
-      resources: 90
+      resources: 200
     - health: 40
-      resources: 270
+      resources: 750
     - health: 50
-      resources: 810
+      resources: 2500
   - name: Greyscale
     refinedName: 
     bitType: 3
@@ -48,13 +48,13 @@ MonoBehaviour:
     - health: 20
       resources: 10
     - health: 40
-      resources: 30
+      resources: 50
     - health: 60
-      resources: 90
+      resources: 200
     - health: 80
-      resources: 270
+      resources: 750
     - health: 100
-      resources: 810
+      resources: 2500
   - name: Reddite
     refinedName: Fuel
     bitType: 4
@@ -62,13 +62,13 @@ MonoBehaviour:
     - health: 5
       resources: 10
     - health: 5
-      resources: 30
+      resources: 50
     - health: 5
-      resources: 90
+      resources: 200
     - health: 5
-      resources: 270
+      resources: 750
     - health: 5
-      resources: 810
+      resources: 2500
   - name: Yellectron
     refinedName: 
     bitType: 5
@@ -76,10 +76,10 @@ MonoBehaviour:
     - health: 10
       resources: 10
     - health: 15
-      resources: 30
+      resources: 50
     - health: 20
-      resources: 90
+      resources: 200
     - health: 25
-      resources: 270
+      resources: 750
     - health: 30
-      resources: 810
+      resources: 2500
