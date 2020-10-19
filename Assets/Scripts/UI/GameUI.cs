@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
@@ -293,11 +294,18 @@ namespace StarSalvager.UI
 
             for (var i = 0; i < SmartWeaponsUI.Length; i++)
             {
+                int index = i;
                 var temp = SmartWeaponsUI[i];
 
                 temp.sprites = sprites;
 
                 SmartWeaponsUI[i] = temp;
+                SmartWeaponsUI[i].buttonObject.onClick.RemoveAllListeners();
+                SmartWeaponsUI[i].buttonObject.onClick.AddListener(() =>
+                {
+                    InputManager.Instance.TriggerSmartWeapon(index);
+                });
+
             }
         }
 
