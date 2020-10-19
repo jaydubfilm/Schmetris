@@ -547,12 +547,6 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 7000
-    - unlockLevel: 0
-      health: 0
-      powerDraw: 0.1
-      dataTest: []
-      burnRate: 0
-      cost: []
   - name: Shield
     partType: 5
     canSell: 1

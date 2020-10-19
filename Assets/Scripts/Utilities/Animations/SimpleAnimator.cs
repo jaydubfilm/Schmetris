@@ -55,6 +55,12 @@ namespace StarSalvager.Utilities.Animations
             if (!_playing)
                 return;
 
+            if (animation is null)
+            {
+                _playing = false;
+                return;
+            }
+
             if (!animation.Loop && _t >= 1f)
             {
                 Stop();
