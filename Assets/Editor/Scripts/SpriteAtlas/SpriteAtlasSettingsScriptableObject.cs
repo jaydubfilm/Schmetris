@@ -17,10 +17,10 @@ namespace StarSalvager.Editor.CustomEditors
         public SpriteAtlas bitsAtlas;
 
 
-        [FolderPath(AbsolutePath = true, RequireExistingPath = true, ParentFolder = "Assets/Sprites/")]
+        [FolderPath(RequireExistingPath = true)]
         public string partSpritePath;
 
-        [FolderPath(AbsolutePath = true, RequireExistingPath = true, ParentFolder = "Assets/Sprites/")]
+        [FolderPath(RequireExistingPath = true)]
         public string bitSpritePath;
 
         [HideInInspector]
@@ -96,7 +96,7 @@ namespace StarSalvager.Editor.CustomEditors
 
             if (index >= 0)
             {
-                PartPaths[index].path = newPath;
+                dataPaths[index].path = newPath;
                 return;
             }
                     

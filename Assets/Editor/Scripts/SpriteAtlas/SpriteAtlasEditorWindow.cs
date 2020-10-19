@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using StarSalvager.Editor.CustomEditors;
@@ -100,6 +101,10 @@ namespace StarSalvager.Editor
 
         }
 
+        [InfoBox("This Tool is still a work in progress", InfoMessageType.Error), DisplayAsString]
+        public string warning = "Warning";
+        
+        
         [SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, DrawScrollView = false), FoldoutGroup("Parts")]
         private List<PartAtlasData> partAtlasDatas;
         
@@ -139,18 +144,31 @@ namespace StarSalvager.Editor
         [Button]
         private void SaveChanges()
         {
+            int index;
+            var factoryManager = FindObjectOfType<FactoryManager>();
+            
             foreach (var partAtlasData in partAtlasDatas)
             {
                 SpriteAtlasSettings.UpdatePath(partAtlasData.type, partAtlasData.selectedVersion);
+
+                index = factoryManager.PartsProfileData.GetProfileIndex(partAtlasData.type);
+                if (index < 0) 
+                    continue;
+
+                var profile = factoryManager.PartsProfileData.profiles[index];
+                partAtlasData.Sprites.CopyTo(profile.Sprites, 0);
+
+                factoryManager.PartsProfileData.profiles[index] = profile;
             }
             
-            foreach (var partAtlasData in bitAtlasDatas)
+            foreach (var bitAtlasData in bitAtlasDatas)
             {
-                SpriteAtlasSettings.UpdatePath(partAtlasData.type, partAtlasData.selectedVersion);
+                SpriteAtlasSettings.UpdatePath(bitAtlasData.type, bitAtlasData.selectedVersion);
             }
             //TODO Need to update the Part/Bit/Component Profiles
             //TODO Need to Update the Part/Bit/Component Atlases
             
+            EditorUtility.SetDirty(factoryManager.PartsProfileData);
             EditorUtility.SetDirty(SpriteAtlasSettings);
             AssetDatabase.SaveAssets();
         }
@@ -171,21 +189,21 @@ namespace StarSalvager.Editor
         [ValueDropdown("GetFolders"), OnValueChanged("SetSprites")]
         public string selectedVersion;
 
-        //[ReadOnly, HideIf("NoPath"), PreviewField, HorizontalGroup("Test")]
         [HideInInspector]
-        public Texture2D[] sprites;
-
+        public Texture2D[] textures;
+        [HideInInspector]
+        public Sprite[] Sprites;
         
         [OnInspectorGUI]
-        [HorizontalGroup("Sprites"), HideIf("NoPath"), TableColumnWidth(600)]
+        [HorizontalGroup("Sprites"), HideIf("NoPath"), TableColumnWidth(300)]
         private void ShowImage()
         {
-            if(sprites == null)
+            if(textures == null)
                 SetSprites();
             
             
             GUILayout.BeginHorizontal();
-            foreach (var sprite in sprites)
+            foreach (var sprite in textures)
             {
                 GUILayout.Label(sprite, GUILayout.Height(50), GUILayout.Width(50));
             }
@@ -203,10 +221,11 @@ namespace StarSalvager.Editor
 
             foreach (var subDirectory in subDirectories)
             {
+                var value = Path.Combine(folder, subDirectory.Name).Replace("\\","/");
                 valueDropdownList.Add(new ValueDropdownItem<string>
                 {
                     Text = subDirectory.Name,
-                    Value = subDirectory.FullName
+                    Value = value
                 });
             }
             
@@ -220,7 +239,10 @@ namespace StarSalvager.Editor
                 return;
 
             var textures = new List<Texture2D>();
+            var sprites = new List<Sprite>();
             var files = new DirectoryInfo(selectedVersion).GetFiles("*.png");
+            
+            
 
             foreach (var fileInfo in files)
             {
@@ -230,11 +252,14 @@ namespace StarSalvager.Editor
                 
                 if(texture is null)
                     continue;
-                
+
+                var sprite = (Sprite) AssetDatabase.LoadAssetAtPath(path, typeof(Sprite));
+                sprites.Add(sprite);
                 textures.Add(texture);
             }
 
-            sprites = textures.ToArray();
+            this.textures = textures.ToArray();
+            Sprites = sprites.ToArray();
         }
 
         private bool NoPath()

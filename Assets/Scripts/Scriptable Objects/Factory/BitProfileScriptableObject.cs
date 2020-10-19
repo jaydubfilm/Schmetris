@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using StarSalvager.AI;
+﻿using System.Linq;
 using StarSalvager.Factories.Data;
-using StarSalvager.Prototype;
 using UnityEngine;
 
 namespace StarSalvager.ScriptableObjects
@@ -14,6 +11,11 @@ namespace StarSalvager.ScriptableObjects
         {
             return profiles
                 .FirstOrDefault(p => p.bitType == Type);
+        }
+        
+        public override int GetProfileIndex(BIT_TYPE Type)
+        {
+            return profiles.ToList().FindIndex(x => x.bitType == Type);
         }
     }
 }

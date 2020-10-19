@@ -30,6 +30,7 @@ namespace StarSalvager.ScriptableObjects
         public T[] profiles;
 
         public abstract T GetProfile(U Type);
+        public abstract int GetProfileIndex(U Type);
     }
 }
  

@@ -13,5 +13,10 @@ namespace StarSalvager.ScriptableObjects
             return profiles
                 .FirstOrDefault(p => p.componentType == Type);
         }
+        
+        public override int GetProfileIndex(COMPONENT_TYPE Type)
+        {
+            return profiles.ToList().FindIndex(x => x.componentType == Type);
+        }
     }
 }
