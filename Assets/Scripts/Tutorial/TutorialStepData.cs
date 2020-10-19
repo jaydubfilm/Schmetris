@@ -7,8 +7,8 @@ namespace StarSalvager.Tutorial.Data
     [Serializable]
     public struct TutorialStepData
     {
-        //[FoldoutGroup("$title", false), DisplayAsString]
-        [HideInInspector] public string title;
+        [SerializeField, FoldoutGroup("$title", false)]
+        public string title;
 
         [HorizontalGroup("$title/UseWait"), ToggleLeft, LabelWidth(50f)]
         public bool useWaitTime;

@@ -40,6 +40,7 @@ namespace StarSalvager.Tutorial.Data
             /* [12] */new TutorialStepData {title = "Fuel"},
             /* [13] */new TutorialStepData {title = "Fuel-1"},
             /* [14] */new TutorialStepData {title = "Fuel-2"},
+            /* [15] */new TutorialStepData {title = "Pre-Falling Bits"},
         };
 
         public TutorialStepData GetTutorialStepData(int index)

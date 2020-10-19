@@ -85,3 +85,7 @@ MonoBehaviour:
     waitTime: 0
     text: The other colourd bits need to be taken back to base before they can be
       refined... and - blah blah blah - too much tutorialing - not enough salvaging!
+  - title: Pre-Falling Bits
+    useWaitTime: 1
+    waitTime: 4
+    text: Stand-in Text
