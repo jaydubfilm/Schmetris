@@ -248,7 +248,7 @@ namespace StarSalvager.Tutorial
         private IEnumerator ComboFirstCoroutine()
         {
             //tutorialSteps[4]
-            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialRemoteData[4], true));
+            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[4], true));
             
             SetText(tutorialRemoteData[6], true, true);
 
@@ -266,32 +266,52 @@ namespace StarSalvager.Tutorial
             
             bot.OnFullMagnet -= SetMagnet;
             
-            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialRemoteData[7], true));
+            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[7], true));
+            
+            LevelManager.Instance.BotObject.ForceDisconnectAllDetachables();
+            yield return new WaitForSeconds(0.5f);
         }
         private IEnumerator MagnetFirstCoroutine()
         {
             //tutorialSteps[5]
-            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialRemoteData[5], true));
+            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[5], true));
+            
+            LevelManager.Instance.BotObject.ForceDisconnectAllDetachables();
+            yield return new WaitForSeconds(0.5f);
             
             SetText(tutorialRemoteData[8], true, true);
 
             bool combo = false;
+            bool magnet = false;
             var bot = LevelManager.Instance.BotObject;
 
+            //TODO need to also wait for magnet, and loop back if that's the case
             void SetCombo()
             {
                 combo = true;
             }
+            void SetMagnet()
+            {
+                magnet = true;
+            }
 
             bot.OnCombo += SetCombo;
+            bot.OnFullMagnet += SetMagnet;
             
             LevelManager.Instance.SetStage(2);
 
-            yield return new WaitUntil(() => combo);
+            yield return new WaitUntil(() => combo || magnet);
             
             bot.OnCombo -= SetCombo;
+            bot.OnFullMagnet -= SetMagnet;
+
+            if (magnet && !combo)
+            {
+                yield return mono.StartCoroutine(MagnetFirstCoroutine());
+                yield break;
+            }
             
-            yield return mono.StartCoroutine(PauseWaitTimerStep(tutorialRemoteData[9], true));
+            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[9], true));
         }
         private IEnumerator PulsarStepCoroutine()
         {
@@ -385,7 +405,7 @@ namespace StarSalvager.Tutorial
         //Generic Tutorial Steps
         //====================================================================================================================//
 
-        private IEnumerator PauseWaitTimerStep(TutorialStepData tutorialStepData, bool waitAnyKey)
+        /*private IEnumerator PauseWaitTimerStep(TutorialStepData tutorialStepData, bool waitAnyKey)
         {
             pauseImage.SetActive(true);
             Time.timeScale = 0f;
@@ -395,7 +415,7 @@ namespace StarSalvager.Tutorial
             Time.timeScale = 1f;
             
             pauseImage.SetActive(false);
-        }
+        }*/
         
         private IEnumerator WaitStep(TutorialStepData tutorialStepData, bool waitAnyKey)
         {

@@ -1543,6 +1543,7 @@ namespace StarSalvager
             DetachBit(attachable);
         }
         
+        //FIXME This should detach ICanDetach objects, not IAttachable
         private void DetachBits(IReadOnlyCollection<IAttachable> detachingBits, bool delayedCollider = false, bool isMagnetDetach = false)
         {
             Vector3 leftOffset = Vector3.left * Constants.gridCellSize;
@@ -1614,7 +1615,6 @@ namespace StarSalvager
                     }
                 }
             }
-
             
             foreach (var iAttachable in others)
             {
@@ -2612,6 +2612,11 @@ namespace StarSalvager
         public void ForceCheckMagnets()
         {
             _needToCheckMagnet = true;
+        }
+
+        public void ForceDisconnectAllDetachables()
+        {
+            DetachBits(attachedBlocks.OfType<ICanDetach>().OfType<IAttachable>().ToList(), true, true);
         }
 
         private bool CheckHasMagnetOverage()
