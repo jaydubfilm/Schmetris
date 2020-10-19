@@ -24,6 +24,8 @@ namespace StarSalvager.UI
         private Button swapUniverseButton;
         [SerializeField, Required]
         private Button backButton;
+        [SerializeField, Required]
+        private Button betweenWavesScrapyardButton;
 
 
         [SerializeField, FoldoutGroup("Hover Window")]
@@ -56,6 +58,8 @@ namespace StarSalvager.UI
             CenterToItem(universeMapButtons[0].GetComponent<RectTransform>());
 
             backButton.gameObject.SetActive(!Globals.IsBetweenWavesInUniverseMap);
+            betweenWavesScrapyardButton.gameObject.SetActive(Globals.IsBetweenWavesInUniverseMap);
+
             if (Globals.IsBetweenWavesInUniverseMap)
             {
                 int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
@@ -194,6 +198,14 @@ namespace StarSalvager.UI
             swapUniverseButton.gameObject.SetActive(false);
 #endif
             backButton.onClick.AddListener(() => SceneLoader.LoadPreviousScene());
+
+            betweenWavesScrapyardButton.onClick.AddListener(() =>
+            {
+                LevelManager.Instance.IsWaveProgressing = true;
+                LevelManager.Instance.ProcessScrapyardUsageBeginAnalytics();
+                LevelManager.Instance.EndWaveState = false;
+                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
+            });
 
             int curSector = 0;
             int curWave = 0;

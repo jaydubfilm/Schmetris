@@ -336,7 +336,14 @@ namespace StarSalvager
                 //Turn wave end summary data into string, post in alert, and clear wave end summary data
                 m_levelManagerUI.ShowSummaryScreen(WaveEndSummaryData.WaveEndTitle,
                     m_waveEndSummaryData.GetWaveEndSummaryDataString(),
-                    () => { m_levelManagerUI.ToggleBetweenWavesUIActive(true); },
+                    () => 
+                    {
+                        Globals.IsBetweenWavesInUniverseMap = true;
+                        IsWaveProgressing = true;
+                        ProcessScrapyardUsageBeginAnalytics();
+                        EndWaveState = false;
+                        SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
+                    },
                     "Continue");
             }
 
