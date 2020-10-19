@@ -32,7 +32,7 @@
         BOOSTRANGE,
         BOOSTRATE,
         BOOSTDAMAGE,
-        BOOSTDEFENCE,
+        BOOSTDEFENSE,
         
         STACKER,
         CLOAK,

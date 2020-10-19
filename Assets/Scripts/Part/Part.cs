@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Part : CollidableBase, IAttachable, ICustomRotate, ISaveable, IPart, IHealth, ICustomRecycle
+    public class Part : CollidableBase, IAttachable, ICustomRotate, ISaveable, IPart, IHealthBoostable, ICustomRecycle
     {
         //IAttachable Properties
         //============================================================================================================//
@@ -30,8 +30,15 @@ namespace StarSalvager
 
         public float StartingHealth { get; private set; }
 
-        [ShowInInspector, ReadOnly, ProgressBar(0, nameof(StartingHealth))]
+        [ShowInInspector, ReadOnly, ProgressBar(0, nameof(BoostedHealth))]
         public float CurrentHealth { get; private set; }
+
+        //IHealthCanBoost Properties
+        //====================================================================================================================//
+
+        public float BoostedHealth => StartingHealth + BoostAmount;
+        public float BoostAmount { get; private set; }
+        private bool _boostIsSetup;
 
         //Part Properties
         //============================================================================================================//
@@ -72,6 +79,9 @@ namespace StarSalvager
         {
         }
 
+        //IHealth Functions
+        //====================================================================================================================//
+        
         public void SetupHealthValues(float startingHealth, float currentHealth)
         {
             StartingHealth = startingHealth;
@@ -79,7 +89,7 @@ namespace StarSalvager
 
             SetDestroyed(CurrentHealth <= 0f);
             
-            if(CurrentHealth < StartingHealth)
+            if(CurrentHealth < BoostedHealth)
                 UpdateDamage();
         }
 
@@ -100,6 +110,31 @@ namespace StarSalvager
             UpdateDamage();
         }
 
+        //IHealthCanBoost Functions
+        //====================================================================================================================//
+        
+        public void SetHealthBoost(float boostAmount)
+        {
+            //Consider floating point errors
+            if (Math.Abs(boostAmount - BoostAmount) < 0.01f)
+                return;
+            
+            if (boostAmount < BoostAmount)
+            {
+                CurrentHealth = Mathf.Clamp(CurrentHealth, 0f, StartingHealth + boostAmount);
+            }
+            else if (boostAmount > BoostAmount && !_boostIsSetup)
+            {
+                CurrentHealth = StartingHealth + boostAmount;
+                _boostIsSetup = true;
+            }
+            
+            BoostAmount = boostAmount;
+        }
+        
+        //====================================================================================================================//
+        
+
         private void UpdateDamage()
         {
             if (Destroyed)
@@ -110,8 +145,8 @@ namespace StarSalvager
                 _damage = FactoryManager.Instance.GetFactory<DamageFactory>().CreateObject<Damage>();
                 _damage.transform.SetParent(transform, false);
             }
-                
-            _damage.SetHealth(CurrentHealth/StartingHealth);
+
+            _damage.SetHealth(CurrentHealth / BoostedHealth);
         }
 
         //Part Functions
@@ -189,6 +224,9 @@ namespace StarSalvager
 
         public void CustomRecycle(params object[] args)
         {
+            BoostAmount = 0f;
+            _boostIsSetup = false;
+            
             SetColor(Color.white);
 
             RecycleDamageEffect();
@@ -206,6 +244,7 @@ namespace StarSalvager
             Recycler.Recycle<Damage>(_damage);
             _damage = null;
         }
+
 
 
     }
