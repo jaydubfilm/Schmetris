@@ -297,6 +297,14 @@ namespace StarSalvager.Values
             _resources[type] = Mathf.Min(value, ResourceCapacities[type]);
         }
 
+        public (float current, float capacity) GetCurrentAndCapacity(BIT_TYPE type, bool isRecoveryDrone)
+        {
+            var current = isRecoveryDrone ? recoveryDroneLiquidResource[type] : liquidResource[type];
+            var capacity = isRecoveryDrone ? recoveryDroneLiquidCapacity[type] : liquidCapacity[type];
+
+            return (current, capacity);
+        }
+
         //============================================================================================================//
 
         
