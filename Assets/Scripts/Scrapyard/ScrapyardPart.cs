@@ -61,6 +61,7 @@ namespace StarSalvager
         //Part Properties
         //============================================================================================================//
         public bool Destroyed => CurrentHealth <= 0f;
+        public bool Disabled => false;
 
         [ShowInInspector, ReadOnly]
         public PART_TYPE Type { get; set; }
