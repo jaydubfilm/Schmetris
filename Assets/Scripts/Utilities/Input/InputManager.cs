@@ -280,8 +280,16 @@ namespace StarSalvager.Utilities.Inputs
             
             if (ctx.ReadValue<float>() != 1f)
                 return;
-            
-            
+
+
+            TriggerSmartWeapon(index);
+
+        }
+
+        public void TriggerSmartWeapon(int index)
+        {
+            if (Console.Open)
+                return;
             
             //FIXME Need to ensure that I map appropriate inputs to associated bots
             _bots[0].BotPartsLogic.TryTriggerSmartWeapon(index);

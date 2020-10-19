@@ -285,8 +285,9 @@ namespace StarSalvager
 
         public void DamageAllEnemies(float damage)
         {
+            var existingEnemies = new List<Enemy>(m_enemies);
             var damageAbs = Mathf.Abs(damage);
-            foreach (var enemy in m_enemies)
+            foreach (var enemy in existingEnemies)
             {
                 if (enemy.IsRecycled)
                     continue;
