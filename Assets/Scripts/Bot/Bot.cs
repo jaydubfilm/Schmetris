@@ -299,10 +299,13 @@ namespace StarSalvager
             
             BotPartsLogic.coreHeat = 0f;
             
+            //Only want to update the parts list after everyone has loaded
             foreach (var attachable in botAttachables)
             {
-                AttachNewBit(attachable.Coordinate, attachable, updateMissions: false);
+                AttachNewBit(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);
             }
+            
+            BotPartsLogic.UpdatePartsList();
         }
 
 
@@ -1121,8 +1124,11 @@ namespace StarSalvager
 
         #region Attach Bits
         
-        public bool TryAttachNewBit(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true, 
-            bool updateColliderGeometry = true, bool updateMissions = true)
+        public bool TryAttachNewBit(Vector2Int coordinate, IAttachable newAttachable, 
+            bool checkForCombo = true, 
+            bool updateColliderGeometry = true, 
+            bool updateMissions = true,
+            bool updatePartList = true)
         {
             if (Destroyed) 
                 return false;
@@ -1162,7 +1168,7 @@ namespace StarSalvager
                 case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
                     break;
-                case Part _:
+                case Part _ when updatePartList:
                     BotPartsLogic.UpdatePartsList();
                     break;
 
@@ -1188,8 +1194,13 @@ namespace StarSalvager
             return true;
         }
 
-        public void AttachNewBit(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true, 
-            bool updateColliderGeometry = true, bool updateMissions = true, bool checkMagnet = true, bool playSound = true)
+        public void AttachNewBit(Vector2Int coordinate, IAttachable newAttachable, 
+            bool checkForCombo = true, 
+            bool updateColliderGeometry = true, 
+            bool updateMissions = true, 
+            bool checkMagnet = true, 
+            bool playSound = true,
+            bool updatePartList = true)
         {
             if (Destroyed) 
                 return;
@@ -1225,7 +1236,7 @@ namespace StarSalvager
                 case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
                     break;
-                case Part _:
+                case Part _ when updatePartList:
                     BotPartsLogic.UpdatePartsList();
                     break;
             }
@@ -1264,8 +1275,13 @@ namespace StarSalvager
         }
 
         public void AttachAttachableToExisting(IAttachable newAttachable, IAttachable existingAttachable,
-            DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true,
-            bool updateMissions = true, bool checkMagnet = true, bool playSound = true)
+            DIRECTION direction, 
+            bool checkForCombo = true, 
+            bool updateColliderGeometry = true,
+            bool updateMissions = true, 
+            bool checkMagnet = true, 
+            bool playSound = true,
+            bool updatePartList = true)
         {
             if (Destroyed) 
                 return;
@@ -1326,7 +1342,7 @@ namespace StarSalvager
                 case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
                     break;
-                case Part _:
+                case Part _ when updatePartList:
                     BotPartsLogic.UpdatePartsList();
                     break;
             }
