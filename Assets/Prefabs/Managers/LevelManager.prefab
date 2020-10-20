@@ -97,5 +97,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RecoveredBotFalling: {fileID: 0}
-  edgeSprite: {fileID: 21300000, guid: 8f4f07a4d3f945f4ca5df3ea25672781, type: 3}
+  edgeSprite: {fileID: 21300000, guid: 8ede64f40fa13de429a00cf47d7820d3, type: 3}
   edgeSpriteColor: {r: 0.09781062, g: 0.13207549, b: 0.12023037, a: 1}

@@ -305,6 +305,9 @@ namespace StarSalvager
             //Only want to update the parts list after everyone has loaded
             foreach (var attachable in botAttachables)
             {
+                if(attachable is Part part && part.Type == PART_TYPE.CORE && isRecoveryDrone)
+                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
+                
                 AttachNewBit(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);
             }
             

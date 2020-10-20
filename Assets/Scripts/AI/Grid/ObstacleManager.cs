@@ -1247,7 +1247,7 @@ namespace StarSalvager
             {
                 var isLeft = i == 0;
 
-                _edgeSprites[i].flipX = isLeft;
+                _edgeSprites[i].flipX = !isLeft;
 
                 var trans = _edgeSprites[i].transform;
                 var xPos = xOffset + orthoSize - X_SCALE / 2f;

@@ -855,6 +855,7 @@ namespace StarSalvager
                     "You failed to recover your bot. Click to return to main menu.",
                     () =>
                     {
+                        RecoverFromDeath = false;
                         GameUi.ShowRecoveryBanner(false);
                         Globals.CurrentWave = 0;
                         GameTimer.SetPaused(false);

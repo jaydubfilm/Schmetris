@@ -93,6 +93,9 @@ namespace StarSalvager
             _isRecoveryDrone = isRecoveryDrone;
             foreach (var attachable in botAttachables)
             {
+                if(attachable is Part part && part.Type == PART_TYPE.CORE && isRecoveryDrone)
+                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
+                
                 AttachNewBit(attachable.Coordinate, attachable);
             }
         }
