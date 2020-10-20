@@ -40,6 +40,7 @@
         DECOY,
         RETRACTOR,
         HOOVER,
+        RECOVERY,
 
     } 
 }

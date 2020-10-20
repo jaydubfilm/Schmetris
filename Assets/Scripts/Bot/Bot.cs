@@ -267,6 +267,7 @@ namespace StarSalvager
 
         public void InitBot(bool isRecoveryDrone)
         {
+            var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
             _isRecoveryDrone = isRecoveryDrone;
             
             _isDestroyed = false;
@@ -276,7 +277,7 @@ namespace StarSalvager
 
             var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
             //Add core component
-            var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(
+            var core = partFactory.CreateObject<Part>(
                 new BlockData
                 {
                     Type = (int)PART_TYPE.CORE,
@@ -284,6 +285,8 @@ namespace StarSalvager
                     Level = 0,
                     Health = startingHealth
                 });
+            
+            if(isRecoveryDrone) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
 
             AttachNewBit(Vector2Int.zero, core, updateMissions: false);
 

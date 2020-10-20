@@ -170,6 +170,8 @@ namespace StarSalvager.Editor
                     continue;
 
                 var profile = factoryManager.PartsProfileData.profiles[index];
+                profile.Sprites = new Sprite[partAtlasData.Sprites.Length];
+                
                 partAtlasData.Sprites.CopyTo(profile.Sprites, 0);
 
                 factoryManager.PartsProfileData.profiles[index] = profile;

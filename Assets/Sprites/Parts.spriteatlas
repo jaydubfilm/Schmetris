@@ -66,7 +66,10 @@ SpriteAtlas:
     - {fileID: 21300000, guid: 2e2bb69d9de6c9d4a9af7278b3530bcc, type: 3}
     - {fileID: 21300000, guid: 5a4f808fa0c3bc4409cc8c37fbb5c192, type: 3}
     - {fileID: 21300000, guid: 485dff4305fd0da4c91382202ed5579e, type: 3}
-    totalSpriteSurfaceArea: 393216
+    - {fileID: 21300000, guid: c8d8caf80e05997469d3dfbddb7fe3f1, type: 3}
+    - {fileID: 21300000, guid: 6c4c5bf73bc32aa45881c24f74b75bd7, type: 3}
+    - {fileID: 21300000, guid: da58ecc6d413fcd48b655cb8bbebba4d, type: 3}
+    totalSpriteSurfaceArea: 442368
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -80,7 +83,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: d6becc35e668194458c7e68ab76570bf, type: 3}
   - {fileID: 21300000, guid: 4aacf1b5046c9d74f81b97434ce8d27e, type: 3}
   - {fileID: 21300000, guid: f27cdc66a92cddc409494b6005898db3, type: 3}
+  - {fileID: 21300000, guid: da58ecc6d413fcd48b655cb8bbebba4d, type: 3}
   - {fileID: 21300000, guid: 2eb188e78c2fa7f42bc399f5c9926cb7, type: 3}
+  - {fileID: 21300000, guid: 6c4c5bf73bc32aa45881c24f74b75bd7, type: 3}
+  - {fileID: 21300000, guid: c8d8caf80e05997469d3dfbddb7fe3f1, type: 3}
   - {fileID: 21300000, guid: 2897c309d4fec844fb378777c9ab53b2, type: 3}
   - {fileID: 21300000, guid: afd9ef09316bdb445825c64c11bcd851, type: 3}
   - {fileID: 21300000, guid: 7e36e05923597464fb708569e47b2dd7, type: 3}
@@ -105,7 +111,10 @@ SpriteAtlas:
   - part_REFINER_2_v1
   - part_SPIKES_1_v1
   - part_CORE_3_v1
+  - part_RECOVERY_3_v1
   - part_BOOSTDAMAGE_2_v1
+  - part_RECOVERY_2_v1
+  - part_RECOVERY_1_v1
   - part_BOOSTRANGE_1_v1
   - part_REFINER_1_v1
   - part_BOOSTRATE_1_v1
