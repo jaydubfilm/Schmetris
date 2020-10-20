@@ -117,14 +117,14 @@ namespace StarSalvager.Editor
         [SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, DrawScrollView = false), FoldoutGroup("Bits")]
         private List<BitAtlasData> bitAtlasDatas;
         
-        [SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, DrawScrollView = false), FoldoutGroup("Bits")]
+        //[SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, DrawScrollView = false), FoldoutGroup("Bits")]
         private List<ComponentAtlasData> componentAtlasDatas;
 
         private void SetupLists()
         {
             partAtlasDatas = SetupList<PartAtlasData, PART_TYPE>();
             bitAtlasDatas = SetupList<BitAtlasData, BIT_TYPE>();
-            componentAtlasDatas = SetupList<ComponentAtlasData, COMPONENT_TYPE>();
+            //componentAtlasDatas = SetupList<ComponentAtlasData, COMPONENT_TYPE>();
         }
         
         private static List<T> SetupList<T, TE>() where TE: Enum where T: AtlasDataBase<TE>, new()
@@ -193,7 +193,7 @@ namespace StarSalvager.Editor
             
             //--------------------------------------------------------------------------------------------------------//
             
-            foreach (var componentAtlasData in componentAtlasDatas)
+            /*foreach (var componentAtlasData in componentAtlasDatas)
             {
                 SpriteAtlasSettings.UpdatePath(componentAtlasData.type, componentAtlasData.selectedVersion);
 
@@ -205,7 +205,7 @@ namespace StarSalvager.Editor
                 componentAtlasData.Sprites.CopyTo(profile.Sprites, 0);
 
                 factoryManager.ComponentProfile.profiles[index] = profile;
-            }
+            }*/
             
             //--------------------------------------------------------------------------------------------------------//
 
@@ -216,7 +216,7 @@ namespace StarSalvager.Editor
             //Update the Part/Bit/Component Profiles
             EditorUtility.SetDirty(factoryManager.PartsProfileData);
             EditorUtility.SetDirty(factoryManager.BitProfileData);
-            EditorUtility.SetDirty(factoryManager.ComponentProfile);
+            //EditorUtility.SetDirty(factoryManager.ComponentProfile);
             
             //Update the Part/Bit Atlases
             UpdateSpriteAtlas<PartAtlasData, PART_TYPE>(SpriteAtlasSettings.partsAtlas, partAtlasDatas);

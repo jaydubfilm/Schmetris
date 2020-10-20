@@ -32,7 +32,7 @@ MonoBehaviour:
   - Type: 25
     path: Assets/Sprites/Parts/BOOSTDAMAGE/v1
   - Type: 26
-    path: Assets/Sprites/Parts/BOOSTDEFENCE/v1
+    path: Assets/Sprites/Parts/BOOSTDEFENSE/v1
   - Type: 27
     path: Assets/Sprites/Parts/STACKER/v1
   BitPaths:
