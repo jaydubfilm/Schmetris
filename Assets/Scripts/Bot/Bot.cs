@@ -3370,6 +3370,7 @@ namespace StarSalvager
             
             attachedBlocks.Clear();
             BotPartsLogic.ClearList();
+            _isRecoveryDrone = false;
             //_parts.Clear();
             
             ObstacleManager.NewShapeOnScreen -= CheckForBonusShapeMatches;
