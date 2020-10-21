@@ -513,6 +513,7 @@ namespace StarSalvager
             {
                 case Bit bit:
                 {
+                   
                     bool legalDirection;
 
                     //Get the coordinate of the collision
@@ -1511,7 +1512,11 @@ namespace StarSalvager
                 CompositeCollider2D.GenerateGeometry();
         }
 
-        public void PushNewAttachable(IAttachable newAttachable, DIRECTION direction, Vector2Int startCoord, bool checkForCombo = true, bool updateColliderGeometry = true, bool checkMagnet = true, bool playSound = true)
+        public void PushNewAttachable(IAttachable newAttachable, DIRECTION direction, Vector2Int startCoord, 
+            bool checkForCombo = true, 
+            bool updateColliderGeometry = true, 
+            bool checkMagnet = true, 
+            bool playSound = true)
         {
             if (Destroyed) 
                 return;

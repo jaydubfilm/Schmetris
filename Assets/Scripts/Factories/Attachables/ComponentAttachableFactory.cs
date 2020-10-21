@@ -169,6 +169,8 @@ namespace StarSalvager.Factories
                 
                 anim.SimpleAnimator.SetAnimation(profile.animation);
                 temp = anim;
+                
+                temp.gameObject.name = $"{nameof(AnimatedComponent)}_{type}_Lvl{blockData.Level}";
             }
             else
             {
@@ -176,6 +178,8 @@ namespace StarSalvager.Factories
                 {
                     temp = CreateObject<Component>();
                 }
+
+                temp.gameObject.name = $"{nameof(Component)}_{type}_Lvl{blockData.Level}";
             }
 
             //--------------------------------------------------------------------------------------------------------//
