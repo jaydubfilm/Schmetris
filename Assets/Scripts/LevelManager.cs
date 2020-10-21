@@ -297,8 +297,8 @@ namespace StarSalvager
             SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
             SessionDataProcessor.Instance.EndActiveWave();
 
-            GameUi.SetClockValue(0f);
-            GameUi.SetTimeString(0);
+            GameUi.SetProgressValue(1f);
+            //GameUi.SetTimeString(0);
             SavePlayerData();
             GameTimer.SetPaused(true);
 
@@ -408,8 +408,8 @@ namespace StarSalvager
             var duration = CurrentWaveData.GetWaveDuration();
             var timeLeft = duration - m_waveTimer;
             
-            GameUi.SetClockValue(timeLeft / duration);
-            GameUi.SetTimeString((int) timeLeft);
+            GameUi.SetProgressValue(1f - timeLeft / duration);
+            //GameUi.SetTimeString((int) timeLeft);
         }
 
         private bool BotIsInPosition()
@@ -667,7 +667,7 @@ namespace StarSalvager
             LevelManagerUI.OverrideText = string.Empty;
             m_levelTimer += m_waveTimer;
             m_waveTimer = 0;
-            GameUi.SetCurrentWaveText("Complete");
+            //GameUi.SetCurrentWaveText("Complete");
             GameUi.ShowAbortWindow(false);
             EnemyManager.SetEnemiesInert(true);
 
@@ -784,7 +784,7 @@ namespace StarSalvager
         public void RestartLevel()
         {
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
-            GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
+            //GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
             GameTimer.SetPaused(false);
             SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.LEVEL);
         }
@@ -897,7 +897,7 @@ namespace StarSalvager
 
         public void OnResume()
         {
-            GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
+            //GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
         }
 
         public void OnPause()

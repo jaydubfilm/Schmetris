@@ -57,8 +57,8 @@ namespace StarSalvager.UI
         private Button pauseWindowMainMenuButton;
         [SerializeField, Required, FoldoutGroup("Pause Menu")]
         private Button resumeButton;
-        [SerializeField, Required, FoldoutGroup("Pause Menu")]
-        private TMP_Text pauseText;
+        /*[SerializeField, Required, FoldoutGroup("Pause Menu")]
+        private TMP_Text pauseText;*/
 
         //============================================================================================================//
         //FIXME I'll want something a little better implemented based on feedback
@@ -304,7 +304,7 @@ namespace StarSalvager.UI
         public void OnResume()
         {
             pauseWindow.SetActive(false);
-            pauseText.gameObject.SetActive(true);
+            //pauseText.gameObject.SetActive(true);
         }
 
         public void OnPause()
@@ -317,7 +317,7 @@ namespace StarSalvager.UI
                 return;
             
             pauseWindow.SetActive(true);
-            pauseText.gameObject.SetActive(false);
+            //pauseText.gameObject.SetActive(false);
         }
     }
 }

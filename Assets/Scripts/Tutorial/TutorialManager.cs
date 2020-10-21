@@ -102,7 +102,7 @@ namespace StarSalvager.Tutorial
             mono.StartCoroutine(MainTutorialCoroutine());
 
             
-            LevelManager.Instance.GameUi.SetCurrentWaveText("Training Simulator");
+            //LevelManager.Instance.GameUi.SetCurrentWaveText("Training Simulator");
             
             _readyForInput = true;
             _isReady = true;
