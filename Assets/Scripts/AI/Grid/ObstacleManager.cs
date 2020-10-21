@@ -1152,6 +1152,7 @@ namespace StarSalvager
             if (newObstacle is Shape shape)
                 shape.FlashBits();
 
+            newObstacle.gameObject.name += "_BonusShape";
 
             PlaceBonusShapeInLevel(newObstacle);
         }

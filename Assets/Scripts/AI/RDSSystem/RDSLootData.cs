@@ -3,7 +3,9 @@ using StarSalvager.AI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using StarSalvager.Factories;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace StarSalvager
 {
@@ -174,36 +176,24 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException();
             }
 
+            
+            
             foreach (var value in Enum.GetValues(valueType))
             {
-                if (rdsData == TYPE.ResourcesRefined && (BIT_TYPE) value == BIT_TYPE.WHITE)
-                    continue;
-
-                if (rdsData == TYPE.ResourcesRefined)
+                var name = Convert.ChangeType(value, valueType).ToString();
+                
+                if (rdsData == TYPE.ResourcesRefined && value is BIT_TYPE bitType)
                 {
-                    switch (value)
-                    {
-                        case BIT_TYPE.BLUE:
-                            types.Add($"Water", (int)value);
-                            break;
-                        case BIT_TYPE.RED:
-                            types.Add($"Fuel", (int)value);
-                            break;
-                        case BIT_TYPE.YELLOW:
-                            types.Add($"Power", (int)value);
-                            break;
-                        case BIT_TYPE.GREEN:
-                            types.Add($"Plasma", (int)value);
-                            break;
-                        case BIT_TYPE.GREY:
-                            types.Add($"Scrap", (int)value);
-                            break;
-                    }
+                    if(bitType == BIT_TYPE.WHITE)
+                        continue;
+                    
+                    name = Object.FindObjectOfType<FactoryManager>().BitsRemoteData.GetRemoteData(bitType)
+                        .refinedName;
+                    
+                    types.Add(name, (int)value);
                 }
-                else
-                {
-                    types.Add($"{value}", (int)value);
-                }
+                
+                types.Add(name, (int)value);
             }
 
             return types;
