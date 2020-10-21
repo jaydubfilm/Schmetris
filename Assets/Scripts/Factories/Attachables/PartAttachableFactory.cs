@@ -149,6 +149,28 @@ namespace StarSalvager.Factories
             return gameObject;
         }
 
+        public void SetOverrideSprite(in IPart toOverride, PART_TYPE overrideType)
+        {
+            if (toOverride.Destroyed)
+                return;
+            
+            var profile = factoryProfile.GetProfile(overrideType);
+            var sprite = profile.GetSprite(toOverride.level);
+
+            //TODO This should be the same function
+            switch (toOverride)
+            {
+                case Part part:
+                    part.SetSprite(sprite);
+                    break;
+                case ScrapyardPart scrapyardPart:
+                    scrapyardPart.SetSprite(sprite);
+                    break;
+            }
+            
+            
+        }
+
         //============================================================================================================//
 
         public GameObject CreateScrapyardGameObject(PART_TYPE partType, int level = 0)

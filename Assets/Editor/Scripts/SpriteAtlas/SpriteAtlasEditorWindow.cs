@@ -7,8 +7,14 @@ using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using StarSalvager.Editor.CustomEditors;
 using StarSalvager.Factories;
+using StarSalvager.Factories.Data;
+using StarSalvager.ScriptableObjects;
+using StarSalvager.Utilities.Extensions;
 using UnityEditor;
+using UnityEditor.U2D;
 using UnityEngine;
+using UnityEngine.U2D;
+using Object = UnityEngine.Object;
 
 namespace StarSalvager.Editor
 {
@@ -47,7 +53,7 @@ namespace StarSalvager.Editor
 
             }
         }
-
+        [Serializable]
         private class ComponentAtlasData : AtlasDataBase<COMPONENT_TYPE>
         {
             protected override string GetName()
@@ -110,11 +116,15 @@ namespace StarSalvager.Editor
         
         [SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, DrawScrollView = false), FoldoutGroup("Bits")]
         private List<BitAtlasData> bitAtlasDatas;
+        
+        //[SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, DrawScrollView = false), FoldoutGroup("Bits")]
+        private List<ComponentAtlasData> componentAtlasDatas;
 
         private void SetupLists()
         {
             partAtlasDatas = SetupList<PartAtlasData, PART_TYPE>();
             bitAtlasDatas = SetupList<BitAtlasData, BIT_TYPE>();
+            //componentAtlasDatas = SetupList<ComponentAtlasData, COMPONENT_TYPE>();
         }
         
         private static List<T> SetupList<T, TE>() where TE: Enum where T: AtlasDataBase<TE>, new()
@@ -146,6 +156,10 @@ namespace StarSalvager.Editor
         {
             int index;
             var factoryManager = FindObjectOfType<FactoryManager>();
+
+            #region Clunky Updates that I dont like...
+
+            //--------------------------------------------------------------------------------------------------------//
             
             foreach (var partAtlasData in partAtlasDatas)
             {
@@ -156,33 +170,141 @@ namespace StarSalvager.Editor
                     continue;
 
                 var profile = factoryManager.PartsProfileData.profiles[index];
+                profile.Sprites = new Sprite[partAtlasData.Sprites.Length];
+                
                 partAtlasData.Sprites.CopyTo(profile.Sprites, 0);
 
                 factoryManager.PartsProfileData.profiles[index] = profile;
             }
             
+            //--------------------------------------------------------------------------------------------------------//
+            
             foreach (var bitAtlasData in bitAtlasDatas)
             {
                 SpriteAtlasSettings.UpdatePath(bitAtlasData.type, bitAtlasData.selectedVersion);
+
+                index = factoryManager.BitProfileData.GetProfileIndex(bitAtlasData.type);
+                if (index < 0) 
+                    continue;
+
+                var profile = factoryManager.BitProfileData.profiles[index];
+                bitAtlasData.Sprites.CopyTo(profile.Sprites, 0);
+
+                factoryManager.BitProfileData.profiles[index] = profile;
             }
-            //TODO Need to update the Part/Bit/Component Profiles
-            //TODO Need to Update the Part/Bit/Component Atlases
             
+            //--------------------------------------------------------------------------------------------------------//
+            
+            /*foreach (var componentAtlasData in componentAtlasDatas)
+            {
+                SpriteAtlasSettings.UpdatePath(componentAtlasData.type, componentAtlasData.selectedVersion);
+
+                index = factoryManager.ComponentProfile.GetProfileIndex(componentAtlasData.type);
+                if (index < 0) 
+                    continue;
+
+                var profile = factoryManager.ComponentProfile.profiles[index];
+                componentAtlasData.Sprites.CopyTo(profile.Sprites, 0);
+
+                factoryManager.ComponentProfile.profiles[index] = profile;
+            }*/
+            
+            //--------------------------------------------------------------------------------------------------------//
+
+            #endregion //Clunky Updates that I dont like...
+
+            /*UpdateData<PartAtlasData, PART_TYPE>(partAtlasDatas);*/
+            
+            //Update the Part/Bit/Component Profiles
             EditorUtility.SetDirty(factoryManager.PartsProfileData);
+            EditorUtility.SetDirty(factoryManager.BitProfileData);
+            //EditorUtility.SetDirty(factoryManager.ComponentProfile);
+            
+            //Update the Part/Bit Atlases
+            UpdateSpriteAtlas<PartAtlasData, PART_TYPE>(SpriteAtlasSettings.partsAtlas, partAtlasDatas);
+            UpdateSpriteAtlas<BitAtlasData, BIT_TYPE>(SpriteAtlasSettings.bitsAtlas, bitAtlasDatas);
+            //TODO Need to Update Component Atlas
+            //UpdateSpriteAtlas<ComponentAtlasData, COMPONENT_TYPE>(SpriteAtlasSettings., partAtlasDatas);
+            
+            
             EditorUtility.SetDirty(SpriteAtlasSettings);
             AssetDatabase.SaveAssets();
+        }
+
+        //FIXME Really want this to work, but it is not playing nice
+        /*private void UpdateData<TD>(List<TD> atlasDatas) where TD: AtlasDataBase
+        {
+            var factoryManager = FindObjectOfType<FactoryManager>();
+            
+
+            switch (true)
+            {
+                case bool _ when typeof(TD) == typeof(PartAtlasData):
+                    UpdateProfileData<PartProfileScriptableObject, PartAtlasData, PART_TYPE>(
+                        (List<PartAtlasData>)atlasDatas,
+                        factoryManager.PartsProfileData);
+                    break;
+                case bool _ when typeof(TE) == typeof(BIT_TYPE):
+                    profileData = factoryManager.BitProfileData ;
+                    break;
+                case bool _ when typeof(TE) == typeof(COMPONENT_TYPE):
+                    profileData = factoryManager.ComponentProfile;
+                    break;
+            }
+        }
+
+        private void UpdateProfileData<T, TD, TE>(List<TD> atlasDatas, T profileData)
+            where T : AttachableProfileScriptableObject<IProfile, TE> 
+            where TD: AtlasDataBase
+            where TE : Enum 
+        {
+            
+            
+            foreach (var atlasData in atlasDatas)
+            {
+                SpriteAtlasSettings.UpdatePath(atlasData.type, atlasData.selectedVersion);
+
+                var index = profileData.GetProfileIndex(atlasData.type);
+                if (index < 0)
+                    continue;
+
+                var profile = profileData.profiles[index];
+                atlasData.Sprites.CopyTo(profile.Sprites, 0);
+
+                profileData.profiles[index] = profile;
+            }
+        }*/
+
+        private static void UpdateSpriteAtlas<TD, TE>(SpriteAtlas spriteAtlas, IEnumerable<TD> atlasDataBase) where TD: AtlasDataBase<TE> where TE : Enum
+        {
+            if (atlasDataBase.IsNullOrEmpty())
+                return;
+            
+            var spriteList = new List<Object>();
+            
+            var current = spriteAtlas.GetPackables();
+            spriteAtlas.Remove(current);
+
+            foreach (var dataBase in atlasDataBase)
+            {
+                spriteList.AddRange(dataBase.Sprites);
+            }
+            
+            
+            spriteAtlas.Add(spriteList.ToArray());
+            
+            EditorUtility.SetDirty(spriteAtlas);
         }
 
         //====================================================================================================================//
         
     }
-    
     [Serializable]
     public abstract class AtlasDataBase<TE> where TE: Enum
     {
         [HideInInspector]
         public TE type;
-
+        
         [ShowInInspector, DisplayAsString, PropertyOrder(-10)]
         public string name => GetName();
 
@@ -269,6 +391,4 @@ namespace StarSalvager.Editor
 
         protected abstract string GetName();
     }
-        
-        
 }

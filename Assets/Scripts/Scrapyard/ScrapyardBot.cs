@@ -69,10 +69,12 @@ namespace StarSalvager
 
         public void InitBot(bool isRecoveryDrone)
         {
+            var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
+            
             _isRecoveryDrone = isRecoveryDrone;
             var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
             //Add core component
-            var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(
+            var core = partFactory.CreateScrapyardObject<ScrapyardPart>(
                 new BlockData
                 {
                     Type = (int)PART_TYPE.CORE,
@@ -81,6 +83,8 @@ namespace StarSalvager
                     Health = startingHealth
                 });
 
+            if(isRecoveryDrone) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
+            
             AttachNewBit(Vector2Int.zero, core);
         }
 
@@ -89,6 +93,9 @@ namespace StarSalvager
             _isRecoveryDrone = isRecoveryDrone;
             foreach (var attachable in botAttachables)
             {
+                if(attachable is Part part && part.Type == PART_TYPE.CORE && isRecoveryDrone)
+                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
+                
                 AttachNewBit(attachable.Coordinate, attachable);
             }
         }
