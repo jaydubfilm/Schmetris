@@ -507,8 +507,8 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 6
-      type: 0
+    - rdsData: 1
+      type: 2
       amount: 0
       level: 0
       probability: 0
