@@ -13,8 +13,9 @@ namespace StarSalvager
         IAttachable iAttachable { get; }
         GameObject gameObject { get;}
         Transform transform { get; }
-
         Vector2Int Coordinate { get; }
+
+        bool IsBusy { get; set; }
 
         int level { get; }
         

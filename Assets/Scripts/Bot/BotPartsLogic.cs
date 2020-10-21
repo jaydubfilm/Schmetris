@@ -1140,6 +1140,9 @@ namespace StarSalvager
 
         public int ProcessBit(Bit targetBit)
         {
+            if (targetBit is ICanCombo iCanCombo && iCanCombo.IsBusy)
+                return 0;
+            
             var bitType = targetBit.Type;
             var amountProcessed = FactoryManager.Instance
                 .GetFactory<BitAttachableFactory>()
