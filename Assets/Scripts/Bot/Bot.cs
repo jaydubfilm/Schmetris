@@ -288,7 +288,7 @@ namespace StarSalvager
             
             if(isRecoveryDrone) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
 
-            AttachNewBit(Vector2Int.zero, core, updateMissions: false);
+            AttachNewBlock(Vector2Int.zero, core, updateMissions: false);
 
             ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
         }
@@ -308,7 +308,7 @@ namespace StarSalvager
                 if(attachable is Part part && part.Type == PART_TYPE.CORE && isRecoveryDrone)
                     FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
                 
-                AttachNewBit(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);
+                AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);
             }
             
             BotPartsLogic.UpdatePartsList();
@@ -625,7 +625,7 @@ namespace StarSalvager
                     AttachAttachableToExisting(component, closestAttachable, connectionDirection);
                     SessionDataProcessor.Instance.ComponentCollected(component.Type);
 
-                    CheckForBonusShapeMatches();
+                    //CheckForCombosAround();
                     
                     break;
                 }
@@ -820,7 +820,7 @@ namespace StarSalvager
                                 return false;
                             }
                             
-                            AttachNewBit(newBotCoordinate + differences[i], bitsToAdd[i], false, false);
+                            AttachNewBlock(newBotCoordinate + differences[i], bitsToAdd[i], false, false);
                             SessionDataProcessor.Instance.BitCollected(bitsToAdd[i].Type);
                         }
                         
@@ -1128,9 +1128,9 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        #region Attach Bits
+        #region Attach Blocks
         
-        public bool TryAttachNewBit(Vector2Int coordinate, IAttachable newAttachable, 
+        public bool TryAttachNewBlock(Vector2Int coordinate, IAttachable newAttachable, 
             bool checkForCombo = true, 
             bool updateColliderGeometry = true, 
             bool updateMissions = true,
@@ -1200,7 +1200,7 @@ namespace StarSalvager
             return true;
         }
 
-        public void AttachNewBit(Vector2Int coordinate, IAttachable newAttachable, 
+        public void AttachNewBlock(Vector2Int coordinate, IAttachable newAttachable, 
             bool checkForCombo = true, 
             bool updateColliderGeometry = true, 
             bool updateMissions = true, 
@@ -1457,7 +1457,7 @@ namespace StarSalvager
                     if (!attachedBlocks.HasPathToCore(check))
                         continue;
                     //Debug.Log($"Found available location for {newAttachable.gameObject.name}\n{coordinate} + ({directions[i]} * {dist}) = {check}");
-                    AttachNewBit(check, newAttachable, checkForCombo, updateColliderGeometry, updateMissions);
+                    AttachNewBlock(check, newAttachable, checkForCombo, updateColliderGeometry, updateMissions);
                     return;
                 }
 
@@ -3504,7 +3504,7 @@ namespace StarSalvager
         {
             foreach (var attachable in attachables)
             {
-                AttachNewBit(attachable.Coordinate, attachable, updateMissions: false, checkForCombo: false, checkMagnet:false);
+                AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, checkForCombo: false, checkMagnet:false);
             }
 
             if(checkForCombos)

@@ -48,7 +48,7 @@ namespace StarSalvager.Utilities.Extensions
                         throw new ArgumentOutOfRangeException(nameof(block.ClassType), block.ClassType, null);
                 }
                 
-                bot.AttachNewBit(attachable.Coordinate, attachable);
+                bot.AttachNewBlock(attachable.Coordinate, attachable);
             }
             
         }
