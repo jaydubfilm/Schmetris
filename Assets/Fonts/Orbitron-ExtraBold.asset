@@ -53,9 +53,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: Orbitron-ExtraBold
   m_EditorClassIdentifier: 
-  hashCode: 0
+  hashCode: -1205270397
   material: {fileID: -8304808927669992072}
-  materialHashCode: 0
+  materialHashCode: 1501349672
   m_Version: 1.1.0
   m_SourceFontFileGUID: 088a427547cf2404cb28c93056595660
   m_SourceFontFile_EditorRef: {fileID: 0}

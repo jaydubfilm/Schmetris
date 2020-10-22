@@ -76,13 +76,8 @@ namespace StarSalvager.UI.Scrapyard
         {
             SaveGameContentScrollView.ClearElements();
             
-            foreach (var saveFile in PlayerPersistentData.PlayerMetadata.SaveFiles)
+            foreach (var saveFile in PlayerDataManager.GetSaveFiles())
             {
-                if (saveFile.FilePath == Files.AUTOSAVE_PATH)
-                {
-                    continue;
-                }
-
                 var element = SaveGameContentScrollView.AddElement(saveFile, $"{saveFile.Name}_UIElement");
                 element.Init(saveFile, SaveFilePressed, DeleteSaveFilePressed);
             }
@@ -121,8 +116,8 @@ namespace StarSalvager.UI.Scrapyard
                         return;
                         
                     SaveGameContentScrollView.RemoveElement(data);
-                    Files.TryDeleteFile(data.FilePath);
-                    PlayerPersistentData.PlayerMetadata.SaveFiles.Remove(data);
+                    Files.TryDeleteFile(Files.GetPlayerAccountSavePath(PlayerDataManager.CurrentSaveSlotIndex));
+                    PlayerDataManager.ClearSaveFileData(data);
                     //TODO Delete the file here
 
                     UpdateScrollView();
@@ -133,11 +128,11 @@ namespace StarSalvager.UI.Scrapyard
         {
             if (_selectedSaveFileData.HasValue)
             {
-                PlayerPersistentData.SetCurrentSaveFile(_selectedSaveFileData.Value.FilePath);
+                PlayerDataManager.SetCurrentSaveSlotIndex(_selectedSaveFileData.Value.SaveSlotIndex);
 
                 CloseMenu();
 
-                FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
+                FactoryManager.Instance.currentModularDataIndex = 0;
                 SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU);
             }
         }
@@ -146,24 +141,23 @@ namespace StarSalvager.UI.Scrapyard
         {
             if (!_selectedSaveFileData.HasValue || _selectedSaveFileData.Value.Name != nameInputField.text || _selectedSaveFileData.Value.Name == "New File")
             {
-                string playerPath = Files.GetNextAvailableSaveSlot();
+                int saveSlotIndex = Files.GetNextAvailableSaveSlot();
 
-                if (playerPath != string.Empty)
+                if (saveSlotIndex >= 0)
                 {
                     SaveFileData newSaveFile = new SaveFileData
                     {
                         Name = nameInputField.text,
                         Date = DateTime.Now,
-                        FilePath = playerPath
+                        SaveSlotIndex = saveSlotIndex
                     };
-                    print("CREATING FILE " + playerPath);
+                    print("CREATING FILE " + saveSlotIndex);
 
-                    PlayerPersistentData.PlayerMetadata.SaveFiles.Add(newSaveFile);
-                    PlayerPersistentData.PlayerMetadata.CurrentSaveFile = newSaveFile;
+                    PlayerDataManager.AddSaveFileData(newSaveFile);
+                    PlayerDataManager.SetCurrentSaveFile(saveSlotIndex);
 
-                    Files.ExportPlayerPersistentData(PlayerPersistentData.PlayerData, playerPath);
-
-                    PlayerPersistentData.SetCurrentSaveFile(playerPath);
+                    PlayerDataManager.ExportPlayerAccountData(saveSlotIndex);
+                    PlayerDataManager.SetCurrentSaveSlotIndex(saveSlotIndex);
 
                     _selectedSaveFileData = newSaveFile;
 
@@ -186,22 +180,22 @@ namespace StarSalvager.UI.Scrapyard
                             return;
                         
                         SaveGameContentScrollView.RemoveElement(_selectedSaveFileData.Value);
-                        string playerPath = _selectedSaveFileData.Value.FilePath;
+                        int saveSlotIndex = _selectedSaveFileData.Value.SaveSlotIndex;
 
-                        PlayerPersistentData.PlayerMetadata.SaveFiles.Remove(_selectedSaveFileData.Value);
+                        PlayerDataManager.RemoveSaveFileData(_selectedSaveFileData.Value);
 
                         SaveFileData newSaveFile = new SaveFileData
                         {
                             Name = nameInputField.text,
                             Date = DateTime.Now,
-                            FilePath = playerPath
+                            SaveSlotIndex = saveSlotIndex
                         };
-                        print("OVERWRITING FILE " + playerPath);
+                        print("OVERWRITING FILE " + saveSlotIndex);
 
-                        PlayerPersistentData.PlayerMetadata.SaveFiles.Add(newSaveFile);
-                        PlayerPersistentData.PlayerMetadata.CurrentSaveFile = newSaveFile;
+                        PlayerDataManager.AddSaveFileData(newSaveFile);
+                        PlayerDataManager.SetCurrentSaveFile(saveSlotIndex);
 
-                        Files.ExportPlayerPersistentData(PlayerPersistentData.PlayerData, playerPath);
+                        PlayerDataManager.ExportPlayerAccountData(saveSlotIndex);
 
                         _selectedSaveFileData = newSaveFile;
 

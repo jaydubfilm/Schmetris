@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
@@ -59,7 +60,7 @@ namespace StarSalvager.UI.Scrapyard
             Init(data);
 
             craftButton.interactable = craftButtonInteractable && 
-                                       PlayerPersistentData.PlayerData.CanAffordFacilityBlueprint(data);
+                                       PlayerDataManager.CanAffordFacilityBlueprint(data);
 
             _onHoverCallback = onHoverCallback;
 

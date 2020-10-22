@@ -17,6 +17,7 @@ using StarSalvager.Audio;
 using System.Collections.Generic;
 using StarSalvager.Utilities.FileIO;
 using TMPro;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.UI
 {
@@ -186,10 +187,8 @@ namespace StarSalvager.UI
             if (!SceneLoader.IsReady)
                 return;
 
-            continueButton.interactable = PlayerPersistentData.PlayerMetadata.CurrentSaveFile.HasValue;
-            loadGameButton.interactable = PlayerPersistentData.PlayerMetadata.SaveFiles.Count > 0 &&
-                                          PlayerPersistentData.PlayerMetadata.SaveFiles.Any(s =>
-                                              s.FilePath != Files.AUTOSAVE_PATH);
+            continueButton.interactable = PlayerDataManager.GetIndexMostRecentSaveFile() >= 0;
+            loadGameButton.interactable = PlayerDataManager.GetSaveFiles().Count > 0;
 
             m_toggleOrientationButton.gameObject.SetActive(!Globals.DisableTestingFeatures);
             m_cameraZoomScaler.gameObject.SetActive(!Globals.DisableTestingFeatures);
@@ -236,20 +235,14 @@ namespace StarSalvager.UI
 
             continueButton.onClick.AddListener(() =>
             {
-                if (!PlayerPersistentData.PlayerMetadata.CurrentSaveFile.HasValue)
+                int saveSlotIndex = PlayerDataManager.GetIndexMostRecentSaveFile();
+
+                if (saveSlotIndex >= 0)
                 {
-                    return;
-                }
+                    print("LOADING FILE " + saveSlotIndex);
 
-                string playerPath = PlayerPersistentData.PlayerMetadata.CurrentSaveFile.Value.FilePath;
-
-                if (playerPath != string.Empty)
-                {
-                    print("LOADING FILE " + playerPath);
-
-                    PlayerPersistentData.SetCurrentSaveFile(playerPath);
-                    FactoryManager.Instance.currentModularDataIndex =
-                        PlayerPersistentData.PlayerData.currentModularSectorIndex;
+                    PlayerDataManager.SetCurrentSaveSlotIndex(saveSlotIndex);
+                    FactoryManager.Instance.currentModularDataIndex = 0;
 
                     //menuState = MENUSTATE.GAMEMENU;
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU);
@@ -282,12 +275,12 @@ namespace StarSalvager.UI
             {
                 OpenMenu(MENU.MAIN);
 
-                string playerPath = Files.GetNextAvailableSaveSlot();
+                int saveSlotIndex = Files.GetNextAvailableSaveSlot();
 
-                if (playerPath != string.Empty)
+                if (saveSlotIndex >= 0)
                 {
-                    PlayerPersistentData.SetCurrentSaveFile(playerPath);
-                    PlayerPersistentData.ResetPlayerData();
+                    PlayerDataManager.SetCurrentSaveSlotIndex(saveSlotIndex);
+                    PlayerDataManager.ResetPlayerAccountData();
 
                     //menuState = MENUSTATE.GAMEMENU;
                     introSceneCanvas.SetActive(true);
@@ -307,20 +300,6 @@ namespace StarSalvager.UI
                 Globals.UsingTutorial = true;
                 Globals.CurrentSector = 4;
                 Globals.CurrentWave = 0;
-
-                
-                /*string playerPath = Files.GetNextAvailableSaveSlot();
-
-                if (playerPath != string.Empty)
-                {
-                    PlayerPersistentData.SetCurrentSaveFile(playerPath);
-                    PlayerPersistentData.ResetPlayerData();
-                }
-                else
-                {
-                    Toast.AddToast("No empty save slots! Load an existing game or delete a save file to proceed.",
-                        time: 3.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
-                }*/
 
                 SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.MAIN_MENU);
             });

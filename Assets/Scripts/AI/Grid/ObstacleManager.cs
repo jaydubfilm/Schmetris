@@ -16,12 +16,13 @@ using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
 using StarSalvager.Cameras;
 using StarSalvager.Missions;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
 {
     public class ObstacleManager : MonoBehaviour, IReset, IPausable, IMoveOnInput
     {
-        private const float BONUS_SCREEN_AREA = 0.5f;
+        private const float BONUS_SCREEN_AREA = 0.6f;
 
         public static Action NewShapeOnScreen;
 
@@ -780,7 +781,7 @@ namespace StarSalvager
 
                 if (stageObstacleData.SelectionType == SELECTION_TYPE.CATEGORY || stageObstacleData.SelectionType == SELECTION_TYPE.SHAPE)
                 {
-                    float modifier = PlayerPersistentData.PlayerData.GetLevelResourceModifier(Globals.CurrentSector, Globals.CurrentWave);
+                    float modifier = PlayerDataManager.GetLevelResourceModifier(Globals.CurrentSector, Globals.CurrentWave);
                     spawnVariable *= modifier;
                 }
 
@@ -1152,6 +1153,7 @@ namespace StarSalvager
             if (newObstacle is Shape shape)
                 shape.FlashBits();
 
+            newObstacle.gameObject.name += "_BonusShape";
 
             PlaceBonusShapeInLevel(newObstacle);
         }

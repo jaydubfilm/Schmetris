@@ -49,8 +49,9 @@ namespace StarSalvager.Factories
 
         public GameObject CreateGameObject(BlockData blockData)
         {
-            var remote = remotePartData.GetRemoteData((PART_TYPE) blockData.Type);
-            var profile = factoryProfile.GetProfile((PART_TYPE)blockData.Type);
+            var type = (PART_TYPE) blockData.Type;
+            var remote = remotePartData.GetRemoteData(type);
+            var profile = factoryProfile.GetProfile(type);
             var sprite = profile.GetSprite(blockData.Level);
             var startingHealth = remote.levels[blockData.Level].health;//.health[blockData.Level];
 
@@ -68,6 +69,8 @@ namespace StarSalvager.Factories
                 
                 anim.SimpleAnimator.SetAnimation(profile.animation);
                 temp = anim;
+
+                temp.gameObject.name = $"{nameof(AnimatedPart)}_{type}_lvl{blockData.Level}";
             }
             else
             {
@@ -75,6 +78,8 @@ namespace StarSalvager.Factories
                 {
                     temp = CreateObject<Part>();
                 }
+                
+                temp.gameObject.name = $"{nameof(Part)}_{type}_lvl{blockData.Level}";
             }
             
             //--------------------------------------------------------------------------------------------------------//

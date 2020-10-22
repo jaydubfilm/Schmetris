@@ -74,11 +74,14 @@ namespace StarSalvager.Factories
             /*if (LevelManager.Instance != null)
                 LevelManager.Instance.ObstacleManager.AddMovableToList(shape);*/
 
+            shape.gameObject.name = $"{nameof(Shape)}_[{totalBits}]";
+
             return shape.GetComponent<T>();
         }
     
         public T CreateObject<T>(SELECTION_TYPE selectionType, string identifier, int numRotations)
         {
+            Shape shape;
             //FIXME
             if (selectionType == SELECTION_TYPE.CATEGORY)
             {
@@ -93,7 +96,7 @@ namespace StarSalvager.Factories
                     return bitFactory.CreateObject<T>((BIT_TYPE)shapeData.BlockData[0].Type, shapeData.BlockData[0].Level);
                 }
 
-                var shape = CreateObject<Shape>();
+                shape = CreateObject<Shape>();
                 for (var i = 0; i < totalBits; i++)
                 {
                     var bit = bitFactory.CreateObject<Bit>((BIT_TYPE)shapeData.BlockData[i].Type, shapeData.BlockData[i].Level);
@@ -116,7 +119,7 @@ namespace StarSalvager.Factories
 
                 shape.GenerateGeometry();
 
-                return shape.GetComponent<T>();
+                
             }
             else if (selectionType == SELECTION_TYPE.SHAPE)
             {
@@ -131,7 +134,7 @@ namespace StarSalvager.Factories
                     return bitFactory.CreateObject<T>((BIT_TYPE)shapeData.BlockData[0].Type, shapeData.BlockData[0].Level);
                 }
 
-                var shape = CreateObject<Shape>();
+                shape = CreateObject<Shape>();
                 for (var i = 0; i < totalBits; i++)
                 {
                     var bit = bitFactory.CreateObject<Bit>((BIT_TYPE)shapeData.BlockData[i].Type, shapeData.BlockData[i].Level);
@@ -153,13 +156,15 @@ namespace StarSalvager.Factories
                 }
 
                 shape.GenerateGeometry();
-
-                return shape.GetComponent<T>();
             }
             else
             {
                 return CreateObject<T>((BIT_TYPE)Random.Range(1, 6), 1);
             }
+
+            shape.gameObject.name = $"{nameof(Shape)}_{selectionType}_[{shape.AttachedBits.Count}]";
+            
+            return shape.GetComponent<T>();
         }
 
         public T CreateObject<T>(List<Bit> bits)

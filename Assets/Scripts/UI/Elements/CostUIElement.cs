@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
@@ -32,12 +33,12 @@ namespace StarSalvager.UI
 
         private void OnEnable()
         {
-            PlayerData.OnValuesChanged += UpdateData;
+            PlayerDataManager.OnValuesChanged += UpdateData;
         }
 
         private void OnDisable()
         {
-            PlayerData.OnValuesChanged -= UpdateData;
+            PlayerDataManager.OnValuesChanged -= UpdateData;
         }
 
 
@@ -72,13 +73,13 @@ namespace StarSalvager.UI
                 case CraftCost.TYPE.Bit:
                     resourceImage.sprite = _bitAttachableFactory.GetBitProfile((BIT_TYPE) data.type).refinedSprite;
                     
-                    costText.text = $"{PlayerPersistentData.PlayerData.resources[(BIT_TYPE)data.type]}/{data.amount}";
+                    costText.text = $"{PlayerDataManager.GetResources()[(BIT_TYPE)data.type]}/{data.amount}";
                     break;
                 case CraftCost.TYPE.Component:
                     resourceImage.sprite = _componentAttachableFactory.GetComponentProfile((COMPONENT_TYPE) data.type)
                         
                         .GetSprite(0);
-                    costText.text = $"{PlayerPersistentData.PlayerData.components[(COMPONENT_TYPE) data.type]}/{data.amount}";
+                    costText.text = $"{PlayerDataManager.GetComponents()[(COMPONENT_TYPE) data.type]}/{data.amount}";
                     break;
                 case CraftCost.TYPE.Part:
                     resourceImage.sprite = _partAttachableFactory.GetProfileData((PART_TYPE) data.type)
@@ -91,7 +92,7 @@ namespace StarSalvager.UI
                     }
                     else
                     {
-                        partCount = PlayerPersistentData.PlayerData.partsInStorageBlockData.Count(x => x.Type == data.type && x.Level == data.partPrerequisiteLevel);
+                        partCount = PlayerDataManager.GetCurrentPartsInStorage().Count(x => x.Type == data.type && x.Level == data.partPrerequisiteLevel);
                     }
                     
                     costText.text = $"{partCount}/{data.amount}";

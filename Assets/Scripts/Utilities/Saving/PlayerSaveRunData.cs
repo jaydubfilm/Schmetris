@@ -1,34 +1,26 @@
 ﻿using System;
 using StarSalvager.UI.Scrapyard;
-using StarSalvager.Utilities;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 using StarSalvager.Missions;
-using UnityEngine.SceneManagement;
-using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Factories;
-using StarSalvager.ScriptableObjects;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Math;
+using StarSalvager.Values;
 
-namespace StarSalvager.Values
+namespace StarSalvager.Utilities.Saving
 {
-    public class PlayerData
+    [Serializable]
+    public class PlayerSaveRunData
     {
-        [JsonIgnore]
-        public static Action OnValuesChanged;
-        [JsonIgnore]
-        public static Action OnCapacitiesChanged;
-
         //============================================================================================================//
 
         //TODO: Add an add/subtract function for ResourceAmount, and make this IReadOnlyDictionary<>
         [JsonIgnore]
-        public Dictionary<BIT_TYPE, int> resources => _resources;
+        public Dictionary<BIT_TYPE, int> readOnlyBits => _resources;
 
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _resources = new Dictionary<BIT_TYPE, int>
@@ -41,7 +33,7 @@ namespace StarSalvager.Values
         };
 
         [JsonIgnore]
-        public IReadOnlyDictionary<BIT_TYPE, int> ResourceCapacities => _resourceCapacity;
+        public Dictionary<BIT_TYPE, int> ResourceCapacities => _resourceCapacity;
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _resourceCapacity = new Dictionary<BIT_TYPE, int>
         {
@@ -52,11 +44,10 @@ namespace StarSalvager.Values
             {BIT_TYPE.GREY, 300},
         };
 
-        [JsonProperty]
-        private int _rationCapacity = 500;
+        public int RationCapacity = 500;
 
         [JsonIgnore]
-        public IReadOnlyDictionary<COMPONENT_TYPE, int> components => _components;
+        public Dictionary<COMPONENT_TYPE, int> readOnlyComponents => _components;
         [JsonProperty]
         private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_TYPE, int>
         {
@@ -119,11 +110,9 @@ namespace StarSalvager.Values
             {BIT_TYPE.GREY, 0},
         };
 
-        public List<BlockData> currentBlockData = new List<BlockData>();
+        public List<BlockData> mainDroneBlockData = new List<BlockData>();
         public List<BlockData> recoveryDroneBlockData = new List<BlockData>();
         public List<BlockData> partsInStorageBlockData = new List<BlockData>();
-
-        public List<Blueprint> unlockedBlueprints = new List<Blueprint>();
 
         public List<SectorWaveModifier> levelResourceModifier = new List<SectorWaveModifier>();
 
@@ -132,20 +121,6 @@ namespace StarSalvager.Values
         public int currentModularSectorIndex = 0;
 
         public bool firstFlight = true;
-
-        public int Level;
-        public int Gears;
-        public int GearsTotal;
-
-        [JsonIgnore]
-        public IReadOnlyDictionary<FACILITY_TYPE, int> facilityRanks => _facilityRanks;
-        [JsonProperty]
-        private Dictionary<FACILITY_TYPE, int> _facilityRanks = new Dictionary<FACILITY_TYPE, int>();
-
-        [JsonIgnore]
-        public IReadOnlyDictionary<FACILITY_TYPE, int> facilityBlueprintRanks => _facilityBlueprintRanks;
-        [JsonProperty]
-        private Dictionary<FACILITY_TYPE, int> _facilityBlueprintRanks = new Dictionary<FACILITY_TYPE, int>();
 
         public string PlaythroughID = string.Empty;
 
@@ -209,80 +184,21 @@ namespace StarSalvager.Values
 
         //============================================================================================================//
 
-        public PlayerData()
+        public PlayerSaveRunData()
         {
             LevelRingNodeTree.ReadInNodeConnectionData(LevelRingConnectionsJson);
         }
 
-        public void ChangeGears(int amount)
+        //============================================================================================================//
+
+        public void IncreaseResourceCapacity(BIT_TYPE bitType, int amount)
         {
-            Gears += amount;
-            GearsTotal += amount;
-            if (LevelManager.Instance.WaveEndSummaryData != null)
+            if (!_resourceCapacity.ContainsKey(bitType))
             {
-                LevelManager.Instance.WaveEndSummaryData.NumGearsGained += amount;
+                Debug.LogError("Resource Capacities missing Bit Type " + bitType);
             }
 
-            int gearsToLevelUp = LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).GearsToLevelUp;
-            if (Gears >= gearsToLevelUp)
-            {
-                Gears -= gearsToLevelUp;
-                DropLevelupLoot();
-                if (LevelManager.Instance.WaveEndSummaryData != null)
-                {
-                    LevelManager.Instance.WaveEndSummaryData.NumLevelsGained++;
-                }
-                Level++;
-
-                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-                {
-                    level = Level
-                };
-                MissionManager.ProcessMissionData(typeof(PlayerLevelMission), missionProgressEventData);
-            }
-            
-            OnValuesChanged?.Invoke();
-        }
-
-        private void DropLevelupLoot()
-        {
-            LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).ConfigureLootTable();
-            List<IRDSObject> levelUpLoot = LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).rdsTable.rdsResult.ToList();
-            for (int i = levelUpLoot.Count - 1; i >= 0; i--)
-            {
-                if (levelUpLoot[i] is RDSValue<Blueprint> rdsValueBlueprint)
-                {
-                    UnlockBlueprint(rdsValueBlueprint.rdsValue);
-                    Toast.AddToast("Unlocked Blueprint!");
-                    levelUpLoot.RemoveAt(i);
-                    continue;
-                }
-                if (levelUpLoot[i] is RDSValue<FacilityBlueprint> rdsValueFacilityBlueprint)
-                {
-                    UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
-                    Toast.AddToast("Unlocked Facility Blueprint!");
-                    levelUpLoot.RemoveAt(i);
-                    continue;
-                }
-                else if (levelUpLoot[i] is RDSValue<Vector2Int> rdsValueGears)
-                {
-                    ChangeGears(UnityEngine.Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
-                    levelUpLoot.RemoveAt(i);
-                    continue;
-                }
-                else if (levelUpLoot[i] is RDSValue<Bit> rdsValueBit)
-                {
-                    AddResource(rdsValueBit.rdsValue.Type, FactoryManager.Instance.BitsRemoteData.GetRemoteData(rdsValueBit.rdsValue.Type).levels[0].resources);
-                }
-                else if (levelUpLoot[i] is RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined)
-                {
-                    AddResource(rdsValueResourceRefined.rdsValue.Item1, rdsValueResourceRefined.rdsValue.Item2);
-                }
-                else if (levelUpLoot[i] is RDSValue<Component> rdsValueComponent)
-                {
-                    AddComponent(rdsValueComponent.rdsValue.Type, 1);
-                }
-            }
+            _resourceCapacity[bitType] += amount;
         }
 
         //============================================================================================================//
@@ -319,11 +235,9 @@ namespace StarSalvager.Values
             {
                 _liquidResource[type] = Mathf.Clamp(value, 0f, _liquidCapacity[type]);
             }
-
-            OnValuesChanged?.Invoke();
         }
 
-        public void SetLiquidResource(Dictionary<BIT_TYPE, float> liquidValues, bool isRecoveryDrone)
+        public void SetLiquidResources(Dictionary<BIT_TYPE, float> liquidValues, bool isRecoveryDrone)
         {
             foreach (var value in liquidValues)
             {
@@ -336,8 +250,6 @@ namespace StarSalvager.Values
                     _liquidResource[value.Key] = Mathf.Clamp(value.Value, 0f, _liquidCapacity[value.Key]);
                 }
             }
-
-            OnValuesChanged?.Invoke();
         }
 
         //============================================================================================================//
@@ -345,8 +257,6 @@ namespace StarSalvager.Values
         public void SetComponents(COMPONENT_TYPE type, int value)
         {
             _components[type] = value;
-
-            OnValuesChanged?.Invoke();
         }
 
         public void SetComponents(Dictionary<COMPONENT_TYPE, int> liquidValues)
@@ -355,8 +265,6 @@ namespace StarSalvager.Values
             {
                 _components[value.Key] = value.Value;
             }
-
-            OnValuesChanged?.Invoke();
         }
 
         //============================================================================================================//
@@ -371,7 +279,7 @@ namespace StarSalvager.Values
             {
                 _liquidCapacity[type] = amount;
             }
-            OnCapacitiesChanged?.Invoke();
+            PlayerDataManager.OnCapacitiesChanged?.Invoke();
         }
 
         public void SetCapacities(Dictionary<BIT_TYPE, int> capacities, bool isRecoveryDrone)
@@ -388,7 +296,7 @@ namespace StarSalvager.Values
                 }
             }
 
-            OnCapacitiesChanged?.Invoke();
+            PlayerDataManager.OnCapacitiesChanged?.Invoke();
         }
 
         public void ClearLiquidCapacity(bool isRecoveryDrone)
@@ -419,6 +327,11 @@ namespace StarSalvager.Values
 
         //============================================================================================================//
 
+        public void SubtractResources(BIT_TYPE bitType, int amount)
+        {
+            _resources[bitType] = Mathf.Max(_resources[bitType] - amount, 0);
+        }
+
         public void AddResources(Dictionary<BIT_TYPE, int> toAdd, float multiplier)
         {
             CostCalculations.AddResources(ref _resources, toAdd, multiplier);
@@ -427,8 +340,6 @@ namespace StarSalvager.Values
             {
                 _resources[bitType] = Mathf.Min(_resources[bitType], ResourceCapacities[bitType]);
             }
-            
-            OnValuesChanged?.Invoke();
         }
 
         public Dictionary<BIT_TYPE, int> AddResourcesReturnWasted(Dictionary<BIT_TYPE, int> toAdd, float multiplier)
@@ -447,65 +358,40 @@ namespace StarSalvager.Values
                 _resources[bitType] = Mathf.Min(_resources[bitType], ResourceCapacities[bitType]);
             }
 
-            OnValuesChanged?.Invoke();
-
             return wastedResources;
         }
 
         public void AddResource(BIT_TYPE type, int amount)
         {
             _resources[type] = Mathf.Min(_resources[type] + amount, ResourceCapacities[type]);
-            OnValuesChanged?.Invoke();
         }
 
-        public void AddResources(PART_TYPE partType, int level, bool isRecursive)
+        public void AddPartResources(PART_TYPE partType, int level, bool isRecursive)
         {
             CostCalculations.AddResources(ref _resources, partType, level, isRecursive);
-            OnValuesChanged?.Invoke();
         }
+
         public void AddResources(BlockData blockData, bool isRecursive)
         {
             if (!blockData.ClassType.Equals(nameof(Part)))
                 return;
             
-            AddResources((PART_TYPE) blockData.Type, blockData.Level, isRecursive);
-        }
-
-        public void SubtractResources(BIT_TYPE type, int amount)
-        {
-            Dictionary<BIT_TYPE, int> resources = new Dictionary<BIT_TYPE, int>();
-            resources.Add(type, amount);
-            SubtractResources(resources);
-        }
-
-        public void SubtractResources(Dictionary<BIT_TYPE, int> toSubtract)
-        {
-            CostCalculations.SubtractResources(ref _resources, toSubtract);
-            OnValuesChanged?.Invoke();
-        }
-
-        public void SubtractResources(PART_TYPE partType, int level, bool isRecursive)
-        {
-            CostCalculations.SubtractResources(ref _resources, partType, level, isRecursive);
-            OnValuesChanged?.Invoke();
+            AddPartResources((PART_TYPE) blockData.Type, blockData.Level, isRecursive);
         }
 
         public void SubtractResources(IEnumerable<CraftCost> cost)
         {
             CostCalculations.SubtractResources(ref _resources, cost);
-            OnValuesChanged?.Invoke();
         }
 
         public void SubtractComponents(IEnumerable<CraftCost> cost)
         {
             CostCalculations.SubtractComponents(ref _components, cost);
-            OnValuesChanged?.Invoke();
         }
 
         public void SubtractPartCosts(PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
         {
             CostCalculations.SubtractPartCosts(ref _resources, ref _components, partsInStorageBlockData, partType, level, isRecursive, costModifier);
-            OnValuesChanged?.Invoke();
         }
 
         //============================================================================================================//
@@ -526,7 +412,6 @@ namespace StarSalvager.Values
             {
                 _liquidResource[type] = Mathf.Clamp(liquidResource[type] + Mathf.Abs(amount), 0, liquidCapacity[type]);
             }
-            OnValuesChanged?.Invoke();
         }
 
         public void SubtractLiquidResource(BIT_TYPE type, float amount, bool isRecoveryDrone)
@@ -539,7 +424,6 @@ namespace StarSalvager.Values
             {
                 _liquidResource[type] = Mathf.Clamp(liquidResource[type] - Mathf.Abs(amount), 0, liquidCapacity[type]);
             }
-            OnValuesChanged?.Invoke();
         }
 
         //============================================================================================================//
@@ -547,13 +431,11 @@ namespace StarSalvager.Values
         public void AddComponent(COMPONENT_TYPE type, int amount)
         {
             _components[type] += Mathf.Abs(amount);
-            OnValuesChanged?.Invoke();
         }
 
         public void SubtractComponent(COMPONENT_TYPE type, int amount)
         {
             _components[type] -= Mathf.Abs(amount);
-            OnValuesChanged?.Invoke();
         }
 
         //============================================================================================================//
@@ -563,13 +445,9 @@ namespace StarSalvager.Values
             return CanAffordBits(facilityBlueprint.cost) && CanAffordComponents(facilityBlueprint.cost);
         }
 
-        public bool CanAffordBits(BIT_TYPE type, int amount)
-        {
-            return CostCalculations.CanAffordResource(resources, type, amount);
-        }
         public bool CanAffordBits(IEnumerable<CraftCost> levelCost)
         {
-            Dictionary<BIT_TYPE, int> tempDictionary = new Dictionary<BIT_TYPE, int>(resources);
+            Dictionary<BIT_TYPE, int> tempDictionary = new Dictionary<BIT_TYPE, int>(_resources);
             return CostCalculations.CanAffordResources(tempDictionary, levelCost);
         }
 
@@ -577,9 +455,9 @@ namespace StarSalvager.Values
         {
             foreach (var craftCost in levelCost)
             {
-                if ((craftCost.resourceType == CraftCost.TYPE.Component && craftCost.type == (int)COMPONENT_TYPE.CHIP && !facilityRanks.ContainsKey(FACILITY_TYPE.WORKBENCHCHIP)) ||
-                    (craftCost.resourceType == CraftCost.TYPE.Component && craftCost.type == (int)COMPONENT_TYPE.COIL && !facilityRanks.ContainsKey(FACILITY_TYPE.WORKBENCHCOIL)) ||
-                    (craftCost.resourceType == CraftCost.TYPE.Component && craftCost.type == (int)COMPONENT_TYPE.FUSOR && !facilityRanks.ContainsKey(FACILITY_TYPE.WORKBENCHFUSOR)))
+                if ((craftCost.resourceType == CraftCost.TYPE.Component && craftCost.type == (int)COMPONENT_TYPE.CHIP && !PlayerDataManager.GetFacilityRanks().ContainsKey(FACILITY_TYPE.WORKBENCHCHIP)) ||
+                    (craftCost.resourceType == CraftCost.TYPE.Component && craftCost.type == (int)COMPONENT_TYPE.COIL && !PlayerDataManager.GetFacilityRanks().ContainsKey(FACILITY_TYPE.WORKBENCHCOIL)) ||
+                    (craftCost.resourceType == CraftCost.TYPE.Component && craftCost.type == (int)COMPONENT_TYPE.FUSOR && !PlayerDataManager.GetFacilityRanks().ContainsKey(FACILITY_TYPE.WORKBENCHFUSOR)))
                 {
                     Debug.Log("MISSING FACILITY");
                     return false;
@@ -593,7 +471,7 @@ namespace StarSalvager.Values
 
         public bool CanAffordPart(PART_TYPE partType, int level, bool isRecursive)
         {
-            Dictionary<BIT_TYPE, int> tempResourceDictionary = new Dictionary<BIT_TYPE, int>(resources);
+            Dictionary<BIT_TYPE, int> tempResourceDictionary = new Dictionary<BIT_TYPE, int>(_resources);
             Dictionary<COMPONENT_TYPE, int> tempComponentDictionary = new Dictionary<COMPONENT_TYPE, int>(_components);
             List<BlockData> tempPartsInStorage = new List<BlockData>(partsInStorageBlockData);
             return CostCalculations.CanAffordPart(tempResourceDictionary, tempComponentDictionary, tempPartsInStorage, partType, level, isRecursive);
@@ -673,13 +551,13 @@ namespace StarSalvager.Values
         
         public List<BlockData> GetCurrentBlockData()
         {
-            return currentBlockData;
+            return mainDroneBlockData;
         }
 
-        public void SetCurrentBlockData(List<BlockData> blockData)
+        public void SetShipBlockData(List<BlockData> blockData)
         {
-            currentBlockData.Clear();
-            currentBlockData.AddRange(blockData);
+            mainDroneBlockData.Clear();
+            mainDroneBlockData.AddRange(blockData);
         }
 
         public List<BlockData> GetRecoveryDroneBlockData()
@@ -707,175 +585,12 @@ namespace StarSalvager.Values
         public void AddPartToStorage(BlockData blockData)
         {
             partsInStorageBlockData.Add(blockData);
-            OnValuesChanged?.Invoke();
+            PlayerDataManager.OnValuesChanged?.Invoke();
         }
 
         public void RemovePartFromStorage(BlockData blockData)
         {
             partsInStorageBlockData.Remove(partsInStorageBlockData.FirstOrDefault(b => b.Level == blockData.Level && b.Type == blockData.Type));
-            OnValuesChanged?.Invoke();
-        }
-
-        public void UnlockBlueprint(Blueprint blueprint)
-        {
-            if (unlockedBlueprints.All(b => b.name != blueprint.name))
-            {
-                unlockedBlueprints.Add(blueprint);
-                
-                //FIXME This may benefit from the use of a callback instead of a direct call
-                if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
-                {
-                    LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprint.DisplayString);
-                }
-            }
-            OnValuesChanged?.Invoke();
-        }
-
-        public void UnlockBlueprint(PART_TYPE partType, int level)
-        {
-            Blueprint blueprint = new Blueprint
-            {
-                name = partType + " " + level,
-                partType = partType,
-                level = level
-            };
-            UnlockBlueprint(blueprint);
-        }
-
-        public void UnlockAllBlueprints()
-        {
-            foreach (var partRemoteData in FactoryManager.Instance.PartsRemoteData.partRemoteData)
-            {
-                for (int i = 0; i < partRemoteData.levels.Count; i++)
-                {
-                    //TODO Add these back in when we're ready!
-                    switch (partRemoteData.partType)
-                    {
-                        //Still want to be able to upgrade the core, just don't want to buy new ones?
-                        case PART_TYPE.CORE when i == 0:
-                        case PART_TYPE.SPIKES:
-                        case PART_TYPE.LASER:
-                        case PART_TYPE.GRENADE:
-                        case PART_TYPE.CATAPULT:
-                        case PART_TYPE.LIGHTNING:
-                        case PART_TYPE.BOOSTRANGE:
-                        case PART_TYPE.BOOSTRATE:
-                        case PART_TYPE.BOOSTDAMAGE:
-                        case PART_TYPE.BOOSTDEFENSE:
-                        case PART_TYPE.STACKER:
-                        case PART_TYPE.CLOAK:
-                        case PART_TYPE.SONAR:
-                        case PART_TYPE.DECOY:
-                        case PART_TYPE.RETRACTOR:
-                        case PART_TYPE.HOOVER:
-                        case PART_TYPE.FREEZE:
-                            continue;
-                    }
-
-                    Blueprint blueprint = new Blueprint
-                    {
-                        name = partRemoteData.partType + " " + i,
-                        partType = partRemoteData.partType,
-                        level = i
-                    };
-                    UnlockBlueprint(blueprint);
-                }
-            }
-            OnValuesChanged?.Invoke();
-        }
-        
-        public bool CheckHasFacility(FACILITY_TYPE type, int level = 0)
-        {
-            if (_facilityRanks.TryGetValue(type, out var rank))
-                return rank >= level;
-
-            return false;
-        }
-
-        public void UnlockFacilityLevel(FACILITY_TYPE type, int level, bool triggerMissionCheck = true)
-        {
-            FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(type);
-            if (_facilityRanks.ContainsKey(type) && _facilityRanks[type] < level)
-            {
-                _facilityRanks[type] = level;
-            }
-            else
-            {
-                _facilityRanks.Add(type, level);
-            }
-
-            if (triggerMissionCheck)
-            {
-                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-                {
-                    facilityType = type,
-                    level = level
-                };
-
-                MissionManager.ProcessMissionData(typeof(FacilityUpgradeMission), missionProgressEventData);
-            }
-
-            int increaseAmount = remoteData.levels[level].increaseAmount;
-            switch (type)
-            {
-                case FACILITY_TYPE.FREEZER:
-                    _rationCapacity += increaseAmount;
-                    break;
-                case FACILITY_TYPE.STORAGEELECTRICITY:
-                    _resourceCapacity[BIT_TYPE.YELLOW] += increaseAmount;
-                    break;
-                case FACILITY_TYPE.STORAGEFUEL:
-                    _resourceCapacity[BIT_TYPE.RED] += increaseAmount;
-                    break;
-                case FACILITY_TYPE.STORAGEPLASMA:
-                    _resourceCapacity[BIT_TYPE.GREEN] += increaseAmount;
-                    break;
-                case FACILITY_TYPE.STORAGESCRAP:
-                    _resourceCapacity[BIT_TYPE.GREY] += increaseAmount;
-                    break;
-                case FACILITY_TYPE.STORAGEWATER:
-                    _resourceCapacity[BIT_TYPE.BLUE] += increaseAmount;
-                    break;
-            }
-
-            //Debug.Log(_rationCapacity);
-            OnCapacitiesChanged?.Invoke();
-            OnValuesChanged?.Invoke();
-        }
-
-        public void UnlockFacilityBlueprintLevel(FacilityBlueprint facilityBlueprint)
-        {
-            UnlockFacilityBlueprintLevel(facilityBlueprint.facilityType, facilityBlueprint.level);
-        }
-
-        public void UnlockFacilityBlueprintLevel(FACILITY_TYPE facilityType, int level)
-        {
-            FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(facilityType);
-            string blueprintUnlockString = $"{remoteData.displayName} lvl {level + 1}";
-            
-            if (_facilityBlueprintRanks.ContainsKey(facilityType))
-            {
-                if (_facilityBlueprintRanks[facilityType] < level)
-                {
-                    _facilityBlueprintRanks[facilityType] = level;
-                    
-                    //FIXME This may benefit from the use of a callback instead of a direct call
-                    if (LevelManager.Instance.WaveEndSummaryData != null)
-                    {
-                        LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprintUnlockString);
-                    }
-                }
-            }
-            else
-            {
-                _facilityBlueprintRanks.Add(facilityType, level);
-                //FIXME This may benefit from the use of a callback instead of a direct call
-                if (LevelManager.Instance.WaveEndSummaryData != null)
-                {
-                    LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprintUnlockString);
-                }
-            }
-            OnValuesChanged?.Invoke();
         }
 
         public void SaveData()
