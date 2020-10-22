@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Recycling;
-using StarSalvager.AI;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
@@ -28,6 +28,18 @@ namespace StarSalvager.Factories
             var sprite = profile.GetSprite(level);
             
             bit.SetSprite(sprite);
+
+            switch (bit)
+            {
+                case AnimatedBit _:
+                    bit.gameObject.name = $"{nameof(AnimatedBit)}_{bitType}_Lvl{level}";
+                    break;
+                case Bit _:
+                    bit.gameObject.name = $"{nameof(Bit)}_{bitType}_Lvl{level}";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(bit), bit, null);
+            }
         }
 
         public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<Bit> bits)
