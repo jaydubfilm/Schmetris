@@ -22,7 +22,7 @@ namespace StarSalvager.Utilities.Puzzle
         };
 
 
-        public static bool TryGetComboData<T>(Bot bot, ICanCombo<T> origin, out (ComboRemoteData comboData, List<IAttachable> toMove) outData) where T: Enum
+        public static bool TryGetComboData<T>(Bot bot, ICanCombo<T> origin, out (ComboRemoteData comboData, List<ICanCombo> toMove) outData) where T: Enum
         {
             outData = (ComboRemoteData.zero, null);
             
@@ -32,10 +32,10 @@ namespace StarSalvager.Utilities.Puzzle
             //UP      [1]
             //RIGHT   [2]
             //DOWN    [3]
-            var directions = new List<IAttachable>[4];
+            var directions = new List<ICanCombo>[4];
             for (var i = 0; i < 4; i++)
             {
-                directions[i] = new List<IAttachable>();
+                directions[i] = new List<ICanCombo>();
                 bot.ComboCount(origin, (DIRECTION)i, ref directions[i]);
             }
 
@@ -51,7 +51,7 @@ namespace StarSalvager.Utilities.Puzzle
             //Look at all possible combos, and select the best option
             foreach (var comboCheck in ComboChecks)
             {
-                if(!comboCheck.TryGetCombo(origin.iAttachable, directions, lineData, out var data))
+                if(!comboCheck.TryGetCombo(origin, directions, lineData, out var data))
                     continue;
 
                 if (data.comboData.points > outData.comboData.points)
@@ -69,7 +69,7 @@ namespace StarSalvager.Utilities.Puzzle
         }
         
         private static (bool hasCombo, int horizontalCount, int verticalCount) GetLineCounts(
-            IReadOnlyList<List<IAttachable>> directions)
+            IReadOnlyList<List<ICanCombo>> directions)
         {
             //Horizontal   [0]
             //Vertical     [1]

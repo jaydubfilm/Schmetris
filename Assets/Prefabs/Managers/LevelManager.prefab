@@ -46,8 +46,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e28dd50fec1e144886f69bef7b8de91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generateRandomSeed: 1
-  seed: 1234567890
   m_cameraController: {fileID: 0}
   m_standardBufferZoneObstacleData: {fileID: 11400000, guid: 05371574dd867a64aa488e704f2e3a46,
     type: 2}
@@ -55,8 +53,11 @@ MonoBehaviour:
     type: 2}
   IsWaveProgressing: 1
   EndWaveState: 0
+  EndSectorState: 0
+  WaterAtBeginningOfWave: 0
+  NumWavesInRow: 0
   MissionsCompletedDuringThisFlight: []
-  ResetFromDeath: 0
+  RecoverFromDeath: 0
   BotDead: 0
   drawGrid: 1
 --- !u!114 &3152543544327253062
@@ -95,6 +96,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ed4c6e1ccf6c1d4dbea6ca798312e24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  edgeSprite: {fileID: 4132611195971401793, guid: a28400b050cce54439829898e8516d58,
-    type: 3}
+  RecoveredBotFalling: {fileID: 0}
+  edgeSprite: {fileID: 21300000, guid: 8ede64f40fa13de429a00cf47d7820d3, type: 3}
   edgeSpriteColor: {r: 0.09781062, g: 0.13207549, b: 0.12023037, a: 1}

@@ -157,8 +157,6 @@ namespace StarSalvager
         /// </summary>
         private void UpdatePartData()
         {
-            
-            
             if (_magnetOverride > 0)
             {
                 MagnetCount = _magnetOverride;
@@ -319,13 +317,15 @@ namespace StarSalvager
                         _bombTimers.Add(part, 0f);
                         break;
                     
-                    case PART_TYPE.BOOSTDEFENCE:
+                    case PART_TYPE.BOOSTDEFENSE:
                         
                         
                         
                         break;
                 }
             }
+
+            SetupHealthBoots();
 
             //Force update capacities, once new values determined
             PlayerDataManager.SetCapacities(capacities, bot.IsRecoveryDrone);
@@ -483,7 +483,7 @@ namespace StarSalvager
                             break;
                         }
 
-                        IHealth toRepair;
+                        IHealthBoostable toRepair;
 
                         var radius = levelData.GetDataValue<int>(DataTest.TEST_KEYS.Radius);
 
@@ -501,7 +501,7 @@ namespace StarSalvager
                         {
                             //TODO Need to determine if this is already happening
                             //If the repairer is also fine, then we can break out
-                            if (part.CurrentHealth < part.StartingHealth)
+                            if (part.CurrentHealth < part.BoostedHealth)
                                 toRepair = part;
                             else
                                 break;
@@ -520,7 +520,7 @@ namespace StarSalvager
                         toRepair.ChangeHealth(repairAmount * Time.deltaTime);
                         
 
-                        TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
+                        TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.BoostedHealth);
                         break;
                     case PART_TYPE.BLASTER:
                         
@@ -1011,6 +1011,36 @@ namespace StarSalvager
 
         #endregion //Shield
 
+        private void SetupHealthBoots()
+        {
+            var pendingBoosts = new Dictionary<Part, float>();
+            
+            //Find & determine every part which will be updated
+            foreach (var defenceBoost in _parts.Where(x => x.Type == PART_TYPE.BOOSTDEFENSE))
+            {
+                var partsAround = _parts.GetAttachablesAround(defenceBoost).OfType<Part>();
+                var boostAmount = GetDefenseBoost(defenceBoost);
+                
+                foreach (var part in partsAround)
+                {
+                    if(!pendingBoosts.ContainsKey(part))
+                        pendingBoosts.Add(part, boostAmount);
+                    else
+                    {
+                        pendingBoosts[part] += boostAmount;
+                    }
+                }
+            }
+
+            if (pendingBoosts.IsNullOrEmpty())
+                return;
+
+            foreach (var pendingBoost in pendingBoosts)
+            {
+                pendingBoost.Key.SetHealthBoost(pendingBoost.Value);
+            }
+        }
+
         //============================================================================================================//
 
         public void SetMagnetOverride(int magnet)
@@ -1100,6 +1130,9 @@ namespace StarSalvager
 
         public int ProcessBit(Bit targetBit)
         {
+            if (targetBit is ICanCombo iCanCombo && iCanCombo.IsBusy)
+                return 0;
+            
             var bitType = targetBit.Type;
             var amountProcessed = FactoryManager.Instance
                 .GetFactory<BitAttachableFactory>()
@@ -1198,6 +1231,21 @@ namespace StarSalvager
             }
 
             return maxBoost;
+        }
+
+        private float GetDefenseBoost(Part part)
+        {
+            if (part.Type != PART_TYPE.BOOSTDEFENSE)
+                return 0f;
+
+            if (part.Destroyed || part.Disabled)
+                return 0f;
+            
+            PartRemoteData partRemoteData =
+                FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
+
+
+            return partRemoteData.levels[part.level].GetDataValue<float>(DataTest.TEST_KEYS.Absorb);
         }
 
         //Checking for recycled extras

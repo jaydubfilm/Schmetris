@@ -591,7 +591,6 @@ namespace StarSalvager.Utilities.Saving
         public void RemovePartFromStorage(BlockData blockData)
         {
             partsInStorageBlockData.Remove(partsInStorageBlockData.FirstOrDefault(b => b.Level == blockData.Level && b.Type == blockData.Type));
-            PlayerDataManager.OnValuesChanged?.Invoke();
         }
 
         public void SaveData()

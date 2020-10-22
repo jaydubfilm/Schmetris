@@ -523,6 +523,11 @@ namespace StarSalvager.Utilities.Saving
             MissionManager.LoadMissionData();
         }
 
+        public static void ClearPlayerAccountData()
+        {
+            PlayerAccountData = null;
+        }
+
         public static void ResetPlayerRunData()
         {
             PlayerAccountData.ResetPlayerRunData();
@@ -530,7 +535,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void SavePlayerAccountData()
         {
-            if (PlayerRunData == null)
+            if (PlayerAccountData == null)
             {
                 return;
             }

@@ -48,7 +48,7 @@ namespace StarSalvager.Utilities.Extensions
                         throw new ArgumentOutOfRangeException(nameof(block.ClassType), block.ClassType, null);
                 }
                 
-                bot.AttachNewBit(attachable.Coordinate, attachable);
+                bot.AttachNewBlock(attachable.Coordinate, attachable);
             }
             
         }
@@ -104,9 +104,10 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="target"></param>
         /// <param name="direction"></param>
         /// <param name="iCanCombos"></param>
-        public static void ComboCount<T>(this Bot bot, ICanCombo<T> target, DIRECTION direction, ref List<IAttachable> iCanCombos) where T: Enum
+        public static void ComboCount<T>(this Bot bot, ICanCombo<T> target, DIRECTION direction, ref List<ICanCombo> iCanCombos) where T: Enum
         {
-            bot.attachedBlocks.ComboCountAlgorithm(target.Type, target.level, target.Coordinate, direction.ToVector2Int(),
+            var combo = bot.attachedBlocks.OfType<ICanCombo>();
+            combo.ComboCountAlgorithm(target.Type, target.level, target.Coordinate, direction.ToVector2Int(),
                 ref iCanCombos);
         }
 

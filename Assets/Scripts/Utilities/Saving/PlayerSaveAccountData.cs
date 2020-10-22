@@ -119,7 +119,7 @@ namespace StarSalvager.Values
                         case PART_TYPE.BOOSTRANGE:
                         case PART_TYPE.BOOSTRATE:
                         case PART_TYPE.BOOSTDAMAGE:
-                        case PART_TYPE.BOOSTDEFENCE:
+                        case PART_TYPE.BOOSTDEFENSE:
                         case PART_TYPE.STACKER:
                         case PART_TYPE.CLOAK:
                         case PART_TYPE.SONAR:

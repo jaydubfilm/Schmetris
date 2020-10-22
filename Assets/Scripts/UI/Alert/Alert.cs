@@ -243,7 +243,7 @@ namespace StarSalvager.UI
                 return true;
             }
             
-            //TODO Check for the code
+            //Check if the code already exists
 
             if (DontShowAgainKeys.Contains(dontShowAgainKey))
                 return false;

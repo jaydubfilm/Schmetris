@@ -954,7 +954,7 @@ namespace StarSalvager.Utilities
                     var newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
                         .CreateObject<IAttachable>(bit, lvl);
                     
-                    bot.AttachNewBit(coord, newBit, true, true, false);
+                    bot.AttachNewBlock(coord, newBit, true, true, false);
                     break;
                 case "part":
                     if (!Enum.TryParse(split[2], true, out PART_TYPE part))
@@ -992,7 +992,7 @@ namespace StarSalvager.Utilities
                     var newPart = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                         .CreateObject<IAttachable>(part, lvl);
                     
-                    bot.AttachNewBit(coord, newPart, true, true, false);
+                    bot.AttachNewBlock(coord, newPart, true, true, false);
                     break;
                 case "component":
                     if (!Enum.TryParse(split[2], true, out COMPONENT_TYPE component))
@@ -1016,7 +1016,7 @@ namespace StarSalvager.Utilities
                     var newComponent = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>()
                         .CreateObject<IAttachable>(component);
                     
-                    bot.AttachNewBit(coord, newComponent, true, true, false);
+                    bot.AttachNewBlock(coord, newComponent, true, true, false);
                     break;
                 case "enemy":
                     var type = split[2].Replace('_', ' ');

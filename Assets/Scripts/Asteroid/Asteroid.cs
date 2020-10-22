@@ -72,8 +72,7 @@ namespace StarSalvager
             if (CurrentHealth > 0) 
                 return;
 
-            //TODO Need to spawn loot
-
+            //Spawns loot
             if (rdsTable != null)
             {
                 LevelManager.Instance.DropLoot(rdsTable.rdsResult.ToList(), transform.localPosition, true);

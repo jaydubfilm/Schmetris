@@ -32,7 +32,7 @@
         BOOSTRANGE,
         BOOSTRATE,
         BOOSTDAMAGE,
-        BOOSTDEFENCE,
+        BOOSTDEFENSE,
         
         STACKER,
         CLOAK,
@@ -40,6 +40,7 @@
         DECOY,
         RETRACTOR,
         HOOVER,
+        RECOVERY,
 
     } 
 }

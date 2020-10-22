@@ -727,23 +727,24 @@ namespace StarSalvager.Utilities.Extensions
         /// Algorithm function that fills the BitList with every Bit in the specified direction that matches the level
         /// and type.
         /// </summary>
-        /// <param name="attachables"></param>
+        /// <param name="canCombos"></param>
         /// <param name="type"></param>
         /// <param name="level"></param>
         /// <param name="coordinate"></param>
         /// <param name="direction"></param>
         /// <param name="iCanCombos"></param>
         /// <returns></returns>
-        public static bool ComboCountAlgorithm<T>(this List<IAttachable> attachables, T type, int level,
+        public static bool ComboCountAlgorithm<T>(this IEnumerable<ICanCombo> canCombos, T type, int level,
             Vector2Int coordinate, Vector2Int direction,
-            ref List<IAttachable> iCanCombos) where T : Enum
+            ref List<ICanCombo> iCanCombos) where T : Enum
         {
             var nextCoords = coordinate + direction;
 
             //Try and get the attachableBase Bit at the new Coordinate
 
-            if (!(attachables
-                .FirstOrDefault(a => a.Coordinate == nextCoords && a is ICanCombo) is ICanCombo<T> nextBit))
+            IEnumerable<ICanCombo> combos = canCombos as ICanCombo[] ?? canCombos.ToArray();
+            if (!(combos
+                .FirstOrDefault(a => a.Coordinate == nextCoords) is ICanCombo<T> nextBit))
                 return false;
 
             //We only care about bits that share the same type
@@ -755,10 +756,10 @@ namespace StarSalvager.Utilities.Extensions
                 return false;
 
             //Add the bit to our combo check list
-            iCanCombos.Add(nextBit.iAttachable);
+            iCanCombos.Add(nextBit);
 
             //Keep checking in this direction
-            return attachables.ComboCountAlgorithm(type, level, nextCoords, direction, ref iCanCombos);
+            return combos.ComboCountAlgorithm(type, level, nextCoords, direction, ref iCanCombos);
         }
 
         //============================================================================================================//

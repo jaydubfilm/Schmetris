@@ -268,6 +268,7 @@ namespace StarSalvager
 
         public void InitBot(bool isRecoveryDrone)
         {
+            var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
             _isRecoveryDrone = isRecoveryDrone;
             
             _isDestroyed = false;
@@ -277,7 +278,7 @@ namespace StarSalvager
 
             var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
             //Add core component
-            var core = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(
+            var core = partFactory.CreateObject<Part>(
                 new BlockData
                 {
                     Type = (int)PART_TYPE.CORE,
@@ -285,8 +286,10 @@ namespace StarSalvager
                     Level = 0,
                     Health = startingHealth
                 });
+            
+            if(isRecoveryDrone) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
 
-            AttachNewBit(Vector2Int.zero, core, updateMissions: false);
+            AttachNewBlock(Vector2Int.zero, core, updateMissions: false);
 
             ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
         }
@@ -300,10 +303,16 @@ namespace StarSalvager
             
             BotPartsLogic.coreHeat = 0f;
             
+            //Only want to update the parts list after everyone has loaded
             foreach (var attachable in botAttachables)
             {
-                AttachNewBit(attachable.Coordinate, attachable, updateMissions: false);
+                if(attachable is Part part && part.Type == PART_TYPE.CORE && isRecoveryDrone)
+                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
+                
+                AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);
             }
+            
+            BotPartsLogic.UpdatePartsList();
         }
 
 
@@ -505,6 +514,7 @@ namespace StarSalvager
             {
                 case Bit bit:
                 {
+                   
                     bool legalDirection;
 
                     //Get the coordinate of the collision
@@ -617,7 +627,7 @@ namespace StarSalvager
                     AttachAttachableToExisting(component, closestAttachable, connectionDirection);
                     SessionDataProcessor.Instance.ComponentCollected(component.Type);
 
-                    CheckForBonusShapeMatches();
+                    //CheckForCombosAround();
                     
                     break;
                 }
@@ -812,7 +822,7 @@ namespace StarSalvager
                                 return false;
                             }
                             
-                            AttachNewBit(newBotCoordinate + differences[i], bitsToAdd[i], false, false);
+                            AttachNewBlock(newBotCoordinate + differences[i], bitsToAdd[i], false, false);
                             SessionDataProcessor.Instance.BitCollected(bitsToAdd[i].Type);
                         }
                         
@@ -1120,10 +1130,13 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        #region Attach Bits
+        #region Attach Blocks
         
-        public bool TryAttachNewBit(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true, 
-            bool updateColliderGeometry = true, bool updateMissions = true)
+        public bool TryAttachNewBlock(Vector2Int coordinate, IAttachable newAttachable, 
+            bool checkForCombo = true, 
+            bool updateColliderGeometry = true, 
+            bool updateMissions = true,
+            bool updatePartList = true)
         {
             if (Destroyed) 
                 return false;
@@ -1163,7 +1176,7 @@ namespace StarSalvager
                 case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
                     break;
-                case Part _:
+                case Part _ when updatePartList:
                     BotPartsLogic.UpdatePartsList();
                     break;
 
@@ -1189,8 +1202,13 @@ namespace StarSalvager
             return true;
         }
 
-        public void AttachNewBit(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true, 
-            bool updateColliderGeometry = true, bool updateMissions = true, bool checkMagnet = true, bool playSound = true)
+        public void AttachNewBlock(Vector2Int coordinate, IAttachable newAttachable, 
+            bool checkForCombo = true, 
+            bool updateColliderGeometry = true, 
+            bool updateMissions = true, 
+            bool checkMagnet = true, 
+            bool playSound = true,
+            bool updatePartList = true)
         {
             if (Destroyed) 
                 return;
@@ -1226,7 +1244,7 @@ namespace StarSalvager
                 case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
                     break;
-                case Part _:
+                case Part _ when updatePartList:
                     BotPartsLogic.UpdatePartsList();
                     break;
             }
@@ -1265,8 +1283,13 @@ namespace StarSalvager
         }
 
         public void AttachAttachableToExisting(IAttachable newAttachable, IAttachable existingAttachable,
-            DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true,
-            bool updateMissions = true, bool checkMagnet = true, bool playSound = true)
+            DIRECTION direction, 
+            bool checkForCombo = true, 
+            bool updateColliderGeometry = true,
+            bool updateMissions = true, 
+            bool checkMagnet = true, 
+            bool playSound = true,
+            bool updatePartList = true)
         {
             if (Destroyed) 
                 return;
@@ -1327,7 +1350,7 @@ namespace StarSalvager
                 case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
                     break;
-                case Part _:
+                case Part _ when updatePartList:
                     BotPartsLogic.UpdatePartsList();
                     break;
             }
@@ -1436,7 +1459,7 @@ namespace StarSalvager
                     if (!attachedBlocks.HasPathToCore(check))
                         continue;
                     //Debug.Log($"Found available location for {newAttachable.gameObject.name}\n{coordinate} + ({directions[i]} * {dist}) = {check}");
-                    AttachNewBit(check, newAttachable, checkForCombo, updateColliderGeometry, updateMissions);
+                    AttachNewBlock(check, newAttachable, checkForCombo, updateColliderGeometry, updateMissions);
                     return;
                 }
 
@@ -1490,7 +1513,11 @@ namespace StarSalvager
                 CompositeCollider2D.GenerateGeometry();
         }
 
-        public void PushNewAttachable(IAttachable newAttachable, DIRECTION direction, Vector2Int startCoord, bool checkForCombo = true, bool updateColliderGeometry = true, bool checkMagnet = true, bool playSound = true)
+        public void PushNewAttachable(IAttachable newAttachable, DIRECTION direction, Vector2Int startCoord, 
+            bool checkForCombo = true, 
+            bool updateColliderGeometry = true, 
+            bool checkMagnet = true, 
+            bool playSound = true)
         {
             if (Destroyed) 
                 return;
@@ -2070,7 +2097,7 @@ namespace StarSalvager
                 if (pendingCombos == null)
                     pendingCombos = new List<PendingCombo>();
 
-                if (pendingCombos.Contains(iCanCombo as IAttachable, out var index))
+                if (pendingCombos.Contains(iCanCombo, out var index))
                 {
                     if (pendingCombos[index].ComboData.points <= temp.comboData.points)
                         continue;
@@ -2160,21 +2187,22 @@ namespace StarSalvager
         /// <summary>
         /// Solves movement and upgrade logic to do with simple combos of blocks.
         /// </summary>
-        /// <param name="comboAttachables"></param>
+        /// <param name="canCombos"></param>
         /// <exception cref="Exception"></exception>
-        private void SimpleComboSolver(ComboRemoteData comboData, IReadOnlyCollection<IAttachable> comboAttachables, float gearMultiplier)
+        private void SimpleComboSolver(ComboRemoteData comboData, IReadOnlyCollection<ICanCombo> canCombos, float gearMultiplier)
         {
-            IAttachable closestToCore = null;
+            ICanCombo closestToCore = null;
             var shortest = 999f;
 
             //Decide who gets to upgrade
             //--------------------------------------------------------------------------------------------------------//
 
-            foreach (IAttachable iAttachable in comboAttachables)
+            foreach (ICanCombo canCombo in canCombos)
             {
+                var attachable = canCombo.iAttachable;
                 //Need to make sure that if we choose this block, that it is connected to the core one way or another
-                var hasPath = attachedBlocks.HasPathToCore(iAttachable,
-                    comboAttachables.Where(ab => ab != iAttachable)
+                var hasPath = attachedBlocks.HasPathToCore(attachable,
+                    canCombos.Where(ab => ab != attachable)
                         .Select(b => b.Coordinate)
                         .ToList());
 
@@ -2183,12 +2211,12 @@ namespace StarSalvager
                     continue;
 
 
-                var dist = Vector2Int.Distance(iAttachable.Coordinate, Vector2Int.zero);
+                var dist = Vector2Int.Distance(canCombo.Coordinate, Vector2Int.zero);
                 if (!(dist < shortest))
                     continue;
 
                 shortest = dist;
-                closestToCore = iAttachable;
+                closestToCore = canCombo;
             }
 
             //Make sure that things are working
@@ -2202,12 +2230,12 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             //Get a list of Bits that will be moving (Blocks that are not the chosen closest to core)
-            var movingBits = comboAttachables
+            var movingBits = canCombos
                 .Where(ab => ab != closestToCore).ToArray();
 
             //Get a list of orphans that may need move when we are moving our bits
             var orphans = new List<OrphanMoveData>();
-            CheckForOrphans(movingBits, closestToCore, ref orphans);
+            CheckForOrphans(movingBits.OfType<IAttachable>(), closestToCore.iAttachable, ref orphans);
 
             //Move everyone who we've determined need to move
             //--------------------------------------------------------------------------------------------------------//
@@ -2275,7 +2303,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
         }
 
-        private void AdvancedComboSolver(ComboRemoteData comboData, IReadOnlyList<IAttachable> comboBits)
+        /*private void AdvancedComboSolver(ComboRemoteData comboData, IReadOnlyList<IAttachable> comboBits)
         {
             IAttachable bestAttachableOption = null;
 
@@ -2343,7 +2371,7 @@ namespace StarSalvager
                 }));
 
             //--------------------------------------------------------------------------------------------------------//
-        }
+        }*/
         
         #endregion //Combo Solvers
         
@@ -2352,14 +2380,15 @@ namespace StarSalvager
         /// <summary>
         /// Get any Bit/Bits that will be orphaned by the bits which will be moving
         /// </summary>
-        /// <param name="movingBits"></param>
+        /// <param name="movingBlocks"></param>
         /// <param name="bitToUpgrade"></param>
         /// <param name="orphanMoveData"></param>
         /// <returns></returns>
-        private void CheckForOrphans(IAttachable[] movingBits,
-            IAttachable bitToUpgrade, ref List<OrphanMoveData> orphanMoveData)
+        private void CheckForOrphans(IEnumerable<IAttachable> movingBlocks,
+            IAttachable bitToUpgrade, 
+            ref List<OrphanMoveData> orphanMoveData)
         {
-            //List<OrphanMoveData> orphanMoveData = null;
+            var movingBits = movingBlocks as IAttachable[] ?? movingBlocks.ToArray();
 
             //Check against all the bits that will be moving
             //--------------------------------------------------------------------------------------------------------//
@@ -3048,24 +3077,34 @@ namespace StarSalvager
         /// <param name="speed"></param>
         /// <param name="OnFinishedCallback"></param>
         /// <returns></returns>
-        private IEnumerator MoveComboPiecesCoroutine(IAttachable[] movingAttachables, IAttachable target,
+        private IEnumerator MoveComboPiecesCoroutine(ICanCombo[] movingAttachables, ICanCombo target,
             IReadOnlyList<OrphanMoveData> orphans, float speed, Action OnFinishedCallback)
         {
+            target.IsBusy = true;
+            
             //Prepare Bits to be moved
             //--------------------------------------------------------------------------------------------------------//
             
-            foreach (var bit in movingAttachables)
+            foreach (var canCombo in movingAttachables)
             {
+                
                 //We need to disable the collider otherwise they can collide while moving
                 //I'm also assuming that if we've confirmed the upgrade, and it cannot be cancelled
-                attachedBlocks.Remove(bit);
-                (bit as Bit)?.SetColliderActive(false);
+                attachedBlocks.Remove(canCombo as IAttachable);
+                canCombo.IsBusy = true;
+                
+                if(canCombo is CollidableBase collidableBase)
+                    collidableBase.SetColliderActive(false);
+                
             }
 
             foreach (var omd in orphans)
             {
                 omd.attachableBase.Coordinate = omd.intendedCoordinates;
                 (omd.attachableBase as Bit)?.SetColliderActive(false);
+                
+                if (omd.attachableBase is ICanCombo iCanCombo)
+                    iCanCombo.IsBusy = true;
             }
             
             //We're going to want to regenerate the shape while things are moving
@@ -3142,11 +3181,12 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             //Once all bits are moved, remove from list and dispose
-            foreach (var attachable in movingAttachables)
+            foreach (var canCombo in movingAttachables)
             {
-                attachable.SetAttached(false);
+                if(canCombo is IAttachable attachable)
+                    attachable.SetAttached(false);
 
-                switch (attachable)
+                switch (canCombo)
                 {
                     case Bit bit:
                         Recycler.Recycle<Bit>(bit);
@@ -3171,7 +3211,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             CompositeCollider2D.GenerateGeometry();
-
+            
 
             OnFinishedCallback?.Invoke();
             
@@ -3355,6 +3395,7 @@ namespace StarSalvager
             
             attachedBlocks.Clear();
             BotPartsLogic.ClearList();
+            _isRecoveryDrone = false;
             //_parts.Clear();
             
             ObstacleManager.NewShapeOnScreen -= CheckForBonusShapeMatches;
@@ -3482,7 +3523,7 @@ namespace StarSalvager
         {
             foreach (var attachable in attachables)
             {
-                AttachNewBit(attachable.Coordinate, attachable, updateMissions: false, checkForCombo: false, checkMagnet:false);
+                AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, checkForCombo: false, checkMagnet:false);
             }
 
             if(checkForCombos)
@@ -3534,21 +3575,21 @@ namespace StarSalvager
     public struct PendingCombo
     {
         public readonly ComboRemoteData ComboData;
-        public readonly List<IAttachable> ToMove;
+        public readonly List<ICanCombo> ToMove;
 
-        public PendingCombo(ComboRemoteData comboData, List<IAttachable> toMove)
+        public PendingCombo(ComboRemoteData comboData, List<ICanCombo> toMove)
         {
             ComboData = comboData;
             ToMove = toMove;
         }
-        public PendingCombo((ComboRemoteData comboData, List<IAttachable> toMove) data)
+        public PendingCombo((ComboRemoteData comboData, List<ICanCombo> toMove) data)
         {
             var (comboData, toMove) = data;
             ComboData = comboData;
             ToMove = toMove;
         }
 
-        public bool Contains(IAttachable attachable)
+        public bool Contains(ICanCombo attachable)
         {
             if (ToMove == null || ToMove.Count == 0)
                 return false;
@@ -3560,19 +3601,19 @@ namespace StarSalvager
 
     public static class PendingComboListExtensions
     {
-        public static bool Contains(this List<PendingCombo> list, IAttachable attachable)
+        public static bool Contains(this List<PendingCombo> list, ICanCombo canCombo)
         {
-            return list.Any(pendingCombo => pendingCombo.Contains(attachable));
+            return list.Any(pendingCombo => pendingCombo.Contains(canCombo));
         }
         
-        public static bool Contains(this List<PendingCombo> list, IAttachable attachable, out int index)
+        public static bool Contains(this List<PendingCombo> list, ICanCombo canCombo, out int index)
         {
             index = -1;
             
             var temp = list.ToArray();
             for (var i = 0; i < temp.Length; i++)
             {
-                if (!temp[i].Contains(attachable))
+                if (!temp[i].Contains(canCombo))
                     continue;
                 
                 index = i;

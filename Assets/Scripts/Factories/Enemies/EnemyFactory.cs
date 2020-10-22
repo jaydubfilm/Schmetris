@@ -107,6 +107,8 @@ namespace StarSalvager.Factories
             
             enemy.Init(enemyData);
 
+            enemy.gameObject.name = $"{enemyData.Name}";
+
             return enemy.GetComponent<T>();
         }
         

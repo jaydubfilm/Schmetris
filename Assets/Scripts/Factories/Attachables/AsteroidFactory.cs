@@ -37,7 +37,7 @@ namespace StarSalvager.Factories
 
         public T CreateAsteroid<T>(ASTEROID_SIZE asteroidSize)
         {
-            var profile = ((AsteroidProfileScriptableObject)_profileData).GetAsteroidProfile(asteroidSize);
+            var profile = _profileData.GetAsteroidProfile(asteroidSize);
             var remote = _remoteData.GetRemoteData(asteroidSize);
 
             var sprite = profile.Sprites[Random.Range(0, profile.Sprites.Length)];
@@ -62,6 +62,8 @@ namespace StarSalvager.Factories
 
             temp.rdsTable = new RDSTable();
             temp.rdsTable.SetupRDSTable(remote.MaxDrops, remote.rdsAsteroidData);
+            
+            temp.gameObject.name = $"{nameof(Asteroid)}_{asteroidSize}_[{Mathf.RoundToInt(sprite.bounds.size.x)},{Mathf.RoundToInt(sprite.bounds.size.y)}]";
 
             return temp.GetComponent<T>();
         }

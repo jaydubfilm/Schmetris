@@ -189,7 +189,7 @@ namespace StarSalvager.UI.Scrapyard
                     quit =>
                     {
                         PlayerDataManager.SavePlayerAccountData();
-                        PlayerDataManager.ResetPlayerAccountData();
+                        PlayerDataManager.ClearPlayerAccountData();
 
                         if (!quit)
                         {

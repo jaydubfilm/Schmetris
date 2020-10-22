@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public interface ICanCombo<out T> : ICanCombo where T: Enum
+    public interface ICanCombo<out TE> : ICanCombo where TE: Enum
     {
-        T Type { get; }
+        TE Type { get; }
     }
     
     public interface ICanCombo
@@ -13,8 +13,9 @@ namespace StarSalvager
         IAttachable iAttachable { get; }
         GameObject gameObject { get;}
         Transform transform { get; }
-
         Vector2Int Coordinate { get; }
+
+        bool IsBusy { get; set; }
 
         int level { get; }
         
