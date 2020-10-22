@@ -2186,7 +2186,9 @@ namespace StarSalvager
         /// <summary>
         /// Solves movement and upgrade logic to do with simple combos of blocks.
         /// </summary>
+        /// <param name="comboData"></param>
         /// <param name="canCombos"></param>
+        /// <param name="gearMultiplier"></param>
         /// <exception cref="Exception"></exception>
         private void SimpleComboSolver(ComboRemoteData comboData, IReadOnlyCollection<ICanCombo> canCombos, float gearMultiplier)
         {
@@ -2201,7 +2203,8 @@ namespace StarSalvager
                 var attachable = canCombo.iAttachable;
                 //Need to make sure that if we choose this block, that it is connected to the core one way or another
                 var hasPath = attachedBlocks.HasPathToCore(attachable,
-                    canCombos.Where(ab => ab != attachable)
+                    canCombos
+                        .Where(ab => ab != attachable)
                         .Select(b => b.Coordinate)
                         .ToList());
 
@@ -2239,16 +2242,13 @@ namespace StarSalvager
             //Move everyone who we've determined need to move
             //--------------------------------------------------------------------------------------------------------//
             
-            //if(orphans.Count > 0)
-            //    Debug.Break();
 
-            var iCanCombo = closestToCore as ICanCombo;
-            iCanCombo.IncreaseLevel(comboData.addLevels);
+            closestToCore.IncreaseLevel(comboData.addLevels);
 
 
             //TODO May want to place this in the coroutine
             //Plays the sound for the new level achieved by the bit
-            switch (iCanCombo.level)
+            switch (closestToCore.level)
             {
                 case 1:
                     AudioController.PlaySound(SOUND.BIT_LVL1MERGE);
@@ -2282,7 +2282,7 @@ namespace StarSalvager
                     FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
 
                     //We need to update the positions and level before we move them in case we interact with bits while they're moving
-                    switch (iCanCombo)
+                    switch (closestToCore)
                     {
                         case Bit _:
                             CheckForCombosAround<BIT_TYPE>(attachedBlocks);

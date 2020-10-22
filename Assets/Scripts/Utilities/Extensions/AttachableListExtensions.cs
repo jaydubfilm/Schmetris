@@ -27,7 +27,7 @@ namespace StarSalvager.Utilities.Extensions
         /// <summary>
         /// Returns whether or not this AttachableBase has a clear path to the core.
         /// </summary>
-        /// <param name="bot"></param>
+        /// <param name="attachedBlocks"></param>
         /// <param name="checking"></param>
         /// <param name="toIgnore"></param>
         /// <returns></returns>
