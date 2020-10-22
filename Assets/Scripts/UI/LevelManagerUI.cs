@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Missions;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using TMPro;
@@ -160,7 +161,7 @@ namespace StarSalvager.UI
             pauseWindowMainMenuButton.onClick.AddListener(() =>
             {
                 m_levelManager.IsWaveProgressing = true;
-                PlayerPersistentData.SaveAutosaveFiles();
+                PlayerDataManager.SavePlayerAccountData();
                 SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
             });
 
@@ -272,9 +273,9 @@ namespace StarSalvager.UI
 
         public void ToggleBetweenWavesUIActive(bool active)
         {
-            int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+            int curIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
 
-            List<LevelRingNode> childNodesAccessible = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(curIndex).childNodes;
+            List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(curIndex).childNodes;
             betweenWavesContinueButton.gameObject.SetActive(childNodesAccessible.Count > 0);
 
             m_betweenWavesUI.SetActive(active);

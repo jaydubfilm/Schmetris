@@ -22,6 +22,7 @@ using StarSalvager.Tutorial;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Particles;
 using Random = UnityEngine.Random;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
 {
@@ -363,14 +364,16 @@ namespace StarSalvager
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
 
             Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
-            foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
+            IReadOnlyDictionary<BIT_TYPE, float> liquids = PlayerDataManager.GetLiquidResources(m_bots[0].IsRecoveryDrone);
+
+            foreach (var resource in liquids)
             {
                 tempDictionary.Add((int) resource.Key, resource.Value);
             }
 
             EnemiesKilledInWave.Clear();
 
-            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 0)
+            if (PlayerDataManager.GetResources()[BIT_TYPE.BLUE] <= 0)
             {
                 m_levelManagerUI.ShowSummaryScreen("Out of water",
                     "Your scrapyard is out of water. You must return now.", () =>
@@ -441,9 +444,7 @@ namespace StarSalvager
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             BotObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
 
-            var botDataToLoad = RecoverFromDeath
-                ? PlayerPersistentData.PlayerData.GetRecoveryDroneBlockData()
-                : PlayerPersistentData.PlayerData.GetCurrentBlockData();
+            var botDataToLoad = PlayerDataManager.GetBlockDatas(RecoverFromDeath);
 
             if (botDataToLoad.Count == 0)
             {
@@ -463,12 +464,12 @@ namespace StarSalvager
 
             InputManager.Instance.InitInput();
 
-            WaterAtBeginningOfWave = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE];
+            WaterAtBeginningOfWave = PlayerDataManager.GetResources()[BIT_TYPE.BLUE];
 
             
             if (RecoverFromDeath)
             {
-                PlayerPersistentData.PlayerData.SetResources(BIT_TYPE.BLUE, WaterAtBeginningOfWave);
+                PlayerDataManager.SetResources(BIT_TYPE.BLUE, WaterAtBeginningOfWave);
             }
 
             SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
@@ -553,13 +554,13 @@ namespace StarSalvager
         private void SetupLevelAnalytics()
         {
             Dictionary<int, float> tempResourceDictionary = new Dictionary<int, float>();
-            foreach (var resource in PlayerPersistentData.PlayerData.resources)
+            foreach (var resource in PlayerDataManager.GetResources())
             {
                 tempResourceDictionary.Add((int)resource.Key, resource.Value);
             }
 
             Dictionary<int, int> tempComponentDictionary = new Dictionary<int, int>();
-            foreach (var component in PlayerPersistentData.PlayerData.components)
+            foreach (var component in PlayerDataManager.GetComponents())
             {
                 tempComponentDictionary.Add((int)component.Key, component.Value);
             }
@@ -574,7 +575,7 @@ namespace StarSalvager
 
         private void CheckPlayerWater()
         {
-            var amount = PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE];
+            var amount = PlayerDataManager.GetResources()[BIT_TYPE.BLUE];
             var required = Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate;
 
             if (amount >= required)
@@ -599,7 +600,7 @@ namespace StarSalvager
             SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
             AudioController.PlayTESTWaveMusic(Globals.CurrentWave);
 
-            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <
+            if (PlayerDataManager.GetResources()[BIT_TYPE.BLUE] <
                 Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate)
             {
                 GameTimer.SetPaused(true);
@@ -645,22 +646,22 @@ namespace StarSalvager
             int progressionSector = Globals.CurrentSector;
             string endWaveMessage;
 
-            PlayerPersistentData.PlayerData.ReduceLevelResourceModifier(Globals.CurrentSector, Globals.CurrentWave);
+            PlayerDataManager.ReduceLevelResourceModifier(Globals.CurrentSector, Globals.CurrentWave);
 
             endWaveMessage = "Wave Complete!";
 
             Toast.AddToast(endWaveMessage, time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
-            if (!Globals.OnlyGetWaveLootOnce || !PlayerPersistentData.PlayerData.CheckIfCompleted(progressionSector, Globals.CurrentWave))
+            if (!Globals.OnlyGetWaveLootOnce || !PlayerDataManager.CheckIfCompleted(progressionSector, Globals.CurrentWave))
             {
                 CurrentWaveData.ConfigureLootTable();
                 List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
                 DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), false);
             }
 
-            int curNodeIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
-            if (!PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Contains(curNodeIndex))
+            int curNodeIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+            if (!PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(curNodeIndex))
             {
-                PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Add(curNodeIndex);
+                PlayerDataManager.AddCompletedNode(curNodeIndex);
             }
 
             EndWaveState = true;
@@ -677,7 +678,7 @@ namespace StarSalvager
             if (RecoverFromDeath)
             {
                 ScrapyardBot scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
-                var currentBlockData = PlayerPersistentData.PlayerData.GetCurrentBlockData();
+                var currentBlockData = PlayerDataManager.GetBlockDatas(false);
                 //Checks to make sure there is a core on the bot
                 if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
                 {
@@ -733,23 +734,23 @@ namespace StarSalvager
                 switch (loot[i])
                 {
                     case RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined:
-                        PlayerPersistentData.PlayerData.AddResource(rdsValueResourceRefined.rdsValue.Item1, rdsValueResourceRefined.rdsValue.Item2);
+                        PlayerDataManager.AddResource(rdsValueResourceRefined.rdsValue.Item1, rdsValueResourceRefined.rdsValue.Item2);
                         loot.RemoveAt(i);
                         break;
                     case RDSValue<Blueprint> rdsValueBlueprint:
-                        PlayerPersistentData.PlayerData.UnlockBlueprint(rdsValueBlueprint.rdsValue);
+                        PlayerDataManager.UnlockBlueprint(rdsValueBlueprint.rdsValue);
                         Toast.AddToast("Unlocked Blueprint!");
                         loot.RemoveAt(i);
                         break;
                     case RDSValue<FacilityBlueprint> rdsValueFacilityBlueprint:
-                        PlayerPersistentData.PlayerData.UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
+                        PlayerDataManager.UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
                         Toast.AddToast("Unlocked Facility Blueprint!");
                         loot.RemoveAt(i);
                         break;
                     case RDSValue<Vector2Int> rdsValueGears:
                     {
                         var gears = Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y);
-                        PlayerPersistentData.PlayerData.ChangeGears(gears);
+                        PlayerDataManager.ChangeGears(gears);
                         loot.RemoveAt(i);
                         
                         FloatingText.Create($"+{gears}", position, Color.white);
@@ -770,14 +771,7 @@ namespace StarSalvager
                 if (!blockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
                     blockData = new List<BlockData>();
 
-                if (RecoverFromDeath)
-                {
-                    PlayerPersistentData.PlayerData.SetRecoveryDroneBlockData(blockData);
-                }
-                else
-                {
-                    PlayerPersistentData.PlayerData.SetCurrentBlockData(blockData);
-                }
+                PlayerDataManager.SetBlockDatas(blockData, RecoverFromDeath);
             }
         }
 
@@ -793,7 +787,7 @@ namespace StarSalvager
         {
             LiquidResourcesCachedOnDeath =
                 new Dictionary<BIT_TYPE, float>(
-                    (IDictionary<BIT_TYPE, float>) PlayerPersistentData.PlayerData.liquidResource);
+                    (IDictionary<BIT_TYPE, float>) PlayerDataManager.GetLiquidResources(m_bots[0].IsRecoveryDrone));
 
             InputManager.Instance.CancelMove();
 
@@ -814,7 +808,7 @@ namespace StarSalvager
             BotDead = true;
 
             Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
-            foreach (var resource in PlayerPersistentData.PlayerData.liquidResource)
+            foreach (var resource in PlayerDataManager.GetLiquidResources(m_bots[0].IsRecoveryDrone))
             {
                 tempDictionary.Add((int) resource.Key, resource.Value);
             }
@@ -858,8 +852,8 @@ namespace StarSalvager
                         GameUi.ShowRecoveryBanner(false);
                         Globals.CurrentWave = 0;
                         GameTimer.SetPaused(false);
-                        PlayerPersistentData.ClearPlayerData();
-                        PlayerPersistentData.PlayerMetadata.CurrentSaveFile = null;
+                        PlayerDataManager.ResetPlayerRunData();
+                        PlayerDataManager.ClearCurrentSaveFile();
                         SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
                     });
             }

@@ -1,38 +1,38 @@
-﻿using StarSalvager.Utilities.Saving;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace StarSalvager.Values
+namespace StarSalvager.Utilities.Saving
 {
-    public class PlayerMetadata
+    public class GameMetadata
     {
         //TODO Get all the save files here
-        public readonly List<SaveFileData> SaveFiles = new List<SaveFileData>();
+        public List<SaveFileData> SaveFiles = new List<SaveFileData>();
 
         public SaveFileData? CurrentSaveFile;
 
 
         //====================================================================================================================//
         
-        public string GetPathMostRecentFile()
+        public int GetIndexMostRecentSaveFile()
         {
-            string saveFileMostRecent = string.Empty;
+            int saveSlotIndexMostRecent = -1;
             DateTime dateTimeMostRecent = new DateTime(2000, 1, 1);
             foreach (var saveFile in SaveFiles)
             {
-                if (saveFileMostRecent == string.Empty)
+                if (DateTime.Compare(dateTimeMostRecent, saveFile.Date) < 0)
                 {
-                    saveFileMostRecent = saveFile.FilePath;
-                    dateTimeMostRecent = saveFile.Date;
-                }
-                else if (DateTime.Compare(dateTimeMostRecent, saveFile.Date) < 0)
-                {
-                    saveFileMostRecent = saveFile.FilePath;
+                    saveSlotIndexMostRecent = saveFile.SaveSlotIndex;
                     dateTimeMostRecent = saveFile.Date;
                 }
             }
             
-            return saveFileMostRecent;
+            return saveSlotIndexMostRecent;
+        }
+
+        public void SetCurrentSaveFile(int saveSlotIndex)
+        {
+            CurrentSaveFile = SaveFiles.FirstOrDefault(s => s.SaveSlotIndex == saveSlotIndex);
         }
 
         //====================================================================================================================//

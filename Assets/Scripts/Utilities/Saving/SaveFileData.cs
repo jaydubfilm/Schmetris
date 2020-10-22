@@ -7,7 +7,7 @@ namespace StarSalvager.Utilities.Saving
         public string Name { get; set; }
         public DateTime Date { get; set; }
 
-        public string FilePath { get; set; }
+        public int SaveSlotIndex { get; set; }
 
 
         #region IEquatable

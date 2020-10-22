@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using StarSalvager.Utilities.Math;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
 {
@@ -272,7 +273,7 @@ namespace StarSalvager
                     case ScrapyardBit _:
                         throw new ArgumentOutOfRangeException(nameof(attachable), attachable, null);
                     case ScrapyardPart scrapyardPart:
-                        PlayerPersistentData.PlayerData.AddResources(scrapyardPart.Type, scrapyardPart.level, true);
+                        PlayerDataManager.AddPartResources(scrapyardPart.Type, scrapyardPart.level, true);
                         UpdatePartsList();
                         break;
                 }
@@ -455,7 +456,7 @@ namespace StarSalvager
         /// </summary>
         private void UpdatePartData()
         {
-            PlayerPersistentData.PlayerData.ClearLiquidCapacity(_isRecoveryDrone);
+            PlayerDataManager.ClearLiquidCapacity(_isRecoveryDrone);
             magnetCount = 0;
             maxParts = 0;
             powerDraw = 0f;
@@ -547,7 +548,7 @@ namespace StarSalvager
             }
 
             //Force only updating once I know all capacities
-            PlayerPersistentData.PlayerData.SetCapacities(capacities, _isRecoveryDrone);
+            PlayerDataManager.SetCapacities(capacities, _isRecoveryDrone);
         }
 
         #endregion //Parts

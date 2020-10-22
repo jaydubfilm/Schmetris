@@ -23,6 +23,7 @@ using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Particles;
 using AudioController = StarSalvager.Audio.AudioController;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
 {
@@ -2007,7 +2008,7 @@ namespace StarSalvager
                 var gears = Globals.GetBonusShapeGearRewards(shape.AttachedBits.Count, numTypes.Count);
                 
                 //Remove the Shape
-                PlayerPersistentData.PlayerData.ChangeGears(gears);
+                PlayerDataManager.ChangeGears(gears);
                 obstacleManager.MatchBonusShape(shape);
                 
                 //FIXME We'll need to double check the position here
@@ -2249,7 +2250,7 @@ namespace StarSalvager
                 {
                     var gearsToAdd = Mathf.RoundToInt(comboData.points * gearMultiplier);
                     //Waits till after combo finishes combining to add the points 
-                    PlayerPersistentData.PlayerData.ChangeGears(gearsToAdd);
+                    PlayerDataManager.ChangeGears(gearsToAdd);
                     
                     FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
 

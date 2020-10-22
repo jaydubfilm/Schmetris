@@ -4,6 +4,7 @@ using StarSalvager.Missions;
 using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using System.Linq;
 using UnityEngine;
@@ -20,7 +21,7 @@ namespace StarSalvager
 
         public void CraftBlueprint(Blueprint blueprint)
         {
-            if (!PlayerPersistentData.PlayerData.CanAffordPart(blueprint.partType, blueprint.level, false)
+            if (!PlayerDataManager.CanAffordPart(blueprint.partType, blueprint.level, false)
                 || blueprint.partType == PART_TYPE.CORE && !mDroneDesigner._scrapyardBot.attachedBlocks.GetBlockDatas().Any(p => p.Type == (int)PART_TYPE.CORE && p.Level == blueprint.level - 1))
             {
                 if (!Toast.Instance.showingToast)
@@ -45,7 +46,7 @@ namespace StarSalvager
                 Health = startingHealth
             };
 
-            PlayerPersistentData.PlayerData.SubtractPartCosts(blueprint.partType, blueprint.level, false);
+            PlayerDataManager.SubtractPartCosts(blueprint.partType, blueprint.level, false);
 
             MissionProgressEventData missionProgressEventData = new MissionProgressEventData
             {
@@ -61,7 +62,7 @@ namespace StarSalvager
                     ref core);
             }
             else
-                PlayerPersistentData.PlayerData.AddPartToStorage(blockData);
+                PlayerDataManager.AddPartToStorage(blockData);
         }
     }
 }

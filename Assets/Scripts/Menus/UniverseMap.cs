@@ -10,6 +10,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.UI
 {
@@ -60,14 +61,14 @@ namespace StarSalvager.UI
 
             if (Globals.IsBetweenWavesInUniverseMap)
             {
-                int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+                int curIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
                 CenterToItem(universeMapButtons[curIndex].GetComponent<RectTransform>());
 
-                for (int i = 0; i < PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Count; i++)
+                for (int i = 0; i < PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Count; i++)
                 {
-                    int nodeIndex = PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes[i];
+                    int nodeIndex = PlayerDataManager.GetPlayerPreviouslyCompletedNodes()[i];
 
-                    List<LevelRingNode> childNodesAccessible = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(nodeIndex).childNodes;
+                    List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
 
                     if (nodeIndex == curIndex)
                     {
@@ -106,13 +107,13 @@ namespace StarSalvager.UI
                     universeMapButtons[i].Button.interactable = false;
                 }
                 
-                for (int i = 0; i < PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Count; i++)
+                for (int i = 0; i < PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Count; i++)
                 {
-                    int nodeIndex = PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes[i];
+                    int nodeIndex = PlayerDataManager.GetPlayerPreviouslyCompletedNodes()[i];
                     
-                    List<LevelRingNode> childNodesAccessible = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(nodeIndex).childNodes;
+                    List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
 
-                    bool isShortcut = PlayerPersistentData.PlayerData.ShortcutNodes.Contains(nodeIndex);
+                    bool isShortcut = PlayerDataManager.GetShortcutNodes().Contains(nodeIndex);
 
                     for (int k = 0; k < universeMapButtons.Count; k++)
                     {
@@ -138,7 +139,7 @@ namespace StarSalvager.UI
                 DrawConnection(connection.x, connection.y);
             }*/
 
-            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 35)
+            if (PlayerDataManager.GetResources()[BIT_TYPE.BLUE] <= 35)
             {
                 Alert.ShowAlert("Water Shortage", "You are running low on water at the base. Be sure to look for some more!", "Ok", null);
             }
@@ -258,8 +259,8 @@ namespace StarSalvager.UI
                 return;
 
             //See if wave is unlocked
-            int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(sector, wave);
-            var unlocked = PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Contains(curIndex);
+            int curIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(sector, wave);
+            var unlocked = PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(curIndex);
             
             missingDataObject.SetActive(!unlocked);
             waveDataScrollView.SetActive(unlocked);

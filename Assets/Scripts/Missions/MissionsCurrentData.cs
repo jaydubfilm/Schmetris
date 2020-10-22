@@ -1,6 +1,7 @@
 ﻿using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
@@ -105,7 +106,6 @@ namespace StarSalvager.Missions
         private void DropMissionLoot(Mission mission)
         {
             MissionRemoteData missionRemoteData = FactoryManager.Instance.MissionRemoteData.GetRemoteData(mission.missionName);
-            PlayerData player = PlayerPersistentData.PlayerData;
 
             missionRemoteData.ConfigureLootTable();
             List<IRDSObject> missionLoot = missionRemoteData.rdsTable.rdsResult.ToList();
@@ -113,35 +113,35 @@ namespace StarSalvager.Missions
             {
                 if (missionLoot[i] is RDSValue<Blueprint> rdsValueBlueprint)
                 {
-                    player.UnlockBlueprint(rdsValueBlueprint.rdsValue);
+                    PlayerDataManager.UnlockBlueprint(rdsValueBlueprint.rdsValue);
                     Toast.AddToast("Unlocked Blueprint!");
                     missionLoot.RemoveAt(i);
                     continue;
                 }
                 if (missionLoot[i] is RDSValue<FacilityBlueprint> rdsValueFacilityBlueprint)
                 {
-                    player.UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
+                    PlayerDataManager.UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
                     Toast.AddToast("Unlocked Facility Blueprint!");
                     missionLoot.RemoveAt(i);
                     continue;
                 }
                 else if (missionLoot[i] is RDSValue<Vector2Int> rdsValueGears)
                 {
-                    player.ChangeGears(UnityEngine.Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
+                    PlayerDataManager.ChangeGears(UnityEngine.Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y));
                     missionLoot.RemoveAt(i);
                     continue;
                 }
                 else if (missionLoot[i] is RDSValue<Bit> rdsValueBit)
                 {
-                    player.AddResource(rdsValueBit.rdsValue.Type, FactoryManager.Instance.BitsRemoteData.GetRemoteData(rdsValueBit.rdsValue.Type).levels[0].resources);
+                    PlayerDataManager.AddResource(rdsValueBit.rdsValue.Type, FactoryManager.Instance.BitsRemoteData.GetRemoteData(rdsValueBit.rdsValue.Type).levels[0].resources);
                 }
                 else if (missionLoot[i] is RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined)
                 {
-                    player.AddResource(rdsValueResourceRefined.rdsValue.Item1, rdsValueResourceRefined.rdsValue.Item2);
+                    PlayerDataManager.AddResource(rdsValueResourceRefined.rdsValue.Item1, rdsValueResourceRefined.rdsValue.Item2);
                 }
                 else if (missionLoot[i] is RDSValue<Component> rdsValueComponent)
                 {
-                    player.AddComponent(rdsValueComponent.rdsValue.Type, 1);
+                    PlayerDataManager.AddComponent(rdsValueComponent.rdsValue.Type, 1);
                 }
             }
         }
