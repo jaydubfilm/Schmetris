@@ -996,12 +996,22 @@ namespace StarSalvager
 
             var attachableDestroyed = closestHealth.CurrentHealth <= 0f;
 
-            switch (withSound)
+            /*switch (withSound)
             {
                 case true when closestAttachable is Bit:
                     AudioController.PlaySound(attachableDestroyed ? SOUND.BIT_EXPLODE : SOUND.BIT_DAMAGE);
                     break;
                 case true when closestAttachable is Part:
+                    AudioController.PlaySound(attachableDestroyed ? SOUND.PART_EXPLODE : SOUND.PART_DAMAGE);
+                    break;
+            }*/
+
+            switch (closestAttachable)
+            {
+                case Bit _ when withSound:
+                    AudioController.PlaySound(attachableDestroyed ? SOUND.BIT_EXPLODE : SOUND.BIT_DAMAGE);
+                    break;
+                case Part _ when withSound:
                     AudioController.PlaySound(attachableDestroyed ? SOUND.PART_EXPLODE : SOUND.PART_DAMAGE);
                     break;
             }
@@ -1024,6 +1034,9 @@ namespace StarSalvager
                     RemoveAttachable(closestAttachable);
                     break;
             }
+            
+            if(closestAttachable.CountTowardsMagnetism)
+                ForceCheckMagnets();
 
 
 
@@ -1078,6 +1091,7 @@ namespace StarSalvager
             switch (attachable)
             {
                 case Bit bit:
+                    
                     missionProgressEventData = new MissionProgressEventData
                     {
                         bitType = bit.Type,

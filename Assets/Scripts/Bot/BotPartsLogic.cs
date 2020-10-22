@@ -186,7 +186,7 @@ namespace StarSalvager
                 if (i >= _smartWeapons.Count)
                     break;
 
-                GameUI.SetIconImage(i, _smartWeapons[i].renderer.sprite);
+                GameUI.SetIconImage(i, _smartWeapons[i].Type);
                 GameUI.ShowIcon(i, true);
             }
 
