@@ -218,7 +218,7 @@ namespace StarSalvager.Tutorial
                 combo = true;
             }
             
-            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[3], true));
+            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[3], false));
             
             SetText(tutorialRemoteData[3], true, true);
 
@@ -496,14 +496,19 @@ namespace StarSalvager.Tutorial
         {
             _inputManager = InputManager.Instance;
             
-            Input.Actions.Default.Any.Enable();
-            Input.Actions.Default.Any.performed += AnyKeyPressed;
+            Input.Actions.Default.Continue.Enable();
+            Input.Actions.Default.Continue.performed += AnyKeyPressed;
+
+
+            //Found: https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/manual/ActionBindings.html?_ga=2.228834015.217367981.1603324316-246071923.1589462724#showing-current-bindings
+            var key = Input.Actions.Default.Continue.GetBindingDisplayString();
+            pressAnyKeyText.text = $"{key} to continue...";
         }
 
         public void DeInitInput()
         {
-            Input.Actions.Default.Any.Disable();
-            Input.Actions.Default.Any.performed -= AnyKeyPressed;
+            Input.Actions.Default.Continue.Disable();
+            Input.Actions.Default.Continue.performed -= AnyKeyPressed;
         }
 
         //Input Functions
