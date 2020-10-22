@@ -4,9 +4,9 @@ using StarSalvager.Utilities.FileIO;
 using StarSalvager.Values;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
-using System.CodeDom;
 using StarSalvager.UI.Scrapyard;
 using System.Security.Policy;
+using StarSalvager.Utilities.Math;
 
 namespace StarSalvager.Utilities.Saving
 {
@@ -38,37 +38,24 @@ namespace StarSalvager.Utilities.Saving
         //Run Data Functions
         //====================================================================================================================//
 
-        public static IReadOnlyDictionary<BIT_TYPE, int> GetResources()
+        public static List<PlayerResource> GetResources()
         {
-            return PlayerRunData.readOnlyBits;
+            return PlayerRunData.GetResources();
+        }
+
+        public static PlayerResource GetResource(BIT_TYPE bitType)
+        {
+            return PlayerRunData.GetResource(bitType);
         }
 
         public static IReadOnlyDictionary<COMPONENT_TYPE, int> GetComponents()
         {
-            return PlayerRunData.readOnlyComponents;
-        }
-
-
-        public static IReadOnlyDictionary<BIT_TYPE, float> GetLiquidResources(bool isRecoveryDrone)
-        {
-            if (isRecoveryDrone)
-            {
-                return PlayerRunData.recoveryDroneLiquidResource;
-            }
-            else
-            {
-                return PlayerRunData.liquidResource;
-            }
-        }
-
-        public static Dictionary<BIT_TYPE, int> GetResourcesClone()
-        {
-            return new Dictionary<BIT_TYPE, int> (PlayerRunData.readOnlyBits);
+            return PlayerRunData.Components;
         }
 
         public static Dictionary<COMPONENT_TYPE, int> GetComponentsClone()
         {
-            return new Dictionary<COMPONENT_TYPE, int>(PlayerRunData.readOnlyComponents);
+            return new Dictionary<COMPONENT_TYPE, int>(PlayerRunData.Components);
         }
 
         public static List<BlockData> GetBlockDatas(bool isRecoveryDrone)
@@ -90,40 +77,12 @@ namespace StarSalvager.Utilities.Saving
 
         public static MissionsCurrentData GetMissionsCurrentData()
         {
-            return PlayerRunData.missionsCurrentData;
-        }
-
-        public static void SetResources(Dictionary<BIT_TYPE, int> values)
-        {
-            PlayerRunData.SetResources(values);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void SetResources(BIT_TYPE type, int value)
-        {
-            PlayerRunData.SetResources(type, value);
-
-            OnValuesChanged?.Invoke();
+            return PlayerAccountData.missionsCurrentData;
         }
 
         public static void SetComponents(COMPONENT_TYPE type, int value)
         {
             PlayerRunData.SetComponents(type, value);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void SetLiquidResource(BIT_TYPE type, float value, bool isRecoveryDrone)
-        {
-            PlayerRunData.SetLiquidResource(type, value, isRecoveryDrone);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void SetLiquidResources(Dictionary<BIT_TYPE, float> liquidValues, bool isRecoveryDrone)
-        {
-            PlayerRunData.SetLiquidResources(liquidValues, isRecoveryDrone);
 
             OnValuesChanged?.Invoke();
         }
@@ -149,40 +108,10 @@ namespace StarSalvager.Utilities.Saving
 
         public static void SetMissionsCurrentData(MissionsCurrentData missionData)
         {
-            PlayerRunData.missionsCurrentData = missionData;
+            PlayerAccountData.missionsCurrentData = missionData;
         }
 
         //============================================================================================================//
-
-        public static void AddResources(Dictionary<BIT_TYPE, int> toAdd, float multiplier)
-        {
-            PlayerRunData.AddResources(toAdd, multiplier);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static Dictionary<BIT_TYPE, int> AddResourcesReturnWasted(Dictionary<BIT_TYPE, int> toAdd, float multiplier)
-        {
-            Dictionary<BIT_TYPE, int> wastedResources = PlayerRunData.AddResourcesReturnWasted(toAdd, multiplier);
-            
-            OnValuesChanged?.Invoke();
-
-            return wastedResources;
-        }
-
-        public static void AddResource(BIT_TYPE type, int amount)
-        {
-            PlayerRunData.AddResource(type, amount);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void AddPartResources(PART_TYPE partType, int level, bool isRecursive)
-        {
-            PlayerRunData.AddPartResources(partType, level, isRecursive);
-
-            OnValuesChanged?.Invoke();
-        }
 
         public static void AddPartResources(BlockData blockData, bool isRecursive)
         {
@@ -190,32 +119,25 @@ namespace StarSalvager.Utilities.Saving
                 return;
 
             AddPartResources((PART_TYPE)blockData.Type, blockData.Level, isRecursive);
+        }
+
+        public static void AddPartResources(PART_TYPE partType, int level, bool isRecursive)
+        {
+            CostCalculations.AddPartResources(partType, level, isRecursive);
 
             OnValuesChanged?.Invoke();
         }
 
-        public static void AddLiquidResource(BIT_TYPE type, float amount, bool isRecoveryDrone)
+        public static void SubtractPartResources(PART_TYPE partType, int level, bool isRecursive)
         {
-            PlayerRunData.AddLiquidResource(type, amount, isRecoveryDrone);
+            CostCalculations.SubtractPartResources(partType, level, isRecursive);
 
             OnValuesChanged?.Invoke();
-        }
-
-        public static void SubtractResources(BIT_TYPE bitType, int amount)
-        {
-            PlayerRunData.SubtractResources(bitType, amount);
         }
 
         public static void SubtractResources(IEnumerable<CraftCost> cost)
         {
-            PlayerRunData.SubtractResources(cost);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void SubtractLiquidResource(BIT_TYPE type, float amount, bool isRecoveryDrone)
-        {
-            PlayerRunData.SubtractLiquidResource(type, amount, isRecoveryDrone);
+            CostCalculations.SubtractResources(cost);
 
             OnValuesChanged?.Invoke();
         }
@@ -254,52 +176,6 @@ namespace StarSalvager.Utilities.Saving
             PlayerRunData.AddDontShowAgainKey(key);
         }
 
-
-        //============================================================================================================//
-
-        public static IReadOnlyDictionary<BIT_TYPE, int> GetResourceCapacities()
-        {
-            return PlayerRunData.ResourceCapacities;
-        }
-
-        public static void SetCapacity(BIT_TYPE type, int amount, bool isRecoveryDrone)
-        {
-            PlayerRunData.SetCapacity(type, amount, isRecoveryDrone);
-
-            OnCapacitiesChanged?.Invoke();
-        }
-
-        public static void SetCapacities(Dictionary<BIT_TYPE, int> capacities, bool isRecoveryDrone)
-        {
-            PlayerRunData.SetCapacities(capacities, isRecoveryDrone);
-
-            OnCapacitiesChanged?.Invoke();
-        }
-
-        public static IReadOnlyDictionary<BIT_TYPE, int> GetLiquidCapacities(bool isRecoveryDrone)
-        {
-            if (isRecoveryDrone)
-            {
-                return PlayerRunData.recoveryDroneLiquidCapacity;
-            }
-            else
-            {
-                return PlayerRunData.liquidCapacity;
-            }
-        }
-
-        public static void ClearLiquidCapacity(bool isRecoveryDrone)
-        {
-            PlayerRunData.ClearLiquidCapacity(isRecoveryDrone);
-
-            OnCapacitiesChanged?.Invoke();
-        }
-
-        public static (float current, float capacity) GetCurrentAndCapacity(BIT_TYPE type, bool isRecoveryDrone)
-        {
-            return PlayerRunData.GetCurrentAndCapacity(type, isRecoveryDrone);
-        }
-
         //============================================================================================================//
 
         public static bool CanAffordFacilityBlueprint(TEST_FacilityBlueprint facilityBlueprint)
@@ -323,13 +199,6 @@ namespace StarSalvager.Utilities.Saving
         }
 
         //====================================================================================================================//
-
-        public static void IncreaseResourceCapacity(BIT_TYPE bitType, int amount)
-        {
-            PlayerRunData.IncreaseResourceCapacity(bitType, amount);
-
-            OnValuesChanged?.Invoke();
-        }
 
         public static void IncreaseRationCapacity(int amount)
         {

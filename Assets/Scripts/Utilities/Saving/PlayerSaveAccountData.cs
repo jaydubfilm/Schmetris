@@ -17,6 +17,8 @@ namespace StarSalvager.Values
 
         public List<Blueprint> unlockedBlueprints = new List<Blueprint>();
 
+        public MissionsCurrentData missionsCurrentData = null;
+
         [JsonIgnore]
         public IReadOnlyDictionary<FACILITY_TYPE, int> facilityRanks => _facilityRanks;
         [JsonProperty]
@@ -171,19 +173,19 @@ namespace StarSalvager.Values
                     PlayerDataManager.IncreaseRationCapacity(increaseAmount);
                     break;
                 case FACILITY_TYPE.STORAGEELECTRICITY:
-                    PlayerDataManager.IncreaseResourceCapacity(BIT_TYPE.YELLOW, increaseAmount);
+                    PlayerDataManager.GetResource(BIT_TYPE.YELLOW).AddResourceCapacity(increaseAmount);
                     break;
                 case FACILITY_TYPE.STORAGEFUEL:
-                    PlayerDataManager.IncreaseResourceCapacity(BIT_TYPE.RED, increaseAmount);
+                    PlayerDataManager.GetResource(BIT_TYPE.RED).AddResourceCapacity(increaseAmount);
                     break;
                 case FACILITY_TYPE.STORAGEPLASMA:
-                    PlayerDataManager.IncreaseResourceCapacity(BIT_TYPE.GREEN, increaseAmount);
+                    PlayerDataManager.GetResource(BIT_TYPE.GREEN).AddResourceCapacity(increaseAmount);
                     break;
                 case FACILITY_TYPE.STORAGESCRAP:
-                    PlayerDataManager.IncreaseResourceCapacity(BIT_TYPE.GREY, increaseAmount);
+                    PlayerDataManager.GetResource(BIT_TYPE.GREY).AddResourceCapacity(increaseAmount);
                     break;
                 case FACILITY_TYPE.STORAGEWATER:
-                    PlayerDataManager.IncreaseResourceCapacity(BIT_TYPE.BLUE, increaseAmount);
+                    PlayerDataManager.GetResource(BIT_TYPE.BLUE).AddResourceCapacity(increaseAmount);
                     break;
             }
 

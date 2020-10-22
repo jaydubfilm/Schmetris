@@ -6,8 +6,6 @@ using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 using StarSalvager.Missions;
-using StarSalvager.Factories;
-using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Values;
 
@@ -18,9 +16,19 @@ namespace StarSalvager.Utilities.Saving
     {
         //============================================================================================================//
 
+        [JsonProperty]
+        private List<PlayerResource> _playerResources = new List<PlayerResource>
+        {
+            new PlayerResource(BIT_TYPE.BLUE, 75, 300, 0, 0, 0, 0),
+            new PlayerResource(BIT_TYPE.GREEN, 0, 300, 0, 0, 0, 0),
+            new PlayerResource(BIT_TYPE.GREY, 0, 300, 0, 0, 0, 0),
+            new PlayerResource(BIT_TYPE.RED, 100, 300, 30, 0, 30, 0),
+            new PlayerResource(BIT_TYPE.YELLOW, 0, 300, 0, 0, 0, 0)
+        };
+
         //TODO: Add an add/subtract function for ResourceAmount, and make this IReadOnlyDictionary<>
-        [JsonIgnore]
-        public Dictionary<BIT_TYPE, int> readOnlyBits => _resources;
+        /*[JsonIgnore]
+        public Dictionary<BIT_TYPE, int> Resources => _resources;
 
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _resources = new Dictionary<BIT_TYPE, int>
@@ -42,12 +50,12 @@ namespace StarSalvager.Utilities.Saving
             {BIT_TYPE.YELLOW, 300},
             {BIT_TYPE.GREEN, 300},
             {BIT_TYPE.GREY, 300},
-        };
+        };*/
 
         public int RationCapacity = 500;
 
         [JsonIgnore]
-        public Dictionary<COMPONENT_TYPE, int> readOnlyComponents => _components;
+        public Dictionary<COMPONENT_TYPE, int> Components => _components;
         [JsonProperty]
         private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_TYPE, int>
         {
@@ -58,11 +66,11 @@ namespace StarSalvager.Utilities.Saving
             {COMPONENT_TYPE.COIL, 0}
         };
 
-        [JsonIgnore]
-        public IReadOnlyDictionary<BIT_TYPE, float> liquidResource => _liquidResource;
+        /*[JsonIgnore]
+        public IReadOnlyDictionary<BIT_TYPE, float> MainDroneLiquidResources => _liquidResources;
         [JsonProperty]
         //FIXME This needs to use some sort of capacity value
-        private Dictionary<BIT_TYPE, float> _liquidResource = new Dictionary<BIT_TYPE, float>
+        private Dictionary<BIT_TYPE, float> _liquidResources = new Dictionary<BIT_TYPE, float>
         {
             {BIT_TYPE.RED, 30},
             {BIT_TYPE.BLUE, 0},
@@ -72,10 +80,10 @@ namespace StarSalvager.Utilities.Saving
         };
 
         [JsonIgnore]
-        public IReadOnlyDictionary<BIT_TYPE, float> recoveryDroneLiquidResource => _recoveryDroneLiquidResource;
+        public IReadOnlyDictionary<BIT_TYPE, float> RecoveryDroneLiquidResources => _recoveryDroneLiquidResources;
         [JsonProperty]
         //FIXME This needs to use some sort of capacity value
-        private Dictionary<BIT_TYPE, float> _recoveryDroneLiquidResource = new Dictionary<BIT_TYPE, float>
+        private Dictionary<BIT_TYPE, float> _recoveryDroneLiquidResources = new Dictionary<BIT_TYPE, float>
         {
             {BIT_TYPE.RED, 30},
             {BIT_TYPE.BLUE, 0},
@@ -86,7 +94,7 @@ namespace StarSalvager.Utilities.Saving
 
         //FIXME I think that this should not be so persistent (Shouldn't need to be saved data)
         [JsonIgnore]
-        public IReadOnlyDictionary<BIT_TYPE, int> liquidCapacity => _liquidCapacity;
+        public IReadOnlyDictionary<BIT_TYPE, int> MainDroneLiquidCapacity => _liquidCapacity;
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _liquidCapacity = new Dictionary<BIT_TYPE, int>
         {
@@ -99,7 +107,7 @@ namespace StarSalvager.Utilities.Saving
 
         //FIXME I think that this should not be so persistent (Shouldn't need to be saved data)
         [JsonIgnore]
-        public IReadOnlyDictionary<BIT_TYPE, int> recoveryDroneLiquidCapacity => _recoveryDroneLiquidCapacity;
+        public IReadOnlyDictionary<BIT_TYPE, int> RecoveryDroneLiquidCapacity => _recoveryDroneLiquidCapacity;
         [JsonProperty]
         private Dictionary<BIT_TYPE, int> _recoveryDroneLiquidCapacity = new Dictionary<BIT_TYPE, int>
         {
@@ -108,15 +116,13 @@ namespace StarSalvager.Utilities.Saving
             {BIT_TYPE.YELLOW, 0},
             {BIT_TYPE.GREEN, 0},
             {BIT_TYPE.GREY, 0},
-        };
+        };*/
 
         public List<BlockData> mainDroneBlockData = new List<BlockData>();
         public List<BlockData> recoveryDroneBlockData = new List<BlockData>();
         public List<BlockData> partsInStorageBlockData = new List<BlockData>();
 
         public List<SectorWaveModifier> levelResourceModifier = new List<SectorWaveModifier>();
-
-        public MissionsCurrentData missionsCurrentData = null;
 
         public int currentModularSectorIndex = 0;
 
@@ -191,65 +197,16 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public void IncreaseResourceCapacity(BIT_TYPE bitType, int amount)
+        public List<PlayerResource> GetResources()
         {
-            if (!_resourceCapacity.ContainsKey(bitType))
-            {
-                Debug.LogError("Resource Capacities missing Bit Type " + bitType);
-            }
-
-            _resourceCapacity[bitType] += amount;
+            return _playerResources;
         }
 
-        //============================================================================================================//
-
-        public void SetResources(Dictionary<BIT_TYPE, int> values)
+        public PlayerResource GetResource(BIT_TYPE bitType)
         {
-            _resources = values;
-        }
+            int index = (int)bitType - 1;
 
-        public void SetResources(BIT_TYPE type, int value)
-        {
-            _resources[type] = Mathf.Min(value, ResourceCapacities[type]);
-        }
-
-        public (float current, float capacity) GetCurrentAndCapacity(BIT_TYPE type, bool isRecoveryDrone)
-        {
-            var current = isRecoveryDrone ? recoveryDroneLiquidResource[type] : liquidResource[type];
-            var capacity = isRecoveryDrone ? recoveryDroneLiquidCapacity[type] : liquidCapacity[type];
-
-            return (current, capacity);
-        }
-
-        //============================================================================================================//
-
-        
-        
-        public void SetLiquidResource(BIT_TYPE type, float value, bool isRecoveryDrone)
-        {
-            if (isRecoveryDrone)
-            {
-                _recoveryDroneLiquidResource[type] = Mathf.Clamp(value, 0f, _recoveryDroneLiquidCapacity[type]);
-            }
-            else
-            {
-                _liquidResource[type] = Mathf.Clamp(value, 0f, _liquidCapacity[type]);
-            }
-        }
-
-        public void SetLiquidResources(Dictionary<BIT_TYPE, float> liquidValues, bool isRecoveryDrone)
-        {
-            foreach (var value in liquidValues)
-            {
-                if (isRecoveryDrone)
-                {
-                    _recoveryDroneLiquidResource[value.Key] = Mathf.Clamp(value.Value, 0f, _recoveryDroneLiquidCapacity[value.Key]);
-                }
-                else
-                {
-                    _liquidResource[value.Key] = Mathf.Clamp(value.Value, 0f, _liquidCapacity[value.Key]);
-                }
-            }
+            return _playerResources[index];
         }
 
         //============================================================================================================//
@@ -269,161 +226,9 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public void SetCapacity(BIT_TYPE type, int amount, bool isRecoveryDrone)
-        {
-            if (isRecoveryDrone)
-            {
-                _recoveryDroneLiquidCapacity[type] = amount;
-            }
-            else
-            {
-                _liquidCapacity[type] = amount;
-            }
-            PlayerDataManager.OnCapacitiesChanged?.Invoke();
-        }
-
-        public void SetCapacities(Dictionary<BIT_TYPE, int> capacities, bool isRecoveryDrone)
-        {
-            foreach (var capacity in capacities)
-            {
-                if (isRecoveryDrone)
-                {
-                    _recoveryDroneLiquidCapacity[capacity.Key] = capacity.Value;
-                }
-                else
-                {
-                    _liquidCapacity[capacity.Key] = capacity.Value;
-                }
-            }
-
-            PlayerDataManager.OnCapacitiesChanged?.Invoke();
-        }
-
-        public void ClearLiquidCapacity(bool isRecoveryDrone)
-        {
-            if (isRecoveryDrone)
-            {
-                _recoveryDroneLiquidCapacity = new Dictionary<BIT_TYPE, int>
-                {
-                    {BIT_TYPE.RED, 0},
-                    {BIT_TYPE.BLUE, 0},
-                    {BIT_TYPE.YELLOW, 0},
-                    {BIT_TYPE.GREEN, 0},
-                    {BIT_TYPE.GREY, 0},
-                };
-            }
-            else
-            {
-                _liquidCapacity = new Dictionary<BIT_TYPE, int>
-                {
-                    {BIT_TYPE.RED, 0},
-                    {BIT_TYPE.BLUE, 0},
-                    {BIT_TYPE.YELLOW, 0},
-                    {BIT_TYPE.GREEN, 0},
-                    {BIT_TYPE.GREY, 0},
-                };
-            }
-        }
-
-        //============================================================================================================//
-
-        public void SubtractResources(BIT_TYPE bitType, int amount)
-        {
-            _resources[bitType] = Mathf.Max(_resources[bitType] - amount, 0);
-        }
-
-        public void AddResources(Dictionary<BIT_TYPE, int> toAdd, float multiplier)
-        {
-            CostCalculations.AddResources(ref _resources, toAdd, multiplier);
-
-            foreach (var bitType in toAdd.Select(keyValuePair => keyValuePair.Key))
-            {
-                _resources[bitType] = Mathf.Min(_resources[bitType], ResourceCapacities[bitType]);
-            }
-        }
-
-        public Dictionary<BIT_TYPE, int> AddResourcesReturnWasted(Dictionary<BIT_TYPE, int> toAdd, float multiplier)
-        {
-            CostCalculations.AddResources(ref _resources, toAdd, multiplier);
-
-            Dictionary<BIT_TYPE, int> wastedResources = new Dictionary<BIT_TYPE, int>();
-
-            foreach (var bitType in toAdd.Select(keyValuePair => keyValuePair.Key))
-            {
-                if (ResourceCapacities[bitType] < _resources[bitType])
-                {
-                    wastedResources.Add(bitType, _resources[bitType] - ResourceCapacities[bitType]);
-                }
-                
-                _resources[bitType] = Mathf.Min(_resources[bitType], ResourceCapacities[bitType]);
-            }
-
-            return wastedResources;
-        }
-
-        public void AddResource(BIT_TYPE type, int amount)
-        {
-            _resources[type] = Mathf.Min(_resources[type] + amount, ResourceCapacities[type]);
-        }
-
-        public void AddPartResources(PART_TYPE partType, int level, bool isRecursive)
-        {
-            CostCalculations.AddResources(ref _resources, partType, level, isRecursive);
-        }
-
-        public void AddResources(BlockData blockData, bool isRecursive)
-        {
-            if (!blockData.ClassType.Equals(nameof(Part)))
-                return;
-            
-            AddPartResources((PART_TYPE) blockData.Type, blockData.Level, isRecursive);
-        }
-
-        public void SubtractResources(IEnumerable<CraftCost> cost)
-        {
-            CostCalculations.SubtractResources(ref _resources, cost);
-        }
-
         public void SubtractComponents(IEnumerable<CraftCost> cost)
         {
             CostCalculations.SubtractComponents(ref _components, cost);
-        }
-
-        public void SubtractPartCosts(PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
-        {
-            CostCalculations.SubtractPartCosts(ref _resources, ref _components, partsInStorageBlockData, partType, level, isRecursive, costModifier);
-        }
-
-        //============================================================================================================//
-
-        public void AddLiquidResource(BIT_TYPE type, float amount, bool isRecoveryDrone)
-        {
-            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-            {
-                bitType = type,
-                floatAmount = amount
-            };
-            MissionManager.ProcessMissionData(typeof(LiquidResourceConvertedMission), missionProgressEventData);
-            if (isRecoveryDrone)
-            {
-                _recoveryDroneLiquidResource[type] = Mathf.Clamp(recoveryDroneLiquidResource[type] + Mathf.Abs(amount), 0, recoveryDroneLiquidCapacity[type]);
-            }
-            else
-            {
-                _liquidResource[type] = Mathf.Clamp(liquidResource[type] + Mathf.Abs(amount), 0, liquidCapacity[type]);
-            }
-        }
-
-        public void SubtractLiquidResource(BIT_TYPE type, float amount, bool isRecoveryDrone)
-        {
-            if (isRecoveryDrone)
-            {
-                _recoveryDroneLiquidResource[type] = Mathf.Clamp(recoveryDroneLiquidResource[type] - Mathf.Abs(amount), 0, recoveryDroneLiquidCapacity[type]);
-            }
-            else
-            {
-                _liquidResource[type] = Mathf.Clamp(liquidResource[type] - Mathf.Abs(amount), 0, liquidCapacity[type]);
-            }
         }
 
         //============================================================================================================//
@@ -447,7 +252,15 @@ namespace StarSalvager.Utilities.Saving
 
         public bool CanAffordBits(IEnumerable<CraftCost> levelCost)
         {
-            Dictionary<BIT_TYPE, int> tempDictionary = new Dictionary<BIT_TYPE, int>(_resources);
+            Dictionary<BIT_TYPE, int> tempDictionary = new Dictionary<BIT_TYPE, int>();
+            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            {
+                if (_bitType == BIT_TYPE.WHITE)
+                    continue;
+
+                tempDictionary.Add(_bitType, PlayerDataManager.GetResource(_bitType).resource);
+            }
+
             return CostCalculations.CanAffordResources(tempDictionary, levelCost);
         }
 
@@ -471,7 +284,15 @@ namespace StarSalvager.Utilities.Saving
 
         public bool CanAffordPart(PART_TYPE partType, int level, bool isRecursive)
         {
-            Dictionary<BIT_TYPE, int> tempResourceDictionary = new Dictionary<BIT_TYPE, int>(_resources);
+            Dictionary<BIT_TYPE, int> tempResourceDictionary = new Dictionary<BIT_TYPE, int>();
+            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            {
+                if (_bitType == BIT_TYPE.WHITE)
+                    continue;
+
+                tempResourceDictionary.Add(_bitType, PlayerDataManager.GetResource(_bitType).resource);
+            }
+
             Dictionary<COMPONENT_TYPE, int> tempComponentDictionary = new Dictionary<COMPONENT_TYPE, int>(_components);
             List<BlockData> tempPartsInStorage = new List<BlockData>(partsInStorageBlockData);
             return CostCalculations.CanAffordPart(tempResourceDictionary, tempComponentDictionary, tempPartsInStorage, partType, level, isRecursive);

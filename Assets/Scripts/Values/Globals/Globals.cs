@@ -30,6 +30,7 @@ namespace StarSalvager.Values
         public static Action<ORIENTATION> OrientationChange;
         public static int GridSizeY;
         public static bool IsBetweenWavesInUniverseMap = false;
+        public static bool IsRecoveryBot = false;
 
 
         private static GameSettingsScriptableObject m_gameSettings = null;

@@ -158,12 +158,12 @@ namespace StarSalvager
                 _scrapyardBot.InitBot(importedData, _isEditingRecoveryDrone);
             }
 
-            bool outOfWaterOnReturn = PlayerDataManager.GetResources()[BIT_TYPE.BLUE] <= 0;
+            bool outOfWaterOnReturn = PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0;
             SellBits();
             //TODO Need to decide if this should happen at arrival or at launch
             //TryFillBotResources();
 
-            if (PlayerDataManager.GetResources()[BIT_TYPE.BLUE] <= 0)
+            if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0)
             {
                 Alert.ShowAlert("Game Over", "Your crew has died of thirst - Game Over. thx!", "Main Menu", () =>
                 {
@@ -296,6 +296,8 @@ namespace StarSalvager
                         var blockData = SelectedBrick.Value;
                         
                         Toast.AddToast("Dismantle part", verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
+
+
                         PlayerDataManager.AddPartResources(SelectedBrick.Value, true);
 
                         //Dismantle part from storage
@@ -644,7 +646,14 @@ namespace StarSalvager
             }
 
             //Setup your list of available resources by putting player resources into a temp list
-            Dictionary<BIT_TYPE, int> resourceComparer = new Dictionary<BIT_TYPE, int>(PlayerDataManager.GetResourcesClone());
+            Dictionary<BIT_TYPE, int> resourceComparer = new Dictionary<BIT_TYPE, int>();
+            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            {
+                if (_bitType == BIT_TYPE.WHITE)
+                    continue;
+
+                resourceComparer.Add(_bitType, PlayerDataManager.GetResource(_bitType).resource);
+            }
             //Setup your list of available resources by putting player resources into a temp list
             Dictionary<COMPONENT_TYPE, int> componentComparer = new Dictionary<COMPONENT_TYPE, int>((IDictionary<COMPONENT_TYPE, int>) PlayerDataManager.GetComponents());
 
@@ -683,7 +692,13 @@ namespace StarSalvager
 
             //Swap to new layout
             _currentLayout = tempLayout;
-            PlayerDataManager.SetResources(resourceComparer);
+            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            {
+                if (_bitType == BIT_TYPE.WHITE)
+                    continue;
+
+                PlayerDataManager.GetResource(_bitType).SetResource(resourceComparer[_bitType]);
+            }
             PlayerDataManager.SetCurrentPartsInStorage(partComparer);
 
             for (int i = _scrapyardBot.attachedBlocks.Count - 1; i >= 0; i--)
@@ -832,7 +847,15 @@ namespace StarSalvager
                 Debug.Log("REFINERY MULTIPLIER: " + refineryMultiplier);
             }
 
-            Dictionary<BIT_TYPE, int> wastedResources = PlayerDataManager.AddResourcesReturnWasted(bits, refineryMultiplier);
+            Dictionary<BIT_TYPE, int> wastedResources = new Dictionary<BIT_TYPE, int>();
+            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            {
+                if (_bitType == BIT_TYPE.WHITE)
+                    continue;
+
+                int wastedResource = PlayerDataManager.GetResource(_bitType).AddResourceReturnWasted((int)(bits[_bitType] * refineryMultiplier));
+                wastedResources.Add(_bitType, wastedResource);
+            }
 
 
             string resourcesGained = "";
@@ -942,7 +965,7 @@ namespace StarSalvager
                 .ToList();
 
             //var totalRepairCost = GetRepairCost();
-            var availableResources = PlayerDataManager.GetResources()[BIT_TYPE.GREEN];
+            var availableResources = PlayerDataManager.GetResource(BIT_TYPE.GREEN).resource;
 
             if (availableResources <= 0f)
             {
@@ -986,7 +1009,7 @@ namespace StarSalvager
                 damagedPart.SetSprite(FactoryManager.Instance.PartsProfileData.GetProfile(damagedPart.Type)
                     .GetSprite(damagedPart.level));
             }
-            PlayerDataManager.SetResources(BIT_TYPE.GREEN, availableResources);
+            PlayerDataManager.GetResource(BIT_TYPE.GREEN).SetResource(availableResources);
             
             SaveBlockData();
 

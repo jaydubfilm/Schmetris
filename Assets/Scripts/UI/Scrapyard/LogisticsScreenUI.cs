@@ -138,19 +138,21 @@ namespace StarSalvager.UI.Scrapyard
 
         private void SetupResourceScrollView()
         {
-            var resources = PlayerDataManager.GetResources();
-            var capacities = PlayerDataManager.GetResourceCapacities();
-
-            foreach (var resource in resources)
+            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
+                if (_bitType == BIT_TYPE.WHITE)
+                    continue;
+
+                PlayerResource playerResource = PlayerDataManager.GetResource(_bitType);
+
                 var data = new ResourceAmount
                 {
-                    type = resource.Key,
-                    amount = resource.Value,
-                    capacity = capacities[resource.Key]
+                    type = _bitType,
+                    amount = playerResource.resource,
+                    capacity = playerResource.resourceCapacity
                 };
 
-                var element = resourceUIElementScrollView.AddElement(data, $"{resource.Key}_UIElement");
+                var element = resourceUIElementScrollView.AddElement(data, $"{_bitType}_UIElement");
                 element.Init(data);
             }
         }

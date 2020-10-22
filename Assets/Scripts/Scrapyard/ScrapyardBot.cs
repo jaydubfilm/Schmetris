@@ -463,7 +463,6 @@ namespace StarSalvager
         /// </summary>
         private void UpdatePartData()
         {
-            PlayerDataManager.ClearLiquidCapacity(_isRecoveryDrone);
             magnetCount = 0;
             maxParts = 0;
             powerDraw = 0f;
@@ -554,8 +553,11 @@ namespace StarSalvager
                 }
             }
 
-            //Force only updating once I know all capacities
-            PlayerDataManager.SetCapacities(capacities, _isRecoveryDrone);
+            //Force update capacities, once new values determined
+            foreach (var capacity in capacities)
+            {
+                PlayerDataManager.GetResource(capacity.Key).SetResourceCapacity(capacity.Value);
+            }
         }
 
         #endregion //Parts

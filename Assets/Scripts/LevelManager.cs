@@ -23,6 +23,7 @@ using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Particles;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Saving;
+using System;
 
 namespace StarSalvager
 {
@@ -363,17 +364,9 @@ namespace StarSalvager
             EnemyManager.RecycleAllEnemies();
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
 
-            Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
-            IReadOnlyDictionary<BIT_TYPE, float> liquids = PlayerDataManager.GetLiquidResources(m_bots[0].IsRecoveryDrone);
-
-            foreach (var resource in liquids)
-            {
-                tempDictionary.Add((int) resource.Key, resource.Value);
-            }
-
             EnemiesKilledInWave.Clear();
 
-            if (PlayerDataManager.GetResources()[BIT_TYPE.BLUE] <= 0)
+            if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0)
             {
                 m_levelManagerUI.ShowSummaryScreen("Out of water",
                     "Your scrapyard is out of water. You must return now.", () =>
@@ -464,13 +457,7 @@ namespace StarSalvager
 
             InputManager.Instance.InitInput();
 
-            WaterAtBeginningOfWave = PlayerDataManager.GetResources()[BIT_TYPE.BLUE];
-
-            
-            if (RecoverFromDeath)
-            {
-                PlayerDataManager.SetResources(BIT_TYPE.BLUE, WaterAtBeginningOfWave);
-            }
+            WaterAtBeginningOfWave = PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource;
 
             SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
 
@@ -554,9 +541,12 @@ namespace StarSalvager
         private void SetupLevelAnalytics()
         {
             Dictionary<int, float> tempResourceDictionary = new Dictionary<int, float>();
-            foreach (var resource in PlayerDataManager.GetResources())
+            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
-                tempResourceDictionary.Add((int)resource.Key, resource.Value);
+                if (_bitType == BIT_TYPE.WHITE)
+                    continue;
+
+                tempResourceDictionary.Add((int)_bitType, PlayerDataManager.GetResource(_bitType).resource);
             }
 
             Dictionary<int, int> tempComponentDictionary = new Dictionary<int, int>();
@@ -575,7 +565,7 @@ namespace StarSalvager
 
         private void CheckPlayerWater()
         {
-            var amount = PlayerDataManager.GetResources()[BIT_TYPE.BLUE];
+            var amount = PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource;
             var required = Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate;
 
             if (amount >= required)
@@ -600,7 +590,7 @@ namespace StarSalvager
             SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
             AudioController.PlayTESTWaveMusic(Globals.CurrentWave);
 
-            if (PlayerDataManager.GetResources()[BIT_TYPE.BLUE] <
+            if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <
                 Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate)
             {
                 GameTimer.SetPaused(true);
@@ -734,7 +724,7 @@ namespace StarSalvager
                 switch (loot[i])
                 {
                     case RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined:
-                        PlayerDataManager.AddResource(rdsValueResourceRefined.rdsValue.Item1, rdsValueResourceRefined.rdsValue.Item2);
+                        PlayerDataManager.GetResource(rdsValueResourceRefined.rdsValue.Item1).AddResource(rdsValueResourceRefined.rdsValue.Item2);
                         loot.RemoveAt(i);
                         break;
                     case RDSValue<Blueprint> rdsValueBlueprint:
@@ -785,9 +775,15 @@ namespace StarSalvager
 
         private void OnBotDied(Bot _, string deathMethod)
         {
-            LiquidResourcesCachedOnDeath =
-                new Dictionary<BIT_TYPE, float>(
-                    (IDictionary<BIT_TYPE, float>) PlayerDataManager.GetLiquidResources(m_bots[0].IsRecoveryDrone));
+            LiquidResourcesCachedOnDeath = new Dictionary<BIT_TYPE, float>();
+
+            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            {
+                if (_bitType == BIT_TYPE.WHITE)
+                    continue;
+
+                LiquidResourcesCachedOnDeath.Add(_bitType, PlayerDataManager.GetResource(_bitType).liquid);
+            }
 
             InputManager.Instance.CancelMove();
 
@@ -808,9 +804,12 @@ namespace StarSalvager
             BotDead = true;
 
             Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
-            foreach (var resource in PlayerDataManager.GetLiquidResources(m_bots[0].IsRecoveryDrone))
+            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
-                tempDictionary.Add((int) resource.Key, resource.Value);
+                if (_bitType == BIT_TYPE.WHITE)
+                    continue;
+
+                tempDictionary.Add((int)_bitType, PlayerDataManager.GetResource(_bitType).liquid);
             }
 
             Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>

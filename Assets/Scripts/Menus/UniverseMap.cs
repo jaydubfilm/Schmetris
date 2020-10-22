@@ -139,7 +139,7 @@ namespace StarSalvager.UI
                 DrawConnection(connection.x, connection.y);
             }*/
 
-            if (PlayerDataManager.GetResources()[BIT_TYPE.BLUE] <= 35)
+            if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 35)
             {
                 Alert.ShowAlert("Water Shortage", "You are running low on water at the base. Be sure to look for some more!", "Ok", null);
             }
