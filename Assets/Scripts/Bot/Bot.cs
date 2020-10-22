@@ -2689,7 +2689,7 @@ namespace StarSalvager
             var magnetDetachables = attachedBlocks.Where(x => x.CountTowardsMagnetism).OfType<ICanDetach>().ToList();
             
             if(GameUi) 
-                GameUi.SetCarryCapacity(magnetDetachables.Count / (float)magnetCount);
+                GameUi.SetCarryCapacity(magnetDetachables.Count / (float)magnetCount, magnetCount);
             
             //Checks here if the total of attached blocks (Minus the Core) change
             if (magnetDetachables.Count <= magnetCount)
@@ -2783,7 +2783,7 @@ namespace StarSalvager
             var magnetAttachables = attachedBlocks.Where(x => x.CountTowardsMagnetism).ToList();
             
             if(GameUi) 
-                GameUi.SetCarryCapacity(magnetAttachables.Count / (float)magnetCount);
+                GameUi.SetCarryCapacity(magnetAttachables.Count / (float)magnetCount, magnetCount);
             
             return magnetAttachables.Count == magnetCount;
         }

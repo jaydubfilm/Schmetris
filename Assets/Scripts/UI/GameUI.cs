@@ -53,6 +53,8 @@ namespace StarSalvager.UI
         }
         //============================================================================================================//
 
+        private const float MAGNET_FILL_VALUE = 0.02875f;
+        
         #region Properties
 
         [SerializeField]
@@ -150,10 +152,12 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
-        private Slider heatSlider;
+        private Image heatFillImage;
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Slider carryCapacitySlider;
+        [SerializeField, Required, FoldoutGroup("BR Window")]
+        private Image carryCapacityFillImage;
 
         /*[SerializeField, Required, FoldoutGroup("BR Window"), Space(10f)]
         private Image bombImageIcon;
@@ -268,7 +272,7 @@ namespace StarSalvager.UI
             SetPowerValue(0f);
 
             SetHeatSliderValue(0f);
-            SetCarryCapacity(0f);
+            SetCarryCapacity(0f, 1);
 
             SetFuelValue(0f);
             SetRepairValue(0f);
@@ -351,8 +355,9 @@ namespace StarSalvager.UI
 
 
 
-        public void SetCarryCapacity(float value)
+        public void SetCarryCapacity(float value, int max)
         {
+            carryCapacityFillImage.pixelsPerUnitMultiplier = max * MAGNET_FILL_VALUE;
             carryCapacitySlider.value = value;
         }
         
@@ -588,7 +593,7 @@ namespace StarSalvager.UI
             //HeatSlider.value = value;
             //heatSliderImage.color = Color.Lerp(minColor, maxColor, value);
 
-            heatSlider.value = value;
+            heatFillImage.fillAmount = value;
 
             //CheckActivateGlowInverse(heatSlider, heatSliderGlow);
 
