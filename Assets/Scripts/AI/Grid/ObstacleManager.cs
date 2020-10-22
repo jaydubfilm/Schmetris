@@ -16,6 +16,7 @@ using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
 using StarSalvager.Cameras;
 using StarSalvager.Missions;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
 {
@@ -780,7 +781,7 @@ namespace StarSalvager
 
                 if (stageObstacleData.SelectionType == SELECTION_TYPE.CATEGORY || stageObstacleData.SelectionType == SELECTION_TYPE.SHAPE)
                 {
-                    float modifier = PlayerPersistentData.PlayerData.GetLevelResourceModifier(Globals.CurrentSector, Globals.CurrentWave);
+                    float modifier = PlayerDataManager.GetLevelResourceModifier(Globals.CurrentSector, Globals.CurrentWave);
                     spawnVariable *= modifier;
                 }
 

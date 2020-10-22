@@ -4,6 +4,7 @@ using StarSalvager.Utilities.FileIO;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.Missions
 {
@@ -79,7 +80,7 @@ namespace StarSalvager.Missions
         }
         private static MissionsMasterData m_missionsMasterData = null;
 
-        public static MissionsCurrentData MissionsCurrentData => PlayerPersistentData.PlayerData.missionsCurrentData;
+        public static MissionsCurrentData MissionsCurrentData => PlayerDataManager.GetMissionsCurrentData();
 
         public static void LoadMissionData()
         {
@@ -164,7 +165,7 @@ namespace StarSalvager.Missions
         {
             MissionsCurrentData currentData = new MissionsCurrentData();
             currentData.ResetMissionData();
-            PlayerPersistentData.PlayerData.missionsCurrentData = currentData;
+            PlayerDataManager.SetMissionsCurrentData(currentData);
         }
 
         public static void CustomOnApplicationQuit()

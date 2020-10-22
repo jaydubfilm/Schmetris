@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
@@ -206,8 +207,8 @@ namespace StarSalvager.UI
         {
             SetupPlayerValues();
 
-            PlayerData.OnCapacitiesChanged += SetupPlayerValues;
-            PlayerData.OnValuesChanged += UpdatePlayerGearsLevel;
+            PlayerDataManager.OnCapacitiesChanged += SetupPlayerValues;
+            PlayerDataManager.OnValuesChanged += UpdatePlayerGearsLevel;
         }
 
         private void LateUpdate()
@@ -230,8 +231,8 @@ namespace StarSalvager.UI
 
         private void OnDisable()
         {
-            PlayerData.OnCapacitiesChanged -= SetupPlayerValues;
-            PlayerData.OnValuesChanged -= UpdatePlayerGearsLevel;
+            PlayerDataManager.OnCapacitiesChanged -= SetupPlayerValues;
+            PlayerDataManager.OnValuesChanged -= UpdatePlayerGearsLevel;
         }
 
         //============================================================================================================//
@@ -323,38 +324,26 @@ namespace StarSalvager.UI
 
         private void SetupPlayerValues()
         {
-            var playerData = PlayerPersistentData.PlayerData;
-
-            if (playerData == null)
-                return;
-            
             ShowAbortWindow(false);
 
             IReadOnlyDictionary<BIT_TYPE, float> liquidResource;
-            IReadOnlyDictionary<BIT_TYPE, int> capacities;
-            if (LevelManager.Instance != null && LevelManager.Instance.RecoverFromDeath)
-            {
-                liquidResource = playerData.recoveryDroneLiquidResource;
-                capacities = playerData.recoveryDroneLiquidCapacity;
-            }
-            else
-            {
-                liquidResource = playerData.liquidResource;
-                capacities = playerData.liquidCapacity;
-            }
+            IReadOnlyDictionary<BIT_TYPE, int> liquidCapacities;
+            bool recoveryDrone = LevelManager.Instance != null && LevelManager.Instance.RecoverFromDeath;
+            liquidResource = PlayerDataManager.GetLiquidResources(recoveryDrone);
+            liquidCapacities = PlayerDataManager.GetLiquidCapacities(recoveryDrone);
 
-            SetResourceSliderBounds(BIT_TYPE.RED, 0, capacities[BIT_TYPE.RED]);
-            SetResourceSliderBounds(BIT_TYPE.GREEN, 0, capacities[BIT_TYPE.GREEN]);
-            SetResourceSliderBounds(BIT_TYPE.GREY, 0, capacities[BIT_TYPE.GREY]);
+            SetResourceSliderBounds(BIT_TYPE.RED, 0, liquidCapacities[BIT_TYPE.RED]);
+            SetResourceSliderBounds(BIT_TYPE.GREEN, 0, liquidCapacities[BIT_TYPE.GREEN]);
+            SetResourceSliderBounds(BIT_TYPE.GREY, 0, liquidCapacities[BIT_TYPE.GREY]);
 
-            SetResourceSliderBounds(BIT_TYPE.BLUE, 0, playerData.ResourceCapacities[BIT_TYPE.BLUE]);
-            SetResourceSliderBounds(BIT_TYPE.YELLOW, 0, capacities[BIT_TYPE.YELLOW]);
+            SetResourceSliderBounds(BIT_TYPE.BLUE, 0, PlayerDataManager.GetResourceCapacities()[BIT_TYPE.BLUE]);
+            SetResourceSliderBounds(BIT_TYPE.YELLOW, 0, liquidCapacities[BIT_TYPE.YELLOW]);
 
             SetFuelValue(liquidResource[BIT_TYPE.RED]);
             SetRepairValue(liquidResource[BIT_TYPE.GREEN]);
             SetAmmoValue(liquidResource[BIT_TYPE.GREY]);
 
-            SetPlayerGearsProgress(playerData.Gears, 999);
+            SetPlayerGearsProgress(PlayerDataManager.GetGears(), 999);
         }
 
         //============================================================================================================//
@@ -411,12 +400,7 @@ namespace StarSalvager.UI
         //TODO I should look into the NotifyPropertyChanged for setting up this functionality
         private void UpdatePlayerGearsLevel()
         {
-            var playerData = PlayerPersistentData.PlayerData;
-            
-            var gearsRequired = LevelManager.Instance.PlayerlevelRemoteDataScriptableObject
-                .GetRemoteData(playerData.Level).GearsToLevelUp;
-
-            SetPlayerGearsProgress(playerData.Gears, gearsRequired);
+            SetPlayerGearsProgress(PlayerDataManager.GetGears(), 100);
         }
 
         public void SetPlayerGearsProgress(int gears, int gearsRequired)

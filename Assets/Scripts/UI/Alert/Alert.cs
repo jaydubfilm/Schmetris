@@ -4,6 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
@@ -38,7 +39,7 @@ namespace StarSalvager.UI
         private Button neutralButton;
         private TMP_Text _neutralButtonText;
 
-        private static IReadOnlyList<string> DontShowAgainKeys => PlayerPersistentData.PlayerData.DontShowAgainKeys;
+        private static IReadOnlyList<string> DontShowAgainKeys => PlayerDataManager.GetDontShowAgainKeys();
         
         private string _activeDontShowKey;
 
@@ -260,7 +261,7 @@ namespace StarSalvager.UI
 
             if (dontShowAgainToggle.isOn)
             {
-                PlayerPersistentData.PlayerData.AddDontShowAgainKey(dontShowAgainKey);
+                PlayerDataManager.AddDontShowAgainKey(dontShowAgainKey);
 
                 dontShowAgainToggle.isOn = false;
                 return;

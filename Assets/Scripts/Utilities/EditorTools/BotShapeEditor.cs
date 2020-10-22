@@ -11,6 +11,7 @@ using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Values;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
 {
@@ -332,22 +333,21 @@ namespace StarSalvager
         {
             if (_scrapyardBot != null)
             {
-                string playerPath = PlayerPersistentData.PlayerMetadata.GetPathMostRecentFile();
+                int saveSlotIndex = PlayerDataManager.GetIndexMostRecentSaveFile();
 
-                if (playerPath != string.Empty)
+                if (saveSlotIndex >= 0)
                 {
-                    PlayerPersistentData.PlayerMetadata.CurrentSaveFile = PlayerPersistentData.PlayerMetadata.SaveFiles.FirstOrDefault(s => s.FilePath == playerPath);
-                    PlayerPersistentData.SetCurrentSaveFile(playerPath);
-                    FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
+                    PlayerDataManager.SetCurrentSaveFile(saveSlotIndex);
+                    PlayerDataManager.SetCurrentSaveSlotIndex(saveSlotIndex);
                 }
                 else
                 {
-                    playerPath = Files.GetNextAvailableSaveSlot();
+                    saveSlotIndex = Files.GetNextAvailableSaveSlot();
 
-                    if (playerPath != string.Empty)
+                    if (saveSlotIndex >= 0)
                     {
-                        PlayerPersistentData.SetCurrentSaveFile(playerPath);
-                        PlayerPersistentData.ResetPlayerData();
+                        PlayerDataManager.SetCurrentSaveSlotIndex(saveSlotIndex);
+                        PlayerDataManager.ResetPlayerAccountData();
                     }
                     else
                     {
@@ -355,7 +355,7 @@ namespace StarSalvager
                     }
                 }
 
-                PlayerPersistentData.PlayerData.SetCurrentBlockData(_scrapyardBot.attachedBlocks.GetBlockDatas());
+                PlayerDataManager.SetBlockDatas(_scrapyardBot.attachedBlocks.GetBlockDatas(), false);
             }
         }
 

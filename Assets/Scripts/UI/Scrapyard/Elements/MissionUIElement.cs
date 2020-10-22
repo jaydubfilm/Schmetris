@@ -7,6 +7,7 @@ using StarSalvager.Values;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine.EventSystems;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.UI.Scrapyard
 {
@@ -41,12 +42,12 @@ namespace StarSalvager.UI.Scrapyard
         public void OnCheckMissionUITrackingToggles()
         {
             bool isTracked =
-                PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Any(m =>
+                PlayerDataManager.GetMissionsCurrentData().CurrentTrackedMissions.Any(m =>
                     m.missionName == data.missionName && !m.MissionComplete());
 
             elementImage.color = isTracked ? Color.green : Color.white;
 
-            favouriteButton.interactable = isTracked || PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Count < Globals.NumCurrentTrackedMissionMax;
+            favouriteButton.interactable = isTracked || PlayerDataManager.GetMissionsCurrentData().CurrentTrackedMissions.Count < Globals.NumCurrentTrackedMissionMax;
         }
 
         //Init Functions

@@ -6,6 +6,7 @@ using StarSalvager.Tutorial.Data;
 using StarSalvager.UI;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
@@ -317,6 +318,7 @@ namespace StarSalvager.Tutorial
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[9], true));
         }
+
         private IEnumerator PulsarStepCoroutine()
         {
             LevelManager.Instance.SetStage(3);
@@ -339,10 +341,11 @@ namespace StarSalvager.Tutorial
             bot.OnBitShift -= SetBump;
             
             bot.PROTO_GodMode = false;
-            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.RED, 6f, bot.IsRecoveryDrone);
+            PlayerDataManager.SetLiquidResource(BIT_TYPE.RED, 6f, bot.IsRecoveryDrone);
 
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[11], false));
         }
+
         private IEnumerator FuelStepCoroutine()
         {
             //TODO Set the bot able to use its fuel
@@ -350,7 +353,7 @@ namespace StarSalvager.Tutorial
             
             LevelManager.Instance.SetStage(0);
             
-            var playerData = PlayerPersistentData.PlayerData.liquidResource;
+            var playerData = PlayerDataManager.GetLiquidResources(bot.IsRecoveryDrone);
             
             yield return new WaitUntil(() => playerData[BIT_TYPE.RED] <= 0f);
             
@@ -371,6 +374,7 @@ namespace StarSalvager.Tutorial
             pressAnyKeyText.gameObject.SetActive(false);
 
         }
+
         private IEnumerator EndStepCoroutine()
         {
             yield return new WaitForSeconds(5f);
