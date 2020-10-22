@@ -548,8 +548,6 @@ namespace StarSalvager.Utilities.Saving
             GameMetaData.CurrentSaveFile = autoSaveFile;
 
             Files.ExportGameMetaData(GameMetaData);
-
-            ResetPlayerAccountData();
         }
 
         //====================================================================================================================//

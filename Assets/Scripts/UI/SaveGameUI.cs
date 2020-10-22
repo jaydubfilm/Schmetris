@@ -116,8 +116,7 @@ namespace StarSalvager.UI.Scrapyard
                         return;
                         
                     SaveGameContentScrollView.RemoveElement(data);
-                    Files.TryDeleteFile(Files.GetPlayerRunSavePath(PlayerDataManager.CurrentSaveSlotIndex));
-                    Files.TryDeleteFile(Files.GetPlayerMetaSavePath(PlayerDataManager.CurrentSaveSlotIndex));
+                    Files.TryDeleteFile(Files.GetPlayerAccountSavePath(PlayerDataManager.CurrentSaveSlotIndex));
                     PlayerDataManager.ClearSaveFileData(data);
                     //TODO Delete the file here
 

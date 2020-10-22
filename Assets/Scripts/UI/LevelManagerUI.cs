@@ -162,6 +162,7 @@ namespace StarSalvager.UI
             {
                 m_levelManager.IsWaveProgressing = true;
                 PlayerDataManager.SavePlayerAccountData();
+                PlayerDataManager.ResetPlayerAccountData();
                 SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
             });
 

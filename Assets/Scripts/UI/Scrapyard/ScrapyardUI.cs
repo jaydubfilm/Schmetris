@@ -164,6 +164,11 @@ namespace StarSalvager.UI.Scrapyard
             {
                 _windows[(int)Window.Settings].SetActive(false);
             });
+
+            saveGameButton.onClick.AddListener(() =>
+            {
+                PlayerDataManager.SavePlayerAccountData();
+            });
             
             loadGameButton.onClick.AddListener(() =>
             {
@@ -184,6 +189,7 @@ namespace StarSalvager.UI.Scrapyard
                     quit =>
                     {
                         PlayerDataManager.SavePlayerAccountData();
+                        PlayerDataManager.ResetPlayerAccountData();
 
                         if (!quit)
                         {

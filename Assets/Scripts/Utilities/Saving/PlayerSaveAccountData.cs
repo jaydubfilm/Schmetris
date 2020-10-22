@@ -148,7 +148,7 @@ namespace StarSalvager.Values
             {
                 _facilityRanks[type] = level;
             }
-            else
+            else if (!_facilityRanks.ContainsKey(type))
             {
                 _facilityRanks.Add(type, level);
             }

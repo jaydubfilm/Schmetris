@@ -67,15 +67,7 @@ namespace StarSalvager.Utilities.FileIO
         private static readonly string
             GAME_META_PATH = Path.Combine(REMOTE_DIRECTORY, GAME_META_FILE);
 
-        private static readonly List<string> PlayerRunSavePaths = new List<string>
-        {
-            Path.Combine(REMOTE_DIRECTORY, "PlayerRunSaveData0.player"),
-            Path.Combine(REMOTE_DIRECTORY, "PlayerRunSaveData1.player"),
-            Path.Combine(REMOTE_DIRECTORY, "PlayerRunSaveData2.player"),
-            Path.Combine(REMOTE_DIRECTORY, "PlayerRunSaveData3.player")
-        };
-
-        private static readonly List<string> PlayerMetaSavePaths = new List<string>
+        private static readonly List<string> PlayerAccountSavePaths = new List<string>
         {
             Path.Combine(REMOTE_DIRECTORY, "PlayerRunMetaData0.player"),
             Path.Combine(REMOTE_DIRECTORY, "PlayerRunMetaData1.player"),
@@ -83,14 +75,9 @@ namespace StarSalvager.Utilities.FileIO
             Path.Combine(REMOTE_DIRECTORY, "PlayerRunMetaData3.player")
         };
 
-        public static string GetPlayerRunSavePath(int saveSlot)
+        public static string GetPlayerAccountSavePath(int saveSlot)
         {
-            return PlayerRunSavePaths[saveSlot];
-        }
-
-        public static string GetPlayerMetaSavePath(int saveSlot)
-        {
-            return PlayerMetaSavePaths[saveSlot];
+            return PlayerAccountSavePaths[saveSlot];
         }
 
         //====================================================================================================================//
@@ -154,12 +141,12 @@ namespace StarSalvager.Utilities.FileIO
 
         public static int GetNextAvailableSaveSlot()
         {
-            for (int i = 0; i < PlayerRunSavePaths.Count; i++)
+            for (int i = 0; i < PlayerAccountSavePaths.Count; i++)
             {
                 if (!Directory.Exists(REMOTE_DIRECTORY))
                     Directory.CreateDirectory(REMOTE_DIRECTORY);
 
-                if (!File.Exists(PlayerRunSavePaths[i]))
+                if (!File.Exists(PlayerAccountSavePaths[i]))
                     return i;
             }
 
@@ -191,10 +178,10 @@ namespace StarSalvager.Utilities.FileIO
 
         public static PlayerSaveAccountData ImportPlayerSaveAccountData(int saveSlotIndex)
         {
-            if (!Directory.Exists(PlayerMetaSavePaths[saveSlotIndex]))
+            if (!Directory.Exists(PlayerAccountSavePaths[saveSlotIndex]))
                 Directory.CreateDirectory(REMOTE_DIRECTORY);
 
-            if (!File.Exists(PlayerMetaSavePaths[saveSlotIndex]))
+            if (!File.Exists(PlayerAccountSavePaths[saveSlotIndex]))
             {
                 PlayerSaveAccountData data = new PlayerSaveAccountData();
 
@@ -211,7 +198,7 @@ namespace StarSalvager.Utilities.FileIO
                 return data;
             }
 
-            var loaded = JsonConvert.DeserializeObject<PlayerSaveAccountData>(File.ReadAllText(PlayerMetaSavePaths[saveSlotIndex]));
+            var loaded = JsonConvert.DeserializeObject<PlayerSaveAccountData>(File.ReadAllText(PlayerAccountSavePaths[saveSlotIndex]));
 
             return loaded;
         }
@@ -221,7 +208,7 @@ namespace StarSalvager.Utilities.FileIO
             playerMetaData.SaveData();
 
             var export = JsonConvert.SerializeObject(playerMetaData, Formatting.None);
-            File.WriteAllText(PlayerMetaSavePaths[saveSlotIndex], export);
+            File.WriteAllText(PlayerAccountSavePaths[saveSlotIndex], export);
 
             return export;
         }
