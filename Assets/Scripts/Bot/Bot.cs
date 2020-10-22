@@ -22,6 +22,7 @@ using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Particles;
+using StarSalvager.Utilities.Puzzle.Data;
 using AudioController = StarSalvager.Audio.AudioController;
 using StarSalvager.Utilities.Saving;
 
@@ -1566,23 +1567,29 @@ namespace StarSalvager
 
         #region Detach Bits
 
-        public void ForceDetach(IAttachable attachable)
+        public void ForceDetach(ICanDetach attachable)
         {
-            DetachBit(attachable);
+            DetachSingleBlock(attachable);
+        }
+
+        private void DetachBlocks(IEnumerable<ICanDetach> detachingBits, bool delayedCollider = false,
+            bool isMagnetDetach = false)
+        {
+            DetachBlocks(detachingBits.ToArray(), delayedCollider, isMagnetDetach);
         }
         
         //FIXME This should detach ICanDetach objects, not IAttachable
-        private void DetachBits(IReadOnlyCollection<IAttachable> detachingBits, bool delayedCollider = false, bool isMagnetDetach = false)
+        private void DetachBlocks(IReadOnlyCollection<ICanDetach> detachingBits, bool delayedCollider = false, bool isMagnetDetach = false)
         {
             Vector3 leftOffset = Vector3.left * Constants.gridCellSize;
             
-            foreach (var attachable in detachingBits)
+            foreach (var canDetach in detachingBits)
             {
-                attachedBlocks.Remove(attachable);
+                attachedBlocks.Remove(canDetach.iAttachable);
             }
             
             var bits = detachingBits.OfType<Bit>().ToList();
-            var others = detachingBits.Where(x => !(x is Bit) && x is ICanDetach).ToList();
+            var others = detachingBits.Where(x => !(x is Bit)).ToList();
 
             //Function should make a shape out of all attached bits, any floaters would remain individual
             while (bits.Count > 0)
@@ -1644,25 +1651,22 @@ namespace StarSalvager
                 }
             }
             
-            foreach (var iAttachable in others)
+            foreach (var canDetach in others)
             {
-                switch(iAttachable)
+                if (delayedCollider && canDetach is CollidableBase collidableBase)
                 {
-                    case Component component:
-                        
-                        if(delayedCollider)
-                            component.DisableColliderTillLeaves(_compositeCollider2D);
-                        
-                        if (LevelManager.Instance != null)
-                            LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(component);
-                        break;
+                    collidableBase.DisableColliderTillLeaves(_compositeCollider2D);
                 }
+                
+                if(LevelManager.Instance && canDetach is IObstacle obstacle)
+                    LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(obstacle);
+                
 
-                iAttachable.SetAttached(false);
+                canDetach.iAttachable.SetAttached(false);
                 
                 if (isMagnetDetach)
                 {
-                    ConnectedSpriteObject.Create(iAttachable.transform, leftOffset);
+                    ConnectedSpriteObject.Create(canDetach.transform, leftOffset);
                 }
             }
 
@@ -1684,7 +1688,7 @@ namespace StarSalvager
         {
             shapeBits = new List<Bit>();
 
-            bits.GetAllAttachedDetachables(originBit, null, ref shapeBits);
+            bits.GetAllConnectedDetachables(originBit, null, ref shapeBits);
 
             if (shapeBits.Count > 1)
             {
@@ -1695,17 +1699,14 @@ namespace StarSalvager
             return false;
         }
         
-        private void DetachBit(IAttachable attachable)
+        private void DetachSingleBlock(ICanDetach canDetach)
         {
-            if (!(attachable is ICanDetach))
-                return;
-            
-            attachable.transform.parent = null;
+            canDetach.transform.parent = null;
 
-            if (LevelManager.Instance != null && attachable is IObstacle obstacle)
+            if (LevelManager.Instance && canDetach is IObstacle obstacle)
                 LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(obstacle);
 
-            RemoveAttachable(attachable);
+            RemoveAttachable(canDetach.iAttachable);
         }
         
         private void RemoveAttachable(IAttachable attachable)
@@ -1769,36 +1770,36 @@ namespace StarSalvager
         /// </summary>
         private bool CheckForDisconnects()
         {
-            var toSolve = new List<IAttachable>(attachedBlocks).Where(x => x is ICanDetach);
+            var toSolve = new List<ICanDetach>(attachedBlocks.OfType<ICanDetach>());
             bool hasDetached = false;
             
-            foreach (var attachable in toSolve)
+            foreach (var canDetach in toSolve)
             {
-                if (!attachedBlocks.Contains(attachable))
-                    continue;
+                /*if (!attachedBlocks.Contains(attachable))
+                    continue;*/
 
-                var hasPathToCore = attachedBlocks.HasPathToCore(attachable);
+                var hasPathToCore = attachedBlocks.HasPathToCore(canDetach.iAttachable);
                 
                 if(hasPathToCore)
                     continue;
 
                 hasDetached = true;
 
-                var attachables = new List<IAttachable>();
-                attachedBlocks.GetAllAttachedDetachables(attachable, null, ref attachables);
+                var detachables = new List<ICanDetach>();
+                attachedBlocks.GetAllConnectedDetachables(canDetach, null, ref detachables);
 
-                foreach (var attachedBit in attachables.OfType<Bit>())
+                foreach (var attachedBit in detachables.OfType<Bit>())
                 {
                     SessionDataProcessor.Instance.BitDetached(attachedBit.Type);
                 }
 
-                if (attachables.Count == 1)
+                if (detachables.Count == 1)
                 {
-                    DetachBit(attachables[0]);
+                    DetachSingleBlock(detachables[0]);
                     continue;
                 }
 
-                DetachBits(attachables);
+                DetachBlocks(detachables);
             }
 
             return hasDetached;
@@ -1809,31 +1810,31 @@ namespace StarSalvager
         /// Returns false if all is okay.
         /// </summary>
         /// <param name="wantToRemove"></param>
-        /// <param name="toIgnore"></param>
+        /// <param name="disconnectList"></param>
         /// <returns></returns>
-        private bool RemovalCausesDisconnects(ICollection<IAttachable> wantToRemove, out string disconnectList)
+        private bool RemovalCausesDisconnects(ICollection<ICanDetach> wantToRemove, out string disconnectList)
         {
             disconnectList = string.Empty;
-            var toSolve = new List<IAttachable>(attachedBlocks);
+            var toSolve = new List<ICanDetach>(attachedBlocks.OfType<ICanDetach>());
             var ignoreCoordinates = wantToRemove?.Select(x => x.Coordinate).ToList();
             
-            foreach (var attachable in toSolve)
+            foreach (var canDetach in toSolve)
             {
-                if (!attachable.CountAsConnectedToCore)
+                if (!canDetach.iAttachable.CountAsConnectedToCore)
                     continue;
                 
                 //if (!attachedBlocks.Contains(attachable))
                 //    continue;
 
-                if (wantToRemove != null && wantToRemove.Contains(attachable))
+                if (wantToRemove != null && wantToRemove.Contains(canDetach))
                     continue;
                 
-                var hasPathToCore = attachedBlocks.HasPathToCore(attachable, ignoreCoordinates);
+                var hasPathToCore = attachedBlocks.HasPathToCore(canDetach.iAttachable, ignoreCoordinates);
                 
                 if(hasPathToCore)
                     continue;
 
-                disconnectList += $"{attachable.gameObject.name} will disconnect\n";
+                disconnectList += $"{canDetach.gameObject.name} will disconnect\n";
 
                 return true;
             }
@@ -2061,26 +2062,21 @@ namespace StarSalvager
 
         #region Puzzle Checks
 
-        private void CheckForCombosAround<T>(Vector2Int coordinate) where T: Enum
-        {
-            CheckForCombosAround(attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate && a is ICanCombo) as ICanCombo<T>);
-        }
+        #region Check for Combos from List
 
         private bool CheckForCombosAround<T>(IEnumerable<IAttachable> iAttachables) where T : Enum
         {
-            return CheckForCombosAround(iAttachables.OfType <ICanCombo<T>>());
+            return CheckForCombosAround(iAttachables.OfType<ICanCombo<T>>());
         }
         private bool CheckForCombosAround<T>(IEnumerable<ICanCombo> iCanCombos) where T : Enum
         {
-            return CheckForCombosAround(iCanCombos.OfType <ICanCombo<T>>());
+            return CheckForCombosAround(iCanCombos.OfType<ICanCombo<T>>());
         }
-        
-
         
         private bool CheckForCombosAround<T>(IEnumerable<ICanCombo<T>> iCanCombos) where T: Enum
         {
             List<PendingCombo> pendingCombos = null;
-            bool hasCombos = false;
+            bool hasCombos;
             
             
             foreach (var iCanCombo in iCanCombos)
@@ -2113,7 +2109,7 @@ namespace StarSalvager
                 }
             }
 
-            if (pendingCombos == null || pendingCombos.Count == 0)
+            if (pendingCombos.IsNullOrEmpty())
                 return false;
             
             var comboFactory = FactoryManager.Instance.GetFactory<ComboFactory>();
@@ -2125,7 +2121,7 @@ namespace StarSalvager
             {
                 if (pendingCombo.ToMove[0] is Bit bit)
                 {
-                    bool isAdvancedCombo = pendingCombo.ComboData.type == Utilities.Puzzle.Data.COMBO.TEE || pendingCombo.ComboData.type == Utilities.Puzzle.Data.COMBO.ANGLE;
+                    bool isAdvancedCombo = pendingCombo.ComboData.type == COMBO.TEE || pendingCombo.ComboData.type == COMBO.ANGLE;
                     MissionProgressEventData missionProgressEventData = new MissionProgressEventData
                     {
                         bitType = bit.Type,
@@ -2142,6 +2138,27 @@ namespace StarSalvager
 
             return hasCombos;
         }
+
+        #endregion //Check for Combos from List
+
+        //====================================================================================================================//
+
+        #region Check for Combos Around Single
+
+        private void CheckForCombosAround<T>(Vector2Int coordinate) where T: Enum
+        {
+            CheckForCombosAround<T>(attachedBlocks
+                .FirstOrDefault(a => a.Coordinate == coordinate));
+        }
+        
+        private void CheckForCombosAround<T>(IAttachable iAttachable) where T: Enum
+        {
+            if (!(iAttachable is ICanCombo iCanCombo))
+                return;
+            
+            CheckForCombosAround(iCanCombo as ICanCombo<T>);
+        }
+
         private void CheckForCombosAround<T>(ICanCombo<T> iCanCombo) where T: Enum
         {
             if (iCanCombo == null)
@@ -2153,14 +2170,9 @@ namespace StarSalvager
             if (!PuzzleChecker.TryGetComboData(this, iCanCombo, out var data))
                 return;
 
-            //if (data.comboData.addLevels == 2)
-            //{
-            //    AdvancedComboSolver(data.comboData, data.toMove);
-            //}
-            //else
             if (iCanCombo is Bit bit)
             {
-                bool isAdvancedCombo = data.comboData.type == Utilities.Puzzle.Data.COMBO.TEE || data.comboData.type == Utilities.Puzzle.Data.COMBO.ANGLE;
+                bool isAdvancedCombo = data.comboData.type == COMBO.TEE || data.comboData.type == COMBO.ANGLE;
                 MissionProgressEventData missionProgressEventData = new MissionProgressEventData
                 {
                     bitType = bit.Type,
@@ -2174,6 +2186,8 @@ namespace StarSalvager
             var multiplier = FactoryManager.Instance.GetFactory<ComboFactory>().GetGearMultiplier(1, data.toMove.Count);
             SimpleComboSolver(data.comboData, data.toMove, multiplier);
         }
+
+        #endregion //Check for Combos Around Single
 
         //============================================================================================================//
         
@@ -2413,36 +2427,36 @@ namespace StarSalvager
                 //----------------------------------------------------------------------------------------------------//
 
                 //Get all the attachableBases around the specified attachable
-                var bitsAround = attachedBlocks.GetAttachablesAround(movingBit);
+                var attachablesAround = attachedBlocks.GetAttachablesAround(movingBit);
 
                 //Don't want to bother checking the block that we know will not move
-                if (bitsAround.Contains(bitToUpgrade))
-                    bitsAround.Remove(bitToUpgrade);
+                if (attachablesAround.Contains(bitToUpgrade))
+                    attachablesAround.Remove(bitToUpgrade);
 
                 //Double check that the neighbors are connected to the core
                 //----------------------------------------------------------------------------------------------------//
 
-                foreach (var bit in bitsAround)
+                foreach (var attachable in attachablesAround)
                 {
                     //Ignore the ones that we know are good
                     //------------------------------------------------------------------------------------------------//
-                    if (bit == null)
+                    if (attachable == null)
                         continue;
 
-                    if (bit == bitToUpgrade)
+                    if (attachable == bitToUpgrade)
                         continue;
 
-                    if (movingBits.Contains(bit))
+                    if (movingBits.Contains(attachable))
                         continue;
 
                     //Make sure that we haven't already determined this element to be moved
-                    if (orphanMoveData != null && orphanMoveData.Any(omd => omd.attachableBase == bit))
+                    if (orphanMoveData != null && orphanMoveData.Any(omd => omd.attachableBase == attachable))
                         continue;
 
                     //Check that we're connected to the core
                     //------------------------------------------------------------------------------------------------//
 
-                    var hasPathToCore = attachedBlocks.HasPathToCore(bit,
+                    var hasPathToCore = attachedBlocks.HasPathToCore(attachable,
                         movingBits
                             .Select(b => b.Coordinate)
                             .ToList());
@@ -2454,10 +2468,13 @@ namespace StarSalvager
                     //------------------------------------------------------------------------------------------------//
 
                     var newOrphanCoordinate =
-                        bit.Coordinate + travelDirection.ToVector2Int() * (int) travelDistance;
+                        attachable.Coordinate + travelDirection.ToVector2Int() * (int) travelDistance;
+                    
+                    if(!(attachable is ICanDetach canDetach))
+                        continue;
 
-                    var attachedToOrphan = new List<IAttachable>();
-                    attachedBlocks.GetAllAttachedDetachables(bit, movingBits, ref attachedToOrphan);
+                    var attachedToOrphan = new List<ICanDetach>();
+                    attachedBlocks.GetAllConnectedDetachables(canDetach, movingBits.OfType<ICanDetach>().ToArray(), ref attachedToOrphan);
 
                     //Debug.LogError($"Orphan Attached Count: {attachedToOrphan.Count}");
                     //Debug.Break();
@@ -2469,8 +2486,13 @@ namespace StarSalvager
 
                     //------------------------------------------------------------------------------------------------//
 
-                    SolveOrphanGroupPositionChange(bit, attachedToOrphan, newOrphanCoordinate, travelDirection,
-                        (int) travelDistance, movingBits, ref orphanMoveData);
+                    SolveOrphanGroupPositionChange(attachable, 
+                        attachedToOrphan.OfType<IAttachable>().ToList(),
+                        newOrphanCoordinate, 
+                        travelDirection,
+                        (int) travelDistance,
+                        movingBits,
+                        ref orphanMoveData);
                 }
 
             }
@@ -2646,7 +2668,7 @@ namespace StarSalvager
 
         public void ForceDisconnectAllDetachables()
         {
-            DetachBits(attachedBlocks.OfType<ICanDetach>().OfType<IAttachable>().ToList(), true, true);
+            DetachBlocks(attachedBlocks.OfType<ICanDetach>(), true, true);
         }
 
         private bool CheckHasMagnetOverage()
@@ -2664,19 +2686,19 @@ namespace StarSalvager
 
 
             var magnetCount = BotPartsLogic.MagnetCount;
-            var magnetAttachables = attachedBlocks.Where(x => x.CountTowardsMagnetism).ToList();
+            var magnetDetachables = attachedBlocks.Where(x => x.CountTowardsMagnetism).OfType<ICanDetach>().ToList();
             
             if(GameUi) 
-                GameUi.SetCarryCapacity(magnetAttachables.Count / (float)magnetCount);
+                GameUi.SetCarryCapacity(magnetDetachables.Count / (float)magnetCount);
             
             //Checks here if the total of attached blocks (Minus the Core) change
-            if (magnetAttachables.Count <= magnetCount)
+            if (magnetDetachables.Count <= magnetCount)
                 return false;
             
             //--------------------------------------------------------------------------------------------------------//
 
-            var toRemoveCount = magnetAttachables.Count - magnetCount;
-            var attachablesToDetach = new List<IAttachable>();
+            var toRemoveCount = magnetDetachables.Count - magnetCount;
+            var toDetach = new List<ICanDetach>();
 
             //--------------------------------------------------------------------------------------------------------//
 
@@ -2687,30 +2709,30 @@ namespace StarSalvager
             {
                 //----------------------------------------------------------------------------------------------------//
                 case MAGNET.DEFAULT:
-                    DefaultMagnetCheck(magnetAttachables, out attachablesToDetach, in toRemoveCount);
+                    DefaultMagnetCheck(magnetDetachables, out toDetach, in toRemoveCount);
                     //time = 1f;
                     onDetach = () =>
                     {
-                        DetachBits(attachablesToDetach, true, true);
+                        DetachBlocks(toDetach, true, true);
                         
                     };
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case MAGNET.BUMP:
-                    BumpMagnetCheck(magnetAttachables, out attachablesToDetach, in toRemoveCount);
+                    BumpMagnetCheck(magnetDetachables, out toDetach, in toRemoveCount);
                     //time = 0f;
                     onDetach = () =>
                     {
-                        DetachBits(attachablesToDetach, true, true);
+                        DetachBlocks(toDetach, true, true);
                     };
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case MAGNET.LOWEST:
-                    LowestMagnetCheckSimple(magnetAttachables, ref attachablesToDetach, ref toRemoveCount);
+                    LowestMagnetCheckSimple(magnetDetachables, ref toDetach, ref toRemoveCount);
                     //time = 1f;
                     onDetach = () =>
                     {
-                        DetachBits(attachablesToDetach, true, true);
+                        DetachBlocks(toDetach, true, true);
                     };
                     break;
                 //----------------------------------------------------------------------------------------------------//
@@ -2724,7 +2746,7 @@ namespace StarSalvager
             //
             //PendingDetach.AddRange(attachablesToDetach);
 
-            foreach (var iCanDetach in attachablesToDetach.OfType<ICanDetach>())
+            foreach (var iCanDetach in toDetach)
             {
                 iCanDetach.PendingDetach = true;
             }
@@ -2767,12 +2789,12 @@ namespace StarSalvager
         }
         
 
-        private void DefaultMagnetCheck(List<IAttachable> attachables, out List<IAttachable> toDetach, in int toRemoveCount)
+        private void DefaultMagnetCheck(List<ICanDetach> detachables, out List<ICanDetach> toDetach, in int toRemoveCount)
         {
             var magnetCount = BotPartsLogic.MagnetCount;
             
             //Gets the last added overage to remove
-            toDetach = attachables.GetRange(magnetCount, toRemoveCount);
+            toDetach = detachables.GetRange(magnetCount, toRemoveCount);
             
             //Get the coordinates of the blocks leaving. This is used to determine if anyone will be left floating
             var leavingCoordinates = toDetach.Select(a => a.Coordinate).ToList();
@@ -2780,7 +2802,7 @@ namespace StarSalvager
             //Go through the bots Blocks to make sure no one will be floating when we detach the parts.
             for (var i = attachedBlocks.Count - 1; i >= 0; i--)
             {
-                if (toDetach.Contains(attachedBlocks[i]))
+                if (toDetach.Any(x => x.iAttachable == attachedBlocks[i]))
                     continue;
 
                 if (attachedBlocks.HasPathToCore(attachedBlocks[i], leavingCoordinates))
@@ -2792,12 +2814,12 @@ namespace StarSalvager
             }
         }
 
-        private void BumpMagnetCheck(List<IAttachable> attachables, out List<IAttachable> toDetach, in int toRemoveCount)
+        private void BumpMagnetCheck(List<ICanDetach> detachables, out List<ICanDetach> toDetach, in int toRemoveCount)
         {
             var magnetCount = BotPartsLogic.MagnetCount;
             
             //Gets the last added overage to remove
-            toDetach = attachables.GetRange(magnetCount, toRemoveCount);
+            toDetach = detachables.GetRange(magnetCount, toRemoveCount);
             
             //Get the coordinates of the blocks leaving. This is used to determine if anyone will be left floating
             var leavingCoordinates = toDetach.Select(a => a.Coordinate).ToList();
@@ -2805,7 +2827,7 @@ namespace StarSalvager
             //Go through the bots Blocks to make sure no one will be floating when we detach the parts.
             for (var i = attachedBlocks.Count - 1; i >= 0; i--)
             {
-                if (toDetach.Contains(attachedBlocks[i]))
+                if (toDetach.Any(x => x.iAttachable == attachedBlocks[i]))
                     continue;
 
                 if (attachedBlocks.HasPathToCore(attachedBlocks[i], leavingCoordinates))
@@ -2819,13 +2841,13 @@ namespace StarSalvager
             
         }
 
-        private void LowestMagnetCheckSimple(List<IAttachable> attachables, ref List<IAttachable> toDetach, ref int toRemoveCount)
+        private void LowestMagnetCheckSimple(List<ICanDetach> detachables, ref List<ICanDetach> toDetach, ref int toRemoveCount)
         {
-            var checkedBits = new List<IAttachable>();
+            var checkedBits = new List<ICanDetach>();
             var debug = string.Empty;
             while (toRemoveCount > 0)
             {
-                var toRemove = FindLowestAttachable(attachables, checkedBits);
+                var toRemove = FindLowestDetachable(detachables, checkedBits);
 
                 if (toRemove == null)
                 {
@@ -2835,13 +2857,13 @@ namespace StarSalvager
 
                 checkedBits.Add(toRemove);
 
-                if (attachables.Count == checkedBits.Count)
+                if (detachables.Count == checkedBits.Count)
                 {
                     //Debug.LogError($"Left with {toRemoveCount} bits unsolved");
                     break;
                 }
                 
-                if (RemovalCausesDisconnects(new List<IAttachable>(toDetach){toRemove}, out debug))
+                if (RemovalCausesDisconnects(new List<ICanDetach>(toDetach){toRemove}, out debug))
                     continue;
 
                 //Debug.Log($"Found Lowest {toRemove.gameObject.name}", toRemove);
@@ -2857,13 +2879,13 @@ namespace StarSalvager
             //Find alternative pieces if we weren't able to find all lowest
             foreach (var bit in toDetach)
             {
-                attachables.Remove(bit);
+                detachables.Remove(bit);
             }
 
             var hasIssue = false;
             while (toRemoveCount > 0)
             {
-                var toRemove = FindFurthestRemovableBit(attachables, toDetach, ref debug);
+                var toRemove = FindFurthestRemovableBlock(detachables, toDetach, ref debug);
 
                 if (toRemove == null)
                 {
@@ -2874,7 +2896,7 @@ namespace StarSalvager
                 }
                     
                 toDetach.Add(toRemove);
-                attachables.Remove(toRemove);
+                detachables.Remove(toRemove);
                 toRemoveCount--;
             }
 
@@ -2922,21 +2944,21 @@ namespace StarSalvager
         }*/
 
         //TODO This will likely need to move to the attachable List extensions
-        private IAttachable FindLowestAttachable(IReadOnlyCollection<IAttachable> attachables, ICollection<IAttachable> toIgnore)
+        private ICanDetach FindLowestDetachable(IReadOnlyCollection<ICanDetach> detachables, ICollection<ICanDetach> toIgnore)
         {
             //I Want the last Bit to be the fallback/default, if I can't find anything
-            IAttachable selectedAttachable = null;
+            ICanDetach selectedDetachable = null;
             //var lowestLevel = 999;
             //The lowest Y coordinate
             var lowestCoordinate = 999;
             var lowestPriority = 9999;
 
-            foreach (var attachable in attachables)
+            foreach (var canDetach in detachables)
             {
-                if (toIgnore.Contains(attachable))
+                if (toIgnore.Contains(canDetach))
                     continue;
                 
-                if(!(attachable is ICanDetach detach))
+                if(!(canDetach is ICanDetach detach))
                     continue;
                 
                 if(detach.AttachPriority > lowestPriority)
@@ -2952,29 +2974,29 @@ namespace StarSalvager
 
                 //Checks if the piece is higher, and if it is, that the level is not higher than the currently selected Bit
                 //This ensures that even if the lowest Bit is of high level, the lowest will always be selected
-                if (attachable.Coordinate.y > lowestCoordinate && !(detach.AttachPriority < lowestPriority))
+                if (canDetach.Coordinate.y > lowestCoordinate && !(detach.AttachPriority < lowestPriority))
                         continue;
 
-                if (RemovalCausesDisconnects(new List<IAttachable>(/*toIgnore*/) {attachable}, out _))
+                if (RemovalCausesDisconnects(new List<ICanDetach>(/*toIgnore*/) {canDetach}, out _))
                     continue;
 
-                selectedAttachable = attachable;
+                selectedDetachable = canDetach;
                 //lowestLevel = HasLevel.level;
-                lowestCoordinate = attachable.Coordinate.y;
+                lowestCoordinate = canDetach.Coordinate.y;
                 lowestPriority = detach.AttachPriority;
 
             }
 
-            if (selectedAttachable != null) 
-                return selectedAttachable;
+            if (selectedDetachable != null) 
+                return selectedDetachable;
             
             
-            foreach (var attachable in attachables)
+            foreach (var canDetach in detachables)
             {
-                if (toIgnore.Contains(attachable))
+                if (toIgnore.Contains(canDetach))
                     continue;
                 
-                if(!(attachable is ICanDetach detach))
+                if(!(canDetach is ICanDetach detach))
                     continue;
                 
                 if(detach.AttachPriority > lowestPriority)
@@ -2990,57 +3012,57 @@ namespace StarSalvager
 
                 //Checks if the piece is higher, and if it is, that the level is not higher than the currently selected Bit
                 //This ensures that even if the lowest Bit is of high level, the lowest will always be selected
-                if (attachable.Coordinate.y > lowestCoordinate)
+                if (canDetach.Coordinate.y > lowestCoordinate)
                     continue;
 
-                if (RemovalCausesDisconnects(new List<IAttachable>(/*toIgnore*/) {attachable}, out _))
+                if (RemovalCausesDisconnects(new List<ICanDetach>(/*toIgnore*/) {canDetach}, out _))
                     continue;
 
-                selectedAttachable = attachable;
+                selectedDetachable = canDetach;
                 //lowestLevel = hasLevel.level;
-                lowestCoordinate = attachable.Coordinate.y;
+                lowestCoordinate = canDetach.Coordinate.y;
                 lowestPriority = detach.AttachPriority;
 
             }
 
-            return selectedAttachable;
+            return selectedDetachable;
         }
 
-        private IAttachable FindFurthestRemovableBit(List<IAttachable> attachables, ICollection<IAttachable> toIgnore, ref string debug)
+        private ICanDetach FindFurthestRemovableBlock(IEnumerable<ICanDetach> detachables, ICollection<ICanDetach> toIgnore, ref string debug)
         {
             //I Want the last Bit to be the fallback/default, if I can't find anything
-            IAttachable selectedAttachable = null;
+            ICanDetach selectedDetachable = null;
             var furthestDistance = -999f;
             var lowestLevel = 999f;
 
-            foreach (var attachable in attachables)
+            foreach (var canDetach in detachables)
             {
-                if (toIgnore.Contains(attachable))
+                if (toIgnore.Contains(canDetach))
                     continue;
                 
-                if (!(attachable is ILevel HasLevel))
+                if (!(canDetach is ILevel hasLevel))
                 {
                     continue;
                 }
 
-                var _dist = Vector2Int.Distance(attachable.Coordinate, Vector2Int.zero);
+                var distance = Vector2Int.Distance(canDetach.Coordinate, Vector2Int.zero);
                 
-                if(_dist < furthestDistance)
+                if(distance < furthestDistance)
                     continue;
 
-                if (lowestLevel < HasLevel.level)
+                if (lowestLevel < hasLevel.level)
                     continue;
 
-                if (RemovalCausesDisconnects(new List<IAttachable>(toIgnore) { attachable }, out debug))
+                if (RemovalCausesDisconnects(new List<ICanDetach>(toIgnore) { canDetach }, out debug))
                     continue;
 
-                selectedAttachable = attachable;
-                furthestDistance = _dist;
-                lowestLevel = HasLevel.level;
+                selectedDetachable = canDetach;
+                furthestDistance = distance;
+                lowestLevel = hasLevel.level;
 
             }
 
-            return selectedAttachable;
+            return selectedDetachable;
         }
         
         #endregion //Magnet Checks
@@ -3071,21 +3093,24 @@ namespace StarSalvager
         /// Coroutine used to move all of the relevant Bits (Bits to be upgraded, orphans) to their appropriate locations
         /// at the specified speed, and when finished trigger the Callback.
         /// </summary>
-        /// <param name="movingAttachables"></param>
+        /// <param name="movingComboBlocks"></param>
         /// <param name="target"></param>
         /// <param name="orphans"></param>
         /// <param name="speed"></param>
-        /// <param name="OnFinishedCallback"></param>
+        /// <param name="onFinishedCallback"></param>
         /// <returns></returns>
-        private IEnumerator MoveComboPiecesCoroutine(ICanCombo[] movingAttachables, ICanCombo target,
-            IReadOnlyList<OrphanMoveData> orphans, float speed, Action OnFinishedCallback)
+        private IEnumerator MoveComboPiecesCoroutine(ICanCombo[] movingComboBlocks,
+            ICanCombo target,
+            IReadOnlyList<OrphanMoveData> orphans,
+            float speed,
+            Action onFinishedCallback)
         {
             target.IsBusy = true;
             
             //Prepare Bits to be moved
             //--------------------------------------------------------------------------------------------------------//
             
-            foreach (var canCombo in movingAttachables)
+            foreach (var canCombo in movingComboBlocks)
             {
                 
                 //We need to disable the collider otherwise they can collide while moving
@@ -3118,7 +3143,7 @@ namespace StarSalvager
             //Obtain lists of both Transforms to manipulate & their current local positions
             //--------------------------------------------------------------------------------------------------------//
 
-            var bitTransforms = movingAttachables.Select(ab => ab.transform).ToArray();
+            var bitTransforms = movingComboBlocks.Select(ab => ab.transform).ToArray();
             var bitTransformPositions = bitTransforms.Select(bt => bt.localPosition).ToArray();
             
             //Same as above but for Orphans
@@ -3181,7 +3206,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             //Once all bits are moved, remove from list and dispose
-            foreach (var canCombo in movingAttachables)
+            foreach (var canCombo in movingComboBlocks)
             {
                 if(canCombo is IAttachable attachable)
                     attachable.SetAttached(false);
@@ -3203,17 +3228,23 @@ namespace StarSalvager
             //Re-enable the colliders on our orphans, and ensure they're in the correct position
             for (var i = 0; i < orphans.Count; i++)
             {
+                var attachable = orphans[i].attachableBase;
                 orphanTransforms[i].localPosition = orphanTargetPositions[i];
-                (orphans[i].attachableBase as CollidableBase)?.SetColliderActive(true);
+                
+                if(attachable is CollidableBase collidableBase)
+                    collidableBase.SetColliderActive(true);
+
+                if (attachable is ICanCombo canCombo)
+                    canCombo.IsBusy = false;
             }
             
             //Now that everyone is where they need to be, wrap things up
             //--------------------------------------------------------------------------------------------------------//
 
             CompositeCollider2D.GenerateGeometry();
-            
+            target.IsBusy = false;
 
-            OnFinishedCallback?.Invoke();
+            onFinishedCallback?.Invoke();
             
             //--------------------------------------------------------------------------------------------------------//
         }
@@ -3228,7 +3259,7 @@ namespace StarSalvager
         /// <param name="speed"></param>
         /// <param name="OnFinishedCallback"></param>
         /// <returns></returns>
-        private IEnumerator ShiftInDirectionCoroutine(IReadOnlyList<ShiftData> toMove, /*DIRECTION direction, */float speed, Action OnFinishedCallback)
+        private IEnumerator ShiftInDirectionCoroutine(IReadOnlyList<ShiftData> toMove, float speed, Action OnFinishedCallback)
         {
             //var dir = direction.ToVector2Int();
             /*var transforms = toMove.Select(x => x.transform).ToArray();
@@ -3589,19 +3620,19 @@ namespace StarSalvager
             ToMove = toMove;
         }
 
-        public bool Contains(ICanCombo attachable)
+        public bool Contains(ICanCombo canCombo)
         {
             if (ToMove == null || ToMove.Count == 0)
                 return false;
                 
-            return ToMove.Contains(attachable);
+            return ToMove.Contains(canCombo);
         }
 
     }
 
     public static class PendingComboListExtensions
     {
-        public static bool Contains(this List<PendingCombo> list, ICanCombo canCombo)
+        public static bool Contains(this IEnumerable<PendingCombo> list, ICanCombo canCombo)
         {
             return list.Any(pendingCombo => pendingCombo.Contains(canCombo));
         }
