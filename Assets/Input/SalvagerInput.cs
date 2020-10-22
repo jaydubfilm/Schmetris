@@ -93,7 +93,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""interactions"": ""Press(behavior=2)""
                 },
                 {
-                    ""name"": ""Any"",
+                    ""name"": ""Continue"",
                     ""type"": ""Button"",
                     ""id"": ""2d121d19-1f96-4c2a-9d4e-b4b432d26d0e"",
                     ""expectedControlType"": ""Button"",
@@ -314,11 +314,11 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": """",
                     ""id"": ""c0473a48-657d-427c-a202-de8357cf1539"",
-                    ""path"": ""<Keyboard>/anyKey"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Any"",
+                    ""action"": ""Continue"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -781,7 +781,7 @@ namespace StarSalvager.Utilities.Inputs
             m_Default_SmartAction2 = m_Default.FindAction("SmartAction2", throwIfNotFound: true);
             m_Default_SmartAction3 = m_Default.FindAction("SmartAction3", throwIfNotFound: true);
             m_Default_SmartAction4 = m_Default.FindAction("SmartAction4", throwIfNotFound: true);
-            m_Default_Any = m_Default.FindAction("Any", throwIfNotFound: true);
+            m_Default_Continue = m_Default.FindAction("Continue", throwIfNotFound: true);
             // Vertical
             m_Vertical = asset.FindActionMap("Vertical", throwIfNotFound: true);
             m_Vertical_SideMovement = m_Vertical.FindAction("Side Movement", throwIfNotFound: true);
@@ -852,7 +852,7 @@ namespace StarSalvager.Utilities.Inputs
         private readonly InputAction m_Default_SmartAction2;
         private readonly InputAction m_Default_SmartAction3;
         private readonly InputAction m_Default_SmartAction4;
-        private readonly InputAction m_Default_Any;
+        private readonly InputAction m_Default_Continue;
         public struct DefaultActions
         {
             private @SalvagerInput m_Wrapper;
@@ -866,7 +866,7 @@ namespace StarSalvager.Utilities.Inputs
             public InputAction @SmartAction2 => m_Wrapper.m_Default_SmartAction2;
             public InputAction @SmartAction3 => m_Wrapper.m_Default_SmartAction3;
             public InputAction @SmartAction4 => m_Wrapper.m_Default_SmartAction4;
-            public InputAction @Any => m_Wrapper.m_Default_Any;
+            public InputAction @Continue => m_Wrapper.m_Default_Continue;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -903,9 +903,9 @@ namespace StarSalvager.Utilities.Inputs
                     @SmartAction4.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction4;
                     @SmartAction4.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction4;
                     @SmartAction4.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSmartAction4;
-                    @Any.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnAny;
-                    @Any.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnAny;
-                    @Any.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnAny;
+                    @Continue.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnContinue;
+                    @Continue.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnContinue;
+                    @Continue.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnContinue;
                 }
                 m_Wrapper.m_DefaultActionsCallbackInterface = instance;
                 if (instance != null)
@@ -937,9 +937,9 @@ namespace StarSalvager.Utilities.Inputs
                     @SmartAction4.started += instance.OnSmartAction4;
                     @SmartAction4.performed += instance.OnSmartAction4;
                     @SmartAction4.canceled += instance.OnSmartAction4;
-                    @Any.started += instance.OnAny;
-                    @Any.performed += instance.OnAny;
-                    @Any.canceled += instance.OnAny;
+                    @Continue.started += instance.OnContinue;
+                    @Continue.performed += instance.OnContinue;
+                    @Continue.canceled += instance.OnContinue;
                 }
             }
         }
@@ -1069,7 +1069,7 @@ namespace StarSalvager.Utilities.Inputs
             void OnSmartAction2(InputAction.CallbackContext context);
             void OnSmartAction3(InputAction.CallbackContext context);
             void OnSmartAction4(InputAction.CallbackContext context);
-            void OnAny(InputAction.CallbackContext context);
+            void OnContinue(InputAction.CallbackContext context);
         }
         public interface IVerticalActions
         {

@@ -22,7 +22,7 @@ namespace StarSalvager
 {
     public class ObstacleManager : MonoBehaviour, IReset, IPausable, IMoveOnInput
     {
-        private const float BONUS_SCREEN_AREA = 0.5f;
+        private const float BONUS_SCREEN_AREA = 0.6f;
 
         public static Action NewShapeOnScreen;
 
