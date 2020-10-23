@@ -462,7 +462,7 @@ namespace StarSalvager
             maxParts = 0;
             powerDraw = 0f;
             
-            var capacities = new Dictionary<BIT_TYPE, int>
+            var liquidCapacities = new Dictionary<BIT_TYPE, int>
             {
                 {BIT_TYPE.RED, 0},
                 {BIT_TYPE.BLUE, 0},
@@ -486,10 +486,10 @@ namespace StarSalvager
                         
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += value;
-                            capacities[BIT_TYPE.GREEN] += value;
-                            capacities[BIT_TYPE.GREY] += value;
-                            capacities[BIT_TYPE.YELLOW] += value;
+                            liquidCapacities[BIT_TYPE.RED] += value;
+                            liquidCapacities[BIT_TYPE.GREEN] += value;
+                            liquidCapacities[BIT_TYPE.GREY] += value;
+                            liquidCapacities[BIT_TYPE.YELLOW] += value;
                         }
                         
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
@@ -516,42 +516,42 @@ namespace StarSalvager
                     case PART_TYPE.STORE:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += value;
-                            capacities[BIT_TYPE.GREEN] += value;
-                            capacities[BIT_TYPE.GREY] += value;
+                            liquidCapacities[BIT_TYPE.RED] += value;
+                            liquidCapacities[BIT_TYPE.GREEN] += value;
+                            liquidCapacities[BIT_TYPE.GREY] += value;
                         }
                         break;
                     case PART_TYPE.STORERED:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += value;
+                            liquidCapacities[BIT_TYPE.RED] += value;
                         }
                         break;
                     case PART_TYPE.STOREGREEN:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.GREEN] += value;
+                            liquidCapacities[BIT_TYPE.GREEN] += value;
                         }
                         break;
                     case PART_TYPE.STOREGREY:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.GREY] += value;
+                            liquidCapacities[BIT_TYPE.GREY] += value;
                         }
                         break;
                     case PART_TYPE.STOREYELLOW:
                         if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.YELLOW] += value;
+                            liquidCapacities[BIT_TYPE.YELLOW] += value;
                         }
                         break;
                 }
             }
 
             //Force update capacities, once new values determined
-            foreach (var capacity in capacities)
+            foreach (var capacity in liquidCapacities)
             {
-                PlayerDataManager.GetResource(capacity.Key).SetResourceCapacity(capacity.Value);
+                PlayerDataManager.GetResource(capacity.Key).SetLiquidCapacity(capacity.Value);
             }
         }
 
