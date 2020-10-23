@@ -287,6 +287,18 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 1672784840}
+    ActiveGameObject: {fileID: 1672784840}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 1908563067}
     ActiveGameObject: {fileID: 1908563067}
     GUIDsList: []
@@ -1398,7 +1410,7 @@ PrefabInstance:
     - target: {fileID: 5569929845529783648, guid: 6fc7d0cb257d6be46beb5cd7b73d8050,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000010125763
+      value: 0.000042118405
       objectReference: {fileID: 0}
     - target: {fileID: 5569929845529783651, guid: 6fc7d0cb257d6be46beb5cd7b73d8050,
         type: 3}

@@ -226,13 +226,6 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public void SubtractComponents(IEnumerable<CraftCost> cost)
-        {
-            CostCalculations.SubtractComponents(ref _components, cost);
-        }
-
-        //============================================================================================================//
-
         public void AddComponent(COMPONENT_TYPE type, int amount)
         {
             _components[type] += Mathf.Abs(amount);
@@ -241,61 +234,6 @@ namespace StarSalvager.Utilities.Saving
         public void SubtractComponent(COMPONENT_TYPE type, int amount)
         {
             _components[type] -= Mathf.Abs(amount);
-        }
-
-        //============================================================================================================//
-
-        public bool CanAffordFacilityBlueprint(TEST_FacilityBlueprint facilityBlueprint)
-        {
-            return CanAffordBits(facilityBlueprint.cost) && CanAffordComponents(facilityBlueprint.cost);
-        }
-
-        public bool CanAffordBits(IEnumerable<CraftCost> levelCost)
-        {
-            Dictionary<BIT_TYPE, int> tempDictionary = new Dictionary<BIT_TYPE, int>();
-            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
-            {
-                if (_bitType == BIT_TYPE.WHITE)
-                    continue;
-
-                tempDictionary.Add(_bitType, PlayerDataManager.GetResource(_bitType).resource);
-            }
-
-            return CostCalculations.CanAffordResources(tempDictionary, levelCost);
-        }
-
-        public bool CanAffordComponents(IEnumerable<CraftCost> levelCost)
-        {
-            foreach (var craftCost in levelCost)
-            {
-                if ((craftCost.resourceType == CraftCost.TYPE.Component && craftCost.type == (int)COMPONENT_TYPE.CHIP && !PlayerDataManager.GetFacilityRanks().ContainsKey(FACILITY_TYPE.WORKBENCHCHIP)) ||
-                    (craftCost.resourceType == CraftCost.TYPE.Component && craftCost.type == (int)COMPONENT_TYPE.COIL && !PlayerDataManager.GetFacilityRanks().ContainsKey(FACILITY_TYPE.WORKBENCHCOIL)) ||
-                    (craftCost.resourceType == CraftCost.TYPE.Component && craftCost.type == (int)COMPONENT_TYPE.FUSOR && !PlayerDataManager.GetFacilityRanks().ContainsKey(FACILITY_TYPE.WORKBENCHFUSOR)))
-                {
-                    Debug.Log("MISSING FACILITY");
-                    return false;
-                }
-            }
-
-            Dictionary<COMPONENT_TYPE, int> tempDictionary = new Dictionary<COMPONENT_TYPE, int>(_components);
-
-            return CostCalculations.CanAffordComponents(tempDictionary, levelCost);
-        }
-
-        public bool CanAffordPart(PART_TYPE partType, int level, bool isRecursive)
-        {
-            Dictionary<BIT_TYPE, int> tempResourceDictionary = new Dictionary<BIT_TYPE, int>();
-            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
-            {
-                if (_bitType == BIT_TYPE.WHITE)
-                    continue;
-
-                tempResourceDictionary.Add(_bitType, PlayerDataManager.GetResource(_bitType).resource);
-            }
-
-            Dictionary<COMPONENT_TYPE, int> tempComponentDictionary = new Dictionary<COMPONENT_TYPE, int>(_components);
-            List<BlockData> tempPartsInStorage = new List<BlockData>(partsInStorageBlockData);
-            return CostCalculations.CanAffordPart(tempResourceDictionary, tempComponentDictionary, tempPartsInStorage, partType, level, isRecursive);
         }
 
         //============================================================================================================//

@@ -379,8 +379,6 @@ namespace StarSalvager.UI
         {
             ShowAbortWindow(false);
 
-            bool recoveryDrone = LevelManager.Instance != null && LevelManager.Instance.RecoverFromDeath;
-
             SetResourceSliderBounds(BIT_TYPE.RED, 0, PlayerDataManager.GetResource(BIT_TYPE.RED).liquidCapacity);
             SetResourceSliderBounds(BIT_TYPE.GREEN, 0, PlayerDataManager.GetResource(BIT_TYPE.GREEN).liquidCapacity);
             SetResourceSliderBounds(BIT_TYPE.GREY, 0, PlayerDataManager.GetResource(BIT_TYPE.GREY).liquidCapacity);

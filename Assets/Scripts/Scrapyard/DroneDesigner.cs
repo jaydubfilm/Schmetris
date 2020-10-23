@@ -63,9 +63,6 @@ namespace StarSalvager
         private bool _isStarted;
         private bool _isDragging;
 
-        public bool IsEditingRecoveryDrone => _isEditingRecoveryDrone;
-        private bool _isEditingRecoveryDrone;
-
         private SpriteRenderer _partDragImage;
 
         //============================================================================================================//
@@ -146,16 +143,16 @@ namespace StarSalvager
 
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
 
-            var currentBlockData = PlayerDataManager.GetBlockDatas(false);
+            var currentBlockData = PlayerDataManager.GetBlockDatas();
             //Checks to make sure there is a core on the bot
             if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
             {
-                _scrapyardBot.InitBot(_isEditingRecoveryDrone);
+                _scrapyardBot.InitBot();
             }
             else
             {
                 var importedData = currentBlockData.ImportBlockDatas(true);
-                _scrapyardBot.InitBot(importedData, _isEditingRecoveryDrone);
+                _scrapyardBot.InitBot(importedData);
             }
 
             bool outOfWaterOnReturn = PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0;
@@ -204,7 +201,7 @@ namespace StarSalvager
             SelectedPartReturnToStorageIfNotPlaced = false;
 
             Camera.onPostRender -= DrawGL;
-            _isEditingRecoveryDrone = false;
+            Globals.IsRecoveryBot = false;
 
             if (_scrapyardBot != null)
             {
@@ -678,9 +675,9 @@ namespace StarSalvager
                 if (partData.Type == (int)PART_TYPE.CORE)
                     continue;
 
-                if (CostCalculations.CanAffordPart(resourceComparer, componentComparer, partComparer, (PART_TYPE)partData.Type, partData.Level, true))
+                if (PlayerDataManager.CanAffordPart((PART_TYPE)partData.Type, partData.Level))
                 {
-                    CostCalculations.SubtractPartCosts(ref resourceComparer, ref componentComparer, partComparer, (PART_TYPE)partData.Type, partData.Level, true);
+                    PlayerDataManager.SubtractPartCosts((PART_TYPE)partData.Type, partData.Level, true);
                 }
                 else
                 {
@@ -730,7 +727,7 @@ namespace StarSalvager
         {
             if (_scrapyardBot != null)
             {
-                PlayerDataManager.SetBlockDatas(_scrapyardBot.attachedBlocks.GetBlockDatas(), _isEditingRecoveryDrone);
+                PlayerDataManager.SetBlockDatas(_scrapyardBot.attachedBlocks.GetBlockDatas());
             }
         }
 
@@ -754,18 +751,18 @@ namespace StarSalvager
 
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
 
-            List<BlockData> currentBlockData = PlayerDataManager.GetBlockDatas(!_isEditingRecoveryDrone);
-            _isEditingRecoveryDrone = !_isEditingRecoveryDrone;
+            Globals.IsRecoveryBot = !Globals.IsRecoveryBot;
+            List<BlockData> currentBlockData = PlayerDataManager.GetBlockDatas();
 
             //Checks to make sure there is a core on the bot
             if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
             {
-                _scrapyardBot.InitBot(_isEditingRecoveryDrone);
+                _scrapyardBot.InitBot();
             }
             else
             {
                 var importedData = currentBlockData.ImportBlockDatas(true);
-                _scrapyardBot.InitBot(importedData, _isEditingRecoveryDrone);
+                _scrapyardBot.InitBot(importedData);
             }
 
             UpdateFloatingMarkers(false);
@@ -778,7 +775,7 @@ namespace StarSalvager
             if (_scrapyardBot == null)
                 return;
 
-            List<BlockData> recoveryBotBlockData = PlayerDataManager.GetBlockDatas(true);
+            List<BlockData> recoveryBotBlockData = PlayerDataManager.GetBlockDatas();
 
             List<ScrapyardBit> listBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
             List<Component> listComponents = _scrapyardBot.attachedBlocks.OfType<Component>().ToList();

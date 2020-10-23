@@ -145,7 +145,6 @@ namespace StarSalvager
         public int NumWavesInRow;
         public Dictionary<ENEMY_TYPE, int> EnemiesKilledInWave = new Dictionary<ENEMY_TYPE, int>();
         public List<string> MissionsCompletedDuringThisFlight = new List<string>();
-        public bool RecoverFromDeath = false;
         public bool BotDead = false;
 
         private bool m_botEnterScreen = false;
@@ -304,7 +303,7 @@ namespace StarSalvager
             SavePlayerData();
             GameTimer.SetPaused(true);
 
-            if (RecoverFromDeath)
+            if (Globals.IsRecoveryBot)
             {
                 m_levelManagerUI.ShowSummaryScreen("Bot Recovered",
                     "You have recovered your wrecked bot. Return to base!", () =>
@@ -381,7 +380,7 @@ namespace StarSalvager
             }
 
             ProjectileManager.UpdateForces();
-            RecoverFromDeath = false;
+            Globals.IsRecoveryBot = false;
         }
 
         private void MoveBotOffScreen()
@@ -437,15 +436,15 @@ namespace StarSalvager
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             BotObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
 
-            var botDataToLoad = PlayerDataManager.GetBlockDatas(RecoverFromDeath);
+            var botDataToLoad = PlayerDataManager.GetBlockDatas();
 
             if (botDataToLoad.Count == 0)
             {
-                BotObject.InitBot(RecoverFromDeath);
+                BotObject.InitBot();
             }
             else
             {
-                BotObject.InitBot(botDataToLoad.ImportBlockDatas(false), RecoverFromDeath);
+                BotObject.InitBot(botDataToLoad.ImportBlockDatas(false));
             }
             
             BotObject.transform.parent = null;
@@ -514,7 +513,7 @@ namespace StarSalvager
                 m_bots.RemoveAt(i);
             }
 
-            if (!RecoverFromDeath)
+            if (!Globals.IsRecoveryBot)
             {
                 LiquidResourcesCachedOnDeath.Clear();
             }
@@ -665,19 +664,19 @@ namespace StarSalvager
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
 
-            if (RecoverFromDeath)
+            if (Globals.IsRecoveryBot)
             {
                 ScrapyardBot scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
-                var currentBlockData = PlayerDataManager.GetBlockDatas(false);
+                var currentBlockData = PlayerDataManager.GetBlockDatas();
                 //Checks to make sure there is a core on the bot
                 if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
                 {
-                    scrapyardBot.InitBot(false);
+                    scrapyardBot.InitBot();
                 }
                 else
                 {
                     var importedData = currentBlockData.ImportBlockDatas(true);
-                    scrapyardBot.InitBot(importedData, scrapyardBot);
+                    scrapyardBot.InitBot(importedData);
                 }
                 if (!Globals.RecoveryOfDroneLocksHorizontalMovement)
                 {
@@ -761,7 +760,7 @@ namespace StarSalvager
                 if (!blockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
                     blockData = new List<BlockData>();
 
-                PlayerDataManager.SetBlockDatas(blockData, RecoverFromDeath);
+                PlayerDataManager.SetBlockDatas(blockData);
             }
         }
 
@@ -787,7 +786,7 @@ namespace StarSalvager
 
             InputManager.Instance.CancelMove();
 
-            if (!RecoverFromDeath)
+            if (!Globals.IsRecoveryBot)
             {
                 foreach (Bot bot in m_bots)
                 {
@@ -824,17 +823,17 @@ namespace StarSalvager
             SessionDataProcessor.Instance.PlayerKilled();
             SessionDataProcessor.Instance.EndActiveWave();
 
-            if (!RecoverFromDeath)
+            if (!Globals.IsRecoveryBot)
             {
                 IsWaveProgressing = false;
-                RecoverFromDeath = true;
+                Globals.IsRecoveryBot = true;
 
                 Alert.ShowAlert("Bot wrecked",
                     "Your bot has been wrecked. Deploy your recovery bot to rescue it.",
                     "Deploy",
                     () =>
                     {
-                        RecoverFromDeath = true;
+                        Globals.IsRecoveryBot = true;
                         IsWaveProgressing = true;
                         GameUi.ShowRecoveryBanner(true);
                         RestartLevel();
@@ -848,7 +847,7 @@ namespace StarSalvager
                     "You failed to recover your bot. Click to return to main menu.",
                     () =>
                     {
-                        RecoverFromDeath = false;
+                        Globals.IsRecoveryBot = false;
                         GameUi.ShowRecoveryBanner(false);
                         Globals.CurrentWave = 0;
                         GameTimer.SetPaused(false);

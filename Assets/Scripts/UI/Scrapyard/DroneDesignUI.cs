@@ -154,7 +154,7 @@ namespace StarSalvager.UI.Scrapyard
 
             _currentlyOverwriting = false;
 
-            recoveryDroneBannerObject.SetActive(DroneDesigner.IsEditingRecoveryDrone);
+            recoveryDroneBannerObject.SetActive(Globals.IsRecoveryBot);
         }
 
         private void OnEnable()
@@ -335,7 +335,7 @@ namespace StarSalvager.UI.Scrapyard
                 DroneDesigner.ToggleDrones();
                 UpdateBotResourceElements();
                 
-                recoveryDroneBannerObject.SetActive(DroneDesigner.IsEditingRecoveryDrone);
+                recoveryDroneBannerObject.SetActive(Globals.IsRecoveryBot);
 
             });
 
@@ -503,7 +503,7 @@ namespace StarSalvager.UI.Scrapyard
                 BIT_TYPE.YELLOW
             };
 
-            List<BlockData> botData = PlayerDataManager.GetBlockDatas(isRecoveryDrone);
+            List<BlockData> botData = PlayerDataManager.GetBlockDatas();
 
             foreach (var bitType in types)
             {
@@ -560,7 +560,7 @@ namespace StarSalvager.UI.Scrapyard
 
                 var movingAmount = Mathf.RoundToInt(Mathf.Min(availableResources, fillRemaining));
 
-                if (isRecoveryDrone == _droneDesigner.IsEditingRecoveryDrone)
+                if (isRecoveryDrone == Globals.IsRecoveryBot)
                 {
                     botLiquidElement.PreviewChange(movingAmount);
                 }

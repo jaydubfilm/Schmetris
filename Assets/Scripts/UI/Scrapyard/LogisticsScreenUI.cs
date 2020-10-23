@@ -184,7 +184,7 @@ namespace StarSalvager.UI.Scrapyard
                 return;
             }
 
-            PlayerDataManager.SubtractResources(item.cost);
+            PlayerDataManager.SubtractCraftCostResources(item.cost);
             PlayerDataManager.SubtractComponents(item.cost);
             PlayerDataManager.UnlockFacilityLevel(item.facilityType, item.level);
         }

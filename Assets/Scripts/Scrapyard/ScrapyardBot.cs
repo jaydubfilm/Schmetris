@@ -35,9 +35,6 @@ namespace StarSalvager
         private bool _rotating;
         private float targetRotation;
 
-        public bool IsRecoveryDrone => _isRecoveryDrone;
-        private bool _isRecoveryDrone;
-
         //============================================================================================================//
 
         private new Rigidbody2D rigidbody
@@ -68,11 +65,10 @@ namespace StarSalvager
 
         #region Init Bot 
 
-        public void InitBot(bool isRecoveryDrone)
+        public void InitBot()
         {
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
             
-            _isRecoveryDrone = isRecoveryDrone;
             var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
             //Add core component
             var core = partFactory.CreateScrapyardObject<ScrapyardPart>(
@@ -84,17 +80,16 @@ namespace StarSalvager
                     Health = startingHealth
                 });
 
-            if(isRecoveryDrone) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
+            if(Globals.IsRecoveryBot) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
             
             AttachNewBit(Vector2Int.zero, core);
         }
 
-        public void InitBot(IEnumerable<IAttachable> botAttachables, bool isRecoveryDrone)
+        public void InitBot(IEnumerable<IAttachable> botAttachables)
         {
-            _isRecoveryDrone = isRecoveryDrone;
             foreach (var attachable in botAttachables)
             {
-                if(attachable is Part part && part.Type == PART_TYPE.CORE && isRecoveryDrone)
+                if(attachable is Part part && part.Type == PART_TYPE.CORE && Globals.IsRecoveryBot)
                     FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
                 
                 AttachNewBit(attachable.Coordinate, attachable);

@@ -21,7 +21,7 @@ namespace StarSalvager
 
         public void CraftBlueprint(Blueprint blueprint)
         {
-            if (!PlayerDataManager.CanAffordPart(blueprint.partType, blueprint.level, false)
+            if (!PlayerDataManager.CanAffordPart(blueprint.partType, blueprint.level)
                 || blueprint.partType == PART_TYPE.CORE && !mDroneDesigner._scrapyardBot.attachedBlocks.GetBlockDatas().Any(p => p.Type == (int)PART_TYPE.CORE && p.Level == blueprint.level - 1))
             {
                 if (!Toast.Instance.showingToast)

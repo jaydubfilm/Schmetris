@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using StarSalvager.UI.Scrapyard;
 using System.Security.Policy;
 using StarSalvager.Utilities.Math;
+using System.Linq;
+using UnityEngine;
+using StarSalvager.Factories;
 
 namespace StarSalvager.Utilities.Saving
 {
@@ -58,9 +61,9 @@ namespace StarSalvager.Utilities.Saving
             return new Dictionary<COMPONENT_TYPE, int>(PlayerRunData.Components);
         }
 
-        public static List<BlockData> GetBlockDatas(bool isRecoveryDrone)
+        public static List<BlockData> GetBlockDatas()
         {
-            if (isRecoveryDrone)
+            if (Globals.IsRecoveryBot)
             {
                 return PlayerRunData.recoveryDroneBlockData;
             }
@@ -94,9 +97,9 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
-        public static void SetBlockDatas(List<BlockData> blockData, bool isRecoveryDrone)
+        public static void SetBlockDatas(List<BlockData> blockData)
         {
-            if (isRecoveryDrone)
+            if (Globals.IsRecoveryBot)
             {
                 PlayerRunData.SetRecoveryDroneBlockData(blockData);
             }
@@ -123,36 +126,54 @@ namespace StarSalvager.Utilities.Saving
 
         public static void AddPartResources(PART_TYPE partType, int level, bool isRecursive)
         {
-            CostCalculations.AddPartResources(partType, level, isRecursive);
+            var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
+            AddCraftCostResources(costs);
 
-            OnValuesChanged?.Invoke();
+            if (!isRecursive)
+                return;
+
+            if (level > 0)
+                AddPartResources(partType, level - 1, isRecursive);
         }
 
-        public static void SubtractPartResources(PART_TYPE partType, int level, bool isRecursive)
+        public static void AddCraftCostResources(List<CraftCost> costs)
         {
-            CostCalculations.SubtractPartResources(partType, level, isRecursive);
+            foreach (CraftCost resource in costs)
+            {
+                if (resource.resourceType != CraftCost.TYPE.Bit)
+                    continue;
 
-            OnValuesChanged?.Invoke();
+                PlayerDataManager.GetResource((BIT_TYPE)resource.type).AddResource(resource.amount, false);
+            }
         }
 
-        public static void SubtractResources(IEnumerable<CraftCost> cost)
+        public static void SubtractPartResources(PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
         {
-            CostCalculations.SubtractResources(cost);
+            var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
+            SubtractCraftCostResources(costs);
 
-            OnValuesChanged?.Invoke();
+            if (!isRecursive)
+                return;
+
+            if (level > 0)
+                SubtractPartResources(partType, level - 1, isRecursive, costModifier);
+        }
+
+        public static void SubtractCraftCostResources(List<CraftCost> costs, float costModifier = 1.0f)
+        {
+            foreach (CraftCost resource in costs)
+            {
+                if (resource.resourceType != CraftCost.TYPE.Bit)
+                    continue;
+
+                PlayerDataManager.GetResource((BIT_TYPE)resource.type).SubtractResource((int)(resource.amount * costModifier), false);
+            }
         }
 
 
         public static void SubtractComponents(IEnumerable<CraftCost> cost)
         {
-            PlayerRunData.SubtractComponents(cost);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void SubtractPartCosts(PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
-        {
-            PlayerRunData.SubtractPartCosts(partType, level, isRecursive, costModifier);
+            PlayerDataManager.SubtractCraftCostComponents(cost);
 
             OnValuesChanged?.Invoke();
         }
@@ -164,9 +185,81 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
+        public static void SubtractPartCosts(PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
+        {
+            SubtractPartResources(partType, level, isRecursive, costModifier);
+            SubtractPartComponents(partType, level, isRecursive);
+            SubtractPartPremades(partType, level, isRecursive);
+
+            OnValuesChanged?.Invoke();
+        }
+
+        public static void SubtractPartComponents(PART_TYPE partType, int level, bool isRecursive)
+        {
+            var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
+            SubtractCraftCostComponents(costs);
+
+            if (!isRecursive)
+                return;
+
+            if (level > 0)
+                SubtractPartComponents(partType, level - 1, isRecursive);
+        }
+
+        public static void SubtractCraftCostComponents(IEnumerable<CraftCost> costs)
+        {
+            foreach (CraftCost resource in costs)
+            {
+                if (resource.resourceType != CraftCost.TYPE.Component)
+                    continue;
+
+                PlayerDataManager.SubtractComponent((COMPONENT_TYPE)resource.type, resource.amount);
+            }
+        }
+
         public static void SubtractComponent(COMPONENT_TYPE type, int amount)
         {
             PlayerRunData.SubtractComponent(type, amount);
+
+            OnValuesChanged?.Invoke();
+        }
+
+        public static void SubtractPartPremades(PART_TYPE partType, int level, bool isRecursive)
+        {
+            var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
+            SubtractCraftCostPremades(costs);
+
+            if (!isRecursive)
+                return;
+
+            if (level > 0)
+                SubtractPartPremades(partType, level - 1, isRecursive);
+        }
+
+        public static void SubtractCraftCostPremades(IEnumerable<CraftCost> costs)
+        {
+            foreach (CraftCost resource in costs)
+            {
+                if (resource.resourceType != CraftCost.TYPE.Part)
+                    continue;
+
+                PlayerDataManager.SubtractPremade((PART_TYPE)resource.type, resource.partPrerequisiteLevel, resource.amount);
+            }
+        }
+
+        public static void SubtractPremade(PART_TYPE partType, int level, int amount)
+        {
+            List<BlockData> storedMatches = PlayerRunData.partsInStorageBlockData.FindAll(p => p.Type == (int)partType && p.Level == level);
+
+            if (storedMatches.Count < amount)
+            {
+                Debug.LogError("Tried to subtract premade parts that don't exist");
+            }
+
+            for (int i = 0; i < amount; i++)
+            {
+                PlayerRunData.RemovePartFromStorage(storedMatches[0]);
+            }
 
             OnValuesChanged?.Invoke();
         }
@@ -178,24 +271,78 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
+        public static bool CanAffordPart(PART_TYPE partType, int level, float resourceCostModifier = 1.0f)
+        {
+            bool hasResources;
+            bool hasComponents;
+            bool hasParts;
+
+            var resourceCosts = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
+            hasResources = CanAffordCraftCostResources(resourceCosts);
+
+            var componentCosts = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
+            hasComponents = CanAffordCraftCostComponents(componentCosts);
+
+            var premadeCosts = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
+            hasParts = CanAffordCraftCostPremades(premadeCosts);
+
+            return hasResources && hasComponents && hasParts;
+        }
+
         public static bool CanAffordFacilityBlueprint(TEST_FacilityBlueprint facilityBlueprint)
         {
-            return PlayerRunData.CanAffordFacilityBlueprint(facilityBlueprint);
+            return CanAffordCraftCostResources(facilityBlueprint.cost) && CanAffordCraftCostComponents(facilityBlueprint.cost);
         }
 
-        public static bool CanAffordBits(IEnumerable<CraftCost> levelCost)
+        public static bool CanAffordCraftCostResources(List<CraftCost> costs)
         {
-            return PlayerRunData.CanAffordBits(levelCost);
+            foreach (CraftCost resource in costs)
+            {
+                if (resource.resourceType != CraftCost.TYPE.Bit)
+                    continue;
+
+                if (PlayerDataManager.GetResource((BIT_TYPE)resource.type).resource < resource.amount)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
-        public static bool CanAffordComponents(IEnumerable<CraftCost> levelCost)
+        public static bool CanAffordCraftCostComponents(List<CraftCost> costs)
         {
-            return PlayerRunData.CanAffordComponents(levelCost);
+            foreach (CraftCost resource in costs)
+            {
+                if (resource.resourceType != CraftCost.TYPE.Component)
+                    continue;
+
+                if (PlayerDataManager.GetComponents()[(COMPONENT_TYPE)resource.type] < resource.amount)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
-        public static bool CanAffordPart(PART_TYPE partType, int level, bool isRecursive)
+        public static bool CanAffordCraftCostPremades(IEnumerable<CraftCost> costs)
         {
-            return PlayerRunData.CanAffordPart(partType, level, isRecursive);
+            foreach (CraftCost resource in costs)
+            {
+                if (resource.resourceType != CraftCost.TYPE.Part)
+                    continue;
+
+                if (resource.type == (int)PART_TYPE.CORE)
+                    continue;
+
+                var partCount = PlayerRunData.partsInStorageBlockData.Count(p => p.Type == resource.type && p.Level == resource.partPrerequisiteLevel);
+
+                if (partCount < resource.amount)
+                    return false;
+            }
+
+            return true;
         }
 
         //====================================================================================================================//

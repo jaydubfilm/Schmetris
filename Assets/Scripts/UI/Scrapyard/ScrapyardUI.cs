@@ -248,8 +248,10 @@ namespace StarSalvager.UI.Scrapyard
         private void Launch()
         {
             //TODO Need to decide if this should happen at arrival or at launch
-            TryFillBotResources(true);
-            TryFillBotResources(false);
+            Globals.IsRecoveryBot = true;
+            TryFillBotResources();
+            Globals.IsRecoveryBot = false;
+            TryFillBotResources();
             
             _droneDesigner.ProcessScrapyardUsageEndAnalytics();
             
@@ -262,7 +264,7 @@ namespace StarSalvager.UI.Scrapyard
         }
         
         
-        private void TryFillBotResources(bool isRecoveryDrone)
+        private void TryFillBotResources()
         {
             BIT_TYPE[] types = {
                 BIT_TYPE.RED,
@@ -271,7 +273,7 @@ namespace StarSalvager.UI.Scrapyard
                 BIT_TYPE.YELLOW
             };
 
-            List<BlockData> botData = PlayerDataManager.GetBlockDatas(isRecoveryDrone);
+            List<BlockData> botData = PlayerDataManager.GetBlockDatas();
             
             foreach (var bitType in types)
             {
