@@ -58,14 +58,14 @@ namespace StarSalvager.Utilities.Saving
             }
         }
 
-        public void SetResourceCapacity(int amount, bool updateValuesChanged = true)
+        public void SetResourceCapacity(int amount, bool updateCapacitiesChanged = true)
         {
             _resourceCapacity = amount; ;
             _resource = Mathf.Clamp(_resource, 0, _resourceCapacity);
 
-            if (updateValuesChanged)
+            if (updateCapacitiesChanged)
             {
-                PlayerDataManager.OnValuesChanged?.Invoke();
+                PlayerDataManager.OnCapacitiesChanged?.Invoke();
             }
         }
 
