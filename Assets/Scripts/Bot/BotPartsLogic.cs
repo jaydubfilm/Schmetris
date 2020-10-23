@@ -1064,6 +1064,9 @@ namespace StarSalvager
 
         private void ForceUpdateResourceUI()
         {
+            if (GameUI == null)
+                return;
+            
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
                 if (_bitType == BIT_TYPE.WHITE)
