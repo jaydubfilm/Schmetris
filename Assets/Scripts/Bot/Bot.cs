@@ -293,6 +293,8 @@ namespace StarSalvager
             AttachNewBlock(Vector2Int.zero, core, updateMissions: false);
 
             ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
+            
+            GameUi?.SetHealthValue(1f);
         }
         
         public void InitBot(IEnumerable<IAttachable> botAttachables, bool isRecoveryDrone)
@@ -307,8 +309,13 @@ namespace StarSalvager
             //Only want to update the parts list after everyone has loaded
             foreach (var attachable in botAttachables)
             {
-                if(attachable is Part part && part.Type == PART_TYPE.CORE && isRecoveryDrone)
-                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
+                if (attachable is Part part && part.Type == PART_TYPE.CORE)
+                {
+                    if(isRecoveryDrone)
+                        FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
+                    
+                    GameUi?.SetHealthValue(part.CurrentHealth / part.BoostedHealth);
+                }
                 
                 AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);
             }
@@ -993,6 +1000,9 @@ namespace StarSalvager
                 return;
 
             closestHealth.ChangeHealth(-Mathf.Abs(damage));
+            
+            if(closestAttachable is Part part && part.Type == PART_TYPE.CORE)
+                GameUi.SetHealthValue(part.CurrentHealth / part.BoostedHealth);
 
             var attachableDestroyed = closestHealth.CurrentHealth <= 0f;
 
@@ -1024,8 +1034,8 @@ namespace StarSalvager
 
             switch (closestAttachable)
             {
-                case Part part:
-                    if (part.Type == PART_TYPE.CORE)
+                case Part core:
+                    if (core.Type == PART_TYPE.CORE)
                         Destroy("Core Destroyed");
                     else
                         BotPartsLogic.UpdatePartsList();

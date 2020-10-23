@@ -845,10 +845,14 @@ namespace StarSalvager
             }
             else
             {
+                Alert.ShowDancers(true);
+                //TODO Need to play ending music here
+                AudioController.PlayMusic(MUSIC.GAME_OVER, true);
                 m_levelManagerUI.ShowSummaryScreen("GAME OVER",
                     "You failed to recover your bot. Click to return to main menu.",
                     () =>
                     {
+                        Alert.ShowDancers(false);
                         RecoverFromDeath = false;
                         GameUi.ShowRecoveryBanner(false);
                         Globals.CurrentWave = 0;

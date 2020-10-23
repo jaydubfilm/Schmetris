@@ -23,8 +23,6 @@ namespace StarSalvager.UI
         [SerializeField, Required]
         private TMP_Text deathText;
         [SerializeField, Required]
-        private TMP_Text livesText;
-        [SerializeField, Required]
         private TMP_Text scrollingMissionsText;
 
         //============================================================================================================//

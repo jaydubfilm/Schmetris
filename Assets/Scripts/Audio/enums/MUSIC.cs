@@ -4,6 +4,7 @@
     {
         MAIN_MENU,
         GAMEPLAY,
-        SCRAPYARD
+        SCRAPYARD,
+        GAME_OVER
     }
 }

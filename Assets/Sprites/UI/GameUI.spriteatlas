@@ -43,10 +43,11 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 8e2642d260cfec648b49f64ac830cdc5, type: 3}
-    totalSpriteSurfaceArea: 358730
+    totalSpriteSurfaceArea: 1325425
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: ae6fb141ac6070c43af30b48f257c2ac, type: 3}
   - {fileID: 21300000, guid: 3e379b5118577b34fb54b6ba6a2e9cd6, type: 3}
   - {fileID: 21300000, guid: 228b30e198f9e8a4bb00aaa17ba48caa, type: 3}
   - {fileID: 21300000, guid: 3c51b9d2ec252614d84a0f362709b2ed, type: 3}
@@ -57,18 +58,23 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 82eb1c55932253840aac56b9a0ab0a39, type: 3}
   - {fileID: 21300000, guid: 666c0f753a99c7c449261b69b9028156, type: 3}
   - {fileID: 21300000, guid: e2f6235697d43cb41a5cb52b013b4e4e, type: 3}
+  - {fileID: 21300000, guid: 58259f960ca79224e9ba6151c96e0826, type: 3}
   - {fileID: 21300000, guid: 0870bd779634c3848b123d62721184f5, type: 3}
   - {fileID: 21300000, guid: 73854258c30d1424a9638199b57ad440, type: 3}
   - {fileID: 21300000, guid: d19cc858df36a5747baa5b7f65d82098, type: 3}
   - {fileID: 21300000, guid: 36300f59af7a8924ea339d58c871d57f, type: 3}
+  - {fileID: 21300000, guid: e67b6c5abe89703438db634ae4887e64, type: 3}
   - {fileID: 21300000, guid: 2104671b5e2062249a7f123576510b98, type: 3}
+  - {fileID: 21300000, guid: 7ac797ab70aa11b43ba3d1753008a2f6, type: 3}
   - {fileID: 21300000, guid: 415ca0cbb641f7e4c9f8348aa48572f8, type: 3}
   - {fileID: 255877476622243558, guid: d0bb13fb193bf014e986d0073c625415, type: 3}
+  - {fileID: 21300000, guid: be4a1d4d6da96a04d8d62c7ab6358717, type: 3}
   - {fileID: 21300000, guid: b596599e27c9172498c4390f67d5d714, type: 3}
   - {fileID: 8082984663549090972, guid: 8b72dfce31d7074489b652f2ac8cf74a, type: 3}
   - {fileID: 21300000, guid: cbbb0d6f845acc845b8d55609f1dfd7f, type: 3}
   - {fileID: 21300000, guid: 8229bfaf823042541adcdcaa639c1bb2, type: 3}
   m_PackedSpriteNamesToIndex:
+  - ui_CRACKS1_0_v1
   - ui_BUTTONCOVER_0_v1
   - UI-popupicon-MAGNET-V1
   - ui_GPATCHPOINT_0_v1
@@ -79,13 +85,17 @@ SpriteAtlas:
   - ui_TEMPICON_0_v1
   - ui_MEGNETISMFILLBAR_0_v1
   - ui_TEMPBACK_0_v1
+  - ui_CRACKS4_0_v1
   - ui_TEMPGAUGE_0_v1
   - ui_STICKER_0_v1
   - ui_BUTTONEXPOSED_0_v1
   - ui_GLOWCORE_0_v1
+  - ui_CRACKS3_0_v1
   - ui_MATERIALCOVER_0_v1
+  - ui_CRACKS2_0_v1
   - ui_LEVELPROGRESS_0_v1
   - whiteSquare_0
+  - ui_GPATCHPOINT_0_v5
   - ui_ACTIVEBOMB_0_v1
   - undo_0
   - UI-popupicon-NO-V1

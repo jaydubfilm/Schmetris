@@ -150,6 +150,14 @@ namespace StarSalvager.Audio
             Instance.PlayMusicLoop(music);
         }
 
+        public static void PlayMusic(MUSIC music, bool forceChange)
+        {
+            if (Instance == null)
+                return;
+
+            Instance.PlaySpecificMusic(music, forceChange);
+        }
+
         public static void PlayTESTWaveMusic(int index, bool forceChange = false)
         {
             if (Instance == null)
@@ -327,6 +335,27 @@ namespace StarSalvager.Audio
             {
                 gameMusicAudioSource.Stop();
                 gameMusicAudioSource.clip = TEST_waveMusic[index];
+                gameMusicAudioSource.Play();
+            }
+            
+            if (forceChange)
+            {
+                Play();
+                return;
+            }
+            
+            StartCoroutine(TEST_MusicFadeCoroutine(1f, Play));
+        }
+        
+        private void PlaySpecificMusic(MUSIC music, bool forceChange)
+        {
+            if (!TryGetMusicClip(music, out AudioClip clip))
+                return;
+            
+            void Play()
+            {
+                gameMusicAudioSource.Stop();
+                gameMusicAudioSource.clip = clip;
                 gameMusicAudioSource.Play();
             }
             
