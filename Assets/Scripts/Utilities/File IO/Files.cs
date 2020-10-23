@@ -69,10 +69,10 @@ namespace StarSalvager.Utilities.FileIO
 
         private static readonly List<string> PlayerAccountSavePaths = new List<string>
         {
-            Path.Combine(REMOTE_DIRECTORY, "PlayerRunMetaData0.player"),
-            Path.Combine(REMOTE_DIRECTORY, "PlayerRunMetaData1.player"),
-            Path.Combine(REMOTE_DIRECTORY, "PlayerRunMetaData2.player"),
-            Path.Combine(REMOTE_DIRECTORY, "PlayerRunMetaData3.player")
+            Path.Combine(REMOTE_DIRECTORY, "PlayerRunAccountData0.player"),
+            Path.Combine(REMOTE_DIRECTORY, "PlayerRunAccountData1.player"),
+            Path.Combine(REMOTE_DIRECTORY, "PlayerRunAccountData2.player"),
+            Path.Combine(REMOTE_DIRECTORY, "PlayerRunAccountData3.player")
         };
 
         public static string GetPlayerAccountSavePath(int saveSlot)
@@ -198,7 +198,10 @@ namespace StarSalvager.Utilities.FileIO
                 return data;
             }
 
-            var loaded = JsonConvert.DeserializeObject<PlayerSaveAccountData>(File.ReadAllText(PlayerAccountSavePaths[saveSlotIndex]));
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
+
+            var loaded = JsonConvert.DeserializeObject<PlayerSaveAccountData>(File.ReadAllText(PlayerAccountSavePaths[saveSlotIndex]), settings);
 
             return loaded;
         }

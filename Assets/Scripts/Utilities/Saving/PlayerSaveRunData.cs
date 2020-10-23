@@ -1,13 +1,11 @@
 ﻿using System;
-using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
-using StarSalvager.Missions;
-using StarSalvager.Utilities.Math;
 using StarSalvager.Values;
+using StarSalvager.Utilities.Extensions;
 
 namespace StarSalvager.Utilities.Saving
 {
@@ -17,14 +15,14 @@ namespace StarSalvager.Utilities.Saving
         //============================================================================================================//
 
         [JsonProperty]
-        private List<PlayerResource> _playerResources = new List<PlayerResource>
-        {
+        private List<PlayerResource> _playerResources = new List<PlayerResource>() {
             new PlayerResource(BIT_TYPE.BLUE, 75, 300, 0, 0, 0, 0),
             new PlayerResource(BIT_TYPE.GREEN, 0, 300, 0, 0, 0, 0),
             new PlayerResource(BIT_TYPE.GREY, 0, 300, 0, 0, 0, 0),
             new PlayerResource(BIT_TYPE.RED, 100, 300, 30, 0, 30, 0),
             new PlayerResource(BIT_TYPE.YELLOW, 0, 300, 0, 0, 0, 0)
         };
+
 
         //TODO: Add an add/subtract function for ResourceAmount, and make this IReadOnlyDictionary<>
         /*[JsonIgnore]
