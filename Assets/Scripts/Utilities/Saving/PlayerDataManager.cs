@@ -4,9 +4,7 @@ using StarSalvager.Utilities.FileIO;
 using StarSalvager.Values;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
-using System.CodeDom;
 using StarSalvager.UI.Scrapyard;
-using System.Security.Policy;
 
 namespace StarSalvager.Utilities.Saving
 {
