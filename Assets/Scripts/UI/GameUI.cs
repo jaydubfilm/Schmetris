@@ -213,6 +213,14 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Image bombNoResourceIcon;*/
 
+        //Health Cracks
+        //====================================================================================================================//
+        [SerializeField, Required, BoxGroup("Cracks")]
+        private CanvasGroup cracksCanvasGroup;
+        [SerializeField, Required, BoxGroup("Cracks")]
+        private Image[] crackImages;
+
+
         //Heat Vignette
         //============================================================================================================//
 
@@ -321,6 +329,8 @@ namespace StarSalvager.UI
 
             SetHeatSliderValue(0f);
             SetCarryCapacity(0f, 1);
+            
+            SetHealthValue(1f);
 
             SetFuelValue(0f);
             SetRepairValue(0f);
@@ -659,6 +669,22 @@ namespace StarSalvager.UI
         }*/
 
         //============================================================================================================//
+
+        public void SetHealthValue(float value)
+        {
+            var inverse = 1f - value;
+
+            var crackIncrement = 1f / crackImages.Length;
+
+            for (int i = 0; i < crackImages.Length; i++)
+            {
+                crackImages[i].enabled = inverse >= crackIncrement * (i + 1);
+            }
+            
+        }
+        
+        //====================================================================================================================//
+        
 
 
         /// <summary>

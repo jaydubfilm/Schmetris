@@ -37,8 +37,11 @@ namespace StarSalvager.UI
 
         [SerializeField, FoldoutGroup("Hover Window")] 
         private TMP_Text windowTitle;
+        /*[SerializeField, FoldoutGroup("Hover Window")]
+        private SpriteTitleContentScrolView waveDataScrollView;*/
+        
         [SerializeField, FoldoutGroup("Hover Window")]
-        private SpriteTitleContentScrolView waveDataScrollView;
+        private SpriteScaleContentScrollView waveDataScrollView;
 
         [SerializeField]
         private List<UniverseMapButton> universeMapButtons;
@@ -275,13 +278,13 @@ namespace StarSalvager.UI
                 var (enemies, bits) = sectorData.GetRemoteData(wave).GetWaveSummaryData();
             
                 //Parse the information to get the sprites & titles
-                var spriteTitles = GetSpriteTitleObjects(enemies, bits);
+                var testSpriteScales = GetSpriteTitleObjects(enemies, bits);
                 waveDataScrollView.ClearElements();
 
-                foreach (var spriteTitle in spriteTitles)
+                foreach (var spriteScale in testSpriteScales)
                 {
-                    var temp = waveDataScrollView.AddElement(spriteTitle);
-                    temp.Init(spriteTitle);
+                    var temp = waveDataScrollView.AddElement(spriteScale);
+                    temp.Init(spriteScale);
                 }
             }
             
@@ -289,7 +292,7 @@ namespace StarSalvager.UI
             StartCoroutine(ResizeRepositionCostWindowCoroutine(rectTransform));
         }
 
-        private List<SpriteTitle> GetSpriteTitleObjects(Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits)
+        /*private List<SpriteTitle> GetSpriteTitleObjects(Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits)
         {
             var outList = new List<SpriteTitle>();
             var enemyProfile = FactoryManager.Instance.EnemyProfile;
@@ -311,6 +314,36 @@ namespace StarSalvager.UI
                 {
                     Sprite = bitProfile.GetProfile(kvp.Key).GetSprite(0),
                     Title = $"{Mathf.RoundToInt(kvp.Value * 100f)}%"
+                });
+            }
+
+            return outList;
+        }*/
+        
+        private List<TEST_SpriteScale> GetSpriteTitleObjects(Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits)
+        {
+            const int SPRITE_LEVEL = 2;
+            
+            var outList = new List<TEST_SpriteScale>();
+            var enemyProfile = FactoryManager.Instance.EnemyProfile;
+            
+            var bitProfile = FactoryManager.Instance.BitProfileData;
+
+            foreach (var kvp in Enemies)
+            {
+                outList.Add(new TEST_SpriteScale
+                {
+                    Sprite = enemyProfile.GetEnemyProfileData(kvp.Key).Sprite,
+                    value = kvp.Value / (float)SpriteScaleUIElement.COUNT,
+                });
+            }
+
+            foreach (var kvp in Bits)
+            {
+                outList.Add(new TEST_SpriteScale
+                {
+                    Sprite = bitProfile.GetProfile(kvp.Key).GetSprite(SPRITE_LEVEL),
+                    value = kvp.Value
                 });
             }
 
