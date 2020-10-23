@@ -16,6 +16,8 @@ namespace StarSalvager.UI
 {
     public class UniverseMap : MonoBehaviour, IReset
     {
+        public bool PROTO_useSum = true;
+        
         [SerializeField, Required] private UniverseMapButton m_universeSectorButtonPrefab;
 
         [SerializeField, Required] private ScrollRect m_scrollRect;
@@ -61,6 +63,9 @@ namespace StarSalvager.UI
         {
             backButton.gameObject.SetActive(!Globals.IsBetweenWavesInUniverseMap);
             betweenWavesScrapyardButton.gameObject.SetActive(Globals.IsBetweenWavesInUniverseMap);
+
+            if(PROTO_useSum)
+                CalculateRingTotalBits();
 
             if (Globals.IsBetweenWavesInUniverseMap)
             {
@@ -254,6 +259,42 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
+        private Dictionary<BIT_TYPE, float> _collectables;
+        private void CalculateRingTotalBits()
+        {
+            _collectables = new Dictionary<BIT_TYPE, float>();
+            
+            var sectors = FactoryManager.Instance.SectorRemoteData;
+
+            foreach (var sector in sectors)
+            {
+                var waves = sector.WaveRemoteData;
+                foreach (var wave in waves)
+                {
+                    var (_, bits) = wave.GetWaveSummaryData(true);
+
+                    foreach (var bit in bits)
+                    {
+                        var bitType = bit.Key;
+                        
+                        if(!_collectables.ContainsKey(bitType))
+                            _collectables.Add(bitType, 0f);
+
+                        _collectables[bitType] += bit.Value;
+                    }
+                }
+            }
+
+
+            foreach (var collectable in _collectables)
+            {
+                Debug.Log($"[{collectable.Key}] = {collectable.Value}");
+            }
+        }
+
+        //====================================================================================================================//
+        
+
         private void WaveHovered(bool hovered, int sector, int wave, RectTransform rectTransform)
         {
             waveDataWindow.SetActive(hovered);
@@ -275,7 +316,7 @@ namespace StarSalvager.UI
             {
                 //Get the actual wave data here
                 var sectorData = FactoryManager.Instance.SectorRemoteData[sector];
-                var (enemies, bits) = sectorData.GetRemoteData(wave).GetWaveSummaryData();
+                var (enemies, bits) = sectorData.GetRemoteData(wave).GetWaveSummaryData(PROTO_useSum);
             
                 //Parse the information to get the sprites & titles
                 var testSpriteScales = GetSpriteTitleObjects(enemies, bits);
@@ -340,10 +381,11 @@ namespace StarSalvager.UI
 
             foreach (var kvp in Bits)
             {
+                Debug.Log($"[{kvp.Key}] = {kvp.Value}");
                 outList.Add(new TEST_SpriteScale
                 {
                     Sprite = bitProfile.GetProfile(kvp.Key).GetSprite(SPRITE_LEVEL),
-                    value = kvp.Value
+                    value = kvp.Value / (PROTO_useSum ? _collectables[kvp.Key] : 1f)
                 });
             }
 

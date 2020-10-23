@@ -9240,6 +9240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 995f54c0842b2c845ae3d7a24b1be257, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PROTO_useSum: 0
   m_universeSectorButtonPrefab: {fileID: 2087305763259004599, guid: 1ed83d2c722e62b49bd492a5f966f8a6,
     type: 3}
   m_scrollRect: {fileID: 5553311265099259242}
