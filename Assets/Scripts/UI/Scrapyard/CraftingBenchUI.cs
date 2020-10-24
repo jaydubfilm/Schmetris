@@ -11,6 +11,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.UI.Scrapyard
 {
@@ -104,10 +105,10 @@ namespace StarSalvager.UI.Scrapyard
             //FIXME This needs to move to the Factory
             if (!Globals.DisableTestingFeatures)
             {
-                PlayerPersistentData.PlayerData.UnlockAllBlueprints();
+                PlayerDataManager.UnlockAllBlueprints();
             }
 
-            foreach (var blueprint in PlayerPersistentData.PlayerData.unlockedBlueprints)
+            foreach (var blueprint in PlayerDataManager.GetUnlockedBlueprints())
             {
                 var temp = blueprintsContentScrollView.AddElement(blueprint, $"{blueprint.name}_UIElement");
                 temp.Init(blueprint, data =>
@@ -146,12 +147,12 @@ namespace StarSalvager.UI.Scrapyard
 
             if (!showWindow)
             {
-                PlayerData.OnValuesChanged -= UpdateCostUI;
+                PlayerDataManager.OnValuesChanged -= UpdateCostUI;
                 lastBlueprint = null;
                 return;
             }
 
-            PlayerData.OnValuesChanged += UpdateCostUI;
+            PlayerDataManager.OnValuesChanged += UpdateCostUI;
 
             lastBlueprint = blueprint;
 
@@ -257,12 +258,10 @@ namespace StarSalvager.UI.Scrapyard
             if (condensed.IsNullOrEmpty())
                 return false;
 
-            var playerData = PlayerPersistentData.PlayerData;
-
             foreach (var facility in from kvp in facilities
                 let type = (int) kvp.Key
                 let facility = kvp.Value
-                where condensed.Any(x => x.type == type) && !playerData.CheckHasFacility(facility)
+                where condensed.Any(x => x.type == type) && !PlayerDataManager.CheckHasFacility(facility)
                 select facility)
             {
                 missingText =

@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
@@ -49,14 +50,14 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnEnable()
         {
-            PlayerData.OnValuesChanged += SetupScrollViews;
+            PlayerDataManager.OnValuesChanged += SetupScrollViews;
 
             SetupScrollViews();
         }
 
         private void OnDisable()
         {
-            PlayerData.OnValuesChanged -= SetupScrollViews;
+            PlayerDataManager.OnValuesChanged -= SetupScrollViews;
         }
 
         //====================================================================================================================//
@@ -67,15 +68,14 @@ namespace StarSalvager.UI.Scrapyard
             facilityItemUIElements.ClearElements();
             foreach (var facilityRemoteData in FactoryManager.Instance.FacilityRemote.GetRemoteDatas())
             {
-                PlayerData playerData = PlayerPersistentData.PlayerData;
                 FACILITY_TYPE type = facilityRemoteData.type;
 
-                if (!playerData.facilityRanks.ContainsKey(type))
+                if (!PlayerDataManager.GetFacilityRanks().ContainsKey(type))
                 {
                     continue;
                 }
 
-                int level = playerData.facilityRanks[type];
+                int level = PlayerDataManager.GetFacilityRanks()[type];
 
                 string description = facilityRemoteData.displayDescription;
                 description = description.Replace("*", facilityRemoteData.levels[level].increaseAmount.ToString());
@@ -94,20 +94,19 @@ namespace StarSalvager.UI.Scrapyard
             facilityBlueprintUIElements.ClearElements();
             foreach (var facilityRemoteData in FactoryManager.Instance.FacilityRemote.GetRemoteDatas())
             {
-                PlayerData playerData = PlayerPersistentData.PlayerData;
                 FACILITY_TYPE type = facilityRemoteData.type;
-                bool containsFacilityKey = playerData.facilityRanks.ContainsKey(type);
-                bool containsFacilityBlueprintKey = playerData.facilityBlueprintRanks.ContainsKey(type);
+                bool containsFacilityKey = PlayerDataManager.GetFacilityRanks().ContainsKey(type);
+                bool containsFacilityBlueprintKey = PlayerDataManager.GetFacilityBlueprintRanks().ContainsKey(type);
 
                 if (!containsFacilityBlueprintKey)
                 {
                     continue;
                 }
 
-                for (int i = 0; i <= playerData.facilityBlueprintRanks[type]; i++)
+                for (int i = 0; i <= PlayerDataManager.GetFacilityBlueprintRanks()[type]; i++)
                 //for (int i = 0; i < facilityRemoteData.levels.Count; i++)
                 {
-                    if (containsFacilityKey && playerData.facilityRanks[type] >= i)
+                    if (containsFacilityKey && PlayerDataManager.GetFacilityRanks()[type] >= i)
                     {
                         continue;
                     }
@@ -125,7 +124,7 @@ namespace StarSalvager.UI.Scrapyard
                     };
 
                     bool craftButtonInteractable =
-                        (containsFacilityKey && i == playerData.facilityRanks[type] + 1) ||
+                        (containsFacilityKey && i == PlayerDataManager.GetFacilityRanks()[type] + 1) ||
                         (!containsFacilityKey && i == 0);
 
                     var element = facilityBlueprintUIElements.AddElement(newBlueprint);
@@ -139,8 +138,8 @@ namespace StarSalvager.UI.Scrapyard
 
         private void SetupResourceScrollView()
         {
-            var resources = PlayerPersistentData.PlayerData.resources;
-            var capacities = PlayerPersistentData.PlayerData.ResourceCapacities;
+            var resources = PlayerDataManager.GetResources();
+            var capacities = PlayerDataManager.GetResourceCapacities();
 
             foreach (var resource in resources)
             {
@@ -158,7 +157,7 @@ namespace StarSalvager.UI.Scrapyard
         
         private void SetupComponentResourceScrollView()
         {
-            var resources = PlayerPersistentData.PlayerData.components;
+            var resources = PlayerDataManager.GetComponents();
 
             foreach (var resource in resources)
             {
@@ -177,17 +176,15 @@ namespace StarSalvager.UI.Scrapyard
         
         private void PurchaseBlueprint([CanBeNull] TEST_FacilityBlueprint item)
         {
-            PlayerData playerData = PlayerPersistentData.PlayerData;
-            
-            if (!playerData.CanAffordFacilityBlueprint(item))
+            if (!PlayerDataManager.CanAffordFacilityBlueprint(item))
             {
                 Debug.LogError($"Cannot afford {item.name}");
                 return;
             }
 
-            playerData.SubtractResources(item.cost);
-            playerData.SubtractComponents(item.cost);
-            playerData.UnlockFacilityLevel(item.facilityType, item.level);
+            PlayerDataManager.SubtractResources(item.cost);
+            PlayerDataManager.SubtractComponents(item.cost);
+            PlayerDataManager.UnlockFacilityLevel(item.facilityType, item.level);
         }
 
         private void SetupDetailsWindow([CanBeNull] TEST_FacilityItem item, bool active)

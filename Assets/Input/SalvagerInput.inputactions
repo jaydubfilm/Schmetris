@@ -78,7 +78,7 @@
                     "interactions": "Press(behavior=2)"
                 },
                 {
-                    "name": "Any",
+                    "name": "Continue",
                     "type": "Button",
                     "id": "2d121d19-1f96-4c2a-9d4e-b4b432d26d0e",
                     "expectedControlType": "Button",
@@ -299,11 +299,22 @@
                 {
                     "name": "",
                     "id": "c0473a48-657d-427c-a202-de8357cf1539",
-                    "path": "<Keyboard>/anyKey",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Any",
+                    "action": "Continue",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f098f2dd-c0b3-47ae-9316-46357d0f21a2",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Continue",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

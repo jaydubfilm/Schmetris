@@ -61,7 +61,7 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.6
+      m_density: 0.412
     - m_selectionType: 3
       m_shapeName: 
       m_category: 

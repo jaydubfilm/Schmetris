@@ -10,6 +10,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.UI
 {
@@ -36,8 +37,11 @@ namespace StarSalvager.UI
 
         [SerializeField, FoldoutGroup("Hover Window")] 
         private TMP_Text windowTitle;
+        /*[SerializeField, FoldoutGroup("Hover Window")]
+        private SpriteTitleContentScrolView waveDataScrollView;*/
+        
         [SerializeField, FoldoutGroup("Hover Window")]
-        private SpriteTitleContentScrolView waveDataScrollView;
+        private SpriteScaleContentScrollView waveDataScrollView;
 
         [SerializeField]
         private List<UniverseMapButton> universeMapButtons;
@@ -60,14 +64,14 @@ namespace StarSalvager.UI
 
             if (Globals.IsBetweenWavesInUniverseMap)
             {
-                int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+                int curIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
                 CenterToItem(universeMapButtons[curIndex].GetComponent<RectTransform>());
 
-                for (int i = 0; i < PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Count; i++)
+                for (int i = 0; i < PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Count; i++)
                 {
-                    int nodeIndex = PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes[i];
+                    int nodeIndex = PlayerDataManager.GetPlayerPreviouslyCompletedNodes()[i];
 
-                    List<LevelRingNode> childNodesAccessible = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(nodeIndex).childNodes;
+                    List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
 
                     if (nodeIndex == curIndex)
                     {
@@ -106,13 +110,13 @@ namespace StarSalvager.UI
                     universeMapButtons[i].Button.interactable = false;
                 }
                 
-                for (int i = 0; i < PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Count; i++)
+                for (int i = 0; i < PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Count; i++)
                 {
-                    int nodeIndex = PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes[i];
+                    int nodeIndex = PlayerDataManager.GetPlayerPreviouslyCompletedNodes()[i];
                     
-                    List<LevelRingNode> childNodesAccessible = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(nodeIndex).childNodes;
+                    List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
 
-                    bool isShortcut = PlayerPersistentData.PlayerData.ShortcutNodes.Contains(nodeIndex);
+                    bool isShortcut = PlayerDataManager.GetShortcutNodes().Contains(nodeIndex);
 
                     for (int k = 0; k < universeMapButtons.Count; k++)
                     {
@@ -138,7 +142,7 @@ namespace StarSalvager.UI
                 DrawConnection(connection.x, connection.y);
             }*/
 
-            if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.BLUE] <= 35)
+            if (PlayerDataManager.GetResources()[BIT_TYPE.BLUE] <= 35)
             {
                 Alert.ShowAlert("Water Shortage", "You are running low on water at the base. Be sure to look for some more!", "Ok", null);
             }
@@ -258,8 +262,8 @@ namespace StarSalvager.UI
                 return;
 
             //See if wave is unlocked
-            int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(sector, wave);
-            var unlocked = PlayerPersistentData.PlayerData.PlayerPreviouslyCompletedNodes.Contains(curIndex);
+            int curIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(sector, wave);
+            var unlocked = PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(curIndex);
             
             missingDataObject.SetActive(!unlocked);
             waveDataScrollView.SetActive(unlocked);
@@ -274,13 +278,13 @@ namespace StarSalvager.UI
                 var (enemies, bits) = sectorData.GetRemoteData(wave).GetWaveSummaryData();
             
                 //Parse the information to get the sprites & titles
-                var spriteTitles = GetSpriteTitleObjects(enemies, bits);
+                var testSpriteScales = GetSpriteTitleObjects(enemies, bits);
                 waveDataScrollView.ClearElements();
 
-                foreach (var spriteTitle in spriteTitles)
+                foreach (var spriteScale in testSpriteScales)
                 {
-                    var temp = waveDataScrollView.AddElement(spriteTitle);
-                    temp.Init(spriteTitle);
+                    var temp = waveDataScrollView.AddElement(spriteScale);
+                    temp.Init(spriteScale);
                 }
             }
             
@@ -288,7 +292,7 @@ namespace StarSalvager.UI
             StartCoroutine(ResizeRepositionCostWindowCoroutine(rectTransform));
         }
 
-        private List<SpriteTitle> GetSpriteTitleObjects(Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits)
+        /*private List<SpriteTitle> GetSpriteTitleObjects(Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits)
         {
             var outList = new List<SpriteTitle>();
             var enemyProfile = FactoryManager.Instance.EnemyProfile;
@@ -310,6 +314,36 @@ namespace StarSalvager.UI
                 {
                     Sprite = bitProfile.GetProfile(kvp.Key).GetSprite(0),
                     Title = $"{Mathf.RoundToInt(kvp.Value * 100f)}%"
+                });
+            }
+
+            return outList;
+        }*/
+        
+        private List<TEST_SpriteScale> GetSpriteTitleObjects(Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits)
+        {
+            const int SPRITE_LEVEL = 2;
+            
+            var outList = new List<TEST_SpriteScale>();
+            var enemyProfile = FactoryManager.Instance.EnemyProfile;
+            
+            var bitProfile = FactoryManager.Instance.BitProfileData;
+
+            foreach (var kvp in Enemies)
+            {
+                outList.Add(new TEST_SpriteScale
+                {
+                    Sprite = enemyProfile.GetEnemyProfileData(kvp.Key).Sprite,
+                    value = kvp.Value / (float)SpriteScaleUIElement.COUNT,
+                });
+            }
+
+            foreach (var kvp in Bits)
+            {
+                outList.Add(new TEST_SpriteScale
+                {
+                    Sprite = bitProfile.GetProfile(kvp.Key).GetSprite(SPRITE_LEVEL),
+                    value = kvp.Value
                 });
             }
 

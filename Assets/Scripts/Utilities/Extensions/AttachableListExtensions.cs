@@ -27,7 +27,7 @@ namespace StarSalvager.Utilities.Extensions
         /// <summary>
         /// Returns whether or not this AttachableBase has a clear path to the core.
         /// </summary>
-        /// <param name="bot"></param>
+        /// <param name="attachedBlocks"></param>
         /// <param name="checking"></param>
         /// <param name="toIgnore"></param>
         /// <returns></returns>
@@ -691,32 +691,47 @@ namespace StarSalvager.Utilities.Extensions
 
         }
 
-        public static void GetAllAttachedDetachables<T>(this List<T> attachables, T current, IAttachable[] toIgnore,
-            ref List<T> outAttachables) where T : IAttachable
+        public static void GetAllConnectedDetachables<T>(this List<T> attachables,
+            ICanDetach current,
+            ICanDetach[] toIgnore,
+            ref List<T> outDetachables) where T : IAttachable
         {
-            var attachablesAround = attachables.GetAttachablesAround(current).OfType<ICanDetach>();
+            var detachablesAround = attachables.GetAttachablesAround(current.iAttachable).OfType<T>().OfType<ICanDetach>();
 
-            outAttachables.Add(current);
+            outDetachables.Add((T)current);
 
-            foreach (var attachable1 in attachablesAround)
+            foreach (var canDetach in detachablesAround)
             {
-                var attachable = (T) attachable1;
 
-                //if (attachable == null)
-                //    continue;
-
-                //if (!attachable.CanDisconnect)
-                //    continue;
-
-                if (toIgnore != null && toIgnore.Contains(attachable))
+                if (toIgnore != null && toIgnore.Contains(canDetach))
                     continue;
 
-                if (outAttachables.Contains(attachable))
+                if (outDetachables.Contains((T)canDetach))
                     continue;
 
-                attachables.GetAllAttachedDetachables(attachable, toIgnore, ref outAttachables);
+                attachables.GetAllConnectedDetachables(canDetach, toIgnore, ref outDetachables);
             }
+        }
+        
+        public static void GetAllConnectedDetachables(this List<IAttachable> attachables,
+            ICanDetach current,
+            ICanDetach[] toIgnore,
+            ref List<ICanDetach> outDetachables)
+        {
+            var detachablesAround = attachables.GetAttachablesAround(current.iAttachable).OfType<ICanDetach>();
 
+            outDetachables.Add(current);
+
+            foreach (var canDetach in detachablesAround)
+            {
+                if (toIgnore != null && toIgnore.Contains(canDetach))
+                    continue;
+
+                if (outDetachables.Contains(canDetach))
+                    continue;
+
+                attachables.GetAllConnectedDetachables(canDetach, toIgnore, ref outDetachables);
+            }
         }
 
 

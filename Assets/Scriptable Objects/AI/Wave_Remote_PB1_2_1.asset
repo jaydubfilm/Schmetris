@@ -51,7 +51,7 @@ MonoBehaviour:
       m_density: 0.3
     - m_selectionType: 1
       m_shapeName: 
-      m_category: O_Doubles_1
+      m_category: O_Triples_L.0
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.4
@@ -86,7 +86,7 @@ MonoBehaviour:
       m_density: 0.3
     - m_selectionType: 1
       m_shapeName: 
-      m_category: O_Triples_I
+      m_category: O_Triples_L.0
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.4

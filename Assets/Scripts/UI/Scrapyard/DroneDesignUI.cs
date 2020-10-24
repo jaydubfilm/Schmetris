@@ -7,6 +7,7 @@ using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
@@ -163,8 +164,8 @@ namespace StarSalvager.UI.Scrapyard
             if (_scrollViewsSetup)
                 RefreshScrollViews();
 
-            PlayerData.OnValuesChanged += UpdateBotResourceElements;
-            PlayerData.OnCapacitiesChanged += UpdateBotResourceElements;
+            PlayerDataManager.OnValuesChanged += UpdateBotResourceElements;
+            PlayerDataManager.OnCapacitiesChanged += UpdateBotResourceElements;
 
             //TODO May want to setup some sort of Init function to merge these two setups
             //launchButtonPointerEvents.PointerEntered += PreviewFillBothBotsResources;
@@ -176,9 +177,9 @@ namespace StarSalvager.UI.Scrapyard
             m_cameraZoomScaler.value = cameraScaleOnEnter;
 
             DroneDesigner?.ClearUndoRedoStacks();
-            
-            PlayerData.OnValuesChanged -= UpdateBotResourceElements;
-            PlayerData.OnCapacitiesChanged -= UpdateBotResourceElements;
+
+            PlayerDataManager.OnValuesChanged -= UpdateBotResourceElements;
+            PlayerDataManager.OnCapacitiesChanged -= UpdateBotResourceElements;
             
             
             //launchButtonPointerEvents.PointerEntered -= PreviewFillBothBotsResources;
@@ -356,7 +357,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitUiScrollView()
         {
-            foreach (var blockData in PlayerPersistentData.PlayerData.GetCurrentPartsInStorage())
+            foreach (var blockData in PlayerDataManager.GetCurrentPartsInStorage())
             {
                 var partRemoteData = remotePartProfileScriptable.GetRemoteData((PART_TYPE)blockData.Type);
 
@@ -382,8 +383,8 @@ namespace StarSalvager.UI.Scrapyard
 
         public void UpdateBotResourceElements()
         {
-            var resources = PlayerPersistentData.PlayerData.resources;
-            var resourceCapacities = PlayerPersistentData.PlayerData.ResourceCapacities;
+            var resources = PlayerDataManager.GetResources();
+            var resourceCapacities = PlayerDataManager.GetResourceCapacities();
 
             foreach (var resource in resources)
             {
@@ -400,18 +401,8 @@ namespace StarSalvager.UI.Scrapyard
             }
 
             //liquidResourceContentView
-            IReadOnlyDictionary<BIT_TYPE, float> liquids;
-            IReadOnlyDictionary<BIT_TYPE, int> liquidsCapacity;
-            if (_droneDesigner.IsEditingRecoveryDrone)
-            {
-                liquids = PlayerPersistentData.PlayerData.recoveryDroneLiquidResource;
-                liquidsCapacity = PlayerPersistentData.PlayerData.recoveryDroneLiquidCapacity;
-            }
-            else
-            {
-                liquids = PlayerPersistentData.PlayerData.liquidResource;
-                liquidsCapacity = PlayerPersistentData.PlayerData.liquidCapacity;
-            }
+            IReadOnlyDictionary<BIT_TYPE, float> liquids = PlayerDataManager.GetLiquidResources(_droneDesigner.IsEditingRecoveryDrone);
+            IReadOnlyDictionary<BIT_TYPE, int> liquidsCapacity = PlayerDataManager.GetLiquidCapacities(_droneDesigner.IsEditingRecoveryDrone);
 
             foreach (var liquid in liquids)
             {
@@ -477,9 +468,9 @@ namespace StarSalvager.UI.Scrapyard
             var powerDraw = _droneDesigner._scrapyardBot.powerDraw;
             var availablePower =
                 Mathf.Clamp(
-                    PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] +
-                    PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW], 0,
-                    PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.YELLOW]);
+                    PlayerDataManager.GetLiquidResources(_droneDesigner.IsEditingRecoveryDrone)[BIT_TYPE.YELLOW] +
+                    PlayerDataManager.GetResources()[BIT_TYPE.YELLOW], 0,
+                    PlayerDataManager.GetLiquidCapacities(_droneDesigner.IsEditingRecoveryDrone)[BIT_TYPE.YELLOW]);
 
             string powerTime = "infinite";
             if(powerDraw > 0)
@@ -518,15 +509,7 @@ namespace StarSalvager.UI.Scrapyard
                 BIT_TYPE.YELLOW
             };
 
-            List<BlockData> botData;
-            if (isRecoveryDrone)
-            {
-                botData = PlayerPersistentData.PlayerData.recoveryDroneBlockData;
-            }
-            else
-            {
-                botData = PlayerPersistentData.PlayerData.currentBlockData;
-            }
+            List<BlockData> botData = PlayerDataManager.GetBlockDatas(isRecoveryDrone);
 
             foreach (var bitType in types)
             {
@@ -570,24 +553,8 @@ namespace StarSalvager.UI.Scrapyard
                 }
 
 
-                float currentAmount;
-                if (isRecoveryDrone)
-                {
-                    currentAmount = PlayerPersistentData.PlayerData.recoveryDroneLiquidResource[bitType];
-                }
-                else
-                {
-                    currentAmount = PlayerPersistentData.PlayerData.liquidResource[bitType];
-                }
-                float currentCapacity;
-                if (isRecoveryDrone)
-                {
-                    currentCapacity = PlayerPersistentData.PlayerData.recoveryDroneLiquidCapacity[bitType];
-                }
-                else
-                {
-                    currentCapacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
-                }
+                float currentAmount = PlayerDataManager.GetLiquidResources(isRecoveryDrone)[bitType];
+                float currentCapacity = PlayerDataManager.GetLiquidCapacities(isRecoveryDrone)[bitType];
 
                 var fillRemaining = currentCapacity - currentAmount;
 
@@ -595,7 +562,7 @@ namespace StarSalvager.UI.Scrapyard
                 if (fillRemaining <= 0f)
                     continue;
 
-                var availableResources = PlayerPersistentData.PlayerData.resources[bitType];
+                var availableResources = PlayerDataManager.GetResources()[bitType];
 
                 //If we have no resources available to refill the liquid, move onto the next
                 if(availableResources <= 0)
@@ -690,7 +657,7 @@ namespace StarSalvager.UI.Scrapyard
                 return;
             
             _repairButtonText.text = $"Repair {finalRepairCost} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.GREEN]}";
-            repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] >= finalRepairCost;
+            repairButton.interactable = PlayerDataManager.GetResources()[BIT_TYPE.GREEN] >= finalRepairCost;
             repairButtonGlow.SetActive(repairButton.interactable);
             
             /*var totalCost = repairCost + replacementCost;
@@ -741,7 +708,7 @@ namespace StarSalvager.UI.Scrapyard
             if (totalCost == 0)
                 return 0;
 
-            var available = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN];
+            var available = PlayerDataManager.GetResources()[BIT_TYPE.GREEN];
 
             if (totalCost <= available || available == 0) 
                 return totalCost;
