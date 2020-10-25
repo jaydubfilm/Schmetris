@@ -5,7 +5,6 @@ using StarSalvager.Values;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
 using StarSalvager.UI.Scrapyard;
-using System.Security.Policy;
 using StarSalvager.Utilities.Math;
 using System.Linq;
 using UnityEngine;
