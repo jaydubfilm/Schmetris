@@ -1,4 +1,5 @@
-﻿using StarSalvager;
+﻿using Newtonsoft.Json;
+using StarSalvager;
 using StarSalvager.Values;
 using System;
 using System.Collections;
@@ -11,29 +12,40 @@ namespace StarSalvager.Utilities.Saving
     [Serializable]
     public class PlayerResource
     {
+        [JsonProperty]
         private BIT_TYPE bitType;
 
+        [JsonIgnore]
         public int resource => _resource;
+        [JsonProperty]
         private int _resource;
 
+        [JsonIgnore]
         public int resourceCapacity => _resourceCapacity;
+        [JsonProperty]
         private int _resourceCapacity;
 
+        [JsonIgnore]
         public float liquid
         {
             get => Globals.IsRecoveryBot ? _recoveryBotLiquid : _mainBotLiquid;
         }
 
 
+        [JsonProperty]
         private float _mainBotLiquid;
+        [JsonProperty]
         private float _recoveryBotLiquid;
 
+        [JsonIgnore]
         public int liquidCapacity
         {
             get => Globals.IsRecoveryBot ? _recoveryBotLiquidCapacity : _mainBotLiquidCapacity;
         }
 
+        [JsonProperty]
         private int _mainBotLiquidCapacity;
+        [JsonProperty]
         private int _recoveryBotLiquidCapacity;
 
         public PlayerResource(BIT_TYPE type, int resource, int resourceCapacity, int mainBotLiquid, int mainBotLiquidCapacity, int recoveryBotLiquid, int recoveryBotLiquidCapacity)

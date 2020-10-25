@@ -856,6 +856,7 @@ namespace StarSalvager
                         Globals.CurrentWave = 0;
                         GameTimer.SetPaused(false);
                         PlayerDataManager.ResetPlayerRunData();
+                        PlayerDataManager.SavePlayerAccountData();
                         PlayerDataManager.ClearCurrentSaveFile();
                         SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
                     });
