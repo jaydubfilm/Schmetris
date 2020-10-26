@@ -18,14 +18,19 @@ namespace StarSalvager.AI
 
         [SerializeField, FoldoutGroup("$SelectionType"), ShowIf("SelectionType", SELECTION_TYPE.ASTEROID)]
         private ASTEROID_SIZE m_asteroidSize;
-        [Title("$GetSpawnsPerScreenWidthPerMinute")]
+        
+        
+        
+        
+        /*[Title("$GetSpawnsPerScreenWidthPerMinute")]
         [Title("$Density")]
-        [Title("$GetDensityFromSpawnsPerScreenWidthPerMinute")]
-        [SerializeField, FoldoutGroup("$SelectionType"), HideIf("m_maxOut"), Range(0, 1)]
+        [Title("$GetDensityFromSpawnsPerScreenWidthPerMinute")]*/
+        
+        [SerializeField, HideInInspector]
         private float m_density;
-        [SerializeField, FoldoutGroup("$SelectionType")]
-        public int m_spawnsPerScreenWidthPerMinute;
-        [SerializeField, FoldoutGroup("$SelectionType")]
+        [SerializeField, HorizontalGroup("$SelectionType/perMinute"), Range(0, 500), PropertyTooltip("Average Per Screen Width"), LabelText("Spawns per Minute"), DisableIf("$m_maxOut")]
+        private int m_spawnsPerScreenWidthPerMinute;
+        [SerializeField, HorizontalGroup("$SelectionType/perMinute"), LabelWidth(5), LabelText("Maxed"), ToggleLeft]
         private bool m_maxOut;
 
         //====================================================================================================================//
@@ -33,6 +38,7 @@ namespace StarSalvager.AI
 
 #if UNITY_EDITOR
         //Todo: These are temporary values set OnValidate in StageObstacleData used for SpawnsPerScreenWidthPerMinute
+        [HideInInspector]
         public float spawningMultiplier = 1;
 
         protected override ValueDropdownList<SELECTION_TYPE> GetSelectionOptions()

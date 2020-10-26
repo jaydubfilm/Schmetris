@@ -38,7 +38,7 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 2
       m_density: 0.2
-      m_spawnsPerScreenWidthPerMinute: 0
+      m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 3
@@ -47,7 +47,7 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.25
-      m_spawnsPerScreenWidthPerMinute: 0
+      m_spawnsPerScreenWidthPerMinute: 30
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -56,7 +56,7 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.3
-      m_spawnsPerScreenWidthPerMinute: 0
+      m_spawnsPerScreenWidthPerMinute: 52
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -65,7 +65,7 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.4
-      m_spawnsPerScreenWidthPerMinute: 0
+      m_spawnsPerScreenWidthPerMinute: 122
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -74,7 +74,7 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.28
-      m_spawnsPerScreenWidthPerMinute: 0
+      m_spawnsPerScreenWidthPerMinute: 42
       m_maxOut: 0
       spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
@@ -94,7 +94,7 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 3
       m_density: 0.2
-      m_spawnsPerScreenWidthPerMinute: 0
+      m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 2
@@ -103,7 +103,7 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 2
       m_density: 0.2
-      m_spawnsPerScreenWidthPerMinute: 0
+      m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 3
@@ -112,7 +112,7 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.25
-      m_spawnsPerScreenWidthPerMinute: 0
+      m_spawnsPerScreenWidthPerMinute: 30
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -121,7 +121,7 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.3
-      m_spawnsPerScreenWidthPerMinute: 0
+      m_spawnsPerScreenWidthPerMinute: 52
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -130,7 +130,7 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.4
-      m_spawnsPerScreenWidthPerMinute: 0
+      m_spawnsPerScreenWidthPerMinute: 122
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.2
-      m_spawnsPerScreenWidthPerMinute: 0
+      m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
       spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
