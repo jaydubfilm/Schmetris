@@ -364,6 +364,7 @@ namespace StarSalvager
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
 
             EnemiesKilledInWave.Clear();
+            MissionManager.ProcessWaveComplete();
 
             if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0)
             {
