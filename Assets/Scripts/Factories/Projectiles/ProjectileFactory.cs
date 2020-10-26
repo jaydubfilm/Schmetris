@@ -44,18 +44,33 @@ namespace StarSalvager.Factories
         //============================================================================================================//
 
         //TODO: Add setting the collisionTag for the projectile
-        public T[] CreateObjects<T>(string projectileType, Vector2 fromPosition, Vector2 targetPosition, float damage, float rangeBoost, string collisionTag, bool shouldFlipSprite = false)
+        public T[] CreateObjects<T>(string projectileType,
+            Vector2 fromPosition,
+            Vector2 targetPosition,
+            Vector2 shootDirection,
+            float damage, 
+            float rangeBoost,
+            string collisionTag
+            , bool shouldFlipSprite = false)
         {
-            return CreateObjects<T>(projectileType, fromPosition, targetPosition, Vector2.zero, damage, rangeBoost, collisionTag, shouldFlipSprite);
+            return CreateObjects<T>(projectileType, fromPosition, targetPosition, Vector2.zero, shootDirection, damage,
+                rangeBoost, collisionTag, shouldFlipSprite);
         }
         
-        public T[] CreateObjects<T>(string projectileType, Vector2 fromPosition, Vector2 targetPosition,
-            Vector2 currentVelocity, float damage, float rangeBoost, string collisionTag, bool shouldFlipSprite = false)
+        public T[] CreateObjects<T>(string projectileType, 
+            Vector2 fromPosition, 
+            Vector2 targetPosition,
+            Vector2 currentVelocity, 
+            Vector2 shootDirection,
+            float damage, 
+            float rangeBoost, 
+            string collisionTag, 
+            bool shouldFlipSprite = false)
         {
             var projectiles = new List<T>();
             var projectileProfile = m_projectileProfile.GetProjectileProfileData(projectileType);
 
-            var travelDirections = GetFireDirections(projectileProfile, fromPosition, targetPosition);
+            var travelDirections = GetFireDirections(projectileProfile, fromPosition, targetPosition, shootDirection);
 
             foreach (var travelDirection in travelDirections)
             {
@@ -93,18 +108,34 @@ namespace StarSalvager.Factories
         //====================================================================================================================//
         
         //TODO: Add setting the collisionTag for the projectile
-        public T[] CreateObjects<T>(string projectileType, Vector2 fromPosition, CollidableBase target, float damage, float rangeBoost, string collisionTag, bool shouldFlipSprite = false)
+        public T[] CreateObjects<T>(string projectileType,
+            Vector2 fromPosition,
+            CollidableBase target,
+            Vector2 shootDirection,
+            float damage, 
+            float rangeBoost, 
+            string collisionTag,
+            bool shouldFlipSprite = false)
         {
-            return CreateObjects<T>(projectileType, fromPosition, target, Vector2.zero, damage,rangeBoost, collisionTag, shouldFlipSprite);
+            return CreateObjects<T>(projectileType, fromPosition, target, shootDirection, Vector2.zero, damage,
+                rangeBoost, collisionTag, shouldFlipSprite);
         }
         
-        public T[] CreateObjects<T>(string projectileType, Vector2 fromPosition, CollidableBase target,
-            Vector2 currentVelocity, float damage,float rangeBoost, string collisionTag, bool shouldFlipSprite = false)
+        public T[] CreateObjects<T>(string projectileType, 
+            Vector2 fromPosition, 
+            CollidableBase target,
+            Vector2 shootDirection,
+            Vector2 currentVelocity, 
+            float damage,
+            float rangeBoost, 
+            string collisionTag, 
+            bool shouldFlipSprite = false)
         {
             var projectiles = new List<T>();
             var projectileProfile = m_projectileProfile.GetProjectileProfileData(projectileType);
 
-            var travelDirections = GetFireDirections(projectileProfile, fromPosition, target.transform.position);
+            var travelDirections =
+                GetFireDirections(projectileProfile, fromPosition, target.transform.position, shootDirection);
 
             foreach (var travelDirection in travelDirections)
             {
@@ -140,12 +171,16 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        private static IEnumerable<Vector2> GetFireDirections(ProjectileProfileData profileData, Vector2 fromPosition,
-            Vector2 targetPosition)
+        private static IEnumerable<Vector2> GetFireDirections(ProjectileProfileData profileData, 
+            Vector2 fromPosition,
+            Vector2 targetPosition,
+            Vector2 shootDirection)
         {
             var spreadAngle = profileData.SpreadAngle;
             var sprayCount = profileData.SprayCount;
             var attackType = profileData.AttackType;
+
+            Vector2 shootAt;
 
             var fireDirections = new List<Vector2>();
 
@@ -155,7 +190,7 @@ namespace StarSalvager.Factories
                 case ENEMY_ATTACKTYPE.Forward:
                 case ENEMY_ATTACKTYPE.AtPlayer:
                 case ENEMY_ATTACKTYPE.Heat_Seeking:
-                    fireDirections.Add(targetPosition - fromPosition);
+                    fireDirections.Add(shootDirection);
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case ENEMY_ATTACKTYPE.AtPlayerCone:
@@ -169,23 +204,25 @@ namespace StarSalvager.Factories
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case ENEMY_ATTACKTYPE.Random_Spray:
+                    shootAt = fromPosition + shootDirection;
                     //For each shot in the spray, rotate player position around enemy position slightly by a random angle to shoot somewhere in a cone around the player
                     for (var i = 0; i < sprayCount; i++)
                     {
-                        fireDirections.Add(GetDestinationForRotatePositionAroundPivot(targetPosition,
+                        fireDirections.Add(GetDestinationForRotatePositionAroundPivot(
+                            shootAt,
                             fromPosition,
-                            Vector3.forward * Random.Range(-spreadAngle,
-                                spreadAngle)) - (Vector3) fromPosition);
+                            Vector3.forward * Random.Range(-spreadAngle, spreadAngle)) - (Vector3) fromPosition);
                     }
 
                     break;
                 case ENEMY_ATTACKTYPE.Fixed_Spray:
-
+                    shootAt = fromPosition + shootDirection;
                     var angleRate = spreadAngle / (sprayCount - 1);
                     var splitAngle = spreadAngle / 2f;
                     for (var i = 0; i < sprayCount; i++)
                     {
-                        fireDirections.Add(GetDestinationForRotatePositionAroundPivot(targetPosition,
+                        fireDirections.Add(GetDestinationForRotatePositionAroundPivot(
+                            shootAt,
                             fromPosition,
                             Vector3.forward * ((i * angleRate) - splitAngle)) - (Vector3) fromPosition);
                     }

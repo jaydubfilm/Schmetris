@@ -599,7 +599,7 @@ namespace StarSalvager
                         
                         //TODO Create projectile shooting at new target
 
-                        CreateProjectile(part, levelData, asteroid.transform.position, "Asteroid");
+                        CreateProjectile(part, levelData, asteroid, "Asteroid");
 
                         break;
                     case PART_TYPE.SNIPER:
@@ -659,14 +659,10 @@ namespace StarSalvager
                             }
                         }
 
-                        Vector3 target;
                         switch (part.Type)
                         {
                             case PART_TYPE.GUN:
                             case PART_TYPE.TRIPLESHOT:
-                                target = part.transform.position + part.transform.up;
-                                CreateProjectile(part, levelData, target);
-                                break;
                             case PART_TYPE.MISSILE:
                                 CreateProjectile(part, levelData, enemy);
                                 break;
@@ -847,7 +843,7 @@ namespace StarSalvager
             }
         }
 
-        private void CreateProjectile(in Part part, PartLevelData levelData, in Enemy enemy, string collisionTag = "Enemy")
+        private void CreateProjectile(in Part part, PartLevelData levelData, in CollidableBase collidableTarget, string collisionTag = "Enemy")
         {
             var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
             var damage = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Damage);
@@ -862,13 +858,14 @@ namespace StarSalvager
                 .CreateObjects<Projectile>(
                     projectileId,
                     position,
-                    enemy,
+                    collidableTarget,
+                    part.transform.up.normalized,
                     damage,
                     rangeBoost,
                     collisionTag,
                     true);
         }
-        private void CreateProjectile(in Part part, PartLevelData levelData, Vector2 targetPosition, string collisionTag = "Enemy")
+        /*private void CreateProjectile(in Part part, PartLevelData levelData, Vector2 targetPosition, string collisionTag = "Enemy")
         {
             var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
 
@@ -889,7 +886,7 @@ namespace StarSalvager
                     rangeBoost,
                     collisionTag,
                     true);
-        }
+        }*/
 
         private float GetProjectileRange(in Part part, string projectileID)
         {
