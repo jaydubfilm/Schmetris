@@ -44,6 +44,9 @@ namespace StarSalvager.UI
         [SerializeField] private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
+        [SerializeField]
+        private GameObject menuCharactersRootObject;
+
         //============================================================================================================//
 
         #region Menu Windows
@@ -285,6 +288,7 @@ namespace StarSalvager.UI
                     //menuState = MENUSTATE.GAMEMENU;
                     introSceneCanvas.SetActive(true);
                     mainMenuWindow.SetActive(false);
+                    menuCharactersRootObject.SetActive(false);
 
                     //SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
                 }
