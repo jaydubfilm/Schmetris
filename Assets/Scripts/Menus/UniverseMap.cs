@@ -107,7 +107,7 @@ namespace StarSalvager.UI
                 CenterToItem(universeMapButtons[0].GetComponent<RectTransform>());
                 for (int i = 0; i < universeMapButtons.Count; i++)
                 {
-                    universeMapButtons[i].Button.interactable = false;
+                    universeMapButtons[i].Button.interactable = !Globals.DisableTestingFeatures;
                 }
                 
                 for (int i = 0; i < PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Count; i++)
