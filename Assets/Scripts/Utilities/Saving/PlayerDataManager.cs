@@ -430,6 +430,21 @@ namespace StarSalvager.Utilities.Saving
             return PlayerAccountData.Gears;
         }
 
+        public static (int, int) GetPatchPointProgress()
+        {
+            return PlayerAccountData.GetPatchPointProgress();
+        }
+
+        public static int GetTotalPatchPoints()
+        {
+            return PlayerAccountData.GetTotalPatchPoints();
+        }
+
+        public static int GetAvailablePatchPoints()
+        {
+            return PlayerAccountData.GetAvailablePatchPoints();
+        }
+
         public static void ChangeGears(int amount)
         {
             PlayerAccountData.ChangeGears(amount);

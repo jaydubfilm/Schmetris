@@ -340,7 +340,7 @@ namespace StarSalvager.UI
             //SetTimeString("0:00");
             
             SetPlayerPatchPoints(0);
-            SetPlayerGearsProgress(0, 0);
+            SetPlayerGearsProgress((0, 0));
             ShowAbortWindow(false);
 
             ShowRecoveryBanner(false);
@@ -400,7 +400,7 @@ namespace StarSalvager.UI
             SetRepairValue(PlayerDataManager.GetResource(BIT_TYPE.GREEN).liquid);
             SetAmmoValue(PlayerDataManager.GetResource(BIT_TYPE.GREY).liquid);
 
-            SetPlayerGearsProgress(PlayerDataManager.GetGears(), 999);
+            SetPlayerGearsProgress(PlayerDataManager.GetPatchPointProgress());
         }
 
         //============================================================================================================//
@@ -458,20 +458,20 @@ namespace StarSalvager.UI
         //TODO I should look into the NotifyPropertyChanged for setting up this functionality
         private void UpdatePlayerGearsLevel()
         {
-            SetPlayerGearsProgress(PlayerDataManager.GetGears(), 100);
+            SetPlayerGearsProgress(PlayerDataManager.GetPatchPointProgress());
 
             //TODO Need to add the Patch Points connection here
-            SetPlayerPatchPoints(0);
+            SetPlayerPatchPoints(PlayerDataManager.GetAvailablePatchPoints());
         }
 
-        public void SetPlayerGearsProgress(int gears, int gearsRequired)
+        public void SetPlayerGearsProgress((int, int) patchPointProgress)
         {
             gearsSlider.minValue = 0;
-            gearsSlider.maxValue = gearsRequired;
-            gearsSlider.value = gears;
+            gearsSlider.maxValue = patchPointProgress.Item2;
+            gearsSlider.value = patchPointProgress.Item1;
             
-            //levelText.text = $"lvl {playerLevel}";
-            gearsText.text = $"{gears} / {gearsRequired}";
+            //levelText.text = $"lvl {}";
+            gearsText.text = $"{patchPointProgress.Item1} / {patchPointProgress.Item2}";
         }
 
         public void SetPlayerPatchPoints(int points)

@@ -51,8 +51,28 @@ namespace StarSalvager.Values
 
             if (newTotalPatchPoints > totalPatchPoints)
             {
-                Toast.AddToast("Unlocked New Patch Point!");
+                for (int i = totalPatchPoints; i < newTotalPatchPoints; i++)
+                {
+                    Toast.AddToast("Unlocked New Patch Point!");
+                }
             }
+        }
+
+        public (int, int) GetPatchPointProgress()
+        {
+            int patchPointBaseCost = 100;
+            int patchPointCostIncrement = 10;
+
+            int totalPatchPoints = 0;
+            int gearsAmount = Gears;
+
+            while (patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints) <= gearsAmount)
+            {
+                gearsAmount -= patchPointCostIncrement + (patchPointCostIncrement * totalPatchPoints);
+                totalPatchPoints++;
+            }
+
+            return (gearsAmount, patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints));
         }
 
         public int GetTotalPatchPoints()
