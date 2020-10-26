@@ -163,7 +163,7 @@ namespace StarSalvager.UI.Scrapyard
 
             if (_scrollViewsSetup)
                 RefreshScrollViews();
-
+            
             PlayerDataManager.OnValuesChanged += UpdateBotResourceElements;
             PlayerDataManager.OnCapacitiesChanged += UpdateBotResourceElements;
 
@@ -425,7 +425,8 @@ namespace StarSalvager.UI.Scrapyard
             }
 
             UpdateFlightDataUI();
-
+            
+            UpdateRepairButton();
         }
 
         private void UpdateLoadListUiScrollViews()
@@ -632,6 +633,13 @@ namespace StarSalvager.UI.Scrapyard
         //====================================================================================================================//
 
         #region Repair Cost
+
+        public void UpdateRepairButton()
+        {
+            var costs = DroneDesigner.GetRepairCostPair();
+
+            ShowRepairCost(costs.x, costs.y);
+        }
 
         //FIXME This needs to be set up to better account for the weird things that come with Replacing destroyed parts
         public void ShowRepairCost(int repairCost, int replacementCost)
