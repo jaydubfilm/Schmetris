@@ -12,7 +12,15 @@ namespace StarSalvager.AI
         public ASTEROID_SIZE AsteroidSize => m_asteroidSize;
         
         private float DensityExponential => m_density * m_density * m_density;
-        public float Density => DensityExponential / Globals.ObstacleDensityReductionModifier;
+        public float Density()
+        {
+            if (m_maxOut)
+            {
+                return 1.0f;
+            }
+            
+            return DensityExponential / Globals.ObstacleDensityReductionModifier;
+        }
 
         //====================================================================================================================//
 
@@ -58,7 +66,7 @@ namespace StarSalvager.AI
         {
             float rowsPerMinute = 60.0f / Globals.TimeForAsteroidToFallOneSquare;
             float columnWidth = Globals.ColumnsOnScreen;
-            float spawningDensityPerSpawningRegionRow = Density * spawningMultiplier;
+            float spawningDensityPerSpawningRegionRow = Density() * spawningMultiplier;
 
             float spawnsPerColumn = spawningDensityPerSpawningRegionRow * columnWidth * rowsPerMinute;
 

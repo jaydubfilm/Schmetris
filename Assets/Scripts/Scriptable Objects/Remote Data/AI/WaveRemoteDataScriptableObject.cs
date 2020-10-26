@@ -110,7 +110,7 @@ namespace StarSalvager.ScriptableObjects
                                     bits.Add(bitType, 0.0f);
                                 }
 
-                                bits[bitType] += 1.0f * obstacleData.Density * stageRemoteData.StageDuration;
+                                bits[bitType] += 1.0f * obstacleData.Density() * stageRemoteData.StageDuration;
                             }
 
                             break;
@@ -127,7 +127,7 @@ namespace StarSalvager.ScriptableObjects
                                         bits.Add(bitType, 0.0f);
                                     }
 
-                                    bits[bitType] += (1.0f * obstacleData.Density * stageRemoteData.StageDuration) / numShapesInCategory;
+                                    bits[bitType] += (1.0f * obstacleData.Density() * stageRemoteData.StageDuration) / numShapesInCategory;
                                 }
                             }
 
