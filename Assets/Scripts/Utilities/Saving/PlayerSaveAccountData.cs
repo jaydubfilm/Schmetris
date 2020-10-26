@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using JetBrains.Annotations;
+using Newtonsoft.Json;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Missions;
@@ -14,6 +15,7 @@ namespace StarSalvager.Values
         public PlayerSaveRunData PlayerRunData = new PlayerSaveRunData();
 
         public int Gears;
+        public int PatchPointsSpent;
 
         public List<Blueprint> unlockedBlueprints = new List<Blueprint>();
 
@@ -42,29 +44,37 @@ namespace StarSalvager.Values
 
         public void ChangeGears(int amount)
         {
-            /*Gears += amount;
-            if (LevelManager.Instance.WaveEndSummaryData != null)
+            int totalPatchPoints = GetTotalPatchPoints();
+            Gears += amount;
+
+            int newTotalPatchPoints = GetTotalPatchPoints();
+
+            if (newTotalPatchPoints > totalPatchPoints)
             {
-                LevelManager.Instance.WaveEndSummaryData.NumGearsGained += amount;
+                Toast.AddToast("Unlocked New Patch Point!");
+            }
+        }
+
+        public int GetTotalPatchPoints()
+        {
+            int patchPointBaseCost = 100;
+            int patchPointCostIncrement = 10;
+
+            int totalPatchPoints = 0;
+            int gearsAmount = Gears;
+
+            while (patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints) <= gearsAmount)
+            {
+                gearsAmount -= patchPointCostIncrement + (patchPointCostIncrement * totalPatchPoints);
+                totalPatchPoints++;
             }
 
-            int gearsToLevelUp = LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).GearsToLevelUp;
-            if (Gears >= gearsToLevelUp)
-            {
-                Gears -= gearsToLevelUp;
-                //DropLevelupLoot();
-                if (LevelManager.Instance.WaveEndSummaryData != null)
-                {
-                    LevelManager.Instance.WaveEndSummaryData.NumLevelsGained++;
-                }
-                //Level++;
+            return totalPatchPoints;
+        }
 
-                //MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-                {
-                    //level = Level
-                };
-                //MissionManager.ProcessMissionData(typeof(PlayerLevelMission), missionProgressEventData);
-            }*/
+        public int GetAvailablePatchPoints()
+        {
+            return GetTotalPatchPoints() - PatchPointsSpent;
         }
 
         //====================================================================================================================//

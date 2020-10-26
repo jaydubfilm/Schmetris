@@ -69,6 +69,7 @@ namespace StarSalvager.UI
             for (int i = 0; i < universeMapButtons.Count; i++)
             {
                 universeMapButtons[i].Button.image.color = Color.white;
+                universeMapButtons[i].BotImage.gameObject.SetActive(false);
             }
 
             if (Globals.IsBetweenWavesInUniverseMap)
@@ -84,7 +85,7 @@ namespace StarSalvager.UI
 
                     if (nodeIndex == curIndex)
                     {
-                        universeMapButtons[nodeIndex].Button.image.color = Color.green;
+                        universeMapButtons[nodeIndex].BotImage.gameObject.SetActive(true);
                         for (int k = 0; k < universeMapButtons.Count; k++)
                         {
                             if (childNodesAccessible.Any(n => n.nodeIndex == k))
@@ -122,6 +123,7 @@ namespace StarSalvager.UI
             else
             {
                 CenterToItem(universeMapButtons[0].GetComponent<RectTransform>());
+                universeMapButtons[0].BotImage.gameObject.SetActive(true);
                 for (int i = 0; i < universeMapButtons.Count; i++)
                 {
                     universeMapButtons[i].Button.interactable = !Globals.DisableTestingFeatures;
