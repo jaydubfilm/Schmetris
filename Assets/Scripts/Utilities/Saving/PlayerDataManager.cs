@@ -263,6 +263,7 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
+        //FIXME This should be stored via Account, not Run
         public static void AddDontShowAgainKey(string key)
         {
             PlayerRunData.AddDontShowAgainKey(key);

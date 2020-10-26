@@ -1154,7 +1154,10 @@ namespace StarSalvager
             var capacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];*/
 
             //We wont add any if its already full!
-            if (current + amountProcessed > capacity)
+            /*if (current + amountProcessed > capacity)
+                return 0;*/
+
+            if (current == capacity)
                 return 0;
 
             PlayerDataManager.GetResource(targetBit.Type).AddLiquid(amountProcessed);
