@@ -397,7 +397,7 @@ namespace StarSalvager.Utilities.Saving
         public static void RemovePartFromStorage(BlockData blockData)
         {
             PlayerRunData.RemovePartFromStorage(blockData);
-            
+
             OnValuesChanged?.Invoke();
         }
 
@@ -554,7 +554,7 @@ namespace StarSalvager.Utilities.Saving
             {
                 return;
             }
-            
+
             Files.ExportPlayerSaveAccountData(PlayerAccountData, CurrentSaveSlotIndex);
 
             GameMetaData.SaveFiles.RemoveAll(s => s.SaveSlotIndex == CurrentSaveSlotIndex);
@@ -624,6 +624,6 @@ namespace StarSalvager.Utilities.Saving
         }
 
         //====================================================================================================================//
-        
+
     }
 }

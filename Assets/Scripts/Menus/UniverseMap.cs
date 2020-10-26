@@ -16,6 +16,8 @@ namespace StarSalvager.UI
 {
     public class UniverseMap : MonoBehaviour, IReset
     {
+        public bool PROTO_useSum = true;
+
         [SerializeField, Required] private UniverseMapButton m_universeSectorButtonPrefab;
 
         [SerializeField, Required] private ScrollRect m_scrollRect;
@@ -33,13 +35,13 @@ namespace StarSalvager.UI
         private GameObject waveDataWindow;
         [SerializeField, FoldoutGroup("Hover Window")]
         private GameObject missingDataObject;
-        
 
-        [SerializeField, FoldoutGroup("Hover Window")] 
+
+        [SerializeField, FoldoutGroup("Hover Window")]
         private TMP_Text windowTitle;
         /*[SerializeField, FoldoutGroup("Hover Window")]
         private SpriteTitleContentScrolView waveDataScrollView;*/
-        
+
         [SerializeField, FoldoutGroup("Hover Window")]
         private SpriteScaleContentScrollView waveDataScrollView;
 
@@ -62,6 +64,8 @@ namespace StarSalvager.UI
             backButton.gameObject.SetActive(!Globals.IsBetweenWavesInUniverseMap);
             betweenWavesScrapyardButton.gameObject.SetActive(Globals.IsBetweenWavesInUniverseMap);
 
+            if(PROTO_useSum)
+                CalculateRingTotalBits();
             for (int i = 0; i < universeMapButtons.Count; i++)
             {
                 universeMapButtons[i].Button.image.color = Color.white;
@@ -116,11 +120,11 @@ namespace StarSalvager.UI
                 {
                     universeMapButtons[i].Button.interactable = !Globals.DisableTestingFeatures;
                 }
-                
+
                 for (int i = 0; i < PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Count; i++)
                 {
                     int nodeIndex = PlayerDataManager.GetPlayerPreviouslyCompletedNodes()[i];
-                    
+
                     List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
 
                     bool isShortcut = PlayerDataManager.GetShortcutNodes().Contains(nodeIndex);
@@ -140,7 +144,7 @@ namespace StarSalvager.UI
                     if (isShortcut)
                     {
                         universeMapButtons[nodeIndex].Button.interactable = true;
-                    }    
+                    }
                 }
             }
 
@@ -261,6 +265,42 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
+        private Dictionary<BIT_TYPE, float> _collectables;
+        private void CalculateRingTotalBits()
+        {
+            _collectables = new Dictionary<BIT_TYPE, float>();
+
+            var sectors = FactoryManager.Instance.SectorRemoteData;
+
+            foreach (var sector in sectors)
+            {
+                var waves = sector.WaveRemoteData;
+                foreach (var wave in waves)
+                {
+                    var (_, bits) = wave.GetWaveSummaryData(true);
+
+                    foreach (var bit in bits)
+                    {
+                        var bitType = bit.Key;
+
+                        if(!_collectables.ContainsKey(bitType))
+                            _collectables.Add(bitType, 0f);
+
+                        _collectables[bitType] += bit.Value;
+                    }
+                }
+            }
+
+
+            foreach (var collectable in _collectables)
+            {
+                Debug.Log($"[{collectable.Key}] = {collectable.Value}");
+            }
+        }
+
+        //====================================================================================================================//
+
+
         private void WaveHovered(bool hovered, int sector, int wave, RectTransform rectTransform)
         {
             waveDataWindow.SetActive(hovered);
@@ -271,7 +311,7 @@ namespace StarSalvager.UI
             //See if wave is unlocked
             int curIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(sector, wave);
             var unlocked = PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(curIndex);
-            
+
             missingDataObject.SetActive(!unlocked);
             waveDataScrollView.SetActive(unlocked);
 
@@ -282,8 +322,8 @@ namespace StarSalvager.UI
             {
                 //Get the actual wave data here
                 var sectorData = FactoryManager.Instance.SectorRemoteData[sector];
-                var (enemies, bits) = sectorData.GetRemoteData(wave).GetWaveSummaryData();
-            
+                var (enemies, bits) = sectorData.GetRemoteData(wave).GetWaveSummaryData(PROTO_useSum);
+
                 //Parse the information to get the sprites & titles
                 var testSpriteScales = GetSpriteTitleObjects(enemies, bits);
                 waveDataScrollView.ClearElements();
@@ -294,7 +334,7 @@ namespace StarSalvager.UI
                     temp.Init(spriteScale);
                 }
             }
-            
+
             //Display
             StartCoroutine(ResizeRepositionCostWindowCoroutine(rectTransform));
         }
@@ -303,7 +343,7 @@ namespace StarSalvager.UI
         {
             var outList = new List<SpriteTitle>();
             var enemyProfile = FactoryManager.Instance.EnemyProfile;
-            
+
             var bitProfile = FactoryManager.Instance.BitProfileData;
 
             foreach (var kvp in Enemies)
@@ -326,14 +366,14 @@ namespace StarSalvager.UI
 
             return outList;
         }*/
-        
+
         private List<TEST_SpriteScale> GetSpriteTitleObjects(Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits)
         {
             const int SPRITE_LEVEL = 2;
-            
+
             var outList = new List<TEST_SpriteScale>();
             var enemyProfile = FactoryManager.Instance.EnemyProfile;
-            
+
             var bitProfile = FactoryManager.Instance.BitProfileData;
 
             foreach (var kvp in Enemies)
@@ -347,16 +387,17 @@ namespace StarSalvager.UI
 
             foreach (var kvp in Bits)
             {
+                Debug.Log($"[{kvp.Key}] = {kvp.Value}");
                 outList.Add(new TEST_SpriteScale
                 {
                     Sprite = bitProfile.GetProfile(kvp.Key).GetSprite(SPRITE_LEVEL),
-                    value = kvp.Value
+                    value = kvp.Value / (PROTO_useSum ? _collectables[kvp.Key] : 1f)
                 });
             }
 
             return outList;
         }
-        
+
         private IEnumerator ResizeRepositionCostWindowCoroutine(RectTransform buttonTransform)
         {
             //TODO Should also reposition the window relative to the screen bounds to always keep in window

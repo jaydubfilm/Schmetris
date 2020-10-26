@@ -75,7 +75,7 @@ namespace StarSalvager.ScriptableObjects
             return waveDuration;
         }
 
-        public (Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits) GetWaveSummaryData()
+        public (Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits) GetWaveSummaryData(bool useSum)
         {
             var enemies = new Dictionary<string, int>();
             var bits = new Dictionary<BIT_TYPE, float>();
@@ -135,6 +135,9 @@ namespace StarSalvager.ScriptableObjects
                 }
             }
 
+            if(useSum)
+                return (enemies, bits);
+            
             float totalValueBits = 0.0f;
             foreach (var keyValuePair in bits)
             {
