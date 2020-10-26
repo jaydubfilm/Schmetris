@@ -121,6 +121,8 @@ namespace StarSalvager
 
         private Dictionary<Part, Asteroid> _asteroidTargets;
 
+        private Dictionary<Part, float> _gunRanges;
+
         //Unity Functions
         //==============================================================================================================//
 
@@ -315,16 +317,11 @@ namespace StarSalvager
                         //GameUI.ShowBombIcon(true);
                         _bombTimers.Add(part, 0f);
                         break;
-                    
-                    case PART_TYPE.BOOSTDEFENSE:
-                        
-                        
-                        
-                        break;
                 }
             }
 
             SetupHealthBoots();
+            SetupGunRangeValues();
 
             //Force update capacities, once new values determined
             foreach (var capacity in liquidCapacities)
@@ -351,21 +348,31 @@ namespace StarSalvager
             //Be careful to not use return here
             foreach (var part in _parts)
             {
-                if(part.Destroyed || part.Disabled)
+                if(part.Destroyed)
                     continue;
 
+                if(part.Disabled && powerValue == 0f)
+                    continue;
+                
                 PartRemoteData partRemoteData =
                     FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
 
                 var levelData = partRemoteData.levels[part.level];
-
+                
+                if (part.Disabled && powerValue > 0f && levelData.powerDraw > 0)
+                {
+                    part.Disabled = false;
+                    UpdatePartData();
+                }
                 //FIXME THis shouldn't happen often, though I may want to reconsider how this is being approached
-                if (powerValue == 0f && levelData.powerDraw > 0)
+                else if (powerValue == 0f && levelData.powerDraw > 0)
                 {
                     part.Disabled = true;
                     UpdatePartData();
                     continue;
                 }
+                
+                
 
                 if(levelData.powerDraw > 0f)
                     powerToRemove += levelData.powerDraw * Time.deltaTime;
@@ -626,7 +633,9 @@ namespace StarSalvager
                         //Check if we have a target before removing resources
                         //--------------------------------------------------------------------------------------------//
 
-                        var enemy = EnemyManager.GetClosestEnemy(transform.position, 100 * Constants.gridCellSize);
+                        var range = _gunRanges[part];
+                        
+                        var enemy = EnemyManager.GetClosestEnemy(transform.position, range);
                         //TODO Determine if this fires at all times or just when there are active enemies in range
                         if (enemy == null)
                             break;
@@ -808,6 +817,35 @@ namespace StarSalvager
         //====================================================================================================================//
 
         #region Weapons
+        
+        private void SetupGunRangeValues()
+        { 
+            _gunRanges = new Dictionary<Part, float>();
+
+            foreach (var part in _parts)
+            {
+                //Destroyed or disabled parts should not contribute to the stats of the bot anymore
+                if (part.Destroyed || part.Disabled)
+                    continue;
+                
+                var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                    .GetRemoteData(part.Type);
+                
+                switch (part.Type)
+                {
+                    case PART_TYPE.TRIPLESHOT:
+                    case PART_TYPE.MISSILE:
+                    case PART_TYPE.GUN:
+
+                        var projectileID = partData.levels[part.level]
+                            .GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
+                        
+                        _gunRanges.Add(part, GetProjectileRange(part, projectileID));
+                        
+                        break;
+                }
+            }
+        }
 
         private void CreateProjectile(in Part part, PartLevelData levelData, in Enemy enemy, string collisionTag = "Enemy")
         {
@@ -851,6 +889,20 @@ namespace StarSalvager
                     rangeBoost,
                     collisionTag,
                     true);
+        }
+
+        private float GetProjectileRange(in Part part, string projectileID)
+        {
+            var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileID);
+
+            var range = projectileData.ProjectileRange;
+
+            if (range == 0f)
+                return 100 * Constants.gridCellSize;
+            
+            var rangeBoost = GetBoostValue(PART_TYPE.BOOSTRANGE, part);
+
+            return range * rangeBoost;
         }
 
         #endregion //Weapons
