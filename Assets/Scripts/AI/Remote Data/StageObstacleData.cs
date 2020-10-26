@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using StarSalvager.Values;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace StarSalvager.AI
 {
@@ -13,18 +14,27 @@ namespace StarSalvager.AI
         private float DensityExponential => m_density * m_density * m_density;
         public float Density => DensityExponential / Globals.ObstacleDensityReductionModifier;
 
-
         //====================================================================================================================//
 
         [SerializeField, FoldoutGroup("$SelectionType"), ShowIf("SelectionType", SELECTION_TYPE.ASTEROID)]
         private ASTEROID_SIZE m_asteroidSize;
-        [SerializeField, FoldoutGroup("$SelectionType"), Range(0, 1)]
+        [Title("$GetSpawnsPerScreenWidthPerMinute")]
+        [Title("$Density")]
+        [Title("$GetDensityFromSpawnsPerScreenWidthPerMinute")]
+        [SerializeField, FoldoutGroup("$SelectionType"), HideIf("m_maxOut"), Range(0, 1)]
         private float m_density;
+        [SerializeField, FoldoutGroup("$SelectionType")]
+        public int m_spawnsPerScreenWidthPerMinute;
+        [SerializeField, FoldoutGroup("$SelectionType")]
+        private bool m_maxOut;
 
         //====================================================================================================================//
 
 
 #if UNITY_EDITOR
+        //Todo: These are temporary values set OnValidate in StageObstacleData used for SpawnsPerScreenWidthPerMinute
+        public float spawningMultiplier = 1;
+
         protected override ValueDropdownList<SELECTION_TYPE> GetSelectionOptions()
         {
             var valueDropdownItems = new ValueDropdownList<SELECTION_TYPE>
@@ -37,9 +47,30 @@ namespace StarSalvager.AI
 
             return valueDropdownItems;
         }
+
+        protected int GetSpawnsPerScreenWidthPerMinute()
+        {
+            float rowsPerMinute = 60.0f / Globals.TimeForAsteroidToFallOneSquare;
+            float columnWidth = Globals.ColumnsOnScreen;
+            float spawningDensityPerSpawningRegionRow = Density * spawningMultiplier;
+
+            float spawnsPerColumn = spawningDensityPerSpawningRegionRow * columnWidth * rowsPerMinute;
+
+            return Mathf.RoundToInt(spawnsPerColumn);
+        }
+
+        protected float GetDensityFromSpawnsPerScreenWidthPerMinute()
+        {
+            float rowsPerMinute = 60.0f / Globals.TimeForAsteroidToFallOneSquare;
+            float columnWidth = Globals.ColumnsOnScreen;
+
+            float density = m_spawnsPerScreenWidthPerMinute / (spawningMultiplier * columnWidth * rowsPerMinute);
+
+            return density;
+        }
 #endif
 
         //====================================================================================================================//
-        
+
     }
 }
