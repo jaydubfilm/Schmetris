@@ -100,12 +100,18 @@ namespace StarSalvager.UI
                     }
                     else
                     {
-                        //universeMapButtons[nodeIndex].Button.image.color = Color.red;
-                        for (int k = 0; k < universeMapButtons.Count; k++)
+                        if (childNodesAccessible.Count == 0)
                         {
-                            if (childNodesAccessible.Any(n => n.nodeIndex == k))
+                            universeMapButtons[nodeIndex].Button.image.color = Color.red;
+                        }
+                        else
+                        {
+                            for (int k = 0; k < universeMapButtons.Count; k++)
                             {
-                                DrawConnection(nodeIndex, k, true);
+                                if (childNodesAccessible.Any(n => n.nodeIndex == k))
+                                {
+                                    DrawConnection(nodeIndex, k, true);
+                                }
                             }
                         }
                     }
@@ -129,21 +135,29 @@ namespace StarSalvager.UI
 
                     bool isShortcut = PlayerDataManager.GetShortcutNodes().Contains(nodeIndex);
 
-                    for (int k = 0; k < universeMapButtons.Count; k++)
+                    if (childNodesAccessible.Count == 0)
                     {
-                        if (childNodesAccessible.Any(n => n.nodeIndex == k))
+                        universeMapButtons[nodeIndex].Button.image.color = Color.red;
+                    }
+                    else
+                    {
+                        for (int k = 0; k < universeMapButtons.Count; k++)
                         {
-                            if (nodeIndex == 0)
+                            if (childNodesAccessible.Any(n => n.nodeIndex == k))
                             {
-                                universeMapButtons[k].Button.interactable = true;
+                                if (nodeIndex == 0)
+                                {
+                                    universeMapButtons[k].Button.interactable = true;
+                                }
+                                DrawConnection(nodeIndex, k, !(nodeIndex == 0 || isShortcut));
                             }
-                            DrawConnection(nodeIndex, k, !(nodeIndex == 0 || isShortcut));
                         }
                     }
 
                     if (isShortcut)
                     {
                         universeMapButtons[nodeIndex].Button.interactable = true;
+                        universeMapButtons[nodeIndex].Button.image.color = Color.blue;
                     }
                 }
             }
