@@ -49,6 +49,8 @@ namespace StarSalvager
         
         public bool Destroyed { get; private set; }
 
+        public bool LockRotation { get; set; }
+
         public bool Disabled
         {
             get => _disabled;
@@ -189,7 +191,7 @@ namespace StarSalvager
         
         public void CustomRotate(Quaternion rotation)
         {
-            if (Type == PART_TYPE.TRIPLESHOT)
+            if (LockRotation)
                 return;
             
             transform.localRotation = rotation;

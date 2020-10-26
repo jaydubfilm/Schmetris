@@ -16,6 +16,9 @@ namespace StarSalvager.Factories.Data
         public PART_TYPE partType;
 
         [FoldoutGroup("$name")]
+        public bool lockRotation;
+
+        [FoldoutGroup("$name")]
         public bool canSell = true;
 
         [TextArea, FoldoutGroup("$name")]
