@@ -63,9 +63,6 @@ namespace StarSalvager
         private bool _isStarted;
         private bool _isDragging;
 
-        public bool IsEditingRecoveryDrone => _isEditingRecoveryDrone;
-        private bool _isEditingRecoveryDrone;
-
         private SpriteRenderer _partDragImage;
 
         //============================================================================================================//
@@ -146,24 +143,24 @@ namespace StarSalvager
 
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
 
-            var currentBlockData = PlayerDataManager.GetBlockDatas(false);
+            var currentBlockData = PlayerDataManager.GetBlockDatas();
             //Checks to make sure there is a core on the bot
             if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
             {
-                _scrapyardBot.InitBot(_isEditingRecoveryDrone);
+                _scrapyardBot.InitBot();
             }
             else
             {
                 var importedData = currentBlockData.ImportBlockDatas(true);
-                _scrapyardBot.InitBot(importedData, _isEditingRecoveryDrone);
+                _scrapyardBot.InitBot(importedData);
             }
 
-            bool outOfWaterOnReturn = PlayerDataManager.GetResources()[BIT_TYPE.BLUE] <= 0;
+            bool outOfWaterOnReturn = PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0;
             SellBits();
             //TODO Need to decide if this should happen at arrival or at launch
             //TryFillBotResources();
 
-            if (PlayerDataManager.GetResources()[BIT_TYPE.BLUE] <= 0)
+            if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0)
             {
                 Alert.ShowAlert("Game Over", "Your crew has died of thirst - Game Over. thx!", "Main Menu", () =>
                 {
@@ -204,7 +201,7 @@ namespace StarSalvager
             SelectedPartReturnToStorageIfNotPlaced = false;
 
             Camera.onPostRender -= DrawGL;
-            _isEditingRecoveryDrone = false;
+            Globals.IsRecoveryBot = false;
 
             if (_scrapyardBot != null)
             {
@@ -296,6 +293,8 @@ namespace StarSalvager
                         var blockData = SelectedBrick.Value;
                         
                         Toast.AddToast("Dismantle part", verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
+
+
                         PlayerDataManager.AddPartResources(SelectedBrick.Value, true);
 
                         //Dismantle part from storage
@@ -644,7 +643,14 @@ namespace StarSalvager
             }
 
             //Setup your list of available resources by putting player resources into a temp list
-            Dictionary<BIT_TYPE, int> resourceComparer = new Dictionary<BIT_TYPE, int>(PlayerDataManager.GetResourcesClone());
+            Dictionary<BIT_TYPE, int> resourceComparer = new Dictionary<BIT_TYPE, int>();
+            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            {
+                if (_bitType == BIT_TYPE.WHITE)
+                    continue;
+
+                resourceComparer.Add(_bitType, PlayerDataManager.GetResource(_bitType).resource);
+            }
             //Setup your list of available resources by putting player resources into a temp list
             Dictionary<COMPONENT_TYPE, int> componentComparer = new Dictionary<COMPONENT_TYPE, int>((IDictionary<COMPONENT_TYPE, int>) PlayerDataManager.GetComponents());
 
@@ -669,9 +675,9 @@ namespace StarSalvager
                 if (partData.Type == (int)PART_TYPE.CORE)
                     continue;
 
-                if (CostCalculations.CanAffordPart(resourceComparer, componentComparer, partComparer, (PART_TYPE)partData.Type, partData.Level, true))
+                if (PlayerDataManager.CanAffordPart((PART_TYPE)partData.Type, partData.Level))
                 {
-                    CostCalculations.SubtractPartCosts(ref resourceComparer, ref componentComparer, partComparer, (PART_TYPE)partData.Type, partData.Level, true);
+                    PlayerDataManager.SubtractPartCosts((PART_TYPE)partData.Type, partData.Level, true);
                 }
                 else
                 {
@@ -683,7 +689,13 @@ namespace StarSalvager
 
             //Swap to new layout
             _currentLayout = tempLayout;
-            PlayerDataManager.SetResources(resourceComparer);
+            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            {
+                if (_bitType == BIT_TYPE.WHITE)
+                    continue;
+
+                PlayerDataManager.GetResource(_bitType).SetResource(resourceComparer[_bitType]);
+            }
             PlayerDataManager.SetCurrentPartsInStorage(partComparer);
 
             for (int i = _scrapyardBot.attachedBlocks.Count - 1; i >= 0; i--)
@@ -715,7 +727,7 @@ namespace StarSalvager
         {
             if (_scrapyardBot != null)
             {
-                PlayerDataManager.SetBlockDatas(_scrapyardBot.attachedBlocks.GetBlockDatas(), _isEditingRecoveryDrone);
+                PlayerDataManager.SetBlockDatas(_scrapyardBot.attachedBlocks.GetBlockDatas());
             }
         }
 
@@ -739,18 +751,18 @@ namespace StarSalvager
 
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
 
-            List<BlockData> currentBlockData = PlayerDataManager.GetBlockDatas(!_isEditingRecoveryDrone);
-            _isEditingRecoveryDrone = !_isEditingRecoveryDrone;
+            Globals.IsRecoveryBot = !Globals.IsRecoveryBot;
+            List<BlockData> currentBlockData = PlayerDataManager.GetBlockDatas();
 
             //Checks to make sure there is a core on the bot
             if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
             {
-                _scrapyardBot.InitBot(_isEditingRecoveryDrone);
+                _scrapyardBot.InitBot();
             }
             else
             {
                 var importedData = currentBlockData.ImportBlockDatas(true);
-                _scrapyardBot.InitBot(importedData, _isEditingRecoveryDrone);
+                _scrapyardBot.InitBot(importedData);
             }
 
             UpdateFloatingMarkers(false);
@@ -763,7 +775,7 @@ namespace StarSalvager
             if (_scrapyardBot == null)
                 return;
 
-            List<BlockData> recoveryBotBlockData = PlayerDataManager.GetBlockDatas(true);
+            List<BlockData> recoveryBotBlockData = PlayerDataManager.GetBlockDatas();
 
             List<ScrapyardBit> listBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
             List<Component> listComponents = _scrapyardBot.attachedBlocks.OfType<Component>().ToList();
@@ -832,7 +844,15 @@ namespace StarSalvager
                 Debug.Log("REFINERY MULTIPLIER: " + refineryMultiplier);
             }
 
-            Dictionary<BIT_TYPE, int> wastedResources = PlayerDataManager.AddResourcesReturnWasted(bits, refineryMultiplier);
+            Dictionary<BIT_TYPE, int> wastedResources = new Dictionary<BIT_TYPE, int>();
+            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            {
+                if (_bitType == BIT_TYPE.WHITE)
+                    continue;
+
+                int wastedResource = PlayerDataManager.GetResource(_bitType).AddResourceReturnWasted((int)(bits[_bitType] * refineryMultiplier));
+                wastedResources.Add(_bitType, wastedResource);
+            }
 
 
             string resourcesGained = "";
@@ -942,7 +962,7 @@ namespace StarSalvager
                 .ToList();
 
             //var totalRepairCost = GetRepairCost();
-            var availableResources = PlayerDataManager.GetResources()[BIT_TYPE.GREEN];
+            var availableResources = PlayerDataManager.GetResource(BIT_TYPE.GREEN).resource;
 
             if (availableResources <= 0f)
             {
@@ -986,7 +1006,7 @@ namespace StarSalvager
                 damagedPart.SetSprite(FactoryManager.Instance.PartsProfileData.GetProfile(damagedPart.Type)
                     .GetSprite(damagedPart.level));
             }
-            PlayerDataManager.SetResources(BIT_TYPE.GREEN, availableResources);
+            PlayerDataManager.GetResource(BIT_TYPE.GREEN).SetResource(availableResources);
             
             SaveBlockData();
 

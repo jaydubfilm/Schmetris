@@ -162,8 +162,7 @@ namespace StarSalvager
                 MagnetCount = _magnetOverride;
             }
 
-            PlayerDataManager.ClearLiquidCapacity(bot.IsRecoveryDrone);
-            var capacities = new Dictionary<BIT_TYPE, int>
+            var liquidCapacities = new Dictionary<BIT_TYPE, int>
             {
                 {BIT_TYPE.RED, 0},
                 {BIT_TYPE.BLUE, 0},
@@ -211,11 +210,11 @@ namespace StarSalvager
 
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += value;
-                            capacities[BIT_TYPE.GREEN] += value;
-                            capacities[BIT_TYPE.GREY] += value;
-                            capacities[BIT_TYPE.YELLOW] += value;
-                            capacities[BIT_TYPE.BLUE] += value;
+                            liquidCapacities[BIT_TYPE.RED] += value;
+                            liquidCapacities[BIT_TYPE.GREEN] += value;
+                            liquidCapacities[BIT_TYPE.GREY] += value;
+                            liquidCapacities[BIT_TYPE.YELLOW] += value;
+                            liquidCapacities[BIT_TYPE.BLUE] += value;
                         }
 
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.SMRTCapacity, out value))
@@ -276,33 +275,33 @@ namespace StarSalvager
                     case PART_TYPE.STORE:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += value;
-                            capacities[BIT_TYPE.GREEN] += value;
-                            capacities[BIT_TYPE.GREY] += value;
+                            liquidCapacities[BIT_TYPE.RED] += value;
+                            liquidCapacities[BIT_TYPE.GREEN] += value;
+                            liquidCapacities[BIT_TYPE.GREY] += value;
                         }
                         break;
                     case PART_TYPE.STORERED:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += value;
+                            liquidCapacities[BIT_TYPE.RED] += value;
                         }
                         break;
                     case PART_TYPE.STOREGREEN:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.GREEN] += value;
+                            liquidCapacities[BIT_TYPE.GREEN] += value;
                         }
                         break;
                     case PART_TYPE.STOREGREY:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.GREY] += value;
+                            liquidCapacities[BIT_TYPE.GREY] += value;
                         }
                         break;
                     case PART_TYPE.STOREYELLOW:
                         if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.YELLOW] += value;
+                            liquidCapacities[BIT_TYPE.YELLOW] += value;
                         }
                         break;
                     case PART_TYPE.FREEZE:
@@ -328,7 +327,10 @@ namespace StarSalvager
             SetupHealthBoots();
 
             //Force update capacities, once new values determined
-            PlayerDataManager.SetCapacities(capacities, bot.IsRecoveryDrone);
+            foreach (var capacity in liquidCapacities)
+            {
+                PlayerDataManager.GetResource(capacity.Key).SetLiquidCapacity(capacity.Value);
+            }
 
             bot.ForceCheckMagnets();
         }
@@ -343,7 +345,7 @@ namespace StarSalvager
         {
             float cooldown;
 
-            float powerValue = PlayerDataManager.GetLiquidResources(bot.IsRecoveryDrone)[BIT_TYPE.YELLOW];
+            float powerValue = PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid;
             var powerToRemove = 0f;
             
             //Be careful to not use return here
@@ -771,7 +773,7 @@ namespace StarSalvager
                 if(bot.PROTO_GodMode)
                     continue;
 
-                PlayerDataManager.SetLiquidResource(partRemoteData.burnType, resourceValue, bot.IsRecoveryDrone);
+                PlayerDataManager.GetResource(partRemoteData.burnType).SetLiquid(resourceValue);
 
                 if(resoucesConsumed > 0)
                     LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(partRemoteData.burnType, resoucesConsumed);
@@ -783,21 +785,21 @@ namespace StarSalvager
                 if (powerValue < 0)
                     powerValue = 0f;
             
-                PlayerDataManager.SetLiquidResource(BIT_TYPE.YELLOW, powerValue, bot.IsRecoveryDrone);
+                PlayerDataManager.GetResource(BIT_TYPE.YELLOW).SetLiquid(powerValue);
             
 
                 //batteryDrainTimer += Time.deltaTime / 2;
                 waterDrainTimer += Time.deltaTime * Constants.waterDrainRate;
 
-                if (waterDrainTimer >= 1 && PlayerDataManager.GetResources()[BIT_TYPE.BLUE] > 0)
+                if (waterDrainTimer >= 1 && PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource > 0)
                 {
                     waterDrainTimer--;
-                    PlayerDataManager.SetResources(BIT_TYPE.BLUE, PlayerDataManager.GetResources()[BIT_TYPE.BLUE] - 1);
+                    PlayerDataManager.GetResource(BIT_TYPE.BLUE).SubtractResource(1);
                 }
             }
 
-            UpdateUI(BIT_TYPE.YELLOW, PlayerDataManager.GetLiquidResources(bot.IsRecoveryDrone)[BIT_TYPE.YELLOW]);
-            UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResources()[BIT_TYPE.BLUE]);
+            UpdateUI(BIT_TYPE.YELLOW, PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid);
+            UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource);
             
             
         }
@@ -1062,15 +1064,19 @@ namespace StarSalvager
 
         private void ForceUpdateResourceUI()
         {
-            var liquidResource = PlayerDataManager.GetLiquidResources(bot.IsRecoveryDrone);
-
-            foreach (var f in liquidResource)
+            if (GameUI == null)
+                return;
+            
+            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
-                UpdateUI(f.Key, f.Value);
+                if (_bitType == BIT_TYPE.WHITE)
+                    continue;
+
+                UpdateUI(_bitType, PlayerDataManager.GetResource(_bitType).liquid);
             }
 
             //UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.li[BIT_TYPE.YELLOW]);
-            UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResources()[BIT_TYPE.BLUE]);
+            UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource);
         }
 
         private void UpdateUI(BIT_TYPE type, float value)
@@ -1140,8 +1146,9 @@ namespace StarSalvager
                 .levels[targetBit.level]
                 .resources;
 
-            var (current, capacity) =
-                PlayerDataManager.GetCurrentAndCapacity(bitType, bot.IsRecoveryDrone);
+            PlayerResource playerResource = PlayerDataManager.GetResource(bitType);
+            var current = playerResource.resource;
+            var capacity = playerResource.resourceCapacity;
 
             /*var current = PlayerPersistentData.PlayerData.liquidResource[bitType];
             var capacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];*/
@@ -1150,7 +1157,7 @@ namespace StarSalvager
             if (current + amountProcessed > capacity)
                 return 0;
 
-            PlayerDataManager.AddLiquidResource(targetBit.Type, amountProcessed, bot.IsRecoveryDrone);
+            PlayerDataManager.GetResource(targetBit.Type).AddLiquid(amountProcessed);
 
             //If we want to process a bit, we want to remove it from the attached list while its processed
             bot.MarkAttachablePendingRemoval(targetBit);
@@ -1195,7 +1202,7 @@ namespace StarSalvager
 
             var value = partLevelData.burnRate == 0
                 ? default
-                : PlayerDataManager.GetLiquidResources(bot.IsRecoveryDrone)[type];
+                : PlayerDataManager.GetResource(type).liquid;
             return value;
         }
 

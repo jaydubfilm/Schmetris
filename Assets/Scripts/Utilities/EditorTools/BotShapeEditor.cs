@@ -183,7 +183,7 @@ namespace StarSalvager
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
 
             if (initBot)
-                _scrapyardBot.InitBot(false);
+                _scrapyardBot.InitBot();
         }
 
         public void CreateShape(List<Bit> bits)
@@ -210,7 +210,7 @@ namespace StarSalvager
             if (botData != null && botData.BlockData != null)
             {
                 CreateBot(false);
-                _scrapyardBot.InitBot(botData.BlockData.ImportBlockDatas(true), false);
+                _scrapyardBot.InitBot(botData.BlockData.ImportBlockDatas(true));
                 m_botShapeEditorUI.SetPartsScrollActive(true);
                 m_botShapeEditorUI.SetCategoriesScrollActive(false);
                 return;
@@ -355,7 +355,7 @@ namespace StarSalvager
                     }
                 }
 
-                PlayerDataManager.SetBlockDatas(_scrapyardBot.attachedBlocks.GetBlockDatas(), false);
+                PlayerDataManager.SetBlockDatas(_scrapyardBot.attachedBlocks.GetBlockDatas());
             }
         }
 

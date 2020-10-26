@@ -389,22 +389,16 @@ namespace StarSalvager.UI
         {
             ShowAbortWindow(false);
 
-            IReadOnlyDictionary<BIT_TYPE, float> liquidResource;
-            IReadOnlyDictionary<BIT_TYPE, int> liquidCapacities;
-            bool recoveryDrone = LevelManager.Instance != null && LevelManager.Instance.RecoverFromDeath;
-            liquidResource = PlayerDataManager.GetLiquidResources(recoveryDrone);
-            liquidCapacities = PlayerDataManager.GetLiquidCapacities(recoveryDrone);
+            SetResourceSliderBounds(BIT_TYPE.RED, 0, PlayerDataManager.GetResource(BIT_TYPE.RED).liquidCapacity);
+            SetResourceSliderBounds(BIT_TYPE.GREEN, 0, PlayerDataManager.GetResource(BIT_TYPE.GREEN).liquidCapacity);
+            SetResourceSliderBounds(BIT_TYPE.GREY, 0, PlayerDataManager.GetResource(BIT_TYPE.GREY).liquidCapacity);
 
-            SetResourceSliderBounds(BIT_TYPE.RED, 0, liquidCapacities[BIT_TYPE.RED]);
-            SetResourceSliderBounds(BIT_TYPE.GREEN, 0, liquidCapacities[BIT_TYPE.GREEN]);
-            SetResourceSliderBounds(BIT_TYPE.GREY, 0, liquidCapacities[BIT_TYPE.GREY]);
+            SetResourceSliderBounds(BIT_TYPE.BLUE, 0, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resourceCapacity);
+            SetResourceSliderBounds(BIT_TYPE.YELLOW, 0, PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquidCapacity);
 
-            SetResourceSliderBounds(BIT_TYPE.BLUE, 0, PlayerDataManager.GetResourceCapacities()[BIT_TYPE.BLUE]);
-            SetResourceSliderBounds(BIT_TYPE.YELLOW, 0, liquidCapacities[BIT_TYPE.YELLOW]);
-
-            SetFuelValue(liquidResource[BIT_TYPE.RED]);
-            SetRepairValue(liquidResource[BIT_TYPE.GREEN]);
-            SetAmmoValue(liquidResource[BIT_TYPE.GREY]);
+            SetFuelValue(PlayerDataManager.GetResource(BIT_TYPE.RED).liquid);
+            SetRepairValue(PlayerDataManager.GetResource(BIT_TYPE.GREEN).liquid);
+            SetAmmoValue(PlayerDataManager.GetResource(BIT_TYPE.GREY).liquid);
 
             SetPlayerGearsProgress(PlayerDataManager.GetGears(), 999);
         }

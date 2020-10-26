@@ -314,19 +314,16 @@ namespace StarSalvager.Utilities
                     
                     if (split[2].ToLower().Equals("all"))
                     {
-                        foreach (BIT_TYPE value in Enum.GetValues(typeof(BIT_TYPE)))
+                        foreach (PlayerResource value in PlayerDataManager.GetResources())
                         {
-                            if (!PlayerDataManager.GetResources().ContainsKey(value))
-                                continue;
-
-                            PlayerDataManager.AddResource(value, intAmount);
+                            value.AddResource(intAmount);
                         }
                         
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
 
-                        PlayerDataManager.AddResource(bitType, intAmount);
+                        PlayerDataManager.GetResource(bitType).AddResource(intAmount);
                     }
                     else
                     {
@@ -358,18 +355,17 @@ namespace StarSalvager.Utilities
                     {
                         foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
                         {
-                            if (!PlayerDataManager.GetResources().ContainsKey(_bitType))
+                            if (_bitType == BIT_TYPE.WHITE)
                                 continue;
 
-                            //I dont want to use AddLiquidResource() here because it would call the OnValuesChanged callback too much
-
-                            PlayerDataManager.AddLiquidResource(_bitType, floatAmount, false);
+                            PlayerDataManager.GetResource(_bitType).AddLiquid(floatAmount, false);
                         }
+                        PlayerDataManager.OnValuesChanged?.Invoke();
                         
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
-                        PlayerDataManager.AddLiquidResource(bitType, floatAmount, false);
+                        PlayerDataManager.GetResource(bitType).AddLiquid(floatAmount);
                     }
                     else
                     {
@@ -591,11 +587,12 @@ namespace StarSalvager.Utilities
         {
             switch (split[1].ToLower())
             {
+                //TODO: Alex B: These need a "Get List as string" function since we aren't using dictionaries anymore.
                 case "liquid":
-                    _consoleDisplay += $"\n{GetDictionaryAsString(PlayerDataManager.GetLiquidResources(false))}";
+                    //_consoleDisplay += $"\n{GetDictionaryAsString(PlayerDataManager.GetLiquidResources(false))}";
                     break;
                 case "currency":
-                    _consoleDisplay += $"\n{GetDictionaryAsString(PlayerDataManager.GetResources())}";
+                    //_consoleDisplay += $"\n{GetDictionaryAsString(PlayerDataManager.GetResources())}";
                     break;
                 case "bits":
                     _consoleDisplay += $"\n{GetEnumsAsString<BIT_TYPE>()}";
@@ -722,17 +719,18 @@ namespace StarSalvager.Utilities
                     
                     if (split[2].ToLower().Equals("all"))
                     {
-                        foreach (BIT_TYPE value in Enum.GetValues(typeof(BIT_TYPE)))
+                        foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
                         {
-                            if (!PlayerDataManager.GetResources().ContainsKey(value))
+                            if (_bitType == BIT_TYPE.WHITE)
                                 continue;
 
-                            PlayerDataManager.SetResources(value, intAmount);
+                            PlayerDataManager.GetResource(_bitType).SetResource(intAmount, false);
                         }
+                        PlayerDataManager.OnValuesChanged?.Invoke();
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
-                        PlayerDataManager.SetResources(bitType, intAmount);
+                        PlayerDataManager.GetResource(bitType).SetResource(intAmount);
                     }
                     else
                     {
@@ -807,27 +805,21 @@ namespace StarSalvager.Utilities
                     
                     if (split[2].ToLower().Equals("all"))
                     {
-                        var data = new Dictionary<BIT_TYPE, float>((IDictionary<BIT_TYPE, float>) PlayerDataManager.GetLiquidResources(false));
-
                         foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
                         {
-                            if (!data.ContainsKey(_bitType))
+                            if (_bitType == BIT_TYPE.WHITE)
                                 continue;
-                            
-                            data[_bitType] = floatAmount;
-                        }
 
-                        PlayerDataManager.SetLiquidResources(data, true);
-                        PlayerDataManager.SetLiquidResources(data, false);
+                            //TODO Alex B: This used to update both recovery and regular bot, now only does the current one
+                            PlayerDataManager.GetResource(_bitType).SetLiquid(floatAmount, false);
+                        }
+                        PlayerDataManager.OnValuesChanged?.Invoke();
                         
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
-                        if (!PlayerDataManager.GetLiquidResources(true).ContainsKey(bitType) || !PlayerDataManager.GetLiquidResources(false).ContainsKey(bitType))
-                            break;
-                        
-                        PlayerDataManager.SetLiquidResource(bitType, floatAmount, true);
-                        PlayerDataManager.SetLiquidResource(bitType, floatAmount, false);
+                        //TODO Alex B: This used to update both recovery and regular bot, now only does the current one
+                        PlayerDataManager.GetResource(bitType).SetLiquid(floatAmount);
                     }
                     else
                     {
