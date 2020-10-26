@@ -151,6 +151,20 @@ namespace StarSalvager.ScriptableObjects
 
             return (enemies, bits);
         }
+
+
+#if UNITY_EDITOR
+        public void OnValidate()
+        {
+            for (int i = 0; i < StageRemoteData.Count; i++)
+            {
+                for (int k = 0; k < StageRemoteData[i].StageObstacleData.Count; k++)
+                {
+                    StageRemoteData[i].StageObstacleData[k].spawningMultiplier = StageRemoteData[i].SpawningObstacleMultiplier;
+                }
+            }
+        }
+#endif
     }
 }
 
