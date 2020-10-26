@@ -62,6 +62,11 @@ namespace StarSalvager.UI
             backButton.gameObject.SetActive(!Globals.IsBetweenWavesInUniverseMap);
             betweenWavesScrapyardButton.gameObject.SetActive(Globals.IsBetweenWavesInUniverseMap);
 
+            for (int i = 0; i < universeMapButtons.Count; i++)
+            {
+                universeMapButtons[i].Button.image.color = Color.white;
+            }
+
             if (Globals.IsBetweenWavesInUniverseMap)
             {
                 int curIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
@@ -75,6 +80,7 @@ namespace StarSalvager.UI
 
                     if (nodeIndex == curIndex)
                     {
+                        universeMapButtons[nodeIndex].Button.image.color = Color.green;
                         for (int k = 0; k < universeMapButtons.Count; k++)
                         {
                             if (childNodesAccessible.Any(n => n.nodeIndex == k))
@@ -90,6 +96,7 @@ namespace StarSalvager.UI
                     }
                     else
                     {
+                        //universeMapButtons[nodeIndex].Button.image.color = Color.red;
                         for (int k = 0; k < universeMapButtons.Count; k++)
                         {
                             if (childNodesAccessible.Any(n => n.nodeIndex == k))
