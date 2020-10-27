@@ -86,6 +86,11 @@ namespace StarSalvager.UI
                     if (nodeIndex == curIndex)
                     {
                         universeMapButtons[nodeIndex].BotImage.gameObject.SetActive(true);
+                        if (childNodesAccessible.Count == 0)
+                        {
+                            universeMapButtons[nodeIndex].Button.image.color = Color.red;
+                        }
+
                         for (int k = 0; k < universeMapButtons.Count; k++)
                         {
                             if (childNodesAccessible.Any(n => n.nodeIndex == k))
