@@ -28,6 +28,11 @@ namespace StarSalvager.Utilities.Saving
 
         //====================================================================================================================//
 
+        public static bool HasPlayerAccountData()
+        {
+            return PlayerAccountData != null;
+        }
+
         public static bool HasPlayerRunData()
         {
             return PlayerAccountData != null && PlayerRunData != null;
@@ -483,6 +488,11 @@ namespace StarSalvager.Utilities.Saving
             PlayerAccountData.RecordBitConnection(bit);
         }
 
+        public static Dictionary<BIT_TYPE, int> GetBitConnections()
+        {
+            return PlayerAccountData.BitConnections;
+        }
+
         public static int GetBitConnections(BIT_TYPE bit)
         {
             if (!PlayerAccountData.BitConnections.ContainsKey(bit))
@@ -506,6 +516,11 @@ namespace StarSalvager.Utilities.Saving
         public static void RecordEnemyKilled(string enemyId)
         {
             PlayerAccountData.RecordEnemyKilled(enemyId);
+        }
+
+        public static Dictionary<string, int> GetEnemiesKilled()
+        {
+            return PlayerAccountData.EnemiesKilled;
         }
 
         public static int GetEnemiesKilled(string enemyId)

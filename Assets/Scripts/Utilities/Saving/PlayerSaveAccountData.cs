@@ -108,7 +108,7 @@ namespace StarSalvager.Values
 
             while (patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints) <= gearsAmount)
             {
-                gearsAmount -= patchPointCostIncrement + (patchPointCostIncrement * totalPatchPoints);
+                gearsAmount -= patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints);
                 totalPatchPoints++;
             }
 
@@ -125,7 +125,7 @@ namespace StarSalvager.Values
 
             while (patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints) <= gearsAmount)
             {
-                gearsAmount -= patchPointCostIncrement + (patchPointCostIncrement * totalPatchPoints);
+                gearsAmount -= patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints);
                 totalPatchPoints++;
             }
 
