@@ -557,6 +557,7 @@ namespace StarSalvager
                                 return false;
                             }
 
+                            PlayerDataManager.RecordBitConnection(bit.Type);
                             //Add these to the block depending on its relative position
                             AttachAttachableToExisting(bit, closestAttachable, connectionDirection);
 
@@ -802,6 +803,12 @@ namespace StarSalvager
                         var bitsToAdd = shape.AttachedBits
                             .OrderBy(x => Vector2Int.Distance(closestCoordinate, x.Coordinate))
                             .ToArray();
+
+                        for (int i = 0; i < bitsToAdd.Length; i++)
+                        {
+                            PlayerDataManager.RecordBitConnection(bitsToAdd[i].Type);
+                        }
+
                         var differences = bitsToAdd.Select(x => x.Coordinate - closestCoordinate).ToArray();
                         
                         //--------------------------------------------------------------------------------------------//

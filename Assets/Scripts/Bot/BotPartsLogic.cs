@@ -527,7 +527,8 @@ namespace StarSalvager
 
                         //Increase the health of this part depending on the current level of the repairer
                         toRepair.ChangeHealth(repairAmount * Time.deltaTime);
-                        
+                        PlayerDataManager.AddRepairsDone(repairAmount * Time.deltaTime);
+
 
                         TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.BoostedHealth);
                         break;

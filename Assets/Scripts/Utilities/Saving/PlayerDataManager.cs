@@ -9,6 +9,7 @@ using StarSalvager.Utilities.Math;
 using System.Linq;
 using UnityEngine;
 using StarSalvager.Factories;
+using UnityEditor;
 
 namespace StarSalvager.Utilities.Saving
 {
@@ -430,6 +431,11 @@ namespace StarSalvager.Utilities.Saving
             return PlayerAccountData.Gears;
         }
 
+        public static int GetGearsThisRun()
+        {
+            return PlayerAccountData.Gears - PlayerAccountData.GearsAtRunBeginning;
+        }
+
         public static (int, int) GetPatchPointProgress()
         {
             return PlayerAccountData.GetPatchPointProgress();
@@ -451,6 +457,95 @@ namespace StarSalvager.Utilities.Saving
 
             OnValuesChanged?.Invoke();
         }
+
+        public static int GetCoreDeaths()
+        {
+            return PlayerAccountData.CoreDeaths;
+        }
+
+        public static int GetCoreDeathsThisRun()
+        {
+            return PlayerAccountData.CoreDeaths - PlayerAccountData.CoreDeathsAtRunBeginning;
+        }
+
+        public static void AddCoreDeath()
+        {
+            PlayerAccountData.CoreDeaths++;
+        }
+
+        public static void RecordBitConnection(BIT_TYPE bit)
+        {
+            PlayerAccountData.RecordBitConnection(bit);
+        }
+
+        public static int GetBitConnections(BIT_TYPE bit)
+        {
+            if (!PlayerAccountData.BitConnections.ContainsKey(bit))
+            {
+                Debug.LogError("Can't find key in Bitconnections");
+            }
+            
+            return PlayerAccountData.BitConnections[bit];
+        }
+
+        public static int GetBitConnectionsThisRun(BIT_TYPE bit)
+        {
+            if (!PlayerAccountData.BitConnections.ContainsKey(bit) || !PlayerAccountData.BitConnectionsAtRunBeginning.ContainsKey(bit))
+            {
+                Debug.LogError("Can't find key in Bitconnections or Bitconnectionsatrunbeginning");
+            }
+
+            return PlayerAccountData.BitConnections[bit] - PlayerAccountData.BitConnectionsAtRunBeginning[bit];
+        }
+
+        public static void RecordEnemyKilled(string enemyId)
+        {
+            PlayerAccountData.RecordEnemyKilled(enemyId);
+        }
+
+        public static int GetEnemiesKilled(string enemyId)
+        {
+            if (!PlayerAccountData.EnemiesKilled.ContainsKey(enemyId))
+            {
+                return 0;
+            }
+
+            return PlayerAccountData.EnemiesKilled[enemyId];
+        }
+
+        public static int GetEnemiesKilledhisRun(string enemyId)
+        {
+            int enemiesKilledTotal = GetEnemiesKilled(enemyId);
+            int enemiesKilledAtRunBeginning;
+
+            if (!PlayerAccountData.EnemiesKilledAtRunBeginning.ContainsKey(enemyId))
+            {
+                enemiesKilledAtRunBeginning = 0;
+            }
+            else
+            {
+                enemiesKilledAtRunBeginning = PlayerAccountData.EnemiesKilledAtRunBeginning[enemyId];
+            }
+
+
+            return enemiesKilledTotal - enemiesKilledAtRunBeginning;
+        }
+
+        public static float GetRepairsDone()
+        {
+            return PlayerAccountData.RepairsDone;
+        }
+
+        public static float GetRepairsDoneThisRun()
+        {
+            return PlayerAccountData.RepairsDone - PlayerAccountData.RepairsDoneAtRunBeginning;
+        }
+
+        public static void AddRepairsDone(float amount)
+        {
+            PlayerAccountData.RepairsDone += amount;
+        }
+
 
         public static bool CheckHasFacility(FACILITY_TYPE type, int level = 0)
         {

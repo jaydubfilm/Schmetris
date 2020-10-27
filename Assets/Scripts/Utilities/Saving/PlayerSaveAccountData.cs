@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Missions;
@@ -7,6 +6,7 @@ using StarSalvager.Utilities.Saving;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace StarSalvager.Values
 {
@@ -16,6 +16,32 @@ namespace StarSalvager.Values
 
         public int Gears;
         public int PatchPointsSpent;
+
+        public int CoreDeaths;
+        public float RepairsDone;
+        public Dictionary<BIT_TYPE, int> BitConnections = new Dictionary<BIT_TYPE, int>
+        {
+            { BIT_TYPE.RED, 0},
+            { BIT_TYPE.BLUE, 0},
+            { BIT_TYPE.YELLOW, 0},
+            { BIT_TYPE.GREEN, 0},
+            { BIT_TYPE.GREY, 0},
+        };
+        public Dictionary<string, int> EnemiesKilled = new Dictionary<string, int>();
+
+        public int GearsAtRunBeginning;
+        public int CoreDeathsAtRunBeginning;
+        public float RepairsDoneAtRunBeginning;
+        public int TotalRuns;
+        public Dictionary<BIT_TYPE, int> BitConnectionsAtRunBeginning = new Dictionary<BIT_TYPE, int>
+        {
+            { BIT_TYPE.RED, 0},
+            { BIT_TYPE.BLUE, 0},
+            { BIT_TYPE.YELLOW, 0},
+            { BIT_TYPE.GREEN, 0},
+            { BIT_TYPE.GREY, 0},
+        };
+        public Dictionary<string, int> EnemiesKilledAtRunBeginning = new Dictionary<string, int>();
 
         public List<Blueprint> unlockedBlueprints = new List<Blueprint>();
 
@@ -37,6 +63,20 @@ namespace StarSalvager.Values
         {
             PlayerSaveRunData data = new PlayerSaveRunData();
             data.PlaythroughID = Guid.NewGuid().ToString();
+
+            GearsAtRunBeginning = Gears;
+            CoreDeathsAtRunBeginning = CoreDeaths;
+            BitConnectionsAtRunBeginning.Clear();
+            foreach (var keyValue in BitConnections)
+            {
+                BitConnectionsAtRunBeginning.Add(keyValue.Key, keyValue.Value);
+            }
+            EnemiesKilledAtRunBeginning.Clear();
+            foreach (var keyValue in EnemiesKilled)
+            {
+                EnemiesKilledAtRunBeginning.Add(keyValue.Key, keyValue.Value);
+            }
+            TotalRuns++;
 
             PlayerRunData = data;
             //MissionManager.LoadMissionData();
@@ -95,6 +135,28 @@ namespace StarSalvager.Values
         public int GetAvailablePatchPoints()
         {
             return GetTotalPatchPoints() - PatchPointsSpent;
+        }
+
+        public void RecordBitConnection(BIT_TYPE bit)
+        {
+            if (BitConnections.ContainsKey(bit))
+            {
+                BitConnections[bit]++;
+            }
+            else
+            {
+                Debug.LogError($"Bit Connection stat tracking, can't find bit type {bit}");
+            }
+        }
+
+        public void RecordEnemyKilled(string enemyId)
+        {
+            if (!EnemiesKilled.ContainsKey(enemyId))
+            {
+                EnemiesKilled.Add(enemyId, 0);
+            }
+
+            EnemiesKilled[enemyId]++;
         }
 
         //====================================================================================================================//

@@ -776,6 +776,7 @@ namespace StarSalvager
         private void OnBotDied(Bot _, string deathMethod)
         {
             LiquidResourcesCachedOnDeath = new Dictionary<BIT_TYPE, float>();
+            PlayerDataManager.AddCoreDeath();
 
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {

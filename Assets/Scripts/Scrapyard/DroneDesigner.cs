@@ -991,7 +991,8 @@ namespace StarSalvager
                         break;
                     
                     availableResources -= cost;
-                
+                    PlayerDataManager.AddRepairsDone(cost);
+
                     partHealth.SetupHealthValues(damagedPart.StartingHealth, damagedPart.StartingHealth);
                 }
                 //Allow partial payment for partial recovery on damaged parts
@@ -1005,6 +1006,7 @@ namespace StarSalvager
                         break;
                     
                     availableResources -= cost;
+                    PlayerDataManager.AddRepairsDone(cost);
                 
                     partHealth.ChangeHealth(cost);
                 }
