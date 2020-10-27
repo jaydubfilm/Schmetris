@@ -660,6 +660,8 @@ namespace StarSalvager
             GameUi.SetCurrentWaveText("Complete");
             GameUi.ShowAbortWindow(false);
             EnemyManager.SetEnemiesInert(true);
+            
+            BotObject.SetSortingLayer(Actor2DBase.OVERLAY_LAYER, 10000);
 
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
@@ -682,7 +684,7 @@ namespace StarSalvager
                 {
                     scrapyardBot.transform.parent = m_obstacleManager.WorldElementsRoot;
                 }
-                scrapyardBot.transform.position = m_bots[0].transform.position + (Vector3.up * Globals.GridSizeY * Constants.gridCellSize);
+                scrapyardBot.transform.position = m_bots[0].transform.position + (Vector3.up * (Globals.GridSizeY * Constants.gridCellSize));
                 ObstacleManager.RecoveredBotFalling = scrapyardBot.gameObject;
             }
 

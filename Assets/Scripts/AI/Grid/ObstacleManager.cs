@@ -1148,7 +1148,7 @@ namespace StarSalvager
             }
 
             if (newObstacle is CollidableBase collidableBase)
-                collidableBase.SetSortingLayer("Overlay", 100);
+                collidableBase.SetSortingLayer(Actor2DBase.OVERLAY_LAYER, 100);
 
             if (newObstacle is Shape shape)
                 shape.FlashBits();
