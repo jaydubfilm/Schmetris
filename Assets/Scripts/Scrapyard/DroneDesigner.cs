@@ -831,7 +831,8 @@ namespace StarSalvager
 
 
             var enumerable = listBits.ToArray();
-            Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
+            Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance
+                .GetFactory<BitAttachableFactory>()
                 .GetTotalResources(enumerable);
 
             float refineryMultiplier = 1.0f;
@@ -850,7 +851,12 @@ namespace StarSalvager
                 if (_bitType == BIT_TYPE.WHITE)
                     continue;
 
-                int wastedResource = PlayerDataManager.GetResource(_bitType).AddResourceReturnWasted((int)(bits[_bitType] * refineryMultiplier));
+                if (!bits.TryGetValue(_bitType, out var amount))
+                {
+                    continue;
+                }
+
+                int wastedResource = PlayerDataManager.GetResource(_bitType).AddResourceReturnWasted((int)(amount * refineryMultiplier));
                 wastedResources.Add(_bitType, wastedResource);
             }
 
