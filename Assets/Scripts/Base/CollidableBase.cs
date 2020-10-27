@@ -82,9 +82,12 @@ namespace StarSalvager
         private Collider2D _waitCollider;
         public void DisableColliderTillLeaves(Collider2D waitCollider)
         {
+            if (waitCollider == collider)
+                return;
+            
             _useCollision = false;
             //SetColliderActive(false);
-            _waitCollider = collider;
+            _waitCollider = waitCollider;
         }
         
         public virtual void SetColliderActive(bool state)
