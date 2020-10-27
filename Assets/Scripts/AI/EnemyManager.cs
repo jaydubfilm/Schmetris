@@ -127,6 +127,11 @@ namespace StarSalvager
                     continue;
                 }
 
+                if (m_enemies[i].Frozen && !LevelManager.Instance.EndWaveState)
+                {
+                    continue;
+                }
+
                 //TODO: This process shouldn't be straight summing and averaging the different forces on different parts. 
                 //We should be selecting for the strongest forces and using those in any given direction, otherwise, the strong forces on one position can be dampened by the weaker on others.
                 if (m_enemiesInert || m_enemies[i].Disabled || m_enemies[i].Frozen)
