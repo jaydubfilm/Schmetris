@@ -889,6 +889,9 @@ namespace StarSalvager
 
             foreach (var resource in wastedResources)
             {
+                if(resource.Value > 0)
+                    continue;
+                
                 resourcesGained += $"{resource.Value} {TMP_SpriteMap.MaterialIcons[resource.Key]} jettisoned due to lack of storage\n";
             }
 

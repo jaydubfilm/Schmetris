@@ -59,7 +59,7 @@ namespace StarSalvager
         //public bool CanDisconnect => true;
         public int AttachPriority => (10 + (int) Type) * level;
         public bool PendingDetach { get; set; }
-        public bool CountTowardsMagnetism => true;
+        public bool CountTowardsMagnetism => false;
 
         //IHealth Properties
         //============================================================================================================//

@@ -143,6 +143,9 @@ namespace StarSalvager.UI
         
         [SerializeField, Required, FoldoutGroup("TR Window")]
         private Slider progressSlider;
+        
+        [SerializeField, Required, FoldoutGroup("TR Window")]
+        private TMP_Text sectorText;
 
         //Bottom Window
         //====================================================================================================================//
@@ -667,6 +670,18 @@ namespace StarSalvager.UI
         {
             sectorText.text = text;
         }*/
+        
+        public void SetCurrentWaveText(int sector, int wave)
+        {
+            sectorText.text = $"Sector {sector}.{wave}";
+
+            //m_currentWaveText.text = "Sector " + (Values.Globals.CurrentSector + 1) + " Wave " + endString;
+        }
+
+        public void SetCurrentWaveText(string text)
+        {
+            sectorText.text = text;
+        }
 
         //============================================================================================================//
 

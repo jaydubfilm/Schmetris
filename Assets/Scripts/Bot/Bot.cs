@@ -29,7 +29,7 @@ using StarSalvager.Utilities.Saving;
 namespace StarSalvager
 {
     [RequireComponent(typeof(BotPartsLogic))]
-    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable
+    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer
     {
         private readonly struct ShiftData
         {
@@ -3624,6 +3624,17 @@ namespace StarSalvager
         #endregion //UNITY EDITOR
 
         //====================================================================================================================//
+
+        public void SetSortingLayer(string sortingLayerName, int sortingOrder = 0)
+        {
+            foreach (var setSpriteLayer in attachedBlocks.OfType<ISetSpriteLayer>())
+            {
+                setSpriteLayer.SetSortingLayer(sortingLayerName, sortingOrder);
+            }
+        }
+
+        //====================================================================================================================//
+        
         
     }
     

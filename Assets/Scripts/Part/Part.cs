@@ -226,6 +226,8 @@ namespace StarSalvager
 
         public void CustomRecycle(params object[] args)
         {
+            SetSortingLayer(DEFAULT_LAYER);
+            
             BoostAmount = 0f;
             _boostIsSetup = false;
             

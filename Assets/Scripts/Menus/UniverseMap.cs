@@ -337,7 +337,7 @@ namespace StarSalvager.UI
             waveDataScrollView.SetActive(unlocked);
 
             waveDataWindow.GetComponent<VerticalLayoutGroup>().enabled = false;
-            windowTitle.text = $"Sector {sector + 1} Wave {wave + 1} data";
+            windowTitle.text = $"Sector {sector + 1}.{wave + 1} data";
 
             if (unlocked)
             {
