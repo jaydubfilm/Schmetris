@@ -614,7 +614,6 @@ namespace StarSalvager
             SavePlayerData();
 
             //Unlock loot for completing wave
-
             ObstacleManager.IncreaseSpeedAllOffGridMoving(3.0f);
             NumWavesInRow++;
 
@@ -631,7 +630,7 @@ namespace StarSalvager
 
             WaveEndSummaryData.CompletedSector = Globals.CurrentSector;
             WaveEndSummaryData.CompletedWave = Globals.CurrentWave;
-            WaveEndSummaryData.WaveEndTitle = $"Sector {Globals.CurrentSector + 1} Wave {Globals.CurrentWave + 1} Complete";//"Wave " + (Globals.CurrentWave + 1) + " Sector " +  + " Complete";
+            WaveEndSummaryData.WaveEndTitle = $"Sector {Globals.CurrentSector + 1}.{Globals.CurrentWave + 1} Complete";
 
             int progressionSector = Globals.CurrentSector;
             string endWaveMessage;
@@ -645,7 +644,7 @@ namespace StarSalvager
             {
                 CurrentWaveData.ConfigureLootTable();
                 List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
-                DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + (Vector3.up * 10 * Constants.gridCellSize), false);
+                DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);
             }
 
             int curNodeIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
@@ -658,7 +657,7 @@ namespace StarSalvager
             LevelManagerUI.OverrideText = string.Empty;
             m_levelTimer += m_waveTimer;
             m_waveTimer = 0;
-            //GameUi.SetCurrentWaveText("Complete");
+            GameUi.SetCurrentWaveText("Complete");
             GameUi.ShowAbortWindow(false);
             EnemyManager.SetEnemiesInert(true);
 
@@ -768,7 +767,7 @@ namespace StarSalvager
         public void RestartLevel()
         {
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
-            //GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
+            GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
             GameTimer.SetPaused(false);
             SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.LEVEL);
         }
@@ -895,7 +894,7 @@ namespace StarSalvager
 
         public void OnResume()
         {
-            //GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
+            GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
         }
 
         public void OnPause()
