@@ -73,7 +73,7 @@ namespace StarSalvager.UI
                 case CraftCost.TYPE.Bit:
                     resourceImage.sprite = _bitAttachableFactory.GetBitProfile((BIT_TYPE) data.type).refinedSprite;
                     
-                    costText.text = $"{PlayerDataManager.GetResources()[(BIT_TYPE)data.type]}/{data.amount}";
+                    costText.text = $"{PlayerDataManager.GetResource((BIT_TYPE)data.type).resource}/{data.amount}";
                     break;
                 case CraftCost.TYPE.Component:
                     resourceImage.sprite = _componentAttachableFactory.GetComponentProfile((COMPONENT_TYPE) data.type)

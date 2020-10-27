@@ -29,7 +29,7 @@ using StarSalvager.Utilities.Saving;
 namespace StarSalvager
 {
     [RequireComponent(typeof(BotPartsLogic))]
-    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable
+    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer
     {
         private readonly struct ShiftData
         {
@@ -95,9 +95,6 @@ namespace StarSalvager
         private float targetRotation;
 
         private bool _needToCheckMagnet;
-
-        public bool IsRecoveryDrone => _isRecoveryDrone;
-        private bool _isRecoveryDrone;
 
         //============================================================================================================//
 
@@ -267,10 +264,9 @@ namespace StarSalvager
 
         #region Init Bot 
 
-        public void InitBot(bool isRecoveryDrone)
+        public void InitBot()
         {
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
-            _isRecoveryDrone = isRecoveryDrone;
             
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
@@ -288,7 +284,7 @@ namespace StarSalvager
                     Health = startingHealth
                 });
             
-            if(isRecoveryDrone) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
+            if(Globals.IsRecoveryBot) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
 
             AttachNewBlock(Vector2Int.zero, core, updateMissions: false);
 
@@ -297,10 +293,8 @@ namespace StarSalvager
             GameUi?.SetHealthValue(1f);
         }
         
-        public void InitBot(IEnumerable<IAttachable> botAttachables, bool isRecoveryDrone)
+        public void InitBot(IEnumerable<IAttachable> botAttachables)
         {
-            _isRecoveryDrone = isRecoveryDrone;
-
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
             
@@ -311,12 +305,12 @@ namespace StarSalvager
             {
                 if (attachable is Part part && part.Type == PART_TYPE.CORE)
                 {
-                    if(isRecoveryDrone)
+                    if(Globals.IsRecoveryBot)
                         FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
                     
                     GameUi?.SetHealthValue(part.CurrentHealth / part.BoostedHealth);
                 }
-                
+
                 AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);
             }
             
@@ -563,6 +557,7 @@ namespace StarSalvager
                                 return false;
                             }
 
+                            PlayerDataManager.RecordBitConnection(bit.Type);
                             //Add these to the block depending on its relative position
                             AttachAttachableToExisting(bit, closestAttachable, connectionDirection);
 
@@ -808,6 +803,12 @@ namespace StarSalvager
                         var bitsToAdd = shape.AttachedBits
                             .OrderBy(x => Vector2Int.Distance(closestCoordinate, x.Coordinate))
                             .ToArray();
+
+                        for (int i = 0; i < bitsToAdd.Length; i++)
+                        {
+                            PlayerDataManager.RecordBitConnection(bitsToAdd[i].Type);
+                        }
+
                         var differences = bitsToAdd.Select(x => x.Coordinate - closestCoordinate).ToArray();
                         
                         //--------------------------------------------------------------------------------------------//
@@ -3450,7 +3451,6 @@ namespace StarSalvager
             
             attachedBlocks.Clear();
             BotPartsLogic.ClearList();
-            _isRecoveryDrone = false;
             //_parts.Clear();
             
             ObstacleManager.NewShapeOnScreen -= CheckForBonusShapeMatches;
@@ -3624,6 +3624,17 @@ namespace StarSalvager
         #endregion //UNITY EDITOR
 
         //====================================================================================================================//
+
+        public void SetSortingLayer(string sortingLayerName, int sortingOrder = 0)
+        {
+            foreach (var setSpriteLayer in attachedBlocks.OfType<ISetSpriteLayer>())
+            {
+                setSpriteLayer.SetSortingLayer(sortingLayerName, sortingOrder);
+            }
+        }
+
+        //====================================================================================================================//
+        
         
     }
     

@@ -777,7 +777,7 @@ namespace StarSalvager
         {
             foreach (StageObstacleData stageObstacleData in obstacleData)
             {
-                float spawnVariable = stageObstacleData.Density * spawningMultiplier * ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
+                float spawnVariable = stageObstacleData.Density() * spawningMultiplier * ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
 
                 if (stageObstacleData.SelectionType == SELECTION_TYPE.CATEGORY || stageObstacleData.SelectionType == SELECTION_TYPE.SHAPE)
                 {
@@ -1148,7 +1148,7 @@ namespace StarSalvager
             }
 
             if (newObstacle is CollidableBase collidableBase)
-                collidableBase.SetSortingLayer("Overlay", 100);
+                collidableBase.SetSortingLayer(Actor2DBase.OVERLAY_LAYER, 100);
 
             if (newObstacle is Shape shape)
                 shape.FlashBits();

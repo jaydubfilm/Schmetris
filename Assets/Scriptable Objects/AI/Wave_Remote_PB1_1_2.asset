@@ -37,36 +37,54 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 3
       m_density: 0.2
+      m_spawnsPerScreenWidthPerMinute: 15
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 2
       m_shapeName: Asteroid3.0
       m_category: 
       m_rotation: 0
       m_asteroidSize: 2
       m_density: 0.2
+      m_spawnsPerScreenWidthPerMinute: 15
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.25
+      m_spawnsPerScreenWidthPerMinute: 30
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 0
       m_shapeName: RedSingle
       m_category: Singles
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.25
+      m_spawnsPerScreenWidthPerMinute: 30
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 0
       m_shapeName: YellowSingle
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.3
+      m_spawnsPerScreenWidthPerMinute: 52
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 0
       m_shapeName: BlueSingle
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.25
+      m_spawnsPerScreenWidthPerMinute: 30
+      m_maxOut: 0
+      spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
   - m_stageDuration: 25
     m_stageBlendPeriod: 0
@@ -84,36 +102,54 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 3
       m_density: 0.18
+      m_spawnsPerScreenWidthPerMinute: 11
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 2
       m_shapeName: Asteroid3.0
       m_category: 
       m_rotation: 0
       m_asteroidSize: 2
       m_density: 0.15
+      m_spawnsPerScreenWidthPerMinute: 6
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.18
+      m_spawnsPerScreenWidthPerMinute: 11
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 0
       m_shapeName: RedSingle
       m_category: Singles
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.25
+      m_spawnsPerScreenWidthPerMinute: 30
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 0
       m_shapeName: YellowSingle
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.3
+      m_spawnsPerScreenWidthPerMinute: 52
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 0
       m_shapeName: BlueSingle
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.25
+      m_spawnsPerScreenWidthPerMinute: 30
+      m_maxOut: 0
+      spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
   maxDrops: 0
   RDSEndOfWaveLoot:

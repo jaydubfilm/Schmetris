@@ -39,12 +39,18 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.6
+      m_spawnsPerScreenWidthPerMinute: 413
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.25
+      m_spawnsPerScreenWidthPerMinute: 30
+      m_maxOut: 0
+      spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
   - m_stageDuration: 20
     m_stageBlendPeriod: 5
@@ -62,12 +68,18 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.412
+      m_spawnsPerScreenWidthPerMinute: 134
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.25
+      m_spawnsPerScreenWidthPerMinute: 30
+      m_maxOut: 0
+      spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
   maxDrops: 0
   RDSEndOfWaveLoot:

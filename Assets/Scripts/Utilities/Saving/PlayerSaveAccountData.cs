@@ -6,6 +6,7 @@ using StarSalvager.Utilities.Saving;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace StarSalvager.Values
 {
@@ -14,8 +15,37 @@ namespace StarSalvager.Values
         public PlayerSaveRunData PlayerRunData = new PlayerSaveRunData();
 
         public int Gears;
+        public int PatchPointsSpent;
+
+        public int CoreDeaths;
+        public float RepairsDone;
+        public Dictionary<BIT_TYPE, int> BitConnections = new Dictionary<BIT_TYPE, int>
+        {
+            { BIT_TYPE.RED, 0},
+            { BIT_TYPE.BLUE, 0},
+            { BIT_TYPE.YELLOW, 0},
+            { BIT_TYPE.GREEN, 0},
+            { BIT_TYPE.GREY, 0},
+        };
+        public Dictionary<string, int> EnemiesKilled = new Dictionary<string, int>();
+
+        public int GearsAtRunBeginning;
+        public int CoreDeathsAtRunBeginning;
+        public float RepairsDoneAtRunBeginning;
+        public int TotalRuns;
+        public Dictionary<BIT_TYPE, int> BitConnectionsAtRunBeginning = new Dictionary<BIT_TYPE, int>
+        {
+            { BIT_TYPE.RED, 0},
+            { BIT_TYPE.BLUE, 0},
+            { BIT_TYPE.YELLOW, 0},
+            { BIT_TYPE.GREEN, 0},
+            { BIT_TYPE.GREY, 0},
+        };
+        public Dictionary<string, int> EnemiesKilledAtRunBeginning = new Dictionary<string, int>();
 
         public List<Blueprint> unlockedBlueprints = new List<Blueprint>();
+
+        public MissionsCurrentData missionsCurrentData = null;
 
         [JsonIgnore]
         public IReadOnlyDictionary<FACILITY_TYPE, int> facilityRanks => _facilityRanks;
@@ -34,35 +64,104 @@ namespace StarSalvager.Values
             PlayerSaveRunData data = new PlayerSaveRunData();
             data.PlaythroughID = Guid.NewGuid().ToString();
 
+            GearsAtRunBeginning = Gears;
+            CoreDeathsAtRunBeginning = CoreDeaths;
+            BitConnectionsAtRunBeginning.Clear();
+            foreach (var keyValue in BitConnections)
+            {
+                BitConnectionsAtRunBeginning.Add(keyValue.Key, keyValue.Value);
+            }
+            EnemiesKilledAtRunBeginning.Clear();
+            foreach (var keyValue in EnemiesKilled)
+            {
+                EnemiesKilledAtRunBeginning.Add(keyValue.Key, keyValue.Value);
+            }
+            TotalRuns++;
+
             PlayerRunData = data;
             //MissionManager.LoadMissionData();
         }
 
         public void ChangeGears(int amount)
         {
-            /*Gears += amount;
-            if (LevelManager.Instance.WaveEndSummaryData != null)
+            int totalPatchPoints = GetTotalPatchPoints();
+            Gears += amount;
+
+            int newTotalPatchPoints = GetTotalPatchPoints();
+
+            if (newTotalPatchPoints > totalPatchPoints)
             {
-                LevelManager.Instance.WaveEndSummaryData.NumGearsGained += amount;
+                for (int i = totalPatchPoints; i < newTotalPatchPoints; i++)
+                {
+                    Toast.AddToast("Unlocked New Patch Point!");
+                }
+            }
+        }
+
+        public (int, int) GetPatchPointProgress()
+        {
+            int patchPointBaseCost = 100;
+            int patchPointCostIncrement = 10;
+
+            int totalPatchPoints = 0;
+            int gearsAmount = Gears;
+
+            while (patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints) <= gearsAmount)
+            {
+                gearsAmount -= patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints);
+                totalPatchPoints++;
             }
 
-            int gearsToLevelUp = LevelManager.Instance.PlayerlevelRemoteDataScriptableObject.GetRemoteData(Level).GearsToLevelUp;
-            if (Gears >= gearsToLevelUp)
-            {
-                Gears -= gearsToLevelUp;
-                //DropLevelupLoot();
-                if (LevelManager.Instance.WaveEndSummaryData != null)
-                {
-                    LevelManager.Instance.WaveEndSummaryData.NumLevelsGained++;
-                }
-                //Level++;
+            return (gearsAmount, patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints));
+        }
 
-                //MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-                {
-                    //level = Level
-                };
-                //MissionManager.ProcessMissionData(typeof(PlayerLevelMission), missionProgressEventData);
-            }*/
+        public int GetTotalPatchPoints()
+        {
+            int patchPointBaseCost = 100;
+            int patchPointCostIncrement = 10;
+
+            int totalPatchPoints = 0;
+            int gearsAmount = Gears;
+
+            while (patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints) <= gearsAmount)
+            {
+                gearsAmount -= patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints);
+                totalPatchPoints++;
+            }
+
+            return totalPatchPoints;
+        }
+
+        public int GetAvailablePatchPoints()
+        {
+            return GetTotalPatchPoints() - PatchPointsSpent;
+        }
+
+        public void SpendPatchPoints(int amount)
+        {
+            PatchPointsSpent -= amount;
+        }
+
+        public void RecordBitConnection(BIT_TYPE bit)
+        {
+            if (BitConnections.ContainsKey(bit))
+            {
+                BitConnections[bit]++;
+            }
+            else
+            {
+                Debug.LogError($"Bit Connection stat tracking, can't find bit type {bit}");
+            }
+        }
+
+        public void RecordEnemyKilled(string enemyId)
+        {
+            if (!EnemiesKilled.ContainsKey(enemyId))
+            {
+                EnemiesKilled.Add(enemyId, 0);
+            }
+
+            EnemiesKilled[enemyId]++;
         }
 
         //====================================================================================================================//
@@ -168,22 +267,22 @@ namespace StarSalvager.Values
             switch (type)
             {
                 case FACILITY_TYPE.FREEZER:
-                    PlayerDataManager.IncreaseRationCapacity(increaseAmount);
+                    PlayerRunData.RationCapacity += increaseAmount;
                     break;
                 case FACILITY_TYPE.STORAGEELECTRICITY:
-                    PlayerDataManager.IncreaseResourceCapacity(BIT_TYPE.YELLOW, increaseAmount);
+                    PlayerRunData.GetResource(BIT_TYPE.YELLOW).AddResourceCapacity(increaseAmount);
                     break;
                 case FACILITY_TYPE.STORAGEFUEL:
-                    PlayerDataManager.IncreaseResourceCapacity(BIT_TYPE.RED, increaseAmount);
+                    PlayerRunData.GetResource(BIT_TYPE.RED).AddResourceCapacity(increaseAmount);
                     break;
                 case FACILITY_TYPE.STORAGEPLASMA:
-                    PlayerDataManager.IncreaseResourceCapacity(BIT_TYPE.GREEN, increaseAmount);
+                    PlayerRunData.GetResource(BIT_TYPE.GREEN).AddResourceCapacity(increaseAmount);
                     break;
                 case FACILITY_TYPE.STORAGESCRAP:
-                    PlayerDataManager.IncreaseResourceCapacity(BIT_TYPE.GREY, increaseAmount);
+                    PlayerRunData.GetResource(BIT_TYPE.GREY).AddResourceCapacity(increaseAmount);
                     break;
                 case FACILITY_TYPE.STORAGEWATER:
-                    PlayerDataManager.IncreaseResourceCapacity(BIT_TYPE.BLUE, increaseAmount);
+                    PlayerRunData.GetResource(BIT_TYPE.BLUE).AddResourceCapacity(increaseAmount);
                     break;
             }
 

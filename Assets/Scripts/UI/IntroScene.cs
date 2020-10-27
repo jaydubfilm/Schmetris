@@ -10,6 +10,7 @@ public class IntroScene : MonoBehaviour, IReset
     private int introSceneStage = 0;
 
     public GameObject mainMenuWindow;
+    public GameObject menuCharacters;
 
     public GameObject panel1;
     public GameObject panelText1;
@@ -44,6 +45,7 @@ public class IntroScene : MonoBehaviour, IReset
             else if (introSceneStage == 1)
             {
                 mainMenuWindow.SetActive(true);
+                menuCharacters.SetActive(true);
                 gameObject.SetActive(false);
                 panel1.SetActive(true);
                 panelText1.SetActive(true);
@@ -56,6 +58,7 @@ public class IntroScene : MonoBehaviour, IReset
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             mainMenuWindow.SetActive(true);
+            menuCharacters.SetActive(true);
             gameObject.SetActive(false);
             panel1.SetActive(true);
             panel2.SetActive(false);

@@ -40,7 +40,7 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
         //bots = FindObjectsOfType<Bot>();
         
         bot.transform.position = new Vector2(0, -7f);
-        bot.InitBot(false);
+        bot.InitBot();
 
         Bot.OnBotDied += (deadBot, deathMethod) =>
         {

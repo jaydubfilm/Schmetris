@@ -248,8 +248,10 @@ namespace StarSalvager.UI.Scrapyard
         private void Launch()
         {
             //TODO Need to decide if this should happen at arrival or at launch
-            TryFillBotResources(true);
-            TryFillBotResources(false);
+            Globals.IsRecoveryBot = true;
+            TryFillBotResources();
+            Globals.IsRecoveryBot = false;
+            TryFillBotResources();
             
             _droneDesigner.ProcessScrapyardUsageEndAnalytics();
             
@@ -262,7 +264,7 @@ namespace StarSalvager.UI.Scrapyard
         }
         
         
-        private void TryFillBotResources(bool isRecoveryDrone)
+        private void TryFillBotResources()
         {
             BIT_TYPE[] types = {
                 BIT_TYPE.RED,
@@ -271,7 +273,7 @@ namespace StarSalvager.UI.Scrapyard
                 BIT_TYPE.YELLOW
             };
 
-            List<BlockData> botData = PlayerDataManager.GetBlockDatas(isRecoveryDrone);
+            List<BlockData> botData = PlayerDataManager.GetBlockDatas();
             
             foreach (var bitType in types)
             {
@@ -304,8 +306,8 @@ namespace StarSalvager.UI.Scrapyard
                 }
 
 
-                float currentAmount = PlayerDataManager.GetLiquidResources(isRecoveryDrone)[bitType];
-                float currentCapacity = PlayerDataManager.GetLiquidCapacities(isRecoveryDrone)[bitType];
+                float currentAmount = PlayerDataManager.GetResource(bitType).liquid;
+                float currentCapacity = PlayerDataManager.GetResource(bitType).liquidCapacity;
 
                 var fillRemaining = currentCapacity - currentAmount;
 
@@ -313,7 +315,7 @@ namespace StarSalvager.UI.Scrapyard
                 if (fillRemaining <= 0f)
                     continue;
 
-                var availableResources = PlayerDataManager.GetResources()[bitType];
+                var availableResources = PlayerDataManager.GetResource(bitType).resource;
 
                 //If we have no resources available to refill the liquid, move onto the next
                 if(availableResources <= 0)
@@ -321,8 +323,8 @@ namespace StarSalvager.UI.Scrapyard
 
                 var movingAmount = Mathf.RoundToInt(Mathf.Min(availableResources, fillRemaining));
 
-                PlayerDataManager.SubtractResources(bitType, movingAmount);
-                PlayerDataManager.AddLiquidResource(bitType, movingAmount, isRecoveryDrone);
+                PlayerDataManager.GetResource(bitType).SubtractResource(movingAmount);
+                PlayerDataManager.GetResource(bitType).AddLiquid(movingAmount);
             }
         }
         

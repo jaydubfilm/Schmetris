@@ -52,11 +52,13 @@ namespace StarSalvager.Factories.Data
         [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
         private float m_projectileSpeed;
         [SerializeField, VerticalGroup("$ProjectileType/row2/right"), 
-         InfoBox("A value of 0 means that the projectile will continue until offscreen"), 
+         InfoBox("A value of 0 means that the projectile will continue until offscreen", VisibleIf = "noRange"), 
          SuffixLabel("units", true)]
         private float m_projectileRange;
 
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        private bool noRange => m_projectileRange == 0f;
+
+        [SerializeField, VerticalGroup("$ProjectileType/row2/right"), LabelText("Sprite Must Rotate")]
         private bool m_requiredRotate;
 
         //====================================================================================================================//

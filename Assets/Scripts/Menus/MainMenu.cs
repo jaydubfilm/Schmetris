@@ -44,6 +44,9 @@ namespace StarSalvager.UI
         [SerializeField] private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
+        [SerializeField]
+        private GameObject menuCharactersRootObject;
+
         //============================================================================================================//
 
         #region Menu Windows
@@ -285,6 +288,7 @@ namespace StarSalvager.UI
                     //menuState = MENUSTATE.GAMEMENU;
                     introSceneCanvas.SetActive(true);
                     mainMenuWindow.SetActive(false);
+                    menuCharactersRootObject.SetActive(false);
 
                     //SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
                 }
@@ -415,6 +419,48 @@ namespace StarSalvager.UI
         private void ClearRemoteData()
         {
             Files.ClearRemoteData();
+        }
+
+        [Button("Show Current Account Stats"), DisableInEditorMode]
+        private void ShowAccountStats()
+        {
+            if (Application.isPlaying)
+            {
+                if (PlayerDataManager.HasPlayerAccountData())
+                {
+                    string newString = "";
+                    newString += $"Total Gears: {PlayerDataManager.GetGears()}, Gears this run: {PlayerDataManager.GetGearsThisRun()}\n";
+                    newString += $"Total Core Deaths: {PlayerDataManager.GetCoreDeaths()}, Core Deaths this run: {PlayerDataManager.GetCoreDeathsThisRun()}\n";
+                    newString += $"Total Repairs Done: {PlayerDataManager.GetRepairsDone()}, Repair Done this run: {PlayerDataManager.GetRepairsDoneThisRun()}\n";
+
+
+                    if (PlayerDataManager.GetBitConnections().Count > 0)
+                    {
+                        newString += ("<b>Bits Connected:</b>\n");
+
+                        foreach (var keyValuePair in PlayerDataManager.GetBitConnections())
+                        {
+                            newString += $"Total {keyValuePair.Key} Connected: {keyValuePair.Value}, {keyValuePair.Key} Connected this run: {PlayerDataManager.GetBitConnectionsThisRun(keyValuePair.Key)}\n";
+                        }
+                    }
+
+                    if (PlayerDataManager.GetEnemiesKilled().Count > 0)
+                    {
+                        newString += ("<b>Enemies Killed:</b>\n");
+
+                        foreach (var keyValuePair in PlayerDataManager.GetEnemiesKilled())
+                        {
+                            newString += $"Total {keyValuePair.Key} Killed: {keyValuePair.Value}, {keyValuePair.Key} Killed this run: {PlayerDataManager.GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
+                        }
+                    }
+
+                    Alert.ShowAlert("Account Tracking Statistics", newString, "Ok", null);
+                }
+                else
+                {
+                    Alert.ShowAlert("No Account Loaded", "No account loaded. Load an account and then click this again.", "Ok", null);
+                }
+            }
         }
 
 #endif

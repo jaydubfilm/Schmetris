@@ -120,7 +120,7 @@ namespace StarSalvager.UI.Scrapyard
                         description = description,
                         facilityType = type,
                         level = i,
-                        cost = facilityRemoteData.levels[i].craftCost
+                        patchCost = facilityRemoteData.levels[i].patchCost
                     };
 
                     bool craftButtonInteractable =
@@ -138,19 +138,21 @@ namespace StarSalvager.UI.Scrapyard
 
         private void SetupResourceScrollView()
         {
-            var resources = PlayerDataManager.GetResources();
-            var capacities = PlayerDataManager.GetResourceCapacities();
-
-            foreach (var resource in resources)
+            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
+                if (_bitType == BIT_TYPE.WHITE)
+                    continue;
+
+                PlayerResource playerResource = PlayerDataManager.GetResource(_bitType);
+
                 var data = new ResourceAmount
                 {
-                    type = resource.Key,
-                    amount = resource.Value,
-                    capacity = capacities[resource.Key]
+                    type = _bitType,
+                    amount = playerResource.resource,
+                    capacity = playerResource.resourceCapacity
                 };
 
-                var element = resourceUIElementScrollView.AddElement(data, $"{resource.Key}_UIElement");
+                var element = resourceUIElementScrollView.AddElement(data, $"{_bitType}_UIElement");
                 element.Init(data);
             }
         }
@@ -182,8 +184,7 @@ namespace StarSalvager.UI.Scrapyard
                 return;
             }
 
-            PlayerDataManager.SubtractResources(item.cost);
-            PlayerDataManager.SubtractComponents(item.cost);
+            PlayerDataManager.SpendPatchPoints(item.patchCost);
             PlayerDataManager.UnlockFacilityLevel(item.facilityType, item.level);
         }
 
@@ -208,7 +209,7 @@ namespace StarSalvager.UI.Scrapyard
             
             detailsTitle.text = item?.name;
             detailsDescription.text = item?.description;
-            DisplayCost(item?.cost);
+            DisplayCost(item.patchCost);
         }
 
         private void DisplayCost(IEnumerable<CraftCost> costs)
@@ -220,6 +221,14 @@ namespace StarSalvager.UI.Scrapyard
                 var element = costUIElementScrollView.AddElement(cost);
                 element.Init(cost);
             }
+        }
+
+        private void DisplayCost(int patchCost)
+        {
+            costUIElementScrollView.ClearElements();
+
+            //var element = costUIElementScrollView.AddElement(cost);
+            //element.Init(cost);
         }
 
         //====================================================================================================================//

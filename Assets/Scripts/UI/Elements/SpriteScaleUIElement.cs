@@ -64,7 +64,7 @@ namespace StarSalvager.UI
                 if (!active)
                     Dec = rounded - i;
 
-                if (!active && Dec >= 0.5f)
+                if (!active && (Dec >= 0.5f || (rounded < 0.5f && i == 0)))
                 {
                     _images[i].type = Image.Type.Filled;
                     _images[i].fillMethod = Image.FillMethod.Horizontal;

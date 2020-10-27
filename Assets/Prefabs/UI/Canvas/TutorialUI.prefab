@@ -758,7 +758,7 @@ MonoBehaviour:
   fillImage: {fileID: 789488161612667206}
   pauseImage: {fileID: 6119217501296265909}
   pressAnyKeyText: {fileID: 9046780174744859635}
-  characterObject: {fileID: 0}
+  characterObject: {fileID: 2928585211657185744}
   fadeImage: {fileID: 4423069547695335851}
   slideCurve:
     serializedVersion: 2

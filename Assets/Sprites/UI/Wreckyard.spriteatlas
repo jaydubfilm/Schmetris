@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Wreckyard
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 40d8c0230b206e145acb25667dbca9dc, type: 3}
+    totalSpriteSurfaceArea: 3451814
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 08f5b3219a0339f439077300ec949514, type: 3}
+  - {fileID: 21300000, guid: 04b20cf6370992e4aa48c0489efa3d9a, type: 3}
+  - {fileID: 21300000, guid: d766e7e75f3f56c4a98f307c0038e0ef, type: 3}
+  - {fileID: 21300000, guid: 2e571489ff3c73042b5593ddcee0de02, type: 3}
+  - {fileID: 21300000, guid: 20e354e90286cc84aa2dde15866855d7, type: 3}
+  - {fileID: 21300000, guid: 3f9cfeaf18523054bad2fb8b8637e20a, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Wreckyard_DRONEYARD_v2
+  - Wreckyard_MASKCHARACTERBEHIND_v2
+  - Wreckyard_MISSSIONS_v2
+  - Wreckyard_BACKGROUND_v2
+  - Wreckyard_TECHTREE_v2
+  - Wreckyard_ARCADE_v2
+  m_Tag: Wreckyard
+  m_IsVariant: 0

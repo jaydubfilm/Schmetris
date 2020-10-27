@@ -40,7 +40,8 @@ namespace DG.TrelloAPI
         {
             if (!string.IsNullOrEmpty(www.error))
             {
-                throw new TrelloException(errorMessage + ": " + www.error);
+                //throw new TrelloException(errorMessage + ": " + www.error);
+                Debug.LogError($"{errorMessage}: {www.error}");
             }
         }
 
