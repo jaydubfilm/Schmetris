@@ -14034,7 +14034,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 6
+  m_ChildAlignment: 0
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
@@ -21859,6 +21859,16 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -0.8909607
       objectReference: {fileID: 0}
+    - target: {fileID: 3995577600004360073, guid: 6e27af208bb1edd40b60c3c5ea7bf278,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3995577600004360073, guid: 6e27af208bb1edd40b60c3c5ea7bf278,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4931981532117089519, guid: 6e27af208bb1edd40b60c3c5ea7bf278,
         type: 3}
       propertyPath: m_Name
@@ -21962,7 +21972,7 @@ PrefabInstance:
     - target: {fileID: 6214145697642903376, guid: 6e27af208bb1edd40b60c3c5ea7bf278,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -147.79666
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6214145697642903376, guid: 6e27af208bb1edd40b60c3c5ea7bf278,
         type: 3}

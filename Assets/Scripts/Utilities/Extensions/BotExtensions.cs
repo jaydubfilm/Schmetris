@@ -81,7 +81,7 @@ namespace StarSalvager.Utilities.Extensions
         {
             var blockDatas = new List<BlockData>();
 
-            var attachables = new List<IAttachable>(bot.attachedBlocks);
+            var attachables = new List<IAttachable>(bot.AttachedBlocks);
 
             foreach (var attachable in attachables)
             {
