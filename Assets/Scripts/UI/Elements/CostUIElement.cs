@@ -97,6 +97,10 @@ namespace StarSalvager.UI
                     
                     costText.text = $"{partCount}/{data.amount}";
                     break;
+                case CraftCost.TYPE.PatchPoint:
+                    resourceImage.sprite = FactoryManager.Instance.FacilityRemote.PatchSprite;
+                    costText.text = $"{PlayerDataManager.GetAvailablePatchPoints()}/{data.amount}";
+                    break;
             }
         }
         
