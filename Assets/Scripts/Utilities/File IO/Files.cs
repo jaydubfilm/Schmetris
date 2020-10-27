@@ -364,7 +364,8 @@ namespace StarSalvager.Utilities.FileIO
 
             if (Application.isPlaying)
             {
-                PlayerDataManager.ResetPlayerAccountData();
+                PlayerDataManager.ClearPlayerAccountData();
+                PlayerDataManager.ResetGameMetaData();
             }
 
         }

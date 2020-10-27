@@ -14,6 +14,7 @@ namespace StarSalvager
     {
         public int level;
         public int increaseAmount;
-        public List<CraftCost> craftCost;
+
+        public int patchCost;
     }
 }

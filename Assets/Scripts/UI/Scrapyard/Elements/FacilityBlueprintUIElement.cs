@@ -17,7 +17,7 @@ namespace StarSalvager.UI.Scrapyard
         public FACILITY_TYPE facilityType;
         public int level;
 
-        public List<CraftCost> cost;
+        public int patchCost;
 
         #region IEquatable
 

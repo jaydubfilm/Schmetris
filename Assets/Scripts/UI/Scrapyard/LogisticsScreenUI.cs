@@ -120,7 +120,7 @@ namespace StarSalvager.UI.Scrapyard
                         description = description,
                         facilityType = type,
                         level = i,
-                        cost = facilityRemoteData.levels[i].craftCost
+                        patchCost = facilityRemoteData.levels[i].patchCost
                     };
 
                     bool craftButtonInteractable =
@@ -184,8 +184,7 @@ namespace StarSalvager.UI.Scrapyard
                 return;
             }
 
-            PlayerDataManager.SubtractCraftCostResources(item.cost);
-            PlayerDataManager.SubtractComponents(item.cost);
+            PlayerDataManager.SpendPatchPoints(item.patchCost);
             PlayerDataManager.UnlockFacilityLevel(item.facilityType, item.level);
         }
 
@@ -210,7 +209,7 @@ namespace StarSalvager.UI.Scrapyard
             
             detailsTitle.text = item?.name;
             detailsDescription.text = item?.description;
-            DisplayCost(item?.cost);
+            DisplayCost(item.patchCost);
         }
 
         private void DisplayCost(IEnumerable<CraftCost> costs)
@@ -222,6 +221,14 @@ namespace StarSalvager.UI.Scrapyard
                 var element = costUIElementScrollView.AddElement(cost);
                 element.Init(cost);
             }
+        }
+
+        private void DisplayCost(int patchCost)
+        {
+            costUIElementScrollView.ClearElements();
+
+            //var element = costUIElementScrollView.AddElement(cost);
+            //element.Init(cost);
         }
 
         //====================================================================================================================//

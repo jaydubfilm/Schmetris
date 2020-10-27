@@ -292,7 +292,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static bool CanAffordFacilityBlueprint(TEST_FacilityBlueprint facilityBlueprint)
         {
-            return CanAffordCraftCostResources(facilityBlueprint.cost) && CanAffordCraftCostComponents(facilityBlueprint.cost);
+            return PlayerAccountData.GetAvailablePatchPoints() >= facilityBlueprint.patchCost;
         }
 
         public static bool CanAffordCraftCostResources(List<CraftCost> costs)
@@ -449,6 +449,11 @@ namespace StarSalvager.Utilities.Saving
         public static int GetAvailablePatchPoints()
         {
             return PlayerAccountData.GetAvailablePatchPoints();
+        }
+
+        public static void SpendPatchPoints(int amount)
+        {
+            PlayerAccountData.SpendPatchPoints(amount);
         }
 
         public static void ChangeGears(int amount)
@@ -613,14 +618,18 @@ namespace StarSalvager.Utilities.Saving
 
         public static void SetCurrentSaveSlotIndex(int saveSlotIndex)
         {
-            PlayerAccountData = Files.ImportPlayerSaveAccountData(saveSlotIndex);
             CurrentSaveSlotIndex = saveSlotIndex;
+            PlayerAccountData = Files.ImportPlayerSaveAccountData(saveSlotIndex);
             MissionManager.LoadMissionData();
         }
 
         public static void ResetPlayerAccountData()
         {
             PlayerSaveAccountData playerAccountData = new PlayerSaveAccountData();
+            playerAccountData.ResetPlayerRunData();
+            PlayerAccountData = playerAccountData;
+            PlayerRunData.PlaythroughID = Guid.NewGuid().ToString();
+
             foreach (var blueprintData in Globals.BlueprintInitialData)
             {
                 Blueprint blueprint = new Blueprint
@@ -634,7 +643,7 @@ namespace StarSalvager.Utilities.Saving
 
             foreach (var facilityData in Globals.FacilityInitialData)
             {
-                UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
+                playerAccountData.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
             }
 
             foreach (var facilityData in Globals.FacilityInitialBlueprintData)
@@ -642,11 +651,12 @@ namespace StarSalvager.Utilities.Saving
                 playerAccountData.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.level);
             }
 
-            playerAccountData.ResetPlayerRunData();
-            PlayerAccountData = playerAccountData;
-            PlayerRunData.PlaythroughID = Guid.NewGuid().ToString();
-
             MissionManager.LoadMissionData();
+        }
+
+        public static void ResetGameMetaData()
+        {
+            GameMetaData = new GameMetadata();
         }
 
         public static void ClearPlayerAccountData()

@@ -137,6 +137,11 @@ namespace StarSalvager.Values
             return GetTotalPatchPoints() - PatchPointsSpent;
         }
 
+        public void SpendPatchPoints(int amount)
+        {
+            PatchPointsSpent -= amount;
+        }
+
         public void RecordBitConnection(BIT_TYPE bit)
         {
             if (BitConnections.ContainsKey(bit))
@@ -262,22 +267,22 @@ namespace StarSalvager.Values
             switch (type)
             {
                 case FACILITY_TYPE.FREEZER:
-                    PlayerDataManager.IncreaseRationCapacity(increaseAmount);
+                    PlayerRunData.RationCapacity += increaseAmount;
                     break;
                 case FACILITY_TYPE.STORAGEELECTRICITY:
-                    PlayerDataManager.GetResource(BIT_TYPE.YELLOW).AddResourceCapacity(increaseAmount);
+                    PlayerRunData.GetResource(BIT_TYPE.YELLOW).AddResourceCapacity(increaseAmount);
                     break;
                 case FACILITY_TYPE.STORAGEFUEL:
-                    PlayerDataManager.GetResource(BIT_TYPE.RED).AddResourceCapacity(increaseAmount);
+                    PlayerRunData.GetResource(BIT_TYPE.RED).AddResourceCapacity(increaseAmount);
                     break;
                 case FACILITY_TYPE.STORAGEPLASMA:
-                    PlayerDataManager.GetResource(BIT_TYPE.GREEN).AddResourceCapacity(increaseAmount);
+                    PlayerRunData.GetResource(BIT_TYPE.GREEN).AddResourceCapacity(increaseAmount);
                     break;
                 case FACILITY_TYPE.STORAGESCRAP:
-                    PlayerDataManager.GetResource(BIT_TYPE.GREY).AddResourceCapacity(increaseAmount);
+                    PlayerRunData.GetResource(BIT_TYPE.GREY).AddResourceCapacity(increaseAmount);
                     break;
                 case FACILITY_TYPE.STORAGEWATER:
-                    PlayerDataManager.GetResource(BIT_TYPE.BLUE).AddResourceCapacity(increaseAmount);
+                    PlayerRunData.GetResource(BIT_TYPE.BLUE).AddResourceCapacity(increaseAmount);
                     break;
             }
 

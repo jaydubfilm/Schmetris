@@ -17,7 +17,11 @@ MonoBehaviour:
     MissionType: 1
     MissionName: Collect 20 greyscale bits
     MissionDescription: Collect 20 greyscale bits by sticking them to your bot.
-    MissionUnlockParameters: []
+    MissionUnlockParameters:
+    - MissionUnlockType: Level Complete
+      SectorUnlockNumber: 0
+      WaveUnlockNumber: 1
+      MissionUnlockName: 
     AmountNeeded: 20
     AnyResourceType: 0
     ResourceType: 3
