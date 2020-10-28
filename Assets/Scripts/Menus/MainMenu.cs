@@ -285,7 +285,6 @@ namespace StarSalvager.UI
                     PlayerDataManager.SetCurrentSaveSlotIndex(saveSlotIndex);
                     PlayerDataManager.ResetPlayerAccountData();
 
-                    //menuState = MENUSTATE.GAMEMENU;
                     introSceneCanvas.SetActive(true);
                     mainMenuWindow.SetActive(false);
                     menuCharactersRootObject.SetActive(false);

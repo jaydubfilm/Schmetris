@@ -68,17 +68,8 @@ namespace StarSalvager
         }
         private EnemyManager _EnemyManager;
 
-        private GameUI GameUI
-        {
-            get
-            {
-                if (_GameUI == null)
-                    _GameUI = FindObjectOfType<GameUI>();
-
-                return _GameUI;
-            }
-        }
-        private GameUI _GameUI;
+        private GameUI GameUI => GameUI.Instance;
+        //private GameUI _GameUI;
 
         //temp variables
         //float batteryDrainTimer = 0;
@@ -173,10 +164,8 @@ namespace StarSalvager
                 {BIT_TYPE.GREY, 0},
             };
 
-            var usedResourceTypes = new List<BIT_TYPE>
-            {
-                BIT_TYPE.BLUE
-            };
+            var usedResourceTypes = new List<BIT_TYPE>();
+            if(!Globals.UsingTutorial) usedResourceTypes.Add(BIT_TYPE.BLUE);
 
             CheckIfShieldShouldRecycle();
             CheckIfFlashIconShouldRecycle();
@@ -185,7 +174,7 @@ namespace StarSalvager
             //Update the Game UI for the Smart Weapons
             //--------------------------------------------------------------------------------------------------------//
 
-            GameUI?.ResetIcons();
+            GameUI.ResetIcons();
 
             for (int i = 0; i < maxSmartWeapons; i++)
             {
@@ -198,7 +187,7 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-
+            FindObjectOfType<GameUI>();
             MagnetCount = 0;
 
             foreach (var part in _parts)
@@ -1146,6 +1135,9 @@ namespace StarSalvager
 
         private void UpdateUI(BIT_TYPE type, float value)
         {
+            if (!GameUI)
+                return;
+            
             switch (type)
             {
                 case BIT_TYPE.BLUE:

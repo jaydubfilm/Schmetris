@@ -678,7 +678,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void ClearPlayerAccountData()
         {
-            PlayerAccountData = null;
+            PlayerAccountData = new PlayerSaveAccountData();
         }
 
         public static void ResetPlayerRunData()
