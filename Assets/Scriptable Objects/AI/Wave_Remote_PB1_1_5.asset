@@ -40,7 +40,7 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 3
-      m_density: 0.2
+      m_density: 0.23780777
       m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
       spawningMultiplier: 1
@@ -49,7 +49,7 @@ MonoBehaviour:
       m_category: Singles
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.29
+      m_density: 0.3407753
       m_spawnsPerScreenWidthPerMinute: 47
       m_maxOut: 0
       spawningMultiplier: 1
@@ -58,7 +58,7 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.2
+      m_density: 0.23780777
       m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
       spawningMultiplier: 1
@@ -80,7 +80,7 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 3
-      m_density: 0.2
+      m_density: 0.23780777
       m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
       spawningMultiplier: 1
@@ -89,7 +89,7 @@ MonoBehaviour:
       m_category: Singles
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.29
+      m_density: 0.3407753
       m_spawnsPerScreenWidthPerMinute: 47
       m_maxOut: 0
       spawningMultiplier: 1
@@ -98,7 +98,7 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.2
+      m_density: 0.23780777
       m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
       spawningMultiplier: 1
