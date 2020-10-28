@@ -11,6 +11,7 @@ using UnityEngine;
 using StarSalvager.Factories;
 using UnityEditor;
 using StarSalvager.Factories.Data;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager.Utilities.Saving
 {
@@ -41,7 +42,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void ExportPlayerAccountData(int saveSlotIndex)
         {
-            Files.ExportPlayerSaveAccountData(PlayerDataManager.PlayerAccountData, saveSlotIndex);
+            Files.ExportPlayerSaveAccountData(PlayerAccountData, saveSlotIndex);
         }
 
         //Run Data Functions
@@ -149,7 +150,7 @@ namespace StarSalvager.Utilities.Saving
                 if (resource.resourceType != CraftCost.TYPE.Bit)
                     continue;
 
-                PlayerDataManager.GetResource((BIT_TYPE)resource.type).AddResource(resource.amount, false);
+                GetResource((BIT_TYPE)resource.type).AddResource(resource.amount, false);
             }
         }
 
@@ -172,14 +173,14 @@ namespace StarSalvager.Utilities.Saving
                 if (resource.resourceType != CraftCost.TYPE.Bit)
                     continue;
 
-                PlayerDataManager.GetResource((BIT_TYPE)resource.type).SubtractResource((int)(resource.amount * costModifier), false);
+                GetResource((BIT_TYPE)resource.type).SubtractResource((int)(resource.amount * costModifier), false);
             }
         }
 
 
         public static void SubtractComponents(IEnumerable<CraftCost> cost)
         {
-            PlayerDataManager.SubtractCraftCostComponents(cost);
+            SubtractCraftCostComponents(cost);
 
             OnValuesChanged?.Invoke();
         }
@@ -219,7 +220,7 @@ namespace StarSalvager.Utilities.Saving
                 if (resource.resourceType != CraftCost.TYPE.Component)
                     continue;
 
-                PlayerDataManager.SubtractComponent((COMPONENT_TYPE)resource.type, resource.amount);
+                SubtractComponent((COMPONENT_TYPE)resource.type, resource.amount);
             }
         }
 
@@ -249,7 +250,7 @@ namespace StarSalvager.Utilities.Saving
                 if (resource.resourceType != CraftCost.TYPE.Part)
                     continue;
 
-                PlayerDataManager.SubtractPremade((PART_TYPE)resource.type, resource.partPrerequisiteLevel, resource.amount);
+                SubtractPremade((PART_TYPE)resource.type, resource.partPrerequisiteLevel, resource.amount);
             }
         }
 
@@ -308,7 +309,7 @@ namespace StarSalvager.Utilities.Saving
                 if (resource.resourceType != CraftCost.TYPE.Bit)
                     continue;
 
-                if (PlayerDataManager.GetResource((BIT_TYPE)resource.type).resource < resource.amount)
+                if (GetResource((BIT_TYPE)resource.type).resource < resource.amount)
                 {
                     return false;
                 }
@@ -324,7 +325,7 @@ namespace StarSalvager.Utilities.Saving
                 if (resource.resourceType != CraftCost.TYPE.Component)
                     continue;
 
-                if (PlayerDataManager.GetComponents()[(COMPONENT_TYPE)resource.type] < resource.amount)
+                if (GetComponents()[(COMPONENT_TYPE)resource.type] < resource.amount)
                 {
                     return false;
                 }
@@ -763,5 +764,36 @@ namespace StarSalvager.Utilities.Saving
 
         //====================================================================================================================//
 
+
+        public static string GetSummaryString()
+        {
+            string summaryText = string.Empty;
+            summaryText += $"Total Gears: {GetGears()}, this run: {GetGearsThisRun()}\n";
+            summaryText += $"Total Core Deaths: {GetCoreDeaths()}, this run: {GetCoreDeathsThisRun()}\n";
+            summaryText += $"Total Repairs Done: {GetRepairsDone()}, this run: {GetRepairsDoneThisRun()}\n";
+
+
+            if (GetBitConnections().Count > 0)
+            {
+                summaryText += ("<b>Bits Connected:</b>\n");
+
+                foreach (var keyValuePair in GetBitConnections())
+                {
+                    summaryText += $"\t{keyValuePair.Key}: {keyValuePair.Value}, this run: {GetBitConnectionsThisRun(keyValuePair.Key)}\n";
+                }
+            }
+
+            if (GetEnemiesKilled().Count > 0)
+            {
+                summaryText += ("<b>Enemies Killed:</b>\n");
+
+                foreach (var keyValuePair in GetEnemiesKilled())
+                {
+                    summaryText += $"\t{keyValuePair.Key}: {keyValuePair.Value}, this run: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
+                }
+            }
+
+            return summaryText;
+        }
     }
 }
