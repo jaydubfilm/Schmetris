@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities;
@@ -16,7 +17,19 @@ namespace StarSalvager.UI
 {
     public class UniverseMap : MonoBehaviour, IReset
     {
-        public bool PROTO_useSum = true;
+        internal enum ICON_TYPE
+        {
+            WAVE,
+            RING_SUM,
+            RING_MAX
+        }
+        
+        [SerializeField, ReadOnly, BoxGroup("Map Stats Icon Prototyping")]
+        private bool PROTO_useSum = true;
+        [SerializeField, BoxGroup("Map Stats Icon Prototyping")]
+        private ICON_TYPE IconType = ICON_TYPE.RING_MAX;
+
+        #region Properties
 
         [SerializeField, Required] private UniverseMapButton m_universeSectorButtonPrefab;
 
@@ -50,6 +63,9 @@ namespace StarSalvager.UI
 
         private List<Image> connectionLines = new List<Image>();
 
+        #endregion //Properties
+
+        //Unity Functions
         //============================================================================================================//
 
         private void Start()
@@ -64,8 +80,26 @@ namespace StarSalvager.UI
             backButton.gameObject.SetActive(!Globals.IsBetweenWavesInUniverseMap);
             betweenWavesScrapyardButton.gameObject.SetActive(Globals.IsBetweenWavesInUniverseMap);
 
-            if(PROTO_useSum)
-                CalculateRingTotalBits();
+            if (PROTO_useSum)
+            {
+                switch (IconType)
+                {
+                    case ICON_TYPE.WAVE:
+                        PROTO_useSum = false;
+                        break;
+                    case ICON_TYPE.RING_SUM:
+                        PROTO_useSum = true;
+                        CalculateRingSum();
+                        break;
+                    case ICON_TYPE.RING_MAX:
+                        PROTO_useSum = true;
+                        CalculateRingMax();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                
+            }
             for (int i = 0; i < universeMapButtons.Count; i++)
             {
                 universeMapButtons[i].Button.image.color = Color.white;
@@ -287,7 +321,7 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         private Dictionary<BIT_TYPE, float> _collectables;
-        private void CalculateRingTotalBits()
+        private void CalculateRingSum()
         {
             _collectables = new Dictionary<BIT_TYPE, float>();
 
@@ -308,6 +342,39 @@ namespace StarSalvager.UI
                             _collectables.Add(bitType, 0f);
 
                         _collectables[bitType] += bit.Value;
+                    }
+                }
+            }
+
+
+            foreach (var collectable in _collectables)
+            {
+                Debug.Log($"[{collectable.Key}] = {collectable.Value}");
+            }
+        }
+        
+        private void CalculateRingMax()
+        {
+            _collectables = new Dictionary<BIT_TYPE, float>();
+
+            var sectors = FactoryManager.Instance.SectorRemoteData;
+
+            foreach (var sector in sectors)
+            {
+                var waves = sector.WaveRemoteData;
+                foreach (var wave in waves)
+                {
+                    var (_, bits) = wave.GetWaveSummaryData(true);
+
+                    foreach (var bit in bits)
+                    {
+                        var bitType = bit.Key;
+
+                        if(!_collectables.ContainsKey(bitType))
+                            _collectables.Add(bitType, 0f);
+
+
+                        _collectables[bitType] = Mathf.Max(_collectables[bitType], bit.Value);
                     }
                 }
             }
@@ -408,7 +475,7 @@ namespace StarSalvager.UI
 
             foreach (var kvp in Bits)
             {
-                Debug.Log($"[{kvp.Key}] = {kvp.Value}");
+                //Debug.Log($"[{kvp.Key}] = {kvp.Value}");
                 outList.Add(new TEST_SpriteScale
                 {
                     Sprite = bitProfile.GetProfile(kvp.Key).GetSprite(SPRITE_LEVEL),
@@ -454,5 +521,8 @@ namespace StarSalvager.UI
 
             windowTransform.anchoredPosition += Vector2.right * 10f;
         }
+
+        //====================================================================================================================//
+        
     }
 }
