@@ -51,7 +51,7 @@ namespace StarSalvager.AI
         public bool Disabled { get; protected set; }
 
         public bool Frozen => FreezeTime > 0f;
-        private float FreezeTime { get; set; }
+        protected float FreezeTime { get; set; }
 
         //IStateAnimation Properties 
         //============================================================================================================//

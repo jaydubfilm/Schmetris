@@ -23,7 +23,7 @@ namespace StarSalvager.AI
         [SerializeField, FoldoutGroup("$SelectionType"), ShowIf("SelectionType", SELECTION_TYPE.ASTEROID)]
         private ASTEROID_SIZE m_asteroidSize;
 
-        //[SerializeField, FoldoutGroup("$SelectionType"), ReadOnly]
+        [SerializeField, HideInInspector]
         private float m_density;
         [SerializeField, HorizontalGroup("$SelectionType/perMinute"), Range(0, 500), PropertyTooltip("Average Per Screen Width"), LabelText("Spawns per Minute"), DisableIf("$m_maxOut"), OnValueChanged("UpdateDensity")]
         private int m_spawnsPerScreenWidthPerMinute;
