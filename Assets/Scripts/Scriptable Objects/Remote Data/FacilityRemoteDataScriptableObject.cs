@@ -10,6 +10,8 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Facility Remote", menuName = "Star Salvager/Scriptable Objects/Facility Remote Data")]
     public class FacilityRemoteDataScriptableObject : ScriptableObject
     {
+        public Sprite PatchSprite;
+        
         public List<FacilityRemoteData> FacilityRemoteData = new List<FacilityRemoteData>();
 
         public FacilityRemoteData GetRemoteData(FACILITY_TYPE Type)

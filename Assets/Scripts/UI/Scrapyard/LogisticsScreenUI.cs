@@ -227,8 +227,13 @@ namespace StarSalvager.UI.Scrapyard
         {
             costUIElementScrollView.ClearElements();
 
-            //var element = costUIElementScrollView.AddElement(cost);
-            //element.Init(cost);
+            CraftCost patchCraftCost = new CraftCost();
+            patchCraftCost.resourceType = CraftCost.TYPE.PatchPoint;
+            patchCraftCost.amount = patchCost;
+
+
+            var element = costUIElementScrollView.AddElement(patchCraftCost);
+            element.Init(patchCraftCost);
         }
 
         //====================================================================================================================//

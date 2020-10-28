@@ -10,6 +10,7 @@ using System.Linq;
 using UnityEngine;
 using StarSalvager.Factories;
 using UnityEditor;
+using StarSalvager.Factories.Data;
 
 namespace StarSalvager.Utilities.Saving
 {
@@ -661,9 +662,10 @@ namespace StarSalvager.Utilities.Saving
                 playerAccountData.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
             }
 
-            foreach (var facilityData in Globals.FacilityInitialBlueprintData)
+            List<FacilityRemoteData> remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteDatas();
+            foreach (var facilityData in remoteData)
             {
-                playerAccountData.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.level);
+                playerAccountData.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.levels.Count - 1);
             }
 
             MissionManager.LoadMissionData();
