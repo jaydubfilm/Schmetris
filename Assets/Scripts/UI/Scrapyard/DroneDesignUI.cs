@@ -12,7 +12,6 @@ using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard
@@ -383,7 +382,7 @@ namespace StarSalvager.UI.Scrapyard
 
         public void UpdateBotResourceElements()
         {
-            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            foreach (BIT_TYPE _bitType in Constants.BIT_ORDER)
             {
                 if (_bitType == BIT_TYPE.WHITE)
                     continue;
@@ -403,11 +402,14 @@ namespace StarSalvager.UI.Scrapyard
             }
 
             //liquidResourceContentView
-            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            foreach (BIT_TYPE _bitType in Constants.BIT_ORDER)
             {
                 if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.BLUE)
                     continue;
-
+                
+                if (DroneDesigner._scrapyardBot == null)
+                    continue;
+                
                 PlayerResource playerResource = PlayerDataManager.GetResource(_bitType);
 
                 var data = new ResourceAmount
@@ -422,6 +424,8 @@ namespace StarSalvager.UI.Scrapyard
 
                 var element = liquidResourceContentView.AddElement(data, $"{_bitType}_UIElement");
                 element.Init(data, true);
+                
+                element.gameObject.SetActive(DroneDesigner._scrapyardBot.UsedResourceTypes.Contains(_bitType));
             }
 
             UpdateFlightDataUI();
@@ -460,7 +464,7 @@ namespace StarSalvager.UI.Scrapyard
             var partCapacity = _droneDesigner._scrapyardBot.PartCapacity;
 
             
-            var powerDraw = _droneDesigner._scrapyardBot.powerDraw;
+            var powerDraw = _droneDesigner._scrapyardBot.PowerDraw;
             var availablePower =
                 Mathf.Clamp(
                     PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid +

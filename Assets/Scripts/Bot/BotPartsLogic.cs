@@ -68,17 +68,8 @@ namespace StarSalvager
         }
         private EnemyManager _EnemyManager;
 
-        private GameUI GameUI
-        {
-            get
-            {
-                if (_GameUI == null)
-                    _GameUI = FindObjectOfType<GameUI>();
-
-                return _GameUI;
-            }
-        }
-        private GameUI _GameUI;
+        private GameUI GameUI => GameUI.Instance;
+        //private GameUI _GameUI;
 
         //temp variables
         //float batteryDrainTimer = 0;
@@ -173,6 +164,9 @@ namespace StarSalvager
                 {BIT_TYPE.GREY, 0},
             };
 
+            var usedResourceTypes = new List<BIT_TYPE>();
+            if(!Globals.UsingTutorial) usedResourceTypes.Add(BIT_TYPE.BLUE);
+
             CheckIfShieldShouldRecycle();
             CheckIfFlashIconShouldRecycle();
             CheckIfBombsShouldRecycle();
@@ -180,7 +174,7 @@ namespace StarSalvager
             //Update the Game UI for the Smart Weapons
             //--------------------------------------------------------------------------------------------------------//
 
-            GameUI?.ResetIcons();
+            GameUI.ResetIcons();
 
             for (int i = 0; i < maxSmartWeapons; i++)
             {
@@ -193,24 +187,33 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-
+            FindObjectOfType<GameUI>();
             MagnetCount = 0;
 
             foreach (var part in _parts)
             {
-                //Destroyed or disabled parts should not contribute to the stats of the bot anymore
-                if (part.Destroyed || part.Disabled)
-                    continue;
                 
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                     .GetRemoteData(part.Type);
+
+                var levelData = partData.levels[part.level];
+                
+                if(!usedResourceTypes.Contains(partData.burnType))
+                    usedResourceTypes.Add(partData.burnType);
+                
+                if(levelData.powerDraw > 0f && !usedResourceTypes.Contains(BIT_TYPE.YELLOW))
+                    usedResourceTypes.Add(BIT_TYPE.YELLOW);
+                
+                //Destroyed or disabled parts should not contribute to the stats of the bot anymore
+                if (part.Destroyed || part.Disabled)
+                    continue;
 
                 int value;
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
 
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.RED] += value;
                             liquidCapacities[BIT_TYPE.GREEN] += value;
@@ -219,7 +222,7 @@ namespace StarSalvager
                             liquidCapacities[BIT_TYPE.BLUE] += value;
                         }
 
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.SMRTCapacity, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.SMRTCapacity, out value))
                         {
                             maxSmartWeapons = value;
                         }
@@ -227,7 +230,7 @@ namespace StarSalvager
                         if (_magnetOverride > 0)
                             break;
 
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
                         {
                             MagnetCount += value;
                         }
@@ -257,7 +260,7 @@ namespace StarSalvager
                         shield.transform.localPosition = Vector3.zero;
 
 
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Radius, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Radius, out value))
                         {
                             shield.SetSize(value);
                         }
@@ -275,7 +278,7 @@ namespace StarSalvager
 
                         break;
                     case PART_TYPE.STORE:
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.RED] += value;
                             liquidCapacities[BIT_TYPE.GREEN] += value;
@@ -283,25 +286,25 @@ namespace StarSalvager
                         }
                         break;
                     case PART_TYPE.STORERED:
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.RED] += value;
                         }
                         break;
                     case PART_TYPE.STOREGREEN:
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.GREEN] += value;
                         }
                         break;
                     case PART_TYPE.STOREGREY:
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.GREY] += value;
                         }
                         break;
                     case PART_TYPE.STOREYELLOW:
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.YELLOW] += value;
                         }
@@ -330,6 +333,7 @@ namespace StarSalvager
             }
 
             bot.ForceCheckMagnets();
+            GameUI.ShowLiquidSliders(usedResourceTypes);
         }
 
         //============================================================================================================//
@@ -1131,6 +1135,9 @@ namespace StarSalvager
 
         private void UpdateUI(BIT_TYPE type, float value)
         {
+            if (!GameUI)
+                return;
+            
             switch (type)
             {
                 case BIT_TYPE.BLUE:

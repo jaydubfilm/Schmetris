@@ -139,7 +139,7 @@ namespace StarSalvager.Values
 
         public void SpendPatchPoints(int amount)
         {
-            PatchPointsSpent -= amount;
+            PatchPointsSpent += amount;
         }
 
         public void RecordBitConnection(BIT_TYPE bit)

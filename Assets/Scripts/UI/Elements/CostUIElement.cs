@@ -88,7 +88,7 @@ namespace StarSalvager.UI
                     int partCount;
                     if (data.type == (int)PART_TYPE.CORE)
                     {
-                        partCount = mDroneDesigner._scrapyardBot.attachedBlocks.GetBlockDatas().Count(x => x.Type == (int)PART_TYPE.CORE && x.Level == data.partPrerequisiteLevel);
+                        partCount = mDroneDesigner._scrapyardBot.AttachedBlocks.GetBlockDatas().Count(x => x.Type == (int)PART_TYPE.CORE && x.Level == data.partPrerequisiteLevel);
                     }
                     else
                     {
@@ -96,6 +96,10 @@ namespace StarSalvager.UI
                     }
                     
                     costText.text = $"{partCount}/{data.amount}";
+                    break;
+                case CraftCost.TYPE.PatchPoint:
+                    resourceImage.sprite = FactoryManager.Instance.FacilityRemote.PatchSprite;
+                    costText.text = $"{PlayerDataManager.GetAvailablePatchPoints()}/{data.amount}";
                     break;
             }
         }

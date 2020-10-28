@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Mail;
 using Newtonsoft.Json;
 using StarSalvager.Factories;
+using StarSalvager.Factories.Data;
 using StarSalvager.Missions;
 using StarSalvager.Utilities.Analytics.Data;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -190,9 +191,10 @@ namespace StarSalvager.Utilities.FileIO
                     data.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
                 }
 
-                foreach (var facilityData in Globals.FacilityInitialBlueprintData)
+                List<FacilityRemoteData> remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteDatas();
+                foreach (var facilityData in remoteData)
                 {
-                    data.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.level);
+                    data.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.levels.Count - 1);
                 }
 
                 return data;

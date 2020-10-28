@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
+using StarSalvager.Utilities;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.UI;
@@ -14,8 +16,23 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class GameUI : MonoBehaviour
+    public class GameUI : SceneSingleton<GameUI>
     {
+        [Serializable]
+        private struct SliderCover
+        {
+            [Required, HorizontalGroup("Row 1"), LabelWidth(40)]
+            public GameObject Slider;
+            [Required, HorizontalGroup("Row 1"), LabelWidth(40)]
+            public GameObject Cover;
+
+            public void SetHidden(bool hidden)
+            {
+                Slider.SetActive(!hidden);
+                Cover.SetActive(hidden);
+            }
+        }
+        
         [Serializable]
         public struct SmartWeaponV2
         {
@@ -162,7 +179,8 @@ namespace StarSalvager.UI
 
         /*[SerializeField, Required, FoldoutGroup("BL Window")]
         private TMP_Text levelText;*/
-        
+        [SerializeField, Required, FoldoutGroup("BL Window")]
+        private SliderCover[] sliderCovers;
         
         
         [SerializeField, Required, FoldoutGroup("BL Window")]
@@ -178,6 +196,8 @@ namespace StarSalvager.UI
         private SliderText waterSlider;
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderText powerSlider;
+        
+
 
         //Right Window
         //============================================================================================================//
@@ -260,7 +280,7 @@ namespace StarSalvager.UI
                 redSliderGlow,
                 blueSliderGlow,
                 greenSliderGlow,
-                greenSliderGlow,
+                greySliderGlow,
                 yellowSliderGlow,
                 //heatSliderGlow
             };
@@ -347,6 +367,7 @@ namespace StarSalvager.UI
             ShowAbortWindow(false);
 
             ShowRecoveryBanner(false);
+            ShowLiquidSliders(null);
         }
 
         private void InitSliderText()
@@ -407,9 +428,6 @@ namespace StarSalvager.UI
         }
 
         //============================================================================================================//
-
-
-
 
         public void SetCarryCapacity(float value, int max)
         {
@@ -543,6 +561,50 @@ namespace StarSalvager.UI
         {
             powerSlider.value = value;
             CheckActivateGlow(powerSlider, yellowSliderGlow);
+        }
+
+
+        //====================================================================================================================//
+
+        public void ShowLiquidSliders(IEnumerable<BIT_TYPE> types)
+        {
+            foreach (var sliderCover in sliderCovers)
+            {
+                sliderCover.SetHidden(true);
+            }
+            
+            if(types.IsNullOrEmpty())
+                return;
+
+            foreach (var bitType in types)
+            {
+                UncoverSlider(bitType);
+            }
+            
+        }
+
+        private void UncoverSlider(BIT_TYPE bitType)
+        {
+            switch (bitType)
+            {
+                case BIT_TYPE.BLUE:
+                    sliderCovers[4].SetHidden(false);
+                    break;
+                case BIT_TYPE.GREEN:
+                    sliderCovers[2].SetHidden(false);
+                    break;
+                case BIT_TYPE.GREY:
+                    sliderCovers[1].SetHidden(false);
+                    break;
+                case BIT_TYPE.RED:
+                    sliderCovers[0].SetHidden(false);
+                    break;
+                case BIT_TYPE.YELLOW:
+                    sliderCovers[3].SetHidden(false);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
+            }
         }
 
         //============================================================================================================//

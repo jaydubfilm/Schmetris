@@ -233,7 +233,7 @@ namespace StarSalvager
             {
                 if (_scrapyardBot != null && mouseCoordinate != Vector2Int.zero)
                 {
-                    IAttachable attachableAtCoordinates = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+                    IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
 
                     if (attachableAtCoordinates != null && attachableAtCoordinates is ScrapyardPart partAtCoordinates)
                     {
@@ -357,7 +357,7 @@ namespace StarSalvager
                 return;
             }
         
-            IAttachable attachableAtCoordinates = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseGridCoordinate);
+            IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseGridCoordinate);
             //Check if there mouse coordinates are empty
             if (attachableAtCoordinates == null)
             {
@@ -454,7 +454,7 @@ namespace StarSalvager
                 return;
             }
             
-            IAttachable attachableAtCoordinates = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+            IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
 
             if (attachableAtCoordinates != null && attachableAtCoordinates is ScrapyardPart scrapPart)
             {
@@ -505,7 +505,7 @@ namespace StarSalvager
             {
                 case SCRAPYARD_ACTION.EQUIP:
                     PlayerDataManager.AddPartToStorage
-                        (_scrapyardBot.attachedBlocks.OfType<ScrapyardPart>().FirstOrDefault(a => a.Coordinate == undoBlockData.Coordinate).ToBlockData());
+                        (_scrapyardBot.AttachedBlocks.OfType<ScrapyardPart>().FirstOrDefault(a => a.Coordinate == undoBlockData.Coordinate).ToBlockData());
                     _scrapyardBot.TryRemoveAttachableAt(undoBlockData.Coordinate, false);
                     break;
                 case SCRAPYARD_ACTION.UNEQUIP:
@@ -564,7 +564,7 @@ namespace StarSalvager
                     break;
                 case SCRAPYARD_ACTION.UNEQUIP:
                     PlayerDataManager.AddPartToStorage
-                        (_scrapyardBot.attachedBlocks.OfType<ScrapyardPart>().FirstOrDefault(a => a.Coordinate == redoBlockData.Coordinate).ToBlockData());
+                        (_scrapyardBot.AttachedBlocks.OfType<ScrapyardPart>().FirstOrDefault(a => a.Coordinate == redoBlockData.Coordinate).ToBlockData());
                     _scrapyardBot.TryRemoveAttachableAt(redoBlockData.Coordinate, false);
                     break;
                 case SCRAPYARD_ACTION.RELOCATE:
@@ -634,7 +634,7 @@ namespace StarSalvager
             //Setup your list of available parts by adding storage and parts on bot together into a temp list
             List<BlockData> partComparer = new List<BlockData>();
             partComparer.AddRange(PlayerDataManager.GetCurrentPartsInStorage());
-            foreach (var attachable in _scrapyardBot.attachedBlocks)
+            foreach (var attachable in _scrapyardBot.AttachedBlocks)
             {
                 if (attachable is ScrapyardPart part && part.Type != (int)PART_TYPE.CORE)
                 {
@@ -698,11 +698,11 @@ namespace StarSalvager
             }
             PlayerDataManager.SetCurrentPartsInStorage(partComparer);
 
-            for (int i = _scrapyardBot.attachedBlocks.Count - 1; i >= 0; i--)
+            for (int i = _scrapyardBot.AttachedBlocks.Count - 1; i >= 0; i--)
             {
-                if (_scrapyardBot.attachedBlocks[i].Coordinate != Vector2Int.zero)
+                if (_scrapyardBot.AttachedBlocks[i].Coordinate != Vector2Int.zero)
                 {
-                    _scrapyardBot.TryRemoveAttachableAt(_scrapyardBot.attachedBlocks[i].Coordinate, false);
+                    _scrapyardBot.TryRemoveAttachableAt(_scrapyardBot.AttachedBlocks[i].Coordinate, false);
                 }
             }
 
@@ -727,7 +727,7 @@ namespace StarSalvager
         {
             if (_scrapyardBot != null)
             {
-                PlayerDataManager.SetBlockDatas(_scrapyardBot.attachedBlocks.GetBlockDatas());
+                PlayerDataManager.SetBlockDatas(_scrapyardBot.AttachedBlocks.GetBlockDatas());
             }
         }
 
@@ -777,8 +777,8 @@ namespace StarSalvager
 
             List<BlockData> recoveryBotBlockData = PlayerDataManager.GetBlockDatas();
 
-            List<ScrapyardBit> listBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>().ToList();
-            List<Component> listComponents = _scrapyardBot.attachedBlocks.OfType<Component>().ToList();
+            List<ScrapyardBit> listBits = _scrapyardBot.AttachedBlocks.OfType<ScrapyardBit>().ToList();
+            List<Component> listComponents = _scrapyardBot.AttachedBlocks.OfType<Component>().ToList();
 
             for (int i = recoveryBotBlockData.Count - 1; i >= 0; i--)
             {
@@ -889,7 +889,7 @@ namespace StarSalvager
 
             foreach (var resource in wastedResources)
             {
-                if(resource.Value > 0)
+                if(resource.Value <= 0)
                     continue;
                 
                 resourcesGained += $"{resource.Value} {TMP_SpriteMap.MaterialIcons[resource.Key]} jettisoned due to lack of storage\n";
@@ -901,7 +901,7 @@ namespace StarSalvager
             
             for (int i = listBits.Count - 1; i >= 0; i--)
             {
-                if (_scrapyardBot.attachedBlocks.Contains(listBits[i]))
+                if (_scrapyardBot.AttachedBlocks.Contains(listBits[i]))
                 {
                     continue;
                 }
@@ -938,7 +938,7 @@ namespace StarSalvager
             if (_scrapyardBot == null)
                 return 0;
             
-            var repairCost = _scrapyardBot.attachedBlocks
+            var repairCost = _scrapyardBot.AttachedBlocks
                 .OfType<ScrapyardPart>()
                 .Where(x => !x.Destroyed)
                 .Where(x => x.CurrentHealth < x.StartingHealth)
@@ -952,7 +952,7 @@ namespace StarSalvager
             if (_scrapyardBot == null)
                 return 0;
 
-            var replacementCost = _scrapyardBot.attachedBlocks
+            var replacementCost = _scrapyardBot.AttachedBlocks
                 .OfType<ScrapyardPart>()
                 .Where(x => x.Destroyed)
                 .Sum(x => x.StartingHealth);
@@ -965,7 +965,7 @@ namespace StarSalvager
             if (_scrapyardBot == null) 
                 return;
 
-            var damagedPartList = _scrapyardBot.attachedBlocks.OfType<ScrapyardPart>()
+            var damagedPartList = _scrapyardBot.AttachedBlocks.OfType<ScrapyardPart>()
                 .Where(x => x.CurrentHealth < x.StartingHealth)
                 .OrderBy(x => x.StartingHealth - x.CurrentHealth)
                 .ToList();
@@ -1047,12 +1047,12 @@ namespace StarSalvager
 
         public bool HasPart(PART_TYPE partType)
         {
-            return _scrapyardBot.attachedBlocks.OfType<ScrapyardPart>().Any(p => p.Type == partType);
+            return _scrapyardBot.AttachedBlocks.OfType<ScrapyardPart>().Any(p => p.Type == partType);
         }
 
         public bool HasParts(params PART_TYPE[] partTypes)
         {
-            return _scrapyardBot.attachedBlocks.OfType<ScrapyardPart>().Any(p => partTypes.Contains(p.Type));
+            return _scrapyardBot.AttachedBlocks.OfType<ScrapyardPart>().Any(p => partTypes.Contains(p.Type));
         }
 
         public void UpdateFloatingMarkers(bool showAvailable)
@@ -1065,33 +1065,33 @@ namespace StarSalvager
 
             if (showAvailable && _scrapyardBot != null)
             {
-                foreach (var attached in _scrapyardBot.attachedBlocks)
+                foreach (var attached in _scrapyardBot.AttachedBlocks)
                 {
-                    if (!_scrapyardBot.attachedBlocks.HasPathToCore(attached))
+                    if (!_scrapyardBot.AttachedBlocks.HasPathToCore(attached))
                         continue;
 
-                    if (_scrapyardBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.left && _scrapyardBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                    if (_scrapyardBot.AttachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.left && _scrapyardBot.AttachedBlocks.HasPathToCore(a)).Count == 0)
                     {
                         if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
                             availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
                         availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.left) * Constants.gridCellSize + Vector3.back;
                         _availablePointMarkers.Add(availableMarker);
                     }
-                    if (_scrapyardBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.right && _scrapyardBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                    if (_scrapyardBot.AttachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.right && _scrapyardBot.AttachedBlocks.HasPathToCore(a)).Count == 0)
                     {
                         if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
                             availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
                         availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.right) * Constants.gridCellSize + Vector3.back;
                         _availablePointMarkers.Add(availableMarker);
                     }
-                    if (_scrapyardBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.up && _scrapyardBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                    if (_scrapyardBot.AttachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.up && _scrapyardBot.AttachedBlocks.HasPathToCore(a)).Count == 0)
                     {
                         if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
                             availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
                         availableMarker.transform.position = (Vector3)(attached.Coordinate + Vector2.up) * Constants.gridCellSize + Vector3.back;
                         _availablePointMarkers.Add(availableMarker);
                     }
-                    if (_scrapyardBot.attachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.down && _scrapyardBot.attachedBlocks.HasPathToCore(a)).Count == 0)
+                    if (_scrapyardBot.AttachedBlocks.FindAll(a => a.Coordinate == attached.Coordinate + Vector2.down && _scrapyardBot.AttachedBlocks.HasPathToCore(a)).Count == 0)
                     {
                         if (!Recycler.TryGrab(ICONS.AVAILABLE, out GameObject availableMarker))
                             availableMarker = GameObject.Instantiate(availablePointMarkerPrefab);
@@ -1109,9 +1109,9 @@ namespace StarSalvager
 
             if (_scrapyardBot != null)
             {
-                foreach (var attached in _scrapyardBot.attachedBlocks)
+                foreach (var attached in _scrapyardBot.AttachedBlocks)
                 {
-                    if (!_scrapyardBot.attachedBlocks.HasPathToCore(attached))
+                    if (!_scrapyardBot.AttachedBlocks.HasPathToCore(attached))
                     {
                         if (!Recycler.TryGrab(ICONS.ALERT, out GameObject newWarning))
                             newWarning = GameObject.Instantiate(floatingPartWarningPrefab);

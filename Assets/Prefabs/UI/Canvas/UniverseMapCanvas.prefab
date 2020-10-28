@@ -9718,9 +9718,9 @@ RectTransform:
   m_Father: {fileID: 244297737854983437}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 246.17896, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 246.17896, y: -90}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &4274683018231727588
@@ -10405,6 +10405,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PROTO_useSum: 0
+  IconType: 2
   m_universeSectorButtonPrefab: {fileID: 2087305763259004599, guid: 1ed83d2c722e62b49bd492a5f966f8a6,
     type: 3}
   m_scrollRect: {fileID: 5553311265099259242}
