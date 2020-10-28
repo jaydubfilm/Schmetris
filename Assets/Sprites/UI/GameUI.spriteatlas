@@ -23,7 +23,7 @@ SpriteAtlas:
     platformSettings:
     - serializedVersion: 3
       m_BuildTarget: DefaultTexturePlatform
-      m_MaxTextureSize: 1024
+      m_MaxTextureSize: 2048
       m_ResizeAlgorithm: 0
       m_TextureFormat: -1
       m_TextureCompression: 1
@@ -43,7 +43,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 8e2642d260cfec648b49f64ac830cdc5, type: 3}
-    totalSpriteSurfaceArea: 1325425
+    totalSpriteSurfaceArea: 2673009
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -58,6 +58,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 82eb1c55932253840aac56b9a0ab0a39, type: 3}
   - {fileID: 21300000, guid: 666c0f753a99c7c449261b69b9028156, type: 3}
   - {fileID: 21300000, guid: e2f6235697d43cb41a5cb52b013b4e4e, type: 3}
+  - {fileID: 21300000, guid: 0860265672de1424d8351e6f3d2d480e, type: 3}
   - {fileID: 21300000, guid: 58259f960ca79224e9ba6151c96e0826, type: 3}
   - {fileID: 21300000, guid: 0870bd779634c3848b123d62721184f5, type: 3}
   - {fileID: 21300000, guid: 73854258c30d1424a9638199b57ad440, type: 3}
@@ -85,6 +86,7 @@ SpriteAtlas:
   - ui_TEMPICON_0_v1
   - ui_MEGNETISMFILLBAR_0_v1
   - ui_TEMPBACK_0_v1
+  - ui_BACKARTLEFT_0_v1
   - ui_CRACKS4_0_v1
   - ui_TEMPGAUGE_0_v1
   - ui_STICKER_0_v1
