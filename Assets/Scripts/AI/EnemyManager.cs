@@ -9,6 +9,7 @@ using StarSalvager.Utilities;
 using StarSalvager.Utilities.Inputs;
 using Random = UnityEngine.Random;
 using Recycling;
+using StarSalvager.Audio;
 using StarSalvager.Cameras;
 
 namespace StarSalvager
@@ -32,6 +33,8 @@ namespace StarSalvager
         public bool isPaused => GameTimer.IsPaused;
 
         private bool m_enemiesInert = false;
+
+        private bool _hasActiveEnemies;
 
         //============================================================================================================//
         
@@ -63,7 +66,21 @@ namespace StarSalvager
 
             HandleEnemyMovement();
         }
-        
+
+        private void LateUpdate()
+        {
+            if (!_hasActiveEnemies && m_enemies.Count > 0 && !LevelManager.Instance.EndWaveState)
+            {
+                _hasActiveEnemies = true;
+                AudioController.PlayMusic(MUSIC.ENEMY);
+            }
+            else if (_hasActiveEnemies && (m_enemies.Count == 0 || LevelManager.Instance.EndWaveState))
+            {
+                _hasActiveEnemies = false;
+                AudioController.PlayMusic(MUSIC.GAMEPLAY, 2f);
+            }
+        }
+
         //============================================================================================================//
 
         public void Activate()

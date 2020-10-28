@@ -5,6 +5,7 @@
         MAIN_MENU,
         GAMEPLAY,
         SCRAPYARD,
-        GAME_OVER
+        ENEMY,
+        GAME_OVER,
     }
 }
