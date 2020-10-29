@@ -19,15 +19,25 @@ MonoBehaviour:
     displayDescription: Freezer description *
     levels:
     - level: 0
-      increaseAmount: 100
+      increaseAmount: 400
       patchCost: 1
-      facilityPrerequisites: []
+      facilityPrerequisites:
+      - facilityType: 16
+        level: 0
     - level: 1
-      increaseAmount: 200
+      increaseAmount: 1600
       patchCost: 1
       facilityPrerequisites: []
     - level: 2
-      increaseAmount: 300
+      increaseAmount: 3600
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 6400
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 10000
       patchCost: 1
       facilityPrerequisites: []
   - type: 1
@@ -35,15 +45,25 @@ MonoBehaviour:
     displayDescription: Increases base fuel storage capacity by *
     levels:
     - level: 0
-      increaseAmount: 0
+      increaseAmount: 400
       patchCost: 1
-      facilityPrerequisites: []
+      facilityPrerequisites:
+      - facilityType: 16
+        level: 0
     - level: 1
-      increaseAmount: 150
+      increaseAmount: 1600
       patchCost: 1
       facilityPrerequisites: []
     - level: 2
-      increaseAmount: 400
+      increaseAmount: 3600
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 6400
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 10000
       patchCost: 1
       facilityPrerequisites: []
   - type: 2
@@ -51,17 +71,27 @@ MonoBehaviour:
     displayDescription: Increases base power storage capacity *
     levels:
     - level: 0
-      increaseAmount: 0
+      increaseAmount: 400
       patchCost: 1
-      facilityPrerequisites: []
+      facilityPrerequisites:
+      - facilityType: 16
+        level: 1
     - level: 1
-      increaseAmount: 200
+      increaseAmount: 1600
       patchCost: 1
       facilityPrerequisites:
       - facilityType: 9
         level: 1
     - level: 2
-      increaseAmount: 400
+      increaseAmount: 3600
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 6400
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 10000
       patchCost: 1
       facilityPrerequisites: []
   - type: 3
@@ -69,15 +99,25 @@ MonoBehaviour:
     displayDescription: Increase base plasma storage capacity by *
     levels:
     - level: 0
-      increaseAmount: 0
+      increaseAmount: 400
       patchCost: 1
-      facilityPrerequisites: []
+      facilityPrerequisites:
+      - facilityType: 16
+        level: 1
     - level: 1
-      increaseAmount: 200
+      increaseAmount: 1600
       patchCost: 1
       facilityPrerequisites: []
     - level: 2
-      increaseAmount: 400
+      increaseAmount: 3600
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 6400
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 10000
       patchCost: 1
       facilityPrerequisites: []
   - type: 4
@@ -85,15 +125,25 @@ MonoBehaviour:
     displayDescription: Increases base scrap metal storage by *
     levels:
     - level: 0
-      increaseAmount: 0
+      increaseAmount: 400
       patchCost: 1
-      facilityPrerequisites: []
+      facilityPrerequisites:
+      - facilityType: 16
+        level: 0
     - level: 1
-      increaseAmount: 200
+      increaseAmount: 1600
       patchCost: 1
       facilityPrerequisites: []
     - level: 2
-      increaseAmount: 400
+      increaseAmount: 3600
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 6400
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 10000
       patchCost: 1
       facilityPrerequisites: []
   - type: 5
@@ -101,15 +151,25 @@ MonoBehaviour:
     displayDescription: Increases base water storage
     levels:
     - level: 0
-      increaseAmount: 0
+      increaseAmount: 400
       patchCost: 1
-      facilityPrerequisites: []
+      facilityPrerequisites:
+      - facilityType: 16
+        level: 1
     - level: 1
-      increaseAmount: 200
+      increaseAmount: 1600
       patchCost: 1
       facilityPrerequisites: []
     - level: 2
-      increaseAmount: 400
+      increaseAmount: 3600
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 6400
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 10000
       patchCost: 1
       facilityPrerequisites: []
   - type: 7
@@ -119,7 +179,9 @@ MonoBehaviour:
     - level: 0
       increaseAmount: 0
       patchCost: 1
-      facilityPrerequisites: []
+      facilityPrerequisites:
+      - facilityType: 22
+        level: 0
   - type: 6
     displayName: Chipworks
     displayDescription: Upgrades workbench to craft parts which require chip components
@@ -127,7 +189,9 @@ MonoBehaviour:
     - level: 0
       increaseAmount: 0
       patchCost: 1
-      facilityPrerequisites: []
+      facilityPrerequisites:
+      - facilityType: 7
+        level: 0
   - type: 8
     displayName: Fusorworks
     displayDescription: Upgrades workbench to be able to craft parts using fusor
@@ -136,20 +200,170 @@ MonoBehaviour:
     - level: 0
       increaseAmount: 0
       patchCost: 1
-      facilityPrerequisites: []
+      facilityPrerequisites:
+      - facilityType: 6
+        level: 0
   - type: 9
     displayName: Refinery
     displayDescription: Increases efficiency of raw material refining by *%
     levels:
     - level: 0
-      increaseAmount: 0
-      patchCost: 1
-      facilityPrerequisites: []
-    - level: 1
       increaseAmount: 50
       patchCost: 1
       facilityPrerequisites: []
-    - level: 2
+    - level: 1
       increaseAmount: 100
+      patchCost: 2
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 150
+      patchCost: 3
+      facilityPrerequisites: []
+  - type: 10
+    displayName: Separator
+    displayDescription: Increase refining yield of fuel by *%
+    levels:
+    - level: 0
+      increaseAmount: 50
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 9
+        level: 0
+    - level: 1
+      increaseAmount: 100
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 150
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 200
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 250
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 11
+    displayName: Smelter
+    displayDescription: Increase refining yield of scrap by *%
+    levels:
+    - level: 0
+      increaseAmount: 50
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 9
+        level: 0
+    - level: 1
+      increaseAmount: 100
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 150
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 200
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 250
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 12
+    displayName: Centrifuge
+    displayDescription: Increase refining yield of greenite by *%
+    levels:
+    - level: 0
+      increaseAmount: 50
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 9
+        level: 1
+    - level: 1
+      increaseAmount: 100
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 150
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 200
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 250
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 13
+    displayName: Evaporator
+    displayDescription: Increase refining yield of water by *%
+    levels:
+    - level: 0
+      increaseAmount: 50
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 9
+        level: 1
+    - level: 1
+      increaseAmount: 100
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 150
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 200
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 250
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 14
+    displayName: Alternator
+    displayDescription: Increase refining yield of electricity by *%
+    levels:
+    - level: 0
+      increaseAmount: 50
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 9
+        level: 1
+    - level: 1
+      increaseAmount: 100
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 150
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 200
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 250
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 15
+    displayName: Processor
+    displayDescription: Increase food processing yield by *%
+    levels:
+    - level: 0
+      increaseAmount: 50
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 9
+        level: 0
+    - level: 1
+      increaseAmount: 100
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 150
       patchCost: 1
       facilityPrerequisites: []
