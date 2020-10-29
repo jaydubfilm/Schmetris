@@ -11,14 +11,10 @@ namespace StarSalvager.AI
     {
         public ASTEROID_SIZE AsteroidSize => m_asteroidSize;
         
+        //[ FoldoutGroup("$SelectionType"), ShowInInspector, DisplayAsString]
         private float DensityExponential => m_density * m_density * m_density;
         public float Density()
         {
-            if (m_maxOut)
-            {
-                return 1.0f;
-            }
-            
             return DensityExponential / Globals.ObstacleDensityReductionModifier;
         }
 
@@ -26,19 +22,12 @@ namespace StarSalvager.AI
 
         [SerializeField, FoldoutGroup("$SelectionType"), ShowIf("SelectionType", SELECTION_TYPE.ASTEROID)]
         private ASTEROID_SIZE m_asteroidSize;
-        
-        
-        
-        
-        /*[Title("$GetSpawnsPerScreenWidthPerMinute")]
-        [Title("$Density")]
-        [Title("$GetDensityFromSpawnsPerScreenWidthPerMinute")]*/
-        
+
         [SerializeField, HideInInspector]
         private float m_density;
-        [SerializeField, HorizontalGroup("$SelectionType/perMinute"), Range(0, 500), PropertyTooltip("Average Per Screen Width"), LabelText("Spawns per Minute"), DisableIf("$m_maxOut")]
+        [SerializeField, HorizontalGroup("$SelectionType/perMinute"), Range(0, 500), PropertyTooltip("Average Per Screen Width"), LabelText("Spawns per Minute"), DisableIf("$m_maxOut"), OnValueChanged("UpdateDensity")]
         private int m_spawnsPerScreenWidthPerMinute;
-        [SerializeField, HorizontalGroup("$SelectionType/perMinute"), LabelWidth(5), LabelText("Maxed"), ToggleLeft]
+        [SerializeField, HorizontalGroup("$SelectionType/perMinute"), LabelWidth(5), LabelText("Maxed"), ToggleLeft, OnValueChanged("UpdateDensity")]
         private bool m_maxOut;
 
         //====================================================================================================================//
@@ -48,6 +37,14 @@ namespace StarSalvager.AI
         //Todo: These are temporary values set OnValidate in StageObstacleData used for SpawnsPerScreenWidthPerMinute
         [HideInInspector]
         public float spawningMultiplier = 1;
+
+        public void UpdateDensity()
+        {
+            //Needed to reverse the cubing, and ensure that we compensate for the GamUI covering 50% of the columns
+            m_density = m_maxOut
+                ? 1f
+                : Mathf.Pow(GetDensityFromSpawnsPerScreenWidthPerMinute(), 0.315f) / Constants.VISIBLE_GAME_AREA;
+        }
 
         protected override ValueDropdownList<SELECTION_TYPE> GetSelectionOptions()
         {
@@ -62,7 +59,7 @@ namespace StarSalvager.AI
             return valueDropdownItems;
         }
 
-        protected int GetSpawnsPerScreenWidthPerMinute()
+        /*protected int GetSpawnsPerScreenWidthPerMinute()
         {
             float rowsPerMinute = 60.0f / Globals.TimeForAsteroidToFallOneSquare;
             float columnWidth = Globals.ColumnsOnScreen;
@@ -71,8 +68,7 @@ namespace StarSalvager.AI
             float spawnsPerColumn = spawningDensityPerSpawningRegionRow * columnWidth * rowsPerMinute;
 
             return Mathf.RoundToInt(spawnsPerColumn);
-        }
-
+        }*/
         protected float GetDensityFromSpawnsPerScreenWidthPerMinute()
         {
             float rowsPerMinute = 60.0f / Globals.TimeForAsteroidToFallOneSquare;

@@ -158,6 +158,13 @@ namespace StarSalvager.UI
 
             pauseWindowMainMenuButton.onClick.AddListener(() =>
             {
+                if (Globals.UsingTutorial)
+                {
+                    Globals.UsingTutorial = false;
+                    LevelManager.Instance.BotObject.PROTO_GodMode = false;
+                }
+                
+                
                 m_levelManager.IsWaveProgressing = true;
                 PlayerDataManager.SavePlayerAccountData();
                 PlayerDataManager.ClearPlayerAccountData();

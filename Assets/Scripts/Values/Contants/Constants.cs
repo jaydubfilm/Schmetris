@@ -2,6 +2,8 @@
 {
     public static class Constants
     {
+        public const float VISIBLE_GAME_AREA = 0.55f;
+        
         public const float gridCellSize = 1f;
         public const int enemyGridScanRadius = 4;
         public const int gridPositionSpacing = 3;

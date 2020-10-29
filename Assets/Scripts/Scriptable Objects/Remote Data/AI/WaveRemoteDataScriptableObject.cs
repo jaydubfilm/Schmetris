@@ -155,6 +155,19 @@ namespace StarSalvager.ScriptableObjects
 
 
 #if UNITY_EDITOR
+
+        /*[Button]
+        private void UpdateData()
+        {
+            for (int i = 0; i < StageRemoteData.Count; i++)
+            {
+                for (int k = 0; k < StageRemoteData[i].StageObstacleData.Count; k++)
+                {
+                    StageRemoteData[i].StageObstacleData[k].UpdateDensity();
+                }
+            }
+        }*/
+        
         public void OnValidate()
         {
             for (int i = 0; i < StageRemoteData.Count; i++)

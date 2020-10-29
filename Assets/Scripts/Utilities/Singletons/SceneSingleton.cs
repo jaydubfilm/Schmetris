@@ -8,6 +8,7 @@ namespace StarSalvager.Utilities
     /// Used for Scene Dependent Singletons (Destoy Object on Load)
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [DefaultExecutionOrder(-10000)]
     public class SceneSingleton<T> : MonoBehaviour where T: Object
     {
         public static T Instance => _instance;

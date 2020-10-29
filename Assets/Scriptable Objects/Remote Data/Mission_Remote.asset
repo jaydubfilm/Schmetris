@@ -140,8 +140,8 @@ MonoBehaviour:
     MissionDescription: Complete all waves in Sector 1 to unlock Sector 2
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
-      SectorUnlockNumber: 1
-      WaveUnlockNumber: 1
+      SectorUnlockNumber: 0
+      WaveUnlockNumber: 0
       MissionUnlockName: 
     AmountNeeded: 1
     AnyResourceType: 0

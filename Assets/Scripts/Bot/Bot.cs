@@ -134,18 +134,8 @@ namespace StarSalvager
             }
         }
         private Rigidbody2D _rigidbody;
-        
-        private GameUI GameUi
-        {
-            get
-            {
-                if (!_gameUi)
-                    _gameUi = FindObjectOfType<GameUI>();
-                
-                return _gameUi;
-            }
-        }
-        private GameUI _gameUi;
+
+        private GameUI GameUi => GameUI.Instance;
 
         private float previousDirection;
         private bool isContinuousRotation;
@@ -290,7 +280,7 @@ namespace StarSalvager
 
             ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
             
-            GameUi?.SetHealthValue(1f);
+            GameUi.SetHealthValue(1f);
         }
         
         public void InitBot(IEnumerable<IAttachable> botAttachables)
@@ -308,7 +298,7 @@ namespace StarSalvager
                     if(Globals.IsRecoveryBot)
                         FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
                     
-                    GameUi?.SetHealthValue(part.CurrentHealth / part.BoostedHealth);
+                    GameUi.SetHealthValue(part.CurrentHealth / part.BoostedHealth);
                 }
 
                 AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);

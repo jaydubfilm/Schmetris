@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
@@ -15,7 +16,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class GameUI : MonoBehaviour
+    public class GameUI : SceneSingleton<GameUI>
     {
         [Serializable]
         private struct SliderCover
@@ -279,7 +280,7 @@ namespace StarSalvager.UI
                 redSliderGlow,
                 blueSliderGlow,
                 greenSliderGlow,
-                greenSliderGlow,
+                greySliderGlow,
                 yellowSliderGlow,
                 //heatSliderGlow
             };

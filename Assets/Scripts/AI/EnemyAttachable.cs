@@ -62,6 +62,13 @@ namespace StarSalvager.AI
 
         protected override void Update()
         {
+            
+            if (FreezeTime > 0)
+            {
+                FreezeTime -= Time.deltaTime;
+                return;
+            }
+            
             if (!Attached)
                 return;
 
