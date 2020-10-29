@@ -30,6 +30,16 @@ namespace StarSalvager.Utilities.Saving
 
         //====================================================================================================================//
 
+        public static bool GethasRunStarted()
+        {
+            return HasPlayerRunData() && PlayerRunData.runStarted;
+        }
+
+        public static void SetRunStarted()
+        {
+            PlayerRunData.runStarted = true;
+        }
+
         public static bool HasPlayerAccountData()
         {
             return PlayerAccountData != null;

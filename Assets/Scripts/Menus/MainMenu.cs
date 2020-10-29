@@ -246,6 +246,7 @@ namespace StarSalvager.UI
 
                     PlayerDataManager.SetCurrentSaveSlotIndex(saveSlotIndex);
                     FactoryManager.Instance.currentModularDataIndex = 0;
+                    PlayerDataManager.SetRunStarted();
 
                     //menuState = MENUSTATE.GAMEMENU;
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU);
@@ -284,6 +285,7 @@ namespace StarSalvager.UI
                 {
                     PlayerDataManager.SetCurrentSaveSlotIndex(saveSlotIndex);
                     PlayerDataManager.ResetPlayerAccountData();
+                    PlayerDataManager.SetRunStarted();
 
                     introSceneCanvas.SetActive(true);
                     mainMenuWindow.SetActive(false);
