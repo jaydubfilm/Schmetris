@@ -178,7 +178,7 @@ MonoBehaviour:
     levels:
     - level: 0
       increaseAmount: 0
-      patchCost: 1
+      patchCost: 2
       facilityPrerequisites:
       - facilityType: 22
         level: 0
@@ -188,7 +188,7 @@ MonoBehaviour:
     levels:
     - level: 0
       increaseAmount: 0
-      patchCost: 1
+      patchCost: 3
       facilityPrerequisites:
       - facilityType: 7
         level: 0
@@ -199,7 +199,7 @@ MonoBehaviour:
     levels:
     - level: 0
       increaseAmount: 0
-      patchCost: 1
+      patchCost: 3
       facilityPrerequisites:
       - facilityType: 6
         level: 0
@@ -273,7 +273,7 @@ MonoBehaviour:
       facilityPrerequisites: []
   - type: 12
     displayName: Centrifuge
-    displayDescription: Increase refining yield of greenite by *%
+    displayDescription: Increase refining yield of plasma by *%
     levels:
     - level: 0
       increaseAmount: 50
@@ -365,5 +365,497 @@ MonoBehaviour:
       facilityPrerequisites: []
     - level: 2
       increaseAmount: 150
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 16
+    displayName: Storage
+    displayDescription: Increase storage slots for parts and components by *.
+    levels:
+    - level: 0
+      increaseAmount: 6
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 1
+      increaseAmount: 12
+      patchCost: 2
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 18
+      patchCost: 3
+      facilityPrerequisites: []
+  - type: 17
+    displayName: Fueler
+    displayDescription: Increase starting fuel by *.
+    levels:
+    - level: 0
+      increaseAmount: 250
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 16
+        level: 1
+    - level: 1
+      increaseAmount: 500
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 1000
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 20
+    displayName: Scrapper
+    displayDescription: Increase starting scrap by *.
+    levels:
+    - level: 0
+      increaseAmount: 250
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 16
+        level: 1
+    - level: 1
+      increaseAmount: 500
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 1000
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 19
+    displayName: Plasmar
+    displayDescription: Increase starting plasma by *.
+    levels:
+    - level: 0
+      increaseAmount: 250
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 16
+        level: 2
+    - level: 1
+      increaseAmount: 500
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 1000
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 18
+    displayName: Electricer
+    displayDescription: Increase starting electricity by *.
+    levels:
+    - level: 0
+      increaseAmount: 250
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 16
+        level: 2
+    - level: 1
+      increaseAmount: 500
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 1000
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 21
+    displayName: Waterer
+    displayDescription: Increase starting water by *.
+    levels:
+    - level: 0
+      increaseAmount: 250
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 16
+        level: 2
+    - level: 1
+      increaseAmount: 500
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 1000
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 22
+    displayName: Workbench
+    displayDescription: Decrease crafting costs by *%.
+    levels:
+    - level: 0
+      increaseAmount: 10
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 1
+      increaseAmount: 25
+      patchCost: 2
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 50
+      patchCost: 3
+      facilityPrerequisites: []
+  - type: 23
+    displayName: Recovery Drone
+    displayDescription: Allows use of Recovery Drone rank *.
+    levels:
+    - level: 0
+      increaseAmount: 1
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 22
+        level: 0
+    - level: 1
+      increaseAmount: 2
+      patchCost: 2
+      facilityPrerequisites:
+      - facilityType: 22
+        level: 1
+    - level: 2
+      increaseAmount: 3
+      patchCost: 3
+      facilityPrerequisites:
+      - facilityType: 22
+        level: 2
+  - type: 24
+    displayName: Layout Saver
+    displayDescription: Allows use of the Layout System
+    levels:
+    - level: 0
+      increaseAmount: 0
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 7
+        level: 0
+  - type: 25
+    displayName: Radar
+    displayDescription: ???
+    levels:
+    - level: 0
+      increaseAmount: 0
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 1
+      increaseAmount: 0
+      patchCost: 2
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 0
+      patchCost: 3
+      facilityPrerequisites: []
+  - type: 26
+    displayName: Mechanics
+    displayDescription: Increase Gears gained by *%.
+    levels:
+    - level: 0
+      increaseAmount: 5
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 1
+      increaseAmount: 10
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 27
+        level: 0
+      - facilityType: 28
+        level: 0
+    - level: 2
+      increaseAmount: 15
+      patchCost: 2
+      facilityPrerequisites:
+      - facilityType: 27
+        level: 1
+      - facilityType: 28
+        level: 1
+    - level: 3
+      increaseAmount: 20
+      patchCost: 2
+      facilityPrerequisites:
+      - facilityType: 27
+        level: 2
+      - facilityType: 28
+        level: 2
+    - level: 4
+      increaseAmount: 25
+      patchCost: 3
+      facilityPrerequisites:
+      - facilityType: 27
+        level: 3
+      - facilityType: 28
+        level: 3
+  - type: 27
+    displayName: Cooling
+    displayDescription: Decrease cooling time by *%.
+    levels:
+    - level: 0
+      increaseAmount: 20
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 0
+    - level: 1
+      increaseAmount: 40
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 1
+    - level: 2
+      increaseAmount: 60
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 2
+    - level: 3
+      increaseAmount: 80
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 3
+  - type: 28
+    displayName: Hull strength
+    displayDescription: Increase health of all parts by *%.
+    levels:
+    - level: 0
+      increaseAmount: 25
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 0
+    - level: 1
+      increaseAmount: 50
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 1
+    - level: 2
+      increaseAmount: 75
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 2
+    - level: 3
+      increaseAmount: 100
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 3
+  - type: 29
+    displayName: Container Improve
+    displayDescription: Increase onboard storage capacity by *%.
+    levels:
+    - level: 0
+      increaseAmount: 10
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 0
+    - level: 1
+      increaseAmount: 20
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 30
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 40
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 50
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 30
+    displayName: Repairer Improve
+    displayDescription: Increase effectiveness of repairer by *%.
+    levels:
+    - level: 0
+      increaseAmount: 10
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 1
+    - level: 1
+      increaseAmount: 20
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 30
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 40
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 50
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 31
+    displayName: Boost Improve
+    displayDescription: Increase effectiveness of all boosts by *%.
+    levels:
+    - level: 0
+      increaseAmount: 10
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 1
+    - level: 1
+      increaseAmount: 20
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 30
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 40
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 50
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 32
+    displayName: Ammo Discount
+    displayDescription: Decrease ammo usage of all basic weapons by *%.
+    levels:
+    - level: 0
+      increaseAmount: 5
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 1
+    - level: 1
+      increaseAmount: 10
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 15
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 20
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 25
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 33
+    displayName: Gear Boost on Kill
+    displayDescription: Get boost to fains gained on a kill by *% for 10 seconds.
+    levels:
+    - level: 0
+      increaseAmount: 10
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 2
+    - level: 1
+      increaseAmount: 20
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 30
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 40
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 50
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 34
+    displayName: Cooldown Decrease
+    displayDescription: Reduce cooldowns of parts by *%.
+    levels:
+    - level: 0
+      increaseAmount: 20
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 2
+    - level: 1
+      increaseAmount: 40
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 60
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 80
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 100
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 35
+    displayName: Rotation Speed Increase
+    displayDescription: Increase rotation speed by *%.
+    levels:
+    - level: 0
+      increaseAmount: 10
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 2
+    - level: 1
+      increaseAmount: 20
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 30
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 40
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 50
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 36
+    displayName: Loot Increase
+    displayDescription: Increase drops from loot tables by *%.
+    levels:
+    - level: 0
+      increaseAmount: 15
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 2
+    - level: 1
+      increaseAmount: 30
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 45
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 3
+      increaseAmount: 60
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 4
+      increaseAmount: 75
+      patchCost: 1
+      facilityPrerequisites: []
+  - type: 37
+    displayName: Core Regen
+    displayDescription: Regen core health by * per second.
+    levels:
+    - level: 0
+      increaseAmount: 5
+      patchCost: 1
+      facilityPrerequisites:
+      - facilityType: 26
+        level: 3
+    - level: 1
+      increaseAmount: 10
+      patchCost: 1
+      facilityPrerequisites: []
+    - level: 2
+      increaseAmount: 15
       patchCost: 1
       facilityPrerequisites: []
