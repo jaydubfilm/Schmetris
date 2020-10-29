@@ -9,13 +9,9 @@ using UnityEngine;
 namespace StarSalvager.Facilities
 {
     [Serializable]
-    public struct FacilityLevelData
+    public struct FacilityPrerequisiteData
     {
+        public FACILITY_TYPE facilityType;
         public int level;
-        public int increaseAmount;
-
-        public int patchCost;
-
-        public List<FacilityPrerequisiteData> facilityPrerequisites;
     }
 }

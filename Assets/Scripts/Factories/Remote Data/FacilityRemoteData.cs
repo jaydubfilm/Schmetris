@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Facilities;
 using StarSalvager.Utilities.Puzzle.Data;
 
 namespace StarSalvager.Factories.Data
