@@ -84,7 +84,9 @@ namespace StarSalvager
 
         public bool Destroyed => _isDestroyed;
         private bool _isDestroyed;
-        
+
+        public bool HasFullMagnet => IsMagnetFull();
+
         private Vector2 targetPosition;
         private float _currentInput;
 

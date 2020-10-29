@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.SceneManagement;
+using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -31,15 +32,20 @@ namespace StarSalvager.UI
         
         private struct WindowData
         {
-            public WINDOW type;
-            public GameObject windowObject;
-            public bool closeOtherWindows;
+            public WINDOW Type;
+            public GameObject WindowObject;
+            public bool CloseOtherWindows;
 
             public void SetActive(bool active)
             {
-                windowObject.gameObject.SetActive(active);
+                WindowObject.gameObject.SetActive(active);
             }
         }
+
+        //Intro Scene Properties
+        //====================================================================================================================//
+        [SerializeField, Required] 
+        private IntroScene IntroScene;
         
         //Main Menu Properties
         //====================================================================================================================//
@@ -64,11 +70,15 @@ namespace StarSalvager.UI
         //TODO This will likely need to be something beyond a normal Button
         [SerializeField, Required, FoldoutGroup("Account Window")]
         private Button[] accountButtons;
+        [SerializeField, Required, FoldoutGroup("Account Window")]
+        private Button[] deleteAccountButtons;
 
         //Account Menu Window Properties
         //====================================================================================================================//
         [SerializeField, Required, FoldoutGroup("Account Menu Window")]
         private GameObject accountMenuWindowObject;
+        [SerializeField, Required, FoldoutGroup("Account Menu Window")]
+        private Button changeAccountButton;
         [SerializeField, Required, FoldoutGroup("Account Menu Window")]
         private Button accountMenuSettingsButton;
         [SerializeField, Required, FoldoutGroup("Account Menu Window")]
@@ -79,6 +89,8 @@ namespace StarSalvager.UI
         private Button continueRunButton;
         [SerializeField, Required, FoldoutGroup("Account Menu Window")]
         private Button abandonRunButton;
+        [SerializeField, Required, FoldoutGroup("Account Menu Window")]
+        private Button tutorialButton;
 
         //Pick Run Window Properties
         //====================================================================================================================//
@@ -134,6 +146,11 @@ namespace StarSalvager.UI
         //MainMenuV2 Functions
         //====================================================================================================================//
 
+        #region Setup Windows
+
+        //Setup Account Window
+        //------------------------------------------------------------------------------------------------------------//
+        
         private void SetupAccountWindow()
         {
             for (var i = 0; i < accountButtons.Length; i++)
@@ -146,28 +163,34 @@ namespace StarSalvager.UI
                     SetupAccountMenuWindow();
                     OpenWindow(WINDOW.ACCOUNT_MENU);
                 });
-                
-                var buttonText = accountButtons[i].GetComponentInChildren<TMP_Text>();
-                if (!Files.TryGetPlayerSaveData(i, out var accountData))
-                {
-                    buttonText.text = "Create new Account";
-                    continue;
-                }
 
-                buttonText.text = $"Load Account {i + 1}\nTotal Runs: {accountData.TotalRuns}";
+                var hasAccount = Files.TryGetPlayerSaveData(i, out var accountData);
+                var buttonText = accountButtons[i].GetComponentInChildren<TMP_Text>();
+                
+                deleteAccountButtons[i].gameObject.SetActive(hasAccount);
+                
+                buttonText.text = !hasAccount
+                    ? "Create new Account"
+                    : $"Load Account {i + 1}\nTotal Runs: {accountData.TotalRuns}";
             }
         }
+        
+        //Setup Account Menu Window
+        //------------------------------------------------------------------------------------------------------------//
 
         private void SetupAccountMenuWindow()
         {
             //TODO Get bool for current run
-            bool hasRun = false;
+            bool hasRun = PlayerDataManager.GethasRunStarted();
             
             newRunButton.gameObject.SetActive(!hasRun);
             continueRunButton.gameObject.SetActive(hasRun);
             abandonRunButton.gameObject.SetActive(hasRun);
             
         }
+        
+        //Setup Run Window
+        //------------------------------------------------------------------------------------------------------------//
 
         private void SetupRunMenuWindow()
         {
@@ -187,7 +210,7 @@ namespace StarSalvager.UI
                     runDescriptionText.text = string.Empty;
                     break;
                 case GAME_TYPE.CLASSIC:
-                    runDescriptionText.text = "Classic";
+                    runDescriptionText.text = "Classic Game mode";
                     break;
                 case GAME_TYPE.HARDCORE:
                     runDescriptionText.text = "Hardcore";
@@ -196,6 +219,10 @@ namespace StarSalvager.UI
                     throw new ArgumentOutOfRangeException(nameof(gameType), gameType, null);
             }
         }
+        //------------------------------------------------------------------------------------------------------------//
+
+
+        #endregion //Setup Windows
 
         //====================================================================================================================//
         
@@ -209,6 +236,9 @@ namespace StarSalvager.UI
             SetupRunMenuButtons();
             SetupSettingsButtons();
         }
+
+        //Setup Main Menu Buttons
+        //------------------------------------------------------------------------------------------------------------//
         
         private void SetupMainMenuButtons()
         {
@@ -224,6 +254,9 @@ namespace StarSalvager.UI
             quitButton.onClick.AddListener(Quit);
         }
 
+        //Setup Account Buttons
+        //------------------------------------------------------------------------------------------------------------//
+        
         private void SetupAccountButtons()
         {
             accountBackButton.onClick.AddListener(CloseOpenWindow);
@@ -237,10 +270,41 @@ namespace StarSalvager.UI
                     OpenWindow(WINDOW.ACCOUNT_MENU);
                 });
             }
+
+            for (var i = 0; i < deleteAccountButtons.Length; i++)
+            {
+                int index = i;
+                deleteAccountButtons[i].onClick.AddListener(() =>
+                {
+                    Alert.ShowAlert($"Delete Account {index}",
+                        "Are you sure you want to delete the account? Data will not be able to be recovered.",
+                        "Delete",
+                        "Cancel",
+                        response =>
+                        {
+                            if (!response)
+                                return;
+                            
+                            PlayerDataManager.DestroyAccountData();
+                            PlayerDataManager.RemoveSaveFileData(index);
+                            Files.DestroyPlayerSaveFile(index);
+                            SetupAccountWindow();
+                        });
+                });
+            }
         }
 
+        //Setup Account Menu Buttons
+        //------------------------------------------------------------------------------------------------------------//
+        
         private void SetupAccountMenuButtons()
         {
+            changeAccountButton.onClick.AddListener(() =>
+            {
+                SetupAccountWindow();
+                OpenWindow(WINDOW.ACCOUNT);
+            });
+            
             accountMenuSettingsButton.onClick.AddListener(() =>
             {
                 OpenWindow(WINDOW.SETTINGS);
@@ -253,16 +317,40 @@ namespace StarSalvager.UI
             });
             continueRunButton.onClick.AddListener(() =>
             {
+
                 //TODO Need to load existing account run here
-                throw new NotImplementedException();
+                PlayerDataManager.SetRunStarted();
+                LeaveMenu(SceneLoader.SCRAPYARD);
             });
             abandonRunButton.onClick.AddListener(() =>
             {
-                //TODO Need to confirm destruction of active run
-                throw new NotImplementedException();
+                Alert.ShowAlert("Abandon Run",
+                    "Are you sure you want to abandon your run, starting a new one?",
+                    "Abandon",
+                    "Cancel",
+                    response =>
+                    {
+                        if (!response)
+                            return;
+                        
+                        PlayerDataManager.ResetPlayerRunData();
+                        PlayerDataManager.SavePlayerAccountData();
+                        SetupAccountMenuWindow();
+                    });
+            });
+            tutorialButton.onClick.AddListener(() =>
+            {
+                Globals.UsingTutorial = true;
+                Globals.CurrentSector = 4;
+                Globals.CurrentWave = 0;
+                
+                LeaveMenu(SceneLoader.LEVEL);
             });
         }
 
+        //Setup Run Buttons
+        //------------------------------------------------------------------------------------------------------------//
+        
         private void SetupRunMenuButtons()
         {
             classicRunButton.onClick.AddListener(() =>
@@ -272,23 +360,49 @@ namespace StarSalvager.UI
             });
             hardcoreRunButton.onClick.AddListener(() =>
             {
-                ShowRunData(GAME_TYPE.HARDCORE);
-                startRunButton.interactable = true;
+                /*ShowRunData(GAME_TYPE.HARDCORE);
+                startRunButton.interactable = true;*/
+                throw new NotImplementedException();
             });
             startRunButton.onClick.AddListener(() =>
             {
-                //TODO Use _selectedGameType to determine how to start the run
-                throw new NotImplementedException();
+                switch (_selectedGameType)
+                {
+                    case GAME_TYPE.CLASSIC:
+                        
+                        PlayerDataManager.SetRunStarted();
+                        SetupAccountMenuWindow();
+                        OpenWindow(WINDOW.ACCOUNT_MENU);
+                        IntroScene.gameObject.SetActive(true);
+                        gameObject.SetActive(false);
+                        break;
+                    case GAME_TYPE.HARDCORE:
+                        throw new NotImplementedException();
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(_selectedGameType), _selectedGameType, null);
+                }
+
             });
-            runBackButton.onClick.AddListener(CloseOpenWindow);
-            
+
+            runBackButton.onClick.AddListener(() =>
+            {
+                ShowRunData(GAME_TYPE.NONE);
+                CloseOpenWindow();
+            });
+
         }
+
+        //Setup Settings Buttons
+        //------------------------------------------------------------------------------------------------------------//
         
         private void SetupSettingsButtons()
         {
-            musicVolumeSlider.onValueChanged.AddListener(volume => { });
-            sfxVolumeSlider.onValueChanged.AddListener(volume => { });
-            testingFeaturesToggle.onValueChanged.AddListener(toggle => { });
+            musicVolumeSlider.onValueChanged.AddListener(AudioController.SetMusicVolume);
+            sfxVolumeSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);
+            testingFeaturesToggle.onValueChanged.AddListener(toggle =>
+            {
+                Globals.DisableTestingFeatures = toggle;
+            });
             
             settingsBackButton.onClick.AddListener(CloseOpenWindow);
         }
@@ -305,17 +419,17 @@ namespace StarSalvager.UI
             {
                 new WindowData
                 {
-                    type = WINDOW.MAIN_MENU, windowObject = mainMenuWindowObject, closeOtherWindows = true
+                    Type = WINDOW.MAIN_MENU, WindowObject = mainMenuWindowObject, CloseOtherWindows = true
                 }, //MAIN_MENU
                 new WindowData
-                    {type = WINDOW.ACCOUNT, windowObject = accountWindowObject, closeOtherWindows = false }, //ACCOUNT
+                    {Type = WINDOW.ACCOUNT, WindowObject = accountWindowObject, CloseOtherWindows = false }, //ACCOUNT
                 new WindowData
                 {
-                    type = WINDOW.ACCOUNT_MENU, windowObject = accountMenuWindowObject, closeOtherWindows = true
+                    Type = WINDOW.ACCOUNT_MENU, WindowObject = accountMenuWindowObject, CloseOtherWindows = true
                 }, //ACCOUNT_MENU
-                new WindowData { type = WINDOW.RUN, windowObject = pickRunWindowObject, closeOtherWindows = false }, //RUN
+                new WindowData { Type = WINDOW.RUN, WindowObject = pickRunWindowObject, CloseOtherWindows = false }, //RUN
                 new WindowData
-                    {type = WINDOW.SETTINGS, windowObject = settingsWindowObject, closeOtherWindows = false}, //SETTINGS
+                    {Type = WINDOW.SETTINGS, WindowObject = settingsWindowObject, CloseOtherWindows = false}, //SETTINGS
             };
 
             OpenWindow(_currentWindow);
@@ -323,14 +437,14 @@ namespace StarSalvager.UI
 
         private void OpenWindow(WINDOW openWindow)
         {
-            
+
             var windowData = _windowData[(int) openWindow];
 
-            if (windowData.closeOtherWindows)
+            if (windowData.CloseOtherWindows)
             {
                 foreach (var window in _windowData)
                 {
-                    window.SetActive(window.type == openWindow);
+                    window.SetActive(window.Type == openWindow);
                 }
             }
             else
@@ -349,7 +463,7 @@ namespace StarSalvager.UI
         {
             var windowData = _windowData[(int) openWindow];
             
-            if(windowData.closeOtherWindows)
+            if(windowData.CloseOtherWindows)
                 throw new ArgumentException("Only windows that overlay can close");
             
             windowData.SetActive(false);
@@ -360,14 +474,33 @@ namespace StarSalvager.UI
 
         //====================================================================================================================//
 
+        private void LeaveMenu(string targetScene)
+        {
+            SetupAccountMenuWindow();
+            OpenWindow(WINDOW.ACCOUNT_MENU);
+            SceneLoader.ActivateScene(targetScene, SceneLoader.MAIN_MENU);
+        }
+
         private static void Quit()
         {
+            Alert.ShowAlert("Quit Game",
+                $"Are you sure you want to quit {Application.productName}?",
+                "Quit",
+                "Cancel",
+                response =>
+                {
+                    if(!response)
+                        return;
+                    
 #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
+                    UnityEditor.EditorApplication.isPlaying = false;
 #else
-            Application.Quit();
+                    Application.Quit();
 #endif
+                });
         }
+
+        //====================================================================================================================//
         
     }
 }

@@ -220,8 +220,10 @@ namespace StarSalvager.Utilities.FileIO
                 return data;
             }
 
-            JsonSerializerSettings settings = new JsonSerializerSettings();
-            settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
+            JsonSerializerSettings settings = new JsonSerializerSettings
+            {
+                ObjectCreationHandling = ObjectCreationHandling.Replace
+            };
 
             var loaded = JsonConvert.DeserializeObject<PlayerSaveAccountData>(File.ReadAllText(PlayerAccountSavePaths[saveSlotIndex]), settings);
 
@@ -237,6 +239,18 @@ namespace StarSalvager.Utilities.FileIO
 
             return export;
         }
+
+        public static void DestroyPlayerSaveFile(int index)
+        {
+            if (!Directory.Exists(REMOTE_DIRECTORY))
+                return;
+            
+            if(!File.Exists(PlayerAccountSavePaths[index]))
+                return;
+            
+            File.Delete(PlayerAccountSavePaths[index]);
+        }
+        
         #endregion //Player Data
 
         //Mission Data

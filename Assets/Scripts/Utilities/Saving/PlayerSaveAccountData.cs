@@ -61,8 +61,11 @@ namespace StarSalvager.Values
 
         public void ResetPlayerRunData()
         {
-            PlayerSaveRunData data = new PlayerSaveRunData();
-            data.PlaythroughID = Guid.NewGuid().ToString();
+            PlayerSaveRunData data = new PlayerSaveRunData
+            {
+                PlaythroughID = Guid.NewGuid().ToString(),
+                runStarted = false
+            };
 
             GearsAtRunBeginning = Gears;
             CoreDeathsAtRunBeginning = CoreDeaths;

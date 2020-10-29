@@ -257,8 +257,9 @@ namespace StarSalvager.Tutorial
             
             SetText(tutorialRemoteData[6], true, true);
 
-            bool magnet = false;
             var bot = LevelManager.Instance.BotObject;
+            bool magnet = bot.HasFullMagnet;
+            
 
             void SetMagnet()
             {
