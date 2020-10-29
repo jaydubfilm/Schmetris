@@ -123,9 +123,22 @@ namespace StarSalvager.UI.Scrapyard
                         patchCost = facilityRemoteData.levels[i].patchCost
                     };
 
-                    bool craftButtonInteractable =
-                        (containsFacilityKey && i == PlayerDataManager.GetFacilityRanks()[type] + 1) ||
-                        (!containsFacilityKey && i == 0);
+                    bool hasPrereqs = true;
+                    for (int k = 0; k < facilityRemoteData.levels[i].facilityPrerequisites.Count; k++)
+                    {
+                        if (PlayerDataManager.GetFacilityRanks().ContainsKey(facilityRemoteData.levels[i].facilityPrerequisites[k].facilityType) &&
+                            PlayerDataManager.GetFacilityRanks()[facilityRemoteData.levels[i].facilityPrerequisites[k].facilityType] >= facilityRemoteData.levels[i].facilityPrerequisites[k].level)
+                        {
+                            continue;
+                        }
+
+                        hasPrereqs = false;
+                        break;
+                    }
+
+                    bool craftButtonInteractable = hasPrereqs && 
+                        ((containsFacilityKey && i == PlayerDataManager.GetFacilityRanks()[type] + 1) ||
+                        (!containsFacilityKey && i == 0));
 
                     var element = facilityBlueprintUIElements.AddElement(newBlueprint);
                     element.Init(newBlueprint, PurchaseBlueprint, SetupDetailsWindow, craftButtonInteractable);

@@ -101,8 +101,8 @@ MonoBehaviour:
       type: 3}
     m_projectileType: Gun Bullet
     m_projectileSpeed: 12
-    m_projectileRange: 0
-    m_requiredRotate: 0
+    m_projectileRange: 12
+    m_requiredRotate: 1
     m_attackType: 0
     m_spreadAngle: 0
     m_sprayCount: 0
@@ -113,7 +113,7 @@ MonoBehaviour:
       type: 3}
     m_projectileType: Triple
     m_projectileSpeed: 10
-    m_projectileRange: 0
+    m_projectileRange: 12
     m_requiredRotate: 1
     m_attackType: 7
     m_spreadAngle: 60
@@ -125,7 +125,7 @@ MonoBehaviour:
       type: 3}
     m_projectileType: Missile
     m_projectileSpeed: 10
-    m_projectileRange: 0
+    m_projectileRange: 20
     m_requiredRotate: 0
     m_attackType: 8
     m_spreadAngle: 0

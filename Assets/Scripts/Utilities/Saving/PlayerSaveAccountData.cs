@@ -264,25 +264,30 @@ namespace StarSalvager.Values
             }
 
             int increaseAmount = remoteData.levels[level].increaseAmount;
+            int previousAmount = 0;
+            if (level > 0)
+            {
+                previousAmount = remoteData.levels[level - 1].increaseAmount;
+            }
             switch (type)
             {
                 case FACILITY_TYPE.FREEZER:
                     PlayerRunData.RationCapacity += increaseAmount;
                     break;
                 case FACILITY_TYPE.STORAGEELECTRICITY:
-                    PlayerRunData.GetResource(BIT_TYPE.YELLOW).AddResourceCapacity(increaseAmount);
+                    PlayerRunData.GetResource(BIT_TYPE.YELLOW).AddResourceCapacity(increaseAmount - previousAmount);
                     break;
                 case FACILITY_TYPE.STORAGEFUEL:
-                    PlayerRunData.GetResource(BIT_TYPE.RED).AddResourceCapacity(increaseAmount);
+                    PlayerRunData.GetResource(BIT_TYPE.RED).AddResourceCapacity(increaseAmount - previousAmount);
                     break;
                 case FACILITY_TYPE.STORAGEPLASMA:
-                    PlayerRunData.GetResource(BIT_TYPE.GREEN).AddResourceCapacity(increaseAmount);
+                    PlayerRunData.GetResource(BIT_TYPE.GREEN).AddResourceCapacity(increaseAmount - previousAmount);
                     break;
                 case FACILITY_TYPE.STORAGESCRAP:
-                    PlayerRunData.GetResource(BIT_TYPE.GREY).AddResourceCapacity(increaseAmount);
+                    PlayerRunData.GetResource(BIT_TYPE.GREY).AddResourceCapacity(increaseAmount - previousAmount);
                     break;
                 case FACILITY_TYPE.STORAGEWATER:
-                    PlayerRunData.GetResource(BIT_TYPE.BLUE).AddResourceCapacity(increaseAmount);
+                    PlayerRunData.GetResource(BIT_TYPE.BLUE).AddResourceCapacity(increaseAmount - previousAmount);
                     break;
             }
 

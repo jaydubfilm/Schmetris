@@ -61,7 +61,7 @@ MonoBehaviour:
     - m_selectionType: 1
       m_shapeName: 
       m_category: O_Triples_L.0
-      m_rotation: 0
+      m_rotation: -1
       m_asteroidSize: 0
       m_density: 0.46021488
       m_spawnsPerScreenWidthPerMinute: 122
@@ -108,7 +108,7 @@ MonoBehaviour:
     - m_selectionType: 1
       m_shapeName: 
       m_category: O_Triples_L.0
-      m_rotation: 0
+      m_rotation: -1
       m_asteroidSize: 0
       m_density: 0.46021488
       m_spawnsPerScreenWidthPerMinute: 122

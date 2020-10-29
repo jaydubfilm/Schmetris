@@ -411,9 +411,9 @@ MonoBehaviour:
       - key: Damage
         value: 6
       - key: Cooldown
-        value: .5
+        value: 0.5
       - key: Projectile
-        value: 083be790-7a08-4f27-b506-e8e09a116bc8
+        value: fcd28cae-267c-4f46-ac9c-8da7a14e8f94
       burnRate: 0.1
       cost:
       - resourceType: 0
