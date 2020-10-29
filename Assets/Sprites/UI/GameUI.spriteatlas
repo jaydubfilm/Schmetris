@@ -54,17 +54,17 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 38790c43e756b534ea0311293c03a641, type: 3}
   - {fileID: 21300000, guid: 5c5b7c93d749b454681c16805bbc892b, type: 3}
   - {fileID: 21300000, guid: a970f1d3628f3cd418e3e3df3f5af8ff, type: 3}
-  - {fileID: 21300000, guid: a9d74234849e7de46ad96217b2f2c1e0, type: 3}
   - {fileID: 21300000, guid: d7559a741aee3984194cfc3f8dbe910e, type: 3}
+  - {fileID: 21300000, guid: 64bb71c4cc5dc7742910f1167f3fd46c, type: 3}
   - {fileID: 21300000, guid: 82eb1c55932253840aac56b9a0ab0a39, type: 3}
   - {fileID: 21300000, guid: 666c0f753a99c7c449261b69b9028156, type: 3}
+  - {fileID: 21300000, guid: f5bdd0a58efa4c44ba5c57d592a4f76b, type: 3}
   - {fileID: 21300000, guid: e2f6235697d43cb41a5cb52b013b4e4e, type: 3}
   - {fileID: 21300000, guid: 58259f960ca79224e9ba6151c96e0826, type: 3}
   - {fileID: 21300000, guid: 0870bd779634c3848b123d62721184f5, type: 3}
   - {fileID: 21300000, guid: 73854258c30d1424a9638199b57ad440, type: 3}
   - {fileID: 21300000, guid: d19cc858df36a5747baa5b7f65d82098, type: 3}
   - {fileID: 21300000, guid: 36300f59af7a8924ea339d58c871d57f, type: 3}
-  - {fileID: 21300000, guid: 118344f9feaeb2244aa331b46788818c, type: 3}
   - {fileID: 21300000, guid: e67b6c5abe89703438db634ae4887e64, type: 3}
   - {fileID: 21300000, guid: 2104671b5e2062249a7f123576510b98, type: 3}
   - {fileID: 21300000, guid: 7ac797ab70aa11b43ba3d1753008a2f6, type: 3}
@@ -83,17 +83,17 @@ SpriteAtlas:
   - ui_MANETISMICON_0_v1
   - ui_ACTIVEFREEZE_0_v1
   - ui_ABILITYBUTTON_0_v3
-  - ui_BACKARTLEFT_0_v2
   - ui_LEVELPROGRESSFILLBAR_0_v1
+  - ui_BACKARTRIGHT_0_v3
   - ui_TEMPICON_0_v1
   - ui_MEGNETISMFILLBAR_0_v1
+  - ui_BACKARTLEFT_0_v3
   - ui_TEMPBACK_0_v1
   - ui_CRACKS4_0_v1
   - ui_TEMPGAUGE_0_v1
   - ui_STICKER_0_v1
   - ui_BUTTONEXPOSED_0_v1
   - ui_GLOWCORE_0_v1
-  - ui_BACKARTRIGHT_0_v2
   - ui_CRACKS3_0_v1
   - ui_MATERIALCOVER_0_v1
   - ui_CRACKS2_0_v1
