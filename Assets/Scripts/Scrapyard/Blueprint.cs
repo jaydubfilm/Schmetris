@@ -16,7 +16,7 @@ namespace StarSalvager
         public int level;
 
         [JsonIgnore]
-        public bool CanAfford => PlayerDataManager.CanAffordPart(partType, level, false);
+        public bool CanAfford => PlayerDataManager.CanAffordPart(partType, level);
 
         [JsonIgnore]
         public string DisplayString => $"{GetDisplayName()} lvl {level + 1}";

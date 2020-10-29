@@ -133,11 +133,11 @@ namespace StarSalvager.Missions
                 }
                 else if (missionLoot[i] is RDSValue<Bit> rdsValueBit)
                 {
-                    PlayerDataManager.AddResource(rdsValueBit.rdsValue.Type, FactoryManager.Instance.BitsRemoteData.GetRemoteData(rdsValueBit.rdsValue.Type).levels[0].resources);
+                    PlayerDataManager.GetResource(rdsValueBit.rdsValue.Type).AddResource(FactoryManager.Instance.BitsRemoteData.GetRemoteData(rdsValueBit.rdsValue.Type).levels[0].resources);
                 }
                 else if (missionLoot[i] is RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined)
                 {
-                    PlayerDataManager.AddResource(rdsValueResourceRefined.rdsValue.Item1, rdsValueResourceRefined.rdsValue.Item2);
+                    PlayerDataManager.GetResource(rdsValueResourceRefined.rdsValue.Item1).AddResource(rdsValueResourceRefined.rdsValue.Item2);
                 }
                 else if (missionLoot[i] is RDSValue<Component> rdsValueComponent)
                 {

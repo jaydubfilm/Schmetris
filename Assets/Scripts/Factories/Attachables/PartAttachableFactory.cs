@@ -87,6 +87,7 @@ namespace StarSalvager.Factories
             //var temp = Object.Instantiate(factoryProfile.Prefab).GetComponent<Part>();
             temp.SetSprite(sprite);
             temp.LoadBlockData(blockData);
+            temp.LockRotation = remote.lockRotation;
 
 
             //temp.StartingHealth =

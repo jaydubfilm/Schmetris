@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c59c6b39881711a4296e83fe97d9a858, type: 3}
   m_Name: Wave_Remote_PB1_5_1
   m_EditorClassIdentifier: 
+  WaveSeed: 0
+  BonusShapes: []
   StageRemoteData: []
+  maxDrops: 0
+  RDSEndOfWaveLoot: []

@@ -5,6 +5,7 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace StarSalvager.ScriptableObjects
@@ -75,7 +76,7 @@ namespace StarSalvager.ScriptableObjects
             return waveDuration;
         }
 
-        public (Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits) GetWaveSummaryData()
+        public (Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits) GetWaveSummaryData(bool useSum)
         {
             var enemies = new Dictionary<string, int>();
             var bits = new Dictionary<BIT_TYPE, float>();
@@ -109,7 +110,7 @@ namespace StarSalvager.ScriptableObjects
                                     bits.Add(bitType, 0.0f);
                                 }
 
-                                bits[bitType] += 1.0f * obstacleData.Density * stageRemoteData.StageDuration;
+                                bits[bitType] += 1.0f * obstacleData.Density() * stageRemoteData.StageDuration;
                             }
 
                             break;
@@ -126,7 +127,7 @@ namespace StarSalvager.ScriptableObjects
                                         bits.Add(bitType, 0.0f);
                                     }
 
-                                    bits[bitType] += (1.0f * obstacleData.Density * stageRemoteData.StageDuration) / numShapesInCategory;
+                                    bits[bitType] += (1.0f * obstacleData.Density() * stageRemoteData.StageDuration) / numShapesInCategory;
                                 }
                             }
 
@@ -135,6 +136,9 @@ namespace StarSalvager.ScriptableObjects
                 }
             }
 
+            if(useSum)
+                return (enemies, bits);
+            
             float totalValueBits = 0.0f;
             foreach (var keyValuePair in bits)
             {
@@ -148,6 +152,33 @@ namespace StarSalvager.ScriptableObjects
 
             return (enemies, bits);
         }
+
+
+#if UNITY_EDITOR
+
+        /*[Button]
+        private void UpdateData()
+        {
+            for (int i = 0; i < StageRemoteData.Count; i++)
+            {
+                for (int k = 0; k < StageRemoteData[i].StageObstacleData.Count; k++)
+                {
+                    StageRemoteData[i].StageObstacleData[k].UpdateDensity();
+                }
+            }
+        }*/
+        
+        public void OnValidate()
+        {
+            for (int i = 0; i < StageRemoteData.Count; i++)
+            {
+                for (int k = 0; k < StageRemoteData[i].StageObstacleData.Count; k++)
+                {
+                    StageRemoteData[i].StageObstacleData[k].spawningMultiplier = StageRemoteData[i].SpawningObstacleMultiplier;
+                }
+            }
+        }
+#endif
     }
 }
 

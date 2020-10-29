@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using UnityEngine;
 using StarSalvager.Values;
 using StarSalvager.Factories;
@@ -22,7 +21,6 @@ namespace StarSalvager
 {
     public class ObstacleManager : MonoBehaviour, IReset, IPausable, IMoveOnInput
     {
-        private const float BONUS_SCREEN_AREA = 0.6f;
 
         public static Action NewShapeOnScreen;
 
@@ -60,10 +58,10 @@ namespace StarSalvager
                                             m_bonusShapes.Count > 0 &&
                                             m_bonusShapes.Any(x =>
                                                 CameraController.IsPointInCameraRect(x.transform.position,
-                                                    BONUS_SCREEN_AREA));
+                                                    Constants.VISIBLE_GAME_AREA));
 
         public IEnumerable<Shape> ActiveBonusShapes => m_bonusShapes
-            .Where(x => CameraController.IsPointInCameraRect(x.transform.position, BONUS_SCREEN_AREA));
+            .Where(x => CameraController.IsPointInCameraRect(x.transform.position, Constants.VISIBLE_GAME_AREA));
 
         public bool isPaused => GameTimer.IsPaused;
 
@@ -396,7 +394,7 @@ namespace StarSalvager
                     m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
                     m_bonusShapes.Contains(checkShape))
                 {
-                    if (CameraController.IsPointInCameraRect(checkShape.transform.position, BONUS_SCREEN_AREA))
+                    if (CameraController.IsPointInCameraRect(checkShape.transform.position, Constants.VISIBLE_GAME_AREA))
                     {
                         m_offGridMovingObstacles[i].isVisible = true;
                         NewShapeOnScreen?.Invoke();
@@ -672,7 +670,7 @@ namespace StarSalvager
                             IEnumerable<StageColumnGroupObstacleData> columnsRight =
                                 m_currentStageData.StageColumnGroupObstacleData.Where(s =>
                                     s.ColumnGroupMinimum >= columnFieldRange.y && !s.IsBlendZone);
-                            if (columnsLeft.Count() > 0 && columnsRight.Count() > 0)
+                            if (columnsLeft.Any() && columnsRight.Any())
                             {
                                 float columnGroupLeftPosition = columnsLeft.Max(s => s.ColumnGroupMaximum);
                                 StageColumnGroupObstacleData columnGroupLeft =
@@ -777,7 +775,7 @@ namespace StarSalvager
         {
             foreach (StageObstacleData stageObstacleData in obstacleData)
             {
-                float spawnVariable = stageObstacleData.Density * spawningMultiplier * ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
+                float spawnVariable = stageObstacleData.Density() * spawningMultiplier * ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
 
                 if (stageObstacleData.SelectionType == SELECTION_TYPE.CATEGORY || stageObstacleData.SelectionType == SELECTION_TYPE.SHAPE)
                 {
@@ -885,6 +883,24 @@ namespace StarSalvager
             }
         }
 
+
+        //Used to benchmark spawn rates
+        /*[SerializeField, ReadOnly]
+        private bool startedCheck;
+        private float timeStart;
+
+        private int spawned;
+
+        [SerializeField, ReadOnly]
+        private List<float> test;
+        
+        //[ShowInInspector]
+        private float totalPerMin => startedCheck ? (spawned / (Time.time - timeStart)) * 60f : 0f;
+
+        [ShowInInspector]
+        private float Average => test.IsNullOrEmpty() ? 0f : test.Average();*/
+        
+
         private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category,
             ASTEROID_SIZE asteroidSize, int numRotations, Vector2 gridRegion, bool allowOverlap, bool forceSpawn,
             bool inRandomYLevel)
@@ -931,7 +947,23 @@ namespace StarSalvager
                             AddObstacleToList(bit);
                         }
                     }
-
+                    
+                    //Used to benchmark spawn rates
+                    /*if (!startedCheck)
+                    {
+                        startedCheck = true;
+                        timeStart = Time.time;
+                        test = new List<float>();
+                    }
+                    else if (startedCheck && Time.time - timeStart >= 1f)
+                    {
+                        test.Add(totalPerMin);
+                        timeStart = Time.time;
+                        spawned = 0;
+                    }
+                    else
+                        spawned++;*/
+                    
                     obstacle = newObstacle;
                     break;
                 }
@@ -1148,7 +1180,7 @@ namespace StarSalvager
             }
 
             if (newObstacle is CollidableBase collidableBase)
-                collidableBase.SetSortingLayer("Overlay", 100);
+                collidableBase.SetSortingLayer(Actor2DBase.OVERLAY_LAYER, 100);
 
             if (newObstacle is Shape shape)
                 shape.FlashBits();

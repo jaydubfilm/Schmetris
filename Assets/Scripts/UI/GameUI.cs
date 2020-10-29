@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
+using StarSalvager.Utilities;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.UI;
@@ -14,8 +16,23 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class GameUI : MonoBehaviour
+    public class GameUI : SceneSingleton<GameUI>
     {
+        [Serializable]
+        private struct SliderCover
+        {
+            [Required, HorizontalGroup("Row 1"), LabelWidth(40)]
+            public GameObject Slider;
+            [Required, HorizontalGroup("Row 1"), LabelWidth(40)]
+            public GameObject Cover;
+
+            public void SetHidden(bool hidden)
+            {
+                Slider.SetActive(!hidden);
+                Cover.SetActive(hidden);
+            }
+        }
+        
         [Serializable]
         public struct SmartWeaponV2
         {
@@ -143,6 +160,9 @@ namespace StarSalvager.UI
         
         [SerializeField, Required, FoldoutGroup("TR Window")]
         private Slider progressSlider;
+        
+        [SerializeField, Required, FoldoutGroup("TR Window")]
+        private TMP_Text sectorText;
 
         //Bottom Window
         //====================================================================================================================//
@@ -159,7 +179,8 @@ namespace StarSalvager.UI
 
         /*[SerializeField, Required, FoldoutGroup("BL Window")]
         private TMP_Text levelText;*/
-        
+        [SerializeField, Required, FoldoutGroup("BL Window")]
+        private SliderCover[] sliderCovers;
         
         
         [SerializeField, Required, FoldoutGroup("BL Window")]
@@ -175,6 +196,8 @@ namespace StarSalvager.UI
         private SliderText waterSlider;
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderText powerSlider;
+        
+
 
         //Right Window
         //============================================================================================================//
@@ -257,7 +280,7 @@ namespace StarSalvager.UI
                 redSliderGlow,
                 blueSliderGlow,
                 greenSliderGlow,
-                greenSliderGlow,
+                greySliderGlow,
                 yellowSliderGlow,
                 //heatSliderGlow
             };
@@ -340,10 +363,11 @@ namespace StarSalvager.UI
             //SetTimeString("0:00");
             
             SetPlayerPatchPoints(0);
-            SetPlayerGearsProgress(0, 0);
+            SetPlayerGearsProgress((0, 0));
             ShowAbortWindow(false);
 
             ShowRecoveryBanner(false);
+            ShowLiquidSliders(null);
         }
 
         private void InitSliderText()
@@ -389,30 +413,21 @@ namespace StarSalvager.UI
         {
             ShowAbortWindow(false);
 
-            IReadOnlyDictionary<BIT_TYPE, float> liquidResource;
-            IReadOnlyDictionary<BIT_TYPE, int> liquidCapacities;
-            bool recoveryDrone = LevelManager.Instance != null && LevelManager.Instance.RecoverFromDeath;
-            liquidResource = PlayerDataManager.GetLiquidResources(recoveryDrone);
-            liquidCapacities = PlayerDataManager.GetLiquidCapacities(recoveryDrone);
+            SetResourceSliderBounds(BIT_TYPE.RED, 0, PlayerDataManager.GetResource(BIT_TYPE.RED).liquidCapacity);
+            SetResourceSliderBounds(BIT_TYPE.GREEN, 0, PlayerDataManager.GetResource(BIT_TYPE.GREEN).liquidCapacity);
+            SetResourceSliderBounds(BIT_TYPE.GREY, 0, PlayerDataManager.GetResource(BIT_TYPE.GREY).liquidCapacity);
 
-            SetResourceSliderBounds(BIT_TYPE.RED, 0, liquidCapacities[BIT_TYPE.RED]);
-            SetResourceSliderBounds(BIT_TYPE.GREEN, 0, liquidCapacities[BIT_TYPE.GREEN]);
-            SetResourceSliderBounds(BIT_TYPE.GREY, 0, liquidCapacities[BIT_TYPE.GREY]);
+            SetResourceSliderBounds(BIT_TYPE.BLUE, 0, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resourceCapacity);
+            SetResourceSliderBounds(BIT_TYPE.YELLOW, 0, PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquidCapacity);
 
-            SetResourceSliderBounds(BIT_TYPE.BLUE, 0, PlayerDataManager.GetResourceCapacities()[BIT_TYPE.BLUE]);
-            SetResourceSliderBounds(BIT_TYPE.YELLOW, 0, liquidCapacities[BIT_TYPE.YELLOW]);
+            SetFuelValue(PlayerDataManager.GetResource(BIT_TYPE.RED).liquid);
+            SetRepairValue(PlayerDataManager.GetResource(BIT_TYPE.GREEN).liquid);
+            SetAmmoValue(PlayerDataManager.GetResource(BIT_TYPE.GREY).liquid);
 
-            SetFuelValue(liquidResource[BIT_TYPE.RED]);
-            SetRepairValue(liquidResource[BIT_TYPE.GREEN]);
-            SetAmmoValue(liquidResource[BIT_TYPE.GREY]);
-
-            SetPlayerGearsProgress(PlayerDataManager.GetGears(), 999);
+            SetPlayerGearsProgress(PlayerDataManager.GetPatchPointProgress());
         }
 
         //============================================================================================================//
-
-
-
 
         public void SetCarryCapacity(float value, int max)
         {
@@ -464,20 +479,20 @@ namespace StarSalvager.UI
         //TODO I should look into the NotifyPropertyChanged for setting up this functionality
         private void UpdatePlayerGearsLevel()
         {
-            SetPlayerGearsProgress(PlayerDataManager.GetGears(), 100);
+            SetPlayerGearsProgress(PlayerDataManager.GetPatchPointProgress());
 
             //TODO Need to add the Patch Points connection here
-            SetPlayerPatchPoints(0);
+            SetPlayerPatchPoints(PlayerDataManager.GetAvailablePatchPoints());
         }
 
-        public void SetPlayerGearsProgress(int gears, int gearsRequired)
+        public void SetPlayerGearsProgress((int, int) patchPointProgress)
         {
             gearsSlider.minValue = 0;
-            gearsSlider.maxValue = gearsRequired;
-            gearsSlider.value = gears;
+            gearsSlider.maxValue = patchPointProgress.Item2;
+            gearsSlider.value = patchPointProgress.Item1;
             
-            //levelText.text = $"lvl {playerLevel}";
-            gearsText.text = $"{gears} / {gearsRequired}";
+            //levelText.text = $"lvl {}";
+            gearsText.text = $"{patchPointProgress.Item1} / {patchPointProgress.Item2}";
         }
 
         public void SetPlayerPatchPoints(int points)
@@ -546,6 +561,50 @@ namespace StarSalvager.UI
         {
             powerSlider.value = value;
             CheckActivateGlow(powerSlider, yellowSliderGlow);
+        }
+
+
+        //====================================================================================================================//
+
+        public void ShowLiquidSliders(IEnumerable<BIT_TYPE> types)
+        {
+            foreach (var sliderCover in sliderCovers)
+            {
+                sliderCover.SetHidden(true);
+            }
+            
+            if(types.IsNullOrEmpty())
+                return;
+
+            foreach (var bitType in types)
+            {
+                UncoverSlider(bitType);
+            }
+            
+        }
+
+        private void UncoverSlider(BIT_TYPE bitType)
+        {
+            switch (bitType)
+            {
+                case BIT_TYPE.BLUE:
+                    sliderCovers[4].SetHidden(false);
+                    break;
+                case BIT_TYPE.GREEN:
+                    sliderCovers[2].SetHidden(false);
+                    break;
+                case BIT_TYPE.GREY:
+                    sliderCovers[1].SetHidden(false);
+                    break;
+                case BIT_TYPE.RED:
+                    sliderCovers[0].SetHidden(false);
+                    break;
+                case BIT_TYPE.YELLOW:
+                    sliderCovers[3].SetHidden(false);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
+            }
         }
 
         //============================================================================================================//
@@ -673,6 +732,18 @@ namespace StarSalvager.UI
         {
             sectorText.text = text;
         }*/
+        
+        public void SetCurrentWaveText(int sector, int wave)
+        {
+            sectorText.text = $"Sector {sector}.{wave}";
+
+            //m_currentWaveText.text = "Sector " + (Values.Globals.CurrentSector + 1) + " Wave " + endString;
+        }
+
+        public void SetCurrentWaveText(string text)
+        {
+            sectorText.text = text;
+        }
 
         //============================================================================================================//
 

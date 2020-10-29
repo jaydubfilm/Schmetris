@@ -142,12 +142,12 @@ namespace StarSalvager.Audio
             }
         }
         
-        public static void PlayMusic(MUSIC music)
+        public static void PlayMusic(MUSIC music, float fadeSpeed = 1f)
         {
             if (Instance == null)
                 return;
             
-            Instance.PlayMusicLoop(music);
+            Instance.PlayMusicLoop(music, fadeSpeed);
         }
 
         public static void PlayMusic(MUSIC music, bool forceChange)
@@ -308,7 +308,7 @@ namespace StarSalvager.Audio
         //Music Functions
         //============================================================================================================//
 
-        private void PlayMusicLoop(MUSIC music)
+        private void PlayMusicLoop(MUSIC music, float fadeSpeed)
         {
             if (!TryGetMusicClip(music, out AudioClip clip))
                 return;
@@ -320,7 +320,7 @@ namespace StarSalvager.Audio
                 weights[i] = i == (int) music ? 1f : 0f;
             }
             
-            musicMixer.TransitionToSnapshots(musicMixerSnapshots, weights, musicFadeTime);
+            musicMixer.TransitionToSnapshots(musicMixerSnapshots, weights, musicFadeTime * fadeSpeed);
             
 
             //TODO Set Pitch here

@@ -27,11 +27,14 @@ namespace StarSalvager
         public int SectorNumber = -1;
         [NonSerialized]
         public int WaveNumber = -1;
+        public Image BotImage;
 
         public void Awake()
         {
             Button = GetComponent<Button>();
             PointerEvents = GetComponent<PointerEvents>();
+
+            BotImage.gameObject.SetActive(false);
         }
 
         public void Start()

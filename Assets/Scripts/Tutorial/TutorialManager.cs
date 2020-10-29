@@ -103,7 +103,7 @@ namespace StarSalvager.Tutorial
             mono.StartCoroutine(MainTutorialCoroutine());
 
             
-            //LevelManager.Instance.GameUi.SetCurrentWaveText("Training Simulator");
+            LevelManager.Instance.GameUi.SetCurrentWaveText("Simulator");
             
             _readyForInput = true;
             _isReady = true;
@@ -341,7 +341,7 @@ namespace StarSalvager.Tutorial
             bot.OnBitShift -= SetBump;
             
             bot.PROTO_GodMode = false;
-            PlayerDataManager.SetLiquidResource(BIT_TYPE.RED, 6f, bot.IsRecoveryDrone);
+            PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(6f);
 
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[11], false));
         }
@@ -353,9 +353,7 @@ namespace StarSalvager.Tutorial
             
             LevelManager.Instance.SetStage(0);
             
-            var playerData = PlayerDataManager.GetLiquidResources(bot.IsRecoveryDrone);
-            
-            yield return new WaitUntil(() => playerData[BIT_TYPE.RED] <= 0f);
+            yield return new WaitUntil(() => PlayerDataManager.GetResource(BIT_TYPE.RED).liquid <= 0f);
             
             LevelManager.Instance.SetStage(4);
             
@@ -363,7 +361,7 @@ namespace StarSalvager.Tutorial
 
             //TODO Set the wave to spawn all reds
             
-            yield return new WaitUntil(() => playerData[BIT_TYPE.RED] > 0f);
+            yield return new WaitUntil(() => PlayerDataManager.GetResource(BIT_TYPE.RED).liquid > 0f);
             
             bot.PROTO_GodMode = true;
             LevelManager.Instance.SetStage(3);

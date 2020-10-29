@@ -40,31 +40,46 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 3
-      m_density: 0.15
+      m_density: 0.17818657
+      m_spawnsPerScreenWidthPerMinute: 6
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 2
       m_shapeName: Asteroid3.0
       m_category: 
       m_rotation: 0
       m_asteroidSize: 2
-      m_density: 0.15
+      m_density: 0.17818657
+      m_spawnsPerScreenWidthPerMinute: 6
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 2
       m_shapeName: Asteroid5.1
       m_category: 
       m_rotation: 0
       m_asteroidSize: 1
-      m_density: 0.1
+      m_density: 0.12606129
+      m_spawnsPerScreenWidthPerMinute: 2
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.25
+      m_density: 0.29583564
+      m_spawnsPerScreenWidthPerMinute: 30
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 1
       m_shapeName: 
       m_category: O_Doubles
       m_rotation: -1
       m_asteroidSize: 0
-      m_density: 0.35
+      m_density: 0.40607727
+      m_spawnsPerScreenWidthPerMinute: 82
+      m_maxOut: 0
+      spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
   - m_stageDuration: 30
     m_stageBlendPeriod: 5
@@ -81,31 +96,46 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 3
-      m_density: 0.15
+      m_density: 0.17818657
+      m_spawnsPerScreenWidthPerMinute: 6
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 2
       m_shapeName: Asteroid3.0
       m_category: 
       m_rotation: 0
       m_asteroidSize: 2
-      m_density: 0.15
+      m_density: 0.17818657
+      m_spawnsPerScreenWidthPerMinute: 6
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 2
       m_shapeName: Asteroid5.1
       m_category: 
       m_rotation: 0
       m_asteroidSize: 1
-      m_density: 0.1
+      m_density: 0.12606129
+      m_spawnsPerScreenWidthPerMinute: 2
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.25
+      m_density: 0.29583564
+      m_spawnsPerScreenWidthPerMinute: 30
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 1
       m_shapeName: 
       m_category: O_Triples_L
       m_rotation: -1
       m_asteroidSize: 0
-      m_density: 0.35
+      m_density: 0.40607727
+      m_spawnsPerScreenWidthPerMinute: 82
+      m_maxOut: 0
+      spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
   maxDrops: 0
   RDSEndOfWaveLoot:

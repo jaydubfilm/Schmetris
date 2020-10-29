@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Mail;
 using Newtonsoft.Json;
 using StarSalvager.Factories;
+using StarSalvager.Factories.Data;
 using StarSalvager.Missions;
 using StarSalvager.Utilities.Analytics.Data;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -69,10 +70,10 @@ namespace StarSalvager.Utilities.FileIO
 
         private static readonly List<string> PlayerAccountSavePaths = new List<string>
         {
-            Path.Combine(REMOTE_DIRECTORY, "PlayerRunMetaData0.player"),
-            Path.Combine(REMOTE_DIRECTORY, "PlayerRunMetaData1.player"),
-            Path.Combine(REMOTE_DIRECTORY, "PlayerRunMetaData2.player"),
-            Path.Combine(REMOTE_DIRECTORY, "PlayerRunMetaData3.player")
+            Path.Combine(REMOTE_DIRECTORY, "PlayerRunAccountData0.player"),
+            Path.Combine(REMOTE_DIRECTORY, "PlayerRunAccountData1.player"),
+            Path.Combine(REMOTE_DIRECTORY, "PlayerRunAccountData2.player"),
+            Path.Combine(REMOTE_DIRECTORY, "PlayerRunAccountData3.player")
         };
 
         public static string GetPlayerAccountSavePath(int saveSlot)
@@ -190,15 +191,19 @@ namespace StarSalvager.Utilities.FileIO
                     data.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
                 }
 
-                foreach (var facilityData in Globals.FacilityInitialBlueprintData)
+                List<FacilityRemoteData> remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteDatas();
+                foreach (var facilityData in remoteData)
                 {
-                    data.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.level);
+                    data.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.levels.Count - 1);
                 }
 
                 return data;
             }
 
-            var loaded = JsonConvert.DeserializeObject<PlayerSaveAccountData>(File.ReadAllText(PlayerAccountSavePaths[saveSlotIndex]));
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
+
+            var loaded = JsonConvert.DeserializeObject<PlayerSaveAccountData>(File.ReadAllText(PlayerAccountSavePaths[saveSlotIndex]), settings);
 
             return loaded;
         }
@@ -361,7 +366,8 @@ namespace StarSalvager.Utilities.FileIO
 
             if (Application.isPlaying)
             {
-                PlayerDataManager.ResetPlayerAccountData();
+                PlayerDataManager.ClearPlayerAccountData();
+                PlayerDataManager.ResetGameMetaData();
             }
 
         }

@@ -13,8 +13,6 @@ namespace StarSalvager.Missions
         private static readonly bool fromScriptable = true;
 
         public static string RecentCompletedMissionName = "";
-        public static int RecentCompletedSectorName;
-        public static int RecentCompletedWaveName;
 
         private static bool HasInit;
         public static List<Mission> MissionTypes 
@@ -135,10 +133,8 @@ namespace StarSalvager.Missions
             CheckUnlocks();
         }
 
-        private static void ProcessWaveComplete(int sectorNumber, int waveNumber)
+        public static void ProcessWaveComplete()
         {
-            RecentCompletedSectorName = sectorNumber;
-            RecentCompletedWaveName = waveNumber;
             CheckUnlocks();
         }
 

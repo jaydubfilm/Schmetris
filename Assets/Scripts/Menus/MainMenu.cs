@@ -44,6 +44,9 @@ namespace StarSalvager.UI
         [SerializeField] private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
+        [SerializeField]
+        private GameObject menuCharactersRootObject;
+
         //============================================================================================================//
 
         #region Menu Windows
@@ -282,9 +285,9 @@ namespace StarSalvager.UI
                     PlayerDataManager.SetCurrentSaveSlotIndex(saveSlotIndex);
                     PlayerDataManager.ResetPlayerAccountData();
 
-                    //menuState = MENUSTATE.GAMEMENU;
                     introSceneCanvas.SetActive(true);
                     mainMenuWindow.SetActive(false);
+                    menuCharactersRootObject.SetActive(false);
 
                     //SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
                 }
@@ -415,6 +418,24 @@ namespace StarSalvager.UI
         private void ClearRemoteData()
         {
             Files.ClearRemoteData();
+        }
+
+        [Button("Show Current Account Stats"), DisableInEditorMode]
+        private void ShowAccountStats()
+        {
+            if (!Application.isPlaying) 
+                return;
+            
+            if (PlayerDataManager.HasPlayerAccountData())
+            {
+                var newString = PlayerDataManager.GetSummaryString();
+
+                Alert.ShowAlert("Account Tracking Statistics", newString, "Ok", null);
+            }
+            else
+            {
+                Alert.ShowAlert("No Account Loaded", "No account loaded. Load an account and then click this again.", "Ok", null);
+            }
         }
 
 #endif

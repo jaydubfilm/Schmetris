@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities;
@@ -16,6 +17,20 @@ namespace StarSalvager.UI
 {
     public class UniverseMap : MonoBehaviour, IReset
     {
+        internal enum ICON_TYPE
+        {
+            WAVE,
+            RING_SUM,
+            RING_MAX
+        }
+        
+        [SerializeField, ReadOnly, BoxGroup("Map Stats Icon Prototyping")]
+        private bool PROTO_useSum = true;
+        [SerializeField, BoxGroup("Map Stats Icon Prototyping")]
+        private ICON_TYPE IconType = ICON_TYPE.RING_MAX;
+
+        #region Properties
+
         [SerializeField, Required] private UniverseMapButton m_universeSectorButtonPrefab;
 
         [SerializeField, Required] private ScrollRect m_scrollRect;
@@ -33,13 +48,13 @@ namespace StarSalvager.UI
         private GameObject waveDataWindow;
         [SerializeField, FoldoutGroup("Hover Window")]
         private GameObject missingDataObject;
-        
 
-        [SerializeField, FoldoutGroup("Hover Window")] 
+
+        [SerializeField, FoldoutGroup("Hover Window")]
         private TMP_Text windowTitle;
         /*[SerializeField, FoldoutGroup("Hover Window")]
         private SpriteTitleContentScrolView waveDataScrollView;*/
-        
+
         [SerializeField, FoldoutGroup("Hover Window")]
         private SpriteScaleContentScrollView waveDataScrollView;
 
@@ -48,6 +63,9 @@ namespace StarSalvager.UI
 
         private List<Image> connectionLines = new List<Image>();
 
+        #endregion //Properties
+
+        //Unity Functions
         //============================================================================================================//
 
         private void Start()
@@ -62,6 +80,32 @@ namespace StarSalvager.UI
             backButton.gameObject.SetActive(!Globals.IsBetweenWavesInUniverseMap);
             betweenWavesScrapyardButton.gameObject.SetActive(Globals.IsBetweenWavesInUniverseMap);
 
+            if (PROTO_useSum)
+            {
+                switch (IconType)
+                {
+                    case ICON_TYPE.WAVE:
+                        PROTO_useSum = false;
+                        break;
+                    case ICON_TYPE.RING_SUM:
+                        PROTO_useSum = true;
+                        CalculateRingSum();
+                        break;
+                    case ICON_TYPE.RING_MAX:
+                        PROTO_useSum = true;
+                        CalculateRingMax();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                
+            }
+            for (int i = 0; i < universeMapButtons.Count; i++)
+            {
+                universeMapButtons[i].Button.image.color = Color.white;
+                universeMapButtons[i].BotImage.gameObject.SetActive(false);
+            }
+
             if (Globals.IsBetweenWavesInUniverseMap)
             {
                 int curIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
@@ -75,6 +119,12 @@ namespace StarSalvager.UI
 
                     if (nodeIndex == curIndex)
                     {
+                        universeMapButtons[nodeIndex].BotImage.gameObject.SetActive(true);
+                        if (childNodesAccessible.Count == 0)
+                        {
+                            universeMapButtons[nodeIndex].Button.image.color = Color.red;
+                        }
+
                         for (int k = 0; k < universeMapButtons.Count; k++)
                         {
                             if (childNodesAccessible.Any(n => n.nodeIndex == k))
@@ -90,11 +140,18 @@ namespace StarSalvager.UI
                     }
                     else
                     {
-                        for (int k = 0; k < universeMapButtons.Count; k++)
+                        if (childNodesAccessible.Count == 0)
                         {
-                            if (childNodesAccessible.Any(n => n.nodeIndex == k))
+                            universeMapButtons[nodeIndex].Button.image.color = Color.red;
+                        }
+                        else
+                        {
+                            for (int k = 0; k < universeMapButtons.Count; k++)
                             {
-                                DrawConnection(nodeIndex, k, true);
+                                if (childNodesAccessible.Any(n => n.nodeIndex == k))
+                                {
+                                    DrawConnection(nodeIndex, k, true);
+                                }
                             }
                         }
                     }
@@ -105,35 +162,44 @@ namespace StarSalvager.UI
             else
             {
                 CenterToItem(universeMapButtons[0].GetComponent<RectTransform>());
+                universeMapButtons[0].BotImage.gameObject.SetActive(true);
                 for (int i = 0; i < universeMapButtons.Count; i++)
                 {
-                    universeMapButtons[i].Button.interactable = false;
+                    universeMapButtons[i].Button.interactable = !Globals.DisableTestingFeatures;
                 }
-                
+
                 for (int i = 0; i < PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Count; i++)
                 {
                     int nodeIndex = PlayerDataManager.GetPlayerPreviouslyCompletedNodes()[i];
-                    
+
                     List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
 
                     bool isShortcut = PlayerDataManager.GetShortcutNodes().Contains(nodeIndex);
 
-                    for (int k = 0; k < universeMapButtons.Count; k++)
+                    if (childNodesAccessible.Count == 0)
                     {
-                        if (childNodesAccessible.Any(n => n.nodeIndex == k))
+                        universeMapButtons[nodeIndex].Button.image.color = Color.red;
+                    }
+                    else
+                    {
+                        for (int k = 0; k < universeMapButtons.Count; k++)
                         {
-                            if (nodeIndex == 0)
+                            if (childNodesAccessible.Any(n => n.nodeIndex == k))
                             {
-                                universeMapButtons[k].Button.interactable = true;
+                                if (nodeIndex == 0)
+                                {
+                                    universeMapButtons[k].Button.interactable = true;
+                                }
+                                DrawConnection(nodeIndex, k, !(nodeIndex == 0 || isShortcut));
                             }
-                            DrawConnection(nodeIndex, k, !(nodeIndex == 0 || isShortcut));
                         }
                     }
 
                     if (isShortcut)
                     {
                         universeMapButtons[nodeIndex].Button.interactable = true;
-                    }    
+                        universeMapButtons[nodeIndex].Button.image.color = Color.blue;
+                    }
                 }
             }
 
@@ -142,7 +208,7 @@ namespace StarSalvager.UI
                 DrawConnection(connection.x, connection.y);
             }*/
 
-            if (PlayerDataManager.GetResources()[BIT_TYPE.BLUE] <= 35)
+            if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 35)
             {
                 Alert.ShowAlert("Water Shortage", "You are running low on water at the base. Be sure to look for some more!", "Ok", null);
             }
@@ -254,6 +320,75 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
+        private Dictionary<BIT_TYPE, float> _collectables;
+        private void CalculateRingSum()
+        {
+            _collectables = new Dictionary<BIT_TYPE, float>();
+
+            var sectors = FactoryManager.Instance.SectorRemoteData;
+
+            foreach (var sector in sectors)
+            {
+                var waves = sector.WaveRemoteData;
+                foreach (var wave in waves)
+                {
+                    var (_, bits) = wave.GetWaveSummaryData(true);
+
+                    foreach (var bit in bits)
+                    {
+                        var bitType = bit.Key;
+
+                        if(!_collectables.ContainsKey(bitType))
+                            _collectables.Add(bitType, 0f);
+
+                        _collectables[bitType] += bit.Value;
+                    }
+                }
+            }
+
+
+            foreach (var collectable in _collectables)
+            {
+                Debug.Log($"[{collectable.Key}] = {collectable.Value}");
+            }
+        }
+        
+        private void CalculateRingMax()
+        {
+            _collectables = new Dictionary<BIT_TYPE, float>();
+
+            var sectors = FactoryManager.Instance.SectorRemoteData;
+
+            foreach (var sector in sectors)
+            {
+                var waves = sector.WaveRemoteData;
+                foreach (var wave in waves)
+                {
+                    var (_, bits) = wave.GetWaveSummaryData(true);
+
+                    foreach (var bit in bits)
+                    {
+                        var bitType = bit.Key;
+
+                        if(!_collectables.ContainsKey(bitType))
+                            _collectables.Add(bitType, 0f);
+
+
+                        _collectables[bitType] = Mathf.Max(_collectables[bitType], bit.Value);
+                    }
+                }
+            }
+
+
+            foreach (var collectable in _collectables)
+            {
+                Debug.Log($"[{collectable.Key}] = {collectable.Value}");
+            }
+        }
+
+        //====================================================================================================================//
+
+
         private void WaveHovered(bool hovered, int sector, int wave, RectTransform rectTransform)
         {
             waveDataWindow.SetActive(hovered);
@@ -264,19 +399,19 @@ namespace StarSalvager.UI
             //See if wave is unlocked
             int curIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(sector, wave);
             var unlocked = PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(curIndex);
-            
+
             missingDataObject.SetActive(!unlocked);
             waveDataScrollView.SetActive(unlocked);
 
             waveDataWindow.GetComponent<VerticalLayoutGroup>().enabled = false;
-            windowTitle.text = $"Sector {sector + 1} Wave {wave + 1} data";
+            windowTitle.text = $"Sector {sector + 1}.{wave + 1} data";
 
             if (unlocked)
             {
                 //Get the actual wave data here
                 var sectorData = FactoryManager.Instance.SectorRemoteData[sector];
-                var (enemies, bits) = sectorData.GetRemoteData(wave).GetWaveSummaryData();
-            
+                var (enemies, bits) = sectorData.GetRemoteData(wave).GetWaveSummaryData(PROTO_useSum);
+
                 //Parse the information to get the sprites & titles
                 var testSpriteScales = GetSpriteTitleObjects(enemies, bits);
                 waveDataScrollView.ClearElements();
@@ -287,7 +422,7 @@ namespace StarSalvager.UI
                     temp.Init(spriteScale);
                 }
             }
-            
+
             //Display
             StartCoroutine(ResizeRepositionCostWindowCoroutine(rectTransform));
         }
@@ -296,7 +431,7 @@ namespace StarSalvager.UI
         {
             var outList = new List<SpriteTitle>();
             var enemyProfile = FactoryManager.Instance.EnemyProfile;
-            
+
             var bitProfile = FactoryManager.Instance.BitProfileData;
 
             foreach (var kvp in Enemies)
@@ -319,14 +454,14 @@ namespace StarSalvager.UI
 
             return outList;
         }*/
-        
+
         private List<TEST_SpriteScale> GetSpriteTitleObjects(Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits)
         {
             const int SPRITE_LEVEL = 2;
-            
+
             var outList = new List<TEST_SpriteScale>();
             var enemyProfile = FactoryManager.Instance.EnemyProfile;
-            
+
             var bitProfile = FactoryManager.Instance.BitProfileData;
 
             foreach (var kvp in Enemies)
@@ -340,16 +475,17 @@ namespace StarSalvager.UI
 
             foreach (var kvp in Bits)
             {
+                //Debug.Log($"[{kvp.Key}] = {kvp.Value}");
                 outList.Add(new TEST_SpriteScale
                 {
                     Sprite = bitProfile.GetProfile(kvp.Key).GetSprite(SPRITE_LEVEL),
-                    value = kvp.Value
+                    value = kvp.Value / (PROTO_useSum ? _collectables[kvp.Key] : 1f)
                 });
             }
 
             return outList;
         }
-        
+
         private IEnumerator ResizeRepositionCostWindowCoroutine(RectTransform buttonTransform)
         {
             //TODO Should also reposition the window relative to the screen bounds to always keep in window
@@ -385,5 +521,8 @@ namespace StarSalvager.UI
 
             windowTransform.anchoredPosition += Vector2.right * 10f;
         }
+
+        //====================================================================================================================//
+        
     }
 }
