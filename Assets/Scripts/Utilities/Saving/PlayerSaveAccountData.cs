@@ -12,7 +12,7 @@ namespace StarSalvager.Values
 {
     public class PlayerSaveAccountData
     {
-        public PlayerSaveRunData PlayerRunData = new PlayerSaveRunData();
+        public PlayerSaveRunData PlayerRunData;
 
         public int Gears;
         public int PatchPointsSpent;
@@ -57,11 +57,231 @@ namespace StarSalvager.Values
         [JsonProperty]
         private Dictionary<FACILITY_TYPE, int> _facilityBlueprintRanks = new Dictionary<FACILITY_TYPE, int>();
 
+        private List<List<Vector2Int>> LevelRingConnectionsJson = new List<List<Vector2Int>>
+        {
+            new List<Vector2Int>
+            {
+                new Vector2Int(2, 0),
+                new Vector2Int(1, 2),
+                new Vector2Int(4, 0),
+                new Vector2Int(3, 4),
+                new Vector2Int(5, 4),
+                new Vector2Int(6, 2),
+                new Vector2Int(7, 2),
+                new Vector2Int(8, 3),
+                new Vector2Int(10, 4),
+                new Vector2Int(9, 10),
+                new Vector2Int(11, 6),
+                new Vector2Int(12, 11),
+                new Vector2Int(13, 8),
+                new Vector2Int(15, 9),
+                new Vector2Int(14, 15),
+                new Vector2Int(14, 15),
+                new Vector2Int(16, 11),
+                new Vector2Int(17, 13),
+                new Vector2Int(18, 17),
+                new Vector2Int(19, 14),
+                new Vector2Int(20, 19),
+                new Vector2Int(21, 16),
+                new Vector2Int(22, 16),
+                new Vector2Int(23, 17),
+                new Vector2Int(24, 18),
+                new Vector2Int(25, 20),
+                new Vector2Int(26, 22),
+                new Vector2Int(26, 24),
+            },
+            new List<Vector2Int>
+            {
+                new Vector2Int(2, 0),
+                new Vector2Int(1, 2),
+                new Vector2Int(3, 2),
+                new Vector2Int(7, 2),
+                new Vector2Int(5, 0),
+                new Vector2Int(4, 5),
+                new Vector2Int(6, 1),
+                new Vector2Int(8, 3),
+                new Vector2Int(10, 4),
+                new Vector2Int(11, 6),
+                new Vector2Int(13, 8),
+                new Vector2Int(12, 13),
+                new Vector2Int(15, 10),
+                new Vector2Int(14, 15),
+                new Vector2Int(16, 12),
+                new Vector2Int(17, 12),
+                new Vector2Int(18, 14),
+                new Vector2Int(19, 15),
+                new Vector2Int(20, 19),
+                new Vector2Int(21, 16),
+                new Vector2Int(26, 21),
+                new Vector2Int(23, 17),
+                new Vector2Int(22, 23),
+                new Vector2Int(24, 19),
+                new Vector2Int(26, 24),
+                new Vector2Int(25, 20),
+            },
+            new List<Vector2Int>
+            {
+                new Vector2Int(1, 0),
+                new Vector2Int(2, 0),
+                new Vector2Int(6, 1),
+                new Vector2Int(3, 2),
+                new Vector2Int(7, 2),
+                new Vector2Int(4, 3),
+                new Vector2Int(8, 3),
+                new Vector2Int(5, 4),
+                new Vector2Int(10, 4),
+                new Vector2Int(12, 6),
+                new Vector2Int(11, 12),
+                new Vector2Int(13, 8),
+                new Vector2Int(14, 8),
+                new Vector2Int(15, 10),
+                new Vector2Int(16, 11),
+                new Vector2Int(17, 11),
+                new Vector2Int(18, 14),
+                new Vector2Int(19, 14),
+                new Vector2Int(22, 16),
+                new Vector2Int(21, 22),
+                new Vector2Int(23, 17),
+                new Vector2Int(20, 19),
+                new Vector2Int(24, 19),
+                new Vector2Int(25, 19),
+                new Vector2Int(26, 22),
+                new Vector2Int(26, 25),
+            },
+            new List<Vector2Int>
+            {
+                new Vector2Int(3, 0),
+                new Vector2Int(5, 0),
+                new Vector2Int(2, 3),
+                new Vector2Int(1, 2),
+                new Vector2Int(7, 1),
+                new Vector2Int(6, 7),
+                new Vector2Int(8, 3),
+                new Vector2Int(4, 5),
+                new Vector2Int(9, 5),
+                new Vector2Int(10, 5),
+                new Vector2Int(11, 7),
+                new Vector2Int(12, 7),
+                new Vector2Int(13, 8),
+                new Vector2Int(14, 9),
+                new Vector2Int(15, 10),
+                new Vector2Int(16, 11),
+                new Vector2Int(17, 11),
+                new Vector2Int(18, 14),
+                new Vector2Int(19, 15),
+                new Vector2Int(22, 17),
+                new Vector2Int(21, 22),
+                new Vector2Int(26, 21),
+                new Vector2Int(23, 17),
+                new Vector2Int(24, 18),
+                new Vector2Int(20, 19),
+                new Vector2Int(25, 19),
+                new Vector2Int(26, 25),
+            },
+            new List<Vector2Int>
+            {
+                new Vector2Int(2, 0),
+                new Vector2Int(3, 0),
+                new Vector2Int(1, 2),
+                new Vector2Int(6, 1),
+                new Vector2Int(7, 3),
+                new Vector2Int(8, 3),
+                new Vector2Int(4, 3),
+                new Vector2Int(5, 4),
+                new Vector2Int(9, 4),
+                new Vector2Int(10, 5),
+                new Vector2Int(12, 6),
+                new Vector2Int(14, 8),
+                new Vector2Int(15, 10),
+                new Vector2Int(11, 12),
+                new Vector2Int(13, 12),
+                new Vector2Int(16, 11),
+                new Vector2Int(17, 11),
+                new Vector2Int(19, 15),
+                new Vector2Int(20, 15),
+                new Vector2Int(18, 17),
+                new Vector2Int(21, 17),
+                new Vector2Int(22, 17),
+                new Vector2Int(25, 20),
+                new Vector2Int(23, 22),
+                new Vector2Int(24, 23),
+                new Vector2Int(26, 24),
+                new Vector2Int(26, 25),
+            }
+        };
+
+        [JsonIgnore]
+        public List<List<int>> ShortcutNodes = new List<List<int>>()
+        {
+            new List<int>
+            { 
+                4,
+                6,
+                8,
+                15,
+                16,
+                17,
+                19,
+                24,
+            },
+            new List<int>
+            {
+                3,
+                4,
+                6,
+                13,
+                15,
+                16,
+                17,
+                24,
+            },
+            new List<int>
+            {
+                3,
+                6,
+                10,
+                13,
+                14,
+                16,
+                17,
+                25,
+            },
+            new List<int>
+            {
+                1,
+                3,
+                9,
+                10,
+                11,
+                18,
+                19,
+                22,
+            },
+            new List<int>
+            {
+                1,
+                4,
+                8,
+                10,
+                12,
+                17,
+                23,
+                25,
+            },
+        };
+
         //====================================================================================================================//
+
+        public PlayerSaveAccountData()
+        {
+            PlayerRunData = new PlayerSaveRunData(LevelRingConnectionsJson[0], ShortcutNodes[0]);
+        }
 
         public void ResetPlayerRunData()
         {
-            PlayerSaveRunData data = new PlayerSaveRunData();
+            int randomIndex = UnityEngine.Random.Range(0, 5);
+            
+            PlayerSaveRunData data = new PlayerSaveRunData(LevelRingConnectionsJson[randomIndex], ShortcutNodes[randomIndex]);
             data.PlaythroughID = Guid.NewGuid().ToString();
 
             GearsAtRunBeginning = Gears;
