@@ -139,6 +139,26 @@ namespace StarSalvager.Utilities.FileIO
         //====================================================================================================================//
 
         #region Player Data
+        
+        public static bool DoesSaveExist(int index)
+        {
+            if (!Directory.Exists(REMOTE_DIRECTORY))
+                return false;
+
+            return File.Exists(PlayerAccountSavePaths[index]);
+        }
+        public static bool TryGetPlayerSaveData(int index, out PlayerSaveAccountData accountData)
+        {
+            accountData = null;
+            var result = DoesSaveExist(index);
+
+            if (!result)
+                return false;
+
+            accountData = ImportPlayerSaveAccountData(index);
+
+            return true;
+        }
 
         public static int GetNextAvailableSaveSlot()
         {
