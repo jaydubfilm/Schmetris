@@ -13,8 +13,12 @@ public class IntroScene : MonoBehaviour, IReset
     public GameObject menuCharacters;*/
 
     public GameObject panel1;
-    public GameObject panelText1;
+    public GameObject panel1Character;
+    
     public GameObject panel2;
+    public GameObject panel2Character;
+
+    public GameObject panelText1;
 
     private void Awake()
     {
@@ -40,7 +44,9 @@ public class IntroScene : MonoBehaviour, IReset
             {
                 introSceneStage++;
                 panelText1.SetActive(false);
+                panel1Character.SetActive(false);
                 panel2.SetActive(true);
+                panel2Character.SetActive(true);
             }
             else if (introSceneStage == 1)
             {
@@ -51,6 +57,9 @@ public class IntroScene : MonoBehaviour, IReset
                 panelText1.SetActive(true);
                 panel2.SetActive(false);
                 introSceneStage = 0;
+                
+                panel1Character.SetActive(true);
+                panel2Character.SetActive(true);
                 SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
             }
         }
