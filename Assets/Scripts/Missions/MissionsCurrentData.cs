@@ -124,7 +124,7 @@ namespace StarSalvager.Missions
                 if (missionLoot[i] is RDSValue<FacilityBlueprint> rdsValueFacilityBlueprint)
                 {
                     PlayerDataManager.UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
-                    Toast.AddToast("Unlocked Facility Blueprint!");
+                    //Toast.AddToast("Unlocked Facility Blueprint!");
                     missionLoot.RemoveAt(i);
                     continue;
                 }

@@ -88,7 +88,7 @@ namespace StarSalvager.Missions
             }
             
             MissionsCurrentData.LoadMissionData();
-            CheckUnlocks();
+            CheckUnlocks(false);
         }
 
         public static void AddMissionCurrent(string missionName)
@@ -138,7 +138,7 @@ namespace StarSalvager.Missions
             CheckUnlocks();
         }
 
-        private static void CheckUnlocks()
+        private static void CheckUnlocks(bool showToast = true)
         {
             for (int i = MissionsCurrentData.NotStartedMissions.Count - 1; i >= 0; i--)
             {
@@ -146,6 +146,10 @@ namespace StarSalvager.Missions
                 if (mission.CheckUnlockParameters())
                 {
                     MissionsCurrentData.AddMission(mission);
+                    if (showToast)
+                    {
+                        Toast.AddToast("Unlock " + mission.missionName + " mission!");
+                    }
 
                     if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
                     {
