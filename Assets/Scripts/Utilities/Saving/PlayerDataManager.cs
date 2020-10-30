@@ -592,6 +592,11 @@ namespace StarSalvager.Utilities.Saving
             return PlayerAccountData.CheckHasFacility(type, level);
         }
 
+        public static bool TryGetFacilityValue(FACILITY_TYPE type, out int level)
+        {
+            return PlayerAccountData.facilityRanks.TryGetValue(type, out level);
+        }
+
         public static void UnlockBlueprint(Blueprint blueprint)
         {
             PlayerAccountData.UnlockBlueprint(blueprint);
@@ -656,6 +661,7 @@ namespace StarSalvager.Utilities.Saving
             CurrentSaveSlotIndex = saveSlotIndex;
             PlayerAccountData = Files.ImportPlayerSaveAccountData(saveSlotIndex);
             MissionManager.LoadMissionData();
+            SavePlayerAccountData();
         }
 
         public static void ResetPlayerAccountData()
