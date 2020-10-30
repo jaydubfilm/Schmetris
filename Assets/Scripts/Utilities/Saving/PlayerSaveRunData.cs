@@ -137,7 +137,9 @@ namespace StarSalvager.Utilities.Saving
         [JsonProperty] 
         private List<string> _dontShowAgainKeys = new List<string>();
 
+        [JsonIgnore]
         public LevelRingNodeTree LevelRingNodeTree = new LevelRingNodeTree();
+        [JsonProperty]
         private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>
         {
 
@@ -155,18 +157,16 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public PlayerSaveRunData(List<Vector2Int> levelRingConnectsionsJson, List<int> shortcutNodes)
+        public void SetupMap(List<Vector2Int> levelRingConnectsionsJson = null, List<int> shortcutNodes = null)
         {
-            /*LevelRingNodeTree = new LevelRingNodeTree();
-            LevelRingConnectionsJson = new List<Vector2Int>();
-            ShortcutNodes = new List<int>();
-            PlayerPreviouslyCompletedNodes = new List<int>()
+            if (levelRingConnectsionsJson != null)
             {
-                0
-            };*/
-            
-            LevelRingConnectionsJson.AddRange(levelRingConnectsionsJson);
-            ShortcutNodes.AddRange(shortcutNodes);
+                LevelRingConnectionsJson.AddRange(levelRingConnectsionsJson);
+            }
+            if (shortcutNodes != null)
+            {
+                ShortcutNodes.AddRange(shortcutNodes);
+            }
             
             LevelRingNodeTree.ReadInNodeConnectionData(LevelRingConnectionsJson);
         }

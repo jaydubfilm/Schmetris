@@ -25,13 +25,13 @@ namespace StarSalvager.Missions
         [JsonProperty]
         private List<MissionData> CurrentTrackedMissionData;
 
-        [JsonProperty]
+        [JsonIgnore]
         public List<Mission> NotStartedMissions;
-        [JsonProperty]
+        [JsonIgnore]
         public List<Mission> CurrentMissions;
-        [JsonProperty]
+        [JsonIgnore]
         public List<Mission> CompletedMissions;
-        [JsonProperty]
+        [JsonIgnore]
         public List<Mission> CurrentTrackedMissions;
 
         public MissionsCurrentData()

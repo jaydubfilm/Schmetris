@@ -12,7 +12,7 @@ namespace StarSalvager.Values
 {
     public class PlayerSaveAccountData
     {
-        public PlayerSaveRunData PlayerRunData;
+        public PlayerSaveRunData PlayerRunData = new PlayerSaveRunData();
 
         public int Gears;
         public int PatchPointsSpent;
@@ -272,20 +272,16 @@ namespace StarSalvager.Values
 
         //====================================================================================================================//
 
-        public PlayerSaveAccountData()
-        {
-            PlayerRunData = new PlayerSaveRunData(LevelRingConnectionsJson[0], ShortcutNodes[0]);
-        }
-
         public void ResetPlayerRunData()
         {
             int randomIndex = UnityEngine.Random.Range(0, 5);
 
-            PlayerSaveRunData data = new PlayerSaveRunData(LevelRingConnectionsJson[randomIndex], ShortcutNodes[randomIndex])
+            PlayerSaveRunData data = new PlayerSaveRunData()
             {
                 PlaythroughID = Guid.NewGuid().ToString(),
                 runStarted = false
             };
+            data.SetupMap(LevelRingConnectionsJson[randomIndex], ShortcutNodes[randomIndex]);
             data.FacilityEffectsOnNewAccount();
 
             GearsAtRunBeginning = Gears;
