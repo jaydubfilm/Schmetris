@@ -382,8 +382,8 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                         break;
                     }
-                    
-                    //TODO Add Patchpoints here
+
+                    PlayerDataManager.AddGearsToGetPatchPoints(intAmount);
                     
                     break;
                 case "storage":

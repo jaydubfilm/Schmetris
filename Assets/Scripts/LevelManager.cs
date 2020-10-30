@@ -673,7 +673,9 @@ namespace StarSalvager
             if (Globals.IsRecoveryBot)
             {
                 ScrapyardBot scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
+                Globals.IsRecoveryBot = false;
                 var currentBlockData = PlayerDataManager.GetBlockDatas();
+                Globals.IsRecoveryBot = true;
                 //Checks to make sure there is a core on the bot
                 if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
                 {

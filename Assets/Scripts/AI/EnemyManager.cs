@@ -250,6 +250,7 @@ namespace StarSalvager
             }
             newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
             newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.MovementType);
+            newEnemy.SetHorizontalMovementYLevel();
 
             LevelManager.Instance.WaveEndSummaryData.AddEnemySpawned(newEnemy.EnemyName);
         }
