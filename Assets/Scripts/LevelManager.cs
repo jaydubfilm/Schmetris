@@ -683,8 +683,10 @@ namespace StarSalvager
                 }
                 else
                 {
+                    Globals.IsRecoveryBot = false;
                     var importedData = currentBlockData.ImportBlockDatas(true);
                     scrapyardBot.InitBot(importedData);
+                    Globals.IsRecoveryBot = true;
                 }
                 if (!Globals.RecoveryOfDroneLocksHorizontalMovement)
                 {
