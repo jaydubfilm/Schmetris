@@ -775,6 +775,7 @@ namespace StarSalvager
             if (_scrapyardBot == null)
                 return;
 
+            Globals.IsRecoveryBot = true;
             List<BlockData> recoveryBotBlockData = PlayerDataManager.GetBlockDatas();
 
             List<ScrapyardBit> listBits = _scrapyardBot.AttachedBlocks.OfType<ScrapyardBit>().ToList();
@@ -796,6 +797,7 @@ namespace StarSalvager
                     continue;
                 }
             }
+            Globals.IsRecoveryBot = false;
 
             if (listComponents.Count > 0)
             {
@@ -851,12 +853,50 @@ namespace StarSalvager
                 if (_bitType == BIT_TYPE.WHITE)
                     continue;
 
-                if (!bits.TryGetValue(_bitType, out var amount))
+                if (bits.TryGetValue(_bitType, out var amount))
                 {
                     continue;
                 }
 
-                int wastedResource = PlayerDataManager.GetResource(_bitType).AddResourceReturnWasted((int)(amount * refineryMultiplier));
+                float facilityRefiningMultiplier = 1.0f;
+                int facilityValue = 0;
+                switch(_bitType)
+                {
+                    case BIT_TYPE.BLUE:
+                        if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.EVAPORATOR, out facilityValue))
+                        {
+                            facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.EVAPORATOR).levels[facilityValue].increaseAmount) / 100);
+                        }
+                        break;
+                    case BIT_TYPE.YELLOW:
+                        if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.ALTERNATOR, out facilityValue))
+                        {
+                            facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.ALTERNATOR).levels[facilityValue].increaseAmount) / 100);
+                        }
+                        break;
+                    case BIT_TYPE.RED:
+                        if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.SEPARATOR, out facilityValue))
+                        {
+                            facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.SEPARATOR).levels[facilityValue].increaseAmount) / 100);
+                        }
+                        break;
+                    case BIT_TYPE.GREEN:
+                        if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.CENTRIFUGE, out facilityValue))
+                        {
+                            facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.CENTRIFUGE).levels[facilityValue].increaseAmount) / 100);
+                        }
+                        break;
+                    case BIT_TYPE.GREY:
+                        if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.SMELTER, out facilityValue))
+                        {
+                            facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.SMELTER).levels[facilityValue].increaseAmount) / 100);
+                        }
+                        break;
+                }
+
+                Debug.Log(_bitType + " -- " + facilityRefiningMultiplier);
+
+                int wastedResource = PlayerDataManager.GetResource(_bitType).AddResourceReturnWasted((int)(amount * refineryMultiplier * facilityRefiningMultiplier));
                 wastedResources.Add(_bitType, wastedResource);
             }
 
@@ -874,8 +914,44 @@ namespace StarSalvager
 
                     BitRemoteData remoteData = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
                         .GetBitRemoteData(resource.Key);
-                    
-                    int resourceAmount = (int) (numAtLevel * remoteData.levels[i].resources * refineryMultiplier);
+
+                    float facilityRefiningMultiplier = 1.0f;
+                    int facilityValue = 0;
+                    switch (resource.Key)
+                    {
+                        case BIT_TYPE.BLUE:
+                            if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.EVAPORATOR, out facilityValue))
+                            {
+                                facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.EVAPORATOR).levels[facilityValue].increaseAmount) / 100);
+                            }
+                            break;
+                        case BIT_TYPE.YELLOW:
+                            if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.ALTERNATOR, out facilityValue))
+                            {
+                                facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.ALTERNATOR).levels[facilityValue].increaseAmount) / 100);
+                            }
+                            break;
+                        case BIT_TYPE.RED:
+                            if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.SEPARATOR, out facilityValue))
+                            {
+                                facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.SEPARATOR).levels[facilityValue].increaseAmount) / 100);
+                            }
+                            break;
+                        case BIT_TYPE.GREEN:
+                            if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.CENTRIFUGE, out facilityValue))
+                            {
+                                facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.CENTRIFUGE).levels[facilityValue].increaseAmount) / 100);
+                            }
+                            break;
+                        case BIT_TYPE.GREY:
+                            if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.SMELTER, out facilityValue))
+                            {
+                                facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.SMELTER).levels[facilityValue].increaseAmount) / 100);
+                            }
+                            break;
+                    }
+
+                    int resourceAmount = (int) (numAtLevel * remoteData.levels[i].resources * refineryMultiplier * facilityRefiningMultiplier);
 
                     var spriteXML = TMP_SpriteMap.GetBitSprite(resource.Key, i);
                     
