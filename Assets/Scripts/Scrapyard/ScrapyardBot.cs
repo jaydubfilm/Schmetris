@@ -91,6 +91,8 @@ namespace StarSalvager
             {
                 if(attachable is Part part && part.Type == PART_TYPE.CORE && Globals.IsRecoveryBot)
                     FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
+                else if(attachable is ScrapyardPart scrapyardPart && scrapyardPart.Type == PART_TYPE.CORE && Globals.IsRecoveryBot)
+                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(scrapyardPart, PART_TYPE.RECOVERY);
                 
                 AttachNewBit(attachable.Coordinate, attachable);
             }
