@@ -318,6 +318,15 @@ namespace StarSalvager.Values
             }
         }
 
+        public void AddGearsToGetPatchPoints(int numPatchPointsToGet)
+        {
+            for (int i = 0; i < numPatchPointsToGet; i++)
+            {
+                (int, int) progress = GetPatchPointProgress();
+                ChangeGears(progress.Item2 - progress.Item1);
+            }
+        }
+
         public (int, int) GetPatchPointProgress()
         {
             int patchPointBaseCost = 100;
