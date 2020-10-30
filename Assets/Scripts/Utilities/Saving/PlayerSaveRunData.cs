@@ -27,33 +27,6 @@ namespace StarSalvager.Utilities.Saving
             new PlayerResource(BIT_TYPE.YELLOW, 0, 300, 0, 0, 0, 0)
         };
 
-
-        //TODO: Add an add/subtract function for ResourceAmount, and make this IReadOnlyDictionary<>
-        /*[JsonIgnore]
-        public Dictionary<BIT_TYPE, int> Resources => _resources;
-
-        [JsonProperty]
-        private Dictionary<BIT_TYPE, int> _resources = new Dictionary<BIT_TYPE, int>
-        {
-            {BIT_TYPE.RED, 100},
-            {BIT_TYPE.BLUE, 75},
-            {BIT_TYPE.YELLOW, 0},
-            {BIT_TYPE.GREEN, 0},
-            {BIT_TYPE.GREY, 0},
-        };
-
-        [JsonIgnore]
-        public Dictionary<BIT_TYPE, int> ResourceCapacities => _resourceCapacity;
-        [JsonProperty]
-        private Dictionary<BIT_TYPE, int> _resourceCapacity = new Dictionary<BIT_TYPE, int>
-        {
-            {BIT_TYPE.RED, 300},
-            {BIT_TYPE.BLUE, 300},
-            {BIT_TYPE.YELLOW, 300},
-            {BIT_TYPE.GREEN, 300},
-            {BIT_TYPE.GREY, 300},
-        };*/
-
         public int RationCapacity = 500;
 
         [JsonIgnore]
@@ -67,58 +40,6 @@ namespace StarSalvager.Utilities.Saving
             {COMPONENT_TYPE.BOLT, 0},
             {COMPONENT_TYPE.COIL, 0}
         };
-
-        /*[JsonIgnore]
-        public IReadOnlyDictionary<BIT_TYPE, float> MainDroneLiquidResources => _liquidResources;
-        [JsonProperty]
-        //FIXME This needs to use some sort of capacity value
-        private Dictionary<BIT_TYPE, float> _liquidResources = new Dictionary<BIT_TYPE, float>
-        {
-            {BIT_TYPE.RED, 30},
-            {BIT_TYPE.BLUE, 0},
-            {BIT_TYPE.YELLOW, 0},
-            {BIT_TYPE.GREEN, 0},
-            {BIT_TYPE.GREY, 0},
-        };
-
-        [JsonIgnore]
-        public IReadOnlyDictionary<BIT_TYPE, float> RecoveryDroneLiquidResources => _recoveryDroneLiquidResources;
-        [JsonProperty]
-        //FIXME This needs to use some sort of capacity value
-        private Dictionary<BIT_TYPE, float> _recoveryDroneLiquidResources = new Dictionary<BIT_TYPE, float>
-        {
-            {BIT_TYPE.RED, 30},
-            {BIT_TYPE.BLUE, 0},
-            {BIT_TYPE.YELLOW, 0},
-            {BIT_TYPE.GREEN, 0},
-            {BIT_TYPE.GREY, 0},
-        };
-
-        //FIXME I think that this should not be so persistent (Shouldn't need to be saved data)
-        [JsonIgnore]
-        public IReadOnlyDictionary<BIT_TYPE, int> MainDroneLiquidCapacity => _liquidCapacity;
-        [JsonProperty]
-        private Dictionary<BIT_TYPE, int> _liquidCapacity = new Dictionary<BIT_TYPE, int>
-        {
-            {BIT_TYPE.RED, 0},
-            {BIT_TYPE.BLUE, 0},
-            {BIT_TYPE.YELLOW, 0},
-            {BIT_TYPE.GREEN, 0},
-            {BIT_TYPE.GREY, 0},
-        };
-
-        //FIXME I think that this should not be so persistent (Shouldn't need to be saved data)
-        [JsonIgnore]
-        public IReadOnlyDictionary<BIT_TYPE, int> RecoveryDroneLiquidCapacity => _recoveryDroneLiquidCapacity;
-        [JsonProperty]
-        private Dictionary<BIT_TYPE, int> _recoveryDroneLiquidCapacity = new Dictionary<BIT_TYPE, int>
-        {
-            {BIT_TYPE.RED, 0},
-            {BIT_TYPE.BLUE, 0},
-            {BIT_TYPE.YELLOW, 0},
-            {BIT_TYPE.GREEN, 0},
-            {BIT_TYPE.GREY, 0},
-        };*/
 
         public List<BlockData> mainDroneBlockData = new List<BlockData>();
         public List<BlockData> recoveryDroneBlockData = new List<BlockData>();

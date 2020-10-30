@@ -84,7 +84,13 @@ namespace StarSalvager.AI
             m_horizontalMovementYLevel = transform.position.y;
             horizontalFarLeftX = -1 * Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
             horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
-            
+        }
+
+        public void SetHorizontalMovementYLevel()
+        {
+            m_horizontalMovementYLevel = transform.position.y;
+            horizontalFarLeftX = -1 * Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
+            horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
         }
 
         protected virtual void Update()
@@ -502,6 +508,14 @@ namespace StarSalvager.AI
 
         public virtual void CustomRecycle(params object[] args)
         {
+            //m_horizontalMovementYLevel = 0.0f;
+            //m_oscillationTimer = 0.0f;
+
+            //horizontalFarLeftX = 0.0f;
+            //horizontalFarRightX = 0.0f;
+
+            //m_mostRecentMovementDirection = Vector3.zero;
+
             FreezeTime = 0f;
             Disabled = false;
             AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
