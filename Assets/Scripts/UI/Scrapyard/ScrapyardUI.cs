@@ -29,17 +29,17 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required]
         private GameObject logisticsWindow;
         
-        [SerializeField, Required]
-        private GameObject saveGameWindow;
+        /*[SerializeField, Required]
+        private GameObject saveGameWindow;*/
 
         [SerializeField, Required, FoldoutGroup("Settings Menu")]
         private GameObject settingsWindow;
         [SerializeField, Required, FoldoutGroup("Settings Menu")]
         private Button resumeGameButton;
-        [SerializeField, Required, FoldoutGroup("Settings Menu")]
+        /*[SerializeField, Required, FoldoutGroup("Settings Menu")]
         private Button saveGameButton;
         [SerializeField, Required, FoldoutGroup("Settings Menu")]
-        private Button loadGameButton;
+        private Button loadGameButton;*/
         [SerializeField, Required, FoldoutGroup("Settings Menu")]
         private Button settingsButton;
         [SerializeField, Required, FoldoutGroup("Settings Menu")]
@@ -75,7 +75,6 @@ namespace StarSalvager.UI.Scrapyard
             Logistics,
             Missions,
             Settings,
-            SaveGame,
         }
         
         //============================================================================================================//
@@ -93,7 +92,7 @@ namespace StarSalvager.UI.Scrapyard
                 logisticsWindow,
                 missionsWindow,
                 settingsWindow,
-                saveGameWindow
+                //saveGameWindow
             };
             
             InitButtons();
@@ -165,7 +164,7 @@ namespace StarSalvager.UI.Scrapyard
                 _windows[(int)Window.Settings].SetActive(false);
             });
 
-            saveGameButton.onClick.AddListener(() =>
+            /*saveGameButton.onClick.AddListener(() =>
             {
                 PlayerDataManager.SavePlayerAccountData();
             });
@@ -173,7 +172,7 @@ namespace StarSalvager.UI.Scrapyard
             loadGameButton.onClick.AddListener(() =>
             {
                 throw new NotImplementedException();
-            });
+            });*/
             settingsButton.onClick.AddListener(() =>
             {
                 throw new NotImplementedException();
