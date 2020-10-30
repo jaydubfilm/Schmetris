@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c59c6b39881711a4296e83fe97d9a858, type: 3}
   m_Name: Wave_Remote_1_1
   m_EditorClassIdentifier: 
+  WaveSeed: 0
   BonusShapes:
   - m_selectionType: 0
     m_shapeName: 
@@ -38,39 +39,57 @@ MonoBehaviour:
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.2
+      m_spawnsPerScreenWidthPerMinute: 0
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 0
       m_shapeName: RedSingle
       m_category: Small
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.4
+      m_spawnsPerScreenWidthPerMinute: 0
+      m_maxOut: 0
+      spawningMultiplier: 1
     - m_selectionType: 0
       m_shapeName: GreySingle
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.4
+      m_spawnsPerScreenWidthPerMinute: 0
+      m_maxOut: 0
+      spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
   maxDrops: 3
   RDSEndOfWaveLoot:
   - rdsData: 2
     type: 1
+    amount: 0
     level: 0
     probability: 0
+    isGearRange: 0
+    gearValue: 0
     gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 1
     isAlwaysSpawn: 1
   - rdsData: 2
     type: 7
+    amount: 0
     level: 1
     probability: 0
+    isGearRange: 0
+    gearValue: 0
     gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 1
     isAlwaysSpawn: 1
   - rdsData: 2
     type: 7
+    amount: 0
     level: 0
     probability: 0
+    isGearRange: 0
+    gearValue: 0
     gearDropRange: {x: 0, y: 0}
     isUniqueSpawn: 1
     isAlwaysSpawn: 1

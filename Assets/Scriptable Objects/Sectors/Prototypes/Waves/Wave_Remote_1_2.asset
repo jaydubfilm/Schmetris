@@ -12,24 +12,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c59c6b39881711a4296e83fe97d9a858, type: 3}
   m_Name: Wave_Remote_1_2
   m_EditorClassIdentifier: 
+  WaveSeed: 0
+  BonusShapes: []
   StageRemoteData:
   - m_stageDuration: 15
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
+    m_stageType: 0
+    m_spawningObstacleMultiplier: 1
+    m_centerChannelWidth: 0.5
     m_stageObstacleData:
     - m_selectionType: 1
       m_shapeName: Small1
       m_category: Medium
-      m_asteroidCountPerMinute: 100
-      m_rotation: Random
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0
+      m_spawnsPerScreenWidthPerMinute: 0
+      m_maxOut: 0
+      spawningMultiplier: 1
+    m_stageColumnGroupObstacleData: []
   - m_stageDuration: 15
     m_stageBlendPeriod: 5
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
+    m_stageType: 0
+    m_spawningObstacleMultiplier: 1
+    m_centerChannelWidth: 0.5
     m_stageObstacleData:
     - m_selectionType: 1
       m_shapeName: Small1
       m_category: Large
-      m_asteroidCountPerMinute: 200
-      m_rotation: Random
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0
+      m_spawnsPerScreenWidthPerMinute: 0
+      m_maxOut: 0
+      spawningMultiplier: 1
+    m_stageColumnGroupObstacleData: []
+  maxDrops: 0
+  RDSEndOfWaveLoot: []
