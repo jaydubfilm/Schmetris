@@ -2,6 +2,7 @@
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Missions;
+using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.Saving;
 using System;
 using System.Collections.Generic;
@@ -300,6 +301,7 @@ namespace StarSalvager.Values
 
             PlayerRunData = data;
             //MissionManager.LoadMissionData();
+            PlayerDataManager.SavePlayerAccountData();
         }
 
         public void ChangeGears(int amount)

@@ -661,6 +661,7 @@ namespace StarSalvager.Utilities.Saving
             CurrentSaveSlotIndex = saveSlotIndex;
             PlayerAccountData = Files.ImportPlayerSaveAccountData(saveSlotIndex);
             MissionManager.LoadMissionData();
+            SavePlayerAccountData();
         }
 
         public static void ResetPlayerAccountData()
