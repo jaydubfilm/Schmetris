@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using UnityEngine;
 using StarSalvager.Values;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Factories;
+using StarSalvager.Factories.Data;
 
 namespace StarSalvager.Utilities.Saving
 {
@@ -137,50 +139,15 @@ namespace StarSalvager.Utilities.Saving
 
         [JsonIgnore]
         public LevelRingNodeTree LevelRingNodeTree = new LevelRingNodeTree();
-        [JsonIgnore]
+        [JsonProperty]
         private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>
         {
-            new Vector2Int(2, 0),
-            new Vector2Int(1, 2),
-            new Vector2Int(4, 0),
-            new Vector2Int(3, 4),
-            new Vector2Int(5, 4),
-            new Vector2Int(6, 2),
-            new Vector2Int(7, 2),
-            new Vector2Int(8, 3),
-            new Vector2Int(10, 4),
-            new Vector2Int(9, 10),
-            new Vector2Int(11, 6),
-            new Vector2Int(12, 11),
-            new Vector2Int(13, 8),
-            new Vector2Int(15, 9),
-            new Vector2Int(14, 15),
-            new Vector2Int(14, 15),
-            new Vector2Int(16, 11),
-            new Vector2Int(17, 13),
-            new Vector2Int(18, 17),
-            new Vector2Int(19, 14),
-            new Vector2Int(20, 19),
-            new Vector2Int(21, 16),
-            new Vector2Int(22, 16),
-            new Vector2Int(23, 17),
-            new Vector2Int(24, 18),
-            new Vector2Int(25, 20),
-            new Vector2Int(26, 22),
-            new Vector2Int(26, 24),
+
         };
 
-        [JsonIgnore]
         public List<int> ShortcutNodes = new List<int>()
         {
-            4,
-            6,
-            8,
-            15,
-            16,
-            17,
-            19,
-            24,
+
         };
 
         public List<int> PlayerPreviouslyCompletedNodes = new List<int>()
@@ -190,9 +157,70 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public PlayerSaveRunData()
+        public void SetupMap(List<Vector2Int> levelRingConnectsionsJson = null, List<int> shortcutNodes = null)
         {
+            if (levelRingConnectsionsJson != null)
+            {
+                LevelRingConnectionsJson.AddRange(levelRingConnectsionsJson);
+            }
+            if (shortcutNodes != null)
+            {
+                ShortcutNodes.AddRange(shortcutNodes);
+            }
+            
             LevelRingNodeTree.ReadInNodeConnectionData(LevelRingConnectionsJson);
+        }
+
+        public void FacilityEffectsOnNewAccount()
+        {
+            var facilityTypes = Enum.GetValues(typeof(FACILITY_TYPE)).Cast<FACILITY_TYPE>().ToList();
+
+            for (int i = 0; i < facilityTypes.Count; i++)
+            {
+                if (PlayerDataManager.CheckHasFacility(facilityTypes[i]))
+                {
+                    int level = PlayerDataManager.GetFacilityRanks()[facilityTypes[i]];
+                    FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(facilityTypes[i]);
+                    int increaseAmount = remoteData.levels[level].increaseAmount;
+
+                    switch (facilityTypes[i])
+                    {
+                        case FACILITY_TYPE.FREEZER:
+                            RationCapacity += increaseAmount;
+                            break;
+                        case FACILITY_TYPE.STORAGEELECTRICITY:
+                            GetResource(BIT_TYPE.YELLOW).AddResourceCapacity(increaseAmount);
+                            break;
+                        case FACILITY_TYPE.STORAGEFUEL:
+                            GetResource(BIT_TYPE.RED).AddResourceCapacity(increaseAmount);
+                            break;
+                        case FACILITY_TYPE.STORAGEPLASMA:
+                            GetResource(BIT_TYPE.GREEN).AddResourceCapacity(increaseAmount);
+                            break;
+                        case FACILITY_TYPE.STORAGESCRAP:
+                            GetResource(BIT_TYPE.GREY).AddResourceCapacity(increaseAmount);
+                            break;
+                        case FACILITY_TYPE.STORAGEWATER:
+                            GetResource(BIT_TYPE.BLUE).AddResourceCapacity(increaseAmount);
+                            break;
+                        case FACILITY_TYPE.STARTINGELECTRICITY:
+                            GetResource(BIT_TYPE.YELLOW).AddResource(increaseAmount);
+                            break;
+                        case FACILITY_TYPE.STARTINGFUEL:
+                            GetResource(BIT_TYPE.RED).AddResource(increaseAmount);
+                            break;
+                        case FACILITY_TYPE.STARTINGPLASMA:
+                            GetResource(BIT_TYPE.GREEN).AddResource(increaseAmount);
+                            break;
+                        case FACILITY_TYPE.STARTINGSCRAP:
+                            GetResource(BIT_TYPE.GREY).AddResource(increaseAmount);
+                            break;
+                        case FACILITY_TYPE.STARTINGWATER:
+                            GetResource(BIT_TYPE.BLUE).AddResource(increaseAmount);
+                            break;
+                    }
+                }
+            }
         }
 
         //============================================================================================================//

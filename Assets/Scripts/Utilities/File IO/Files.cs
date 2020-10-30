@@ -217,6 +217,8 @@ namespace StarSalvager.Utilities.FileIO
                     data.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.levels.Count - 1);
                 }
 
+                data.ResetPlayerRunData();
+
                 return data;
             }
 
@@ -226,6 +228,8 @@ namespace StarSalvager.Utilities.FileIO
             };
 
             var loaded = JsonConvert.DeserializeObject<PlayerSaveAccountData>(File.ReadAllText(PlayerAccountSavePaths[saveSlotIndex]), settings);
+
+            loaded.PlayerRunData.SetupMap();
 
             return loaded;
         }

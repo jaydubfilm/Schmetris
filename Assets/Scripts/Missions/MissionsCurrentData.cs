@@ -1,8 +1,10 @@
-﻿using StarSalvager.Factories;
+﻿using Newtonsoft.Json;
+using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,25 +12,26 @@ using UnityEngine;
 
 namespace StarSalvager.Missions
 {
+    [Serializable]
     public class MissionsCurrentData
     {
         //TODO: Switch this set of lists into a dictionary with key = type, value = list<mission>
-        [Newtonsoft.Json.JsonProperty]
+        [JsonProperty]
         private List<MissionData> NotStartedMissionData;
-        [Newtonsoft.Json.JsonProperty]
+        [JsonProperty]
         private List<MissionData> CurrentMissionData;
-        [Newtonsoft.Json.JsonProperty]
+        [JsonProperty]
         private List<MissionData> CompletedMissionData;
-        [Newtonsoft.Json.JsonProperty]
+        [JsonProperty]
         private List<MissionData> CurrentTrackedMissionData;
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public List<Mission> NotStartedMissions;
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public List<Mission> CurrentMissions;
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public List<Mission> CompletedMissions;
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public List<Mission> CurrentTrackedMissions;
 
         public MissionsCurrentData()

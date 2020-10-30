@@ -281,8 +281,15 @@ namespace StarSalvager.UI
         {
             int curIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
 
-            List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(curIndex).childNodes;
-            betweenWavesContinueButton.gameObject.SetActive(childNodesAccessible.Count > 0);
+            if (PlayerDataManager.GetLevelRingNodeTree().TryFindNode(curIndex) == null)
+            {
+                betweenWavesContinueButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(curIndex).childNodes;
+                betweenWavesContinueButton.gameObject.SetActive(childNodesAccessible.Count > 0);
+            }
 
             m_betweenWavesUI.SetActive(active);
         }
