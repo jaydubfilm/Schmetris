@@ -15,6 +15,8 @@ namespace StarSalvager.UI
     public class Alert : Singleton<Alert>
     {
         public static bool Displayed => Instance.windowObject.activeInHierarchy;
+
+        [SerializeField, Required] private TMP_Text versionText;
         
         [SerializeField, Required]
         private GameObject windowObject;
@@ -50,6 +52,8 @@ namespace StarSalvager.UI
         
         private void Start()
         {
+            versionText.text = $"v{Application.version}";
+            
             _positiveButtonText = positiveButton.GetComponentInChildren<TMP_Text>();
             _negativeButtonText = negativeButton.GetComponentInChildren<TMP_Text>();
             _neutralButtonText = neutralButton.GetComponentInChildren<TMP_Text>();

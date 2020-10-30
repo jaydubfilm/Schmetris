@@ -69,6 +69,9 @@ namespace StarSalvager
 
         private void LateUpdate()
         {
+            if (LevelManager.Instance.BotDead)
+                return;
+            
             if (!_hasActiveEnemies && m_enemies.Count > 0 && !LevelManager.Instance.EndWaveState)
             {
                 _hasActiveEnemies = true;
