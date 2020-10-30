@@ -78,7 +78,7 @@ namespace StarSalvager.Prototype
         //OutroScene Functions
         //====================================================================================================================//
 
-        private void ShowFinalScreen()
+        private static void ShowFinalScreen()
         {
             Alert.ShowDancers(true);
             AudioController.PlayMusic(MUSIC.GAME_OVER, true);
@@ -92,11 +92,13 @@ namespace StarSalvager.Prototype
                     GameUI.Instance.ShowRecoveryBanner(false);
                     Globals.CurrentWave = 0;
                     GameTimer.SetPaused(false);
+                    
                     PlayerDataManager.ResetPlayerRunData();
                     PlayerDataManager.SavePlayerAccountData();
-                    PlayerDataManager.ClearCurrentSaveFile();
+                    
                     SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
                 });
+            Alert.SetLineHeight(90f);
         }
         
 

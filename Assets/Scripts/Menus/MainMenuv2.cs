@@ -17,6 +17,7 @@ namespace StarSalvager.UI
     {
         private enum WINDOW
         {
+            NONE = -1,
             MAIN_MENU,
             ACCOUNT,
             ACCOUNT_MENU,
@@ -131,12 +132,17 @@ namespace StarSalvager.UI
         
         //====================================================================================================================//
         
-        private WINDOW _currentWindow = WINDOW.MAIN_MENU;
-        private WINDOW _previousWindow = WINDOW.MAIN_MENU;
+        private WINDOW _currentWindow = WINDOW.NONE;
+        private WINDOW _previousWindow = WINDOW.NONE;
         private WindowData[] _windowData;
 
         //Unity Functions
         //====================================================================================================================//
+
+        private void OnEnable()
+        {
+            RefreshWindow(_currentWindow);
+        }
 
         private void Start()
         {
@@ -146,6 +152,28 @@ namespace StarSalvager.UI
 
         //MainMenuV2 Functions
         //====================================================================================================================//
+
+        private void RefreshWindow(WINDOW window)
+        {
+            switch (window)
+            {
+                case WINDOW.NONE:
+                case WINDOW.MAIN_MENU:
+                case WINDOW.SETTINGS:
+                    break;
+                case WINDOW.ACCOUNT:
+                    SetupAccountWindow();
+                    break;
+                case WINDOW.ACCOUNT_MENU:
+                    SetupAccountMenuWindow();
+                    break;
+                case WINDOW.RUN:
+                    SetupRunMenuWindow();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(window), window, null);
+            }
+        }
 
         #region Setup Windows
 
@@ -245,7 +273,6 @@ namespace StarSalvager.UI
         {
             playButton.onClick.AddListener(() =>
             {
-                SetupAccountWindow();
                 OpenWindow(WINDOW.ACCOUNT);
             });
             settingsButton.onClick.AddListener(() =>
@@ -302,7 +329,6 @@ namespace StarSalvager.UI
         {
             changeAccountButton.onClick.AddListener(() =>
             {
-                SetupAccountWindow();
                 OpenWindow(WINDOW.ACCOUNT);
             });
             
@@ -313,7 +339,6 @@ namespace StarSalvager.UI
             accountMenuQuitButton.onClick.AddListener(Quit);
             newRunButton.onClick.AddListener(() =>
             {
-                SetupRunMenuWindow();
                 OpenWindow(WINDOW.RUN);
             });
             continueRunButton.onClick.AddListener(() =>
@@ -372,7 +397,6 @@ namespace StarSalvager.UI
                     case GAME_TYPE.CLASSIC:
                         
                         PlayerDataManager.SetRunStarted();
-                        SetupAccountMenuWindow();
                         OpenWindow(WINDOW.ACCOUNT_MENU);
                         IntroScene.gameObject.SetActive(true);
                         gameObject.SetActive(false);
@@ -433,11 +457,13 @@ namespace StarSalvager.UI
                     {Type = WINDOW.SETTINGS, WindowObject = settingsWindowObject, CloseOtherWindows = false}, //SETTINGS
             };
 
-            OpenWindow(_currentWindow);
+            OpenWindow(WINDOW.MAIN_MENU);
         }
 
         private void OpenWindow(WINDOW openWindow)
         {
+            
+            RefreshWindow(openWindow);
 
             var windowData = _windowData[(int) openWindow];
 
