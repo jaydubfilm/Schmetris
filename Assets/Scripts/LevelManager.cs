@@ -24,6 +24,7 @@ using StarSalvager.Utilities.Particles;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Saving;
 using System;
+using StarSalvager.Prototype;
 
 namespace StarSalvager
 {
@@ -32,12 +33,15 @@ namespace StarSalvager
         //Properties
         //====================================================================================================================//
 
+        [SerializeField, Required, BoxGroup("Prototyping")]
+        private OutroScene OutroScene;
+        
         #region Properties
 
         private List<Bot> m_bots;
         public Bot BotObject => m_bots[0];
 
-        [SerializeField]
+        [SerializeField, Space(10f)]
         private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
@@ -846,10 +850,12 @@ namespace StarSalvager
             }
             else
             {
-                Alert.ShowDancers(true);
-                //TODO Need to play ending music here
-                AudioController.PlayMusic(MUSIC.GAME_OVER, true);
-                m_levelManagerUI.ShowSummaryScreen("GAME OVER",
+                //Alert.ShowDancers(true);
+                //AudioController.PlayMusic(MUSIC.GAME_OVER, true);
+                
+                OutroScene.gameObject.SetActive(true);
+                
+                /*m_levelManagerUI.ShowSummaryScreen("GAME OVER",
                     "You failed to recover your bot. Click to return to main menu.",
                     () =>
                     {
@@ -862,7 +868,7 @@ namespace StarSalvager
                         PlayerDataManager.SavePlayerAccountData();
                         PlayerDataManager.ClearCurrentSaveFile();
                         SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
-                    });
+                    });*/
             }
         }
 

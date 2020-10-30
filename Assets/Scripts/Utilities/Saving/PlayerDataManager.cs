@@ -11,6 +11,7 @@ using UnityEngine;
 using StarSalvager.Factories;
 using UnityEditor;
 using StarSalvager.Factories.Data;
+using StarSalvager.Utilities.UI;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.Utilities.Saving
@@ -775,7 +776,7 @@ namespace StarSalvager.Utilities.Saving
         //====================================================================================================================//
 
 
-        public static string GetSummaryString()
+        public static string GetAccountSummaryString()
         {
             string summaryText = string.Empty;
             summaryText += $"Total Gears: {GetGears()}, this run: {GetGearsThisRun()}\n";
@@ -800,6 +801,37 @@ namespace StarSalvager.Utilities.Saving
                 foreach (var keyValuePair in GetEnemiesKilled())
                 {
                     summaryText += $"\t{keyValuePair.Key}: {keyValuePair.Value}, this run: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
+                }
+            }
+
+            return summaryText;
+        }
+        
+        public static string GetRunSummaryString()
+        {
+            string summaryText = string.Empty;
+            summaryText += $"Total Gears: {GetGearsThisRun()}\n";
+            summaryText += $"Total Core Deaths: {GetCoreDeathsThisRun()}\n";
+            summaryText += $"Total Repairs Done: {GetRepairsDoneThisRun()}\n";
+
+
+            if (GetBitConnections().Count > 0)
+            {
+                summaryText += ("<b>Bits Connected:</b>\n");
+
+                foreach (var keyValuePair in GetBitConnections())
+                {
+                    summaryText += $"\t{TMP_SpriteMap.GetBitSprite(keyValuePair.Key, 0)}: {GetBitConnectionsThisRun(keyValuePair.Key)}\n";
+                }
+            }
+
+            if (GetEnemiesKilled().Count > 0)
+            {
+                summaryText += ("<b>Enemies Killed:</b>\n");
+
+                foreach (var keyValuePair in GetEnemiesKilled())
+                {
+                    summaryText += $"\t{keyValuePair.Key}: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
                 }
             }
 

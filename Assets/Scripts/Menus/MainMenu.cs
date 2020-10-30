@@ -12,7 +12,6 @@ using StarSalvager.Factories;
 
 using CameraController = StarSalvager.Cameras.CameraController;
 using System.Collections;
-using System.Linq;
 using StarSalvager.Audio;
 using System.Collections.Generic;
 using StarSalvager.Utilities.FileIO;
@@ -21,6 +20,7 @@ using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.UI
 {
+    [Obsolete("Use MainMenuv2 instead")]
     //FIXME Once the navigation style is decided, we can better solidify the data structure for the menus
     //FIXME All windows can be combined to reduce total images used
     public class MainMenu : MonoBehaviour
@@ -430,7 +430,7 @@ namespace StarSalvager.UI
             
             if (PlayerDataManager.HasPlayerAccountData())
             {
-                var newString = PlayerDataManager.GetSummaryString();
+                var newString = PlayerDataManager.GetAccountSummaryString();
 
                 Alert.ShowAlert("Account Tracking Statistics", newString, "Ok", null);
             }

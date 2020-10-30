@@ -1,6 +1,7 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
+using StarSalvager.Prototype;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
