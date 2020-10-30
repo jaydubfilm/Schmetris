@@ -14,7 +14,7 @@ namespace StarSalvager.Utilities.Saving
     {
         //============================================================================================================//
 
-        public bool runStarted = false;
+        public bool runStarted;
 
         [JsonProperty]
         private List<PlayerResource> _playerResources = new List<PlayerResource>() {

@@ -139,6 +139,26 @@ namespace StarSalvager.Utilities.FileIO
         //====================================================================================================================//
 
         #region Player Data
+        
+        public static bool DoesSaveExist(int index)
+        {
+            if (!Directory.Exists(REMOTE_DIRECTORY))
+                return false;
+
+            return File.Exists(PlayerAccountSavePaths[index]);
+        }
+        public static bool TryGetPlayerSaveData(int index, out PlayerSaveAccountData accountData)
+        {
+            accountData = null;
+            var result = DoesSaveExist(index);
+
+            if (!result)
+                return false;
+
+            accountData = ImportPlayerSaveAccountData(index);
+
+            return true;
+        }
 
         public static int GetNextAvailableSaveSlot()
         {
@@ -200,8 +220,10 @@ namespace StarSalvager.Utilities.FileIO
                 return data;
             }
 
-            JsonSerializerSettings settings = new JsonSerializerSettings();
-            settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
+            JsonSerializerSettings settings = new JsonSerializerSettings
+            {
+                ObjectCreationHandling = ObjectCreationHandling.Replace
+            };
 
             var loaded = JsonConvert.DeserializeObject<PlayerSaveAccountData>(File.ReadAllText(PlayerAccountSavePaths[saveSlotIndex]), settings);
 
@@ -217,6 +239,18 @@ namespace StarSalvager.Utilities.FileIO
 
             return export;
         }
+
+        public static void DestroyPlayerSaveFile(int index)
+        {
+            if (!Directory.Exists(REMOTE_DIRECTORY))
+                return;
+            
+            if(!File.Exists(PlayerAccountSavePaths[index]))
+                return;
+            
+            File.Delete(PlayerAccountSavePaths[index]);
+        }
+        
         #endregion //Player Data
 
         //Mission Data

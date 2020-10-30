@@ -280,9 +280,12 @@ namespace StarSalvager.Values
         public void ResetPlayerRunData()
         {
             int randomIndex = UnityEngine.Random.Range(0, 5);
-            
-            PlayerSaveRunData data = new PlayerSaveRunData(LevelRingConnectionsJson[randomIndex], ShortcutNodes[randomIndex]);
-            data.PlaythroughID = Guid.NewGuid().ToString();
+
+            PlayerSaveRunData data = new PlayerSaveRunData(LevelRingConnectionsJson[randomIndex], ShortcutNodes[randomIndex])
+            {
+                PlaythroughID = Guid.NewGuid().ToString(),
+                runStarted = false
+            };
 
             GearsAtRunBeginning = Gears;
             CoreDeathsAtRunBeginning = CoreDeaths;

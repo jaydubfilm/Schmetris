@@ -20,7 +20,7 @@ MonoBehaviour:
   bitSpritePath: Assets/Sprites/Bits
   PartPaths:
   - Type: 0
-    path: Assets/Sprites/Parts/CORE/v1
+    path: Assets/Sprites/Parts/CORE/v2
   - Type: 17
     path: Assets/Sprites/Parts/REFINER/v1
   - Type: 18
@@ -36,7 +36,7 @@ MonoBehaviour:
   - Type: 27
     path: Assets/Sprites/Parts/STACKER/v1
   - Type: 33
-    path: Assets/Sprites/Parts/RECOVERY/V1
+    path: Assets/Sprites/Parts/RECOVERY/v2
   BitPaths:
   - Type: 1
     path: Assets/Sprites/Bits/BLUE/v1

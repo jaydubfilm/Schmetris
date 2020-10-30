@@ -805,5 +805,10 @@ namespace StarSalvager.Utilities.Saving
 
             return summaryText;
         }
+
+        public static void DestroyAccountData()
+        {
+            PlayerAccountData = null;
+        }
     }
 }
