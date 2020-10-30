@@ -41,6 +41,7 @@ namespace StarSalvager.Utilities
             string.Concat("add ", "component ", "[COMPONENT_TYPE | all] ", "[uint]").ToUpper(),
             string.Concat("add ", "gears ", "[uint]").ToUpper(),
             string.Concat("add ", "liquid ", "[BIT_TYPE | all] ", "[float]").ToUpper(),
+            string.Concat("add ", "patchpoints ", "[uint]").ToUpper(),
             string.Concat("add ", "storage ", "parts ", "[PART_TYPE] ", "[Amount:int]").ToUpper(),
             string.Concat("add ", "storage ", "components ", "[COMPONENT_TYPE] ", "[Amount:int]").ToUpper(),
             "\n",
@@ -374,6 +375,16 @@ namespace StarSalvager.Utilities
                     }
 
                     PlayerDataManager.OnValuesChanged?.Invoke();
+                    break;
+                case "patchpoints":
+                    if (!int.TryParse(split[2], out intAmount))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
+                    }
+                    
+                    //TODO Add Patchpoints here
+                    
                     break;
                 case "storage":
                     if (!int.TryParse(split[4], out var addAmount))
