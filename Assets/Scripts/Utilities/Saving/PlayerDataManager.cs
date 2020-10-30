@@ -481,6 +481,13 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
+        public static void AddGearsToGetPatchPoints(int numPatchPointsToGet)
+        {
+            PlayerAccountData.AddGearsToGetPatchPoints(numPatchPointsToGet);
+
+            OnValuesChanged?.Invoke();
+        }
+
         public static int GetCoreDeaths()
         {
             return PlayerAccountData.CoreDeaths;
