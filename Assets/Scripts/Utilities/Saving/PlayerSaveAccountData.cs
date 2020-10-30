@@ -286,6 +286,7 @@ namespace StarSalvager.Values
                 PlaythroughID = Guid.NewGuid().ToString(),
                 runStarted = false
             };
+            data.FacilityEffectsOnNewAccount();
 
             GearsAtRunBeginning = Gears;
             CoreDeathsAtRunBeginning = CoreDeaths;
