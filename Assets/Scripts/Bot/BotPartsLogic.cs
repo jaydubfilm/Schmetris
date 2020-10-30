@@ -102,8 +102,9 @@ namespace StarSalvager
 
         //==============================================================================================================//
 
-        private Dictionary<Part, bool> _playingSounds;
+        private Dictionary<FACILITY_TYPE, int> _facilityImprovements;
 
+        private Dictionary<Part, bool> _playingSounds;
 
         private Dictionary<Part, float> _projectileTimers;
         private Dictionary<Part, ShieldData> _shields;
@@ -166,6 +167,8 @@ namespace StarSalvager
 
             var usedResourceTypes = new List<BIT_TYPE>();
             if(!Globals.UsingTutorial) usedResourceTypes.Add(BIT_TYPE.BLUE);
+            
+            UpdateFacilityData();
 
             CheckIfShieldShouldRecycle();
             CheckIfFlashIconShouldRecycle();
@@ -280,6 +283,8 @@ namespace StarSalvager
                     case PART_TYPE.STORE:
                         if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
+                            value = Mathf.RoundToInt(value * GetFacilityImprovement(FACILITY_TYPE.CONTAINERIMPROVE));
+                            
                             liquidCapacities[BIT_TYPE.RED] += value;
                             liquidCapacities[BIT_TYPE.GREEN] += value;
                             liquidCapacities[BIT_TYPE.GREY] += value;
@@ -288,24 +293,32 @@ namespace StarSalvager
                     case PART_TYPE.STORERED:
                         if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
+                            value = Mathf.RoundToInt(value * GetFacilityImprovement(FACILITY_TYPE.CONTAINERIMPROVE));
+                            
                             liquidCapacities[BIT_TYPE.RED] += value;
                         }
                         break;
                     case PART_TYPE.STOREGREEN:
                         if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
+                            value = Mathf.RoundToInt(value * GetFacilityImprovement(FACILITY_TYPE.CONTAINERIMPROVE));
+                            
                             liquidCapacities[BIT_TYPE.GREEN] += value;
                         }
                         break;
                     case PART_TYPE.STOREGREY:
                         if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
+                            value = Mathf.RoundToInt(value * GetFacilityImprovement(FACILITY_TYPE.CONTAINERIMPROVE));
+                            
                             liquidCapacities[BIT_TYPE.GREY] += value;
                         }
                         break;
                     case PART_TYPE.STOREYELLOW:
                         if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
+                            value = Mathf.RoundToInt(value * GetFacilityImprovement(FACILITY_TYPE.CONTAINERIMPROVE));
+                            
                             liquidCapacities[BIT_TYPE.YELLOW] += value;
                         }
                         break;
@@ -402,28 +415,6 @@ namespace StarSalvager
                     else
                     {
                         resourceValue = ProcessBit(targetBit);
-                        /*var addAmount = FactoryManager.Instance
-                            .GetFactory<BitAttachableFactory>().GetBitRemoteData(targetBit.Type).levels[targetBit.level]
-                            .resources;
-
-                        PlayerPersistentData.PlayerData.AddLiquidResource(partRemoteData.burnType, addAmount, bot.IsRecoveryDrone);
-
-                        //If we want to process a bit, we want to remove it from the attached list while its processed
-                        bot.MarkAttachablePendingRemoval(targetBit);
-                        
-                        //TODO May want to play around with the order of operations here
-                        StartCoroutine(RefineBitCoroutine(targetBit, 1.6f,
-                            () =>
-                        {
-                            bot.DestroyAttachable<Bit>(targetBit);
-                        }));
-
-
-
-                        resourceValue = addAmount;
-                        SessionDataProcessor.Instance.LiquidProcessed(targetBit.Type, addAmount);
-                        AudioController.PlaySound(SOUND.BIT_REFINED);
-                        bot.ForceCheckMagnets();*/
                     }
 
                 }
@@ -479,7 +470,7 @@ namespace StarSalvager
                         else
                             _coreCoolTimer = 0;
 
-                        coreHeat -= coolSpeed * Time.deltaTime;
+                        coreHeat -= coolSpeed * GetFacilityImprovement(FACILITY_TYPE.COOLING) * Time.deltaTime;
 
                         if (coreHeat < 0)
                         {
@@ -524,6 +515,7 @@ namespace StarSalvager
                         resourceValue -= resoucesConsumed;
 
                         var repairAmount = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Heal);
+                        repairAmount *= GetFacilityImprovement(FACILITY_TYPE.REPAIRERIMPROVE);
                         repairAmount *= GetBoostValue(PART_TYPE.BOOSTRATE, part);
 
                         //FIXME This will need some sort of time cooldown
@@ -595,7 +587,8 @@ namespace StarSalvager
 
                             if (resourceValue > 0)
                             {
-                                resoucesConsumed = levelData.burnRate;
+                                resoucesConsumed = levelData.burnRate *
+                                                   GetFacilityImprovement(FACILITY_TYPE.AMMODISCOUNT);
                                 resourceValue -= resoucesConsumed;
                             }
                         }
@@ -659,7 +652,8 @@ namespace StarSalvager
 
                             if (resourceValue > 0)
                             {
-                                resoucesConsumed = levelData.burnRate;
+                                resoucesConsumed = levelData.burnRate *
+                                                   GetFacilityImprovement(FACILITY_TYPE.AMMODISCOUNT);
                                 resourceValue -= resoucesConsumed;
                             }
                         }
@@ -963,7 +957,7 @@ namespace StarSalvager
             //Set the cooldown time
             if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float cooldown))
             {
-                _bombTimers[part] = cooldown;
+                _bombTimers[part] = cooldown * GetFacilityImprovement(FACILITY_TYPE.COOLDOWNDECREASE);
             }
 
             //Damage all the enemies
@@ -995,7 +989,7 @@ namespace StarSalvager
             //Set the cooldown time
             if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float cooldown))
             {
-                _bombTimers[part] = cooldown;
+                _bombTimers[part] = cooldown* GetFacilityImprovement(FACILITY_TYPE.COOLDOWNDECREASE);
             }
 
             partLevelData.TryGetValue(DataTest.TEST_KEYS.Radius, out int radius);
@@ -1297,7 +1291,7 @@ namespace StarSalvager
                     maxBoost = mult;
             }
 
-            return maxBoost;
+            return maxBoost * GetFacilityImprovement(FACILITY_TYPE.BOOSTIMPROVE);
         }
 
         private float GetDefenseBoost(Part part)
@@ -1312,7 +1306,8 @@ namespace StarSalvager
                 FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
 
 
-            return partRemoteData.levels[part.level].GetDataValue<float>(DataTest.TEST_KEYS.Absorb);
+            return partRemoteData.levels[part.level].GetDataValue<float>(DataTest.TEST_KEYS.Absorb) *
+                   GetFacilityImprovement(FACILITY_TYPE.BOOSTIMPROVE);
         }
 
         //Checking for recycled extras
@@ -1367,6 +1362,50 @@ namespace StarSalvager
             CheckIfBombsShouldRecycle();
             
             _parts.Clear();
+        }
+
+        //====================================================================================================================//
+
+        private void UpdateFacilityData()
+        {
+            _facilityImprovements =
+                new Dictionary<FACILITY_TYPE, int>(
+                    (IDictionary<FACILITY_TYPE, int>) PlayerDataManager.GetFacilityRanks());
+        }
+
+        private float GetFacilityImprovement(FACILITY_TYPE facilityType)
+        {
+            if (_facilityImprovements.IsNullOrEmpty())
+                return 1f;
+
+            if (!_facilityImprovements.TryGetValue(facilityType, out var level))
+                return 1f;
+
+            switch (facilityType)
+            {
+                //----------------------------------------------------------------------------------------------------//
+                case FACILITY_TYPE.COOLDOWNDECREASE:
+                    return 1f - (0.2f * level);
+                case FACILITY_TYPE.COOLING:
+                    return 1f + (0.2f * level);
+                //----------------------------------------------------------------------------------------------------//
+                case FACILITY_TYPE.HULLSTRENGTH:
+                    return 1f + (0.25f * level);
+                //----------------------------------------------------------------------------------------------------//
+                case FACILITY_TYPE.ROTATESPEEDINCREASE:
+                case FACILITY_TYPE.CONTAINERIMPROVE:
+                case FACILITY_TYPE.BOOSTIMPROVE:
+                case FACILITY_TYPE.REPAIRERIMPROVE:
+                    return 1f + (0.1f * level);
+                //----------------------------------------------------------------------------------------------------//
+                case FACILITY_TYPE.AMMODISCOUNT:
+                    return 1f - (0.05f * level);
+                //----------------------------------------------------------------------------------------------------//
+                case FACILITY_TYPE.COREREPAIRSREGEN:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(facilityType), facilityType, null);
+            }
         }
         
         //============================================================================================================//
