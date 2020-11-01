@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WaveRemoteData:
   - {fileID: 11400000, guid: 18559367f3ec34b7b98c984416e9d6e9, type: 2}
-  - {fileID: 11400000, guid: 9a4d60bebe7b14a30beaf0d59d5e5295, type: 2}
-  - {fileID: 11400000, guid: c5c51a53021694f11a3fcfa5f9d619ab, type: 2}
+  - {fileID: 11400000, guid: 18559367f3ec34b7b98c984416e9d6e9, type: 2}
+  - {fileID: 11400000, guid: 18559367f3ec34b7b98c984416e9d6e9, type: 2}
   - {fileID: 11400000, guid: f29cbff2aaa594fa59f7057df5e69199, type: 2}
   - {fileID: 11400000, guid: bc4e210b66a5e4c6c8311e6c55f771c3, type: 2}

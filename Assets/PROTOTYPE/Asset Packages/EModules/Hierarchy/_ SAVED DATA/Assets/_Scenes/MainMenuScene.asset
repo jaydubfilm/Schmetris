@@ -34,85 +34,29 @@ MonoBehaviour:
     - i1: -96205052
       i2: 1831848149
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: 661791289
+      i2: 1845069059
     list:
-    - i1: -1
-      i2: -1
+    - i1: 661791289
+      i2: 1845069059
   - activeObject:
-      i1: 355557995
-      i2: 0
+      i1: -464838314
+      i2: 1866823308
     list:
-    - i1: 355557995
-      i2: 0
+    - i1: -464838314
+      i2: 1866823308
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -1262517752
+      i2: 189985321
     list:
-    - i1: -1
-      i2: -1
+    - i1: -1262517752
+      i2: 189985321
   - activeObject:
-      i1: 355557995
-      i2: 0
+      i1: -1262517752
+      i2: 189985321
     list:
-    - i1: 355557995
-      i2: 0
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: 355557995
-      i2: 0
-    list:
-    - i1: 355557995
-      i2: 0
-  - activeObject:
-      i1: 244293250
-      i2: 0
-    list:
-    - i1: 244293250
-      i2: 0
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: 244293250
-      i2: 0
-    list:
-    - i1: 244293250
-      i2: 0
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: 244293250
-      i2: 0
-    list:
-    - i1: 244293250
-      i2: 0
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-    - i1: -1
-      i2: -1
+    - i1: -1262517752
+      i2: 189985321
   - activeObject:
       i1: -1
       i2: -1
@@ -132,11 +76,11 @@ MonoBehaviour:
     - i1: -1
       i2: -1
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -464838314
+      i2: 1866823308
     list:
-    - i1: -1
-      i2: -1
+    - i1: -464838314
+      i2: 1866823308
   - activeObject:
       i1: -1
       i2: -1
@@ -156,23 +100,63 @@ MonoBehaviour:
     - i1: -1
       i2: -1
   - activeObject:
+      i1: -464838314
+      i2: 1866823308
+    list:
+    - i1: -464838314
+      i2: 1866823308
+  - activeObject:
       i1: -1
       i2: -1
     list:
     - i1: -1
       i2: -1
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
     - i1: -1
       i2: -1
+  - activeObject:
+      i1: -464838314
+      i2: 1866823308
+    list:
+    - i1: -464838314
+      i2: 1866823308
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
     - i1: -1
       i2: -1
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
     - i1: -1
       i2: -1
+  - activeObject:
+      i1: -464838314
+      i2: 1866823308
+    list:
+    - i1: -464838314
+      i2: 1866823308
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
     - i1: -1
       i2: -1
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
     - i1: -1
       i2: -1
-    - i1: -1
+  - activeObject:
+      i1: -1
       i2: -1
+    list:
     - i1: -1
       i2: -1
   - activeObject:
@@ -386,7 +370,6 @@ MonoBehaviour:
     FavString: []
     list:
     - {fileID: 0}
-    - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
     GUIDsActiveGameObject: 
@@ -482,13 +465,6 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
     - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
