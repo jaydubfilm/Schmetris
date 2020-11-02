@@ -875,7 +875,9 @@ namespace StarSalvager
             {
                 //Alert.ShowDancers(true);
                 //AudioController.PlayMusic(MUSIC.GAME_OVER, true);
-                
+
+                IsWaveProgressing = false;
+                //GameTimer.SetPaused(false);
                 OutroScene.gameObject.SetActive(true);
                 
                 /*m_levelManagerUI.ShowSummaryScreen("GAME OVER",
