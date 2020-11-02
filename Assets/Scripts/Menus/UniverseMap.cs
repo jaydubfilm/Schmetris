@@ -271,6 +271,7 @@ namespace StarSalvager.UI
                 LevelManager.Instance.IsWaveProgressing = true;
                 LevelManager.Instance.ProcessScrapyardUsageBeginAnalytics();
                 LevelManager.Instance.EndWaveState = false;
+                LevelManager.Instance.ResetLevelTimer();
                 SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
             });
 

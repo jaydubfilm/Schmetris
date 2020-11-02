@@ -65,6 +65,8 @@ namespace StarSalvager
         private float m_levelTimer = 0;
         public float LevelTimer => m_levelTimer + m_waveTimer;
 
+        private float m_checkFlightLengthMissionTimer = 0;
+
         private int m_currentStage;
         public int CurrentStage => m_currentStage;
 
@@ -249,7 +251,19 @@ namespace StarSalvager
         private void ProgressStage()
         {
             if (IsWaveProgressing)
+            {
                 m_waveTimer += Time.deltaTime;
+                m_checkFlightLengthMissionTimer += Time.deltaTime;
+                if (m_checkFlightLengthMissionTimer >= 1.0f)
+                {
+                    m_checkFlightLengthMissionTimer -= 1;
+                    MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                    {
+                        floatAmount = LevelTimer
+                    };
+                    MissionManager.ProcessMissionData(typeof(FlightLengthMission), missionProgressEventData);
+                }
+            }
 
             int currentStage = m_currentStage;
             if (CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage))
@@ -540,6 +554,11 @@ namespace StarSalvager
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
             ProjectileManager.Reset();
             MissionsCompletedDuringThisFlight.Clear();
+        }
+
+        public void ResetLevelTimer()
+        {
+            m_levelTimer = 0;
         }
 
         private void SetupLevelAnalytics()
