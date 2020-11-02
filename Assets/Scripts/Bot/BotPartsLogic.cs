@@ -166,7 +166,9 @@ namespace StarSalvager
             };
 
             var usedResourceTypes = new List<BIT_TYPE>();
+            /*
             if(!Globals.UsingTutorial) usedResourceTypes.Add(BIT_TYPE.BLUE);
+            */
             
             UpdateFacilityData();
 
@@ -798,7 +800,7 @@ namespace StarSalvager
                 if (waterDrainTimer >= 1 && PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource > 0)
                 {
                     waterDrainTimer--;
-                    PlayerDataManager.GetResource(BIT_TYPE.BLUE).SubtractResource(1);
+                    //PlayerDataManager.GetResource(BIT_TYPE.BLUE).SubtractResource(1);
                 }
             }
 

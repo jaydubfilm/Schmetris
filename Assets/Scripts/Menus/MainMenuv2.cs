@@ -1,7 +1,9 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
+using StarSalvager.Factories;
 using StarSalvager.Prototype;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
@@ -48,6 +50,9 @@ namespace StarSalvager.UI
         //====================================================================================================================//
         [SerializeField, Required] 
         private IntroScene IntroScene;
+
+        [SerializeField, Required]
+        private SpriteRenderer partSprite;
         
         //Main Menu Properties
         //====================================================================================================================//
@@ -146,6 +151,9 @@ namespace StarSalvager.UI
 
         private void Start()
         {
+            partSprite.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.CORE).GetSprite(0);
+            
+            
             SetupWindows();
             SetupButtons();
         }

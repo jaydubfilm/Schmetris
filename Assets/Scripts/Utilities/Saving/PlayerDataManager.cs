@@ -29,6 +29,10 @@ namespace StarSalvager.Utilities.Saving
         private static GameMetadata GameMetaData = Files.ImportGameMetaData();
 
 
+        //TEMP
+        public static Dictionary<int, int> NumTimesBeatNewWaveInSector => PlayerAccountData.numTimesBeatNewWaveInSector;
+        public static List<Dictionary<int, int>> SectorWaveIndexConverter => PlayerRunData.sectorWaveIndexConverter;
+
         //====================================================================================================================//
 
         public static bool GethasRunStarted()
@@ -840,11 +844,14 @@ namespace StarSalvager.Utilities.Saving
 
             if (GetEnemiesKilled().Count > 0)
             {
+                var enemyRemoteData = FactoryManager.Instance.EnemyRemoteData;
                 summaryText += ("<b>Enemies Killed:</b>\n");
 
                 foreach (var keyValuePair in GetEnemiesKilled())
                 {
-                    summaryText += $"\t{keyValuePair.Key}: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
+                    var name = enemyRemoteData.GetEnemyRemoteData(keyValuePair.Key).Name;
+                
+                    summaryText += $"\t{name}: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
                 }
             }
 

@@ -160,7 +160,7 @@ namespace StarSalvager
             //TODO Need to decide if this should happen at arrival or at launch
             //TryFillBotResources();
 
-            if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0)
+            /*if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0)
             {
                 Alert.ShowAlert("Game Over", "Your crew has died of thirst - Game Over. thx!", "Main Menu", () =>
                 {
@@ -172,7 +172,7 @@ namespace StarSalvager
             else if (outOfWaterOnReturn)
             {
                 Alert.ShowAlert("Water Restored", "You have resuscitated your thirsty crew.", "Phew!", null);
-            }
+            }*/
 
             if (_dismantleBin == null)
             {
