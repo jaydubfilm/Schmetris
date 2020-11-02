@@ -6,6 +6,7 @@ using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
@@ -35,6 +36,12 @@ namespace StarSalvager
             PointerEvents = GetComponent<PointerEvents>();
 
             BotImage.gameObject.SetActive(false);
+        }
+
+        private void OnEnable()
+        {
+            //TODO Need to get the level here
+            BotImage.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.CORE).GetSprite(0);
         }
 
         public void Start()
