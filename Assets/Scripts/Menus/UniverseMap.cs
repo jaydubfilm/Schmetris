@@ -208,10 +208,10 @@ namespace StarSalvager.UI
                 DrawConnection(connection.x, connection.y);
             }*/
 
-            if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 35)
+            /*if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 35)
             {
                 Alert.ShowAlert("Water Shortage", "You are running low on water at the base. Be sure to look for some more!", "Ok", null);
-            }
+            }*/
         }
 
         public void Reset()
@@ -271,6 +271,7 @@ namespace StarSalvager.UI
                 LevelManager.Instance.IsWaveProgressing = true;
                 LevelManager.Instance.ProcessScrapyardUsageBeginAnalytics();
                 LevelManager.Instance.EndWaveState = false;
+                LevelManager.Instance.ResetLevelTimer();
                 SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
             });
 

@@ -13,7 +13,19 @@ MonoBehaviour:
   m_Name: Wave_Remote_PB2_2_9
   m_EditorClassIdentifier: 
   WaveSeed: 0
-  BonusShapes: []
+  BonusShapes:
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: BS_3Cell
+    m_rotation: -1
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: BS_2Cell
+    m_rotation: -1
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: BS_3Cell
+    m_rotation: -1
   StageRemoteData:
   - m_stageDuration: 30
     m_stageBlendPeriod: 0
@@ -22,7 +34,79 @@ MonoBehaviour:
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
-    m_stageObstacleData: []
+    m_stageObstacleData:
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 1
+      m_density: 0.2603645
+      m_spawnsPerScreenWidthPerMinute: 20
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 2
+      m_density: 0.24737094
+      m_spawnsPerScreenWidthPerMinute: 17
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 3
+      m_density: 0.2861784
+      m_spawnsPerScreenWidthPerMinute: 27
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: RedSingle
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.23269531
+      m_spawnsPerScreenWidthPerMinute: 14
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: BlueSingle
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: YellowSingle
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.3264256
+      m_spawnsPerScreenWidthPerMinute: 41
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreenDouble
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 3
+      m_shapeName: 
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.29583564
+      m_spawnsPerScreenWidthPerMinute: 30
+      m_maxOut: 0
+      spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
   - m_stageDuration: 45
     m_stageBlendPeriod: 0
@@ -31,7 +115,79 @@ MonoBehaviour:
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
-    m_stageObstacleData: []
+    m_stageObstacleData:
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 1
+      m_density: 0.2603645
+      m_spawnsPerScreenWidthPerMinute: 20
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 2
+      m_density: 0.24737094
+      m_spawnsPerScreenWidthPerMinute: 17
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 3
+      m_density: 0.2861784
+      m_spawnsPerScreenWidthPerMinute: 27
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: RedSingle
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.23269531
+      m_spawnsPerScreenWidthPerMinute: 14
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: BlueSingle
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: YellowSingle
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.3264256
+      m_spawnsPerScreenWidthPerMinute: 41
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreenDouble
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 3
+      m_shapeName: 
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.29583564
+      m_spawnsPerScreenWidthPerMinute: 30
+      m_maxOut: 0
+      spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
   maxDrops: 0
   RDSEndOfWaveLoot: []

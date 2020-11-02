@@ -13,7 +13,19 @@ MonoBehaviour:
   m_Name: Wave_Remote_PB2_4_7
   m_EditorClassIdentifier: 
   WaveSeed: 0
-  BonusShapes: []
+  BonusShapes:
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: BS_4Cell
+    m_rotation: -1
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: BS_3Cell
+    m_rotation: -1
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: BS_4Cell
+    m_rotation: -1
   StageRemoteData:
   - m_stageDuration: 15
     m_stageBlendPeriod: 0
@@ -22,7 +34,198 @@ MonoBehaviour:
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
-    m_stageObstacleData: []
+    m_stageObstacleData:
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.38104028
+      m_spawnsPerScreenWidthPerMinute: 67
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 1
+      m_density: 0.20929426
+      m_spawnsPerScreenWidthPerMinute: 10
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 2
+      m_density: 0.19508804
+      m_spawnsPerScreenWidthPerMinute: 8
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 3
+      m_density: 0.22732617
+      m_spawnsPerScreenWidthPerMinute: 13
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: RedDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: BlueDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.23269531
+      m_spawnsPerScreenWidthPerMinute: 14
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreenDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.2861784
+      m_spawnsPerScreenWidthPerMinute: 27
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreyDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.23269531
+      m_spawnsPerScreenWidthPerMinute: 14
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: YellowDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 3
+      m_shapeName: 
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.29583564
+      m_spawnsPerScreenWidthPerMinute: 30
+      m_maxOut: 0
+      spawningMultiplier: 1
+    m_stageColumnGroupObstacleData: []
+  - m_stageDuration: 30
+    m_stageBlendPeriod: 0
+    m_waitUntilAllEnemiesDefeatedToBegin: 0
+    m_stageEnemyData:
+    - m_enemyType: 599761cf-c12a-45b0-bbab-918008384f28
+      m_enemyCount: 4
+    m_stageType: 0
+    m_spawningObstacleMultiplier: 1
+    m_centerChannelWidth: 0.5
+    m_stageObstacleData:
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.38104028
+      m_spawnsPerScreenWidthPerMinute: 67
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 1
+      m_density: 0.20929426
+      m_spawnsPerScreenWidthPerMinute: 10
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 2
+      m_density: 0.19508804
+      m_spawnsPerScreenWidthPerMinute: 8
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 3
+      m_density: 0.22732617
+      m_spawnsPerScreenWidthPerMinute: 13
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: RedDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: BlueDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.23269531
+      m_spawnsPerScreenWidthPerMinute: 14
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreenDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.2861784
+      m_spawnsPerScreenWidthPerMinute: 27
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreyDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.23269531
+      m_spawnsPerScreenWidthPerMinute: 14
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: YellowDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 3
+      m_shapeName: 
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.29583564
+      m_spawnsPerScreenWidthPerMinute: 30
+      m_maxOut: 0
+      spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
   - m_stageDuration: 30
     m_stageBlendPeriod: 0
@@ -31,25 +234,198 @@ MonoBehaviour:
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
-    m_stageObstacleData: []
+    m_stageObstacleData:
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.38104028
+      m_spawnsPerScreenWidthPerMinute: 67
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 1
+      m_density: 0.20929426
+      m_spawnsPerScreenWidthPerMinute: 10
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 2
+      m_density: 0.19508804
+      m_spawnsPerScreenWidthPerMinute: 8
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 3
+      m_density: 0.22732617
+      m_spawnsPerScreenWidthPerMinute: 13
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: RedDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: BlueDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.23269531
+      m_spawnsPerScreenWidthPerMinute: 14
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreenDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.2861784
+      m_spawnsPerScreenWidthPerMinute: 27
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreyDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.23269531
+      m_spawnsPerScreenWidthPerMinute: 14
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: YellowDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 3
+      m_shapeName: 
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.29583564
+      m_spawnsPerScreenWidthPerMinute: 30
+      m_maxOut: 0
+      spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
   - m_stageDuration: 30
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
-    m_stageEnemyData: []
+    m_stageEnemyData:
+    - m_enemyType: f3c96622-609f-498c-be89-8cc575e46fe0
+      m_enemyCount: 6
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
-    m_stageObstacleData: []
-    m_stageColumnGroupObstacleData: []
-  - m_stageDuration: 30
-    m_stageBlendPeriod: 0
-    m_waitUntilAllEnemiesDefeatedToBegin: 0
-    m_stageEnemyData: []
-    m_stageType: 0
-    m_spawningObstacleMultiplier: 1
-    m_centerChannelWidth: 0.5
-    m_stageObstacleData: []
+    m_stageObstacleData:
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.38104028
+      m_spawnsPerScreenWidthPerMinute: 67
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 1
+      m_density: 0.20929426
+      m_spawnsPerScreenWidthPerMinute: 10
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 2
+      m_density: 0.19508804
+      m_spawnsPerScreenWidthPerMinute: 8
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 3
+      m_density: 0.22732617
+      m_spawnsPerScreenWidthPerMinute: 13
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: RedDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: BlueDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.23269531
+      m_spawnsPerScreenWidthPerMinute: 14
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreenDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.2861784
+      m_spawnsPerScreenWidthPerMinute: 27
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreyDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.23269531
+      m_spawnsPerScreenWidthPerMinute: 14
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: YellowDouble
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 3
+      m_shapeName: 
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.29583564
+      m_spawnsPerScreenWidthPerMinute: 30
+      m_maxOut: 0
+      spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
   maxDrops: 0
   RDSEndOfWaveLoot: []

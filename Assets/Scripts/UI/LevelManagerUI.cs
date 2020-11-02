@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Missions;
 using StarSalvager.Utilities;
@@ -249,16 +250,15 @@ namespace StarSalvager.UI
             if(MissionManager.MissionsCurrentData == null || MissionManager.MissionsCurrentData.CurrentTrackedMissions == null)
                 return;
             
-            
-            if (MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count <= 0 && string.IsNullOrEmpty(OverrideText)) 
+            if (MissionManager.MissionsCurrentData.CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList().Count <= 0 && string.IsNullOrEmpty(OverrideText)) 
                 return;
             
             string missionReminderText;
             if (string.IsNullOrEmpty(OverrideText))
             {
                 Mission curMission = MissionManager.MissionsCurrentData
-                    .CurrentTrackedMissions[
-                        Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count)];
+                    .CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList()[
+                        Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList().Count)];
 
                 missionReminderText = curMission.missionName + curMission.GetMissionProgressString();
             }
