@@ -31,6 +31,7 @@ namespace StarSalvager.Utilities.Saving
 
         //TEMP
         public static Dictionary<int, int> NumTimesBeatNewWaveInSector => PlayerAccountData.numTimesBeatNewWaveInSector;
+        public static List<Dictionary<int, int>> SectorWaveIndexConverter => PlayerRunData.sectorWaveIndexConverter;
 
         //====================================================================================================================//
 

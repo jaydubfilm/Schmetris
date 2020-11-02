@@ -411,7 +411,7 @@ namespace StarSalvager.UI
             {
                 //Get the actual wave data here
                 var sectorData = FactoryManager.Instance.SectorRemoteData[sector];
-                var (enemies, bits) = sectorData.GetRemoteData(wave).GetWaveSummaryData(PROTO_useSum);
+                var (enemies, bits) = sectorData.GetIndexConvertedRemoteData(sector, wave).GetWaveSummaryData(PROTO_useSum);
 
                 //Parse the information to get the sprites & titles
                 var testSpriteScales = GetSpriteTitleObjects(enemies, bits);
