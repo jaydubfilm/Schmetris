@@ -145,11 +145,11 @@ namespace StarSalvager.UI.Scrapyard
                 }
             }
 
-            SetupResourceScrollView();
-            SetupComponentResourceScrollView();
+            /*SetupResourceScrollView();
+            SetupComponentResourceScrollView();*/
         }
 
-        private void SetupResourceScrollView()
+        /*private void SetupResourceScrollView()
         {
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
@@ -185,7 +185,7 @@ namespace StarSalvager.UI.Scrapyard
                 var element = componentResourceUIElementScrollView.AddElement(data, $"{resource.Key}_UIElement");
                 element.Init(data);
             }
-        }
+        }*/
 
         //====================================================================================================================//
         
