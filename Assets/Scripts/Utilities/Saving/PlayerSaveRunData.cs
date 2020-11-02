@@ -18,6 +18,9 @@ namespace StarSalvager.Utilities.Saving
 
         public bool runStarted;
 
+        //TEMP
+        public List<Dictionary<int, int>> sectorWaveIndexConverter = new List<Dictionary<int, int>>();
+
         [JsonProperty]
         private List<PlayerResource> _playerResources = new List<PlayerResource>() {
             new PlayerResource(BIT_TYPE.BLUE, 75, 300, 0, 0, 0, 0),
@@ -80,6 +83,28 @@ namespace StarSalvager.Utilities.Saving
 
         public void SetupMap(List<Vector2Int> levelRingConnectsionsJson = null, List<int> shortcutNodes = null)
         {
+            //TEMP
+            for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
+            {
+                List<int> availableIndexes = new List<int>();
+                sectorWaveIndexConverter.Add(new Dictionary<int, int>());
+
+                int numOptions = FactoryManager.Instance.SectorRemoteData[i].GetNumberOfWaves();
+
+                for (int k = 0; k < numOptions; k++)
+                {
+                    availableIndexes.Add(k);
+                }
+
+                for (int k = 0; k < numOptions; k++)
+                {
+                    int randomIndex = availableIndexes[UnityEngine.Random.Range(0, availableIndexes.Count)];
+                    availableIndexes.Remove(randomIndex);
+                    sectorWaveIndexConverter[i].Add(k, randomIndex);
+                }
+            }
+            //ENDTEMP
+
             if (levelRingConnectsionsJson != null)
             {
                 LevelRingConnectionsJson.AddRange(levelRingConnectsionsJson);

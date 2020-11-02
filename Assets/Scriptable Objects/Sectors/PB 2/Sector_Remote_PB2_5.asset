@@ -18,3 +18,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 18bb5848526f94043aede479b4285c87, type: 2}
   - {fileID: 11400000, guid: c9f7861849127435cb81a2ca28133dcb, type: 2}
   - {fileID: 11400000, guid: 590787b59e3e5427a8ff9023b25be1cb, type: 2}
+  sectorRemoteDataLootTablesScriptable: {fileID: 11400000, guid: 796e2dd108975e54498e22c97e5261c9,
+    type: 2}
