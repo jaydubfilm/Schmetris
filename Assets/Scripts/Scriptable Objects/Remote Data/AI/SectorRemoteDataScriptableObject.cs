@@ -10,6 +10,8 @@ namespace StarSalvager.ScriptableObjects
     {
         public List<WaveRemoteDataScriptableObject> WaveRemoteData = new List<WaveRemoteDataScriptableObject>();
 
+        public SectorRemoteDataLootTablesScriptableObject sectorRemoteDataLootTablesScriptable;
+
         public int GridSizeX => Globals.GridSizeX;
 
         public WaveRemoteDataScriptableObject GetRemoteData(int waveNumber)

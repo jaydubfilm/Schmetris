@@ -15,6 +15,26 @@ namespace StarSalvager.Values
     {
         public PlayerSaveRunData PlayerRunData = new PlayerSaveRunData();
 
+        //TEMP
+        public Dictionary<int, int> numTimesBeatNewWaveInSector = new Dictionary<int, int>()
+        {
+            { 0, 0 },
+            { 1, 0 },
+            { 2, 0 },
+            { 3, 0 },
+            { 4, 0 }
+        };
+
+        //TEMP
+        public Dictionary<int, int> sectorWaveIndexConverter = new Dictionary<int, int>()
+        {
+            { 0, 0 },
+            { 1, 0 },
+            { 2, 0 },
+            { 3, 0 },
+            { 4, 0 }
+        };
+
         public int Gears;
         public int PatchPointsSpent;
 
@@ -272,6 +292,28 @@ namespace StarSalvager.Values
         };
 
         //====================================================================================================================//
+
+        public PlayerSaveAccountData()
+        {
+            List<int> usedIndexes = new List<int>();
+            int numOptions = FactoryManager.Instance.SectorRemoteData[0].GetNumberOfWaves();
+
+            for (int i = 0; i < 5; i++)
+            {
+                int randomIndex = UnityEngine.Random.Range(0, numOptions);
+                while (usedIndexes.Contains(randomIndex))
+                {
+                    randomIndex = UnityEngine.Random.Range(0, numOptions);
+                }
+                usedIndexes.Add(randomIndex);
+                usedIndexes[i] = randomIndex;
+            }
+        }
+
+        public int GetSectorWaveIndexConvertedValue(int i)
+        {
+            return sectorWaveIndexConverter[i];
+        }
 
         public void ResetPlayerRunData()
         {

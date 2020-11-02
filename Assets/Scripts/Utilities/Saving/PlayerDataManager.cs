@@ -29,6 +29,9 @@ namespace StarSalvager.Utilities.Saving
         private static GameMetadata GameMetaData = Files.ImportGameMetaData();
 
 
+        //TEMP
+        public static Dictionary<int, int> NumTimesBeatNewWaveInSector => PlayerAccountData.numTimesBeatNewWaveInSector;
+
         //====================================================================================================================//
 
         public static bool GethasRunStarted()
