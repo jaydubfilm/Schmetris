@@ -798,7 +798,7 @@ namespace StarSalvager
                 if (waterDrainTimer >= 1 && PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource > 0)
                 {
                     waterDrainTimer--;
-                    PlayerDataManager.GetResource(BIT_TYPE.BLUE).SubtractResource(1);
+                    //PlayerDataManager.GetResource(BIT_TYPE.BLUE).SubtractResource(1);
                 }
             }
 

@@ -370,7 +370,7 @@ namespace StarSalvager
             EnemiesKilledInWave.Clear();
             MissionManager.ProcessWaveComplete();
 
-            if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0)
+            /*if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0)
             {
                 m_levelManagerUI.ShowSummaryScreen("Out of water",
                     "Your scrapyard is out of water. You must return now.", () =>
@@ -382,7 +382,7 @@ namespace StarSalvager
                         ProcessScrapyardUsageBeginAnalytics();
                         SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
                     });
-            }
+            }*/
 
             ProjectileManager.UpdateForces();
             Globals.IsRecoveryBot = false;
@@ -504,7 +504,7 @@ namespace StarSalvager
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
 
-            CheckPlayerWater();
+            //CheckPlayerWater();
         }
 
         private void CleanLevel()
