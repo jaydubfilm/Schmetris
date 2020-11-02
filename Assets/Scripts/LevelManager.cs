@@ -672,10 +672,14 @@ namespace StarSalvager
                 SectorLootTableScriptableObject sectorLootTable = FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector].sectorRemoteDataLootTablesScriptable.GetLootTableAtIndex(PlayerDataManager.NumTimesBeatNewWaveInSector[Globals.CurrentSector]);
                 if (sectorLootTable != null)
                 {
-                    sectorLootTable.ConfigureLootTable();
-                    List<IRDSObject> newWaveLoot = sectorLootTable.rdsTable.rdsResult.ToList();
-                    DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);
-                    PlayerDataManager.NumTimesBeatNewWaveInSector[Globals.CurrentSector]++;
+                    List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave)).childNodes;
+                    if (childNodesAccessible.Count == 0 || UnityEngine.Random.Range(0.0f, 1.0f) <= 0.33f)
+                    {
+                        sectorLootTable.ConfigureLootTable();
+                        List<IRDSObject> newWaveLoot = sectorLootTable.rdsTable.rdsResult.ToList();
+                        DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);
+                        PlayerDataManager.NumTimesBeatNewWaveInSector[Globals.CurrentSector]++;
+                    }
                 }
             }
 
