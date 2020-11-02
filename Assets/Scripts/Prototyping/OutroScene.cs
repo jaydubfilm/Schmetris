@@ -92,6 +92,7 @@ namespace StarSalvager.Prototype
                     GameUI.Instance.ShowRecoveryBanner(false);
                     Globals.CurrentWave = 0;
                     GameTimer.SetPaused(false);
+                    LevelManager.Instance.IsWaveProgressing = true;
                     
                     PlayerDataManager.ResetPlayerRunData();
                     PlayerDataManager.SavePlayerAccountData();
