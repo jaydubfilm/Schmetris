@@ -166,7 +166,9 @@ namespace StarSalvager
             };
 
             var usedResourceTypes = new List<BIT_TYPE>();
+            /*
             if(!Globals.UsingTutorial) usedResourceTypes.Add(BIT_TYPE.BLUE);
+            */
             
             UpdateFacilityData();
 
