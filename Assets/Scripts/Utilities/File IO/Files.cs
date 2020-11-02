@@ -206,6 +206,17 @@ namespace StarSalvager.Utilities.FileIO
             {
                 PlayerSaveAccountData data = new PlayerSaveAccountData();
 
+                foreach (var blueprintData in Globals.BlueprintInitialData)
+                {
+                    Blueprint blueprint = new Blueprint
+                    {
+                        name = (PART_TYPE)blueprintData.type + " " + blueprintData.level,
+                        partType = (PART_TYPE)blueprintData.type,
+                        level = blueprintData.level
+                    };
+                    data.UnlockBlueprint(blueprint);
+                }
+
                 foreach (var facilityData in Globals.FacilityInitialData)
                 {
                     data.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
