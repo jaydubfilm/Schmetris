@@ -2416,7 +2416,7 @@ namespace StarSalvager
         /// <param name="orphanMoveData"></param>
         /// <returns></returns>
         private void CheckForOrphans(IEnumerable<IAttachable> movingBlocks,
-            IAttachable bitToUpgrade, 
+            IAttachable bitToUpgrade,
             ref List<OrphanMoveData> orphanMoveData)
         {
             var movingBits = movingBlocks as IAttachable[] ?? movingBlocks.ToArray();
@@ -2434,10 +2434,10 @@ namespace StarSalvager
                 var travelDistance = dif.magnitude;
 
                 //Debug.Log($"Travel Direction: {travelDirection} distance {travelDistance}");
-                
-                if(travelDirection == DIRECTION.NULL)
+
+                if (travelDirection == DIRECTION.NULL)
                     continue;
-                
+
 
 
                 //Check around moving bits (Making sure to exclude the one that doesn't move)
@@ -2463,6 +2463,9 @@ namespace StarSalvager
                     if (attachable == bitToUpgrade)
                         continue;
 
+                    if (!(attachable is ICanDetach canDetach))
+                        continue;
+
                     if (movingBits.Contains(attachable))
                         continue;
 
@@ -2481,33 +2484,39 @@ namespace StarSalvager
                     if (hasPathToCore)
                         continue;
 
+                    var travelDistInt = (int) travelDistance;
+
                     //We've got an orphan, record all of the necessary data
                     //------------------------------------------------------------------------------------------------//
 
-                    var newOrphanCoordinate =
-                        attachable.Coordinate + travelDirection.ToVector2Int() * (int) travelDistance;
-                    
-                    if(!(attachable is ICanDetach canDetach))
-                        continue;
-
-                    var attachedToOrphan = new List<ICanDetach>();
-                    attachedBlocks.GetAllConnectedDetachables(canDetach, movingBits.OfType<ICanDetach>().ToArray(), ref attachedToOrphan);
-
-                    //Debug.LogError($"Orphan Attached Count: {attachedToOrphan.Count}");
-                    //Debug.Break();
-
-                    //Debug.Log($"{newOrphanCoordinate} = {bit.Coordinate} + {travelDirection.ToVector2Int()} * {(int) travelDistance}");
-
                     if (orphanMoveData == null)
                         orphanMoveData = new List<OrphanMoveData>();
+                    
+
+                    var newOrphanCoordinate =
+                        attachable.Coordinate + travelDirection.ToVector2Int() * travelDistInt;
+
+                    var attachedToOrphan = new List<ICanDetach>();
+                    attachedBlocks.GetAllConnectedDetachables(canDetach, 
+                        movingBits.OfType<ICanDetach>().ToArray(),
+                        ref attachedToOrphan);
+
+                    //If someone is already planning to move to the target position, just choose one spot back
+                    if (orphanMoveData.Count > 0 &&
+                        orphanMoveData.Any(x => x.intendedCoordinates == newOrphanCoordinate))
+                    {
+                        newOrphanCoordinate += travelDirection.Reflected().ToVector2Int();
+                        travelDistInt--;
+                    }
+
 
                     //------------------------------------------------------------------------------------------------//
 
-                    SolveOrphanGroupPositionChange(attachable, 
+                    SolveOrphanGroupPositionChange(attachable,
                         attachedToOrphan.OfType<IAttachable>().ToList(),
-                        newOrphanCoordinate, 
+                        newOrphanCoordinate,
                         travelDirection,
-                        (int) travelDistance,
+                        travelDistInt,
                         movingBits,
                         ref orphanMoveData);
                 }
@@ -2608,8 +2617,13 @@ namespace StarSalvager
 
                 //Checks to see if this orphan can travel unimpeded to the destination
                 //If it cannot, set the destination to the block beside that which is blocking it.
-                var hasClearPath = IsPathClear(stayingBlocks, movingBits, travelDistance, orphan.Coordinate,
-                    travelDirection, desiredLocation, out var clearCoordinate);
+                var hasClearPath = IsPathClear(stayingBlocks, 
+                    movingBits, 
+                    travelDistance, 
+                    orphan.Coordinate,
+                    travelDirection, 
+                    desiredLocation, 
+                    out var clearCoordinate);
 
                 if (!hasClearPath && clearCoordinate == Vector2Int.zero)
                     distances[i] = 999f;
@@ -2650,12 +2664,15 @@ namespace StarSalvager
             //var distance = (int) orphanMoveData.distance;
             var coordinate = currentCoordinate;
             
-            clearCoordinate = Vector2Int.zero;
+            //If the distance starts at zero, its already at the TargetCoordinate
+            clearCoordinate = distance == 0 ? targetCoordinate : Vector2Int.zero;
             
             while (distance > 0)
             {
                 coordinate += moveDirection.ToVector2Int();
-                var occupied = stayingBlocks.Where(x => !toIgnore.Contains(x)).FirstOrDefault(x => x.Coordinate == coordinate);
+                var occupied = stayingBlocks
+                    .Where(x => !toIgnore.Contains(x))
+                    .FirstOrDefault(x => x.Coordinate == coordinate);
 
                 //Debug.LogError($"Occupied: {occupied == null} at {coordinate} distance {distance}");
                 
@@ -3463,44 +3480,46 @@ namespace StarSalvager
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(2,-1),
-                    Level =0,
-                    Type = (int)BIT_TYPE.GREY
+                    Coordinate = new Vector2Int(-1, 1),
+                    Level = 0,
+                    Type = (int) BIT_TYPE.GREY
                 },
-                
+
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(1,0),
-                    Level =0,
-                    Type = (int)BIT_TYPE.GREEN
-                },
-                new BlockData
-                {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(2,0),
-                    Level =0,
-                    Type = (int)BIT_TYPE.GREEN
+                    Coordinate = new Vector2Int(0, 1),
+                    Level = 0,
+                    Type = (int) BIT_TYPE.GREY
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(3,-1),
-                    Level =0,
-                    Type = (int)BIT_TYPE.GREEN
+                    Coordinate = new Vector2Int(1, 1),
+                    Level = 0,
+                    Type = (int) BIT_TYPE.GREY
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(3,-2),
-                    Level =0,
-                    Type = (int)BIT_TYPE.GREEN
+                    Coordinate = new Vector2Int(-1, 2),
+                    Level = 0,
+                    Type = (int) BIT_TYPE.GREY
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(1, 2),
+                    Level = 0,
+                    Type = (int) BIT_TYPE.YELLOW
                 },
 
             };
 
             AddMorePieces(blocks, false);
+            CheckForCombosAround<BIT_TYPE>(attachedBlocks.OfType<ICanCombo>().ToList());
         }
+
         [Button]
         private void AddComboTestPieces()
         {
