@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cinemachine;
 using StarSalvager.Values;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras.Data;
@@ -24,6 +25,9 @@ namespace StarSalvager.Cameras
         
         
         #region Properties
+
+        [Required]
+        public CinemachineVirtualCamera CinemachineVirtualCamera;
 
         private Vector3 _startPos;
         private Vector3 _beginningLerpPos;

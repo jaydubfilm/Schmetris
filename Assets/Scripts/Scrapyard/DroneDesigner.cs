@@ -13,7 +13,6 @@ using Recycling;
 using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using Sirenix.OdinInspector;
-using Sirenix.Utilities;
 using StarSalvager.UI.Scrapyard;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.FileIO;

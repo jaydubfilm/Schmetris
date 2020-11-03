@@ -2,10 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cinemachine;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
 using StarSalvager.Audio;
+using StarSalvager.Cameras;
 using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
@@ -139,6 +141,18 @@ namespace StarSalvager
             }
         }
         private Rigidbody2D _rigidbody;
+        
+        public new Transform transform
+        {
+            get
+            {
+                if (_transform == null)
+                    _transform = gameObject.transform;
+                
+                return _transform;
+            }
+        }
+        private Transform _transform;
 
         private GameUI GameUi => GameUI.Instance;
 
@@ -227,32 +241,26 @@ namespace StarSalvager
             float distHorizontal;
             float direction;
             Vector3 moveDirection;
+
+
             bool canMove;
-
-            switch (true)
+            if (m_distanceHorizontal < 0)
             {
-                //Move Left values
-                //----------------------------------------------------------------------------------------------------//
-                case bool _ when m_distanceHorizontal < 0:
-                    distHorizontal = Mathf.Abs(m_distanceHorizontal);
-                    direction = -1f;
-                    canMove = xPos > -0.5f * Constants.gridCellSize * Globals.GridSizeX;
-                    moveDirection = Vector3.left;
-                    break;
-
-                //Move Right Values
-                //----------------------------------------------------------------------------------------------------//
-                case bool _ when m_distanceHorizontal > 0:
-                    distHorizontal = m_distanceHorizontal;
-                    direction = 1f;
-                    canMove = xPos < 0.5f * Constants.gridCellSize * Globals.GridSizeX;
-                    moveDirection = Vector3.right;
-                    break;
-
-                //----------------------------------------------------------------------------------------------------//
-                default:
-                    //MOVE_DELTA = 0f;
-                    return;
+                distHorizontal = Mathf.Abs(m_distanceHorizontal);
+                direction = -1f;
+                canMove = xPos > -0.5f * Constants.gridCellSize * Globals.GridSizeX;
+                moveDirection = Vector3.left;
+            }
+            else if (m_distanceHorizontal > 0)
+            {
+                distHorizontal = m_distanceHorizontal;
+                direction = 1f;
+                canMove = xPos < 0.5f * Constants.gridCellSize * Globals.GridSizeX;
+                moveDirection = Vector3.right;
+            }
+            else
+            {
+                return;
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -273,7 +281,7 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            LevelManager.Instance.CameraController.transform.position += moveDirection * toMove;
+            //LevelManager.Instance.CameraController.transform.position += moveDirection * toMove;
 
         }
 
@@ -372,6 +380,10 @@ namespace StarSalvager
             ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
             
             GameUi.SetHealthValue(1f);
+
+            var camera = CameraController.Camera.GetComponent<CameraController>().CinemachineVirtualCamera;
+            camera.LookAt = transform;
+            camera.Follow = transform;
         }
         
         public void InitBot(IEnumerable<IAttachable> botAttachables)
@@ -396,6 +408,10 @@ namespace StarSalvager
             }
             
             BotPartsLogic.UpdatePartsList();
+            
+            var camera = CameraController.Camera.GetComponent<CameraController>().CinemachineVirtualCamera;
+            camera.LookAt = transform;
+            camera.Follow = transform;
         }
 
 

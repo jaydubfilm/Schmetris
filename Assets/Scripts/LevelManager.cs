@@ -736,10 +736,11 @@ namespace StarSalvager
 
         public void SetBotBelowScreen()
         {
-            for (int i = 0; i < m_bots.Count; i++)
+            Debug.LogError("ERROR: This needs to be fixed to support new movement system");
+            /*for (int i = 0; i < m_bots.Count; i++)
             {
                 m_bots[i].transform.position = Vector3.down * 5;
-            }
+            }*/
         }
 
         public void SetBotEnterScreen(bool value)
