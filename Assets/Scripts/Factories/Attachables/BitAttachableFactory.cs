@@ -42,6 +42,27 @@ namespace StarSalvager.Factories
             }
         }
 
+        public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<BlockData> blockDatas)
+        {
+            var resources = new Dictionary<BIT_TYPE, int>();
+
+            foreach (var blockData in blockDatas)
+            {
+                if (!blockData.ClassType.Equals(nameof(Bit)))
+                    continue;
+
+                var bitType = (BIT_TYPE) blockData.Type;
+                
+                
+                if(!resources.ContainsKey(bitType))
+                    resources.Add(bitType, 0);
+
+                resources[bitType] += GetTotalResource(bitType, blockData.Level);
+            }
+
+            return resources;
+        }
+        
         public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<Bit> bits)
         {
             var resources = new Dictionary<BIT_TYPE, int>();
@@ -51,15 +72,10 @@ namespace StarSalvager.Factories
                 if(!resources.ContainsKey(bit.Type))
                     resources.Add(bit.Type, 0);
 
-                resources[bit.Type] += GetTotalResource(bit);
+                resources[bit.Type] += GetTotalResource(bit.Type, bit.level);
             }
 
             return resources;
-        }
-        
-        public int GetTotalResource(Bit bit)
-        {
-            return _remoteData.GetRemoteData(bit.Type).levels[bit.level].resources;
         }
 
         public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<ScrapyardBit> bits)
@@ -75,6 +91,11 @@ namespace StarSalvager.Factories
             }
 
             return resources;
+        }
+        
+        public int GetTotalResource(BIT_TYPE bitType, int level)
+        {
+            return _remoteData.GetRemoteData(bitType).levels[level].resources;
         }
 
         //============================================================================================================//
