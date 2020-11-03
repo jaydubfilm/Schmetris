@@ -1,7 +1,11 @@
-﻿namespace StarSalvager.Values
+﻿using System;
+
+namespace StarSalvager.Values
 {
     public static class Constants
     {
+        public static readonly Version VERSION = new Version(1, 1, 0, 0);
+
         public const float VISIBLE_GAME_AREA = 0.55f;
         
         public const float gridCellSize = 1f;

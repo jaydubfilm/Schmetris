@@ -500,7 +500,7 @@ namespace StarSalvager.Tutorial
 
 
             //Found: https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/manual/ActionBindings.html?_ga=2.228834015.217367981.1603324316-246071923.1589462724#showing-current-bindings
-            var key = Input.Actions.Default.Continue.GetBindingDisplayString();
+            var key = Input.Actions.Default.Continue.GetBindingDisplayString(InputBinding.DisplayStringOptions.DontUseShortDisplayNames | InputBinding.DisplayStringOptions.DontOmitDevice);
             pressAnyKeyText.text = $"{key} to continue...";
         }
 

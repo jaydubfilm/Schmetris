@@ -15,6 +15,8 @@ namespace StarSalvager.Values
     {
         public PlayerSaveRunData PlayerRunData = new PlayerSaveRunData();
 
+        public Version Version = Constants.VERSION;
+
         //TEMP
         public Dictionary<int, int> numTimesBeatNewWaveInSector = new Dictionary<int, int>()
         {
