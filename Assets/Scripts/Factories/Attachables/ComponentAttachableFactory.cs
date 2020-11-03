@@ -1,9 +1,11 @@
-﻿using Recycling;
+﻿using System;
+using Recycling;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace StarSalvager.Factories
 {
@@ -37,6 +39,18 @@ namespace StarSalvager.Factories
             var sprite = profile.GetSprite(level);
             
             component.SetSprite(sprite);
+            
+            switch (component)
+            {
+                case AnimatedComponent _:
+                    component.gameObject.name = $"{nameof(AnimatedComponent)}_{componentType}_Lvl{level}";
+                    break;
+                case Component _:
+                    component.gameObject.name = $"{nameof(Component)}_{componentType}_Lvl{level}";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(component), component, null);
+            }
         }
         
         //============================================================================================================//
@@ -169,6 +183,8 @@ namespace StarSalvager.Factories
                 
                 anim.SimpleAnimator.SetAnimation(profile.animation);
                 temp = anim;
+                
+                temp.gameObject.name = $"{nameof(AnimatedComponent)}_{type}_Lvl{blockData.Level}";
             }
             else
             {
@@ -176,6 +192,8 @@ namespace StarSalvager.Factories
                 {
                     temp = CreateObject<Component>();
                 }
+
+                temp.gameObject.name = $"{nameof(Component)}_{type}_Lvl{blockData.Level}";
             }
 
             //--------------------------------------------------------------------------------------------------------//

@@ -4,6 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
@@ -14,6 +15,8 @@ namespace StarSalvager.UI
     public class Alert : Singleton<Alert>
     {
         public static bool Displayed => Instance.windowObject.activeInHierarchy;
+
+        [SerializeField, Required] private TMP_Text versionText;
         
         [SerializeField, Required]
         private GameObject windowObject;
@@ -38,7 +41,10 @@ namespace StarSalvager.UI
         private Button neutralButton;
         private TMP_Text _neutralButtonText;
 
-        private static IReadOnlyList<string> DontShowAgainKeys => PlayerPersistentData.PlayerData.DontShowAgainKeys;
+        [SerializeField]
+        private GameObject[] Dancers;
+
+        private static IReadOnlyList<string> DontShowAgainKeys => PlayerDataManager.GetDontShowAgainKeys();
         
         private string _activeDontShowKey;
 
@@ -46,16 +52,34 @@ namespace StarSalvager.UI
         
         private void Start()
         {
+            versionText.text = $"v{Application.version}";
+            
             _positiveButtonText = positiveButton.GetComponentInChildren<TMP_Text>();
             _negativeButtonText = negativeButton.GetComponentInChildren<TMP_Text>();
             _neutralButtonText = neutralButton.GetComponentInChildren<TMP_Text>();
 
             SetActive(false);
-
+            SetDancersActive(false);
         }
 
         //============================================================================================================//
 
+        public static void ShowDancers(bool state)
+        {
+            if (!Instance)
+                return;
+            Instance.SetDancersActive(state);
+        }
+
+        private void SetDancersActive(bool state)
+        {
+            foreach (var dancer in Dancers)
+            {
+                dancer.SetActive(state);
+            }
+        }
+
+        //====================================================================================================================//
         
         /// <summary>
         /// Displays an alert with a single Neutral button. NOTE: using DontShowAgain, if the code has been marked as don't show again, OnPressedCallback will Invoke
@@ -260,7 +284,7 @@ namespace StarSalvager.UI
 
             if (dontShowAgainToggle.isOn)
             {
-                PlayerPersistentData.PlayerData.AddDontShowAgainKey(dontShowAgainKey);
+                PlayerDataManager.AddDontShowAgainKey(dontShowAgainKey);
 
                 dontShowAgainToggle.isOn = false;
                 return;

@@ -6,10 +6,12 @@ using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
 {
@@ -27,11 +29,20 @@ namespace StarSalvager
         public int SectorNumber = -1;
         [NonSerialized]
         public int WaveNumber = -1;
+        public Image BotImage;
 
         public void Awake()
         {
             Button = GetComponent<Button>();
             PointerEvents = GetComponent<PointerEvents>();
+
+            BotImage.gameObject.SetActive(false);
+        }
+
+        private void OnEnable()
+        {
+            //TODO Need to get the level here
+            BotImage.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.CORE).GetSprite(0);
         }
 
         public void Start()
@@ -45,6 +56,7 @@ namespace StarSalvager
                 
                 Globals.CurrentSector = SectorNumber;
                 Globals.CurrentWave = WaveNumber;
+                Debug.Log($"Convert Sector Wave Index {SectorNumber}, {WaveNumber} to {SectorNumber}, {PlayerDataManager.SectorWaveIndexConverter[SectorNumber][WaveNumber]}");
                 SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
             });
         }

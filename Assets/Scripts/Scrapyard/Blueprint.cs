@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using StarSalvager.Factories;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace StarSalvager
         public int level;
 
         [JsonIgnore]
-        public bool CanAfford => PlayerPersistentData.PlayerData.CanAffordPart(partType, level, false);
+        public bool CanAfford => PlayerDataManager.CanAffordPart(partType, level);
 
         [JsonIgnore]
         public string DisplayString => $"{GetDisplayName()} lvl {level + 1}";

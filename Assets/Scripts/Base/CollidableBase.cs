@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Recycling;
 using UnityEngine;
 
 namespace StarSalvager
@@ -10,15 +9,9 @@ namespace StarSalvager
     /// Any object that can touch a bot should use this base class
     /// </summary>
     [RequireComponent(typeof(Collider2D))]
-    public abstract class CollidableBase : MonoBehaviour, IRecycled
+    public abstract class CollidableBase : Actor2DBase
     {
-        public bool IsRecycled { get; set; }
-        
-        //private const int CHECK_FREQUENCY = 1;
-//
-        //private int checks;
-        protected bool useCollision = true;
-
+        private bool _useCollision = true;
 
         protected string CollisionTag { get; set; } = "Player";
 
@@ -36,48 +29,12 @@ namespace StarSalvager
         }
         private Collider2D _collider;
 
-        //FIXME I'd prefer that this remain protected
-        public new SpriteRenderer renderer
-        {
-            get
-            {
-                if (_renderer == null)
-                    _renderer = gameObject.GetComponent<SpriteRenderer>();
-
-                return _renderer;
-            }
-        }
-        private SpriteRenderer _renderer;
+        //Unity Functions
+        //====================================================================================================================//
         
-        
-        public new Transform transform
-        {
-            get
-            {
-                if (isSet) return _transform;
-
-                _transform = gameObject.GetComponent<Transform>();
-                isSet = _transform != null;
-
-                return _transform;
-            }
-        }
-        private Transform _transform;
-        private bool isSet;
-        
-        //============================================================================================================//
-
-        private Collider2D waitCollider;
-        public void DisableColliderTillLeaves(Collider2D collider)
-        {
-            useCollision = false;
-            //SetColliderActive(false);
-            waitCollider = collider;
-        }
-
         private void OnCollisionEnter2D(Collision2D other)
         {
-            if (!useCollision)
+            if (!_useCollision)
                 return;
             
             if (!other.gameObject.CompareTag(CollisionTag))
@@ -94,7 +51,7 @@ namespace StarSalvager
         //TODO Consider how best to avoid using the Collision Stay
         private void OnCollisionStay2D(Collision2D other)
         {
-            if (!useCollision)
+            if (!_useCollision)
                 return;
             
             if (!other.gameObject.CompareTag(CollisionTag))
@@ -109,38 +66,33 @@ namespace StarSalvager
 
         private void OnCollisionExit2D(Collision2D other)
         {
-            if (waitCollider == null)
+            if (_waitCollider == null)
                 return;
 
-            if (other.collider != waitCollider)
+            if (other.collider != _waitCollider)
                 return;
 
-            useCollision = true;
-            waitCollider = null;
+            _useCollision = true;
+            _waitCollider = null;
 
         }
 
         //============================================================================================================//
 
-        public void SetSprite(Sprite sprite)
+        private Collider2D _waitCollider;
+        public void DisableColliderTillLeaves(Collider2D waitCollider)
         {
-            renderer.sprite = sprite;
+            if (waitCollider == collider)
+                return;
+            
+            _useCollision = false;
+            //SetColliderActive(false);
+            _waitCollider = waitCollider;
         }
-
-        public virtual void SetColor(Color color)
-        {
-            renderer.color = color;
-        }
-
+        
         public virtual void SetColliderActive(bool state)
         {
             collider.enabled = state;
-        }
-        
-        public virtual void SetSortingLayer(string sortingLayerName, int sortingOrder = 0)
-        {
-           renderer.sortingLayerName = sortingLayerName;
-           renderer.sortingOrder = sortingOrder;
         }
         
         //============================================================================================================//

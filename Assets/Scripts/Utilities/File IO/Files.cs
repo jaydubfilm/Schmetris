@@ -4,10 +4,12 @@ using System.IO;
 using System.Net.Mail;
 using Newtonsoft.Json;
 using StarSalvager.Factories;
+using StarSalvager.Factories.Data;
 using StarSalvager.Missions;
 using StarSalvager.Utilities.Analytics.Data;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Math;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using UnityEngine;
 
@@ -61,24 +63,23 @@ namespace StarSalvager.Utilities.FileIO
         //Player Data Directory
         //====================================================================================================================//
         
-        private const string AUTOSAVE_FILE = "Autosave.player";
-        private const string PLAYER_PERSISTENT_FILE = "PlayerPersistentMetadata.player";
-        
-        
-        public static readonly string AUTOSAVE_PATH = Path.Combine(REMOTE_DIRECTORY, AUTOSAVE_FILE);
+        private const string GAME_META_FILE = "GameMetaData.player";
 
         private static readonly string
-            PERSISTENT_META_PATH = Path.Combine(REMOTE_DIRECTORY, PLAYER_PERSISTENT_FILE);
+            GAME_META_PATH = Path.Combine(REMOTE_DIRECTORY, GAME_META_FILE);
 
-        private static readonly List<string> PersistentDataPaths = new List<string>
+        private static readonly List<string> PlayerAccountSavePaths = new List<string>
         {
-            Path.Combine(REMOTE_DIRECTORY, "PlayerPersistentDataSaveFile0.player"),
-            Path.Combine(REMOTE_DIRECTORY, "PlayerPersistentDataSaveFile1.player"),
-            Path.Combine(REMOTE_DIRECTORY, "PlayerPersistentDataSaveFile2.player"),
-            Path.Combine(REMOTE_DIRECTORY, "PlayerPersistentDataSaveFile3.player"),
-            Path.Combine(REMOTE_DIRECTORY, "PlayerPersistentDataSaveFile4.player"),
-            Path.Combine(REMOTE_DIRECTORY, "PlayerPersistentDataSaveFile5.player")
+            Path.Combine(REMOTE_DIRECTORY, "PlayerRunAccountData0.player"),
+            Path.Combine(REMOTE_DIRECTORY, "PlayerRunAccountData1.player"),
+            Path.Combine(REMOTE_DIRECTORY, "PlayerRunAccountData2.player"),
+            Path.Combine(REMOTE_DIRECTORY, "PlayerRunAccountData3.player")
         };
+
+        public static string GetPlayerAccountSavePath(int saveSlot)
+        {
+            return PlayerAccountSavePaths[saveSlot];
+        }
 
         //====================================================================================================================//
         
@@ -138,93 +139,108 @@ namespace StarSalvager.Utilities.FileIO
         //====================================================================================================================//
 
         #region Player Data
-
-        public static string GetNextAvailableSaveSlot()
+        
+        public static bool DoesSaveExist(int index)
         {
-            foreach (var path in PersistentDataPaths)
+            if (!Directory.Exists(REMOTE_DIRECTORY))
+                return false;
+
+            return File.Exists(PlayerAccountSavePaths[index]);
+        }
+        public static bool TryGetPlayerSaveData(int index, out PlayerSaveAccountData accountData)
+        {
+            accountData = null;
+            var result = DoesSaveExist(index);
+
+            if (!result)
+                return false;
+
+            accountData = TryImportPlayerSaveAccountData(index);
+
+            return true;
+        }
+
+        public static int GetNextAvailableSaveSlot()
+        {
+            for (int i = 0; i < PlayerAccountSavePaths.Count; i++)
             {
-                if (!Directory.Exists(path))
+                if (!Directory.Exists(REMOTE_DIRECTORY))
                     Directory.CreateDirectory(REMOTE_DIRECTORY);
 
-                if (!File.Exists(path))
-                    return path;
+                if (!File.Exists(PlayerAccountSavePaths[i]))
+                    return i;
             }
 
-            return AUTOSAVE_PATH;
+            Debug.Log("No available save slots, using slot 0");
+            return 0;
         }
         
-        public static PlayerMetadata ImportPlayerPersistentMetadata()
+        public static GameMetadata ImportGameMetaData()
         {
-            if (!Directory.Exists(PERSISTENT_META_PATH))
+            if (!Directory.Exists(GAME_META_PATH))
                 Directory.CreateDirectory(REMOTE_DIRECTORY);
 
-            if (!File.Exists(PERSISTENT_META_PATH))
+            if (!File.Exists(GAME_META_PATH))
             {
-                PlayerMetadata data = new PlayerMetadata();
+                GameMetadata data = new GameMetadata();
                 return data;
             }
 
-            return ImportJsonData<PlayerMetadata>(PERSISTENT_META_PATH);
+            return ImportJsonData<GameMetadata>(GAME_META_PATH);
         }
         
-        public static string ExportPlayerPersistentMetadata(PlayerMetadata editorData)
+        public static string ExportGameMetaData(GameMetadata editorData)
         {
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
-            File.WriteAllText(PERSISTENT_META_PATH, export);
+            File.WriteAllText(GAME_META_PATH, export);
 
             return export;
         }
 
-        public static PlayerData ImportPlayerPersistentData(string saveSlot)
+        public static PlayerSaveAccountData TryImportPlayerSaveAccountData(int saveSlotIndex)
         {
-            if (!Directory.Exists(saveSlot))
+            if (!Directory.Exists(PlayerAccountSavePaths[saveSlotIndex]))
                 Directory.CreateDirectory(REMOTE_DIRECTORY);
 
-            if (!File.Exists(saveSlot))
+            if (!File.Exists(PlayerAccountSavePaths[saveSlotIndex]))
             {
-                PlayerData data = new PlayerData();
-                data.PlaythroughID = Guid.NewGuid().ToString();
-
-                foreach (var blueprintData in Globals.BlueprintInitialData)
-                {
-                    Blueprint blueprint = new Blueprint
-                    {
-                        name = (PART_TYPE)blueprintData.type + " " + blueprintData.level,
-                        partType = (PART_TYPE)blueprintData.type,
-                        level = blueprintData.level
-                    };
-                    data.UnlockBlueprint(blueprint);
-                }
-
-                foreach (var facilityData in Globals.FacilityInitialData)
-                {
-                    data.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
-                }
-
-                foreach (var facilityData in Globals.FacilityInitialBlueprintData)
-                {
-                    data.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.level);
-                }
-
-                return data;
+                return null;
             }
 
-            var loaded = JsonConvert.DeserializeObject<PlayerData>(File.ReadAllText(saveSlot));
+            JsonSerializerSettings settings = new JsonSerializerSettings
+            {
+                ObjectCreationHandling = ObjectCreationHandling.Replace
+            };
+
+            var loaded = JsonConvert.DeserializeObject<PlayerSaveAccountData>(File.ReadAllText(PlayerAccountSavePaths[saveSlotIndex]), settings);
+
+            loaded.PlayerRunData.SetupMap();
 
             return loaded;
         }
-        
-        public static string ExportPlayerPersistentData(PlayerData editorData, string saveSlot)
+
+        public static string ExportPlayerSaveAccountData(PlayerSaveAccountData playerMetaData, int saveSlotIndex)
         {
-            editorData.SaveData();
-            
-            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
-            File.WriteAllText(saveSlot, export);
+            playerMetaData.SaveData();
+
+            var export = JsonConvert.SerializeObject(playerMetaData, Formatting.None);
+            File.WriteAllText(PlayerAccountSavePaths[saveSlotIndex], export);
 
             return export;
-            
         }
-            #endregion //Player Data
+
+        public static void DestroyPlayerSaveFile(int index)
+        {
+            if (!Directory.Exists(REMOTE_DIRECTORY))
+                return;
+            
+            if(!File.Exists(PlayerAccountSavePaths[index]))
+                return;
+            
+            File.Delete(PlayerAccountSavePaths[index]);
+        }
+        
+        #endregion //Player Data
 
         //Mission Data
         //====================================================================================================================//
@@ -373,7 +389,8 @@ namespace StarSalvager.Utilities.FileIO
 
             if (Application.isPlaying)
             {
-                PlayerPersistentData.ClearPlayerData();
+                PlayerDataManager.ClearPlayerAccountData();
+                PlayerDataManager.ResetGameMetaData();
             }
 
         }

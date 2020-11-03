@@ -6,6 +6,7 @@ using StarSalvager.Tutorial.Data;
 using StarSalvager.UI;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
@@ -102,7 +103,7 @@ namespace StarSalvager.Tutorial
             mono.StartCoroutine(MainTutorialCoroutine());
 
             
-            //LevelManager.Instance.GameUi.SetCurrentWaveText("Training Simulator");
+            LevelManager.Instance.GameUi.SetCurrentWaveText("Simulator");
             
             _readyForInput = true;
             _isReady = true;
@@ -217,7 +218,7 @@ namespace StarSalvager.Tutorial
                 combo = true;
             }
             
-            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[3], true));
+            yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[3], false));
             
             SetText(tutorialRemoteData[3], true, true);
 
@@ -256,8 +257,9 @@ namespace StarSalvager.Tutorial
             
             SetText(tutorialRemoteData[6], true, true);
 
-            bool magnet = false;
             var bot = LevelManager.Instance.BotObject;
+            bool magnet = bot.HasFullMagnet;
+            
 
             void SetMagnet()
             {
@@ -317,6 +319,7 @@ namespace StarSalvager.Tutorial
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[9], true));
         }
+
         private IEnumerator PulsarStepCoroutine()
         {
             LevelManager.Instance.SetStage(3);
@@ -339,10 +342,11 @@ namespace StarSalvager.Tutorial
             bot.OnBitShift -= SetBump;
             
             bot.PROTO_GodMode = false;
-            PlayerPersistentData.PlayerData.SetLiquidResource(BIT_TYPE.RED, 6f, bot.IsRecoveryDrone);
+            PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(6f);
 
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[11], false));
         }
+
         private IEnumerator FuelStepCoroutine()
         {
             //TODO Set the bot able to use its fuel
@@ -350,9 +354,7 @@ namespace StarSalvager.Tutorial
             
             LevelManager.Instance.SetStage(0);
             
-            var playerData = PlayerPersistentData.PlayerData.liquidResource;
-            
-            yield return new WaitUntil(() => playerData[BIT_TYPE.RED] <= 0f);
+            yield return new WaitUntil(() => PlayerDataManager.GetResource(BIT_TYPE.RED).liquid <= 0f);
             
             LevelManager.Instance.SetStage(4);
             
@@ -360,7 +362,7 @@ namespace StarSalvager.Tutorial
 
             //TODO Set the wave to spawn all reds
             
-            yield return new WaitUntil(() => playerData[BIT_TYPE.RED] > 0f);
+            yield return new WaitUntil(() => PlayerDataManager.GetResource(BIT_TYPE.RED).liquid > 0f);
             
             bot.PROTO_GodMode = true;
             LevelManager.Instance.SetStage(3);
@@ -371,6 +373,7 @@ namespace StarSalvager.Tutorial
             pressAnyKeyText.gameObject.SetActive(false);
 
         }
+
         private IEnumerator EndStepCoroutine()
         {
             yield return new WaitForSeconds(5f);
@@ -492,14 +495,19 @@ namespace StarSalvager.Tutorial
         {
             _inputManager = InputManager.Instance;
             
-            Input.Actions.Default.Any.Enable();
-            Input.Actions.Default.Any.performed += AnyKeyPressed;
+            Input.Actions.Default.Continue.Enable();
+            Input.Actions.Default.Continue.performed += AnyKeyPressed;
+
+
+            //Found: https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/manual/ActionBindings.html?_ga=2.228834015.217367981.1603324316-246071923.1589462724#showing-current-bindings
+            var key = Input.Actions.Default.Continue.GetBindingDisplayString();
+            pressAnyKeyText.text = $"{key} to continue...";
         }
 
         public void DeInitInput()
         {
-            Input.Actions.Default.Any.Disable();
-            Input.Actions.Default.Any.performed -= AnyKeyPressed;
+            Input.Actions.Default.Continue.Disable();
+            Input.Actions.Default.Continue.performed -= AnyKeyPressed;
         }
 
         //Input Functions

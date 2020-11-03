@@ -15,6 +15,7 @@ MonoBehaviour:
   partRemoteData:
   - name: Core
     partType: 0
+    lockRotation: 0
     canSell: 0
     description: The heart and soul of your bot.  The core contains a powerful electro-magnet
       that attracts raw materials, as well as a limited storage capacity for refined
@@ -150,6 +151,7 @@ MonoBehaviour:
         amount: 1
   - name: Magnet
     partType: 1
+    lockRotation: 0
     canSell: 1
     description: Enhances the basic magnetism strength of your core, to allow the
       collection of additional materials and components in the field.
@@ -230,6 +232,7 @@ MonoBehaviour:
         amount: 4
   - name: Repairer
     partType: 2
+    lockRotation: 0
     canSell: 1
     description: Uses plasma to repair damaged parts within range.
     priority: 50
@@ -323,6 +326,7 @@ MonoBehaviour:
         amount: 1
   - name: Armor
     partType: 3
+    lockRotation: 0
     canSell: 1
     description: 'These forge-hardened titanium plates are the building blocks of
       a great defense. '
@@ -393,6 +397,7 @@ MonoBehaviour:
         amount: 1
   - name: Gun
     partType: 4
+    lockRotation: 0
     canSell: 1
     description: This basic offensive weapon will fire on any enemy within range
       and consumes scrap metal ammunition.  Aim leaves something to be desired.
@@ -406,9 +411,9 @@ MonoBehaviour:
       - key: Damage
         value: 6
       - key: Cooldown
-        value: .5
+        value: 0.5
       - key: Projectile
-        value: 083be790-7a08-4f27-b506-e8e09a116bc8
+        value: fcd28cae-267c-4f46-ac9c-8da7a14e8f94
       burnRate: 0.1
       cost:
       - resourceType: 0
@@ -485,6 +490,7 @@ MonoBehaviour:
         amount: 1
   - name: Triple Shot
     partType: 12
+    lockRotation: 1
     canSell: 1
     description: This gun rotates with your bot and fires three projectiles in an
       arc.  Very effective!
@@ -549,6 +555,7 @@ MonoBehaviour:
         amount: 7000
   - name: Shield
     partType: 5
+    lockRotation: 0
     canSell: 1
     description: 'When fully charged, this hydrogen-powered shield absorbs damage
       to all cells within its radius. '
@@ -659,6 +666,7 @@ MonoBehaviour:
         amount: 1
   - name: Bomb
     partType: 7
+    lockRotation: 0
     canSell: 1
     description: 'This powerfu pilot-triggered weapon deals explosive damage to all
       enemies on the screen. '
@@ -719,6 +727,7 @@ MonoBehaviour:
         amount: 1
   - name: Container
     partType: 8
+    lockRotation: 0
     canSell: 1
     description: This multi-purpose container provides extra on-board storage for
       all resource types.
@@ -799,6 +808,7 @@ MonoBehaviour:
         amount: 1
   - name: Fuel Tank
     partType: 9
+    lockRotation: 0
     canSell: 1
     description: Provides extra on-board fuel storage.
     priority: 50
@@ -882,6 +892,7 @@ MonoBehaviour:
         amount: 1
   - name: Plasma Drum
     partType: 10
+    lockRotation: 0
     canSell: 1
     description: Provides extra on-board plasma storage.
     priority: 50
@@ -965,6 +976,7 @@ MonoBehaviour:
         amount: 1
   - name: Magazine
     partType: 11
+    lockRotation: 0
     canSell: 1
     description: 'Provides extra on-board storage for refined scrap metal. '
     priority: 0
@@ -1036,6 +1048,7 @@ MonoBehaviour:
         amount: 1
   - name: Battery
     partType: 13
+    lockRotation: 0
     canSell: 1
     description: Provides extra on-board storage for power.
     priority: 100
@@ -1067,6 +1080,7 @@ MonoBehaviour:
       cost: []
   - name: Missile
     partType: 14
+    lockRotation: 0
     canSell: 1
     description: 
     priority: 50
@@ -1134,6 +1148,7 @@ MonoBehaviour:
         amount: 10000
   - name: Sniper
     partType: 15
+    lockRotation: 0
     canSell: 1
     description: 
     priority: 50
@@ -1193,6 +1208,7 @@ MonoBehaviour:
         amount: 6500
   - name: Sniper
     partType: 15
+    lockRotation: 0
     canSell: 1
     description: 
     priority: 50
@@ -1256,6 +1272,7 @@ MonoBehaviour:
         amount: 6500
   - name: Blaster
     partType: 16
+    lockRotation: 0
     canSell: 1
     description: 
     priority: 0
@@ -1327,6 +1344,7 @@ MonoBehaviour:
         amount: 1000
   - name: Auto-Refiner
     partType: 17
+    lockRotation: 0
     canSell: 1
     description: 
     priority: 0
@@ -1352,6 +1370,7 @@ MonoBehaviour:
         amount: 100
   - name: Range Boost
     partType: 23
+    lockRotation: 0
     canSell: 1
     description: 
     priority: 50
@@ -1411,6 +1430,7 @@ MonoBehaviour:
         amount: 500
   - name: Overclock
     partType: 24
+    lockRotation: 0
     canSell: 1
     description: 
     priority: 50
@@ -1474,6 +1494,7 @@ MonoBehaviour:
         amount: 500
   - name: Offense
     partType: 25
+    lockRotation: 0
     canSell: 1
     description: 
     priority: 50
@@ -1533,6 +1554,7 @@ MonoBehaviour:
         amount: 750
   - name: Defense
     partType: 26
+    lockRotation: 0
     canSell: 1
     description: 
     priority: 50
@@ -1592,6 +1614,7 @@ MonoBehaviour:
         amount: 750
   - name: Freeze
     partType: 6
+    lockRotation: 0
     canSell: 1
     description: 
     priority: 50

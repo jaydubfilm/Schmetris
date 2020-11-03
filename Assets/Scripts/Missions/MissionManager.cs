@@ -4,6 +4,7 @@ using StarSalvager.Utilities.FileIO;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.Missions
 {
@@ -12,8 +13,6 @@ namespace StarSalvager.Missions
         private static readonly bool fromScriptable = true;
 
         public static string RecentCompletedMissionName = "";
-        public static int RecentCompletedSectorName;
-        public static int RecentCompletedWaveName;
 
         private static bool HasInit;
         public static List<Mission> MissionTypes 
@@ -79,7 +78,7 @@ namespace StarSalvager.Missions
         }
         private static MissionsMasterData m_missionsMasterData = null;
 
-        public static MissionsCurrentData MissionsCurrentData => PlayerPersistentData.PlayerData.missionsCurrentData;
+        public static MissionsCurrentData MissionsCurrentData => PlayerDataManager.GetMissionsCurrentData();
 
         public static void LoadMissionData()
         {
@@ -89,7 +88,7 @@ namespace StarSalvager.Missions
             }
             
             MissionsCurrentData.LoadMissionData();
-            CheckUnlocks();
+            CheckUnlocks(false);
         }
 
         public static void AddMissionCurrent(string missionName)
@@ -134,14 +133,12 @@ namespace StarSalvager.Missions
             CheckUnlocks();
         }
 
-        private static void ProcessWaveComplete(int sectorNumber, int waveNumber)
+        public static void ProcessWaveComplete()
         {
-            RecentCompletedSectorName = sectorNumber;
-            RecentCompletedWaveName = waveNumber;
             CheckUnlocks();
         }
 
-        private static void CheckUnlocks()
+        private static void CheckUnlocks(bool showToast = true)
         {
             for (int i = MissionsCurrentData.NotStartedMissions.Count - 1; i >= 0; i--)
             {
@@ -149,6 +146,10 @@ namespace StarSalvager.Missions
                 if (mission.CheckUnlockParameters())
                 {
                     MissionsCurrentData.AddMission(mission);
+                    if (showToast)
+                    {
+                        Toast.AddToast("Unlock " + mission.missionName + " mission!");
+                    }
 
                     if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
                     {
@@ -164,7 +165,7 @@ namespace StarSalvager.Missions
         {
             MissionsCurrentData currentData = new MissionsCurrentData();
             currentData.ResetMissionData();
-            PlayerPersistentData.PlayerData.missionsCurrentData = currentData;
+            PlayerDataManager.SetMissionsCurrentData(currentData);
         }
 
         public static void CustomOnApplicationQuit()

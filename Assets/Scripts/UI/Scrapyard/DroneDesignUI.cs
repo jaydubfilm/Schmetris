@@ -7,11 +7,11 @@ using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard
@@ -153,7 +153,7 @@ namespace StarSalvager.UI.Scrapyard
 
             _currentlyOverwriting = false;
 
-            recoveryDroneBannerObject.SetActive(DroneDesigner.IsEditingRecoveryDrone);
+            recoveryDroneBannerObject.SetActive(Globals.IsRecoveryBot);
         }
 
         private void OnEnable()
@@ -162,9 +162,9 @@ namespace StarSalvager.UI.Scrapyard
 
             if (_scrollViewsSetup)
                 RefreshScrollViews();
-
-            PlayerData.OnValuesChanged += UpdateBotResourceElements;
-            PlayerData.OnCapacitiesChanged += UpdateBotResourceElements;
+            
+            PlayerDataManager.OnValuesChanged += UpdateBotResourceElements;
+            PlayerDataManager.OnCapacitiesChanged += UpdateBotResourceElements;
 
             //TODO May want to setup some sort of Init function to merge these two setups
             //launchButtonPointerEvents.PointerEntered += PreviewFillBothBotsResources;
@@ -176,9 +176,9 @@ namespace StarSalvager.UI.Scrapyard
             m_cameraZoomScaler.value = cameraScaleOnEnter;
 
             DroneDesigner?.ClearUndoRedoStacks();
-            
-            PlayerData.OnValuesChanged -= UpdateBotResourceElements;
-            PlayerData.OnCapacitiesChanged -= UpdateBotResourceElements;
+
+            PlayerDataManager.OnValuesChanged -= UpdateBotResourceElements;
+            PlayerDataManager.OnCapacitiesChanged -= UpdateBotResourceElements;
             
             
             //launchButtonPointerEvents.PointerEntered -= PreviewFillBothBotsResources;
@@ -334,7 +334,7 @@ namespace StarSalvager.UI.Scrapyard
                 DroneDesigner.ToggleDrones();
                 UpdateBotResourceElements();
                 
-                recoveryDroneBannerObject.SetActive(DroneDesigner.IsEditingRecoveryDrone);
+                recoveryDroneBannerObject.SetActive(Globals.IsRecoveryBot);
 
             });
 
@@ -356,7 +356,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitUiScrollView()
         {
-            foreach (var blockData in PlayerPersistentData.PlayerData.GetCurrentPartsInStorage())
+            foreach (var blockData in PlayerDataManager.GetCurrentPartsInStorage())
             {
                 var partRemoteData = remotePartProfileScriptable.GetRemoteData((PART_TYPE)blockData.Type);
 
@@ -382,65 +382,55 @@ namespace StarSalvager.UI.Scrapyard
 
         public void UpdateBotResourceElements()
         {
-            var resources = PlayerPersistentData.PlayerData.resources;
-            var resourceCapacities = PlayerPersistentData.PlayerData.ResourceCapacities;
-
-            foreach (var resource in resources)
+            foreach (BIT_TYPE _bitType in Constants.BIT_ORDER)
             {
+                if (_bitType == BIT_TYPE.WHITE)
+                    continue;
+
+                PlayerResource playerResource = PlayerDataManager.GetResource(_bitType);
+
                 var data = new ResourceAmount
                 {
                     //resourceType = CraftCost.TYPE.Bit,
-                    type = resource.Key,
-                    amount = resource.Value,
-                    capacity = resourceCapacities[resource.Key]
+                    type = _bitType,
+                    amount = playerResource.resource,
+                    capacity = playerResource.resourceCapacity
                 };
 
-                var element = resourceScrollView.AddElement(data, $"{resource.Key}_UIElement");
+                var element = resourceScrollView.AddElement(data, $"{_bitType}_UIElement");
                 element.Init(data);
             }
 
             //liquidResourceContentView
-            IReadOnlyDictionary<BIT_TYPE, float> liquids;
-            IReadOnlyDictionary<BIT_TYPE, int> liquidsCapacity;
-            if (_droneDesigner.IsEditingRecoveryDrone)
+            foreach (BIT_TYPE _bitType in Constants.BIT_ORDER)
             {
-                liquids = PlayerPersistentData.PlayerData.recoveryDroneLiquidResource;
-                liquidsCapacity = PlayerPersistentData.PlayerData.recoveryDroneLiquidCapacity;
-            }
-            else
-            {
-                liquids = PlayerPersistentData.PlayerData.liquidResource;
-                liquidsCapacity = PlayerPersistentData.PlayerData.liquidCapacity;
-            }
-
-            foreach (var liquid in liquids)
-            {
-                var bitType = liquid.Key;
-
-                switch (bitType)
-                {
-                    case BIT_TYPE.BLUE:
-                    case BIT_TYPE.WHITE:
-                        continue;
-                }
+                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.BLUE)
+                    continue;
                 
+                if (DroneDesigner._scrapyardBot == null)
+                    continue;
+                
+                PlayerResource playerResource = PlayerDataManager.GetResource(_bitType);
+
                 var data = new ResourceAmount
                 {
-                    amount = (int)liquid.Value,
-                    capacity = liquidsCapacity[bitType],
-                    type = bitType,
+                    amount = (int)playerResource.liquid,
+                    capacity = playerResource.liquidCapacity,
+                    type = _bitType,
                 };
-                
-                if(bitType == BIT_TYPE.YELLOW)
+
+                if (_bitType == BIT_TYPE.YELLOW)
                     Console.WriteLine("");
 
-                var element = liquidResourceContentView.AddElement(data, $"{liquid.Key}_UIElement");
+                var element = liquidResourceContentView.AddElement(data, $"{_bitType}_UIElement");
                 element.Init(data, true);
+                
+                element.gameObject.SetActive(DroneDesigner._scrapyardBot.UsedResourceTypes.Contains(_bitType));
             }
 
-
             UpdateFlightDataUI();
-
+            
+            UpdateRepairButton();
         }
 
         private void UpdateLoadListUiScrollViews()
@@ -474,12 +464,12 @@ namespace StarSalvager.UI.Scrapyard
             var partCapacity = _droneDesigner._scrapyardBot.PartCapacity;
 
             
-            var powerDraw = _droneDesigner._scrapyardBot.powerDraw;
+            var powerDraw = _droneDesigner._scrapyardBot.PowerDraw;
             var availablePower =
                 Mathf.Clamp(
-                    PlayerPersistentData.PlayerData.liquidResource[BIT_TYPE.YELLOW] +
-                    PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW], 0,
-                    PlayerPersistentData.PlayerData.liquidCapacity[BIT_TYPE.YELLOW]);
+                    PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid +
+                    PlayerDataManager.GetResource(BIT_TYPE.YELLOW).resource, 0,
+                    PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquidCapacity);
 
             string powerTime = "infinite";
             if(powerDraw > 0)
@@ -518,15 +508,7 @@ namespace StarSalvager.UI.Scrapyard
                 BIT_TYPE.YELLOW
             };
 
-            List<BlockData> botData;
-            if (isRecoveryDrone)
-            {
-                botData = PlayerPersistentData.PlayerData.recoveryDroneBlockData;
-            }
-            else
-            {
-                botData = PlayerPersistentData.PlayerData.currentBlockData;
-            }
+            List<BlockData> botData = PlayerDataManager.GetBlockDatas();
 
             foreach (var bitType in types)
             {
@@ -569,41 +551,21 @@ namespace StarSalvager.UI.Scrapyard
                     continue;
                 }
 
-
-                float currentAmount;
-                if (isRecoveryDrone)
-                {
-                    currentAmount = PlayerPersistentData.PlayerData.recoveryDroneLiquidResource[bitType];
-                }
-                else
-                {
-                    currentAmount = PlayerPersistentData.PlayerData.liquidResource[bitType];
-                }
-                float currentCapacity;
-                if (isRecoveryDrone)
-                {
-                    currentCapacity = PlayerPersistentData.PlayerData.recoveryDroneLiquidCapacity[bitType];
-                }
-                else
-                {
-                    currentCapacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
-                }
-
-                var fillRemaining = currentCapacity - currentAmount;
+                var fillRemaining = PlayerDataManager.GetResource(bitType).liquidCapacity - PlayerDataManager.GetResource(bitType).liquid;
 
                 //If its already full, then we're good to move on
                 if (fillRemaining <= 0f)
                     continue;
 
-                var availableResources = PlayerPersistentData.PlayerData.resources[bitType];
+                var availableResources = PlayerDataManager.GetResource(bitType).resource;
 
                 //If we have no resources available to refill the liquid, move onto the next
-                if(availableResources <= 0)
+                if (availableResources <= 0)
                     continue;
 
                 var movingAmount = Mathf.RoundToInt(Mathf.Min(availableResources, fillRemaining));
 
-                if (isRecoveryDrone == _droneDesigner.IsEditingRecoveryDrone)
+                if (isRecoveryDrone == Globals.IsRecoveryBot)
                 {
                     botLiquidElement.PreviewChange(movingAmount);
                 }
@@ -676,6 +638,13 @@ namespace StarSalvager.UI.Scrapyard
 
         #region Repair Cost
 
+        public void UpdateRepairButton()
+        {
+            var costs = DroneDesigner.GetRepairCostPair();
+
+            ShowRepairCost(costs.x, costs.y);
+        }
+
         //FIXME This needs to be set up to better account for the weird things that come with Replacing destroyed parts
         public void ShowRepairCost(int repairCost, int replacementCost)
         {
@@ -690,7 +659,7 @@ namespace StarSalvager.UI.Scrapyard
                 return;
             
             _repairButtonText.text = $"Repair {finalRepairCost} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.GREEN]}";
-            repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] >= finalRepairCost;
+            repairButton.interactable = PlayerDataManager.GetResource(BIT_TYPE.GREEN).resource >= finalRepairCost;
             repairButtonGlow.SetActive(repairButton.interactable);
             
             /*var totalCost = repairCost + replacementCost;
@@ -741,7 +710,7 @@ namespace StarSalvager.UI.Scrapyard
             if (totalCost == 0)
                 return 0;
 
-            var available = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN];
+            var available = PlayerDataManager.GetResource(BIT_TYPE.GREEN).resource;
 
             if (totalCost <= available || available == 0) 
                 return totalCost;

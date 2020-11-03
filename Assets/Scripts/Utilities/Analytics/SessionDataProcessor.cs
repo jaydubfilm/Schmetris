@@ -4,6 +4,7 @@ using StarSalvager.Audio;
 using StarSalvager.Utilities.Analytics.Data;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Utilities.Saving;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Analytics
@@ -280,6 +281,8 @@ namespace StarSalvager.Utilities.Analytics
         {
             if (!_currentWave.HasValue)
                 return;
+
+            PlayerDataManager.RecordEnemyKilled(enemyId);
 
             var wave = _currentWave.Value;
             

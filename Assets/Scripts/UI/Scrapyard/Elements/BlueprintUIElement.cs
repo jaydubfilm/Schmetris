@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.UI.Scrapyard
 {
@@ -27,12 +28,12 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnEnable()
         {
-            PlayerData.OnValuesChanged += UpdateUI;
+            PlayerDataManager.OnValuesChanged += UpdateUI;
         }
 
         private void OnDisable()
         {
-            PlayerData.OnValuesChanged -= UpdateUI;
+            PlayerDataManager.OnValuesChanged -= UpdateUI;
         }
 
         //============================================================================================================//

@@ -1,6 +1,8 @@
 ﻿using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Utilities.Saving;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace StarSalvager.Missions
@@ -23,7 +25,7 @@ namespace StarSalvager.Missions
             if (IsComplete)
                 return true;
             
-            if (MissionManager.RecentCompletedSectorName == m_sectorNumber && MissionManager.RecentCompletedWaveName == m_waveNumber)
+            if (PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(m_sectorNumber, m_waveNumber)))
             {
                 IsComplete = true;
                 return true;

@@ -1,6 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using UnityEngine;
 
@@ -35,12 +36,12 @@ namespace StarSalvager.UI.Scrapyard
             
             UpdateStorage();
 
-            PlayerData.OnValuesChanged += UpdateStorage;
+            PlayerDataManager.OnValuesChanged += UpdateStorage;
         }
 
         private void OnDisable()
         {
-            PlayerData.OnValuesChanged -= UpdateStorage;   
+            PlayerDataManager.OnValuesChanged -= UpdateStorage;   
         }
 
         //============================================================================================================//
@@ -56,7 +57,7 @@ namespace StarSalvager.UI.Scrapyard
             
             storageUiElementScrollView.ClearElements();
             
-            foreach (var storageBlockData in PlayerPersistentData.PlayerData.GetCurrentPartsInStorage())
+            foreach (var storageBlockData in PlayerDataManager.GetCurrentPartsInStorage())
             {
                 TEST_Storage testStorage = new TEST_Storage
                 {
@@ -72,7 +73,7 @@ namespace StarSalvager.UI.Scrapyard
                 });
             }
             
-            foreach (var storageBlockData in PlayerPersistentData.PlayerData.components)
+            foreach (var storageBlockData in PlayerDataManager.GetComponents())
             {
                 //TODO Need to separate the components
                 TEST_Storage testStorage = new TEST_Storage

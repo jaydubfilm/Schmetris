@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using UnityEngine;
@@ -28,17 +29,17 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required]
         private GameObject logisticsWindow;
         
-        [SerializeField, Required]
-        private GameObject saveGameWindow;
+        /*[SerializeField, Required]
+        private GameObject saveGameWindow;*/
 
         [SerializeField, Required, FoldoutGroup("Settings Menu")]
         private GameObject settingsWindow;
         [SerializeField, Required, FoldoutGroup("Settings Menu")]
         private Button resumeGameButton;
-        [SerializeField, Required, FoldoutGroup("Settings Menu")]
+        /*[SerializeField, Required, FoldoutGroup("Settings Menu")]
         private Button saveGameButton;
         [SerializeField, Required, FoldoutGroup("Settings Menu")]
-        private Button loadGameButton;
+        private Button loadGameButton;*/
         [SerializeField, Required, FoldoutGroup("Settings Menu")]
         private Button settingsButton;
         [SerializeField, Required, FoldoutGroup("Settings Menu")]
@@ -74,7 +75,6 @@ namespace StarSalvager.UI.Scrapyard
             Logistics,
             Missions,
             Settings,
-            SaveGame,
         }
         
         //============================================================================================================//
@@ -92,7 +92,7 @@ namespace StarSalvager.UI.Scrapyard
                 logisticsWindow,
                 missionsWindow,
                 settingsWindow,
-                saveGameWindow
+                //saveGameWindow
             };
             
             InitButtons();
@@ -163,11 +163,16 @@ namespace StarSalvager.UI.Scrapyard
             {
                 _windows[(int)Window.Settings].SetActive(false);
             });
+
+            /*saveGameButton.onClick.AddListener(() =>
+            {
+                PlayerDataManager.SavePlayerAccountData();
+            });
             
             loadGameButton.onClick.AddListener(() =>
             {
                 throw new NotImplementedException();
-            });
+            });*/
             settingsButton.onClick.AddListener(() =>
             {
                 throw new NotImplementedException();
@@ -182,7 +187,8 @@ namespace StarSalvager.UI.Scrapyard
                     "Cancel",
                     quit =>
                     {
-                        PlayerPersistentData.SaveAutosaveFiles();
+                        PlayerDataManager.SavePlayerAccountData();
+                        //PlayerDataManager.ClearPlayerAccountData();
 
                         if (!quit)
                         {
@@ -217,7 +223,7 @@ namespace StarSalvager.UI.Scrapyard
             }
 
             //Checks to see if we need to display a window
-            if (PlayerPersistentData.PlayerData.partsInStorageBlockData.Count > 0)
+            if (PlayerDataManager.GetCurrentPartsInStorage().Count > 0)
             {
                 Alert.ShowAlert("Warning!", 
                     "You have unused parts left in storage, are you sure you want to launch?",
@@ -241,8 +247,10 @@ namespace StarSalvager.UI.Scrapyard
         private void Launch()
         {
             //TODO Need to decide if this should happen at arrival or at launch
-            TryFillBotResources(true);
-            TryFillBotResources(false);
+            Globals.IsRecoveryBot = true;
+            TryFillBotResources();
+            Globals.IsRecoveryBot = false;
+            TryFillBotResources();
             
             _droneDesigner.ProcessScrapyardUsageEndAnalytics();
             
@@ -255,7 +263,7 @@ namespace StarSalvager.UI.Scrapyard
         }
         
         
-        private void TryFillBotResources(bool isRecoveryDrone)
+        private void TryFillBotResources()
         {
             BIT_TYPE[] types = {
                 BIT_TYPE.RED,
@@ -264,15 +272,7 @@ namespace StarSalvager.UI.Scrapyard
                 BIT_TYPE.YELLOW
             };
 
-            List<BlockData> botData;
-            if (isRecoveryDrone)
-            {
-                botData = PlayerPersistentData.PlayerData.recoveryDroneBlockData;
-            }
-            else
-            {
-                botData = PlayerPersistentData.PlayerData.currentBlockData;
-            }
+            List<BlockData> botData = PlayerDataManager.GetBlockDatas();
             
             foreach (var bitType in types)
             {
@@ -305,24 +305,8 @@ namespace StarSalvager.UI.Scrapyard
                 }
 
 
-                float currentAmount;
-                if (isRecoveryDrone)
-                {
-                    currentAmount = PlayerPersistentData.PlayerData.recoveryDroneLiquidResource[bitType];
-                }
-                else
-                {
-                    currentAmount = PlayerPersistentData.PlayerData.liquidResource[bitType];
-                }
-                float currentCapacity;
-                if (isRecoveryDrone)
-                {
-                    currentCapacity = PlayerPersistentData.PlayerData.recoveryDroneLiquidCapacity[bitType];
-                }
-                else
-                {
-                    currentCapacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];
-                }
+                float currentAmount = PlayerDataManager.GetResource(bitType).liquid;
+                float currentCapacity = PlayerDataManager.GetResource(bitType).liquidCapacity;
 
                 var fillRemaining = currentCapacity - currentAmount;
 
@@ -330,7 +314,7 @@ namespace StarSalvager.UI.Scrapyard
                 if (fillRemaining <= 0f)
                     continue;
 
-                var availableResources = PlayerPersistentData.PlayerData.resources[bitType];
+                var availableResources = PlayerDataManager.GetResource(bitType).resource;
 
                 //If we have no resources available to refill the liquid, move onto the next
                 if(availableResources <= 0)
@@ -338,8 +322,8 @@ namespace StarSalvager.UI.Scrapyard
 
                 var movingAmount = Mathf.RoundToInt(Mathf.Min(availableResources, fillRemaining));
 
-                PlayerPersistentData.PlayerData.resources[bitType] -= movingAmount;
-                PlayerPersistentData.PlayerData.AddLiquidResource(bitType, movingAmount, isRecoveryDrone);
+                PlayerDataManager.GetResource(bitType).SubtractResource(movingAmount);
+                PlayerDataManager.GetResource(bitType).AddLiquid(movingAmount);
             }
         }
         

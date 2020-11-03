@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 using StarSalvager.Factories;
 using TMPro;
 using UnityEngine;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.UI.Scrapyard
 {
@@ -50,20 +51,20 @@ namespace StarSalvager.UI.Scrapyard
                     OnHoveredChange,
                     mission =>
                     {
-                        if (PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.All(m =>
+                        if (PlayerDataManager.GetMissionsCurrentData().CurrentTrackedMissions.All(m =>
                             m.missionName != currentMission.missionName))
                         {
-                            if (PlayerPersistentData.PlayerData.missionsCurrentData.CurrentTrackedMissions.Count >=
+                            if (PlayerDataManager.GetMissionsCurrentData().CurrentTrackedMissions.Count >=
                                 Globals.NumCurrentTrackedMissionMax)
                                 return;
 
                             Debug.Log("Track " + mission.missionName);
-                            PlayerPersistentData.PlayerData.missionsCurrentData.AddTrackedMissions(currentMission);
+                            PlayerDataManager.GetMissionsCurrentData().AddTrackedMissions(currentMission);
                         }
                         else
                         {
                             Debug.Log("Untrack " + mission.missionName);
-                            PlayerPersistentData.PlayerData.missionsCurrentData.RemoveTrackedMission(currentMission);
+                            PlayerDataManager.GetMissionsCurrentData().RemoveTrackedMission(currentMission);
                         }
 
                         CheckMissionUITrackingToggles?.Invoke();

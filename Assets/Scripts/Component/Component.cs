@@ -17,15 +17,12 @@ namespace StarSalvager
         
         private Damage _damage;
 
-        //private TextMeshPro _label;
-
         //ICanCombo Properties
         //====================================================================================================================//
 
         public IAttachable iAttachable => this;
-
-        [ShowInInspector, ReadOnly]
-        public int level { get; private set; }
+        
+        public bool IsBusy { get; set; }
         
         //IObstacle Properties
         //============================================================================================================//
@@ -40,11 +37,20 @@ namespace StarSalvager
         //============================================================================================================//
         public COMPONENT_TYPE Type { get; set; }
 
+        //ILevel Properties
+        //====================================================================================================================//
+        
+        [ShowInInspector, ReadOnly]
+        public int level { get; private set; }
+        
+        
         //IAttachable Properties
         //============================================================================================================//
         
         [ShowInInspector, ReadOnly]
         public Vector2Int Coordinate { get; set; }
+
+
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
         public bool CountAsConnectedToCore => true;
@@ -53,7 +59,7 @@ namespace StarSalvager
         //public bool CanDisconnect => true;
         public int AttachPriority => (10 + (int) Type) * level;
         public bool PendingDetach { get; set; }
-        public bool CountTowardsMagnetism => true;
+        public bool CountTowardsMagnetism => false;
 
         //IHealth Properties
         //============================================================================================================//
@@ -218,6 +224,7 @@ namespace StarSalvager
         {
             SetAttached(false);
             PendingDetach = false;
+            IsBusy = false;
             
             if (_damage)
             {

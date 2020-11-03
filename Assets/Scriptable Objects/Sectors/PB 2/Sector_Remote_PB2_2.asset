@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07556beae1525cb409df6b65d1c22548, type: 3}
+  m_Name: Sector_Remote_PB2_2
+  m_EditorClassIdentifier: 
+  WaveRemoteData:
+  - {fileID: 11400000, guid: 59976c4f8c1c54f5e94b4772dccad432, type: 2}
+  - {fileID: 11400000, guid: e02d6b378925446ffbe67b50b22b906d, type: 2}
+  - {fileID: 11400000, guid: b20c54b2169994aa788376928e939053, type: 2}
+  - {fileID: 11400000, guid: 5c63992785947427baff3b9e1a824541, type: 2}
+  - {fileID: 11400000, guid: ae333c5f3b2804be8914c66daa3cdc6e, type: 2}
+  sectorRemoteDataLootTablesScriptable: {fileID: 11400000, guid: 704367255fb35df498df8031c1684d15,
+    type: 2}

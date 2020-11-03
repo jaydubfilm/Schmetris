@@ -41,7 +41,7 @@ MonoBehaviour:
     useWaitTime: 1
     waitTime: 4
     text: Oops! You maxed out your magnetism! Right now your core can only carry
-      6 bits at a time. With the right upgrades we could increase this limit, but
+      8 bits at a time. With the right upgrades we could increase this limit, but
       there are other ways to save space.
   - title: Combo-magnet-1
     useWaitTime: 0
@@ -51,7 +51,7 @@ MonoBehaviour:
     useWaitTime: 1
     waitTime: 4
     text: Oops!  You maxed out your magnetism!  Right now your core can only carry
-      6 bits at a time. With the right upgrades we could increase this limit.
+      8 bits at a time. With the right upgrades we could increase this limit.
   - title: Magnet-combo-1
     useWaitTime: 0
     waitTime: 0
@@ -66,7 +66,7 @@ MonoBehaviour:
     waitTime: 0
     text: Don't be afraid of those pulsars. Bump into them and move your bits around
   - title: Pulsar-1
-    useWaitTime: 1
+    useWaitTime: 0
     waitTime: 8
     text: It's all coming back to you! Pulsars are a great way to rearrange your
       bits or get rid of bits you don't want.
@@ -83,9 +83,9 @@ MonoBehaviour:
   - title: Fuel-2
     useWaitTime: 0
     waitTime: 0
-    text: The other colourd bits need to be taken back to base before they can be
-      refined... and - blah blah blah - too much tutorialing - not enough salvaging!
+    text: The other colours need to be taken back to base before they can be refined...
+      and - blah blah blah - too much tutorialing - not enough salvaging!
   - title: Pre-Falling Bits
     useWaitTime: 1
-    waitTime: 4
-    text: Stand-in Text
+    waitTime: 3
+    text: That's some fancy flying, Captain!  Now the real fun begins.

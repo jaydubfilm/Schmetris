@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Missions;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using TMPro;
@@ -21,8 +23,6 @@ namespace StarSalvager.UI
         
         [SerializeField, Required]
         private TMP_Text deathText;
-        [SerializeField, Required]
-        private TMP_Text livesText;
         [SerializeField, Required]
         private TMP_Text scrollingMissionsText;
 
@@ -159,9 +159,23 @@ namespace StarSalvager.UI
 
             pauseWindowMainMenuButton.onClick.AddListener(() =>
             {
-                m_levelManager.IsWaveProgressing = true;
-                PlayerPersistentData.SaveAutosaveFiles();
-                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                Alert.ShowAlert("Are you sure?", "Giving up will abandon your current run. Are you sure you want to do that?", "Yes", "No", (b) =>
+                {
+                    if (b)
+                    {
+                        if (Globals.UsingTutorial)
+                        {
+                            Globals.UsingTutorial = false;
+                            LevelManager.Instance.BotObject.PROTO_GodMode = false;
+                        }
+
+
+                        m_levelManager.IsWaveProgressing = true;
+                        PlayerDataManager.ResetPlayerRunData();
+                        PlayerDataManager.SavePlayerAccountData();
+                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                    }
+                });
             });
 
             deathWindowRetryButton.onClick.AddListener(() =>
@@ -236,16 +250,15 @@ namespace StarSalvager.UI
             if(MissionManager.MissionsCurrentData == null || MissionManager.MissionsCurrentData.CurrentTrackedMissions == null)
                 return;
             
-            
-            if (MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count <= 0 && string.IsNullOrEmpty(OverrideText)) 
+            if (MissionManager.MissionsCurrentData.CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList().Count <= 0 && string.IsNullOrEmpty(OverrideText)) 
                 return;
             
             string missionReminderText;
             if (string.IsNullOrEmpty(OverrideText))
             {
                 Mission curMission = MissionManager.MissionsCurrentData
-                    .CurrentTrackedMissions[
-                        Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Count)];
+                    .CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList()[
+                        Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList().Count)];
 
                 missionReminderText = curMission.missionName + curMission.GetMissionProgressString();
             }
@@ -272,10 +285,17 @@ namespace StarSalvager.UI
 
         public void ToggleBetweenWavesUIActive(bool active)
         {
-            int curIndex = PlayerPersistentData.PlayerData.LevelRingNodeTree.ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+            int curIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
 
-            List<LevelRingNode> childNodesAccessible = PlayerPersistentData.PlayerData.LevelRingNodeTree.TryFindNode(curIndex).childNodes;
-            betweenWavesContinueButton.gameObject.SetActive(childNodesAccessible.Count > 0);
+            if (PlayerDataManager.GetLevelRingNodeTree().TryFindNode(curIndex) == null)
+            {
+                betweenWavesContinueButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(curIndex).childNodes;
+                betweenWavesContinueButton.gameObject.SetActive(childNodesAccessible.Count > 0);
+            }
 
             m_betweenWavesUI.SetActive(active);
         }

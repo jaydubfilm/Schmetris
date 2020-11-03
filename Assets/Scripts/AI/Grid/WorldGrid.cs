@@ -7,6 +7,7 @@ using StarSalvager.AI;
 using UnityEngine.InputSystem.Interactions;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Cameras;
+using System.Linq;
 
 namespace StarSalvager
 {
@@ -416,14 +417,22 @@ namespace StarSalvager
 
             Vector2Int startingPoint = GetCoordinatesOfGridSquareAtLocalPosition(startingLocation);
 
+            int numRetries = 20;
+            int numRetriesUsed = 0;
+
             for (int i = 0; i < numBits; i++)
             {
                 Vector2Int bitPosition = startingPoint +
                     (Vector2Int.up * UnityEngine.Random.Range(verticalExplosionRange / 2, verticalExplosionRange + 1)) +
                     (Vector2Int.left * UnityEngine.Random.Range(0, horizontalExplosionRange + 1) * (UnityEngine.Random.Range(0, 2) * 2 - 1));
 
-                if (GetGridSquareAtCoordinates(bitPosition).ObstacleInSquare)
+                if (GetGridSquareAtCoordinates(bitPosition).ObstacleInSquare || GetGridSquareAtCoordinates(bitPosition + Vector2Int.up).ObstacleInSquare || GetGridSquareAtCoordinates(bitPosition + Vector2Int.up * 2).ObstacleInSquare || bitExplosionPositions.Contains(bitPosition))
                 {
+                    if (numRetriesUsed < numRetries)
+                    {
+                        numRetriesUsed++;
+                        i--;
+                    }
                     continue;
                 }
                 bitExplosionPositions[i] = bitPosition;

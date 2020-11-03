@@ -67,6 +67,7 @@ namespace StarSalvager
             }
 
             CompositeCollider.GenerateGeometry();
+            gameObject.name = $"{nameof(Shape)}_[{attachedBits.Count}]";
         }
 
         //================================================================================================================//

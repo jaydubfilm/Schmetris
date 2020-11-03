@@ -21,6 +21,8 @@ namespace StarSalvager.AI
 
         //IAttachable Properties
         //============================================================================================================//
+        
+
         [ShowInInspector, ReadOnly]
         public Vector2Int Coordinate { get; set; }
         [ShowInInspector, ReadOnly]
@@ -30,9 +32,16 @@ namespace StarSalvager.AI
         public bool CanShift => true;
         public bool CountTowardsMagnetism => false;
 
+        //ICanDetach Properties
+        //====================================================================================================================//
+        
         public int AttachPriority => 10000;
 
         public bool PendingDetach { get; set; }
+        
+        public IAttachable iAttachable => this;
+        
+        
         //EnemyAttachable Properties
         //============================================================================================================//
         
@@ -53,6 +62,13 @@ namespace StarSalvager.AI
 
         protected override void Update()
         {
+            
+            if (FreezeTime > 0)
+            {
+                FreezeTime -= Time.deltaTime;
+                return;
+            }
+            
             if (!Attached)
                 return;
 

@@ -20,6 +20,7 @@ namespace StarSalvager
 
         [ShowInInspector, ReadOnly]
         public Vector2Int Coordinate { get; set; }
+
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
 
@@ -40,7 +41,11 @@ namespace StarSalvager
 
         public bool CountTowardsMagnetism => true;
 
+        //ICanCombo Properties
+        //====================================================================================================================//
         public IAttachable iAttachable => this;
+        
+        public bool IsBusy { get; set; }
 
         //IHealth Properties
         //============================================================================================================//
@@ -238,9 +243,10 @@ namespace StarSalvager
             transform.rotation = Quaternion.identity;
             SetRotating(false);
 
-            SetSortingLayer("Default");
+            SetSortingLayer(DEFAULT_LAYER);
 
             PendingDetach = false;
+            IsBusy = false;
 
             if (_damage)
             {

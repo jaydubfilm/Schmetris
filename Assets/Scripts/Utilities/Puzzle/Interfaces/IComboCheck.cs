@@ -6,9 +6,9 @@ namespace StarSalvager.Utilities.Puzzle.Interfaces
 {
     public interface IComboCheck
     {
-        bool TryGetCombo(IAttachable origin, List<IAttachable>[] directions,
+        bool TryGetCombo(ICanCombo origin, List<ICanCombo>[] directions,
             (bool hasCombo, int horizontalCount, int verticalCount) lineData,
-            out (ComboRemoteData comboData, List<IAttachable> toMove) outData);
+            out (ComboRemoteData comboData, List<ICanCombo> toMove) outData);
     }
 }
 

@@ -11,6 +11,7 @@ using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Values;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
 {
@@ -110,9 +111,9 @@ namespace StarSalvager
             if (_scrapyardBot == null)
                 return;
             
-            if (_scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate) != null)
+            if (_scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate) != null)
             {
-                IAttachable attachable = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+                IAttachable attachable = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
                 if (attachable != null && attachable is ScrapyardPart partAtCoordinates && partAtCoordinates.Type == PART_TYPE.CORE)
                 {
                     FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level + 1, ref partAtCoordinates);
@@ -154,7 +155,7 @@ namespace StarSalvager
             {
                 if (_scrapyardBot != null)
                 {
-                    IAttachable attachable = _scrapyardBot.attachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+                    IAttachable attachable = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
                     if (attachable != null && attachable is ScrapyardPart partAtCoordinates && partAtCoordinates.Type == PART_TYPE.CORE && partAtCoordinates.level > 0)
                     {
                         FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level - 1, ref partAtCoordinates);
@@ -182,7 +183,7 @@ namespace StarSalvager
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
 
             if (initBot)
-                _scrapyardBot.InitBot(false);
+                _scrapyardBot.InitBot();
         }
 
         public void CreateShape(List<Bit> bits)
@@ -209,7 +210,7 @@ namespace StarSalvager
             if (botData != null && botData.BlockData != null)
             {
                 CreateBot(false);
-                _scrapyardBot.InitBot(botData.BlockData.ImportBlockDatas(true), false);
+                _scrapyardBot.InitBot(botData.BlockData.ImportBlockDatas(true));
                 m_botShapeEditorUI.SetPartsScrollActive(true);
                 m_botShapeEditorUI.SetCategoriesScrollActive(false);
                 return;
@@ -249,9 +250,9 @@ namespace StarSalvager
         {
             if (_scrapyardBot != null)
             {
-                foreach (var attached in _scrapyardBot.attachedBlocks)
+                foreach (var attached in _scrapyardBot.AttachedBlocks)
                 {
-                    if (!_scrapyardBot.attachedBlocks.HasPathToCore(attached))
+                    if (!_scrapyardBot.AttachedBlocks.HasPathToCore(attached))
                     {
                         return false;
                     }
@@ -277,9 +278,9 @@ namespace StarSalvager
             if (_scrapyardBot != null)
             {
                 List<IAttachable> toRemove = new List<IAttachable>();
-                foreach (var attached in _scrapyardBot.attachedBlocks)
+                foreach (var attached in _scrapyardBot.AttachedBlocks)
                 {
-                    if (!_scrapyardBot.attachedBlocks.HasPathToCore(attached))
+                    if (!_scrapyardBot.AttachedBlocks.HasPathToCore(attached))
                     {
                         toRemove.Add(attached);
                     }
@@ -314,7 +315,7 @@ namespace StarSalvager
         {
             if (_scrapyardBot != null)
             {
-                EditorBotGeneratorData newData = new EditorBotGeneratorData(inputName, _scrapyardBot.attachedBlocks.GetBlockDatas());
+                EditorBotGeneratorData newData = new EditorBotGeneratorData(inputName, _scrapyardBot.AttachedBlocks.GetBlockDatas());
                 EditorBotShapeData.AddEditorBotData(newData);
             }
 
@@ -332,22 +333,21 @@ namespace StarSalvager
         {
             if (_scrapyardBot != null)
             {
-                string playerPath = PlayerPersistentData.PlayerMetadata.GetPathMostRecentFile();
+                int saveSlotIndex = PlayerDataManager.GetIndexMostRecentSaveFile();
 
-                if (playerPath != string.Empty)
+                if (saveSlotIndex >= 0)
                 {
-                    PlayerPersistentData.PlayerMetadata.CurrentSaveFile = PlayerPersistentData.PlayerMetadata.SaveFiles.FirstOrDefault(s => s.FilePath == playerPath);
-                    PlayerPersistentData.SetCurrentSaveFile(playerPath);
-                    FactoryManager.Instance.currentModularDataIndex = PlayerPersistentData.PlayerData.currentModularSectorIndex;
+                    PlayerDataManager.SetCurrentSaveFile(saveSlotIndex);
+                    PlayerDataManager.SetCurrentSaveSlotIndex(saveSlotIndex);
                 }
                 else
                 {
-                    playerPath = Files.GetNextAvailableSaveSlot();
+                    saveSlotIndex = Files.GetNextAvailableSaveSlot();
 
-                    if (playerPath != string.Empty)
+                    if (saveSlotIndex >= 0)
                     {
-                        PlayerPersistentData.SetCurrentSaveFile(playerPath);
-                        PlayerPersistentData.ResetPlayerData();
+                        PlayerDataManager.SetCurrentSaveSlotIndex(saveSlotIndex);
+                        PlayerDataManager.ResetPlayerAccountData();
                     }
                     else
                     {
@@ -355,7 +355,7 @@ namespace StarSalvager
                     }
                 }
 
-                PlayerPersistentData.PlayerData.SetCurrentBlockData(_scrapyardBot.attachedBlocks.GetBlockDatas());
+                PlayerDataManager.SetBlockDatas(_scrapyardBot.AttachedBlocks.GetBlockDatas());
             }
         }
 

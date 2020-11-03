@@ -11,17 +11,18 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using StarSalvager.Utilities.Math;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
 {
     public class ScrapyardBot : MonoBehaviour, ICustomRecycle
     {
         [SerializeField, BoxGroup("PROTOTYPE")]
-        public float TEST_RotSpeed;
+        public float testRotSpeed;
 
         //============================================================================================================//
 
-        public List<IAttachable> attachedBlocks => _attachedBlocks ?? (_attachedBlocks = new List<IAttachable>());
+        public List<IAttachable> AttachedBlocks => _attachedBlocks ?? (_attachedBlocks = new List<IAttachable>());
 
         [SerializeField, ReadOnly, Space(10f), ShowInInspector]
         private List<IAttachable> _attachedBlocks;
@@ -32,14 +33,11 @@ namespace StarSalvager
         public bool Rotating => _rotating;
 
         private bool _rotating;
-        private float targetRotation;
-
-        public bool IsRecoveryDrone => _isRecoveryDrone;
-        private bool _isRecoveryDrone;
+        private float _targetRotation;
 
         //============================================================================================================//
 
-        private new Rigidbody2D rigidbody
+        private new Rigidbody2D Rigidbody
         {
             get
             {
@@ -67,11 +65,10 @@ namespace StarSalvager
 
         #region Init Bot 
 
-        public void InitBot(bool isRecoveryDrone)
+        public void InitBot()
         {
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
             
-            _isRecoveryDrone = isRecoveryDrone;
             var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
             //Add core component
             var core = partFactory.CreateScrapyardObject<ScrapyardPart>(
@@ -83,18 +80,19 @@ namespace StarSalvager
                     Health = startingHealth
                 });
 
-            if(isRecoveryDrone) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
+            if(Globals.IsRecoveryBot) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
             
             AttachNewBit(Vector2Int.zero, core);
         }
 
-        public void InitBot(IEnumerable<IAttachable> botAttachables, bool isRecoveryDrone)
+        public void InitBot(IEnumerable<IAttachable> botAttachables)
         {
-            _isRecoveryDrone = isRecoveryDrone;
             foreach (var attachable in botAttachables)
             {
-                if(attachable is Part part && part.Type == PART_TYPE.CORE && isRecoveryDrone)
+                if(attachable is Part part && part.Type == PART_TYPE.CORE && Globals.IsRecoveryBot)
                     FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
+                else if(attachable is ScrapyardPart scrapyardPart && scrapyardPart.Type == PART_TYPE.CORE && Globals.IsRecoveryBot)
+                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(scrapyardPart, PART_TYPE.RECOVERY);
                 
                 AttachNewBit(attachable.Coordinate, attachable);
             }
@@ -132,16 +130,16 @@ namespace StarSalvager
             //If we're already rotating, we need to add the direction to the target
             if (Rotating)
             {
-                targetRotation += toRotate;
+                _targetRotation += toRotate;
             }
             else
             {
-                targetRotation = rigidbody.rotation + toRotate;
+                _targetRotation = Rigidbody.rotation + toRotate;
             }
 
-            targetRotation = MathS.ClampAngle(targetRotation);
+            _targetRotation = MathS.ClampAngle(_targetRotation);
 
-            foreach (var attachedBlock in attachedBlocks)
+            foreach (var attachedBlock in AttachedBlocks)
             {
                 attachedBlock.RotateCoordinate(rotation);
             }
@@ -158,20 +156,20 @@ namespace StarSalvager
 
         #region Movement
 
-        private bool rotate;
+        private bool _rotate;
 
         private void RotateBot()
         {
-            var rotation = rigidbody.rotation;
+            var rotation = Rigidbody.rotation;
 
             //Rotates towards the target rotation.
             float rotationAmount;
             rotationAmount = Globals.BotRotationSpeed;
-            rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, rotationAmount * Time.fixedDeltaTime);
-            rigidbody.rotation = rotation;
+            rotation = Mathf.MoveTowardsAngle(rotation, _targetRotation, rotationAmount * Time.fixedDeltaTime);
+            Rigidbody.rotation = rotation;
 
             //Here we check how close to the final rotation we are.
-            var remainingDegrees = Mathf.Abs(Mathf.DeltaAngle(rotation, targetRotation));
+            var remainingDegrees = Mathf.Abs(Mathf.DeltaAngle(rotation, _targetRotation));
 
             //TODO Here we'll need to rotate the sprites & Coordinates after a certain threshold is met for that rotation
 
@@ -189,21 +187,21 @@ namespace StarSalvager
             //NOTE: This is a strict order-of-operations as changing will cause rotations to be incorrect
             //--------------------------------------------------------------------------------------------------------//
             //Force set the rotation to the target, in case the bot is not exactly on target
-            rigidbody.rotation = targetRotation;
-            targetRotation = 0f;
+            Rigidbody.rotation = _targetRotation;
+            _targetRotation = 0f;
 
 
             TryRotateBits();
-            rotate = false;
+            _rotate = false;
             _rotating = false;
         }
 
         private void TryRotateBits()
         {
-            if (rotate)
+            if (_rotate)
                 return;
 
-            var check = (int)targetRotation;
+            var check = (int)_targetRotation;
             float deg;
             if (check == 180)
             {
@@ -215,12 +213,12 @@ namespace StarSalvager
             }
             else
             {
-                deg = targetRotation + 180;
+                deg = _targetRotation + 180;
             }
 
             var rot = Quaternion.Euler(0, 0, deg);
 
-            foreach (var attachedBlock in attachedBlocks)
+            foreach (var attachedBlock in AttachedBlocks)
             {
                 if (attachedBlock is ICustomRotate customRotate)
                 {
@@ -232,7 +230,7 @@ namespace StarSalvager
                 attachedBlock.transform.localRotation = rot;
             }
 
-            rotate = true;
+            _rotate = true;
         }
 
         #endregion //Movement
@@ -248,8 +246,8 @@ namespace StarSalvager
             newAttachable.transform.position = transform.position + (Vector3)(Vector2.one * coordinate * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
-            newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
-            attachedBlocks.Add(newAttachable);
+            newAttachable.gameObject.name = $"Block {AttachedBlocks.Count}";
+            AttachedBlocks.Add(newAttachable);
 
             switch (newAttachable)
             {
@@ -270,7 +268,7 @@ namespace StarSalvager
 
         public void TryRemoveAttachableAt(Vector2Int coordinate, bool refund)
         {
-            var attachable = attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
+            var attachable = AttachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
             //TODO - think of a better place to handle this selling event
             if (refund)
             {
@@ -279,7 +277,7 @@ namespace StarSalvager
                     case ScrapyardBit _:
                         throw new ArgumentOutOfRangeException(nameof(attachable), attachable, null);
                     case ScrapyardPart scrapyardPart:
-                        PlayerPersistentData.PlayerData.AddResources(scrapyardPart.Type, scrapyardPart.level, true);
+                        PlayerDataManager.AddPartResources(scrapyardPart.Type, scrapyardPart.level, true);
                         UpdatePartsList();
                         break;
                 }
@@ -294,22 +292,22 @@ namespace StarSalvager
 
         public void RemoveAllBits()
         {
-            for (int i = attachedBlocks.Count - 1; i >= 0; i--)
+            for (int i = AttachedBlocks.Count - 1; i >= 0; i--)
             {
-                if (attachedBlocks[i] is ScrapyardBit)
+                if (AttachedBlocks[i] is ScrapyardBit)
                 {
-                    DetachBit(attachedBlocks[i]);
+                    DetachBit(AttachedBlocks[i]);
                 }
             }
         }
         
         public void RemoveAllComponents()
         {
-            for (int i = attachedBlocks.Count - 1; i >= 0; i--)
+            for (int i = AttachedBlocks.Count - 1; i >= 0; i--)
             {
-                if (attachedBlocks[i] is Component)
+                if (AttachedBlocks[i] is Component)
                 {
-                    DetachBit(attachedBlocks[i]);
+                    DetachBit(AttachedBlocks[i]);
                 }
             }
         }
@@ -323,13 +321,13 @@ namespace StarSalvager
 
         private void RemoveAttachable(IAttachable attachable)
         {
-            attachedBlocks.Remove(attachable);
+            AttachedBlocks.Remove(attachable);
             attachable.SetAttached(false);
         }
 
         private void DestroyAttachable(IAttachable attachable, bool refundCost = true)
         {
-            attachedBlocks.Remove(attachable);
+            AttachedBlocks.Remove(attachable);
             attachable.SetAttached(false);
 
             switch (attachable)
@@ -355,7 +353,7 @@ namespace StarSalvager
         /// <typeparam name="T"></typeparam>
         private void DestroyAttachable<T>(IAttachable attachable) where T : IAttachable
         {
-            attachedBlocks.Remove(attachable);
+            AttachedBlocks.Remove(attachable);
             attachable.SetAttached(false);
 
             Recycler.Recycle<T>(attachable.gameObject);
@@ -372,14 +370,14 @@ namespace StarSalvager
         /// </summary>
         public bool CheckHasDisconnects()
         {
-            var toSolve = new List<IAttachable>(attachedBlocks);
+            var toSolve = new List<IAttachable>(AttachedBlocks);
 
             foreach (var attachableBase in toSolve)
             {
-                if (!attachedBlocks.Contains(attachableBase))
+                if (!AttachedBlocks.Contains(attachableBase))
                     continue;
 
-                var hasPathToCore = attachedBlocks.HasPathToCore(attachableBase);
+                var hasPathToCore = AttachedBlocks.HasPathToCore(attachableBase);
 
                 if (hasPathToCore)
                     continue;
@@ -439,12 +437,14 @@ namespace StarSalvager
         [SerializeField, BoxGroup("Bot Part Data"), ReadOnly, Space(10f)]
         private int magnetCount;
 
-        public float powerDraw { get; private set; }
+        public float PowerDraw { get; private set; }
 
-        private int maxParts { get; set; }
+        private int MAXParts { get; set; }
 
-        public bool AtPartCapacity => _parts.Count >= maxParts + 1;
-        public string PartCapacity => $"{_parts.Count - 1 }/{maxParts }";
+        public bool AtPartCapacity => _parts.Count >= MAXParts + 1;
+        public string PartCapacity => $"{_parts.Count - 1 }/{MAXParts }";
+
+        public List<BIT_TYPE> UsedResourceTypes { get; private set; }
 
         /// <summary>
         /// Called when new Parts are added to the attachable List. Allows for a short list of parts to exist to ease call
@@ -452,7 +452,7 @@ namespace StarSalvager
         /// </summary>
         private void UpdatePartsList()
         {
-            _parts = attachedBlocks.OfType<ScrapyardPart>().ToList();
+            _parts = AttachedBlocks.OfType<ScrapyardPart>().ToList();
 
             UpdatePartData();
         }
@@ -462,12 +462,11 @@ namespace StarSalvager
         /// </summary>
         private void UpdatePartData()
         {
-            PlayerPersistentData.PlayerData.ClearLiquidCapacity(_isRecoveryDrone);
             magnetCount = 0;
-            maxParts = 0;
-            powerDraw = 0f;
+            MAXParts = 0;
+            PowerDraw = 0f;
             
-            var capacities = new Dictionary<BIT_TYPE, int>
+            var liquidCapacities = new Dictionary<BIT_TYPE, int>
             {
                 {BIT_TYPE.RED, 0},
                 {BIT_TYPE.BLUE, 0},
@@ -475,41 +474,49 @@ namespace StarSalvager
                 {BIT_TYPE.GREEN, 0},
                 {BIT_TYPE.GREY, 0},
             };
+            
+            UsedResourceTypes = new List<BIT_TYPE>();
 
             foreach (var part in _parts)
             {
                 int value;
 
-                
-                var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type).levels[part.level];
+                var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
+                var levelData = partData.levels[part.level];
 
-                powerDraw += partData.powerDraw;
+                PowerDraw += levelData.powerDraw;
+                
+                if(!UsedResourceTypes.Contains(partData.burnType))
+                    UsedResourceTypes.Add(partData.burnType);
+                
+                if(levelData.powerDraw > 0f && !UsedResourceTypes.Contains(BIT_TYPE.YELLOW))
+                    UsedResourceTypes.Add(BIT_TYPE.YELLOW);
                 
                 switch (part.Type)
                 { 
                     case PART_TYPE.CORE:
                         
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += value;
-                            capacities[BIT_TYPE.GREEN] += value;
-                            capacities[BIT_TYPE.GREY] += value;
-                            capacities[BIT_TYPE.YELLOW] += value;
+                            liquidCapacities[BIT_TYPE.RED] += value;
+                            liquidCapacities[BIT_TYPE.GREEN] += value;
+                            liquidCapacities[BIT_TYPE.GREY] += value;
+                            liquidCapacities[BIT_TYPE.YELLOW] += value;
                         }
                         
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
                         {
                             magnetCount += value;
                         }
 
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.PartCapacity, out int intValue))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.PartCapacity, out int intValue))
                         {
-                            maxParts = intValue;
+                            MAXParts = intValue;
                         }
                         break;
                     case PART_TYPE.MAGNET: 
                     
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
                         {
                             magnetCount += value;
                         }
@@ -519,42 +526,45 @@ namespace StarSalvager
                     case PART_TYPE.SHIELD:
                         break;
                     case PART_TYPE.STORE:
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += value;
-                            capacities[BIT_TYPE.GREEN] += value;
-                            capacities[BIT_TYPE.GREY] += value;
+                            liquidCapacities[BIT_TYPE.RED] += value;
+                            liquidCapacities[BIT_TYPE.GREEN] += value;
+                            liquidCapacities[BIT_TYPE.GREY] += value;
                         }
                         break;
                     case PART_TYPE.STORERED:
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.RED] += value;
+                            liquidCapacities[BIT_TYPE.RED] += value;
                         }
                         break;
                     case PART_TYPE.STOREGREEN:
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.GREEN] += value;
+                            liquidCapacities[BIT_TYPE.GREEN] += value;
                         }
                         break;
                     case PART_TYPE.STOREGREY:
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.GREY] += value;
+                            liquidCapacities[BIT_TYPE.GREY] += value;
                         }
                         break;
                     case PART_TYPE.STOREYELLOW:
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            capacities[BIT_TYPE.YELLOW] += value;
+                            liquidCapacities[BIT_TYPE.YELLOW] += value;
                         }
                         break;
                 }
             }
 
-            //Force only updating once I know all capacities
-            PlayerPersistentData.PlayerData.SetCapacities(capacities, _isRecoveryDrone);
+            //Force update capacities, once new values determined
+            foreach (var capacity in liquidCapacities)
+            {
+                PlayerDataManager.GetResource(capacity.Key).SetLiquidCapacity(capacity.Value);
+            }
         }
 
         #endregion //Parts
@@ -565,7 +575,7 @@ namespace StarSalvager
 
         public void CustomRecycle(params object[] args)
         {
-            foreach (var attachable in attachedBlocks)
+            foreach (var attachable in AttachedBlocks)
             {
                 switch (attachable)
                 {
@@ -581,7 +591,7 @@ namespace StarSalvager
                 }
             }
 
-            attachedBlocks.Clear();
+            AttachedBlocks.Clear();
         }
 
         #endregion //Custom Recycle

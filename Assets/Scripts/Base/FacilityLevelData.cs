@@ -6,14 +6,16 @@ using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-//FIXME This should be under a more specific namespace
-namespace StarSalvager
+namespace StarSalvager.Facilities
 {
     [Serializable]
     public struct FacilityLevelData
     {
         public int level;
         public int increaseAmount;
-        public List<CraftCost> craftCost;
+
+        public int patchCost;
+
+        public List<FacilityPrerequisiteData> facilityPrerequisites;
     }
 }
