@@ -11,6 +11,7 @@ using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
 {
@@ -55,6 +56,7 @@ namespace StarSalvager
                 
                 Globals.CurrentSector = SectorNumber;
                 Globals.CurrentWave = WaveNumber;
+                Debug.Log($"Convert Sector Wave Index {SectorNumber}, {WaveNumber} to {SectorNumber}, {PlayerDataManager.SectorWaveIndexConverter[SectorNumber][WaveNumber]}");
                 SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
             });
         }
