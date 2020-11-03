@@ -61,7 +61,7 @@ namespace StarSalvager
                                                     Constants.VISIBLE_GAME_AREA));
 
         public IEnumerable<Shape> ActiveBonusShapes => m_bonusShapes
-            .Where(x => CameraController.IsPointInCameraRect(x.transform.position, Constants.VISIBLE_GAME_AREA));
+            .Where(x => CameraController.IsPointInCameraRect(x.transform.position, 0.95f * Constants.VISIBLE_GAME_AREA));
 
         public bool isPaused => GameTimer.IsPaused;
 
