@@ -9563,6 +9563,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IntroScene: {fileID: 0}
+  partSprite: {fileID: 0}
   mainMenuWindowObject: {fileID: 708998763807863424}
   playButton: {fileID: 8017945057484899893}
   settingsButton: {fileID: 4135927736905888877}

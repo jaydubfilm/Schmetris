@@ -37,3 +37,15 @@ MonoBehaviour:
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 1
       isAlwaysSpawn: 1
+  - maxDrops: 1
+    RDSEndOfWaveLoot:
+    - rdsData: 4
+      type: 17
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 1
+      isAlwaysSpawn: 1
