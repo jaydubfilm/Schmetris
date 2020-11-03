@@ -664,16 +664,24 @@ namespace StarSalvager.Utilities.Saving
         public static void SetCurrentSaveSlotIndex(int saveSlotIndex)
         {
             CurrentSaveSlotIndex = saveSlotIndex;
-            PlayerAccountData = Files.ImportPlayerSaveAccountData(saveSlotIndex);
-            MissionManager.LoadMissionData();
+            PlayerSaveAccountData tryImportPlayerAccountData = Files.TryImportPlayerSaveAccountData(saveSlotIndex);
+            if (tryImportPlayerAccountData == null)
+            {
+                ResetPlayerAccountData();
+            }
+            else
+            {
+                PlayerAccountData = Files.TryImportPlayerSaveAccountData(saveSlotIndex);
+                MissionManager.LoadMissionData();
+            }
             SavePlayerAccountData();
         }
 
         public static void ResetPlayerAccountData()
         {
             PlayerSaveAccountData playerAccountData = new PlayerSaveAccountData();
-            playerAccountData.ResetPlayerRunData();
             PlayerAccountData = playerAccountData;
+            playerAccountData.ResetPlayerRunData();
             PlayerRunData.PlaythroughID = Guid.NewGuid().ToString();
 
             foreach (var blueprintData in Globals.BlueprintInitialData)

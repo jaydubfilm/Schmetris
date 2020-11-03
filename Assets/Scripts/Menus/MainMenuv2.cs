@@ -375,7 +375,7 @@ namespace StarSalvager.UI
             tutorialButton.onClick.AddListener(() =>
             {
                 Globals.UsingTutorial = true;
-                Globals.CurrentSector = 4;
+                Globals.CurrentSector = FactoryManager.Instance.SectorRemoteData.Count - 1;
                 Globals.CurrentWave = 0;
                 
                 LeaveMenu(SceneLoader.LEVEL);
