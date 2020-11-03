@@ -35,7 +35,12 @@ namespace StarSalvager.Utilities.Saving
 
         //====================================================================================================================//
 
-        public static bool GethasRunStarted()
+        public static Version GetVersion()
+        {
+            return PlayerAccountData.Version;
+        }
+
+        public static bool GetHasRunStarted()
         {
             return HasPlayerRunData() && PlayerRunData.runStarted;
         }

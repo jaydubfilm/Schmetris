@@ -170,7 +170,18 @@ namespace StarSalvager.UI
                 case WINDOW.SETTINGS:
                     break;
                 case WINDOW.ACCOUNT:
-                    SetupAccountWindow();
+                    if (CheckVersionConflict())
+                    {
+                        Alert.ShowAlert("Version Conflict", "This version is newer then your save file version. Save files will need to be deleted.", "Ok", () =>
+                        {
+                            Files.ClearRemoteData();
+                            SetupAccountWindow();
+                        });
+                    }
+                    else
+                    {
+                        SetupAccountWindow();
+                    }
                     break;
                 case WINDOW.ACCOUNT_MENU:
                     SetupAccountMenuWindow();
@@ -188,6 +199,24 @@ namespace StarSalvager.UI
         //Setup Account Window
         //------------------------------------------------------------------------------------------------------------//
         
+        private bool CheckVersionConflict()
+        {
+            for (var i = 0; i < accountButtons.Length; i++)
+            {
+                var hasAccount = Files.TryGetPlayerSaveData(i, out var accountData);
+
+                if (hasAccount)
+                {
+                    if (accountData.Version != Constants.VERSION)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         private void SetupAccountWindow()
         {
             for (var i = 0; i < accountButtons.Length; i++)
@@ -218,7 +247,7 @@ namespace StarSalvager.UI
         private void SetupAccountMenuWindow()
         {
             //TODO Get bool for current run
-            bool hasRun = PlayerDataManager.GethasRunStarted();
+            bool hasRun = PlayerDataManager.GetHasRunStarted();
             
             newRunButton.gameObject.SetActive(!hasRun);
             continueRunButton.gameObject.SetActive(hasRun);
