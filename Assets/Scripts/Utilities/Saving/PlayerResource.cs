@@ -128,18 +128,18 @@ namespace StarSalvager.Utilities.Saving
             }
         }
 
-        public int AddResourceReturnWasted(int amount, bool updateValuesChanged = true)
+        public void AddResourceReturnWasted(int amount, out int totalWasted, bool updateValuesChanged = true)
         {
+            totalWasted = default;
+            
             _resource += amount;
-            int toReturn = Mathf.Max(0, _resource - _resourceCapacity);
+            totalWasted = Mathf.Max(0, _resource - _resourceCapacity);
             _resource = Mathf.Min(_resource, _resourceCapacity);
 
             if (updateValuesChanged)
             {
                 PlayerDataManager.OnValuesChanged?.Invoke();
             }
-
-            return toReturn;
         }
 
         public void AddResourceCapacity(int amount, bool updateCapacitiesChanged = true)

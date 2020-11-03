@@ -205,11 +205,12 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
-        public static void AddComponent(COMPONENT_TYPE type, int amount)
+        public static void AddComponent(COMPONENT_TYPE type, int amount, bool updateValuesChanged = true)
         {
             PlayerRunData.AddComponent(type, amount);
 
-            OnValuesChanged?.Invoke();
+            if(updateValuesChanged)
+                OnValuesChanged?.Invoke();
         }
 
         public static void SubtractPartCosts(PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
