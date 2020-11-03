@@ -47,7 +47,7 @@ namespace StarSalvager
 
         public SectorRemoteDataScriptableObject CurrentSector => FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector];
 
-        public WaveRemoteDataScriptableObject CurrentWaveData => CurrentSector.GetRemoteData(Globals.CurrentWave);
+        public WaveRemoteDataScriptableObject CurrentWaveData => CurrentSector.GetIndexConvertedRemoteData(Globals.CurrentSector, Globals.CurrentWave);
 
         [SerializeField, Required]
         private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
@@ -64,6 +64,8 @@ namespace StarSalvager
 
         private float m_levelTimer = 0;
         public float LevelTimer => m_levelTimer + m_waveTimer;
+
+        private float m_checkFlightLengthMissionTimer = 0;
 
         private int m_currentStage;
         public int CurrentStage => m_currentStage;
@@ -249,7 +251,19 @@ namespace StarSalvager
         private void ProgressStage()
         {
             if (IsWaveProgressing)
+            {
                 m_waveTimer += Time.deltaTime;
+                m_checkFlightLengthMissionTimer += Time.deltaTime;
+                if (m_checkFlightLengthMissionTimer >= 1.0f)
+                {
+                    m_checkFlightLengthMissionTimer -= 1;
+                    MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                    {
+                        floatAmount = LevelTimer
+                    };
+                    MissionManager.ProcessMissionData(typeof(FlightLengthMission), missionProgressEventData);
+                }
+            }
 
             int currentStage = m_currentStage;
             if (CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage))
@@ -370,7 +384,7 @@ namespace StarSalvager
             EnemiesKilledInWave.Clear();
             MissionManager.ProcessWaveComplete();
 
-            if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0)
+            /*if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0)
             {
                 m_levelManagerUI.ShowSummaryScreen("Out of water",
                     "Your scrapyard is out of water. You must return now.", () =>
@@ -382,7 +396,7 @@ namespace StarSalvager
                         ProcessScrapyardUsageBeginAnalytics();
                         SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
                     });
-            }
+            }*/
 
             ProjectileManager.UpdateForces();
             Globals.IsRecoveryBot = false;
@@ -504,7 +518,7 @@ namespace StarSalvager
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
 
-            CheckPlayerWater();
+            //CheckPlayerWater();
         }
 
         private void CleanLevel()
@@ -540,6 +554,11 @@ namespace StarSalvager
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
             ProjectileManager.Reset();
             MissionsCompletedDuringThisFlight.Clear();
+        }
+
+        public void ResetLevelTimer()
+        {
+            m_levelTimer = 0;
         }
 
         private void SetupLevelAnalytics()
@@ -646,9 +665,22 @@ namespace StarSalvager
             Toast.AddToast(endWaveMessage, time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
             if (!Globals.OnlyGetWaveLootOnce || !PlayerDataManager.CheckIfCompleted(progressionSector, Globals.CurrentWave))
             {
-                CurrentWaveData.ConfigureLootTable();
+                /*CurrentWaveData.ConfigureLootTable();
                 List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
-                DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);
+                DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);*/
+
+                SectorLootTableScriptableObject sectorLootTable = FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector].sectorRemoteDataLootTablesScriptable.GetLootTableAtIndex(PlayerDataManager.NumTimesBeatNewWaveInSector[Globals.CurrentSector]);
+                if (sectorLootTable != null)
+                {
+                    List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave)).childNodes;
+                    if (childNodesAccessible.Count == 0 || UnityEngine.Random.Range(0.0f, 1.0f) <= 0.33f)
+                    {
+                        sectorLootTable.ConfigureLootTable();
+                        List<IRDSObject> newWaveLoot = sectorLootTable.rdsTable.rdsResult.ToList();
+                        DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);
+                        PlayerDataManager.NumTimesBeatNewWaveInSector[Globals.CurrentSector]++;
+                    }
+                }
             }
 
             int curNodeIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
@@ -856,7 +888,9 @@ namespace StarSalvager
             {
                 //Alert.ShowDancers(true);
                 //AudioController.PlayMusic(MUSIC.GAME_OVER, true);
-                
+
+                IsWaveProgressing = false;
+                //GameTimer.SetPaused(false);
                 OutroScene.gameObject.SetActive(true);
                 
                 /*m_levelManagerUI.ShowSummaryScreen("GAME OVER",

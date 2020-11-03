@@ -85,9 +85,9 @@ namespace Recycling
 
 			if (!(recycled is null) && recycled.IsRecycled)
 			{
-#if UNITY_EDITOR
+/*#if UNITY_EDITOR
 				Debug.Log($"{gameObject.name} is already recycled");
-#endif
+#endif*/
 				return;
 			}
 			

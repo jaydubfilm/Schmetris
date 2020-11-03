@@ -155,7 +155,7 @@ namespace StarSalvager.Utilities.FileIO
             if (!result)
                 return false;
 
-            accountData = ImportPlayerSaveAccountData(index);
+            accountData = TryImportPlayerSaveAccountData(index);
 
             return true;
         }
@@ -197,29 +197,14 @@ namespace StarSalvager.Utilities.FileIO
             return export;
         }
 
-        public static PlayerSaveAccountData ImportPlayerSaveAccountData(int saveSlotIndex)
+        public static PlayerSaveAccountData TryImportPlayerSaveAccountData(int saveSlotIndex)
         {
             if (!Directory.Exists(PlayerAccountSavePaths[saveSlotIndex]))
                 Directory.CreateDirectory(REMOTE_DIRECTORY);
 
             if (!File.Exists(PlayerAccountSavePaths[saveSlotIndex]))
             {
-                PlayerSaveAccountData data = new PlayerSaveAccountData();
-
-                foreach (var facilityData in Globals.FacilityInitialData)
-                {
-                    data.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
-                }
-
-                List<FacilityRemoteData> remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteDatas();
-                foreach (var facilityData in remoteData)
-                {
-                    data.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.levels.Count - 1);
-                }
-
-                data.ResetPlayerRunData();
-
-                return data;
+                return null;
             }
 
             JsonSerializerSettings settings = new JsonSerializerSettings

@@ -26,16 +26,12 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 771806d5ec0835544862fa727f69e841,
       type: 2}
-    m_attackType: 3
     m_projectileType: 80e17eca-2642-4846-b12f-02a08cab40e9
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
     m_orbitRadius: 0
     m_numberCellsDescend: 4
     m_ignoreObstacleAvoidance: 1
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 0
-    m_sprayCount: 0
   - m_sprite: {fileID: -6023146387330590771, guid: ee33b25d36b2b5a478cc4f0ba1cf52d6,
       type: 3}
     m_enemyTypeID: 4eeac5cf-1c0c-492d-82a1-86108b574464
@@ -43,16 +39,12 @@ MonoBehaviour:
     m_isAttachable: 1
     m_enemyAnimationController: {fileID: 11400000, guid: ae007e5b94b7cd047bd759c04c2ec622,
       type: 2}
-    m_attackType: 6
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
     m_oscillationsPerSeconds: 1
     m_oscillationAngleRange: 60
     m_orbitRadius: 15
     m_numberCellsDescend: 2
     m_ignoreObstacleAvoidance: 0
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 15
-    m_sprayCount: 12
   - m_sprite: {fileID: 2357439660054832943, guid: ca216a3cd365bfe4e924677094170fdb,
       type: 3}
     m_enemyTypeID: f3c96622-609f-498c-be89-8cc575e46fe0
@@ -60,16 +52,12 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 9a67d56bcff91044590444220f102079,
       type: 2}
-    m_attackType: 1
     m_projectileType: 8f0be7e3-1231-4c2c-81ca-460162be6318
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
     m_orbitRadius: 0
     m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 0
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 0
-    m_sprayCount: 0
   - m_sprite: {fileID: -8242381499147173548, guid: d97ff67049d79e0468a1fa4286b69a4d,
       type: 3}
     m_enemyTypeID: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
@@ -77,16 +65,12 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 0dd910dbe7dbc1c4e84db8fb870ec59d,
       type: 2}
-    m_attackType: 1
     m_projectileType: cac32cbf-8978-4092-ad94-3ab8e384a0c7
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
     m_orbitRadius: 12
     m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 0
-    m_addVelocityToProjectiles: 1
-    m_spreadAngle: 60
-    m_sprayCount: 3
   - m_sprite: {fileID: -4368447452934732472, guid: 8103108770a92fe4793bab8f1881bb8a,
       type: 3}
     m_enemyTypeID: 71b8347a-1d17-4ade-81d4-85930af8210e
@@ -94,16 +78,12 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 1d48aa33d2525f7468ce1854b45407fd,
       type: 2}
-    m_attackType: 4
     m_projectileType: 30aba478-81d5-4d02-a410-9c321a671732
     m_oscillationsPerSeconds: 1
     m_oscillationAngleRange: 180
     m_orbitRadius: 0
     m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 1
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 45
-    m_sprayCount: 3
   - m_sprite: {fileID: 1155024208887532473, guid: db9adc14e8a7d054da2c1eed6b01af10,
       type: 3}
     m_enemyTypeID: 29b4a36e-47f7-47a4-8922-f7de5f531383
@@ -111,16 +91,12 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 771806d5ec0835544862fa727f69e841,
       type: 2}
-    m_attackType: 3
     m_projectileType: 80e17eca-2642-4846-b12f-02a08cab40e9
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
     m_orbitRadius: 0
     m_numberCellsDescend: 4
     m_ignoreObstacleAvoidance: 1
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 45
-    m_sprayCount: 3
   - m_sprite: {fileID: -6023146387330590771, guid: 037280dcf6b6b524fa1ec69161347441,
       type: 3}
     m_enemyTypeID: 599761cf-c12a-45b0-bbab-918008384f28
@@ -128,16 +104,12 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: ae007e5b94b7cd047bd759c04c2ec622,
       type: 2}
-    m_attackType: 6
     m_projectileType: 
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
     m_orbitRadius: 0
     m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 0
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 0
-    m_sprayCount: 0
   - m_sprite: {fileID: 2357439660054832943, guid: ca216a3cd365bfe4e924677094170fdb,
       type: 3}
     m_enemyTypeID: 842a2d03-61be-4bc2-8391-ae25826a30af
@@ -145,16 +117,12 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 9a67d56bcff91044590444220f102079,
       type: 2}
-    m_attackType: 0
     m_projectileType: 8f0be7e3-1231-4c2c-81ca-460162be6318
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
     m_orbitRadius: 0
     m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 0
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 0
-    m_sprayCount: 0
   - m_sprite: {fileID: -8242381499147173548, guid: d97ff67049d79e0468a1fa4286b69a4d,
       type: 3}
     m_enemyTypeID: e90054ce-9f64-4b84-9aab-5c6808cf3c67
@@ -162,16 +130,12 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 0dd910dbe7dbc1c4e84db8fb870ec59d,
       type: 2}
-    m_attackType: 0
     m_projectileType: cac32cbf-8978-4092-ad94-3ab8e384a0c7
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
     m_orbitRadius: 12
     m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 0
-    m_addVelocityToProjectiles: 1
-    m_spreadAngle: 0
-    m_sprayCount: 0
   - m_sprite: {fileID: -4368447452934732472, guid: 8103108770a92fe4793bab8f1881bb8a,
       type: 3}
     m_enemyTypeID: 1f78cb36-17d7-48d7-8e1c-a44536df7949
@@ -179,13 +143,9 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 1d48aa33d2525f7468ce1854b45407fd,
       type: 2}
-    m_attackType: 0
     m_projectileType: 30aba478-81d5-4d02-a410-9c321a671732
     m_oscillationsPerSeconds: 1
     m_oscillationAngleRange: 180
     m_orbitRadius: 0
     m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 1
-    m_addVelocityToProjectiles: 0
-    m_spreadAngle: 0
-    m_sprayCount: 0

@@ -29,6 +29,10 @@ namespace StarSalvager.Utilities.Saving
         private static GameMetadata GameMetaData = Files.ImportGameMetaData();
 
 
+        //TEMP
+        public static Dictionary<int, int> NumTimesBeatNewWaveInSector => PlayerAccountData.numTimesBeatNewWaveInSector;
+        public static List<Dictionary<int, int>> SectorWaveIndexConverter => PlayerRunData.sectorWaveIndexConverter;
+
         //====================================================================================================================//
 
         public static bool GethasRunStarted()
@@ -659,16 +663,24 @@ namespace StarSalvager.Utilities.Saving
         public static void SetCurrentSaveSlotIndex(int saveSlotIndex)
         {
             CurrentSaveSlotIndex = saveSlotIndex;
-            PlayerAccountData = Files.ImportPlayerSaveAccountData(saveSlotIndex);
-            MissionManager.LoadMissionData();
+            PlayerSaveAccountData tryImportPlayerAccountData = Files.TryImportPlayerSaveAccountData(saveSlotIndex);
+            if (tryImportPlayerAccountData == null)
+            {
+                ResetPlayerAccountData();
+            }
+            else
+            {
+                PlayerAccountData = Files.TryImportPlayerSaveAccountData(saveSlotIndex);
+                MissionManager.LoadMissionData();
+            }
             SavePlayerAccountData();
         }
 
         public static void ResetPlayerAccountData()
         {
             PlayerSaveAccountData playerAccountData = new PlayerSaveAccountData();
-            playerAccountData.ResetPlayerRunData();
             PlayerAccountData = playerAccountData;
+            playerAccountData.ResetPlayerRunData();
             PlayerRunData.PlaythroughID = Guid.NewGuid().ToString();
 
             foreach (var blueprintData in Globals.BlueprintInitialData)
@@ -840,11 +852,14 @@ namespace StarSalvager.Utilities.Saving
 
             if (GetEnemiesKilled().Count > 0)
             {
+                var enemyRemoteData = FactoryManager.Instance.EnemyRemoteData;
                 summaryText += ("<b>Enemies Killed:</b>\n");
 
                 foreach (var keyValuePair in GetEnemiesKilled())
                 {
-                    summaryText += $"\t{keyValuePair.Key}: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
+                    var name = enemyRemoteData.GetEnemyRemoteData(keyValuePair.Key).Name;
+                
+                    summaryText += $"\t{name}: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
                 }
             }
 
