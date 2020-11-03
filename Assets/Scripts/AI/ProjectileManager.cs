@@ -7,24 +7,24 @@ using StarSalvager.Utilities;
 using StarSalvager.Utilities.Inputs;
 using Input = UnityEngine.Input;
 
-public class ProjectileManager : IReset, IMoveOnInput
+public class ProjectileManager : IReset
 {
     private List<Projectile> m_projectiles;
 
     //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
-    private float m_currentInput;
+    //private float m_currentInput;
 
    // public bool Moving => _moving;
-    private bool _moving;
+   // private bool _moving;
 
-    private float m_distanceHorizontal;
+    //private float m_distanceHorizontal;
     
     //================================================================================================================//
 
     public ProjectileManager()
     {
         m_projectiles = new List<Projectile>();
-        RegisterMoveOnInput();
+       // RegisterMoveOnInput();
     }
     
     //IReset Functions
@@ -46,9 +46,9 @@ public class ProjectileManager : IReset, IMoveOnInput
     
     //================================================================================================================//
 
-    public void UpdateForces()
+    public void CleanProjectiles()
     {
-        Vector3 gridMovement = Vector3.zero;
+        /*Vector3 gridMovement = Vector3.zero;
         if (m_distanceHorizontal != 0)
         {
             if (m_distanceHorizontal > 0)
@@ -63,11 +63,11 @@ public class ProjectileManager : IReset, IMoveOnInput
                 gridMovement = Vector3.left * toMove;
                 m_distanceHorizontal += toMove;
             }
-        }
+        }*/
 
         CleanProjectiles(Globals.GridSizeY * 1.1f * Constants.gridCellSize);
             
-        foreach (var projectile in m_projectiles)
+        /*foreach (var projectile in m_projectiles)
         {
             projectile.transform.position -= gridMovement;
         }
@@ -77,7 +77,7 @@ public class ProjectileManager : IReset, IMoveOnInput
         if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)
         {
             Move(m_currentInput);
-        }
+        }*/
     }
 
     public void AddProjectile(Projectile newProjectile)
@@ -88,7 +88,7 @@ public class ProjectileManager : IReset, IMoveOnInput
     //IMoveOnInput functions
     //================================================================================================================//
     
-    public void RegisterMoveOnInput()
+   /* public void RegisterMoveOnInput()
     {
         InputManager.RegisterMoveOnInput(this);
     }
@@ -106,7 +106,7 @@ public class ProjectileManager : IReset, IMoveOnInput
         m_distanceHorizontal += direction * Constants.gridCellSize;
 
         _moving = true;
-    }
+    }*/
     
     //================================================================================================================//
 

@@ -331,7 +331,12 @@ namespace StarSalvager.AI
         //Determine whether this horizontal mover is going left or right
         public Vector3 SetHorizontalDirection(bool isDescending = false)
         {
-            if (transform.position.x <= horizontalFarLeftX && m_currentHorizontalMovementDirection != Vector3.right)
+            //Movement styles are based on the player location. For now, hardcode this
+            Vector3 playerLocation = LevelManager.Instance.BotObject != null
+                ? LevelManager.Instance.BotObject.transform.position
+                : Vector3.right * 50;
+
+            if (transform.position.x <= playerLocation.x + horizontalFarLeftX && m_currentHorizontalMovementDirection != Vector3.right)
             {
                 m_currentHorizontalMovementDirection = Vector3.right;
                 if (isDescending)
@@ -339,8 +344,7 @@ namespace StarSalvager.AI
                     m_horizontalMovementYLevel -= Constants.gridCellSize * m_enemyData.NumberCellsDescend;
                 }
             }
-            else if (transform.position.x >= horizontalFarRightX &&
-                     m_currentHorizontalMovementDirection != Vector3.left)
+            else if (transform.position.x >= playerLocation.x + horizontalFarRightX && m_currentHorizontalMovementDirection != Vector3.left)
             {
                 m_currentHorizontalMovementDirection = Vector3.left;
                 if (isDescending)

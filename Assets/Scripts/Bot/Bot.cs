@@ -25,11 +25,12 @@ using StarSalvager.Utilities.Particles;
 using StarSalvager.Utilities.Puzzle.Data;
 using AudioController = StarSalvager.Audio.AudioController;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.Inputs;
 
 namespace StarSalvager
 {
     [RequireComponent(typeof(BotPartsLogic))]
-    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer
+    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer, IMoveOnInput
     {
         private readonly struct ShiftData
         {
@@ -77,8 +78,10 @@ namespace StarSalvager
 
         [SerializeField, ReadOnly, Space(10f), ShowInInspector] 
         private List<IAttachable> _attachedBlocks;
-        
-        /*private List<Part> _parts;*/
+
+        //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
+        private float m_currentInput;
+        private float m_distanceHorizontal = 0.0f;
 
         //============================================================================================================//
 
@@ -149,13 +152,15 @@ namespace StarSalvager
         private void Start()
         {
             RegisterPausable();
+            RegisterMoveOnInput();
         }
 
         private void Update()
         {
             if (isPaused)
                 return;
-            
+
+            TryMovement();
             SetParticles();
             
             //See if the bot has completed the current wave
@@ -167,12 +172,17 @@ namespace StarSalvager
                 return;
             
             //TODO Once all done testing, remove this
-            if (Input.GetKeyDown(KeyCode.LeftShift))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.LeftShift))
             {
                 Time.timeScale = Time.timeScale == 0.1f ? 1f : 0.1f;
             }
             
             BotPartsLogic.PartsUpdateLoop();
+
+            if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)
+            {
+                Move(m_currentInput);
+            }
         }
 
         private void LateUpdate()
@@ -207,9 +217,88 @@ namespace StarSalvager
 
         #endregion //Unity Functions
 
+        //IMoveOnInput
+        //============================================================================================================//
+
+        private void TryMovement()
+        {
+            var xPos = transform.position.x;
+
+            float distHorizontal;
+            float direction;
+            Vector3 moveDirection;
+            bool canMove;
+
+            switch (true)
+            {
+                //Move Left values
+                //----------------------------------------------------------------------------------------------------//
+                case bool _ when m_distanceHorizontal < 0:
+                    distHorizontal = Mathf.Abs(m_distanceHorizontal);
+                    direction = -1f;
+                    canMove = xPos > -0.5f * Constants.gridCellSize * Globals.GridSizeX;
+                    moveDirection = Vector3.left;
+                    break;
+
+                //Move Right Values
+                //----------------------------------------------------------------------------------------------------//
+                case bool _ when m_distanceHorizontal > 0:
+                    distHorizontal = m_distanceHorizontal;
+                    direction = 1f;
+                    canMove = xPos < 0.5f * Constants.gridCellSize * Globals.GridSizeX;
+                    moveDirection = Vector3.right;
+                    break;
+
+                //----------------------------------------------------------------------------------------------------//
+                default:
+                    //MOVE_DELTA = 0f;
+                    return;
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            var toMove = Mathf.Min(distHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
+            //MOVE_DELTA = toMove * direction;
+
+            Globals.MovingDirection = Mathf.Abs(m_distanceHorizontal) <= 0.2f
+                ? DIRECTION.NULL
+                : m_distanceHorizontal.GetHorizontalDirection();
+
+            m_distanceHorizontal -= toMove * direction;
+
+            if (!canMove)
+                return;
+
+            transform.position += moveDirection * toMove;
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            LevelManager.Instance.CameraController.transform.position += moveDirection * toMove;
+
+        }
+
+        public void RegisterMoveOnInput()
+        {
+            InputManager.RegisterMoveOnInput(this);
+        }
+
+        public void Move(float direction)
+        {
+            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+            {
+                m_currentInput = 0f;
+                return;
+            }
+
+            m_currentInput = direction;
+
+            m_distanceHorizontal += direction * Constants.gridCellSize;
+        }
+
+
         //Particle Tests
         //====================================================================================================================//
-        
+
         private void SetParticles()
         {
             if (Destroyed)

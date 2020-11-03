@@ -398,7 +398,7 @@ namespace StarSalvager
                     });
             }*/
 
-            ProjectileManager.UpdateForces();
+            ProjectileManager.CleanProjectiles();
             Globals.IsRecoveryBot = false;
         }
 

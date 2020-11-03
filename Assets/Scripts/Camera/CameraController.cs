@@ -104,7 +104,7 @@ namespace StarSalvager.Cameras
 
             //--------------------------------------------------------------------------------------------------------//
 
-            if (InputManager.Instance.MostRecentSideMovement != 0)
+            /*if (InputManager.Instance.MostRecentSideMovement != 0)
             {
                 CurrentState = _atBounds ? STATE.MOTION : STATE.NONE;
             }
@@ -152,7 +152,7 @@ namespace StarSalvager.Cameras
                 _last = _current = Vector2.zero;
             }
 
-            tempPosition = transform.position;
+            tempPosition = transform.position;*/
 
 
         }
@@ -290,7 +290,7 @@ namespace StarSalvager.Cameras
 
         //================================================================================================================//
 
-        [Obsolete("This should not move using the ObstacleManager")]
+        /*[Obsolete("This should not move using the ObstacleManager")]
         public void MoveCameraWithObstacles(Vector3 toMoveCamera)
         {
             if (!Globals.CameraUseInputMotion)
@@ -319,7 +319,7 @@ namespace StarSalvager.Cameras
             transform.position = newPosition;
 
             _cameraXOffset = newPosition.x;
-        }
+        }*/
 
         public void SetOrthographicSize(float screenWidthInWorld, Vector3 botPosition)
         {
@@ -390,14 +390,14 @@ namespace StarSalvager.Cameras
             
         public void Move(float direction)
         {
-            if (!Globals.CameraUseInputMotion)
+            /*if (!Globals.CameraUseInputMotion)
                 return;
 
             if (direction == 0) 
                 return;
             
             _beginningLerpPos = _startPos;
-            _lerpValue = 0.0f;
+            _lerpValue = 0.0f;*/
         }
 
         #endregion //IMoveOnInput
