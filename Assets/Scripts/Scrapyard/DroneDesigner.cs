@@ -13,6 +13,7 @@ using Recycling;
 using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using StarSalvager.UI.Scrapyard;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.FileIO;
@@ -92,7 +93,7 @@ namespace StarSalvager
             
             
             Vector3 screenToWorldPosition = Cameras.CameraController.Camera.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
-            if (_isDragging || (SelectedPartClickPosition != null && Vector3.Distance(SelectedPartClickPosition.Value, screenToWorldPosition) > 0.5f))
+            if (_isDragging || SelectedPartClickPosition != null && Vector3.Distance(SelectedPartClickPosition.Value, screenToWorldPosition) > 0.5f)
             {
                 _isDragging = true;
                 _partDragImage.transform.position = new Vector3(screenToWorldPosition.x, screenToWorldPosition.y, 0);
@@ -770,229 +771,203 @@ namespace StarSalvager
 
         //============================================================================================================//
 
+        //https://github.com/jaydubfilm/Schmetris/blob/12dc0227e9eac307f8d32ecd15dca73b1eb389b9/Assets/Scripts/Scrapyard/DroneDesigner.cs
+
         private void SellBits()
         {
             if (_scrapyardBot == null)
                 return;
 
+            var bitAttachableFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
+
+            //Obtain the block data from both the Recovery Drone & Drone
+            //--------------------------------------------------------------------------------------------------------//
+            
             Globals.IsRecoveryBot = true;
-            List<BlockData> recoveryBotBlockData = PlayerDataManager.GetBlockDatas();
-
-            List<ScrapyardBit> listBits = _scrapyardBot.AttachedBlocks.OfType<ScrapyardBit>().ToList();
-            List<Component> listComponents = _scrapyardBot.AttachedBlocks.OfType<Component>().ToList();
-
-            for (int i = recoveryBotBlockData.Count - 1; i >= 0; i--)
-            {
-                if (recoveryBotBlockData[i].ClassType == "Bit")
-                {
-                    listBits.Add(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<ScrapyardBit>(recoveryBotBlockData[i]));
-                    recoveryBotBlockData.RemoveAt(i);
-                    continue;
-                }
-                
-                if (recoveryBotBlockData[i].ClassType == "Component")
-                {
-                    listComponents.Add(FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().CreateObject<Component>((COMPONENT_TYPE)recoveryBotBlockData[i].Type, recoveryBotBlockData[i].Level));
-                    recoveryBotBlockData.RemoveAt(i);
-                    continue;
-                }
-            }
+            //Get the Recovery Drone data & clean it
+            var recoveryDroneBlockData = new List<BlockData>(PlayerDataManager.GetBlockDatas());
+            PlayerDataManager.SetBlockDatas(recoveryDroneBlockData.Where(x => x.ClassType.Equals(nameof(Part))).ToList());
+            
             Globals.IsRecoveryBot = false;
+            
+            //Get the active Drone Data & clean it
+            var droneBlockData = new List<BlockData>(PlayerDataManager.GetBlockDatas());
+            PlayerDataManager.SetBlockDatas(droneBlockData.Where(x => x.ClassType.Equals(nameof(Part))).ToList());
+            
+            //--------------------------------------------------------------------------------------------------------//
 
-            if (listComponents.Count > 0)
+            List<BlockData> botBlockData = new List<BlockData>(recoveryDroneBlockData);
+            botBlockData.AddRange(droneBlockData);
+
+            float refineryMultiplier = GetRefineryMultiplier();
+
+            var processedResources = new Dictionary<BIT_TYPE, int>();
+            var wastedResources = new Dictionary<BIT_TYPE, int>();
+
+            foreach (var blockData in botBlockData)
             {
-                _scrapyardBot.RemoveAllComponents();
-
-                //TODO Need to think about if I should be displaying the components processed or not
-                foreach (var component in listComponents)
+                int amount;
+                switch (blockData.ClassType)
                 {
-                    var amount = 1;
+                    //------------------------------------------------------------------------------------------------//
+                    case nameof(Component):
+                        amount = 1;
+                        var componentType = (COMPONENT_TYPE) blockData.Type;
 
-                    if (component.level > 0)
-                        amount = component.level * 3;
+                        if (blockData.Level > 0)
+                            amount = blockData.Level * 3;
 
-                    PlayerDataManager.AddComponent(component.Type, amount);
+                        PlayerDataManager.AddComponent(componentType, amount, false);
 
-                    MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-                    {
-                        componentType = component.Type,
-                        intAmount = amount
-                    };
-                    MissionManager.ProcessMissionData(typeof(ComponentCollectedMission), missionProgressEventData);
+                        MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                        {
+                            componentType = componentType,
+                            intAmount = amount
+                        };
+                        MissionManager.ProcessMissionData(typeof(ComponentCollectedMission), missionProgressEventData);
+                        break;
+                    //------------------------------------------------------------------------------------------------//
+                    case nameof(Bit):
+                    case nameof(ScrapyardBit):
+                        var bitType = (BIT_TYPE) blockData.Type;
+
+                        var facilityRefiningMultiplier = GetFacilityMultiplier(bitType);
+
+                        amount = bitAttachableFactory.GetTotalResource(bitType, blockData.Level);
+
+                        var addResourceAmount = (int) (amount * refineryMultiplier * facilityRefiningMultiplier);
+                        PlayerDataManager.GetResource(bitType)
+                            .AddResourceReturnWasted(
+                                addResourceAmount, 
+                                out var wastedResource, 
+                                false);
+
+                        TryIncrementDict(bitType, amount, ref processedResources);
+                        TryIncrementDict(bitType, wastedResource, ref wastedResources);
+
+
+                        break;
+                    //------------------------------------------------------------------------------------------------//
                 }
-
-                PlayerDataManager.OnValuesChanged?.Invoke();
-                SaveBlockData();
             }
+            ShowAlertInfo(botBlockData, processedResources, wastedResources);
 
 
-            if (listBits.Count == 0)
-                return;
+            PlayerDataManager.OnValuesChanged?.Invoke();
 
-            //var scrapyardBits = _scrapyardBot.attachedBlocks.OfType<ScrapyardBit>();
+            DroneDesignUi.UpdateBotResourceElements();
 
+        }
 
-            var enumerable = listBits.ToArray();
-            Dictionary<BIT_TYPE, int> bits = FactoryManager.Instance
-                .GetFactory<BitAttachableFactory>()
-                .GetTotalResources(enumerable);
-
+        private static float GetRefineryMultiplier()
+        {
             float refineryMultiplier = 1.0f;
-            if (PlayerDataManager.GetFacilityRanks().ContainsKey(FACILITY_TYPE.REFINERY))
+            if (!PlayerDataManager.GetFacilityRanks().ContainsKey(FACILITY_TYPE.REFINERY)) 
+                return refineryMultiplier;
+            
+            int refineryRank = PlayerDataManager.GetFacilityRanks()[FACILITY_TYPE.REFINERY];
+            float increaseAmount = FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.REFINERY)
+                .levels[refineryRank].increaseAmount;
+            
+            refineryMultiplier = 1 + increaseAmount / 100;
+            
+            Debug.Log("REFINERY MULTIPLIER: " + refineryMultiplier);
+
+            return refineryMultiplier;
+        }
+        
+        private static float GetFacilityMultiplier(BIT_TYPE bitType)
+        {
+            FACILITY_TYPE facilityType;
+            switch (bitType)
             {
-                int refineryRank = PlayerDataManager.GetFacilityRanks()[FACILITY_TYPE.REFINERY];
-                float increaseAmount = FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.REFINERY)
-                    .levels[refineryRank].increaseAmount;
-                refineryMultiplier = 1 + (increaseAmount / 100);
-                Debug.Log("REFINERY MULTIPLIER: " + refineryMultiplier);
+                case BIT_TYPE.BLUE:
+                    facilityType = FACILITY_TYPE.EVAPORATOR;
+                    break;
+                case BIT_TYPE.YELLOW:
+                    facilityType = FACILITY_TYPE.ALTERNATOR;
+                    break;
+                case BIT_TYPE.RED:
+                    facilityType = FACILITY_TYPE.SEPARATOR;
+                    break;
+                case BIT_TYPE.GREEN:
+                    facilityType = FACILITY_TYPE.CENTRIFUGE;
+                    break;
+                case BIT_TYPE.GREY:
+                    facilityType = FACILITY_TYPE.SMELTER;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
+            }
+            
+            if (PlayerDataManager.TryGetFacilityValue(facilityType, out var facilityValue))
+            {
+                return 1 + (float) FactoryManager.Instance.FacilityRemote
+                    .GetRemoteData(facilityType).levels[facilityValue].increaseAmount / 100;
             }
 
-            Dictionary<BIT_TYPE, int> wastedResources = new Dictionary<BIT_TYPE, int>();
-            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            return 1f;
+        }
+
+        private static void TryIncrementDict<TE>(TE type, int amount, ref Dictionary<TE, int> dictionary)
+        {
+            if (!dictionary.ContainsKey(type))
+                dictionary.Add(type, amount);
+            else
             {
-                if (_bitType == BIT_TYPE.WHITE)
-                    continue;
-
-                if (bits.TryGetValue(_bitType, out var amount))
-                {
-                    continue;
-                }
-
-                float facilityRefiningMultiplier = 1.0f;
-                int facilityValue = 0;
-                switch(_bitType)
-                {
-                    case BIT_TYPE.BLUE:
-                        if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.EVAPORATOR, out facilityValue))
-                        {
-                            facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.EVAPORATOR).levels[facilityValue].increaseAmount) / 100);
-                        }
-                        break;
-                    case BIT_TYPE.YELLOW:
-                        if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.ALTERNATOR, out facilityValue))
-                        {
-                            facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.ALTERNATOR).levels[facilityValue].increaseAmount) / 100);
-                        }
-                        break;
-                    case BIT_TYPE.RED:
-                        if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.SEPARATOR, out facilityValue))
-                        {
-                            facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.SEPARATOR).levels[facilityValue].increaseAmount) / 100);
-                        }
-                        break;
-                    case BIT_TYPE.GREEN:
-                        if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.CENTRIFUGE, out facilityValue))
-                        {
-                            facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.CENTRIFUGE).levels[facilityValue].increaseAmount) / 100);
-                        }
-                        break;
-                    case BIT_TYPE.GREY:
-                        if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.SMELTER, out facilityValue))
-                        {
-                            facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.SMELTER).levels[facilityValue].increaseAmount) / 100);
-                        }
-                        break;
-                }
-
-                Debug.Log(_bitType + " -- " + facilityRefiningMultiplier);
-
-                int wastedResource = PlayerDataManager.GetResource(_bitType).AddResourceReturnWasted((int)(amount * refineryMultiplier * facilityRefiningMultiplier));
-                wastedResources.Add(_bitType, wastedResource);
+                dictionary[type] += amount;
             }
+        }
 
-
-            string resourcesGained = "";
-            foreach (var resource in bits)
+        private static void ShowAlertInfo(IEnumerable<BlockData> botBlockDatas, Dictionary<BIT_TYPE, int> processedResources, Dictionary<BIT_TYPE, int> wastedResources)
+        {
+            var bits = botBlockDatas
+                .Where(x => x.ClassType.Equals(nameof(Bit)) || x.ClassType.Equals(nameof(ScrapyardBit))).ToArray();
+            
+            float refineryMultiplier = GetRefineryMultiplier();
+            BitAttachableFactory bitAttachableFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
+            
+            
+            string resourcesGained = string.Empty;
+            foreach (var kvp in processedResources)
             {
-                int numTotal = enumerable.Count(b => b.Type == resource.Key);
+                var bitType = kvp.Key;
+                int numTotal = bits.Count(b => b.Type == (int)bitType);
 
                 for (int i = 0; numTotal > 0; i++)
                 {
-                    int numAtLevel = enumerable.Count(b => b.Type == resource.Key && b.level == i);
+                    int numAtLevel = bits.Count(b => (BIT_TYPE)b.Type == bitType && b.Level == i);
                     if (numAtLevel == 0)
                         continue;
 
-                    BitRemoteData remoteData = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
-                        .GetBitRemoteData(resource.Key);
+                    var remoteData = bitAttachableFactory.GetBitRemoteData(bitType);
 
-                    float facilityRefiningMultiplier = 1.0f;
-                    int facilityValue = 0;
-                    switch (resource.Key)
-                    {
-                        case BIT_TYPE.BLUE:
-                            if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.EVAPORATOR, out facilityValue))
-                            {
-                                facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.EVAPORATOR).levels[facilityValue].increaseAmount) / 100);
-                            }
-                            break;
-                        case BIT_TYPE.YELLOW:
-                            if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.ALTERNATOR, out facilityValue))
-                            {
-                                facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.ALTERNATOR).levels[facilityValue].increaseAmount) / 100);
-                            }
-                            break;
-                        case BIT_TYPE.RED:
-                            if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.SEPARATOR, out facilityValue))
-                            {
-                                facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.SEPARATOR).levels[facilityValue].increaseAmount) / 100);
-                            }
-                            break;
-                        case BIT_TYPE.GREEN:
-                            if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.CENTRIFUGE, out facilityValue))
-                            {
-                                facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.CENTRIFUGE).levels[facilityValue].increaseAmount) / 100);
-                            }
-                            break;
-                        case BIT_TYPE.GREY:
-                            if (PlayerDataManager.TryGetFacilityValue(FACILITY_TYPE.SMELTER, out facilityValue))
-                            {
-                                facilityRefiningMultiplier = 1 + (((float)FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.SMELTER).levels[facilityValue].increaseAmount) / 100);
-                            }
-                            break;
-                    }
-
+                    float facilityRefiningMultiplier = GetFacilityMultiplier(bitType);
                     int resourceAmount = (int) (numAtLevel * remoteData.levels[i].resources * refineryMultiplier * facilityRefiningMultiplier);
 
-                    var spriteXML = TMP_SpriteMap.GetBitSprite(resource.Key, i);
+                    var spriteIcon = TMP_SpriteMap.GetBitSprite(bitType, i);
+                    var materialIcon = TMP_SpriteMap.MaterialIcons[bitType];
                     
-                    resourcesGained +=
-                        $"{numAtLevel} x {spriteXML} = {resourceAmount} {TMP_SpriteMap.MaterialIcons[resource.Key]} ";
+                    resourcesGained += $"{numAtLevel} x {spriteIcon} = {resourceAmount} {materialIcon} ";
                     numTotal -= numAtLevel;
                 }
 
                 resourcesGained += "\n";
             }
 
+            string resourcesWasted = string.Empty;
             foreach (var resource in wastedResources)
             {
                 if(resource.Value <= 0)
                     continue;
+
+                var materialIcon = TMP_SpriteMap.MaterialIcons[resource.Key];
                 
-                resourcesGained += $"{resource.Value} {TMP_SpriteMap.MaterialIcons[resource.Key]} jettisoned due to lack of storage\n";
+                resourcesWasted += $"{resource.Value} {materialIcon} jettisoned due to lack of storage\n";
             }
 
-            Alert.ShowAlert("Resources Refined", resourcesGained, "Okay", null);
+            Alert.ShowAlert("Resources Refined", $"{resourcesGained}{resourcesWasted}", "Okay", null);
             Alert.SetLineHeight(90f);
-
-            
-            for (int i = listBits.Count - 1; i >= 0; i--)
-            {
-                if (_scrapyardBot.AttachedBlocks.Contains(listBits[i]))
-                {
-                    continue;
-                }
-
-                Recycler.Recycle<ScrapyardBit>(listBits[i]);
-                listBits.RemoveAt(i);
-            }
-
-            _scrapyardBot.RemoveAllBits();
-
-
-
-            SaveBlockData();
-
-            DroneDesignUi.UpdateBotResourceElements();
         }
 
         //Repair Calculations

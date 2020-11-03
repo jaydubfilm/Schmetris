@@ -203,7 +203,7 @@ namespace StarSalvager
 
                 var levelData = partData.levels[part.level];
                 
-                if(!usedResourceTypes.Contains(partData.burnType))
+                if(levelData.burnRate > 0 && !usedResourceTypes.Contains(partData.burnType))
                     usedResourceTypes.Add(partData.burnType);
                 
                 if(levelData.powerDraw > 0f && !usedResourceTypes.Contains(BIT_TYPE.YELLOW))
