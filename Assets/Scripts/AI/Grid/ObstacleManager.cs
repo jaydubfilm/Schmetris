@@ -61,7 +61,7 @@ namespace StarSalvager
                                                     Constants.VISIBLE_GAME_AREA));
 
         public IEnumerable<Shape> ActiveBonusShapes => m_bonusShapes
-            .Where(x => CameraController.IsPointInCameraRect(x.transform.position, Constants.VISIBLE_GAME_AREA));
+            .Where(x => CameraController.IsPointInCameraRect(x.transform.position, 0.95f * Constants.VISIBLE_GAME_AREA));
 
         public bool isPaused => GameTimer.IsPaused;
 
@@ -1196,7 +1196,7 @@ namespace StarSalvager
 
             float screenOffset = Globals.ColumnsOnScreen * Constants.gridCellSize * 0.35f;
             //float height = Camera.main.orthographicSize * 0.5f;
-            float height = Constants.gridCellSize * Random.Range(8.0f, 12.0f);
+            float height = Constants.gridCellSize * Random.Range(6.0f, 8.0f);
 
             Vector3 startingPosition = new Vector3(screenOffset * tryFlipSides, height, 11);
             Vector3 endPosition = new Vector3(screenOffset * -tryFlipSides, height, 11);
