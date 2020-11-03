@@ -769,9 +769,10 @@ namespace StarSalvager
             UpdateFloatingMarkers(false);
         }
 
+        //Sell Bits & Components
         //============================================================================================================//
 
-        //https://github.com/jaydubfilm/Schmetris/blob/12dc0227e9eac307f8d32ecd15dca73b1eb389b9/Assets/Scripts/Scrapyard/DroneDesigner.cs
+        #region Sell Bits & Components
 
         private void SellBits()
         {
@@ -796,9 +797,16 @@ namespace StarSalvager
             
             //--------------------------------------------------------------------------------------------------------//
 
-            List<BlockData> botBlockData = new List<BlockData>(recoveryDroneBlockData);
-            botBlockData.AddRange(droneBlockData);
+            //Only get all the things that aren't parts from the two bots
+            List<BlockData> botBlockData = recoveryDroneBlockData
+                .Where(x => !x.ClassType.Equals(nameof(Part)))
+                .Concat(droneBlockData.Where(x => !x.ClassType.Equals(nameof(Part))))
+                .ToList();
 
+            //If we have nothing to process, don't bother moving forward
+            if (botBlockData.Count == 0)
+                return;
+                
             float refineryMultiplier = GetRefineryMultiplier();
 
             var processedResources = new Dictionary<BIT_TYPE, int>();
@@ -850,13 +858,13 @@ namespace StarSalvager
                     //------------------------------------------------------------------------------------------------//
                 }
             }
-            ShowAlertInfo(botBlockData, processedResources, wastedResources);
 
-
+            //Update all relevant parties
             PlayerDataManager.OnValuesChanged?.Invoke();
-
             DroneDesignUi.UpdateBotResourceElements();
-
+            
+            //Show the final alert to the player
+            ShowAlertInfo(botBlockData, processedResources, wastedResources);
         }
 
         private static float GetRefineryMultiplier()
@@ -909,16 +917,6 @@ namespace StarSalvager
             return 1f;
         }
 
-        private static void TryIncrementDict<TE>(TE type, int amount, ref Dictionary<TE, int> dictionary)
-        {
-            if (!dictionary.ContainsKey(type))
-                dictionary.Add(type, amount);
-            else
-            {
-                dictionary[type] += amount;
-            }
-        }
-
         private static void ShowAlertInfo(IEnumerable<BlockData> botBlockDatas, Dictionary<BIT_TYPE, int> processedResources, Dictionary<BIT_TYPE, int> wastedResources)
         {
             var bits = botBlockDatas
@@ -969,6 +967,18 @@ namespace StarSalvager
             Alert.ShowAlert("Resources Refined", $"{resourcesGained}{resourcesWasted}", "Okay", null);
             Alert.SetLineHeight(90f);
         }
+        
+        private static void TryIncrementDict<TE>(TE type, int amount, ref Dictionary<TE, int> dictionary)
+        {
+            if (!dictionary.ContainsKey(type))
+                dictionary.Add(type, amount);
+            else
+            {
+                dictionary[type] += amount;
+            }
+        }
+
+        #endregion //Sell Bits & Components
 
         //Repair Calculations
         //====================================================================================================================//
