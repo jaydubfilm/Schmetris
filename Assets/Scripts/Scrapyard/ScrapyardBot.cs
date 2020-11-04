@@ -290,7 +290,21 @@ namespace StarSalvager
             UpdatePartsList();
         }
 
-        public void RemoveAllBits()
+        public void RemoveDetachables()
+        {
+            for (int i = AttachedBlocks.Count - 1; i >= 0; i--)
+            {
+                switch (AttachedBlocks[i])
+                {
+                    case Component _:
+                    case ScrapyardBit _:
+                        DetachBit(AttachedBlocks[i]);
+                        break;
+                }
+            }
+        }
+
+        /*public void RemoveAllBits()
         {
             for (int i = AttachedBlocks.Count - 1; i >= 0; i--)
             {
@@ -310,7 +324,7 @@ namespace StarSalvager
                     DetachBit(AttachedBlocks[i]);
                 }
             }
-        }
+        }*/
 
         private void DetachBit(IAttachable attachable)
         {
