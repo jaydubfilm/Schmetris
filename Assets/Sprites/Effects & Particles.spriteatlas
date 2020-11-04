@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Effects & Particles
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 93c8087663718784c984c9fb3415ef4f, type: 3}
+    totalSpriteSurfaceArea: 808986
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: d7313290ef5193a40aea0cae6134a68d, type: 3}
+  - {fileID: 21300000, guid: d2a4d6f0defc4984e9dca3e03fd7ed1e, type: 3}
+  - {fileID: 21300000, guid: ed53eec33717891429b3df770dc7a04c, type: 3}
+  - {fileID: 21300000, guid: 3db761e60741f4240a142722c30652da, type: 3}
+  - {fileID: 21300000, guid: 8154d079cc2403549bfb12d8a8a35d50, type: 3}
+  - {fileID: 21300000, guid: 9d27b5ca62096534d94ba81a39aa756a, type: 3}
+  - {fileID: 21300000, guid: 6dd9dc6b90b817f4692117d493ed6cab, type: 3}
+  - {fileID: 21300000, guid: 1702a96d81214c14eba789dd802ab866, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - effect_WELDPards_2_v1
+  - effect_THRUSTERBACK_1_v1
+  - effect_IMPACTTOPADD_1_v1
+  - effect_WELDPards_3_v1
+  - effect_WELDPards_1_v1
+  - effect_MERGECOMBO_1_v1
+  - effect_IMPACTBOT_1_v1
+  - effect_THRUSTERFRONTADD_1_v1
+  m_Tag: Effects & Particles
+  m_IsVariant: 0
