@@ -859,6 +859,8 @@ namespace StarSalvager
                 }
             }
 
+            _scrapyardBot.RemoveDetachables();
+            
             //Update all relevant parties
             PlayerDataManager.OnValuesChanged?.Invoke();
             DroneDesignUi.UpdateBotResourceElements();
