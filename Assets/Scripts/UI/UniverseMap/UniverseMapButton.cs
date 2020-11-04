@@ -56,7 +56,7 @@ namespace StarSalvager
                 
                 Globals.CurrentSector = SectorNumber;
                 Globals.CurrentWave = WaveNumber;
-                Debug.Log($"Convert Sector Wave Index {SectorNumber}, {WaveNumber} to {SectorNumber}, {PlayerDataManager.SectorWaveIndexConverter[SectorNumber][WaveNumber]}");
+                Debug.Log($"SectorWave {SectorNumber + 1}.{WaveNumber + 1} uses {SectorNumber + 1}.{PlayerDataManager.SectorWaveIndexConverter[SectorNumber][WaveNumber] + 1}");
                 SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
             });
         }
