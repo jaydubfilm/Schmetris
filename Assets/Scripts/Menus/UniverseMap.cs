@@ -104,6 +104,7 @@ namespace StarSalvager.UI
             {
                 universeMapButtons[i].Button.image.color = Color.white;
                 universeMapButtons[i].BotImage.gameObject.SetActive(false);
+                universeMapButtons[i].ShortcutImage.gameObject.SetActive(false);
             }
 
             if (Globals.IsBetweenWavesInUniverseMap)
@@ -119,6 +120,15 @@ namespace StarSalvager.UI
 
                     if (nodeIndex == curIndex)
                     {
+                        for (int k = 0; k < childNodesAccessible.Count; k++)
+                        {
+                            bool isChildShortcut = PlayerDataManager.GetShortcutNodes().Contains(childNodesAccessible[k].nodeIndex);
+                            if (isChildShortcut)
+                            {
+                                universeMapButtons[childNodesAccessible[k].nodeIndex].ShortcutImage.gameObject.SetActive(true);
+                            }
+                        }
+
                         universeMapButtons[nodeIndex].BotImage.gameObject.SetActive(true);
                         if (childNodesAccessible.Count == 0)
                         {
@@ -155,6 +165,12 @@ namespace StarSalvager.UI
                                 }
                             }
                         }
+                    }
+
+                    bool isShortcut = PlayerDataManager.GetShortcutNodes().Contains(nodeIndex);
+                    if (isShortcut)
+                    {
+                        universeMapButtons[nodeIndex].ShortcutImage.gameObject.SetActive(true);
                     }
                 }
 
@@ -199,7 +215,7 @@ namespace StarSalvager.UI
                     if (isShortcut)
                     {
                         universeMapButtons[nodeIndex].Button.interactable = true;
-                        universeMapButtons[nodeIndex].Button.image.color = Color.blue;
+                        universeMapButtons[nodeIndex].ShortcutImage.gameObject.SetActive(true);
                     }
                 }
             }
