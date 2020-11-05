@@ -48,7 +48,7 @@ namespace StarSalvager.UI.Scrapyard
             elementImage.color = isTracked ? Color.green : Color.white;
 
             //favouriteButton.interactable = isTracked || PlayerDataManager.GetMissionsCurrentData().CurrentTrackedMissions.Count < Globals.NumCurrentTrackedMissionMax;
-            favouriteButton.interactable = isTracked;
+            favouriteButton.interactable = true;
         }
 
         //Init Functions
