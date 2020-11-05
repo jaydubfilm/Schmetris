@@ -854,6 +854,66 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 859504053}
+    ActiveGameObject: {fileID: 859504053}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 218454926}
+    ActiveGameObject: {fileID: 218454926}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 859504053}
+    ActiveGameObject: {fileID: 859504053}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 218454926}
+    ActiveGameObject: {fileID: 218454926}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 859504053}
     - {fileID: 423388869}
     - {fileID: 126902903}
@@ -1065,66 +1125,6 @@ MonoBehaviour:
     list:
     - {fileID: 859504053}
     ActiveGameObject: {fileID: 859504053}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1334237525}
-    ActiveGameObject: {fileID: 1334237525}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 432875511}
-    ActiveGameObject: {fileID: 432875511}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1334237525}
-    ActiveGameObject: {fileID: 1334237525}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 859504053}
-    ActiveGameObject: {fileID: 859504053}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1334237525}
-    ActiveGameObject: {fileID: 1334237525}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -1618,6 +1618,11 @@ PrefabInstance:
       propertyPath: animationTime
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 266452060594130311, guid: f0f137c953357bc4a97060f9e0853879,
+        type: 3}
+      propertyPath: globalScaleSpeed
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 266452060594130328, guid: f0f137c953357bc4a97060f9e0853879,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1707,86 +1712,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 156293001}
     m_Modifications:
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: globalScaleCurve.m_Curve.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: useGlobalScale
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: globalScaleEnd.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: globalScaleEnd.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: globalScaleCurve.m_Curve.Array.data[0].inSlope
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: globalScaleCurve.m_Curve.Array.data[0].outSlope
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: globalScaleCurve.m_Curve.Array.data[1].time
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: globalScaleCurve.m_Curve.Array.data[1].value
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: globalScaleCurve.m_Curve.Array.data[1].inSlope
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: globalScaleCurve.m_Curve.Array.data[1].outSlope
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: globalScaleCurve.m_Curve.Array.data[1].inWeight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: globalScaleCurve.m_Curve.Array.data[1].outWeight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: globalScaleCurve.m_Curve.Array.data[2].time
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: globalScaleCurve.m_Curve.Array.data[2].value
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: globalScaleCurve.m_Curve.Array.data[1].tangentMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6760237738234481193, guid: 9b066a010ed8029498d3fd9cacdfbad4,
-        type: 3}
-      propertyPath: globalScaleSpeed
-      value: 100
-      objectReference: {fileID: 0}
     - target: {fileID: 6760237738234481206, guid: 9b066a010ed8029498d3fd9cacdfbad4,
         type: 3}
       propertyPath: m_LocalPosition.x
