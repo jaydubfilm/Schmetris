@@ -34,6 +34,8 @@ namespace StarSalvager.Utilities.Backgrounds
 
             [HideInInspector]
             public float yScale;
+            [HideInInspector]
+            public float xScale;
 
             [HideInInspector]
             public Material MaterialInstance;
@@ -78,17 +80,26 @@ namespace StarSalvager.Utilities.Backgrounds
         [SerializeField]
         private Background[] backgrounds;
 
+        private new Transform transform;
+
+        private Vector3 _delta;
+        private Vector3 _currentPos, _lastPos;
+
         //IPausable Properties
         //====================================================================================================================//
         
         public bool isPaused { get; private set; }
 
-
         //====================================================================================================================//
 
         private void Awake()
         {
-            gameObject.transform.SetParent(_camera.transform, true);
+            transform = gameObject.transform;
+            
+            transform.SetParent(_camera.transform, true);
+
+            _currentPos = _lastPos = transform.position;
+
         }
 
         private void OnEnable()
@@ -107,6 +118,8 @@ namespace StarSalvager.Utilities.Backgrounds
         {
             if (isPaused)
                 return;
+
+            CalculateCameraDelta();
             
             //TODO Need to get the current movement delta
             MoveBackgrounds();
@@ -133,6 +146,7 @@ namespace StarSalvager.Utilities.Backgrounds
                     case TYPE.STATIC:
                         continue;
                     case TYPE.SPRITE:
+                        backgrounds[i].Renderer = backgrounds[i].Transform.GetComponent<SpriteRenderer>();
                         break;
                     case TYPE.TRANSPARENT:
                         SetMaterialInstance(transparentMaterial, ref backgrounds[i]);
@@ -165,8 +179,8 @@ namespace StarSalvager.Utilities.Backgrounds
                     //------------------------------------------------------------------------------------------------//
 
                     case TYPE.SPRITE:
-                        
                         //TODO Need to check and see if the image should wrap
+                        CheckSpriteWrap(background);
                         
                         var yPosDelta = Globals.TimeForAsteroidToFallOneSquare / (background.distance / globalSpeedOffset);
                         
@@ -177,11 +191,16 @@ namespace StarSalvager.Utilities.Backgrounds
                     
                     case TYPE.TRANSPARENT:
                     case TYPE.CUTOUT:
+                        var xDelta = (1f / background.xScale) *
+                                     (-_delta.x / (background.distance / globalSpeedOffset)) *
+                                     background.startTile.x;
+                        
                         var yDelta = (1f / background.yScale) *
                                      (Globals.TimeForAsteroidToFallOneSquare / (background.distance / globalSpeedOffset)) *
                                      background.startTile.y;
                         
-                        offset = Vector2.up * (yDelta * Time.deltaTime);
+                        //offset = Vector2.up * (yDelta * Time.deltaTime);
+                        offset = new Vector2(-xDelta, yDelta) * Time.deltaTime;
 
                         background.MaterialInstance.mainTextureOffset += offset;
                         break;
@@ -190,6 +209,33 @@ namespace StarSalvager.Utilities.Backgrounds
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
+            }
+        }
+
+        //Delta Functions
+        //====================================================================================================================//
+
+        private void CalculateCameraDelta()
+        {
+            _lastPos = _currentPos;
+            _currentPos = transform.position;
+
+            _delta = _currentPos - _lastPos;
+        }
+
+        private void CheckSpriteWrap(in Background background)
+        {
+            var pos = background.Transform.localPosition;
+            var spriteRenderer = (SpriteRenderer)background.Renderer;
+            
+            var lowestPoint = _camera.ViewportToWorldPoint(Vector3.zero).y;
+            var highestPoint = _camera.ViewportToWorldPoint(Vector3.one).y;
+            
+            if (pos.y < lowestPoint - spriteRenderer.bounds.extents.y)
+            {
+                pos.y = Mathf.Abs(highestPoint + spriteRenderer.bounds.extents.y * 1.2f);
+                
+                background.Transform.localPosition = pos;
             }
         }
 
@@ -217,6 +263,7 @@ namespace StarSalvager.Utilities.Backgrounds
         private static void SetMaterialInstance(Material material, ref Background background)
         {
             background.yScale = background.Transform.localScale.y;
+            background.xScale = background.Transform.localScale.x;
 
             if (background.MaterialInstance == null)
             {
