@@ -153,7 +153,7 @@ namespace StarSalvager.UI
                     {
                         if (childNodesAccessible.Count == 0)
                         {
-                            universeMapButtons[nodeIndex].Button.image.color = Color.red;
+                            //universeMapButtons[nodeIndex].Button.image.color = Color.red;
                         }
                         else
                         {
@@ -195,7 +195,7 @@ namespace StarSalvager.UI
 
                     if (childNodesAccessible.Count == 0)
                     {
-                        universeMapButtons[nodeIndex].Button.image.color = Color.red;
+                        //universeMapButtons[nodeIndex].Button.image.color = Color.red;
                     }
                     else
                     {
