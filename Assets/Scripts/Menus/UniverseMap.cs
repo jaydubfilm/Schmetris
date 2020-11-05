@@ -123,6 +123,7 @@ namespace StarSalvager.UI
                         if (childNodesAccessible.Count == 0)
                         {
                             universeMapButtons[nodeIndex].Button.image.color = Color.red;
+                            Alert.ShowAlert("Dead End", "You've reached a dead end. Return to base.", "Ok", null);
                         }
 
                         for (int k = 0; k < universeMapButtons.Count; k++)

@@ -140,6 +140,11 @@ namespace StarSalvager.UI.Scrapyard
                         ((containsFacilityKey && i == PlayerDataManager.GetFacilityRanks()[type] + 1) ||
                         (!containsFacilityKey && i == 0));
 
+                    if (!craftButtonInteractable)
+                    {
+                        continue;
+                    }
+
                     var element = facilityBlueprintUIElements.AddElement(newBlueprint);
                     element.Init(newBlueprint, PurchaseBlueprint, SetupDetailsWindow, craftButtonInteractable);
                 }
