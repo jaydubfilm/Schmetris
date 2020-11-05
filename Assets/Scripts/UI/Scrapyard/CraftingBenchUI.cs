@@ -103,7 +103,7 @@ namespace StarSalvager.UI.Scrapyard
         private void InitUIScrollView()
         {
             //FIXME This needs to move to the Factory
-            if (!Globals.DisableTestingFeatures)
+            if (Globals.TestingFeatures)
             {
                 PlayerDataManager.UnlockAllBlueprints();
             }

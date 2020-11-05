@@ -182,7 +182,7 @@ namespace StarSalvager.UI
                 universeMapButtons[0].BotImage.gameObject.SetActive(true);
                 for (int i = 0; i < universeMapButtons.Count; i++)
                 {
-                    universeMapButtons[i].Button.interactable = !Globals.DisableTestingFeatures;
+                    universeMapButtons[i].Button.interactable = Globals.TestingFeatures;
                 }
 
                 for (int i = 0; i < PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Count; i++)

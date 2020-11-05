@@ -109,7 +109,7 @@ namespace StarSalvager.UI
 
         private void OnEnable()
         {
-            pauseWindowScrapyardButton.gameObject.SetActive(!Globals.DisableTestingFeatures);
+            pauseWindowScrapyardButton.gameObject.SetActive(Globals.TestingFeatures);
             InitScrollPositions();
         }
 
