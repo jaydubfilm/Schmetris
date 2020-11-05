@@ -62,7 +62,7 @@ public class Toast : Singleton<Toast>
     //================================================================================================================//
 
     public static void AddToast(string text, Sprite sprite = null, float time = 1f, Layout verticalLayout = Layout.End,
-        Layout horizontalLayout = Layout.Start)
+        Layout horizontalLayout = Layout.Middle)
     {
         Instance?.Add(new ToastData
         {

@@ -32,6 +32,9 @@ namespace StarSalvager.ScriptableObjects
         public float asteroidDamage = 10.0f;
         public List<BonusShapeGearsValue> bonusShapeGearsRewards;
 
+        public float botEnterScreenMaxSize = 1.5f;
+        public float botExitScreenMaxSize = 2.0f;
+
         public bool cameraUseInputMotion = true;
         [ShowIf("cameraUseInputMotion", true)]
         public float cameraSmoothing = 1.0f;

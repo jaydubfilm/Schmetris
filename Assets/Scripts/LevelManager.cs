@@ -35,7 +35,7 @@ namespace StarSalvager
 
         [SerializeField, Required, BoxGroup("Prototyping")]
         private OutroScene OutroScene;
-        
+
         #region Properties
 
         private List<Bot> m_bots;
@@ -115,7 +115,7 @@ namespace StarSalvager
             }
         }
         private ObstacleManager m_obstacleManager;
-        
+
         public TutorialManager TutorialManager
         {
             get
@@ -153,8 +153,8 @@ namespace StarSalvager
         public List<string> MissionsCompletedDuringThisFlight = new List<string>();
         public bool BotDead = false;
 
-        private bool m_botEnterScreen = false;
-        private bool m_botZoomOffScreen = false;
+        public bool m_botEnterScreen { get; private set; } = false;
+        public bool m_botZoomOffScreen { get; private set; } = false;
 
         private float botMoveOffScreenSpeed = 0.0f;
 
@@ -197,7 +197,7 @@ namespace StarSalvager
             {
                 ProgressStage();
             }
-            else if (ObstacleManager.HasNoActiveObstacles || (ObstacleManager.RecoveredBotFalling != null && !BotIsInPosition()))
+            else if ((ObstacleManager.RecoveredBotFalling == null && ObstacleManager.HasNoActiveObstacles) || (ObstacleManager.RecoveredBotFalling != null && BotIsInPosition()))
             {
                 ProcessEndOfWave();
             }
@@ -226,7 +226,10 @@ namespace StarSalvager
                 var pos = bot.transform.position;
 
                 if (!m_botEnterScreen)
+                {
+                    bot.transform.localScale = Vector2.one;
                     continue;
+                }
 
                 if (pos.y >= Constants.gridCellSize * 5)
                 {
@@ -238,6 +241,8 @@ namespace StarSalvager
                 pos.y = newY;
                 
                 bot.transform.position = pos;
+                float scale = Mathf.Lerp(Globals.BotEnterScreenMaxSize, 1, bot.transform.position.y / (5 * Constants.gridCellSize));
+                bot.transform.localScale = new Vector2(scale, scale);
             }
 
             if (m_botZoomOffScreen)
@@ -404,13 +409,30 @@ namespace StarSalvager
 
         private void MoveBotOffScreen()
         {
-            if (botMoveOffScreenSpeed < 10)
+            if (botMoveOffScreenSpeed < 20)
             {
-                botMoveOffScreenSpeed += Time.deltaTime * 5;
+                if (Globals.IsRecoveryBot && !ObstacleManager.RecoveredBotTowing)
+                {
+                    botMoveOffScreenSpeed += Time.deltaTime * 2;
+                }
+                else
+                {
+                    botMoveOffScreenSpeed += Time.deltaTime * 5;
+                }
             }
             foreach (var bot in m_bots)
             {
                 bot.transform.position += Vector3.up * (botMoveOffScreenSpeed * Time.deltaTime);
+                float scale = Mathf.Lerp(1.0f, Globals.BotExitScreenMaxSize, botMoveOffScreenSpeed / 20);
+                bot.transform.localScale = new Vector2(scale, scale);
+
+
+                float distanceTrail = 3.0f;
+                if (ObstacleManager.RecoveredBotFalling != null && bot.transform.position.y >= ObstacleManager.RecoveredBotFalling.transform.position.y + distanceTrail)
+                {
+                    ObstacleManager.RecoveredBotTowing = true;
+                    ObstacleManager.RecoveredBotFalling.transform.position = bot.transform.position + (Vector3.down * distanceTrail);
+                }
             }
         }
 
@@ -428,9 +450,9 @@ namespace StarSalvager
 
         private bool BotIsInPosition()
         {
-            var yPos = CameraController.Camera.WorldToScreenPoint(ObstacleManager.RecoveredBotFalling.transform.position).y;
+            var yPos = Constants.gridCellSize * Globals.GridSizeY;
 
-            return yPos > Screen.height / 2f;
+            return m_bots[0].transform.position.y >= yPos && ObstacleManager.RecoveredBotFalling.transform.position.y > yPos;
         }
 
         //LevelManager Functions
@@ -518,6 +540,10 @@ namespace StarSalvager
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
 
+            SetBotBelowScreen();
+            SetBotZoomOffScreen(false);
+            SetBotEnterScreen(true);
+
             //CheckPlayerWater();
         }
 
@@ -602,35 +628,6 @@ namespace StarSalvager
         }
         
         //============================================================================================================//
-        
-        public void BeginNextWave()
-        {
-            IsWaveProgressing = true;
-            EndWaveState = false;
-
-            //LiquidResourcesCachedOnDeath = new Dictionary<BIT_TYPE, float>((IDictionary<BIT_TYPE, float>)PlayerPersistentData.PlayerData.liquidResource);
-
-            SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
-            AudioController.PlayTESTWaveMusic(Globals.CurrentWave);
-
-            if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <
-                Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate)
-            {
-                GameTimer.SetPaused(true);
-                m_levelManagerUI.ShowSummaryScreen("Almost out of water",
-                    "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.",
-                    () => { GameTimer.SetPaused(false); });
-            }
-
-            for (int i = 0; i < m_bots.Count; i++)
-            {
-                m_bots[i].SetColliderActive(true);
-            }
-
-            SetBotBelowScreen();
-            SetBotZoomOffScreen(false);
-            SetBotEnterScreen(true);
-        }
         
         private void TransitionToEndWaveState()
         {
