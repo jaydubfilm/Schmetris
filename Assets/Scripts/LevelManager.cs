@@ -35,7 +35,7 @@ namespace StarSalvager
 
         [SerializeField, Required, BoxGroup("Prototyping")]
         private OutroScene OutroScene;
-        
+
         #region Properties
 
         private List<Bot> m_bots;
@@ -115,7 +115,7 @@ namespace StarSalvager
             }
         }
         private ObstacleManager m_obstacleManager;
-        
+
         public TutorialManager TutorialManager
         {
             get
@@ -153,8 +153,8 @@ namespace StarSalvager
         public List<string> MissionsCompletedDuringThisFlight = new List<string>();
         public bool BotDead = false;
 
-        private bool m_botEnterScreen = false;
-        private bool m_botZoomOffScreen = false;
+        public bool m_botEnterScreen { get; private set; } = false;
+        public bool m_botZoomOffScreen { get; private set; } = false;
 
         private float botMoveOffScreenSpeed = 0.0f;
 
@@ -197,7 +197,7 @@ namespace StarSalvager
             {
                 ProgressStage();
             }
-            else if (ObstacleManager.HasNoActiveObstacles || (ObstacleManager.RecoveredBotFalling != null && !BotIsInPosition()))
+            else if ((ObstacleManager.RecoveredBotFalling == null && ObstacleManager.HasNoActiveObstacles) || (ObstacleManager.RecoveredBotFalling != null && BotIsInPosition()))
             {
                 ProcessEndOfWave();
             }
@@ -411,13 +411,28 @@ namespace StarSalvager
         {
             if (botMoveOffScreenSpeed < 20)
             {
-                botMoveOffScreenSpeed += Time.deltaTime * 5;
+                if (Globals.IsRecoveryBot && !ObstacleManager.RecoveredBotTowing)
+                {
+                    botMoveOffScreenSpeed += Time.deltaTime * 2;
+                }
+                else
+                {
+                    botMoveOffScreenSpeed += Time.deltaTime * 5;
+                }
             }
             foreach (var bot in m_bots)
             {
                 bot.transform.position += Vector3.up * (botMoveOffScreenSpeed * Time.deltaTime);
                 float scale = Mathf.Lerp(1.0f, Globals.BotExitScreenMaxSize, botMoveOffScreenSpeed / 20);
                 bot.transform.localScale = new Vector2(scale, scale);
+
+
+                float distanceTrail = 3.0f;
+                if (ObstacleManager.RecoveredBotFalling != null && bot.transform.position.y >= ObstacleManager.RecoveredBotFalling.transform.position.y + distanceTrail)
+                {
+                    ObstacleManager.RecoveredBotTowing = true;
+                    ObstacleManager.RecoveredBotFalling.transform.position = bot.transform.position + (Vector3.down * distanceTrail);
+                }
             }
         }
 
@@ -435,9 +450,9 @@ namespace StarSalvager
 
         private bool BotIsInPosition()
         {
-            var yPos = CameraController.Camera.WorldToScreenPoint(ObstacleManager.RecoveredBotFalling.transform.position).y;
+            var yPos = Constants.gridCellSize * Globals.GridSizeY;
 
-            return yPos > Screen.height / 2f;
+            return m_bots[0].transform.position.y >= yPos && ObstacleManager.RecoveredBotFalling.transform.position.y > yPos;
         }
 
         //LevelManager Functions
