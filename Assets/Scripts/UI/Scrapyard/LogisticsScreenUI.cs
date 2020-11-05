@@ -28,15 +28,18 @@ namespace StarSalvager.UI.Scrapyard
         private TMP_Text detailsTitle;
         [SerializeField, Required, BoxGroup("Details Window")]
         private TMP_Text detailsDescription;
+
+        [SerializeField]
+        private TMP_Text patchPointsText;
         
 
-        //TODO Need to add Resources
+        /*//TODO Need to add Resources
         [SerializeField]
         private ResourceUIElementScrollView resourceUIElementScrollView;
         
         //TODO Need to add Components
         [SerializeField]
-        private ComponentResourceUIElementScrollView componentResourceUIElementScrollView;
+        private ComponentResourceUIElementScrollView componentResourceUIElementScrollView;*/
 
         //====================================================================================================================//
 
@@ -152,6 +155,8 @@ namespace StarSalvager.UI.Scrapyard
 
             /*SetupResourceScrollView();
             SetupComponentResourceScrollView();*/
+
+            UpdatePatchPoints();
         }
 
         /*private void SetupResourceScrollView()
@@ -191,6 +196,11 @@ namespace StarSalvager.UI.Scrapyard
                 element.Init(data);
             }
         }*/
+
+        private void UpdatePatchPoints()
+        {
+            patchPointsText.text = $"{PlayerDataManager.GetAvailablePatchPoints()}";
+        }
 
         //====================================================================================================================//
         

@@ -51,8 +51,8 @@ namespace StarSalvager.UI
         [SerializeField, Required] 
         private IntroScene IntroScene;
 
-        [SerializeField, Required]
-        private SpriteRenderer partSprite;
+        /*[SerializeField, Required]
+        private SpriteRenderer partSprite;*/
         
         //Main Menu Properties
         //====================================================================================================================//
@@ -151,8 +151,7 @@ namespace StarSalvager.UI
 
         private void Start()
         {
-            partSprite.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.CORE).GetSprite(0);
-            
+            //partSprite.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.CORE).GetSprite(0);
             
             SetupWindows();
             SetupButtons();
