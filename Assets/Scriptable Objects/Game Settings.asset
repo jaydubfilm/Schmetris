@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allowAccessToUnlockedLaterWaves: 1
   disableTestingFeatures: 1
-  bitsPushThroughParts: 0
+  bitsPushThroughParts: 1
   gridWidth: 100
   timeForAsteroidToFallOneSquare: 0.32
   DASTime: 0.15

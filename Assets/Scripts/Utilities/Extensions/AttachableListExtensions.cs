@@ -861,9 +861,15 @@ namespace StarSalvager.Utilities.Extensions
             //--------------------------------------------------------------------------------------------------------//
         }
 
-        private static bool TraversalContains(BlockData start, BlockData toCompare, Vector2Int currentCoordinate,
-            DIRECTION currentDirection, IReadOnlyCollection<BlockData> originalList,
-            IReadOnlyCollection<BlockData> compareList, ref List<Vector2Int> traversedCompared, ref List<Vector2Int> upgrading)
+        private static bool TraversalContains(
+            BlockData start, 
+            BlockData toCompare,
+            Vector2Int currentCoordinate,
+            DIRECTION currentDirection,
+            IReadOnlyCollection<BlockData> originalList,
+            IReadOnlyCollection<BlockData> compareList,
+            ref List<Vector2Int> traversedCompared,
+            ref List<Vector2Int> upgrading)
         {
             //Ensure we haven't already been here, and that we're not storing doubles
             if (traversedCompared.Contains(currentCoordinate))
@@ -872,8 +878,8 @@ namespace StarSalvager.Utilities.Extensions
                 return false;
             }
 
-            var found = originalList.FirstOrDefault(x =>
-                x.Coordinate == start.Coordinate + currentCoordinate && x.Type == toCompare.Type);
+            var found = originalList
+                .FirstOrDefault(x => x.Coordinate == start.Coordinate + currentCoordinate && x.Type == toCompare.Type);
 
             //If no one was at that location, that shapes don't match
             if (string.IsNullOrEmpty(found.ClassType))
@@ -892,7 +898,8 @@ namespace StarSalvager.Utilities.Extensions
             {
                 nextCoordinate = currentCoordinate + nextDirection.ToVector2Int();
 
-                var nextCheck = compareList.FirstOrDefault(x => x.Coordinate == nextCoordinate);
+                var nextCheck = compareList.FirstOrDefault(x => x.Coordinate == toCompare.Coordinate + nextCoordinate);
+
                 //There was not block found in this direction
                 if (string.IsNullOrEmpty(nextCheck.ClassType))
                 {
@@ -909,14 +916,27 @@ namespace StarSalvager.Utilities.Extensions
             }
 
 
-            var result = TraversalContains(start, toCompare, nextCoordinate, nextDirection, originalList, compareList,
-                ref traversedCompared, ref upgrading);
+            var result = TraversalContains(
+                start,
+                toCompare,
+                nextCoordinate,
+                nextDirection,
+                originalList,
+                compareList,
+                ref traversedCompared,
+                ref upgrading);
 
             if (result) return true;
 
 
-            return TraversalContains(start, toCompare, nextCoordinate, nextDirection, originalList, compareList,
-                ref traversedCompared, ref upgrading);
+            return TraversalContains(start,
+                toCompare,
+                nextCoordinate,
+                nextDirection,
+                originalList,
+                compareList,
+                ref traversedCompared,
+                ref upgrading);
 
         }
 
