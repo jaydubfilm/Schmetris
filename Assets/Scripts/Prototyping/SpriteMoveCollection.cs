@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
@@ -15,7 +13,7 @@ namespace StarSalvager.Prototype
 
         [SerializeField] private Transform[] affectedTransforms;
 
-        [SerializeField, MinMaxSlider(0, 1000, true)]
+        [SerializeField, MinMaxSlider(0, 100, true)]
         private Vector2 speedRange;
 
         private float[] _rotationSpeeds;
