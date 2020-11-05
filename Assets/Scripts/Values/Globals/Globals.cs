@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using StarSalvager.ScriptableObjects;
@@ -60,6 +61,9 @@ namespace StarSalvager.Values
         public static int NumCurrentTrackedMissionMax => m_gameSettings.numCurrentTrackedMissionMax;
         public static bool OnlyGetWaveLootOnce => m_gameSettings.onlyGetWaveLootOnce;
         public static bool RecoveryOfDroneLocksHorizontalMovement => m_gameSettings.recoveryOfDroneLocksHorizontalMovement;
+
+        public static float BotEnterScreenMaxSize => m_gameSettings.botEnterScreenMaxSize;
+        public static float BotExitScreenMaxSize => m_gameSettings.botExitScreenMaxSize;
 
         //Values set by Game Settings - do not set values here
         public static bool DisableTestingFeatures;

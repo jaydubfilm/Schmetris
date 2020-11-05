@@ -3436,6 +3436,8 @@ namespace StarSalvager
 
         public void CustomRecycle(params object[] args)
         {
+            transform.localScale = Vector2.one;
+            
             foreach (var attachable in attachedBlocks)
             {
                 switch (attachable)
