@@ -436,7 +436,7 @@ namespace StarSalvager.AI
         {
             ChangeHealth(-damage);
             
-            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
+            var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
             explosion.transform.position = worldPosition;
             
             if(CurrentHealth > 0)

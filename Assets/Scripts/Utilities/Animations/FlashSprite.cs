@@ -103,7 +103,7 @@ namespace StarSalvager.Utilities
         
         public static FlashSprite Create(Transform parent, Vector3 localPosition, Color color, bool startActive = true)
         {
-            var flashSprite = FactoryManager.Instance.GetFactory<BotFactory>().CreateAlertIcon();
+            var flashSprite = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<FlashSprite>();
             flashSprite.transform.SetParent(parent);
             flashSprite.transform.localPosition = localPosition;
 

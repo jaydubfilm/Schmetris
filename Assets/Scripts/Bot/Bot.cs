@@ -967,7 +967,7 @@ namespace StarSalvager
                     return false;
             }
 
-            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
+            var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
             explosion.transform.position = worldPosition;
             
             TryHitAt(closestAttachable, damage);
@@ -1086,7 +1086,7 @@ namespace StarSalvager
             TryHitAt(attachable, 10000);
             AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
             
-            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
+            var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
             explosion.transform.position = attachable.transform.position;
 
             MissionProgressEventData missionProgressEventData;

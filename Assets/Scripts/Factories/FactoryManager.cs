@@ -88,16 +88,23 @@ namespace StarSalvager.Factories
         
         [SerializeField, Required, BoxGroup("Bot")]
         private GameObject botPrefab;
-        [SerializeField, Required, BoxGroup("Bot")]
+        /*[SerializeField, Required, BoxGroup("Bot")]
         private GameObject shieldPrototypePrefab;
         [SerializeField, Required, BoxGroup("Bot")]
-        private GameObject alertIconPrefab;
+        private GameObject alertIconPrefab;*/
         [SerializeField, Required, BoxGroup("Bot")]
         private GameObject scrapyardBotPrefab;
         [SerializeField, Required, BoxGroup("Puzzle Combos")]
         private ComboRemoteDataScriptableObject comboRemoteData;
+
+        //Effects Properties
+        //====================================================================================================================//
+
+        [SerializeField, Required, BoxGroup("Effects") ]
+        private EffectProfileScriptableObject effectProfileScriptableObject;
+        public EffectProfileScriptableObject EffectProfileScriptableObject => effectProfileScriptableObject;
         
-        //============================================================================================================//
+        /*//============================================================================================================//
         
         [SerializeField, Required, BoxGroup("Damage")]
         private GameObject damageFactory;
@@ -119,7 +126,7 @@ namespace StarSalvager.Factories
         private GameObject fadeSpritePrefab;
         
         [SerializeField, Required, BoxGroup("Particles")]
-        private GameObject shrinkLinePrefab;
+        private GameObject shrinkLinePrefab;*/
 
         //============================================================================================================//
 
@@ -227,13 +234,10 @@ namespace StarSalvager.Factories
                     return new ComboFactory(comboRemoteData) as T;
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(BotFactory):
-                    return new BotFactory(botPrefab, scrapyardBotPrefab, shieldPrototypePrefab, alertIconPrefab) as T;
+                    return new BotFactory(botPrefab, scrapyardBotPrefab) as T;
                 //----------------------------------------------------------------------------------------------------//
-                case bool _ when type == typeof(DamageFactory):
-                    return new DamageFactory(damageFactory) as T;
-                //----------------------------------------------------------------------------------------------------//
-                case bool _ when type == typeof(ParticleFactory):
-                    return new ParticleFactory(explosionPrefab, labelPrefab, floatingTextPrefab, connectedSpritePrefab, fadeSpritePrefab, shrinkLinePrefab) as T;
+                case bool _ when type == typeof(EffectFactory):
+                    return new EffectFactory(EffectProfileScriptableObject) as T;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type.Name, null);

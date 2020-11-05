@@ -259,7 +259,7 @@ namespace StarSalvager
                             break;
 
                         //TODO Need to add the use of the recycler
-                        var shield = FactoryManager.Instance.GetFactory<BotFactory>().CreateShield();
+                        var shield = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Shield>();
 
                         shield.transform.SetParent(part.transform);
                         shield.transform.localPosition = Vector3.zero;
@@ -670,7 +670,7 @@ namespace StarSalvager
                             case PART_TYPE.SNIPER:
                                 var direction = (enemy.transform.position + ((Vector3)Random.insideUnitCircle * 3) - part.transform.position).normalized;
 
-                                var lineShrink = FactoryManager.Instance.GetFactory<ParticleFactory>()
+                                var lineShrink = FactoryManager.Instance.GetFactory<EffectFactory>()
                                     .CreateObject<LineShrink>();
 
                                 var chance = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Probability);

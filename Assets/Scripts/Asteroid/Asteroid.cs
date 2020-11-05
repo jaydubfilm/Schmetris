@@ -88,7 +88,7 @@ namespace StarSalvager
         {
             ChangeHealth(-damage);
             
-            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
+            var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
             LevelManager.Instance.ObstacleManager.AddToRoot(explosion);
             explosion.transform.position = worldPosition;
 
