@@ -156,7 +156,7 @@ namespace StarSalvager
         public bool m_botEnterScreen { get; private set; } = false;
         public bool m_botZoomOffScreen { get; private set; } = false;
 
-        private float botMoveOffScreenSpeed = 0.0f;
+        private float botMoveOffScreenSpeed = 1.0f;
 
         #endregion //Properties
 
@@ -197,7 +197,7 @@ namespace StarSalvager
             {
                 ProgressStage();
             }
-            else if ((ObstacleManager.RecoveredBotFalling == null && ObstacleManager.HasNoActiveObstacles) || (ObstacleManager.RecoveredBotFalling != null && BotIsInPosition()))
+            else if (BotIsInPosition())
             {
                 ProcessEndOfWave();
             }
@@ -409,21 +409,22 @@ namespace StarSalvager
 
         private void MoveBotOffScreen()
         {
+            var yPos = Constants.gridCellSize * Globals.GridSizeY;
             if (botMoveOffScreenSpeed < 20)
             {
                 if (Globals.IsRecoveryBot && !ObstacleManager.RecoveredBotTowing)
                 {
-                    botMoveOffScreenSpeed += Time.deltaTime * 2;
+                    botMoveOffScreenSpeed += Time.deltaTime * botMoveOffScreenSpeed;
                 }
                 else
                 {
-                    botMoveOffScreenSpeed += Time.deltaTime * 5;
+                    botMoveOffScreenSpeed += Time.deltaTime * botMoveOffScreenSpeed * 2;
                 }
             }
             foreach (var bot in m_bots)
             {
                 bot.transform.position += Vector3.up * (botMoveOffScreenSpeed * Time.deltaTime);
-                float scale = Mathf.Lerp(1.0f, Globals.BotExitScreenMaxSize, botMoveOffScreenSpeed / 20);
+                float scale = Mathf.Lerp(1.0f, Globals.BotExitScreenMaxSize, bot.transform.position.y / yPos);
                 bot.transform.localScale = new Vector2(scale, scale);
 
 
@@ -452,7 +453,7 @@ namespace StarSalvager
         {
             var yPos = Constants.gridCellSize * Globals.GridSizeY;
 
-            return m_bots[0].transform.position.y >= yPos && ObstacleManager.RecoveredBotFalling.transform.position.y > yPos;
+            return m_bots[0].transform.position.y >= yPos && (ObstacleManager.RecoveredBotFalling == null || ObstacleManager.RecoveredBotFalling.transform.position.y > yPos);
         }
 
         //LevelManager Functions
@@ -750,7 +751,7 @@ namespace StarSalvager
 
             if (!value)
             {
-                botMoveOffScreenSpeed = 0;
+                botMoveOffScreenSpeed = 1.0f;
             }
         }
 
