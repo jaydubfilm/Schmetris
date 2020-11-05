@@ -182,9 +182,11 @@ namespace StarSalvager.Utilities.Backgrounds
                         //TODO Need to check and see if the image should wrap
                         CheckSpriteWrap(background);
                         
+                        var xPosDelta = -_delta.x / (background.distance / globalSpeedOffset);
+                        
                         var yPosDelta = Globals.TimeForAsteroidToFallOneSquare / (background.distance / globalSpeedOffset);
                         
-                        background.Transform.localPosition += Vector3.down * (yPosDelta * Time.deltaTime);
+                        background.Transform.localPosition += new Vector3(xPosDelta, -yPosDelta) * Time.deltaTime;
                         break;
                     
                     //------------------------------------------------------------------------------------------------//
@@ -192,7 +194,7 @@ namespace StarSalvager.Utilities.Backgrounds
                     case TYPE.TRANSPARENT:
                     case TYPE.CUTOUT:
                         var xDelta = (1f / background.xScale) *
-                                     (-_delta.x / (background.distance / globalSpeedOffset)) *
+                                     (_delta.x / (background.distance / globalSpeedOffset)) *
                                      background.startTile.x;
                         
                         var yDelta = (1f / background.yScale) *
@@ -200,8 +202,9 @@ namespace StarSalvager.Utilities.Backgrounds
                                      background.startTile.y;
                         
                         //offset = Vector2.up * (yDelta * Time.deltaTime);
-                        offset = new Vector2(-xDelta, yDelta) * Time.deltaTime;
+                        offset = new Vector2(xDelta, yDelta) * Time.deltaTime;
 
+                        //FIXME This offset doesn't work correctly in build. Unsure if the camera delta or something else is causing the issue
                         background.MaterialInstance.mainTextureOffset += offset;
                         break;
                     //------------------------------------------------------------------------------------------------//
@@ -220,6 +223,7 @@ namespace StarSalvager.Utilities.Backgrounds
             _lastPos = _currentPos;
             _currentPos = transform.position;
 
+            
             _delta = _currentPos - _lastPos;
         }
 
