@@ -68,12 +68,16 @@ namespace StarSalvager.Missions
         {
             if (!CurrentTrackedMissions.Any(m => m.missionName == mission.missionName))
             {
-                if (CurrentTrackedMissions.Count < Globals.NumCurrentTrackedMissionMax)
+                if (CurrentTrackedMissions.Count >= Globals.NumCurrentTrackedMissionMax)
                 {
-                    MissionData missionData = CurrentMissionData.Find(m => m.MissionName == mission.missionName);
-                    CurrentTrackedMissions.Add(mission);
-                    CurrentTrackedMissionData.Add(missionData);
+                    MissionData removeMissionData = CurrentTrackedMissionData[0];
+                    CurrentTrackedMissions.RemoveAll(m => m.missionName == removeMissionData.MissionName);
+                    CurrentTrackedMissionData.RemoveAll(m => m.MissionName == removeMissionData.MissionName);
                 }
+
+                MissionData missionData = CurrentMissionData.Find(m => m.MissionName == mission.missionName);
+                CurrentTrackedMissions.Add(mission);
+                CurrentTrackedMissionData.Add(missionData);
             }
         }
 
