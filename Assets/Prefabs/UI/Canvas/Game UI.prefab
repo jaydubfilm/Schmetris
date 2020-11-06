@@ -1301,7 +1301,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e67b6c5abe89703438db634ae4887e64, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 156c5b2bc4f90af4d87c0e5553785272, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1725,7 +1725,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 58259f960ca79224e9ba6151c96e0826, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 21e48fdd15c73e84999ff9bc8acf3704, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2061,7 +2061,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7ac797ab70aa11b43ba3d1753008a2f6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: be21c127dd51d6c48925f1ef44da8e8e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2135,7 +2135,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f5bdd0a58efa4c44ba5c57d592a4f76b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 38ceea929f8b43a4291aec6a053b2cc7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6415,7 +6415,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 64bb71c4cc5dc7742910f1167f3fd46c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1deb860dba383cc428528a2e5170c255, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9598,7 +9598,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ae6fb141ac6070c43af30b48f257c2ac, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7aa79e2aba8b339409796118b29a2e37, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9816,7 +9816,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: 07dcdf6564f0acb449e839a22429599b, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.2}
   m_RaycastTarget: 0
   m_Maskable: 0
   m_OnCullStateChanged:
