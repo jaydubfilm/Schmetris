@@ -1173,7 +1173,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 18
+  m_fontSize: 47.85
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1190,7 +1190,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 2
+  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -1219,7 +1219,7 @@ MonoBehaviour:
     spaceCount: 0
     wordCount: 1
     linkCount: 0
-    lineCount: 4
+    lineCount: 1
     pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
@@ -7441,7 +7441,69 @@ MonoBehaviour:
   vignetteImage: {fileID: 7416328784947895897}
   vignetteMinColor: {r: 1, g: 0.14117648, b: 0.14117648, a: 0}
   vignetteMaxColor: {r: 1, g: 0.14117648, b: 0.14117648, a: 0.6}
+  flashTimeRange: {x: 0.4, y: 0.7}
   borderGlow: {fileID: 7443690187230298321}
+  border: {fileID: 5647521465387081734}
+  flashCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 5.195174
+      outSlope: 5.195174
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.91404825
+    - serializedVersion: 3
+      time: 0.11050509
+      value: 0.64544696
+      inSlope: 6.4750433
+      outSlope: 6.4750433
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.2729342
+      value: 1.039701
+      inSlope: 7.792531
+      outSlope: 7.792531
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.04562363
+      outWeight: 0.062879175
+    - serializedVersion: 3
+      time: 0.60283464
+      value: 0.6759532
+      inSlope: 7.269398
+      outSlope: 7.269398
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33439967
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.77124274
+      value: -0.51831937
+      inSlope: -0.27027026
+      outSlope: -0.27027026
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 1
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 4.239298
+      outSlope: 4.239298
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.34976593
+      outWeight: 0
+    m_PreInfinity: 1
+    m_PostInfinity: 1
+    m_RotationOrder: 4
 --- !u!1 &5522319499635563682
 GameObject:
   m_ObjectHideFlags: 0
@@ -9817,7 +9879,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: 07dcdf6564f0acb449e839a22429599b, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.101960786}
   m_RaycastTarget: 0
   m_Maskable: 0
   m_OnCullStateChanged:
