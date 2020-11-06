@@ -9,19 +9,19 @@ public class CinemachineImpulseListenerCustom : CinemachineImpulseListener
     CinemachineVirtualCameraBase vcam,
     CinemachineCore.Stage stage, ref CameraState state, float deltaTime)
     {
-        Debug.Log("MOO");
-        if (stage == CinemachineCore.Stage.Aim)
+        /*Debug.Log("MOO");*/
+        if (stage != CinemachineCore.Stage.Aim) 
+            return;
+        
+        Vector3 impulsePos = Vector3.zero;
+        Quaternion impulseRot = Quaternion.identity;
+        if (CinemachineImpulseManager.Instance.GetImpulseAt(
+            state.FinalPosition, m_Use2DDistance, m_ChannelMask,
+            out impulsePos, out impulseRot))
         {
-            Vector3 impulsePos = Vector3.zero;
-            Quaternion impulseRot = Quaternion.identity;
-            if (CinemachineImpulseManager.Instance.GetImpulseAt(
-                state.FinalPosition, m_Use2DDistance, m_ChannelMask,
-                out impulsePos, out impulseRot))
-            {
-                state.PositionCorrection += new Vector3(impulsePos.x, 0, 0) * -m_Gain;
-                //impulseRot = Quaternion.SlerpUnclamped(Quaternion.identity, impulseRot, -m_Gain);
-                //state.OrientationCorrection = state.OrientationCorrection * impulseRot;
-            }
+            state.PositionCorrection += new Vector3(impulsePos.x, impulsePos.y, 0) * -m_Gain;
+            //impulseRot = Quaternion.SlerpUnclamped(Quaternion.identity, impulseRot, -m_Gain);
+            //state.OrientationCorrection = state.OrientationCorrection * impulseRot;
         }
     }
 }
