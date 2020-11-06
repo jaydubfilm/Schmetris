@@ -11,6 +11,7 @@ using StarSalvager.Utilities.Animations;
 using StarSalvager.Values;
 using StarSalvager.Factories.Data;
 using System.Linq;
+using StarSalvager.UI;
 
 namespace StarSalvager
 {
@@ -106,6 +107,8 @@ namespace StarSalvager
 
             if (bot != null)
             {
+                bot.SendImpulse();
+
                 if (bot.Rotating)
                 {
                     //Recycler.Recycle<Asteroid>(this);

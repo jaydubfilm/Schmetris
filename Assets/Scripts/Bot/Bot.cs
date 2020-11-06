@@ -154,6 +154,18 @@ namespace StarSalvager
         }
         private Transform _transform;
 
+        public CinemachineImpulseSource cinemachineImpulseSource
+        {
+            get
+            {
+                if (_cinemachineImpulseSource == null)
+                    _cinemachineImpulseSource = gameObject.GetComponent<CinemachineImpulseSource>();
+
+                return _cinemachineImpulseSource;
+            }
+        }
+        private CinemachineImpulseSource _cinemachineImpulseSource;
+
         private GameUI GameUi => GameUI.Instance;
 
         private float previousDirection;
@@ -3737,6 +3749,13 @@ namespace StarSalvager
 #endif
 
         #endregion //UNITY EDITOR
+
+        //====================================================================================================================//
+
+        public void SendImpulse()
+        {
+            cinemachineImpulseSource.GenerateImpulse(10);
+        }
 
         //====================================================================================================================//
 
