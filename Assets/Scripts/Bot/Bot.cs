@@ -265,18 +265,17 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            var toMove = Mathf.Min(distHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
+            var toMove = Mathf.Min(Mathf.Abs(distHorizontal), Globals.BotHorizontalSpeed * Time.deltaTime);
             //MOVE_DELTA = toMove * direction;
 
             Globals.MovingDirection = Mathf.Abs(m_distanceHorizontal) <= 0.2f
                 ? DIRECTION.NULL
                 : m_distanceHorizontal.GetHorizontalDirection();
 
-            m_distanceHorizontal -= toMove * direction;
-
             if (!canMove)
                 return;
 
+            m_distanceHorizontal -= toMove * direction;
             transform.position += moveDirection * toMove;
 
             //--------------------------------------------------------------------------------------------------------//
