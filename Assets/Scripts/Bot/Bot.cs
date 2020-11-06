@@ -43,6 +43,16 @@ namespace StarSalvager
             }
         }
         
+        private struct WeldData
+        {
+            public IAttachable target;
+            public IAttachable attachedTo;
+
+            public DIRECTION Direction => target == null || attachedTo == null
+                ? DIRECTION.NULL
+                : (target.Coordinate - attachedTo.Coordinate).ToDirection();
+        }
+        
         public static Action<Bot, string> OnBotDied;
 
         public Action OnCombo;
@@ -97,6 +107,8 @@ namespace StarSalvager
         private float targetRotation;
 
         private bool _needToCheckMagnet;
+
+        private List<WeldData> _weldDatas;
 
         //============================================================================================================//
 
@@ -177,13 +189,20 @@ namespace StarSalvager
 
         private void LateUpdate()
         {
-            if (!_needToCheckMagnet) 
-                return;
+            if (_needToCheckMagnet)
+            {
 
-            if(IsMagnetFull()) OnFullMagnet?.Invoke();
-            
-            AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
-            _needToCheckMagnet = false;
+                if (IsMagnetFull())
+                    OnFullMagnet?.Invoke();
+
+                AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+                _needToCheckMagnet = false;
+            }
+
+            if (!_weldDatas.IsNullOrEmpty())
+            {
+                ShouldShowEffect(ref _weldDatas);
+            }
         }
 
         private void FixedUpdate()
@@ -258,6 +277,8 @@ namespace StarSalvager
 
         public void InitBot()
         {
+            _weldDatas = new List<WeldData>();
+            
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
             
             _isDestroyed = false;
@@ -287,6 +308,8 @@ namespace StarSalvager
         
         public void InitBot(IEnumerable<IAttachable> botAttachables)
         {
+            _weldDatas = new List<WeldData>();
+            
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
             
@@ -504,6 +527,8 @@ namespace StarSalvager
             if (Rotating)
                 return false;
 
+            IAttachable closestAttachable = null;
+
             switch (attachable)
             {
                 case Bit bit:
@@ -516,7 +541,7 @@ namespace StarSalvager
 
                     //------------------------------------------------------------------------------------------------//
 
-                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
                     legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
@@ -594,7 +619,7 @@ namespace StarSalvager
 
                     //----------------------------------------------------------------------------------------------------//
 
-                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
                     legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
@@ -637,7 +662,7 @@ namespace StarSalvager
 
                     //----------------------------------------------------------------------------------------------------//
 
-                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint, true);
+                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint, true);
                     
                     switch (closestAttachable)
                     {
@@ -668,9 +693,13 @@ namespace StarSalvager
                 }
             }
 
-            if (!(attachable is EnemyAttachable))
+            if (!(attachable is EnemyAttachable) && (attachable is Bit bitCheck && bitCheck.Type != BIT_TYPE.WHITE))
             {
-                CreateWeldEffect(attachable.Coordinate, connectionDirection);
+                _weldDatas.Add(new WeldData
+                {
+                    target = attachable,
+                    attachedTo = closestAttachable
+                });
             }
 
             return true;
@@ -2088,6 +2117,40 @@ namespace StarSalvager
 
         //Creating Effects
         //====================================================================================================================//
+
+        private void ShouldShowEffect(ref List<WeldData> weldDatas)
+        {
+            bool IsBusy(IAttachable attachable)
+            {
+                switch (attachable)
+                {
+                    case ICanCombo iCanCombo when iCanCombo.IsBusy:
+                    case ICanDetach iCanDetach when iCanDetach.PendingDetach:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+            var copy = new List<WeldData>(weldDatas);
+            weldDatas = new List<WeldData>();
+
+            for (int i = copy.Count - 1; i >= 0; i--)
+            {
+                var data = copy[i];
+                var direction = data.Direction;
+
+                if (direction == DIRECTION.NULL)
+                    continue;
+                
+                if(!data.target.Attached || !data.attachedTo.Attached)
+                    continue;
+
+                if (IsBusy(data.target) || IsBusy(data.attachedTo))
+                    continue;
+
+                CreateWeldEffect(data.target.Coordinate, direction);
+            }
+        }
 
         private void CreateWeldEffect(Vector2Int coordinate, DIRECTION direction)
         {
