@@ -10,7 +10,7 @@ namespace StarSalvager.ScriptableObjects
     public class GameSettingsScriptableObject : ScriptableObject
     {
         public bool allowAccessToUnlockedLaterWaves = true;
-        public bool disableTestingFeatures = false;
+        public bool testingFeatures = false;
         public bool bitsPushThroughParts = false;
         
         [DisableInPlayMode]

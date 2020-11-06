@@ -65,7 +65,7 @@ namespace StarSalvager.Values
         public static float BotExitScreenMaxSize => m_gameSettings.botExitScreenMaxSize;
 
         //Values set by Game Settings - do not set values here
-        public static bool DisableTestingFeatures;
+        public static bool TestingFeatures;
         public static float AsteroidFallTimer;
 
         public static ORIENTATION Orientation
@@ -96,7 +96,7 @@ namespace StarSalvager.Values
         {
             m_gameSettings = gameSettings;
 
-            DisableTestingFeatures = m_gameSettings.disableTestingFeatures;
+            TestingFeatures = m_gameSettings.testingFeatures;
             AsteroidFallTimer = TimeForAsteroidToFallOneSquare / 2;
         }
         

@@ -774,7 +774,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void RemoveSaveFileData(int index)
         {
-            GameMetaData.SaveFiles.RemoveAt(index);
+            GameMetaData.SaveFiles.RemoveAll(s => s.SaveSlotIndex == index);
         }
 
         public static void ClearSaveFileData(SaveFileData data)

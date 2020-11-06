@@ -889,7 +889,7 @@ namespace StarSalvager.Utilities
                         break;
                     }
 
-                    Globals.DisableTestingFeatures = state;
+                    Globals.TestingFeatures = state;
                     break;
                 case "timescale":
                     if (!float.TryParse(split[2], out var scale))

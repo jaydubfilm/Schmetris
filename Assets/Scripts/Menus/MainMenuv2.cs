@@ -462,7 +462,7 @@ namespace StarSalvager.UI
             sfxVolumeSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);
             testingFeaturesToggle.onValueChanged.AddListener(toggle =>
             {
-                Globals.DisableTestingFeatures = toggle;
+                Globals.TestingFeatures = toggle;
             });
             
             settingsBackButton.onClick.AddListener(CloseOpenWindow);
