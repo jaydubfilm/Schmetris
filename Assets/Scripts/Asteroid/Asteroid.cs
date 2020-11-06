@@ -12,6 +12,7 @@ using StarSalvager.Values;
 using StarSalvager.Factories.Data;
 using System.Linq;
 using StarSalvager.Prototype;
+using StarSalvager.UI;
 
 namespace StarSalvager
 {
@@ -124,6 +125,8 @@ namespace StarSalvager
 
             if (bot != null)
             {
+                GameUI.Instance.FlashBorder();
+
                 if (bot.Rotating)
                 {
                     //Recycler.Recycle<Asteroid>(this);

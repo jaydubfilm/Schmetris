@@ -259,8 +259,14 @@ namespace StarSalvager.UI
         [SerializeField, Required, ToggleGroup("useVignette")]
         private Color vignetteMaxColor;
 
+        //Other
+        //============================================================================================================//
+
+        [SerializeField, Required]
+        private Image borderGlow;
+
         #endregion //Properties
-        
+
         private Image[] glowImages;
         private float _alpha;
         private float speed = 4f;
@@ -632,6 +638,11 @@ namespace StarSalvager.UI
 
 
         //============================================================================================================//
+
+        public void FlashBorder()
+        {
+            
+        }
 
         /*public void ShowBombIcon(bool state)
         {
