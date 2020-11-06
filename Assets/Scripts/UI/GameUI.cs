@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
@@ -639,9 +640,42 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
+        private bool flashBorderActive = false;
+
         public void FlashBorder()
         {
-            
+            if (!flashBorderActive)
+            {
+                StartCoroutine(BorderFlashingCoroutine());
+            }
+        }
+
+        public IEnumerator BorderFlashingCoroutine()
+        {
+            flashBorderActive = true;
+
+            float timer = 0.0f;
+            float startingAlpha = borderGlow.color.a;
+
+
+            while (timer <= 2.0f)
+            {
+                timer += Time.deltaTime;
+                if (timer <= 0.5f || (timer > 1.0f && timer <= 1.5f))
+                {
+                    borderGlow.color = new Color(borderGlow.color.r, borderGlow.color.g, borderGlow.color.b, Mathf.Lerp(startingAlpha, 0, 2 * (timer % 0.5f)));
+                }
+                else
+                {
+                    borderGlow.color = new Color(borderGlow.color.r, borderGlow.color.g, borderGlow.color.b, Mathf.Lerp(0, startingAlpha, 2 * (timer % 0.5f)));
+                }
+                yield return null;
+            }
+
+            borderGlow.color = new Color(borderGlow.color.r, borderGlow.color.g, borderGlow.color.b, startingAlpha);
+            flashBorderActive = false;
+
+            yield return null;
         }
 
         /*public void ShowBombIcon(bool state)
