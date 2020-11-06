@@ -246,7 +246,7 @@ namespace StarSalvager
             newAttachable.transform.position = transform.position + (Vector3)(Vector2.one * coordinate * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
-            newAttachable.gameObject.name = $"Block {AttachedBlocks.Count}";
+            //newAttachable.gameObject.name = $"Block {AttachedBlocks.Count}";
             AttachedBlocks.Add(newAttachable);
 
             switch (newAttachable)

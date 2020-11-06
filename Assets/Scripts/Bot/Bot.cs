@@ -668,6 +668,11 @@ namespace StarSalvager
                 }
             }
 
+            if (!(attachable is EnemyAttachable))
+            {
+                CreateWeldEffect(attachable.Coordinate, connectionDirection);
+            }
+
             return true;
         }
 
@@ -1167,7 +1172,7 @@ namespace StarSalvager
             newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
-            newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
+            //newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
             
             //We want to avoid having the same element multiple times in the list
             if(!attachedBlocks.Contains(newAttachable)) 
@@ -1236,7 +1241,7 @@ namespace StarSalvager
             newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
-            newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
+            //newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
             
             //We want to avoid having the same element multiple times in the list
             if(!attachedBlocks.Contains(newAttachable)) 
@@ -2074,6 +2079,36 @@ namespace StarSalvager
         }
 
         #endregion //CheckForBonusShapeMatches
+
+        //Creating Effects
+        //====================================================================================================================//
+
+        private void CreateWeldEffect(Vector2Int coordinate, DIRECTION direction)
+        {
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.WELD);
+            var effectTransform = effect.transform;
+            effectTransform.SetParent(transform);
+
+            var position = coordinate + (direction.Reflected().ToVector2() / 2f);
+            effectTransform.localPosition = transform.InverseTransformPoint(transform.position + (Vector3)position);
+
+            switch (direction)
+            {
+                case DIRECTION.LEFT:
+                case DIRECTION.RIGHT:
+                    effectTransform.eulerAngles = Vector3.forward * 90f;
+                    break;
+                case DIRECTION.UP:
+                case DIRECTION.DOWN:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+
+            var time = effect.GetComponent<ScaleColorSpriteAnimation>().AnimationTime;
+            
+            Destroy(effect, time);
+        }
         
         //============================================================================================================//
 

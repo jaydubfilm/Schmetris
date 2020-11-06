@@ -122,17 +122,17 @@ namespace StarSalvager.Factories
         
         private GameObject CreateWeldEffect()
         {
-            return Object.Instantiate(_effectProfileScriptableObject.damageEffectPrefab);
+            return Object.Instantiate(_effectProfileScriptableObject.weldEffectPrefab);
         }
         
         private GameObject CreateImpactEffect()
         {
-            return Object.Instantiate(_effectProfileScriptableObject.damageEffectPrefab);
+            return Object.Instantiate(_effectProfileScriptableObject.impactEffectPrefab);
         }
         
         private GameObject CreateThrustEffect()
         {
-            return Object.Instantiate(_effectProfileScriptableObject.damageEffectPrefab);
+            return Object.Instantiate(_effectProfileScriptableObject.thrustEffectPrefab);
         }
         
         

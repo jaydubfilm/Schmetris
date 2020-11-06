@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8218493200200191056}
   - component: {fileID: 8218493200200191057}
   m_Layer: 0
-  m_Name: EffectTest
+  m_Name: WeldEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,7 +46,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75aa57d01249eee43bdbc2b3cf0bb890, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationTime: 2
+  animationTime: 1.2
+  looping: 0
+  useGlobalScale: 0
+  globalScaleSpeed: 0
+  globalScaleCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  globalScaleStart: {x: 0, y: 0}
+  globalScaleEnd: {x: 0, y: 0}
   effectors:
   - spriteRenderer: {fileID: 8218493200955695965}
     speed: 1

@@ -106,6 +106,7 @@ namespace StarSalvager.Utilities
             var flashSprite = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<FlashSprite>();
             flashSprite.transform.SetParent(parent);
             flashSprite.transform.localPosition = localPosition;
+            flashSprite.transform.localScale = Vector3.one;
 
             flashSprite.SetColor(color);
             flashSprite.SetActive(startActive);

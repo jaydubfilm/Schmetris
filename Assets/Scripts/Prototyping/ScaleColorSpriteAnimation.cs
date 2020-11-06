@@ -51,6 +51,8 @@ namespace StarSalvager.Prototype
 
         //====================================================================================================================//
         
+        public float AnimationTime => animationTime;
+        
         [SerializeField, Range(0.01f, 30f)]
         private float animationTime;
 

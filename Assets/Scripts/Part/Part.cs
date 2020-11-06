@@ -144,7 +144,7 @@ namespace StarSalvager
             
             if (_damage == null)
             {
-                _damage = FactoryManager.Instance.GetFactory<DamageFactory>().CreateObject<Damage>();
+                _damage = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Damage>();
                 _damage.transform.SetParent(transform, false);
             }
 
