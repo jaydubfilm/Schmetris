@@ -40,7 +40,11 @@ namespace StarSalvager
             if (!other.gameObject.CompareTag(CollisionTag))
                 return;
 
-            var point = CalculateContactPoint(other.contacts);
+            var contacts = new ContactPoint2D[5];
+
+            var count = other.GetContacts(contacts);
+            
+            var point = CalculateContactPoint(contacts.ToList().GetRange(0, count));
 
             Debug.DrawRay(point, Vector3.right, Color.red, 1f);
 
@@ -57,7 +61,10 @@ namespace StarSalvager
             if (!other.gameObject.CompareTag(CollisionTag))
                 return;
 
-            var point = CalculateContactPoint(other.contacts);
+            var contacts = new ContactPoint2D[5];
+            var count = other.GetContacts(contacts);
+            
+            var point = CalculateContactPoint(contacts.ToList().GetRange(0, count));
             
             Debug.DrawRay(point, Vector3.right, Color.cyan, 0.5f);
             

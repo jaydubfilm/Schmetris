@@ -927,8 +927,10 @@ namespace StarSalvager
         /// </summary>
         /// <param name="hitPosition"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public bool TryBounceAt(Vector2 hitPosition)
+        public bool TryBounceAt(Vector2 hitPosition, out bool destroyed)
         {
+            destroyed = false;
+            
             if(LevelManager.Instance.EndWaveState)
                 return false;
             
@@ -952,6 +954,10 @@ namespace StarSalvager
             }
             
             TryHitAt(closestAttachable, Globals.AsteroidDamage);
+
+            if (closestAttachable is IHealth iHealth && iHealth.CurrentHealth <= 0)
+                destroyed = true;
+            
             return true;
         }
 

@@ -11,6 +11,7 @@ using StarSalvager.Utilities.Animations;
 using StarSalvager.Values;
 using StarSalvager.Factories.Data;
 using System.Linq;
+using StarSalvager.Prototype;
 
 namespace StarSalvager
 {
@@ -47,8 +48,17 @@ namespace StarSalvager
 
         public float Radius { get; private set; }
 
-        public SpriteMask SpriteMask;
-        public SpriteMask _spriteMask;
+        public SpriteMask SpriteMask
+        {
+            get
+            {
+                if (_spriteMask == null)
+                    _spriteMask = GetComponent<SpriteMask>();
+
+                return _spriteMask;
+            }
+        }
+        private SpriteMask _spriteMask;
 
         //IRotate Functions
         //============================================================================================================//
@@ -132,13 +142,19 @@ namespace StarSalvager
                     case DIRECTION.LEFT:
                     case DIRECTION.RIGHT:
                         //Only want to move the bot if we're legally allowed
-                        if(bot.TryBounceAt(hitPoint))
+                        if (bot.TryBounceAt(hitPoint, out var destroyed))
+                        {
                             InputManager.Instance.ForceMove(direction);
+                            
+                            if(destroyed) 
+                                CreateImpactEffect(hitPoint);
+                        }
 
                         break;
                     case DIRECTION.UP:
                     case DIRECTION.DOWN:
-                        bot.TryAsteroidDamageAt(hitPoint);
+                        if (bot.TryAsteroidDamageAt(hitPoint)) 
+                            CreateImpactEffect(hitPoint);
                         break;
                         //default:
                         //    throw new ArgumentOutOfRangeException();
@@ -155,12 +171,39 @@ namespace StarSalvager
             }
         }
 
+        //Actor2DBase Functions
+        //====================================================================================================================//
+        
+        public override void SetSprite(Sprite sprite)
+        {
+            base.SetSprite(sprite);
+
+            SpriteMask.sprite = sprite;
+        }
+
         //Asteroid Functions
         //============================================================================================================//
 
         public void SetRadius(float radius)
         {
             Radius = radius;
+        }
+
+        private void CreateImpactEffect(Vector2 worldPosition)
+        {
+            var localPosition = transform.InverseTransformPoint(worldPosition);
+            var eulerRotation = Vector3.forward * Random.Range(0, 360);
+
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.IMPACT);
+            var effectTransform = effect.transform;
+            
+            effectTransform.SetParent(transform);
+            effectTransform.localPosition = localPosition;
+            effectTransform.eulerAngles = eulerRotation;
+
+            var time = effect.GetComponent<ScaleColorSpriteAnimation>().AnimationTime;
+            
+            Destroy(effect, time);
         }
         
         //ICustomRecycle Function

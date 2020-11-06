@@ -171,7 +171,7 @@ namespace StarSalvager.Factories
         
         private GameObject CreateAlert()
         {
-            if (!Recycler.TryGrab<Explosion>(out GameObject gameObject))
+            if (!Recycler.TryGrab<FlashSprite>(out GameObject gameObject))
             {
                 gameObject = Object.Instantiate(_effectProfileScriptableObject.alertIconPrefab);
             }
