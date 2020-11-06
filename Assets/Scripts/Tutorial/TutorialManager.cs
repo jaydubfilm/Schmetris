@@ -381,7 +381,7 @@ namespace StarSalvager.Tutorial
             LevelManager.Instance.BotObject.SetColliderActive(false);
             
             //TODO Bot needs to fly away
-            LevelManager.Instance.SetBotZoomOffScreen(true);
+            LevelManager.Instance.SetBotExitScreen(true);
             
             yield return mono.StartCoroutine(ShowDialogWindowCoroutine(false));
             yield return mono.StartCoroutine(SlideCharacterCoroutine(false));
@@ -401,7 +401,7 @@ namespace StarSalvager.Tutorial
             yield return new WaitForSeconds(1f);
 
             Globals.UsingTutorial = false;
-            LevelManager.Instance.SetBotZoomOffScreen(false);
+            LevelManager.Instance.SetBotExitScreen(false);
             LevelManager.Instance.BotObject.PROTO_GodMode = false;
 
             SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);

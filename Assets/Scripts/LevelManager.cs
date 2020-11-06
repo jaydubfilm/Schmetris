@@ -203,7 +203,7 @@ namespace StarSalvager
             }
             else
             {
-                SetBotZoomOffScreen(true);
+                SetBotExitScreen(true);
             }
         }
 
@@ -218,6 +218,9 @@ namespace StarSalvager
         //LevelManager Update Functions
         //====================================================================================================================//
 
+        private float _enterTime = 1.3f;
+        private float _t;
+        private float _startY;
         //FIXME Does this need to be happening every frame?
         private void CheckBotPositions()
         {
@@ -231,18 +234,26 @@ namespace StarSalvager
                     continue;
                 }
 
-                if (pos.y >= Constants.gridCellSize * 5)
+                if (_t / _enterTime >= 1f)
                 {
                     SetBotEnterScreen(false);
+                    
+                    _t = 0f;
+                    _startY = 0f;
+                    
                     continue;
                 }
+
+                var t = enterCurve.Evaluate(_t / _enterTime);
                 
-                var newY = Mathf.Lerp(pos.y, 5 * Constants.gridCellSize, Time.deltaTime * 3);
+                var newY = Mathf.Lerp(_startY, 5 * Constants.gridCellSize,  t);
                 pos.y = newY;
                 
                 bot.transform.position = pos;
-                float scale = Mathf.Lerp(Globals.BotEnterScreenMaxSize, 1, bot.transform.position.y / (5 * Constants.gridCellSize));
-                bot.transform.localScale = new Vector2(scale, scale);
+                float scale = Mathf.Lerp(Globals.BotEnterScreenMaxSize, 1,  t/*bot.transform.position.y / (5 * Constants.gridCellSize)*/);
+                bot.transform.localScale = Vector3.one * scale;
+
+                _t += Time.deltaTime;
             }
 
             if (m_botZoomOffScreen)
@@ -541,7 +552,7 @@ namespace StarSalvager
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
 
             SetBotBelowScreen();
-            SetBotZoomOffScreen(false);
+            SetBotExitScreen(false);
             SetBotEnterScreen(true);
 
             //CheckPlayerWater();
@@ -575,7 +586,7 @@ namespace StarSalvager
             }
 
             SetBotEnterScreen(false);
-            SetBotZoomOffScreen(false);
+            SetBotExitScreen(false);
 
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
             ProjectileManager.Reset();
@@ -731,20 +742,57 @@ namespace StarSalvager
             }
         }
 
+
+        //====================================================================================================================//
+
+        private GameObject _effect;
+
+        private void CreateThrustEffect(Bot bot)
+        {
+            if (_effect != null)
+                return;
+            
+            var lowestCoordinate =
+                bot.attachedBlocks.GetAttachableInDirection(Vector2Int.zero, DIRECTION.DOWN).Coordinate;
+
+            var localPosition = lowestCoordinate + DIRECTION.DOWN.ToVector2() / 2f;
+            
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.THRUST);
+            var effectTransform = effect.transform;
+            effectTransform.SetParent(bot.transform);
+            effectTransform.localPosition = localPosition;
+
+            _effect = effect;
+        }
+        
+        
+        //====================================================================================================================//
+
+        [SerializeField]
+        private AnimationCurve enterCurve;
+        
+
         public void SetBotBelowScreen()
         {
             for (int i = 0; i < m_bots.Count; i++)
             {
                 m_bots[i].transform.position = Vector3.down * 5;
             }
+
+            _startY = -5f;
         }
 
         public void SetBotEnterScreen(bool value)
         {
             m_botEnterScreen = value;
+
+            if(value)
+                CreateThrustEffect(BotObject);
+            else if(_effect)
+                Destroy(_effect);
         }
 
-        public void SetBotZoomOffScreen(bool value)
+        public void SetBotExitScreen(bool value)
         {
             m_botZoomOffScreen = value;
 
@@ -752,6 +800,11 @@ namespace StarSalvager
             {
                 botMoveOffScreenSpeed = 0;
             }
+            
+            if(value)
+                CreateThrustEffect(BotObject);
+            else if(_effect)
+                Destroy(_effect);
         }
 
         //FIXME Does this need to be in the LevelManager?

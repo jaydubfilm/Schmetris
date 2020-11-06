@@ -583,6 +583,12 @@ namespace StarSalvager.Utilities.Extensions
         //============================================================================================================//
 
         public static IAttachable GetAttachableInDirection(this IEnumerable<IAttachable> attachables,
+            Vector2Int coordinate, DIRECTION direction)
+        {
+            var from = attachables.FirstOrDefault(x => x.Coordinate == coordinate);
+            return attachables.GetAttachableInDirection(from, direction.ToVector2Int());
+        }
+        public static IAttachable GetAttachableInDirection(this IEnumerable<IAttachable> attachables,
             IAttachable from, DIRECTION direction)
         {
             return attachables.GetAttachableInDirection(from, direction.ToVector2Int());
@@ -594,7 +600,8 @@ namespace StarSalvager.Utilities.Extensions
             return attachables.GetAttachableInDirection(from, direction.ToDirection());
         }
 
-        public static IAttachable GetAttachableInDirection(this IEnumerable<IAttachable> attachables, IAttachable from,
+        public static IAttachable GetAttachableInDirection(this IEnumerable<IAttachable> attachables, 
+            IAttachable from,
             Vector2Int direction)
         {
             var coordinate = from.Coordinate;
