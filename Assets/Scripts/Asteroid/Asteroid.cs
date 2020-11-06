@@ -16,9 +16,7 @@ namespace StarSalvager
 {
     public class Asteroid : CollidableBase, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate
     {
-        public RDSTable rdsTable { get; set; }
 
-        public float Radius { get; private set; }
         //IRotate properties
         //============================================================================================================//
 
@@ -41,6 +39,16 @@ namespace StarSalvager
         public bool IsRegistered { get; set; }
 
         public bool IsMarkedOnGrid { get; set; } = false;
+
+        //Asteroid Properties
+        //====================================================================================================================//
+        
+        public RDSTable rdsTable { get; set; }
+
+        public float Radius { get; private set; }
+
+        public SpriteMask SpriteMask;
+        public SpriteMask _spriteMask;
 
         //IRotate Functions
         //============================================================================================================//
