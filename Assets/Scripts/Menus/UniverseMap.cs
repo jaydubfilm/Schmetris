@@ -141,7 +141,7 @@ namespace StarSalvager.UI
                             if (childNodesAccessible.Any(n => n.nodeIndex == k))
                             {
                                 universeMapButtons[k].Button.interactable = true;
-                                DrawConnection(curIndex, k, false);
+                                DrawConnection(curIndex, k, !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == k));
                             }
                             else
                             {
@@ -161,7 +161,7 @@ namespace StarSalvager.UI
                             {
                                 if (childNodesAccessible.Any(n => n.nodeIndex == k))
                                 {
-                                    DrawConnection(nodeIndex, k, true);
+                                    DrawConnection(nodeIndex, k, !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == k));
                                 }
                             }
                         }
@@ -207,7 +207,7 @@ namespace StarSalvager.UI
                                 {
                                     universeMapButtons[k].Button.interactable = true;
                                 }
-                                DrawConnection(nodeIndex, k, !(nodeIndex == 0 || isShortcut));
+                                DrawConnection(nodeIndex, k, !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == k));
                             }
                         }
                     }
@@ -242,7 +242,7 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        private void DrawConnection(int connectionStart, int connectionEnd, bool setRed)
+        private void DrawConnection(int connectionStart, int connectionEnd, bool setHalfway)
         {
             GameObject newLine = new GameObject();
 
@@ -252,15 +252,20 @@ namespace StarSalvager.UI
 
             Image newLineImage = newLine.GetComponent<Image>();
 
-            if (setRed)
-            {
-                newLineImage.color = Color.red;
-            }
-
             newLineImage.transform.position = (universeMapButtons[connectionStart].transform.position + universeMapButtons[connectionEnd].transform.position) / 2;
+            if (setHalfway)
+            {
+                newLineImage.transform.position = (universeMapButtons[connectionStart].transform.position + newLineImage.transform.position) / 2;
+            }
 
             RectTransform newLineRectTransform = newLine.GetComponent<RectTransform>();
             newLineRectTransform.sizeDelta = new Vector2(Vector2.Distance(universeMapButtons[connectionStart].transform.position, universeMapButtons[connectionEnd].transform.position), 5);
+
+            if (setHalfway)
+            {
+                newLineRectTransform.sizeDelta = new Vector2(newLineRectTransform.sizeDelta.x / 2, newLineRectTransform.sizeDelta.y);
+            }
+
             newLineRectTransform.transform.right = (universeMapButtons[connectionStart].transform.position - universeMapButtons[connectionEnd].transform.position).normalized;
 
             connectionLines.Add(newLineImage);
