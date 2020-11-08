@@ -28,29 +28,17 @@ MonoBehaviour:
       list: []
   LOCALIDINFILE_Hash3:
   - activeObject:
-      i1: -464838314
-      i2: 1866823308
+      i1: -96205052
+      i2: 1831848149
     list:
-    - i1: -464838314
-      i2: 1866823308
+    - i1: -96205052
+      i2: 1831848149
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: 801110177
+      i2: 1296850351
     list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: 598996318
-      i2: 0
-    list:
-    - i1: 598996318
-      i2: 0
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
+    - i1: 801110177
+      i2: 1296850351
   - activeObject:
       i1: -1
       i2: -1
@@ -87,6 +75,12 @@ MonoBehaviour:
     list:
     - i1: -1
       i2: -1
+    - i1: -1
+      i2: -1
+    - i1: -1
+      i2: -1
+    - i1: -1
+      i2: -1
   - activeObject:
       i1: -1
       i2: -1
@@ -97,6 +91,22 @@ MonoBehaviour:
       i1: -1
       i2: -1
     list:
+    - i1: -1
+      i2: -1
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
     - i1: -1
       i2: -1
   - activeObject:
@@ -298,17 +308,8 @@ MonoBehaviour:
     FavString: []
     list:
     - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
+    - {fileID: 0}
+    - {fileID: 0}
     - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
@@ -334,6 +335,7 @@ MonoBehaviour:
     FavString: []
     list:
     - {fileID: 0}
+    - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
     GUIDsActiveGameObject: 
@@ -345,6 +347,19 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
     - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
