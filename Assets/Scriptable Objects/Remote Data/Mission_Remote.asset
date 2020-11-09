@@ -136,7 +136,7 @@ MonoBehaviour:
   - MissionID: 4e8c6dfa-c577-4921-accf-5241b7ce46aa
     MissionType: 10
     MissionName: Complete Sector 1
-    MissionDescription: Complete all waves in Sector 1 to unlock Sector 2
+    MissionDescription: Complete all waves in Sector 1
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 0

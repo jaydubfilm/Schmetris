@@ -359,8 +359,6 @@ namespace StarSalvager
                         GameTimer.SetPaused(false);
                         EndWaveState = false;
                         EndSectorState = false;
-                        MissionManager.ProcessMissionData(typeof(SectorsCompletedMission),
-                            new MissionProgressEventData());
                         ProcessLevelCompleteAnalytics();
                         ProcessScrapyardUsageBeginAnalytics();
                         SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
@@ -414,6 +412,9 @@ namespace StarSalvager
                     });
             }*/
 
+            MissionManager.ProcessMissionData(typeof(SectorsCompletedMission),
+                new MissionProgressEventData());
+
             ProjectileManager.UpdateForces();
             Globals.IsRecoveryBot = false;
         }
@@ -435,7 +436,7 @@ namespace StarSalvager
             foreach (var bot in m_bots)
             {
                 bot.transform.position += Vector3.up * (botMoveOffScreenSpeed * Time.deltaTime);
-                float scale = Mathf.Lerp(1.0f, Globals.BotExitScreenMaxSize, bot.transform.position.y / yPos);
+                float scale = Mathf.Lerp(1.0f, Globals.BotExitScreenMaxSize, (bot.transform.position.y - (Constants.gridCellSize * 5)) / (yPos - (Constants.gridCellSize * 5)));
                 bot.transform.localScale = new Vector2(scale, scale);
 
 
