@@ -425,7 +425,7 @@ namespace StarSalvager
             {
                 if (Globals.IsRecoveryBot && !ObstacleManager.RecoveredBotTowing)
                 {
-                    botMoveOffScreenSpeed += Time.deltaTime * botMoveOffScreenSpeed;
+                    botMoveOffScreenSpeed += Time.deltaTime * botMoveOffScreenSpeed * 0.25f;
                 }
                 else
                 {
@@ -439,7 +439,7 @@ namespace StarSalvager
                 bot.transform.localScale = new Vector2(scale, scale);
 
 
-                float distanceTrail = 3.0f;
+                float distanceTrail = 6.0f;
                 if (ObstacleManager.RecoveredBotFalling != null && bot.transform.position.y >= ObstacleManager.RecoveredBotFalling.transform.position.y + distanceTrail)
                 {
                     ObstacleManager.RecoveredBotTowing = true;

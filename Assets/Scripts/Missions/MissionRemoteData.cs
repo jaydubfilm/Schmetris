@@ -148,7 +148,7 @@ namespace StarSalvager.Missions
                 switch (missionUnlockParameters.MissionUnlockType)
                 {
                     case "Level Complete":
-                        missionUnlockData.Add(new LevelCompleteUnlockCheck(missionUnlockParameters.SectorUnlockNumber, missionUnlockParameters.WaveUnlockNumber));
+                        missionUnlockData.Add(new LevelCompleteUnlockCheck(missionUnlockParameters.SectorUnlockNumber));
                         break;
                     case "Mission Complete":
                         missionUnlockData.Add(new MissionCompleteUnlockCheck(missionUnlockParameters.MissionUnlockName));

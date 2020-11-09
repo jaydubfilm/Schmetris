@@ -31,6 +31,8 @@ namespace StarSalvager.ScriptableObjects
         public float levelResourceDropReductionAmount = 0.5f;
         public float asteroidDamage = 10.0f;
         public List<BonusShapeGearsValue> bonusShapeGearsRewards;
+        public int patchPointBaseCost = 500;
+        public int patchPointIncrementCost = 50;
 
         public float botEnterScreenMaxSize = 1.5f;
         public float botExitScreenMaxSize = 2.0f;

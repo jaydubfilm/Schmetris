@@ -71,6 +71,11 @@ namespace StarSalvager.UI.Scrapyard
             facilityItemUIElements.ClearElements();
             foreach (var facilityRemoteData in FactoryManager.Instance.FacilityRemote.GetRemoteDatas())
             {
+                if (facilityRemoteData.hideInFacilityMenu)
+                {
+                    continue;
+                }
+                
                 FACILITY_TYPE type = facilityRemoteData.type;
 
                 if (!PlayerDataManager.GetFacilityRanks().ContainsKey(type))
@@ -97,6 +102,11 @@ namespace StarSalvager.UI.Scrapyard
             facilityBlueprintUIElements.ClearElements();
             foreach (var facilityRemoteData in FactoryManager.Instance.FacilityRemote.GetRemoteDatas())
             {
+                if (facilityRemoteData.hideInFacilityMenu)
+                {
+                    continue;
+                }
+
                 FACILITY_TYPE type = facilityRemoteData.type;
                 bool containsFacilityKey = PlayerDataManager.GetFacilityRanks().ContainsKey(type);
                 bool containsFacilityBlueprintKey = PlayerDataManager.GetFacilityBlueprintRanks().ContainsKey(type);

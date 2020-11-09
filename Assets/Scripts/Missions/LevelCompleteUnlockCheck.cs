@@ -11,21 +11,20 @@ namespace StarSalvager.Missions
     {
         public bool IsComplete { get; private set; }
         public int m_sectorNumber;
-        public int m_waveNumber;
 
-        public LevelCompleteUnlockCheck(int sectorNumber, int waveNumber)
+        public LevelCompleteUnlockCheck(int sectorNumber)
         {
             IsComplete = false;
             m_sectorNumber = sectorNumber;
-            m_waveNumber = waveNumber;
         }
         
         public bool CheckUnlockParameters()
         {
             if (IsComplete)
                 return true;
-            
-            if (PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(m_sectorNumber, m_waveNumber)))
+
+            int compareSector = m_sectorNumber;
+            if (PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => PlayerDataManager.GetLevelRingNodeTree().ConvertNodeIndexIntoSectorWave(n).Item1 == compareSector))
             {
                 IsComplete = true;
                 return true;
@@ -40,8 +39,7 @@ namespace StarSalvager.Missions
             {
                 ClassType = GetType().Name,
                 IsComplete = this.IsComplete,
-                SectorNumber = m_sectorNumber,
-                WaveNumber = m_waveNumber
+                SectorNumber = m_sectorNumber
             };
         }
     }
