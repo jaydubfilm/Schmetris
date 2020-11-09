@@ -376,9 +376,12 @@ namespace StarSalvager.Tutorial
 
         private IEnumerator EndStepCoroutine()
         {
+            LevelManager.Instance.EndWaveState = true;
+            
             yield return new WaitForSeconds(5f);
             
             LevelManager.Instance.BotObject.SetColliderActive(false);
+            
             
             //TODO Bot needs to fly away
             LevelManager.Instance.SetBotExitScreen(true);

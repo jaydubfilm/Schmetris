@@ -920,6 +920,9 @@ namespace StarSalvager
 
         private static void ShowAlertInfo(IEnumerable<BlockData> botBlockDatas, Dictionary<BIT_TYPE, int> processedResources, Dictionary<BIT_TYPE, int> wastedResources)
         {
+            if (processedResources.IsNullOrEmpty() || wastedResources.IsNullOrEmpty())
+                return;
+            
             var bits = botBlockDatas
                 .Where(x => x.ClassType.Equals(nameof(Bit)) || x.ClassType.Equals(nameof(ScrapyardBit))).ToArray();
             
@@ -965,7 +968,12 @@ namespace StarSalvager
                 resourcesWasted += $"{resource.Value} {materialIcon} jettisoned due to lack of storage\n";
             }
 
-            Alert.ShowAlert("Resources Refined", $"{resourcesGained}{resourcesWasted}", "Okay", null);
+            var body = $"{resourcesGained}{resourcesWasted}";
+
+            if (string.IsNullOrEmpty(body))
+                return;
+
+            Alert.ShowAlert("Resources Refined", body, "Okay", null);
             Alert.SetLineHeight(90f);
         }
         
