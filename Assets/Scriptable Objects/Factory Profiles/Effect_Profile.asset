@@ -24,7 +24,7 @@ MonoBehaviour:
     type: 3}
   thrustEffectPrefab: {fileID: 6098061626621829834, guid: d27d9d84588ffe141b18e682d4c85f5c,
     type: 3}
-  explosionPrefab: {fileID: 238150696391007923, guid: 17239bb474ede86468099f6844d6a3b7,
+  explosionEffectPrefab: {fileID: 2165056553181583225, guid: b44088c05643106409287cb77e8c56f6,
     type: 3}
   labelPrefab: {fileID: 9099319384489682599, guid: 8a229f5344f29bc42a484ccc31bdec75,
     type: 3}

@@ -1007,8 +1007,8 @@ namespace StarSalvager
                     return false;
             }
 
-            var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
-            explosion.transform.position = worldPosition;
+            /*var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
+            explosion.transform.position = worldPosition;*/
             
             TryHitAt(closestAttachable, damage);
 
@@ -1061,6 +1061,10 @@ namespace StarSalvager
 
             if (!attachableDestroyed)
                 return;
+            
+            CreateExplosionEffect(closestAttachable.transform.position);
+            GameUi.FlashBorder();
+
 
             //Things to do if the attachable is destroyed
             //--------------------------------------------------------------------------------------------------------//
@@ -1126,8 +1130,10 @@ namespace StarSalvager
             TryHitAt(attachable, 10000);
             AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
             
-            var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
-            explosion.transform.position = attachable.transform.position;
+            /*var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
+            explosion.transform.position = attachable.transform.position;*/
+            
+            CreateExplosionEffect(attachable.transform.position);
 
             MissionProgressEventData missionProgressEventData;
 
@@ -2177,6 +2183,18 @@ namespace StarSalvager
             var time = effect.GetComponent<ScaleColorSpriteAnimation>().AnimationTime;
             
             Destroy(effect, time);
+        }
+        
+        protected static void CreateExplosionEffect(Vector2 worldPosition)
+        {
+            var explosion = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreateEffect(EffectFactory.EFFECT.EXPLOSION);
+            LevelManager.Instance.ObstacleManager.AddToRoot(explosion);
+            explosion.transform.position = worldPosition;
+
+            var time = explosion.GetComponent<ParticleSystemGroupScaling>().AnimationTime;
+            
+            Destroy(explosion, time);
         }
         
         //============================================================================================================//

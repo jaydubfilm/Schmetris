@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Factories;
+using StarSalvager.Prototype;
 using UnityEngine;
 
 namespace StarSalvager
@@ -129,7 +131,7 @@ namespace StarSalvager
         /// <summary>
         /// Called when the object contacts a bot
         /// </summary>
-        protected abstract void OnCollide(GameObject gameObject, Vector2 hitPoint);
+        protected abstract void OnCollide(GameObject gameObject, Vector2 worldHitPoint);
 
         private static Vector2 CalculateContactPoint(IEnumerable<ContactPoint2D> points)
         {
@@ -156,7 +158,17 @@ namespace StarSalvager
         
         //============================================================================================================//
 
+        protected static void CreateExplosionEffect(Vector2 worldPosition)
+        {
+            var explosion = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreateEffect(EffectFactory.EFFECT.EXPLOSION);
+            LevelManager.Instance.ObstacleManager.AddToRoot(explosion);
+            explosion.transform.position = worldPosition;
 
+            var time = explosion.GetComponent<ParticleSystemGroupScaling>().AnimationTime;
+            
+            Destroy(explosion, time);
+        }
         
     }
 }

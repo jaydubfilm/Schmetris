@@ -69,17 +69,17 @@ namespace StarSalvager
         
         //============================================================================================================//
         
-        protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
+        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
             var bot = gameObject.GetComponent<Bot>();
 
             if (bot.Rotating)
             {
-                this.Bounce(hitPoint, bot.MostRecentRotate);
+                this.Bounce(worldHitPoint, bot.MostRecentRotate);
                 return;
             }
 
-            var dir = (hitPoint - (Vector2)transform.position).ToVector2Int();
+            var dir = (worldHitPoint - (Vector2)transform.position).ToVector2Int();
 
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
             //return the direction to shoot the ray
