@@ -20,7 +20,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 1
       MissionUnlockName: 
     AmountNeeded: 20
     AnyResourceType: 0
@@ -141,7 +140,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: 
     AmountNeeded: 1
     AnyResourceType: 0
@@ -184,7 +182,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 1
-      WaveUnlockNumber: 2
       MissionUnlockName: 
     AmountNeeded: 1
     AnyResourceType: 0
@@ -227,7 +224,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: Complete Sector 1
     AmountNeeded: 0
     AnyResourceType: 0
@@ -270,7 +266,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: 
     AmountNeeded: 1
     AnyResourceType: 0
@@ -313,7 +308,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 1
-      WaveUnlockNumber: 1
       MissionUnlockName: 
     AmountNeeded: 1
     AnyResourceType: 0
@@ -356,7 +350,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 1
-      WaveUnlockNumber: 1
       MissionUnlockName: 
     AmountNeeded: 1
     AnyResourceType: 0
@@ -399,7 +392,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: Hit bumper
     AmountNeeded: 1
     AnyResourceType: 0
@@ -432,7 +424,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: 1e95753c-4321-47a3-9992-6e83534294c8
     AmountNeeded: 200
     AnyResourceType: 0
@@ -475,7 +466,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: Mission 3
     AmountNeeded: 1
     AnyResourceType: 1
@@ -518,15 +508,12 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: Kill a parasite
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: Kill an invader
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 2
-      WaveUnlockNumber: 1
       MissionUnlockName: 
     AmountNeeded: 5
     AnyResourceType: 0
@@ -569,7 +556,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: Orphan a bit with a bumper
     AmountNeeded: 1
     AnyResourceType: 0
@@ -613,7 +599,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: 
     AmountNeeded: 1
     AnyResourceType: 0
@@ -656,7 +641,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: 79a85ec5-cc96-48dd-862c-791919cba7b6
     AmountNeeded: 2
     AnyResourceType: 0
@@ -699,7 +683,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 2
-      WaveUnlockNumber: 1
       MissionUnlockName: 
     AmountNeeded: 0
     AnyResourceType: 0
@@ -742,7 +725,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Level Complete
       SectorUnlockNumber: 2
-      WaveUnlockNumber: 1
       MissionUnlockName: 
     AmountNeeded: 0
     AnyResourceType: 0
@@ -785,7 +767,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: 8bf13add-01f8-44bd-91a8-fd330d72a92c
     AmountNeeded: 1
     AnyResourceType: 0
@@ -828,7 +809,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: cd105b59-16c1-43f7-aa81-a017377384c6
     AmountNeeded: 1
     AnyResourceType: 0
@@ -871,7 +851,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: e906d702-a1ad-4533-b0d8-48e27a399b8c
     AmountNeeded: 1
     AnyResourceType: 1
@@ -914,7 +893,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: 4a80b2b4-048c-4213-8bdd-991d1a826b7f
     AmountNeeded: 1
     AnyResourceType: 1
@@ -958,7 +936,6 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      WaveUnlockNumber: 0
       MissionUnlockName: e241f40c-3c04-45c6-bf34-24bca67b905c
     AmountNeeded: 1
     AnyResourceType: 1

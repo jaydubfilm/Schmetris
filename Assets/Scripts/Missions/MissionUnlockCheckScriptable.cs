@@ -16,9 +16,6 @@ namespace StarSalvager.Missions
         [SerializeField, FoldoutGroup("$MissionUnlockType"), ShowIf("MissionUnlockType", "Level Complete")]
         public int SectorUnlockNumber;
 
-        [SerializeField, FoldoutGroup("$MissionUnlockType"), ShowIf("MissionUnlockType", "Level Complete")]
-        public int WaveUnlockNumber;
-
         [SerializeField, FoldoutGroup("$MissionUnlockType"), ValueDropdown("GetMissionNames"), ShowIf("MissionUnlockType", "Mission Complete")]
         public string MissionUnlockName;
 
