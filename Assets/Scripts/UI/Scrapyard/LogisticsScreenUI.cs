@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
@@ -247,6 +248,33 @@ namespace StarSalvager.UI.Scrapyard
             
             detailsTitle.text = item?.name;
             detailsDescription.text = item?.description;
+
+            string prereqText = "\nPrerequisite for ";
+            int numAdded = 0;
+            for (int i = 0; i < FactoryManager.Instance.FacilityRemote.FacilityRemoteData.Count; i++)
+            {
+                FacilityRemoteData facilityRemoteData = FactoryManager.Instance.FacilityRemote.FacilityRemoteData[i];
+                for (int k = 0; k < facilityRemoteData.levels.Count; k++)
+                {
+                    if (facilityRemoteData.levels[k].facilityPrerequisites.Any(f => f.facilityType == item.facilityType && f.level == item.level))
+                    {
+                        if (numAdded > 0)
+                        {
+                            prereqText += ", ";
+                        }
+
+                        prereqText += $"{facilityRemoteData.displayName} {k + 1}";
+                        numAdded++;
+                    }
+                }
+            }
+            prereqText += ".";
+
+            if (numAdded > 0)
+            {
+                detailsDescription.text += prereqText;
+            }
+
             DisplayCost(item.patchCost);
         }
 
