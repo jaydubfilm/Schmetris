@@ -1,0 +1,97 @@
+
+enemy_SQUIDCOLOUR2_1_v1.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Squid_Enemy_ver1-animation3_00
+  rotate: false
+  xy: 0, 1548
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+Squid_Enemy_ver1-animation3_01
+  rotate: false
+  xy: 258, 1548
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+Squid_Enemy_ver1-animation3_02
+  rotate: false
+  xy: 516, 1548
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+Squid_Enemy_ver1-animation3_03
+  rotate: false
+  xy: 774, 1548
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+Squid_Enemy_ver1-animation3_04
+  rotate: false
+  xy: 1032, 1548
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+Squid_Enemy_ver1-animation3_05
+  rotate: false
+  xy: 1290, 1548
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+Squid_Enemy_ver1-animation3_06
+  rotate: false
+  xy: 1548, 1548
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+Squid_Enemy_ver1-animation3_07
+  rotate: false
+  xy: 0, 1290
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+Squid_Enemy_ver1-animation3_08
+  rotate: false
+  xy: 258, 1290
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+Squid_Enemy_ver1-animation3_09
+  rotate: false
+  xy: 516, 1290
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+Squid_Enemy_ver1-animation3_10
+  rotate: false
+  xy: 774, 1290
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+Squid_Enemy_ver1-animation3_11
+  rotate: false
+  xy: 1032, 1290
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+Squid_Enemy_ver1-animation3_12
+  rotate: false
+  xy: 1290, 1290
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1

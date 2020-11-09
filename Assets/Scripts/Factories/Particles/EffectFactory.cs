@@ -16,7 +16,8 @@ namespace StarSalvager.Factories
         {
             WELD,
             IMPACT,
-            THRUST
+            THRUST,
+            EXPLOSION
         }
         
         private readonly EffectProfileScriptableObject _effectProfileScriptableObject;
@@ -60,9 +61,9 @@ namespace StarSalvager.Factories
             var type = typeof(T);
             switch (true)
             {
-                case bool _ when type == typeof(Explosion):
+                /*case bool _ when type == typeof(Explosion):
                     gameObject = CreateExplosion();
-                    break;
+                    break;*/
                 case bool _ when type == typeof(TextMeshPro):
                     gameObject = CreateLabel();
                     break;
@@ -110,6 +111,9 @@ namespace StarSalvager.Factories
                 case EFFECT.THRUST:
                     gameObject = CreateThrustEffect();
                     break;
+                case EFFECT.EXPLOSION:
+                    gameObject = CreateExplosionEffect();
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(effect), effect, null);
             }
@@ -133,6 +137,11 @@ namespace StarSalvager.Factories
         private GameObject CreateThrustEffect()
         {
             return Object.Instantiate(_effectProfileScriptableObject.thrustEffectPrefab);
+        }
+        
+        private GameObject CreateExplosionEffect()
+        {
+            return Object.Instantiate(_effectProfileScriptableObject.explosionEffectPrefab);
         }
         
         
@@ -161,12 +170,13 @@ namespace StarSalvager.Factories
 
         private GameObject CreateExplosion()
         {
-            if (!Recycler.TryGrab<Explosion>(out GameObject gameObject))
+            throw new NotImplementedException();
+            /*if (!Recycler.TryGrab<Explosion>(out GameObject gameObject))
             {
                 gameObject = Object.Instantiate(_effectProfileScriptableObject.explosionPrefab);
             }
 
-            return gameObject;
+            return gameObject;*/
         }
         
         private GameObject CreateAlert()

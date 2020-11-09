@@ -248,14 +248,14 @@ namespace StarSalvager
 
         //================================================================================================================//
 
-        protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
+        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
             if (!(gameObject.GetComponent<Bot>() is Bot bot))
                 return;
 
             if (bot.Rotating)
             {
-                this.Bounce(hitPoint, bot.MostRecentRotate);
+                this.Bounce(worldHitPoint, bot.MostRecentRotate);
 
                     AudioController.PlaySound(SOUND.BIT_BOUNCE);
                     return;
@@ -267,7 +267,7 @@ namespace StarSalvager
 
             //Long ray compensates for the players high speed
             var rayLength = Constants.gridCellSize * 3f;
-            var closestAttachable = attachedBits.GetClosestAttachable(hitPoint) as IAttachable;
+            var closestAttachable = attachedBits.GetClosestAttachable(worldHitPoint) as IAttachable;
 
             closestAttachable = attachedBits.GetAttachableInDirection(closestAttachable, rayDirection);
 

@@ -138,7 +138,7 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
-        protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
+        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
             var canBeHit = gameObject.GetComponent<ICanBeHit>();
 

@@ -154,7 +154,7 @@ namespace StarSalvager
         //Part Functions
         //============================================================================================================//
 
-        protected override void OnCollide(GameObject gObj, Vector2 hitPoint)
+        protected override void OnCollide(GameObject gObj, Vector2 worldHitPoint)
         {
 #if !UNITY_EDITOR
             //FIXME Need to find the cause of parts not despawning correctly

@@ -1,0 +1,97 @@
+
+BallHeadPurpleColour_ver1.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+BallHeadEnemy_Ver1c-animation3_00
+  rotate: false
+  xy: 0, 516
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: -1
+BallHeadEnemy_Ver1c-animation3_12
+  rotate: false
+  xy: 0, 516
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: -1
+BallHeadEnemy_Ver1c-animation3_01
+  rotate: false
+  xy: 0, 258
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: -1
+BallHeadEnemy_Ver1c-animation3_02
+  rotate: false
+  xy: 0, 0
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: -1
+BallHeadEnemy_Ver1c-animation3_03
+  rotate: false
+  xy: 130, 516
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: -1
+BallHeadEnemy_Ver1c-animation3_04
+  rotate: false
+  xy: 130, 258
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: -1
+BallHeadEnemy_Ver1c-animation3_05
+  rotate: false
+  xy: 130, 0
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: -1
+BallHeadEnemy_Ver1c-animation3_06
+  rotate: false
+  xy: 260, 516
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: -1
+BallHeadEnemy_Ver1c-animation3_07
+  rotate: false
+  xy: 260, 258
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: -1
+BallHeadEnemy_Ver1c-animation3_08
+  rotate: false
+  xy: 260, 0
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: -1
+BallHeadEnemy_Ver1c-animation3_09
+  rotate: false
+  xy: 390, 516
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: -1
+BallHeadEnemy_Ver1c-animation3_10
+  rotate: false
+  xy: 390, 258
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: -1
+BallHeadEnemy_Ver1c-animation3_11
+  rotate: false
+  xy: 390, 0
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: -1
