@@ -492,7 +492,7 @@ namespace StarSalvager
 
             var botDataToLoad = PlayerDataManager.GetBlockDatas();
 
-            if (botDataToLoad.Count == 0)
+            if (botDataToLoad.Count == 0 || Globals.UsingTutorial)
             {
                 BotObject.InitBot();
             }
@@ -757,12 +757,12 @@ namespace StarSalvager
             var lowestCoordinate =
                 bot.attachedBlocks.GetAttachableInDirection(Vector2Int.zero, DIRECTION.DOWN).Coordinate;
 
-            var localPosition = lowestCoordinate + DIRECTION.DOWN.ToVector2() / 2f;
+            var localPosition = bot.transform.position + (Vector3)(lowestCoordinate + DIRECTION.DOWN.ToVector2() / 2f);
             
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.THRUST);
             var effectTransform = effect.transform;
             effectTransform.SetParent(bot.transform);
-            effectTransform.localPosition = localPosition;
+            effectTransform.localPosition = bot.transform.InverseTransformPoint(localPosition);
 
             _effect = effect;
         }
@@ -848,6 +848,9 @@ namespace StarSalvager
 
         public void SavePlayerData()
         {
+            if (Globals.UsingTutorial)
+                return;
+            
             foreach (Bot bot in m_bots)
             {
                 var blockData = bot.GetBlockDatas();

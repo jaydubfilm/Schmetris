@@ -55,7 +55,6 @@ namespace StarSalvager.Utilities.Inputs
 
         private bool _lockSideMovement;
 
-
         [SerializeField, BoxGroup("DAS"), ReadOnly]
         private float dasMovementTimer;
         [SerializeField, BoxGroup("DAS"), ReadOnly]
