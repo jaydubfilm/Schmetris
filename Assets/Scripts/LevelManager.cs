@@ -491,7 +491,7 @@ namespace StarSalvager
 
             var botDataToLoad = PlayerDataManager.GetBlockDatas();
 
-            if (botDataToLoad.Count == 0)
+            if (botDataToLoad.Count == 0 || Globals.UsingTutorial)
             {
                 BotObject.InitBot();
             }
@@ -847,6 +847,9 @@ namespace StarSalvager
 
         public void SavePlayerData()
         {
+            if (Globals.UsingTutorial)
+                return;
+            
             foreach (Bot bot in m_bots)
             {
                 var blockData = bot.GetBlockDatas();

@@ -63,6 +63,8 @@ namespace StarSalvager.Tutorial
         private bool _isReady;
         private MonoBehaviour mono;
 
+        private float _playerStartFuel;
+
         //Unity Functions
         //====================================================================================================================//
 
@@ -85,6 +87,9 @@ namespace StarSalvager.Tutorial
             
             mono = LevelManager.Instance;
             InitInput();
+
+            _playerStartFuel = PlayerDataManager.GetResource(BIT_TYPE.RED).liquid;
+            PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(30);
             
             _tutorialStepCoroutines = new List<IEnumerator>
             {
@@ -406,7 +411,11 @@ namespace StarSalvager.Tutorial
             Globals.UsingTutorial = false;
             LevelManager.Instance.SetBotExitScreen(false);
             LevelManager.Instance.BotObject.PROTO_GodMode = false;
+            LevelManager.Instance.EndWaveState = false;
 
+
+            PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(_playerStartFuel);
+            
             SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
 
             fadeImage.color = Color.clear;
