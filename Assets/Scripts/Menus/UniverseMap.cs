@@ -199,6 +199,20 @@ namespace StarSalvager.UI
                     }
                     else
                     {
+                        if (!Globals.ShortcutJumpToAfter)
+                        {
+                            for (int k = 0; k < childNodesAccessible.Count; k++)
+                            {
+                                if (PlayerDataManager.GetShortcutNodes().Contains(childNodesAccessible[k].nodeIndex))
+                                {
+                                    int index = childNodesAccessible[k].nodeIndex;
+                                    universeMapButtons[index].Button.interactable = true;
+                                    universeMapButtons[index].ShortcutImage.gameObject.SetActive(true);
+                                    DrawConnection(0, index, false, true);
+                                }
+                            }
+                        }
+                        
                         for (int k = 0; k < universeMapButtons.Count; k++)
                         {
                             if (childNodesAccessible.Any(n => n.nodeIndex == k))
@@ -214,7 +228,17 @@ namespace StarSalvager.UI
 
                     if (isShortcut)
                     {
-                        universeMapButtons[nodeIndex].Button.interactable = true;
+                        if (Globals.ShortcutJumpToAfter)
+                        {
+                            for (int k = 0; k < childNodesAccessible.Count; k++)
+                            {
+                                int index = childNodesAccessible[k].nodeIndex;
+                                universeMapButtons[index].Button.interactable = true;
+                                //universeMapButtons[index].ShortcutImage.gameObject.SetActive(true);
+                                //DrawConnection(0, index, false, true);
+                            }
+                        }
+                        //universeMapButtons[nodeIndex].Button.interactable = true;
                         universeMapButtons[nodeIndex].ShortcutImage.gameObject.SetActive(true);
                     }
                 }
@@ -242,7 +266,7 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        private void DrawConnection(int connectionStart, int connectionEnd, bool setHalfway)
+        private void DrawConnection(int connectionStart, int connectionEnd, bool setHalfway, bool colourCyan = false)
         {
             GameObject newLine = new GameObject();
 
@@ -256,6 +280,11 @@ namespace StarSalvager.UI
             if (setHalfway)
             {
                 newLineImage.transform.position = (universeMapButtons[connectionStart].transform.position + newLineImage.transform.position) / 2;
+            }
+
+            if (colourCyan)
+            {
+                newLineImage.color = Color.cyan;
             }
 
             RectTransform newLineRectTransform = newLine.GetComponent<RectTransform>();

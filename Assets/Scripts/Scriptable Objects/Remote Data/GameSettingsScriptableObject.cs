@@ -46,6 +46,7 @@ namespace StarSalvager.ScriptableObjects
         public int numCurrentTrackedMissionMax = 3;
         public bool onlyGetWaveLootOnce = true;
         public bool recoveryOfDroneLocksHorizontalMovement = true;
+        public bool shortcutJumpToAfter = false;
 
         public List<BlueprintInitialData> blueprintInitialData = new List<BlueprintInitialData>();
         public List<FacilityInitialData> facilityInitialData = new List<FacilityInitialData>();

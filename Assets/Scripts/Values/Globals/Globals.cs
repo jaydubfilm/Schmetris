@@ -62,6 +62,7 @@ namespace StarSalvager.Values
         public static int NumCurrentTrackedMissionMax => m_gameSettings.numCurrentTrackedMissionMax;
         public static bool OnlyGetWaveLootOnce => m_gameSettings.onlyGetWaveLootOnce;
         public static bool RecoveryOfDroneLocksHorizontalMovement => m_gameSettings.recoveryOfDroneLocksHorizontalMovement;
+        public static bool ShortcutJumpToAfter => m_gameSettings.shortcutJumpToAfter;
 
         public static float BotEnterScreenMaxSize => m_gameSettings.botEnterScreenMaxSize;
         public static float BotExitScreenMaxSize => m_gameSettings.botExitScreenMaxSize;
