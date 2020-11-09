@@ -48,7 +48,7 @@ MonoBehaviour:
   - m_sprite: {fileID: 2357439660054832943, guid: ca216a3cd365bfe4e924677094170fdb,
       type: 3}
     m_enemyTypeID: f3c96622-609f-498c-be89-8cc575e46fe0
-    m_movementType: 6
+    m_movementType: 0
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 9a67d56bcff91044590444220f102079,
       type: 2}
