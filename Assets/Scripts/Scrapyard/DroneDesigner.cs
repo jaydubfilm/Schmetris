@@ -101,7 +101,7 @@ namespace StarSalvager
 
         private void OnDestroy()
         {
-            Camera.onPostRender -= DrawGL;
+            //Camera.onPostRender -= DrawGL;
 
             DeInitInput();
         }
@@ -139,7 +139,7 @@ namespace StarSalvager
         public void Activate()
         {
             GameTimer.SetPaused(true);
-            Camera.onPostRender += DrawGL;
+            //Camera.onPostRender += DrawGL;
 
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
 
@@ -174,12 +174,12 @@ namespace StarSalvager
                 Alert.ShowAlert("Water Restored", "You have resuscitated your thirsty crew.", "Phew!", null);
             }*/
 
-            if (_dismantleBin == null)
+            /*if (_dismantleBin == null)
             {
                 _dismantleBin = Instantiate(dismantleBinPrefab);
                 _dismantleBin.transform.position = new Vector2(10, 10);
                 _dismantleBin.transform.parent = transform;
-            }
+            }*/
 
             UpdateFloatingMarkers(false);
             
@@ -200,7 +200,7 @@ namespace StarSalvager
             SelectedPartRemoveFromStorage = false;
             SelectedPartReturnToStorageIfNotPlaced = false;
 
-            Camera.onPostRender -= DrawGL;
+            //Camera.onPostRender -= DrawGL;
             Globals.IsRecoveryBot = false;
 
             if (_scrapyardBot != null)
