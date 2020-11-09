@@ -209,7 +209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75aa57d01249eee43bdbc2b3cf0bb890, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationTime: 15
+  animationTime: 5
   looping: 0
   useGlobalScale: 1
   globalScaleSpeed: 100
