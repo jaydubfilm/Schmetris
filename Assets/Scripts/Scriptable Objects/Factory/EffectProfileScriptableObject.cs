@@ -54,6 +54,10 @@ namespace StarSalvager.ScriptableObjects
         
         [SerializeField, Required, BoxGroup("Particles")]
         public GameObject lineShrinkPrefab;
+        
+        [SerializeField, Required, BoxGroup("Particles")]
+        public GameObject lineRendererPrefab;
+
 
         //====================================================================================================================//
         
