@@ -11,14 +11,14 @@ using StarSalvager.Utilities.Animations;
 using StarSalvager.Values;
 using StarSalvager.Factories.Data;
 using System.Linq;
+using StarSalvager.Prototype;
+using StarSalvager.UI;
 
 namespace StarSalvager
 {
     public class Asteroid : CollidableBase, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate
     {
-        public RDSTable rdsTable { get; set; }
 
-        public float Radius { get; private set; }
         //IRotate properties
         //============================================================================================================//
 
@@ -41,6 +41,25 @@ namespace StarSalvager
         public bool IsRegistered { get; set; }
 
         public bool IsMarkedOnGrid { get; set; } = false;
+
+        //Asteroid Properties
+        //====================================================================================================================//
+        
+        public RDSTable rdsTable { get; set; }
+
+        public float Radius { get; private set; }
+
+        public SpriteMask SpriteMask
+        {
+            get
+            {
+                if (_spriteMask == null)
+                    _spriteMask = GetComponent<SpriteMask>();
+
+                return _spriteMask;
+            }
+        }
+        private SpriteMask _spriteMask;
 
         //IRotate Functions
         //============================================================================================================//
@@ -87,10 +106,8 @@ namespace StarSalvager
         public bool TryHitAt(Vector2 worldPosition, float damage)
         {
             ChangeHealth(-damage);
-            
-            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
-            LevelManager.Instance.ObstacleManager.AddToRoot(explosion);
-            explosion.transform.position = worldPosition;
+
+            CreateExplosionEffect(worldPosition);
 
             return true;
         }
@@ -98,7 +115,7 @@ namespace StarSalvager
         //CollidableBase Functions
         //============================================================================================================//
 
-        protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
+        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
             //Debug.Break();
             
@@ -106,16 +123,18 @@ namespace StarSalvager
 
             if (bot != null)
             {
+                
+
                 if (bot.Rotating)
                 {
                     //Recycler.Recycle<Asteroid>(this);
                     bot.Rotate(bot.MostRecentRotate.Invert());
                     AudioController.PlaySound(SOUND.ASTEROID_BASH);
-                    bot.TryHitAt(hitPoint, Globals.AsteroidDamage);
+                    bot.TryHitAt(worldHitPoint, Globals.AsteroidDamage);
                     return;
                 }
 
-                var dir = (hitPoint - (Vector2)transform.position).ToVector2Int();
+                var dir = (worldHitPoint - (Vector2)transform.position).ToVector2Int();
                 var direction = dir.ToDirection();
 
                 //If the player moves sideways into this asteroid, push them away, and damage them, to give them a chance
@@ -124,13 +143,21 @@ namespace StarSalvager
                     case DIRECTION.LEFT:
                     case DIRECTION.RIGHT:
                         //Only want to move the bot if we're legally allowed
-                        if(bot.TryBounceAt(hitPoint))
+                        if (bot.TryBounceAt(worldHitPoint, out var destroyed))
+                        {
                             InputManager.Instance.ForceMove(direction);
+
+                            if (destroyed)
+                            {
+                                CreateImpactEffect(worldHitPoint);
+                            }
+                        }
 
                         break;
                     case DIRECTION.UP:
                     case DIRECTION.DOWN:
-                        bot.TryAsteroidDamageAt(hitPoint);
+                        if (bot.TryAsteroidDamageAt(worldHitPoint)) 
+                            CreateImpactEffect(worldHitPoint);
                         break;
                         //default:
                         //    throw new ArgumentOutOfRangeException();
@@ -147,12 +174,39 @@ namespace StarSalvager
             }
         }
 
+        //Actor2DBase Functions
+        //====================================================================================================================//
+        
+        public override void SetSprite(Sprite sprite)
+        {
+            base.SetSprite(sprite);
+
+            SpriteMask.sprite = sprite;
+        }
+
         //Asteroid Functions
         //============================================================================================================//
 
         public void SetRadius(float radius)
         {
             Radius = radius;
+        }
+
+        private void CreateImpactEffect(Vector2 worldPosition)
+        {
+            var localPosition = transform.InverseTransformPoint(worldPosition);
+            var eulerRotation = Vector3.forward * Random.Range(0, 360);
+
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.IMPACT);
+            var effectTransform = effect.transform;
+            
+            effectTransform.SetParent(transform);
+            effectTransform.localPosition = localPosition;
+            effectTransform.eulerAngles = eulerRotation;
+
+            var time = effect.GetComponent<ScaleColorSpriteAnimation>().AnimationTime;
+            
+            Destroy(effect, time);
         }
         
         //ICustomRecycle Function

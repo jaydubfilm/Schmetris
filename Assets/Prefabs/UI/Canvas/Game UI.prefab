@@ -233,6 +233,7 @@ RectTransform:
   - {fileID: 2014372966934657805}
   - {fileID: 9143655655824421403}
   - {fileID: 3829671958732547805}
+  - {fileID: 4346959502510101828}
   m_Father: {fileID: 5819174461859025590}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -610,7 +611,7 @@ GameObject:
   - component: {fileID: 8514189248293761598}
   - component: {fileID: 7412885708176556483}
   m_Layer: 5
-  m_Name: Image (1)
+  m_Name: Glare_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1300,7 +1301,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e67b6c5abe89703438db634ae4887e64, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 156c5b2bc4f90af4d87c0e5553785272, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1724,7 +1725,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 58259f960ca79224e9ba6151c96e0826, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 21e48fdd15c73e84999ff9bc8acf3704, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2060,7 +2061,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7ac797ab70aa11b43ba3d1753008a2f6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: be21c127dd51d6c48925f1ef44da8e8e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2134,7 +2135,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f5bdd0a58efa4c44ba5c57d592a4f76b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 38ceea929f8b43a4291aec6a053b2cc7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2156,7 +2157,7 @@ GameObject:
   - component: {fileID: 39747619580167478}
   - component: {fileID: 1298010470628765483}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Glare_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2457,7 +2458,7 @@ GameObject:
   - component: {fileID: 7517502858146190630}
   - component: {fileID: 8765998781073086327}
   m_Layer: 5
-  m_Name: Image (2)
+  m_Name: Glare_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6414,7 +6415,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 64bb71c4cc5dc7742910f1167f3fd46c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1deb860dba383cc428528a2e5170c255, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7440,6 +7441,69 @@ MonoBehaviour:
   vignetteImage: {fileID: 7416328784947895897}
   vignetteMinColor: {r: 1, g: 0.14117648, b: 0.14117648, a: 0}
   vignetteMaxColor: {r: 1, g: 0.14117648, b: 0.14117648, a: 0.6}
+  flashTimeRange: {x: 0.4, y: 0.7}
+  borderGlow: {fileID: 7443690187230298321}
+  border: {fileID: 5647521465387081734}
+  flashCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 5.195174
+      outSlope: 5.195174
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.91404825
+    - serializedVersion: 3
+      time: 0.11050509
+      value: 0.64544696
+      inSlope: 6.4750433
+      outSlope: 6.4750433
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.2729342
+      value: 1.039701
+      inSlope: 7.792531
+      outSlope: 7.792531
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.04562363
+      outWeight: 0.062879175
+    - serializedVersion: 3
+      time: 0.60283464
+      value: 0.6759532
+      inSlope: 7.269398
+      outSlope: 7.269398
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33439967
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.77124274
+      value: -0.51831937
+      inSlope: -0.27027026
+      outSlope: -0.27027026
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 1
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 4.239298
+      outSlope: 4.239298
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.34976593
+      outWeight: 0
+    m_PreInfinity: 1
+    m_PostInfinity: 1
+    m_RotationOrder: 4
 --- !u!1 &5522319499635563682
 GameObject:
   m_ObjectHideFlags: 0
@@ -9241,8 +9305,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 6087728065614238764, guid: eedae858e3908f241a937a3fa16b0504,
-    type: 3}
+  m_Sprite: {fileID: 21300000, guid: b78008d6fca3a2f469050019e5184fbc, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9251,7 +9314,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 0.45
+  m_PixelsPerUnitMultiplier: 0.5
 --- !u!114 &5210637041507234647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9598,7 +9661,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ae6fb141ac6070c43af30b48f257c2ac, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7aa79e2aba8b339409796118b29a2e37, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9757,6 +9820,94 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &6941660401490036270
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4346959502510101828}
+  - component: {fileID: 2728447447075095068}
+  - component: {fileID: 7443690187230298321}
+  - component: {fileID: 4421457654785532570}
+  m_Layer: 5
+  m_Name: Center_Border_Glow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4346959502510101828
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6941660401490036270}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 9222165884564463645}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -2, y: 0}
+  m_SizeDelta: {x: -4, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &2728447447075095068
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6941660401490036270}
+  m_CullTransparentMesh: 0
+--- !u!114 &7443690187230298321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6941660401490036270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 2100000, guid: 07dcdf6564f0acb449e839a22429599b, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.101960786}
+  m_RaycastTarget: 0
+  m_Maskable: 0
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: c942aa80205dddd4f980316112a99fdc, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 0.5
+--- !u!114 &4421457654785532570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6941660401490036270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShowMaskGraphic: 1
 --- !u!1 &6964789051742129321
 GameObject:
   m_ObjectHideFlags: 0
@@ -11282,7 +11433,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 36300f59af7a8924ea339d58c871d57f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 32909f138b0bfc84280ebf4b6747fdd0, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

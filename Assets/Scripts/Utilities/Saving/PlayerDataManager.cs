@@ -35,7 +35,12 @@ namespace StarSalvager.Utilities.Saving
 
         //====================================================================================================================//
 
-        public static bool GethasRunStarted()
+        public static Version GetVersion()
+        {
+            return PlayerAccountData.Version;
+        }
+
+        public static bool GetHasRunStarted()
         {
             return HasPlayerRunData() && PlayerRunData.runStarted;
         }
@@ -200,11 +205,12 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
-        public static void AddComponent(COMPONENT_TYPE type, int amount)
+        public static void AddComponent(COMPONENT_TYPE type, int amount, bool updateValuesChanged = true)
         {
             PlayerRunData.AddComponent(type, amount);
 
-            OnValuesChanged?.Invoke();
+            if(updateValuesChanged)
+                OnValuesChanged?.Invoke();
         }
 
         public static void SubtractPartCosts(PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
@@ -768,7 +774,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void RemoveSaveFileData(int index)
         {
-            GameMetaData.SaveFiles.RemoveAt(index);
+            GameMetaData.SaveFiles.RemoveAll(s => s.SaveSlotIndex == index);
         }
 
         public static void ClearSaveFileData(SaveFileData data)
@@ -852,14 +858,15 @@ namespace StarSalvager.Utilities.Saving
 
             if (GetEnemiesKilled().Count > 0)
             {
-                var enemyRemoteData = FactoryManager.Instance.EnemyRemoteData;
+                var enemyProfileData = FactoryManager.Instance.EnemyProfile;
+                
                 summaryText += ("<b>Enemies Killed:</b>\n");
 
                 foreach (var keyValuePair in GetEnemiesKilled())
                 {
-                    var name = enemyRemoteData.GetEnemyRemoteData(keyValuePair.Key).Name;
+                    var spriteName = enemyProfileData.GetEnemyProfileData(keyValuePair.Key).Sprite?.name;
                 
-                    summaryText += $"\t{name}: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
+                    summaryText += $"\t{TMP_SpriteMap.GetEnemySprite(spriteName)}: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
                 }
             }
 

@@ -101,7 +101,7 @@ namespace StarSalvager.Utilities.Particles
             if (FactoryManager.Instance == null)
                 return;
             
-            FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<ConnectedSpriteObject>()
+            FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<ConnectedSpriteObject>()
                 .Init(connectedTransform, offset);
         }
 

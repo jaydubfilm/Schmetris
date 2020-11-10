@@ -21,7 +21,7 @@ namespace StarSalvager.Utilities.Extensions
                         missionUnlockChecks.Add(new MissionCompleteUnlockCheck(missionUnlockParameterData.MissionName));
                         break;
                     case nameof(LevelCompleteUnlockCheck):
-                        missionUnlockChecks.Add(new LevelCompleteUnlockCheck(missionUnlockParameterData.SectorNumber, missionUnlockParameterData.WaveNumber));
+                        missionUnlockChecks.Add(new LevelCompleteUnlockCheck(missionUnlockParameterData.SectorNumber));
                         break;
                 }
             }

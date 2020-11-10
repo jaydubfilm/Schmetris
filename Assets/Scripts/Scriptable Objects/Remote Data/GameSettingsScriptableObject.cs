@@ -10,7 +10,7 @@ namespace StarSalvager.ScriptableObjects
     public class GameSettingsScriptableObject : ScriptableObject
     {
         public bool allowAccessToUnlockedLaterWaves = true;
-        public bool disableTestingFeatures = false;
+        public bool testingFeatures = false;
         public bool bitsPushThroughParts = false;
         
         [DisableInPlayMode]
@@ -31,6 +31,11 @@ namespace StarSalvager.ScriptableObjects
         public float levelResourceDropReductionAmount = 0.5f;
         public float asteroidDamage = 10.0f;
         public List<BonusShapeGearsValue> bonusShapeGearsRewards;
+        public int patchPointBaseCost = 500;
+        public int patchPointIncrementCost = 50;
+
+        public float botEnterScreenMaxSize = 1.5f;
+        public float botExitScreenMaxSize = 2.0f;
 
         public bool cameraUseInputMotion = true;
         [ShowIf("cameraUseInputMotion", true)]
@@ -41,6 +46,7 @@ namespace StarSalvager.ScriptableObjects
         public int numCurrentTrackedMissionMax = 3;
         public bool onlyGetWaveLootOnce = true;
         public bool recoveryOfDroneLocksHorizontalMovement = true;
+        public bool shortcutJumpToAfter = false;
 
         public List<BlueprintInitialData> blueprintInitialData = new List<BlueprintInitialData>();
         public List<FacilityInitialData> facilityInitialData = new List<FacilityInitialData>();

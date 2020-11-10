@@ -20,6 +20,9 @@ namespace StarSalvager.UI.Scrapyard
         private TMP_Text title;
 
         [SerializeField, Required]
+        private TMP_Text buttonText;
+
+        [SerializeField, Required]
         private Button favouriteButton;
 
         private Action<Mission, bool> _onHoverCallback;
@@ -47,7 +50,10 @@ namespace StarSalvager.UI.Scrapyard
 
             elementImage.color = isTracked ? Color.green : Color.white;
 
-            favouriteButton.interactable = isTracked || PlayerDataManager.GetMissionsCurrentData().CurrentTrackedMissions.Count < Globals.NumCurrentTrackedMissionMax;
+            buttonText.text = isTracked ? "Untrack" : "Track";
+
+            //favouriteButton.interactable = isTracked || PlayerDataManager.GetMissionsCurrentData().CurrentTrackedMissions.Count < Globals.NumCurrentTrackedMissionMax;
+            favouriteButton.interactable = true;
         }
 
         //Init Functions

@@ -15,6 +15,8 @@ namespace StarSalvager.Values
     {
         public PlayerSaveRunData PlayerRunData = new PlayerSaveRunData();
 
+        public Version Version = Constants.VERSION;
+
         //TEMP
         public Dictionary<int, int> numTimesBeatNewWaveInSector = new Dictionary<int, int>()
         {
@@ -341,8 +343,8 @@ namespace StarSalvager.Values
 
         public (int, int) GetPatchPointProgress()
         {
-            int patchPointBaseCost = 100;
-            int patchPointCostIncrement = 10;
+            int patchPointBaseCost = Globals.PatchPointBaseCost;
+            int patchPointCostIncrement = Globals.PatchPointIncrementCost;
 
             int totalPatchPoints = 0;
             int gearsAmount = Gears;
@@ -358,8 +360,8 @@ namespace StarSalvager.Values
 
         public int GetTotalPatchPoints()
         {
-            int patchPointBaseCost = 100;
-            int patchPointCostIncrement = 10;
+            int patchPointBaseCost = Globals.PatchPointBaseCost;
+            int patchPointCostIncrement = Globals.PatchPointIncrementCost;
 
             int totalPatchPoints = 0;
             int gearsAmount = Gears;

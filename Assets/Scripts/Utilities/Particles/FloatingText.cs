@@ -141,7 +141,7 @@ namespace StarSalvager.Utilities.Particles
             if (FactoryManager.Instance == null)
                 return;
             
-            FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<FloatingText>()
+            FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<FloatingText>()
                 .Init(text, position, color);
         }
 

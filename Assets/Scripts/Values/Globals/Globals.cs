@@ -56,13 +56,19 @@ namespace StarSalvager.Values
         public static List<BlueprintInitialData> BlueprintInitialData => m_gameSettings.blueprintInitialData;
         public static List<FacilityInitialData> FacilityInitialData => m_gameSettings.facilityInitialData;
         public static List<FacilityInitialData> FacilityInitialBlueprintData => m_gameSettings.facilityInitialBlueprintData;
+        public static int PatchPointBaseCost => m_gameSettings.patchPointBaseCost;
+        public static int PatchPointIncrementCost => m_gameSettings.patchPointIncrementCost;
 
         public static int NumCurrentTrackedMissionMax => m_gameSettings.numCurrentTrackedMissionMax;
         public static bool OnlyGetWaveLootOnce => m_gameSettings.onlyGetWaveLootOnce;
         public static bool RecoveryOfDroneLocksHorizontalMovement => m_gameSettings.recoveryOfDroneLocksHorizontalMovement;
+        public static bool ShortcutJumpToAfter => m_gameSettings.shortcutJumpToAfter;
+
+        public static float BotEnterScreenMaxSize => m_gameSettings.botEnterScreenMaxSize;
+        public static float BotExitScreenMaxSize => m_gameSettings.botExitScreenMaxSize;
 
         //Values set by Game Settings - do not set values here
-        public static bool DisableTestingFeatures;
+        public static bool TestingFeatures;
         public static float AsteroidFallTimer;
 
         public static ORIENTATION Orientation
@@ -93,7 +99,7 @@ namespace StarSalvager.Values
         {
             m_gameSettings = gameSettings;
 
-            DisableTestingFeatures = m_gameSettings.disableTestingFeatures;
+            TestingFeatures = m_gameSettings.testingFeatures;
             AsteroidFallTimer = TimeForAsteroidToFallOneSquare / 2;
         }
         

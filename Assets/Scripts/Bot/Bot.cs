@@ -43,6 +43,16 @@ namespace StarSalvager
             }
         }
         
+        private struct WeldData
+        {
+            public IAttachable target;
+            public IAttachable attachedTo;
+
+            public DIRECTION Direction => target == null || attachedTo == null
+                ? DIRECTION.NULL
+                : (target.Coordinate - attachedTo.Coordinate).ToDirection();
+        }
+        
         public static Action<Bot, string> OnBotDied;
 
         public Action OnCombo;
@@ -97,6 +107,8 @@ namespace StarSalvager
         private float targetRotation;
 
         private bool _needToCheckMagnet;
+
+        private List<WeldData> _weldDatas;
 
         //============================================================================================================//
 
@@ -177,13 +189,20 @@ namespace StarSalvager
 
         private void LateUpdate()
         {
-            if (!_needToCheckMagnet) 
-                return;
+            if (_needToCheckMagnet)
+            {
 
-            if(IsMagnetFull()) OnFullMagnet?.Invoke();
-            
-            AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
-            _needToCheckMagnet = false;
+                if (IsMagnetFull())
+                    OnFullMagnet?.Invoke();
+
+                AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+                _needToCheckMagnet = false;
+            }
+
+            if (!_weldDatas.IsNullOrEmpty())
+            {
+                ShouldShowEffect(ref _weldDatas);
+            }
         }
 
         private void FixedUpdate()
@@ -258,6 +277,8 @@ namespace StarSalvager
 
         public void InitBot()
         {
+            _weldDatas = new List<WeldData>();
+            
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
             
             _isDestroyed = false;
@@ -287,6 +308,8 @@ namespace StarSalvager
         
         public void InitBot(IEnumerable<IAttachable> botAttachables)
         {
+            _weldDatas = new List<WeldData>();
+            
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
             
@@ -504,6 +527,8 @@ namespace StarSalvager
             if (Rotating)
                 return false;
 
+            IAttachable closestAttachable = null;
+
             switch (attachable)
             {
                 case Bit bit:
@@ -516,7 +541,7 @@ namespace StarSalvager
 
                     //------------------------------------------------------------------------------------------------//
 
-                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
                     legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
@@ -555,7 +580,7 @@ namespace StarSalvager
 
                             CheckForBonusShapeMatches();
 
-                            AudioController.PlaySound(SOUND.BIT_SNAP);
+                            AudioController.PlayBitConnectSound(bit.Type);
                             SessionDataProcessor.Instance.BitCollected(bit.Type);
                             break;
                         case BIT_TYPE.WHITE:
@@ -594,7 +619,7 @@ namespace StarSalvager
 
                     //----------------------------------------------------------------------------------------------------//
 
-                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
                     legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
@@ -637,7 +662,7 @@ namespace StarSalvager
 
                     //----------------------------------------------------------------------------------------------------//
 
-                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint, true);
+                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint, true);
                     
                     switch (closestAttachable)
                     {
@@ -666,6 +691,15 @@ namespace StarSalvager
                     AttachAttachableToExisting(enemyAttachable, closestAttachable, connectionDirection);
                     break;
                 }
+            }
+
+            if (!(attachable is EnemyAttachable) && (attachable is Bit bitCheck && bitCheck.Type != BIT_TYPE.WHITE))
+            {
+                _weldDatas.Add(new WeldData
+                {
+                    target = attachable,
+                    attachedTo = closestAttachable
+                });
             }
 
             return true;
@@ -922,8 +956,10 @@ namespace StarSalvager
         /// </summary>
         /// <param name="hitPosition"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public bool TryBounceAt(Vector2 hitPosition)
+        public bool TryBounceAt(Vector2 hitPosition, out bool destroyed)
         {
+            destroyed = false;
+            
             if(LevelManager.Instance.EndWaveState)
                 return false;
             
@@ -947,6 +983,10 @@ namespace StarSalvager
             }
             
             TryHitAt(closestAttachable, Globals.AsteroidDamage);
+
+            if (closestAttachable is IHealth iHealth && iHealth.CurrentHealth <= 0)
+                destroyed = true;
+            
             return true;
         }
 
@@ -967,8 +1007,8 @@ namespace StarSalvager
                     return false;
             }
 
-            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
-            explosion.transform.position = worldPosition;
+            /*var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
+            explosion.transform.position = worldPosition;*/
             
             TryHitAt(closestAttachable, damage);
 
@@ -1021,6 +1061,10 @@ namespace StarSalvager
 
             if (!attachableDestroyed)
                 return;
+            
+            CreateExplosionEffect(closestAttachable.transform.position);
+            GameUi.FlashBorder();
+
 
             //Things to do if the attachable is destroyed
             //--------------------------------------------------------------------------------------------------------//
@@ -1086,8 +1130,10 @@ namespace StarSalvager
             TryHitAt(attachable, 10000);
             AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
             
-            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
-            explosion.transform.position = attachable.transform.position;
+            /*var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
+            explosion.transform.position = attachable.transform.position;*/
+            
+            CreateExplosionEffect(attachable.transform.position);
 
             MissionProgressEventData missionProgressEventData;
 
@@ -1167,7 +1213,7 @@ namespace StarSalvager
             newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
-            newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
+            //newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
             
             //We want to avoid having the same element multiple times in the list
             if(!attachedBlocks.Contains(newAttachable)) 
@@ -1236,7 +1282,7 @@ namespace StarSalvager
             newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
-            newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
+            //newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
             
             //We want to avoid having the same element multiple times in the list
             if(!attachedBlocks.Contains(newAttachable)) 
@@ -1417,7 +1463,7 @@ namespace StarSalvager
         {
             switch (part.Type)
             {
-                case PART_TYPE.CORE when PROTO_autoRefineFuel && bit.Type == BIT_TYPE.RED:
+                //case PART_TYPE.CORE when PROTO_autoRefineFuel && bit.Type == BIT_TYPE.RED:
                 case PART_TYPE.REFINER when !part.Disabled:
                     break;
                 default:
@@ -2074,6 +2120,82 @@ namespace StarSalvager
         }
 
         #endregion //CheckForBonusShapeMatches
+
+        //Creating Effects
+        //====================================================================================================================//
+
+        private void ShouldShowEffect(ref List<WeldData> weldDatas)
+        {
+            bool IsBusy(IAttachable attachable)
+            {
+                switch (attachable)
+                {
+                    case ICanCombo iCanCombo when iCanCombo.IsBusy:
+                    case ICanDetach iCanDetach when iCanDetach.PendingDetach:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+            var copy = new List<WeldData>(weldDatas);
+            weldDatas = new List<WeldData>();
+
+            for (int i = copy.Count - 1; i >= 0; i--)
+            {
+                var data = copy[i];
+                var direction = data.Direction;
+
+                if (direction == DIRECTION.NULL)
+                    continue;
+                
+                if(!data.target.Attached || !data.attachedTo.Attached)
+                    continue;
+
+                if (IsBusy(data.target) || IsBusy(data.attachedTo))
+                    continue;
+
+                CreateWeldEffect(data.target.Coordinate, direction);
+            }
+        }
+
+        private void CreateWeldEffect(Vector2Int coordinate, DIRECTION direction)
+        {
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.WELD);
+            var effectTransform = effect.transform;
+            effectTransform.SetParent(transform);
+
+            var position = coordinate + (direction.Reflected().ToVector2() / 2f);
+            effectTransform.localPosition = transform.InverseTransformPoint(transform.position + (Vector3)position);
+
+            switch (direction)
+            {
+                case DIRECTION.LEFT:
+                case DIRECTION.RIGHT:
+                    effectTransform.eulerAngles = Vector3.forward * 90f;
+                    break;
+                case DIRECTION.UP:
+                case DIRECTION.DOWN:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+
+            var time = effect.GetComponent<ScaleColorSpriteAnimation>().AnimationTime;
+            
+            Destroy(effect, time);
+        }
+        
+        protected static void CreateExplosionEffect(Vector2 worldPosition)
+        {
+            var explosion = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreateEffect(EffectFactory.EFFECT.EXPLOSION);
+            LevelManager.Instance.ObstacleManager.AddToRoot(explosion);
+            explosion.transform.position = worldPosition;
+
+            var time = explosion.GetComponent<ParticleSystemGroupScaling>().AnimationTime;
+            
+            Destroy(explosion, time);
+        }
         
         //============================================================================================================//
 
@@ -3436,6 +3558,8 @@ namespace StarSalvager
 
         public void CustomRecycle(params object[] args)
         {
+            transform.localScale = Vector2.one;
+            
             foreach (var attachable in attachedBlocks)
             {
                 switch (attachable)

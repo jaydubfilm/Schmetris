@@ -424,7 +424,7 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
-        protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
+        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
 
         }
@@ -436,7 +436,7 @@ namespace StarSalvager.AI
         {
             ChangeHealth(-damage);
             
-            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
+            var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.EXPLOSION);
             explosion.transform.position = worldPosition;
             
             if(CurrentHealth > 0)
@@ -444,6 +444,7 @@ namespace StarSalvager.AI
 
             return true;
         }
+        
 
         //IHealth Functions
         //============================================================================================================//

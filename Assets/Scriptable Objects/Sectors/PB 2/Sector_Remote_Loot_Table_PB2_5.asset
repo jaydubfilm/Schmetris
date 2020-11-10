@@ -12,4 +12,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8e923fcaa0498f43bbe2c1941280fe4, type: 3}
   m_Name: Sector_Remote_Loot_Table_PB2_5
   m_EditorClassIdentifier: 
-  SectorRemoteDataLootTables: []
+  SectorRemoteDataLootTables:
+  - maxDrops: 1
+    RDSEndOfWaveLoot:
+    - rdsData: 4
+      type: 6
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 1
+      isAlwaysSpawn: 1
+  - maxDrops: 1
+    RDSEndOfWaveLoot:
+    - rdsData: 4
+      type: 0
+      amount: 0
+      level: 1
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 1
+      isAlwaysSpawn: 1
+  - maxDrops: 1
+    RDSEndOfWaveLoot:
+    - rdsData: 4
+      type: 25
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 1
+      isAlwaysSpawn: 1

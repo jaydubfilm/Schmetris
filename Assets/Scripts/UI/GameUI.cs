@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
@@ -13,6 +14,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
 {
@@ -259,8 +261,21 @@ namespace StarSalvager.UI
         [SerializeField, Required, ToggleGroup("useVignette")]
         private Color vignetteMaxColor;
 
+        //Other
+        //============================================================================================================//
+        [SerializeField, MinMaxSlider(0.2f, 2f, true), FoldoutGroup("Neon Border")] 
+        private Vector2 flashTimeRange;
+        [SerializeField, Required, FoldoutGroup("Neon Border")]
+        private Image borderGlow;
+        [SerializeField, Required, FoldoutGroup("Neon Border")]
+        private Image border;
+        [SerializeField, FoldoutGroup("Neon Border")]
+        private AnimationCurve flashCurve;
+        private bool _flashingBorder;
+
+
         #endregion //Properties
-        
+
         private Image[] glowImages;
         private float _alpha;
         private float speed = 4f;
@@ -632,6 +647,77 @@ namespace StarSalvager.UI
 
 
         //============================================================================================================//
+
+
+
+        [Button, DisableIf("_flashingBorder"), DisableInEditorMode, FoldoutGroup("Neon Border")]
+        public void FlashBorder()
+        {
+            if (_flashingBorder)
+                return;
+
+            _flashingBorder = true;
+
+            var time = Random.Range(flashTimeRange.x, flashTimeRange.y);
+            
+            StartCoroutine(BorderFlashingCoroutine(time));
+        }
+
+        /*public IEnumerator BorderFlashingCoroutine()
+        {
+            _flashingBorder = true;
+
+            float timer = 0.0f;
+            float startingAlpha = borderGlow.color.a;
+
+
+            while (timer <= 2.0f)
+            {
+                timer += Time.deltaTime;
+                if (timer <= 0.5f || (timer > 1.0f && timer <= 1.5f))
+                {
+                    borderGlow.color = new Color(borderGlow.color.r, borderGlow.color.g, borderGlow.color.b, Mathf.Lerp(startingAlpha, 0, 2 * (timer % 0.5f)));
+                }
+                else
+                {
+                    borderGlow.color = new Color(borderGlow.color.r, borderGlow.color.g, borderGlow.color.b, Mathf.Lerp(0, startingAlpha, 2 * (timer % 0.5f)));
+                }
+                yield return null;
+            }
+
+            borderGlow.color = new Color(borderGlow.color.r, borderGlow.color.g, borderGlow.color.b, startingAlpha);
+            _flashingBorder = false;
+
+            yield return null;
+        }*/
+
+        private IEnumerator BorderFlashingCoroutine(float time)
+        {
+            float t = 0f;
+            Color startBorderGlowColor = borderGlow.color;
+            Color endGlowColor = Color.clear;
+
+            Color startBorderColor = Color.white;
+            Color darkBorderColor = new Color(0.5f,0.5f,0.5f);
+
+            var mult = Random.Range(1f, 5f);
+
+            while (t / time < 1f)
+            {
+                var td = 1f - flashCurve.Evaluate((t / time) * mult);
+                borderGlow.color = Color.Lerp(startBorderGlowColor, endGlowColor, td);
+                border.color = Color.Lerp(startBorderColor, darkBorderColor, td);
+
+                t += Time.deltaTime;
+
+                yield return null;
+            }
+
+            borderGlow.color = startBorderGlowColor;
+            border.color = startBorderColor;
+
+            _flashingBorder = false;
+        }
 
         /*public void ShowBombIcon(bool state)
         {

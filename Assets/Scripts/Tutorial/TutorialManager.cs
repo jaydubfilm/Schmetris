@@ -63,6 +63,8 @@ namespace StarSalvager.Tutorial
         private bool _isReady;
         private MonoBehaviour mono;
 
+        private float _playerStartFuel;
+
         //Unity Functions
         //====================================================================================================================//
 
@@ -85,6 +87,9 @@ namespace StarSalvager.Tutorial
             
             mono = LevelManager.Instance;
             InitInput();
+
+            _playerStartFuel = PlayerDataManager.GetResource(BIT_TYPE.RED).liquid;
+            PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(30);
             
             _tutorialStepCoroutines = new List<IEnumerator>
             {
@@ -376,12 +381,15 @@ namespace StarSalvager.Tutorial
 
         private IEnumerator EndStepCoroutine()
         {
+            LevelManager.Instance.EndWaveState = true;
+            
             yield return new WaitForSeconds(5f);
             
             LevelManager.Instance.BotObject.SetColliderActive(false);
             
+            
             //TODO Bot needs to fly away
-            LevelManager.Instance.SetBotZoomOffScreen(true);
+            LevelManager.Instance.SetBotExitScreen(true);
             
             yield return mono.StartCoroutine(ShowDialogWindowCoroutine(false));
             yield return mono.StartCoroutine(SlideCharacterCoroutine(false));
@@ -401,9 +409,13 @@ namespace StarSalvager.Tutorial
             yield return new WaitForSeconds(1f);
 
             Globals.UsingTutorial = false;
-            LevelManager.Instance.SetBotZoomOffScreen(false);
+            LevelManager.Instance.SetBotExitScreen(false);
             LevelManager.Instance.BotObject.PROTO_GodMode = false;
+            LevelManager.Instance.EndWaveState = false;
 
+
+            PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(_playerStartFuel);
+            
             SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
 
             fadeImage.color = Color.clear;
@@ -500,8 +512,9 @@ namespace StarSalvager.Tutorial
 
 
             //Found: https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/manual/ActionBindings.html?_ga=2.228834015.217367981.1603324316-246071923.1589462724#showing-current-bindings
-            var key = Input.Actions.Default.Continue.GetBindingDisplayString();
-            pressAnyKeyText.text = $"{key} to continue...";
+            /*var key = Input.Actions.Default.Continue.GetBindingDisplayString(InputBinding.DisplayStringOptions.DontUseShortDisplayNames | InputBinding.DisplayStringOptions.DontOmitDevice);
+            pressAnyKeyText.text = $"{key} to continue...";*/
+            pressAnyKeyText.text = "Press Space to continue...";
         }
 
         public void DeInitInput()

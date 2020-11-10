@@ -51,8 +51,8 @@ namespace StarSalvager.UI
         [SerializeField, Required] 
         private IntroScene IntroScene;
 
-        [SerializeField, Required]
-        private SpriteRenderer partSprite;
+        /*[SerializeField, Required]
+        private SpriteRenderer partSprite;*/
         
         //Main Menu Properties
         //====================================================================================================================//
@@ -151,8 +151,7 @@ namespace StarSalvager.UI
 
         private void Start()
         {
-            partSprite.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.CORE).GetSprite(0);
-            
+            //partSprite.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.CORE).GetSprite(0);
             
             SetupWindows();
             SetupButtons();
@@ -170,7 +169,18 @@ namespace StarSalvager.UI
                 case WINDOW.SETTINGS:
                     break;
                 case WINDOW.ACCOUNT:
-                    SetupAccountWindow();
+                    if (CheckVersionConflict())
+                    {
+                        Alert.ShowAlert("Version Conflict", "This version is newer then your save file version. Save files will need to be deleted.", "Ok", () =>
+                        {
+                            Files.ClearRemoteData();
+                            SetupAccountWindow();
+                        });
+                    }
+                    else
+                    {
+                        SetupAccountWindow();
+                    }
                     break;
                 case WINDOW.ACCOUNT_MENU:
                     SetupAccountMenuWindow();
@@ -188,6 +198,24 @@ namespace StarSalvager.UI
         //Setup Account Window
         //------------------------------------------------------------------------------------------------------------//
         
+        private bool CheckVersionConflict()
+        {
+            for (var i = 0; i < accountButtons.Length; i++)
+            {
+                var hasAccount = Files.TryGetPlayerSaveData(i, out var accountData);
+
+                if (hasAccount)
+                {
+                    if (accountData.Version != Constants.VERSION)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         private void SetupAccountWindow()
         {
             for (var i = 0; i < accountButtons.Length; i++)
@@ -218,7 +246,7 @@ namespace StarSalvager.UI
         private void SetupAccountMenuWindow()
         {
             //TODO Get bool for current run
-            bool hasRun = PlayerDataManager.GethasRunStarted();
+            bool hasRun = PlayerDataManager.GetHasRunStarted();
             
             newRunButton.gameObject.SetActive(!hasRun);
             continueRunButton.gameObject.SetActive(hasRun);
@@ -375,7 +403,7 @@ namespace StarSalvager.UI
             tutorialButton.onClick.AddListener(() =>
             {
                 Globals.UsingTutorial = true;
-                Globals.CurrentSector = 4;
+                Globals.CurrentSector = FactoryManager.Instance.SectorRemoteData.Count - 1;
                 Globals.CurrentWave = 0;
                 
                 LeaveMenu(SceneLoader.LEVEL);
@@ -434,7 +462,7 @@ namespace StarSalvager.UI
             sfxVolumeSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);
             testingFeaturesToggle.onValueChanged.AddListener(toggle =>
             {
-                Globals.DisableTestingFeatures = toggle;
+                Globals.TestingFeatures = toggle;
             });
             
             settingsBackButton.onClick.AddListener(CloseOpenWindow);

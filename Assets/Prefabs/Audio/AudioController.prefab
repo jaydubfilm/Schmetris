@@ -773,6 +773,16 @@ MonoBehaviour:
     _clip: {fileID: 8300000, guid: 560ab6084ec5b7f46bf8db19ee50cde4, type: 3}
   - _sound: 37
     _clip: {fileID: 8300000, guid: b151e5ac18d68694fbaeea150c758b9e, type: 3}
+  - _sound: 38
+    _clip: {fileID: 0}
+  - _sound: 39
+    _clip: {fileID: 0}
+  - _sound: 40
+    _clip: {fileID: 0}
+  - _sound: 41
+    _clip: {fileID: 0}
+  - _sound: 42
+    _clip: {fileID: 0}
   musicMixerSnapshots:
   - {fileID: 24500006, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}
   - {fileID: -8389569066866548857, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}

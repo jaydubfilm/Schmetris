@@ -93,6 +93,8 @@ namespace StarSalvager.UI
         private LevelManager m_levelManager;
         private RectTransform m_canvasRect;
 
+        private Mission curMissionReminder = null;
+
         //====================================================================================================================//
         
         // Start is called before the first frame update
@@ -109,7 +111,7 @@ namespace StarSalvager.UI
 
         private void OnEnable()
         {
-            pauseWindowScrapyardButton.gameObject.SetActive(!Globals.DisableTestingFeatures);
+            pauseWindowScrapyardButton.gameObject.SetActive(Globals.TestingFeatures);
             InitScrollPositions();
         }
 
@@ -237,6 +239,11 @@ namespace StarSalvager.UI
                 m_isMissionReminderScrolling = false;
                 return;
             }
+
+            if (curMissionReminder != null)
+            {
+                scrollingMissionsText.text = curMissionReminder.missionName + curMissionReminder.GetMissionProgressString();
+            }
             
             _scrollPosition += Time.deltaTime * SCROLL_SPEED;
             SetPosition(_scrollPosition);
@@ -259,12 +266,14 @@ namespace StarSalvager.UI
                 Mission curMission = MissionManager.MissionsCurrentData
                     .CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList()[
                         Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList().Count)];
+                curMissionReminder = curMission;
 
                 missionReminderText = curMission.missionName + curMission.GetMissionProgressString();
             }
             else
             {
                 missionReminderText = OverrideText;
+                curMissionReminder = null;
             }
 
             var multiplier = string.IsNullOrEmpty(OverrideText) ? 1f : 0.2f;

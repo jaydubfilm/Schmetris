@@ -54,9 +54,9 @@ namespace StarSalvager.UI.Scrapyard
                         if (PlayerDataManager.GetMissionsCurrentData().CurrentTrackedMissions.All(m =>
                             m.missionName != currentMission.missionName))
                         {
-                            if (PlayerDataManager.GetMissionsCurrentData().CurrentTrackedMissions.Count >=
+                            /*if (PlayerDataManager.GetMissionsCurrentData().CurrentTrackedMissions.Count >=
                                 Globals.NumCurrentTrackedMissionMax)
-                                return;
+                                return;*/
 
                             Debug.Log("Track " + mission.missionName);
                             PlayerDataManager.GetMissionsCurrentData().AddTrackedMissions(currentMission);

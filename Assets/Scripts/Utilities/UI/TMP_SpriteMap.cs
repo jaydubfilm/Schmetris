@@ -53,6 +53,16 @@ namespace StarSalvager.Utilities.UI
             return $"<sprite=\"{GAME_PIECES}\" name=\"{GAME_PIECES}_{typeBase + levelOffset}\">";
         }
 
+        //Enemy Sprites
+        //====================================================================================================================//
+        
+        private const string ENEMIES = "enemy_ALLSPRITES_1_v1";
+
+        internal static string GetEnemySprite(string spriteName)
+        {
+            return string.IsNullOrEmpty(spriteName) ? string.Empty : $"<sprite=\"{ENEMIES}\" name=\"{spriteName}\">";
+        }
+
         //Inputs
         //====================================================================================================================//
 

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Game Settings
   m_EditorClassIdentifier: 
   allowAccessToUnlockedLaterWaves: 1
-  disableTestingFeatures: 1
-  bitsPushThroughParts: 0
+  testingFeatures: 0
+  bitsPushThroughParts: 1
   gridWidth: 100
   timeForAsteroidToFallOneSquare: 0.32
   DASTime: 0.15
@@ -89,12 +89,17 @@ MonoBehaviour:
   - numCells: 5
     numColours: 5
     gearsValue: 1000
+  patchPointBaseCost: 500
+  patchPointIncrementCost: 50
+  botEnterScreenMaxSize: 1.5
+  botExitScreenMaxSize: 2
   cameraUseInputMotion: 1
   cameraSmoothing: 1
   cameraOffsetBounds: 0.2
   numCurrentTrackedMissionMax: 3
   onlyGetWaveLootOnce: 1
   recoveryOfDroneLocksHorizontalMovement: 1
+  shortcutJumpToAfter: 0
   blueprintInitialData:
   - type: 4
     level: 0

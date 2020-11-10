@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace StarSalvager.Utilities.Animations
 {
-    [RequireComponent(typeof(SimpleAnimator))]
-    public class Explosion : MonoBehaviour, IRecycled
+    [System.Obsolete("Use particle System"), RequireComponent(typeof(SimpleAnimator))]
+    public class Explosion : MonoBehaviour//, IRecycled
     {
-        public bool IsRecycled { get; set; }
+        /*public bool IsRecycled { get; set; }
         
         private SimpleAnimator Animator => _animator ? _animator : _animator = GetComponent<SimpleAnimator>();
         private SimpleAnimator _animator;
@@ -34,7 +34,7 @@ namespace StarSalvager.Utilities.Animations
         }
 
         
-        //============================================================================================================//
+        //============================================================================================================//*/
         
     }
 }

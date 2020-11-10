@@ -338,6 +338,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   elementImage: {fileID: 142704079050276892}
   title: {fileID: 7525366320634381637}
+  buttonText: {fileID: 4868120294453963549}
   favouriteButton: {fileID: 5108093663158653450}
 --- !u!114 &142704079050276892
 MonoBehaviour:

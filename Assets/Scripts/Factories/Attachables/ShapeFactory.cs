@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Recycling;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.InputSystem.Interactions;
@@ -79,13 +81,13 @@ namespace StarSalvager.Factories
             return shape.GetComponent<T>();
         }
     
-        public T CreateObject<T>(SELECTION_TYPE selectionType, string identifier, int numRotations)
+        public T CreateObject<T>(SELECTION_TYPE selectionType, string identifier, int numRotations, List<List<BlockData>> exclusionList = null)
         {
             Shape shape;
             //FIXME
             if (selectionType == SELECTION_TYPE.CATEGORY)
             {
-                EditorShapeGeneratorData shapeData = GetRandomInCategory(identifier);
+                EditorShapeGeneratorData shapeData = GetRandomInCategory(identifier, exclusionList);
 
                 int totalBits = shapeData.BlockData.Count;
 
@@ -224,10 +226,53 @@ namespace StarSalvager.Factories
             return customShapeCategoryData[category];
         }
 
-        public EditorShapeGeneratorData GetRandomInCategory(string category)
+        public EditorShapeGeneratorData GetRandomInCategory(string category, List<List<BlockData>> exclusionList)
         {
-            List<EditorShapeGeneratorData> categoryData = GetCategoryData(category);
+            List<EditorShapeGeneratorData> categoryData = GetCategoryData(category).Where(s => !ShouldExclude(s, exclusionList)).ToList();
+            if (categoryData.Count == 0)
+            {
+                categoryData = GetCategoryData(category);
+            }
+
             return categoryData[Random.Range(0, categoryData.Count)];
+        }
+
+        private bool ShouldExclude(EditorShapeGeneratorData shapeData, List<List<BlockData>> exclusionList)
+        {
+            if (exclusionList == null)
+            {
+                return false;
+            }
+            
+            List<BlockData> shapeBlockData = shapeData.BlockData;
+
+            for (int i = 0; i < exclusionList.Count; i++)
+            {
+                List<BlockData> previousShapeBlockData = exclusionList[i];
+                if (previousShapeBlockData.Count != shapeBlockData.Count)
+                {
+                    continue;
+                }
+
+                bool isEqual = true;
+                for (int k = 0; k < previousShapeBlockData.Count; k++)
+                {
+                    if (!previousShapeBlockData[k].Equals(shapeBlockData[i]))
+                    {
+                        //They are not equal, we can break
+                        isEqual = false;
+                        break;
+                    }
+                }
+
+                if (isEqual)
+                {
+                    //Shape is equal to previous shape
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void UpdateCatgeoryData(string category)

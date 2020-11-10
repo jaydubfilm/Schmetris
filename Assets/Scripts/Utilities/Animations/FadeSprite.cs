@@ -96,7 +96,7 @@ namespace StarSalvager.Utilities.Animations
         
         public static FadeSprite Create(Transform parent, Vector3 localPosition, Color color, bool startActive = true)
         {
-            var fadeSprite = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<FadeSprite>();
+            var fadeSprite = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<FadeSprite>();
             fadeSprite.transform.SetParent(parent);
             fadeSprite.transform.localPosition = localPosition;
 

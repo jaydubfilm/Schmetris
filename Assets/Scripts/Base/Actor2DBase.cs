@@ -47,7 +47,7 @@ namespace StarSalvager
         //Actor2DBase Properties
         //====================================================================================================================//
         
-        public void SetSprite(Sprite sprite)
+        public virtual void SetSprite(Sprite sprite)
         {
             renderer.sprite = sprite;
         }

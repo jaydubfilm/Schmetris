@@ -9,14 +9,27 @@ namespace StarSalvager.Factories.Data
     [Serializable]
     public class FacilityRemoteData
     {
-        [FoldoutGroup("$displayName")]
+        [FoldoutGroup("$ScriptableHeaderName")]
         public FACILITY_TYPE type;
-        [FoldoutGroup("$displayName")]
+        [FoldoutGroup("$ScriptableHeaderName")]
         public string displayName;
-        [FoldoutGroup("$displayName")]
+        [FoldoutGroup("$ScriptableHeaderName")]
         public string displayDescription;
-        [FoldoutGroup("$displayName")]
+        [FoldoutGroup("$ScriptableHeaderName")]
+        public bool hideInFacilityMenu;
+        [FoldoutGroup("$ScriptableHeaderName")]
         public List<FacilityLevelData> levels;
+
+        public string ScriptableHeaderName()
+        {
+            string returnString = displayName;
+            if (hideInFacilityMenu)
+            {
+                returnString += $" HIDDEN IN FACILITY MENU";
+            }
+
+            return returnString;
+        }
     }
 }
 
