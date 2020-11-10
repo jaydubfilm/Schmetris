@@ -288,6 +288,7 @@ namespace StarSalvager
             RecoveredBotTowing = false;
 
             m_bonusShapes.Clear();
+            previousShapesInLevel.Clear();
             m_offGridMovingObstacles.Clear();
             m_bonusShapesSpawned = 0;
             m_bonusShapeTimer = 0;
@@ -1162,6 +1163,8 @@ namespace StarSalvager
 
         #region Bonus Shapes
 
+        List<List<BlockData>> previousShapesInLevel = new List<List<BlockData>>();
+
         private void SpawnBonusShape(SELECTION_TYPE selectionType, string shapeName, string category, int numRotations)
         {
             IObstacle newObstacle;
@@ -1179,6 +1182,29 @@ namespace StarSalvager
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(selectionType), selectionType, null);
+            }
+
+            if (newObstacle is Shape shape)
+            {
+                List<BlockData> newObstacleData = new List<BlockData>();
+                for (int i = 0; i < shape.AttachedBits.Count; i++)
+                {
+                    newObstacleData.Add(shape.AttachedBits[i].ToBlockData());
+                }
+                previousShapesInLevel.Add(newObstacleData);
+
+                for (int i = 0; i < previousShapesInLevel.Count; i++)
+                {
+                    if (previousShapesInLevel[i].Count != newObstacleData.Count)
+                    {
+                        continue;
+                    }
+
+                    for (int k = 0; k < previousShapesInLevel[i].Count; k++)
+                    {
+
+                    }
+                }
             }
 
             if (newObstacle is CollidableBase collidableBase)
