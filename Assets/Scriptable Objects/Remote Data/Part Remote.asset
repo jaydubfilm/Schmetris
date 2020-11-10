@@ -735,7 +735,7 @@ MonoBehaviour:
     burnType: 0
     levels:
     - unlockLevel: 3
-      health: 50
+      health: 80
       powerDraw: 0
       dataTest:
       - key: Capacity
@@ -755,7 +755,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 1
     - unlockLevel: 5
-      health: 75
+      health: 100
       powerDraw: 0
       dataTest:
       - key: Capacity
@@ -779,7 +779,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 1
     - unlockLevel: 8
-      health: 100
+      health: 120
       powerDraw: 0
       dataTest:
       - key: Capacity
@@ -815,7 +815,7 @@ MonoBehaviour:
     burnType: 0
     levels:
     - unlockLevel: 1
-      health: 50
+      health: 80
       powerDraw: 0
       dataTest:
       - key: Capacity
@@ -831,7 +831,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 40
     - unlockLevel: 3
-      health: 75
+      health: 100
       powerDraw: 0
       dataTest:
       - key: Capacity
@@ -859,7 +859,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 1
     - unlockLevel: 5
-      health: 100
+      health: 120
       powerDraw: 0
       dataTest:
       - key: Capacity
@@ -899,7 +899,7 @@ MonoBehaviour:
     burnType: 0
     levels:
     - unlockLevel: 2
-      health: 50
+      health: 80
       powerDraw: 0
       dataTest:
       - key: Capacity
@@ -919,7 +919,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 1
     - unlockLevel: 4
-      health: 75
+      health: 100
       powerDraw: 0
       dataTest:
       - key: Capacity
@@ -947,7 +947,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 1
     - unlockLevel: 6
-      health: 100
+      health: 120
       powerDraw: 0
       dataTest:
       - key: Capacity
@@ -983,7 +983,7 @@ MonoBehaviour:
     burnType: 0
     levels:
     - unlockLevel: 2
-      health: 50
+      health: 80
       powerDraw: 0
       dataTest:
       - key: Capacity
@@ -999,7 +999,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 1
     - unlockLevel: 4
-      health: 75
+      health: 100
       powerDraw: 0
       dataTest:
       - key: Capacity
@@ -1023,7 +1023,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 1
     - unlockLevel: 6
-      health: 100
+      health: 120
       powerDraw: 0
       dataTest:
       - key: Capacity
@@ -1055,7 +1055,7 @@ MonoBehaviour:
     burnType: 5
     levels:
     - unlockLevel: 3
-      health: 50
+      health: 80
       powerDraw: 0
       dataTest:
       - key: Capacity
@@ -1063,7 +1063,7 @@ MonoBehaviour:
       burnRate: 0
       cost: []
     - unlockLevel: 6
-      health: 75
+      health: 100
       powerDraw: 0
       dataTest:
       - key: Capacity
@@ -1071,7 +1071,7 @@ MonoBehaviour:
       burnRate: 0
       cost: []
     - unlockLevel: 9
-      health: 100
+      health: 120
       powerDraw: 0
       dataTest:
       - key: Capacity
@@ -1287,7 +1287,7 @@ MonoBehaviour:
     burnType: 0
     levels:
     - unlockLevel: 0
-      health: 80
+      health: 100
       powerDraw: 0.3
       dataTest: []
       burnRate: 0
@@ -1337,7 +1337,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 50
     - unlockLevel: 6
-      health: 100
+      health: 120
       powerDraw: 0.6
       dataTest:
       - key: Multiplier
@@ -1401,7 +1401,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 50
     - unlockLevel: 6
-      health: 100
+      health: 120
       powerDraw: 0.6
       dataTest:
       - key: Multiplier
@@ -1465,7 +1465,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 100
     - unlockLevel: 6
-      health: 100
+      health: 120
       powerDraw: 0.6
       dataTest:
       - key: Multiplier
@@ -1525,7 +1525,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 100
     - unlockLevel: 7
-      health: 100
+      health: 120
       powerDraw: 0.6
       dataTest:
       - key: Absorb
@@ -1585,7 +1585,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 150
     - unlockLevel: 7
-      health: 150
+      health: 120
       powerDraw: 0.3
       dataTest:
       - key: Radius
