@@ -40,8 +40,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 0
-      m_density: 0.35391927
-      m_spawnsPerScreenWidthPerMinute: 53
+      m_density: 0.2426918
+      m_spawnsPerScreenWidthPerMinute: 16
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 2
@@ -49,8 +49,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 2
-      m_density: 0.3048521
-      m_spawnsPerScreenWidthPerMinute: 33
+      m_density: 0.15682171
+      m_spawnsPerScreenWidthPerMinute: 4
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -58,8 +58,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.20929426
-      m_spawnsPerScreenWidthPerMinute: 10
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -143,8 +143,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 0
-      m_density: 0.35391927
-      m_spawnsPerScreenWidthPerMinute: 53
+      m_density: 0.2426918
+      m_spawnsPerScreenWidthPerMinute: 16
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 2
@@ -152,8 +152,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 2
-      m_density: 0.3048521
-      m_spawnsPerScreenWidthPerMinute: 33
+      m_density: 0.15682171
+      m_spawnsPerScreenWidthPerMinute: 4
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -161,8 +161,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.20929426
-      m_spawnsPerScreenWidthPerMinute: 10
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0

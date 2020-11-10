@@ -40,8 +40,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 0
-      m_density: 0.38104028
-      m_spawnsPerScreenWidthPerMinute: 67
+      m_density: 0.22166616
+      m_spawnsPerScreenWidthPerMinute: 12
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 2
@@ -49,8 +49,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 1
-      m_density: 0.20929426
-      m_spawnsPerScreenWidthPerMinute: 10
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 2
@@ -141,8 +141,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 0
-      m_density: 0.38104028
-      m_spawnsPerScreenWidthPerMinute: 67
+      m_density: 0.22166616
+      m_spawnsPerScreenWidthPerMinute: 12
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 2
@@ -150,8 +150,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 1
-      m_density: 0.20929426
-      m_spawnsPerScreenWidthPerMinute: 10
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 2
@@ -240,8 +240,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 0
-      m_density: 0.38104028
-      m_spawnsPerScreenWidthPerMinute: 67
+      m_density: 0.22166616
+      m_spawnsPerScreenWidthPerMinute: 12
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 2
@@ -249,8 +249,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 1
-      m_density: 0.20929426
-      m_spawnsPerScreenWidthPerMinute: 10
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 2
@@ -341,8 +341,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 0
-      m_density: 0.38104028
-      m_spawnsPerScreenWidthPerMinute: 67
+      m_density: 0.22166616
+      m_spawnsPerScreenWidthPerMinute: 12
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 2
@@ -350,8 +350,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 1
-      m_density: 0.20929426
-      m_spawnsPerScreenWidthPerMinute: 10
+      m_density: 0.18705235
+      m_spawnsPerScreenWidthPerMinute: 7
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 2
