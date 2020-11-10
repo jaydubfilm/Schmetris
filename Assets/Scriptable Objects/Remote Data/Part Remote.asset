@@ -409,7 +409,7 @@ MonoBehaviour:
       powerDraw: 0.02
       dataTest:
       - key: Damage
-        value: 6
+        value: 7
       - key: Cooldown
         value: 0.5
       - key: Projectile
