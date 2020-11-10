@@ -34,59 +34,53 @@ MonoBehaviour:
     - i1: -464838314
       i2: 1866823308
   - activeObject:
-      i1: -96205052
-      i2: 1831848149
+      i1: -464838314
+      i2: 1866823308
     list:
-    - i1: -96205052
-      i2: 1831848149
+    - i1: -464838314
+      i2: 1866823308
   - activeObject:
-      i1: -96205052
-      i2: 1831848149
+      i1: 661791289
+      i2: 1845069059
     list:
-    - i1: -96205052
-      i2: 1831848149
+    - i1: 661791289
+      i2: 1845069059
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -464838314
+      i2: 1866823308
     list:
-    - i1: -1
-      i2: -1
+    - i1: -464838314
+      i2: 1866823308
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -464838314
+      i2: 1866823308
     list:
-    - i1: -1
-      i2: -1
+    - i1: -464838314
+      i2: 1866823308
   - activeObject:
-      i1: -96205052
-      i2: 1831848149
+      i1: -464838314
+      i2: 1866823308
     list:
-    - i1: -96205052
-      i2: 1831848149
+    - i1: -464838314
+      i2: 1866823308
   - activeObject:
-      i1: 801110177
-      i2: 1296850351
+      i1: -464838314
+      i2: 1866823308
     list:
-    - i1: 801110177
-      i2: 1296850351
+    - i1: -464838314
+      i2: 1866823308
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -464838314
+      i2: 1866823308
     list:
-    - i1: -1
-      i2: -1
+    - i1: -464838314
+      i2: 1866823308
   - activeObject:
-      i1: -1
-      i2: -1
+      i1: -464838314
+      i2: 1866823308
     list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
+    - i1: -464838314
+      i2: 1866823308
   - activeObject:
       i1: -1
       i2: -1
@@ -103,40 +97,6 @@ MonoBehaviour:
       i1: -1
       i2: -1
     list:
-    - i1: -1
-      i2: -1
-    - i1: -1
-      i2: -1
-    - i1: -1
-      i2: -1
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
-  - activeObject:
-      i1: -1
-      i2: -1
-    list:
-    - i1: -1
-      i2: -1
     - i1: -1
       i2: -1
   - activeObject:
@@ -179,6 +139,44 @@ MonoBehaviour:
       i1: -1
       i2: -1
     list:
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
+    - i1: -1
+      i2: -1
+    - i1: -1
+      i2: -1
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
+  - activeObject:
+      i1: -1
+      i2: -1
+    list:
+    - i1: -1
+      i2: -1
     - i1: -1
       i2: -1
   LOCALIDINFILE_Hash4:
@@ -368,9 +366,6 @@ MonoBehaviour:
     FavString: []
     list:
     - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
     GUIDsActiveGameObject: 
@@ -394,32 +389,6 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
-    - {fileID: 0}
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
     - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
@@ -504,6 +473,34 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
     - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
