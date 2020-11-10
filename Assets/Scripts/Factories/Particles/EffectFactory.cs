@@ -17,7 +17,8 @@ namespace StarSalvager.Factories
             WELD,
             IMPACT,
             THRUST,
-            EXPLOSION
+            EXPLOSION,
+            MERGE
         }
         
         private readonly EffectProfileScriptableObject _effectProfileScriptableObject;
@@ -65,28 +66,28 @@ namespace StarSalvager.Factories
                     gameObject = CreateExplosion();
                     break;*/
                 case bool _ when type == typeof(TextMeshPro):
-                    gameObject = CreateLabel();
+                    gameObject = CreateObject<T>(_effectProfileScriptableObject.labelPrefab);//CreateLabel();
                     break;
                 case bool _ when type == typeof(FloatingText):
-                    gameObject = CreateFloatingText();
+                    gameObject = CreateObject<T>(_effectProfileScriptableObject.floatingTextPrefab);
                     break;
                 case bool _ when type == typeof(ConnectedSpriteObject):
-                    gameObject = CreateConnectedSprite();
+                    gameObject = CreateObject<T>(_effectProfileScriptableObject.magnetIconSpritePrefab);
                     break;
                 case bool _ when type == typeof(FadeSprite):
-                    gameObject = CreateFadeSprite();
+                    gameObject = CreateObject<T>(_effectProfileScriptableObject.fadeSpritePrefab);
                     break;
                 case bool _ when type == typeof(LineShrink):
-                    gameObject = CreateLineShrink();
+                    gameObject = CreateObject<T>(_effectProfileScriptableObject.lineShrinkPrefab);
                     break;
                 case bool _ when type == typeof(FlashSprite):
-                    gameObject = CreateAlert();
+                    gameObject = CreateObject<T>(_effectProfileScriptableObject.alertIconPrefab);
                     break;
                 case bool _ when type == typeof(Damage):
-                    gameObject = CreateDamage();
+                    gameObject = CreateObject<T>(_effectProfileScriptableObject.damageEffectPrefab);
                     break;
                 case bool _ when type == typeof(Shield):
-                    gameObject = CreateShield();
+                    gameObject = CreateObject<T>(_effectProfileScriptableObject.shieldPrototypePrefab);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -103,16 +104,19 @@ namespace StarSalvager.Factories
             switch (effect)
             {
                 case EFFECT.WELD:
-                    gameObject = CreateWeldEffect();
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.weldEffectPrefab);
                     break;
                 case EFFECT.IMPACT:
-                    gameObject = CreateImpactEffect();
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.impactEffectPrefab);
                     break;
                 case EFFECT.THRUST:
-                    gameObject = CreateThrustEffect();
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.thrustEffectPrefab);
                     break;
                 case EFFECT.EXPLOSION:
-                    gameObject = CreateExplosionEffect();
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.explosionEffectPrefab);
+                    break;
+                case EFFECT.MERGE:
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.mergeEffectPrefab);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(effect), effect, null);
@@ -121,34 +125,10 @@ namespace StarSalvager.Factories
             return gameObject;
         }
 
-        //Create Effects Prefabs
-        //====================================================================================================================//
-        
-        private GameObject CreateWeldEffect()
-        {
-            return Object.Instantiate(_effectProfileScriptableObject.weldEffectPrefab);
-        }
-        
-        private GameObject CreateImpactEffect()
-        {
-            return Object.Instantiate(_effectProfileScriptableObject.impactEffectPrefab);
-        }
-        
-        private GameObject CreateThrustEffect()
-        {
-            return Object.Instantiate(_effectProfileScriptableObject.thrustEffectPrefab);
-        }
-        
-        private GameObject CreateExplosionEffect()
-        {
-            return Object.Instantiate(_effectProfileScriptableObject.explosionEffectPrefab);
-        }
-        
-        
         //Create Specific Prefabs
         //============================================================================================================//
 
-        private GameObject CreateDamage()
+        /*private GameObject CreateDamage()
         {
             if (!Recycler.TryGrab<Damage>(out GameObject gameObject))
             {
@@ -176,7 +156,7 @@ namespace StarSalvager.Factories
                 gameObject = Object.Instantiate(_effectProfileScriptableObject.explosionPrefab);
             }
 
-            return gameObject;*/
+            return gameObject;#1#
         }
         
         private GameObject CreateAlert()
@@ -235,9 +215,19 @@ namespace StarSalvager.Factories
             }
 
             return gameObject;
-        }
+        }*/
 
         //====================================================================================================================//
+
+        private static GameObject CreateObject<T>(GameObject prefab)
+        {
+            if (!Recycler.TryGrab<T>(out GameObject gameObject))
+            {
+                gameObject = Object.Instantiate(prefab);
+            }
+
+            return gameObject;
+        }
         
     }
 }

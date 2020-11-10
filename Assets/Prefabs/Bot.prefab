@@ -49,8 +49,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TEST_ParticleSystem: {fileID: 3099671416270462534}
   TEST_ParticleSystemForceField: {fileID: 1806099405544202029}
-  TEST_RotSpeed: 500
-  TEST_MergeSpeed: 5
+  PROTO_autoRefineFuel: 1
+  TEST_MergeTime: 0.35
   TEST_DetachTime: 0.15
   TEST_SetDetachColor: 0
   MostRecentRotate: 0
