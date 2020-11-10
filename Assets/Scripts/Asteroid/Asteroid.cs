@@ -106,10 +106,8 @@ namespace StarSalvager
         public bool TryHitAt(Vector2 worldPosition, float damage)
         {
             ChangeHealth(-damage);
-            
-            var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
-            LevelManager.Instance.ObstacleManager.AddToRoot(explosion);
-            explosion.transform.position = worldPosition;
+
+            CreateExplosionEffect(worldPosition);
 
             return true;
         }
@@ -117,7 +115,7 @@ namespace StarSalvager
         //CollidableBase Functions
         //============================================================================================================//
 
-        protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
+        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
             //Debug.Break();
             
@@ -125,18 +123,18 @@ namespace StarSalvager
 
             if (bot != null)
             {
-                GameUI.Instance.FlashBorder();
+                
 
                 if (bot.Rotating)
                 {
                     //Recycler.Recycle<Asteroid>(this);
                     bot.Rotate(bot.MostRecentRotate.Invert());
                     AudioController.PlaySound(SOUND.ASTEROID_BASH);
-                    bot.TryHitAt(hitPoint, Globals.AsteroidDamage);
+                    bot.TryHitAt(worldHitPoint, Globals.AsteroidDamage);
                     return;
                 }
 
-                var dir = (hitPoint - (Vector2)transform.position).ToVector2Int();
+                var dir = (worldHitPoint - (Vector2)transform.position).ToVector2Int();
                 var direction = dir.ToDirection();
 
                 //If the player moves sideways into this asteroid, push them away, and damage them, to give them a chance
@@ -145,19 +143,21 @@ namespace StarSalvager
                     case DIRECTION.LEFT:
                     case DIRECTION.RIGHT:
                         //Only want to move the bot if we're legally allowed
-                        if (bot.TryBounceAt(hitPoint, out var destroyed))
+                        if (bot.TryBounceAt(worldHitPoint, out var destroyed))
                         {
                             InputManager.Instance.ForceMove(direction);
-                            
-                            if(destroyed) 
-                                CreateImpactEffect(hitPoint);
+
+                            if (destroyed)
+                            {
+                                CreateImpactEffect(worldHitPoint);
+                            }
                         }
 
                         break;
                     case DIRECTION.UP:
                     case DIRECTION.DOWN:
-                        if (bot.TryAsteroidDamageAt(hitPoint)) 
-                            CreateImpactEffect(hitPoint);
+                        if (bot.TryAsteroidDamageAt(worldHitPoint)) 
+                            CreateImpactEffect(worldHitPoint);
                         break;
                         //default:
                         //    throw new ArgumentOutOfRangeException();

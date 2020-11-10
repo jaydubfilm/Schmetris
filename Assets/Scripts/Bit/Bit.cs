@@ -150,7 +150,7 @@ namespace StarSalvager
         //Bit Functions
         //============================================================================================================//
 
-        protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
+        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
             //Debug.Break();
             
@@ -159,12 +159,12 @@ namespace StarSalvager
 
             if (bot.Rotating)
             {
-                this.Bounce(hitPoint, bot.MostRecentRotate);
+                this.Bounce(worldHitPoint, bot.MostRecentRotate);
                 AudioController.PlaySound(SOUND.BIT_BOUNCE);
                 return;
             }
 
-            var dir = (hitPoint - (Vector2)transform.position).ToVector2Int();
+            var dir = (worldHitPoint - (Vector2)transform.position).ToVector2Int();
             var direction = dir.ToDirection();
 
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,

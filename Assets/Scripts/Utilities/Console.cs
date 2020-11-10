@@ -83,7 +83,7 @@ namespace StarSalvager.Utilities
             string.Concat("spawn ", "bit ", "[BIT_TYPE] ",  "(x,y) ", "[uint]").ToUpper(),
             string.Concat("spawn ", "part ", "[PART_TYPE] ",  "(x,y) ", "[uint]").ToUpper(),
             string.Concat("spawn ", "component ", "[COMPONENT_TYPE] ",  "(x,y)").ToUpper(),
-            string.Concat("spawn ", "enemy ", "[enemy_name : use _ instead of space]").ToUpper(),
+            string.Concat("spawn ", "enemy ", "[enemy_name : use _ instead of space]", "[uint]").ToUpper(),
             "\n",
             string.Concat("unlock ", "sectorwave ", "[sector : int] ", "[wave : int]").ToUpper(),
             "\n",

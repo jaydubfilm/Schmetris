@@ -140,7 +140,7 @@ namespace StarSalvager.AI
         //Enemy Overrides
         //====================================================================================================================//
         
-        protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
+        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
             if (Disabled)
                 return;
@@ -159,7 +159,7 @@ namespace StarSalvager.AI
                 return;
             }
 
-            var dir = (hitPoint - (Vector2)transform.position).ToVector2Int();
+            var dir = (worldHitPoint - (Vector2)transform.position).ToVector2Int();
 
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
             //return the direction to shoot the ray
