@@ -235,25 +235,25 @@ MonoBehaviour:
     hideInFacilityMenu: 0
     levels:
     - level: 0
-      increaseAmount: 50
+      increaseAmount: 10
       patchCost: 1
       facilityPrerequisites:
       - facilityType: 9
         level: 0
     - level: 1
-      increaseAmount: 100
+      increaseAmount: 20
       patchCost: 1
       facilityPrerequisites: []
     - level: 2
-      increaseAmount: 150
+      increaseAmount: 30
       patchCost: 1
       facilityPrerequisites: []
     - level: 3
-      increaseAmount: 200
+      increaseAmount: 40
       patchCost: 1
       facilityPrerequisites: []
     - level: 4
-      increaseAmount: 250
+      increaseAmount: 50
       patchCost: 1
       facilityPrerequisites: []
   - type: 11
@@ -262,25 +262,25 @@ MonoBehaviour:
     hideInFacilityMenu: 0
     levels:
     - level: 0
-      increaseAmount: 50
+      increaseAmount: 10
       patchCost: 1
       facilityPrerequisites:
       - facilityType: 9
         level: 0
     - level: 1
-      increaseAmount: 100
+      increaseAmount: 20
       patchCost: 1
       facilityPrerequisites: []
     - level: 2
-      increaseAmount: 150
+      increaseAmount: 30
       patchCost: 1
       facilityPrerequisites: []
     - level: 3
-      increaseAmount: 200
+      increaseAmount: 40
       patchCost: 1
       facilityPrerequisites: []
     - level: 4
-      increaseAmount: 250
+      increaseAmount: 50
       patchCost: 1
       facilityPrerequisites: []
   - type: 12
@@ -289,25 +289,25 @@ MonoBehaviour:
     hideInFacilityMenu: 0
     levels:
     - level: 0
-      increaseAmount: 50
+      increaseAmount: 10
       patchCost: 1
       facilityPrerequisites:
       - facilityType: 9
         level: 1
     - level: 1
-      increaseAmount: 100
+      increaseAmount: 20
       patchCost: 1
       facilityPrerequisites: []
     - level: 2
-      increaseAmount: 150
+      increaseAmount: 30
       patchCost: 1
       facilityPrerequisites: []
     - level: 3
-      increaseAmount: 200
+      increaseAmount: 40
       patchCost: 1
       facilityPrerequisites: []
     - level: 4
-      increaseAmount: 250
+      increaseAmount: 50
       patchCost: 1
       facilityPrerequisites: []
   - type: 13
@@ -316,25 +316,25 @@ MonoBehaviour:
     hideInFacilityMenu: 0
     levels:
     - level: 0
-      increaseAmount: 50
+      increaseAmount: 10
       patchCost: 1
       facilityPrerequisites:
       - facilityType: 9
         level: 1
     - level: 1
-      increaseAmount: 100
+      increaseAmount: 20
       patchCost: 1
       facilityPrerequisites: []
     - level: 2
-      increaseAmount: 150
+      increaseAmount: 30
       patchCost: 1
       facilityPrerequisites: []
     - level: 3
-      increaseAmount: 200
+      increaseAmount: 40
       patchCost: 1
       facilityPrerequisites: []
     - level: 4
-      increaseAmount: 250
+      increaseAmount: 50
       patchCost: 1
       facilityPrerequisites: []
   - type: 14
@@ -343,25 +343,25 @@ MonoBehaviour:
     hideInFacilityMenu: 0
     levels:
     - level: 0
-      increaseAmount: 50
+      increaseAmount: 10
       patchCost: 1
       facilityPrerequisites:
       - facilityType: 9
         level: 1
     - level: 1
-      increaseAmount: 100
+      increaseAmount: 20
       patchCost: 1
       facilityPrerequisites: []
     - level: 2
-      increaseAmount: 150
+      increaseAmount: 30
       patchCost: 1
       facilityPrerequisites: []
     - level: 3
-      increaseAmount: 200
+      increaseAmount: 40
       patchCost: 1
       facilityPrerequisites: []
     - level: 4
-      increaseAmount: 250
+      increaseAmount: 50
       patchCost: 1
       facilityPrerequisites: []
   - type: 15

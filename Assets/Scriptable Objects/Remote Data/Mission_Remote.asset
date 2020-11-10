@@ -13,15 +13,96 @@ MonoBehaviour:
   m_Name: Mission_Remote
   m_EditorClassIdentifier: 
   m_missionRemoteData:
+  - MissionID: 42d75534-6254-42b0-8740-597da26037cb
+    MissionType: 9
+    MissionName: Complete any wave
+    MissionDescription: Completet any wave!
+    MissionUnlockParameters: []
+    AmountNeeded: 0
+    AnyResourceType: 0
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 1
+    BonusShapeNumber: 0
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+    maxDrops: 1
+    RDSLoot:
+    - rdsData: 6
+      type: 0
+      amount: 0
+      level: 0
+      probability: 0
+      isGearRange: 0
+      gearValue: 150
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+  - MissionID: 3581e56a-ab74-40b1-9546-22f57c92efef
+    MissionType: 3
+    MissionName: Match 3 bits
+    MissionDescription: ' Match 3 bits'
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      MissionUnlockName: 42d75534-6254-42b0-8740-597da26037cb
+    AmountNeeded: 1
+    AnyResourceType: 1
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 1
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    BonusShapeNumber: 0
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+    maxDrops: 1
+    RDSLoot:
+    - rdsData: 6
+      type: 0
+      amount: 0
+      level: 0
+      probability: 0
+      isGearRange: 0
+      gearValue: 15
+      gearDropRange: {x: 15, y: 15}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
   - MissionID: 1e95753c-4321-47a3-9992-6e83534294c8
     MissionType: 1
-    MissionName: Collect 20 greyscale bits
-    MissionDescription: Collect 20 greyscale bits by sticking them to your bot.
+    MissionName: Collect 10 greyscale bits
+    MissionDescription: Collect 10 greyscale bits by sticking them to your bot.
     MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
+    - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      MissionUnlockName: 
-    AmountNeeded: 20
+      MissionUnlockName: 42d75534-6254-42b0-8740-597da26037cb
+    AmountNeeded: 10
     AnyResourceType: 0
     ResourceType: 3
     AnyComponentType: 0
@@ -83,45 +164,6 @@ MonoBehaviour:
     FlightLength: 90
     IsFromEnemyLoot: 0
     maxDrops: 0
-    RDSLoot:
-    - rdsData: 6
-      type: 0
-      amount: 0
-      level: 0
-      probability: 0
-      isGearRange: 0
-      gearValue: 15
-      gearDropRange: {x: 15, y: 15}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-  - MissionID: 3581e56a-ab74-40b1-9546-22f57c92efef
-    MissionType: 3
-    MissionName: Match 3 bits
-    MissionDescription: ' Match 3 bits'
-    MissionUnlockParameters: []
-    AmountNeeded: 1
-    AnyResourceType: 1
-    ResourceType: 0
-    AnyComponentType: 0
-    ComponentType: 0
-    ComboLevel: 1
-    IsAdvancedCombo: 0
-    AnyEnemyType: 0
-    EnemyType: 
-    SectorNumber: 0
-    WaveNumber: 0
-    BonusShapeNumber: 0
-    PartType: 0
-    PartLevel: 0
-    FacilityType: 0
-    FacilityLevel: 0
-    PlayerLevel: 0
-    ThroughPart: 0
-    OrphanBit: 0
-    HasCombos: 0
-    FlightLength: 0
-    IsFromEnemyLoot: 0
-    maxDrops: 1
     RDSLoot:
     - rdsData: 6
       type: 0
