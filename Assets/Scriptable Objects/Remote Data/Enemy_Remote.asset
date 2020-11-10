@@ -46,7 +46,7 @@ MonoBehaviour:
     m_name: Parasite
     m_health: 20
     m_movementSpeed: 6
-    m_attackDamage: 1
+    m_attackDamage: 0.5
     m_rateOfFire: 2
     m_dimensions: {x: 1, y: 1}
     m_maxDrops: 4
@@ -83,9 +83,9 @@ MonoBehaviour:
       isAlwaysSpawn: 1
   - m_enemyType: f3c96622-609f-498c-be89-8cc575e46fe0
     m_name: Ball Head
-    m_health: 50
+    m_health: 35
     m_movementSpeed: 3
-    m_attackDamage: 20
+    m_attackDamage: 15
     m_rateOfFire: 0.4
     m_dimensions: {x: 1, y: 2}
     m_maxDrops: 5

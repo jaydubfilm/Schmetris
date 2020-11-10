@@ -24,7 +24,7 @@ MonoBehaviour:
     burnType: 4
     levels:
     - unlockLevel: 0
-      health: 20
+      health: 30
       powerDraw: 0
       dataTest:
       - key: Magnet
@@ -38,7 +38,7 @@ MonoBehaviour:
       burnRate: 1
       cost: []
     - unlockLevel: 0
-      health: 50
+      health: 60
       powerDraw: 0
       dataTest:
       - key: Magnet
@@ -334,7 +334,7 @@ MonoBehaviour:
     burnType: 0
     levels:
     - unlockLevel: 0
-      health: 150
+      health: 200
       powerDraw: 0
       dataTest: []
       burnRate: 0
@@ -348,7 +348,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 2
     - unlockLevel: 0
-      health: 300
+      health: 400
       powerDraw: 0
       dataTest: []
       burnRate: 0
@@ -374,7 +374,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 1
     - unlockLevel: 0
-      health: 500
+      health: 600
       powerDraw: 0
       dataTest: []
       burnRate: 0
