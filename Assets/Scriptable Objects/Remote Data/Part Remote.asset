@@ -179,8 +179,8 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 5
-      burnRate: 0.1
+        value: 6
+      burnRate: 1
       cost:
       - resourceType: 0
         type: 3
@@ -207,8 +207,8 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 8
-      burnRate: 0.17
+        value: 10
+      burnRate: 2
       cost:
       - resourceType: 0
         type: 3
