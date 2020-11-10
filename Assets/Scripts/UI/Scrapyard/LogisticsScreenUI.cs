@@ -32,6 +32,8 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField]
         private TMP_Text patchPointsText;
+        [SerializeField]
+        private TMP_Text patchPointProgressText;
         
 
         /*//TODO Need to add Resources
@@ -210,7 +212,9 @@ namespace StarSalvager.UI.Scrapyard
 
         private void UpdatePatchPoints()
         {
+            var (current, required) = PlayerDataManager.GetPatchPointProgress();
             patchPointsText.text = $"{PlayerDataManager.GetAvailablePatchPoints()}";
+            patchPointProgressText.text = $"Next Patch Point: {current}/{required}";
         }
 
         //====================================================================================================================//

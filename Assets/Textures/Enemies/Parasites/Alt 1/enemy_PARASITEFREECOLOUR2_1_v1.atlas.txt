@@ -1,0 +1,97 @@
+
+enemy_PARASITEFREECOLOUR2_1_v1.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Enemy1_ver3-animation2_00
+  rotate: false
+  xy: 177, 318
+  size: 168, 172
+  orig: 175, 193
+  offset: 4, 17
+  index: -1
+Enemy1_ver3-animation2_12
+  rotate: false
+  xy: 177, 318
+  size: 168, 172
+  orig: 175, 193
+  offset: 4, 17
+  index: -1
+Enemy1_ver3-animation2_01
+  rotate: false
+  xy: 177, 492
+  size: 170, 173
+  orig: 175, 193
+  offset: 3, 18
+  index: -1
+Enemy1_ver3-animation2_02
+  rotate: false
+  xy: 2, 490
+  size: 173, 175
+  orig: 175, 193
+  offset: 1, 17
+  index: -1
+Enemy1_ver3-animation2_03
+  rotate: false
+  xy: 511, 343
+  size: 147, 156
+  orig: 175, 193
+  offset: 15, 23
+  index: -1
+Enemy1_ver3-animation2_04
+  rotate: false
+  xy: 502, 163
+  size: 147, 157
+  orig: 175, 193
+  offset: 15, 22
+  index: -1
+Enemy1_ver3-animation2_05
+  rotate: false
+  xy: 154, 157
+  size: 147, 158
+  orig: 175, 193
+  offset: 15, 21
+  index: -1
+Enemy1_ver3-animation2_06
+  rotate: false
+  xy: 2, 156
+  size: 150, 159
+  orig: 175, 193
+  offset: 13, 21
+  index: -1
+Enemy1_ver3-animation2_07
+  rotate: false
+  xy: 347, 158
+  size: 153, 162
+  orig: 175, 193
+  offset: 12, 20
+  index: -1
+Enemy1_ver3-animation2_08
+  rotate: false
+  xy: 509, 501
+  size: 156, 164
+  orig: 175, 193
+  offset: 10, 19
+  index: -1
+Enemy1_ver3-animation2_09
+  rotate: false
+  xy: 349, 499
+  size: 158, 166
+  orig: 175, 193
+  offset: 9, 19
+  index: -1
+Enemy1_ver3-animation2_10
+  rotate: false
+  xy: 347, 322
+  size: 162, 168
+  orig: 175, 193
+  offset: 7, 18
+  index: -1
+Enemy1_ver3-animation2_11
+  rotate: false
+  xy: 2, 317
+  size: 164, 171
+  orig: 175, 193
+  offset: 6, 17
+  index: -1

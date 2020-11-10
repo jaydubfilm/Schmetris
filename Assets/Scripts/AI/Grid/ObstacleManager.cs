@@ -467,6 +467,8 @@ namespace StarSalvager
                             m_obstacles[i].IsRegistered = false;
                             m_obstacles[i] = null;
                             break;
+                        case MoveWithObstacles _:
+                            break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                     }
