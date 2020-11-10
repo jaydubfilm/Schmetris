@@ -28,6 +28,10 @@ MonoBehaviour:
     type: 3}
   mergeEffectPrefab: {fileID: 3807654637103170005, guid: 72eb08c420eb02b4fadf0baccdc1dfdf,
     type: 3}
+  lineRendererPrefab: {fileID: 436994220410373860, guid: 7ba59dd502de9ac42baa1ce1e3882565,
+    type: 3}
+  trailRendererPrefab: {fileID: 8521025257017661423, guid: 939fd1655fe07734abf182330fdf87cb,
+    type: 3}
   labelPrefab: {fileID: 9099319384489682599, guid: 8a229f5344f29bc42a484ccc31bdec75,
     type: 3}
   floatingTextPrefab: {fileID: 1209333815536603345, guid: 7431c86c30856054c909791de5d76629,
@@ -37,6 +41,4 @@ MonoBehaviour:
   fadeSpritePrefab: {fileID: 2815963387748468045, guid: c8cdc129b907c3c41938631740bde5cc,
     type: 3}
   lineShrinkPrefab: {fileID: 3714246245670551338, guid: c7ec7772b105e4745bdae2298a512216,
-    type: 3}
-  lineRendererPrefab: {fileID: 436994220410373860, guid: 7ba59dd502de9ac42baa1ce1e3882565,
     type: 3}

@@ -37,6 +37,12 @@ namespace StarSalvager.ScriptableObjects
         
         [SerializeField, Required, BoxGroup("Effects")]
         public GameObject mergeEffectPrefab;
+        
+        [SerializeField, Required, BoxGroup("Effects")]
+        public GameObject lineRendererPrefab;
+        
+        [SerializeField, Required, BoxGroup("Effects")]
+        public GameObject trailRendererPrefab;
 
         //Particle Effect Prefabs
         //====================================================================================================================//
@@ -54,10 +60,6 @@ namespace StarSalvager.ScriptableObjects
         
         [SerializeField, Required, BoxGroup("Particles")]
         public GameObject lineShrinkPrefab;
-        
-        [SerializeField, Required, BoxGroup("Particles")]
-        public GameObject lineRendererPrefab;
-
 
         //====================================================================================================================//
         
