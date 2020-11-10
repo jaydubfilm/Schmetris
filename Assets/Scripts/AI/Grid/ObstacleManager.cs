@@ -1172,7 +1172,7 @@ namespace StarSalvager
             {
                 case SELECTION_TYPE.CATEGORY:
                     newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>()
-                        .CreateObject<IObstacle>(selectionType, category, numRotations);
+                        .CreateObject<IObstacle>(selectionType, category, numRotations, previousShapesInLevel);
                     break;
 
                 case SELECTION_TYPE.SHAPE:
@@ -1184,6 +1184,9 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(selectionType), selectionType, null);
             }
 
+            if (newObstacle is CollidableBase collidableBase)
+                collidableBase.SetSortingLayer(Actor2DBase.OVERLAY_LAYER, 100);
+
             if (newObstacle is Shape shape)
             {
                 List<BlockData> newObstacleData = new List<BlockData>();
@@ -1192,26 +1195,8 @@ namespace StarSalvager
                     newObstacleData.Add(shape.AttachedBits[i].ToBlockData());
                 }
                 previousShapesInLevel.Add(newObstacleData);
-
-                for (int i = 0; i < previousShapesInLevel.Count; i++)
-                {
-                    if (previousShapesInLevel[i].Count != newObstacleData.Count)
-                    {
-                        continue;
-                    }
-
-                    for (int k = 0; k < previousShapesInLevel[i].Count; k++)
-                    {
-
-                    }
-                }
-            }
-
-            if (newObstacle is CollidableBase collidableBase)
-                collidableBase.SetSortingLayer(Actor2DBase.OVERLAY_LAYER, 100);
-
-            if (newObstacle is Shape shape)
                 shape.FlashBits();
+            }
 
             newObstacle.gameObject.name += "_BonusShape";
 
