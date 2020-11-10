@@ -100,6 +100,33 @@ namespace StarSalvager.Audio
         //Static functions
         //============================================================================================================//
 
+        public static void PlayBitConnectSound(BIT_TYPE bitType, float volume = 1f, float pitch = 1f)
+        {
+            SOUND sound;
+            switch (bitType)
+            {
+                case BIT_TYPE.BLUE:
+                    sound = SOUND.BIT_SNAP_BLUE;
+                    break;
+                case BIT_TYPE.GREEN:
+                    sound = SOUND.BIT_SNAP_GREEN;
+                    break;
+                case BIT_TYPE.GREY:
+                    sound = SOUND.BIT_SNAP_GREY;
+                    break;
+                case BIT_TYPE.RED:
+                    sound = SOUND.BIT_SNAP_RED;
+                    break;
+                case BIT_TYPE.YELLOW:
+                    sound = SOUND.BIT_SNAP_YELLOW;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
+            }
+
+            PlaySound(sound, volume, pitch);
+        }
+
         /// <summary>
         /// Volume should be any value between 0.0 - 1.0. Pitch should be between 0.01 - 3.0
         /// </summary>

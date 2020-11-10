@@ -580,7 +580,7 @@ namespace StarSalvager
 
                             CheckForBonusShapeMatches();
 
-                            AudioController.PlaySound(SOUND.BIT_SNAP);
+                            AudioController.PlayBitConnectSound(bit.Type);
                             SessionDataProcessor.Instance.BitCollected(bit.Type);
                             break;
                         case BIT_TYPE.WHITE:
