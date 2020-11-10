@@ -3,6 +3,7 @@ using StarSalvager.Factories.Data;
 using System;
 using Recycling;
 using StarSalvager.Cameras;
+using StarSalvager.Factories;
 using StarSalvager.Utilities;
 
 namespace StarSalvager.AI
@@ -19,6 +20,8 @@ namespace StarSalvager.AI
         private bool _hasRange;
         private float _lifeTime;
         private CollidableBase _target;
+
+        private TrailRenderer _trailRenderer;
 
         //============================================================================================================//
 
@@ -48,7 +51,8 @@ namespace StarSalvager.AI
             string collisionTag,
             float damage,
             float rangeBoost,
-            Vector2 direction, Vector2 velocity)
+            Vector2 direction, 
+            Vector2 velocity)
         {
             ProjectileData = profileData;
 
@@ -68,6 +72,11 @@ namespace StarSalvager.AI
 
                 //Calculates the time it will take to travel the distance
                 _lifeTime = ProjectileData.ProjectileRange * rangeBoost / ProjectileData.ProjectileSpeed;
+            }
+
+            if (profileData.UseTrail)
+            {
+                CreateTrailEffect(ProjectileData.Color);
             }
         }
 
@@ -164,6 +173,31 @@ namespace StarSalvager.AI
             renderer.flipY = state;
         }
 
+
+        //====================================================================================================================//
+
+        private void CreateTrailEffect(Color color)
+        {
+            var endColor = color;
+            endColor.a = 0f;
+                
+            if (!_trailRenderer)
+            {
+                _trailRenderer = FactoryManager.Instance
+                    .GetFactory<EffectFactory>()
+                    .CreateEffect(EffectFactory.EFFECT.TRAIL)
+                    .GetComponent<TrailRenderer>();
+                
+                _trailRenderer.transform.SetParent(transform, false);
+            }
+
+            _trailRenderer.startColor = color;
+            _trailRenderer.endColor = endColor;
+            _trailRenderer.widthMultiplier = ((BoxCollider2D) collider).size.x / 2f;
+
+            _trailRenderer.emitting = true;
+        }
+
         //============================================================================================================//
 
         public void CustomRecycle(params object[] args)
@@ -174,6 +208,10 @@ namespace StarSalvager.AI
             _lifeTime = 0f;
 
             renderer.flipX = renderer.flipY = false;
+
+            if (_trailRenderer)
+                _trailRenderer.emitting = false;
+
         }
     }
 }
