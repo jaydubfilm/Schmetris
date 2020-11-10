@@ -2,8 +2,8 @@
 {
     public enum SOUND
     {
-        BIT_SNAP,
-        BIT_LVL1MERGE,
+        BIT_SNAP = 0,
+        BIT_LVL1MERGE = 1,
         BIT_LVL2MERGE,
         BIT_LVL3MERGE,
         BIT_LVL4MERGE,
@@ -39,7 +39,13 @@
         BALLHEAD_FIRE,
         MOSQUITO_FIRE,
         BIT_REFINED,
-        BOT_ROTATE,
+        BOT_ROTATE = 37,
+        
+        BIT_SNAP_BLUE,
+        BIT_SNAP_GREEN,
+        BIT_SNAP_GREY,
+        BIT_SNAP_RED,
+        BIT_SNAP_YELLOW,
     }
 }
 
