@@ -73,8 +73,8 @@ namespace StarSalvager
         //====================================================================================================================//
         [SerializeField, BoxGroup("PROTOTYPE")]
         private bool PROTO_autoRefineFuel = true;
-        [SerializeField, Range(0.5f, 10f), BoxGroup("PROTOTYPE")]
-        public float TEST_MergeSpeed = 2f;
+        [SerializeField, Range(0.1f, 2f), BoxGroup("PROTOTYPE"), SuffixLabel("Sec", true)]
+        public float TEST_MergeTime = 0.6f;
         
         [SerializeField, BoxGroup("PROTOTYPE/Magnet")]
         public float TEST_DetachTime = 1f;
@@ -2012,7 +2012,7 @@ namespace StarSalvager
             bool hasCombos = false;
             
             StartCoroutine(ShiftInDirectionCoroutine(toShift, 
-                TEST_MergeSpeed,
+                TEST_MergeTime,
                 () =>
             {
                 //TODO May want to consider that Enemies may still attack while being shifted
@@ -2185,7 +2185,7 @@ namespace StarSalvager
             Destroy(effect, time);
         }
         
-        protected static void CreateExplosionEffect(Vector2 worldPosition)
+        private void CreateExplosionEffect(Vector2 worldPosition)
         {
             var explosion = FactoryManager.Instance.GetFactory<EffectFactory>()
                 .CreateEffect(EffectFactory.EFFECT.EXPLOSION);
@@ -2195,6 +2195,25 @@ namespace StarSalvager
             var time = explosion.GetComponent<ParticleSystemGroupScaling>().AnimationTime;
             
             Destroy(explosion, time);
+        }
+
+        private void CreateMergeEffect(Transform parent, float animationTime, Color color)
+        {
+            var startColor = color;
+            startColor.a = 0f;
+            var newTime = animationTime * 2f;
+
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.MERGE);
+            var animationComponent = effect.GetComponent<ScaleColorSpriteAnimation>();
+            
+            animationComponent.SetAnimationTime(newTime);
+            animationComponent.SetAllElementColors(startColor, color);
+            
+            
+            effect.transform.SetParent(parent, false);
+            
+            
+            Destroy(effect, newTime);
         }
         
         //============================================================================================================//
@@ -2426,7 +2445,7 @@ namespace StarSalvager
                 movingBits,
                 closestToCore,
                 orphans.ToArray(),
-                TEST_MergeSpeed,
+                TEST_MergeTime,
                 () =>
                 {
                     var gearsToAdd = Mathf.RoundToInt(comboData.points * gearMultiplier);
@@ -3252,23 +3271,36 @@ namespace StarSalvager
         /// <param name="movingComboBlocks"></param>
         /// <param name="target"></param>
         /// <param name="orphans"></param>
-        /// <param name="speed"></param>
+        /// <param name="seconds"></param>
         /// <param name="onFinishedCallback"></param>
         /// <returns></returns>
         private IEnumerator MoveComboPiecesCoroutine(ICanCombo[] movingComboBlocks,
             ICanCombo target,
             IReadOnlyList<OrphanMoveData> orphans,
-            float speed,
+            float seconds,
             Action onFinishedCallback)
         {
             target.IsBusy = true;
             
             //Prepare Bits to be moved
             //--------------------------------------------------------------------------------------------------------//
+
+            var mergeColor = Color.white;
+
+            if (target is Bit bitColor)
+            {
+                mergeColor = FactoryManager.Instance.BitProfileData.GetProfile(bitColor.Type).color;
+            }
+
+
+            CreateMergeEffect(target.transform, seconds, mergeColor);
+            foreach (var movingComboBlock in movingComboBlocks)
+            {
+                CreateMergeEffect(movingComboBlock.transform, seconds, mergeColor);
+            }
             
             foreach (var canCombo in movingComboBlocks)
             {
-                
                 //We need to disable the collider otherwise they can collide while moving
                 //I'm also assuming that if we've confirmed the upgrade, and it cannot be cancelled
                 attachedBlocks.Remove(canCombo as IAttachable);
@@ -3314,8 +3346,9 @@ namespace StarSalvager
 
 
             //Move bits towards target
-            while (t <= 1f)
+            while (t / seconds <= 1f)
             {
+                var td = t / seconds;
                 //Move the main blocks related to the upgrading
                 //----------------------------------------------------------------------------------------------------//
                 
@@ -3331,7 +3364,7 @@ namespace StarSalvager
                     
                     //Lerp to destination based on the starting position NOT the current position
                     bt.localPosition =
-                        Vector2.Lerp(bitTransformPositions[i], targetTransform.localPosition, t);
+                        Vector2.Lerp(bitTransformPositions[i], targetTransform.localPosition, td);
                     
                     SSDebug.DrawArrow(bt.position,targetTransform.position, Color.green);
                 }
@@ -3346,14 +3379,14 @@ namespace StarSalvager
                     //Debug.Log($"Start {bitTransform.position} End {position}");
 
                     bitTransform.localPosition = Vector2.Lerp(orphanTransformPositions[i],
-                        orphanTargetPositions[i], t);
+                        orphanTargetPositions[i], td);
                     
                     SSDebug.DrawArrow(bitTransform.position,transform.TransformPoint(orphanTargetPositions[i]), Color.red);
                 }
                 
                 //----------------------------------------------------------------------------------------------------//
 
-                t += Time.deltaTime * speed;
+                t += Time.deltaTime;
 
                 yield return null;
             }
@@ -3412,17 +3445,11 @@ namespace StarSalvager
         /// </summary>
         /// <param name="toMove"></param>
         /// <param name="direction"></param>
-        /// <param name="speed"></param>
+        /// <param name="seconds"></param>
         /// <param name="OnFinishedCallback"></param>
         /// <returns></returns>
-        private IEnumerator ShiftInDirectionCoroutine(IReadOnlyList<ShiftData> toMove, float speed, Action OnFinishedCallback)
+        private IEnumerator ShiftInDirectionCoroutine(IReadOnlyList<ShiftData> toMove, float seconds, Action OnFinishedCallback)
         {
-            //var dir = direction.ToVector2Int();
-            /*var transforms = toMove.Select(x => x.transform).ToArray();
-            var startPositions = transforms.Select(x => x.localPosition).ToArray();
-            var targetPositions = toMove.Select(o =>
-                transform.InverseTransformPoint((Vector2) transform.position +
-                                                ((Vector2) o.Coordinate + dir)  * Constants.gridCellSize)).ToArray();*/
             var count = toMove.Count;
             
             var transforms = new Transform[count];
@@ -3460,17 +3487,19 @@ namespace StarSalvager
 
             var t = 0f;
 
-            while (t < 1f)
+            while (t / seconds < 1f)
             {
+                var td = t / seconds;
+                
                 for (var i = 0; i < transforms.Length; i++)
                 {
                     if (toMove[i].Target.Attached == false)
                         continue;
                     
-                    transforms[i].localPosition = Vector2.Lerp(startPositions[i], targetPositions[i], t);
+                    transforms[i].localPosition = Vector2.Lerp(startPositions[i], targetPositions[i], td);
                 }
 
-                t += Time.deltaTime * speed;
+                t += Time.deltaTime;
                 
                 yield return null;
             }

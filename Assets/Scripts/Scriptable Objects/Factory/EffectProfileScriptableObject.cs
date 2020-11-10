@@ -32,8 +32,11 @@ namespace StarSalvager.ScriptableObjects
         [SerializeField, Required, BoxGroup("Effects")]
         public GameObject thrustEffectPrefab;
         
-        [SerializeField, Required, BoxGroup("Particles")]
+        [SerializeField, Required, BoxGroup("Effects")]
         public GameObject explosionEffectPrefab;
+        
+        [SerializeField, Required, BoxGroup("Effects")]
+        public GameObject mergeEffectPrefab;
 
         //Particle Effect Prefabs
         //====================================================================================================================//
