@@ -91,12 +91,12 @@ namespace StarSalvager.Factories.Data
 
         private void OnAnimationValueChanged()
         {
-            if (AnimationController == null)
+            /*if (AnimationController == null)
             {
                 m_sprite = null;
                 return;
             }
-            m_sprite = AnimationController.GetAnimation("Default").GetFrame(0);
+            m_sprite = AnimationController.GetAnimation("Default").GetFrame(0);*/
         }
         
         private IEnumerable GetProjectileTypes()

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f116f2073723fd444adc764dc540ec2a, type: 3}
+  m_Name: SuperParasite_Controller
+  m_EditorClassIdentifier: 
+  States:
+  - StateName: Default
+    Animation: {fileID: 11400000, guid: 1823bbd045e8f6248825929ff7bc65d6, type: 2}
+  - StateName: Attack
+    Animation: {fileID: 11400000, guid: a8281db8acd7a66448c8c89eb6b1e007, type: 2}
