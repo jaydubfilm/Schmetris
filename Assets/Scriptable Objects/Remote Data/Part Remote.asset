@@ -24,7 +24,7 @@ MonoBehaviour:
     burnType: 4
     levels:
     - unlockLevel: 0
-      health: 20
+      health: 50
       powerDraw: 0
       dataTest:
       - key: Magnet
@@ -38,7 +38,7 @@ MonoBehaviour:
       burnRate: 1
       cost: []
     - unlockLevel: 0
-      health: 50
+      health: 80
       powerDraw: 0
       dataTest:
       - key: Magnet
@@ -92,7 +92,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 1
     - unlockLevel: 0
-      health: 100
+      health: 120
       powerDraw: 0
       dataTest:
       - key: Magnet
@@ -159,7 +159,7 @@ MonoBehaviour:
     burnType: 5
     levels:
     - unlockLevel: 0
-      health: 80
+      health: 50
       powerDraw: 0
       dataTest:
       - key: Magnet
@@ -175,7 +175,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 20
     - unlockLevel: 0
-      health: 100
+      health: 70
       powerDraw: 0
       dataTest:
       - key: Magnet
@@ -203,7 +203,7 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 1
     - unlockLevel: 0
-      health: 120
+      health: 100
       powerDraw: 0
       dataTest:
       - key: Magnet
@@ -239,13 +239,13 @@ MonoBehaviour:
     burnType: 2
     levels:
     - unlockLevel: 0
-      health: 80
-      powerDraw: 0.02
+      health: 50
+      powerDraw: 0.1
       dataTest:
       - key: Heal
-        value: 20
+        value: 2
       - key: Radius
-        value: 3
+        value: 1
       burnRate: 1
       cost:
       - resourceType: 0
@@ -261,13 +261,13 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 3
     - unlockLevel: 0
-      health: 90
-      powerDraw: 0.04
+      health: 70
+      powerDraw: 0.2
       dataTest:
       - key: Heal
-        value: 25
-      - key: Radius
         value: 4
+      - key: Radius
+        value: 1
       burnRate: 2
       cost:
       - resourceType: 0
@@ -296,12 +296,12 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 0
       health: 100
-      powerDraw: 0.1
+      powerDraw: 0.3
       dataTest:
       - key: Heal
-        value: 50
+        value: 6
       - key: Radius
-        value: 5
+        value: 2
       burnRate: 3
       cost:
       - resourceType: 0
@@ -405,8 +405,8 @@ MonoBehaviour:
     burnType: 3
     levels:
     - unlockLevel: 0
-      health: 60
-      powerDraw: 0.02
+      health: 50
+      powerDraw: 0.1
       dataTest:
       - key: Damage
         value: 7
@@ -425,8 +425,8 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 90
     - unlockLevel: 0
-      health: 80
-      powerDraw: 0.04
+      health: 70
+      powerDraw: 0.2
       dataTest:
       - key: Damage
         value: 20
@@ -458,7 +458,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 0
       health: 100
-      powerDraw: 0.1
+      powerDraw: 0.3
       dataTest:
       - key: Damage
         value: 30
@@ -499,7 +499,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 4
       health: 100
-      powerDraw: 0.02
+      powerDraw: 0.15
       dataTest:
       - key: Damage
         value: 15
@@ -527,7 +527,7 @@ MonoBehaviour:
         amount: 400
     - unlockLevel: 8
       health: 120
-      powerDraw: 0.04
+      powerDraw: 0.3
       dataTest:
       - key: Damage
         value: 25
@@ -563,8 +563,8 @@ MonoBehaviour:
     burnType: 1
     levels:
     - unlockLevel: 4
-      health: 100
-      powerDraw: 0.02
+      health: 80
+      powerDraw: 0.1
       dataTest:
       - key: Absorb
         value: .3
@@ -594,7 +594,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 6
       health: 100
-      powerDraw: 0.04
+      powerDraw: 0.2
       dataTest:
       - key: Absorb
         value: .5
@@ -628,7 +628,7 @@ MonoBehaviour:
         amount: 1
     - unlockLevel: 8
       health: 120
-      powerDraw: 0.1
+      powerDraw: 0.3
       dataTest:
       - key: Absorb
         value: .75
@@ -675,7 +675,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 3
       health: 100
-      powerDraw: 0.02
+      powerDraw: 0.15
       dataTest:
       - key: Cooldown
         value: 5
@@ -696,8 +696,8 @@ MonoBehaviour:
         partPrerequisiteLevel: 0
         amount: 3
     - unlockLevel: 8
-      health: 150
-      powerDraw: 0.04
+      health: 120
+      powerDraw: 0.3
       dataTest:
       - key: Cooldown
         value: 10
@@ -1088,7 +1088,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 5
       health: 100
-      powerDraw: 0.02
+      powerDraw: 0.15
       dataTest:
       - key: Damage
         value: 5
@@ -1112,7 +1112,7 @@ MonoBehaviour:
         amount: 500
     - unlockLevel: 9
       health: 120
-      powerDraw: 0.04
+      powerDraw: 0.3
       dataTest:
       - key: Damage
         value: 10
@@ -1156,7 +1156,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 4
       health: 100
-      powerDraw: 0.02
+      powerDraw: 0.15
       dataTest:
       - key: Damage
         value: 50
@@ -1182,76 +1182,12 @@ MonoBehaviour:
         amount: 400
     - unlockLevel: 8
       health: 120
-      powerDraw: 0.04
+      powerDraw: 0.3
       dataTest:
       - key: Damage
         value: 100
       - key: Cooldown
         value: 3
-      burnRate: 0.1
-      cost:
-      - resourceType: 1
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 3500
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 6500
-  - name: Sniper
-    partType: 15
-    lockRotation: 0
-    canSell: 1
-    description: 
-    priority: 50
-    burnType: 3
-    levels:
-    - unlockLevel: 4
-      health: 100
-      powerDraw: 0.02
-      dataTest:
-      - key: Damage
-        value: 100
-      - key: Cooldown
-        value: 2
-      - key: Probability
-        value: 0.75
-      burnRate: 0.1
-      cost:
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 4
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 200
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 400
-    - unlockLevel: 8
-      health: 120
-      powerDraw: 0.04
-      dataTest:
-      - key: Damage
-        value: 200
-      - key: Cooldown
-        value: 2
-      - key: Probability
-        value: 0.75
       burnRate: 0.1
       cost:
       - resourceType: 1
@@ -1280,7 +1216,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 5
       health: 100
-      powerDraw: 0.03
+      powerDraw: 0.3
       dataTest:
       - key: Damage
         value: 300
@@ -1316,7 +1252,7 @@ MonoBehaviour:
         amount: 200
     - unlockLevel: 7
       health: 120
-      powerDraw: 0.06
+      powerDraw: 0.6
       dataTest:
       - key: Damage
         value: 400
@@ -1352,7 +1288,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 0
       health: 80
-      powerDraw: 0.02
+      powerDraw: 0.3
       dataTest: []
       burnRate: 0
       cost:
@@ -1378,7 +1314,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 3
       health: 100
-      powerDraw: 0.03
+      powerDraw: 0.3
       dataTest:
       - key: Multiplier
         value: 1.25
@@ -1402,7 +1338,7 @@ MonoBehaviour:
         amount: 50
     - unlockLevel: 6
       health: 100
-      powerDraw: 0.06
+      powerDraw: 0.6
       dataTest:
       - key: Multiplier
         value: 1.5
@@ -1438,7 +1374,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 3
       health: 100
-      powerDraw: 0.03
+      powerDraw: 0.3
       dataTest:
       - key: Multiplier
         value: 1.5
@@ -1466,7 +1402,7 @@ MonoBehaviour:
         amount: 50
     - unlockLevel: 6
       health: 100
-      powerDraw: 0.06
+      powerDraw: 0.6
       dataTest:
       - key: Multiplier
         value: 2.0
@@ -1502,7 +1438,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 3
       health: 100
-      powerDraw: 0.03
+      powerDraw: 0.3
       dataTest:
       - key: Multiplier
         value: 1.5
@@ -1530,7 +1466,7 @@ MonoBehaviour:
         amount: 100
     - unlockLevel: 6
       health: 100
-      powerDraw: 0.06
+      powerDraw: 0.6
       dataTest:
       - key: Multiplier
         value: 1.5
@@ -1562,7 +1498,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 4
       health: 100
-      powerDraw: 0.03
+      powerDraw: 0.3
       dataTest:
       - key: Absorb
         value: 50
@@ -1590,7 +1526,7 @@ MonoBehaviour:
         amount: 100
     - unlockLevel: 7
       health: 100
-      powerDraw: 0.06
+      powerDraw: 0.6
       dataTest:
       - key: Absorb
         value: 100
@@ -1622,7 +1558,7 @@ MonoBehaviour:
     levels:
     - unlockLevel: 3
       health: 100
-      powerDraw: 0.01
+      powerDraw: 0.15
       dataTest:
       - key: Radius
         value: 10
@@ -1650,7 +1586,7 @@ MonoBehaviour:
         amount: 150
     - unlockLevel: 7
       health: 150
-      powerDraw: 0.02
+      powerDraw: 0.3
       dataTest:
       - key: Radius
         value: 15
