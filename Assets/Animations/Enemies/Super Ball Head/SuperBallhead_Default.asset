@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae94ebc07ea1de141874967c13a86044, type: 3}
+  m_Name: SuperBallhead_Default
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 2357439660054832943, guid: e87271b6576d71a46ba17e0446a9ac03, type: 3}
+  - {fileID: -7196277583270249734, guid: e87271b6576d71a46ba17e0446a9ac03, type: 3}
+  - {fileID: 962509961299145510, guid: e87271b6576d71a46ba17e0446a9ac03, type: 3}
+  - {fileID: 1173497254590542945, guid: e87271b6576d71a46ba17e0446a9ac03, type: 3}
+  - {fileID: 5302662780755779538, guid: e87271b6576d71a46ba17e0446a9ac03, type: 3}
+  - {fileID: 6089427668078774575, guid: e87271b6576d71a46ba17e0446a9ac03, type: 3}
+  - {fileID: 7238307507730690899, guid: e87271b6576d71a46ba17e0446a9ac03, type: 3}
+  - {fileID: 2232186508233565116, guid: e87271b6576d71a46ba17e0446a9ac03, type: 3}
+  - {fileID: 1652705381411858658, guid: e87271b6576d71a46ba17e0446a9ac03, type: 3}
+  - {fileID: -3312750005598948846, guid: e87271b6576d71a46ba17e0446a9ac03, type: 3}
+  - {fileID: 3489291087901742313, guid: e87271b6576d71a46ba17e0446a9ac03, type: 3}
+  - {fileID: 296661238107261286, guid: e87271b6576d71a46ba17e0446a9ac03, type: 3}
+  - {fileID: 8618161290902320108, guid: e87271b6576d71a46ba17e0446a9ac03, type: 3}
+  speed: 1
+  Loop: 1
+  PingPong: 0
+  useAnimationCurve: 0
+  curve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

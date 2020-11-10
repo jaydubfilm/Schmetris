@@ -858,14 +858,15 @@ namespace StarSalvager.Utilities.Saving
 
             if (GetEnemiesKilled().Count > 0)
             {
-                var enemyRemoteData = FactoryManager.Instance.EnemyRemoteData;
+                var enemyProfileData = FactoryManager.Instance.EnemyProfile;
+                
                 summaryText += ("<b>Enemies Killed:</b>\n");
 
                 foreach (var keyValuePair in GetEnemiesKilled())
                 {
-                    var name = enemyRemoteData.GetEnemyRemoteData(keyValuePair.Key).Name;
+                    var spriteName = enemyProfileData.GetEnemyProfileData(keyValuePair.Key).Sprite?.name;
                 
-                    summaryText += $"\t{name}: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
+                    summaryText += $"\t{TMP_SpriteMap.GetEnemySprite(spriteName)}: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
                 }
             }
 
