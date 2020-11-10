@@ -38,3 +38,5 @@ MonoBehaviour:
     type: 3}
   lineShrinkPrefab: {fileID: 3714246245670551338, guid: c7ec7772b105e4745bdae2298a512216,
     type: 3}
+  lineRendererPrefab: {fileID: 436994220410373860, guid: 7ba59dd502de9ac42baa1ce1e3882565,
+    type: 3}

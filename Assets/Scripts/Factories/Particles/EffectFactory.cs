@@ -18,7 +18,8 @@ namespace StarSalvager.Factories
             IMPACT,
             THRUST,
             EXPLOSION,
-            MERGE
+            MERGE,
+            LINE
         }
         
         private readonly EffectProfileScriptableObject _effectProfileScriptableObject;
@@ -117,6 +118,9 @@ namespace StarSalvager.Factories
                     break;
                 case EFFECT.MERGE:
                     gameObject = Object.Instantiate(_effectProfileScriptableObject.mergeEffectPrefab);
+                    break;
+                case EFFECT.LINE:
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.lineRendererPrefab);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(effect), effect, null);
