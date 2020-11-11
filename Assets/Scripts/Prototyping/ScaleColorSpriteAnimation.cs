@@ -114,6 +114,29 @@ namespace StarSalvager.Prototype
             effector.endColor = endColor;
         }
 
+        //====================================================================================================================//
+
+        public void SetAllElementScales(Vector2 startScale, Vector2 endScale)
+        {
+            for (int i = 0; i < effectors.Length; i++)
+            {
+                SetElementScale(i, startScale, endScale);
+            }
+        }
+        
+        public void SetElementScale(int index, Vector2 startScale, Vector2 endScale)
+        {
+            var effector = effectors[index];
+            
+            if(!effector.useScale)
+                return;
+            
+            effector.startScale = startScale;
+            effector.endScale = endScale;
+        }
+
+        //====================================================================================================================//
+        
         [Button, PropertyOrder(-1000), DisableInEditorMode]
         private void TestPlay()
         {

@@ -43,19 +43,25 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 93c8087663718784c984c9fb3415ef4f, type: 3}
-    totalSpriteSurfaceArea: 2116123
+    totalSpriteSurfaceArea: 2230811
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: d7313290ef5193a40aea0cae6134a68d, type: 3}
   - {fileID: -5207891248487718059, guid: d2a4d6f0defc4984e9dca3e03fd7ed1e, type: 3}
+  - {fileID: 21300000, guid: 3b3259715e32b27448f86364c71be6a6, type: 3}
+  - {fileID: 21300000, guid: 4e41c8224e17a924388cfd96022b148e, type: 3}
   - {fileID: 21300000, guid: 26e262320d543da40864dfed3d6bfdde, type: 3}
   - {fileID: 21300000, guid: 5e3a49924a96fdd4ebb64106715f5940, type: 3}
+  - {fileID: 21300000, guid: 517ce7732660441498de20bdf0725cc9, type: 3}
   - {fileID: 21300000, guid: ed53eec33717891429b3df770dc7a04c, type: 3}
   - {fileID: 21300000, guid: 4643bb163c32bc34a9aac87cd7f9f2af, type: 3}
   - {fileID: 21300000, guid: 3db761e60741f4240a142722c30652da, type: 3}
+  - {fileID: 21300000, guid: b3029fb78363a2e4d9d827ba2cc5a0d1, type: 3}
+  - {fileID: 21300000, guid: eddc1998f99251e4ab1eec7eeac18932, type: 3}
   - {fileID: 21300000, guid: 8154d079cc2403549bfb12d8a8a35d50, type: 3}
   - {fileID: 21300000, guid: 7de87ea994b0c3345938c4e40f2af905, type: 3}
+  - {fileID: 21300000, guid: 97feaef954399054390736aca33a0c10, type: 3}
   - {fileID: 21300000, guid: 9d27b5ca62096534d94ba81a39aa756a, type: 3}
   - {fileID: 21300000, guid: b6c61bca04b522d4880da81558c3a4da, type: 3}
   - {fileID: 21300000, guid: 2652e6ea0e5d2d449bed280d92ead795, type: 3}
@@ -65,16 +71,23 @@ SpriteAtlas:
   - {fileID: 4726295210043589906, guid: 1702a96d81214c14eba789dd802ab866, type: 3}
   - {fileID: 21300000, guid: ec71837d5dc3d1e4287ce139f2fe6a77, type: 3}
   - {fileID: 21300000, guid: 5139289d34af8a94ab6eae02b317f896, type: 3}
+  - {fileID: 21300000, guid: 8e32f0cdcce908d46b526635bb438533, type: 3}
   m_PackedSpriteNamesToIndex:
   - effect_WELDPards_2_v1
   - effect_THRUSTERBACK_1_v1_0
+  - juicypart_REFINERWHITE_1_v1
+  - juicyparts_TRIPLE_1_v1
   - effect_EXPLODEBALL_1_v1
   - effect_EXPLODOVERGLOW_1_v1
+  - juicyparts_RATEBOOSTGLOW_1_v1
   - effect_IMPACTTOPADD_1_v1
   - effect_WELDPards_2_v2
   - effect_WELDPards_3_v1
+  - juicypart_BOOSTRATEWHITE_1_v1
+  - juicyparts_AUTOREFINEGLOW_1_v1
   - effect_WELDPards_1_v1
   - effect_EXPLODECLOUD_1_v1
+  - juicyparts_REPAIRERGLOW_1_v1
   - effect_MERGECOMBO_1_v1
   - effect_WELDPards_1_v2
   - effect_EXPLODESPARK_1_v1
@@ -84,5 +97,6 @@ SpriteAtlas:
   - effect_THRUSTERFRONTADD_1_v1_0
   - effect_EXPLODOVERWHITEGLOW_1_v1
   - effect_EXPLODESPIKE_1_v1
+  - juicyparts_GUN_1_v1
   m_Tag: Effects & Particles
   m_IsVariant: 0
