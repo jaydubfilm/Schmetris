@@ -110,6 +110,9 @@ namespace StarSalvager
 
         //==============================================================================================================//
         
+        private Dictionary<Part, Transform> _turrets;
+        private Dictionary<Part, Enemy> _gunTargets;
+        
         private List<Part> _parts;
         private List<Part> _smartWeapons;
         private int _maxSmartWeapons;
@@ -1091,7 +1094,7 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        #region Bomb
+        #region mart Weapons
 
         /// <summary>
         /// This should use values similar to an array (ie. starts at [0])
@@ -1123,7 +1126,7 @@ namespace StarSalvager
             }
         }
 
-        private void TriggerBomb(Part part)
+        private void TriggerBomb(in Part part)
         {
             if (_bombTimers == null || _bombTimers.Count == 0)
                 return;
@@ -1152,10 +1155,12 @@ namespace StarSalvager
                 EnemyManager.DamageAllEnemies(damage);
             }
 
+            CreateBombEffect(part, 50f);
+
             AudioController.PlaySound(SOUND.BOMB_BLAST);
         }
 
-        private void TriggerFreeze(Part part)
+        private void TriggerFreeze(in Part part)
         {
             if (_bombTimers == null || _bombTimers.Count == 0)
                 return;
@@ -1188,6 +1193,8 @@ namespace StarSalvager
                 enemy.SetFrozen(freezeTime);
             }
 
+            //Need to pass the diameter not the radius
+            CreateBombEffect(part, radius * 2f);
             AudioController.PlaySound(SOUND.BOMB_BLAST);
         }
 
@@ -1623,8 +1630,6 @@ namespace StarSalvager
         //Effects
         //====================================================================================================================//
 
-        private Dictionary<Part, Transform> _turrets;
-        private Dictionary<Part, Enemy> _gunTargets;
         
         private FlashSprite GetAlertIcon(Part part)
         {
@@ -1659,6 +1664,38 @@ namespace StarSalvager
             effect.transform.SetParent(part.transform, false);
             
             _turrets.Add(part, effect.transform);
+        }
+
+        private void CreateBombEffect(in Part part, in float range)
+        {
+            Color startColor;
+
+            switch (part.Type)
+            {
+                case PART_TYPE.BOMB:
+                    startColor = Color.red;
+                    break;
+                case PART_TYPE.FREEZE:
+                    startColor = Color.cyan;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(part.Type), part.Type, null);
+            }
+
+            var endColor = startColor;
+            endColor.a = 0f;
+            
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreatePartEffect(EffectFactory.PART_EFFECT.BOMB);
+
+            effect.transform.position = part.transform.position;
+            
+            var effectAnimationComponent = effect.GetComponent<ScaleColorSpriteAnimation>();
+            
+            effectAnimationComponent.SetAllElementColors(startColor, endColor);
+            effectAnimationComponent.SetAllElementScales(Vector2.one * 0.2f, Vector2.one * range);
+            
+            Destroy(effect, effectAnimationComponent.AnimationTime);
         }
 
         private void CleanEffects()

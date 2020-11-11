@@ -68,7 +68,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 341895645
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: -146046115836049733, guid: de9672edf888d7a43bb7eb5b5e911460,
     type: 3}
@@ -92,8 +92,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2720145993455503050}
   - component: {fileID: 2720145993455503051}
+  - component: {fileID: -5495951611770886391}
   m_Layer: 0
-  m_Name: BombEffectPrefab
+  m_Name: ShockwaveEffectPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -195,3 +196,15 @@ MonoBehaviour:
       m_RotationOrder: 4
     startScale: {x: 0.2, y: 0.2}
     endScale: {x: 5, y: 5}
+--- !u!114 &-5495951611770886391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2720145993455503049}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b19d49b9c29334d45b5a5744fb2acd07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
