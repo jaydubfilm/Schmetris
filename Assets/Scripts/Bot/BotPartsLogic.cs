@@ -468,13 +468,13 @@ namespace StarSalvager
             return true;
         }
 
-        private void TryUpdateResourceUsage(Part part, in PartRemoteData partRemoteData, in PartLevelData partLevelData, out float resourceValue)
+        private bool ShouldUpdateResourceUsage(in Part part, in PartRemoteData partRemoteData, in PartLevelData partLevelData, out float resourceValue)
         {
             resourceValue = default;
             
             //If there's nothing using these resources ignore
-            if(partLevelData.burnRate == 0f)
-                return;
+            if(partLevelData.burnRate == 0f || (int)partRemoteData.burnType == 0)
+                return false;
 
             resourceValue = GetValueToBurn(partLevelData, partRemoteData.burnType);
 
@@ -492,7 +492,7 @@ namespace StarSalvager
                 }
                 else
                 {
-                    resourceValue = ProcessBit(targetBit);
+                    resourceValue = ProcessBit(part, targetBit);
                 }
 
             }
@@ -503,6 +503,8 @@ namespace StarSalvager
                 if(_flashes != null && _flashes.ContainsKey(part))
                     GetAlertIcon(part).SetActive(false);
             }
+
+            return true;
         }
 
         //FIXME I Will want to separate these functions as this is getting too large
@@ -535,7 +537,8 @@ namespace StarSalvager
                 if(!TryUpdatePowerUsage(part, levelData, powerValue, ref powerToRemove, deltaTime))
                     continue;
 
-                TryUpdateResourceUsage(part, partRemoteData, levelData, out var resourceValue);
+                var shouldUpdateResource =
+                    ShouldUpdateResourceUsage(part, partRemoteData, levelData, out var resourceValue);
 
                 //Used to measure total consumption of parts over time
                 float resourcesConsumed = 0f;
@@ -614,11 +617,13 @@ namespace StarSalvager
                         break;
                 }
 
-                UpdateUI(partRemoteData.burnType, resourceValue);
-
                 if(bot.PROTO_GodMode)
                     continue;
 
+                if (!shouldUpdateResource)
+                    continue;
+                
+                UpdateUI(partRemoteData.burnType, resourceValue);
                 PlayerDataManager.GetResource(partRemoteData.burnType).SetLiquid(resourceValue);
 
                 if(resourcesConsumed > 0)
@@ -1310,7 +1315,7 @@ namespace StarSalvager
 
         #region Process Bit
 
-        public int ProcessBit(Bit targetBit)
+        public int ProcessBit(in Part part, Bit targetBit)
         {
             if (targetBit is ICanCombo iCanCombo && iCanCombo.IsBusy)
                 return 0;
@@ -1337,12 +1342,15 @@ namespace StarSalvager
                 return 0;
 
             PlayerDataManager.GetResource(targetBit.Type).AddLiquid(amountProcessed);
+            targetBit.IsBusy = true;
 
             //If we want to process a bit, we want to remove it from the attached list while its processed
             bot.MarkAttachablePendingRemoval(targetBit);
 
             //TODO May want to play around with the order of operations here
-            StartCoroutine(RefineBitCoroutine(targetBit, 1.6f,
+            StartCoroutine(RefineBitCoroutine(targetBit,
+                part.transform,
+                1.6f,
                 () =>
                 {
                     bot.DestroyAttachable<Bit>(targetBit);
@@ -1352,6 +1360,11 @@ namespace StarSalvager
             SessionDataProcessor.Instance.LiquidProcessed(targetBit.Type, amountProcessed);
             AudioController.PlaySound(SOUND.BIT_REFINED);
             bot.ForceCheckMagnets();
+            
+            if (part.Type == PART_TYPE.REFINER)
+            {
+                CreateRefinerEffect(part, bitType);
+            }
 
             return amountProcessed;
         }
@@ -1467,58 +1480,10 @@ namespace StarSalvager
             });
         }
 
-
-        /*private void CheckIfShieldShouldRecycle()
-        {
-            
-
-            /*if (_shields == null || _shields.Count == 0)
-                return;
-
-            var copy = new Dictionary<Part, ShieldData>(_shields);
-            foreach (var data in copy.Where(data => data.Key.IsRecycled || data.Key.Destroyed))
-            {
-                Recycler.Recycle<Shield>(data.Value.shield.gameObject);
-                _shields.Remove(data.Key);
-            }#1#
-        }*/
-
-        /*private void CheckIfFlashIconShouldRecycle()
-        {
-            if (_flashes == null || _flashes.Count == 0)
-                return;
-
-            var copy = new Dictionary<Part, FlashSprite>(_flashes);
-            foreach (var data in copy.Where(data => data.Key.IsRecycled || data.Key.Destroyed))
-            {
-                _flashes.Remove(data.Key);
-                Recycler.Recycle<FlashSprite>(data.Value.gameObject);
-            }
-        }*/
-
-        /*private void CheckIfBombsShouldRecycle()
-        {
-            if (_bombTimers == null || _bombTimers.Count == 0)
-                return;
-
-            var copy = new Dictionary<Part, float>(_bombTimers);
-            foreach (var data in copy.Where(data => data.Key.IsRecycled || data.Key.Destroyed))
-            {
-               _bombTimers.Remove(data.Key);
-
-               var index = _smartWeapons.FindIndex(0, _smartWeapons.Count, x => x == data.Key);
-               GameUI.ShowIcon(index, false);
-            }
-
-        }*/
-
         public void ClearList()
         {
             TryClearPartDictionaries();
             CleanEffects();
-            /*CheckIfShieldShouldRecycle();
-            CheckIfFlashIconShouldRecycle();
-            CheckIfBombsShouldRecycle();*/
 
             _parts.Clear();
         }
@@ -1531,7 +1496,6 @@ namespace StarSalvager
             var copy = new Dictionary<Part, T>(partDictionary);
             foreach (var data in copy.Where(data => data.Key.IsRecycled || data.Key.Destroyed))
             {
-                //Recycler.Recycle<Shield>(data.Value.gameObject);
                 OnRecycleCallback?.Invoke(data.Value);
                 
                 partDictionary.Remove(data.Key);
@@ -1545,7 +1509,6 @@ namespace StarSalvager
             var copy = new Dictionary<Part, T>(partDictionary);
             foreach (var data in copy.Where(data => data.Key.IsRecycled || data.Key.Destroyed))
             {
-                //Recycler.Recycle<Shield>(data.Value.gameObject);
                 OnRecycleCallback?.Invoke(data.Key);
                 
                 partDictionary.Remove(data.Key);
@@ -1698,6 +1661,23 @@ namespace StarSalvager
             Destroy(effect, effectAnimationComponent.AnimationTime);
         }
 
+        private void CreateRefinerEffect(in Part part, in BIT_TYPE bitType)
+        {
+            var endColor = FactoryManager.Instance.BitProfileData.GetProfile(bitType).color;
+            var startColor = endColor;
+            startColor.a = 0f;
+            
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreatePartEffect(EffectFactory.PART_EFFECT.REFINER);
+            var effectComponent = effect.GetComponent<ScaleColorSpriteAnimation>();
+            
+            effect.transform.SetParent(part.transform, false);
+            
+            effectComponent.SetAllElementColors(startColor, endColor);
+            
+            Destroy(effect, effectComponent.AnimationTime);
+        }
+
         private void CleanEffects()
         {
             if (!_turrets.IsNullOrEmpty())
@@ -1714,10 +1694,10 @@ namespace StarSalvager
         //Coroutines
         //============================================================================================================//
 
-        private IEnumerator RefineBitCoroutine(Bit bit, float speed, Action onFinishedCallback)
+        private IEnumerator RefineBitCoroutine(Bit bit, Transform processToTranform, float speed, Action onFinishedCallback)
         {
             var bitStartPosition = bit.transform.position;
-            var endPosition = bot.transform.position;
+            var endPosition = processToTranform.position;
             var t = 0f;
 
             bit.SetColliderActive(false);

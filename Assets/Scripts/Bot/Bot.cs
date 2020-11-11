@@ -1470,7 +1470,7 @@ namespace StarSalvager
                     return;
             }
             
-            BotPartsLogic.ProcessBit(bit);
+            BotPartsLogic.ProcessBit((Part)part, bit);
             CheckForDisconnects();
         }
 
