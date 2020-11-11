@@ -64,7 +64,7 @@ namespace StarSalvager.Utilities
             string.Concat("print ", "components").ToUpper(),
             "\n",
             //string.Concat("set ", "bitprofile ", "[index:uint]").ToUpper(),
-            string.Concat("set ", "bot ", "magnet ", "[uint]").ToUpper(),
+            //string.Concat("set ", "bot ", "magnet ", "[uint]").ToUpper(),
             string.Concat("set ", "bot ", "heat ", "[0.0 - 100.0]").ToUpper(),
             string.Concat("set ", "bot ", "health ", "[0.0 - 1.0]").ToUpper(),
             string.Concat("set ", "columns ", "[uint]").ToUpper(),
@@ -644,7 +644,7 @@ namespace StarSalvager.Utilities
                 {
                     switch (split[2].ToLower())
                     {
-                        case "magnet":
+                        /*case "magnet":
                             if (!int.TryParse(split[3], out var magnet))
                             {
                                 _consoleDisplay += UnrecognizeCommand(split[3]);
@@ -663,7 +663,7 @@ namespace StarSalvager.Utilities
                     
                             //PlayerPersistentData.PlayerData.liquidResource[bit] = amount;
                     
-                            break;
+                            break;*/
                         case "heat":
                             if (!float.TryParse(split[3], out var heat))
                             {

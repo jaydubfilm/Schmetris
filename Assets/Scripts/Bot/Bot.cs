@@ -329,7 +329,7 @@ namespace StarSalvager
                 AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);
             }
             
-            BotPartsLogic.UpdatePartsList();
+            BotPartsLogic.PopulatePartsList();
         }
 
 
@@ -1075,7 +1075,7 @@ namespace StarSalvager
                     if (core.Type == PART_TYPE.CORE)
                         Destroy("Core Destroyed");
                     else
-                        BotPartsLogic.UpdatePartsList();
+                        BotPartsLogic.PopulatePartsList();
                     break;
                 default:
                     RemoveAttachable(closestAttachable);
@@ -1241,7 +1241,7 @@ namespace StarSalvager
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
                     break;
                 case Part _ when updatePartList:
-                    BotPartsLogic.UpdatePartsList();
+                    BotPartsLogic.PopulatePartsList();
                     break;
 
                 //This can NEVER happen as Shape is not IAttachable
@@ -1309,7 +1309,7 @@ namespace StarSalvager
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
                     break;
                 case Part _ when updatePartList:
-                    BotPartsLogic.UpdatePartsList();
+                    BotPartsLogic.PopulatePartsList();
                     break;
             }
 
@@ -1415,7 +1415,7 @@ namespace StarSalvager
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
                     break;
                 case Part _ when updatePartList:
-                    BotPartsLogic.UpdatePartsList();
+                    BotPartsLogic.PopulatePartsList();
                     break;
             }
             
@@ -1790,7 +1790,7 @@ namespace StarSalvager
                     break;
                 case Part _:
                     DestroyAttachable<Part>(attachable);
-                    BotPartsLogic.UpdatePartsList();
+                    BotPartsLogic.PopulatePartsList();
                     break;
                 case EnemyAttachable _:
                     DestroyAttachable<EnemyAttachable>(attachable);
