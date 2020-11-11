@@ -19,6 +19,8 @@ MonoBehaviour:
     m_sprite: {fileID: 1247627281784427692, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
     m_projectileType: Basic Projectile
+    useTrail: 0
+    color: {r: 1, g: 0.56078434, b: 1, a: 1}
     m_projectileSpeed: 10
     m_projectileRange: 0
     m_requiredRotate: 1
@@ -30,6 +32,8 @@ MonoBehaviour:
   - m_projectileTypeID: 54ef5003-668f-48e1-bd6b-9bfb3221d9d0
     m_sprite: {fileID: 21300012, guid: a6d1b10b2671f96418d37196aacabe1b, type: 3}
     m_projectileType: Better Projectile
+    useTrail: 0
+    color: {r: 0.93725497, g: 0.7294118, b: 0.8705883, a: 1}
     m_projectileSpeed: 10
     m_projectileRange: 0
     m_requiredRotate: 0
@@ -41,6 +45,8 @@ MonoBehaviour:
   - m_projectileTypeID: 315b7ca5-bf86-4e37-88db-d055fbea3f00
     m_sprite: {fileID: 21300014, guid: e7495963a94ea8c4d875690bf0db95e4, type: 3}
     m_projectileType: Best Projectile
+    useTrail: 0
+    color: {r: 0.95294124, g: 0.5568628, b: 0.29803923, a: 1}
     m_projectileSpeed: 15
     m_projectileRange: 0
     m_requiredRotate: 0
@@ -53,6 +59,8 @@ MonoBehaviour:
     m_sprite: {fileID: 8060306004869834615, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
     m_projectileType: Fly Needle
+    useTrail: 0
+    color: {r: 1, g: 0.3921569, b: 0.039215688, a: 1}
     m_projectileSpeed: 14
     m_projectileRange: 0
     m_requiredRotate: 0
@@ -64,6 +72,8 @@ MonoBehaviour:
   - m_projectileTypeID: 8f0be7e3-1231-4c2c-81ca-460162be6318
     m_sprite: {fileID: 21300002, guid: e05867bf595405c46a8ee4ae392e9180, type: 3}
     m_projectileType: Ballhead Blast
+    useTrail: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
     m_projectileSpeed: 6
     m_projectileRange: 0
     m_requiredRotate: 0
@@ -76,6 +86,8 @@ MonoBehaviour:
     m_sprite: {fileID: -27257796672442213, guid: cd42b1419861ceb4dae39c1c9ad09fb2,
       type: 3}
     m_projectileType: Mosquito Zap
+    useTrail: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
     m_projectileSpeed: 18
     m_projectileRange: 0
     m_requiredRotate: 0
@@ -88,6 +100,8 @@ MonoBehaviour:
     m_sprite: {fileID: -3311313229851740455, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
     m_projectileType: Squid Ball
+    useTrail: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
     m_projectileSpeed: 12
     m_projectileRange: 0
     m_requiredRotate: 0
@@ -100,6 +114,8 @@ MonoBehaviour:
     m_sprite: {fileID: 3878735451401828320, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
     m_projectileType: Gun Bullet
+    useTrail: 1
+    color: {r: 0.76470596, g: 0.75294125, b: 0.7490196, a: 1}
     m_projectileSpeed: 12
     m_projectileRange: 12
     m_requiredRotate: 1
@@ -112,6 +128,8 @@ MonoBehaviour:
     m_sprite: {fileID: 1247627281784427692, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
     m_projectileType: Triple
+    useTrail: 0
+    color: {r: 1, g: 0.60784316, b: 1, a: 1}
     m_projectileSpeed: 10
     m_projectileRange: 12
     m_requiredRotate: 1
@@ -124,6 +142,8 @@ MonoBehaviour:
     m_sprite: {fileID: -3311313229851740455, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
     m_projectileType: Missile
+    useTrail: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
     m_projectileSpeed: 10
     m_projectileRange: 20
     m_requiredRotate: 0
@@ -136,6 +156,8 @@ MonoBehaviour:
     m_sprite: {fileID: -7191923045049933382, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
     m_projectileType: Blaster
+    useTrail: 0
+    color: {r: 1, g: 0.63529414, b: 0.48235297, a: 1}
     m_projectileSpeed: 10
     m_projectileRange: 0
     m_requiredRotate: 1

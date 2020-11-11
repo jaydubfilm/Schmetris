@@ -21,6 +21,9 @@ namespace StarSalvager.Prototype
 
         private void OnDestroy()
         {
+            if (!LevelManager.Instance)
+                return;
+            
             LevelManager.Instance.ObstacleManager.ForceRemoveObstacleFromList(this);
         }
 
