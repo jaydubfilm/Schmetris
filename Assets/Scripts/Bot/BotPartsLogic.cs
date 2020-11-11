@@ -182,6 +182,8 @@ namespace StarSalvager
                 MagnetCount = _magnetOverride;
             }
 
+            _gunTargets = new Dictionary<Part, Enemy>();
+
             var liquidCapacities = new Dictionary<BIT_TYPE, int>
             {
                 {BIT_TYPE.RED, 0},
@@ -267,6 +269,7 @@ namespace StarSalvager
                         {
                             MagnetCount += value;
                         }
+
                         break;
                     case PART_TYPE.MAGNET:
 
@@ -276,6 +279,7 @@ namespace StarSalvager
                         {
                             MagnetCount += value;
                         }
+
                         break;
                     //Determine if we need to setup the shield elements for the bot
                     //FIXME I'll need a way of disposing of the shield visual object
@@ -319,6 +323,7 @@ namespace StarSalvager
                             liquidCapacities[BIT_TYPE.GREEN] += value;
                             liquidCapacities[BIT_TYPE.GREY] += value;
                         }
+
                         break;
                     case PART_TYPE.STORERED:
                         if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
@@ -327,6 +332,7 @@ namespace StarSalvager
 
                             liquidCapacities[BIT_TYPE.RED] += value;
                         }
+
                         break;
                     case PART_TYPE.STOREGREEN:
                         if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
@@ -335,6 +341,7 @@ namespace StarSalvager
 
                             liquidCapacities[BIT_TYPE.GREEN] += value;
                         }
+
                         break;
                     case PART_TYPE.STOREGREY:
                         if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
@@ -343,6 +350,7 @@ namespace StarSalvager
 
                             liquidCapacities[BIT_TYPE.GREY] += value;
                         }
+
                         break;
                     case PART_TYPE.STOREYELLOW:
                         if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
@@ -351,10 +359,11 @@ namespace StarSalvager
 
                             liquidCapacities[BIT_TYPE.YELLOW] += value;
                         }
+
                         break;
                     case PART_TYPE.FREEZE:
                     case PART_TYPE.BOMB:
-                        if(_bombTimers == null)
+                        if (_bombTimers == null)
                             _bombTimers = new Dictionary<Part, float>();
 
                         if (_bombTimers.ContainsKey(part))
@@ -362,6 +371,14 @@ namespace StarSalvager
 
                         //GameUI.ShowBombIcon(true);
                         _bombTimers.Add(part, 0f);
+                        break;
+
+                    case PART_TYPE.GUN:
+                    case PART_TYPE.SNIPER:
+                    case PART_TYPE.TRIPLESHOT:
+                    case PART_TYPE.MISSILE:
+                        _gunTargets.Add(part, null);
+                        CreateTurretEffect(part);
                         break;
                 }
             }
@@ -523,55 +540,7 @@ namespace StarSalvager
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
-                        
                         CoreUpdate(part, levelData, ref resourceValue, ref resourcesConsumed, deltaTime);
-                        
-                        /*var outOfFuel = resourceValue <= 0f && useBurnRate;
-                        GameUI.ShowAbortWindow(outOfFuel);
-
-
-                        //Determines if the player can move with no available fuel
-                        //NOTE: This needs to happen before the subtraction of resources to prevent premature force-stop
-                        InputManager.Instance.LockSideMovement = resourceValue <= 0f;
-
-                        if (resourceValue > 0f && useBurnRate)
-                        {
-                            resourcesConsumed = levelData.burnRate * deltaTime;
-                            resourceValue -= resourcesConsumed;
-                        }
-
-
-                        CanSelfDestruct = outOfFuel;
-                        //LevelManagerUI.OverrideText = outOfFuel ? "Out of Fuel. 'D' to self destruct" : string.Empty;
-
-                        //TODO Need to check on Heating values for the core
-                        if (coreHeat <= 0)
-                        {
-                            GameUI.SetHeatSliderValue(0f);
-                            break;
-                        }
-
-                        GameUI.SetHeatSliderValue(coreHeat / 100f);
-
-
-                        part.SetColor(Color.Lerp(Color.white, Color.red, coreHeat / 100f));
-
-                        if (_coreCoolTimer > 0f)
-                        {
-                            _coreCoolTimer -= Time.deltaTime;
-                            break;
-                        }
-                        else
-                            _coreCoolTimer = 0;
-
-                        coreHeat -= coolSpeed * GetFacilityImprovement(FACILITY_TYPE.COOLING) * Time.deltaTime;
-
-                        if (coreHeat < 0)
-                        {
-                            coreHeat = 0;
-                            part.SetColor(Color.white);
-                        }*/
-
                         break;
                     case PART_TYPE.REPAIR:
 
@@ -626,249 +595,21 @@ namespace StarSalvager
                         break;
                     case PART_TYPE.BLASTER:
                         BlasterUpdate(part, levelData, ref resourceValue, ref resourcesConsumed, deltaTime);
-                        /*//--------------------------------------------------------------------------------------------//
-                        if (_projectileTimers == null)
-                            _projectileTimers = new Dictionary<Part, float>();
-
-                        if (!_projectileTimers.ContainsKey(part))
-                            _projectileTimers.Add(part, 0f);
-
-                        //Cooldown
-                        //--------------------------------------------------------------------------------------------//
-
-                        cooldown = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Cooldown);
-                        cooldown /= GetBoostValue(PART_TYPE.BOOSTRATE, part);
-
-                        if (_projectileTimers[part] < cooldown)
-                        {
-                            _projectileTimers[part] += Time.deltaTime;
-                            break;
-                        }
-
-                        _projectileTimers[part] = 0f;
-
-                        //Check if we have a target before removing resources
-                        //--------------------------------------------------------------------------------------------//
-
-                        if (_asteroidTargets.IsNullOrEmpty())
-                        {
-                            _asteroidTargets = new Dictionary<Part, Asteroid>();
-                        }
-
-                        if (!_asteroidTargets.TryGetValue(part, out var asteroid) || asteroid.IsRecycled)
-                        {
-                            //TODO Find closest asteroids
-                            asteroid = LevelManager.Instance.ObstacleManager.Asteroids.FindClosestObstacleInRange(
-                                    transform.position, 10);
-
-                            if (asteroid == null)
-                                break;
-                        }
-
-
-                        //TODO Determine if this fires at all times or just when there are active enemies in range
-
-
-
-                        //Use resources
-                        //--------------------------------------------------------------------------------------------//
-
-                        if (useBurnRate)
-                        {
-                            if (resourceValue <= 0f)
-                            {
-                                AudioController.PlaySound(SOUND.GUN_CLICK);
-                                break;
-                            }
-
-                            if (resourceValue > 0)
-                            {
-                                resourcesConsumed = levelData.burnRate *
-                                                   GetFacilityImprovement(FACILITY_TYPE.AMMODISCOUNT);
-                                resourceValue -= resourcesConsumed;
-                            }
-                        }
-
-                        //--------------------------------------------------------------------------------------------//
-
-                        //TODO Create projectile shooting at new target
-
-                        CreateProjectile(part, levelData, asteroid, "Asteroid");*/
-
                         break;
                     case PART_TYPE.SNIPER:
                     case PART_TYPE.MISSILE:
                     case PART_TYPE.TRIPLESHOT:
                     case PART_TYPE.GUN:
                         GunUpdate(part, levelData, ref resourceValue, ref resourcesConsumed, deltaTime);
-                        /*//TODO Need to determine if the shoot type is looking for enemies or not
-                        //--------------------------------------------------------------------------------------------//
-                        if (_projectileTimers == null)
-                            _projectileTimers = new Dictionary<Part, float>();
-
-                        if (!_projectileTimers.ContainsKey(part))
-                            _projectileTimers.Add(part, 0f);
-
-                        //TODO This needs to fire every x Seconds
-                        //--------------------------------------------------------------------------------------------//
-
-                        //FIXME This now might more sense to count down instead of counting up
-                        cooldown = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Cooldown);
-                        cooldown /= GetBoostValue(PART_TYPE.BOOSTRATE, part);
-
-                        if (_projectileTimers[part] < cooldown)
-                        {
-                            _projectileTimers[part] += deltaTime;
-                            break;
-                        }
-
-                        _projectileTimers[part] = 0f;
-
-                        //Check if we have a target before removing resources
-                        //--------------------------------------------------------------------------------------------//
-
-                        var range = _gunRanges[part];
-
-                        var enemy = EnemyManager.GetClosestEnemy(transform.position, range);
-                        //TODO Determine if this fires at all times or just when there are active enemies in range
-                        if (enemy == null)
-                            break;
-
-
-                        //Use resources
-                        //--------------------------------------------------------------------------------------------//
-
-                        if (useBurnRate)
-                        {
-                            if (resourceValue <= 0f)
-                            {
-                                AudioController.PlaySound(SOUND.GUN_CLICK);
-                                break;
-                            }
-
-                            if (resourceValue > 0)
-                            {
-                                resourcesConsumed = levelData.burnRate *
-                                                   GetFacilityImprovement(FACILITY_TYPE.AMMODISCOUNT);
-                                resourceValue -= resourcesConsumed;
-                            }
-                        }
-
-                        switch (part.Type)
-                        {
-                            case PART_TYPE.GUN:
-                            case PART_TYPE.TRIPLESHOT:
-                            case PART_TYPE.MISSILE:
-                                CreateProjectile(part, levelData, enemy);
-                                break;
-                            case PART_TYPE.SNIPER:
-                                var direction = (enemy.transform.position + ((Vector3)Random.insideUnitCircle * 3) - part.transform.position).normalized;
-
-                                var lineShrink = FactoryManager.Instance.GetFactory<EffectFactory>()
-                                    .CreateObject<LineShrink>();
-
-                                var chance = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Probability);
-                                var didHitTarget = Random.value <= chance;
-
-
-                                lineShrink.Init(part.transform.position,
-                                    didHitTarget
-                                        ?  enemy.transform.position
-                                        : part.transform.position + direction * 100);
-
-                                if (didHitTarget)
-                                {
-                                    var damage = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Damage);
-                                    enemy.TryHitAt(enemy.transform.position, damage);
-                                }
-
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-
-                        //--------------------------------------------------------------------------------------------//*/
-
                         break;
                     case PART_TYPE.SHIELD:
                         ShieldUpdate(part, levelData, ref resourceValue, ref resourcesConsumed, deltaTime);
-                        /*const float fakeHealth = 25f;
-
-                        var data = _shields[part];
-                        var shield = data.shield;
-                        //shield.transform.position = part.transform.position;
-
-                        if (resourceValue <= 0f && useBurnRate && data.currentHp <= 0)
-                        {
-                            shield.SetAlpha(0f);
-                            break;
-                        }
-
-                        if (data.currentHp < fakeHealth)
-                        {
-                            //TODO Shield has countdown before it can begin recharging
-                            if (data.timer >= data.waitTime)
-                            {
-                                resourcesConsumed = levelData.burnRate * deltaTime;
-
-                                //TODO Shield only use resources when recharging
-                                resourceValue -= resourcesConsumed;
-                                _shields[part].currentHp += levelData.burnRate * deltaTime;
-
-                                TryPlaySound(part, SOUND.SHIELD_RECHARGE, true);
-                            }
-                            else
-                            {
-                                _shields[part].timer += Time.deltaTime;
-                            }
-                        }
-                        else
-                        {
-                            TryPlaySound(part, SOUND.SHIELD_RECHARGE, false);
-                        }
-
-                        //FIXME This needs to have some sort of play cooldown
-                        //AudioController.PlaySound(SOUND.SHIELD_RECHARGE);
-
-                        shield.SetAlpha(0.5f * (data.currentHp / fakeHealth));*/
-
                         break;
                     case PART_TYPE.FREEZE:
                     case PART_TYPE.BOMB:
                         BombUpdate(part, levelData, ref resourceValue, ref resourcesConsumed, deltaTime);
-                        /*
-                        //TODO This still needs to account for multiple bombs
-                        if (!_bombTimers.TryGetValue(part, out var timer))
-                            break;
-
-                        if (timer <= 0f)
-                            break;
-
-                        var index = _smartWeapons.FindIndex(0, _smartWeapons.Count, x => x == part);
-
-                        if (useBurnRate && resourceValue <= 0)
-                        {
-                            //FIXME I don't like that this is getting called so often
-                            //GameUI.SetHasResource(index, false);
-                            break;
-                        }
-
-                        //GameUI.SetHasResource(index, true);
-
-
-                        levelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float bombCooldown);
-
-                        resourcesConsumed = deltaTime;
-                        resourceValue -= resourcesConsumed;
-
-                        _bombTimers[part] -= deltaTime;
-                        GameUI.SetFill(index, 1f - _bombTimers[part] / bombCooldown);
-                        */
-
                         break;
                 }
-
-
 
                 UpdateUI(partRemoteData.burnType, resourceValue);
 
@@ -1097,6 +838,22 @@ namespace StarSalvager
             if (!_projectileTimers.ContainsKey(part))
                 _projectileTimers.Add(part, 0f);
 
+            //Aim the Turret Effect
+            //--------------------------------------------------------------------------------------------//
+
+            var target = _gunTargets[part];
+            
+            if (target && target.IsRecycled == false)
+            {
+                var targetTransform = target.transform;
+                var normDirection = (targetTransform.position - part.transform.position).normalized;
+                _turrets[part].up = normDirection;
+            }
+            else if (target && target.IsRecycled)
+            {
+                _gunTargets[part] = null;
+            }
+
             //TODO This needs to fire every x Seconds
             //--------------------------------------------------------------------------------------------//
 
@@ -1117,10 +874,12 @@ namespace StarSalvager
 
             var range = _gunRanges[part];
 
-            var enemy = EnemyManager.GetClosestEnemy(transform.position, range);
+            var enemy = EnemyManager.GetClosestEnemy(part.transform.position, range);
             //TODO Determine if this fires at all times or just when there are active enemies in range
             if (enemy == null)
                 return;
+
+            _gunTargets[part] = enemy;
 
 
             //Use resources
@@ -1488,7 +1247,6 @@ namespace StarSalvager
 
         #endregion //Shield
 
-
         //Updating UI
         //============================================================================================================//
 
@@ -1750,6 +1508,7 @@ namespace StarSalvager
         public void ClearList()
         {
             TryClearPartDictionaries();
+            CleanEffects();
             /*CheckIfShieldShouldRecycle();
             CheckIfFlashIconShouldRecycle();
             CheckIfBombsShouldRecycle();*/
@@ -1863,6 +1622,9 @@ namespace StarSalvager
 
         //Effects
         //====================================================================================================================//
+
+        private Dictionary<Part, Transform> _turrets;
+        private Dictionary<Part, Enemy> _gunTargets;
         
         private FlashSprite GetAlertIcon(Part part)
         {
@@ -1881,6 +1643,35 @@ namespace StarSalvager
             _flashes.Add(part, flash);
 
             return _flashes[part];
+        }
+
+        private void CreateTurretEffect(in Part part)
+        {
+            if(_turrets.IsNullOrEmpty())
+                _turrets = new Dictionary<Part, Transform>();
+
+            if (_turrets.ContainsKey(part))
+                return;
+            
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreatePartEffect(EffectFactory.PART_EFFECT.GUN);
+            
+            effect.transform.SetParent(part.transform, false);
+            
+            _turrets.Add(part, effect.transform);
+        }
+
+        private void CleanEffects()
+        {
+            if (!_turrets.IsNullOrEmpty())
+            {
+                var turrets = _turrets.Values;
+                foreach (var turret in turrets)
+                {
+                    Destroy(turret.gameObject);
+                }
+            }
+
         }
 
         //Coroutines
