@@ -186,6 +186,7 @@ namespace StarSalvager
             }
 
             _gunTargets = new Dictionary<Part, Enemy>();
+            _repairTarget = new Dictionary<Part, Part>();
 
             var liquidCapacities = new Dictionary<BIT_TYPE, int>
             {
@@ -374,6 +375,10 @@ namespace StarSalvager
 
                         //GameUI.ShowBombIcon(true);
                         _bombTimers.Add(part, 0f);
+                        break;
+                    
+                    case PART_TYPE.REPAIR:
+                        _repairTarget.Add(part, null);
                         break;
 
                     case PART_TYPE.GUN:
@@ -719,8 +724,11 @@ namespace StarSalvager
                 //TODO Need to play the no resources for repair sound here
                 return;
             }
-
             var radius = partLevelData.GetDataValue<int>(DataTest.TEST_KEYS.Radius);
+
+
+            var repairTarget = _repairTarget[part];
+
 
             //FIXME I don't think using linq here, especially twice is the best option
             //TODO This needs to fire every x Seconds
@@ -733,6 +741,16 @@ namespace StarSalvager
                 .OrderByDescending(x => x.Value)
                 .FirstOrDefault().Key;
 
+            //Repair Effect Confirm
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (repairTarget && repairTarget != (Part) toRepair)
+            {
+                _repairEffects[repairTarget].SetActive(false);
+            }
+            
+            //--------------------------------------------------------------------------------------------------------//
+
             //If we weren't able to find a part, see if the repairer needs to be fixed
             if (toRepair is null)
             {
@@ -744,6 +762,29 @@ namespace StarSalvager
                     return;
             }
 
+            //Repair Effect Setup
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var partToRepair = (Part) toRepair;
+
+            if (repairTarget != partToRepair)
+            {
+                _repairTarget[part] = partToRepair;
+                
+                if (_repairEffects.IsNullOrEmpty())
+                    _repairEffects = new Dictionary<Part, GameObject>();
+            
+                if (!_repairEffects.TryGetValue(partToRepair, out var effectObject))
+                {
+                    CreateRepairEffect(partToRepair);
+                }
+                else
+                {
+                    effectObject.SetActive(true);
+                }
+            }
+            //--------------------------------------------------------------------------------------------------------//
+            
             resourcesConsumed = partLevelData.burnRate * deltaTime;
             resourceValue -= resourcesConsumed;
 
@@ -1593,6 +1634,8 @@ namespace StarSalvager
         //Effects
         //====================================================================================================================//
 
+        private Dictionary<Part, GameObject> _repairEffects;
+        private Dictionary<Part, Part> _repairTarget;
         
         private FlashSprite GetAlertIcon(Part part)
         {
@@ -1678,6 +1721,22 @@ namespace StarSalvager
             Destroy(effect, effectComponent.AnimationTime);
         }
 
+        private void CreateRepairEffect(in Part part)
+        {
+            if(_repairEffects.IsNullOrEmpty())
+                _repairEffects = new Dictionary<Part, GameObject>();
+
+            if (_repairEffects.ContainsKey(part))
+                return;
+            
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreatePartEffect(EffectFactory.PART_EFFECT.REPAIR);
+            
+            effect.transform.SetParent(part.transform, false);
+            
+            _repairEffects.Add(part, effect);
+        }
+
         private void CleanEffects()
         {
             if (!_turrets.IsNullOrEmpty())
@@ -1686,6 +1745,16 @@ namespace StarSalvager
                 foreach (var turret in turrets)
                 {
                     Destroy(turret.gameObject);
+                }
+            }
+
+            if (!_repairEffects.IsNullOrEmpty())
+            {
+                var repairs = _repairEffects.Values;
+
+                foreach (var repair in repairs)
+                {
+                    Destroy(repair);
                 }
             }
 
