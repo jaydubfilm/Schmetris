@@ -282,7 +282,7 @@ MonoBehaviour:
     SectorNumber: 0
     WaveNumber: 0
     BonusShapeNumber: 0
-    PartType: 1
+    PartType: 4
     PartLevel: 0
     FacilityType: 0
     FacilityLevel: 0
