@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Sector_Remote_PB2_2
   m_EditorClassIdentifier: 
   WaveRemoteData:
+  - {fileID: 11400000, guid: 567a67c74bee1174ba2670e1bdcb1648, type: 2}
   - {fileID: 11400000, guid: 59976c4f8c1c54f5e94b4772dccad432, type: 2}
   - {fileID: 11400000, guid: e02d6b378925446ffbe67b50b22b906d, type: 2}
   - {fileID: 11400000, guid: b20c54b2169994aa788376928e939053, type: 2}
@@ -22,6 +23,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 56843a94f69aa4828b7e15d478386238, type: 2}
   - {fileID: 11400000, guid: 18b45da02afbd4959af4dda63f207443, type: 2}
   - {fileID: 11400000, guid: 85e22ae657f724fe0abcd96508ab851a, type: 2}
-  - {fileID: 11400000, guid: 567a67c74bee1174ba2670e1bdcb1648, type: 2}
   sectorRemoteDataLootTablesScriptable: {fileID: 11400000, guid: 704367255fb35df498df8031c1684d15,
     type: 2}
