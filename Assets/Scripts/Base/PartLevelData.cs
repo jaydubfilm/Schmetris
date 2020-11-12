@@ -83,7 +83,7 @@ namespace StarSalvager
             SMRTCapacity,
             Probability,
             PartCapacity,
-            Multiplier
+            Multiplier,
         }
 
         public static readonly string[] TestList =
@@ -101,7 +101,7 @@ namespace StarSalvager
             "SMRTCapacity",
             "Probability",
             "PartCapacity",
-            "Multiplier"
+            "Multiplier",
         };
 
         [ValueDropdown(nameof(TestList)), HorizontalGroup("row1", Width = 120), HideLabel]
@@ -141,6 +141,7 @@ namespace StarSalvager
 
                 case TEST_KEYS.Projectile:
                     return value;
+                
                 default:
                     throw new ArgumentOutOfRangeException(nameof(key), _out, null);
             }
@@ -206,6 +207,7 @@ namespace StarSalvager
 
                 case TEST_KEYS.Projectile:
                     return $"{_out} should be of type string";
+                
                 default:
                     throw new ArgumentOutOfRangeException(nameof(key), _out, null);
             }

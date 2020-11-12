@@ -433,20 +433,54 @@ namespace StarSalvager
                     botMoveOffScreenSpeed += Time.deltaTime * botMoveOffScreenSpeed * 2;
                 }
             }
+
             foreach (var bot in m_bots)
             {
                 bot.transform.position += Vector3.up * (botMoveOffScreenSpeed * Time.deltaTime);
-                float scale = Mathf.Lerp(1.0f, Globals.BotExitScreenMaxSize, (bot.transform.position.y - (Constants.gridCellSize * 5)) / (yPos - (Constants.gridCellSize * 5)));
+                float scale = Mathf.Lerp(1.0f, Globals.BotExitScreenMaxSize,
+                    (bot.transform.position.y - (Constants.gridCellSize * 5)) / (yPos - (Constants.gridCellSize * 5)));
                 bot.transform.localScale = new Vector2(scale, scale);
 
 
-                float distanceTrail = 6.0f;
-                if (ObstacleManager.RecoveredBotFalling != null && bot.transform.position.y >= ObstacleManager.RecoveredBotFalling.transform.position.y + distanceTrail)
+                const float distanceTrail = 6.0f;
+                if (ObstacleManager.RecoveredBotFalling != null && bot.transform.position.y >=
+                    ObstacleManager.RecoveredBotFalling.transform.position.y + distanceTrail)
                 {
+                    if (!ObstacleManager.RecoveredBotTowing)
+                        CreateTowEffect();
+
                     ObstacleManager.RecoveredBotTowing = true;
-                    ObstacleManager.RecoveredBotFalling.transform.position = bot.transform.position + (Vector3.down * distanceTrail);
+                    ObstacleManager.RecoveredBotFalling.transform.position =
+                        bot.transform.position + (Vector3.down * distanceTrail);
+
+                    UpdateTowLineRenderer(bot.transform.position,
+                        ObstacleManager.RecoveredBotFalling.transform.position);
                 }
             }
+        }
+
+        //====================================================================================================================//
+        
+        private LineRenderer _towLineRenderer;
+        private void CreateTowEffect()
+        {
+            _towLineRenderer = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreateEffect(EffectFactory.EFFECT.LINE).GetComponent<LineRenderer>();
+
+            _towLineRenderer.widthMultiplier = 0.2f;
+            _towLineRenderer.startColor = _towLineRenderer.endColor = Color.gray;
+        }
+
+        private void UpdateTowLineRenderer(Vector3 botPosition, Vector3 recoveryDronePosition)
+        {
+            if (!_towLineRenderer)
+                return;
+            
+            _towLineRenderer.SetPositions(new []
+            {
+                botPosition,
+                recoveryDronePosition
+            });
         }
 
         //====================================================================================================================//
@@ -593,6 +627,9 @@ namespace StarSalvager
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
             ProjectileManager.Reset();
             MissionsCompletedDuringThisFlight.Clear();
+            
+            if(_towLineRenderer)
+                Destroy(_towLineRenderer.gameObject);
         }
 
         public void ResetLevelTimer()
@@ -605,7 +642,7 @@ namespace StarSalvager
             Dictionary<int, float> tempResourceDictionary = new Dictionary<int, float>();
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
-                if (_bitType == BIT_TYPE.WHITE)
+                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
                 tempResourceDictionary.Add((int)_bitType, PlayerDataManager.GetResource(_bitType).resource);
@@ -876,7 +913,7 @@ namespace StarSalvager
 
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
-                if (_bitType == BIT_TYPE.WHITE)
+                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
                 LiquidResourcesCachedOnDeath.Add(_bitType, PlayerDataManager.GetResource(_bitType).liquid);
@@ -903,7 +940,7 @@ namespace StarSalvager
             Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
-                if (_bitType == BIT_TYPE.WHITE)
+                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
                 tempDictionary.Add((int)_bitType, PlayerDataManager.GetResource(_bitType).liquid);

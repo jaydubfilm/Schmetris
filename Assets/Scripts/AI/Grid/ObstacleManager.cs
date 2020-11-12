@@ -137,19 +137,7 @@ namespace StarSalvager
 
             if (!LevelManager.Instance.EndWaveState)
             {
-                if (m_bonusShapesSpawned < LevelManager.Instance.CurrentWaveData.BonusShapes.Count)
-                {
-                    m_bonusShapeTimer += Time.deltaTime;
-                    if (m_bonusShapeTimer >= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency)
-                    {
-                        m_bonusShapeTimer -= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency;
-                        StageObstacleShapeData bonusObstacleShapeData =
-                            LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
-                        SpawnBonusShape(bonusObstacleShapeData.SelectionType, bonusObstacleShapeData.ShapeName,
-                            bonusObstacleShapeData.Category, bonusObstacleShapeData.Rotation);
-                        m_bonusShapesSpawned++;
-                    }
-                }
+                TrySpawnBonusShape();
             }
 
             //Set the movement direction
@@ -565,6 +553,33 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
+
+
+        private void TrySpawnBonusShape()
+        {
+            if (m_bonusShapesSpawned >= LevelManager.Instance.CurrentWaveData.BonusShapes.Count) 
+                return;
+            
+            m_bonusShapeTimer += Time.deltaTime;
+            
+            if (!(m_bonusShapeTimer >= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency)) 
+                return;
+            
+            m_bonusShapeTimer -= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency;
+            
+            var bonusObstacleShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
+            
+            SpawnBonusShape(
+                bonusObstacleShapeData.SelectionType,
+                bonusObstacleShapeData.ShapeName,
+                bonusObstacleShapeData.Category,
+                bonusObstacleShapeData.Rotation);
+            
+            m_bonusShapesSpawned++;
+        }
+
+        //====================================================================================================================//
+        
 
         public void MoveToNewWave()
         {

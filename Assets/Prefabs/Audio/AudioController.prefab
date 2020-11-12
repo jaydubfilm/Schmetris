@@ -774,15 +774,15 @@ MonoBehaviour:
   - _sound: 37
     _clip: {fileID: 8300000, guid: b151e5ac18d68694fbaeea150c758b9e, type: 3}
   - _sound: 38
-    _clip: {fileID: 0}
+    _clip: {fileID: 8300000, guid: a9a823ca312aa69458975193f849a642, type: 3}
   - _sound: 39
-    _clip: {fileID: 0}
+    _clip: {fileID: 8300000, guid: ae9c805c74db1f9479c3c7e0a04cedd2, type: 3}
   - _sound: 40
-    _clip: {fileID: 0}
+    _clip: {fileID: 8300000, guid: f524e3515b4c6ef489ed45a1169b17f6, type: 3}
   - _sound: 41
-    _clip: {fileID: 0}
+    _clip: {fileID: 8300000, guid: bd31ac15fb48d4348b412a6dc09b27ff, type: 3}
   - _sound: 42
-    _clip: {fileID: 0}
+    _clip: {fileID: 8300000, guid: f2fd3da7db389f54196040b355554136, type: 3}
   musicMixerSnapshots:
   - {fileID: 24500006, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}
   - {fileID: -8389569066866548857, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}

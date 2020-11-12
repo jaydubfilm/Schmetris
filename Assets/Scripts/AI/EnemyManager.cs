@@ -352,6 +352,12 @@ namespace StarSalvager
             return closestEnemy;
         }
 
+        /// <summary>
+        /// Returns the closest active enemy in the range radius
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="range"></param>
+        /// <returns></returns>
         public Enemy GetClosestEnemy(Vector2 position, float range)
         {
             var shortestDist = 999f;

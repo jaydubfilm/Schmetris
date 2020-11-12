@@ -89,6 +89,54 @@ namespace StarSalvager.Prototype
 
         //====================================================================================================================//
 
+        public void SetAnimationTime(float animationTime)
+        {
+            this.animationTime = animationTime;
+        }
+
+
+        public void SetAllElementColors(Color startColor, Color endColor)
+        {
+            for (int i = 0; i < effectors.Length; i++)
+            {
+                SetElementColor(i, startColor, endColor);
+            }
+        }
+        
+        public void SetElementColor(int index, Color startColor, Color endColor)
+        {
+            var effector = effectors[index];
+            
+            if(!effector.useColor)
+                return;
+            
+            effector.startColor = startColor;
+            effector.endColor = endColor;
+        }
+
+        //====================================================================================================================//
+
+        public void SetAllElementScales(Vector2 startScale, Vector2 endScale)
+        {
+            for (int i = 0; i < effectors.Length; i++)
+            {
+                SetElementScale(i, startScale, endScale);
+            }
+        }
+        
+        public void SetElementScale(int index, Vector2 startScale, Vector2 endScale)
+        {
+            var effector = effectors[index];
+            
+            if(!effector.useScale)
+                return;
+            
+            effector.startScale = startScale;
+            effector.endScale = endScale;
+        }
+
+        //====================================================================================================================//
+        
         [Button, PropertyOrder(-1000), DisableInEditorMode]
         private void TestPlay()
         {

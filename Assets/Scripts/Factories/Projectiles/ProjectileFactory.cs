@@ -5,6 +5,7 @@ using StarSalvager.ScriptableObjects;
 using StarSalvager.AI;
 using Recycling;
 using StarSalvager.Factories.Data;
+using StarSalvager.Projectiles;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
@@ -178,32 +179,31 @@ namespace StarSalvager.Factories
         {
             var spreadAngle = profileData.SpreadAngle;
             var sprayCount = profileData.SprayCount;
-            var attackType = profileData.AttackType;
+            var fireType = profileData.FireType;
 
             Vector2 shootAt;
 
             var fireDirections = new List<Vector2>();
 
-            switch (attackType)
+            switch (fireType)
             {
                 //----------------------------------------------------------------------------------------------------//
-                case ENEMY_ATTACKTYPE.Forward:
-                case ENEMY_ATTACKTYPE.AtPlayer:
-                case ENEMY_ATTACKTYPE.Heat_Seeking:
+                case FIRE_TYPE.FORWARD:
+                case FIRE_TYPE.HEAT_SEEKING:
                     fireDirections.Add(shootDirection);
                     break;
                 //----------------------------------------------------------------------------------------------------//
-                case ENEMY_ATTACKTYPE.AtPlayerCone:
+                /*case FIRE_TYPE.FIXED_SPRAY:
                     //Rotate player position around enemy position slightly by a random angle to shoot somewhere in a cone around the player
                     fireDirections.Add(GetDestinationForRotatePositionAroundPivot(targetPosition, fromPosition,
                         Vector3.forward * Random.Range(-spreadAngle, spreadAngle)) - (Vector3) fromPosition);
-                    break;
+                    break;*/
                 //----------------------------------------------------------------------------------------------------//
-                case ENEMY_ATTACKTYPE.Down:
+                /*case FIRE_TYPE.Down:
                     fireDirections.Add(Vector3.down);
-                    break;
+                    break;*/
                 //----------------------------------------------------------------------------------------------------//
-                case ENEMY_ATTACKTYPE.Random_Spray:
+                case FIRE_TYPE.RANDOM_SPRAY:
                     shootAt = fromPosition + shootDirection;
                     //For each shot in the spray, rotate player position around enemy position slightly by a random angle to shoot somewhere in a cone around the player
                     for (var i = 0; i < sprayCount; i++)
@@ -215,7 +215,7 @@ namespace StarSalvager.Factories
                     }
 
                     break;
-                case ENEMY_ATTACKTYPE.Fixed_Spray:
+                case FIRE_TYPE.FIXED_SPRAY:
                     shootAt = fromPosition + shootDirection;
                     var angleRate = spreadAngle / (sprayCount - 1);
                     var splitAngle = spreadAngle / 2f;
@@ -229,14 +229,13 @@ namespace StarSalvager.Factories
                     
                     break;
                 //----------------------------------------------------------------------------------------------------//
-                case ENEMY_ATTACKTYPE.Spiral:
+                case FIRE_TYPE.SPIRAL:
                     //Consult spiral formula to get the angle to shoot the next shot at
                     //fireDirections.Add(GetSpiralAttackDirection(fromPosition, ref TEMP_SPIRAL));
                     throw new NotImplementedException("This needs work, consult Alex's if attempting to use this");
-                    break;
                 //----------------------------------------------------------------------------------------------------//
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(attackType), attackType, null);
+                    throw new ArgumentOutOfRangeException(nameof(fireType), fireType, null);
                 //----------------------------------------------------------------------------------------------------//
             }
 
@@ -244,14 +243,14 @@ namespace StarSalvager.Factories
         }
 
         //Get the location that enemy is firing at, then create the firing projectile from the factory
-        private static Vector2 GetSpiralAttackDirection(Vector2 fromPosition, ref Vector2 spiralAttackDirection)
+        /*private static Vector2 GetSpiralAttackDirection(Vector2 fromPosition, ref Vector2 spiralAttackDirection)
         {
             spiralAttackDirection =
                 GetDestinationForRotatePositionAroundPivot(spiralAttackDirection + fromPosition,
                     fromPosition, Vector3.forward * 30) - (Vector3)fromPosition;
 
             return spiralAttackDirection;
-        }
+        }*/
         
         //Rotate point around pivot by angles amount
         private static Vector3 GetDestinationForRotatePositionAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
@@ -261,7 +260,7 @@ namespace StarSalvager.Factories
             return direction + pivot;
         }
         
-        private static Vector3 GetDestinationForRotatePositionAroundPivotAtDistance(Vector3 point, Vector3 pivot,
+        /*private static Vector3 GetDestinationForRotatePositionAroundPivotAtDistance(Vector3 point, Vector3 pivot,
             Vector3 angles, float distance)
         {
             Vector3 direction = point - pivot;
@@ -269,7 +268,7 @@ namespace StarSalvager.Factories
             direction *= distance;
             direction = Quaternion.Euler(angles) * direction;
             return direction + pivot;
-        }
+        }*/
     }
 }
 

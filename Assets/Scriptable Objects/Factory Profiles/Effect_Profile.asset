@@ -26,6 +26,23 @@ MonoBehaviour:
     type: 3}
   explosionEffectPrefab: {fileID: 2165056553181583225, guid: b44088c05643106409287cb77e8c56f6,
     type: 3}
+  mergeEffectPrefab: {fileID: 3807654637103170005, guid: 72eb08c420eb02b4fadf0baccdc1dfdf,
+    type: 3}
+  lineRendererPrefab: {fileID: 436994220410373860, guid: 7ba59dd502de9ac42baa1ce1e3882565,
+    type: 3}
+  trailRendererPrefab: {fileID: 8521025257017661423, guid: 939fd1655fe07734abf182330fdf87cb,
+    type: 3}
+  tripleTurretSprite: {fileID: 21300000, guid: 4e41c8224e17a924388cfd96022b148e, type: 3}
+  repairEffectPrefab: {fileID: 1166414769957300450, guid: 1155e00c8911b4a4489e6d0f41f7f7f5,
+    type: 3}
+  refinerEffectPrefab: {fileID: 3620216826289945778, guid: 08536ca0870ccac478d0d0c4d4855233,
+    type: 3}
+  boostRateEffectPrefab: {fileID: 4988503831258076327, guid: 61155e2624e42c641845d891c04bc159,
+    type: 3}
+  gunEffectPrefab: {fileID: 5867005859306974768, guid: c5057bf223f798c44afaafa78f87e25f,
+    type: 3}
+  shockwaveEffectPrefab: {fileID: 2720145993455503049, guid: 3771c2b4c34de2a46b4a811f4cff2532,
+    type: 3}
   labelPrefab: {fileID: 9099319384489682599, guid: 8a229f5344f29bc42a484ccc31bdec75,
     type: 3}
   floatingTextPrefab: {fileID: 1209333815536603345, guid: 7431c86c30856054c909791de5d76629,

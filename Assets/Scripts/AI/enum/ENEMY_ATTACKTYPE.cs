@@ -2,7 +2,7 @@
 
 namespace StarSalvager.AI
 {
-    [Serializable]
+    [Serializable, Obsolete("Use FIRE_TYPE instead")]
     public enum ENEMY_ATTACKTYPE : int
     {
         None = 6 ,

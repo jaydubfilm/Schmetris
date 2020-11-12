@@ -13,17 +13,56 @@ MonoBehaviour:
   m_Name: Mission_Remote
   m_EditorClassIdentifier: 
   m_missionRemoteData:
-  - MissionID: 1e95753c-4321-47a3-9992-6e83534294c8
-    MissionType: 1
-    MissionName: Collect 20 greyscale bits
-    MissionDescription: Collect 20 greyscale bits by sticking them to your bot.
-    MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
-      SectorUnlockNumber: 0
-      MissionUnlockName: 
-    AmountNeeded: 20
+  - MissionID: 42d75534-6254-42b0-8740-597da26037cb
+    MissionType: 9
+    MissionName: Complete any wave
+    MissionDescription: Completet any wave!
+    MissionUnlockParameters: []
+    AmountNeeded: 0
     AnyResourceType: 0
-    ResourceType: 3
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 1
+    BonusShapeNumber: 0
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+    maxDrops: 1
+    RDSLoot:
+    - rdsData: 6
+      type: 0
+      amount: 0
+      level: 0
+      probability: 0
+      isGearRange: 0
+      gearValue: 100
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+  - MissionID: e688fab8-d276-473e-a9e0-751a73ce6232
+    MissionType: 6
+    MissionName: Bump a pulsar
+    MissionDescription: Shift bits around your drone by bumping a white 'pulsar'
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      MissionUnlockName: 42d75534-6254-42b0-8740-597da26037cb
+    AmountNeeded: 1
+    AnyResourceType: 0
+    ResourceType: 0
     AnyComponentType: 0
     ComponentType: 0
     ComboLevel: 0
@@ -51,54 +90,18 @@ MonoBehaviour:
       level: 0
       probability: 0
       isGearRange: 0
-      gearValue: 10
-      gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-  - MissionID: 842836bf-9aa3-4173-81b9-0a5663e5ab06
-    MissionType: 11
-    MissionName: Fly for 90 seconds
-    MissionDescription: Fly for 90 seconds without returning to base.
-    MissionUnlockParameters: []
-    AmountNeeded: 0
-    AnyResourceType: 0
-    ResourceType: 0
-    AnyComponentType: 0
-    ComponentType: 0
-    ComboLevel: 0
-    IsAdvancedCombo: 0
-    AnyEnemyType: 0
-    EnemyType: 
-    SectorNumber: 0
-    WaveNumber: 0
-    BonusShapeNumber: 0
-    PartType: 0
-    PartLevel: 0
-    FacilityType: 0
-    FacilityLevel: 0
-    PlayerLevel: 0
-    ThroughPart: 0
-    OrphanBit: 0
-    HasCombos: 0
-    FlightLength: 90
-    IsFromEnemyLoot: 0
-    maxDrops: 0
-    RDSLoot:
-    - rdsData: 6
-      type: 0
-      amount: 0
-      level: 0
-      probability: 0
-      isGearRange: 0
-      gearValue: 15
-      gearDropRange: {x: 15, y: 15}
+      gearValue: 50
+      gearDropRange: {x: 50, y: 50}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
   - MissionID: 3581e56a-ab74-40b1-9546-22f57c92efef
     MissionType: 3
     MissionName: Match 3 bits
-    MissionDescription: ' Match 3 bits'
-    MissionUnlockParameters: []
+    MissionDescription: Match 3 bits
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      MissionUnlockName: 42d75534-6254-42b0-8740-597da26037cb
     AmountNeeded: 1
     AnyResourceType: 1
     ResourceType: 0
@@ -129,21 +132,21 @@ MonoBehaviour:
       level: 0
       probability: 0
       isGearRange: 0
-      gearValue: 15
+      gearValue: 50
       gearDropRange: {x: 15, y: 15}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
-  - MissionID: 4e8c6dfa-c577-4921-accf-5241b7ce46aa
-    MissionType: 10
-    MissionName: Complete Sector 1
-    MissionDescription: Complete all waves in Sector 1
+  - MissionID: 1e95753c-4321-47a3-9992-6e83534294c8
+    MissionType: 1
+    MissionName: Collect 10 greyscale bits
+    MissionDescription: Collect 10 greyscale bits by sticking them to your bot.
     MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
+    - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      MissionUnlockName: 
-    AmountNeeded: 1
+      MissionUnlockName: 42d75534-6254-42b0-8740-597da26037cb
+    AmountNeeded: 10
     AnyResourceType: 0
-    ResourceType: 0
+    ResourceType: 3
     AnyComponentType: 0
     ComponentType: 0
     ComboLevel: 0
@@ -171,8 +174,8 @@ MonoBehaviour:
       level: 0
       probability: 0
       isGearRange: 0
-      gearValue: 25
-      gearDropRange: {x: 25, y: 25}
+      gearValue: 50
+      gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
   - MissionID: 8bf13add-01f8-44bd-91a8-fd330d72a92c
@@ -180,9 +183,9 @@ MonoBehaviour:
     MissionName: Craft a magnet
     MissionDescription: Craft a magnet to collect more materials
     MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
+    - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 1
-      MissionUnlockName: 
+      MissionUnlockName: 3581e56a-ab74-40b1-9546-22f57c92efef
     AmountNeeded: 1
     AnyResourceType: 0
     ResourceType: 0
@@ -213,60 +216,18 @@ MonoBehaviour:
       level: 0
       probability: 0
       isGearRange: 0
-      gearValue: 15
+      gearValue: 150
       gearDropRange: {x: 15, y: 15}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
-  - MissionID: efa428ed-1428-452b-bf88-19bb333d1f02
-    MissionType: 9
-    MissionName: Fly 3 waves in a row
-    MissionDescription: Complete three waves in a row without returning to base
+  - MissionID: 4e8c6dfa-c577-4921-accf-5241b7ce46aa
+    MissionType: 10
+    MissionName: Complete Sector 1
+    MissionDescription: Complete all waves in Sector 1
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      MissionUnlockName: Complete Sector 1
-    AmountNeeded: 0
-    AnyResourceType: 0
-    ResourceType: 0
-    AnyComponentType: 0
-    ComponentType: 0
-    ComboLevel: 0
-    IsAdvancedCombo: 0
-    AnyEnemyType: 0
-    EnemyType: 
-    SectorNumber: 0
-    WaveNumber: 3
-    BonusShapeNumber: 0
-    PartType: 0
-    PartLevel: 0
-    FacilityType: 0
-    FacilityLevel: 0
-    PlayerLevel: 0
-    ThroughPart: 0
-    OrphanBit: 0
-    HasCombos: 0
-    FlightLength: 0
-    IsFromEnemyLoot: 0
-    maxDrops: 1
-    RDSLoot:
-    - rdsData: 6
-      type: 0
-      amount: 0
-      level: 0
-      probability: 0
-      isGearRange: 0
-      gearValue: 50
-      gearDropRange: {x: 50, y: 50}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-  - MissionID: e688fab8-d276-473e-a9e0-751a73ce6232
-    MissionType: 6
-    MissionName: Bump a pulsar
-    MissionDescription: Shift bits around your drone by bumping a white 'pulsar'
-    MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
-      SectorUnlockNumber: 0
-      MissionUnlockName: 
+      MissionUnlockName: 3581e56a-ab74-40b1-9546-22f57c92efef
     AmountNeeded: 1
     AnyResourceType: 0
     ResourceType: 0
@@ -297,8 +258,95 @@ MonoBehaviour:
       level: 0
       probability: 0
       isGearRange: 0
-      gearValue: 50
-      gearDropRange: {x: 50, y: 50}
+      gearValue: 250
+      gearDropRange: {x: 25, y: 25}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+  - MissionID: cd105b59-16c1-43f7-aa81-a017377384c6
+    MissionType: 5
+    MissionName: Craft a gun
+    MissionDescription: Craft a gun part in the wreckshop
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      MissionUnlockName: 8bf13add-01f8-44bd-91a8-fd330d72a92c
+    AmountNeeded: 1
+    AnyResourceType: 0
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    BonusShapeNumber: 0
+    PartType: 4
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+    maxDrops: 1
+    RDSLoot:
+    - rdsData: 6
+      type: 0
+      amount: 0
+      level: 0
+      probability: 0
+      isGearRange: 0
+      gearValue: 150
+      gearDropRange: {x: 300, y: 300}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+  - MissionID: 020d7507-b997-41d7-bbff-921f40e58e73
+    MissionType: 13
+    MissionName: Upgrade refinery
+    MissionDescription: Upgrade your base's refinery facility
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      MissionUnlockName: 1e95753c-4321-47a3-9992-6e83534294c8
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      MissionUnlockName: 8bf13add-01f8-44bd-91a8-fd330d72a92c
+    AmountNeeded: 0
+    AnyResourceType: 0
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    BonusShapeNumber: 0
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 9
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+    maxDrops: 1
+    RDSLoot:
+    - rdsData: 6
+      type: 0
+      amount: 0
+      level: 0
+      probability: 0
+      isGearRange: 0
+      gearValue: 250
+      gearDropRange: {x: 250, y: 250}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
   - MissionID: e906d702-a1ad-4533-b0d8-48e27a399b8c
@@ -306,9 +354,9 @@ MonoBehaviour:
     MissionName: Kill a parasite
     MissionDescription: Kill a parasite
     MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
+    - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 1
-      MissionUnlockName: 
+      MissionUnlockName: cd105b59-16c1-43f7-aa81-a017377384c6
     AmountNeeded: 1
     AnyResourceType: 0
     ResourceType: 0
@@ -339,7 +387,7 @@ MonoBehaviour:
       level: 0
       probability: 0
       isGearRange: 0
-      gearValue: 100
+      gearValue: 200
       gearDropRange: {x: 100, y: 100}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
@@ -348,9 +396,9 @@ MonoBehaviour:
     MissionName: Kill an invader
     MissionDescription: Kill an invader
     MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
+    - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 1
-      MissionUnlockName: 
+      MissionUnlockName: cd105b59-16c1-43f7-aa81-a017377384c6
     AmountNeeded: 1
     AnyResourceType: 0
     ResourceType: 0
@@ -385,14 +433,56 @@ MonoBehaviour:
       gearDropRange: {x: 200, y: 200}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
+  - MissionID: efa428ed-1428-452b-bf88-19bb333d1f02
+    MissionType: 9
+    MissionName: Fly 3 waves in a row
+    MissionDescription: Complete three waves in a row without returning to base
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      MissionUnlockName: 4e8c6dfa-c577-4921-accf-5241b7ce46aa
+    AmountNeeded: 0
+    AnyResourceType: 0
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 3
+    BonusShapeNumber: 0
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+    maxDrops: 1
+    RDSLoot:
+    - rdsData: 6
+      type: 0
+      amount: 0
+      level: 0
+      probability: 0
+      isGearRange: 0
+      gearValue: 500
+      gearDropRange: {x: 50, y: 50}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
   - MissionID: ba172ac5-f96d-4e33-846e-b70df1c87e48
     MissionType: 6
     MissionName: Orphan a bit with a pulsar
     MissionDescription: Bump a white pulsar to remove bits from your drone
     MissionUnlockParameters:
-    - MissionUnlockType: Mission Complete
-      SectorUnlockNumber: 0
-      MissionUnlockName: Hit bumper
+    - MissionUnlockType: Level Complete
+      SectorUnlockNumber: 1
+      MissionUnlockName: e688fab8-d276-473e-a9e0-751a73ce6232
     AmountNeeded: 1
     AnyResourceType: 0
     ResourceType: 1
@@ -416,7 +506,17 @@ MonoBehaviour:
     FlightLength: 0
     IsFromEnemyLoot: 0
     maxDrops: 1
-    RDSLoot: []
+    RDSLoot:
+    - rdsData: 6
+      type: 0
+      amount: 0
+      level: 0
+      probability: 0
+      isGearRange: 0
+      gearValue: 50
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
   - MissionID: 4a1bd860-0a1f-4b77-befc-51ec54bba2a9
     MissionType: 1
     MissionName: Collect 20 greenium bits
@@ -466,7 +566,7 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      MissionUnlockName: Mission 3
+      MissionUnlockName: 4a1bd860-0a1f-4b77-befc-51ec54bba2a9
     AmountNeeded: 1
     AnyResourceType: 1
     ResourceType: 0
@@ -491,14 +591,56 @@ MonoBehaviour:
     IsFromEnemyLoot: 0
     maxDrops: 1
     RDSLoot:
-    - rdsData: 1
-      type: 2
+    - rdsData: 6
+      type: 0
       amount: 0
       level: 0
       probability: 0
       isGearRange: 0
       gearValue: 500
       gearDropRange: {x: 500, y: 500}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+  - MissionID: bb754be9-3993-49ec-8c37-ddd64c964f3d
+    MissionType: 10
+    MissionName: Complete Sector 2
+    MissionDescription: Complete all waves in Sector 2
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      MissionUnlockName: 4e8c6dfa-c577-4921-accf-5241b7ce46aa
+    AmountNeeded: 0
+    AnyResourceType: 0
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 1
+    WaveNumber: 0
+    BonusShapeNumber: 0
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 0
+    IsFromEnemyLoot: 0
+    maxDrops: 1
+    RDSLoot:
+    - rdsData: 6
+      type: 0
+      amount: 0
+      level: 0
+      probability: 0
+      isGearRange: 0
+      gearValue: 350
+      gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
   - MissionID: 10f9f0c0-418a-426c-80a3-6ab8d65756ec
@@ -508,13 +650,10 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      MissionUnlockName: Kill a parasite
+      MissionUnlockName: e906d702-a1ad-4533-b0d8-48e27a399b8c
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      MissionUnlockName: Kill an invader
-    - MissionUnlockType: Level Complete
-      SectorUnlockNumber: 2
-      MissionUnlockName: 
+      MissionUnlockName: add6ce90-b614-49b9-a4cb-2f33d45f5a05
     AmountNeeded: 5
     AnyResourceType: 0
     ResourceType: 0
@@ -556,7 +695,7 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      MissionUnlockName: Orphan a bit with a bumper
+      MissionUnlockName: ba172ac5-f96d-4e33-846e-b70df1c87e48
     AmountNeeded: 1
     AnyResourceType: 0
     ResourceType: 1
@@ -591,15 +730,57 @@ MonoBehaviour:
       gearDropRange: {x: 200, y: 200}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
+  - MissionID: 842836bf-9aa3-4173-81b9-0a5663e5ab06
+    MissionType: 11
+    MissionName: Fly for 200 seconds
+    MissionDescription: Fly for 200 seconds without returning to base.
+    MissionUnlockParameters:
+    - MissionUnlockType: Mission Complete
+      SectorUnlockNumber: 0
+      MissionUnlockName: bb754be9-3993-49ec-8c37-ddd64c964f3d
+    AmountNeeded: 0
+    AnyResourceType: 0
+    ResourceType: 0
+    AnyComponentType: 0
+    ComponentType: 0
+    ComboLevel: 0
+    IsAdvancedCombo: 0
+    AnyEnemyType: 0
+    EnemyType: 
+    SectorNumber: 0
+    WaveNumber: 0
+    BonusShapeNumber: 0
+    PartType: 0
+    PartLevel: 0
+    FacilityType: 0
+    FacilityLevel: 0
+    PlayerLevel: 0
+    ThroughPart: 0
+    OrphanBit: 0
+    HasCombos: 0
+    FlightLength: 90
+    IsFromEnemyLoot: 0
+    maxDrops: 0
+    RDSLoot:
+    - rdsData: 6
+      type: 0
+      amount: 0
+      level: 0
+      probability: 0
+      isGearRange: 0
+      gearValue: 200
+      gearDropRange: {x: 15, y: 15}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
   - MissionID: 79a85ec5-cc96-48dd-862c-791919cba7b6
     MissionType: 12
     MissionName: Match a bonus shape
     MissionDescription: Duplicate the pattern and rotation of a passing bonus shape
       to upgrade bits and gain rewards!
     MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
+    - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      MissionUnlockName: 
+      MissionUnlockName: 3581e56a-ab74-40b1-9546-22f57c92efef
     AmountNeeded: 1
     AnyResourceType: 0
     ResourceType: 0
@@ -641,7 +822,7 @@ MonoBehaviour:
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
-      MissionUnlockName: 79a85ec5-cc96-48dd-862c-791919cba7b6
+      MissionUnlockName: 4e8c6dfa-c577-4921-accf-5241b7ce46aa
     AmountNeeded: 2
     AnyResourceType: 0
     ResourceType: 0
@@ -676,56 +857,14 @@ MonoBehaviour:
       gearDropRange: {x: 250, y: 250}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
-  - MissionID: 020d7507-b997-41d7-bbff-921f40e58e73
-    MissionType: 13
-    MissionName: Upgrade refinery
-    MissionDescription: Upgrade your base's refinery facility to rank 2
-    MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
-      SectorUnlockNumber: 2
-      MissionUnlockName: 
-    AmountNeeded: 0
-    AnyResourceType: 0
-    ResourceType: 0
-    AnyComponentType: 0
-    ComponentType: 0
-    ComboLevel: 0
-    IsAdvancedCombo: 0
-    AnyEnemyType: 0
-    EnemyType: 
-    SectorNumber: 0
-    WaveNumber: 0
-    BonusShapeNumber: 0
-    PartType: 0
-    PartLevel: 0
-    FacilityType: 9
-    FacilityLevel: 1
-    PlayerLevel: 0
-    ThroughPart: 0
-    OrphanBit: 0
-    HasCombos: 0
-    FlightLength: 0
-    IsFromEnemyLoot: 0
-    maxDrops: 1
-    RDSLoot:
-    - rdsData: 6
-      type: 0
-      amount: 0
-      level: 0
-      probability: 0
-      isGearRange: 0
-      gearValue: 250
-      gearDropRange: {x: 250, y: 250}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
   - MissionID: 059e9fd0-6921-43c9-bc00-48dabdaacf49
     MissionType: 14
-    MissionName: Reach Player Level 3
-    MissionDescription: Reach Player Level 3 by gaining 'gears'.
+    MissionName: Reach Player Level 10
+    MissionDescription: Reach Player Level 10 by gaining 'gears'.
     MissionUnlockParameters:
-    - MissionUnlockType: Level Complete
+    - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 2
-      MissionUnlockName: 
+      MissionUnlockName: 020d7507-b997-41d7-bbff-921f40e58e73
     AmountNeeded: 0
     AnyResourceType: 0
     ResourceType: 0
@@ -742,7 +881,7 @@ MonoBehaviour:
     PartLevel: 0
     FacilityType: 0
     FacilityLevel: 0
-    PlayerLevel: 3
+    PlayerLevel: 10
     ThroughPart: 0
     OrphanBit: 0
     HasCombos: 0
@@ -756,49 +895,7 @@ MonoBehaviour:
       level: 0
       probability: 0
       isGearRange: 0
-      gearValue: 300
-      gearDropRange: {x: 300, y: 300}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-  - MissionID: cd105b59-16c1-43f7-aa81-a017377384c6
-    MissionType: 5
-    MissionName: Craft a gun
-    MissionDescription: Craft a gun part in the wreckshop
-    MissionUnlockParameters:
-    - MissionUnlockType: Mission Complete
-      SectorUnlockNumber: 0
-      MissionUnlockName: 8bf13add-01f8-44bd-91a8-fd330d72a92c
-    AmountNeeded: 1
-    AnyResourceType: 0
-    ResourceType: 0
-    AnyComponentType: 0
-    ComponentType: 0
-    ComboLevel: 0
-    IsAdvancedCombo: 0
-    AnyEnemyType: 0
-    EnemyType: 
-    SectorNumber: 0
-    WaveNumber: 0
-    BonusShapeNumber: 0
-    PartType: 1
-    PartLevel: 0
-    FacilityType: 0
-    FacilityLevel: 0
-    PlayerLevel: 0
-    ThroughPart: 0
-    OrphanBit: 0
-    HasCombos: 0
-    FlightLength: 0
-    IsFromEnemyLoot: 0
-    maxDrops: 1
-    RDSLoot:
-    - rdsData: 6
-      type: 0
-      amount: 0
-      level: 0
-      probability: 0
-      isGearRange: 0
-      gearValue: 300
+      gearValue: 500
       gearDropRange: {x: 300, y: 300}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
