@@ -61,6 +61,9 @@ namespace StarSalvager.UI
         [SerializeField]
         private List<UniverseMapButton> universeMapButtons;
 
+        [SerializeField]
+        private Image dottedLineImage;
+
         private List<Image> connectionLines = new List<Image>();
 
         #endregion //Properties
@@ -266,21 +269,30 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        private void DrawConnection(int connectionStart, int connectionEnd, bool setHalfway, bool colourCyan = false)
+        private void DrawConnection(int connectionStart, int connectionEnd, bool dottedLine, bool colourCyan = false)
         {
-            GameObject newLine = new GameObject();
+            GameObject newLine;
+
+            if (dottedLine)
+            {
+                newLine = Instantiate(dottedLineImage).gameObject;
+            }
+            else
+            {
+                newLine = new GameObject();
+            }
 
             newLine.transform.parent = m_scrollRectArea.transform;
             newLine.transform.SetAsFirstSibling();
-            newLine.AddComponent<Image>();
+
+            if (!dottedLine)
+            {
+                newLine.AddComponent<Image>();
+            }
 
             Image newLineImage = newLine.GetComponent<Image>();
 
             newLineImage.transform.position = (universeMapButtons[connectionStart].transform.position + universeMapButtons[connectionEnd].transform.position) / 2;
-            if (setHalfway)
-            {
-                newLineImage.transform.position = (universeMapButtons[connectionStart].transform.position + newLineImage.transform.position) / 2;
-            }
 
             if (colourCyan)
             {
@@ -289,11 +301,6 @@ namespace StarSalvager.UI
 
             RectTransform newLineRectTransform = newLine.GetComponent<RectTransform>();
             newLineRectTransform.sizeDelta = new Vector2(Vector2.Distance(universeMapButtons[connectionStart].transform.position, universeMapButtons[connectionEnd].transform.position), 5);
-
-            if (setHalfway)
-            {
-                newLineRectTransform.sizeDelta = new Vector2(newLineRectTransform.sizeDelta.x / 2, newLineRectTransform.sizeDelta.y);
-            }
 
             newLineRectTransform.transform.right = (universeMapButtons[connectionStart].transform.position - universeMapButtons[connectionEnd].transform.position).normalized;
 
