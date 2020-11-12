@@ -160,13 +160,8 @@ namespace StarSalvager.UI.Scrapyard
         private void OnEnable()
         {
             Camera.onPostRender += _droneDesigner.DrawGL;
-
-            if (_droneDesigner._dismantleBin == null)
-            {
-                _droneDesigner._dismantleBin = Instantiate(_droneDesigner.dismantleBinPrefab);
-                _droneDesigner._dismantleBin.transform.position = new Vector2(10, 8);
-                _droneDesigner._dismantleBin.transform.parent = _droneDesigner.transform;
-            }
+            _droneDesigner.SetupDrone();
+            _droneDesigner.SetupDismantleBin();
 
             cameraScaleOnEnter = m_cameraZoomScaler.value;
 
@@ -184,9 +179,8 @@ namespace StarSalvager.UI.Scrapyard
         private void OnDisable()
         {
             Camera.onPostRender -= _droneDesigner.DrawGL;
-
-            GameObject.Destroy(_droneDesigner._dismantleBin);
-            _droneDesigner._dismantleBin = null;
+            _droneDesigner.RecycleDrone();
+            _droneDesigner.RecycleDismantleBin();
 
             m_cameraZoomScaler.value = cameraScaleOnEnter;
 
