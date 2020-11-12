@@ -99,7 +99,7 @@ MonoBehaviour:
   numCurrentTrackedMissionMax: 3
   onlyGetWaveLootOnce: 1
   recoveryOfDroneLocksHorizontalMovement: 1
-  shortcutJumpToAfter: 0
+  shortcutJumpToAfter: 1
   blueprintInitialData:
   - type: 4
     level: 0

@@ -152,7 +152,7 @@ namespace StarSalvager.Missions
                         missionUnlockData.Add(new LevelCompleteUnlockCheck(missionUnlockParameters.SectorUnlockNumber));
                         break;
                     case "Mission Complete":
-                        missionUnlockData.Add(new MissionCompleteUnlockCheck(missionUnlockParameters.MissionUnlockName));
+                        missionUnlockData.Add(new MissionCompleteUnlockCheck(missionUnlockParameters.GetMissionName()));
                         break;
                 }
             }

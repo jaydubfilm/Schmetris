@@ -40,5 +40,19 @@ namespace StarSalvager.Missions
             }
             return missionTypes;
         }
+
+        public string GetMissionName()
+        {
+            foreach (MissionRemoteData data in UnityEngine.Object.FindObjectOfType<FactoryManager>().MissionRemoteData.m_missionRemoteData)
+            {
+                if (data.MissionID == MissionUnlockName)
+                {
+                    return data.MissionName;
+                }
+            }
+
+            Debug.LogError("Can't find mission name for " + MissionUnlockName);
+            return string.Empty;
+        }
     }
 }
