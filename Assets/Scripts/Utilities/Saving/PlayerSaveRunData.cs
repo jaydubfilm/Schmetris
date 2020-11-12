@@ -82,7 +82,7 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public void SetupMap(List<Vector2Int> levelRingConnectsionsJson = null, List<int> shortcutNodes = null)
+        public void SetupMap(List<Vector2Int> levelRingConnectionsJson = null, List<int> shortcutNodes = null)
         {
             //TEMP
             if (!hasSetupConverter)
@@ -110,9 +110,10 @@ namespace StarSalvager.Utilities.Saving
             }
             //ENDTEMP
 
-            if (levelRingConnectsionsJson != null)
+            if (levelRingConnectionsJson != null)
             {
-                LevelRingConnectionsJson.AddRange(levelRingConnectsionsJson);
+                LevelRingConnectionsJson.Clear();
+                LevelRingConnectionsJson.AddRange(levelRingConnectionsJson);
             }
             if (shortcutNodes != null)
             {
