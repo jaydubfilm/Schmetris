@@ -329,7 +329,7 @@ namespace StarSalvager
                 AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);
             }
             
-            BotPartsLogic.UpdatePartsList();
+            BotPartsLogic.PopulatePartsList();
         }
 
 
@@ -1075,7 +1075,7 @@ namespace StarSalvager
                     if (core.Type == PART_TYPE.CORE)
                         Destroy("Core Destroyed");
                     else
-                        BotPartsLogic.UpdatePartsList();
+                        BotPartsLogic.PopulatePartsList();
                     break;
                 default:
                     RemoveAttachable(closestAttachable);
@@ -1241,7 +1241,7 @@ namespace StarSalvager
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
                     break;
                 case Part _ when updatePartList:
-                    BotPartsLogic.UpdatePartsList();
+                    BotPartsLogic.PopulatePartsList();
                     break;
 
                 //This can NEVER happen as Shape is not IAttachable
@@ -1309,7 +1309,7 @@ namespace StarSalvager
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
                     break;
                 case Part _ when updatePartList:
-                    BotPartsLogic.UpdatePartsList();
+                    BotPartsLogic.PopulatePartsList();
                     break;
             }
 
@@ -1415,7 +1415,7 @@ namespace StarSalvager
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
                     break;
                 case Part _ when updatePartList:
-                    BotPartsLogic.UpdatePartsList();
+                    BotPartsLogic.PopulatePartsList();
                     break;
             }
             
@@ -1470,7 +1470,7 @@ namespace StarSalvager
                     return;
             }
             
-            BotPartsLogic.ProcessBit(bit);
+            BotPartsLogic.ProcessBit((Part)part, bit);
             CheckForDisconnects();
         }
 
@@ -1790,7 +1790,7 @@ namespace StarSalvager
                     break;
                 case Part _:
                     DestroyAttachable<Part>(attachable);
-                    BotPartsLogic.UpdatePartsList();
+                    BotPartsLogic.PopulatePartsList();
                     break;
                 case EnemyAttachable _:
                     DestroyAttachable<EnemyAttachable>(attachable);
@@ -2888,6 +2888,7 @@ namespace StarSalvager
                     //time = 1f;
                     onDetach = () =>
                     {
+                        TryProcessDetachingBits(toDetach);
                         DetachBlocks(toDetach, true, true);
                         
                     };
@@ -2898,6 +2899,7 @@ namespace StarSalvager
                     //time = 0f;
                     onDetach = () =>
                     {
+                        TryProcessDetachingBits(toDetach);
                         DetachBlocks(toDetach, true, true);
                     };
                     break;
@@ -2907,6 +2909,7 @@ namespace StarSalvager
                     //time = 1f;
                     onDetach = () =>
                     {
+                        TryProcessDetachingBits(toDetach);
                         DetachBlocks(toDetach, true, true);
                     };
                     break;
@@ -2950,6 +2953,25 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             return true;
+        }
+
+        private void TryProcessDetachingBits(List<ICanDetach> toDetach)
+        {
+            if (toDetach.Count <= 0)
+                return;
+            
+            for (int i = toDetach.Count - 1; i >= 0; i--)
+            {
+                if (!(toDetach[i] is Bit bit)) 
+                    continue;
+
+                var core = attachedBlocks[0] as Part;
+                
+                if (_botPartsLogic.ProcessBit(core, bit) > 0)
+                {
+                    toDetach.RemoveAt(i);
+                }
+            }
         }
 
         private bool IsMagnetFull()

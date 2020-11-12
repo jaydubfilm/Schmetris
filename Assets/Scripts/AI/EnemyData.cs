@@ -5,6 +5,7 @@ using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.UI.Scrapyard;
 using StarSalvager.Factories;
+using StarSalvager.Projectiles;
 using StarSalvager.Utilities.Extensions;
 
 namespace StarSalvager
@@ -27,7 +28,8 @@ namespace StarSalvager
 
         public ENEMY_MOVETYPE MovementType { get; }
 
-        public ENEMY_ATTACKTYPE AttackType { get; }
+        public FIRE_TYPE FireType { get; }
+        public bool FireAtTarget { get; }
 
         public bool IgnoreObstacleAvoidance { get; }
 
@@ -64,7 +66,8 @@ namespace StarSalvager
         {
             ProjectileProfileData projectileProfileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(enemyProfileData.ProjectileType);
 
-            AttackType = projectileProfileData.AttackType;
+            FireType = projectileProfileData.FireType;
+            FireAtTarget = projectileProfileData.FireAtTarget;
             AddVelocityToProjectiles = projectileProfileData.AddVelocityToProjectiles;
             SpreadAngle = projectileProfileData.SpreadAngle;
             m_sprayCount = projectileProfileData.SprayCount;

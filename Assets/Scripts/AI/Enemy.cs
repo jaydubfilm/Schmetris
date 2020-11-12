@@ -11,6 +11,7 @@ using StarSalvager.Utilities;
 using System.Linq;
 using StarSalvager.Audio;
 using StarSalvager.Cameras;
+using StarSalvager.Projectiles;
 using StarSalvager.Utilities.Analytics;
 using Random = UnityEngine.Random;
 
@@ -96,7 +97,7 @@ namespace StarSalvager.AI
         protected virtual void Update()
         {
             //Count down fire timer. If ready to fire, call fireAttack()
-            if (m_enemyData.AttackType == ENEMY_ATTACKTYPE.None)
+            if (m_enemyData.FireType == FIRE_TYPE.NONE)
                 return;
 
             if (FreezeTime > 0)
@@ -169,30 +170,33 @@ namespace StarSalvager.AI
 
             Vector2 targetLocation;
             
-            switch (m_enemyData.AttackType)
+            switch (m_enemyData.FireType)
             {
-                case ENEMY_ATTACKTYPE.Forward:
-                    targetLocation = GetDestination();
-                    break;
-                case ENEMY_ATTACKTYPE.AtPlayer:
-                case ENEMY_ATTACKTYPE.AtPlayerCone:
-                case ENEMY_ATTACKTYPE.Random_Spray:
-                    targetLocation = playerLocation;
-                    break;
-                case ENEMY_ATTACKTYPE.Spiral:
-                case ENEMY_ATTACKTYPE.Down:
+                case FIRE_TYPE.SPIRAL:
                     targetLocation = Vector2.down;
                     break;
+                case FIRE_TYPE.FORWARD:
+                    targetLocation = Vector2.down;
+                    break;
+                case FIRE_TYPE.RANDOM_SPRAY:
+                case FIRE_TYPE.FIXED_SPRAY:
+                    targetLocation = playerLocation;
+                    break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(m_enemyData.AttackType), m_enemyData.AttackType, null);
+                    throw new ArgumentOutOfRangeException(nameof(m_enemyData.FireType), m_enemyData.FireType, null);
             }
+
+            Vector2 shootDirection = m_enemyData.FireAtTarget
+                ? (targetLocation - (Vector2) transform.position).normalized
+                : Vector2.down;
+
             
             FactoryManager.Instance.GetFactory<ProjectileFactory>()
                 .CreateObjects<Projectile>(
                     m_enemyData.ProjectileType, 
                     transform.position,
                     targetLocation,
-                    m_mostRecentMovementDirection * m_enemyData.MovementSpeed,
+                    shootDirection, /*m_mostRecentMovementDirection * m_enemyData.MovementSpeed,*/
                     m_enemyData.AttackDamage,
                     1f,
                     "Player");

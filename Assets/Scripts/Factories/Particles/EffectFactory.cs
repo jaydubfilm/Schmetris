@@ -22,6 +22,17 @@ namespace StarSalvager.Factories
             LINE,
             TRAIL
         }
+
+        public enum PART_EFFECT
+        {
+            REPAIR,
+            REFINER,
+            RATE_BOOST,
+            GUN,
+            TRIPLE_SHOT,
+            BOMB,
+            FREEZE
+        }
         
         private readonly EffectProfileScriptableObject _effectProfileScriptableObject;
         /*private readonly GameObject _explosionPrefab;
@@ -128,6 +139,40 @@ namespace StarSalvager.Factories
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(effect), effect, null);
+            }
+            
+            return gameObject;
+        }
+        
+        public GameObject CreatePartEffect(PART_EFFECT partEffect)
+        {
+            GameObject gameObject;
+            
+            switch (partEffect)
+            {
+                case PART_EFFECT.REPAIR:
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.repairEffectPrefab);
+                    break;
+                case PART_EFFECT.REFINER:
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.refinerEffectPrefab);
+                    break;
+                case PART_EFFECT.RATE_BOOST:
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.boostRateEffectPrefab);
+                    break;
+                case PART_EFFECT.GUN:
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.gunEffectPrefab);
+                    break;
+                case PART_EFFECT.TRIPLE_SHOT:
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.gunEffectPrefab);
+                    gameObject.GetComponent<SpriteRenderer>().sprite =
+                        _effectProfileScriptableObject.tripleTurretSprite;
+                    break;
+                case PART_EFFECT.BOMB:
+                case PART_EFFECT.FREEZE:
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.shockwaveEffectPrefab);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(partEffect), partEffect, null);
             }
             
             return gameObject;

@@ -34,8 +34,16 @@ namespace StarSalvager.Editor
             [TableColumnWidth(70, Resizable = false)]
             public float hp;
 
+            [DisableIf("Lock")]
+            public int priority;
+
             [SuffixLabel("KW/sec", true)]
             public float powerDraw;
+
+            [DisableIf("Lock")]
+            public BIT_TYPE burnType;
+            [SuffixLabel("/sec", true), DisableIf("NoBurnType")]
+            public float burnRate;
             
             
             [TableColumnWidth(50, Resizable = false)]
@@ -59,7 +67,8 @@ namespace StarSalvager.Editor
             [GUIColor(1f,1f,0.35f)]
             public int yellow;
 
-            
+            public bool Lock => partLevel > 0;
+            public bool NoBurnType => burnType == BIT_TYPE.NONE;
         }
 
         private static PartCostBulkEditor _window;
@@ -93,9 +102,16 @@ namespace StarSalvager.Editor
                 
                 var lvlData = list.partRemoteData[partCostData.index].levels[partCostData.partLevel];
 
+                if (partCostData.partLevel == 0)
+                {
+                    list.partRemoteData[partCostData.index].priority = partCostData.priority;
+                    list.partRemoteData[partCostData.index].burnType = partCostData.burnType;
+                }
+
                 lvlData.health = partCostData.hp;
                 lvlData.powerDraw = partCostData.powerDraw;
                 lvlData.unlockLevel = partCostData.unlock;
+                lvlData.burnRate = partCostData.burnRate;
 
                 FillData(partCostData, ref lvlData);
 
@@ -153,6 +169,11 @@ namespace StarSalvager.Editor
                         
                         unlock = partRemoteData.levels[j].unlockLevel,
                         hp = partRemoteData.levels[j].health,
+                        
+                        priority = partRemoteData.priority,
+                        burnType = partRemoteData.burnType,
+                        
+                        burnRate = partRemoteData.levels[j].burnRate,
                         
                         powerDraw = partRemoteData.levels[j].powerDraw,
 

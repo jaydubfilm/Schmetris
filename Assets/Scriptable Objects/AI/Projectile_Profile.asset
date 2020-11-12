@@ -24,7 +24,8 @@ MonoBehaviour:
     m_projectileSpeed: 10
     m_projectileRange: 0
     m_requiredRotate: 1
-    m_attackType: 0
+    fireType: 2
+    fireTowardsTarget: 1
     m_spreadAngle: 0
     m_sprayCount: 0
     m_canHitAsteroids: 0
@@ -37,7 +38,8 @@ MonoBehaviour:
     m_projectileSpeed: 10
     m_projectileRange: 0
     m_requiredRotate: 0
-    m_attackType: 0
+    fireType: 2
+    fireTowardsTarget: 0
     m_spreadAngle: 0
     m_sprayCount: 0
     m_canHitAsteroids: 0
@@ -50,7 +52,8 @@ MonoBehaviour:
     m_projectileSpeed: 15
     m_projectileRange: 0
     m_requiredRotate: 0
-    m_attackType: 0
+    fireType: 2
+    fireTowardsTarget: 0
     m_spreadAngle: 0
     m_sprayCount: 0
     m_canHitAsteroids: 0
@@ -64,7 +67,8 @@ MonoBehaviour:
     m_projectileSpeed: 14
     m_projectileRange: 0
     m_requiredRotate: 0
-    m_attackType: 3
+    fireType: 2
+    fireTowardsTarget: 0
     m_spreadAngle: 0
     m_sprayCount: 0
     m_canHitAsteroids: 0
@@ -77,7 +81,8 @@ MonoBehaviour:
     m_projectileSpeed: 6
     m_projectileRange: 0
     m_requiredRotate: 0
-    m_attackType: 1
+    fireType: 2
+    fireTowardsTarget: 1
     m_spreadAngle: 0
     m_sprayCount: 0
     m_canHitAsteroids: 0
@@ -91,7 +96,8 @@ MonoBehaviour:
     m_projectileSpeed: 18
     m_projectileRange: 0
     m_requiredRotate: 0
-    m_attackType: 1
+    fireType: 2
+    fireTowardsTarget: 1
     m_spreadAngle: 0
     m_sprayCount: 0
     m_canHitAsteroids: 0
@@ -105,7 +111,8 @@ MonoBehaviour:
     m_projectileSpeed: 12
     m_projectileRange: 0
     m_requiredRotate: 0
-    m_attackType: 4
+    fireType: 3
+    fireTowardsTarget: 0
     m_spreadAngle: 45
     m_sprayCount: 3
     m_canHitAsteroids: 0
@@ -119,7 +126,8 @@ MonoBehaviour:
     m_projectileSpeed: 12
     m_projectileRange: 12
     m_requiredRotate: 1
-    m_attackType: 0
+    fireType: 2
+    fireTowardsTarget: 1
     m_spreadAngle: 0
     m_sprayCount: 0
     m_canHitAsteroids: 0
@@ -133,7 +141,8 @@ MonoBehaviour:
     m_projectileSpeed: 10
     m_projectileRange: 12
     m_requiredRotate: 1
-    m_attackType: 7
+    fireType: 4
+    fireTowardsTarget: 0
     m_spreadAngle: 60
     m_sprayCount: 3
     m_canHitAsteroids: 0
@@ -147,7 +156,8 @@ MonoBehaviour:
     m_projectileSpeed: 10
     m_projectileRange: 20
     m_requiredRotate: 0
-    m_attackType: 8
+    fireType: 5
+    fireTowardsTarget: 0
     m_spreadAngle: 0
     m_sprayCount: 0
     m_canHitAsteroids: 0
@@ -161,7 +171,8 @@ MonoBehaviour:
     m_projectileSpeed: 10
     m_projectileRange: 0
     m_requiredRotate: 1
-    m_attackType: 0
+    fireType: 2
+    fireTowardsTarget: 0
     m_spreadAngle: 0
     m_sprayCount: 0
     m_canHitAsteroids: 1
