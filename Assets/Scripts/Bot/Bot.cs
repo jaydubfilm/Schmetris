@@ -2957,17 +2957,19 @@ namespace StarSalvager
 
         private void TryProcessDetachingBits(List<ICanDetach> toDetach)
         {
-            if (toDetach.Count > 0)
+            if (toDetach.Count <= 0)
+                return;
+            
+            for (int i = toDetach.Count - 1; i >= 0; i--)
             {
-                for (int i = toDetach.Count - 1; i >= 0; i--)
+                if (!(toDetach[i] is Bit bit)) 
+                    continue;
+
+                var core = attachedBlocks[0] as Part;
+                
+                if (_botPartsLogic.ProcessBit(core, bit) > 0)
                 {
-                    if (toDetach[i] is Bit bit)
-                    {
-                        if (_botPartsLogic.ProcessBit(bit) > 0)
-                        {
-                            toDetach.RemoveAt(i);
-                        }
-                    }
+                    toDetach.RemoveAt(i);
                 }
             }
         }
