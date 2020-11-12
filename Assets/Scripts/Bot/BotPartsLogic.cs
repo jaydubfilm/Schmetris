@@ -1408,11 +1408,8 @@ namespace StarSalvager
                 .resources;
 
             PlayerResource playerResource = PlayerDataManager.GetResource(bitType);
-            var current = playerResource.resource;
-            var capacity = playerResource.resourceCapacity;
-
-            /*var current = PlayerPersistentData.PlayerData.liquidResource[bitType];
-            var capacity = PlayerPersistentData.PlayerData.liquidCapacity[bitType];*/
+            var current = playerResource.liquid;
+            var capacity = playerResource.liquidCapacity;
 
             //We wont add any if its already full!
             /*if (current + amountProcessed > capacity)
