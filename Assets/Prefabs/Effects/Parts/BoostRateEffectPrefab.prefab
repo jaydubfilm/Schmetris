@@ -68,7 +68,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 341895645
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: b3029fb78363a2e4d9d827ba2cc5a0d1, type: 3}
   m_Color: {r: 1, g: 0.59651405, b: 0.1745283, a: 1}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 4988503831258076324}
   - component: {fileID: 4988503831258076325}
   m_Layer: 0
-  m_Name: RateEffectPrefab
+  m_Name: BoostRateEffectPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animationTime: 2
-  looping: 0
+  looping: 1
   useGlobalScale: 0
   globalScaleSpeed: 1
   globalScaleCurve:
@@ -301,7 +301,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 341895645
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 517ce7732660441498de20bdf0725cc9, type: 3}
   m_Color: {r: 1, g: 0.55372715, b: 0, a: 1}

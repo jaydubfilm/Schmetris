@@ -205,7 +205,7 @@ namespace StarSalvager
             UpdateFacilityData();
             
             TryClearPartDictionaries();
-            CheckShouldCleanTurrets();
+            CheckShouldRecycleEffects();
 
             /*CheckIfShieldShouldRecycle();
             CheckIfFlashIconShouldRecycle();
@@ -392,6 +392,10 @@ namespace StarSalvager
                         if (ShouldUseGunTurret(levelData))
                             CreateTurretEffect(part);
                         break;
+                    
+                    case PART_TYPE.BOOSTRATE:
+                        CreateBoostRateEffect(part);
+                        break;
                 }
             }
 
@@ -410,6 +414,16 @@ namespace StarSalvager
                 {
                     var turret = kvp.Value.gameObject;
                     turret.GetComponent<SpriteRenderer>().color = kvp.Key.Disabled ? Color.gray : Color.white;
+                }
+            }
+            
+            if (!_boostEffects.IsNullOrEmpty())
+            {
+                var keys = new List<Part>(_boostEffects.Keys);
+                foreach (var key in keys.Where(key => key.Disabled || key.Destroyed))
+                {
+                    Destroy(_boostEffects[key]);
+                    _boostEffects.Remove(key);
                 }
             }
 
@@ -1472,9 +1486,11 @@ namespace StarSalvager
         #region Boosts
 
         //FIXME This is very efficient for finding the parts
-        private float GetBoostValue(PART_TYPE boostPart, Part fromPart)
+        private float GetBoostValue(PART_TYPE boostPart, in Part fromPart)
         {
-            var boosts = _parts.Where(x => x.Type == boostPart).ToList();
+            var boosts = _parts
+                .Where(x => !x.Disabled && !x.Destroyed && x.Type == boostPart)
+                .ToList();
 
             if (boosts.IsNullOrEmpty())
                 return 1f;
@@ -1505,7 +1521,7 @@ namespace StarSalvager
             return maxBoost * GetFacilityImprovement(FACILITY_TYPE.BOOSTIMPROVE);
         }
 
-        private float GetDefenseBoost(Part part)
+        private float GetDefenseBoost(in Part part)
         {
             if (part.Type != PART_TYPE.BOOSTDEFENSE)
                 return 0f;
@@ -1659,6 +1675,7 @@ namespace StarSalvager
         //Effects
         //====================================================================================================================//
 
+        private Dictionary<Part, GameObject> _boostEffects;
         private Dictionary<Part, GameObject> _repairEffects;
         private Dictionary<Part, Part> _repairTarget;
         
@@ -1766,6 +1783,22 @@ namespace StarSalvager
             
             _repairEffects.Add(part, effect);
         }
+        
+        private void CreateBoostRateEffect(in Part part)
+        {
+            if(_boostEffects.IsNullOrEmpty())
+                _boostEffects = new Dictionary<Part, GameObject>();
+
+            if (_boostEffects.ContainsKey(part))
+                return;
+            
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreatePartEffect(EffectFactory.PART_EFFECT.RATE_BOOST);
+            
+            effect.transform.SetParent(part.transform, false);
+            
+            _boostEffects.Add(part, effect);
+        }
 
         private void CleanEffects()
         {
@@ -1790,12 +1823,31 @@ namespace StarSalvager
                     Destroy(repair);
                 }
             }
+            
+            if (!_boostEffects.IsNullOrEmpty())
+            {
+                var effectsValues = _boostEffects.Values;
+
+                foreach (var boost in effectsValues)
+                {
+                    Destroy(boost);
+                }
+            }
 
         }
 
-        private void CheckShouldCleanTurrets()
+        private void CheckShouldRecycleEffects()
         {
             CheckShouldRecycle(ref _turrets, (Transform data) =>
+            {
+                Destroy(data.gameObject);
+            });
+            
+            CheckShouldRecycle(ref _repairEffects, (GameObject data) =>
+            {
+                Destroy(data.gameObject);
+            });
+            CheckShouldRecycle(ref _boostEffects, (GameObject data) =>
             {
                 Destroy(data.gameObject);
             });
