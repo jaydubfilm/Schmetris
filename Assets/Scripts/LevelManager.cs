@@ -642,7 +642,7 @@ namespace StarSalvager
             Dictionary<int, float> tempResourceDictionary = new Dictionary<int, float>();
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
-                if (_bitType == BIT_TYPE.WHITE)
+                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
                 tempResourceDictionary.Add((int)_bitType, PlayerDataManager.GetResource(_bitType).resource);
@@ -913,7 +913,7 @@ namespace StarSalvager
 
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
-                if (_bitType == BIT_TYPE.WHITE)
+                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
                 LiquidResourcesCachedOnDeath.Add(_bitType, PlayerDataManager.GetResource(_bitType).liquid);
@@ -940,7 +940,7 @@ namespace StarSalvager
             Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
-                if (_bitType == BIT_TYPE.WHITE)
+                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
                 tempDictionary.Add((int)_bitType, PlayerDataManager.GetResource(_bitType).liquid);

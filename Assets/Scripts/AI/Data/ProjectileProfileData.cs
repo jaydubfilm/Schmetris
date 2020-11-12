@@ -1,6 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using StarSalvager.AI;
+using StarSalvager.Projectiles;
 
 namespace StarSalvager.Factories.Data
 {
@@ -12,17 +13,18 @@ namespace StarSalvager.Factories.Data
         public string ProjectileTypeID => m_projectileTypeID;
 
         public Sprite Sprite => m_sprite;
-        
+
         public bool UseTrail => useTrail;
         public Color Color => color;
 
         public float ProjectileSpeed => m_projectileSpeed;
-        
+
         public float ProjectileRange => m_projectileRange;
 
         public bool RequiresRotation => m_requiredRotate;
 
-        public ENEMY_ATTACKTYPE AttackType => m_attackType;
+        public FIRE_TYPE FireType => fireType;
+        public bool FireAtTarget => fireTowardsTarget;
 
         public float SpreadAngle => m_spreadAngle;
 
@@ -51,16 +53,18 @@ namespace StarSalvager.Factories.Data
 
         [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
         private string m_projectileType;
-        
+
         [SerializeField, HorizontalGroup("$ProjectileType/row2/right/trail")]
         private bool useTrail;
+
         [SerializeField, HorizontalGroup("$ProjectileType/row2/right/trail"), HideLabel, EnableIf("useTrail")]
         private Color color = Color.white;
 
         [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
         private float m_projectileSpeed;
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right"), 
-         InfoBox("A value of 0 means that the projectile will continue until offscreen", VisibleIf = "noRange"), 
+
+        [SerializeField, VerticalGroup("$ProjectileType/row2/right"),
+         InfoBox("A value of 0 means that the projectile will continue until offscreen", VisibleIf = "noRange"),
          SuffixLabel("units", true)]
         private float m_projectileRange;
 
@@ -71,15 +75,21 @@ namespace StarSalvager.Factories.Data
 
         //====================================================================================================================//
 
+        /*[SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        private ENEMY_ATTACKTYPE m_attackType;*/
+        
         [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
-        private ENEMY_ATTACKTYPE m_attackType;
+        private FIRE_TYPE fireType;
+        
+        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        private bool fireTowardsTarget;
 
-        private bool showSpreadAngle => m_attackType == ENEMY_ATTACKTYPE.AtPlayerCone || showSprayCount;
-                                        
-        private bool showSprayCount => m_attackType == ENEMY_ATTACKTYPE.Random_Spray ||
-                                      m_attackType == ENEMY_ATTACKTYPE.Fixed_Spray;
-        
-        
+        private bool showSpreadAngle => fireType == FIRE_TYPE.FIXED_SPRAY || showSprayCount;
+
+        private bool showSprayCount => fireType == FIRE_TYPE.RANDOM_SPRAY ||
+                                       fireType == FIRE_TYPE.FIXED_SPRAY;
+
+
 
 
         [SerializeField, VerticalGroup("$ProjectileType/row2/right"), ShowIf(nameof(showSpreadAngle))]

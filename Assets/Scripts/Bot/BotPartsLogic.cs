@@ -385,8 +385,11 @@ namespace StarSalvager
                     case PART_TYPE.SNIPER:
                     case PART_TYPE.TRIPLESHOT:
                     case PART_TYPE.MISSILE:
+                        
                         _gunTargets.Add(part, null);
-                        CreateTurretEffect(part);
+                        
+                        if (ShouldUseGunTurret(levelData))
+                            CreateTurretEffect(part);
                         break;
                 }
             }
@@ -892,11 +895,11 @@ namespace StarSalvager
 
             var target = _gunTargets[part];
             
-            if (target && target.IsRecycled == false)
+            if (target && target.IsRecycled == false && _turrets.TryGetValue(part, out var turretTransform))
             {
                 var targetTransform = target.transform;
                 var normDirection = (targetTransform.position - part.transform.position).normalized;
-                _turrets[part].up = normDirection;
+                turretTransform.up = normDirection;
             }
             else if (target && target.IsRecycled)
             {
@@ -1099,7 +1102,7 @@ namespace StarSalvager
             }
         }
 
-        private void CreateProjectile(in Part part, PartLevelData levelData, in CollidableBase collidableTarget, string collisionTag = "Enemy")
+        private void CreateProjectile(in Part part, in PartLevelData levelData, in CollidableBase collidableTarget, string collisionTag = "Enemy")
         {
             var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
             var damage = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Damage);
@@ -1108,6 +1111,9 @@ namespace StarSalvager
             var rangeBoost = GetBoostValue(PART_TYPE.BOOSTRANGE, part);
 
             var position = part.transform.position;
+            var shootDirection = ShouldUseGunTurret(levelData)
+                ? (collidableTarget.transform.position - part.transform.position).normalized
+                : part.transform.up.normalized;
 
             //TODO Might need to add something to change the projectile used for each gun piece
             FactoryManager.Instance.GetFactory<ProjectileFactory>()
@@ -1115,14 +1121,14 @@ namespace StarSalvager
                     projectileId,
                     position,
                     collidableTarget,
-                    part.transform.up.normalized,
+                    shootDirection,
                     damage,
                     rangeBoost,
                     collisionTag,
                     true);
         }
 
-        private float GetProjectileRange(in Part part, string projectileID)
+        private float GetProjectileRange(in Part part, in string projectileID)
         {
             var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileID);
 
@@ -1136,11 +1142,19 @@ namespace StarSalvager
             return range * rangeBoost;
         }
 
+        private static bool ShouldUseGunTurret(in PartLevelData levelData)
+        {
+            var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
+            var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
+
+            return projectileData.FireAtTarget;
+        }
+
         #endregion //Weapons
 
         //============================================================================================================//
 
-        #region mart Weapons
+        #region Smart Weapons
 
         /// <summary>
         /// This should use values similar to an array (ie. starts at [0])
@@ -1312,7 +1326,7 @@ namespace StarSalvager
 
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
-                if (_bitType == BIT_TYPE.WHITE)
+                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
                 UpdateUI(_bitType, PlayerDataManager.GetResource(_bitType).liquid);

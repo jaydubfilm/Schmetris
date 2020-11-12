@@ -356,7 +356,7 @@ namespace StarSalvager.Utilities
                     {
                         foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
                         {
-                            if (_bitType == BIT_TYPE.WHITE)
+                            if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                                 continue;
 
                             PlayerDataManager.GetResource(_bitType).AddLiquid(floatAmount, false);
@@ -732,7 +732,7 @@ namespace StarSalvager.Utilities
                     {
                         foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
                         {
-                            if (_bitType == BIT_TYPE.WHITE)
+                            if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                                 continue;
 
                             PlayerDataManager.GetResource(_bitType).SetResource(intAmount, false);
@@ -818,7 +818,7 @@ namespace StarSalvager.Utilities
                     {
                         foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
                         {
-                            if (_bitType == BIT_TYPE.WHITE)
+                            if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                                 continue;
 
                             //TODO Alex B: This used to update both recovery and regular bot, now only does the current one

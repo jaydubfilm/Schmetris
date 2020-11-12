@@ -4,6 +4,7 @@ using System;
 using Recycling;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
+using StarSalvager.Projectiles;
 using StarSalvager.Utilities;
 
 namespace StarSalvager.AI
@@ -95,17 +96,14 @@ namespace StarSalvager.AI
         {
             var newPosition = transform.position;
 
-            switch (ProjectileData.AttackType)
+            switch (ProjectileData.FireType)
             {
                 //----------------------------------------------------------------------------------------------------//
 
-                case ENEMY_ATTACKTYPE.Forward:
-                case ENEMY_ATTACKTYPE.AtPlayer:
-                case ENEMY_ATTACKTYPE.AtPlayerCone:
-                case ENEMY_ATTACKTYPE.Down:
-                case ENEMY_ATTACKTYPE.Random_Spray:
-                case ENEMY_ATTACKTYPE.Spiral:
-                case ENEMY_ATTACKTYPE.Fixed_Spray:
+                case FIRE_TYPE.FORWARD:
+                case FIRE_TYPE.RANDOM_SPRAY:
+                case FIRE_TYPE.SPIRAL:
+                case FIRE_TYPE.FIXED_SPRAY:
                     newPosition +=
                         (EnemyVelocityModifier + TravelDirectionNormalized * ProjectileData.ProjectileSpeed) *
                         Time.deltaTime;
@@ -113,7 +111,7 @@ namespace StarSalvager.AI
 
                 //----------------------------------------------------------------------------------------------------//
 
-                case ENEMY_ATTACKTYPE.Heat_Seeking:
+                case FIRE_TYPE.HEAT_SEEKING:
 
                     if (_target != null)
                     {
@@ -138,7 +136,7 @@ namespace StarSalvager.AI
                 //----------------------------------------------------------------------------------------------------//
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(ProjectileData.AttackType), ProjectileData.AttackType,
+                    throw new ArgumentOutOfRangeException(nameof(ProjectileData.FireType), ProjectileData.FireType,
                         null);
             }
 

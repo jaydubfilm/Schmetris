@@ -605,7 +605,7 @@ namespace StarSalvager.UI.Scrapyard
             var resourceUIElements = new Dictionary<BIT_TYPE, ResourceUIElement>();
             foreach (BIT_TYPE type in Enum.GetValues(typeof(BIT_TYPE)))
             {
-                if (type == BIT_TYPE.WHITE)
+                if (type == BIT_TYPE.WHITE || type == BIT_TYPE.NONE)
                     continue;
                 resourceUIElements.Add(type, resourceScrollView.FindElement(x => x.type == type));
             }

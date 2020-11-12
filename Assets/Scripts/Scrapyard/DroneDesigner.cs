@@ -646,7 +646,7 @@ namespace StarSalvager
             Dictionary<BIT_TYPE, int> resourceComparer = new Dictionary<BIT_TYPE, int>();
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
-                if (_bitType == BIT_TYPE.WHITE)
+                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
                 resourceComparer.Add(_bitType, PlayerDataManager.GetResource(_bitType).resource);
@@ -691,7 +691,7 @@ namespace StarSalvager
             _currentLayout = tempLayout;
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
-                if (_bitType == BIT_TYPE.WHITE)
+                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
                 PlayerDataManager.GetResource(_bitType).SetResource(resourceComparer[_bitType]);
