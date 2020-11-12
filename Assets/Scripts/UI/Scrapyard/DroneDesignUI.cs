@@ -6,6 +6,7 @@ using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.UI;
@@ -158,6 +159,15 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnEnable()
         {
+            Camera.onPostRender += _droneDesigner.DrawGL;
+
+            if (_droneDesigner._dismantleBin == null)
+            {
+                _droneDesigner._dismantleBin = Instantiate(_droneDesigner.dismantleBinPrefab);
+                _droneDesigner._dismantleBin.transform.position = new Vector2(10, 8);
+                _droneDesigner._dismantleBin.transform.parent = _droneDesigner.transform;
+            }
+
             cameraScaleOnEnter = m_cameraZoomScaler.value;
 
             if (_scrollViewsSetup)
@@ -173,6 +183,11 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnDisable()
         {
+            Camera.onPostRender -= _droneDesigner.DrawGL;
+
+            GameObject.Destroy(_droneDesigner._dismantleBin);
+            _droneDesigner._dismantleBin = null;
+
             m_cameraZoomScaler.value = cameraScaleOnEnter;
 
             DroneDesigner?.ClearUndoRedoStacks();
@@ -420,7 +435,7 @@ namespace StarSalvager.UI.Scrapyard
                 };
 
                 if (_bitType == BIT_TYPE.YELLOW)
-                    Console.WriteLine("");
+                    System.Console.WriteLine("");
 
                 var element = liquidResourceContentView.AddElement(data, $"{_bitType}_UIElement");
                 element.Init(data, true);

@@ -43,14 +43,14 @@ namespace StarSalvager
         [SerializeField]
         private GameObject availablePointMarkerPrefab;
         [SerializeField]
-        private SpriteRenderer dismantleBinPrefab;
+        public SpriteRenderer dismantleBinPrefab;
 
         [NonSerialized]
         public bool IsUpgrading;
 
         private List<GameObject> _floatingPartWarnings;
         private List<GameObject> _availablePointMarkers;
-        private SpriteRenderer _dismantleBin;
+        public SpriteRenderer _dismantleBin;
 
         private Stack<ScrapyardEditData> _toUndoStack;
         private Stack<ScrapyardEditData> _toRedoStack;
@@ -101,8 +101,6 @@ namespace StarSalvager
 
         private void OnDestroy()
         {
-            //Camera.onPostRender -= DrawGL;
-
             DeInitInput();
         }
 
@@ -139,7 +137,6 @@ namespace StarSalvager
         public void Activate()
         {
             GameTimer.SetPaused(true);
-            //Camera.onPostRender += DrawGL;
 
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
 
@@ -157,29 +154,6 @@ namespace StarSalvager
 
             bool outOfWaterOnReturn = PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0;
             SellBits();
-            //TODO Need to decide if this should happen at arrival or at launch
-            //TryFillBotResources();
-
-            /*if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0)
-            {
-                Alert.ShowAlert("Game Over", "Your crew has died of thirst - Game Over. thx!", "Main Menu", () =>
-                {
-                    PlayerDataManager.ResetPlayerRunData();
-                    PlayerDataManager.ClearCurrentSaveFile();
-                    SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
-                });
-            }
-            else if (outOfWaterOnReturn)
-            {
-                Alert.ShowAlert("Water Restored", "You have resuscitated your thirsty crew.", "Phew!", null);
-            }*/
-
-            /*if (_dismantleBin == null)
-            {
-                _dismantleBin = Instantiate(dismantleBinPrefab);
-                _dismantleBin.transform.position = new Vector2(10, 10);
-                _dismantleBin.transform.parent = transform;
-            }*/
 
             UpdateFloatingMarkers(false);
             
