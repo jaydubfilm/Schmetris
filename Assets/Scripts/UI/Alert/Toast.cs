@@ -106,7 +106,7 @@ public class Toast : Singleton<Toast>
             Image.sprite = toast.sprite;
             Text.text = toast.Text;
             SetPosition(toastTransform, toast);
-
+            
             Image.gameObject.SetActive(toast.sprite != null);
             
             var t = 0f;

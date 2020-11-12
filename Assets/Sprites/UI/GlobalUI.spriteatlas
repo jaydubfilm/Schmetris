@@ -31,10 +31,14 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: a9d38963260bfa54d8cc12979b734551, type: 3}
-    totalSpriteSurfaceArea: 0
+    totalSpriteSurfaceArea: 17284
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
-  m_PackedSprites: []
-  m_PackedSpriteNamesToIndex: []
+  m_PackedSprites:
+  - {fileID: 21300000, guid: f96fecb3080db654793cdbcdb70be8c9, type: 3}
+  - {fileID: 21300000, guid: a74d1e14bb8791a41966e7bee187a901, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - ui_ORANGESCREEN_0_v1
+  - wavesummary_POLE_0_v1
   m_Tag: GlobalUI
   m_IsVariant: 0
