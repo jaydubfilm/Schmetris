@@ -51,7 +51,7 @@ public class LevelRingNodeTree
         int curIndex = 1;
         for (int i = 0; i < sector; i++)
         {
-            curIndex += FactoryManager.Instance.SectorRemoteData[i].GetNumberOfWaves();
+            curIndex += 5;
         }
         curIndex += wave;
 
