@@ -347,8 +347,8 @@ namespace StarSalvager.UI
                 universeMapButtons[i].WaveNumber = curWave;
                 universeMapButtons[i].Text.text = (curSector + 1) + "." + (curWave + 1);
                 universeMapButtons[i].SetupHoveredCallback(WaveHovered);
-                int numWavesInSector = FactoryManager.Instance.SectorRemoteData[curSector].GetNumberOfWaves();
-                if (curWave + 1 >= numWavesInSector)
+                //int numWavesInSector = FactoryManager.Instance.SectorRemoteData[curSector].GetNumberOfWaves();
+                if (curWave + 1 >= 5)
                 {
                     curSector++;
                     curWave = 0;
