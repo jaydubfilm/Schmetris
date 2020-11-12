@@ -160,8 +160,12 @@ namespace StarSalvager.Factories
                     gameObject = Object.Instantiate(_effectProfileScriptableObject.boostRateEffectPrefab);
                     break;
                 case PART_EFFECT.GUN:
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.gunEffectPrefab);
+                    break;
                 case PART_EFFECT.TRIPLE_SHOT:
                     gameObject = Object.Instantiate(_effectProfileScriptableObject.gunEffectPrefab);
+                    gameObject.GetComponent<SpriteRenderer>().sprite =
+                        _effectProfileScriptableObject.tripleTurretSprite;
                     break;
                 case PART_EFFECT.BOMB:
                 case PART_EFFECT.FREEZE:

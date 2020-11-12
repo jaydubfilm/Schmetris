@@ -46,7 +46,8 @@ namespace StarSalvager.ScriptableObjects
 
         //Part Effects
         //====================================================================================================================//
-        
+        [SerializeField, Required, BoxGroup("Part Effects")]
+        public Sprite tripleTurretSprite;
         [SerializeField, Required, BoxGroup("Part Effects")]
         public GameObject repairEffectPrefab;
         [SerializeField, Required, BoxGroup("Part Effects")]

@@ -205,6 +205,7 @@ namespace StarSalvager
             UpdateFacilityData();
             
             TryClearPartDictionaries();
+            CheckShouldCleanTurrets();
 
             /*CheckIfShieldShouldRecycle();
             CheckIfFlashIconShouldRecycle();
@@ -402,6 +403,16 @@ namespace StarSalvager
             {
                 PlayerDataManager.GetResource(capacity.Key).SetLiquidCapacity(capacity.Value);
             }
+
+            if (!_turrets.IsNullOrEmpty())
+            {
+                foreach (var kvp in _turrets)
+                {
+                    var turret = kvp.Value.gameObject;
+                    turret.GetComponent<SpriteRenderer>().color = kvp.Key.Disabled ? Color.gray : Color.white;
+                }
+            }
+
 
             bot.ForceCheckMagnets();
             GameUI.ShowLiquidSliders(usedResourceTypes);
@@ -1670,6 +1681,7 @@ namespace StarSalvager
             return _flashes[part];
         }
 
+        //FIXME The turret setup feels shit, need to clean this
         private void CreateTurretEffect(in Part part)
         {
             if(_turrets.IsNullOrEmpty())
@@ -1677,9 +1689,13 @@ namespace StarSalvager
 
             if (_turrets.ContainsKey(part))
                 return;
+
+            var partEffect = part.Type == PART_TYPE.TRIPLESHOT
+                ? EffectFactory.PART_EFFECT.TRIPLE_SHOT
+                : EffectFactory.PART_EFFECT.GUN;
             
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
-                .CreatePartEffect(EffectFactory.PART_EFFECT.GUN);
+                .CreatePartEffect(partEffect);
             
             effect.transform.SetParent(part.transform, false);
             
@@ -1758,6 +1774,9 @@ namespace StarSalvager
                 var turrets = _turrets.Values;
                 foreach (var turret in turrets)
                 {
+                    if(!turret)
+                        continue;
+                    
                     Destroy(turret.gameObject);
                 }
             }
@@ -1772,6 +1791,14 @@ namespace StarSalvager
                 }
             }
 
+        }
+
+        private void CheckShouldCleanTurrets()
+        {
+            CheckShouldRecycle(ref _turrets, (Transform data) =>
+            {
+                Destroy(data.gameObject);
+            });
         }
 
         //Coroutines
