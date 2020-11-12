@@ -2888,6 +2888,7 @@ namespace StarSalvager
                     //time = 1f;
                     onDetach = () =>
                     {
+                        TryProcessDetachingBits(toDetach);
                         DetachBlocks(toDetach, true, true);
                         
                     };
@@ -2898,6 +2899,7 @@ namespace StarSalvager
                     //time = 0f;
                     onDetach = () =>
                     {
+                        TryProcessDetachingBits(toDetach);
                         DetachBlocks(toDetach, true, true);
                     };
                     break;
@@ -2907,6 +2909,7 @@ namespace StarSalvager
                     //time = 1f;
                     onDetach = () =>
                     {
+                        TryProcessDetachingBits(toDetach);
                         DetachBlocks(toDetach, true, true);
                     };
                     break;
@@ -2950,6 +2953,23 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             return true;
+        }
+
+        private void TryProcessDetachingBits(List<ICanDetach> toDetach)
+        {
+            if (toDetach.Count > 0)
+            {
+                for (int i = toDetach.Count - 1; i >= 0; i--)
+                {
+                    if (toDetach[i] is Bit bit)
+                    {
+                        if (_botPartsLogic.ProcessBit(bit) > 0)
+                        {
+                            toDetach.RemoveAt(i);
+                        }
+                    }
+                }
+            }
         }
 
         private bool IsMagnetFull()
