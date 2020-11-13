@@ -248,7 +248,7 @@ namespace StarSalvager
                     {
                         var blockData = SelectedBrick.Value;
                         
-                        Toast.AddToast("Dismantle part", verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
+                        Toast.AddToast("Dismantle part");
 
 
                         PlayerDataManager.AddPartResources(SelectedBrick.Value, true);

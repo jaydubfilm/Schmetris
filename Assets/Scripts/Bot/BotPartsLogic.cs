@@ -685,6 +685,7 @@ namespace StarSalvager
         {
             if (bot.PROTO_GodMode) 
                 return;
+            
             powerValue -= powerToRemove;
             if (powerValue < 0)
                 powerValue = 0f;
