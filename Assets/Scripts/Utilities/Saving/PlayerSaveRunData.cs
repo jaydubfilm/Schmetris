@@ -334,7 +334,7 @@ namespace StarSalvager.Utilities.Saving
 
         public void SaveData()
         {
-            LevelRingConnectionsJson = LevelRingNodeTree.ConvertNodeTreeIntoConnections();
+            //LevelRingConnectionsJson = LevelRingNodeTree.ConvertNodeTreeIntoConnections();
         }
     }
 }
