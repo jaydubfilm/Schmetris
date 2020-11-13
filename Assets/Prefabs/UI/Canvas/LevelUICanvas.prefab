@@ -1135,6 +1135,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2835911641826685085}
   - component: {fileID: 2153722230073794470}
+  - component: {fileID: 6635082722733146379}
   - component: {fileID: 7654145164560536635}
   m_Layer: 0
   m_Name: ScrollingMissionsText
@@ -1170,6 +1171,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8250838378850607614}
   m_CullTransparentMesh: 0
+--- !u!114 &6635082722733146379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8250838378850607614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25353e05f01a703418c44465b9d95d64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  underlayColor: {r: 0, g: 0, b: 0, a: 1}
+  underlayOffset: 0.06
 --- !u!114 &7654145164560536635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1191,8 +1206,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: fc2808391d940cb42a9ef44bffae2487, type: 2}
-  m_sharedMaterial: {fileID: -8304808927669992072, guid: fc2808391d940cb42a9ef44bffae2487,
+  m_fontAsset: {fileID: 11400000, guid: 101133d00cd1e5b4ca9a92b7c941684d, type: 2}
+  m_sharedMaterial: {fileID: -8304808927669992072, guid: 101133d00cd1e5b4ca9a92b7c941684d,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

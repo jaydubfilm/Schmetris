@@ -10910,6 +10910,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6409830575362164653}
   - component: {fileID: 124338900202346074}
+  - component: {fileID: 3526031794750971928}
   - component: {fileID: 5803919706334188715}
   m_Layer: 5
   m_Name: Text (TMP)
@@ -10945,6 +10946,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5164112302783208388}
   m_CullTransparentMesh: 0
+--- !u!114 &3526031794750971928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5164112302783208388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25353e05f01a703418c44465b9d95d64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  underlayColor: {r: 0.4117647, g: 0.22745098, b: 0.003921569, a: 1}
+  underlayOffset: 0.06
 --- !u!114 &5803919706334188715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10974,8 +10989,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4284479484
+  m_fontColor: {r: 0.9882353, g: 0.96862745, b: 0.37254903, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -14736,13 +14751,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.90099996, g: 0.43586504, b: 0.10599999, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8079271155fa6ed42acc9e9c546cc99b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 006d7f586ee6e7f4ba086bb4c444dc70, type: 3}
   m_Type: 2
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -14751,7 +14766,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 2.9
+  m_PixelsPerUnitMultiplier: 1.3
 --- !u!1 &7210874252086896128
 GameObject:
   m_ObjectHideFlags: 0
@@ -21126,15 +21141,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2317dbd4d709124b99dbb1d004673e3, type: 3}
---- !u!224 &3729517700913568919 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5392352888635155822, guid: c2317dbd4d709124b99dbb1d004673e3,
-    type: 3}
-  m_PrefabInstance: {fileID: 8724762166916971001}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2069346574856596502 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7323802190393759215, guid: c2317dbd4d709124b99dbb1d004673e3,
+    type: 3}
+  m_PrefabInstance: {fileID: 8724762166916971001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &3729517700913568919 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5392352888635155822, guid: c2317dbd4d709124b99dbb1d004673e3,
     type: 3}
   m_PrefabInstance: {fileID: 8724762166916971001}
   m_PrefabAsset: {fileID: 0}

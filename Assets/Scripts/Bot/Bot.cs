@@ -2966,8 +2966,10 @@ namespace StarSalvager
                     continue;
 
                 var core = attachedBlocks[0] as Part;
+
+                float resourceCapacityLiquid = PlayerDataManager.GetResource(bit.Type).liquidCapacity;
                 
-                if (_botPartsLogic.ProcessBit(core, bit) > 0)
+                if (_botPartsLogic.ProcessBit(core, bit, resourceCapacityLiquid * Globals.GameUIResourceThreshold) > 0)
                 {
                     toDetach.RemoveAt(i);
                 }

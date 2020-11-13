@@ -138,7 +138,12 @@ namespace StarSalvager.UI
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
                 LevelManager.Instance.EndWaveState = false;
-                SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
+                
+                
+                ScreenFade.Fade(() =>
+                {
+                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
+                });
             });
 
             betweenWavesScrapyardButton.onClick.AddListener(() =>
@@ -147,7 +152,11 @@ namespace StarSalvager.UI
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
                 LevelManager.Instance.EndWaveState = false;
-                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                ScreenFade.Fade(() =>
+                {
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                });
+                
             });
 
             pauseWindowScrapyardButton.onClick.AddListener(() =>
@@ -156,7 +165,10 @@ namespace StarSalvager.UI
                 m_levelManager.SavePlayerData();
                 ToggleBetweenWavesUIActive(false);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
-                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                ScreenFade.Fade(() =>
+                {
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                });
             });
 
             pauseWindowMainMenuButton.onClick.AddListener(() =>
@@ -175,7 +187,12 @@ namespace StarSalvager.UI
                         m_levelManager.IsWaveProgressing = true;
                         PlayerDataManager.ResetPlayerRunData();
                         PlayerDataManager.SavePlayerAccountData();
-                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                        
+                        
+                        ScreenFade.Fade(() =>
+                        {
+                            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                        });
                     }
                 });
             });
@@ -190,7 +207,11 @@ namespace StarSalvager.UI
             {
                 m_levelManager.IsWaveProgressing = true;
                 GameTimer.SetPaused(false);
-                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+
+                ScreenFade.Fade(() =>
+                {
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                });
             });
             
             resumeButton.onClick.AddListener(() =>
@@ -319,6 +340,11 @@ namespace StarSalvager.UI
         public void ShowSummaryScreen(string titleText, string summaryText, Action onConfirmedCallback, string buttonText = "Ok")
         {
             Alert.ShowAlert(titleText, summaryText, buttonText, onConfirmedCallback);
+        }
+
+        public void ShowWaveSummaryWindow(string titleText, string summaryText, Action onConfirmedCallback)
+        {
+            GameUI.Instance.ShowWaveSummaryWindow(true, titleText, summaryText, onConfirmedCallback, 0.5f);
         }
 
 

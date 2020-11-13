@@ -630,7 +630,10 @@ MonoBehaviour:
   panel1Character: {fileID: 3809993236893508902}
   panel2: {fileID: 1058941659278912506}
   panel2Character: {fileID: 2869351121882910785}
-  panelText1: {fileID: 12639216856430546}
+  panelText1GameObject: {fileID: 12639216856430546}
+  panelText2GameObject: {fileID: 4708707273424713228}
+  panelText1: {fileID: 7940296808014049556}
+  panelText2: {fileID: 7976441009984190243}
 --- !u!223 &3809993237436780330
 Canvas:
   m_ObjectHideFlags: 0
