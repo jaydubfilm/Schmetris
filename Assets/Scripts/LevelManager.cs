@@ -38,8 +38,8 @@ namespace StarSalvager
 
         #region Properties
 
-        private List<Bot> m_bots;
-        public Bot BotObject => m_bots[0];
+        private List<Bot> m_bots = new List<Bot>();
+        public Bot BotObject => m_bots.Count > 0 ? m_bots[0] : null;
 
         [SerializeField, Space(10f)]
         private CameraController m_cameraController;
@@ -224,7 +224,7 @@ namespace StarSalvager
         //FIXME Does this need to be happening every frame?
         private void CheckBotPositions()
         {
-            if (BotDead || BotObject.Destroyed)
+            if (BotDead || (BotObject != null && BotObject.Destroyed))
             {
                 return;
             }
@@ -334,7 +334,7 @@ namespace StarSalvager
 
         private void ProcessEndOfWave()
         {
-            if (BotDead || BotObject.Destroyed)
+            if (BotDead || (BotObject != null && BotObject.Destroyed))
             {
                 return;
             }
@@ -717,7 +717,7 @@ namespace StarSalvager
         
         private void TransitionToEndWaveState()
         {
-            if (BotDead || BotObject.Destroyed)
+            if (BotDead || (BotObject != null && BotObject.Destroyed))
             {
                 return;
             }
@@ -877,7 +877,7 @@ namespace StarSalvager
 
         public void SetBotExitScreen(bool value)
         {
-            if (BotDead || BotObject.Destroyed)
+            if (BotDead || (BotObject != null && BotObject.Destroyed))
             {
                 return;
             }

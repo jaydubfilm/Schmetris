@@ -69,7 +69,7 @@ namespace StarSalvager
 
         private void LateUpdate()
         {
-            if (LevelManager.Instance.BotDead || LevelManager.Instance.BotObject.Destroyed)
+            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
                 return;
             
             if (!_hasActiveEnemies && m_enemies.Count > 0 && !LevelManager.Instance.EndWaveState)
@@ -193,7 +193,7 @@ namespace StarSalvager
 
         private void SetupStage(int stageNumber)
         {
-            if (LevelManager.Instance.BotDead || LevelManager.Instance.BotObject.Destroyed)
+            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
             {
                 return;
             }

@@ -314,7 +314,7 @@ namespace StarSalvager.Utilities.Inputs
             if (isPaused)
                 return;
 
-            if (LevelManager.Instance.BotDead || LevelManager.Instance.BotObject.Destroyed)
+            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
                 return;
 
             MostRecentSideMovement = moveDirection;
@@ -387,7 +387,7 @@ namespace StarSalvager.Utilities.Inputs
             if (_moveOnInput == null)
                 return;
 
-            if (LevelManager.Instance.BotDead || LevelManager.Instance.BotObject.Destroyed)
+            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
                 return;
 
             if (value != 0 && LevelManager.Instance.EndWaveState)
@@ -431,7 +431,7 @@ namespace StarSalvager.Utilities.Inputs
             if (isPaused)
                 return;
 
-            if (LevelManager.Instance.BotDead || LevelManager.Instance.BotObject.Destroyed)
+            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
                 return;
 
             if (rotateDirection != 0 && LevelManager.Instance.EndWaveState)
@@ -496,7 +496,7 @@ namespace StarSalvager.Utilities.Inputs
         /// <param name="value"></param>
         private void Rotate(float value)
         {
-            if (LevelManager.Instance.BotDead || LevelManager.Instance.BotObject.Destroyed)
+            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
                 return;
 
             foreach (var bot in _bots)
