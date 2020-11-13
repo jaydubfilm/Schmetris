@@ -589,7 +589,7 @@ namespace StarSalvager
 
         public void SetupStage(int stageNumber)
         {
-            if (LevelManager.Instance.BotDead)
+            if (LevelManager.Instance.BotDead || LevelManager.Instance.BotObject.Destroyed)
             {
                 return;
             }

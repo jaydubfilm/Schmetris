@@ -224,7 +224,7 @@ namespace StarSalvager
         //FIXME Does this need to be happening every frame?
         private void CheckBotPositions()
         {
-            if (BotDead)
+            if (BotDead || BotObject.Destroyed)
             {
                 return;
             }
@@ -334,7 +334,7 @@ namespace StarSalvager
 
         private void ProcessEndOfWave()
         {
-            if (BotDead)
+            if (BotDead || BotObject.Destroyed)
             {
                 return;
             }
@@ -717,7 +717,7 @@ namespace StarSalvager
         
         private void TransitionToEndWaveState()
         {
-            if (BotDead)
+            if (BotDead || BotObject.Destroyed)
             {
                 return;
             }
@@ -877,7 +877,7 @@ namespace StarSalvager
 
         public void SetBotExitScreen(bool value)
         {
-            if (BotDead)
+            if (BotDead || BotObject.Destroyed)
             {
                 return;
             }
