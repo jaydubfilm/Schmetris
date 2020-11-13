@@ -232,44 +232,50 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Image carryCapacityFillImage;
 
-        /*[SerializeField, Required, FoldoutGroup("BR Window"), Space(10f)]
-        private Image bombImageIcon;
+        //Wave Summary Window
+        //====================================================================================================================//
 
-        [SerializeField, Required, FoldoutGroup("BR Window")]
-        private Image bombNoResourceIcon;*/
+        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        private RectTransform waveSummaryWindow;
+        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        private TMP_Text waveSummaryTitle;
+        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        private TMP_Text waveSummaryText;
+        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        private Button confirmButton;
 
         //Health Cracks
         //====================================================================================================================//
-        [SerializeField, Required, BoxGroup("Cracks")]
+        [SerializeField, Required, FoldoutGroup("Extras"), FoldoutGroup("Extras/Cracks")]
         private CanvasGroup cracksCanvasGroup;
-        [SerializeField, Required, BoxGroup("Cracks")]
+        [SerializeField, Required, FoldoutGroup("Extras/Cracks")]
         private Image[] crackImages;
 
 
         //Heat Vignette
         //============================================================================================================//
 
-        [SerializeField, Required, ToggleGroup("useVignette")]
+        [SerializeField, Required, ToggleGroup("Extras/useVignette", "Vignette")]
         private bool useVignette;
 
-        [SerializeField, Required, ToggleGroup("useVignette")]
+        [SerializeField, Required, ToggleGroup("Extras/useVignette")]
         private Image vignetteImage;
 
-        [SerializeField, Required, ToggleGroup("useVignette")]
+        [SerializeField, Required, ToggleGroup("Extras/useVignette")]
         private Color vignetteMinColor;
 
-        [SerializeField, Required, ToggleGroup("useVignette")]
+        [SerializeField, Required, ToggleGroup("Extras/useVignette")]
         private Color vignetteMaxColor;
 
         //Other
         //============================================================================================================//
-        [SerializeField, MinMaxSlider(0.2f, 2f, true), FoldoutGroup("Neon Border")] 
+        [SerializeField, MinMaxSlider(0.2f, 2f, true), FoldoutGroup("Extras/Neon Border")] 
         private Vector2 flashTimeRange;
-        [SerializeField, Required, FoldoutGroup("Neon Border")]
+        [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
         private Image borderGlow;
-        [SerializeField, Required, FoldoutGroup("Neon Border")]
+        [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
         private Image border;
-        [SerializeField, FoldoutGroup("Neon Border")]
+        [SerializeField, FoldoutGroup("Extras/Neon Border")]
         private AnimationCurve flashCurve;
         private bool _flashingBorder;
 
@@ -287,6 +293,8 @@ namespace StarSalvager.UI
             InitSliderText();
 
             vignetteImage.gameObject.SetActive(useVignette);
+
+            ShowWaveSummaryWindow(false, string.Empty, string.Empty, null, instantMove: true);
             
             InitValues();
 
@@ -398,12 +406,6 @@ namespace StarSalvager.UI
 
         private void InitSmartWeaponUI()
         {
-            /*var sprites = new []
-            {
-                normalSprite,
-                readySprite, 
-                disabledSprite
-            };*/
 
             for (var i = 0; i < SmartWeaponsUI.Length; i++)
             {
@@ -515,13 +517,6 @@ namespace StarSalvager.UI
             patchPointsText.text = $"{points}";
         }
 
-        /*public void SetAllResourceSliderBounds(int min, int max)
-        {
-            fuelSlider.SetBounds(min, max);
-            repairSlider.SetBounds(min, max);
-            ammoSlider.SetBounds(min, max);
-        }*/
-
         public void SetResourceSliderBounds(BIT_TYPE type, int min, int max)
         {
             switch (type)
@@ -630,27 +625,10 @@ namespace StarSalvager.UI
             progressSlider.value = value;
         }
 
-        /*public void SetTimeString(int seconds)
-        {
-            TimeSpan time = TimeSpan.FromSeconds(seconds);
-
-            //here backslash is must to tell that colon is
-            //not the part of format, it just a character that we want in output
-            SetTimeString(time.ToString(@"m\:ss"));
-        }
-
-        public void SetTimeString(string time)
-        {
-            timeText.text = time;
-        }*/
-
-
 
         //============================================================================================================//
 
-
-
-        [Button, DisableIf("_flashingBorder"), DisableInEditorMode, FoldoutGroup("Neon Border")]
+        [Button, DisableIf("_flashingBorder"), DisableInEditorMode, FoldoutGroup("Extras/Neon Border")]
         public void FlashBorder()
         {
             if (_flashingBorder)
@@ -663,33 +641,6 @@ namespace StarSalvager.UI
             StartCoroutine(BorderFlashingCoroutine(time));
         }
 
-        /*public IEnumerator BorderFlashingCoroutine()
-        {
-            _flashingBorder = true;
-
-            float timer = 0.0f;
-            float startingAlpha = borderGlow.color.a;
-
-
-            while (timer <= 2.0f)
-            {
-                timer += Time.deltaTime;
-                if (timer <= 0.5f || (timer > 1.0f && timer <= 1.5f))
-                {
-                    borderGlow.color = new Color(borderGlow.color.r, borderGlow.color.g, borderGlow.color.b, Mathf.Lerp(startingAlpha, 0, 2 * (timer % 0.5f)));
-                }
-                else
-                {
-                    borderGlow.color = new Color(borderGlow.color.r, borderGlow.color.g, borderGlow.color.b, Mathf.Lerp(0, startingAlpha, 2 * (timer % 0.5f)));
-                }
-                yield return null;
-            }
-
-            borderGlow.color = new Color(borderGlow.color.r, borderGlow.color.g, borderGlow.color.b, startingAlpha);
-            _flashingBorder = false;
-
-            yield return null;
-        }*/
 
         private IEnumerator BorderFlashingCoroutine(float time)
         {
@@ -719,41 +670,6 @@ namespace StarSalvager.UI
             _flashingBorder = false;
         }
 
-        /*public void ShowBombIcon(bool state)
-        {
-            bombImageIcon.gameObject.SetActive(state);
-        }
-
-        public void SetHasBombResource(bool hasAmmo)
-        {
-            //Doesn't matter if the thing isn't showing
-            if (!bombImageIcon.gameObject.activeInHierarchy)
-                return;
-
-            //Prevent constantly setting the below values
-            if (bombNoResourceIcon.gameObject.activeInHierarchy == !hasAmmo)
-                return;
-            
-            bombImageIcon.color = hasAmmo ? Color.white : Color.gray;
-            bombNoResourceIcon.gameObject.SetActive(!hasAmmo);
-        }
-        
-        public void SetBombFill(float fillValue)
-        {
-            bombImageIcon.fillAmount = fillValue;
-        }*/
-        /*public void SetIconImage(int index, Sprite sprite)
-        {
-            if (index < 0) return;
-            SmartWeaponsUI[index].iconImage.sprite = sprite;
-        }
-
-        public void ShowIcon(int index, bool state)
-        {
-            if (index < 0) return;
-            SmartWeaponsUI[index].SetActive(state);
-        }*/
-
         public void SetIconImage(int index, PART_TYPE partType)
         {
             if (index < 0) return;
@@ -780,14 +696,6 @@ namespace StarSalvager.UI
             SmartWeaponsUI[index].SetActive(state);
         }
 
-        //FIXME Need to determine what's happening with this
-        /*[Obsolete("Currently not using the resource indicator for the Smart Weapons")]
-        public void SetHasResource(int index, bool hasResource)
-        {
-            if (index < 0) return;
-            SmartWeaponsUI[index].SetHasResource(hasResource);
-        }*/
-
         public void SetFill(int index, float fillValue)
         {
             if (index < 0) return;
@@ -806,24 +714,9 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-
-        /*public void SetCurrentWaveText(int sector, int wave)
-        {
-            sectorText.text = $"Sector {sector} Wave {wave}";
-
-            //m_currentWaveText.text = "Sector " + (Values.Globals.CurrentSector + 1) + " Wave " + endString;
-        }
-
-        public void SetCurrentWaveText(string text)
-        {
-            sectorText.text = text;
-        }*/
-        
         public void SetCurrentWaveText(int sector, int wave)
         {
             sectorText.text = $"Sector {sector}.{wave}";
-
-            //m_currentWaveText.text = "Sector " + (Values.Globals.CurrentSector + 1) + " Wave " + endString;
         }
 
         public void SetCurrentWaveText(string text)
@@ -846,7 +739,75 @@ namespace StarSalvager.UI
             
         }
         
+        //Wave Summary Window Functions
         //====================================================================================================================//
+
+        #region Wave Summary Window
+
+        private bool _movingSummaryWindow;
+        public void ShowWaveSummaryWindow(bool show,in string title, in string text, Action onConfirmCallback, float moveTime = 1f, bool instantMove = false)
+        {
+            if (_movingSummaryWindow)
+                return;
+            
+            float targetY;
+            if (show)
+            {
+                targetY = -waveSummaryWindow.sizeDelta.y / 4f;
+                
+                confirmButton.onClick.RemoveAllListeners();
+                confirmButton.onClick.AddListener(() =>
+                {
+                    ShowWaveSummaryWindow(false,string.Empty, string.Empty, null, instantMove:true);
+                    onConfirmCallback?.Invoke();
+                });
+            }
+            else
+            {
+                targetY = waveSummaryWindow.sizeDelta.y * 1.5f;
+            }
+
+            waveSummaryTitle.text = title;
+            waveSummaryText.text = text;
+            
+
+            
+            if (instantMove)
+            {
+                var newPos = waveSummaryWindow.anchoredPosition;
+                newPos.y = targetY;
+                waveSummaryWindow.anchoredPosition = newPos;
+
+                return;
+            }
+
+            StartCoroutine(PositionWaveSummaryWindow(waveSummaryWindow, targetY, moveTime));
+        }
+
+        private IEnumerator PositionWaveSummaryWindow(RectTransform rectTransform, float targetYPos, float time)
+        {
+            confirmButton.interactable = false;
+            _movingSummaryWindow = true;
+            
+            var t = 0f;
+
+            var startPos = rectTransform.anchoredPosition;
+            var endPos = startPos;
+            endPos.y = targetYPos;
+
+            while (t / time < 1f)
+            {
+                rectTransform.anchoredPosition = Vector2.Lerp(startPos, endPos, t / time);
+
+                t += Time.deltaTime;
+                yield return null;
+            }
+
+            _movingSummaryWindow = false;
+            confirmButton.interactable = true;
+        }
+
+        #endregion //Wave Summary Window
         
 
 
@@ -856,12 +817,7 @@ namespace StarSalvager.UI
         /// <param name="value"></param>
         public void SetHeatSliderValue(float value)
         {
-            //HeatSlider.value = value;
-            //heatSliderImage.color = Color.Lerp(minColor, maxColor, value);
-
             heatFillImage.fillAmount = value;
-
-            //CheckActivateGlowInverse(heatSlider, heatSliderGlow);
 
             if (useVignette)
                 vignetteImage.color = Color.Lerp(vignetteMinColor, vignetteMaxColor, value);

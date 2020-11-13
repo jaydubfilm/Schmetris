@@ -237,6 +237,7 @@ namespace StarSalvager
                 if (_t / _enterTime >= 1f)
                 {
                     SetBotEnterScreen(false);
+                    BotObject.PROTO_GodMode = false;
                     
                     _t = 0f;
                     _startY = 0f;
@@ -366,7 +367,19 @@ namespace StarSalvager
             }
             else
             {
-                //Turn wave end summary data into string, post in alert, and clear wave end summary data
+                m_levelManagerUI.ShowWaveSummaryWindow(
+                    WaveEndSummaryData.WaveEndTitle,
+                    m_waveEndSummaryData.GetWaveEndSummaryDataString(),
+                    () => 
+                {
+                    Globals.IsBetweenWavesInUniverseMap = true;
+                    IsWaveProgressing = true;
+                    ProcessScrapyardUsageBeginAnalytics();
+                    EndWaveState = false;
+                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
+                });
+                
+                /*//Turn wave end summary data into string, post in alert, and clear wave end summary data
                 m_levelManagerUI.ShowSummaryScreen(WaveEndSummaryData.WaveEndTitle,
                     m_waveEndSummaryData.GetWaveEndSummaryDataString(),
                     () => 
@@ -377,7 +390,7 @@ namespace StarSalvager
                         EndWaveState = false;
                         SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
                     },
-                    "Continue");
+                    "Continue");*/
             }
 
 
@@ -825,8 +838,11 @@ namespace StarSalvager
         {
             m_botEnterScreen = value;
 
-            if(value)
+            if (value)
+            {
                 CreateThrustEffect(BotObject);
+                BotObject.PROTO_GodMode = true;
+            }
             else if(_effect)
                 Destroy(_effect);
         }

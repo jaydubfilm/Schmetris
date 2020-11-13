@@ -53,9 +53,11 @@ public class WaveEndSummaryData
     {
         var outStringList = new List<string>
         {
-            $"<b>Bonus Shapes Matched:</b> {NumBonusShapesMatched}/{NumTotalBonusShapesSpawned}",
             $"<b>Gears Gained:</b> {NumGearsGained}",
         };
+
+        if (NumTotalBonusShapesSpawned > 0)
+            outStringList.Add($"<b>Bonus Shapes Matched:</b> {NumBonusShapesMatched}/{NumTotalBonusShapesSpawned}");
 
         if (_numTotalEnemiesSpawned > 0)
         {

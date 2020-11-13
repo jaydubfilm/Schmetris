@@ -827,6 +827,13 @@ namespace StarSalvager
             toRepair.ChangeHealth(repairAmount * deltaTime);
             PlayerDataManager.AddRepairsDone(repairAmount * deltaTime);
 
+            
+            //Update the UI if the thing we're repairing is the core
+            if (partToRepair && partToRepair.Type == PART_TYPE.CORE)
+            {
+                GameUI.SetHealthValue(partToRepair.CurrentHealth / partToRepair.BoostedHealth);
+            }
+
 
             TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.BoostedHealth);
         }
