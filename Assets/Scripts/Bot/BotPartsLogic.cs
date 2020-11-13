@@ -1422,7 +1422,7 @@ namespace StarSalvager
         /// <param name="targetBit"></param>
         /// <param name="valueToCheck"></param>
         /// <returns></returns>
-        public int ProcessBit(in Part part, Bit targetBit, int valueToCheck)
+        public int ProcessBit(in Part part, Bit targetBit, float valueToCheck)
         {
             PlayerResource playerResource = PlayerDataManager.GetResource(targetBit.Type);
             var current = playerResource.liquid;
