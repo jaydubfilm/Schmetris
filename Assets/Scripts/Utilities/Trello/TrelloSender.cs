@@ -166,7 +166,7 @@ namespace StarSalvager.Utilities.Trello
                     processingSendObject.SetActive(false);
                     bugWindowObject.SetActive(false);
                     
-                    Toast.AddToast("Bug Submitted", horizontalLayout: Toast.Layout.End);
+                    Toast.AddToast("Bug Submitted");
                 }));
         }
         

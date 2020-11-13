@@ -242,7 +242,7 @@ namespace StarSalvager
                 if (_t / _enterTime >= 1f)
                 {
                     SetBotEnterScreen(false);
-                    BotObject.PROTO_GodMode = false;
+                    BotObject.PROTO_GodMode = Globals.UsingTutorial;
                     
                     _t = 0f;
                     _startY = 0f;
@@ -750,7 +750,7 @@ namespace StarSalvager
 
             endWaveMessage = "Wave Complete!";
 
-            Toast.AddToast(endWaveMessage, time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
+            Toast.AddToast(endWaveMessage);
             if (!Globals.OnlyGetWaveLootOnce || !PlayerDataManager.CheckIfCompleted(progressionSector, Globals.CurrentWave))
             {
                 /*CurrentWaveData.ConfigureLootTable();
