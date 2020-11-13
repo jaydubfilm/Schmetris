@@ -787,9 +787,6 @@ namespace StarSalvager
 
         private void SellBits()
         {
-            if (_scrapyardBot == null)
-                return;
-
             var bitAttachableFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
 
             //Obtain the block data from both the Recovery Drone & Drone
@@ -869,8 +866,6 @@ namespace StarSalvager
                     //------------------------------------------------------------------------------------------------//
                 }
             }
-
-            _scrapyardBot.RemoveDetachables();
             
             //Update all relevant parties
             PlayerDataManager.OnValuesChanged?.Invoke();
