@@ -121,7 +121,7 @@ MonoBehaviour:
     m_sprite: {fileID: 3878735451401828320, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
     m_projectileType: Gun Bullet
-    useTrail: 1
+    useTrail: 0
     color: {r: 0.76470596, g: 0.75294125, b: 0.7490196, a: 1}
     m_projectileSpeed: 12
     m_projectileRange: 12

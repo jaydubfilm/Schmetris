@@ -1845,6 +1845,8 @@ namespace StarSalvager
                     
                     Destroy(turret.gameObject);
                 }
+                
+                _turrets = new Dictionary<Part, Transform>();
             }
 
             if (!_repairEffects.IsNullOrEmpty())
@@ -1855,6 +1857,7 @@ namespace StarSalvager
                 {
                     Destroy(repair);
                 }
+                _repairEffects = new Dictionary<Part, GameObject>();
             }
             
             if (!_boostEffects.IsNullOrEmpty())
@@ -1865,6 +1868,8 @@ namespace StarSalvager
                 {
                     Destroy(boost);
                 }
+                
+                _boostEffects = new Dictionary<Part, GameObject>();
             }
 
         }
