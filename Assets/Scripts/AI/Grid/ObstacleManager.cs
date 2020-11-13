@@ -589,6 +589,11 @@ namespace StarSalvager
 
         public void SetupStage(int stageNumber)
         {
+            if (LevelManager.Instance.BotDead)
+            {
+                return;
+            }
+
             if (stageNumber > 0)
                 m_previousStageData = LevelManager.Instance.CurrentWaveData.GetRemoteData(stageNumber - 1);
 
