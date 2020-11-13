@@ -60,7 +60,12 @@ namespace StarSalvager.Prototype
 
                     panel1Character.SetActive(true);
                     panel2Character.SetActive(true);
-                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
+                    
+                    
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
+                    });
                 }
             }
 
@@ -72,7 +77,10 @@ namespace StarSalvager.Prototype
                 panel1.SetActive(true);
                 panel2.SetActive(false);
                 introSceneStage = 0;
-                SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
+                ScreenFade.Fade(() =>
+                {
+                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
+                });
             }
         }
     }

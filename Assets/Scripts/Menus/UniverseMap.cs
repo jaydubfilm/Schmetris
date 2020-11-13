@@ -330,7 +330,11 @@ namespace StarSalvager.UI
                 LevelManager.Instance.ProcessScrapyardUsageBeginAnalytics();
                 LevelManager.Instance.EndWaveState = false;
                 LevelManager.Instance.ResetLevelTimer();
-                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
+                
+                ScreenFade.Fade(() =>
+                {
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
+                });
             });
 
             int curSector = 0;

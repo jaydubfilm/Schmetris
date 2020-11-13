@@ -541,7 +541,11 @@ namespace StarSalvager.UI
         {
             SetupAccountMenuWindow();
             OpenWindow(WINDOW.ACCOUNT_MENU);
-            SceneLoader.ActivateScene(targetScene, SceneLoader.MAIN_MENU);
+            
+            ScreenFade.Fade(() =>
+            {
+                SceneLoader.ActivateScene(targetScene, SceneLoader.MAIN_MENU);
+            });
         }
 
         private static void Quit()
