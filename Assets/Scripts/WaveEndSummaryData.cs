@@ -53,15 +53,15 @@ public class WaveEndSummaryData
     {
         var outStringList = new List<string>
         {
-            $"<b>Gears Gained:</b> {NumGearsGained}",
+            $"{GetAsTitle("Gears Gained")} {NumGearsGained}",
         };
 
         if (NumTotalBonusShapesSpawned > 0)
-            outStringList.Add($"<b>Bonus Shapes Matched:</b> {NumBonusShapesMatched}/{NumTotalBonusShapesSpawned}");
+            outStringList.Add($"{GetAsTitle("Bonus Shapes Matched")} {NumBonusShapesMatched}/{NumTotalBonusShapesSpawned}");
 
         if (_numTotalEnemiesSpawned > 0)
         {
-            outStringList.Add("<b>Enemies Killed:</b> ");
+            outStringList.Add($"{GetAsTitle("Enemies Killed")}");
             foreach (var keyValuePair in _dictTotalEnemiesSpawned)
             {
                 //out default value for int should be 0
@@ -73,27 +73,27 @@ public class WaveEndSummaryData
 
         if (NumLevelsGained > 0)
         {
-            outStringList.Add($"<b>Level ups:</b> {NumLevelsGained}");
+            outStringList.Add($"{GetAsTitle("Level ups")} {NumLevelsGained}");
         }
 
         if (_blueprintsUnlockedStrings.Count > 0)
         {
-            outStringList.Add($"<b>Blueprints Unlocked:</b> {string.Join(", ", _blueprintsUnlockedStrings)}");
+            outStringList.Add($"{GetAsTitle("Blueprints Unlocked")} {string.Join(", ", _blueprintsUnlockedStrings)}");
         }
 
         if (_missionCompletedStrings.Count > 0)
         {
-            outStringList.Add($"<b>Missions Completed:</b> {string.Join(", ", _missionCompletedStrings)}");
+            outStringList.Add($"{GetAsTitle("Missions Completed")} {string.Join(", ", _missionCompletedStrings)}");
         }
 
         if (_missionUnlockedStrings.Count > 0)
         {
-            outStringList.Add($"<b>Missions Unlocked:</b> {string.Join(", ", _missionUnlockedStrings)}");
+            outStringList.Add($"{GetAsTitle("Missions Unlocked")} {string.Join(", ", _missionUnlockedStrings)}");
         }
 
         if (_resourcesConsumed. Count > 0)
         {
-            outStringList.Add("<b>Resources Consumed:</b> ");
+            outStringList.Add($"{GetAsTitle("Resources Consumed")} ");
 
             var joinList = new List<string>();
             foreach (var keyValuePair in _resourcesConsumed)
@@ -105,6 +105,11 @@ public class WaveEndSummaryData
             outStringList.Add(string.Join(", ", joinList));
         }
         return string.Join("\n", outStringList);
+    }
+
+    private static string GetAsTitle(in string title)
+    {
+        return $"<b><color=#00FFBF>{title}:</color></b>";
     }
 
     //====================================================================================================================//
