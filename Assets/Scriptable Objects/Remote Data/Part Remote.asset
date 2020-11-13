@@ -28,7 +28,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 8
+        value: 9
       - key: Capacity
         value: 30
       - key: SMRTCapacity
@@ -42,7 +42,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 10
+        value: 12
       - key: Capacity
         value: 100
       - key: SMRTCapacity
@@ -96,7 +96,7 @@ MonoBehaviour:
       powerDraw: 0
       dataTest:
       - key: Magnet
-        value: 10
+        value: 15
       - key: Capacity
         value: 200
       - key: SMRTCapacity
