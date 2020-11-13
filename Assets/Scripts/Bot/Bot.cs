@@ -2967,7 +2967,7 @@ namespace StarSalvager
 
                 var core = attachedBlocks[0] as Part;
                 
-                if (_botPartsLogic.ProcessBit(core, bit) > 0)
+                if (_botPartsLogic.ProcessBit(core, bit, Globals.MagnetRefineThreshold) > 0)
                 {
                     toDetach.RemoveAt(i);
                 }

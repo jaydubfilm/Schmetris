@@ -43,6 +43,7 @@ namespace StarSalvager.ScriptableObjects
         [ShowIf("cameraUseInputMotion", true)]
         public float cameraOffsetBounds = 0.5f;
 
+        public int magnetRefineThreshold = 5;
         public int numCurrentTrackedMissionMax = 3;
         public bool onlyGetWaveLootOnce = true;
         public bool recoveryOfDroneLocksHorizontalMovement = true;

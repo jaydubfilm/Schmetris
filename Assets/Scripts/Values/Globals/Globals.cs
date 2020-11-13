@@ -59,6 +59,7 @@ namespace StarSalvager.Values
         public static int PatchPointBaseCost => m_gameSettings.patchPointBaseCost;
         public static int PatchPointIncrementCost => m_gameSettings.patchPointIncrementCost;
 
+        public static int MagnetRefineThreshold => m_gameSettings.magnetRefineThreshold;
         public static int NumCurrentTrackedMissionMax => m_gameSettings.numCurrentTrackedMissionMax;
         public static bool OnlyGetWaveLootOnce => m_gameSettings.onlyGetWaveLootOnce;
         public static bool RecoveryOfDroneLocksHorizontalMovement => m_gameSettings.recoveryOfDroneLocksHorizontalMovement;
