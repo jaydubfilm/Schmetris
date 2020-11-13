@@ -285,6 +285,7 @@ namespace StarSalvager.Tutorial
 
             yield return new WaitUntil(() => magnet);
             
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(false));
             SetMagnetGlow();
             
             bot.OnFullMagnet -= SetMagnet;
@@ -294,10 +295,12 @@ namespace StarSalvager.Tutorial
             LevelManager.Instance.BotObject.ForceDisconnectAllDetachables();
             yield return new WaitForSeconds(0.5f);
             
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(true));
             glowImage.gameObject.SetActive(false);
         }
         private IEnumerator MagnetFirstCoroutine()
         {
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(false));
             SetMagnetGlow();
             
             //tutorialSteps[5]
@@ -305,6 +308,7 @@ namespace StarSalvager.Tutorial
             
             LevelManager.Instance.BotObject.ForceDisconnectAllDetachables();
             
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(true));
             glowImage.gameObject.SetActive(false);
             
             yield return new WaitForSeconds(0.5f);

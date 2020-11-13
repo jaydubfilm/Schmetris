@@ -2844,6 +2844,8 @@ namespace StarSalvager
         public void ForceDisconnectAllDetachables()
         {
             DetachBlocks(attachedBlocks.OfType<ICanDetach>(), true, true);
+            
+            ForceCheckMagnets();
         }
 
         private bool CheckHasMagnetOverage()
