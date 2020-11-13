@@ -349,7 +349,11 @@ namespace StarSalvager
                         EndSectorState = false;
                         ProcessLevelCompleteAnalytics();
                         ProcessScrapyardUsageBeginAnalytics();
-                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+
+                        ScreenFade.Fade(() =>
+                        {
+                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                        });
                     });
             }
             else if (EndSectorState)
@@ -362,7 +366,11 @@ namespace StarSalvager
                         EndSectorState = false;
                         ProcessLevelCompleteAnalytics();
                         ProcessScrapyardUsageBeginAnalytics();
-                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+
+                        ScreenFade.Fade(() =>
+                        {
+                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                        });
                     });
             }
             else
@@ -376,7 +384,12 @@ namespace StarSalvager
                     IsWaveProgressing = true;
                     ProcessScrapyardUsageBeginAnalytics();
                     EndWaveState = false;
-                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
+                    
+                    
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
+                    });
                 });
                 
                 /*//Turn wave end summary data into string, post in alert, and clear wave end summary data
@@ -919,7 +932,12 @@ namespace StarSalvager
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
             GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
             GameTimer.SetPaused(false);
-            SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.LEVEL);
+
+            ScreenFade.Fade(() =>
+            {
+                SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.LEVEL);
+            });
+            
         }
 
         private void OnBotDied(Bot _, string deathMethod)

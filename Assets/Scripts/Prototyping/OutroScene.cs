@@ -97,7 +97,12 @@ namespace StarSalvager.Prototype
                     PlayerDataManager.ResetPlayerRunData();
                     PlayerDataManager.SavePlayerAccountData();
                     
-                    SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                    });
+                    
+                    
                 });
             Alert.SetLineHeight(90f);
         }

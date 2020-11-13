@@ -244,6 +244,18 @@ namespace StarSalvager
                 if(levelData.powerDraw > 0f && !usedResourceTypes.Contains(BIT_TYPE.YELLOW))
                     usedResourceTypes.Add(BIT_TYPE.YELLOW);
 
+                if (part.Type == PART_TYPE.REFINER)
+                {
+                    if(!usedResourceTypes.Contains(BIT_TYPE.BLUE))
+                        usedResourceTypes.Add(BIT_TYPE.BLUE);
+                    if(!usedResourceTypes.Contains(BIT_TYPE.GREY))
+                        usedResourceTypes.Add(BIT_TYPE.GREY);
+                    if(!usedResourceTypes.Contains(BIT_TYPE.GREEN))
+                        usedResourceTypes.Add(BIT_TYPE.GREEN);
+                    if(!usedResourceTypes.Contains(BIT_TYPE.YELLOW))
+                        usedResourceTypes.Add(BIT_TYPE.YELLOW);
+                }
+
                 //Destroyed or disabled parts should not contribute to the stats of the bot anymore
                 if (part.Destroyed || part.Disabled)
                     continue;
@@ -1401,6 +1413,22 @@ namespace StarSalvager
         //============================================================================================================//
 
         #region Process Bit
+
+        
+        /// <summary>
+        /// Checks to see if the current liquid is less than or equal to valueToCheck
+        /// </summary>
+        /// <param name="part"></param>
+        /// <param name="targetBit"></param>
+        /// <param name="valueToCheck"></param>
+        /// <returns></returns>
+        public int ProcessBit(in Part part, Bit targetBit, int valueToCheck)
+        {
+            PlayerResource playerResource = PlayerDataManager.GetResource(targetBit.Type);
+            var current = playerResource.liquid;
+
+            return current > valueToCheck ? 0 : ProcessBit(part, targetBit);
+        }
 
         public int ProcessBit(in Part part, Bit targetBit)
         {

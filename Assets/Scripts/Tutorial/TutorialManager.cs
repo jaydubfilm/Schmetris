@@ -416,9 +416,12 @@ namespace StarSalvager.Tutorial
 
             PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(_playerStartFuel);
             
-            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
-
-            fadeImage.color = Color.clear;
+            
+            
+            ScreenFade.Fade(() =>
+            {
+                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+            });
         }
         
         //Generic Tutorial Steps
