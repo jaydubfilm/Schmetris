@@ -193,6 +193,11 @@ namespace StarSalvager
 
         private void SetupStage(int stageNumber)
         {
+            if (LevelManager.Instance.BotDead)
+            {
+                return;
+            }
+            
             StageRemoteData waveRemoteData = LevelManager.Instance.CurrentWaveData.GetRemoteData(stageNumber);
             m_enemiesToSpawn.Clear();
             m_timesToSpawn.Clear();

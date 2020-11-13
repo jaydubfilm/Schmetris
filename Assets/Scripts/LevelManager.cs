@@ -224,6 +224,11 @@ namespace StarSalvager
         //FIXME Does this need to be happening every frame?
         private void CheckBotPositions()
         {
+            if (BotDead)
+            {
+                return;
+            }
+
             foreach (var bot in m_bots)
             {
                 var pos = bot.transform.position;
@@ -329,6 +334,11 @@ namespace StarSalvager
 
         private void ProcessEndOfWave()
         {
+            if (BotDead)
+            {
+                return;
+            }
+
             var botBlockData = BotObject.GetBlockDatas();
             SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
             SessionDataProcessor.Instance.EndActiveWave();
@@ -707,6 +717,11 @@ namespace StarSalvager
         
         private void TransitionToEndWaveState()
         {
+            if (BotDead)
+            {
+                return;
+            }
+            
             SavePlayerData();
 
             //Unlock loot for completing wave
@@ -862,6 +877,11 @@ namespace StarSalvager
 
         public void SetBotExitScreen(bool value)
         {
+            if (BotDead)
+            {
+                return;
+            }
+
             m_botZoomOffScreen = value;
 
             if (!value)
