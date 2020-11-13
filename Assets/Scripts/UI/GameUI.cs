@@ -842,7 +842,7 @@ namespace StarSalvager.UI
         private static void CheckActivateGlow(Slider slider, Behaviour glowSlider)
         {
             var value = slider.value / slider.maxValue;
-            glowSlider.enabled = value <= 0.33f;
+            glowSlider.enabled = value <= Globals.GameUIResourceThreshold;
         }
 
         private static void CheckActivateGlowInverse(Slider slider, Behaviour glowSlider)
