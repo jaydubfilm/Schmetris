@@ -38,8 +38,8 @@ namespace StarSalvager
 
         #region Properties
 
-        private List<Bot> m_bots;
-        public Bot BotObject => m_bots[0];
+        private List<Bot> m_bots = new List<Bot>();
+        public Bot BotObject => m_bots.Count > 0 ? m_bots[0] : null;
 
         [SerializeField, Space(10f)]
         private CameraController m_cameraController;
@@ -224,6 +224,11 @@ namespace StarSalvager
         //FIXME Does this need to be happening every frame?
         private void CheckBotPositions()
         {
+            if (BotDead || (BotObject != null && BotObject.Destroyed))
+            {
+                return;
+            }
+
             foreach (var bot in m_bots)
             {
                 var pos = bot.transform.position;
@@ -237,7 +242,7 @@ namespace StarSalvager
                 if (_t / _enterTime >= 1f)
                 {
                     SetBotEnterScreen(false);
-                    BotObject.PROTO_GodMode = false;
+                    BotObject.PROTO_GodMode = Globals.UsingTutorial;
                     
                     _t = 0f;
                     _startY = 0f;
@@ -329,6 +334,11 @@ namespace StarSalvager
 
         private void ProcessEndOfWave()
         {
+            if (BotDead || (BotObject != null && BotObject.Destroyed))
+            {
+                return;
+            }
+
             var botBlockData = BotObject.GetBlockDatas();
             SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
             SessionDataProcessor.Instance.EndActiveWave();
@@ -707,6 +717,11 @@ namespace StarSalvager
         
         private void TransitionToEndWaveState()
         {
+            if (BotDead || (BotObject != null && BotObject.Destroyed))
+            {
+                return;
+            }
+            
             SavePlayerData();
 
             //Unlock loot for completing wave
@@ -735,7 +750,7 @@ namespace StarSalvager
 
             endWaveMessage = "Wave Complete!";
 
-            Toast.AddToast(endWaveMessage, time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
+            Toast.AddToast(endWaveMessage);
             if (!Globals.OnlyGetWaveLootOnce || !PlayerDataManager.CheckIfCompleted(progressionSector, Globals.CurrentWave))
             {
                 /*CurrentWaveData.ConfigureLootTable();
@@ -862,6 +877,11 @@ namespace StarSalvager
 
         public void SetBotExitScreen(bool value)
         {
+            if (BotDead || (BotObject != null && BotObject.Destroyed))
+            {
+                return;
+            }
+
             m_botZoomOffScreen = value;
 
             if (!value)

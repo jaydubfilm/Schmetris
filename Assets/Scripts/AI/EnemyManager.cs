@@ -69,7 +69,7 @@ namespace StarSalvager
 
         private void LateUpdate()
         {
-            if (LevelManager.Instance.BotDead)
+            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
                 return;
             
             if (!_hasActiveEnemies && m_enemies.Count > 0 && !LevelManager.Instance.EndWaveState)
@@ -193,6 +193,11 @@ namespace StarSalvager
 
         private void SetupStage(int stageNumber)
         {
+            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
+            {
+                return;
+            }
+            
             StageRemoteData waveRemoteData = LevelManager.Instance.CurrentWaveData.GetRemoteData(stageNumber);
             m_enemiesToSpawn.Clear();
             m_timesToSpawn.Clear();
