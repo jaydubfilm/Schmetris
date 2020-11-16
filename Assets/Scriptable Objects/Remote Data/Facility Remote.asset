@@ -218,15 +218,15 @@ MonoBehaviour:
     hideInFacilityMenu: 0
     levels:
     - level: 0
-      increaseAmount: 50
+      increaseAmount: 5
       patchCost: 1
       facilityPrerequisites: []
     - level: 1
-      increaseAmount: 100
+      increaseAmount: 10
       patchCost: 2
       facilityPrerequisites: []
     - level: 2
-      increaseAmount: 150
+      increaseAmount: 15
       patchCost: 3
       facilityPrerequisites: []
   - type: 10
