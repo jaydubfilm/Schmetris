@@ -138,7 +138,6 @@ namespace StarSalvager
         {
             GameTimer.SetPaused(true);
 
-            bool outOfWaterOnReturn = PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0;
             SellBits();
 
             UpdateFloatingMarkers(false);
@@ -683,7 +682,7 @@ namespace StarSalvager
         {
             if (_scrapyardBot != null)
             {
-                PlayerDataManager.SetBlockDatas(_scrapyardBot.AttachedBlocks.GetBlockDatas());
+                PlayerDataManager.SetBlockData(_scrapyardBot.AttachedBlocks.GetBlockDatas());
             }
         }
 
@@ -795,13 +794,13 @@ namespace StarSalvager
             Globals.IsRecoveryBot = true;
             //Get the Recovery Drone data & clean it
             var recoveryDroneBlockData = new List<BlockData>(PlayerDataManager.GetBlockDatas());
-            PlayerDataManager.SetBlockDatas(recoveryDroneBlockData.Where(x => x.ClassType.Equals(nameof(Part))).ToList());
+            PlayerDataManager.SetBlockData(recoveryDroneBlockData.Where(x => x.ClassType.Equals(nameof(Part)) || x.ClassType.Equals(nameof(ScrapyardPart))).ToList());
             
             Globals.IsRecoveryBot = false;
             
             //Get the active Drone Data & clean it
             var droneBlockData = new List<BlockData>(PlayerDataManager.GetBlockDatas());
-            PlayerDataManager.SetBlockDatas(droneBlockData.Where(x => x.ClassType.Equals(nameof(Part))).ToList());
+            PlayerDataManager.SetBlockData(droneBlockData.Where(x => x.ClassType.Equals(nameof(Part)) || x.ClassType.Equals(nameof(ScrapyardPart))).ToList());
             
             //--------------------------------------------------------------------------------------------------------//
 

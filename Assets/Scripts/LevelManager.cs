@@ -943,7 +943,7 @@ namespace StarSalvager
                 if (!blockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
                     blockData = new List<BlockData>();
 
-                PlayerDataManager.SetBlockDatas(blockData);
+                PlayerDataManager.SetBlockData(blockData);
             }
         }
 
