@@ -2556,7 +2556,7 @@ namespace StarSalvager
         /// <param name="bitToUpgrade"></param>
         /// <param name="orphanMoveData"></param>
         /// <returns></returns>
-        private void CheckForOrphans(IEnumerable<IAttachable> movingBlocks,
+        public void CheckForOrphans(IEnumerable<IAttachable> movingBlocks,
             IAttachable bitToUpgrade,
             ref List<OrphanMoveData> orphanMoveData)
         {

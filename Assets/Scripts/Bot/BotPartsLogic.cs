@@ -12,6 +12,7 @@ using StarSalvager.Prototype;
 using StarSalvager.UI;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Analytics;
+using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
@@ -1454,6 +1455,16 @@ namespace StarSalvager
             if (current == capacity)
                 return 0;
 
+            //Get a list of orphans that may need move when we are moving our bits
+            var orphans = new List<OrphanMoveData>();
+            bot.CheckForOrphans(new[]
+                {
+                    //Bit that's being processed
+                    targetBit as IAttachable,
+                },
+                bot.attachedBlocks[0],
+                ref orphans);
+
             PlayerDataManager.GetResource(targetBit.Type).AddLiquid(amountProcessed);
             targetBit.IsBusy = true;
 
@@ -1463,6 +1474,7 @@ namespace StarSalvager
             //TODO May want to play around with the order of operations here
             StartCoroutine(RefineBitCoroutine(targetBit,
                 part.transform,
+                orphans,
                 1.6f,
                 () =>
                 {
@@ -1894,7 +1906,7 @@ namespace StarSalvager
         //Coroutines
         //============================================================================================================//
 
-        private IEnumerator RefineBitCoroutine(Bit bit, Transform processToTranform, float speed, Action onFinishedCallback)
+        private IEnumerator RefineBitCoroutine(Bit bit, Transform processToTranform, IReadOnlyList<OrphanMoveData> orphans, float speed, Action onFinishedCallback)
         {
             var bitStartPosition = bit.transform.position;
             var endPosition = processToTranform.position;
@@ -1904,6 +1916,25 @@ namespace StarSalvager
             bit.Coordinate = Vector2Int.zero;
             bit.renderer.sortingOrder = 10000;
 
+            foreach (var omd in orphans)
+            {
+                omd.attachableBase.Coordinate = omd.intendedCoordinates;
+                (omd.attachableBase as Bit)?.SetColliderActive(false);
+
+                if (omd.attachableBase is ICanCombo iCanCombo)
+                    iCanCombo.IsBusy = true;
+            }
+
+            //Same as above but for Orphans
+            //--------------------------------------------------------------------------------------------------------//
+
+            /*var orphanTransforms = orphans.Select(bt => bt.attachableBase.transform).ToArray();
+            var orphanTransformPositions = orphanTransforms.Select(bt => bt.localPosition).ToArray();
+            var orphanTargetPositions = orphans.Select(o =>
+                transform.InverseTransformPoint((Vector2)transform.position +
+                                                (Vector2)o.intendedCoordinates * Constants.gridCellSize)).ToArray();*/
+            //--------------------------------------------------------------------------------------------------------//
+
             while (t < 1f)
             {
                 bit.transform.position = Vector3.Lerp(bitStartPosition, endPosition, t);
@@ -1911,10 +1942,39 @@ namespace StarSalvager
                 //TODO Need to adjust the scale here
                 bit.transform.localScale = Vector3.LerpUnclamped(Vector3.zero, Vector3.one, refineScaleCurve.Evaluate(t));
 
+
+                //Move the orphans into their new positions
+                //----------------------------------------------------------------------------------------------------//
+
+                /*for (var i = 0; i < orphans.Count; i++)
+                {
+                    var bitTransform = orphanTransforms[i];
+
+                    //Debug.Log($"Start {bitTransform.position} End {position}");
+
+                    bitTransform.localPosition = Vector2.Lerp(orphanTransformPositions[i],
+                        orphanTargetPositions[i], t);
+
+                    SSDebug.DrawArrow(bitTransform.position, transform.TransformPoint(orphanTargetPositions[i]), Color.red);
+                }*/
+
                 t += Time.deltaTime * speed * moveSpeedCurve.Evaluate(t);
 
                 yield return null;
             }
+
+            //Re-enable the colliders on our orphans, and ensure they're in the correct position
+            /*for (var i = 0; i < orphans.Count; i++)
+            {
+                var attachable = orphans[i].attachableBase;
+                orphanTransforms[i].localPosition = orphanTargetPositions[i];
+
+                if (attachable is CollidableBase collidableBase)
+                    collidableBase.SetColliderActive(true);
+
+                if (attachable is ICanCombo canCombo)
+                    canCombo.IsBusy = false;
+            }*/
 
             onFinishedCallback?.Invoke();
             bit.transform.localScale = Vector3.one;
