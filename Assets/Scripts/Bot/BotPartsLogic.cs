@@ -677,6 +677,7 @@ namespace StarSalvager
             }
 
             TryRemoveResources(powerValue, powerToRemove, deltaTime);
+            LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(BIT_TYPE.YELLOW, powerToRemove);
 
             UpdateUI(BIT_TYPE.YELLOW, PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid);
             UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource);
