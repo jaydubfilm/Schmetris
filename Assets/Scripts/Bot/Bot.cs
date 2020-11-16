@@ -345,6 +345,13 @@ namespace StarSalvager
             if (GameTimer.IsPaused) 
                 return;
 
+
+            if (direction != 0 && _isDestroyed)
+            {
+                isContinuousRotation = false;
+                return;
+            }
+
             if (previousDirection == direction && direction != 0)
             {
                 isContinuousRotation = true;

@@ -557,6 +557,7 @@ namespace StarSalvager.Utilities.Inputs
         public void CancelMove()
         {
             Move(0);
+            Rotate(0);
         }
 
 
