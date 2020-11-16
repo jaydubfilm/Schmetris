@@ -346,7 +346,7 @@ namespace StarSalvager
                 return;
 
 
-            if (direction != 0 && _isDestroyed)
+            if (direction != 0 && (LevelManager.Instance.BotDead || _isDestroyed))
             {
                 isContinuousRotation = false;
                 return;
@@ -3621,7 +3621,10 @@ namespace StarSalvager
         public void CustomRecycle(params object[] args)
         {
             transform.localScale = Vector2.one;
-            
+            isContinuousRotation = false;
+            targetRotation = 0;
+            _rotating = false;
+
             foreach (var attachable in attachedBlocks)
             {
                 switch (attachable)
