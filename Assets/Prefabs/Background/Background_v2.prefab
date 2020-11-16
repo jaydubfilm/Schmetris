@@ -623,6 +623,7 @@ MonoBehaviour:
     Transform: {fileID: 8450868299511753622}
     Renderer: {fileID: 0}
     yScale: 0
+    xScale: 0
     MaterialInstance: {fileID: 0}
     startOffset: {x: 0, y: 0}
     startTile: {x: 1, y: 1}
@@ -634,6 +635,7 @@ MonoBehaviour:
     Transform: {fileID: 6140557962963535764}
     Renderer: {fileID: 0}
     yScale: 0
+    xScale: 0
     MaterialInstance: {fileID: 0}
     startOffset: {x: 0, y: 0}
     startTile: {x: 1, y: 1}
@@ -645,6 +647,7 @@ MonoBehaviour:
     Transform: {fileID: 6416717816596724903}
     Renderer: {fileID: 0}
     yScale: 0
+    xScale: 0
     MaterialInstance: {fileID: 0}
     startOffset: {x: 0, y: 0}
     startTile: {x: 1, y: 1}
@@ -656,6 +659,7 @@ MonoBehaviour:
     Transform: {fileID: 4595036903017304885}
     Renderer: {fileID: 0}
     yScale: 0
+    xScale: 0
     MaterialInstance: {fileID: 0}
     startOffset: {x: 0, y: 0}
     startTile: {x: 1, y: 1}
@@ -667,6 +671,7 @@ MonoBehaviour:
     Transform: {fileID: 3295871988050022675}
     Renderer: {fileID: 0}
     yScale: 0
+    xScale: 0
     MaterialInstance: {fileID: 0}
     startOffset: {x: 0, y: 0}
     startTile: {x: 1, y: 1}
@@ -678,6 +683,7 @@ MonoBehaviour:
     Transform: {fileID: 6140557961423596227}
     Renderer: {fileID: 0}
     yScale: 0
+    xScale: 0
     MaterialInstance: {fileID: 0}
     startOffset: {x: 0.5, y: 0.5}
     startTile: {x: 1.2, y: 1.2}
@@ -689,6 +695,7 @@ MonoBehaviour:
     Transform: {fileID: 452937758110731177}
     Renderer: {fileID: 0}
     yScale: 0
+    xScale: 0
     MaterialInstance: {fileID: 0}
     startOffset: {x: 0.5, y: 0.5}
     startTile: {x: 1, y: 1}
@@ -700,11 +707,12 @@ MonoBehaviour:
     Transform: {fileID: 631398543432052788}
     Renderer: {fileID: 0}
     yScale: 0
+    xScale: 0
     MaterialInstance: {fileID: 0}
     startOffset: {x: 0, y: 0}
     startTile: {x: 1.25, y: 1.25}
     Texture: {fileID: 2800000, guid: cce8f8a07d5e221419ec2c98a2ddd56a, type: 3}
-    Color: {r: 0.28235295, g: 0.7019608, b: 0.6745098, a: 0.2}
+    Color: {r: 0.28235295, g: 0.7019608, b: 0.6745098, a: 0.29803923}
     isInfinite: 0
     distance: 1
 --- !u!1 &8450868299511753611

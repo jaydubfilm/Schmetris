@@ -291,7 +291,6 @@ namespace StarSalvager.Cameras
 
         #endregion //Camera Rect
 
-
         //================================================================================================================//
 
         /*[Obsolete("This should not move using the ObstacleManager")]

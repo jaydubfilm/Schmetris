@@ -80,6 +80,7 @@ namespace StarSalvager.Utilities.Backgrounds
         [SerializeField]
         private Background[] backgrounds;
 
+        private Transform _targetTransform;
         private new Transform transform;
 
         private Vector3 _delta;
@@ -169,6 +170,11 @@ namespace StarSalvager.Utilities.Backgrounds
                 if (background.isInfinite)
                     continue;
 
+                var distSpeed = background.distance / globalSpeedOffset;
+
+                var xSpeed = (_delta.x / Globals.BotHorizontalSpeed) / distSpeed;
+                var ySpeed = Globals.TimeForAsteroidToFallOneSquare / distSpeed;
+
                 switch (background.type)
                 {
                     //------------------------------------------------------------------------------------------------//
@@ -182,9 +188,8 @@ namespace StarSalvager.Utilities.Backgrounds
                         //TODO Need to check and see if the image should wrap
                         CheckSpriteWrap(background);
                         
-                        var xPosDelta = -_delta.x / (background.distance / globalSpeedOffset);
-                        
-                        var yPosDelta = Globals.TimeForAsteroidToFallOneSquare / (background.distance / globalSpeedOffset);
+                        var xPosDelta = -xSpeed;
+                        var yPosDelta = ySpeed;
                         
                         background.Transform.localPosition += new Vector3(xPosDelta, -yPosDelta) * Time.deltaTime;
                         break;
@@ -193,13 +198,8 @@ namespace StarSalvager.Utilities.Backgrounds
                     
                     case TYPE.TRANSPARENT:
                     case TYPE.CUTOUT:
-                        var xDelta = (1f / background.xScale) *
-                                     (_delta.x / (background.distance / globalSpeedOffset)) *
-                                     background.startTile.x;
-                        
-                        var yDelta = (1f / background.yScale) *
-                                     (Globals.TimeForAsteroidToFallOneSquare / (background.distance / globalSpeedOffset)) *
-                                     background.startTile.y;
+                        var xDelta = (1f / background.xScale) * xSpeed * background.startTile.x;
+                        var yDelta = (1f / background.yScale) * ySpeed * background.startTile.y;
                         
                         //offset = Vector2.up * (yDelta * Time.deltaTime);
                         offset = new Vector2(xDelta, yDelta) * Time.deltaTime;
@@ -220,11 +220,17 @@ namespace StarSalvager.Utilities.Backgrounds
 
         private void CalculateCameraDelta()
         {
+            var deltaTime = Time.deltaTime;
+
+            if (deltaTime == 0f)
+                return;
+            
             _lastPos = _currentPos;
             _currentPos = transform.position;
 
+
             
-            _delta = _currentPos - _lastPos;
+            _delta = (_currentPos - _lastPos) / deltaTime;
         }
 
         private void CheckSpriteWrap(in Background background)
