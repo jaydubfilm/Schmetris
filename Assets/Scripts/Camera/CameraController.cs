@@ -25,7 +25,7 @@ namespace StarSalvager.Cameras
         
         
         #region Properties
-
+        
         [Required]
         public CinemachineVirtualCamera CinemachineVirtualCamera;
 

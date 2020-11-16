@@ -180,13 +180,14 @@ namespace StarSalvager
             RegisterPausable();
             RegisterMoveOnInput();
         }
+        
 
         private void Update()
         {
             if (isPaused)
                 return;
 
-            TryMovement();
+            
             SetParticles();
             
             //See if the bot has completed the current wave
@@ -196,6 +197,13 @@ namespace StarSalvager
             
             if (Destroyed)
                 return;
+            
+            TryMovement();
+
+            if (Rotating)
+            {
+                RotateBot();
+            }
             
             //TODO Once all done testing, remove this
             if (UnityEngine.Input.GetKeyDown(KeyCode.LeftShift))
@@ -222,20 +230,6 @@ namespace StarSalvager
             _needToCheckMagnet = false;
         }
 
-        private void FixedUpdate()
-        {
-            if(Destroyed)
-                return;
-
-            /*if (Moving)
-                MoveBot();*/
-
-            if (Rotating)
-            {
-                RotateBot();
-            }
-        }
-
         private void OnEnable()
         {
             CompositeCollider2D.GenerateGeometry();
@@ -250,49 +244,46 @@ namespace StarSalvager
         {
             var xPos = transform.position.x;
 
-            float distHorizontal;
-            float direction;
-            Vector3 moveDirection;
+            var distHorizontal = Mathf.Abs(m_distanceHorizontal);
+            DIRECTION direction;
 
 
             bool canMove;
             if (m_distanceHorizontal < 0)
             {
-                distHorizontal = Mathf.Abs(m_distanceHorizontal);
-                direction = -1f;
+                direction = DIRECTION.LEFT;
                 canMove = xPos > -0.5f * Constants.gridCellSize * Globals.GridSizeX;
-                moveDirection = Vector3.left;
             }
             else if (m_distanceHorizontal > 0)
             {
-                distHorizontal = m_distanceHorizontal;
-                direction = 1f;
+                direction = DIRECTION.RIGHT;
                 canMove = xPos < 0.5f * Constants.gridCellSize * Globals.GridSizeX;
-                moveDirection = Vector3.right;
             }
             else
             {
-                return;
+                canMove = false;
+                distHorizontal = 0f;
+                direction = DIRECTION.NULL;
             }
 
             //--------------------------------------------------------------------------------------------------------//
 
-            var toMove = Mathf.Min(Mathf.Abs(distHorizontal), Globals.BotHorizontalSpeed * Time.deltaTime);
-            //MOVE_DELTA = toMove * direction;
 
-            Globals.MovingDirection = Mathf.Abs(m_distanceHorizontal) <= 0.2f
+            Globals.MovingDirection = distHorizontal <= 0.2f
                 ? DIRECTION.NULL
-                : m_distanceHorizontal.GetHorizontalDirection();
+                : direction;
 
             if (!canMove)
                 return;
+            
+            var toMove = Mathf.Min(distHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
 
-            m_distanceHorizontal -= toMove * direction;
-            transform.position += moveDirection * toMove;
+            var moveDirection = direction.ToVector2();
+
+            m_distanceHorizontal -= toMove * moveDirection.x;
+            transform.position += (Vector3)moveDirection * toMove;
 
             //--------------------------------------------------------------------------------------------------------//
-
-            //LevelManager.Instance.CameraController.transform.position += moveDirection * toMove;
 
         }
 
@@ -437,7 +428,7 @@ namespace StarSalvager
         {
             if (GameTimer.IsPaused) 
                 return;
-
+            
             if (previousDirection == direction && direction != 0)
             {
                 isContinuousRotation = true;
@@ -480,7 +471,7 @@ namespace StarSalvager
             {
                 targetRotation = rigidbody.rotation + toRotate;
             }
-
+            
             targetRotation = MathS.ClampAngle(targetRotation);
 
             foreach (var attachedBlock in attachedBlocks)
@@ -517,7 +508,7 @@ namespace StarSalvager
 
         private void RotateBot()
         {
-            var rotation = rigidbody.rotation;
+            var rotation = transform.eulerAngles.z;
 
             //Rotates towards the target rotation.
             float rotationAmount;
@@ -529,8 +520,8 @@ namespace StarSalvager
             {
                 rotationAmount = Globals.BotRotationSpeed;
             }
-            rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, rotationAmount * Time.fixedDeltaTime);
-            rigidbody.rotation = rotation;
+            rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, rotationAmount * Time.deltaTime);
+            transform.rotation = Quaternion.Euler(0,0,rotation);
             
             //FIXME Remove this when ready
             TEST_ParticleSystem.transform.rotation = Quaternion.identity;
@@ -554,7 +545,7 @@ namespace StarSalvager
             //NOTE: This is a strict order-of-operations as changing will cause rotations to be incorrect
             //--------------------------------------------------------------------------------------------------------//
             //Force set the rotation to the target, in case the bot is not exactly on target
-            rigidbody.rotation = targetRotation;
+            transform.rotation = Quaternion.Euler(0,0,targetRotation);
             targetRotation = 0f;
             
             
