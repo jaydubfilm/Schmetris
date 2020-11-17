@@ -491,7 +491,10 @@ namespace StarSalvager
                     ObstacleManager.RecoveredBotFalling.transform.position.y + distanceTrail)
                 {
                     if (!ObstacleManager.RecoveredBotTowing)
+                    {
                         CreateTowEffect();
+                        AudioController.PlaySound(SOUND.RECOVERY_TOW);
+                    }
 
                     ObstacleManager.RecoveredBotTowing = true;
                     ObstacleManager.RecoveredBotFalling.transform.position =
@@ -883,6 +886,7 @@ namespace StarSalvager
             
             if (value)
             {
+                AudioController.PlaySound(SOUND.BOT_ARRIVES);
                 CreateThrustEffect(BotObject);
                 BotObject.PROTO_GodMode = true;
             }
@@ -907,12 +911,15 @@ namespace StarSalvager
                 botMoveOffScreenSpeed = 1.0f;
             }
 
-            if (value)
+            if (value && !_effect)
             {
+                AudioController.PlaySound(SOUND.BOT_DEPARTS);
                 CreateThrustEffect(BotObject);
             }
-            else if(_effect)
+            else if (!value && _effect)
+            {
                 Destroy(_effect);
+            }
         }
 
         //FIXME Does this need to be in the LevelManager?

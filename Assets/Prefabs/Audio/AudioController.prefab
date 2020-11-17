@@ -783,6 +783,32 @@ MonoBehaviour:
     _clip: {fileID: 8300000, guid: bd31ac15fb48d4348b412a6dc09b27ff, type: 3}
   - _sound: 42
     _clip: {fileID: 8300000, guid: f2fd3da7db389f54196040b355554136, type: 3}
+  - _sound: 43
+    _clip: {fileID: 8300000, guid: ba03485ae9bac8b4e8c73ccf6ca35420, type: 3}
+  - _sound: 44
+    _clip: {fileID: 8300000, guid: f15293df1be111345afdf45c1c624ac4, type: 3}
+  - _sound: 45
+    _clip: {fileID: 8300000, guid: 709394b714ba5354ea8667fc9e1dd94a, type: 3}
+  - _sound: 46
+    _clip: {fileID: 8300000, guid: 2d94aee041b4c6c499e94fe979228888, type: 3}
+  - _sound: 47
+    _clip: {fileID: 8300000, guid: 44969c03eea6a3a42bb568a5aba3c44c, type: 3}
+  - _sound: 48
+    _clip: {fileID: 8300000, guid: 90e6a9586a6a06b43b8a383cf8d78261, type: 3}
+  - _sound: 49
+    _clip: {fileID: 8300000, guid: 90e6a9586a6a06b43b8a383cf8d78261, type: 3}
+  - _sound: 50
+    _clip: {fileID: 0}
+  - _sound: 51
+    _clip: {fileID: 8300000, guid: 0f03ec6e48f56f94e83b014ac4468ca1, type: 3}
+  - _sound: 52
+    _clip: {fileID: 8300000, guid: 7d6b08a452e494c44b3849f8dcb81997, type: 3}
+  - _sound: 53
+    _clip: {fileID: 8300000, guid: 4f4b0251a672a5242adfb98d06c80fee, type: 3}
+  - _sound: 54
+    _clip: {fileID: 8300000, guid: 93eb968010087d741b95fa8d51f8b2f1, type: 3}
+  - _sound: 55
+    _clip: {fileID: 8300000, guid: 7a2d5d91fdee650478a43eccfba44cbb, type: 3}
   musicMixerSnapshots:
   - {fileID: 24500006, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}
   - {fileID: -8389569066866548857, guid: 90dae2fcc970a4040a2747a22f65a8d6, type: 2}

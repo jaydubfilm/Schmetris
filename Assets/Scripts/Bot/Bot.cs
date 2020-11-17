@@ -1583,13 +1583,46 @@ namespace StarSalvager
             {
                 //case PART_TYPE.CORE when PROTO_autoRefineFuel && bit.Type == BIT_TYPE.RED:
                 case PART_TYPE.REFINER when !part.Disabled:
+                    
                     break;
                 default:
                     return;
             }
             
-            BotPartsLogic.ProcessBit((Part)part, bit);
+            var hasProcessed = BotPartsLogic.ProcessBit((Part)part, bit) > 0;
+            
+            if(hasProcessed && part.Type == PART_TYPE.REFINER)
+                PlayRefineSound(bit.Type);
+            
             CheckForDisconnects();
+        }
+
+        private void PlayRefineSound(BIT_TYPE bitType)
+        {
+            SOUND sound;
+
+            switch (bitType)
+            {
+                case BIT_TYPE.BLUE:
+                    sound = SOUND.REFINE_BLUE;
+                    break;
+                case BIT_TYPE.GREEN:
+                    sound = SOUND.REFINE_GREEN;
+                    break;
+                case BIT_TYPE.GREY:
+                    sound = SOUND.REFINE_GREY;
+                    break;
+                case BIT_TYPE.RED:
+                    sound = SOUND.REFINE_RED;
+                    break;
+                case BIT_TYPE.YELLOW:
+                    sound = SOUND.REFINE_YELLOW;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
+            }
+            AudioController.PlaySound(sound);
+
         }
 
         //FIXME Ensure that I have a version of this function without the desiredDirection, and one that accounts for corners
@@ -2197,12 +2230,17 @@ namespace StarSalvager
                 if (!attachedBlocks.Contains(shape.AttachedBits, out var upgrading))
                     continue;
                 
+                AudioController.PlaySound(SOUND.BONUS_SHAPE_MATCH);
+                
+                AudioController.PlaySound(SOUND.BONUS_SHAPE_UPG);
                 //Upgrade the pieces matched
                 foreach (var coordinate in upgrading)
                 {
                     var toUpgrade = attachedBlocks.OfType<Bit>().FirstOrDefault(x => x.Coordinate == coordinate);
 
                     toUpgrade?.IncreaseLevel();
+                    
+                    
                 }
 
                 List<BIT_TYPE> numTypes = new List<BIT_TYPE>();
@@ -2219,6 +2257,8 @@ namespace StarSalvager
                 //Remove the Shape
                 PlayerDataManager.ChangeGears(gears);
                 obstacleManager.MatchBonusShape(shape);
+                
+                
                 
                 //FIXME We'll need to double check the position here
                 FloatingText.Create($"+{gears}",
