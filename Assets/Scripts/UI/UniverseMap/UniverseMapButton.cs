@@ -32,6 +32,7 @@ namespace StarSalvager
         public int WaveNumber = -1;
         public Image BotImage;
         public Image ShortcutImage;
+        public Image PointOfInterestImage;
 
         public void Awake()
         {

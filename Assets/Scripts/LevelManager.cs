@@ -762,31 +762,6 @@ namespace StarSalvager
             endWaveMessage = "Wave Complete!";
 
             Toast.AddToast(endWaveMessage);
-            if (!Globals.OnlyGetWaveLootOnce || !PlayerDataManager.CheckIfCompleted(progressionSector, Globals.CurrentWave))
-            {
-                /*CurrentWaveData.ConfigureLootTable();
-                List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
-                DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);*/
-
-                SectorLootTableScriptableObject sectorLootTable = FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector].sectorRemoteDataLootTablesScriptable.GetLootTableAtIndex(PlayerDataManager.NumTimesBeatNewWaveInSector[Globals.CurrentSector]);
-                if (sectorLootTable != null)
-                {
-                    List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave)).childNodes;
-                    if (childNodesAccessible.Count == 0 || UnityEngine.Random.Range(0.0f, 1.0f) <= 0.33f)
-                    {
-                        sectorLootTable.ConfigureLootTable();
-                        List<IRDSObject> newWaveLoot = sectorLootTable.rdsTable.rdsResult.ToList();
-                        DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);
-                        PlayerDataManager.NumTimesBeatNewWaveInSector[Globals.CurrentSector]++;
-                    }
-                }
-            }
-
-            int curNodeIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
-            if (!PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(curNodeIndex))
-            {
-                PlayerDataManager.AddCompletedNode(curNodeIndex);
-            }
 
             EndWaveState = true;
             LevelManagerUI.OverrideText = string.Empty;
@@ -800,6 +775,33 @@ namespace StarSalvager
 
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
+
+            if (!Globals.OnlyGetWaveLootOnce || !PlayerDataManager.CheckIfCompleted(progressionSector, Globals.CurrentWave))
+            {
+                UnityEngine.Random.InitState(System.DateTime.Now.Millisecond);
+                /*CurrentWaveData.ConfigureLootTable();
+                List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
+                DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);*/
+
+                SectorLootTableScriptableObject sectorLootTable = FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector].sectorRemoteDataLootTablesScriptable.GetLootTableAtIndex(PlayerDataManager.NumTimesGottenLootTableInSector[Globals.CurrentSector]);
+                if (sectorLootTable != null)
+                {
+                    List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave)).childNodes;
+                    if (childNodesAccessible.Count == 0 || UnityEngine.Random.Range(0.0f, 1.0f) <= 0.33f)
+                    {
+                        sectorLootTable.ConfigureLootTable();
+                        List<IRDSObject> newWaveLoot = sectorLootTable.rdsTable.rdsResult.ToList();
+                        DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);
+                        PlayerDataManager.NumTimesGottenLootTableInSector[Globals.CurrentSector]++;
+                    }
+                }
+            }
+
+            int curNodeIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+            if (!PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(curNodeIndex))
+            {
+                PlayerDataManager.AddCompletedNode(curNodeIndex);
+            }
 
             if (Globals.IsRecoveryBot)
             {
@@ -942,6 +944,22 @@ namespace StarSalvager
                         
                         FloatingText.Create($"+{gears}", position, Color.white);
                         
+                        break;
+                    }
+                    case RDSValue<BlockData> rdsValueBlockData:
+                    {
+                        if (EndWaveState)
+                        {
+                            switch (rdsValueBlockData.rdsValue.ClassType)
+                            {
+                                case nameof(Component):
+                                    PlayerDataManager.AddComponent((COMPONENT_TYPE)rdsValueBlockData.rdsValue.Type, 1);
+                                    loot.RemoveAt(i);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
                         break;
                     }
                 }

@@ -108,6 +108,7 @@ namespace StarSalvager.UI
                 universeMapButtons[i].Button.image.color = Color.white;
                 universeMapButtons[i].BotImage.gameObject.SetActive(false);
                 universeMapButtons[i].ShortcutImage.gameObject.SetActive(false);
+                universeMapButtons[i].PointOfInterestImage.gameObject.SetActive(PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i) != null && PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i).childNodes.Count == 0 && !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(i));
             }
 
             if (Globals.IsBetweenWavesInUniverseMap)
@@ -193,6 +194,15 @@ namespace StarSalvager.UI
                     int nodeIndex = PlayerDataManager.GetPlayerPreviouslyCompletedNodes()[i];
 
                     List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
+
+                    for (int k = 0; k < childNodesAccessible.Count; k++)
+                    {
+                        bool isChildShortcut = PlayerDataManager.GetShortcutNodes().Contains(childNodesAccessible[k].nodeIndex);
+                        if (isChildShortcut)
+                        {
+                            universeMapButtons[childNodesAccessible[k].nodeIndex].ShortcutImage.gameObject.SetActive(true);
+                        }
+                    }
 
                     bool isShortcut = PlayerDataManager.GetShortcutNodes().Contains(nodeIndex);
 
