@@ -49,3 +49,56 @@ MonoBehaviour:
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 1
       isAlwaysSpawn: 1
+  SectorRemoteDataBackupLootTable:
+    maxDrops: 2
+    RDSEndOfWaveLoot:
+    - rdsData: 3
+      type: 0
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+    - rdsData: 3
+      type: 1
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+    - rdsData: 3
+      type: 2
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+    - rdsData: 3
+      type: 3
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+    - rdsData: 3
+      type: 4
+      amount: 0
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0

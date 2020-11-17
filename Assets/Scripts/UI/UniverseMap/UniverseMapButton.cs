@@ -25,12 +25,14 @@ namespace StarSalvager
         [NonSerialized]
         public PointerEvents PointerEvents;
         public TMP_Text Text;
+        public TMP_Text TextBelow;
         [NonSerialized]
         public int SectorNumber = -1;
         [NonSerialized]
         public int WaveNumber = -1;
         public Image BotImage;
         public Image ShortcutImage;
+        public Image PointOfInterestImage;
 
         public void Awake()
         {
@@ -52,6 +54,10 @@ namespace StarSalvager
             {
                 if (SectorNumber < 0 || WaveNumber < 0)
                 {
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
+                    });
                     return;
                 }
                 

@@ -260,6 +260,8 @@ namespace StarSalvager
                 bot.transform.localScale = Vector3.one * scale;
 
                 _t += Time.deltaTime;
+                
+                m_cameraController.SetTrackedOffset(y: (5 * Constants.gridCellSize) - newY);
             }
 
             if (m_botZoomOffScreen)
@@ -447,16 +449,22 @@ namespace StarSalvager
                         SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
                     });
             }*/
+            
+            ProjectileManager.CleanProjectiles();
 
             MissionManager.ProcessMissionData(typeof(SectorsCompletedMission),
                 new MissionProgressEventData());
 
-            ProjectileManager.UpdateForces();
+            //ProjectileManager.UpdateForces();
+
             Globals.IsRecoveryBot = false;
         }
 
+        //FIXME This will need to be cleaned up
         private void MoveBotOffScreen()
         {
+            const float offset = Constants.gridCellSize * 5;
+            
             var yPos = Constants.gridCellSize * Globals.GridSizeY;
             if (botMoveOffScreenSpeed < 20)
             {
@@ -474,7 +482,7 @@ namespace StarSalvager
             {
                 bot.transform.position += Vector3.up * (botMoveOffScreenSpeed * Time.deltaTime);
                 float scale = Mathf.Lerp(1.0f, Globals.BotExitScreenMaxSize,
-                    (bot.transform.position.y - (Constants.gridCellSize * 5)) / (yPos - (Constants.gridCellSize * 5)));
+                    (bot.transform.position.y - offset) / (yPos - offset));
                 bot.transform.localScale = new Vector2(scale, scale);
 
 
@@ -483,7 +491,10 @@ namespace StarSalvager
                     ObstacleManager.RecoveredBotFalling.transform.position.y + distanceTrail)
                 {
                     if (!ObstacleManager.RecoveredBotTowing)
+                    {
                         CreateTowEffect();
+                        AudioController.PlaySound(SOUND.RECOVERY_TOW);
+                    }
 
                     ObstacleManager.RecoveredBotTowing = true;
                     ObstacleManager.RecoveredBotFalling.transform.position =
@@ -492,6 +503,8 @@ namespace StarSalvager
                     UpdateTowLineRenderer(bot.transform.position,
                         ObstacleManager.RecoveredBotFalling.transform.position);
                 }
+                
+                m_cameraController.SetTrackedOffset(y: offset + -bot.transform.position.y);
             }
         }
 
@@ -579,6 +592,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             InputManager.Instance.InitInput();
+            InputManager.Instance.LockRotation = true;
 
             WaterAtBeginningOfWave = PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource;
 
@@ -751,31 +765,6 @@ namespace StarSalvager
             endWaveMessage = "Wave Complete!";
 
             Toast.AddToast(endWaveMessage);
-            if (!Globals.OnlyGetWaveLootOnce || !PlayerDataManager.CheckIfCompleted(progressionSector, Globals.CurrentWave))
-            {
-                /*CurrentWaveData.ConfigureLootTable();
-                List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
-                DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);*/
-
-                SectorLootTableScriptableObject sectorLootTable = FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector].sectorRemoteDataLootTablesScriptable.GetLootTableAtIndex(PlayerDataManager.NumTimesBeatNewWaveInSector[Globals.CurrentSector]);
-                if (sectorLootTable != null)
-                {
-                    List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave)).childNodes;
-                    if (childNodesAccessible.Count == 0 || UnityEngine.Random.Range(0.0f, 1.0f) <= 0.33f)
-                    {
-                        sectorLootTable.ConfigureLootTable();
-                        List<IRDSObject> newWaveLoot = sectorLootTable.rdsTable.rdsResult.ToList();
-                        DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);
-                        PlayerDataManager.NumTimesBeatNewWaveInSector[Globals.CurrentSector]++;
-                    }
-                }
-            }
-
-            int curNodeIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
-            if (!PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(curNodeIndex))
-            {
-                PlayerDataManager.AddCompletedNode(curNodeIndex);
-            }
 
             EndWaveState = true;
             LevelManagerUI.OverrideText = string.Empty;
@@ -789,6 +778,33 @@ namespace StarSalvager
 
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
+
+            if (!Globals.OnlyGetWaveLootOnce || !PlayerDataManager.CheckIfCompleted(progressionSector, Globals.CurrentWave))
+            {
+                UnityEngine.Random.InitState(System.DateTime.Now.Millisecond);
+                /*CurrentWaveData.ConfigureLootTable();
+                List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
+                DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);*/
+
+                SectorLootTableScriptableObject sectorLootTable = FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector].sectorRemoteDataLootTablesScriptable.GetLootTableAtIndex(PlayerDataManager.NumTimesGottenLootTableInSector[Globals.CurrentSector]);
+                if (sectorLootTable != null)
+                {
+                    List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave)).childNodes;
+                    if (childNodesAccessible.Count == 0 || UnityEngine.Random.Range(0.0f, 1.0f) <= 0.33f)
+                    {
+                        sectorLootTable.ConfigureLootTable();
+                        List<IRDSObject> newWaveLoot = sectorLootTable.rdsTable.rdsResult.ToList();
+                        DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);
+                        PlayerDataManager.NumTimesGottenLootTableInSector[Globals.CurrentSector]++;
+                    }
+                }
+            }
+
+            int curNodeIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+            if (!PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(curNodeIndex))
+            {
+                PlayerDataManager.AddCompletedNode(curNodeIndex);
+            }
 
             if (Globals.IsRecoveryBot)
             {
@@ -854,25 +870,31 @@ namespace StarSalvager
 
         public void SetBotBelowScreen()
         {
+            //Debug.LogError("ERROR: This needs to be fixed to support new movement system");
             for (int i = 0; i < m_bots.Count; i++)
             {
                 m_bots[i].transform.position = Vector3.down * 5;
             }
+            
+            _startY = -5f; 
 
-            _startY = -5f;
         }
 
         public void SetBotEnterScreen(bool value)
         {
             m_botEnterScreen = value;
-
+            
             if (value)
             {
+                AudioController.PlaySound(SOUND.BOT_ARRIVES);
                 CreateThrustEffect(BotObject);
                 BotObject.PROTO_GodMode = true;
             }
-            else if(_effect)
+            else if (_effect)
+            {
+                InputManager.Instance.LockRotation = false;
                 Destroy(_effect);
+            }
         }
 
         public void SetBotExitScreen(bool value)
@@ -883,16 +905,21 @@ namespace StarSalvager
             }
 
             m_botZoomOffScreen = value;
-
+            
             if (!value)
             {
                 botMoveOffScreenSpeed = 1.0f;
             }
-            
-            if(value)
+
+            if (value && !_effect)
+            {
+                AudioController.PlaySound(SOUND.BOT_DEPARTS);
                 CreateThrustEffect(BotObject);
-            else if(_effect)
+            }
+            else if (!value && _effect)
+            {
                 Destroy(_effect);
+            }
         }
 
         //FIXME Does this need to be in the LevelManager?
@@ -926,6 +953,22 @@ namespace StarSalvager
                         
                         break;
                     }
+                    case RDSValue<BlockData> rdsValueBlockData:
+                    {
+                        if (EndWaveState)
+                        {
+                            switch (rdsValueBlockData.rdsValue.ClassType)
+                            {
+                                case nameof(Component):
+                                    PlayerDataManager.AddComponent((COMPONENT_TYPE)rdsValueBlockData.rdsValue.Type, 1);
+                                    loot.RemoveAt(i);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        break;
+                    }
                 }
             }
 
@@ -943,7 +986,7 @@ namespace StarSalvager
                 if (!blockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
                     blockData = new List<BlockData>();
 
-                PlayerDataManager.SetBlockDatas(blockData);
+                PlayerDataManager.SetBlockData(blockData);
             }
         }
 
@@ -955,6 +998,8 @@ namespace StarSalvager
 
             ScreenFade.Fade(() =>
             {
+                Globals.IsRecoveryBot = true;
+                GameUi.ShowRecoveryBanner(true);
                 SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.LEVEL);
             });
             
@@ -974,6 +1019,7 @@ namespace StarSalvager
             }
 
             InputManager.Instance.CancelMove();
+            InputManager.Instance.LockRotation = true;
 
             if (!Globals.IsRecoveryBot)
             {
@@ -1015,16 +1061,13 @@ namespace StarSalvager
             if (!Globals.IsRecoveryBot)
             {
                 IsWaveProgressing = false;
-                Globals.IsRecoveryBot = true;
 
                 Alert.ShowAlert("Bot wrecked",
                     "Your bot has been wrecked. Deploy your recovery bot to rescue it.",
                     "Deploy",
                     () =>
                     {
-                        Globals.IsRecoveryBot = true;
                         IsWaveProgressing = true;
-                        GameUi.ShowRecoveryBanner(true);
                         RestartLevel();
                     });
 
@@ -1037,22 +1080,8 @@ namespace StarSalvager
 
                 IsWaveProgressing = false;
                 //GameTimer.SetPaused(false);
+
                 OutroScene.gameObject.SetActive(true);
-                
-                /*m_levelManagerUI.ShowSummaryScreen("GAME OVER",
-                    "You failed to recover your bot. Click to return to main menu.",
-                    () =>
-                    {
-                        Alert.ShowDancers(false);
-                        Globals.IsRecoveryBot = false;
-                        GameUi.ShowRecoveryBanner(false);
-                        Globals.CurrentWave = 0;
-                        GameTimer.SetPaused(false);
-                        PlayerDataManager.ResetPlayerRunData();
-                        PlayerDataManager.SavePlayerAccountData();
-                        PlayerDataManager.ClearCurrentSaveFile();
-                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
-                    });*/
             }
         }
 

@@ -14,7 +14,7 @@ using StarSalvager.Cameras;
 
 namespace StarSalvager
 {
-    public class EnemyManager : MonoBehaviour, IReset, IPausable, IMoveOnInput
+    public class EnemyManager : MonoBehaviour, IReset, IPausable
     {
         private List<Enemy> m_enemies;
 
@@ -26,9 +26,9 @@ namespace StarSalvager
         private int m_nextStageToSpawn;
 
         //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
-        private float m_currentInput;
+        //private float m_currentInput;
 
-        private float m_distanceHorizontal = 0.0f;
+        //private float m_distanceHorizontal = 0.0f;
 
         public bool isPaused => GameTimer.IsPaused;
 
@@ -46,7 +46,7 @@ namespace StarSalvager
             m_timesToSpawn = new List<float>();
             RegisterPausable();
 
-            RegisterMoveOnInput();
+            //RegisterMoveOnInput();
         }
 
         // Update is called once per frame
@@ -294,7 +294,7 @@ namespace StarSalvager
         //IMoveOnInput
         //============================================================================================================//
         
-        public void RegisterMoveOnInput()
+        /*public void RegisterMoveOnInput()
         {
             InputManager.RegisterMoveOnInput(this);
         }
@@ -309,8 +309,8 @@ namespace StarSalvager
 
             m_currentInput = direction;
 
-            m_distanceHorizontal += direction * Constants.gridCellSize;*/
-        }
+            m_distanceHorizontal += direction * Constants.gridCellSize;
+        }*/
         
         //============================================================================================================//
 

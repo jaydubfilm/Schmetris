@@ -241,6 +241,7 @@ namespace StarSalvager
         {
             SetAttached(false);
             transform.rotation = Quaternion.identity;
+            transform.localScale = Vector3.one;
             SetRotating(false);
 
             SetSortingLayer(DEFAULT_LAYER);

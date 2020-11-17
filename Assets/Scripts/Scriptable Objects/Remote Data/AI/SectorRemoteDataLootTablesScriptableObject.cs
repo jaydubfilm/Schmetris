@@ -11,11 +11,14 @@ namespace StarSalvager.ScriptableObjects
         [SerializeField]
         public List<SectorLootTableScriptableObject> SectorRemoteDataLootTables = new List<SectorLootTableScriptableObject>();
 
+        [SerializeField]
+        private SectorLootTableScriptableObject SectorRemoteDataBackupLootTable;
+
         public SectorLootTableScriptableObject GetLootTableAtIndex(int i)
         {
             if (SectorRemoteDataLootTables.Count <= i)
             {
-                return null;
+                return SectorRemoteDataBackupLootTable;
             }
             
             return SectorRemoteDataLootTables[i];

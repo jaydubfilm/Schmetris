@@ -525,7 +525,7 @@ MonoBehaviour:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
       MissionUnlockName: 1e95753c-4321-47a3-9992-6e83534294c8
-    AmountNeeded: 200
+    AmountNeeded: 20
     AnyResourceType: 0
     ResourceType: 2
     AnyComponentType: 0

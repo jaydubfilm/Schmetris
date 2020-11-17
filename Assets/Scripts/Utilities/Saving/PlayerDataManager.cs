@@ -30,7 +30,7 @@ namespace StarSalvager.Utilities.Saving
 
 
         //TEMP
-        public static Dictionary<int, int> NumTimesBeatNewWaveInSector => PlayerAccountData.numTimesBeatNewWaveInSector;
+        public static Dictionary<int, int> NumTimesGottenLootTableInSector => PlayerAccountData.numTimesBeatNewWaveInSector;
         public static List<Dictionary<int, int>> SectorWaveIndexConverter => PlayerRunData.sectorWaveIndexConverter;
 
         //====================================================================================================================//
@@ -124,7 +124,7 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
-        public static void SetBlockDatas(List<BlockData> blockData)
+        public static void SetBlockData(List<BlockData> blockData)
         {
             if (Globals.IsRecoveryBot)
             {

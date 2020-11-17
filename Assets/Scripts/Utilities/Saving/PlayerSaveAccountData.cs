@@ -7,6 +7,7 @@ using StarSalvager.Utilities.Saving;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Audio;
 using UnityEngine;
 
 namespace StarSalvager.Values
@@ -323,13 +324,13 @@ namespace StarSalvager.Values
 
             int newTotalPatchPoints = GetTotalPatchPoints();
 
-            if (newTotalPatchPoints > totalPatchPoints)
-            {
-                for (int i = totalPatchPoints; i < newTotalPatchPoints; i++)
-                {
-                    Toast.AddToast("Unlocked New Patch Point!");
-                }
-            }
+            if (newTotalPatchPoints <= totalPatchPoints) 
+                return;
+            
+            var difference = newTotalPatchPoints - totalPatchPoints;
+            Toast.AddToast($"Unlocked {(difference > 1 ? $"{difference} Patch Points!" : "New Patch Point!")}");
+                
+            AudioController.PlaySound(SOUND.UNLOCK_PATCH_POINT);
         }
 
         public void AddGearsToGetPatchPoints(int numPatchPointsToGet)
