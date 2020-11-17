@@ -501,7 +501,7 @@ namespace StarSalvager
                         ObstacleManager.RecoveredBotFalling.transform.position);
                 }
                 
-                m_cameraController.SetTrackedOffset(y: offset -bot.transform.position.y);
+                m_cameraController.SetTrackedOffset(y: offset + -bot.transform.position.y);
             }
         }
 

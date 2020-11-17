@@ -51,11 +51,10 @@ MonoBehaviour:
   TEST_ParticleSystem: {fileID: 3099671416270462534}
   TEST_ParticleSystemForceField: {fileID: 1806099405544202029}
   PROTO_autoRefineFuel: 1
-  TEST_MergeSpeed: 5
+  TEST_MergeTime: 0.3
   TEST_DetachTime: 0.15
   TEST_SetDetachColor: 0
   MostRecentRotate: 0
-  CameraController: {fileID: 0}
   PROTO_GodMode: 0
 --- !u!114 &1775463995226503707
 MonoBehaviour:
@@ -72,10 +71,6 @@ MonoBehaviour:
   bot: {fileID: 2681746267895581274}
   useMagnet: 1
   currentMagnet: 0
-  useBurnRate: 1
-  coreHeat: 0
-  coolSpeed: 20
-  coolDelay: 1
   refineScaleCurve:
     serializedVersion: 2
     m_Curve:
@@ -142,6 +137,10 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  useBurnRate: 1
+  coreHeat: 0
+  coolSpeed: 20
+  coolDelay: 1
 --- !u!66 &2681746267895581254
 CompositeCollider2D:
   m_ObjectHideFlags: 0

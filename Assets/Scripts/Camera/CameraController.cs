@@ -404,10 +404,14 @@ namespace StarSalvager.Cameras
             framingTransposer.m_SoftZoneHeight = Mathf.Max(height, 0.8f);
         }*/
 
-        public void SetTrackedOffset(float x = 0, float y = 0, float z = 0f)
+        public void SetTrackedOffset(float x = 0f, float y = 0f, float z = 0f)
         {
             var framingTransposer = CinemachineVirtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
-            framingTransposer.m_TrackedObjectOffset = new Vector3(x, y, z);
+
+            var targetPosition = CinemachineVirtualCamera.m_LookAt.position + new Vector3(x, y * 2f, z);
+            var newPos = CinemachineVirtualCamera.m_LookAt.InverseTransformPoint(targetPosition);
+            
+            framingTransposer.m_TrackedObjectOffset = newPos;
         }
 
         public void SetOrthoSize(float size)
@@ -420,6 +424,7 @@ namespace StarSalvager.Cameras
 
         public void ResetCameraPosition()
         {
+            SetTrackedOffset();
             CinemachineVirtualCamera.transform.position = new Vector3(0f, 13.39f, -10f);
         }
         
