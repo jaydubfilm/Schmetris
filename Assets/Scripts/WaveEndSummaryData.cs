@@ -152,6 +152,9 @@ public class WaveEndSummaryData
 
     public void AddConsumedBit(BIT_TYPE type, float amount)
     {
+        if (amount == 0f)
+            return;
+        
         if(!_resourcesConsumed.ContainsKey(type))
             _resourcesConsumed.Add(type, 0f);
 

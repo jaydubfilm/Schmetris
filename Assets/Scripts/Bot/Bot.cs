@@ -1583,13 +1583,17 @@ namespace StarSalvager
             {
                 //case PART_TYPE.CORE when PROTO_autoRefineFuel && bit.Type == BIT_TYPE.RED:
                 case PART_TYPE.REFINER when !part.Disabled:
-                    PlayRefineSound(bit.Type);
+                    
                     break;
                 default:
                     return;
             }
             
-            BotPartsLogic.ProcessBit((Part)part, bit);
+            var hasProcessed = BotPartsLogic.ProcessBit((Part)part, bit) > 0;
+            
+            if(hasProcessed && part.Type == PART_TYPE.REFINER)
+                PlayRefineSound(bit.Type);
+            
             CheckForDisconnects();
         }
 

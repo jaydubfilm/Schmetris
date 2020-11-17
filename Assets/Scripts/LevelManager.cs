@@ -911,13 +911,15 @@ namespace StarSalvager
                 botMoveOffScreenSpeed = 1.0f;
             }
 
-            if (value)
+            if (value && !_effect)
             {
                 AudioController.PlaySound(SOUND.BOT_DEPARTS);
                 CreateThrustEffect(BotObject);
             }
-            else if(_effect)
+            else if (!value && _effect)
+            {
                 Destroy(_effect);
+            }
         }
 
         //FIXME Does this need to be in the LevelManager?
