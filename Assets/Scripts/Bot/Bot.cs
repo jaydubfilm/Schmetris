@@ -404,9 +404,9 @@ namespace StarSalvager
             
             GameUi.SetHealthValue(1f);
 
-            var camera = CameraController.Camera.GetComponent<CameraController>().CinemachineVirtualCamera;
-            camera.LookAt = transform;
-            camera.Follow = transform;
+            var camera = CameraController.Camera.GetComponent<CameraController>();
+            camera.SetLookAtFollow(transform);
+            camera.ResetCameraPosition();
         }
         
         public void InitBot(IEnumerable<IAttachable> botAttachables)
@@ -434,9 +434,9 @@ namespace StarSalvager
             
 
             
-            var camera = CameraController.Camera.GetComponent<CameraController>().CinemachineVirtualCamera;
-            camera.LookAt = transform;
-            camera.Follow = transform;
+            var camera = CameraController.Camera.GetComponent<CameraController>();
+            camera.SetLookAtFollow(transform);
+            camera.ResetCameraPosition();
 
             BotPartsLogic.PopulatePartsList();
 

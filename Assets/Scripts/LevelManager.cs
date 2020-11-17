@@ -260,6 +260,8 @@ namespace StarSalvager
                 bot.transform.localScale = Vector3.one * scale;
 
                 _t += Time.deltaTime;
+                
+                m_cameraController.SetTrackedOffset(y: (5 * Constants.gridCellSize) - newY);
             }
 
             if (m_botZoomOffScreen)
@@ -458,8 +460,11 @@ namespace StarSalvager
             Globals.IsRecoveryBot = false;
         }
 
+        //FIXME This will need to be cleaned up
         private void MoveBotOffScreen()
         {
+            
+            
             var yPos = Constants.gridCellSize * Globals.GridSizeY;
             if (botMoveOffScreenSpeed < 20)
             {
@@ -495,6 +500,8 @@ namespace StarSalvager
                     UpdateTowLineRenderer(bot.transform.position,
                         ObstacleManager.RecoveredBotFalling.transform.position);
                 }
+                
+                m_cameraController.SetTrackedOffset(y: (Constants.gridCellSize * 5) -bot.transform.position.y);
             }
         }
 
@@ -858,20 +865,20 @@ namespace StarSalvager
 
         public void SetBotBelowScreen()
         {
-            Debug.LogError("ERROR: This needs to be fixed to support new movement system");
-            /*for (int i = 0; i < m_bots.Count; i++)
+            //Debug.LogError("ERROR: This needs to be fixed to support new movement system");
+            for (int i = 0; i < m_bots.Count; i++)
             {
                 m_bots[i].transform.position = Vector3.down * 5;
             }
             
-            _startY = -5f; */
+            _startY = -5f; 
 
         }
 
         public void SetBotEnterScreen(bool value)
         {
             m_botEnterScreen = value;
-
+            
             if (value)
             {
                 CreateThrustEffect(BotObject);
@@ -892,14 +899,16 @@ namespace StarSalvager
             }
 
             m_botZoomOffScreen = value;
-
+            
             if (!value)
             {
                 botMoveOffScreenSpeed = 1.0f;
             }
-            
-            if(value)
+
+            if (value)
+            {
                 CreateThrustEffect(BotObject);
+            }
             else if(_effect)
                 Destroy(_effect);
         }

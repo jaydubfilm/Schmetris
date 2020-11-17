@@ -337,6 +337,8 @@ namespace StarSalvager.Cameras
             //horzExtent = orthographicSize * Screen.width / Screen.height / 2;
 
             UpdateRect();
+
+            SetOrthoSize(orthographicSize);
         }
 
         public void CameraOffset(Vector3 pos, bool useHorizontalOffset)
@@ -380,6 +382,47 @@ namespace StarSalvager.Cameras
 
             return clamped;
         }
+
+
+        //Virtual Camera
+        //====================================================================================================================//
+
+        public void SetLookAtFollow(Transform target)
+        {
+            CinemachineVirtualCamera.LookAt = target;
+            CinemachineVirtualCamera.Follow = target;
+
+        }
+
+        /*public void SetDeadzone(float width = 0.1f, float height = 0f)
+        {
+            var framingTransposer = CinemachineVirtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
+            
+            framingTransposer.m_DeadZoneWidth = width;
+            framingTransposer.m_DeadZoneHeight = height;
+
+            framingTransposer.m_SoftZoneHeight = Mathf.Max(height, 0.8f);
+        }*/
+
+        public void SetTrackedOffset(float x = 0, float y = 0, float z = 0f)
+        {
+            var framingTransposer = CinemachineVirtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
+            framingTransposer.m_TrackedObjectOffset = new Vector3(x, y, z);
+        }
+
+        public void SetOrthoSize(float size)
+        {
+            if (!CinemachineVirtualCamera)
+                return;
+
+            CinemachineVirtualCamera.m_Lens.OrthographicSize = size;
+        }
+
+        public void ResetCameraPosition()
+        {
+            CinemachineVirtualCamera.transform.position = new Vector3(0f, 13.39f, -10f);
+        }
+        
 
         //IMoveOnInput functions
         //================================================================================================================//
