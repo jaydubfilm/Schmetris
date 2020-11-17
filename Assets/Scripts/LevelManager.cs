@@ -959,6 +959,8 @@ namespace StarSalvager
 
             ScreenFade.Fade(() =>
             {
+                Globals.IsRecoveryBot = true;
+                GameUi.ShowRecoveryBanner(true);
                 SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.LEVEL);
             });
             
@@ -1020,16 +1022,13 @@ namespace StarSalvager
             if (!Globals.IsRecoveryBot)
             {
                 IsWaveProgressing = false;
-                Globals.IsRecoveryBot = true;
 
                 Alert.ShowAlert("Bot wrecked",
                     "Your bot has been wrecked. Deploy your recovery bot to rescue it.",
                     "Deploy",
                     () =>
                     {
-                        Globals.IsRecoveryBot = true;
                         IsWaveProgressing = true;
-                        GameUi.ShowRecoveryBanner(true);
                         RestartLevel();
                     });
 
