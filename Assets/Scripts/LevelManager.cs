@@ -579,6 +579,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             InputManager.Instance.InitInput();
+            InputManager.Instance.LockRotation = true;
 
             WaterAtBeginningOfWave = PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource;
 
@@ -871,8 +872,11 @@ namespace StarSalvager
                 CreateThrustEffect(BotObject);
                 BotObject.PROTO_GodMode = true;
             }
-            else if(_effect)
+            else if (_effect)
+            {
+                InputManager.Instance.LockRotation = false;
                 Destroy(_effect);
+            }
         }
 
         public void SetBotExitScreen(bool value)
@@ -943,7 +947,7 @@ namespace StarSalvager
                 if (!blockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
                     blockData = new List<BlockData>();
 
-                PlayerDataManager.SetBlockDatas(blockData);
+                PlayerDataManager.SetBlockData(blockData);
             }
         }
 
@@ -974,6 +978,7 @@ namespace StarSalvager
             }
 
             InputManager.Instance.CancelMove();
+            InputManager.Instance.LockRotation = true;
 
             if (!Globals.IsRecoveryBot)
             {

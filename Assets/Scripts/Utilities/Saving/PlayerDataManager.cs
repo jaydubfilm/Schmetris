@@ -124,7 +124,7 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
-        public static void SetBlockDatas(List<BlockData> blockData)
+        public static void SetBlockData(List<BlockData> blockData)
         {
             if (Globals.IsRecoveryBot)
             {

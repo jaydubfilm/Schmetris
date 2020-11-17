@@ -47,7 +47,7 @@ namespace StarSalvager.Prototype
             dialogueLines.Add((0, $"I thought it was {PlayerDataManager.GetResource(BIT_TYPE.GREY).resource}."));
             dialogueLines.Add((1, "Nah I’ve had this one in my pocket since yesterday. What? I like how it feels."));
             dialogueLines.Add((0, $"{ PlayerDataManager.GetResource(BIT_TYPE.GREY).resource + 1} metal bits is enough to craft another drone core."));
-            dialogueLines.Add((0, "(ahem) Captain… it’ill put a dent in our cargo stores, but -"));
+            dialogueLines.Add((0, "(ahem) Captain… it’ll put a dent in our cargo stores, but -"));
             dialogueLines.Add((1, "Are you saying we’re still in the game?"));
             dialogueLines.Add((0, "We’re still in the game!"));
 

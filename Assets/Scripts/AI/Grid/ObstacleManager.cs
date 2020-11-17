@@ -646,6 +646,12 @@ namespace StarSalvager
                 return;
             }
 
+            if (direction != 0 && LevelManager.Instance.BotDead)
+            {
+                m_currentInput = 0f;
+                return;
+            }
+
             m_currentInput = direction;
 
             m_distanceHorizontal += direction * Constants.gridCellSize;

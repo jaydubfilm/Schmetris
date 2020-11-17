@@ -53,7 +53,34 @@ namespace StarSalvager.Utilities.Inputs
             } 
         }
 
+        [ShowInInspector, ReadOnly]
+        public bool LockRotation
+        {
+            get => _lockRotation;
+            set
+            {
+                //Only want to call this in the event that it's different
+                if (_lockRotation == value)
+                    return;
+
+                _lockRotation = value;
+
+                if (value)
+                {
+                    TryApplyRotate(0f);
+                }
+                else
+                {
+                    //Need to make sure that we reset the DasTimer otherwise it wont work!
+                    dasRotateTimer = 0f;
+                    ProcessRotateInput(_currentRotateInput);
+                }
+
+            }
+        }
+
         private bool _lockSideMovement;
+        private bool _lockRotation;
 
         [SerializeField, BoxGroup("DAS"), ReadOnly]
         private float dasMovementTimer;
@@ -439,6 +466,12 @@ namespace StarSalvager.Utilities.Inputs
 
             MostRecentRotateMovement = rotateDirection;
 
+            if (LockRotation)
+            {
+                TryApplyRotate(0f);
+                return;
+            }
+
             TryApplyRotate(rotateDirection);
 
             //This check needs to happen after TryApplyRotate as it could cause the Rotate to never trigger
@@ -553,13 +586,11 @@ namespace StarSalvager.Utilities.Inputs
 
         //====================================================================================================================//
         
-
         public void CancelMove()
         {
             Move(0);
+            Rotate(0);
         }
-
-
         
         #endregion //Inputs
 
