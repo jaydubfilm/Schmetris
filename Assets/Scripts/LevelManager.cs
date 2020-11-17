@@ -453,7 +453,7 @@ namespace StarSalvager
             MissionManager.ProcessMissionData(typeof(SectorsCompletedMission),
                 new MissionProgressEventData());
 
-            ProjectileManager.UpdateForces();
+            //ProjectileManager.UpdateForces();
 
             Globals.IsRecoveryBot = false;
         }
