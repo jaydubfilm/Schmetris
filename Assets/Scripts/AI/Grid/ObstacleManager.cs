@@ -189,6 +189,8 @@ namespace StarSalvager
                             recycleBits = false
                         });
                         break;
+                    case MoveWithObstacles _:
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                 }
